@@ -16,7 +16,7 @@ class LayoutGruenesCi2 extends LayoutHooks
     {
         $out = '<header class="row logo" role="banner">' .
             '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Zur Startseite">' .
-            '<img src="/img/gruenes_ci2_logo.png" width="185" height="100" alt="Bündnis 90 / Die GRÜNEN Logo">' .
+            $this->getLogoStr() .
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
