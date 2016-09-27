@@ -28,7 +28,7 @@ if ($admin) {
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
     $templateItem->id    = -1;
-    $templateItem->title = 'New Item';
+    $templateItem->title = \Yii::t('con', 'new_item');
     $templateItem->code  = '#';
     ob_start();
     LayoutHelper::showAgendaItem($templateItem, $consultation, $admin, !$longVersion);
