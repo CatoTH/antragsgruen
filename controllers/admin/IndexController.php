@@ -79,7 +79,7 @@ class IndexController extends AdminBase
                 }
 
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
-                $this->layoutParams->mainCssFile       = $siteSettings->siteLayout;
+                $this->layoutParams->setLayout($siteSettings->siteLayout);
 
                 $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));

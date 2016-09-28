@@ -3,10 +3,15 @@
 namespace app\models\settings;
 
 use app\components\UrlHelper;
+use app\views\hooks\LayoutHooks;
+use app\views\hooks\LayoutStd;
+use app\views\hooks\LayoutGruenesCi2;
 use yii\helpers\Html;
 
 class Layout
 {
+    const DEFAULT_LAYOUT = 'layout-classic';
+
     public $menu                 = [];
     public $breadcrumbs          = null;
     public $multimenu            = [];
@@ -21,7 +26,10 @@ class Layout
     public $onloadJs             = [];
     public $fullWidth            = false;
     public $fullScreen           = false;
-    public $mainCssFile          = 'layout-classic';
+    public $mainCssFile          = null;
+
+    /** @var LayoutHooks */
+    public $hooks = null;
 
     /** @var \app\models\db\Consultation|null */
     private $consultation;
@@ -32,10 +40,26 @@ class Layout
     public static function getCssLayouts()
     {
         return [
-            'layout-classic'    => 'Antragsgrün-Standard',
-            'layout-gruenes-ci' => 'Grünes CI',
-            'layout-dbjr'       => 'DBJR',
+            'layout-classic'     => 'Antragsgrün-Standard',
+            'layout-gruenes-ci'  => 'Grünes CI',
+            'layout-gruenes-ci2' => 'Grünes CI v2',
+            'layout-dbjr'        => 'DBJR',
         ];
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        $this->mainCssFile = $layout;
+        switch ($layout) {
+            case 'layout-gruenes-ci2':
+                $this->hooks = new LayoutGruenesCi2($this);
+                break;
+            default:
+                $this->hooks = new LayoutStd($this);
+        }
     }
 
     /**
@@ -145,9 +169,10 @@ class Layout
     /**
      * @return string[]
      */
-    public function getJSFiles() {
+    public function getJSFiles()
+    {
         $jsLang = $this->getJSLanguageCode();
-        $files = [];
+        $files  = [];
         if (defined('YII_DEBUG') && YII_DEBUG) {
             $files[] = $this->resourceUrl('js/bootstrap.js');
             $files[] = $this->resourceUrl('js/bower/bootbox/bootbox.js');
@@ -160,9 +185,9 @@ class Layout
             $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
             $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         }
-	    foreach ($this->extraJs as $extraJs) {
-		    $files[] = $this->resourceUrl($extraJs);
-	    }
+        foreach ($this->extraJs as $extraJs) {
+            $files[] = $this->resourceUrl($extraJs);
+        }
 
         return $files;
     }

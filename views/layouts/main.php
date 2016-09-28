@@ -1,7 +1,5 @@
 <?php
 use app\components\UrlHelper;
-use app\models\AdminTodoItem;
-use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -102,142 +100,25 @@ echo '<script src="' . $layout->resourceUrl('js/modernizr.js') . '"></script>';
 $this->beginBody();
 
 echo '<div class="over_footer_wrapper">';
+
+echo $layout->hooks->beforePage();
 echo '<div class="container" id="page">';
-echo '<header id="mainmenu">';
-echo '<div class="navbar">
-        <div class="navbar-inner">
-            <div class="container">';
+echo $layout->hooks->beginPage();
 
-echo '<ul class="nav navbar-nav">';
-
-if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
-    if ($controller->consultation) {
-        $homeUrl = UrlHelper::homeUrl();
-        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) . '</li>';
-        if ($controller->consultation->hasHelpPage()) {
-            $helpLink = UrlHelper::createUrl('consultation/help');
-            echo '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
-        }
-    } else {
-        $startLink = UrlHelper::createUrl('manager/index');
-        echo '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
-    }
-
-    if (!User::getCurrentUser() && !$minimalistic) {
-        if (get_class($controller) == \app\controllers\UserController::class) {
-            $backUrl = UrlHelper::createUrl('consultation/index');
-        } else {
-            $backUrl = \yii::$app->request->url;
-        }
-        $loginUrl   = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
-        $loginTitle = \Yii::t('base', 'menu_login');
-        echo '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) . '</li>';
-    }
-    if (User::getCurrentUser()) {
-        $settingsTitle = \Yii::t('base', 'menu_account');
-        $link          = Html::a($settingsTitle, UrlHelper::createUrl('user/myaccount'), ['id' => 'myAccountLink']);
-        echo '<li>' . $link . '</li>';
-
-        $logoutUrl   = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
-        $logoutTitle = \Yii::t('base', 'menu_logout');
-        echo '<li>' . Html::a('Logout', $logoutUrl, ['id' => 'logoutLink']) . '</li>';
-    }
-    if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING)) {
-        $adminUrl   = UrlHelper::createUrl('admin/motion/listall');
-        $adminTitle = \Yii::t('base', 'menu_motion_list');
-        echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
-    }
-    if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
-        $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
-        if (count($todo) > 0) {
-            $adminUrl   = UrlHelper::createUrl('admin/index/todo');
-            $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
-            echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
-        }
-
-        $adminUrl   = UrlHelper::createUrl('admin/index');
-        $adminTitle = \Yii::t('base', 'menu_admin');
-        echo '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
-    }
-}
-echo '</ul>
-            </div>
-        </div>
-    </div>';
-
-echo '</header>';
-
-echo '<div class="row logo">
-<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
-if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
-    $path     = parse_url($controller->consultation->getSettings()->logoUrl);
-    $filename = basename($path['path']);
-    $filename = substr($filename, 0, strrpos($filename, '.'));
-    $filename = str_replace(
-        ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
-        [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
-        $filename
-    );
-    $logoUrl  = $controller->consultation->getSettings()->logoUrl;
-    if (!isset($path['host']) && $logoUrl[0] != '/') {
-        $logoUrl = $resourceBase . $logoUrl;
-    }
-    echo '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
-} else {
-    echo '<span class="logoImg"></span>';
-}
-echo '</a></div>';
-
-
+echo $layout->hooks->logoRow();
 echo $controller->showErrors();
-
-if (is_array($layout->breadcrumbs)) {
-    echo '<ol class="breadcrumb">';
-    foreach ($layout->breadcrumbs as $link => $name) {
-        if ($link == '' || is_null($link)) {
-            echo '<li>' . Html::encode($name) . '</li>';
-        } else {
-            echo '<li>' . Html::a($name, $link) . '</li>';
-        }
-    }
-    echo '</ol>';
-}
-
+echo $layout->hooks->beforeContent();
 
 /** @var string $content */
 echo $content;
 
-if ($controller->consultation) {
-    $legalLink   = UrlHelper::createUrl('consultation/legal');
-    $privacyLink = UrlHelper::createUrl('consultation/privacy');
-} else {
-    $legalLink   = UrlHelper::createUrl('manager/site-legal');
-    $privacyLink = UrlHelper::createUrl('manager/site-privacy');
-}
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
 
-echo '<footer class="footer">
-        <div class="container">
-            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
-    \Yii::t('base', 'imprint') . '</a>
-            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
-    \Yii::t('base', 'privacy_statement') . '</a>
+echo $layout->hooks->endPage();
 
-            <span class="version">';
-if (\Yii::$app->language == 'de') {
-    echo 'Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
-} else {
-    echo 'Antragsgrün by <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
-}
-
-echo '</span>
-        </div>
-    </footer>';
 
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '"></script>' . "\n";
