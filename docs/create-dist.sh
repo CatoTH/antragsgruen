@@ -15,20 +15,20 @@ fi
 
 export ANTRAGSGRUEN_VERSION=$(cat config/defines.php | grep "ANTRAGSGRUEN_VERSION" | cut -d \' -f 4)
 
-if [[ -d ./local/antragsgruen ]]; then
-    rm -R ./local/antragsgruen
+if [[ -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
+    rm -R ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 fi
 
 mkdir ./local
-mkdir ./local/antragsgruen
-if [[ ! -d ./local/antragsgruen ]]; then
+mkdir ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
+if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
     echo "Could not create the temporary directory"
     exit
 fi
 
-rsync -av --exclude='local' --exclude='./dist' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen
+rsync -av --exclude='local' --exclude='./dist' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
-cd local/antragsgruen
+cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.2.1"
@@ -48,6 +48,7 @@ cd web/js/bower/intl/locale-data
 find . -type f ! -name "de*" -exec rm {} \;
 cd ../../../../../
 rm -R web/js/bower/moment/src/
+rm -R web/js/src
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
@@ -58,4 +59,4 @@ rm config/config_tests.json
 touch config/INSTALLING
 
 cd ..
-tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen
+tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
