@@ -6,7 +6,7 @@ use app\models\settings\AntragsgruenApp;
  * @var AntragsgruenApp $params
  */
 
-define('ANTRAGSGRUEN_VERSION', '3.4.3');
+define('ANTRAGSGRUEN_VERSION', '3.5.0b1');
 define('ANTRAGSGRUEN_HISTORY_URL', 'https://github.com/CatoTH/antragsgruen/blob/v3/History.md');
 
 // For PHPExcel

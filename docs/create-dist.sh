@@ -3,7 +3,7 @@
 # Releasing:
 # - Increase version number in config/defines.php
 # - Write Changelog
-# - Execute this script (bin/create-dist.sh)
+# - Execute this script (docs/create-dist.sh)
 # - Upload the generated .tar.bz2-file
 # - Update README.md
 # - Commit this changes to repository and tag the new version
@@ -34,7 +34,8 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.2.1"
 ./composer.phar install --no-dev
 
-rm -R local dist docker-vagrant
+rm -R local dist docker-vagrant .DS_Store .idea
+rm config/DEBUG config/config.template.json
 rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml
 rm web/index-test.php
 mv web/index-production.php web/index.php
