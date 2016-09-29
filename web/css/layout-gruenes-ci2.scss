@@ -254,7 +254,6 @@ footer.footer {
   padding-right: 0;
   padding-left: 50px;
 
-
   .form-search {
     margin-bottom: 2em;
 
@@ -293,6 +292,12 @@ footer.footer {
     background: #e6e6e6;
     box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
     border-radius: 0;
+    list-style-type: none;
+
+    a {
+        padding: 10px 0;
+        display: block;
+    }
 
     li a, .icon {
       color: #46962b;
@@ -331,5 +336,9 @@ footer.footer {
         margin-right: 0.5em;
       }
     }
+  }
+
+  .share_buttons {
+    margin-top: 20px;
   }
 }
