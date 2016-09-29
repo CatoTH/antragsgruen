@@ -350,6 +350,9 @@ class Base extends Controller
      */
     protected function showErrorpage($status, $message)
     {
+        if ($this->layoutParams->hooks === null) {
+            $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+        }
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->statusCode    = $status;
         Yii::$app->response->content       = $this->render(
