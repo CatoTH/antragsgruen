@@ -242,10 +242,11 @@ class Tools
      * @static
      * @param string $mysqlDate
      * @param string|null $locale
+     * @param bool $allowRelativeDates
      * @return string
      * @throws Internal
      */
-    public static function formatMysqlDateTime($mysqlDate, $locale = null)
+    public static function formatMysqlDateTime($mysqlDate, $locale = null, $allowRelativeDates = true)
     {
         if (strlen($mysqlDate) == 0) {
             return '-';
@@ -258,7 +259,7 @@ class Tools
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 
-        return self::formatMysqlDate($mysqlDate) . ", " . substr($mysqlDate, 11, 5);
+        return self::formatMysqlDate($mysqlDate, $locale, $allowRelativeDates) . ", " . substr($mysqlDate, 11, 5);
     }
 
     /**

@@ -96,11 +96,11 @@ if ($motion->replacedMotion) {
 
 if ($motion->dateResolution != '') {
     echo '<tr><th>' . \Yii::t('motion', 'resoluted_on') . ':</th>
-       <td>' . Tools::formatMysqlDate($motion->dateResolution) . '</td>
+       <td>' . Tools::formatMysqlDate($motion->dateResolution, null, false) . '</td>
      </tr>';
 }
 echo '<tr><th>' . \Yii::t('motion', 'submitted_on') . ':</th>
-       <td>' . Tools::formatMysqlDateTime($motion->dateCreation) . '</td>
+       <td>' . Tools::formatMysqlDateTime($motion->dateCreation, null, false) . '</td>
                 </tr>';
 
 $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);

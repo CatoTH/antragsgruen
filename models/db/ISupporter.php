@@ -104,7 +104,8 @@ abstract class ISupporter extends ActiveRecord
             } else {
                 if ($this->resolutionDate > 0) {
                     $orga .= ' <small style="font-weight: normal;">(';
-                    $orga .= \Yii::t('motion', 'resolution_on') . ': ' . Tools::formatMysqlDate($this->resolutionDate);
+                    $orga .= \Yii::t('motion', 'resolution_on') . ': ';
+                    $orga .= Tools::formatMysqlDate($this->resolutionDate, null, false);
                     $orga .= ')</small>';
                 }
                 return $orga;
@@ -123,7 +124,7 @@ abstract class ISupporter extends ActiveRecord
             } else {
                 if ($this->resolutionDate > 0) {
                     $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
-                    $orga .= Tools::formatMysqlDate($this->resolutionDate) . ')';
+                    $orga .= Tools::formatMysqlDate($this->resolutionDate, null, false) . ')';
                 }
                 return $orga;
             }
