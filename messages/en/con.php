@@ -24,6 +24,8 @@ return [
     'pdf_motions'          => 'PDFs: Motions',
     'pdf_amendments'       => 'All Amendments',
     'pdf_amendments_small' => 'PDFs: Amendments',
+    'sb_search_form'       => 'Search form',
+    'sb_search_desc'       => 'The term to search for.',
     'sb_search'            => 'Search',
     'sb_search_do'         => 'Search',
     'sb_search_query'      => 'Search for...',

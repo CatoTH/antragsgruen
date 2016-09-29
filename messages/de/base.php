@@ -7,6 +7,8 @@ return [
     'saved'                 => 'Gespeichert.',
     'edit'                  => 'Bearbeiten',
     'Home'                  => 'Start',
+    'home_back'             => 'Zur Startseite',
+    'menu_main'             => 'Hauptmenü',
     'menu_account'          => 'Account',
     'menu_admin'            => 'Einstellungen',
     'menu_login'            => 'Login',

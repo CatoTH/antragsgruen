@@ -15,15 +15,18 @@ class LayoutGruenesCi2 extends LayoutHooks
     public function logoRow()
     {
         $out = '<header class="row logo" role="banner">' .
-            '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="Zur Startseite">' .
+            '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="' .
+            Html::encode(\Yii::t('base', 'home_back')) . '">' .
             $this->getLogoStr() .
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
             '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Antragsgrün</a>' .
-            '</span></div>' .
-            '<div id="site-description">Anträge zur BDK 2016</div>' .
-            '</div>' .
+            '</span></div>';
+        if ($this->consultation) {
+            $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';
+        }
+        $out .= '</div>' .
             '</header>';
 
         return $out;
@@ -35,7 +38,8 @@ class LayoutGruenesCi2 extends LayoutHooks
     public function beforeContent()
     {
         $out = '<section class="navwrap">' .
-            '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">Hauptmenü:</h6>' .
+            '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">' .
+            \Yii::t('base', 'menu_main') . ':</h6>' .
             '<div class="navigation nav-fallback clearfix">';
         $out .= $this->getStdNavbarHeader();
         $out .= '</div></nav>';
@@ -74,8 +78,8 @@ class LayoutGruenesCi2 extends LayoutHooks
     public function getSearchForm()
     {
         $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
-        $html .= '<h6 class="invisible">Suchformular</h6>';
-        $html .= '<label for="search">Der Suchbegriff nach dem die Website durchsucht werden soll.</label>
+        $html .= '<h6 class="invisible">' . \Yii::t('con', 'sb_search_form') . '</h6>';
+        $html .= '<label for="search">' . \Yii::t('con', 'sb_search_desc') . '</label>
     <input type="text" class="query" name="query"
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">

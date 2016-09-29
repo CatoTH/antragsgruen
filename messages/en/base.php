@@ -7,6 +7,8 @@ return [
     'saved'                 => 'Saved.',
     'edit'                  => 'Edit',
     'Home'                  => 'Home',
+    'home_back'             => 'Back to home',
+    'menu_main'             => 'Main menu',
     'Settings'              => 'Settings',
     'privacy_statement'     => 'Privacy',
     'imprint'               => 'Imprint',

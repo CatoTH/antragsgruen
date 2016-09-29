@@ -13,13 +13,18 @@ abstract class LayoutHooks
     /** @var Layout */
     protected $layout;
 
+    /** @var Consultation|null */
+    protected $consultation;
+
     /**
      * LayoutHooks constructor.
      * @param Layout $layout
+     * @param Consultation|null $consultation
      */
-    public function __construct(Layout $layout)
+    public function __construct(Layout $layout, $consultation)
     {
         $this->layout = $layout;
+        $this->consultation = $consultation;
     }
 
     /**

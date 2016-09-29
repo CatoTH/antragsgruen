@@ -7,6 +7,7 @@
 - Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)
 - Bugfixes in the ODT-Export
 - Introduction of layout hooks (this enables more flexible layout variants)
+- A new theme inspired by the German Green Party's CI
 
 ### Version 3.4.3 (2016-08-22)
 

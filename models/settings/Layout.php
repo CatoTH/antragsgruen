@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\views\hooks\LayoutHooks;
 use app\views\hooks\LayoutStd;
@@ -55,17 +56,17 @@ class Layout
         $this->mainCssFile = $layout;
         switch ($layout) {
             case 'layout-gruenes-ci2':
-                $this->hooks = new LayoutGruenesCi2($this);
+                $this->hooks = new LayoutGruenesCi2($this, $this->consultation);
                 break;
             default:
-                $this->hooks = new LayoutStd($this);
+                $this->hooks = new LayoutStd($this, $this->consultation);
         }
     }
 
     /**
-     * @param \app\models\db\Consultation $consultation
+     * @param Consultation $consultation
      */
-    public function setConsultation(\app\models\db\Consultation $consultation)
+    public function setConsultation(Consultation $consultation)
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {
