@@ -19,7 +19,7 @@ foreach ($motion->replacedByMotions as $replMotion) {
 }
 
 
-$html        = '<ul class="sidebarActions nav nav-list">';
+$html        = '<ul class="sidebarActions">';
 $sidebarRows = 0;
 
 try {
