@@ -8,6 +8,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
+use app\models\db\TexTemplate;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
@@ -223,6 +224,9 @@ class MotionController extends AdminBase
                     $motionType->position                    = 0;
                     $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
                     $motionType->status                      = 0;
+
+                    $texTemplates = TexTemplate::find()->all();
+                    $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }
             }
             $motionType->titleSingular          = $type['titleSingular'];
