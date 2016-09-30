@@ -243,10 +243,10 @@ footer.footer {
 
 @media (min-width: $screen-md) {
   main.col-md-9 {
-    width: 730px;
+    width: 750px;
   }
   aside.col-md-3 {
-    width: 294px;
+    width: 274px;
   }
 }
 
@@ -288,7 +288,7 @@ footer.footer {
   }
   .sidebar-box, .sidebarActions {
     margin: 0 0 2em 0;
-    padding: 1.5em;
+    padding: 18px;
     border: 0;
     background: #e6e6e6;
     box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
@@ -347,5 +347,8 @@ footer.footer {
 
   .share_buttons {
     margin-top: 20px;
+    li {
+      width: 102px;
+    }
   }
 }
