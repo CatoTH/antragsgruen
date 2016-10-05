@@ -30,14 +30,17 @@ class BugfixController extends Controller
         }
         $changedCount = 0;
         foreach ($motion->getActiveSections() as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
-            }
-            $newText = HTMLTools::cleanSimpleHtml($section->data);
-            if ($newText != $section->data) {
-                $changedCount++;
-                $section->data = HTMLTools::cleanSimpleHtml($section->data);
-                $section->save();
+            try {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                $newText = HTMLTools::cleanSimpleHtml($section->data);
+                if ($newText != $section->data) {
+                    $changedCount++;
+                    $section->data = HTMLTools::cleanSimpleHtml($section->data);
+                    $section->save();
+                }
+            } catch (\Exception $e) {
             }
         }
         if ($changedCount > 0) {
@@ -60,17 +63,20 @@ class BugfixController extends Controller
         }
         $changedCount = 0;
         foreach ($amendment->getActiveSections() as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
-            }
+            try {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
 
-            //$newText = HTMLTools::cleanSimpleHtml($section->dataRaw); // don't do this; <del>'s are removed
+                //$newText = HTMLTools::cleanSimpleHtml($section->dataRaw); // don't do this; <del>'s are removed
 
-            $newText = HTMLTools::cleanSimpleHtml($section->data);
-            if ($newText != $section->data) {
-                $changedCount++;
-                $section->data = $newText;
-                $section->save();
+                $newText = HTMLTools::cleanSimpleHtml($section->data);
+                if ($newText != $section->data) {
+                    $changedCount++;
+                    $section->data = $newText;
+                    $section->save();
+                }
+            } catch (\Exception $e) {
             }
         }
         if ($changedCount > 0) {
