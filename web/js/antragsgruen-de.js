@@ -34,7 +34,8 @@ ANTRAGSGRUEN_STRINGS = {
         "emailMissingTo": "Es wurden keine E-Mail-Adressen angegeben.",
         "emailNumberMismatch": "Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!",
         "delMotionConfirm": "Diesen Antrag wirklich löschen?",
-        "delAmendmentConfirm": "Diesen Änderungsantrag wirklich löschen?"
+        "delAmendmentConfirm": "Diesen Änderungsantrag wirklich löschen?",
+        "deleteMotionSectionConfirm": "Wenn dieser Abschnitt gelöscht wird, wird er auch unwiderruflich in allen Anträgen dieses Types gelöscht. Wirklich löschen?"
     }
 };
 

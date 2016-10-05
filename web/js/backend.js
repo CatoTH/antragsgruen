@@ -75,8 +75,12 @@
             ev.preventDefault();
             var $sectionHolder = $(this).parents('li').first(),
                 delId = $sectionHolder.data('id');
-            $('.adminTypeForm').append('<input type="hidden" name="sectionsTodelete[]" value="' + delId + '">');
-            $sectionHolder.remove();
+            bootbox.confirm(__t('admin', 'deleteMotionSectionConfirm'), function (result) {
+                if (result) {
+                    $('.adminTypeForm').append('<input type="hidden" name="sectionsTodelete[]" value="' + delId + '">');
+                    $sectionHolder.remove();
+                }
+            });
         });
         $list.on('change', '.sectionType', function () {
             var $li = $(this).parents('li').first(),

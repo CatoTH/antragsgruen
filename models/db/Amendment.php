@@ -87,6 +87,20 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return AmendmentSection[]
+     */
+    public function getActiveSections()
+    {
+        $sections = [];
+        foreach ($this->sections as $section) {
+            if ($section->getSettings()) {
+                $sections[] = $section;
+            }
+        }
+        return $sections;
+    }
+
+    /**
      * @param int $sectionId
      * @return AmendmentSection|null
      */
@@ -213,11 +227,10 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return ConsultationSettingsMotionSection
+     * @return ConsultationSettingsMotionSection[]
      */
-    public function getMySections()
+    public function getTypeSections()
     {
-
         return $this->getMyMotion()->motionType->motionSections;
     }
 
@@ -253,7 +266,7 @@ class Amendment extends IMotion implements IRSSItem
         $firstLine  = $this->getMyMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
 
-        foreach ($this->sections as $section) {
+        foreach ($this->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
@@ -761,7 +774,7 @@ class Amendment extends IMotion implements IRSSItem
         $firstLine  = $this->getMyMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
 
-        foreach ($this->sections as $section) {
+        foreach ($this->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }

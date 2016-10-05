@@ -130,7 +130,7 @@ foreach ($motions as $motion) {
     } else {
         foreach ($motionType->motionSections as $section) {
             $text = '';
-            foreach ($motion->sections as $sect) {
+            foreach ($motion->getActiveSections() as $sect) {
                 if ($sect->sectionId == $section->id) {
                     $text .= $sect->getSectionType()->getMotionPlainText();
                 }

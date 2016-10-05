@@ -38,7 +38,7 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @return ConsultationSettingsMotionSection
+     * @return ConsultationSettingsMotionSection|null
      */
     public function getSettings()
     {
@@ -126,7 +126,7 @@ class AmendmentSection extends IMotionSection
         if ($this->originalMotionSection === null) {
             $motion = $this->getMotion();
             if ($motion) {
-                foreach ($this->getMotion()->sections as $section) {
+                foreach ($this->getMotion()->getActiveSections() as $section) {
                     if ($section->sectionId == $this->sectionId) {
                         $this->originalMotionSection = $section;
                     }

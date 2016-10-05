@@ -51,7 +51,7 @@ class MotionEditForm extends Model
             foreach ($motion->tags as $tag) {
                 $this->tags[] = $tag->id;
             }
-            foreach ($motion->sections as $section) {
+            foreach ($motion->getActiveSections() as $section) {
                 $motionSections[$section->sectionId] = $section;
             }
         }
@@ -246,7 +246,7 @@ class MotionEditForm extends Model
     {
         /** @var MotionSection[] $sectionsById */
         $sectionsById = [];
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             $sectionsById[$section->sectionId] = $section;
         }
         foreach ($this->sections as $section) {

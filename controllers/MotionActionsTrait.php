@@ -61,7 +61,7 @@ trait MotionActionsTrait
         $commentForm->setAttributes($postComment);
         $commentForm->sectionId = null;
         if ($postComment['sectionId'] > 0) {
-            foreach ($motion->sections as $section) {
+            foreach ($motion->getActiveSections() as $section) {
                 if ($section->sectionId == $postComment['sectionId']) {
                     $commentForm->sectionId = $postComment['sectionId'];
                 }

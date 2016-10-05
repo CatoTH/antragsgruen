@@ -36,7 +36,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return ConsultationSettingsMotionSection
+     * @return ConsultationSettingsMotionSection|null
      */
     public function getSettings()
     {
@@ -56,9 +56,6 @@ class MotionSection extends IMotionSection
                 }
             }
         }
-        echo "<br>";
-        var_dump($this->sectionId);
-        die();
         return null;
     }
 
@@ -101,7 +98,7 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return AmendmentSection|null
+     * @return AmendmentSection[]|null
      */
     public function getAmendingSections()
     {
@@ -206,7 +203,7 @@ class MotionSection extends IMotionSection
             $motion = $this->getConsultation()->getMotion($this->motionId);
             foreach ($motion->getVisibleAmendments(false) as $amendment) {
                 $amSec = null;
-                foreach ($amendment->sections as $section) {
+                foreach ($amendment->getActiveSections() as $section) {
                     if ($section->sectionId == $this->sectionId) {
                         $amSec = $section;
                     }

@@ -29,7 +29,7 @@ class BugfixController extends Controller
             $this->stderr('Motion not found' . "\n");
         }
         $changedCount = 0;
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
@@ -59,7 +59,7 @@ class BugfixController extends Controller
             $this->stderr('Amendment not found' . "\n");
         }
         $changedCount = 0;
-        foreach ($amendment->sections as $section) {
+        foreach ($amendment->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }

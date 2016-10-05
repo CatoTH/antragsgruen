@@ -472,7 +472,7 @@ class Consultation extends ActiveRecord
                 continue;
             }
             $found = false;
-            foreach ($motion->sections as $section) {
+            foreach ($motion->getActiveSections() as $section) {
                 if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
                     $found             = true;
                     $result            = new SearchResult();
@@ -489,7 +489,7 @@ class Consultation extends ActiveRecord
                     if (in_array($amend->status, $this->getInvisibleAmendmentStati())) {
                         continue;
                     }
-                    foreach ($amend->sections as $section) {
+                    foreach ($amend->getActiveSections() as $section) {
                         if (!$found && $section->getSectionType()->matchesFulltextSearch($text)) {
                             $found             = true;
                             $result            = new SearchResult();

@@ -100,7 +100,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo '<div class="preamble"><div>';
         echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
         echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
-        $amParas = $amendment->getChangedParagraphs($motion->sections, true);
+        $amParas = $amendment->getChangedParagraphs($motion->getActiveSections(), true);
         if (count($amParas) > 1) {
             echo '<div class="moreAffected">';
             echo str_replace('%num%', count($amParas), \Yii::t('amend', 'affects_x_paragraphs'));

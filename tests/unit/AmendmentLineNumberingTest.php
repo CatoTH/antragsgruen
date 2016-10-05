@@ -21,7 +21,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $amendment = Amendment::findOne($amendmentId);
 
         $section = null;
-        foreach ($amendment->sections as $sect) {
+        foreach ($amendment->getActiveSections() as $sect) {
             if ($sect->sectionId == $sectionId) {
                 $section = $sect;
             }
@@ -45,7 +45,7 @@ class AmendmentLineNumberingTest extends DBTestBase
         $amendment = Amendment::findOne($amendmentId);
 
         $section = null;
-        foreach ($amendment->sections as $sect) {
+        foreach ($amendment->getActiveSections() as $sect) {
             if ($sect->sectionId == $sectionId) {
                 $section = $sect;
             }

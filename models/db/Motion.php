@@ -139,6 +139,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return MotionSection[]
+     */
+    public function getActiveSections()
+    {
+        $sections = [];
+        foreach ($this->sections as $section) {
+            if ($section->getSettings()) {
+                $sections[] = $section;
+            }
+        }
+        return $sections;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotionType()
@@ -181,7 +195,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return ConsultationSettingsMotionSection[]
      */
-    public function getMySections()
+    public function getTypeSections()
     {
         return $this->motionType->motionSections;
     }

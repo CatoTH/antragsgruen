@@ -43,7 +43,7 @@ class AmendmentEditForm extends Model
         /** @var AmendmentSection[] $amendmentSections */
         $amendmentSections = [];
         $motionSections    = [];
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             $motionSections[$section->sectionId] = $section;
         }
         if ($amendment) {
@@ -51,7 +51,7 @@ class AmendmentEditForm extends Model
             $this->supporters  = $amendment->amendmentSupporters;
             $this->reason      = $amendment->changeExplanation;
             $this->editorial   = $amendment->changeEditorial;
-            foreach ($amendment->sections as $section) {
+            foreach ($amendment->getActiveSections() as $section) {
                 $amendmentSections[$section->sectionId] = $section;
                 if ($section->data == '' && isset($motionSections[$section->sectionId])) {
                     $data                                            = $motionSections[$section->sectionId]->data;
@@ -284,7 +284,7 @@ class AmendmentEditForm extends Model
             $motionType->getAmendmentSupportTypeClass()->submitAmendment($amendment);
 
             // Sections
-            foreach ($amendment->sections as $section) {
+            foreach ($amendment->getActiveSections() as $section) {
                 $section->delete();
             }
             foreach ($this->sections as $section) {

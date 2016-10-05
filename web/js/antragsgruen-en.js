@@ -35,7 +35,8 @@ ANTRAGSGRUEN_STRINGS = {
         "emailMissingTo": "No e-mail-address was entered.",
         "emailNumberMismatch": "The number of names and e-mail-addresses does not match.",
         "delMotionConfirm": "Do you really want to delete this motion?",
-        "delAmendmentConfirm": "Do you really want to delete this amendment?"
+        "delAmendmentConfirm": "Do you really want to delete this amendment?",
+        "deleteMotionSectionConfirm": "Do you really want to delete this section? It will be deleted from all motions of this motion type."
     }
 };
 

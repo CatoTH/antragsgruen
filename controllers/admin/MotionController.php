@@ -69,11 +69,10 @@ class MotionController extends AdminBase
                 $sectionId = IntVal($sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
                 $section = $motionType->getMotionSections()->andWhere('id = ' . $sectionId)->one();
-                if (!$section) {
-                    throw new FormError('Section not found: ' . $sectionId);
+                if ($section) {
+                    $section->status = ConsultationSettingsMotionSection::STATUS_DELETED;
+                    $section->save();
                 }
-                $section->status = ConsultationSettingsMotionSection::STATUS_DELETED;
-                $section->save();
             }
         }
     }
@@ -225,7 +224,7 @@ class MotionController extends AdminBase
                     $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
                     $motionType->status                      = 0;
 
-                    $texTemplates = TexTemplate::find()->all();
+                    $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }
             }

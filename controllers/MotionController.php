@@ -32,7 +32,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
                 $metadata = json_decode($section->metadata, true);
                 Header('Content-type: ' . $metadata['mime']);
@@ -56,7 +56,7 @@ class MotionController extends Base
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
                 Header('Content-type: application/pdf');
                 echo base64_decode($section->data);
@@ -223,7 +223,7 @@ class MotionController extends Base
 
         $openedComments = [];
         if ($commentId > 0) {
-            foreach ($motion->sections as $section) {
+            foreach ($motion->getActiveSections() as $section) {
                 if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
@@ -242,7 +242,7 @@ class MotionController extends Base
 
 
         $commentWholeMotions = false;
-        foreach ($motion->sections as $section) {
+        foreach ($motion->getActiveSections() as $section) {
             if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
                 $commentWholeMotions = true;
             }
