@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\db\ActiveRecord;
@@ -136,13 +137,28 @@ class Site extends ActiveRecord
     {
         $shownSites = [];
         /** @var Site[] $sites */
-        $sites = Site::find()->orderBy('dateCreation DESC')->all();
+        $sites = Site::find()->with('currentConsultation')->all();
         foreach ($sites as $site) {
             if (!$site->public) {
                 continue;
             }
+            if (!$site->currentConsultation) {
+                continue;
+            }
             $shownSites[] = $site;
         }
+
+        usort($shownSites, function (Site $site1, Site $site2) {
+            $ts1 = Tools::dateSql2timestamp($site1->currentConsultation->dateCreation);
+            $ts2 = Tools::dateSql2timestamp($site2->currentConsultation->dateCreation);
+            if ($ts1 < $ts2) {
+                return 1;
+            } elseif ($ts1 < $ts2) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
 
         return $shownSites;
     }

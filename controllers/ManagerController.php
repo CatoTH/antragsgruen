@@ -46,7 +46,7 @@ class ManagerController extends Base
         foreach ($sites as $site) {
             $url      = UrlHelper::createUrl(['consultation/index', 'subdomain' => $site->subdomain]);
             $siteData = [
-                'title'        => $site->title,
+                'title'        => ($site->currentConsultation ? $site->currentConsultation->title : $site->title),
                 'organization' => $site->organization,
                 'url'          => $url,
             ];
