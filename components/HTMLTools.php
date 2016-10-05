@@ -132,6 +132,9 @@ class HTMLTools
         // should only happen in some edge cases where the editor was not used correctly
         $html = preg_replace('/<del[^>]*>.*<\/del>/siuU', '', $html);
 
+        // Remove <a>...</a>
+        $html = preg_replace('/<a>(.*)<\/a>/siuU', '$1', $html);
+
         static::loadNetIdna2();
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
         $html = HtmlPurifier::process(

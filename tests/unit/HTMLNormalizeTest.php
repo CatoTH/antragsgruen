@@ -26,6 +26,19 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testStripEmptyAs()
+    {
+        $orig   = '<h2><a>Test</a> - <a href="https://antragsgruen.de">Test 2</a></h2>';
+        $expect = '<h2>Test - <a href="https://antragsgruen.de">Test 2</a></h2>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+
+        $out = HTMLTools::cleanSimpleHtml($out);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
     public function testDanglingNbsp()
     {
         $orig   = '<p><span>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.&nbsp;</span></p>';
