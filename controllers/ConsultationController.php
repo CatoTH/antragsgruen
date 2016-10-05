@@ -369,6 +369,7 @@ class ConsultationController extends Base
             }
         }
 
+        $this->consultation->flushCacheWithChildren();
         $this->consultation->refresh();
 
         \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
