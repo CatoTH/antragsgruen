@@ -118,8 +118,11 @@ class BugfixController extends Controller
             $this->stdout('- Motion ' . $motion->id . ':' . "\n");
             $this->actionFixMotionText($motion->id);
             foreach ($motion->amendments as $amendment) {
-                $this->stdout('- Amendment ' . $amendment->id . ':' . "\n");
-                $this->actionFixAmendmentText($amendment->id);
+                try {
+                    $this->stdout('- Amendment ' . $amendment->id . ':' . "\n");
+                    $this->actionFixAmendmentText($amendment->id);
+                } catch (\Exception $e) {
+                }
             }
         }
         $con->flushCacheWithChildren();
@@ -135,13 +138,19 @@ class BugfixController extends Controller
         /** @var Amendment[] $amendments */
         $amendments = Amendment::find()->where('status != ' . Amendment::STATUS_DELETED)->all();
         foreach ($amendments as $amend) {
-            $this->actionFixAmendmentText($amend->id);
+            try {
+                $this->actionFixAmendmentText($amend->id);
+            } catch (\Exception $e) {
+            }
         }
 
         /** @var Motion[] $motions */
         $motions = Motion::find()->where('status != ' . Motion::STATUS_DELETED)->all();
         foreach ($motions as $motion) {
-            $this->actionFixMotionText($motion->id);
+            try {
+                $this->actionFixMotionText($motion->id);
+            } catch (\Exception $e) {
+            }
         }
     }
 
