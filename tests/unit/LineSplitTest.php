@@ -9,6 +9,7 @@ class LineSplitTest extends TestBase
 {
     use Specify;
 
+
     /**
      */
     public function testCase1()
@@ -182,7 +183,7 @@ class LineSplitTest extends TestBase
             '<ol start="2"><li>###LINENUMBER###No. 1</li></ol>',
         ];
 
-        $out    = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
+        $out = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $this->assertEquals($expect, $out);
     }
 
@@ -205,13 +206,27 @@ class LineSplitTest extends TestBase
      */
     public function testAmpersand()
     {
-        $orig = '<p>Test Line 1 &amp; ü € 2<br>Line 2</p>';
+        $orig   = '<p>Test Line 1 &amp; ü € 2<br>Line 2</p>';
         $expect = [
             '<p>###LINENUMBER###Test Line 1 &amp; ü € 2<br>',
             '###LINENUMBER###Line 2</p>',
         ];
         $out    = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
 
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testHeadlines()
+    {
+        $orig   = '<h2>Wir kämpfen für Lohngleichheit und eine eigenständige Existenzsicherung von Frauen</h2>';
+        $expect = [
+            '<h2>###LINENUMBER###Wir kämpfen für Lohngleichheit und eine ',
+            '###LINENUMBER###eigenständige Existenzsicherung von Frauen</h2>',
+        ];
+
+        $out = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $this->assertEquals($expect, $out);
     }
 }

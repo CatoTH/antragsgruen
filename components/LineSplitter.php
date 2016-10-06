@@ -129,6 +129,8 @@ class LineSplitter
     private static function splitHtmlToLinesInt(\DOMElement $node, $lineLength, $prependLines)
     {
         $indentedElements = ['ol', 'ul', 'pre', 'blockquote'];
+        $veryBigElements  = ['h1', 'h2'];
+        $bigElements      = ['h3', 'h4', 'h5', 'h6'];
         $out              = [];
         $inlineTextSpool  = '';
         foreach ($node->childNodes as $child) {
@@ -147,7 +149,11 @@ class LineSplitter
 
                         $inlineTextSpool = '';
                     }
-                    if (in_array($child->nodeName, $indentedElements)) {
+                    if (in_array($child->nodeName, $veryBigElements)) {
+                        $arr = static::splitHtmlToLinesInt($child, floor($lineLength * 0.60), $prependLines);
+                    } elseif (in_array($child->nodeName, $bigElements)) {
+                        $arr = static::splitHtmlToLinesInt($child, floor($lineLength * 0.75), $prependLines);
+                    } elseif (in_array($child->nodeName, $indentedElements)) {
                         $arr = static::splitHtmlToLinesInt($child, $lineLength - 6, $prependLines);
                     } else {
                         $arr = static::splitHtmlToLinesInt($child, $lineLength, $prependLines);

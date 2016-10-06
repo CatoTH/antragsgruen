@@ -8,7 +8,8 @@ use yii\helpers\HtmlPurifier;
 
 class HTMLTools
 {
-    public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section'];
+    public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
     /**
      * @param string $str
