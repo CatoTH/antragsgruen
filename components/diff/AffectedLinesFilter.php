@@ -185,10 +185,10 @@ class AffectedLinesFilter
                             $out[] = $newEl;
                         }
                     }
+                    $currLine += mb_substr_count($child->nodeValue, '###LINENUMBER###');
                 } else {
                     $inlineTextSpool .= HTMLTools::renderDomToHtml($child);
                 }
-                $currLine += mb_substr_count($child->nodeValue, '###LINENUMBER###');
             }
         }
 

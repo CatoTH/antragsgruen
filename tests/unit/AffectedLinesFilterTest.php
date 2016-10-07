@@ -13,26 +13,6 @@ use Codeception\Specify;
 class AffectedLinesFilterTest extends TestBase
 {
 
-    public function testInsertBr()
-    {
-        $in = '<ul><li>###LINENUMBER###ausreichende Angebote der Erwachsenenbildung in der ' .
-            '###LINENUMBER###Einwanderungsgesellschaft. Dafür müssen die Mittel für die ' .
-            '###LINENUMBER###Erwachsenenbildungsträger verdoppelt werden.</li></ul>' .
-            '<ins><br></ins>' .
-            '<p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p>' .
-            '<ins><br></ins>' .
-            '<p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>'.
-            '<p>###LINENUMBER###<strong>Kommunen als Bildungsort </strong></p>';
-        $expect = [[
-            'text'     => '<ins><br></ins><p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p><ins><br></ins><p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>',
-            'lineFrom' => 3,
-            'lineTo'   => 3,
-        ]];
-        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
-        $this->assertEquals($expect, $out);
-    }
-
-
     /**
      */
     public function testBasic()
@@ -148,7 +128,6 @@ class AffectedLinesFilterTest extends TestBase
         ]];
         $this->assertEquals($expected, $affectedBlocks);
     }
-
 
 
     /**
@@ -429,5 +408,58 @@ class AffectedLinesFilterTest extends TestBase
         ];
         $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
         $this->assertEquals($expect, $filtered);
+    }
+
+    /**
+     */
+    public function testComplex()
+    {
+        $in = '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist ' .
+            '<ins>unmodern, denn viele Menschen wollen heute eine geschlechtergerechte Rollenverteilung in ihrer Partnerschaft. Das Ehegattensplitting steuert in die andere Richtung und bringt Familien dazu, in traditionelle Rollenmuster zu fallen, in die sie nicht hineinwollen. Es ist </ins>' .
+            'ungerecht, denn es erlaubt nur ' .
+            '###LINENUMBER###einem Teil der Familien, Lebensphasen abzufedern, in denen eine Person weniger oder nichts ' .
+            '###LINENUMBER###verdient<del>. Das Ehegattensplitting ist nicht nachhaltig</del>. Alleinerziehende oder Paare, die sich ' .
+            '###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon' .
+            '<ins>. Vom Ehegattensplitting profitieren Ehen und eingetragene Lebenspartnerschaften, völlig unabhängig davon, ob Kinder in diesen Ehen oder Lebensgemeinschaften leben. Kinder, die bei Eltern in nichtehelichen Lebensgemeinschaften aufwachsen, werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu' .
+            '###LINENUMBER###kommt, dass die mit dem Ehegattensplitting geförderte Arbeitsteilung vor allem für Frauen ' .
+            '###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich in Kombination mit Minijobs, mit fehlender Betreuungsinfrastruktur und ungleichen Löhnen negativ aus, da es Anreize für Frauen setzt, keiner Erwerbsarbeit nachzugehen. Aufgrund der geringeren Erwerbstätigkeit von Frauen verringern sich somit langfristig ihre Chancen auf dem Arbeitsmarkt und senken ihr Einkommen über die gesamte Erwerbsbiographie. Der vermeintlich positive Effekt des Splittings auf das Haushaltseinkommen verkehrt sich im Lebensverlauf ins Gegenteil</ins>. Eine ' .
+            '###LINENUMBER###Frau, die keiner oder nur einer geringfügigen Erwerbsarbeit nachgeht und in dieser Zeit ' .
+            '###LINENUMBER###zusammen mit ihrem Partner vom Splitting profitiert, steht nach der Scheidung oder Verlust ' .
+            '###LINENUMBER###des Partners oft ohne eigene Alterssicherung da. Aus diesen Gründen wollen <ins>wir </ins>zur individuellen ' .
+            '###LINENUMBER###Besteuerung übergehen und das Ehegattensplitting durch eine <strong>gezielte Förderung von Familien ' .
+            '###LINENUMBER###mit Kindern und <del>Alleinerziehenden</del></strong><ins>Alleinerziehenden</ins> ersetzen.</p>';
+
+        $expect = [[
+            'text'     => '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist <ins>unmodern, denn viele Menschen wollen heute eine geschlechtergerechte Rollenverteilung in ihrer Partnerschaft. Das Ehegattensplitting steuert in die andere Richtung und bringt Familien dazu, in traditionelle Rollenmuster zu fallen, in die sie nicht hineinwollen. Es ist </ins>ungerecht, denn es erlaubt nur ###LINENUMBER###einem Teil der Familien, Lebensphasen abzufedern, in denen eine Person weniger oder nichts ###LINENUMBER###verdient<del>. Das Ehegattensplitting ist nicht nachhaltig</del>. Alleinerziehende oder Paare, die sich ###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon<ins>. Vom Ehegattensplitting profitieren Ehen und eingetragene Lebenspartnerschaften, völlig unabhängig davon, ob Kinder in diesen Ehen oder Lebensgemeinschaften leben. Kinder, die bei Eltern in nichtehelichen Lebensgemeinschaften aufwachsen, werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu###LINENUMBER###kommt, dass die mit dem Ehegattensplitting geförderte Arbeitsteilung vor allem für Frauen ###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich in Kombination mit Minijobs, mit fehlender Betreuungsinfrastruktur und ungleichen Löhnen negativ aus, da es Anreize für Frauen setzt, keiner Erwerbsarbeit nachzugehen. Aufgrund der geringeren Erwerbstätigkeit von Frauen verringern sich somit langfristig ihre Chancen auf dem Arbeitsmarkt und senken ihr Einkommen über die gesamte Erwerbsbiographie. Der vermeintlich positive Effekt des Splittings auf das Haushaltseinkommen verkehrt sich im Lebensverlauf ins Gegenteil</ins>. Eine </p>',
+            'lineFrom' => 1,
+            'lineTo'   => 6,
+        ], [
+            'text'     => '<p>###LINENUMBER###des Partners oft ohne eigene Alterssicherung da. Aus diesen Gründen wollen <ins>wir </ins>zur individuellen ###LINENUMBER###Besteuerung übergehen und das Ehegattensplitting durch eine <strong>gezielte Förderung von Familien ###LINENUMBER###mit Kindern und <del>Alleinerziehenden</del></strong><ins>Alleinerziehenden</ins> ersetzen.</p>',
+            'lineFrom' => 9,
+            'lineTo'   => 11,
+        ]];
+        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testInsertBr()
+    {
+        $in     = '<ul><li>###LINENUMBER###ausreichende Angebote der Erwachsenenbildung in der ' .
+            '###LINENUMBER###Einwanderungsgesellschaft. Dafür müssen die Mittel für die ' .
+            '###LINENUMBER###Erwachsenenbildungsträger verdoppelt werden.</li></ul>' .
+            '<ins><br></ins>' .
+            '<p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p>' .
+            '<ins><br></ins>' .
+            '<p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>' .
+            '<p>###LINENUMBER###<strong>Kommunen als Bildungsort </strong></p>';
+        $expect = [[
+            'text'     => '<ins><br></ins><p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p><ins><br></ins><p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>',
+            'lineFrom' => 3,
+            'lineTo'   => 3,
+        ]];
+        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
+        $this->assertEquals($expect, $out);
     }
 }
