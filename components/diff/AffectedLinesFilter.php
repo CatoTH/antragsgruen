@@ -149,7 +149,7 @@ class AffectedLinesFilter
         $inlineTextSpool = '';
         $currLine        = $firstLine;
 
-        $addToOut = function ($inlineHtml) use (&$out, $currLine) {
+        $addToOut = function ($inlineHtml, $currLine) use (&$out) {
             $lines    = static::splitToLines($inlineHtml, $currLine);
             $affected = static::filterAffectedBlocks($lines);
             $grouped  = static::groupAffectedDiffBlocks($affected);
@@ -168,7 +168,7 @@ class AffectedLinesFilter
                 /** @var \DOMElement $child */
                 if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
                     if ($inlineTextSpool != '') {
-                        $addToOut($inlineTextSpool);
+                        $addToOut($inlineTextSpool, $currLine);
                         $inlineTextSpool = '';
                     }
 
@@ -188,12 +188,12 @@ class AffectedLinesFilter
                 } else {
                     $inlineTextSpool .= HTMLTools::renderDomToHtml($child);
                 }
+                $currLine += mb_substr_count($child->nodeValue, '###LINENUMBER###');
             }
-            $currLine += mb_substr_count($child->nodeValue, '###LINENUMBER###');
         }
 
         if ($inlineTextSpool != '') {
-            $addToOut($inlineTextSpool);
+            $addToOut($inlineTextSpool, $currLine);
         }
 
         if ($node->nodeName != 'body') {
@@ -223,7 +223,7 @@ class AffectedLinesFilter
             return [];
         }
         /** @var \DOMElement $dom */
-        $lines   = static::splitToAffectedLinesInt($dom, $firstLine);
+        $lines = static::splitToAffectedLinesInt($dom, $firstLine);
         $grouped = static::groupAffectedDiffBlocks($lines);
         return $grouped;
     }

@@ -13,6 +13,55 @@ use Codeception\Specify;
 class AffectedLinesFilterTest extends TestBase
 {
 
+    public function testInsertBr()
+    {
+        $in = '<ul><li>###LINENUMBER###ausreichende Angebote der Erwachsenenbildung in der ' .
+            '###LINENUMBER###Einwanderungsgesellschaft. Dafür müssen die Mittel für die ' .
+            '###LINENUMBER###Erwachsenenbildungsträger verdoppelt werden.</li></ul>' .
+            '<ins><br></ins>' .
+            '<p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p>' .
+            '<ins><br></ins>' .
+            '<p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>'.
+            '<p>###LINENUMBER###<strong>Kommunen als Bildungsort </strong></p>';
+        $expect = [[
+            'text'     => '<ins><br></ins><p class="inserted"><strong>Bildung in den Flüchtlingslagern</strong></p><ins><br></ins><p class="inserted">Bildung für Flüchtende beginnt nicht erst in Deutschland, </p><ins><br></ins>',
+            'lineFrom' => 3,
+            'lineTo'   => 3,
+        ]];
+        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
+        $this->assertEquals($expect, $out);
+    }
+
+
+    /**
+     */
+    public function testBasic()
+    {
+        /*
+        $orig = '<p>Test Test</p><ul><li>Point 1</li><li>Point 2</li></ul><p>Test</p>';
+        $new  = '<p>Test Test2</p><ul><li>Point 1</li><li>Point 2</li><li>Test 3</li></ul>';
+
+        $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
+        $origParas = HTMLTools::sectionSimpleHTML($orig);
+        $origParas = LineSplitter::addLineNumbersToParagraphs($origParagraphs, 80);
+        $diff           = new Diff2();
+        $diffParas = $diff->compareSectionedHtml($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
+        */
+        $diffParas = [
+            '<p>###LINENUMBER###Test Test<ins>2</ins></p>',
+            '<ul><li>###LINENUMBER###Point 1</li></ul>',
+            '<ul><li>###LINENUMBER###Point 2</li></ul>',
+            '<p class="deleted">###LINENUMBER###Test</p><ul class="inserted"><li>Test 3</li></ul>',
+        ];
+        $expected  = [
+            ['text' => '<p>###LINENUMBER###Test Test<ins>2</ins></p>', 'lineFrom' => 1, 'lineTo' => 1],
+            ['text' => '<p class="deleted">###LINENUMBER###Test</p><ul class="inserted"><li>Test 3</li></ul>', 'lineFrom' => 4, 'lineTo' => 4],
+        ];
+        $diff      = implode('', $diffParas);
+        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
+
+        $this->assertEquals($expected, $lines);
+    }
 
     /**
      */
@@ -100,35 +149,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expected, $affectedBlocks);
     }
 
-    /**
-     */
-    public function testBasic()
-    {
-        /*
-        $orig = '<p>Test Test</p><ul><li>Point 1</li><li>Point 2</li></ul><p>Test</p>';
-        $new  = '<p>Test Test2</p><ul><li>Point 1</li><li>Point 2</li><li>Test 3</li></ul>';
-
-        $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
-        $origParas = HTMLTools::sectionSimpleHTML($orig);
-        $origParas = LineSplitter::addLineNumbersToParagraphs($origParagraphs, 80);
-        $diff           = new Diff2();
-        $diffParas = $diff->compareSectionedHtml($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
-        */
-        $diffParas = [
-            '<p>###LINENUMBER###Test Test<ins>2</ins></p>',
-            '<ul><li>###LINENUMBER###Point 1</li></ul>',
-            '<ul><li>###LINENUMBER###Point 2</li></ul>',
-            '<p class="deleted">###LINENUMBER###Test</p><ul class="inserted"><li>Test 3</li></ul>',
-        ];
-        $expected  = [
-            ['text' => '<p>###LINENUMBER###Test Test<ins>2</ins></p>', 'lineFrom' => 1, 'lineTo' => 1],
-            ['text' => '<p class="deleted">###LINENUMBER###Test</p><ul class="inserted"><li>Test 3</li></ul>', 'lineFrom' => 4, 'lineTo' => 4],
-        ];
-        $diff      = implode('', $diffParas);
-        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
-
-        $this->assertEquals($expected, $lines);
-    }
 
 
     /**
