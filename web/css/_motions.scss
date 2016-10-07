@@ -490,6 +490,7 @@
       .lineNumber:after {
         content: attr(data-line-number);
         color: #C3C3C3;
+        font-size: $motionStdFontSize;
         font-style: normal;
         font-weight: normal;
         text-decoration: none;
