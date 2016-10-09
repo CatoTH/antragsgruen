@@ -19,7 +19,7 @@ abstract class IPDFLayout
     public static function getClasses()
     {
         return [
-            -1 => '- kein PDF -',
+            -1 => '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -',
             0  => 'LDK Bayern',
             1  => 'BDK',
             2  => 'DBJR',

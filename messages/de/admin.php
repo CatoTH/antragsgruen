@@ -356,4 +356,5 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'users_name'       => 'Name',
     'users_auth'       => 'Anmeldedaten',
     'users_registered' => 'Registriert',
+    'pdf_templ_none'   => 'Kein PDF',
 ];

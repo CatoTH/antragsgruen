@@ -337,4 +337,5 @@ Bye,
     'users_name'       => 'Name',
     'users_auth'       => 'Authentification',
     'users_registered' => 'Registered',
+    'pdf_templ_none'   => 'No PDF',
 ];

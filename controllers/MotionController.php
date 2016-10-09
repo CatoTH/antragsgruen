@@ -122,7 +122,7 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        if ($this->getParams()->xelatexPath) {
+        if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_tex', ['motion' => $motion]);
         } else {
             return $this->renderPartial('pdf_tcpdf', ['motion' => $motion]);

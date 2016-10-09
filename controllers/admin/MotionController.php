@@ -105,6 +105,14 @@ class MotionController extends AdminBase
             $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
 
+            $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
+            if (strpos($pdfTemplate, 'php') === 0) {
+                $motionType->pdfLayout = IntVal(str_replace('php', '', $pdfTemplate));
+                $motionType->texTemplateId = null;
+            } elseif ($pdfTemplate) {
+                $motionType->texTemplateId = IntVal($pdfTemplate);
+            }
+
             $motionType->motionLikesDislikes = 0;
             if (isset($input['motionLikesDislikes'])) {
                 foreach ($input['motionLikesDislikes'] as $val) {

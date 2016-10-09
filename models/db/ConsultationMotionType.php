@@ -1,6 +1,7 @@
 <?php
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\views\pdfLayouts\IPDFLayout;
@@ -35,6 +36,7 @@ use yii\db\ActiveRecord;
  * @property int $amendmentMultipleParagraphs
  * @property int $status
  * @property int $layoutTwoCols
+ * @property int $pdfPageNumbers
  *
  * @property ConsultationSettingsMotionSection[] $motionSections
  * @property Motion[] $motions
@@ -43,7 +45,7 @@ use yii\db\ActiveRecord;
  */
 class ConsultationMotionType extends ActiveRecord
 {
-    const CONTACT_NONE       = 0;
+    const CONTACT_NONE     = 0;
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
 
@@ -190,6 +192,27 @@ class ConsultationMotionType extends ActiveRecord
         }
     }
 
+    /**
+     * @return string[]
+     */
+    public function getAvailablePDFTemplates()
+    {
+        /** @var AntragsgruenApp $config */
+        $config = \Yii::$app->params;
+        $return = [];
+        foreach (IPDFLayout::getClasses() as $id => $name) {
+            $return['php' . $id] = $name;
+        }
+        if ($config->xelatexPath) {
+            /** @var TexTemplate[] $texLayouts */
+            $texLayouts = TexTemplate::find()->all();
+            foreach ($texLayouts as $layout) {
+                $return[$layout->id] = $layout->title;
+            }
+        }
+        return $return;
+    }
+
 
     /**
      * @return bool
@@ -242,7 +265,8 @@ class ConsultationMotionType extends ActiveRecord
             [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
-            [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes', 'layoutTwoCols'], 'number'],
+            [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
+            [['layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],

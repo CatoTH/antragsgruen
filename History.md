@@ -4,8 +4,9 @@
 
 - Support for H2, H3 and H4 headlines in motion texts
 - Improvements in the Plain-PHP PDF-Export, like attaching user-uploaded PDFs
+- PHP-Based PDF templates are now available on LaTeX-enabled systems, too
 - Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)
-- Bugfixes in the ODT-Export
+- Bugfixes in the ODT-Export and line numbering
 - Introduction of layout hooks (this enables more flexible layout variants)
 - A new theme inspired by the German Green Party's CI
 

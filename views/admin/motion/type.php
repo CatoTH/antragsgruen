@@ -95,9 +95,9 @@ echo '<label class="col-md-4 control-label" for="pdfLayout">';
 echo \Yii::t('admin', 'motion_type_pdf_layout');
 echo '</label><div class="col-md-8">';
 echo Html::dropDownList(
-    'type[pdfLayout]',
-    $motionType->pdfLayout,
-    \app\views\pdfLayouts\IPDFLayout::getClasses(),
+    'pdfTemplate',
+    ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout),
+    $motionType->getAvailablePDFTemplates(),
     ['id' => 'pdfLayout', 'class' => 'form-control']
 );
 echo '</div></div>';

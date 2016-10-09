@@ -54,7 +54,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        if ($this->getParams()->xelatexPath) {
+        if ($this->getParams()->xelatexPath && $amendment->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_tex', ['amendment' => $amendment]);
         } else {
             return $this->renderPartial('pdf_tcpdf', ['amendment' => $amendment]);
