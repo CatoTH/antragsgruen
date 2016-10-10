@@ -79,9 +79,10 @@ class Exporter
             }
             if (in_array('ins', $extraStyles)) {
                 $out[] = '\textcolor{Insert}{' . trim($item) . '}';
-            }
-            if (in_array('del', $extraStyles)) {
+            } elseif (in_array('del', $extraStyles)) {
                 $out[] = '\textcolor{Delete}{\sout{' . trim($item) . '}}';
+            } else {
+                $out[] = trim($item);
             }
         }
 
