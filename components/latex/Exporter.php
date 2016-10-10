@@ -65,6 +65,30 @@ class Exporter
     }
 
     /**
+     * @param string $content
+     * @param string[] $extraStyles
+     * @return string
+     */
+    private static function addInsDelExtraStylesToLi($content, $extraStyles)
+    {
+        $items = explode('\item ', $content);
+        $out   = [];
+        foreach ($items as $item) {
+            if (trim($item) == '') {
+                continue;
+            }
+            if (in_array('ins', $extraStyles)) {
+                $out[] = '\textcolor{Insert}{' . trim($item) . '}';
+            }
+            if (in_array('del', $extraStyles)) {
+                $out[] = '\textcolor{Delete}{\sout{' . trim($item) . '}}';
+            }
+        }
+
+        return '\item ' . implode("\n" . '\item ', $out) . "\n";
+    }
+
+    /**
      * @param \DOMNode $node
      * @param array $extraStyles
      * @return string
@@ -178,11 +202,11 @@ class Exporter
                     $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
                 case 'ul':
-                    $content = static::addInsDelExtraStyles($content, $extraStyles);
+                    $content = static::addInsDelExtraStylesToLi($content, $extraStyles);
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
                     $firstLine = '';
-                    $content   = static::addInsDelExtraStyles($content, $extraStyles);
+                    $content   = static::addInsDelExtraStylesToLi($content, $extraStyles);
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
