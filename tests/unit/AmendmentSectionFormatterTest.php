@@ -11,6 +11,26 @@ class AmendmentSectionFormatterTest extends TestBase
 {
     use Specify;
 
+    public function testRemoveWhitespaces()
+    {
+        $orig = '<p>Der eigene, existenzsichernde Job ist immer noch die beste Absicherung gegen Armut. Häufig ist der Weg dorthin aber für Alleinerziehende und gering verdienende Eltern sehr schwierig. Deswegen sind sie in besonderem Maße auf verlässliche und gute Betreuungs- und Bildungsangebote für ihre Kinder angewiesen. Aus- und Weiterbildungen in Teilzeit können ein Weg für Alleinerziehende sein, wieder einen existenzsichernden Arbeitsplatz zu finden. Dabei muss gewährleistet sein, dass in diesen Phasen das Existenzminimum von Alleinerziehenden und ihren Kindern ohne großen bürokratischen Aufwand durch lückenlose Leistungen gesichert ist. <strong>Wiedereinstiegshilfen nach der Babypause</strong> oder einer längeren Elternzeit wollen wir <strong>verbessern</strong>.</p>';
+        $new  = '<p>Der eigene, existenzsichernde Job ist immer noch die beste Absicherung gegen Armut. Häufig ist der Weg dorthin aber für Alleinerziehende und gering verdienende Eltern sehr schwierig. Deswegen sind sie in besonderem Maße auf verlässliche, kostenlose und gute Betreuungs- und Bildungsangebote für ihre Kinder angewiesen. Aus- und Weiterbildungen in Teilzeit können ein Weg für Alleinerziehende sein, wieder einen existenzsichernden Arbeitsplatz zu finden. Dabei muss gewährleistet sein, dass in diesen Phasen das Existenzminimum von Alleinerziehenden und ihren Kindern ohne großen bürokratischen Aufwand durch lückenlose Leistungen gesichert ist. <strong>Wiedereinstiegshilfen nach der Babypause</strong> oder einer längeren Elternzeit wollen wir <strong>verbessern</strong>.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($orig);
+        $formatter->setTextNew($new);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_INLINE);
+        $this->assertEquals(1, count($diffGroups));
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($orig);
+        $formatter->setTextNew($new);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals(1, count($diffGroups));
+    }
+
     public function testCrashing()
     {
         // This basically tests if the cache in ArrayMatcher's calcSimilarity does its job.
