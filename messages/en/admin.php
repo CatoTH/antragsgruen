@@ -15,6 +15,7 @@ return [
     'index_motions'               => 'Motions / Documents',
     'index_all_motions'           => 'All motions and amendments',
     'index_export_ods'            => 'Export: Spreadsheet',
+    'index_export_ods_listall'    => 'Spreadsheet: Motions, Addresses',
     'index_motion_create'         => 'Create new',
     'index_export_excel'          => 'Export: Excel',
     'index_export_oslides'        => 'OpenSlides-Export',

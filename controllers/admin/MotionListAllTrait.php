@@ -180,6 +180,8 @@ trait MotionListAllTrait
      */
     public function actionOdslistall()
     {
+        // @TODO: support filtering for motion types and withdrawn motions
+        
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');

@@ -86,6 +86,9 @@ foreach ($consultation->motionTypes as $motionType) {
                     $title = \Yii::t('admin', 'index_odt_zip_list');
                     echo $getExportLinkLi($title, 'admin/motion/odtziplist', $motionType->id, 'motionOdtZIP');
 
+                    $title = \Yii::t('admin', 'index_export_ods_listall');
+                    echo $getExportLinkLi($title, 'admin/motion/odslistall', $motionType->id, 'motionODSlist');
+
                     $title = \Yii::t('admin', 'index_export_excel') .
                         ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
                     echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
