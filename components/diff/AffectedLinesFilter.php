@@ -104,35 +104,40 @@ class AffectedLinesFilter
      */
     public static function groupAffectedDiffBlocks($blocks)
     {
-        $currBlock     = null;
+        $currGroupedBlock     = null;
         $groupedBlocks = [];
         foreach ($blocks as $block) {
-            $needsNewBlock = ($currBlock === null);
-            if ($block['lineFrom'] > $currBlock['lineTo'] + 1) {
+            $needsNewBlock = ($currGroupedBlock === null);
+            if ($block['lineFrom'] > $currGroupedBlock['lineTo'] + 1) {
                 $needsNewBlock = true;
             }
             $lineNumberPos = mb_strpos(strip_tags($block['text']), '###LINENUMBER###');
             if ($lineNumberPos === false || $lineNumberPos !== 0) {
                 // This block was inserted => there is another line with the same number before
-                if ($block['lineFrom'] > $currBlock['lineTo']) {
+                if ($block['lineFrom'] > $currGroupedBlock['lineTo']) {
                     $needsNewBlock = true;
                 }
             }
             if ($needsNewBlock) {
-                if ($currBlock !== null) {
-                    $groupedBlocks[] = $currBlock;
+                if ($currGroupedBlock !== null) {
+                    $groupedBlocks[] = $currGroupedBlock;
                 }
-                $currBlock = [
+                $currGroupedBlock = [
                     'text'     => '',
                     'lineFrom' => $block['lineFrom'],
                     'lineTo'   => $block['lineTo'],
                 ];
             }
-            $currBlock['text'] .= $block['text'];
-            $currBlock['lineTo'] = $block['lineTo'];
+            $currGroupedBlock['text'] .= $block['text'];
+
+            if ($block['lineTo'] > $currGroupedBlock['lineTo']) {
+                // This is the normal case; there are some rare cases (see testLiSplitIntoTwo test case)
+                // in which the new block does not have line numbers and therefore a lower lineTo
+                $currGroupedBlock['lineTo'] = $block['lineTo'];
+            }
         }
-        if ($currBlock) {
-            $groupedBlocks[] = $currBlock;
+        if ($currGroupedBlock) {
+            $groupedBlocks[] = $currGroupedBlock;
         }
         return $groupedBlocks;
     }

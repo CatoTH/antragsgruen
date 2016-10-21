@@ -15,6 +15,28 @@ class AffectedLinesFilterTest extends TestBase
 
     /**
      */
+    public function testLiSplitIntoTwo()
+    {
+        $diffParas = [
+            '<ul><li>###LINENUMBER###Test 1 ' .
+            '###LINENUMBER###Test 2.</li></ul>',
+
+            '<ul><li><del>###LINENUMBER###Test 3 ' .
+            '###LINENUMBER###Test 4 ' .
+            '###LINENUMBER###Test 5</del><p class="inserted">Neuer Text.</p></li></ul>',
+        ];
+        $expected  = [
+            ['text' => '<ul><li><del>###LINENUMBER###Test 3 ###LINENUMBER###Test 4 ###LINENUMBER###Test 5</del></li></ul>' .
+                '<ul><li><p class="inserted">Neuer Text.</p></li></ul>',
+             'lineFrom' => 3, 'lineTo' => 5],
+        ];
+        $diff      = implode('', $diffParas);
+        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1);
+
+        $this->assertEquals($expected, $lines);
+    }
+    /**
+     */
     public function testBasic()
     {
         /*
