@@ -168,13 +168,13 @@ class Exporter
 
             switch ($node->nodeName) {
                 case 'h4':
-                    return '\textbf{' . $content . '}\\newline';
+                    return '\textbf{' . $content . '}\\newline' . "\n";
                 case 'h3':
-                    return '\textbf{\large ' . $content . '}\\newline';
+                    return '\textbf{\large ' . $content . '}\\newline' . "\n";
                 case 'h2':
-                    return '\textbf{\Large ' . $content . '}\\newline';
+                    return '\textbf{\Large ' . $content . '}\\newline' . "\n";
                 case 'h1':
-                    return '\textbf{\LARGE ' . $content . '}\\newline';
+                    return '\textbf{\LARGE ' . $content . '}\\newline' . "\n";
                 case 'br':
                     return '\newline' . "\n";
                 case 'p':

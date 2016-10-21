@@ -570,8 +570,8 @@ class TextSimple extends ISectionType
         if (count($diffGroups) > 0) {
             $title = Exporter::encodePlainString($section->getSettings()->title);
             if ($title == \Yii::t('motion', 'motion_text')) {
-                $titPattern = 'Änderungsantrag zu #MOTION#';
-                $title      = str_replace('#MOTION#', $section->getMotion()->titlePrefix, $titPattern);
+                $titPattern = \Yii::t('amend', 'amendment_for_prefix');
+                $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
             }
 
             $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
