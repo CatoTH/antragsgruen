@@ -96,5 +96,4 @@ class AmendmentSectionFormatter
         }
         return $affectedBlocks;
     }
-
 }
