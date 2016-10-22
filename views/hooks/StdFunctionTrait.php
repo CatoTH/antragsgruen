@@ -162,11 +162,11 @@ trait StdFunctionTrait
 
             <span class="version">';
         if (\Yii::$app->language == 'de') {
-            $out .= 'Antragsgrün von <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
+                Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
         } else {
-            $out .= 'Antragsgrün by <a href="https://www.hoessl.eu/">Tobias Hößl</a>,
-        Version ' . Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
+                Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
         }
 
         $out .= '</span>
