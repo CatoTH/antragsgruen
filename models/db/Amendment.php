@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
+use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -253,6 +254,43 @@ class Amendment extends IMotion implements IRSSItem
         ];
     }
 
+    /**
+     * @param int $firstLine
+     * @param int $lineLength
+     * @param string[] $original
+     * @param string[] $new
+     * @return int
+     */
+    public static function calcFirstDiffLineCached($firstLine, $lineLength, $original, $new)
+    {
+        $cacheFunc = 'calcFirstDiffLineCached';
+        $cacheDeps = [$firstLine, $lineLength, $original, $new];
+
+        $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
+        if ($cache !== false) {
+            return $cache;
+        }
+
+        $firstLineFallback = $firstLine;
+
+        for ($i = 0; $i < count($original) && $i < count($new); $i++) {
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($original[$i]);
+            $formatter->setTextNew($new[$i]);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+            if (count($diffGroups) > 0) {
+                $firstLine = $diffGroups[0]['lineFrom'];
+                HashedStaticCache::setCache($cacheFunc, $cacheDeps, $firstLine);
+                return $firstLine;
+            }
+        }
+
+        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $firstLineFallback);
+        return $firstLineFallback;
+    }
+
 
     /**
      * @return int
@@ -265,26 +303,18 @@ class Amendment extends IMotion implements IRSSItem
         }
         $firstLine  = $this->getMyMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
+        $original = $new = [];
 
         foreach ($this->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
-            $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-            $formatter->setTextNew($section->data);
-            $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
-
-            if (count($diffGroups) > 0) {
-                $firstLine = $diffGroups[0]['lineFrom'];
-                $this->setCacheItem('getFirstDiffLine', $firstLine);
-                return $firstLine;
-            }
+            $original[] = $section->getOriginalMotionSection()->data;
+            $new[] = $section->data;
         }
 
-        // Nothing changed in a simple text section
-        $firstLine = $this->getMyMotion()->getFirstLineNumber();
+        $firstLine = static::calcFirstDiffLineCached($firstLine, $lineLength, $original, $new);
+
         $this->setCacheItem('getFirstDiffLine', $firstLine);
         return $firstLine;
     }
