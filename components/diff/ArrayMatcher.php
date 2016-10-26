@@ -105,7 +105,12 @@ class ArrayMatcher
         for ($i = 0; $i < count($arr1); $i++) {
             $val1 = str_replace($this->ignoredStrings, $replaces, $arr1[$i]);
             $val2 = str_replace($this->ignoredStrings, $replaces, $arr2[$i]);
-            $similarity += similar_text($val1, $val2);
+
+            $cacheKey2 = md5("1" . $val1 . "2" . $val2);
+            if (!isset(static::$calcSimilarityCache[$cacheKey2])) {
+                 static::$calcSimilarityCache[$cacheKey2] = similar_text($val1, $val2);
+            }
+            $similarity += static::$calcSimilarityCache[$cacheKey2];
         }
         static::$calcSimilarityCache[$cacheKey] = $similarity;
         return $similarity;
