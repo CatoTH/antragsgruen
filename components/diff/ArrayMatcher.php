@@ -92,7 +92,7 @@ class ArrayMatcher
         if (count($arr1) != count($arr2)) {
             throw new \Exception('calcSimilarity: The number of elements does not match');
         }
-        $cacheKey = md5(serialize($arr1), serialize($arr2));
+        $cacheKey = md5(serialize($arr1) . serialize($arr2));
         if (isset(static::$calcSimilarityCache[$cacheKey])) {
             return static::$calcSimilarityCache[$cacheKey];
         }
