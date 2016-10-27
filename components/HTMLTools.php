@@ -74,9 +74,10 @@ class HTMLTools
 
     /**
      * @param string $htmlIn
+     * @param bool $linkify
      * @return string
      */
-    public static function correctHtmlErrors($htmlIn)
+    public static function correctHtmlErrors($htmlIn, $linkify = false)
     {
         $cacheKey = 'correctHtmlErrors_' . md5($htmlIn);
         if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
@@ -86,14 +87,14 @@ class HTMLTools
         static::loadNetIdna2();
         $str = HtmlPurifier::process(
             $htmlIn,
-            function ($config) {
+            function ($config) use ($linkify) {
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
                     'HTML.AllowedElements'                    => null,
                     'Attr.AllowedClasses'                     => null,
                     'CSS.AllowedProperties'                   => null,
-                    'AutoFormat.Linkify'                      => true,
+                    'AutoFormat.Linkify'                      => $linkify,
                     'AutoFormat.AutoParagraph'                => false,
                     'AutoFormat.RemoveSpansWithoutAttributes' => false,
                     'AutoFormat.RemoveEmpty'                  => false,
