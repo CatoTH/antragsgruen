@@ -24,7 +24,7 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
 $layout->addCSS('css/backend.css');
 $layout->addJS('js/backend.js');
-$layout->addJS('js/bower/Sortable/Sortable.min.js');
+$layout->addJS('js/Sortable.js');
 $layout->loadDatepicker();
 
 $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
