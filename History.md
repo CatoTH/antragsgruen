@@ -10,6 +10,8 @@
 - Introduction of layout hooks (this enables more flexible layout variants)
 - Improved caching, especially on the home page
 - A new theme inspired by the German Green Party's CI
+- Several bugfixes in the Diff-algorithms
+- URLs in the motion text are not automatically converted to links anymore
 
 ### Version 3.4.3 (2016-08-22)
 

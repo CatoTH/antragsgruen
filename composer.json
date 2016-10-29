@@ -41,7 +41,7 @@
     "yiisoft/yii2-debug": "^2.0.6",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
-    "codeception/codeception": "^2.2.5",
+    "codeception/codeception": "^2.2.6",
     "codeception/specify": "^0.4.5",
     "codeception/verify": "^0.3.2",
     "facebook/webdriver": "^1.2.0",

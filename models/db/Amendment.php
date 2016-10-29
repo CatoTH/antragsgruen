@@ -303,14 +303,14 @@ class Amendment extends IMotion implements IRSSItem
         }
         $firstLine  = $this->getMyMotion()->getFirstLineNumber();
         $lineLength = $this->getMyConsultation()->getSettings()->lineLength;
-        $original = $new = [];
+        $original   = $new = [];
 
         foreach ($this->getActiveSections() as $section) {
             if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $original[] = $section->getOriginalMotionSection()->data;
-            $new[] = $section->data;
+            $new[]      = $section->data;
         }
 
         $firstLine = static::calcFirstDiffLineCached($firstLine, $lineLength, $original, $new);
@@ -338,11 +338,11 @@ class Amendment extends IMotion implements IRSSItem
 
         $tit1 = explode('-', $ae1->titlePrefix);
         $tit2 = explode('-', $ae2->titlePrefix);
-        if (count($tit1) == 3 && count($tit2) == 3) {
-            if ($tit1[2] < $tit2[2]) {
+        if (count($tit1) > 2 && count($tit1) == count($tit2)) {
+            if ($tit1[count($tit1) - 1] < $tit2[count($tit2) - 1]) {
                 return -1;
             }
-            if ($tit1[2] > $tit2[2]) {
+            if ($tit1[count($tit1) - 1] > $tit2[count($tit2) - 1]) {
                 return 1;
             }
             return 0;
