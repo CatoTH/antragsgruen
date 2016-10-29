@@ -126,7 +126,7 @@ class AmendmentSectionFormatterTest extends TestBase
      */
     public function testEmptyDeletedSpaceAtEnd()
     {
-        return; // @TODO
+        $this->markTestIncomplete('kommt noch'); // @TODO
 
         $strPre  = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich. Hier wissen wir die vielen Bürger*innen in diesem Land auf unserer Seite, die sich dem rechten Mob entgegenstellen, der die Not von Schutzsuchenden für Hass und rechtsextreme Propaganda missbraucht.</p>';
         $strPost = '<p>Wir sind froh und dankbar über alle, die in der Krise anpacken statt bloß zu lamentieren. Das vielleicht hervorstechendste Moment der letzten Wochen und Monate ist die schier unendliche Hilfsbereitschaft und der Wille zu einem solidarischen Engagement für Flüchtlinge – und zwar quer durch alle Gesellschaftsschichten, in Stadt und Land. Wer dagegen in dieser Situation zündelt und Stimmung gegen Flüchtlinge schürt, handelt unverantwortlich.</p>

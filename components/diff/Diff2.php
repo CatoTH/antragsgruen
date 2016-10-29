@@ -356,7 +356,6 @@ class Diff2
         $combined = str_replace(DiffRenderer::DEL_END . DiffRenderer::DEL_START, '', $combined);
         $combined = str_replace(DiffRenderer::INS_END . DiffRenderer::INS_START, '', $combined);
 
-
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
@@ -406,6 +405,35 @@ class Diff2
     }
 
     /**
+     * @param string $haystack
+     * @param string $needle
+     * @return int|false
+     */
+    public static function findFirstOccurrenceIgnoringTags($haystack, $needle)
+    {
+        $first = mb_strpos($haystack, $needle);
+        if ($first === false) {
+            return false;
+        }
+        $firstTag = mb_strpos($haystack, '<');
+        if ($firstTag === false || $firstTag > $first) {
+            return $first;
+        }
+        $parts = preg_split('/(<[^>]*>)/', $haystack, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $pos   = 0;
+        for ($i = 0; $i < count($parts); $i++) {
+            if (($i % 2) == 0) {
+                $occ = mb_strpos($parts[$i], $needle);
+                if ($occ !== false) {
+                    return $pos + $occ;
+                }
+            }
+            $pos += mb_strlen($parts[$i]);
+        }
+        return false;
+    }
+
+    /**
      * @internal
      * @param string $orig
      * @param string $new
@@ -448,10 +476,14 @@ class Diff2
         if ($postfixLen < 40) {
             $postfix = '';
         } else {
-            if ($postfixLen > 40 && mb_strpos($postfix, '. ') !== false && mb_strpos($postfix, '. ') < 40) {
-                $postfix = mb_substr($postfix, mb_strpos($postfix, '. ') + 1);
-            } elseif ($postfixLen > 40 && mb_strpos($postfix, '.') !== false && mb_strpos($postfix, '.') < 40) {
-                $postfix = mb_substr($postfix, mb_strpos($postfix, '.') + 1);
+            $firstDot = static::findFirstOccurrenceIgnoringTags($postfix, '. ');
+            if ($postfixLen > 40 && $firstDot !== false && $firstDot < 40) {
+                $postfix = mb_substr($postfix, $firstDot + 1);
+            } else {
+                $firstDot = static::findFirstOccurrenceIgnoringTags($postfix, '.');
+                if ($postfixLen > 40 && $firstDot !== false && $firstDot < 40) {
+                    $postfix = mb_substr($postfix, $firstDot + 1);
+                }
             }
         }
         if ($postfix == '') {
