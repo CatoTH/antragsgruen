@@ -118,7 +118,8 @@ class AmendmentSectionFormatterTest extends TestBase
         $formatter->setTextNew($strPost);
         $formatter->setFirstLineNo(0);
         $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
-        $this->assertEquals(3, count($diffGroups));
+
+        $this->assertEquals(4, count($diffGroups));
     }
 
     /**

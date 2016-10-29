@@ -15,6 +15,18 @@ class Diff2Test extends TestBase
 
     /**
      */
+    public function testNoDiffInLink()
+    {
+        $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
+        $new      = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
+        $expected = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. ###DEL_START###Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. ###DEL_END###(<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
+        $diff     = new Diff2();
+        $out      = $diff->computeLineDiff($orig, $new);
+        $this->assertEquals($expected, $out);
+    }
+
+    /**
+     */
     public function testNoGroupingBeyondLists()
     {
         $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
@@ -402,10 +414,9 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diff      = new Diff2();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>' .
-            '<p class="inserted">Test 456</p>',
+        $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
             '<ul class="deleted"><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>',
-            '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul>',
+            '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul><p class="inserted">Test 456</p>',
             '<ul class="deleted"><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
         ];
         $this->assertEquals($expected, $diffParas);
@@ -418,7 +429,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     public function testReplaceParagraph()
     {
         $diff = new Diff2();
-
 
         $str1           = '<p>Unchanging line</p>
 <p>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, ' .
@@ -490,6 +500,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             '<p><del>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds</del>' .
             '<ins>Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>'];
         */
+        /*
         $expect = [
             '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
             'Biaschlegl soi oans, zwoa, gsuffa <del>Oachkatzlschwoaf hod Wiesn</del><ins>Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. ' .
@@ -497,6 +508,11 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
             '<p class="deleted">Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. ' .
             'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>',
+        ];
+        */
+        $expect = [
+            '<p class="deleted">I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
+            '<p><del>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds</del><ins>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf</ins> helfgod im Beidl des basd scho i hob di liab. A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>',
         ];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
@@ -781,8 +797,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 <p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>';
         $expected = ['<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>',
             '<p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte<ins>n</ins> ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>',
-            '<p><del>###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</del><ins>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</ins></p>',
-            '<p class="deleted">###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. ###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'];
+            '<p class="deleted">###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
+            '<p><del>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'];
         // Hint: could be further improved, by separating the leading 'n' from the big change block
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
