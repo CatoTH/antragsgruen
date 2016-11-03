@@ -26,6 +26,7 @@ Installation:
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
 
+
 Installation
 ------------
 
@@ -78,6 +79,20 @@ Set up the virtual host of your web server. Example files are provided here:
 * Example configuration for [nginx](docs/nginx.sample_single_site.conf)
 * Example configuration for [apache](docs/apache.sample.conf)
 
+
+
+Developing custom themes
+------------------------
+
+You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
+* Create a file ```web/css/layout-my-layout.scss``` using layout-classic.scss as a template
+* Adapt the SCSS variables and add custom styles
+* Run ```gulp``` to compile the SCSS into CSS
+* Add a line ```'layout-my-layout' => 'My cool new layout'``` to the "localLayouts"-object in config/config.json
+* Now, you can choose your new theme in the consultation settings
+
+A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
+Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
 
 
 LaTeX/XeTeX-based PDF-rendering:

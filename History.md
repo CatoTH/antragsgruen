@@ -3,6 +3,7 @@
 ## Version 3.5.0 [not yet released]
 
 - Support for H2, H3 and H4 headlines in motion texts
+- Support adding local stylesheets/themes using configuration files (and added some documentation on how to to so) 
 - Improvements in the Plain-PHP PDF-Export, like attaching user-uploaded PDFs
 - PHP-Based PDF templates are now available on LaTeX-enabled systems, too
 - Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)

@@ -37,6 +37,7 @@ class AntragsgruenApp
     public $xdvipdfmx             = null;
     public $pdfExportConcat       = true;
     public $pdfExportIntegFrame   = false;
+    public $localLayouts          = [];
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

@@ -40,12 +40,14 @@ class Layout
      */
     public static function getCssLayouts()
     {
-        return [
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        return array_merge([
             'layout-classic'     => 'Antragsgrün-Standard',
             'layout-gruenes-ci'  => 'Grünes CI',
             'layout-gruenes-ci2' => 'Grünes CI v2',
             'layout-dbjr'        => 'DBJR',
-        ];
+        ], $params->localLayouts);
     }
 
     /**
