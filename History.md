@@ -9,7 +9,7 @@
 - Supporting motions and amendments is now supported (if "All" is selected in the motion type settings)
 - Bugfixes in the ODT-Export and line numbering
 - Introduction of layout hooks (this enables more flexible layout variants)
-- Improved caching, especially on the home page
+- Improved caching, especially on the home page and when generating PDFs
 - A new theme inspired by the German Green Party's CI
 - Several bugfixes in the Diff-algorithms
 - URLs in the motion text are not automatically converted to links anymore
