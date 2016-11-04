@@ -137,6 +137,7 @@ class MotionController extends Base
     public function actionPdfcollection($motionTypeId = '', $withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
+        $texTemplate = null;
         try {
             $motions = $this->consultation->getVisibleMotionsSorted($withdrawn);
             if ($motionTypeId != '' && $motionTypeId != '0') {
@@ -144,7 +145,11 @@ class MotionController extends Base
                 $motionsFiltered = [];
                 foreach ($motions as $motion) {
                     if (in_array($motion->motionTypeId, $motionTypeIds)) {
-                        $motionsFiltered[] = $motion;
+                        if ($texTemplate === null) {
+                            $texTemplate = $motion->motionType->texTemplate;
+                        } elseif ($motion->motionType->texTemplate == $texTemplate) {
+                            $motionsFiltered[] = $motion;
+                        }
                     }
                 }
                 $motions = $motionsFiltered;
@@ -158,10 +163,10 @@ class MotionController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        if ($this->getParams()->xelatexPath) {
-            return $this->renderPartial('pdf_collection_tex', ['motions' => $motions]);
+        if ($this->getParams()->xelatexPath && $texTemplate) {
+            return $this->renderPartial('pdf_collection_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
         } else {
-            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]); // @TODO
+            return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]);
         }
     }
 

@@ -3,13 +3,14 @@
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
 use app\models\db\Motion;
+use app\models\db\TexTemplate;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 /**
+ * @var TexTemplate $texTemplate
  * @var Motion[] $motions
  */
-$texTemplate = $motions[0]->motionType->texTemplate;
 
 $layout            = new Layout();
 $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
