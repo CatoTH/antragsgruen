@@ -2,6 +2,7 @@
 
 namespace app\components\latex;
 
+use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
@@ -362,10 +363,11 @@ class Exporter
         if (!$this->app->xelatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
-        $layoutStr  = static::createLayoutString($this->layout);
-        $contentStr = '';
-        $count      = 0;
-        $imageFiles = [];
+        $layoutStr   = static::createLayoutString($this->layout);
+        $contentStr  = '';
+        $count       = 0;
+        $imageFiles  = [];
+        $imageHashes = [];
         foreach ($contents as $content) {
             if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
@@ -376,14 +378,14 @@ class Exporter
                     throw new Internal('Invalid image filename');
                 }
                 file_put_contents($this->app->tmpDir . $fileName, $fileData);
-                $imageFiles[] = $this->app->tmpDir . $fileName;
+                $imageHashes[$this->app->tmpDir . $fileName] = md5($fileData);
+                $imageFiles[]                                = $this->app->tmpDir . $fileName;
             }
             $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
         $filenameBase = $this->app->tmpDir . uniqid('motion-pdf');
-        file_put_contents($filenameBase . '.tex', $str);
 
         $cmd = $this->app->xelatexPath;
         $cmd .= ' -interaction=batchmode';
@@ -393,14 +395,27 @@ class Exporter
         }
         $cmd .= ' "' . $filenameBase . '.tex"';
 
+        $cacheDepend = $str;
+        foreach ($imageHashes as $file => $hash) {
+            $cacheDepend = str_replace($file, $hash, $cacheDepend);
+        }
+        $cached      = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
+
         if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
             Header('Content-Type: text/plain');
             echo $str;
-            echo "\n\n%" . $cmd;
-            unlink($filenameBase . '.tex');
+            echo "\n\nIs in cache: " . ($cached ? "Yes" : "No") . "\n%" . $cmd;
             die();
         }
 
+        if ($cached) {
+            foreach ($imageFiles as $file) {
+                unlink($file);
+            }
+            return $cached;
+        }
+
+        file_put_contents($filenameBase . '.tex', $str);
         shell_exec($cmd);
         shell_exec($cmd); // Do it twice, to get the LastPage-reference right
 
@@ -418,6 +433,8 @@ class Exporter
         foreach ($imageFiles as $file) {
             unlink($file);
         }
+
+        HashedStaticCache::setCache('latexCreatePDF', $cacheDepend, $pdf);
 
         return $pdf;
     }
