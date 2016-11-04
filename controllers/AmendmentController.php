@@ -73,7 +73,13 @@ class AmendmentController extends Base
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
         $amendments = [];
+        $texTemplate = null;
         foreach ($motions as $motion) {
+            if ($texTemplate === null) {
+                $texTemplate = $motion->motionType->texTemplate;
+            } elseif ($texTemplate != $motion->motionType->texTemplate) {
+                continue;
+            }
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }
         if (count($amendments) == 0) {
@@ -82,8 +88,11 @@ class AmendmentController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
-        if ($this->getParams()->xelatexPath) {
-            return $this->renderPartial('pdf_collection_tex', ['amendments' => $amendments]);
+        if ($this->getParams()->xelatexPath && $texTemplate) {
+            return $this->renderPartial('pdf_collection_tex', [
+                'amendments'  => $amendments,
+                'texTemplate' => $texTemplate,
+            ]);
         } else {
             return $this->renderPartial('pdf_collection_tcpdf', ['amendments' => $amendments]);
         }
