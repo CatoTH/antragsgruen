@@ -109,7 +109,7 @@ $html .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
 
 $html .= '</ul></div>';
 $layout->menusHtml[]      = $html;
-$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'notifications'), $link) . '</li>';
+$layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
 
 
 if ($hasMotions) {
