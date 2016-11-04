@@ -13,11 +13,9 @@ use yii\helpers\Html;
 
 $layout            = new Layout();
 $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-//$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
-//    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
 $layout->template = $texTemplate->texLayout;
 $layout->author   = 'Antragsgrün';
-$layout->title    = 'Änderungsanträge';
+$layout->title    = \Yii::t('export', 'all_amendments_title');
 
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
@@ -29,6 +27,6 @@ try {
     }
     echo $exporter->createPDF($contents);
 } catch (\Exception $e) {
-    echo 'Ein Fehler trat auf: ' . Html::encode($e);
+    echo 'An error occurred: ' . Html::encode($e);
     die();
 }
