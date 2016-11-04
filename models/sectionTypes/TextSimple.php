@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
+use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
@@ -509,6 +510,8 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         $hasLineNumbers = $section->getSettings()->lineNumbers;
+        $fixedWidth = $section->getSettings()->fixedWidth;
+        $firstLine = $section->getFirstLineNumber();
 
         $title = Exporter::encodePlainString($section->getSettings()->title);
         if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
@@ -516,34 +519,42 @@ class TextSimple extends ISectionType
         }
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
 
-        if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
-            if ($hasLineNumbers) {
-                $tex .= "\\linenumbers\n";
-                $tex .= "\\resetlinenumber[" . $section->getFirstLineNumber() . "]\n";
-            }
+        $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
+        $tex2 = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
 
-            $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
-            foreach ($paragraphs as $paragraph) {
-                $tex .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
-            }
-
-            if ($hasLineNumbers) {
-                if (substr($tex, -9, 9) == "\\newline\n") {
-                    $tex = substr($tex, 0, strlen($tex) - 9) . "\n";
+        if (!$tex2) {
+            $tex2 = '';
+            if ($fixedWidth || $hasLineNumbers) {
+                if ($hasLineNumbers) {
+                    $tex2 .= "\\linenumbers\n";
+                    $tex2 .= "\\resetlinenumber[" . $firstLine . "]\n";
                 }
-                $tex .= "\n\\nolinenumbers\n";
+
+                $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
+                foreach ($paragraphs as $paragraph) {
+                    $tex2 .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
+                }
+
+                if ($hasLineNumbers) {
+                    if (substr($tex2, -9, 9) == "\\newline\n") {
+                        $tex2 = substr($tex2, 0, strlen($tex2) - 9) . "\n";
+                    }
+                    $tex2 .= "\n\\nolinenumbers\n";
+                }
+            } else {
+                $paras = $section->getTextParagraphLines();
+                foreach ($paras as $para) {
+                    $html = str_replace('###LINENUMBER###', '', implode('', $para));
+                    $tex2 .= static::getMotionLinesToTeX([$html]) . "\n";
+                }
             }
-        } else {
-            $paras = $section->getTextParagraphLines();
-            foreach ($paras as $para) {
-                $html = str_replace('###LINENUMBER###', '', implode('', $para));
-                $tex .= static::getMotionLinesToTeX([$html]) . "\n";
-            }
+            HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);
         }
+
         if ($isRight) {
-            $content->textRight .= $tex;
+            $content->textRight .= $tex . $tex2;
         } else {
-            $content->textMain .= $tex;
+            $content->textMain .= $tex . $tex2;
         }
     }
 
@@ -554,29 +565,34 @@ class TextSimple extends ISectionType
      */
     public function printAmendmentTeX($isRight, Content $content)
     {
-        $tex = '';
-
         /** @var AmendmentSection $section */
         $section    = $this->section;
         $firstLine  = $section->getFirstLineNumber();
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+        $cacheDeps = [$firstLine, $lineLength, $section->getOriginalMotionSection()->data, $section->data];
+        $tex = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
 
-        if (count($diffGroups) > 0) {
-            $title = Exporter::encodePlainString($section->getSettings()->title);
-            if ($title == \Yii::t('motion', 'motion_text')) {
-                $titPattern = \Yii::t('amend', 'amendment_for_prefix');
-                $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
+        if (!$tex) {
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+
+            if (count($diffGroups) > 0) {
+                $title = Exporter::encodePlainString($section->getSettings()->title);
+                if ($title == \Yii::t('motion', 'motion_text')) {
+                    $titPattern = \Yii::t('amend', 'amendment_for_prefix');
+                    $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
+                }
+
+                $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
+                $tex .= Exporter::encodeHTMLString($html);
             }
 
-            $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
-            $tex .= Exporter::encodeHTMLString($html);
+            HashedStaticCache::setCache('printAmendmentTeX', $cacheDeps, $tex);
         }
 
         if ($isRight) {

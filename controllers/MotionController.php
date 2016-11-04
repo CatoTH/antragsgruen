@@ -136,24 +136,27 @@ class MotionController extends Base
      */
     public function actionPdfcollection($motionTypeId = '', $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn   = ($withdrawn == 1);
         $texTemplate = null;
         try {
             $motions = $this->consultation->getVisibleMotionsSorted($withdrawn);
             if ($motionTypeId != '' && $motionTypeId != '0') {
-                $motionTypeIds   = explode(',', $motionTypeId);
-                $motionsFiltered = [];
-                foreach ($motions as $motion) {
-                    if (in_array($motion->motionTypeId, $motionTypeIds)) {
-                        if ($texTemplate === null) {
-                            $texTemplate = $motion->motionType->texTemplate;
-                        } elseif ($motion->motionType->texTemplate == $texTemplate) {
-                            $motionsFiltered[] = $motion;
-                        }
-                    }
-                }
-                $motions = $motionsFiltered;
+                $motionTypeIds = explode(',', $motionTypeId);
+                $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {
+                    return in_array($motion->motionTypeId, $motionTypeIds);
+                });
             }
+
+            $motionsFiltered = [];
+            foreach ($motions as $motion) {
+                if ($texTemplate === null) {
+                    $texTemplate = $motion->motionType->texTemplate;
+                } elseif ($motion->motionType->texTemplate == $texTemplate) {
+                    $motionsFiltered[] = $motion;
+                }
+            }
+            $motions = $motionsFiltered;
+
             if (count($motions) == 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }

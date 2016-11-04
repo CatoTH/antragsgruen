@@ -87,12 +87,12 @@ class LayoutHelper
     }
 
     /**
-     * @param TCPDF $pdf
+     * @param \FPDI $pdf
      * @param IPDFLayout $pdfLayout
      * @param Amendment $amendment
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(TCPDF $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
+    public static function printToPDF(\FPDI $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
     {
         $pdf->AddPage();
 
