@@ -55,7 +55,8 @@ echo '<td class="actionCol"><div class="btn-group">
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-if (in_array($entry->status, [Motion::STATUS_DRAFT, Motion::STATUS_SUBMITTED_UNSCREENED])) {
+$screenable = [Motion::STATUS_DRAFT, Motion::STATUS_DRAFT_ADMIN, Motion::STATUS_SUBMITTED_UNSCREENED];
+if (in_array($entry->status, $screenable)) {
     $link = Html::encode($search->getCurrentUrl($route, ['motionScreen' => $entry->id]));
     $name = Html::encode(\Yii::t('admin', 'list_screen'));
     echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';

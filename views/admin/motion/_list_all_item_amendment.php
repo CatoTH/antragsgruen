@@ -56,7 +56,8 @@ echo '<td class="actionCol"><div class="btn-group">
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-if (in_array($entry->status, [Amendment::STATUS_DRAFT, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
+$screenable = [Amendment::STATUS_DRAFT, Amendment::STATUS_DRAFT_ADMIN, Amendment::STATUS_SUBMITTED_UNSCREENED];
+if (in_array($entry->status, $screenable)) {
     $name = Html::encode(\Yii::t('admin', 'list_screen'));
     $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
     echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';

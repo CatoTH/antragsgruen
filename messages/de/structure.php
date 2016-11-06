@@ -109,6 +109,7 @@ return [
     'STATUS_MISSING_INFORMATION'   => 'Informationen fehlen',
     'STATUS_DISMISSED'             => 'Nicht zugelassen',
     'STATUS_COLLECTING_SUPPORTERS' => 'Unterstützer*innen sammeln',
+    'STATUS_DRAFT_ADMIN'           => 'Entwurf (Admin)',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

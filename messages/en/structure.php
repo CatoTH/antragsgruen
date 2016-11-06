@@ -109,6 +109,7 @@ return [
     'STATUS_MISSING_INFORMATION'   => 'Missing information',
     'STATUS_DISMISSED'             => 'Dismissed',
     'STATUS_COLLECTING_SUPPORTERS' => 'Call for supporters',
+    'STATUS_DRAFT_ADMIN'           => 'Draft (Admin)',
 
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',

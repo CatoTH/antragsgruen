@@ -37,6 +37,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_MISSING_INFORMATION   = 13;
     const STATUS_DISMISSED             = 14;
     const STATUS_COLLECTING_SUPPORTERS = 15;
+    const STATUS_DRAFT_ADMIN           = 16;
 
     /**
      * @return string[]
@@ -62,6 +63,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_MISSING_INFORMATION   => \Yii::t('structure', 'STATUS_MISSING_INFORMATION'),
             static::STATUS_DISMISSED             => \Yii::t('structure', 'STATUS_DISMISSED'),
             static::STATUS_COLLECTING_SUPPORTERS => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
+            static::STATUS_DRAFT_ADMIN           => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
         ];
     }
 

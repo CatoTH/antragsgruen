@@ -13,6 +13,7 @@
 - A new theme inspired by the German Green Party's CI
 - Several bugfixes in the Diff-algorithms
 - URLs in the motion text are not automatically converted to links anymore
+- A new motion status "Draft (Admin)" is introduced
 
 ### Version 3.4.3 (2016-08-22)
 
