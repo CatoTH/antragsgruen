@@ -270,7 +270,7 @@ class LayoutHelper
 
         $supporters = $motion->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString(\Yii::t('motion', 'initiators_head'));
+            $title = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps = [];
             foreach ($supporters as $supp) {
