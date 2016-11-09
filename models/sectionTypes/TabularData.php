@@ -90,14 +90,14 @@ class TabularData extends ISectionType
         }
         $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
         $data = json_decode($this->section->data, true);
-        $str  = '<dl class="tabularData table">';
+        $str  = '<dl class="tabularData table' . (!$isRight ? ' dl-horizontal' : '') . '">';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
-            $str .= '<dt' . (!$isRight ? ' class="dl-horizontal"' : '') . '>';
+            $str .= '<dt>';
             $str .= Html::encode($rows[$rowId]->title) . ':';
-            $str .= '</dt><dd class="col-md-9">';
+            $str .= '</dt><dd>';
             $str .= Html::encode($rows[$rowId]->formatRow($rowData));
             $str .= '</dd>';
         }
