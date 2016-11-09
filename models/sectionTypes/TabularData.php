@@ -151,8 +151,8 @@ class TabularData extends ISectionType
             }
             $y     = $pdf->getY();
             $text1 = '<strong>' . Html::encode($rows[$rowId]->title) . ':</strong>';
-
-            $text2 = Html::encode($rowData);  // @TODO sectionType-specific handling
+            $text2 = Exporter::encodeHTMLString($rows[$rowId]->formatRow($rowData));
+            
             $pdf->writeHTMLCell(45, '', 25, $y, $text1, 0, 0, 0, true, '', true);
             $pdf->writeHTMLCell(111, '', 75, '', $text2, 0, 1, 0, true, '', true);
             $pdf->Ln(3);
@@ -239,13 +239,17 @@ class TabularData extends ISectionType
     public function getMotionPlainText()
     {
         $data   = json_decode($this->section->data, true);
+        $type = $this->section->getSettings();
+        $rows = static::getTabularDataRowsFromData($type->data);
+
         $return = '';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
             }
             $return .= $rows[$rowId]->title . ': ';
-            $return .= $rowData . "\n"; // @TODO sectionType-specific handling
+            $return .= Exporter::encodeHTMLString($rows[$rowId]->formatRow($rowData));
+            $return .= "\n";
         }
         return $return;
     }
@@ -275,12 +279,16 @@ class TabularData extends ISectionType
                 continue;
             }
             if ($isRight) {
-                $content->textRight .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";
+                $content->textRight .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}';
+                $content->textRight .= "\\newline\n";
                 $content->textRight .= '\vspace{0.2cm}';
-                $content->textRight .= Exporter::encodePlainString($rowData) . "\\newline\n";
+                $content->textRight .= Exporter::encodePlainString($rowData);
+                $content->textRight .= "\\newline\n";
             } else {
-                $content->textMain .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}' . "\\newline\n";
-                $content->textMain .= Exporter::encodePlainString($rowData) . "\\newline\n";
+                $content->textMain .= '\textbf{' . Exporter::encodePlainString($rows[$rowId]->title) . ':}';
+                $content->textMain .= "\\newline\n";
+                $content->textMain .= Exporter::encodeHTMLString($rows[$rowId]->formatRow($rowData));
+                $content->textMain .= "\\newline\n";
             }
         }
         if ($isRight) {
