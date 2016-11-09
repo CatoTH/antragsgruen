@@ -6,6 +6,7 @@ use app\components\latex\Content;
 use app\components\UrlHelper;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
@@ -23,8 +24,8 @@ class Image extends ISectionType
         $url     = UrlHelper::createUrl(
             [
                 'motion/viewimage',
-                'motionSlug'  => $section->getMotion()->getMotionSlug(),
-                'sectionId' => $section->sectionId
+                'motionSlug' => $section->getMotion()->getMotionSlug(),
+                'sectionId'  => $section->sectionId
             ]
         );
         return $url;
@@ -66,6 +67,29 @@ class Image extends ISectionType
     }
 
     /**
+     * @param string $filename
+     * @param string $targetType
+     * @return string
+     * @throws Internal
+     */
+    public static function getOptimizedImage($filename, $targetType)
+    {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        if ($app->imageMagickPath === null) {
+            return file_get_contents($filename);
+        } elseif (!file_exists($app->imageMagickPath)) {
+            throw new Internal("ImageMagick not correctly set up");
+        }
+
+        $tmpfile = $app->tmpDir . uniqid('image-conv-') . "." . $targetType;
+        exec($app->imageMagickPath . " -strip \"" . addslashes($filename) . "\" \"" . addslashes($tmpfile) . "\"");
+        $converted = (file_exists($tmpfile) ? file_get_contents($tmpfile) : '');
+        unlink($tmpfile);
+        return $converted;
+    }
+
+    /**
      * @param string $data
      * @throws FormError
      */
@@ -75,20 +99,35 @@ class Image extends ISectionType
             throw new FormError('Invalid Image');
         }
         $mime = mime_content_type($data['tmp_name']);
-        if (!in_array($mime, ['image/png', 'image/jpg', 'image/jpeg', 'image/gif'])) {
-            throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
-        }
         $imagedata = getimagesize($data['tmp_name']);
         if (!$imagedata) {
             throw new FormError('Could not read image.');
         }
+
+        switch ($mime) {
+            case 'image/png':
+                $fileExt = 'png';
+                break;
+            case 'image/jpg':
+            case 'image/jpeg':
+                $fileExt = 'jpeg';
+                break;
+            case 'image/gif':
+                $fileExt = 'gif';
+                break;
+            default:
+                throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
+        }
+
+        $optimized = static::getOptimizedImage($data['tmp_name'], $fileExt);
+
         $metadata                = [
             'width'    => $imagedata[0],
             'height'   => $imagedata[1],
-            'filesize' => filesize($data['tmp_name']),
+            'filesize' => strlen($optimized),
             'mime'     => $mime
         ];
-        $this->section->data     = base64_encode(file_get_contents($data['tmp_name']));
+        $this->section->data     = base64_encode($optimized);
         $this->section->metadata = json_encode($metadata);
     }
 
