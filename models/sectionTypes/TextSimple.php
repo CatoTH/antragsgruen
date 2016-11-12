@@ -561,7 +561,6 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
-     * @return string
      */
     public function printAmendmentTeX($isRight, Content $content)
     {

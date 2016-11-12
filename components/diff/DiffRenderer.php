@@ -428,6 +428,10 @@ class DiffRenderer
         }
 
         $newDom = $this->nodeCreator->createElement($dom->nodeName);
+        foreach ($dom->attributes as $key => $val) {
+                $val = $dom->getAttribute($key);
+                $newDom->setAttribute($key, $val);
+        }
         foreach ($newChildren as $newChild) {
             $newDom->appendChild($newChild);
         }

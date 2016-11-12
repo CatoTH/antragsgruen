@@ -13,6 +13,28 @@ class AmendmentSectionFormatterTest extends TestBase
 
     /**
      */
+    public function testKeepOLStart()
+    {
+        $strPre  = '<ol><li>Test 1</li><li>Test 2</li><li>Test 3</li><li>Test 4</li></ol>';
+        $strPost = '<ol><li>Test 1</li><li>Test 2</li><li>Test 3neu</li><li>Test 4</li></ol>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
+
+        $this->assertEquals([
+            [
+                'text' => '<ol start="3"><li>###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
+                'lineFrom' => 3,
+                'lineTo' => 3,
+            ]
+        ], $diffGroups);
+    }
+
+    /**
+     */
     public function testOverlongLines()
     {
         $orig = '<p>[1] <a href="https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf">https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf</a></p>';
@@ -26,6 +48,8 @@ class AmendmentSectionFormatterTest extends TestBase
 
     }
 
+    /**
+     */
     public function testRemoveWhitespaces()
     {
         $orig = '<p>Der eigene, existenzsichernde Job ist immer noch die beste Absicherung gegen Armut. Häufig ist der Weg dorthin aber für Alleinerziehende und gering verdienende Eltern sehr schwierig. Deswegen sind sie in besonderem Maße auf verlässliche und gute Betreuungs- und Bildungsangebote für ihre Kinder angewiesen. Aus- und Weiterbildungen in Teilzeit können ein Weg für Alleinerziehende sein, wieder einen existenzsichernden Arbeitsplatz zu finden. Dabei muss gewährleistet sein, dass in diesen Phasen das Existenzminimum von Alleinerziehenden und ihren Kindern ohne großen bürokratischen Aufwand durch lückenlose Leistungen gesichert ist. <strong>Wiedereinstiegshilfen nach der Babypause</strong> oder einer längeren Elternzeit wollen wir <strong>verbessern</strong>.</p>';
@@ -46,6 +70,8 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals(1, count($diffGroups));
     }
 
+    /**
+     */
     public function testCrashing()
     {
         // This basically tests if the cache in ArrayMatcher's calcSimilarity does its job.
@@ -143,6 +169,8 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals($expect, $text);
     }
 
+    /**
+     */
     public function testInlineFormatting()
     {
         $strPre  = '<p>Test 123</p>';
@@ -160,7 +188,6 @@ class AmendmentSectionFormatterTest extends TestBase
         $expect = '<h4 class="lineSummary">In Zeile 1 löschen:</h4><div><p>Test<del style="color:#FF0000;text-decoration:line-through;"> 123</del></p></div>';
         $this->assertEquals($expect, $text);
     }
-
 
     /**
      */
