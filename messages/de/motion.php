@@ -97,7 +97,7 @@ return [
     'edit_bread'                         => 'Bearbeiten',
     'edit_mail_title'                    => 'Antrag überarbeitet',
     'edit_type'                          => '%TYPE% bearbeiten',
-    'edit_mail_body'                     => 'Der Antrag "%TITLE%" wurde überarbeitet.\nLink: %LINK%',
+    'edit_mail_body'                     => 'Der Antrag "%TITLE%" wurde überarbeitet.' . "\n" . 'Link: %LINK%',
     'err_create_permission'              => 'Keine Berechtigung zum Anlegen von Anträgen.',
     'err_create'                         => 'Ein Fehler beim Anlegen ist aufgetreten',
     'err_edit_permission'                => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',

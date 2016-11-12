@@ -80,7 +80,7 @@ return [
     'edit_bread'                => 'Edit',
     'edit_mail_title'           => 'Motion edited',
     'edit_type'                 => 'Edit %TYPE%',
-    'edit_mail_body'            => 'The motion "%TITLE%" has been edited.\nLink: %LINK%',
+    'edit_mail_body'            => 'The motion "%TITLE%" has been edited.' . "\n" . 'Link: %LINK%',
     'err_create_permission'     => 'No permission to create motions.',
     'err_create'                => 'An error occurred.',
     'err_edit_permission'       => 'No permission to edit this motion.',
