@@ -18,6 +18,8 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'));
+$layout->addJS('js/backend.js');
+$layout->addOnLoadJS('$.AntragsgruenAdmin.adminIndex();');
 
 
 echo '<h1>' . \Yii::t('admin', 'index_settings') . '</h1>';
@@ -30,8 +32,11 @@ echo '
     <ul>
     <li>';
 
-$link = UrlHelper::createUrl('admin/index/consultation');
-echo Html::a(\Yii::t('admin', 'index_consultation_settings'), $link, ['id' => 'consultationLink']);
+echo Html::a(
+    \Yii::t('admin', 'index_consultation_settings'),
+    UrlHelper::createUrl('admin/index/consultation'),
+    ['id' => 'consultationLink']
+);
 
 echo '</li><li class="secondary">';
 echo Html::a(
@@ -105,5 +110,15 @@ if (User::currentUserIsSuperuser()) {
 }
 
 
-echo '</div>';
+if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+    if (count($site->consultations) == 1) {
+        echo Html::beginForm('', 'post', ['class' => 'del-site-caller']);
+        echo '<button class="btn-link" type="submit" name="delSite">' .
+            '<span class="glyphicon glyphicon-trash"></span> ' . 'Seite löschen' .
+            '</button>';
+        echo Html::endForm();
+    }
+}
 
+
+echo '</div>';

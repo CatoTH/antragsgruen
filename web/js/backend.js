@@ -600,6 +600,22 @@
         new SiteCreateWizard($, $(".siteCreate"));
     };
 
+    var adminIndex = function() {
+        var $delForm = $(".del-site-caller");
+        $delForm.find("button").click(function(ev) {
+            ev.preventDefault();
+            var $button = $(this);
+            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
+                if (result) {
+                    var id = $button.data("id"),
+                        $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
+                    $delForm.append($input);
+                    $delForm.submit();
+                }
+            });
+        });
+    };
+
     $.AntragsgruenAdmin = {
         'consultationSettingsForm': consultationSettingsForm,
         'motionTypeEdit': motionTypeEdit,
@@ -610,7 +626,8 @@
         'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,
         'amendmentEditInit': amendmentEditInit,
-        'consultationCreate': consultationCreate
+        'consultationCreate': consultationCreate,
+        'adminIndex': adminIndex
     };
 
 }(jQuery));

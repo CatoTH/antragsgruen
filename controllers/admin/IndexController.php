@@ -29,6 +29,11 @@ class IndexController extends AdminBase
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
 
+        if ($this->isPostSet('delSite')) {
+            $this->site->setDeleted();
+            return $this->render('site_deleted', []);
+        }
+
         return $this->render(
             'index',
             [

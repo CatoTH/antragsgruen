@@ -219,5 +219,9 @@ class Site extends ActiveRecord
         $this->subdomain    = null;
         $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
+
+        foreach ($this->consultations as $consultation) {
+            $consultation->setDeleted();
+        }
     }
 }
