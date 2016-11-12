@@ -224,4 +224,23 @@ class Site extends ActiveRecord
             $consultation->setDeleted();
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function readyForPurge()
+    {
+        if ($this->dateDeletion === null) {
+            return false;
+        }
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->sitePurgeAfterDays === null || $params->sitePurgeAfterDays < 1) {
+            return false;
+        }
+        $deleted = Tools::dateSql2timestamp($this->dateDeletion);
+        $days    = floor((time() - $deleted) / (3600 * 24));
+
+        return ($days > $params->sitePurgeAfterDays);
+    }
 }

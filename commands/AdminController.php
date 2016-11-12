@@ -1,6 +1,7 @@
 <?php
 namespace app\commands;
 
+use app\components\SitePurger;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\Motion;
@@ -118,6 +119,28 @@ class AdminController extends Controller
                 'Please remember to ensure the runtime/cache-directory and all files are still writable ' .
                 'by the web process if the current process is being run with a different user.' . "\n"
             );
+        }
+    }
+
+    /**
+     * Delete all sites ready for purging.
+     */
+    public function actionPurgeFromDatabase()
+    {
+        /** @var Site[] $sites */
+        $sites = Site::findBySql('SELECT * FROM site WHERE dateDeletion IS NOT NULL')->all();
+        foreach ($sites as $site) {
+            if (!$site->readyForPurge()) {
+                $this->stderr("Site " . $site->id . " not ready for purging\n");
+                continue;
+            }
+            try {
+                $this->stdout('Purging data of site ' . $site->id . "\n");
+                SitePurger::purgeSite($site->id);
+                $this->stdout("-> Finished\n");
+            } catch (\Exception $e) {
+                $this->stderr($e->getMessage());
+            }
         }
     }
 }

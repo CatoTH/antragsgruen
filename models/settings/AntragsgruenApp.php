@@ -39,6 +39,7 @@ class AntragsgruenApp
     public $pdfExportIntegFrame   = false;
     public $localLayouts          = [];
     public $imageMagickPath       = null;
+    public $sitePurgeAfterDays    = null;
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];
