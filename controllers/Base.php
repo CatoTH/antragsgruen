@@ -420,7 +420,7 @@ class Base extends Controller
         if (is_null($this->site)) {
             $this->site = Site::findOne(['subdomain' => $subdomain]);
         }
-        if (is_null($this->site)) {
+        if (is_null($this->site) || $this->site->status == Site::STATUS_DELETED || $this->site->dateDeletion !== null) {
             $this->consultationNotFound();
         }
 
@@ -431,7 +431,7 @@ class Base extends Controller
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
         }
-        if (is_null($this->consultation)) {
+        if (is_null($this->consultation) || $this->consultation->dateDeletion !== null) {
             $this->consultationNotFound();
         } else {
             Consultation::setCurrent($this->consultation);

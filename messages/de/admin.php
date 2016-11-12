@@ -347,6 +347,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'todo_comment_to'             => 'Zu',
     'cons_new_created'            => 'Die neue Veranstaltung wurde angelegt.',
     'cons_std_set_done'           => 'Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.',
+    'cons_delete_title'           => 'Veranstaltung löschen',
+    'cons_delete_done'            => 'Die Veranstaltung wurde gelöscht',
     'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
         'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
     'support_coll_policy_fix'     => 'Einstellungen so setzen',

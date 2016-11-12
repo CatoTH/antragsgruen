@@ -115,6 +115,7 @@ label.legend {
   padding: 0;
 
   > li {
+    position: relative;
     margin: 10px 0 30px;
     padding: 10px;
     overflow: auto;
@@ -130,6 +131,23 @@ label.legend {
 
     .stdbox {
       float: right;
+    }
+
+    .delbox {
+      color: red;
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+    html.no-touchevents & {
+      .delbox {
+        visibility: hidden;
+      }
+      &:hover {
+        .delbox {
+          visibility: visible;
+        }
+      }
     }
   }
 }

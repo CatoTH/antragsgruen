@@ -1,5 +1,9 @@
 # Version history
 
+## Nex version [not yet released]
+
+- Introduce a way to delete consultations
+
 ## Version 3.5.0 (2016-11-12)
 
 - Support for H2, H3 and H4 headlines in motion texts

@@ -26,6 +26,7 @@ use yii\db\ActiveRecord;
  * @property string $eventDateTo
  * @property string $adminEmail
  * @property string $dateCreation
+ * @property string $dateDeletion
  * @property string $settings
  *
  * @property Site $site
@@ -609,5 +610,14 @@ class Consultation extends ActiveRecord
     {
         $text = ConsultationText::findOne(['consultationId' => $this->id, 'textId' => 'help']);
         return ($text !== null);
+    }
+
+    /**
+     */
+    public function setDeleted()
+    {
+        $this->urlPath    = null;
+        $this->dateDeletion = date('Y-m-d H:i:s');
+        $this->save(false);
     }
 }

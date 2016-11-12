@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
@@ -268,6 +269,20 @@ class IndexController extends AdminBase
                 }
             }
             $this->site->refresh();
+        }
+        if ($this->isPostSet('delete') && count($post['delete']) == 1) {
+            foreach ($site->consultations as $consultation) {
+                $keys = array_keys($post['delete']);
+                if ($consultation->id == $keys[0] && $site->currentConsultationId != $consultation->id) {
+                    $consultation->setDeleted();
+                    \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
+                    if ($this->consultation->id == $consultation->id) {
+                        $fallback = $this->site->currentConsultation->urlPath;
+                        $url = UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]);
+                        return $this->redirect($url);
+                    }
+                }
+            }
         }
 
         return $this->render('site_consultations', [

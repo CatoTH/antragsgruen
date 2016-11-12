@@ -582,6 +582,20 @@
                 $(".settingsTypeTemplate").removeClass("hidden");
             }
         }).change();
+
+        var $consultationEditForm = $(".consultationEditForm");
+        $consultationEditForm.find(".delbox button").click(function(ev) {
+            ev.preventDefault();
+            var $button = $(this);
+            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
+                if (result) {
+                    var id = $button.data("id"),
+                        $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
+                    $consultationEditForm.append($input);
+                    $consultationEditForm.submit();
+                }
+            });
+        });
         
         new SiteCreateWizard($, $(".siteCreate"));
     };

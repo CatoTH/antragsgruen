@@ -53,6 +53,11 @@ foreach ($site->consultations as $consultation) {
     }
     echo '</div>';
 
+    if (!$isStandard) {
+        echo '<div class="delbox"><button type="submit" name="delete[' . $consultation->id . ']" class="link" title="' .
+            \Yii::t('admin', 'cons_delete_title') . '"><span class="glyphicon glyphicon-trash"></span></button></div>';
+    }
+
     echo '<h3>';
     echo Html::encode($consultation->title) . ' <small>(' . Html::encode($consultation->titleShort) . ')</small>';
     echo '</h3>';
@@ -84,7 +89,12 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
     <div class="form-group">
         <label for="newTitle" class="col-md-4 control-label"><?= 'Titel der Veranstaltung' ?>:</label>
         <div class="col-md-8">
-            <?= Html::input('text', 'newConsultation[title]', $createForm->title, array_merge($textOpts, ['id' => 'newTitle'])) ?>
+            <?= Html::input(
+                'text',
+                'newConsultation[title]',
+                $createForm->title,
+                array_merge($textOpts, ['id' => 'newTitle'])
+            ) ?>
         </div>
     </div>
 
@@ -110,7 +120,11 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 $createForm->urlPath,
                 array_merge($textOpts, ['id' => 'newPath'])
             );
-            $url   = Url::toRoute(['consultation/index', 'subdomain' => $site->subdomain, 'consultationPath' => '--CON--']);
+            $url   = Url::toRoute([
+                'consultation/index',
+                'subdomain' => $site->subdomain,
+                'consultationPath' => '--CON--'
+            ]);
             $url   = UrlHelper::absolutizeLink($url);
             echo str_replace('--CON--', $input, $url);
             ?>

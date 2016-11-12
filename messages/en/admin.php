@@ -312,6 +312,8 @@ Bye,
     'todo_comment_to'             => 'To',
     'cons_new_created'            => 'The new consultation has been created.',
     'cons_std_set_done'           => 'This consultation has been set as the new standard.',
+    'cons_delete_title'           => 'Delete this consultations',
+    'cons_delete_done'            => 'The consultation has been deleted',
     'support_coll_policy_fix'     => 'Fix settings',
 
     'save'                        => 'Save', // 'Speichern'

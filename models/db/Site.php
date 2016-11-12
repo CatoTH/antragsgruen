@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property string $title
  * @property string $titleShort
  * @property string $dateCreation
+ * @property string $dateDeletion
  * @property string $settings
  * @property string $contact
  * @property int $status
@@ -56,7 +57,7 @@ class Site extends ActiveRecord
      */
     public function getConsultations()
     {
-        return $this->hasMany(Consultation::class, ['siteId' => 'id']);
+        return $this->hasMany(Consultation::class, ['siteId' => 'id'])->where('consultation.dateDeletion IS NULL');
     }
 
     /**
@@ -212,10 +213,11 @@ class Site extends ActiveRecord
 
     /**
      */
-    public function deleteSite()
+    public function setDeleted()
     {
-        $this->status    = static::STATUS_DELETED;
-        $this->subdomain = null;
+        $this->status       = static::STATUS_DELETED;
+        $this->subdomain    = null;
+        $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
     }
 }
