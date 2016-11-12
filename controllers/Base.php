@@ -219,7 +219,9 @@ class Base extends Controller
      */
     public function getParams()
     {
-        return \Yii::$app->params;
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app;
     }
 
     /**
@@ -345,7 +347,6 @@ class Base extends Controller
     /**
      * @param $status
      * @param $message
-     * @return string
      * @throws \yii\base\ExitException
      */
     protected function showErrorpage($status, $message)
@@ -370,11 +371,7 @@ class Base extends Controller
     protected function consultationNotFound()
     {
         $url     = Html::encode($this->getParams()->domainPlain);
-        $message = 'Die angegebene Veranstaltung wurde nicht gefunden. ' .
-            'Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br>
-					<br>
-					Auf der <a href="' . $url . '">Antragsgrün-Startseite</a> ' .
-            'siehst du rechts eine Liste der aktiven Veranstaltungen.';
+        $message = str_replace('%URL%', $url, \Yii::t('base', 'err_cons_404'));
         $this->showErrorpage(404, $message);
     }
 
@@ -383,11 +380,7 @@ class Base extends Controller
      */
     protected function consultationError()
     {
-        $message = "Leider existiert die aufgerufene Seite nicht. " .
-            "Falls du der Meinung bist, dass das ein Fehler ist, " .
-            "melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.";
-
-        $this->showErrorpage(500, $message);
+        $this->showErrorpage(500, \Yii::t('base', 'err_site_404'));
     }
 
     /**
@@ -400,11 +393,7 @@ class Base extends Controller
         $subdomain      = strtolower($this->site->subdomain);
 
         if (strtolower($this->consultation->site->subdomain) != $subdomain) {
-            Yii::$app->user->setFlash(
-                "error",
-                "Fehlerhafte Parameter - " .
-                "die Veranstaltung gehört nicht zur Veranstaltungsreihe."
-            );
+            Yii::$app->user->setFlash("error", \Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
@@ -414,7 +403,7 @@ class Base extends Controller
         }
 
         if ($checkAmendment != null && ($checkMotion == null || $checkAmendment->motionId != $checkMotion->id)) {
-            Yii::$app->session->setFlash('error', 'Der Änderungsantrag gehört nicht zum Antrag.');
+            Yii::$app->session->setFlash('error', \Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
     }
