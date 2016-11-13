@@ -23,7 +23,10 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m160228_152511_motion_type_rename_initiator_form', 1457086233),
   ('m160304_095858_motion_slug', 1457086236),
   ('m160305_201135_support_separate_to_motions_and_amendments', '1457209261'),
-  ('m160305_214526_support_likes_dislikes', '1457209261');
+  ('m160305_214526_support_likes_dislikes', '1457209261'),
+  ('m160605_104819_remove_consultation_type', '1457209261'),
+  ('m161112_161536_add_date_delete', '1457209261')
+;
 
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;

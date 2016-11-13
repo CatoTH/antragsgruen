@@ -122,6 +122,7 @@ CREATE TABLE `###TABLE_PREFIX###consultation` (
   `amendmentNumbering` TINYINT(4)   NOT NULL,
   `adminEmail`         VARCHAR(150)      DEFAULT NULL,
   `dateCreation`       TIMESTAMP    NULL DEFAULT NULL,
+  `dateDeletion`       TIMESTAMP    NULL DEFAULT NULL,
   `settings`           TEXT
 )
   ENGINE = InnoDB
@@ -513,6 +514,7 @@ CREATE TABLE `###TABLE_PREFIX###site` (
   `title`                 VARCHAR(200) NOT NULL,
   `titleShort`            VARCHAR(100)      DEFAULT NULL,
   `dateCreation`          TIMESTAMP    NULL DEFAULT NULL,
+  `dateDeletion`          TIMESTAMP    NULL DEFAULT NULL,
   `settings`              TEXT,
   `currentConsultationId` INT(11)           DEFAULT NULL,
   `public`                TINYINT(4)        DEFAULT '1',
