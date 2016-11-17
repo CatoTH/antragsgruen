@@ -317,7 +317,7 @@ class Exporter
     public static function createTextWithRightString($textMain, $textRight)
     {
         if ($textRight == '') {
-            return $textMain;
+            return "\\raggedright\n" . $textMain;
         }
 
         $textMain = str_replace(
