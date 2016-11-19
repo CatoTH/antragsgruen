@@ -283,6 +283,7 @@ class IndexController extends AdminBase
                     \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
                     if ($this->consultation->id == $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
+                        
                         $url = UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]);
                         return $this->redirect($url);
                     }
@@ -298,9 +299,10 @@ class IndexController extends AdminBase
     }
 
     /**
+     * @param int $version
      * @return string
      */
-    public function actionOpenslidesusers()
+    public function actionOpenslidesusers($version = 1)
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'text/csv');
@@ -320,8 +322,14 @@ class IndexController extends AdminBase
             }
         }
 
-        return $this->renderPartial('openslides_user_list', [
-            'users' => $users,
-        ]);
+        if ($version == 2) {
+            return $this->renderPartial('openslides2_user_list', [
+                'users' => $users,
+            ]);
+        } else {
+            return $this->renderPartial('openslides1_user_list', [
+                'users' => $users,
+            ]);
+        }
     }
 }
