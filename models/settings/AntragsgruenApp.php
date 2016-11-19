@@ -45,6 +45,16 @@ class AntragsgruenApp
     public $mailService = ['transport' => 'sendmail'];
 
     /**
+     * @return AntragsgruenApp
+     */
+    public static function getInstance()
+    {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app;
+    }
+
+    /**
      * @return bool
      */
     private function isHttps()
