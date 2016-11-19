@@ -3,6 +3,7 @@ use yii\helpers\Html;
 
 /**
  * @var app\models\forms\SiteCreateForm $model
+ * @var string $mode
  * @var \Callable $t
  */
 
@@ -30,7 +31,13 @@ use yii\helpers\Html;
     </fieldset>
     <div class="navigation">
         <button class="btn btn-lg btn-prev"><span class="icon-chevron-left"></span> <?= $t('prev') ?></button>
+        <?php if ($mode == 'sandbox') { ?>
+            <button type="submit" class="btn btn-lg btn-next btn-primary" name="create">
+                <span class="icon-chevron-right"></span> <?= $t('finish') ?>
+            </button>
+        <?php } else { ?>
         <button class="btn btn-lg btn-next btn-primary"><span class="icon-chevron-right"></span> <?= $t('next') ?>
         </button>
+        <?php } ?>
     </div>
 </div>

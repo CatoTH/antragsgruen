@@ -40,6 +40,7 @@ class AntragsgruenApp
     public $localLayouts          = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
+    public $mode                  = 'production';
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

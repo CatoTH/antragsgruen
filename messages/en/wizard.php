@@ -97,4 +97,8 @@ return [
     'created_goto_con'       => 'Go to the new site',
     'created_goto_motion'    => 'Now you can create the motion',
     'created_goto_manifesto' => 'Now you can create the manifesto',
+
+    'sandbox_dummy_contact' => 'Test-Contact',
+    'sandbox_dummy_orga'    => 'Organisation X',
+    'sandbox_dummy_title'   => 'Test-Event',
 ];

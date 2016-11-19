@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Antragsgrün-Seite anlegen',
-    
+
     'step_purpose'    => 'Einsatzzweck',
     'step_motions'    => 'Anträge',
     'step_amendments' => 'Änderungsanträge',
@@ -97,4 +97,8 @@ return [
     'created_goto_con'       => 'Zur neu angelegten Veranstaltung',
     'created_goto_motion'    => 'Hier kannst du nun den Antrag anlegen',
     'created_goto_manifesto' => 'Hier kannst du nun den Text eingeben',
+
+    'sandbox_dummy_contact' => 'Test-Kontakt',
+    'sandbox_dummy_orga'    => 'Organisation X',
+    'sandbox_dummy_title'   => 'Test-Veranstaltung',
 ];

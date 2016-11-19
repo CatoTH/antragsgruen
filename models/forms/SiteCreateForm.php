@@ -591,4 +591,37 @@ class SiteCreateForm extends Model
             throw new FormError($legalText->getErrors());
         }
     }
+
+    /**
+     */
+    public function setSandboxParams()
+    {
+        $this->contact      = \Yii::t('wizard', 'sandbox_dummy_contact');
+        $this->organization = \Yii::t('wizard', 'sandbox_dummy_orga');
+        $this->title        = \Yii::t('wizard', 'sandbox_dummy_title');
+        $this->subdomain    = substr(md5(uniqid()), 0, 8);
+        $this->openNow      = true;
+    }
+
+    /**
+     * @return User
+     */
+    public function createSandboxUser()
+    {
+        $email                = $this->subdomain . '@example.org';
+        $user                 = new User();
+        $user->auth           = 'email:' . $email;
+        $user->email          = $email;
+        $user->name           = 'Admin';
+        $user->status         = User::STATUS_CONFIRMED;
+        $user->emailConfirmed = true;
+        $user->dateCreation   = date('Y-m-d H:i:s');
+        $user->pwdEnc         = password_hash('admin', PASSWORD_DEFAULT);
+        $user->save();
+        if (!$user) {
+            var_dump($user->getErrors());
+            die();
+        }
+        return $user;
+    }
 }
