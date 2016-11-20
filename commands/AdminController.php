@@ -127,8 +127,10 @@ class AdminController extends Controller
      */
     public function actionPurgeFromDatabase()
     {
+        $app = AntragsgruenApp::getInstance();
+        $sql = 'SELECT * FROM `' . $app->tablePrefix . 'site` WHERE `dateDeletion` IS NOT NULL';
         /** @var Site[] $sites */
-        $sites = Site::findBySql('SELECT * FROM site WHERE dateDeletion IS NOT NULL')->all();
+        $sites = Site::findBySql($sql)->all();
         foreach ($sites as $site) {
             if (!$site->readyForPurge()) {
                 $this->stderr("Site " . $site->id . " not ready for purging\n");
@@ -138,6 +140,31 @@ class AdminController extends Controller
                 $this->stdout('Purging data of site ' . $site->id . "\n");
                 SitePurger::purgeSite($site->id);
                 $this->stdout("-> Finished\n");
+            } catch (\Exception $e) {
+                $this->stderr($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Delete all sites older than 3 days. Only available in Sandbox mode.
+     */
+    public function actionDeleteOldSandboxInstances()
+    {
+        $app = AntragsgruenApp::getInstance();
+        if ($app->mode != 'sandbox') {
+            $this->stderr('This can only be used in sandbox mode');
+            return;
+        }
+
+        $sql = 'SELECT * FROM `' . $app->tablePrefix . 'site` ' .
+            'WHERE `dateCreation` < NOW() - INTERVAL 3 DAY AND `dateDeletion` IS NULL';
+        /** @var Site[] $sites */
+        $sites = Site::findBySql($sql)->all();
+        foreach ($sites as $site) {
+            try {
+                $site->setDeleted();
+                $this->stdout('- Deleted: ' . $site->id . "\n");
             } catch (\Exception $e) {
                 $this->stderr($e->getMessage());
             }

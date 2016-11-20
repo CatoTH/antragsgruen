@@ -19,13 +19,14 @@ $controller->layoutParams->addJS("js/build/SiteCreateWizard.js");
 $layout->loadDatepicker();
 $controller->layoutParams->addOnLoadJS('new SiteCreateWizard($, $("form.siteCreate"));');
 
+$mode = ($controller->getParams()->mode == 'sandbox' ? 'sandbox' : 'subdomain');
+
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="fuelux">
     <?php echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']); ?>
 
-    <?= $this->render('../createsite_wizard/index', ['model' => $model, 'errors' => $errors, 'mode' => 'subdomain']) ?>
+    <?= $this->render('../createsite_wizard/index', ['model' => $model, 'errors' => $errors, 'mode' => $mode]) ?>
 
     <?= Html::endForm() ?>
 </div>
-

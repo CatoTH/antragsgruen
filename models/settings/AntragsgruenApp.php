@@ -40,9 +40,20 @@ class AntragsgruenApp
     public $localLayouts          = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
+    public $mode                  = 'production';
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];
+
+    /**
+     * @return AntragsgruenApp
+     */
+    public static function getInstance()
+    {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app;
+    }
 
     /**
      * @return bool

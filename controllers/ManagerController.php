@@ -121,16 +121,19 @@ class ManagerController extends Base
     }
 
     /**
-     * @return User|null
      */
     protected function requireEligibleToCreateUser()
     {
+        if ($this->getParams()->mode == 'sandbox') {
+            // In sandbox mode, everyone is allowed to create a site
+            return;
+        }
+
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('manager/index'));
-            return null;
+            \Yii::$app->end();
         }
-        return $user;
     }
 
     /**
@@ -164,7 +167,12 @@ class ManagerController extends Base
             try {
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
-                    $model->create(User::getCurrentUser());
+                    if ($this->getParams()->mode == 'sandbox') {
+                        $user = $model->createSandboxUser();
+                    } else {
+                        $user = User::getCurrentUser();
+                    }
+                    $model->create($user);
                     return $this->render('created', ['form' => $model]);
                 } else {
                     throw new FormError($model->getErrors());
@@ -172,6 +180,9 @@ class ManagerController extends Base
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
+        }
+        if ($this->getParams()->mode == 'sandbox') {
+            $model->setSandboxParams();
         }
 
         return $this->render(

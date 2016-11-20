@@ -46,11 +46,12 @@ $t = function ($string) {
     <?= $this->render('amend_deadline', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_screening', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('comments', ['model' => $model, 't' => $t]) ?>
-    <?= $this->render('agenda', ['model' => $model, 't' => $t]) ?>
+    <?= $this->render('agenda', ['model' => $model, 't' => $t, 'mode' => $mode]) ?>
     <?= $this->render('opennow', ['model' => $model, 't' => $t]) ?>
     <?php
     switch ($mode) {
         case 'subdomain':
+        case 'sandbox':
             echo $this->render('sitedata_subdomain', ['model' => $model, 't' => $t]);
             break;
         case 'singlesite':

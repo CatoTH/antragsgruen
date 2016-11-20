@@ -97,4 +97,15 @@ return [
     'created_goto_con'       => 'Go to the new site',
     'created_goto_motion'    => 'Now you can create the motion',
     'created_goto_manifesto' => 'Now you can create the manifesto',
+
+    'sandbox_dummy_contact' => 'Test-Contact',
+    'sandbox_dummy_orga'    => 'Organisation X',
+    'sandbox_dummy_title'   => 'Test-Event',
+    'sandbox_dummy_welcome' => '<h2>Welcome to Antragsgrün!</h2><br><br>
+                                On this sandbox site, you can freely test all features of Antragsgrün.
+                                We\'ve created a dummy admin-user for you to test all administrative tasks:<br><br>
+                                <strong>Login:</strong> %ADMIN_USERNAME%<br>
+                                <strong>Password:</strong> %ADMIN_PASSWORD%<br><br>
+                                However, please note that this site will be <strong>deleted three days after creation</strong>.<br><br>
+                                <em>By the way: you can edit this text by clicking on "edit" on the top right.</em>',
 ];
