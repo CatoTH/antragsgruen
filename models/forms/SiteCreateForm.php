@@ -15,6 +15,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use yii\base\Model;
 use yii\helpers\Html;
@@ -248,7 +249,7 @@ class SiteCreateForm extends Model
             $this->createAgenda($con);
         }
 
-        $this->createImprint($site, $con);
+        $this->createPageData($site, $con);
 
         return $con;
     }
@@ -284,7 +285,7 @@ class SiteCreateForm extends Model
             $this->createAgenda($con);
         }
 
-        $this->createImprint($site, $con);
+        $this->createPageData($site, $con);
 
         return $con;
     }
@@ -344,8 +345,16 @@ class SiteCreateForm extends Model
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 0;
-        $type->deadlineMotions             = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
-        $type->deadlineAmendments          = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        if ($this->motionDeadline) {
+            $type->deadlineMotions = $this->motionDeadline->format('Y-m-d H:i:s');
+        } else {
+            $type->deadlineMotions = null;
+        }
+        if ($this->amendmentDeadline) {
+            $type->deadlineAmendments = $this->amendmentDeadline->format('Y-m-d H:i:s');
+        } else {
+            $type->deadlineAmendments = null;
+        }
 
         if (!$type->save()) {
             throw new FormError($type->getErrors());
@@ -447,8 +456,16 @@ class SiteCreateForm extends Model
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 0;
-        $type->deadlineMotions             = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
-        $type->deadlineAmendments          = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        if ($this->motionDeadline) {
+            $type->deadlineMotions = $this->motionDeadline->format('Y-m-d H:i:s');
+        } else {
+            $type->deadlineMotions = null;
+        }
+        if ($this->amendmentDeadline) {
+            $type->deadlineAmendments = $this->amendmentDeadline->format('Y-m-d H:i:s');
+        } else {
+            $type->deadlineAmendments = null;
+        }
 
         if (!$type->save()) {
             throw new FormError($type->getErrors());
@@ -579,7 +596,7 @@ class SiteCreateForm extends Model
      * @param Consultation $consultation
      * @throws FormError
      */
-    private function createImprint(Site $site, Consultation $consultation)
+    private function createPageData(Site $site, Consultation $consultation)
     {
         $contactHtml               = nl2br(Html::encode($site->contact));
         $legalText                 = new ConsultationText();
@@ -589,6 +606,22 @@ class SiteCreateForm extends Model
         $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
         if (!$legalText->save()) {
             throw new FormError($legalText->getErrors());
+        }
+
+        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
+            $welcomeHtml               = str_replace(
+                ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%'],
+                [$this->subdomain . '@example.org', 'admin'],
+                \Yii::t('wizard', 'sandbox_dummy_welcome')
+            );
+            $legalText                 = new ConsultationText();
+            $legalText->consultationId = $consultation->id;
+            $legalText->category       = 'pagedata';
+            $legalText->textId         = 'welcome';
+            $legalText->text           = $welcomeHtml;
+            if (!$legalText->save()) {
+                throw new FormError($legalText->getErrors());
+            }
         }
     }
 
@@ -608,6 +641,10 @@ class SiteCreateForm extends Model
      */
     public function createSandboxUser()
     {
+        if (\Yii::$app->user) {
+            \Yii::$app->user->logout();
+        }
+
         $email                = $this->subdomain . '@example.org';
         $user                 = new User();
         $user->auth           = 'email:' . $email;
@@ -622,6 +659,9 @@ class SiteCreateForm extends Model
             var_dump($user->getErrors());
             die();
         }
+
+        \Yii::$app->user->login($user, AntragsgruenApp::getInstance()->autoLoginDuration);
+
         return $user;
     }
 }
