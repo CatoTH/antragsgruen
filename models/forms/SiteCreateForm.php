@@ -3,6 +3,7 @@
 namespace app\models\forms;
 
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
@@ -608,10 +609,12 @@ class SiteCreateForm extends Model
             throw new FormError($legalText->getErrors());
         }
 
-        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
+        $params = AntragsgruenApp::getInstance();
+        if ($params->mode == 'sandbox') {
+            $siteurl = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
             $welcomeHtml               = str_replace(
-                ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%'],
-                [$this->subdomain . '@example.org', 'admin'],
+                ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%', '%SITE_URL%'],
+                [$this->subdomain . '@example.org', 'admin', $siteurl],
                 \Yii::t('wizard', 'sandbox_dummy_welcome')
             );
             $legalText                 = new ConsultationText();

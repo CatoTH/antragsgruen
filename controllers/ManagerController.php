@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AntiXSS;
 use app\components\HTMLTools;
 use app\components\MessageSource;
 use app\components\UrlHelper;

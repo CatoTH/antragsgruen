@@ -82,19 +82,50 @@ $params = \Yii::$app->params;
 
 </div>
 
-<?php
-echo '<h2 id="selbst_nutzen" class="green">Antragsgrün nutzen</h2>
+<h2 id="selbst_nutzen" class="green">Antragsgrün nutzen</h2>
 
 <div class="content infoSite">
+    <p style="margin-bottom: 40px;">
+        <strong>Antragsgrün ist OpenSource</strong><br>
+        Antragsgrün ist
+        <a href="#opensource" onClick="$('#opensource').scrollintoview({top_offset: -50}); return false;">OpenSource-
+            Software</a> und kann von jeder und jedem kostenlos genutzt werden, sowohl um an Diskussionen
+        teilzunehmen, als auch um eigene Programm-/Antragsdiskussionen einzurichten. Den Download und eine Anleitung
+        zur Installation gibt es auf <a href="https://github.com/CatoTH/antragsgruen">Github</a>.
+    </p>
 
-<p>Antragsgrün ist <strong><a href="#opensource" onClick="$(\'#opensource\').scrollintoview({top_offset: -50}); return false;">OpenSource-Software</a></strong>
-und kann von jeder und jedem frei genutzt werden, sowohl um an Diskussionen teilzunehmen, als auch um eigene Programm-/Antragsdiskussionen einzurichten.</p>
-<p>Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong> einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren.
-Dazu kannst du das Formular unter "<a href="#opensource" onClick="$(\'#asGreenMember\').scrollintoview({top_offset: -50}); return false;">Als Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten - kostenlos (wobei wir uns über einen kleinen freiwilligen Beitrag zum Betrieb und der Weiterentwicklung freuen würden).
-Benötigt wird nur ein Zugang beim Grünen Netz bzw. beim Wurzelwerk.</p>
-<p>Sind speziellere <strong>programmiertechnische Anpassungen</strong> nötig, oder sollen wir Antragsgrün auf einer <strong>eigenen Domain</strong> hosten, können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
-<a href="#wer" onClick="$(\'#wer\').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
-</div>';
+    <p>
+        <strong>Antragsgrün erst mal ausprobieren</strong><br>
+        Wenn du erst einmal unverbindlich ausprobieren willst, ob Antragsgrün für deine Zwecke passend ist,
+        kannst du hier schnell und ohne Angabe von Kontaktdaten eine eigene Test-Version von Antragsgrün
+        anlegen, die für drei Tage verfügbar ist.
+    </p>
+    <p style="text-align: right;">
+        <a href="http://sandbox.antragsgruen.de/createsite" class="btn btn-default">Test-Version anlegen</a>
+    </p>
+
+    <p style="margin-bottom: 40px;">
+        <strong>Angebot für Grüne Organisationen</strong><br>
+        Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong>
+        einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren.
+        Dazu kannst du das Formular unter
+        "<a href="#opensource" onClick="$('#asGreenMember').scrollintoview({top_offset: -50}); return false;">Als
+            Grünen-Mitglied nutzen</a>" nutzen und es dir innerhalb von zwei, drei Minuten selbst einrichten -
+        kostenlos.
+        Benötigt wird nur ein Zugang beim Grünen Netz bzw. beim Wurzelwerk.
+    </p>
+
+    <p>
+        <strong>Fehlt eine Funktion? Professioneller Support und Anpassungen gewünscht?</strong><br>
+        Sind speziellere programmiertechnische Anpassungen nötig, oder sollen wir Antragsgrün auf einer
+        <strong>eigenen Domain</strong> hosten, können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen
+        sind wir immer
+        <a href="#wer" onClick="$('#wer').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
+    </p>
+</div>
+
+
+<?php
 
 if ($params->hasWurzelwerk || $params->hasSaml) {
     echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>

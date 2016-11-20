@@ -136,6 +136,9 @@ class Site extends ActiveRecord
      */
     public static function getSidebarSites()
     {
+        if (AntragsgruenApp::getInstance()->mode == 'sandbox') {
+            return [];
+        }
         $shownSites = [];
         /** @var Site[] $sites */
         $sites = Site::find()->with('currentConsultation')->all();

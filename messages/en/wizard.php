@@ -103,9 +103,14 @@ return [
     'sandbox_dummy_title'   => 'Test-Event',
     'sandbox_dummy_welcome' => '<h2>Welcome to Antragsgrün!</h2><br><br>
                                 On this sandbox site, you can freely test all features of Antragsgrün.
+                                Everyone can access this site using this URL:<br><br>
+                                <blockquote><strong><a href="%SITE_URL%">%SITE_URL%</a></strong></blockquote><br><br>
                                 We\'ve created a dummy admin-user for you to test all administrative tasks:<br><br>
+                                <blockquote>
                                 <strong>Login:</strong> %ADMIN_USERNAME%<br>
-                                <strong>Password:</strong> %ADMIN_PASSWORD%<br><br>
+                                <strong>Password:</strong> %ADMIN_PASSWORD%
+                                </blockquote>
+                                <br><br>
                                 However, please note that this site will be <strong>deleted three days after creation</strong>.<br><br>
                                 <em>By the way: you can edit this text by clicking on "edit" on the top right.</em>',
 ];
