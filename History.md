@@ -1,8 +1,10 @@
 # Version history
 
-## Nex version [not yet released]
+## Version 3.5.1 [not yet released]
 
-- Introduce a way to delete consultations
+- Introduce a way to delete consultations and sites
+- Introduce a sandbox-mode, where you can play around with Antragsgrün on a temporary site that will be deleted after 3 days.
+- Some methods to prevent automated bots from posting spam to comment forms
 
 ## Version 3.5.0 (2016-11-12)
 

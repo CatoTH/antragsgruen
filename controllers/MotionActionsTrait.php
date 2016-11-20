@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\AntiSpam;
 use app\components\UrlHelper;
 use app\models\db\ConsultationLog;
 use app\models\db\IComment;
@@ -55,6 +56,11 @@ trait MotionActionsTrait
     {
         if (!$motion->motionType->getCommentPolicy()->checkCurrUser()) {
             throw new Access('No rights to write a comment');
+        }
+        if (\Yii::$app->user->isGuest) {
+            if (AntiSpam::createToken($motion->consultationId) != \Yii::$app->request->post('jsprotection')) {
+                throw new Access(\Yii::t('base', 'err_js_or_login'));
+            }
         }
         $postComment = \Yii::$app->request->post('comment');
         $commentForm = new CommentForm();

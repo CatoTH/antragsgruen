@@ -1259,7 +1259,11 @@ function __t(category, str) {
         'recalcAgendaCodes': recalcAgendaCodes
     };
 
-    $(".jsProtectionHint").remove();
+    $(".jsProtectionHint").each(function() {
+        var $hint = $(this);
+        $('<input type="hidden" name="jsprotection">').attr("value", $hint.data("value")).appendTo($hint.parent());
+        $hint.remove();
+    });
 
 }(jQuery));
 

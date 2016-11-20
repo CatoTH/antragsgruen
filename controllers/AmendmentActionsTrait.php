@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\AntiSpam;
 use app\components\EmailNotifications;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -57,6 +58,13 @@ trait AmendmentActionsTrait
         if (!$amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
             throw new Access('No rights to write a comment');
         }
+
+        $consultation = $amendment->getMyConsultation();
+        if (\Yii::$app->user->isGuest) {
+            if (AntiSpam::createToken($consultation->id) != \Yii::$app->request->post('jsprotection')) {
+                throw new Access(\Yii::t('base', 'err_js_or_login'));
+            }
+        }
         $commentForm = new CommentForm();
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
@@ -65,8 +73,7 @@ trait AmendmentActionsTrait
         }
 
         try {
-            $comment      = $commentForm->saveAmendmentComment($amendment);
-            $consultation = $amendment->getMyConsultation();
+            $comment = $commentForm->saveAmendmentComment($amendment);
             ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT, $comment->id);
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
         } catch (\Exception $e) {

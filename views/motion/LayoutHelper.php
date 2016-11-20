@@ -174,7 +174,7 @@ class LayoutHelper
         echo '<legend>' . \Yii::t('comment', 'comment_write_title') . '</legend>';
 
         if (\Yii::$app->user->isGuest) {
-            echo '<div class="jsProtectionHint">' . \Yii::t('base', 'err_js_or_login') . '</div>';
+            echo \app\components\AntiSpam::getJsProtectionHint($consultation->id);
         }
 
         $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;

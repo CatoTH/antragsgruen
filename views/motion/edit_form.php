@@ -65,9 +65,7 @@ if (!in_array($motionPolicy::getPolicyID(), $publicPolicies)) {
 }
 
 if (\Yii::$app->user->isGuest) {
-    echo '<div class="alert alert-warning jsProtectionHint" role="alert">';
-    echo \Yii::t('base', 'err_js_or_login');
-    echo '</div>';
+    echo \app\components\AntiSpam::getJsProtectionHint($form->motionId);
 }
 
 echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
