@@ -138,7 +138,7 @@ class ConsultationCreateForm extends Model
     }
 
     /**
-     * @return FormError
+     * @throws FormError
      */
     private function createConsultationFromWizard()
     {
@@ -165,12 +165,11 @@ class ConsultationCreateForm extends Model
     public function createConsultation()
     {
         if ($this->title == '' || $this->titleShort == '' || $this->urlPath == '') {
-            throw new FormError('Bitte fülle alle Felder aus');
+            throw new FormError(\Yii::t('wizard', 'cons_err_fields_missing'));
         }
         foreach ($this->template->site->consultations as $cons) {
             if (mb_strtolower($cons->urlPath) == mb_strtolower($this->urlPath)) {
-                $msg = 'Diese Adresse ist leider schon von einer anderen Veranstaltung auf dieser Seite vergeben.';
-                throw new FormError($msg);
+                throw new FormError(\Yii::t('wizard', 'cons_err_path_taken'));
             }
         }
 

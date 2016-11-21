@@ -114,7 +114,7 @@ if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CONSULTATION_SE
     if (count($site->consultations) == 1) {
         echo Html::beginForm('', 'post', ['class' => 'del-site-caller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .
-            '<span class="glyphicon glyphicon-trash"></span> ' . 'Seite löschen' .
+            '<span class="glyphicon glyphicon-trash"></span> ' . \Yii::t('admin', 'index_site_del') .
             '</button>';
         echo Html::endForm();
     }

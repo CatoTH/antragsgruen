@@ -113,4 +113,7 @@ return [
                                 <br><br>
                                 Bitte beachte aber, dass dies nur eine Test-Seite ist und <strong>nach drei Tagen wieder gelöscht</strong> wird.<br><br>
                                 <em>Diesen Text kannst du übrigens bearbeiten, indem du rechts oben auf "Bearbeiten" klickst.</em>',
+
+    'cons_err_fields_missing' => 'Bitte fülle alle Felder aus',
+    'cons_err_path_taken'     => 'Diese Adresse ist leider schon von einer anderen Veranstaltung auf dieser Seite vergeben.',
 ];

@@ -25,17 +25,17 @@ $layout->addJS("js/build/SiteCreateWizard.js");
 $layout->loadDatepicker();
 $layout->addOnLoadJS('$.AntragsgruenAdmin.consultationCreate();');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Veranstaltungen');
+$layout->addBreadcrumb(\Yii::t('admin', 'cons_breadcrumb'));
 $layout->loadFuelux();
 
 $settings = $site->getSettings();
 
-echo '<h1>Veranstaltungen</h1>';
+echo '<h1>' . \Yii::t('admin', 'cons_title') . '</h1>';
 
 echo $controller->showErrors();
 
 echo Html::beginForm('', 'post', ['class' => 'consultationEditForm']);
-echo '<h2 class="green">' . 'Angelegte Veranstaltungen' . '</h2>';
+echo '<h2 class="green">' . \Yii::t('admin', 'cons_created_list') . '</h2>';
 echo '<div class="content"><ul id="consultationsList">';
 foreach ($site->consultations as $consultation) {
     $isStandard = ($consultation->id == $site->currentConsultationId);
@@ -46,10 +46,10 @@ foreach ($site->consultations as $consultation) {
     echo '<div class="stdbox">';
     if ($isStandard) {
         echo '<strong><span class="glyphicon glyphicon-ok" style="color: green;"></span> ' .
-            'Standard-Veranstaltung' . '</strong>';
+            \Yii::t('admin', 'cons_std_con') . '</strong>';
     } else {
         echo '<button type="submit" name="setStandard[' . $consultation->id . ']" class="link">' .
-            'Als Standard setzen</button>';
+            \Yii::t('admin', 'cons_set_std') . '</button>';
     }
     echo '</div>';
 
@@ -65,11 +65,11 @@ foreach ($site->consultations as $consultation) {
     echo '<div class="homeLink">';
     $url = Url::toRoute(array_merge(['consultation/index'], $params));
     echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-        'Zur Seite' . '</a>';
+        \Yii::t('admin', 'cons_goto_site') . '</a>';
     echo '</div><div class="adminLink">';
     $url = Url::toRoute(array_merge(['admin/index'], $params));
     echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-        'Zur Administration' . '</a>';
+        \Yii::t('admin', 'cons_goto_admin') . '</a>';
     echo '</div>';
 
     echo '</li>';
@@ -82,12 +82,12 @@ echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm form-horizo
 
 $textOpts = ['required' => 'required', 'class' => 'form-control'];
 ?>
-<h2 class="green"><?= 'Veranstaltung anlegen' ?></h2>
+<h2 class="green"><?= \Yii::t('admin', 'cons_create') ?></h2>
 
 <div class="content">
 
     <div class="form-group">
-        <label for="newTitle" class="col-md-4 control-label"><?= 'Titel der Veranstaltung' ?>:</label>
+        <label for="newTitle" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_title') ?>:</label>
         <div class="col-md-8">
             <?= Html::input(
                 'text',
@@ -99,7 +99,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
     </div>
 
     <div class="form-group">
-        <label for="newShort" class="col-md-4 control-label"><?= 'Kurzversion' ?>:</label>
+        <label for="newShort" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_short') ?>:</label>
         <div class="col-md-4">
             <?= Html::input(
                 'text',
@@ -111,7 +111,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
     </div>
 
     <div class="form-group">
-        <label for="newPath" class="col-md-4 control-label">Internet-Adresse:</label>
+        <label for="newPath" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_url') ?>:</label>
         <div class="col-md-8 fakeUrl">
             <?php
             $input = Html::input(
@@ -131,7 +131,9 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
         </div>
 
         <div class="form-group">
-            <label for="newSetStandard" class="col-md-4 control-label">Standard:</label>
+            <label for="newSetStandard" class="col-md-4 control-label">
+                <?= \Yii::t('admin', 'cons_create_std') ?>:
+            </label>
             <div class="col-md-8 checkbox">
                 <label>
                     <?= Html::checkbox(
@@ -139,23 +141,23 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                         $createForm->setAsDefault,
                         ['id' => 'newSetStandard']
                     ) ?>
-                    Sofort als Standard-Veranstaltung festlegen
+                    <?= \Yii::t('admin', 'cons_create_std_do') ?>
                 </label>
             </div>
         </div>
 
         <div class="form-group settingsType">
-            <div class="col-md-4 control-label">Einstellungen:</div>
+            <div class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_settings') ?>:</div>
             <div class="col-md-8">
                 <label class="radio settingsTypeLabel">
                     <input type="radio" name="newConsultation[settingsType]" id="settingsTypeWizard" required
                            value="wizard">
-                    Einrichtungs-Assistenten verwenden
+                    <?= \Yii::t('admin', 'cons_create_wizard') ?>
                 </label>
                 <label class="radio settingsTypeLabel">
                     <input type="radio" name="newConsultation[settingsType]" id="settingsTypeTemplate" required
                            value="template" checked>
-                    Einstellungen übernehmen von:
+                    <?= \Yii::t('admin', 'cons_create_template') ?>:
                 </label>
                 <?php
                 $templates = [];
@@ -175,7 +177,9 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
 
         <div class="settingsTypeTemplate">
             <div class="saveholder">
-                <button type="submit" name="createConsultation" class="btn btn-primary">Veranstaltung anlegen</button>
+                <button type="submit" name="createConsultation" class="btn btn-primary">
+                    <?= \Yii::t('admin', 'cons_create_submit') ?>
+                </button>
             </div>
         </div>
         <div class="settingsTypeWizard siteCreate fuelux">
