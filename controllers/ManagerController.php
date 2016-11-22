@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\HTMLTools;
 use app\components\MessageSource;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
@@ -49,7 +50,8 @@ class ManagerController extends Base
                 'organization' => $site->organization,
                 'url'          => $url,
             ];
-            if ($site->status == Site::STATUS_ACTIVE) {
+            $age      = time() - Tools::dateSql2timestamp($site->currentConsultation->dateCreation);
+            if ($site->status == Site::STATUS_ACTIVE && $age < 4 * 30 * 24 * 3600) {
                 $sitesCurrent[] = $siteData;
             } else {
                 $sitesOld[] = $siteData;

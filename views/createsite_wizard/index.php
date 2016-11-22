@@ -1,12 +1,12 @@
 <?php
 
-use yii\helpers\Html;
-
 /**
  * @var string[] $errors
  * @var string $mode
  * @var \app\models\forms\SiteCreateForm $model
  */
+
+use yii\helpers\Html;
 
 $t = function ($string) {
     return \Yii::t('wizard', $string);
@@ -28,9 +28,11 @@ $t = function ($string) {
         <li data-target="#stepSpecial" class="stepSpecial">
             <?= $t('step_special') ?><span class="chevron"></span>
         </li>
+        <?php if ($mode != 'sandbox') { ?>
         <li data-target="#stepSite" class="stepSite">
             <?= $t('step_site') ?><span class="chevron"></span>
         </li>
+        <?php } ?>
     </ul>
 </div>
 <div class="content">
