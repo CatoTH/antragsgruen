@@ -16,7 +16,9 @@ class User extends \yii\web\User
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
-        if ($params->domainPlain) {
+        if ($params->cookieDomain) {
+            return $params->cookieDomain;
+        } elseif ($params->domainPlain) {
             return '.' . parse_url($params->domainPlain, PHP_URL_HOST);
         } else {
             return '';
