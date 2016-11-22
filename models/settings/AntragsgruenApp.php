@@ -18,6 +18,7 @@ class AntragsgruenApp
     public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen-v3.localhost/';
     public $domainSubdomain       = '';
+    public $cookieDomain          = null;
     public $hasWurzelwerk         = false;
     public $hasSaml               = false;
     public $createNeedsWurzelwerk = false;
@@ -40,7 +41,7 @@ class AntragsgruenApp
     public $localLayouts          = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
-    public $mode                  = 'production';
+    public $mode                  = 'production'; // [production | sandbox]
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

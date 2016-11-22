@@ -51,7 +51,14 @@ $config = yii\helpers\ArrayHelper::merge(
         ],
     ]
 );
-if ($params->domainPlain) {
+if ($params->cookieDomain) {
+    $config['components']['session'] = [
+        'cookieParams' => [
+            'httponly' => true,
+            'domain'   => $params->cookieDomain,
+        ]
+    ];
+} elseif ($params->domainPlain) {
     $config['components']['session'] = [
         'cookieParams' => [
             'httponly' => true,
