@@ -103,6 +103,11 @@
       display: inline-block;
       width: 190px;
       height: 190px;
+      @media screen and (max-width: 525px) {
+        width: 150px;
+        height: 150px;
+      }
+
       border: solid 1px #999;
       vertical-align: top;
       cursor: pointer;
@@ -124,20 +129,35 @@
       .title {
         font-family: "Open Sans", sans-serif;
         margin-top: 60px;
+        @media screen and (max-width: 525px) {
+          margin-top: 32px;
+        }
         display: block;
         font-size: 24px;
         &.long {
           font-size: 19px;
         }
+        @media screen and (max-width: 525px) {
+          font-size: 20px;
+          &.long {
+            font-size: 17px;
+          }
+        }
       }
       &.two-lines {
         .title {
           margin-top: 40px;
+          @media screen and (max-width: 525px) {
+            margin-top: 7px;
+          }
         }
       }
       &.date-label {
         .title {
           margin-top: 40px;
+          @media screen and (max-width: 525px) {
+            margin-top: 7px;
+          }
         }
       }
       .description {
@@ -148,6 +168,9 @@
       &.description-first {
         .description {
           margin-top: 40px;
+          @media screen and (max-width: 525px) {
+            margin-top: 7px;
+          }
         }
         .title {
           margin-top: 5px;
