@@ -50,6 +50,26 @@ class Exporter
     }
 
     /**
+     * @param string $str
+     * @return string
+     */
+    public static function encodePREString($str)
+    {
+        $out = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
+        $lines = explode("\n", $str);
+        foreach ($lines as $line) {
+            if (strlen($line) > 0 && $line[0] == ' ') {
+                $out .= '\phantom{.}';
+                $line = substr($line, 1);
+            }
+            $out .= str_replace(' ', '\ ', static::encodePlainString($line));
+            $out .= '\linebreak' . "\n";
+        }
+        $out .= '}' . "\n\n" . '\linenumbers';
+        return $out;
+    }
+
+    /**
      * @param string $content
      * @param string[] $extraStyles
      * @return string
@@ -256,6 +276,8 @@ class Exporter
                 case 'ins':
                     //return '\textcolor{Insert}{\uline{' . $content . '}}';
                     return '\textcolor{Insert}{' . $content . '}';
+                case 'pre':
+                    return  static::encodePREString($content);
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -399,7 +421,7 @@ class Exporter
         foreach ($imageHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
-        $cached      = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
+        $cached = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
 
         if (YII_ENV_DEV && isset($_REQUEST['latex_src'])) {
             Header('Content-Type: text/plain');
