@@ -219,7 +219,7 @@ class Tools
             return '-';
         } elseif (substr($mysqldate, 0, 10) == date("Y-m-d") && $allowRelativeDates) {
             return \yii::t('base', 'Today');
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d" - 3600 * 24) && $allowRelativeDates) {
+        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d", time() - 3600 * 24) && $allowRelativeDates) {
             return \yii::t('base', 'Yesterday');
         }
 
