@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.5.1 [not yet released]
+## Version 3.5.1 (2016-11-30)
 
 - Introduce a way to delete consultations and sites
 - Introduce a sandbox-mode, where you can play around with Antragsgrün on a temporary site that will be deleted after 3 days.
