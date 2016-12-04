@@ -4,14 +4,11 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-function gotoSupportingMotion($I)
-{
-    \app\tests\_pages\MotionPage::openBy($I, [
-        'subdomain'        => 'supporter',
-        'consultationPath' => 'supporter',
-        'motionSlug'       => 116,
-    ]);
-}
+$motionUrl = \app\tests\_pages\MotionPage::getPageUrl($I, [
+    'subdomain'        => 'supporter',
+    'consultationPath' => 'supporter',
+    'motionSlug'       => 116,
+]);
 
 
 $I->wantTo('check the admin settings');
@@ -27,14 +24,14 @@ $I->logout();
 
 
 $I->wantTo('enable/disable liking and disliking');
-gotoSupportingMotion($I);
+$I->amOnPage($motionUrl);
 $I->see('Dieser Antrag ist noch nicht offiziell eingereicht.');
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->dontSeeElement('button[name=motionSupport]');
 $I->dontSeeElement('section.likes');
 
 $I->loginAsStdUser();
-gotoSupportingMotion($I);
+$I->amOnPage($motionUrl);
 $I->seeElement('button[name=motionSupport]');
 $I->dontSeeElement('button[name=motionLike]');
 $I->dontSeeElement('button[name=motionDislike]');
@@ -53,7 +50,7 @@ $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();
 
 $I->loginAsStdUser();
-gotoSupportingMotion($I);
+$I->amOnPage($motionUrl);
 $I->seeElement('section.likes');
 $I->seeElement('button[name=motionLike]');
 $I->seeElement('button[name=motionDislike]');
@@ -98,7 +95,7 @@ $I->logout();
 $I->wantTo('submit the motion');
 
 $I->loginAsStdAdmin();
-gotoSupportingMotion($I);
+$I->amOnPage($motionUrl);
 $I->see('Testuser', 'section.supporters');
 $I->submitForm('.motionSupportFinishForm', [], 'motionSupportFinish');
 $I->see('Der Antrag ist nun offiziell eingereicht');
@@ -110,7 +107,7 @@ $I->logout();
 
 $I->wantTo('ensure I can\'t revoke my support once the motion has been submitted');
 $I->loginAsStdUser();
-gotoSupportingMotion($I);
+$I->amOnPage($motionUrl);
 $I->see('Du!', 'section.supporters');
 $I->dontSeeElement('button[name=motionSupportRevoke]');
 

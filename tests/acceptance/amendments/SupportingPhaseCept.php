@@ -4,17 +4,14 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-function gotoSupportingAmendment($I)
-{
-    \app\tests\_pages\AmendmentPage::openBy($I, [
-        'subdomain'        => 'supporter',
-        'consultationPath' => 'supporter',
-        'motionSlug'       => 116,
-        'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID,
-    ]);
-}
+$amendmentUrl = \app\tests\_pages\AmendmentPage::getPageUrl($I, [
+    'subdomain'        => 'supporter',
+    'consultationPath' => 'supporter',
+    'motionSlug'       => 116,
+    'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID,
+]);
 
-$I->wantTo('publish the motion');
+$I->wantTo('publish the amendment');
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
 \app\tests\_pages\MotionPage::openBy($I, [
     'subdomain'        => 'supporter',
@@ -90,14 +87,14 @@ $I->logout();
 
 
 $I->wantTo('enable/disable liking and disliking');
-gotoSupportingAmendment($I);
+$I->amOnPage($amendmentUrl);
 $I->see('Dieser Änderungsantrag ist noch nicht offiziell eingereicht.');
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->dontSeeElement('button[name=motionSupport]');
 $I->dontSeeElement('section.likes');
 
 $I->loginAsStdAdmin();
-gotoSupportingAmendment($I);
+$I->amOnPage($amendmentUrl);
 $I->seeElement('button[name=motionSupport]');
 $I->dontSeeElement('button[name=motionLike]');
 $I->dontSeeElement('button[name=motionDislike]');
@@ -115,7 +112,7 @@ $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();
 
 $I->loginAsStdAdmin();
-gotoSupportingAmendment($I);
+$I->amOnPage($amendmentUrl);
 $I->seeElement('section.likes');
 $I->seeElement('button[name=motionLike]');
 $I->seeElement('button[name=motionDislike]');
@@ -161,7 +158,7 @@ $I->logout();
 $I->wantTo('submit the amendment');
 
 $I->loginAsStdUser();
-gotoSupportingAmendment($I);
+$I->amOnPage($amendmentUrl);
 $I->see('Testadmin', 'section.supporters');
 $I->submitForm('.amendmentSupportFinishForm', [], 'amendmentSupportFinish');
 $I->see('Der Änderungsantrag ist nun offiziell eingereicht');
@@ -170,9 +167,8 @@ $I->see('Eingereicht (ungeprüft)', '.motionData');
 $I->logout();
 
 
-
 $I->wantTo('ensure I can\'t revoke my support once the amendment has been submitted');
 $I->loginAsStdAdmin();
-gotoSupportingAmendment($I);
+$I->amOnPage($amendmentUrl);
 $I->see('Du!', 'section.supporters');
 $I->dontSeeElement('button[name=motionSupportRevoke]');

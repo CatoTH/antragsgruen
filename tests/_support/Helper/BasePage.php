@@ -78,4 +78,15 @@ abstract class BasePage extends Component
 
         return $page;
     }
+
+    /**
+     * @param \AcceptanceTester $I
+     * @param $params
+     * @return string
+     */
+    public static function getPageUrl($I, $params)
+    {
+        $page = new static($I);
+        return $page->getUrl($params);
+    }
 }
