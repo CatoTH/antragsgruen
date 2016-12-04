@@ -508,6 +508,29 @@
             $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
         });
 
+
+        var loadAmendmentCollissions = function() {
+            var url = $(".checkAmendmentCollissions").data("url"),
+                sections = [];
+            $("#motionTextEditHolder").children().each(function () {
+                var $this = $(this);
+                if ($this.hasClass("wysiwyg-textarea")) {
+                    var sectionId = $this.attr("id").replace("section_holder_", "");
+                    sections[sectionId] = CKEDITOR.instances[$this.find(".texteditor").attr("id")].getData();
+                }
+            });
+            $.post(url, {
+                'newSections': sections,
+                '_csrf': $("#motionUpdateForm").find('> input[name=_csrf]').val()
+            }, function(html) {
+                $(".amendmentCollissionsHolder").html(html);
+            });
+        };
+        $(".checkAmendmentCollissions").click(function(ev) {
+            ev.preventDefault();
+            loadAmendmentCollissions();
+        });
+
         $(".motionDeleteForm").submit(function (ev, data) {
             if (data && typeof(data.confirmed) && data.confirmed === true) {
                 return;

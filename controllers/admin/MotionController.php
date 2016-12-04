@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\db\Amendment;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
@@ -12,6 +13,7 @@ use app\models\db\TexTemplate;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
+use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\components\motionTypeTemplates\Application as ApplicationTemplate;
@@ -107,7 +109,7 @@ class MotionController extends AdminBase
 
             $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
             if (strpos($pdfTemplate, 'php') === 0) {
-                $motionType->pdfLayout = IntVal(str_replace('php', '', $pdfTemplate));
+                $motionType->pdfLayout     = IntVal(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
             } elseif ($pdfTemplate) {
                 $motionType->texTemplateId = IntVal($pdfTemplate);
@@ -316,6 +318,42 @@ class MotionController extends AdminBase
         }
 
         $motion->refresh();
+    }
+
+    /**
+     * @param int $motionId
+     */
+    public function actionGetAmendmentRewriteCollissions($motionId)
+    {
+        $overrides = [];
+
+        $newSections = \Yii::$app->request->post('newSections', []);
+
+        /** @var Motion $motion */
+        $motion            = $this->consultation->getMotion($motionId);
+        $collissions       = $amendments = [];
+        foreach ($motion->amendments as $amendment) {
+            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
+                continue;
+            }
+            foreach ($amendment->getActiveSections() as $section) {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], $overrides);
+                if (count($coll) > 0) {
+                    if (!in_array($amendment, $amendments)) {
+                        $amendments[] = $amendment;
+                        $collissions[$amendment->id] = [];
+                    }
+                    $collissions[$amendment->id][$section->sectionId] = $collissions;
+                }
+            }
+        }
+        return $this->renderPartial('amendment-rewrite-collissions', [
+            'amendments'        => $amendments,
+            'collissions'       => $collissions,
+        ]);
     }
 
     /**

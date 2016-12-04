@@ -22,6 +22,7 @@ $userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchan
 $domPlainPaths = 'site-legal|site-privacy|help|password|billing|createsite|savetextajax|siteconfig|antragsgrueninit';
 $domPlainPaths .= '|check-subdomain|antragsgrueninitdbtest|paymentadmin|userlist';
 $adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
+$adminMotionPaths    .= '|get-amendment-rewrite-collissions';
 $adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 $adminPaths .= '|todo';

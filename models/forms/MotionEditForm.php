@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\models\db\Amendment;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsTag;
@@ -158,6 +159,49 @@ class MotionEditForm extends Model
         if (count($errors) > 0) {
             throw new FormError($errors);
         }
+    }
+
+    /**
+     * Returns true, if the rewriting was successful
+     *
+     * @param Motion $motion
+     * @param string[] $newHtmls
+     * @param array $overrides
+     * @return bool
+     */
+    public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
+    {
+        foreach ($motion->amendments as $amendment) {
+            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
+                continue;
+            }
+            foreach ($amendment->getActiveSections() as $section) {
+                if ($section->getSectionType() != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                if (!$section->canRewrite($newHtmls[$section->sectionId], $overrides)) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($motion->amendments as $amendment) {
+            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
+                continue;
+            }
+            foreach ($amendment->getActiveSections() as $section) {
+                if ($section->getSectionType() != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                $section->performRewrite($newHtmls[$section->sectionId], $overrides);
+                $section->save();
+            }
+        }
+        foreach ($motion->getActiveSections() as $section) {
+            $section->data = $newHtmls[$section->sectionId];
+            $section->save();
+        }
+        return true;
     }
 
     /**
