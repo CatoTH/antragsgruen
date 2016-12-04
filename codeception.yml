@@ -14,4 +14,4 @@ extensions:
         - Codeception\Extension\RunFailed
 modules:
 config:
-    test_entry_url: http://localhost:8080/index-test.php
+    test_entry_url: http://localhost:8081/index-test.php
