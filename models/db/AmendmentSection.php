@@ -132,7 +132,7 @@ class AmendmentSection extends IMotionSection
                     }
                 }
             } else {
-                null;
+                return null;
             }
         }
         return $this->originalMotionSection;
