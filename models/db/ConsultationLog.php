@@ -244,6 +244,7 @@ class ConsultationLog extends ActiveRecord
                 } else {
                     return null;
                 }
+                break;
             case static::AMENDMENT_PUBLISH:
             case static::AMENDMENT_WITHDRAW:
             case static::AMENDMENT_DELETE:
@@ -254,16 +255,26 @@ class ConsultationLog extends ActiveRecord
             case static::AMENDMENT_UNLIKE:
             case static::AMENDMENT_DISLIKE:
             case static::AMENDMENT_CHANGE:
-                if ($this->amendment) {
+                if ($this->amendment && $this->amendment->getMyMotion()) {
                     return UrlHelper::createAmendmentUrl($this->amendment);
                 } else {
                     return null;
                 }
+                break;
             case static::MOTION_COMMENT:
-                return UrlHelper::createMotionCommentUrl($this->motionComment);
+                if ($this->motionComment && $this->motionComment->motion) {
+                    return UrlHelper::createMotionCommentUrl($this->motionComment);
+                } else {
+                    return null;
+                }
                 break;
             case static::AMENDMENT_COMMENT:
-                return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
+                if ($this->amendmentComment && $this->amendmentComment->amendment &&
+                    $this->amendmentComment->amendment->getMyMotion()) {
+                    return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
+                } else {
+                    return null;
+                }
                 break;
             default:
                 return null;
