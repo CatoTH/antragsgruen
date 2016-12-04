@@ -2,18 +2,17 @@
 
 namespace unit;
 
-use app\components\diff\Diff2;
+use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
-use Codeception\Specify;
 
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
     /**
      * @param int $amendmentId
      * @param int $sectionId
-     * @return \string[]
+     * @return array[]
      * @throws \app\models\exceptions\Internal
      */
     private function getAffected($amendmentId, $sectionId)
@@ -24,7 +23,7 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
         $origParas = HTMLTools::sectionSimpleHTML($orig->data);
         $newParas = HTMLTools::sectionSimpleHTML($section->data);
 
-        return Diff2::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
+        return Diff::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
     }
 
 

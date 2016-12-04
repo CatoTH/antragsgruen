@@ -4,7 +4,7 @@ namespace app\components\diff;
 
 use app\models\exceptions\Internal;
 
-class Diff2
+class Diff
 {
     const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
     const MAX_LINE_CHANGE_RATIO         = 0.4;

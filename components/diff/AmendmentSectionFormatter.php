@@ -85,7 +85,7 @@ class AmendmentSectionFormatter
                 $newParagraphs[] = $newParagraph;
             }
 
-            $diff = new Diff2();
+            $diff = new Diff();
             $diffSections = $diff->compareHtmlParagraphs($originals, $newParagraphs, $diffFormatting);
             $htmlDiff     = implode("\n", $diffSections);
 

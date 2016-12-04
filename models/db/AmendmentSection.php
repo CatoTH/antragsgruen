@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\diff\Diff2;
+use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
@@ -188,7 +188,7 @@ class AmendmentSection extends IMotionSection
 
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
-        $diff         = new Diff2();
+        $diff         = new Diff();
         $diffParas    = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
 
         foreach ($diffParas as $paraNo => $diffPara) {

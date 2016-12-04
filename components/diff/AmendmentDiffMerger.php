@@ -66,7 +66,7 @@ class AmendmentDiffMerger
         $this->paraData       = [];
         $this->diffParagraphs = [];
         foreach ($paras as $paraNo => $paraStr) {
-            $origTokenized = Diff2::tokenizeLine($paraStr);
+            $origTokenized = Diff::tokenizeLine($paraStr);
             $words         = [];
             foreach ($origTokenized as $x) {
                 $words[] = [
@@ -91,7 +91,7 @@ class AmendmentDiffMerger
      */
     public function addAmendingParagraphs($amendmentId, $amendingParas)
     {
-        $diff     = new Diff2();
+        $diff     = new Diff();
         $amParams = ['amendmentId' => $amendmentId];
         $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->sectionParagraphs, $amendingParas, $amParams);
 

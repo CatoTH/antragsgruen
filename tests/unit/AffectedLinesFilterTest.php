@@ -3,12 +3,7 @@
 namespace unit;
 
 use app\components\diff\AffectedLinesFilter;
-use app\components\diff\Diff2;
-use app\components\diff\DiffRenderer;
-use app\components\HTMLTools;
-use app\components\LineSplitter;
 use app\models\sectionTypes\TextSimple;
-use Codeception\Specify;
 
 class AffectedLinesFilterTest extends TestBase
 {
@@ -46,7 +41,7 @@ class AffectedLinesFilterTest extends TestBase
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
         $origParas = HTMLTools::sectionSimpleHTML($orig);
         $origParas = LineSplitter::addLineNumbersToParagraphs($origParagraphs, 80);
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas = $diff->compareSectionedHtml($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
         */
         $diffParas = [

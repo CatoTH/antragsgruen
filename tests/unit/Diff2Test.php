@@ -2,14 +2,14 @@
 
 namespace unit;
 
-use app\components\diff\Diff2;
+use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\diff\Engine;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use Codeception\Specify;
 
-class Diff2Test extends TestBase
+class DiffTest extends TestBase
 {
     use Specify;
 
@@ -20,7 +20,7 @@ class Diff2Test extends TestBase
         $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $new      = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $expected = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. ###DEL_START###Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. ###DEL_END###(<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
-        $diff     = new Diff2();
+        $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
         $this->assertEquals($expected, $out);
     }
@@ -32,7 +32,7 @@ class Diff2Test extends TestBase
         $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
         $new      = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
         $expected = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, ###DEL_START###da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, ###DEL_END###doch das Blindtextchen ließ sich nicht beirren.###INS_START###</p></li><li><p>Noch eine neuer Punkt an dritter Stelle###INS_END###</p></li></ul></li></ul>';
-        $diff     = new Diff2();
+        $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
         $this->assertEquals($expected, $out);
     }
@@ -53,7 +53,7 @@ class Diff2Test extends TestBase
         $expect = [
             // @TODO
         ];
-        $diff   = new Diff2();
+        $diff   = new Diff();
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
@@ -64,7 +64,7 @@ class Diff2Test extends TestBase
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
         $new  = ['<ul><li>Test1</li></ul>', '<ul><li>Test2</li></ul>', '<ul><li>Test3</li></ul>'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
             $this->assertEquals(2, count($arr));
@@ -81,7 +81,7 @@ class Diff2Test extends TestBase
 
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>', '<ul><li>Test3</li></ul>'];
         $new  = ['<p>Neue Zeile</p>'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new);
             // @TODO Insert at the beginning or end, not in the middle
@@ -95,7 +95,7 @@ class Diff2Test extends TestBase
 
         $orig = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
         $new  = ['<ul><li>Seltsame Zeichen: Test</li></ul>'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $diff->compareHtmlParagraphsToWordArray($orig, $new);
         } catch (Internal $e) {
@@ -106,7 +106,7 @@ class Diff2Test extends TestBase
 
         $orig = ['<strong>Tes1 45666</strong> kjhkjh kljlkjlkj'];
         $new  = ['Tes1 45666 kjhkjh<br>kljlkjlkj'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
         } catch (Internal $e) {
@@ -122,7 +122,7 @@ class Diff2Test extends TestBase
 
         $orig = ['<ul><li>Wir sind Nummer 1</li></ul>'];
         $new  = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
         } catch (Internal $e) {
@@ -136,7 +136,7 @@ class Diff2Test extends TestBase
 
         $orig = ['Test1 Test 2 der Test 3 Test4'];
         $new  = ['Test1 Test 2 die Test 3 Test4'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
         } catch (Internal $e) {
@@ -149,7 +149,7 @@ class Diff2Test extends TestBase
 
         $orig = ['Test1 test123456test Test4'];
         $new  = ['Test1 test12356test Test4'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $words = $diff->compareHtmlParagraphsToWordArray($orig, $new);
         } catch (Internal $e) {
@@ -167,7 +167,7 @@ class Diff2Test extends TestBase
         $orig = ['<p>Normaler Text wieder<sup>Hochgestellt</sup>.<br>
 Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $new  = ['<p>Normaler Text wieder.</p>'];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $words = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
         } catch (Internal $e) {
@@ -185,7 +185,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
             '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
         ];
-        $diff = new Diff2();
+        $diff = new Diff();
         try {
             $arr = $diff->compareHtmlParagraphsToWordArray($orig, $new, ['amendmentId' => 1]);
             $this->assertEquals(1, count($arr));
@@ -221,7 +221,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
                 Engine::UNMODIFIED
             ]
         ];
-        $diff    = new Diff2();
+        $diff    = new Diff();
         $grouped = $diff->groupOperations($src, '');
         $this->assertEquals($src, $grouped); // Should not be changed
 
@@ -238,7 +238,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             ['<pre>###LINENUMBER###PRE' . "\n" . '* Test' . "\n" . '</pre>', Engine::DELETED],
             ['test 123', Engine::UNMODIFIED],
         ];
-        $diff       = new Diff2();
+        $diff       = new Diff();
         $out        = $diff->groupOperations($operations, "\n");
         $this->assertEquals($expected, $out);
 
@@ -249,7 +249,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
      */
     public function testWordDiff()
     {
-        $diff     = new Diff2();
+        $diff     = new Diff();
         $renderer = new DiffRenderer();
 
         $orig = 'Zeichen das sie überwunden';
@@ -301,7 +301,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $orig = '<p>###LINENUMBER###Wir wollen eine Wirtschaftsweise, in der alle Rohstoffe immer wieder neu verarbeitet und ###LINENUMBER###nicht auf einer Deponie landen oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts in Entwicklungs- und Schwellenländer ist keine Lösung. Sie verursacht dort ###LINENUMBER###schwere Umweltschäden. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von ###LINENUMBER###Produkten und Verpackungen eine Produktverantwortung zukommt, indem ambitionierte, aber ###LINENUMBER###machbare Recyclingziele eingeführt werden. Dadurch werden Rohstoffpreise befördert, die die ###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des ###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig. Wir setzen uns ###LINENUMBER###dafür ein, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen ###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
         $new  = '<p>Der beste Abfall ist der, der nicht entsteht. Wir wollen eine Wirtschaftsweise, in der Material- und Rohstoffeffizienz an erster Stelle stehen und in der alle Rohstoffe immer wieder neu verarbeitet werden und nicht auf einer Deponie landen, in Entwicklungs- und Schwellenländer exportiert oder verbrannt werden. Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<br>Produkten und Verpackungen eine ökologische Produktverantwortung zukommt, indem ambitionierte, abermachbare Recyclingziele sowie Ziele zur Material- und Rohstoffeffizienz eingeführt werden. Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für die Verwendung von Recyclingmaterialien zu schaffen.</p><p>Wir setzen uns dafür ein, dass die Rohstoffpreise die<br>sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<br>Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird Ökologie zum Wettbewerbsvorteil: Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann, setzen wir uns außerdem dafür ein , dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<br>Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>';
 
-        $diff = new Diff2();
+        $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs([$orig], [$new], DiffRenderer::FORMATTING_CLASSES);
 
         $expect = ['<p><ins>Der beste Abfall ist der, der nicht entsteht. </ins>###LINENUMBER###Wir wollen eine Wirtschaftsweise, <ins>in der Material- und Rohstoffeffizienz an erster Stelle stehen und </ins>in der alle Rohstoffe immer wieder neu verarbeitet <ins>werden </ins>und ###LINENUMBER###nicht auf einer Deponie landen<del> oder verbrannt werden. Auch die Verschiffung unseres ###LINENUMBER###Elektroschrotts</del><ins>,</ins> in Entwicklungs- und Schwellenländer <del>ist keine Lösung</del><ins>exportiert oder verbrannt werden</ins>. <del>Sie verursacht dort ###LINENUMBER###schwere Umweltschäden</del><ins>Wir setzen uns für echte Kreislaufwirtschaft mit dem perspektivischen Ziel von „Zero Waste“ ein und wollen den Rohstoffschatz, der im vermeintlichen Müll schlummert heben</ins>. Wir wollen deshalb ein Wertstoffgesetz, durch das Herstellern von<del> </del><ins><br></ins>###LINENUMBER###Produkten und Verpackungen eine <ins>ökologische </ins>Produktverantwortung zukommt, indem ambitionierte, <del>aber ###LINENUMBER###machbare</del><ins>abermachbare</ins> Recyclingziele <ins>sowie Ziele zur Material- und Rohstoffeffizienz </ins>eingeführt werden. <del>Dadurch werden Rohstoffpreise befördert,</del><ins>Wir wollen einen „Recycling-Dialog“ mit Industrie, Verbraucher- und Umweltverbänden sowie der Abfallwirtschaft ins Leben rufen, um gemeinsam ambitioniertere Standards in Bezug auf weniger Rohstoffeinsatz und mehr Recycling zu entwickeln und Anreize für</ins> die <ins>Verwendung von Recyclingmaterialien zu schaffen.</ins></p><p><ins>Wir setzen uns dafür ein, dass </ins>die <ins>Rohstoffpreise die<br></ins>###LINENUMBER###sozialen und ökologischen Folgekosten der Rohstoffgewinnung und ihrer Verwertung am Ende des<del> </del><ins><br></ins>###LINENUMBER###Produktlebenszyklus und gegenüber den Verbraucher*innen ehrlich abbilden. So wird <del>der ###LINENUMBER###Einsatz von Recyclingmaterial gegenüber Primärmaterial wettbewerbsfähig.</del><ins>Ökologie zum Wettbewerbsvorteil:</ins> <del>Wir</del><ins>Wer weniger Rohstoffe verbraucht oder Recyclingmaterial anstatt Primärmaterial, spart Geld, Damit der gesamte (Sekundär)-Rohstoffschatz gehoben werden kann,</ins> setzen <ins>wir </ins>uns <ins>außerdem </ins>###LINENUMBER###dafür ein<ins> </ins>, dass für gewerbliche Abfälle und Bauabfälle die gleichen ökologischen<del> </del><ins><br></ins>###LINENUMBER###Anforderungen gelten wie für die Hausmüllsammlung und -verwertung.</p>'];
@@ -346,7 +346,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
-        $diff = new Diff2();
+        $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expectedDiff, $out);
     }
@@ -358,7 +358,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $orig     = ['<ul><li>Wir sind Nummer 1</li></ul>'];
         $new      = ['<ul><li>Wir bla bla</li></ul>', '<ul><li>Wir sind Nummer 1</li></ul>'];
         $expected = ['<ul class="inserted"><li>Wir bla bla</li></ul><ul><li>Wir sind Nummer 1</li></ul>'];
-        $diff     = new Diff2();
+        $diff     = new Diff();
         $out      = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expected, $out);
     }
@@ -388,7 +388,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
-        $diff = new Diff2();
+        $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>', $out[0]);
@@ -411,7 +411,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
 
-        $diff      = new Diff2();
+        $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
@@ -428,7 +428,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
      */
     public function testReplaceParagraph()
     {
-        $diff = new Diff2();
+        $diff = new Diff();
 
         $str1           = '<p>Unchanging line</p>
 <p>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, ' .
@@ -476,7 +476,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $newParagraphs  = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.</p>'];
         $expect         = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren.<del> Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</del></p>'];
 
-        $diff      = new Diff2();
+        $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
     }
@@ -485,7 +485,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
      */
     public function testParagraphs()
     {
-        $diff = new Diff2();
+        $diff = new Diff();
 
         $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
             'Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>' .
@@ -589,7 +589,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             '<ul class="inserted"><li>Blabla</li></ul>',
             '<p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>'];
 
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
@@ -611,7 +611,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
             '<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.<ins>asdasd</ins></li></ul>',
             '<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
 
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
@@ -698,7 +698,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     {
         $strPre    = ['<ul><li>Listenpunkt</li></ul>'];
         $strPost   = ['<p>Test</p>'];
-        $diff      = new Diff2();
+        $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($strPre, $strPost, DiffRenderer::FORMATTING_CLASSES);
         $expected  = ['<ul class="deleted"><li>Listenpunkt</li></ul><p class="inserted">Test</p>'];
         $this->assertEquals($expected, $diffParas);
@@ -714,7 +714,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. <del>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen.</del><ins><em>Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus wollen wir eine Bürger*innenversicherung in Gesundheit und Pflege einführen. Auch die Rentenversicherung wollen wir schrittweise zu einer Bürger*innenversicherung weiterentwickeln. In einem ersten Schritt wollen wir die bisher nicht pflichtversicherten Selbständigen in die gesetzliche Rentenversicherung einbeziehen. Die Grüne Garantierente soll ein Signal speziell an Selbständige mit geringem Einkommen senden, dass sich die Beiträge zur Rentenversicherung auch lohnen. </em></ins> ###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>'];
@@ -730,7 +730,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $expected = ['<p><strong>Balance von Freiheit und Sicherheit für <del>Solo-</del>Selbstständige und Existenzgründer*innen</strong></p>'];
@@ -750,7 +750,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff           = new Diff2();
+        $diff           = new Diff();
 
         var_dump($origParagraphs);
         var_dump($newParagraphs);
@@ -777,7 +777,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expect, $diffParas);
@@ -803,7 +803,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
         $this->assertEquals($expected, $diffParas);
@@ -816,7 +816,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     {
         $origParagraphs = ['<p>wieder<sup>Test</sup>.</p>'];
         $newParagraphs  = ['<p>wieder.</p>'];
-        $diff           = new Diff2();
+        $diff           = new Diff();
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals('<p>wieder<del><sup>Test</sup></del>.</p>', $diffParas[0]);
     }
@@ -835,7 +835,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $expect = [
             '<p>###LINENUMBER###<em><strong>Test</strong></em> bla bla bla bla bla <del>lkj </del>bla</p>',
         ];
-        $diff   = new Diff2();
+        $diff   = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
