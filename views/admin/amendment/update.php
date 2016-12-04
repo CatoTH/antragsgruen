@@ -24,7 +24,7 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_amend'));
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
-$layout->addJS('js/Sortable.js');
+$layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 

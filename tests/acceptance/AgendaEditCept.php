@@ -44,7 +44,7 @@ $I->seeElement('#agendaitem_-1 .agendaItemEditForm .code');
 $I->fillField('#agendaitem_-1 .agendaItemEditForm .title', 'More motions');
 $I->selectOption('#agendaitem_-1 .agendaItemEditForm .motionType', '5');
 $I->seeElement('#agendaEditSavingHolder');
-$I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
+$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 
 
@@ -66,7 +66,7 @@ $I->see('2. Anträge', '.motionListAgenda');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click();');
 $I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
 $I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', '0');
-$I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
+$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 $I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
@@ -89,7 +89,7 @@ $I->acceptBootboxConfirm();
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');
 
-$I->submitForm('#agendaEditSavingHolder', [], ['saveAgenda']);
+$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');

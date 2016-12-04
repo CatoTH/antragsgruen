@@ -6,14 +6,26 @@ var gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
 
     main_js_files = [
-        "web/js/bootstrap.js", "web/js/bower/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-        "web/js/bower/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
+        "node_modules/bootstrap/dist/js/bootstrap.js", "node_modules/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
+        "node_modules/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
     ];
+
+gulp.task('copy-files', function() {
+    gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/html5shiv/dist/html5shiv*").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/typeahead.js/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
+});
 
 gulp.task('pdfjs', function () {
     gulp.src([
             "web/js/pdfjs-viewer/compatibility.js", "web/js/pdfjs-viewer/l10n.js",
-            "web/js/bower/pdfjs-dist/build/pdf.combined.js",
+            "node_modules/pdfjs-dist/build/pdf.combined.js",
             "web/js/pdfjs-viewer/ui_utils.js", "web/js/pdfjs-viewer/default_preferences.js", "web/js/pdfjs-viewer/preferences.js", "web/js/pdfjs-viewer/download_manager.js",
             "web/js/pdfjs-viewer/view_history.js", "web/js/pdfjs-viewer/pdf_link_service.js", "web/js/pdfjs-viewer/pdf_rendering_queue.js", "web/js/pdfjs-viewer/pdf_page_view.js",
             "web/js/pdfjs-viewer/text_layer_builder.js", "web/js/pdfjs-viewer/annotations_layer_builder.js", "web/js/pdfjs-viewer/pdf_viewer.js", "web/js/pdfjs-viewer/pdf_thumbnail_view.js",
@@ -84,4 +96,4 @@ gulp.task('watch', function () {
     gulp.watch(['./web/js/src/SiteCreateWizard.es6'], ['build-wizard']);
 });
 
-gulp.task('default', ['build-js', 'build-css']);
+gulp.task('default', ['build-wizard', 'build-js', 'build-css', 'pdfjs', 'copy-files']);

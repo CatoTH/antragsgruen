@@ -2,7 +2,7 @@
 
 namespace app\tests\_pages;
 
-use yii\codeception\BasePage;
+use Helper\BasePage;
 
 /**
  * @property \AcceptanceTester|\FunctionalTester $actor

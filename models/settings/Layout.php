@@ -176,7 +176,7 @@ class Layout
     {
         $jsLang = $this->getJSLanguageCode();
         $files  = [];
-        if (defined('YII_DEBUG') && YII_DEBUG) {
+        if (defined('YII_DEBUG') && YII_DEBUG && false) {
             $files[] = $this->resourceUrl('js/bootstrap.js');
             $files[] = $this->resourceUrl('js/bower/bootbox/bootbox.js');
             $files[] = $this->resourceUrl('js/scrollintoview.js');
@@ -214,9 +214,9 @@ class Layout
      */
     public function loadDatepicker()
     {
-        $this->addJS('js/bower/moment/min/moment-with-locales.min.js');
-        $this->addJS('js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js');
-        $this->addCSS('js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css');
+        $this->addJS('npm/moment-with-locales.min.js');
+        $this->addJS('npm/bootstrap-datetimepicker.min.js');
+        $this->addCSS('npm/bootstrap-datetimepicker.min.css');
     }
 
     /**
@@ -230,15 +230,22 @@ class Layout
      */
     public function loadFuelux()
     {
-        $this->addJS('js/fuelux/js/fuelux.min.js');
-        $this->addCSS('js/fuelux/css/fuelux.min.css');
+        $this->addJS('npm/fuelux.min.js');
+        $this->addCSS('npm/fuelux.min.css');
+    }
+
+    /**
+     */
+    public function loadSortable()
+    {
+        $this->addJS('npm/Sortable.min.js');
     }
 
     /**
      */
     public function loadTypeahead()
     {
-        $this->addJs('js/bower/typeahead.js/dist/typeahead.bundle.min.js');
+        $this->addJs('npm/typeahead.bundle.min.js');
     }
 
     /**

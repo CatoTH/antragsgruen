@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('switch on screening and create two motions and amanemdnets');
+$I->wantTo('switch on screening and create two motions and amendments');
 
 $I->loginAndGotoStdAdminPage()->gotoConsultation();
 $I->checkOption('#screeningMotions');

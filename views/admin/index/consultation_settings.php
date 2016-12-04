@@ -18,7 +18,7 @@ $params = \Yii::$app->params;
 
 $layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
-$layout->addJS('js/Sortable.js');
+$layout->loadSortable();
 $layout->loadFuelux();
 
 $this->title = \Yii::t('admin', 'con_h1');

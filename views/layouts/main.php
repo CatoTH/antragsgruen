@@ -54,7 +54,7 @@ if ($layout->robotsNoindex || \app\models\settings\AntragsgruenApp::getInstance(
 }
 
 echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('js/bower/html5shiv/dist/html5shiv.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('npm/html5shiv.min.js') . '"></script>
     <![endif]-->
     <!--[if lt IE 8]>
     <link rel="stylesheet" href="' . $layout->resourceUrl('css/antragsgruen-ie7.css') . '">
@@ -71,7 +71,7 @@ echo '<!--[if lt IE 9]>
     <script src="' . $layout->resourceUrl('js/jquery-1.12.4.min.js') . '"></script>
     <![endif]-->
     <!--[if gte IE 9]> -->
-    <script src="' . $layout->resourceUrl('js/jquery-3.1.1.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
     <!--<![endif]-->
 
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">

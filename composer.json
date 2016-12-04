@@ -26,18 +26,9 @@
     "catoth/html2opendocument": "0.6",
     "simplesamlphp/simplesamlphp": "^1.14.8",
     "zendframework/zend-servicemanager": "^3.1.1",
-    "bower-asset/moment": "dev-master",
-    "bower-asset/moment-timezone": "dev-master",
-    "bower-asset/Sortable": "dev-master",
-    "bower-asset/bootbox": "^4.4.0-dev",
-    "bower-asset/html5shiv": "^3.7.3-dev",
-    "bower-asset/typeahead.js": "^0.11.1-dev",
-    "bower-asset/intl": "^1.1.0-dev",
-    "bower-asset/pdfjs-dist": "dev-master",
     "setasign/fpdi-tcpdf": "^1.6"
   },
   "require-dev": {
-    "yiisoft/yii2-codeception": "^2.0.5",
     "yiisoft/yii2-debug": "^2.0.6",
     "phpmd/phpmd": "@stable",
     "squizlabs/php_codesniffer": "2.3.*",
