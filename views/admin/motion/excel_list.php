@@ -15,7 +15,7 @@ use app\models\db\Motion;
 $controller   = $this->context;
 $consultation = $controller->consultation;
 
-PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
+//PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 
 
 $hasTags = ($consultation->tags > 0);
