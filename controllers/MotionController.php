@@ -354,6 +354,9 @@ class MotionController extends Base
             $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
             try {
                 $form->saveMotion($motion);
+                if (isset($post['sections'])) {
+                    $form->updateTextRewritingAmendments($motion, $post['sections']);
+                }
 
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
 

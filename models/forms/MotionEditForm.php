@@ -45,6 +45,15 @@ class MotionEditForm extends Model
         parent::__construct();
         $this->motionType = $motionType;
         $this->agendaItem = $agendaItem;
+        $this->setSection($motion);
+    }
+
+
+    /**
+     * @param Motion|null $motion
+     */
+    private function setSection($motion)
+    {
         $motionSections   = [];
         if ($motion) {
             $this->motionId   = $motion->id;
@@ -57,7 +66,7 @@ class MotionEditForm extends Model
             }
         }
         $this->sections = [];
-        foreach ($motionType->motionSections as $sectionType) {
+        foreach ($this->motionType->motionSections as $sectionType) {
             if (isset($motionSections[$sectionType->id])) {
                 $this->sections[] = $motionSections[$sectionType->id];
             } else {
@@ -113,6 +122,10 @@ class MotionEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
+            if ($this->motionId && $section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                // Updating the text is done separately, including amendment rewriting
+                continue;
+            }
             if ($section->getSettings()->type == ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
                 $section->getSectionType()->setMotionData($values['motion']['title']);
             }
@@ -176,7 +189,7 @@ class MotionEditForm extends Model
                 continue;
             }
             foreach ($amendment->getActiveSections() as $section) {
-                if ($section->getSectionType() != ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
                 if (!$section->canRewrite($newHtmls[$section->sectionId], $overrides)) {
@@ -190,7 +203,7 @@ class MotionEditForm extends Model
                 continue;
             }
             foreach ($amendment->getActiveSections() as $section) {
-                if ($section->getSectionType() != ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
                 $section->performRewrite($newHtmls[$section->sectionId], $overrides);
@@ -198,9 +211,15 @@ class MotionEditForm extends Model
             }
         }
         foreach ($motion->getActiveSections() as $section) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
             $section->data = $newHtmls[$section->sectionId];
             $section->save();
         }
+
+        $this->setSection($motion);
+
         return true;
     }
 

@@ -346,7 +346,7 @@ class MotionController extends AdminBase
                         $amendments[] = $amendment;
                         $collissions[$amendment->id] = [];
                     }
-                    $collissions[$amendment->id][$section->sectionId] = $collissions;
+                    $collissions[$amendment->id][$section->sectionId] = $coll;
                 }
             }
         }
@@ -400,6 +400,9 @@ class MotionController extends AdminBase
             try {
                 $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
+                if (isset($post['sections'])) {
+                    $form->updateTextRewritingAmendments($motion, $post['sections']);
+                }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }

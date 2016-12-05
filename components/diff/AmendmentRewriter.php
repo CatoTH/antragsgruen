@@ -121,7 +121,7 @@ class AmendmentRewriter
             } elseif (isset($affectedByNewMotion[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByNewMotion[$paragraphNo];
             } else {
-                $newVersion[$paragraphNo] = $motionOldHtml[$paragraphNo];
+                $newVersion[$paragraphNo] = $motionOldSections[$paragraphNo];
             }
         }
 
