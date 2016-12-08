@@ -72,18 +72,9 @@ function __t(category, str) {
                 {name: 'colors'},
                 {name: 'others'}
             ],
-            removePlugins: 'stylescombo,save,newpage,print,templates,showblocks,specialchar,about,preview,pastetext,pastefromword,bbcode',
-            extraPlugins: 'autogrow,wordcount,tabletools',
+            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext',
+            extraPlugins: 'tabletools',
             scayt_sLang: 'de_DE',
-            autoGrow_bottomSpace: 20,
-            // Whether or not you want to show the Word Count
-            wordcount: {
-                showWordCount: false,
-                showCharCount: false,
-                showParagraphs: false,
-                countHTML: false,
-                countSpacesAsChars: true
-            },
             title: $el.attr("title")
         };
 

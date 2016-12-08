@@ -13,10 +13,10 @@
  * (1) http://ckeditor.com/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/44a5f7a4ea5b0c3f3ce5abc33e1712ef
+ * (2) http://ckeditor.com/builder/3edd829e3b9e384819afa831454e09d7
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/44a5f7a4ea5b0c3f3ce5abc33e1712ef
+ * (3) http://ckeditor.com/builder/download/3edd829e3b9e384819afa831454e09d7
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -25,7 +25,7 @@
  */
 
 var CKBUILDER_CONFIG = {
-	skin: 'moono',
+	skin: 'moono-lisa',
 	preset: 'full',
 	ignore: [
 		'.bender',
@@ -52,7 +52,6 @@ var CKBUILDER_CONFIG = {
 	plugins : {
 		'a11yhelp' : 1,
 		'about' : 1,
-		'autogrow' : 1,
 		'basicstyles' : 1,
 		'bidi' : 1,
 		'blockquote' : 1,
@@ -65,7 +64,6 @@ var CKBUILDER_CONFIG = {
 		'elementspath' : 1,
 		'enterkey' : 1,
 		'entities' : 1,
-		'filebrowser' : 1,
 		'find' : 1,
 		'floatingspace' : 1,
 		'font' : 1,
@@ -73,28 +71,21 @@ var CKBUILDER_CONFIG = {
 		'forms' : 1,
 		'horizontalrule' : 1,
 		'htmlwriter' : 1,
-		'iframe' : 1,
 		'image' : 1,
 		'indentblock' : 1,
 		'indentlist' : 1,
 		'justify' : 1,
-		'language' : 1,
 		'link' : 1,
 		'list' : 1,
 		'liststyle' : 1,
-		'lite' : 1,
 		'magicline' : 1,
 		'maximize' : 1,
-		'newpage' : 1,
-		'pagebreak' : 1,
 		'pastefromword' : 1,
 		'pastetext' : 1,
 		'preview' : 1,
-		'print' : 1,
 		'removeformat' : 1,
 		'resize' : 1,
 		'save' : 1,
-		'scayt' : 1,
 		'selectall' : 1,
 		'showblocks' : 1,
 		'showborders' : 1,
@@ -106,8 +97,6 @@ var CKBUILDER_CONFIG = {
 		'tabletools' : 1,
 		'toolbar' : 1,
 		'undo' : 1,
-		'wordcount' : 1,
-		'wsc' : 1,
 		'wysiwygarea' : 1
 	},
 	languages : {
