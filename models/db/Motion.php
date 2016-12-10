@@ -300,6 +300,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Amendment[]
+     */
+    public function getAmendmentsRelevantForCollissionDetection()
+    {
+        $amendments = [];
+        foreach ($this->amendments as $amendment) {
+            if ($amendment->status != Amendment::STATUS_DELETED && $amendment->status != Amendment::STATUS_DRAFT) {
+                $amendments[] = $amendment;
+            }
+        }
+        return $amendments;
+    }
+
+    /**
      * @param bool $includeWithdrawn
      * @return Amendment[]
      */
@@ -879,7 +893,7 @@ class Motion extends IMotion implements IRSSItem
 
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
-            $first = $inits[0];
+            $first          = $inits[0];
             $resolutionDate = $first->resolutionDate;
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;

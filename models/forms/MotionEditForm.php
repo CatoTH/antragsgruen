@@ -184,29 +184,33 @@ class MotionEditForm extends Model
      */
     public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
     {
-        foreach ($motion->amendments as $amendment) {
-            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
-                continue;
-            }
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections() as $section) {
                 if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                if (!$section->canRewrite($newHtmls[$section->sectionId], $overrides)) {
+                if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
+                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                } else {
+                    $section_overrides = [];
+                }
+                if (!$section->canRewrite($newHtmls[$section->sectionId], $section_overrides)) {
                     return false;
                 }
             }
         }
 
-        foreach ($motion->amendments as $amendment) {
-            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
-                continue;
-            }
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections() as $section) {
                 if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                $section->performRewrite($newHtmls[$section->sectionId], $overrides);
+                if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
+                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                } else {
+                    $section_overrides = [];
+                }
+                $section->performRewrite($newHtmls[$section->sectionId], $section_overrides);
                 $section->save();
             }
         }

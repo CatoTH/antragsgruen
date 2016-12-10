@@ -8,12 +8,12 @@ use app\models\exceptions\Internal;
 class AmendmentRewriter
 {
     /**
-     * @param string[] $oldParagraphs
-     * @param string[] $newParagraphs
+     * @param string[]   $oldParagraphs
+     * @param string[]   $newParagraphs
      * @return string[]
      * @throws Internal
      */
-    private static function computeAffectedParagraphs($oldParagraphs, $newParagraphs)
+    private static function computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs)
     {
         $matcher = new ArrayMatcher();
         list($oldAdjusted, $newAdjusted) = $matcher->matchForDiff($oldParagraphs, $newParagraphs);
@@ -37,10 +37,33 @@ class AmendmentRewriter
             }
         }
 
+        if (serialize($oldParagraphs) != serialize($oldWithoutEmpty)) {
+            throw new Internal("An internal error matching the paragraphs ocurred");
+        }
+
+        return $newWithoutEmpty;
+    }
+
+    /**
+     * @param string[] $oldParagraphs
+     * @param string[] $newParagraphs
+     * @param bool $asDiff
+     * @return \string[]
+     * @throws Internal
+     */
+    private static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
+    {
+        $matchingNewParagraphs = static::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
+
         $affected = [];
-        for ($i = 0; $i < count($oldWithoutEmpty); $i++) {
-            if ($oldWithoutEmpty[$i] != $newWithoutEmpty[$i]) {
-                $affected[$i] = $newWithoutEmpty[$i];
+        $diff     = new Diff();
+        for ($i = 0; $i < count($matchingNewParagraphs); $i++) {
+            if ($oldParagraphs[$i] != $matchingNewParagraphs[$i]) {
+                if ($asDiff) {
+                    $affected[$i] = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
+                } else {
+                    $affected[$i] = $matchingNewParagraphs[$i];
+                }
             }
         }
 
@@ -60,38 +83,41 @@ class AmendmentRewriter
         $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, false);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, false);
 
-        if (count(array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment))) == 0) {
-            return true;
+        $colliding = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
+        foreach ($colliding as $col) {
+            if (!isset($overrides[$col])) {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
      * @param string $motionOldHtml
      * @param string $motionNewHtml
      * @param string $amendmentHtml
-     * @param string[] $overrides
+     * @param boolean $asDiff
      * @return string[]
      */
-    public static function getCollidingParagraphs($motionOldHtml, $motionNewHtml, $amendmentHtml, $overrides = [])
+    public static function getCollidingParagraphs($motionOldHtml, $motionNewHtml, $amendmentHtml, $asDiff = false)
     {
         $motionOldSections = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, $asDiff);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, $asDiff);
 
         $paraNos = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         $paras   = [];
-        $diff    = new Diff();
         foreach ($paraNos as $paraNo) {
-            $paras[] = $diff->computeLineDiff($motionOldSections[$paraNo], $amendmentSections[$paraNo]);
+            $paras[$paraNo] = $affectedByAmendment[$paraNo];
         }
+
         return $paras;
     }
 
@@ -109,12 +135,14 @@ class AmendmentRewriter
         $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, false);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, false);
 
         $newVersion = [];
         for ($paragraphNo = 0; $paragraphNo < count($motionOldSections); $paragraphNo++) {
-            if (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
+            if (isset($overrides[$paragraphNo])) {
+                $newVersion[$paragraphNo] = $overrides[$paragraphNo];
+            } elseif (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
                 throw new Internal('Not supported yet');
             } elseif (isset($affectedByAmendment[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByAmendment[$paragraphNo];

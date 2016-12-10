@@ -230,17 +230,16 @@ class AmendmentSection extends IMotionSection
 
     /**
      * @param string $newMotionHtml
-     * @param string[] $overrides
      * @return string[]
      * @throws Internal
      */
-    public function getRewriteCollissions($newMotionHtml, $overrides = [])
+    public function getRewriteCollissions($newMotionHtml)
     {
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');
         }
         $oldMotionHtml = $this->getOriginalMotionSection()->data;
-        return AmendmentRewriter::getCollidingParagraphs($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
+        return AmendmentRewriter::getCollidingParagraphs($oldMotionHtml, $newMotionHtml, $this->data, false);
     }
 
     /**

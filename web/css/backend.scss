@@ -365,6 +365,30 @@ label.legend {
       margin-right: 15px;
     }
   }
+
+  .check-button-row {
+    text-align: center;
+  }
+  .amendmentCollissionsHolder {
+    margin-top: 20px;
+
+    .amendment-override-block {
+      margin-top: 20px;
+
+      > textarea {
+        display: none;
+      }
+      > .texteditor {
+        background-color: #f7f7f7;
+        border: solid 1px #eee;
+      }
+    }
+  }
+  .saveholder {
+    .checkAmendmentCollissions {
+      display: none;
+    }
+  }
 }
 
 #amendmentUpdateForm {

@@ -506,12 +506,23 @@
                 });
             });
             $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
+
+            if ($(".checkAmendmentCollissions").length > 0) {
+                $(".wysiwyg-textarea .texteditor").on("focus", function () {
+                    $(".checkAmendmentCollissions").show();
+                    $(".saveholder .save").prop("disabled", true).hide();
+                });
+                $(".checkAmendmentCollissions").show();
+                $(".saveholder .save").prop("disabled", true).hide();
+            }
         });
 
 
-        var loadAmendmentCollissions = function() {
+        var loadAmendmentCollissions = function () {
             var url = $(".checkAmendmentCollissions").data("url"),
-                sections = [];
+                sections = [],
+                $holder = $(".amendmentCollissionsHolder");
+
             $("#motionTextEditHolder").children().each(function () {
                 var $this = $(this);
                 if ($this.hasClass("wysiwyg-textarea")) {
@@ -522,13 +533,31 @@
             $.post(url, {
                 'newSections': sections,
                 '_csrf': $("#motionUpdateForm").find('> input[name=_csrf]').val()
-            }, function(html) {
-                $(".amendmentCollissionsHolder").html(html);
+            }, function (html) {
+                $holder.html(html);
+
+                if ($holder.find(".amendment-override-block > .texteditor").length > 0) {
+                    $holder.find(".amendment-override-block > .texteditor").each(function () {
+                        $.AntragsgruenCKEDITOR.init($(this).attr("id"))
+                    });
+                    $(".amendmentCollissionsHolder").scrollintoview({top_offset: -50});
+                }
+
+                $(".checkAmendmentCollissions").hide();
+                $(".saveholder .save").prop("disabled", false).show();
+
             });
         };
-        $(".checkAmendmentCollissions").click(function(ev) {
+        $(".checkAmendmentCollissions").click(function (ev) {
             ev.preventDefault();
             loadAmendmentCollissions();
+        });
+
+        $("#motionUpdateForm").submit(function() {
+            $(".amendmentCollissionsHolder .amendment-override-block > .texteditor").each(function() {
+                var text = CKEDITOR.instances[$(this).attr("id")].getData();
+                $(this).parents(".amendment-override-block").find("> textarea").val(text);
+            });
         });
 
         $(".motionDeleteForm").submit(function (ev, data) {
@@ -596,7 +625,7 @@
     };
 
     var consultationCreate = function () {
-        $(".settingsType").find("input[type=radio]").change(function() {
+        $(".settingsType").find("input[type=radio]").change(function () {
             if ($("#settingsTypeWizard").prop("checked")) {
                 $(".settingsTypeWizard").removeClass("hidden");
                 $(".settingsTypeTemplate").addClass("hidden");
@@ -607,7 +636,7 @@
         }).change();
 
         var $consultationEditForm = $(".consultationEditForm");
-        $consultationEditForm.find(".delbox button").click(function(ev) {
+        $consultationEditForm.find(".delbox button").click(function (ev) {
             ev.preventDefault();
             var $button = $(this);
             bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
@@ -619,13 +648,13 @@
                 }
             });
         });
-        
+
         new SiteCreateWizard($, $(".siteCreate"));
     };
 
-    var adminIndex = function() {
+    var adminIndex = function () {
         var $delForm = $(".del-site-caller");
-        $delForm.find("button").click(function(ev) {
+        $delForm.find("button").click(function (ev) {
             ev.preventDefault();
             var $button = $(this);
             bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {

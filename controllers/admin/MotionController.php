@@ -332,10 +332,7 @@ class MotionController extends AdminBase
         /** @var Motion $motion */
         $motion            = $this->consultation->getMotion($motionId);
         $collissions       = $amendments = [];
-        foreach ($motion->amendments as $amendment) {
-            if ($amendment->status == Amendment::STATUS_DELETED || $amendment->status == Amendment::STATUS_DRAFT) {
-                continue;
-            }
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections() as $section) {
                 if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
@@ -343,7 +340,7 @@ class MotionController extends AdminBase
                 $coll = $section->getRewriteCollissions($newSections[$section->sectionId], $overrides);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
-                        $amendments[] = $amendment;
+                        $amendments[$amendment->id] = $amendment;
                         $collissions[$amendment->id] = [];
                     }
                     $collissions[$amendment->id][$section->sectionId] = $coll;
@@ -401,7 +398,8 @@ class MotionController extends AdminBase
                 $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
-                    $form->updateTextRewritingAmendments($motion, $post['sections']);
+                    $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
+                    $form->updateTextRewritingAmendments($motion, $post['sections'], $overrides);
                 }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());

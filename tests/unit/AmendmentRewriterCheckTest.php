@@ -17,6 +17,7 @@ class AmendmentRewriterCheckTest extends TestBase
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
         $this->assertTrue($rewritable);
     }
+
     /**
      */
     public function testBasic1()
@@ -39,5 +40,19 @@ class AmendmentRewriterCheckTest extends TestBase
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
         $this->assertFalse($rewritable);
+    }
+
+    /**
+     */
+    public function testCollidingLineInserted1()
+    {
+        $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 3</p>';
+        $amendmentHtml = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>A new line</p>' . '<p>Test 4</p>';
+        $newHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 5</p>';
+
+        $colliding = AmendmentRewriter::getCollidingParagraphs($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertEquals([
+            1 => '<p>Test 4</p>'
+        ], $colliding);
     }
 }
