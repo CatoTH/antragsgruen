@@ -94,6 +94,7 @@ return [
     'published_email_title'             => 'Änderungsantrag veröffentlicht',
     'sidebar_adminedit'                 => 'Admin: bearbeiten',
     'sidebar_back'                      => 'Zurück zum Antrag',
+    'sidebar_mergeintomotion'           => 'In den Antrag übernehmen',
     'back_to_amend'                     => 'Zurück zum Änderungsantrag',
     'initiated_by'                      => 'gestellt von',
     'confirm_bread'                     => 'Bestätigen',

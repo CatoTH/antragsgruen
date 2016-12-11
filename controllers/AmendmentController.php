@@ -7,10 +7,12 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\User;
+use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
+use app\models\sectionTypes\ISectionType;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -45,7 +47,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -72,7 +76,7 @@ class AmendmentController extends Base
         if (count($motions) == 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
-        $amendments = [];
+        $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
             if ($texTemplate === null) {
@@ -109,7 +113,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -142,7 +148,8 @@ class AmendmentController extends Base
             $adminEdit = null;
         }
 
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
         }
 
@@ -221,6 +228,60 @@ class AmendmentController extends Base
                 'deleteDraftId' => \Yii::$app->request->get('draftId'),
             ]);
         }
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws Access
+     * @throws NotFound
+     */
+    public function actionMerge($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound("Amendment not found");
+        }
+        if (!$amendment->canMergeIntoMotion()) {
+            throw new Access("Not allowed to use this function");
+        }
+
+        $collissions         = [];
+        $collidingAmendments = [];
+
+        $motion      = $amendment->getMyMotion();
+        $newSections = [];
+        foreach ($amendment->getActiveSections() as $section) {
+            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+            $newSections[$section->sectionId] = $section->data;
+        }
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendCheck) {
+            if ($amendCheck->id == $amendment->id) {
+                continue;
+            }
+            foreach ($amendCheck->getActiveSections() as $section) {
+                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                    continue;
+                }
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
+                if (count($coll) > 0) {
+                    if (!in_array($amendCheck, $collidingAmendments)) {
+                        $collidingAmendments[$amendCheck->id] = $amendCheck;
+                        $collissions[$amendCheck->id]         = [];
+                    }
+                    $collissions[$amendCheck->id][$section->sectionId] = $coll;
+                }
+            }
+        }
+
+        return $this->render('merge', [
+            'amendment'           => $amendment,
+            'collissions'         => $collissions,
+            'collidingAmendments' => $collidingAmendments,
+        ]);
     }
 
     /**

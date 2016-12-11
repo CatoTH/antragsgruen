@@ -207,7 +207,13 @@ if (!$motion->textFixed) {
         echo '<div class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span class="sr-only">' . 'Warning' . ':</span> ' .
-            'Editing the text after amendments have been submitted is dangerous! @TODO Hint amendment merging' .
+            'Editing the text after amendments have been submitted is dangerous!<br><br>
+            Do not use this function if you want to merge an amendment into the original motion.
+            In that case, please go to the amendment itsels and choose "Merge into motion" on the sidebar instead.<br>
+            <br>
+            If you need to change the text of the motion here, please note that this can be tricky if there already
+            is an amendment affecting the same part of the text that you change. In that case, you will not
+            adapt your changes to every colliding amendment before you can save the new version.' .
         '</div>';
     }
 

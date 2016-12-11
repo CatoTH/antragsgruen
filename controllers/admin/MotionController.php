@@ -325,8 +325,6 @@ class MotionController extends AdminBase
      */
     public function actionGetAmendmentRewriteCollissions($motionId)
     {
-        $overrides = [];
-
         $newSections = \Yii::$app->request->post('newSections', []);
 
         /** @var Motion $motion */
@@ -337,7 +335,7 @@ class MotionController extends AdminBase
                 if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], $overrides);
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
                         $amendments[$amendment->id] = $amendment;

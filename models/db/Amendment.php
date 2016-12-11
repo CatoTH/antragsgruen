@@ -574,6 +574,14 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return bool
      */
+    public function canMergeIntoMotion()
+    {
+        return $this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT);
+    }
+
+    /**
+     * @return bool
+     */
     public function isSocialSharable()
     {
         if ($this->getMyConsultation()->site->getSettings()->forceLogin) {
