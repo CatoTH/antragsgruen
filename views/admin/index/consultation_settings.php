@@ -292,6 +292,7 @@ $handledSiteSettings = [];
                         </li>
                     </ul>
                 </div>
+                <label>
                 <?php
                 $handledSettings[] = 'allowMultipleTags';
                 echo Html::checkbox(
