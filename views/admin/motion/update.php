@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -73,32 +74,29 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data', 'class' => 'fuelux']);
+echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data']);
 
-echo '<div class="content form-horizontal">';
+echo '<div class="content form-horizontal fuelux">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="parentMotion">';
 echo \Yii::t('admin', 'motion_replaces');
 echo ':</label><div class="col-md-9">';
-echo '<select class="form-control" name="motion[parentMotionId]" id="parentMotion"><option>-</option>';
-foreach ($consultation->motions as $mot) {
-    if ($mot->id != $motion->id) {
-        echo '<option value="' . $mot->id . '"';
-        if ($motion->parentMotionId == $mot->id) {
-            echo ' selected';
-        }
-        echo '>' . Html::encode($mot->getTitleWithPrefix()) . '</option>';
-    }
+
+$options = ['-'];
+foreach ($consultation->motions as $motion) {
+    $options[$motion->id] = $motion->getTitleWithPrefix();
 }
-echo '</select></div></div>';
+$attrs = ['id' => 'parentMotion', 'class' => 'form-control'];
+echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs);
+echo '</div></div>';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionStatus">';
 echo \Yii::t('admin', 'motion_status');
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'motionStatus'];
-echo Html::dropDownList('motion[status]', $motion->status, Motion::getStati(), $options);
+echo HTMLTools::fueluxSelectbox('motion[status]', Motion::getStati(), $motion->status, $options);
 echo '</div><div class="col-md-5">';
 $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
 echo Html::textInput('motion[statusString]', $motion->statusString, $options);
