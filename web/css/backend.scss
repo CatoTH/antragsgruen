@@ -371,16 +371,17 @@ label.legend {
   }
   .amendmentCollissionsHolder {
     margin-top: 20px;
-
+    .amendmentBy {
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-bottom: -10px;
+      color: gray;
+    }
     .amendment-override-block {
       margin-top: 20px;
 
       > textarea {
         display: none;
-      }
-      > .texteditor {
-        background-color: #f7f7f7;
-        border: solid 1px #eee;
       }
     }
   }
