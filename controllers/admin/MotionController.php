@@ -322,6 +322,7 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionId
+     * @return string
      */
     public function actionGetAmendmentRewriteCollissions($motionId)
     {
@@ -331,10 +332,7 @@ class MotionController extends AdminBase
         $motion            = $this->consultation->getMotion($motionId);
         $collissions       = $amendments = [];
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            foreach ($amendment->getActiveSections() as $section) {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
@@ -345,7 +343,7 @@ class MotionController extends AdminBase
                 }
             }
         }
-        return $this->renderPartial('amendment-rewrite-collissions', [
+        return $this->renderPartial('@app/views/amendment/ajax-rewrite-collissions', [
             'amendments'        => $amendments,
             'collissions'       => $collissions,
         ]);

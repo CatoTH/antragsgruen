@@ -227,7 +227,7 @@ if (!$motion->textFixed) {
     $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
     echo '<section class="amendmentCollissionsHolder"></section>';
     if ($needsCollissionCheck) {
-        echo '<div class="check-button-row">';
+        echo '<div class="checkButtonRow">';
         echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
             'Finished editing / Check for collissions' . '</button>';
         echo '</div>';

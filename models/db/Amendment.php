@@ -88,14 +88,17 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param null|int $filer_type
      * @return AmendmentSection[]
      */
-    public function getActiveSections()
+    public function getActiveSections($filer_type = null)
     {
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                $sections[] = $section;
+                if ($filer_type === null || $section->getSettings()->type == $filer_type) {
+                    $sections[] = $section;
+                }
             }
         }
         return $sections;

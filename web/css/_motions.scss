@@ -886,3 +886,37 @@ iframe.pdfViewer {
     }
   }
 }
+
+.amendmentMergeForm {
+  .checkButtonRow {
+    text-align: center;
+  }
+  .affectedBlock {
+    margin-top: 20px;
+
+    > textarea {
+      display: none;
+    }
+  }
+  .amendmentCollissionsHolder {
+    margin-top: 20px;
+    .amendmentBy {
+      margin-top: 10px;
+      margin-left: 20px;
+      margin-bottom: -10px;
+      color: gray;
+    }
+    .amendmentOverrideBlock {
+      margin-top: 20px;
+
+      > textarea {
+        display: none;
+      }
+    }
+  }
+  .saveholder {
+    .checkAmendmentCollissions {
+      display: none;
+    }
+  }
+}

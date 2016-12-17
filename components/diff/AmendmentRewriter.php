@@ -51,7 +51,7 @@ class AmendmentRewriter
      * @return \string[]
      * @throws Internal
      */
-    private static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
+    public static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
     {
         $matchingNewParagraphs = static::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
 

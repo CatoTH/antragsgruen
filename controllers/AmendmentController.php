@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\diff\AmendmentRewriter;
+use app\components\diff\DiffRenderer;
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -237,50 +240,78 @@ class AmendmentController extends Base
      * @throws Access
      * @throws NotFound
      */
+    public function actionGetMergeCollissions($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        if (!$amendment->canMergeIntoMotion()) {
+            throw new Access('Not allowed to use this function');
+        }
+
+        $newSections = \Yii::$app->request->post('newSections', []);
+
+        $collissions = $amendments = [];
+        foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {
+            if ($amend->id == $amendment->id) {
+                continue;
+            }
+            foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
+                if (count($coll) > 0) {
+                    if (!in_array($amend, $amendments)) {
+                        $amendments[$amend->id]  = $amend;
+                        $collissions[$amend->id] = [];
+                    }
+                    $collissions[$amend->id][$section->sectionId] = $coll;
+                }
+            }
+        }
+        return $this->renderPartial('@app/views/amendment/ajax-rewrite-collissions', [
+            'amendments'  => $amendments,
+            'collissions' => $collissions,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws Access
+     * @throws NotFound
+     */
     public function actionMerge($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
-            throw new NotFound("Amendment not found");
+            throw new NotFound('Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
-            throw new Access("Not allowed to use this function");
+            throw new Access('Not allowed to use this function');
         }
 
-        $collissions         = [];
-        $collidingAmendments = [];
+        $motion = $amendment->getMyMotion();
 
-        $motion      = $amendment->getMyMotion();
-        $newSections = [];
-        foreach ($amendment->getActiveSections() as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
+        $paragraphSections = [];
+        $diffRenderer = new DiffRenderer();
+        $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
+
+        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $motionParas    = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $amendmentParas = HTMLTools::sectionSimpleHTML($section->data);
+            $paragraphs     = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
+            foreach ($paragraphs as $paraNo => $diff) {
+                $paragraphs[$paraNo] = $diffRenderer->renderHtmlWithPlaceholders($diff);
             }
-            $newSections[$section->sectionId] = $section->data;
-        }
-        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendCheck) {
-            if ($amendCheck->id == $amendment->id) {
-                continue;
-            }
-            foreach ($amendCheck->getActiveSections() as $section) {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
-                if (count($coll) > 0) {
-                    if (!in_array($amendCheck, $collidingAmendments)) {
-                        $collidingAmendments[$amendCheck->id] = $amendCheck;
-                        $collissions[$amendCheck->id]         = [];
-                    }
-                    $collissions[$amendCheck->id][$section->sectionId] = $coll;
-                }
-            }
+
+            $paragraphSections[$section->sectionId] = $paragraphs;
         }
 
         return $this->render('merge', [
-            'amendment'           => $amendment,
-            'collissions'         => $collissions,
-            'collidingAmendments' => $collidingAmendments,
+            'motion'            => $motion,
+            'amendment'         => $amendment,
+            'paragraphSections' => $paragraphSections,
         ]);
     }
 

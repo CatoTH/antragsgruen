@@ -102,6 +102,7 @@ function __t(category, str) {
         }
 
         if ($el.data('track-changed') == '1') {
+            console.log("Track");
             ckeditorConfig.extraPlugins += ',lite';
             ckeditorConfig.lite = {tooltips: false};
         } else {
@@ -796,6 +797,46 @@ function __t(category, str) {
         });
     };
 
+    var amendmentMergeForm = function() {
+        var loadAmendmentCollissions = function () {
+            var url = $(".checkAmendmentCollissions").data("url"),
+                sections = [],
+                $holder = $(".amendmentCollissionsHolder");
+
+            $("#motionTextEditHolder").children().each(function () {
+                var $this = $(this);
+                if ($this.hasClass("wysiwyg-textarea")) {
+                    var sectionId = $this.attr("id").replace("section_holder_", "");
+                    sections[sectionId] = CKEDITOR.instances[$this.find(".texteditor").attr("id")].getData();
+                }
+            });
+            $.post(url, {
+                'newSections': sections,
+                '_csrf': $("#motionUpdateForm").find('> input[name=_csrf]').val()
+            }, function (html) {
+                $holder.html(html);
+
+                if ($holder.find(".amendmentOverrideBlock > .texteditor").length > 0) {
+                    $holder.find(".amendmentOverrideBlock > .texteditor").each(function () {
+                        $.AntragsgruenCKEDITOR.init($(this).attr("id"))
+                    });
+                    $(".amendmentCollissionsHolder").scrollintoview({top_offset: -50});
+                }
+
+                $(".checkAmendmentCollissions").hide();
+                $(".saveholder .save").prop("disabled", false).show();
+
+            });
+        };
+        $(".checkAmendmentCollissions").click(function (ev) {
+            ev.preventDefault();
+            loadAmendmentCollissions();
+        });
+        $(".affectedBlock > .texteditor").each(function() {
+            $.AntragsgruenCKEDITOR.init($(this).attr("id"));
+        });
+    };
+
     var amendmentEditForm = function (multipleParagraphs) {
         var lang = $html.attr('lang'),
             $opener = $(".editorialChange .opener");
@@ -1244,6 +1285,7 @@ function __t(category, str) {
         'motionMergeAmendmentsForm': motionMergeAmendmentsForm,
         'amendmentEditForm': amendmentEditForm,
         'amendmentEditFormSinglePara': amendmentEditFormSinglePara,
+        'amendmentMergeForm': amendmentMergeForm,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
         'accountEdit': accountEdit,

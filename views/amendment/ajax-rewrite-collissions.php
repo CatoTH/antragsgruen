@@ -41,7 +41,7 @@ foreach ($collissions as $amendmentId => $sections) {
         'am' . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
     foreach ($sections as $sectionId => $paragraphs) {
         foreach ($paragraphs as $paragraphNo => $text) {
-            echo '<section class="amendment-override-block">';
+            echo '<section class="amendmentOverrideBlock">';
             echo '<textarea name="amendmentOverride[' . $amendmentId . '][' . $sectionId . '][' . $paragraphNo . ']" ';
             echo 'value="" class=""></textarea>';
             echo '<div id="amendmentOverride_' . $amendmentId . '_' . $sectionId . '_' . $paragraphNo . '" class="';

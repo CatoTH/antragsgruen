@@ -536,8 +536,8 @@
             }, function (html) {
                 $holder.html(html);
 
-                if ($holder.find(".amendment-override-block > .texteditor").length > 0) {
-                    $holder.find(".amendment-override-block > .texteditor").each(function () {
+                if ($holder.find(".amendmentOverrideBlock > .texteditor").length > 0) {
+                    $holder.find(".amendmentOverrideBlock > .texteditor").each(function () {
                         $.AntragsgruenCKEDITOR.init($(this).attr("id"))
                     });
                     $(".amendmentCollissionsHolder").scrollintoview({top_offset: -50});
