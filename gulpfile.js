@@ -94,7 +94,7 @@ gulp.task('build-css', function () {
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
-    gulp.watch(['./web/js/src/**/*.ts'], ['build-typescript']);
+    gulp.watch(['./web/typescript/**/*.ts'], ['build-typescript']);
 });
 
 gulp.task('default', ['build-js', 'build-typescript', 'build-css', 'pdfjs', 'copy-files']);

@@ -16,7 +16,6 @@ $layout     = $controller->layoutParams;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
 
-$layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadFuelux();
@@ -25,7 +24,7 @@ $this->title = \Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'));
 
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.consultationSettingsForm();');
+$layout->setMainAMDModule('backend/ConsultationSettings');
 
 /**
  * @param \app\models\settings\Consultation $settings
