@@ -15,9 +15,8 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('wizard', 'title');
 $controller->layoutParams->addCSS('css/formwizard.css');
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->addJS("js/build/SiteCreateWizard.js");
+$layout->setMainAMDModule('manager/CreateSite');
 $layout->loadDatepicker();
-$controller->layoutParams->addOnLoadJS('new SiteCreateWizard($, $("form.siteCreate"));');
 
 $mode = ($controller->getParams()->mode == 'sandbox' ? 'sandbox' : 'subdomain');
 

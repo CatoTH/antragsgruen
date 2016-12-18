@@ -2,7 +2,8 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
-    babel = require('gulp-babel'),
+    ts = require('gulp-typescript'),
+    tsProject = ts.createProject('tsconfig.json'),
     sourcemaps = require('gulp-sourcemaps'),
 
     main_js_files = [
@@ -20,6 +21,7 @@ gulp.task('copy-files', function() {
     gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
 });
 
 gulp.task('pdfjs', function () {
@@ -39,16 +41,15 @@ gulp.task('pdfjs', function () {
         .pipe(gulp.dest('./web/js/build/'));
 });
 
-gulp.task('build-wizard', function() {
-    gulp.src('./web/js/src/SiteCreateWizard.es6')
+gulp.task('build-typescript', function() {
+    var tsResult = gulp.src('web/typescript/**/*.ts')
         .pipe(sourcemaps.init())
-        .pipe(babel({
-			presets: ['es2015']
-		}))
-        .pipe(concat('SiteCreateWizard.js'))
+        .pipe(tsProject());
+
+    tsResult.js
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./web/js/build/'));
+        .pipe(gulp.dest('web/js/build/'));
 });
 
 gulp.task('build-js', function () {
@@ -93,7 +94,7 @@ gulp.task('build-css', function () {
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
-    gulp.watch(['./web/js/src/SiteCreateWizard.es6'], ['build-wizard']);
+    gulp.watch(['./web/js/src/**/*.ts'], ['build-typescript']);
 });
 
-gulp.task('default', ['build-wizard', 'build-js', 'build-css', 'pdfjs', 'copy-files']);
+gulp.task('default', ['build-js', 'build-typescript', 'build-css', 'pdfjs', 'copy-files']);

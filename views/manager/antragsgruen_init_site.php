@@ -17,10 +17,9 @@ $layout     = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addCSS('css/formwizard.css');
-$layout->addJS("js/build/SiteCreateWizard.js");
 $layout->addCSS('css/manager.css');
+$layout->setMainAMDModule('manager/InitSite');
 $layout->loadDatepicker();
-$controller->layoutParams->addOnLoadJS('new SiteCreateWizard($, $("form.siteCreate"));');
 
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
 

@@ -572,50 +572,6 @@
         motionSupporterEdit();
     };
 
-    var consultationCreate = function () {
-        $(".settingsType").find("input[type=radio]").change(function() {
-            if ($("#settingsTypeWizard").prop("checked")) {
-                $(".settingsTypeWizard").removeClass("hidden");
-                $(".settingsTypeTemplate").addClass("hidden");
-            } else {
-                $(".settingsTypeWizard").addClass("hidden");
-                $(".settingsTypeTemplate").removeClass("hidden");
-            }
-        }).change();
-
-        var $consultationEditForm = $(".consultationEditForm");
-        $consultationEditForm.find(".delbox button").click(function(ev) {
-            ev.preventDefault();
-            var $button = $(this);
-            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
-                if (result) {
-                    var id = $button.data("id"),
-                        $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
-                    $consultationEditForm.append($input);
-                    $consultationEditForm.submit();
-                }
-            });
-        });
-        
-        new SiteCreateWizard($, $(".siteCreate"));
-    };
-
-    var adminIndex = function() {
-        var $delForm = $(".del-site-caller");
-        $delForm.find("button").click(function(ev) {
-            ev.preventDefault();
-            var $button = $(this);
-            bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
-                if (result) {
-                    var id = $button.data("id"),
-                        $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
-                    $delForm.append($input);
-                    $delForm.submit();
-                }
-            });
-        });
-    };
-
     $.AntragsgruenAdmin = {
         'consultationSettingsForm': consultationSettingsForm,
         'motionTypeEdit': motionTypeEdit,
@@ -625,9 +581,7 @@
         'siteAccessInit': siteAccessInit,
         'siteAccessUsersInit': siteAccessUsersInit,
         'motionEditInit': motionEditInit,
-        'amendmentEditInit': amendmentEditInit,
-        'consultationCreate': consultationCreate,
-        'adminIndex': adminIndex
+        'amendmentEditInit': amendmentEditInit
     };
 
 }(jQuery));
