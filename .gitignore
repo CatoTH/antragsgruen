@@ -12,6 +12,6 @@ config/DEBUG
 web/js/bower
 assets/local/
 tests/_output/*
-tests/_output/*
 node_modules/
-
+typings/
+npm-debug.log

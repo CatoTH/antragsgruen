@@ -28,6 +28,7 @@ class Layout
     public $fullWidth            = false;
     public $fullScreen           = false;
     public $mainCssFile          = null;
+    public $mainAMDModule        = null;
 
     /** @var LayoutHooks */
     public $hooks = null;
@@ -300,5 +301,25 @@ class Layout
         }
         $newUrl = $params->resourceBase . $url;
         return Html::encode($newUrl);
+    }
+
+    /**
+     * @param string $module
+     */
+    public function setMainAMDModule($module)
+    {
+        $this->mainAMDModule = $module;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAMDLoader()
+    {
+        if ($this->mainAMDModule) {
+            $module = $this->resourceUrl('js/build/' . $this->mainAMDModule);
+            $src    = $this->resourceUrl('npm/require.js');
+            return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '">';
+        }
     }
 }

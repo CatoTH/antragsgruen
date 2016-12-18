@@ -18,9 +18,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'));
-$layout->addJS('js/backend.js');
-$layout->addOnLoadJS('$.AntragsgruenAdmin.adminIndex();');
-
+$layout->setMainAMDModule('backend/AdminIndex');
 
 echo '<h1>' . \Yii::t('admin', 'index_settings') . '</h1>';
 

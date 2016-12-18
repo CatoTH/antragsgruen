@@ -46,7 +46,7 @@ Install the sources and dependencies from the repository:
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.2.1"
+./composer.phar global require "fxp/composer-asset-plugin:1.2.2"
 ./composer.phar install --prefer-dist
 ```
 
@@ -126,10 +126,11 @@ You can enable debug mode by creating an empty file config/DEBUG.
 
 To compile the JavaScript- and CSS-Files, you need to install Gulp:
 ```bash
-npm install
-node_modules/.bin/gulp # Compiles the regular JS/CSS-files
-node_modules/.bin/gulp watch # Listens for changes in JS/CSS-files and compiles them immediatelly
-node_modules/.bin/gulp pdfjs # Compiles PDF.JS
+npm install # Installs all required packages 
+npm run typings install # Installs the typings needed for TypeScript
+
+npm run build # Compiles the regular JS/CSS-files
+npm run watch # Listens for changes in JS/CSS-files and compiles them immediatelly
 ```
 
 After updating the source code from git, do:
@@ -143,16 +144,17 @@ Testing
 -------
 
 * Create a separate (MySQL-)database for testing
-* Set up the configuration file: ```bash
-cp config/config_tests.template.json config/config_tests.json
-vi config/config_tests.json```
+* Set up the configuration file: ```
+cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
-* Start PhantomJS: ```bash
-node_modules/.bin/phantomjs --webdriver=4444```
-* Start debug server: ```bash
-tests/start_debug_server.sh```
-* Run all tests: ```bash
-vendor/bin/codecept run```
-* Run a single acceptence-test: ```bash
-vendor/bin/codecept run acceptance MotionCreateCept```
+* Start PhantomJS: ```
+npm run test:phantomjs --webdriver=4444```
+* Start debug server: ```
+npm run test:server```
+* Run all acceptance tests: ```
+run run test:acceptance```
+* Run all unit tests: ```
+run run test:unit```
+* Run a single acceptence-test: ```
+npm run test:acceptance MotionCreateCept```

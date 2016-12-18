@@ -1,6 +1,41 @@
+interface WizardState {
+    wording: number;
+    singleMotion: number;
+    motionsInitiatedBy: number;
+    motionsDeadlineExists: number;
+    motionsDeadline: string;
+    motionScreening: number;
+    needsSupporters: number;
+    minSupporters: number;
+    hasAmendments: number;
+    amendSinglePara: number;
+    amendmentInitiatedBy: number;
+    amendmentDeadlineExists: number;
+    amendmentDeadline: string;
+    amendScreening: number;
+    hasComments: number;
+    hasAgenda: number;
+    openNow: number;
+    title: string;
+    organization: string;
+    subdomain: string;
+    contact: string;
+}
+
 class SiteCreateWizard {
-    getRadioValue(fieldsetClass, defaultVal) {
-        var $input = this.$root.find("fieldset." + fieldsetClass).find("input:checked");
+    private firstPanel: string = "#panelPurpose";
+    private mode: string;
+    private data: WizardState;
+    private $activePanel: JQuery;
+
+    constructor(private $root: JQuery) {
+        this.firstPanel = "#panelPurpose";
+        this.mode = $("#SiteCreateWizard").data("mode");
+        this.initEvents();
+    }
+
+    getRadioValue(fieldsetClass: string, defaultVal: any): any {
+        let $input = this.$root.find("fieldset." + fieldsetClass).find("input:checked");
         if ($input.length > 0) {
             return $input.val();
         } else {
@@ -8,7 +43,7 @@ class SiteCreateWizard {
         }
     };
 
-    getWizardState() {
+    getWizardState(): WizardState {
         return {
             wording: this.getRadioValue('wording', 1),
             singleMotion: this.getRadioValue('singleMotion', 0),
@@ -34,11 +69,11 @@ class SiteCreateWizard {
         };
     };
 
-    showPanel($panel) {
+    showPanel($panel: JQuery) {
         this.data = this.getWizardState();
         console.log(this.data);
 
-        var step = $panel.data("tab");
+        let step = $panel.data("tab");
         this.$root.find(".wizard .steps li").removeClass("active");
         this.$root.find(".wizard .steps ." + step).addClass("active");
 
@@ -49,7 +84,7 @@ class SiteCreateWizard {
         this.$activePanel = $panel;
 
         try {
-            var isCorrect = (window.location.hash == "#" + $panel.attr("id"));
+            let isCorrect = (window.location.hash == "#" + $panel.attr("id"));
             if ((window.location.hash == "" || window.location.hash == "#") && "#" + $panel.attr("id") == this.firstPanel) {
                 isCorrect = true;
             }
@@ -62,7 +97,7 @@ class SiteCreateWizard {
         }
     };
 
-    getNextPanel() {
+    getNextPanel(): string {
         this.data = this.getWizardState();
 
         switch (this.$activePanel.attr("id")) {
@@ -118,8 +153,7 @@ class SiteCreateWizard {
     }
 
     initEvents() {
-        var $form = this.$root,
-            $ = this.$;
+        let $form = this.$root;
 
         this.$activePanel = null;
         this.data = this.getWizardState();
@@ -128,19 +162,19 @@ class SiteCreateWizard {
             this.data = this.getWizardState();
         });
         $form.find(".radio-label input").change(function () {
-            var $fieldset = $(this).parents("fieldset").first();
+            let $fieldset = $(this).parents("fieldset").first();
             $fieldset.find(".radio-label").removeClass("active");
-            var $active = $fieldset.find(".radio-label input:checked");
+            let $active = $fieldset.find(".radio-label input:checked");
             $active.parents(".radio-label").first().addClass("active");
         }).trigger("change");
 
         $form.find("fieldset.wording input").change(function () {
-            var wording = $form.find("fieldset.wording input:checked").data("wording-name");
+            let wording = $form.find("fieldset.wording input:checked").data("wording-name");
             $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
         }).trigger("change");
 
         $form.find(".input-group.date").each(function () {
-            var $this = $(this);
+            let $this = $(this);
             $this.datetimepicker({
                 locale: $this.find("input").data('locale')
             });
@@ -155,7 +189,7 @@ class SiteCreateWizard {
             $("input.needsSupporters").prop("checked", true).change();
         });
         $form.find("#siteSubdomain").on("keyup change", function () {
-            var $this = $(this),
+            let $this = $(this),
                 subdomain = $this.val(),
                 $group = $this.parents(".subdomainRow").first(),
                 requesturl = $this.data("query-url").replace(/SUBDOMAIN/, subdomain),
@@ -205,7 +239,7 @@ class SiteCreateWizard {
             }
         });
 
-        var obj = this;
+        let obj = this;
         $form.find(".navigation .btn-next").click(function (ev) {
             if ($(this).attr("type") == "submit") {
                 return;
@@ -219,19 +253,19 @@ class SiteCreateWizard {
                 window.history.back();
             }
         });
-        $form.submit(function (ev) {
+        $form.submit(function () {
 
         });
 
         $(window).on("hashchange", (ev) => {
             ev.preventDefault();
-            var hash;
-            if (window.location.hash.substring(1) == 0) {
+            let hash;
+            if (parseInt(window.location.hash.substring(1)) === 0) {
                 hash = this.firstPanel;
             } else {
                 hash = "#panel" + window.location.hash.substring(1);
             }
-            var $panel = $(hash);
+            let $panel = $(hash);
             if ($panel.length > 0) {
                 this.showPanel($panel);
             }
@@ -239,14 +273,6 @@ class SiteCreateWizard {
 
         $form.find(".step-pane").addClass("inactive");
         this.showPanel($(this.firstPanel));
-    }
-
-    constructor($, $root) {
-        this.$ = $;
-        this.firstPanel = "#panelPurpose";
-        this.$root = $root;
-        this.mode = $("#SiteCreateWizard").data("mode");
-        this.initEvents();
     }
 }
 
