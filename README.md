@@ -144,18 +144,17 @@ Testing
 -------
 
 * Create a separate (MySQL-)database for testing
-* Set up the configuration file: ```bash
-cp config/config_tests.template.json config/config_tests.json
-vi config/config_tests.json```
+* Set up the configuration file: ```
+cp config/config_tests.template.json config/config_tests.json && vi config/config_tests.json```
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed.
-* Start PhantomJS: ```bash
+* Start PhantomJS: ```
 npm run test:phantomjs --webdriver=4444```
-* Start debug server: ```bash
+* Start debug server: ```
 npm run test:server```
-* Run all acceptance tests: ```bash
+* Run all acceptance tests: ```
 run run test:acceptance```
-* Run all unit tests: ```bash
+* Run all unit tests: ```
 run run test:unit```
-* Run a single acceptence-test: ```bash
+* Run a single acceptence-test: ```
 npm run test:acceptance MotionCreateCept```
