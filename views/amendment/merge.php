@@ -54,21 +54,50 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
 <fieldset class="affectedParagraphs">
     <?php
     foreach ($paragraphSections as $sectionId => $paragraphs) {
-        foreach ($paragraphs as $paragraphNo => $text) {
-            echo '<section class="affectedBlock">';
-            echo '<textarea name="newParas[' . $sectionId . '][' . $paragraphNo . ']" value="" class=""></textarea>';
-            echo '<div id="new_paragraphs_' . $sectionId . '_' . $paragraphNo . '" class="';
-            if (in_array($sectionId, $fixedWidthSections)) {
-                echo 'fixedWidthFont ';
-            }
-            echo 'texteditor texteditorBox" title="' . 'Änderungsantrag anpassen' . '" data-track-changed="1">';
-            echo $text;
-            echo '</div></section>';
+        $fixedClass = (in_array($sectionId, $fixedWidthSections) ? 'fixedWidthFont' : '');
+
+        foreach ($paragraphs as $paragraphNo => $paraData) {
+            $nameBase = 'newParas[' . $sectionId . '][' . $paragraphNo . ']';
+            ?>
+            <section class="paragraph paragraph_<?= $sectionId ?>_<?= $paragraphNo ?> unmodified">
+                <h2 class="green"><?php
+                    echo str_replace(
+                        ['%LINEFROM%', '%LINETO%'],
+                        [$paraData['lineFrom'], $paraData['lineTo']],
+                        'Änderung von Zeile %LINEFROM% bis %LINETO%'
+                    )
+                    ?>:
+                </h2>
+                <div class="modifySelector">
+                    <label>
+                        <input type="radio" name="<?= $nameBase ?>[modified]" value="0" checked>
+                        Unverändert übernehmen
+                    </label>
+                    <label>
+                        <input type="radio" name="<?= $nameBase ?>[modified]" value="1">
+                        Modifizierte Übernahme
+                    </label>
+                </div>
+                <div class="unmodifiedVersion motionTextHolder">
+                    <div class="paragraph">
+                        <div class="text <?=$fixedClass?>"><?= $paraData['diff'] ?></div>
+                    </div>
+                </div>
+                <div class="affectedBlock">
+                    <textarea name="<?= $nameBase ?>[modified]" class="" title=""></textarea>
+                    <div id="new_paragraphs_<?= $sectionId ?>_<?= $paragraphNo ?>"
+                         class="<?=$fixedClass?> texteditor texteditorBox"
+                         title="<?= 'Änderungsantrag anpassen' ?>" data-track-changed="1">
+                        <?=$paraData['plain']?>
+                    </div>
+                </div>
+            </section>
+            <?php
         }
     }
     $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
     if ($needsCollissionCheck) {
-        echo '<div class="check-button-row">';
+        echo '<div class="checkButtonRow">';
         echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
             'Finished editing / Check for collissions' . '</button>';
         echo '</div>';

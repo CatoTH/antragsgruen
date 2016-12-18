@@ -102,7 +102,6 @@ function __t(category, str) {
         }
 
         if ($el.data('track-changed') == '1') {
-            console.log("Track");
             ckeditorConfig.extraPlugins += ',lite';
             ckeditorConfig.lite = {tooltips: false};
         } else {
@@ -832,6 +831,16 @@ function __t(category, str) {
             ev.preventDefault();
             loadAmendmentCollissions();
         });
+        $(".affectedParagraphs .paragraph").each(function() {
+            var $paragraph = $(this);
+            $paragraph.find(".modifySelector input").change(function() {
+                if ($paragraph.find(".modifySelector input:checked").val() == "1") {
+                    $paragraph.addClass("modified").removeClass("unmodified");
+                } else {
+                    $paragraph.removeClass("modified").addClass("unmodified");
+                }
+            });
+        });
         $(".affectedBlock > .texteditor").each(function() {
             $.AntragsgruenCKEDITOR.init($(this).attr("id"));
         });
@@ -1299,6 +1308,3 @@ function __t(category, str) {
     });
 
 }(jQuery));
-
-
-

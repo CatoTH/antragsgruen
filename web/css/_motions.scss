@@ -890,6 +890,15 @@ iframe.pdfViewer {
 .amendmentMergeForm {
   .checkButtonRow {
     text-align: center;
+    margin: 20px 0;
+  }
+  .affectedParagraphs {
+    .paragraph.unmodified .affectedBlock {
+      display: none;
+    }
+    .paragraph.modified .unmodifiedVersion {
+      display: none;
+    }
   }
   .affectedBlock {
     margin-top: 20px;
@@ -898,8 +907,15 @@ iframe.pdfViewer {
       display: none;
     }
   }
+  .modifySelector {
+    margin-top: 15px;
+    label {
+      margin-right: 20px;
+      font-weight: normal;
+    }
+  }
   .amendmentCollissionsHolder {
-    margin-top: 20px;
+    margin-top: 15px;
     .amendmentBy {
       margin-top: 10px;
       margin-left: 20px;
@@ -907,7 +923,7 @@ iframe.pdfViewer {
       color: gray;
     }
     .amendmentOverrideBlock {
-      margin-top: 20px;
+      margin-top: 15px;
 
       > textarea {
         display: none;

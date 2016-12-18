@@ -196,7 +196,7 @@ class LineSplitter
      * @param string $html
      * @param int $lineLength
      * @param string $prependLines
-     * @return string
+     * @return string[]
      */
     public static function splitHtmlToLines($html, $lineLength, $prependLines)
     {

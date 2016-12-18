@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\diff\AmendmentRewriter;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use app\components\LineSplitter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -291,18 +292,35 @@ class AmendmentController extends Base
             throw new Access('Not allowed to use this function');
         }
 
-        $motion = $amendment->getMyMotion();
+        $motion     = $amendment->getMyMotion();
+        $lineLength = $this->consultation->getSettings()->lineLength;
 
         $paragraphSections = [];
-        $diffRenderer = new DiffRenderer();
+        $diffRenderer      = new DiffRenderer();
         $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
 
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $motionParas    = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-            $amendmentParas = HTMLTools::sectionSimpleHTML($section->data);
-            $paragraphs     = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
-            foreach ($paragraphs as $paraNo => $diff) {
-                $paragraphs[$paraNo] = $diffRenderer->renderHtmlWithPlaceholders($diff);
+            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
+            $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
+            $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);
+
+            $lineNumber      = $section->getFirstLineNumber();
+            $paraLineNumbers = [];
+            for ($paraNo = 0; $paraNo < count($motionParas); $paraNo++) {
+                $paraLineNumbers[$paraNo] = $lineNumber;
+                $lineNumber += LineSplitter::countMotionParaLines($motionParas[$paraNo], $lineLength);
+            }
+            $paraLineNumbers[count($motionParas)] = $lineNumber;
+
+            $paragraphs = [];
+            foreach (array_keys($paragraphsDiff) as $paraNo) {
+                $paragraphs[$paraNo] = [
+                    'lineFrom' => $paraLineNumbers[$paraNo],
+                    'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
+                    'plain'    => $paragraphsPlain[$paraNo],
+                    'diff'     => $diffRenderer->renderHtmlWithPlaceholders($paragraphsDiff[$paraNo]),
+                ];
             }
 
             $paragraphSections[$section->sectionId] = $paragraphs;

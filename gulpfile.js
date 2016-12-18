@@ -84,7 +84,7 @@ gulp.task('build-js', function () {
 gulp.task('build-css', function () {
     gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
-        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
 });
