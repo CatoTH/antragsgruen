@@ -21,13 +21,11 @@ $this->title = \Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
 $layout->loadFuelux();
-$layout->addJS('js/backend.js');
 $layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionListAll();');
+$layout->setMainAMDModule('backend/MotionList');
 
 $route   = 'admin/motion/listall';
 $hasTags = (count($controller->consultation->tags) > 0);

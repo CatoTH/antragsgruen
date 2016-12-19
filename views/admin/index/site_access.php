@@ -17,10 +17,10 @@ $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('admin', 'siteacc_title');
 $layout->addCSS('css/backend.css');
-$layout->addJS('js/backend.js');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'siteacc_bread'));
 $layout->loadFuelux();
+$layout->setMainAMDModule('backend/SiteAccess');
 
 $settings = $site->getSettings();
 
@@ -149,6 +149,3 @@ echo '</div>
 <br><br>
 </section>';
 echo Html::endForm();
-
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.siteAccessInit();');

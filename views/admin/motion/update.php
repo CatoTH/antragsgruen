@@ -24,12 +24,12 @@ $this->title = 'Antrag bearbeiten: ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_motion'));
 
-$layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 $layout->loadFuelux();
+$layout->setMainAMDModule('backend/MotionEdit');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
@@ -226,5 +226,3 @@ echo '<div class="saveholder">
 </div>';
 
 echo Html::endForm();
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionEditInit();');

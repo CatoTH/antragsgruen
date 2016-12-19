@@ -2,7 +2,6 @@
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
-use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
 
 /**
@@ -18,7 +17,6 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl(
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
 $layout->addCSS('css/backend.css');
-$layout->addJS('js/backend.js');
 
 echo '<h1>' . $this->title . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'motionTypeCreateForm content form-horizontal']);

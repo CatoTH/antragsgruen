@@ -8,7 +8,6 @@ $controller   = $this->context;
 $consultation = $controller->consultation;
 
 $layout = $controller->layoutParams;
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.exportRowInit();');
 
 
 $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
