@@ -135,5 +135,3 @@ echo Html::endForm();
 
 
 echo '</div></section>';
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.siteAccessUsersInit();');

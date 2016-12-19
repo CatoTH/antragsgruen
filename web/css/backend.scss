@@ -374,13 +374,19 @@ label.legend {
   }
   .amendmentCollissionsHolder {
     margin-top: 20px;
+
     .amendmentBy {
       margin-top: 10px;
       margin-left: 20px;
       margin-bottom: -10px;
       color: gray;
     }
-    .amendment-override-block {
+
+    > h2 {
+      margin-top: 20px;
+    }
+
+    .amendmentOverrideBlock {
       margin-top: 20px;
 
       > textarea {

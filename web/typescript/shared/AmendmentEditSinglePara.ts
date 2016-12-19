@@ -62,7 +62,6 @@ export class AmendmentEditSinglePara {
 
     private startEditing(para: Element) {
         let $para = $(para);
-        console.log($para);
         if (!$para.hasClass('modifyable')) {
             return;
         }

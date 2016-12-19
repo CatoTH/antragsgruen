@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/nestedSortable/index.d.ts" />
+/// <reference path="../typings/nestedSortable/index.d.ts" />
 
 interface JQueryStatic {
     Antragsgruen: any;
