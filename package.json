@@ -37,7 +37,9 @@
         "typings":"^2.0.0",
         "@types/jquery": "^2.0.34",
         "@types/bootbox": "^4.4.30",
-        "@types/ckeditor": "*"
+        "@types/ckeditor": "*",
+        "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
+        "@types/sortablejs": "^1.3.30"
     },
     "directories": {
         "bin": "./bin/"

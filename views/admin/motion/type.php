@@ -23,9 +23,9 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl(
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
 
 $layout->addCSS('css/backend.css');
-$layout->addJS('js/backend.js');
 $layout->loadSortable();
 $layout->loadDatepicker();
+$layout->setMainAMDModule('backend/MotionTypeEdit');
 
 $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
 
@@ -246,8 +246,6 @@ echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sig
 
 echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">' .
     \Yii::t('base', 'save') . '</button></div>';
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.motionTypeEdit();');
 
 echo '</div>';
 echo Html::endForm();
