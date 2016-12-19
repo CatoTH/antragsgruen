@@ -1,0 +1,163 @@
+import domObject = CKEDITOR.dom.domObject;
+import editor = CKEDITOR.editor;
+
+export class AntragsgruenEditor {
+    private editor: editor;
+    private $el: JQuery;
+
+    private static ckeditor_strip(html: string): string {
+        let tmp = document.createElement("div");
+        tmp.innerHTML = html;
+
+        if (tmp.textContent == '' && typeof tmp.innerText == 'undefined') {
+            return '';
+        }
+
+        return tmp.textContent || tmp.innerText;
+    }
+
+    private static ckeditor_charcount(text: string): number {
+        let normalizedText = text.replace(/(\r\n|\n|\r)/gm, "").replace(/^\s+|\s+$/g, "").replace("&nbsp;", "");
+        normalizedText = AntragsgruenEditor.ckeditor_strip(normalizedText).replace(/^([\s\t\r\n]*)$/, "");
+
+        return normalizedText.length;
+    }
+
+    private $currCounter: JQuery;
+    private $warning: JQuery;
+    private $submit: JQuery;
+    private maxLen: number;
+    private maxLenSoft: boolean;
+
+    private maxLenOnChange() {
+        let currLen = AntragsgruenEditor.ckeditor_charcount(this.editor.getData());
+        this.$currCounter.text(currLen);
+        if (currLen > this.maxLen) {
+            this.$warning.removeClass('hidden');
+            if (!this.maxLenSoft) {
+                this.$submit.prop("disabled", true);
+            }
+        } else {
+            this.$warning.addClass('hidden');
+            if (!this.maxLenSoft) {
+                this.$submit.prop("disabled", false);
+            }
+        }
+    }
+
+    private initMaxLen() {
+        let $fieldset = this.$el.parents(".wysiwyg-textarea").first();
+        if (!$fieldset.data("max-len")) {
+            return;
+        }
+
+        this.maxLen = $fieldset.data("max-len");
+        this.maxLenSoft = false;
+        this.$warning = $fieldset.find('.maxLenTooLong');
+        this.$submit = this.$el.parents("form").first().find("button[type=submit]");
+        this.$currCounter = $fieldset.find(".maxLenHint .counter");
+
+        if (this.maxLen < 0) {
+            this.maxLenSoft = true;
+            this.maxLen = -1 * this.maxLen;
+        }
+
+        this.editor.on('change', this.maxLenOnChange);
+        this.maxLenOnChange();
+    }
+
+    private static createConfig(title: string, noStrike: boolean, trackChanged: boolean, allowDiffFormattings: boolean, enterMode: any): any {
+        let ckeditorConfig = {
+            coreStyles_strike: {
+                element: 'span',
+                attributes: {'class': 'strike'},
+                overrides: 'strike'
+            },
+            coreStyles_underline: {
+                element: 'span',
+                attributes: {'class': 'underline'}
+            },
+            toolbarGroups: [
+                {name: 'tools'},
+                {name: 'document', groups: ['mode', 'document', 'doctools']},
+                //{name: 'clipboard', groups: ['clipboard', 'undo']},
+                //{name: 'editing', groups: ['find', 'selection', 'spellchecker']},
+                //{name: 'forms'},
+                {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+                {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']},
+                {name: 'links'},
+                {name: 'insert'},
+                {name: 'styles'},
+                {name: 'colors'},
+                {name: 'others'}
+            ],
+            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext',
+            extraPlugins: 'tabletools',
+            scayt_sLang: 'de_DE',
+            title: title,
+            enterMode: enterMode
+        };
+
+        let strikeEl = (noStrike ? '' : ' s'),
+            strikeClass = (noStrike ? '' : ',strike'),
+            allowedContent = '';
+
+        if (trackChanged || allowDiffFormattings) {
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
+                'h2 h3 h4;' +
+                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
+                'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
+                'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
+                'section[data-*](collidingParagraph)';
+        } else {
+            allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
+                'ul ol li {list-style-type};' +
+                'h2 h3 h4;' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                'p blockquote {border,margin,padding};' +
+                'span(underline' + strikeClass + ',subscript,superscript);' +
+                'a[href];';
+        }
+
+        if (trackChanged) {
+            ckeditorConfig.extraPlugins += ',lite';
+            ckeditorConfig['lite'] = {tooltips: false};
+        } else {
+            ckeditorConfig['removePlugins'] += ',lite';
+        }
+        ckeditorConfig['allowedContent'] = allowedContent;
+        // ckeditorConfig.pasteFilter = allowedContent; // Seems to break copy/pasting some <strong> formatting in 4.5.11
+
+        return ckeditorConfig
+    }
+
+    public getEditor(): editor {
+        return this.editor;
+    }
+
+    constructor(id) {
+        this.$el = $("#" + id);
+
+        let initialized = this.$el.data("ckeditor_initialized");
+        if (typeof (initialized) != "undefined" && initialized) {
+            return;
+        }
+        this.$el.data("ckeditor_initialized", "1");
+        this.$el.attr("contenteditable", "true");
+
+        let ckeditorConfig = AntragsgruenEditor.createConfig(
+            this.$el.attr("title"),
+            (this.$el.data("no-strike") == '1'),
+            (this.$el.data('track-changed') == '1'),
+            (this.$el.data('allow-diff-formattings') == '1'),
+            (this.$el.data('enter-mode') == 'br' ? CKEDITOR.ENTER_BR : CKEDITOR.ENTER_P)
+        );
+
+        this.editor = CKEDITOR.inline(id, ckeditorConfig);
+
+        this.initMaxLen();
+    }
+}

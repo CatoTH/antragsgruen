@@ -22,12 +22,11 @@ $this->title = \Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitl
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion/listall'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_amend'));
 
-$layout->addJS('js/backend.js');
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
-
+$layout->setMainAMDModule('backend/AmendmentEdit');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
@@ -173,7 +172,8 @@ if (!$amendment->textFixed) {
 <div class="content" id="amendmentTextEditCaller">
     <button type="button" class="btn btn-default">' . \Yii::t('admin', 'amend_edit_text') . '</button>
 </div>
-<div class="content hidden" id="amendmentTextEditHolder">';
+<div class="content hidden" id="amendmentTextEditHolder"
+     data-multiple-paragraphs="' . ($multipleParagraphs ? 1 : 0) . '">';
 
     foreach ($form->sections as $section) {
         echo $section->getSectionType()->getAmendmentFormField();
@@ -224,5 +224,3 @@ echo '<div class="saveholder">
 </div>';
 
 echo Html::endForm();
-
-$layout->addOnLoadJS('jQuery.AntragsgruenAdmin.amendmentEditInit(' . ($multipleParagraphs ? 1 : 0) . ');');
