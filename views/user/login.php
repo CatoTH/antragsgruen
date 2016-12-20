@@ -18,6 +18,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('user', 'login_title');
 $layout->addBreadcrumb(\Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
+$layout->setMainAMDModule('frontend/LoginForm');
 
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;
@@ -218,5 +219,3 @@ if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo Html::endForm();
     echo '</div></section>';
 }
-
-$layout->addOnLoadJS('jQuery.Antragsgruen.loginForm();');

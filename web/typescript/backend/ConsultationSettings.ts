@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/fuelux/index.d.ts" />
+/// <reference path="../typings/fuelux/index.d.ts" />
 
 declare let Sortable: any;
 

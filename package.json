@@ -40,7 +40,8 @@
         "@types/ckeditor": "*",
         "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
         "@types/sortablejs": "^1.3.30",
-        "@types/typeahead": "^0.11.27"
+        "@types/typeahead": "^0.11.27",
+        "@types/bootstrap": "^3.3.32"
     },
     "directories": {
         "bin": "./bin/"

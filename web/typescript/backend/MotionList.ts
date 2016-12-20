@@ -1,4 +1,4 @@
-/// <reference path="../../../typings/colresizable/index.d.ts" />
+/// <reference path="../typings/colresizable/index.d.ts" />
 
 class MotionList {
     constructor() {
