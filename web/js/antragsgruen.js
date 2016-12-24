@@ -1184,77 +1184,6 @@ function __t(category, str) {
         });
     };
 
-    var loginForm = function () {
-        var $form = $("#usernamePasswordForm"),
-            pwMinLen = $("#passwordInput").data("min-len");
-        $form.find("input[name=createAccount]").change(function () {
-            if ($(this).prop("checked")) {
-                $("#pwdConfirm").removeClass('hidden');
-                $("#regName").removeClass('hidden').find("input").attr("required", "required");
-                $("#passwordInput").attr("placeholder", "Min. " + pwMinLen + " Zeichen");
-                $("#create_str").removeClass('hidden');
-                $("#login_str").addClass('hidden');
-            } else {
-                $("#pwdConfirm").addClass('hidden');
-                $("#regName").addClass('hidden').find("input").removeAttr("required");
-                $("#passwordInput").attr("placeholder", "");
-                $("#createStr").addClass('hidden');
-                $("#loginStr").removeClass('hidden');
-            }
-        }).trigger("change");
-        $form.submit(function (ev) {
-            var pwd = $("#passwordInput").val();
-            if (pwd.length < pwMinLen) {
-                ev.preventDefault();
-                bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
-            }
-            if ($form.find("input[name=createAccount]").prop("checked")) {
-                if (pwd != $("#passwordConfirm").val()) {
-                    ev.preventDefault();
-                    bootbox.alert(__t("std", "pw_no_match"));
-                }
-            }
-        });
-    };
-
-    var accountEdit = function () {
-        var pwMinLen = $("#userPwd").data("min-len");
-
-        $('.accountDeleteForm input[name=accountDeleteConfirm]').change(function () {
-            if ($(this).prop("checked")) {
-                $(".accountDeleteForm button[name=accountDelete]").prop("disabled", false);
-            } else {
-                $(".accountDeleteForm button[name=accountDelete]").prop("disabled", true);
-            }
-        }).trigger('change');
-
-        var $emailExisting = $('.emailExistingRow');
-        if ($emailExisting.length == 1) {
-            var $changeRow = $('.emailChangeRow');
-            $changeRow.addClass('hidden');
-            $(".requestEmailChange").click(function (ev) {
-                ev.preventDefault();
-                $changeRow.removeClass("hidden");
-                $emailExisting.addClass("hidden");
-                $changeRow.find("input").focus();
-            });
-        }
-
-        $('.userAccountForm').submit(function (ev) {
-            var pwd = $("#userPwd").val(),
-                pwd2 = $("#userPwd2").val();
-            if (pwd != '' || pwd2 != '') {
-                if (pwd.length < pwMinLen) {
-                    ev.preventDefault();
-                    bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
-                } else if (pwd != pwd2) {
-                    ev.preventDefault();
-                    bootbox.alert(__t("std", "pw_no_match"));
-                }
-            }
-        });
-    };
-
     // Needs to be synchronized with CunsultationAgendaItem:getSortedFromConsultation
     var recalcAgendaCodes = function () {
         var recalcAgendaNode = function ($ol) {
@@ -1287,7 +1216,6 @@ function __t(category, str) {
     };
 
     $.Antragsgruen = {
-        'loginForm': loginForm,
         'motionShow': motionShow,
         'amendmentShow': amendmentShow,
         'motionEditForm': motionEditForm,
@@ -1297,7 +1225,6 @@ function __t(category, str) {
         'amendmentMergeForm': amendmentMergeForm,
         'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
-        'accountEdit': accountEdit,
         'recalcAgendaCodes': recalcAgendaCodes
     };
 

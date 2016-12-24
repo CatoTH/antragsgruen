@@ -17,6 +17,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(\Yii::t('user', 'my_acc_bread'));
 $layout->robotsNoindex = true;
+$layout->setMainAMDModule('frontend/AccountEdit');
 
 
 $formUrl = \app\components\UrlHelper::createUrl('user/myaccount');
@@ -114,5 +115,3 @@ echo '<h2 class="green">' . \Yii::t('user', 'del_title') . '</h2>' .
      </div>
     ' . Html::endForm();
 
-
-$layout->addOnLoadJS('jQuery.Antragsgruen.accountEdit();');
