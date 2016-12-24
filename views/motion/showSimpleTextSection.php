@@ -74,17 +74,19 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
     echo '">';
     if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
-        $linesArr = [];
-        foreach ($paragraph->lines as $line) {
+        foreach ($paragraph->lines as $i => $line) {
             if ($section->getSettings()->lineNumbers) {
                 /** @var int $lineNo */
                 $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
                 $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
             }
             $line       = str_replace('<br>', '', $line);
-            $linesArr[] = $line;
+            $first3     = substr($line, 0, 3);
+            if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
+                echo '<br>';
+            }
+            echo $line;
         }
-        echo implode('<br>', $linesArr);
     } else {
         echo $paragraph->origStr;
     }
