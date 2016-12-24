@@ -15,6 +15,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->loadCKEditor();
+$layout->setMainAMDModule('frontend/MergeSingleAmendment');
 
 $this->title = $amendment->getTitle() . ': ' . 'Änderungen übernehmen';
 
@@ -38,7 +39,7 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
 
 <h1><?= Html::encode($this->title) ?></h1>
 
-<?= Html::beginForm('', 'post', ['class' => 'content amendmentMergeForm']) ?>
+<?= Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentMergeForm']) ?>
 
 <div class="alert alert-info">
     Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen Änderungen
@@ -59,7 +60,8 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
         foreach ($paragraphs as $paragraphNo => $paraData) {
             $nameBase = 'newParas[' . $sectionId . '][' . $paragraphNo . ']';
             ?>
-            <section class="paragraph paragraph_<?= $sectionId ?>_<?= $paragraphNo ?> unmodified">
+            <section class="paragraph paragraph_<?= $sectionId ?>_<?= $paragraphNo ?> unmodified"
+                     data-unchanged-amendment="<?=Html::encode($paraData['plain'])?>">
                 <h2 class="green"><?php
                     echo str_replace(
                         ['%LINEFROM%', '%LINETO%'],
@@ -95,7 +97,7 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
             <?php
         }
     }
-    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
+    $url = UrlHelper::createAmendmentUrl($amendment, 'get-merge-collissions');
     if ($needsCollissionCheck) {
         echo '<div class="checkButtonRow">';
         echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
@@ -138,5 +140,3 @@ echo '<button type="submit" name="save" class="btn btn-primary save">' . \Yii::t
 </div>';
 
 echo Html::endForm();
-
-$layout->addOnLoadJS('jQuery.Antragsgruen.amendmentMergeForm();');
