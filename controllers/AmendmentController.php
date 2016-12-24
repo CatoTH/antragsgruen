@@ -251,7 +251,18 @@ class AmendmentController extends Base
             throw new Access('Not allowed to use this function');
         }
 
-        $newSections = \Yii::$app->request->post('newSections', []);
+        $newSectionParas = \Yii::$app->request->post('newSections', []);
+        $newSections = [];
+        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
+            if (isset($newSectionParas[$section->sectionId])) {
+                foreach ($newSectionParas[$section->sectionId] as $paraNo => $para) {
+                    $amendmentParas[$paraNo] = $para;
+                }
+            }
+            $newSections[$section->sectionId] = implode("\n", $amendmentParas);
+        }
+
 
         $collissions = $amendments = [];
         foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {

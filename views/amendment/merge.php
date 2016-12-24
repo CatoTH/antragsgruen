@@ -61,7 +61,8 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
             $nameBase = 'newParas[' . $sectionId . '][' . $paragraphNo . ']';
             ?>
             <section class="paragraph paragraph_<?= $sectionId ?>_<?= $paragraphNo ?> unmodified"
-                     data-unchanged-amendment="<?=Html::encode($paraData['plain'])?>">
+                     data-unchanged-amendment="<?=Html::encode($paraData['plain'])?>"
+                     data-section-id="<?=$sectionId?>" data-paragraph-no="<?=$paragraphNo?>">
                 <h2 class="green"><?php
                     echo str_replace(
                         ['%LINEFROM%', '%LINETO%'],
@@ -110,6 +111,7 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
 <fieldset class="amendmentCollissionsHolder"></fieldset>
 
 <fieldset class="otherAmendmentStatus">
+    <h2 class="green">Stati der Änderungsanträge</h2>
     <?php
     foreach ($otherAmendments as $otherAmend) {
         echo '<div class="row"><div class="col-md-3">';

@@ -143,6 +143,7 @@ export class AntragsgruenEditor {
 
         let initialized = this.$el.data("ckeditor_initialized");
         if (typeof (initialized) != "undefined" && initialized) {
+            console.log("initialized", id);
             return;
         }
         this.$el.data("ckeditor_initialized", "1");

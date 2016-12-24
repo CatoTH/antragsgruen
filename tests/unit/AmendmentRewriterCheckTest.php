@@ -3,6 +3,7 @@
 namespace unit;
 
 use app\components\diff\AmendmentRewriter;
+use app\components\diff\DiffRenderer;
 
 class AmendmentRewriterCheckTest extends TestBase
 {
@@ -54,5 +55,25 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertEquals([
             1 => '<p>Test 4</p>'
         ], $colliding);
+    }
+
+    /**
+     */
+    public function testAffectedAddingLines()
+    {
+        $oldSections = [
+            '<p>The old line</p>'
+        ];
+        $newSections = [
+            '<p>Inserted before</p>',
+            '<p>Inserted before2</p>',
+            '<p>The old line</p>',
+            '<p>Inserted after</p>',
+        ];
+        $affected = AmendmentRewriter::computeAffectedParagraphs($oldSections, $newSections, true);
+        $this->assertEquals(1, count($affected));
+        $renderer = new DiffRenderer();
+        $diff = $renderer->renderHtmlWithPlaceholders($affected[0]);
+        $this->assertEquals('<p><ins>Inserted before</ins></p><p class="inserted">Inserted before2</p><p>The old line</p><p><ins>Inserted after</ins></p>', $diff);
     }
 }

@@ -25,8 +25,8 @@ class AmendmentRewriter
         $oldWithoutEmpty = $newWithoutEmpty = [];
         for ($i = 0; $i < count($oldAdjusted); $i++) {
             if ($oldAdjusted[$i] == '###EMPTYINSERTED###') {
-                if ($i == 0) {
-                    $pendinginsert = $newAdjusted[$i];
+                if (count($newWithoutEmpty) == 0) {
+                    $pendinginsert .= $newAdjusted[$i];
                 } else {
                     $newWithoutEmpty[count($newWithoutEmpty) - 1] .= $newAdjusted[$i];
                 }
