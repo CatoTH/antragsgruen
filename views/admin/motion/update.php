@@ -84,8 +84,8 @@ echo \Yii::t('admin', 'motion_replaces');
 echo ':</label><div class="col-md-9">';
 
 $options = ['-'];
-foreach ($consultation->motions as $motion) {
-    $options[$motion->id] = $motion->getTitleWithPrefix();
+foreach ($consultation->motions as $otherMotion) {
+    $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
 }
 $attrs = ['id' => 'parentMotion', 'class' => 'form-control'];
 echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs);
