@@ -239,12 +239,11 @@ class AmendmentController extends Base
     /**
      * @param string $motionSlug
      * @param int $amendmentId
-     * @param int $withDiff
      * @return string
      * @throws Access
      * @throws NotFound
      */
-    public function actionGetMergeCollissions($motionSlug, $amendmentId, $withDiff)
+    public function actionGetMergeCollissions($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
@@ -273,7 +272,7 @@ class AmendmentController extends Base
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId]);
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], true);
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
                         $amendments[$amend->id]  = $amend;

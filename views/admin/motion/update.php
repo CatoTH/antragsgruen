@@ -246,11 +246,7 @@ echo $this->render('_update_supporter', [
 
 echo '<div class="saveholder">';
 if ($needsCollissionCheck) {
-    $url = UrlHelper::createUrl([
-        'admin/motion/get-amendment-rewrite-collissions',
-        'motionId' => $motion->id,
-        'withDiff' => false,
-    ]);
+    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
     echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
         'Check for collissions' . '</button>';
 }

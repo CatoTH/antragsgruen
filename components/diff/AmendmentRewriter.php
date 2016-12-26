@@ -55,12 +55,14 @@ class AmendmentRewriter
     {
         $matchingNewParagraphs = static::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
 
-        $affected = [];
-        $diff     = new Diff();
+        $affected     = [];
+        $diff         = new Diff();
+        $diffRenderer = new DiffRenderer();
         for ($i = 0; $i < count($matchingNewParagraphs); $i++) {
             if ($oldParagraphs[$i] != $matchingNewParagraphs[$i]) {
                 if ($asDiff) {
-                    $affected[$i] = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
+                    $diffPlain = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
+                    $affected[$i] = $diffRenderer->renderHtmlWithPlaceholders($diffPlain);
                 } else {
                     $affected[$i] = $matchingNewParagraphs[$i];
                 }
@@ -111,11 +113,6 @@ class AmendmentRewriter
 
         $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, $asDiff);
         $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, $asDiff);
-
-        var_dump($motionOldSections);
-        var_dump($motionNewSections);
-        var_dump($affectedByNewMotion);
-        die();
 
         $paraNos = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         $paras   = [];
