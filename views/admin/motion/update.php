@@ -214,7 +214,7 @@ if (!$motion->textFixed) {
             If you need to change the text of the motion here, please note that this can be tricky if there already
             is an amendment affecting the same part of the text that you change. In that case, you will not
             adapt your changes to every colliding amendment before you can save the new version.' .
-        '</div>';
+            '</div>';
     }
 
     foreach ($form->sections as $section) {
@@ -246,7 +246,11 @@ echo $this->render('_update_supporter', [
 
 echo '<div class="saveholder">';
 if ($needsCollissionCheck) {
-    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
+    $url = UrlHelper::createUrl([
+        'admin/motion/get-amendment-rewrite-collissions',
+        'motionId' => $motion->id,
+        'withDiff' => false,
+    ]);
     echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
         'Check for collissions' . '</button>';
 }

@@ -78,7 +78,7 @@ class MotionEdit {
 
     private loadAmendmentCollissions() {
         let url = $(".checkAmendmentCollissions").data("url"),
-            sections = [],
+            sections = {},
             $holder = $(".amendmentCollissionsHolder");
 
         $("#motionTextEditHolder").children().each(function () {

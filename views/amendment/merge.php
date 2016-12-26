@@ -87,7 +87,7 @@ $needsCollissionCheck = (count($otherAmendments) > 0);
                     </div>
                 </div>
                 <div class="affectedBlock">
-                    <textarea name="<?= $nameBase ?>[modified]" class="" title=""></textarea>
+                    <textarea name="<?= $nameBase ?>[modified]" class="modifiedText" title=""></textarea>
                     <div id="new_paragraphs_<?= $sectionId ?>_<?= $paragraphNo ?>"
                          class="<?=$fixedClass?> texteditor texteditorBox"
                          title="<?= 'Änderungsantrag anpassen' ?>" data-track-changed="1">

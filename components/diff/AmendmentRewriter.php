@@ -112,6 +112,11 @@ class AmendmentRewriter
         $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, $asDiff);
         $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, $asDiff);
 
+        var_dump($motionOldSections);
+        var_dump($motionNewSections);
+        var_dump($affectedByNewMotion);
+        die();
+
         $paraNos = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         $paras   = [];
         foreach ($paraNos as $paraNo) {

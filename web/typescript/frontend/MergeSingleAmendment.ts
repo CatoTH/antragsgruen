@@ -21,18 +21,20 @@ class MergeSingleAmendment {
         this.$affectedParagraphs.each((i, el) => {
             this.initAffectedParagraph(el);
         });
-
+        this.$form.submit(this.onSubmit.bind(this));
     }
 
     private initAffectedParagraph(el) {
         let $paragraph = $(el);
+
         $paragraph.find(".modifySelector input").change(function () {
             if ($paragraph.find(".modifySelector input:checked").val() == "1") {
                 $paragraph.addClass("modified").removeClass("unmodified");
             } else {
                 $paragraph.removeClass("modified").addClass("unmodified");
             }
-        });
+        }).trigger("change");
+
         let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no");
         this.editors[key] = new AntragsgruenEditor($paragraph.find(".affectedBlock > .texteditor").attr("id"));
     }
@@ -99,6 +101,20 @@ class MergeSingleAmendment {
 
         this.$checkCollissions.hide();
         $(".saveholder .save").prop("disabled", false).show();
+    }
+
+    private onSubmit() {
+        this.$affectedParagraphs.each((i, el) => {
+            let $paragraph = $(el),
+                $input = $paragraph.find(".modifiedText");
+
+            if ($paragraph.find(".modifySelector input:checked").val() == "1") {
+                let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no");
+                $input.val(this.editors[key].getEditor().getData());
+            } else {
+                $input.val($paragraph.data("unchanged-amendment"));
+            }
+        });
     }
 }
 

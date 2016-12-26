@@ -13,10 +13,12 @@ use app\models\db\ConsultationLog;
 use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
 use app\models\sectionTypes\ISectionType;
+use app\models\forms\MergeSingleAmendmentForm;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -237,11 +239,12 @@ class AmendmentController extends Base
     /**
      * @param string $motionSlug
      * @param int $amendmentId
+     * @param int $withDiff
      * @return string
      * @throws Access
      * @throws NotFound
      */
-    public function actionGetMergeCollissions($motionSlug, $amendmentId)
+    public function actionGetMergeCollissions($motionSlug, $amendmentId, $withDiff)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
@@ -252,9 +255,9 @@ class AmendmentController extends Base
         }
 
         $newSectionParas = \Yii::$app->request->post('newSections', []);
-        $newSections = [];
+        $newSections     = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
+            $amendmentParas = HTMLTools::sectionSimpleHTML($section->data);
             if (isset($newSectionParas[$section->sectionId])) {
                 foreach ($newSectionParas[$section->sectionId] as $paraNo => $para) {
                     $amendmentParas[$paraNo] = $para;
@@ -291,6 +294,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws Access
+     * @throws Internal
      * @throws NotFound
      */
     public function actionMerge($motionSlug, $amendmentId)
@@ -305,6 +309,23 @@ class AmendmentController extends Base
 
         $motion     = $amendment->getMyMotion();
         $lineLength = $this->consultation->getSettings()->lineLength;
+
+        if ($this->isPostSet('save')) {
+            $form                = new MergeSingleAmendmentForm(
+                $amendment,
+                Amendment::STATUS_ACCEPTED, // @TODO
+                \Yii::$app->request->post('newParas', []),
+                \Yii::$app->request->post('amendmentOverride', []),
+                \Yii::$app->request->post('amendmentStatus', [])
+            );
+            if (!$form->checkConsistency()) {
+                die("NOT OK");
+                throw new Internal("The input is incosistent");
+            }
+            die("OK");
+
+
+        }
 
         $paragraphSections = [];
         $diffRenderer      = new DiffRenderer();
