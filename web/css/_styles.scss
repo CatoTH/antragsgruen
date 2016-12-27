@@ -9,6 +9,10 @@ button.link {
   display: none;
 }
 
+.fueluxSelectHolder {
+  position: relative; // fuelux
+}
+
 del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
   color: #880000;
   text-decoration: line-through;

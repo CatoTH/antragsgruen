@@ -310,20 +310,18 @@ class AmendmentController extends Base
         $lineLength = $this->consultation->getSettings()->lineLength;
 
         if ($this->isPostSet('save')) {
-            $form                = new MergeSingleAmendmentForm(
+            $form = new MergeSingleAmendmentForm(
                 $amendment,
-                Amendment::STATUS_ACCEPTED, // @TODO
+                $motion->titlePrefix . 'neu', // @TODO
+                \Yii::$app->request->post('amendmentStatus'),
                 \Yii::$app->request->post('newParas', []),
                 \Yii::$app->request->post('amendmentOverride', []),
-                \Yii::$app->request->post('amendmentStatus', [])
+                \Yii::$app->request->post('otherAmendmentsStatus', [])
             );
-            if (!$form->checkConsistency()) {
-                die("NOT OK");
-                throw new Internal("The input is incosistent");
+            if ($form->checkConsistency()) {
+                $newAmendment = $form->performRewrite();
+                var_dump($newAmendment);
             }
-            die("OK");
-
-
         }
 
         $paragraphSections = [];

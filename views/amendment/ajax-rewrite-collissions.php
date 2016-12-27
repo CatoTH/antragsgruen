@@ -15,15 +15,17 @@ if (count($collissions) == 0) {
 }
 
 ?>
-<div class="alert alert-danger">
-    <strong><?='Es gibt Kollissionen mit bestehenden Änderungsanträgen'?></strong><br>
-    <br>
-    Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen Absätze
-    nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt, mit denen es
-    Kollissionen gibt.<br>
-    Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten bleibt</strong>.
-</div>
-
+    <div class="content">
+        <div class="alert alert-danger">
+            <strong><?= 'Es gibt Kollissionen mit bestehenden Änderungsanträgen' ?></strong><br>
+            <br>
+            Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
+            Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
+            mit denen es Kollissionen gibt.<br>
+            Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten
+                bleibt</strong>.
+        </div>
+    </div>
 <?php
 
 $fixedWidthSections = [];
@@ -36,6 +38,7 @@ foreach ($amendments[array_keys($amendments)[0]]->getActiveSections() as $sectio
 foreach ($collissions as $amendmentId => $sections) {
     $amendment = $amendments[$amendmentId];
     echo '<h2 class="green">' . Html::encode($amendment->getTitle()) . '</h2>';
+    echo '<div class="content">';
     echo '<div class="amendmentBy">' .
         '(Eingereicht von' . ': ' . $amendment->getInitiatorsStr() . ', ' .
         'am' . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
@@ -50,7 +53,7 @@ foreach ($collissions as $amendmentId => $sections) {
             }
             echo 'texteditor texteditorBox" title="' . 'Änderungsantrag anpassen' . '">';
             echo $text;
-            echo '</div></section>';
+            echo '</div></div></section>';
         }
     }
 }

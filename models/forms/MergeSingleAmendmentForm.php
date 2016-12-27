@@ -4,13 +4,20 @@ namespace app\models\forms;
 
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use app\models\db\MotionSection;
+use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
 
 class MergeSingleAmendmentForm extends Model
 {
     /** @var Motion */
-    public $motion;
+    public $oldMotion;
+    /** @var null|Motion */
+    public $newMotion = null;
+
+    /** @var string */
+    public $newTitlePrefix;
 
     /** @var Amendment */
     public $mergeAmendment;
@@ -26,14 +33,16 @@ class MergeSingleAmendmentForm extends Model
     /**
      * @param Amendment $amendment
      * @param int $newStatus
+     * @param int $newTitlePrefix
      * @param array $paragraphs
      * @param array $otherAmendOverrides
      * @param array $otherAmendStati
      */
-    public function __construct(Amendment $amendment, $newStatus, $paragraphs, $otherAmendOverrides, $otherAmendStati)
+    public function __construct(Amendment $amendment, $newTitlePrefix, $newStatus, $paragraphs, $otherAmendOverrides, $otherAmendStati)
     {
         parent::__construct();
-        $this->motion              = $amendment->getMyMotion();
+        $this->newTitlePrefix      = $newTitlePrefix;
+        $this->oldMotion           = $amendment->getMyMotion();
         $this->mergeAmendment      = $amendment;
         $this->mergeAmendStatus    = $newStatus;
         $this->paragraphs          = $paragraphs;
@@ -90,5 +99,63 @@ class MergeSingleAmendmentForm extends Model
         }
 
         return true;
+    }
+
+    /**
+     */
+    private function createNewMotion()
+    {
+        $this->newMotion                  = new Motion();
+        $this->newMotion->consultationId  = $this->oldMotion->consultationId;
+        $this->newMotion->motionTypeId    = $this->oldMotion->motionTypeId;
+        $this->newMotion->parentMotionId  = $this->oldMotion->id;
+        $this->newMotion->agendaItemId    = $this->oldMotion->agendaItemId;
+        $this->newMotion->title           = $this->oldMotion->title;
+        $this->newMotion->titlePrefix     = $this->newTitlePrefix;
+        $this->newMotion->dateCreation    = date('Y-m-d H:i:s');
+        $this->newMotion->datePublication = date('Y-m-d H:i:s');
+        $this->newMotion->dateResolution  = $this->oldMotion->dateResolution;
+        $this->newMotion->statusString    = $this->oldMotion->statusString;
+        $this->newMotion->status          = $this->oldMotion->status;
+        $this->newMotion->noteInternal    = $this->oldMotion->noteInternal;
+        $this->newMotion->textFixed       = $this->oldMotion->textFixed;
+        $this->newMotion->slug            = $this->oldMotion->slug;
+        $this->newMotion->cache           = '';
+        if (!$this->newMotion->save()) {
+            throw new DB($this->newMotion->getErrors());
+        }
+    }
+
+    /**
+     * @throws DB
+     */
+    private function createNewMotionSections()
+    {
+        $newSections = $this->getNewHtmlParas();
+
+        foreach ($this->oldMotion->sections as $section) {
+            $newSection = new MotionSection();
+            $newSection->setAttributes($section->getAttributes(), false);
+            $newSection->motionId = $this->newMotion->id;
+            if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                if (isset($newSections[$section->sectionId])) {
+                    $newSection->data    = $newSections[$section->sectionId];
+                    $newSection->dataRaw = '';
+                }
+            }
+            if (!$newSection->save()) {
+                throw new DB($newSection->getErrors());
+            }
+        }
+    }
+
+    /**
+     * @return Motion
+     */
+    public function performRewrite()
+    {
+        $this->createNewMotion();
+        $this->createNewMotionSections();
+        return $this->newMotion;
     }
 }
