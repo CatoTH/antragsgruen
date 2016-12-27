@@ -272,7 +272,7 @@ class AmendmentController extends Base
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], true);
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
                         $amendments[$amend->id]  = $amend;

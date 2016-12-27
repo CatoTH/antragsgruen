@@ -7,6 +7,7 @@ class MergeSingleAmendment {
     private $checkCollissions: JQuery;
     private $affectedParagraphs: JQuery;
     private editors: AntragsgruenEditor[] = [];
+    private collissionEditors: { [id: string]: AntragsgruenEditor} = {};
 
     constructor() {
         this.$form = $("#amendmentMergeForm");
@@ -71,15 +72,6 @@ class MergeSingleAmendment {
             sections[$el.data("section-id")][$el.data("paragraph-no")] = text;
         });
 
-        /*
-         $("#motionTextEditHolder").children().each(function () {
-         let $this = $(this);
-         if ($this.hasClass("wysiwyg-textarea")) {
-         let sectionId = $this.attr("id").replace("section_holder_", "");
-         sections[sectionId] = CKEDITOR.instances[$this.find(".texteditor").attr("id")].getData();
-         }
-         });
-         */
         $.post(url, {
             'newSections': sections,
             '_csrf': this.$form.find('> input[name=_csrf]').val()
@@ -89,12 +81,14 @@ class MergeSingleAmendment {
     private collissionsLoaded(html) {
         console.log(html);
 
+        this.collissionEditors = {};
         this.$collissionHolder.html(html);
         let $texteditors = this.$collissionHolder.find(".amendmentOverrideBlock > .texteditor");
 
         if ($texteditors.length > 0) {
             $texteditors.each((i, el) => {
-                new AntragsgruenEditor($(el).attr("id"));
+                let id = $(el).attr("id");
+                this.collissionEditors[id] = new AntragsgruenEditor(id);
             });
             this.$collissionHolder.scrollintoview({top_offset: -50});
         }
@@ -115,6 +109,10 @@ class MergeSingleAmendment {
                 $input.val($paragraph.data("unchanged-amendment"));
             }
         });
+        for (let id in this.collissionEditors) {
+            let html = this.collissionEditors[id].getEditor().getData();
+            $("#" + id).parents(".amendmentOverrideBlock").first().find("> textarea").val(html);
+        }
     }
 }
 

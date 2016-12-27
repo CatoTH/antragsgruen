@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\diff\AmendmentRewriter;
+use app\components\diff\ArrayMatcher;
 use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
@@ -211,6 +212,17 @@ class AmendmentSection extends IMotionSection
 
         $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
         return $amParagraphs;
+    }
+
+    /**
+     * @param bool $splitListItems
+     * @return \string[]
+     */
+    public function getParagraphsRelativeToOriginal($splitListItems = true)
+    {
+        $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
+        $oldSections = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data, $splitListItems);
+        return ArrayMatcher::computeMatchingAffectedParagraphs($oldSections, $newSections);
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace app\models\forms;
 
-use app\models\db\Amendment;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsTag;
@@ -185,10 +184,7 @@ class MotionEditForm extends Model
     public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
     {
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            foreach ($amendment->getActiveSections() as $section) {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $section_overrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
@@ -201,10 +197,7 @@ class MotionEditForm extends Model
         }
 
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            foreach ($amendment->getActiveSections() as $section) {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $section_overrides = $overrides[$amendment->id][$section->sectionId];
                 } else {
@@ -214,10 +207,8 @@ class MotionEditForm extends Model
                 $section->save();
             }
         }
-        foreach ($motion->getActiveSections() as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                continue;
-            }
+
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $section->data = $newHtmls[$section->sectionId];
             $section->save();
         }

@@ -48,8 +48,7 @@ foreach ($collissions as $amendmentId => $sections) {
             if (in_array($sectionId, $fixedWidthSections)) {
                 echo 'fixedWidthFont ';
             }
-            echo 'texteditor texteditorBox" data-allow-diff-formattings="1" 
-                  title="' . 'Änderungsantrag anpassen' . '">';
+            echo 'texteditor texteditorBox" title="' . 'Änderungsantrag anpassen' . '">';
             echo $text;
             echo '</div></section>';
         }

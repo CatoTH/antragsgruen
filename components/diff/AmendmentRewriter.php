@@ -7,42 +7,6 @@ use app\models\exceptions\Internal;
 
 class AmendmentRewriter
 {
-    /**
-     * @param string[]   $oldParagraphs
-     * @param string[]   $newParagraphs
-     * @return string[]
-     * @throws Internal
-     */
-    private static function computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs)
-    {
-        $matcher = new ArrayMatcher();
-        list($oldAdjusted, $newAdjusted) = $matcher->matchForDiff($oldParagraphs, $newParagraphs);
-        if (count($oldAdjusted) != count($newAdjusted)) {
-            throw new Internal('compareSectionedHtml: number of sections does not match');
-        }
-
-        $pendinginsert   = '';
-        $oldWithoutEmpty = $newWithoutEmpty = [];
-        for ($i = 0; $i < count($oldAdjusted); $i++) {
-            if ($oldAdjusted[$i] == '###EMPTYINSERTED###') {
-                if (count($newWithoutEmpty) == 0) {
-                    $pendinginsert .= $newAdjusted[$i];
-                } else {
-                    $newWithoutEmpty[count($newWithoutEmpty) - 1] .= $newAdjusted[$i];
-                }
-            } else {
-                $oldWithoutEmpty[] = $oldAdjusted[$i];
-                $newWithoutEmpty[] = $pendinginsert . $newAdjusted[$i];
-                $pendinginsert     = '';
-            }
-        }
-
-        if (serialize($oldParagraphs) != serialize($oldWithoutEmpty)) {
-            throw new Internal("An internal error matching the paragraphs ocurred");
-        }
-
-        return $newWithoutEmpty;
-    }
 
     /**
      * @param string[] $oldParagraphs
@@ -53,7 +17,7 @@ class AmendmentRewriter
      */
     public static function computeAffectedParagraphs($oldParagraphs, $newParagraphs, $asDiff = false)
     {
-        $matchingNewParagraphs = static::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
+        $matchingNewParagraphs = ArrayMatcher::computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs);
 
         $affected     = [];
         $diff         = new Diff();
