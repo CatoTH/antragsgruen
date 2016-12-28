@@ -319,8 +319,8 @@ class AmendmentController extends Base
                 \Yii::$app->request->post('otherAmendmentsStatus', [])
             );
             if ($form->checkConsistency()) {
-                $newAmendment = $form->performRewrite();
-                var_dump($newAmendment);
+                $newMotion = $form->performRewrite();
+                return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $newMotion]);
             }
         }
 

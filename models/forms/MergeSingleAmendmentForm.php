@@ -5,6 +5,7 @@ namespace app\models\forms;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\db\MotionSupporter;
 use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
@@ -38,8 +39,14 @@ class MergeSingleAmendmentForm extends Model
      * @param array $otherAmendOverrides
      * @param array $otherAmendStati
      */
-    public function __construct(Amendment $amendment, $newTitlePrefix, $newStatus, $paragraphs, $otherAmendOverrides, $otherAmendStati)
-    {
+    public function __construct(
+        Amendment $amendment,
+        $newTitlePrefix,
+        $newStatus,
+        $paragraphs,
+        $otherAmendOverrides,
+        $otherAmendStati
+    ) {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
         $this->oldMotion           = $amendment->getMyMotion();
@@ -76,7 +83,7 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->mergeAmendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             if ($this->mergeAmendment->id == $amendment->id) {
                 continue;
             }
@@ -124,6 +131,16 @@ class MergeSingleAmendmentForm extends Model
         if (!$this->newMotion->save()) {
             throw new DB($this->newMotion->getErrors());
         }
+
+        foreach ($this->oldMotion->motionSupporters as $supporter) {
+            $newSupporter = new MotionSupporter();
+            $newSupporter->setAttributes($supporter->getAttributes(), false);
+            $newSupporter->id       = null;
+            $newSupporter->motionId = $this->newMotion->id;
+            if (!$newSupporter->save()) {
+                throw new DB($this->newMotion->getErrors());
+            }
+        }
     }
 
     /**
@@ -150,12 +167,53 @@ class MergeSingleAmendmentForm extends Model
     }
 
     /**
+     * @throws DB
+     */
+    private function rewriteOtherAmendments()
+    {
+        $newSections = $this->getNewHtmlParas();
+        $overrides   = $this->otherAmendOverrides;
+
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            if ($amendment->id == $this->mergeAmendment->id) {
+                continue;
+            }
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
+                    $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
+                } else {
+                    $sectionOverrides = [];
+                }
+                $section->performRewrite($newSections[$section->sectionId], $sectionOverrides);
+                $section->dataRaw = '';
+                $section->cache   = '';
+                if (!$section->save()) {
+                    throw new DB($section->getErrors());
+                }
+            }
+            $amendment->motionId = $this->newMotion->id;
+            $amendment->cache    = '';
+            if (!$amendment->save()) {
+                throw new DB($amendment->getErrors());
+            }
+        }
+    }
+
+    /**
      * @return Motion
      */
     public function performRewrite()
     {
         $this->createNewMotion();
         $this->createNewMotionSections();
+        $this->rewriteOtherAmendments();
+
+        $this->mergeAmendment->status = $this->mergeAmendStatus;
+        $this->mergeAmendment->save();
+
+        $this->oldMotion->status = Motion::STATUS_MODIFIED;
+        $this->oldMotion->save();
+
         return $this->newMotion;
     }
 }

@@ -560,15 +560,15 @@ class HTMLTools
     {
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMNode $node */
-            $node = [
+            $nodeArr = [
                 'name'     => $node->nodeName,
                 'classes'  => '',
                 'children' => [],
             ];
             foreach ($node->childNodes as $child) {
-                $node['children'][] = static::getDomDebug($child);
+                $nodeArr['children'][] = static::getDomDebug($child);
             }
-            return $node;
+            return $nodeArr;
         } else {
             /** @var \DOMText $node */
             return [
@@ -626,6 +626,87 @@ class HTMLTools
         $shyAfters = ['itglieder', 'enden', 'voll', 'undex', 'gierten', 'wahl', 'andes'];
         foreach ($shyAfters as $shyAfter) {
             $str = str_replace($shyAfter, $shyAfter . '&shy;', $str);
+        }
+        return $str;
+    }
+
+    /**
+     * @param \DOMNode $node
+     * @return \DOMNode[]
+     */
+    private static function stripInsDelMarkersInt(\DOMNode $node)
+    {
+        if (!is_a($node, \DOMElement::class)) {
+            return [$node];
+        }
+
+        /** @var \DOMElement $node */
+        if ($node->nodeName == 'del') {
+            return [];
+        }
+        if ($node->nodeName == 'ins') {
+            $children = [];
+            while ($node->childNodes->length > 0) {
+                $child = $node->childNodes[0];
+                $node->removeChild($child);
+                $children[] = $child;
+            }
+            return $children;
+        }
+
+        $classes = [];
+        if ($node->getAttribute('class')) {
+            $classes = explode(' ', $node->getAttribute('class'));
+        }
+        if (in_array('deleted', $classes)) {
+            return [];
+        }
+
+        if (in_array('inserted', $classes)) {
+            $classes = array_filter($classes, function ($class) {
+                return ($class != 'inserted');
+            });
+            $newClasses = trim(implode(' ', $classes));
+            if ($newClasses != '') {
+                $node->setAttribute('class', $newClasses);
+            } else {
+                $node->removeAttribute('class');
+            }
+        }
+
+        $children = [];
+        while ($node->childNodes->length > 0) {
+            $child = $node->childNodes[0];
+            $node->removeChild($child);
+            $modifiedChild = static::stripInsDelMarkersInt($child);
+            $children      = array_merge($children, $modifiedChild);
+        }
+        foreach ($children as $child) {
+            $node->appendChild($child);
+        }
+
+        return [$node];
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function stripInsDelMarkers($html)
+    {
+        $src_doc = new \DOMDocument();
+        $src_doc->loadHTML(
+            '<html><head>
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+            </head><body>' . $html . '</body></html>'
+        );
+        $bodies = $src_doc->getElementsByTagName('body');
+        $body   = $bodies->item(0);
+
+        $strippedBody = static::stripInsDelMarkersInt($body);
+        $str          = '';
+        foreach ($strippedBody[0]->childNodes as $child) {
+            $str .= static::renderDomToHtml($child);
         }
         return $str;
     }

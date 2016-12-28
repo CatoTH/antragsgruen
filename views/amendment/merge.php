@@ -17,6 +17,15 @@ $layout->loadFuelux();
 $layout->loadCKEditor();
 $layout->setMainAMDModule('frontend/MergeSingleAmendment');
 
+$motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
+$layout->addBreadcrumb($amendment->getMyMotion()->motionType->titleSingular, $motionUrl);
+if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
+    $layout->addBreadcrumb(UrlHelper::createAmendmentUrl($amendment), $amendment->titlePrefix);
+} else {
+    $layout->addBreadcrumb(UrlHelper::createAmendmentUrl($amendment), \Yii::t('amend', 'amendment'));
+}
+$layout->addBreadcrumb('Änderungen übernehmen');
+
 $this->title = $amendment->getTitle() . ': ' . 'Änderungen übernehmen';
 
 $fixedWidthSections = [];

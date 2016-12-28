@@ -7,7 +7,7 @@ class MergeSingleAmendment {
     private $checkCollissions: JQuery;
     private $affectedParagraphs: JQuery;
     private editors: AntragsgruenEditor[] = [];
-    private collissionEditors: { [id: string]: AntragsgruenEditor} = {};
+    private collissionEditors: {[id: string]: AntragsgruenEditor} = {};
 
     constructor() {
         this.$form = $("#amendmentMergeForm");
@@ -52,7 +52,6 @@ class MergeSingleAmendment {
                 text;
 
             if (modified) {
-                console.log(sectionId + "_" + paragraphNo);
                 let editor: editor = this.editors[sectionId + "_" + paragraphNo].getEditor(),
                     dataOrig = editor.getData();
                 if (typeof(editor.plugins.lite) != 'undefined') {
@@ -79,8 +78,6 @@ class MergeSingleAmendment {
     }
 
     private collissionsLoaded(html) {
-        console.log(html);
-
         this.collissionEditors = {};
         this.$collissionHolder.html(html);
         let $texteditors = this.$collissionHolder.find(".amendmentOverrideBlock > .texteditor");
@@ -103,14 +100,23 @@ class MergeSingleAmendment {
                 $input = $paragraph.find(".modifiedText");
 
             if ($paragraph.find(".modifySelector input:checked").val() == "1") {
-                let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no");
-                $input.val(this.editors[key].getEditor().getData());
+                let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no"),
+                    editor: editor = this.editors[key].getEditor();
+                if (typeof(editor.plugins.lite) != 'undefined') {
+                    editor.plugins.lite.findPlugin(editor).acceptAll();
+                }
+                $input.val(editor.getData());
             } else {
                 $input.val($paragraph.data("unchanged-amendment"));
             }
         });
         for (let id in this.collissionEditors) {
-            let html = this.collissionEditors[id].getEditor().getData();
+            let editor: editor = this.collissionEditors[id].getEditor();
+            if (typeof(editor.plugins.lite) != 'undefined') {
+                editor.plugins.lite.findPlugin(editor).acceptAll();
+            }
+            let html = editor.getData();
+
             $("#" + id).parents(".amendmentOverrideBlock").first().find("> textarea").val(html);
         }
     }
