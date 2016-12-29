@@ -7,6 +7,7 @@ use app\components\diff\ArrayMatcher;
 use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use app\components\LineSplitter;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
@@ -172,6 +173,27 @@ class AmendmentSection extends IMotionSection
             $first += $section->getOriginalMotionSection()->getNumberOfCountableLines();
         }
         throw new Internal('Did not find myself');
+    }
+
+    /**
+     * Paragraph numbering starts at 0
+     * The last returned paragraph number does not actually exist but exists to calculate the length of the
+     * actual last paragraph
+     *
+     * @return int[]
+     */
+    public function getParagraphLineNumberHelper()
+    {
+        $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data);
+        $lineLength      = $this->getMotion()->getConsultation()->getSettings()->lineLength;
+        $lineNumber      = $this->getFirstLineNumber();
+        $paraLineNumbers = [];
+        for ($paraNo = 0; $paraNo < count($motionParas); $paraNo++) {
+            $paraLineNumbers[$paraNo] = $lineNumber;
+            $lineNumber += LineSplitter::countMotionParaLines($motionParas[$paraNo], $lineLength);
+        }
+        $paraLineNumbers[count($motionParas)] = $lineNumber;
+        return $paraLineNumbers;
     }
 
     /**

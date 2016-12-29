@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\components\diff\AmendmentRewriter;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
-use app\components\LineSplitter;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
@@ -253,8 +252,9 @@ class AmendmentController extends Base
             throw new Access('Not allowed to use this function');
         }
 
-        $newSectionParas = \Yii::$app->request->post('newSections', []);
-        $newSections     = [];
+        $newSectionParas       = \Yii::$app->request->post('newSections', []);
+        $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
+        $newSections           = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $amendmentParas = HTMLTools::sectionSimpleHTML($section->data);
             if (isset($newSectionParas[$section->sectionId])) {
@@ -271,14 +271,26 @@ class AmendmentController extends Base
             if ($amend->id == $amendment->id) {
                 continue;
             }
+            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+                continue;
+            }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $paraLineNumbers = $section->getParagraphLineNumberHelper();
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
                         $amendments[$amend->id]  = $amend;
                         $collissions[$amend->id] = [];
                     }
-                    $collissions[$amend->id][$section->sectionId] = $coll;
+
+                    $collissions[$amend->id][$section->sectionId] = [];
+                    foreach ($coll as $paraNo => $text) {
+                        $collissions[$amend->id][$section->sectionId][$paraNo] = [
+                            'lineFrom' => $paraLineNumbers[$paraNo],
+                            'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
+                            'text'     => $text,
+                        ];
+                    }
                 }
             }
         }
@@ -326,13 +338,12 @@ class AmendmentController extends Base
             throw new Access('Not allowed to use this function');
         }
 
-        $motion     = $amendment->getMyMotion();
-        $lineLength = $this->consultation->getSettings()->lineLength;
+        $motion = $amendment->getMyMotion();
 
         if ($this->isPostSet('save')) {
             $form = new MergeSingleAmendmentForm(
                 $amendment,
-                $motion->titlePrefix . 'neu', // @TODO
+                \Yii::$app->request->post('motionTitlePrefix'),
                 \Yii::$app->request->post('amendmentStatus'),
                 \Yii::$app->request->post('newParas', []),
                 \Yii::$app->request->post('amendmentOverride', []),
@@ -346,6 +357,9 @@ class AmendmentController extends Base
                     'merge-done',
                     ['newMotionId' => $newMotion->id]
                 ));
+            } else {
+                return $this->showErrorpage(500, 'An internal consistance error occurred. ' .
+                    'This should never happen and smells like an error in the system.');
             }
         }
 
@@ -359,15 +373,8 @@ class AmendmentController extends Base
             $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
             $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);
 
-            $lineNumber      = $section->getFirstLineNumber();
-            $paraLineNumbers = [];
-            for ($paraNo = 0; $paraNo < count($motionParas); $paraNo++) {
-                $paraLineNumbers[$paraNo] = $lineNumber;
-                $lineNumber += LineSplitter::countMotionParaLines($motionParas[$paraNo], $lineLength);
-            }
-            $paraLineNumbers[count($motionParas)] = $lineNumber;
-
-            $paragraphs = [];
+            $paraLineNumbers = $section->getParagraphLineNumberHelper();
+            $paragraphs      = [];
             foreach (array_keys($paragraphsDiff) as $paraNo) {
                 $paragraphs[$paraNo] = [
                     'lineFrom' => $paraLineNumbers[$paraNo],

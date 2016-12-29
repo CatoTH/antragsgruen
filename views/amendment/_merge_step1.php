@@ -46,12 +46,11 @@ use yii\helpers\Html;
                 echo '<span class="by">' . \Yii::t('amend', 'merge1_amend_by') . ': ' .
                     $otherAmend->getInitiatorsStr() . '</span>';
                 echo '</div><div class="col-md-9"><div class="fueluxSelectHolder">';
-                $statiAll                   = $amendment->getStati();
-                $stati                      = [
-                    Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],
-                    Amendment::STATUS_REJECTED          => $statiAll[Amendment::STATUS_REJECTED],
-                    Amendment::STATUS_MODIFIED_ACCEPTED => $statiAll[Amendment::STATUS_MODIFIED_ACCEPTED],
-                ];
+                $statiAll = $amendment->getStati();
+                $stati    = [];
+                foreach (Amendment::getStatiMarkAsDoneOnRewriting() as $statusId) {
+                    $stati[$statusId] = $statiAll[$statusId];
+                }
                 $stati[$otherAmend->status] = \Yii::t('amend', 'merge1_status_unchanged') . ': ' .
                     $statiAll[$amendment->status];
                 echo HTMLTools::fueluxSelectbox(

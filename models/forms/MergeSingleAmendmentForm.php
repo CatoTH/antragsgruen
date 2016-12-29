@@ -46,7 +46,8 @@ class MergeSingleAmendmentForm extends Model
         $paragraphs,
         $otherAmendOverrides,
         $otherAmendStati
-    ) {
+    )
+    {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
         $this->oldMotion           = $amendment->getMyMotion();
@@ -87,6 +88,9 @@ class MergeSingleAmendmentForm extends Model
             if ($this->mergeAmendment->id == $amendment->id) {
                 continue;
             }
+            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+                continue;
+            }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
@@ -94,12 +98,6 @@ class MergeSingleAmendmentForm extends Model
                     $sectionOverrides = [];
                 }
                 if (!$section->canRewrite($newSections[$section->sectionId], $sectionOverrides)) {
-                    var_dump($section->data);
-                    echo "\n\n";
-                    var_dump($newSections[$section->sectionId]);
-                    echo "\n\n";
-
-
                     return false;
                 }
             }
@@ -178,6 +176,9 @@ class MergeSingleAmendmentForm extends Model
             if ($amendment->id == $this->mergeAmendment->id) {
                 continue;
             }
+            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+                continue;
+            }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $sectionOverrides = $overrides[$amendment->id][$section->sectionId];
@@ -193,6 +194,25 @@ class MergeSingleAmendmentForm extends Model
             }
             $amendment->motionId = $this->newMotion->id;
             $amendment->cache    = '';
+            $amendment->status   = $this->otherAmendStati[$amendment->id];
+            if (!$amendment->save()) {
+                throw new DB($amendment->getErrors());
+            }
+        }
+    }
+
+    /**
+     */
+    private function setDoneAmendmentsStatuses()
+    {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            if ($amendment->id == $this->mergeAmendment->id) {
+                continue;
+            }
+            if (!in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+                continue;
+            }
+            $amendment->status = $this->otherAmendStati[$amendment->id];
             if (!$amendment->save()) {
                 throw new DB($amendment->getErrors());
             }
@@ -207,6 +227,7 @@ class MergeSingleAmendmentForm extends Model
         $this->createNewMotion();
         $this->createNewMotionSections();
         $this->rewriteOtherAmendments();
+        $this->setDoneAmendmentsStatuses();
 
         $this->mergeAmendment->status = $this->mergeAmendStatus;
         $this->mergeAmendment->save();
