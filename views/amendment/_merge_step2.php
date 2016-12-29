@@ -19,10 +19,6 @@ foreach ($amendment->getActiveSections() as $section) {
 ?>
 
 <div class="step_2">
-    <div class="content">
-        <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_introduction') ?></div>
-    </div>
-
     <fieldset class="affectedParagraphs">
         <?php
         foreach ($paragraphSections as $sectionId => $paragraphs) {

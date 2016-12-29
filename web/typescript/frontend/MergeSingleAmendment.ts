@@ -10,12 +10,14 @@ class MergeSingleAmendment {
     private $steps: {[no: string]: JQuery};
     private editors: AntragsgruenEditor[] = [];
     private collissionEditors: {[id: string]: AntragsgruenEditor} = {};
+    private $otherStatsFields: JQuery;
 
     constructor() {
         this.$form = $("#amendmentMergeForm");
         this.$collissionHolder = $(".amendmentCollissionsHolder");
         this.$checkCollissions = $(".checkAmendmentCollissions");
         this.$affectedParagraphs = $(".affectedParagraphs > .paragraph");
+        this.$otherStatsFields = $(".otherAmendmentStatus input");
 
         this.$stepWizardHolder = $("#MergeSingleWizard").find(".steps");
         this.$steps = {
@@ -72,7 +74,8 @@ class MergeSingleAmendment {
         this.gotoStep("3");
 
         let url = this.$checkCollissions.data("url"),
-            sections = {};
+            sections = {},
+            otherAmendmentsStatus = {};
 
         this.$affectedParagraphs.each((i, el) => {
             let $el = $(el),
@@ -101,8 +104,14 @@ class MergeSingleAmendment {
             sections[$el.data("section-id")][$el.data("paragraph-no")] = text;
         });
 
+        this.$otherStatsFields.each((i, el) => {
+            let $input:JQuery = $(el);
+            otherAmendmentsStatus[$input.parents(".selectlist").data("amendment-id")] = $input.val();
+        });
+
         $.post(url, {
             'newSections': sections,
+            'otherAmendmentsStatus': otherAmendmentsStatus,
             '_csrf': this.$form.find('> input[name=_csrf]').val()
         }, this.collissionsLoaded.bind(this));
     }

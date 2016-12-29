@@ -11,6 +11,8 @@ use yii\helpers\Html;
 ?>
 <div class="step_1">
     <div class="content">
+        <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_introduction') ?></div>
+
         <div class="form-group">
             <label for="motionTitlePrefix"><?= \Yii::t('amend', 'merge1_motion_prefix') ?></label>
             <input type="text" class="form-control" id="motionTitlePrefix" name="motionTitlePrefix"
@@ -35,11 +37,14 @@ use yii\helpers\Html;
     <fieldset class="otherAmendmentStatus">
         <h2 class="green"><?= \Yii::t('amend', 'merge1_other_status') ?></h2>
         <div class="content">
+            <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_status_intro') ?></div>
+
             <?php
             foreach ($otherAmendments as $otherAmend) {
                 echo '<div class="row"><div class="col-md-3">';
                 echo Html::a($otherAmend->getTitle(), UrlHelper::createAmendmentUrl($otherAmend));
-                echo ' (' . \Yii::t('amend', 'merge1_amend_by') . ': ' . $otherAmend->getInitiatorsStr() . ')';
+                echo '<span class="by">' . \Yii::t('amend', 'merge1_amend_by') . ': ' .
+                    $otherAmend->getInitiatorsStr() . '</span>';
                 echo '</div><div class="col-md-9"><div class="fueluxSelectHolder">';
                 $statiAll                   = $amendment->getStati();
                 $stati                      = [
@@ -52,7 +57,8 @@ use yii\helpers\Html;
                 echo HTMLTools::fueluxSelectbox(
                     'otherAmendmentsStatus[' . $otherAmend->id . ']',
                     $stati,
-                    $otherAmend->status
+                    $otherAmend->status,
+                    ['data-amendment-id' => $otherAmend->id]
                 );
                 echo '</div></div></div>';
             }

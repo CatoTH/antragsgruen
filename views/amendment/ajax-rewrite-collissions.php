@@ -10,21 +10,13 @@ use app\components\Tools;
 use yii\helpers\Html;
 
 if (count($collissions) == 0) {
-    echo '<div class="alert alert-success">' . 'Keine Konflikte zu bestehenden Änderungsanträgen' . '</div>';
+    echo '<div class="alert alert-success">' . \Yii::t('amend', 'merge1_no_collissions') . '</div>';
     return;
 }
 
 ?>
     <div class="content">
-        <div class="alert alert-danger">
-            <strong><?= 'Es gibt Kollissionen mit bestehenden Änderungsanträgen' ?></strong><br>
-            <br>
-            Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
-            Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
-            mit denen es Kollissionen gibt.<br>
-            Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten
-                bleibt</strong>.
-        </div>
+        <div class="alert alert-danger"><?=\Yii::t('amend', 'merge1_collission_intro')?></div>
     </div>
 <?php
 
@@ -40,8 +32,8 @@ foreach ($collissions as $amendmentId => $sections) {
     echo '<h2 class="green">' . Html::encode($amendment->getTitle()) . '</h2>';
     echo '<div class="content">';
     echo '<div class="amendmentBy">' .
-        '(Eingereicht von' . ': ' . $amendment->getInitiatorsStr() . ', ' .
-        'am' . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
+        '(' . \Yii::t('amend', 'merge1_submitted_by') . ': ' . $amendment->getInitiatorsStr() . ', ' .
+        \Yii::t('amend', 'merge1_submitted_on') . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
     foreach ($sections as $sectionId => $paragraphs) {
         foreach ($paragraphs as $paragraphNo => $text) {
             echo '<section class="amendmentOverrideBlock">';
@@ -51,7 +43,7 @@ foreach ($collissions as $amendmentId => $sections) {
             if (in_array($sectionId, $fixedWidthSections)) {
                 echo 'fixedWidthFont ';
             }
-            echo 'texteditor texteditorBox" title="' . 'Änderungsantrag anpassen' . '">';
+            echo 'texteditor texteditorBox" title="' . \Yii::t('amend', 'merge1_modify_title') . '">';
             echo $text;
             echo '</div></div></section>';
         }

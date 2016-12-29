@@ -888,9 +888,21 @@ iframe.pdfViewer {
 }
 
 #amendmentMergeForm {
+  #motionTitlePrefix, .dropdown-toggle {
+    max-width: 230px;
+  }
   .checkButtonRow {
     text-align: center;
     margin: 20px 0;
+  }
+  .otherAmendmentStatus {
+    .row {
+      margin-bottom: 15px;
+    }
+    .by {
+      display: block;
+      font-size: 0.8em;
+    }
   }
   .affectedParagraphs {
     .paragraph.unmodified .affectedBlock {
@@ -916,9 +928,6 @@ iframe.pdfViewer {
   }
   .amendmentCollissionsHolder {
     .amendmentBy {
-      margin-top: 10px;
-      margin-left: 20px;
-      margin-bottom: -10px;
       color: gray;
     }
     .amendmentOverrideBlock {
