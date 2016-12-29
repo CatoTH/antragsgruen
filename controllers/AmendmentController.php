@@ -291,6 +291,26 @@ class AmendmentController extends Base
     /**
      * @param string $motionSlug
      * @param int $amendmentId
+     * @param int $newMotionId
+     * @return string
+     * @throws NotFound
+     */
+    public function actionMergeDone($motionSlug, $amendmentId, $newMotionId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        $motion = $this->consultation->getMotion($newMotionId);
+        if (!$motion) {
+            throw new NotFound('Motion not found');
+        }
+        return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $motion]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
      * @return string
      * @throws Access
      * @throws Internal
@@ -320,7 +340,12 @@ class AmendmentController extends Base
             );
             if ($form->checkConsistency()) {
                 $newMotion = $form->performRewrite();
-                return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $newMotion]);
+
+                return $this->redirect(UrlHelper::createAmendmentUrl(
+                    $amendment,
+                    'merge-done',
+                    ['newMotionId' => $newMotion->id]
+                ));
             }
         }
 

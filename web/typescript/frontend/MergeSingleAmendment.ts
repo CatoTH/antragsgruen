@@ -6,6 +6,8 @@ class MergeSingleAmendment {
     private $form: JQuery;
     private $checkCollissions: JQuery;
     private $affectedParagraphs: JQuery;
+    private $stepWizardHolder: JQuery;
+    private $steps: {[no: string]: JQuery};
     private editors: AntragsgruenEditor[] = [];
     private collissionEditors: {[id: string]: AntragsgruenEditor} = {};
 
@@ -15,14 +17,40 @@ class MergeSingleAmendment {
         this.$checkCollissions = $(".checkAmendmentCollissions");
         this.$affectedParagraphs = $(".affectedParagraphs > .paragraph");
 
+        this.$stepWizardHolder = $("#MergeSingleWizard").find(".steps");
+        this.$steps = {
+            "1": this.$form.find("> .step_1"),
+            "2": this.$form.find("> .step_2"),
+            "3": this.$form.find("> .step_3")
+        };
+
         this.$checkCollissions.click((ev) => {
             ev.preventDefault();
             this.loadCollissions();
+        });
+        this.$steps["1"].find(".goto_2").click((ev) => {
+            ev.preventDefault();
+            this.gotoStep("2");
         });
         this.$affectedParagraphs.each((i, el) => {
             this.initAffectedParagraph(el);
         });
         this.$form.submit(this.onSubmit.bind(this));
+
+        this.gotoStep("1");
+    }
+
+    private gotoStep(no: string) {
+        for (let n in this.$steps) {
+            if (n == no) {
+                this.$steps[n].removeClass("hidden");
+            } else {
+                this.$steps[n].addClass("hidden");
+            }
+        }
+        this.$stepWizardHolder.children().removeClass("active");
+        this.$stepWizardHolder.find(".goto_step" + no).addClass("active");
+        this.$stepWizardHolder.scrollintoview({top_offset: -50});
     }
 
     private initAffectedParagraph(el) {
@@ -41,6 +69,8 @@ class MergeSingleAmendment {
     }
 
     private loadCollissions() {
+        this.gotoStep("3");
+
         let url = this.$checkCollissions.data("url"),
             sections = {};
 
@@ -87,11 +117,7 @@ class MergeSingleAmendment {
                 let id = $(el).attr("id");
                 this.collissionEditors[id] = new AntragsgruenEditor(id);
             });
-            this.$collissionHolder.scrollintoview({top_offset: -50});
         }
-
-        this.$checkCollissions.hide();
-        $(".saveholder .save").prop("disabled", false).show();
     }
 
     private onSubmit() {

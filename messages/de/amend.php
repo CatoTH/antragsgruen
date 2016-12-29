@@ -134,4 +134,33 @@ return [
     'support_finish_btn'                => 'Änderungsantrag offiziell einreichen',
     'support_finish_err'                => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'               => 'Der Änderungsantrag ist nun offiziell eingereicht',
+
+    'merge1_title'             => 'Änderungen übernehmen',
+    'merge1_step1_title'       => 'Änderungen',
+    'merge1_step2_title'       => 'Kollissionen beheben',
+    'merge1_step3_title'       => 'Status festlegen',
+    'merge1_introduction'      => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+            Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
+            bleiben aber abrufbar.<br><br>
+            Falls sich duch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
+            Ansonsten lass sie einfach unverändert.<br><br>
+            <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
+            Änderungsanträge beziehen (die nicht als erledigt markiert werden), kommt es zu Kollissionen;
+            in diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
+    'merge1_changein_x'        => 'Änderung von Zeile %LINEFROM% bis %LINETO%',
+    'merge1_changein_1'        => 'Änderung in Zeile %LINEFROM%',
+    'merge1_use_unchanged'     => 'Unverändert übernehmen',
+    'merge1_use_modified'      => 'Modifizierte Übernahme',
+    'merge1_modify_title'      => 'Änderungsantrag anpassen',
+    'merge1_check_collissions' => 'Weiter / Kollissionen überprüfen',
+    'merge1_other_status'      => 'Stati der Änderungsanträge',
+    'merge1_status_unchanged'  => 'unverändert',
+    'merge1_amend_by'          => 'von',
+    'merge1_goon'              => 'Weiter',
+    'merge1_loading'           => 'Überprüfe...',
+    'merge1_motion_prefix'     => 'Neues Kürzel des Antrags',
+    'merge1_amend_status'      => 'Neuer Status dieses Änderungsantrags',
+    'merge1_done_title'        => 'Antrag geändert',
+    'merge1_done_str'          => 'Der Änderungsantrag wurde eingepflegt.',
+    'merge1_done_goto'         => 'Zur neuen Antragsversion',
 ];
