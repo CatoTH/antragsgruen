@@ -69,8 +69,80 @@ class AmendmentRewriterCheckTest extends TestBase
             '<p>The old line</p>',
             '<p>Inserted after</p>',
         ];
-        $affected = AmendmentRewriter::computeAffectedParagraphs($oldSections, $newSections, true);
+        $affected    = AmendmentRewriter::computeAffectedParagraphs($oldSections, $newSections, true);
         $this->assertEquals(1, count($affected));
         $this->assertEquals('<p><ins>Inserted before</ins></p><p class="inserted">Inserted before2</p><p>The old line</p><p><ins>Inserted after</ins></p>', $affected[0]);
+    }
+
+    /**
+     */
+    public function testInParagraph1()
+    {
+        $oldHtml       = '<p>Test 123 Bla <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Bla<strong>STRONG</strong></p>';
+        $newHtml       = '<p>Test 123 Bla <strong>STRONG 2</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+    }
+
+    /**
+     */
+    public function testInParagraph2()
+    {
+        $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
+        $newHtml       = '<p>Test 123 <strong>STRONG 2</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+    }
+
+    /**
+     */
+    public function testInParagraph3()
+    {
+        $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
+        $newHtml       = '<p>Test2 123 <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Test 123 <strong>STRONG 2</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+    }
+
+    /**
+     */
+    public function testInParagraph4()
+    {
+        $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
+        $newHtml       = '<p>Test3 123 <strong>STRONG 2</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertFalse($rewritable);
+    }
+
+    /**
+     */
+    public function testInParagraph5()
+    {
+        $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Test2 123 <strong>STRONG</strong></p>';
+        $newHtml       = '<p>Test2 123 <strong>STRONG 2</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+    }
+
+    /**
+     */
+    public function testInParagraph6()
+    {
+        $oldHtml       = '<p>Test 123 Bla 123 <strong>STRONG</strong></p>';
+        $amendmentHtml = '<p>Bla 123 <strong>STRONG</strong></p>';
+        $newHtml       = '<p>Bla 123 <strong>STR</strong></p>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
     }
 }

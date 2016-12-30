@@ -25,7 +25,7 @@ class AmendmentRewriter
         for ($i = 0; $i < count($matchingNewParagraphs); $i++) {
             if ($oldParagraphs[$i] != $matchingNewParagraphs[$i]) {
                 if ($asDiff) {
-                    $diffPlain = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
+                    $diffPlain    = $diff->computeLineDiff($oldParagraphs[$i], $matchingNewParagraphs[$i]);
                     $affected[$i] = $diffRenderer->renderHtmlWithPlaceholders($diffPlain);
                 } else {
                     $affected[$i] = $matchingNewParagraphs[$i];
@@ -37,24 +37,89 @@ class AmendmentRewriter
     }
 
     /**
+     * @param string $motionOldPara
+     * @param string $motionNewPara
+     * @param string $amendmentPara
+     * @return string
+     * @throws Internal
+     */
+    public static function createMerge($motionOldPara, $motionNewPara, $amendmentPara)
+    {
+        $diff           = new Diff();
+        $wordsNewMotion = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$motionNewPara], []);
+        $wordsAmendment = $diff->compareHtmlParagraphsToWordArray([$motionOldPara], [$amendmentPara], []);
+
+        if (count($wordsNewMotion) != count($wordsAmendment)) {
+            throw new Internal('canRewrite: word arrays are inconsistent');
+        }
+
+        $inDiffMotion = $inDiffAmendment = false;
+        $new          = [];
+
+        for ($i = 0; $i < count($wordsNewMotion[0]); $i++) {
+            $wordNewMotion = $wordsNewMotion[0][$i]['diff'];
+            $wordAmendment = $wordsAmendment[0][$i]['diff'];
+
+            $hadDiff = false;
+            if ($inDiffMotion && $inDiffAmendment && $wordNewMotion != $wordAmendment) {
+                throw new Internal('In Diff: ' . $wordNewMotion . ' != ' . $wordAmendment);
+            }
+
+            if ($inDiffMotion) {
+                $new[] = $wordNewMotion;
+            } elseif ($inDiffAmendment) {
+                $new[] = $wordAmendment;
+            } else {
+                $new[] = $wordsNewMotion[0][$i]['word'];
+            }
+
+            preg_match_all("/###(INS|DEL)_(?<mode>START|END)###/siu", $wordNewMotion, $matchesMotion);
+            preg_match_all("/###(INS|DEL)_(?<mode>START|END)###/siu", $wordAmendment, $matchesAmend);
+            if (count($matchesMotion['mode']) > 0) {
+                if ($inDiffAmendment && !$inDiffMotion) {
+                    throw new Internal('Motion changes within amendment changes: ' . $wordNewMotion);
+                }
+                $hadDiff      = true;
+                $inDiffMotion = ($matchesMotion['mode'][count($matchesMotion['mode']) - 1] == 'START');
+            }
+            if (count($matchesAmend['mode']) > 0) {
+                if (($inDiffMotion || $hadDiff) && ($wordNewMotion != $wordAmendment)) {
+                    throw new Internal('Amendment changes within motion changes: ' . $wordAmendment);
+                }
+                $inDiffAmendment = ($matchesAmend['mode'][count($matchesAmend['mode']) - 1] == 'START');
+            }
+        }
+
+        return $new;
+    }
+
+    /**
      * @param string $motionOldHtml
      * @param string $motionNewHtml
      * @param string $amendmentHtml
      * @param string[] $overrides
      * @return bool
+     * @throws Internal
      */
     public static function canRewrite($motionOldHtml, $motionNewHtml, $amendmentHtml, $overrides = [])
     {
-        $motionOldSections = HTMLTools::sectionSimpleHTML($motionOldHtml);
-        $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
-        $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
+        $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
+        $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
+        $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, false);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, false);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
 
         $colliding = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         foreach ($colliding as $col) {
-            if (!isset($overrides[$col])) {
+            if (isset($overrides[$col])) {
+                continue;
+            }
+            try {
+                static::createMerge($motionOldParas[$col], $motionNewParas[$col], $amendmentParas[$col]);
+            } catch (\Exception $e) {
+                //var_dump($e->getMessage());
+                //die();
                 return false;
             }
         }
@@ -71,17 +136,22 @@ class AmendmentRewriter
      */
     public static function getCollidingParagraphs($motionOldHtml, $motionNewHtml, $amendmentHtml, $asDiff = false)
     {
-        $motionOldSections = HTMLTools::sectionSimpleHTML($motionOldHtml);
-        $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
-        $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
+        $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
+        $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
+        $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, $asDiff);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, $asDiff);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, $asDiff);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, $asDiff);
 
         $paraNos = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         $paras   = [];
         foreach ($paraNos as $paraNo) {
-            $paras[$paraNo] = $affectedByAmendment[$paraNo];
+            try {
+                static::createMerge($motionOldParas[$paraNo], $motionNewParas[$paraNo], $amendmentParas[$paraNo]);
+            } catch (\Exception $e) {
+                $paras[$paraNo] = $affectedByAmendment[$paraNo];
+            }
+
         }
 
         return $paras;
@@ -97,25 +167,29 @@ class AmendmentRewriter
      */
     public static function performRewrite($motionOldHtml, $motionNewHtml, $amendmentHtml, $overrides = [])
     {
-        $motionOldSections = HTMLTools::sectionSimpleHTML($motionOldHtml);
-        $motionNewSections = HTMLTools::sectionSimpleHTML($motionNewHtml);
-        $amendmentSections = HTMLTools::sectionSimpleHTML($amendmentHtml);
+        $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
+        $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
+        $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
 
-        $affectedByAmendment = static::computeAffectedParagraphs($motionOldSections, $amendmentSections, false);
-        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldSections, $motionNewSections, false);
+        $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, false);
+        $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, false);
 
         $newVersion = [];
-        for ($paragraphNo = 0; $paragraphNo < count($motionOldSections); $paragraphNo++) {
+        for ($paragraphNo = 0; $paragraphNo < count($motionOldParas); $paragraphNo++) {
             if (isset($overrides[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $overrides[$paragraphNo];
             } elseif (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
-                throw new Internal('Not supported yet');
+                $newVersion[$paragraphNo] = static::createMerge(
+                    $motionOldParas[$paragraphNo],
+                    $motionNewParas[$paragraphNo],
+                    $amendmentParas[$paragraphNo]
+                );
             } elseif (isset($affectedByAmendment[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByAmendment[$paragraphNo];
             } elseif (isset($affectedByNewMotion[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByNewMotion[$paragraphNo];
             } else {
-                $newVersion[$paragraphNo] = $motionOldSections[$paragraphNo];
+                $newVersion[$paragraphNo] = $motionOldParas[$paragraphNo];
             }
         }
 
