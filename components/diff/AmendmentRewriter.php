@@ -65,14 +65,6 @@ class AmendmentRewriter
                 throw new Internal('In Diff: ' . $wordNewMotion . ' != ' . $wordAmendment);
             }
 
-            if ($inDiffMotion) {
-                $new[] = $wordNewMotion;
-            } elseif ($inDiffAmendment) {
-                $new[] = $wordAmendment;
-            } else {
-                $new[] = $wordsNewMotion[0][$i]['word'];
-            }
-
             preg_match_all("/###(INS|DEL)_(?<mode>START|END)###/siu", $wordNewMotion, $matchesMotion);
             preg_match_all("/###(INS|DEL)_(?<mode>START|END)###/siu", $wordAmendment, $matchesAmend);
             if (count($matchesMotion['mode']) > 0) {
@@ -88,9 +80,20 @@ class AmendmentRewriter
                 }
                 $inDiffAmendment = ($matchesAmend['mode'][count($matchesAmend['mode']) - 1] == 'START');
             }
+
+            if (count($matchesMotion['mode']) > 0) {
+                $new[] = $wordNewMotion;
+            } elseif (count($matchesAmend['mode']) > 0) {
+                $new[] = $wordAmendment;
+            } else {
+                $new[] = $wordsNewMotion[0][$i]['word'];
+            }
         }
 
-        return implode('', $new);
+        $newHtml  = implode('', $new);
+        $renderer = new DiffRenderer();
+        $newHtml  = $renderer->renderHtmlWithPlaceholders($newHtml);
+        return HTMLTools::stripInsDelMarkers($newHtml);
     }
 
     /**
@@ -202,9 +205,10 @@ class AmendmentRewriter
             } elseif (isset($affectedByAmendment[$paragraphNo]) && isset($affectedByNewMotion[$paragraphNo])) {
                 $newVersion[$paragraphNo] = static::createMerge(
                     $motionOldParas[$paragraphNo],
-                    $motionNewParas[$paragraphNo],
-                    $amendmentParas[$paragraphNo]
+                    $affectedByNewMotion[$paragraphNo],
+                    $affectedByAmendment[$paragraphNo]
                 );
+
             } elseif (isset($affectedByAmendment[$paragraphNo])) {
                 $newVersion[$paragraphNo] = $affectedByAmendment[$paragraphNo];
             } elseif (isset($affectedByNewMotion[$paragraphNo])) {
