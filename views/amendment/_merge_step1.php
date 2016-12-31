@@ -42,6 +42,7 @@ use yii\helpers\Html;
             <?php
             foreach ($otherAmendments as $otherAmend) {
                 echo '<div class="row"><div class="col-md-3">';
+                echo HTMLTools::amendmentDiffTooltip($otherAmend, 'bottom');
                 echo Html::a($otherAmend->getTitle(), UrlHelper::createAmendmentUrl($otherAmend));
                 echo '<span class="by">' . \Yii::t('amend', 'merge1_amend_by') . ': ' .
                     $otherAmend->getInitiatorsStr() . '</span>';

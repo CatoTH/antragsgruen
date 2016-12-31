@@ -22,6 +22,7 @@ return [
     'none_yet'               => 'No amendment yet',
     'amendment_for'          => 'Amendment for',
     'amendment_for_prefix'   => 'Amendment for %PREFIX%',
+    'ajax_diff_title'        => 'Changes',
     'confirmed_visible'      => 'You submitted the amendment. It is visible immediatelly.',
     'confirmed_screening'    => 'You submitted the amendment. It will be screened now.',
 

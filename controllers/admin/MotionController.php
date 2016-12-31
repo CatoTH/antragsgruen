@@ -343,7 +343,7 @@ class MotionController extends AdminBase
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax-rewrite-collissions', [
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
             'amendments'        => $amendments,
             'collissions'       => $collissions,
         ]);

@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\models\db\Amendment;
 use app\models\exceptions\Internal;
 use yii\helpers\Html;
 use yii\helpers\HtmlPurifier;
@@ -502,6 +503,21 @@ class HTMLTools
     }
 
     /**
+     * @param Amendment $amendment
+     * @param string $direction [top, bottom, right, left]
+     * @return string
+     */
+    public static function amendmentDiffTooltip(Amendment $amendment, $direction = '')
+    {
+        $url = UrlHelper::createAmendmentUrl($amendment, 'ajax-diff');
+        return '<button tabindex="0" type="button" data-toggle="popover" ' .
+            'class="amendmentAjaxTooltip link" data-initialized="0" ' .
+            'data-url="' . Html::encode($url) . '" title="' . \Yii::t('amend', 'ajax_diff_title') . '" ' .
+            'data-amendment-id="' . $amendment->id . '" data-placement="' . Html::encode($direction) . '">' .
+            '<span class="glyphicon glyphicon-eye-open"></span></button>';
+    }
+
+    /**
      * @param string $formName
      * @param array $options
      * @param string $value
@@ -663,7 +679,7 @@ class HTMLTools
         }
 
         if (in_array('inserted', $classes)) {
-            $classes = array_filter($classes, function ($class) {
+            $classes    = array_filter($classes, function ($class) {
                 return ($class != 'inserted');
             });
             $newClasses = trim(implode(' ', $classes));

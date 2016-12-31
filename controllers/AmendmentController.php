@@ -185,7 +185,23 @@ class AmendmentController extends Base
 
 
         return $this->render('view', $amendmentViewParams);
+    }
 
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionAjaxDiff($motionSlug, $amendmentId)
+    {
+        $this->layout = 'column2';
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            return '';
+        }
+
+        return $this->renderPartial('ajax_diff', ['amendment' => $amendment]);
     }
 
     /**
@@ -294,7 +310,7 @@ class AmendmentController extends Base
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax-rewrite-collissions', [
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
             'amendments'  => $amendments,
             'collissions' => $collissions,
         ]);

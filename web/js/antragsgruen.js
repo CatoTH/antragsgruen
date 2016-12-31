@@ -85,7 +85,7 @@ function __t(category, str) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h2 h3 h4;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
-                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
@@ -95,7 +95,7 @@ function __t(category, str) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
                 'h2 h3 h4;' +
-                    //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
+                //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
                 'span(underline' + strikeClass + ',subscript,superscript);' +
                 'a[href];';
@@ -958,7 +958,7 @@ function __t(category, str) {
             });
         });
 
-        $(".share_buttons a").click(function(ev) {
+        $(".share_buttons a").click(function (ev) {
             var target = $(this).attr("href");
             if (window.open(target, '_blank', 'width=600,height=460')) {
                 ev.preventDefault();
@@ -983,7 +983,7 @@ function __t(category, str) {
             });
         });
 
-        $(".share_buttons a").click(function(ev) {
+        $(".share_buttons a").click(function (ev) {
             var target = $(this).attr("href");
             if (window.open(target, '_blank', 'width=600,height=460')) {
                 ev.preventDefault();
@@ -1177,10 +1177,41 @@ function __t(category, str) {
         'recalcAgendaCodes': recalcAgendaCodes
     };
 
-    $(".jsProtectionHint").each(function() {
+    $(".jsProtectionHint").each(function () {
         var $hint = $(this);
         $('<input type="hidden" name="jsprotection">').attr("value", $hint.data("value")).appendTo($hint.parent());
         $hint.remove();
+    });
+
+    $(document).on('click', '.amendmentAjaxTooltip', function (ev) {
+        var $el = $(ev.currentTarget);
+        if ($el.data('initialized') == '0') {
+            $el.data('initialized', '1');
+            $el.popover({
+                html: true,
+                trigger: 'manual',
+                content: function () {
+                    var id = 'pop_' + (new Date()).getTime(),
+                        content = '<div id="' + id + '">Loading...</div>',
+                        url = $el.data('url');
+                    $.get(url, function (ret) {
+                        $('#' + id).html(ret);
+                    });
+                    return content;
+                }
+            });
+        }
+        $('.amendmentAjaxTooltip').not($el).popover('hide');
+        $el.popover('toggle');
+    });
+    $(document).on('click', function (ev) {
+        var $target = $(ev.target);
+        if (
+            !$target.hasClass('amendmentAjaxTooltip') && !$target.hasClass('popover') &&
+            $target.parents('.amendmentAjaxTooltip').length == 0 && $target.parents('.popover').length == 0
+        ) {
+            $('.amendmentAjaxTooltip').popover('hide');
+        }
     });
 
 }(jQuery));

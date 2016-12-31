@@ -22,6 +22,7 @@ return [
     'none_yet'                          => 'Es gibt noch keine Änderungsanträge',
     'amendment_for'                     => 'Änderungsantrag zu',
     'amendment_for_prefix'              => 'Änderungsantrag zu %PREFIX%',
+    'ajax_diff_title'                   => 'Änderungen',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',

@@ -495,3 +495,32 @@ ul.searchResults {
     position: relative;
   }
 }
+
+.amendmentAjaxTooltip + .popover {
+  width: 250px;
+  max-width: none;
+  @media screen and (min-width: 800px) {
+    width: 400px;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 600px;
+  }
+  .popover-content {
+    padding-right: 0;
+  }
+}
+
+.ajaxAmendment {
+  max-height: 250px;
+  overflow: auto;
+  > h3 {
+    display: none;
+  }
+  h4 {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  ul {
+    padding-left: 20px;
+  }
+}
