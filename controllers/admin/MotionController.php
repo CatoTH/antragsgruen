@@ -329,14 +329,14 @@ class MotionController extends AdminBase
         $newSections = \Yii::$app->request->post('newSections', []);
 
         /** @var Motion $motion */
-        $motion            = $this->consultation->getMotion($motionId);
-        $collissions       = $amendments = [];
+        $motion      = $this->consultation->getMotion($motionId);
+        $collissions = $amendments = [];
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
-                        $amendments[$amendment->id] = $amendment;
+                        $amendments[$amendment->id]  = $amendment;
                         $collissions[$amendment->id] = [];
                     }
                     $collissions[$amendment->id][$section->sectionId] = $coll;
@@ -344,8 +344,8 @@ class MotionController extends AdminBase
             }
         }
         return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
-            'amendments'        => $amendments,
-            'collissions'       => $collissions,
+            'amendments'  => $amendments,
+            'collissions' => $collissions,
         ]);
     }
 

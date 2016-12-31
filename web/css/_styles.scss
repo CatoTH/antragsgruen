@@ -47,6 +47,8 @@ del.space, ins.space, del.formatting, ins.formatting {
 }
 
 .texteditor {
+  background-color: white;
+
   &.boxed {
     @extend .texteditorBox;
   }
@@ -496,9 +498,17 @@ ul.searchResults {
   }
 }
 
+h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
+  float: right;
+  color: gray;
+  margin-right: -10px;
+}
+
 .amendmentAjaxTooltip + .popover {
   width: 250px;
   max-width: none;
+  color: black;
+
   @media screen and (min-width: 800px) {
     width: 400px;
   }

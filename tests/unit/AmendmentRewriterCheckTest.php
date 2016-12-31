@@ -52,7 +52,11 @@ class AmendmentRewriterCheckTest extends TestBase
 
         $colliding = AmendmentRewriter::getCollidingParagraphs($oldHtml, $newHtml, $amendmentHtml);
         $this->assertEquals([
-            1 => '<p>Test 4</p>'
+            1 => [
+                'text' => '<p>Test 4</p>',
+                'amendmentDiff' => '<p><del>Test 3</del><ins>A new line</ins></p>',
+                'motionNewDiff' => '<p>Test <del>3</del><ins>5</ins></p>',
+            ]
         ], $colliding);
     }
 

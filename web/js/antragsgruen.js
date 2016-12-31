@@ -877,9 +877,9 @@ function __t(category, str) {
             ev.preventDefault();
             var $this = $(this),
                 $commentHolder = $this.parents('.paragraph').first().find('.commentHolder');
-            $this.addClass("hidden");
-            $this.parent().find('.hider').removeClass("hidden");
-            $commentHolder.removeClass("hidden");
+            $this.addClass('hidden');
+            $this.parent().find('.hider').removeClass('hidden');
+            $commentHolder.removeClass('hidden');
             if (!$commentHolder.isOnScreen(0.1, 0.1)) {
                 $commentHolder.scrollintoview({top_offset: -100});
             }
@@ -887,10 +887,10 @@ function __t(category, str) {
 
         $paragraphs.find('.comment .hider').click(function (ev) {
             var $this = $(this);
-            $this.addClass("hidden");
-            $this.parent().find('.shower').removeClass("hidden");
+            $this.addClass('hidden');
+            $this.parent().find('.shower').removeClass('hidden');
 
-            $this.parents('.paragraph').first().find('.commentHolder').addClass("hidden");
+            $this.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
             ev.preventDefault();
         });
 

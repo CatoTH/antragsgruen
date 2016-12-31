@@ -90,7 +90,7 @@ class AmendmentRewriter
             }
         }
 
-        return $new;
+        return implode('', $new);
     }
 
     /**
@@ -132,9 +132,16 @@ class AmendmentRewriter
      * @param string $motionNewHtml
      * @param string $amendmentHtml
      * @param boolean $asDiff
+     * @param null|int[] $lineNumbers
      * @return string[]
      */
-    public static function getCollidingParagraphs($motionOldHtml, $motionNewHtml, $amendmentHtml, $asDiff = false)
+    public static function getCollidingParagraphs(
+        $motionOldHtml,
+        $motionNewHtml,
+        $amendmentHtml,
+        $asDiff = false,
+        $lineNumbers = null
+    )
     {
         $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
@@ -143,15 +150,29 @@ class AmendmentRewriter
         $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, $asDiff);
         $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, $asDiff);
 
-        $paraNos = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
-        $paras   = [];
+        $paraNos  = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
+        $paras    = [];
+        $diff     = new Diff();
+        $renderer = new DiffRenderer();
         foreach ($paraNos as $paraNo) {
             try {
                 static::createMerge($motionOldParas[$paraNo], $motionNewParas[$paraNo], $amendmentParas[$paraNo]);
             } catch (\Exception $e) {
-                $paras[$paraNo] = $affectedByAmendment[$paraNo];
+                $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $motionNewParas[$paraNo]);
+                $motionNewDiff = $renderer->renderHtmlWithPlaceholders($motionNewDiff);
+                $amendmentDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $amendmentParas[$paraNo]);
+                $amendmentDiff = $renderer->renderHtmlWithPlaceholders($amendmentDiff);
+                $data          = [
+                    'text'          => $affectedByAmendment[$paraNo],
+                    'amendmentDiff' => $amendmentDiff,
+                    'motionNewDiff' => $motionNewDiff,
+                ];
+                if ($lineNumbers) {
+                    $data['lineFrom'] = $lineNumbers[$paraNo];
+                    $data['lineTo']   = $lineNumbers[$paraNo + 1] - 1;
+                }
+                $paras[$paraNo] = $data;
             }
-
         }
 
         return $paras;

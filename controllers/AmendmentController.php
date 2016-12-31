@@ -292,21 +292,12 @@ class AmendmentController extends Base
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
-                $paraLineNumbers = $section->getParagraphLineNumberHelper();
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
                         $amendments[$amend->id]  = $amend;
                         $collissions[$amend->id] = [];
                     }
-
-                    $collissions[$amend->id][$section->sectionId] = [];
-                    foreach ($coll as $paraNo => $text) {
-                        $collissions[$amend->id][$section->sectionId][$paraNo] = [
-                            'lineFrom' => $paraLineNumbers[$paraNo],
-                            'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
-                            'text'     => $text,
-                        ];
-                    }
+                    $collissions[$amend->id][$section->sectionId] = $coll;
                 }
             }
         }

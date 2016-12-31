@@ -932,24 +932,33 @@ iframe.pdfViewer {
       font-weight: normal;
     }
   }
-  .amendmentCollissionsHolder {
-    .amendmentBy {
-      color: gray;
-    }
-    .amendmentOverrideBlock {
-      margin-top: 15px;
-      margin-bottom: 15px;
-
-      > textarea {
-        display: none;
-      }
-    }
-  }
   .save-row {
     text-align: center;
   }
   .saveholder {
     .checkAmendmentCollissions {
+      display: none;
+    }
+  }
+}
+
+.amendmentCollissionsHolder {
+  .amendmentBy {
+    color: gray;
+  }
+  .amendmentOverrideBlock {
+    background-color: #f5f5f5;
+    margin: 15px -10px;
+    padding: 10px;
+    border: solid 1px #ddd;
+    border-radius: 4px;
+
+    > h3 {
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    > textarea {
       display: none;
     }
   }

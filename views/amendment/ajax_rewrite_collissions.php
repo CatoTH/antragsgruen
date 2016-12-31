@@ -6,6 +6,7 @@
  * @var array[] $collissions
  */
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use yii\helpers\Html;
 
@@ -31,7 +32,10 @@ foreach ($amendments[array_keys($amendments)[0]]->getActiveSections() as $sectio
 
 foreach ($collissions as $amendmentId => $sections) {
     $amendment = $amendments[$amendmentId];
-    echo '<h2 class="green">' . Html::encode($amendment->getTitle()) . '</h2>';
+    echo '<h2 class="green">' .
+        Html::encode($amendment->getTitle()) .
+        HTMLTools::amendmentDiffTooltip($amendment, 'bottom') .
+        '</h2>';
     echo '<div class="content">';
     echo '<div class="amendmentBy">' .
         '(' . \Yii::t('amend', 'merge1_submitted_by') . ': ' . $amendment->getInitiatorsStr() . ', ' .
@@ -44,8 +48,19 @@ foreach ($collissions as $amendmentId => $sections) {
             } else {
                 $tpl = \Yii::t('amend', 'merge1_changein_x');
             }
-            echo '<label>' . str_replace(['%LINEFROM%', '%LINETO%'], [$para['lineFrom'], $para['lineTo']], $tpl) .
-                '</label>';
+            echo '<h3>' . str_replace(['%LINEFROM%', '%LINETO%'], [$para['lineFrom'], $para['lineTo']], $tpl) . '</h3>';
+
+            $classes = 'text ' . (in_array($sectionId, $fixedWidthSections) ? ' fixedWidthFont' : '');
+
+            echo '<label>' . \Yii::t('amend', 'merge1_manual_changes') . '</label>';
+            echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
+                $para['motionNewDiff'] . '</div></div></div>';
+
+            echo '<label>' . \Yii::t('amend', 'merge1_manual_amend') . '</label>';
+            echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
+                $para['amendmentDiff'] . '</div></div></div>';
+
+            echo '<label>' . \Yii::t('amend', 'merge1_manual_new') . '</label>';
             echo '<textarea name="amendmentOverride[' . $amendmentId . '][' . $sectionId . '][' . $paragraphNo . ']" ';
             echo 'value="" class=""></textarea>';
             echo '<div id="amendmentOverride_' . $amendmentId . '_' . $sectionId . '_' . $paragraphNo . '" class="';

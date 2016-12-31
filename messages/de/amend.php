@@ -179,4 +179,7 @@ return [
     'merge1_submitted_by'      => 'Eingereicht von',
     'merge1_submitted_on'      => 'am',
     'merge1_no_collissions'    => 'Keine Konflikte zu bestehenden Änderungsanträgen',
+    'merge1_manual_changes'    => 'Vorgenommene Änderungen',
+    'merge1_manual_amend'      => 'Änderungen des Änderungsantrags',
+    'merge1_manual_new'        => 'Neuer Änderungsantrag',
 ];

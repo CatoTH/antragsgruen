@@ -372,28 +372,6 @@ label.legend {
   .checkButtonRow {
     text-align: center;
   }
-  .amendmentCollissionsHolder {
-    margin-top: 20px;
-
-    .amendmentBy {
-      margin-top: 10px;
-      margin-left: 20px;
-      margin-bottom: -10px;
-      color: gray;
-    }
-
-    > h2 {
-      margin-top: 20px;
-    }
-
-    .amendmentOverrideBlock {
-      margin-top: 20px;
-
-      > textarea {
-        display: none;
-      }
-    }
-  }
   .saveholder {
     .checkAmendmentCollissions {
       display: none;
