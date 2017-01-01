@@ -143,7 +143,7 @@ return [
     'merge1_introduction'      => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
-            Falls sich duch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
+            Falls sich durch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
             Ansonsten lass sie einfach unverändert.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
             Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.

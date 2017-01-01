@@ -333,6 +333,7 @@ Bye,
     'cons_create_template'        => 'Take settings from',
     'cons_create_submit'          => 'Create consultation',
     'support_coll_policy_fix'     => 'Fix settings',
+    'support_coll_policy_warning' => 'If there is a support collecting phase, it\'s recommended to enforce a login both for creating and for supporting a mogion. Furthermore, enabling confirmation e-mails to the initiator is recommended.',
 
     'save'                        => 'Save', // 'Speichern'
     'motion_type_edit'            => 'Edit motion type',
