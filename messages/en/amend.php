@@ -148,7 +148,7 @@ return [
     'merge1_amend_by'          => 'by',
     'merge1_goon'              => 'Next',
     'merge1_loading'           => 'Checking...',
-    'merge1_motion_prefix'     => 'New prefix of the motion',
+    'merge1_motion_prefix'     => 'New code of the motion',
     'merge1_amend_status'      => 'New status of this amendment',
     'merge1_done_title'        => 'The motion has been changed.',
     'merge1_done_str'          => 'The amendment has been adopted',
