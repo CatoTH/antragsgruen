@@ -319,7 +319,7 @@ class Layout
         if ($this->mainAMDModule) {
             $module = $this->resourceUrl('js/build/' . $this->mainAMDModule);
             $src    = $this->resourceUrl('npm/require.js');
-            return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '">';
+            return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '"></script>';
         }
     }
 }
