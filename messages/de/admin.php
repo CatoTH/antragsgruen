@@ -50,6 +50,15 @@ return [
     'motion_edit_btn'             => 'Bearbeiten',
     'motion_edit_supporters'      => 'Unterstützer*innen',
     'motion_edit_supporters_add'  => 'Unterstützer*in hinzufügen',
+    'motion_edit_title'           => 'Antrag bearbeiten',
+    'motion_amrew_warning'        => 'Warnung',
+    'motion_amrew_intro'          => 'Es ist gefährlich, Anträge zu bearbeiten, nachdem bereits Änderungsanträge gestellt wurden!<br><br>
+            Wenn du einen Änderungsantrag in den Antrag übernehmen willst, gibt es dafür eine eigene Funktion: rufe den Änderungsantrag auf und wähle den Menüpunkt "In den Antrag übernehmen" rechts.<br>
+            <br>
+            Wenn du hier den Text an einer Stelle änderst, auf die sich auch ein Änderungsantrag beziehst, kommt es zum Konflikt mit diesem;
+            muss die Änderung hier auch in allen Änderunsanträgen vorgenommen werden, zu denen der Konflikt auftritt.',
+    'motion_amrew_btn1'           => 'Fertig / Auf Konflikte hin überprüfen',
+    'motion_amrew_btn2'           => 'Auf Konflikte hin überprüfen',
     'motion_supp_name'            => 'Name',
     'motion_supp_orga'            => 'Organisation',
     'motion_supp_auth_email'      => 'E-Mail',

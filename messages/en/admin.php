@@ -52,6 +52,17 @@ return [
     'motion_edit_btn'             => 'Edit',
     'motion_edit_supporters'      => 'Supporters',
     'motion_edit_supporters_add'  => 'Add supporter',
+    'motion_edit_title'           => 'Edit motion',
+    'motion_amrew_warning'        => 'Warning',
+    'motion_amrew_intro'          => 'Editing the text after amendments have been submitted is dangerous!<br><br>
+            Do not use this function if you want to merge an amendment into the original motion.
+            In that case, please go to the amendment itsels and choose "Merge into motion" on the sidebar instead.<br>
+            <br>
+            If you need to change the text of the motion here, please note that this can be tricky if there already
+            is an amendment affecting the same part of the text that you change. In that case, you will not
+            adapt your changes to every colliding amendment before you can save the new version.',
+    'motion_amrew_btn1'           => 'Finished editing / Check for collissions',
+    'motion_amrew_btn2'           => 'Check for collissions',
     'motion_supp_name'            => 'Name',
     'motion_supp_orga'            => 'Organisation',
     'motion_supp_auth_email'      => 'E-Mail',
