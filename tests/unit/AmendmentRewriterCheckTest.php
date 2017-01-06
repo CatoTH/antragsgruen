@@ -8,6 +8,20 @@ class AmendmentRewriterCheckTest extends TestBase
 {
     /**
      */
+    public function testListInsertedAndDeleted1()
+    {
+        $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
+        $amendmentHtml = '<ul><li>List item 1</li><li>List item 2</li><li>List item 5</li></ul>';
+        $newHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 4</li><li>List item 5</li></ul>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertFalse($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
+        $this->assertFalse($rewritable);
+    }
+
+    /**
+     */
     public function testLineInserted1()
     {
         $oldHtml       = '<p>Test 123 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
@@ -28,6 +42,8 @@ class AmendmentRewriterCheckTest extends TestBase
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
         $this->assertTrue($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
+        $this->assertTrue($rewritable);
     }
 
     /**
@@ -39,6 +55,8 @@ class AmendmentRewriterCheckTest extends TestBase
         $newHtml       = '<p>Test 124 <strong>STRONG</strong></p>' . '<p>Test 4</p>';
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertFalse($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
         $this->assertFalse($rewritable);
     }
 
@@ -87,6 +105,8 @@ class AmendmentRewriterCheckTest extends TestBase
         $newHtml       = '<p>Test 123 Bla <strong>STRONG 2</strong></p>';
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
         $this->assertTrue($rewritable);
     }
 
@@ -147,6 +167,8 @@ class AmendmentRewriterCheckTest extends TestBase
         $newHtml       = '<p>Bla 123 <strong>STR</strong></p>';
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
         $this->assertTrue($rewritable);
     }
 }

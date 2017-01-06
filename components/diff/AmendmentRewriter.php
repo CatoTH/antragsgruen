@@ -119,7 +119,7 @@ class AmendmentRewriter
                 continue;
             }
             try {
-                static::createMerge($motionOldParas[$col], $motionNewParas[$col], $amendmentParas[$col]);
+                static::createMerge($motionOldParas[$col], $affectedByNewMotion[$col], $affectedByAmendment[$col]);
             } catch (\Exception $e) {
                 //var_dump($e->getMessage());
                 //die();
