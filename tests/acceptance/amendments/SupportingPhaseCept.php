@@ -22,7 +22,7 @@ $I->dontSeeElement("#sidebar .amendmentCreate a");
 $I->loginAsStdAdmin();
 $I->seeElement("#sidebar .amendmentCreate a");
 $I->click('#sidebar .adminEdit a');
-$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
+$I->executeJS('$("#motionStatus").selectlist("selectByValue", "' . \app\models\db\Motion::STATUS_SUBMITTED_SCREENED . '");');
 $I->submitForm('#motionUpdateForm', [], 'save');
 $I->logout();
 

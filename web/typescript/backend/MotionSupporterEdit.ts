@@ -3,7 +3,9 @@ declare let Sortable: any;
 export class MotionSupporterEdit {
     constructor(private $supporterHolder: JQuery) {
         let $sortable = this.$supporterHolder.find("> ul");
-        Sortable.create($sortable[0], {draggable: 'li'});
+        if ($sortable.length > 0) {
+            Sortable.create($sortable[0], {draggable: 'li'});
+        }
 
         $(".supporterRowAdder").click(function (ev) {
             $sortable.append($(this).data("content"));
