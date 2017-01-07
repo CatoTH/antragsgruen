@@ -10,6 +10,8 @@ $I->see('A2');
 $I->see('A3');
 $I->see('Ä2');
 $page->gotoMotionEdit(3);
+$I->wait(1);
+
 $I->click('.motionDeleteForm button');
 $I->wait(1);
 $I->acceptBootboxConfirm();

@@ -30,7 +30,7 @@ $I->see('A3: Textformatierungen', 'h1');
 $I->wantTo('unpublish the motion');
 $I->loginAsStdAdmin();
 $I->click('#sidebar .adminEdit a');
-$I->selectOption('#motionStatus', \app\models\db\Motion::STATUS_DRAFT);
+$I->executeJS('$("#motionStatus").selectlist("selectByValue", "' . \app\models\db\Motion::STATUS_DRAFT . '");');
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 
