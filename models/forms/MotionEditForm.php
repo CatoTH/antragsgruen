@@ -53,7 +53,7 @@ class MotionEditForm extends Model
      */
     private function setSection($motion)
     {
-        $motionSections   = [];
+        $motionSections = [];
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
@@ -216,6 +216,17 @@ class MotionEditForm extends Model
         $this->setSection($motion);
 
         return true;
+    }
+
+    /**
+     * @param Motion $motion
+     * @param string[] $newHtmls
+     */
+    public function setSectionTextWithoutSaving(Motion $motion, $newHtmls)
+    {
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $section->data = $newHtmls[$section->sectionId];
+        }
     }
 
     /**

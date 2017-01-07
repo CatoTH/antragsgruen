@@ -4,7 +4,6 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\db\Amendment;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
