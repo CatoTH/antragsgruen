@@ -72,7 +72,7 @@ class AmendmentRewriterCheckTest extends TestBase
         $this->assertEquals([
             1 => [
                 'text' => '<p>Test 4</p>',
-                'amendmentDiff' => '<p><del>Test 3</del><ins>A new line</ins></p>',
+                'amendmentDiff' => '<p>Test <del>3</del><ins>4</ins></p>',
                 'motionNewDiff' => '<p>Test <del>3</del><ins>5</ins></p>',
             ]
         ], $colliding);

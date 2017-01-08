@@ -311,11 +311,14 @@ class HTMLTools
 
     /**
      * @param string $html
-     * @return \DOMNode
+     * @param bool $correctBefore
+     * @return \DOMElement
      */
-    public static function html2DOM($html)
+    public static function html2DOM($html, $correctBefore = true)
     {
-        $html = static::correctHtmlErrors($html);
+        if ($correctBefore) {
+            $html = static::correctHtmlErrors($html);
+        }
 
         $src_doc = new \DOMDocument();
         $src_doc->loadHTML('<html><head>
@@ -342,17 +345,66 @@ class HTMLTools
      */
     public static function sectionSimpleHTML($html, $splitListItems = true)
     {
-        $src_doc = new \DOMDocument();
-        $src_doc->loadHTML(
-            '<html><head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-            </head><body>' . $html . '</body></html>'
-        );
-        $bodies = $src_doc->getElementsByTagName('body');
-        $body   = $bodies->item(0);
-
-        /** @var \DOMElement $body */
+        $body = static::html2DOM($html);
         return static::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
+    }
+
+    /**
+     * Tries to restore the original HTML after re-combining reviously split markup.
+     * Currently, this only joins adjacent top-level lists.
+     *
+     * @param string $html
+     * @return string
+     */
+    public static function removeSectioningFragments($html)
+    {
+        $body = static::html2DOM($html);
+        $children = $body->childNodes;
+        for ($i = 0; $i < $children->length; $i++) {
+            $appendToPrev = false;
+            $child = $children->item($i);
+            if (is_a($child, \DOMText::class) && trim($child->nodeValue) == '') {
+                $body->removeChild($child);
+                $i--;
+            }
+            /** @var \DOMElement $child */
+
+            if ($i == 0) {
+                continue;
+            }
+            if (strtolower($child->nodeName) == 'ul' && strtolower($children->item($i - 1)->nodeName) == 'ul') {
+                $appendToPrev = true;
+            }
+            if (strtolower($child->nodeName) == 'ol' && strtolower($children->item($i - 1)->nodeName) == 'ol') {
+                $startPrev = $children->item($i - 1)->getAttribute('start');
+                if ($startPrev) {
+                    $startPrev = IntVal($startPrev);
+                } else {
+                    $startPrev = 1;
+                }
+                $currExpected = $startPrev;
+                foreach ($children->item($i - 1)->childNodes as $tmpChild) {
+                    if (is_a($tmpChild, \DOMElement::class) && strtolower($tmpChild->nodeName) == 'li') {
+                        $currExpected++;
+                    }
+                }
+                $currStart = $child->getAttribute('start');
+                if (!$currStart || IntVal($currStart) == $currExpected) {
+                    $appendToPrev = true;
+                }
+            }
+
+            if ($appendToPrev) {
+                foreach ($child->childNodes as $subchild) {
+                    $child->removeChild($subchild);
+                    $children->item($i - 1)->appendChild($subchild);
+                }
+                $body->removeChild($child);
+                $i--;
+            }
+        }
+
+        return static::renderDomToHtml($body, true);
     }
 
 
@@ -542,25 +594,31 @@ class HTMLTools
 
     /**
      * @param \DOMNode $node
+     * @param bool $skipBody
      * @return string
      */
-    public static function renderDomToHtml(\DOMNode $node)
+    public static function renderDomToHtml(\DOMNode $node, $skipBody = false)
     {
         if (is_a($node, \DOMElement::class)) {
             if ($node->nodeName == 'br') {
                 return '<br>';
             }
             /** @var \DOMElement $node */
-            $str = '<' . $node->nodeName;
-            foreach ($node->attributes as $key => $val) {
-                $val = $node->getAttribute($key);
-                $str .= ' ' . $key . '="' . Html::encode($val) . '"';
+            $str = '';
+            if (!$skipBody || strtolower($node->nodeName) != 'body') {
+                $str .= '<' . $node->nodeName;
+                foreach ($node->attributes as $key => $val) {
+                    $val = $node->getAttribute($key);
+                    $str .= ' ' . $key . '="' . Html::encode($val) . '"';
+                }
+                $str .= '>';
             }
-            $str .= '>';
             foreach ($node->childNodes as $child) {
                 $str .= static::renderDomToHtml($child);
             }
-            $str .= '</' . $node->nodeName . '>';
+            if (!$skipBody || strtolower($node->nodeName) != 'body') {
+                $str .= '</' . $node->nodeName . '>';
+            }
             return $str;
         } else {
             /** @var \DOMText $node */
@@ -710,15 +768,7 @@ class HTMLTools
      */
     public static function stripInsDelMarkers($html)
     {
-        $src_doc = new \DOMDocument();
-        $src_doc->loadHTML(
-            '<html><head>
-            <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-            </head><body>' . $html . '</body></html>'
-        );
-        $bodies = $src_doc->getElementsByTagName('body');
-        $body   = $bodies->item(0);
-
+        $body = static::html2DOM($html);
         $strippedBody = static::stripInsDelMarkersInt($body);
         $str          = '';
         foreach ($strippedBody[0]->childNodes as $child) {

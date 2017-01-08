@@ -263,6 +263,7 @@ class AmendmentRewriter
             }
         }
 
-        return implode("\n", $newVersion);
+        $new = implode("\n", $newVersion);
+        return HTMLTools::removeSectioningFragments($new);
     }
 }

@@ -15,7 +15,7 @@ class AmendmentRewriterPerformTest extends TestBase
         $newHtml       = '<p>Test 123 <STRONG>STRONG</STRONG></p>' . '<p>Test 5</p>';
 
         $rewritten = AmendmentRewriter::performRewrite($oldHtml, $newHtml, $amendmentHtml);
-        $this->assertEquals('<p>Test 456 <strong>STRONG</strong></p>' . "\n" . '<p>Test 5</p>', $rewritten);
+        $this->assertEquals('<p>Test 456 <strong>STRONG</strong></p>' . '<p>Test 5</p>', $rewritten);
     }
 
     /**
@@ -27,6 +27,6 @@ class AmendmentRewriterPerformTest extends TestBase
         $newHtml       = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?123</li></ul>';
 
         $rewritten = AmendmentRewriter::performRewrite($oldHtml, $newHtml, $amendmentHtml);
-        $this->assertEquals('<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?123</li></ul><ul><li>Neuer Punkt</li></ul>', $rewritten);
+        $this->assertEquals('<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?123</li><li>Neuer Punkt</li></ul>', $rewritten);
     }
 }
