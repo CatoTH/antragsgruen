@@ -58,7 +58,7 @@ use yii\helpers\Html;
                     'otherAmendmentsStatus[' . $otherAmend->id . ']',
                     $stati,
                     $otherAmend->status,
-                    ['data-amendment-id' => $otherAmend->id]
+                    ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id]
                 );
                 echo '</div></div></div>';
             }
