@@ -22,6 +22,7 @@ return [
     'none_yet'                          => 'Es gibt noch keine Änderungsanträge',
     'amendment_for'                     => 'Änderungsantrag zu',
     'amendment_for_prefix'              => 'Änderungsantrag zu %PREFIX%',
+    'ajax_diff_title'                   => 'Änderungen',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
@@ -94,6 +95,7 @@ return [
     'published_email_title'             => 'Änderungsantrag veröffentlicht',
     'sidebar_adminedit'                 => 'Admin: bearbeiten',
     'sidebar_back'                      => 'Zurück zum Antrag',
+    'sidebar_mergeintomotion'           => 'In den Antrag übernehmen',
     'back_to_amend'                     => 'Zurück zum Änderungsantrag',
     'initiated_by'                      => 'gestellt von',
     'confirm_bread'                     => 'Bestätigen',
@@ -133,4 +135,51 @@ return [
     'support_finish_btn'                => 'Änderungsantrag offiziell einreichen',
     'support_finish_err'                => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'               => 'Der Änderungsantrag ist nun offiziell eingereicht',
+
+    'merge1_title'             => 'Änderungen übernehmen',
+    'merge1_step1_title'       => 'Status festlegen',
+    'merge1_step2_title'       => 'Änderungen angeben',
+    'merge1_step3_title'       => 'Kollissionen beheben',
+    'merge1_introduction'      => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+            Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
+            bleiben aber abrufbar.<br><br>
+            Falls sich durch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
+            Ansonsten lass sie einfach unverändert.<br><br>
+            <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
+            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.
+            In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
+    'merge1_status_intro'      => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
+            (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zu Gunsten dieses abgelehnt wurden)
+            können sie hier entsprechend markiert werden.<br>
+            Dadurch können auch keine Kollissionen mit diesem Änderungsantrag entstehen.<br>
+            Bitte beachte aber, dass hierdurch ausschließlich der Status dieser Änderungsanträge gesetzt wird;
+            tatsächliche Änderungen am eigentlichen Antrag werden dadurch nicht vorgenommen.',
+    'merge1_collission_intro'  => '<strong>Es gibt Kollissionen mit bestehenden Änderungsanträgen</strong><br>
+            <br>
+            Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
+            Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
+            mit denen es Kollissionen gibt.<br>
+            Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten bleibt</strong>.',
+    'merge1_changein_x'        => 'Änderung von Zeile %LINEFROM% bis %LINETO%',
+    'merge1_changein_1'        => 'Änderung in Zeile %LINEFROM%',
+    'merge1_use_unchanged'     => 'Unverändert übernehmen',
+    'merge1_use_modified'      => 'Modifizierte Übernahme',
+    'merge1_modify_title'      => 'Änderungsantrag anpassen',
+    'merge1_check_collissions' => 'Weiter / Kollissionen überprüfen',
+    'merge1_other_status'      => 'Neue Stati der anderen Änderungsanträge',
+    'merge1_status_unchanged'  => 'unverändert',
+    'merge1_amend_by'          => 'von',
+    'merge1_goon'              => 'Weiter',
+    'merge1_loading'           => 'Überprüfe...',
+    'merge1_motion_prefix'     => 'Neues Kürzel des Antrags',
+    'merge1_amend_status'      => 'Neuer Status dieses Änderungsantrags',
+    'merge1_done_title'        => 'Antrag geändert',
+    'merge1_done_str'          => 'Der Änderungsantrag wurde eingepflegt.',
+    'merge1_done_goto'         => 'Zur neuen Antragsversion',
+    'merge1_submitted_by'      => 'Eingereicht von',
+    'merge1_submitted_on'      => 'am',
+    'merge1_no_collissions'    => 'Keine Konflikte zu bestehenden Änderungsanträgen',
+    'merge1_manual_changes'    => 'Vorgenommene Änderungen',
+    'merge1_manual_amend'      => 'Änderungen des Änderungsantrags',
+    'merge1_manual_new'        => 'Neuer Änderungsantrag',
 ];

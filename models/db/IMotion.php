@@ -68,6 +68,14 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return int[]
+     */
+    public static function getStatiMarkAsDoneOnRewriting()
+    {
+        return [static::STATUS_ACCEPTED, static::STATUS_REJECTED, static::STATUS_MODIFIED_ACCEPTED];
+    }
+
+    /**
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      * @throws InvalidConfigException if there is no primary key defined

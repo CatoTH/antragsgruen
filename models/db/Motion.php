@@ -139,14 +139,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param null|int $filer_type
      * @return MotionSection[]
      */
-    public function getActiveSections()
+    public function getActiveSections($filer_type = null)
     {
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                $sections[] = $section;
+                if ($filer_type === null || $section->getSettings()->type == $filer_type) {
+                    $sections[] = $section;
+                }
             }
         }
         return $sections;
@@ -281,7 +284,18 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getNewTitlePrefix()
     {
-        return $this->titlePrefix . 'neu'; // @TODO
+        $new = \Yii::t('motion', 'prefix_new_code');
+        if (stripos($this->titlePrefix, $new) !== false) {
+            $parts = explode($new, $this->titlePrefix);
+            if ($parts[1] > 0) {
+                $parts[1]++;
+            } else {
+                $parts[1] = 2;
+            }
+            return implode($new, $parts);
+        } else {
+            return $this->titlePrefix . $new;
+        }
     }
 
     /**
@@ -294,6 +308,20 @@ class Motion extends IMotion implements IRSSItem
         foreach ($this->amendments as $amend) {
             if (!in_array($amend->status, $this->getConsultation()->getInvisibleAmendmentStati(!$includeWithdrawn))) {
                 $amendments[] = $amend;
+            }
+        }
+        return $amendments;
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getAmendmentsRelevantForCollissionDetection()
+    {
+        $amendments = [];
+        foreach ($this->amendments as $amendment) {
+            if ($amendment->status != Amendment::STATUS_DELETED && $amendment->status != Amendment::STATUS_DRAFT) {
+                $amendments[] = $amendment;
             }
         }
         return $amendments;
@@ -879,7 +907,7 @@ class Motion extends IMotion implements IRSSItem
 
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
-            $first = $inits[0];
+            $first          = $inits[0];
             $resolutionDate = $first->resolutionDate;
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;

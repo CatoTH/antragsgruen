@@ -44,7 +44,16 @@ class MotionEditForm extends Model
         parent::__construct();
         $this->motionType = $motionType;
         $this->agendaItem = $agendaItem;
-        $motionSections   = [];
+        $this->setSection($motion);
+    }
+
+
+    /**
+     * @param Motion|null $motion
+     */
+    private function setSection($motion)
+    {
+        $motionSections = [];
         if ($motion) {
             $this->motionId   = $motion->id;
             $this->supporters = $motion->motionSupporters;
@@ -56,7 +65,7 @@ class MotionEditForm extends Model
             }
         }
         $this->sections = [];
-        foreach ($motionType->motionSections as $sectionType) {
+        foreach ($this->motionType->motionSections as $sectionType) {
             if (isset($motionSections[$sectionType->id])) {
                 $this->sections[] = $motionSections[$sectionType->id];
             } else {
@@ -112,6 +121,10 @@ class MotionEditForm extends Model
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
+            if ($this->motionId && $section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                // Updating the text is done separately, including amendment rewriting
+                continue;
+            }
             if ($section->getSettings()->type == ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
                 $section->getSectionType()->setMotionData($values['motion']['title']);
             }
@@ -157,6 +170,62 @@ class MotionEditForm extends Model
 
         if (count($errors) > 0) {
             throw new FormError($errors);
+        }
+    }
+
+    /**
+     * Returns true, if the rewriting was successful
+     *
+     * @param Motion $motion
+     * @param string[] $newHtmls
+     * @param array $overrides
+     * @return bool
+     */
+    public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
+    {
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
+                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                } else {
+                    $section_overrides = [];
+                }
+                if (!$section->canRewrite($newHtmls[$section->sectionId], $section_overrides)) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
+                    $section_overrides = $overrides[$amendment->id][$section->sectionId];
+                } else {
+                    $section_overrides = [];
+                }
+                $section->performRewrite($newHtmls[$section->sectionId], $section_overrides);
+                $section->save();
+            }
+        }
+
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $section->data = $newHtmls[$section->sectionId];
+            $section->save();
+        }
+
+        $this->setSection($motion);
+
+        return true;
+    }
+
+    /**
+     * @param Motion $motion
+     * @param string[] $newHtmls
+     */
+    public function setSectionTextWithoutSaving(Motion $motion, $newHtmls)
+    {
+        foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $section->data = $newHtmls[$section->sectionId];
         }
     }
 

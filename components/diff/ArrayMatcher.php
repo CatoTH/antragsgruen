@@ -2,6 +2,8 @@
 
 namespace app\components\diff;
 
+use app\models\exceptions\Internal;
+
 class ArrayMatcher
 {
     /** @var string[] */
@@ -108,7 +110,7 @@ class ArrayMatcher
 
             $cacheKey2 = md5("1" . $val1 . "2" . $val2);
             if (!isset(static::$calcSimilarityCache[$cacheKey2])) {
-                 static::$calcSimilarityCache[$cacheKey2] = similar_text($val1, $val2);
+                static::$calcSimilarityCache[$cacheKey2] = similar_text($val1, $val2);
             }
             $similarity += static::$calcSimilarityCache[$cacheKey2];
         }
@@ -250,7 +252,7 @@ class ArrayMatcher
      */
     public function matchForDiff($referenceArr, $toMatchArr)
     {
-        $diff   = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
+        $diff = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
 
         $newRef = $newMatching = [];
 
@@ -271,5 +273,46 @@ class ArrayMatcher
         }
 
         return [$newRef, $newMatching];
+    }
+
+    /**
+     * @param string[]   $oldParagraphs
+     * @param string[]   $newParagraphs
+     * @return string[]
+     * @throws Internal
+     */
+    public static function computeMatchingAffectedParagraphs($oldParagraphs, $newParagraphs)
+    {
+        $matcher = new ArrayMatcher();
+        list($oldAdjusted, $newAdjusted) = $matcher->matchForDiff($oldParagraphs, $newParagraphs);
+        if (count($oldAdjusted) != count($newAdjusted)) {
+            throw new Internal('computeMatchingAffectedParagraphs: number of sections does not match');
+        }
+
+        $pendinginsert   = '';
+        $oldWithoutEmpty = $newWithoutEmpty = [];
+        for ($i = 0; $i < count($oldAdjusted); $i++) {
+            if ($oldAdjusted[$i] == '###EMPTYINSERTED###') {
+                if (count($newWithoutEmpty) == 0) {
+                    $pendinginsert .= $newAdjusted[$i];
+                } else {
+                    $newWithoutEmpty[count($newWithoutEmpty) - 1] .= $newAdjusted[$i];
+                }
+            } else {
+                if ($newAdjusted[$i] == '###EMPTYINSERTED###') {
+                    $newWithoutEmpty[] = $pendinginsert . '';
+                } else {
+                    $newWithoutEmpty[] = $pendinginsert . $newAdjusted[$i];
+                }
+                $oldWithoutEmpty[] = $oldAdjusted[$i];
+                $pendinginsert     = '';
+            }
+        }
+
+        if (serialize($oldParagraphs) != serialize($oldWithoutEmpty)) {
+            throw new Internal("An internal error matching the paragraphs ocurred");
+        }
+
+        return $newWithoutEmpty;
     }
 }

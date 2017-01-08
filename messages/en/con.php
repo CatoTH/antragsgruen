@@ -36,4 +36,6 @@ return [
     'sb_feeds'             => 'Feeds',
     'search_no_query'      => 'To search term entered',
     'new_item'             => 'New Item',
+    'activity_bc'                         => 'Activities',
+    'activity_title'                      => 'Activity Log',
 ];

@@ -368,6 +368,15 @@ label.legend {
       margin-right: 15px;
     }
   }
+
+  .checkButtonRow {
+    text-align: center;
+  }
+  .saveholder {
+    .checkAmendmentCollissions {
+      display: none;
+    }
+  }
 }
 
 #amendmentUpdateForm {

@@ -2,9 +2,12 @@
 
 namespace app\models\db;
 
+use app\components\diff\AmendmentRewriter;
+use app\components\diff\ArrayMatcher;
 use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use app\components\LineSplitter;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
@@ -173,6 +176,27 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
+     * Paragraph numbering starts at 0
+     * The last returned paragraph number does not actually exist but exists to calculate the length of the
+     * actual last paragraph
+     *
+     * @return int[]
+     */
+    public function getParagraphLineNumberHelper()
+    {
+        $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data);
+        $lineLength      = $this->getMotion()->getConsultation()->getSettings()->lineLength;
+        $lineNumber      = $this->getFirstLineNumber();
+        $paraLineNumbers = [];
+        for ($paraNo = 0; $paraNo < count($motionParas); $paraNo++) {
+            $paraLineNumbers[$paraNo] = $lineNumber;
+            $lineNumber += LineSplitter::countMotionParaLines($motionParas[$paraNo], $lineLength);
+        }
+        $paraLineNumbers[count($motionParas)] = $lineNumber;
+        return $paraLineNumbers;
+    }
+
+    /**
      * @param string[] $origParagraphs
      * @param bool $splitListItems
      * @return MotionSectionParagraphAmendment[]
@@ -184,7 +208,7 @@ class AmendmentSection extends IMotionSection
             return $cached;
         }
 
-        $firstLine   = $this->getFirstLineNumber();
+        $firstLine = $this->getFirstLineNumber();
 
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
@@ -194,9 +218,9 @@ class AmendmentSection extends IMotionSection
         foreach ($diffParas as $paraNo => $diffPara) {
             $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
             if ($firstDiffPos !== false) {
-                $unchanged = mb_substr($diffPara, 0, $firstDiffPos);
-                $firstDiffLine = $firstLine + mb_substr_count($unchanged, '###LINENUMBER###') - 1;
-                $amSec          = new MotionSectionParagraphAmendment(
+                $unchanged             = mb_substr($diffPara, 0, $firstDiffPos);
+                $firstDiffLine         = $firstLine + mb_substr_count($unchanged, '###LINENUMBER###') - 1;
+                $amSec                 = new MotionSectionParagraphAmendment(
                     $this->amendmentId,
                     $this->sectionId,
                     $paraNo,
@@ -210,5 +234,64 @@ class AmendmentSection extends IMotionSection
 
         $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
         return $amParagraphs;
+    }
+
+    /**
+     * @param bool $splitListItems
+     * @return \string[]
+     */
+    public function getParagraphsRelativeToOriginal($splitListItems = true)
+    {
+        $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
+        $oldSections = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data, $splitListItems);
+        return ArrayMatcher::computeMatchingAffectedParagraphs($oldSections, $newSections);
+    }
+
+    /**
+     * @param string $newMotionHtml
+     * @param string[] $overrides
+     * @return bool
+     * @throws Internal
+     */
+    public function canRewrite($newMotionHtml, $overrides = [])
+    {
+        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            throw new Internal('Rewriting is only possible for simple text');
+        }
+        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        return AmendmentRewriter::canRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
+    }
+
+    /**
+     * @param string $newMotionHtml
+     * @param bool $asDiff
+     * @param bool $debug
+     * @return array
+     * @throws Internal
+     */
+    public function getRewriteCollissions($newMotionHtml, $asDiff = false, $debug = false)
+    {
+        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            throw new Internal('Rewriting is only possible for simple text');
+        }
+        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        return AmendmentRewriter::getCollidingParagraphs(
+            $oldMotionHtml,
+            $newMotionHtml,
+            $this->data,
+            $asDiff,
+            $this->getParagraphLineNumberHelper(),
+            $debug
+        );
+    }
+
+    /**
+     * @param string $newMotionHtml
+     * @param string[] $overrides
+     */
+    public function performRewrite($newMotionHtml, $overrides = [])
+    {
+        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        $this->data    = AmendmentRewriter::performRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
     }
 }

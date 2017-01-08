@@ -886,3 +886,80 @@ iframe.pdfViewer {
     }
   }
 }
+
+#amendmentMergeForm {
+  #motionTitlePrefix, .dropdown-toggle {
+    max-width: 230px;
+  }
+  .checkButtonRow {
+    text-align: center;
+    margin: 20px 0;
+  }
+  .otherAmendmentStatus {
+    .row {
+      margin-bottom: 15px;
+    }
+    .by {
+      display: block;
+      font-size: 0.8em;
+    }
+    .amendmentAjaxTooltip {
+      float: right;
+      color: gray;
+      margin-right: -15px;
+      margin-top: 7px;
+    }
+  }
+  .affectedParagraphs {
+    .paragraph.unmodified .affectedBlock {
+      display: none;
+    }
+    .paragraph.modified .unmodifiedVersion {
+      display: none;
+    }
+  }
+  .affectedBlock {
+    margin-top: 20px;
+
+    > textarea {
+      display: none;
+    }
+  }
+  .modifySelector {
+    margin-top: 15px;
+    label {
+      margin-right: 20px;
+      font-weight: normal;
+    }
+  }
+  .save-row {
+    text-align: center;
+  }
+  .saveholder {
+    .checkAmendmentCollissions {
+      display: none;
+    }
+  }
+}
+
+.amendmentCollissionsHolder {
+  .amendmentBy {
+    color: gray;
+  }
+  .amendmentOverrideBlock {
+    background-color: #f5f5f5;
+    margin: 15px -10px;
+    padding: 10px;
+    border: solid 1px #ddd;
+    border-radius: 4px;
+
+    > h3 {
+      font-size: 18px;
+      margin-top: 0;
+    }
+
+    > textarea {
+      display: none;
+    }
+  }
+}

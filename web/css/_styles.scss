@@ -9,6 +9,10 @@ button.link {
   display: none;
 }
 
+.fueluxSelectHolder {
+  position: relative; // fuelux
+}
+
 del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
   color: #880000;
   text-decoration: line-through;
@@ -43,6 +47,8 @@ del.space, ins.space, del.formatting, ins.formatting {
 }
 
 .texteditor {
+  background-color: white;
+
   &.boxed {
     @extend .texteditorBox;
   }
@@ -487,10 +493,44 @@ ul.searchResults {
   .pillbox > .pill-group {
     list-style-type: none;
   }
-  .form-group .dropdown-menu {
-    margin-left: 15px;
-  }
   .selectlist .btn.dropdown-toggle {
     position: relative;
+  }
+}
+
+h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
+  float: right;
+  color: gray;
+  margin-right: -10px;
+}
+
+.amendmentAjaxTooltip + .popover {
+  width: 250px;
+  max-width: none;
+  color: black;
+
+  @media screen and (min-width: 800px) {
+    width: 400px;
+  }
+  @media screen and (min-width: 1200px) {
+    width: 600px;
+  }
+  .popover-content {
+    padding-right: 0;
+  }
+}
+
+.ajaxAmendment {
+  max-height: 250px;
+  overflow: auto;
+  > h3 {
+    display: none;
+  }
+  h4 {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+  ul {
+    padding-left: 20px;
   }
 }

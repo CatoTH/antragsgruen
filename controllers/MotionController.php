@@ -350,10 +350,14 @@ class MotionController extends Base
         $fromMode = ($motion->status == Motion::STATUS_DRAFT ? 'create' : 'edit');
 
         if ($this->isPostSet('save')) {
+            $post = \Yii::$app->request->post();
             $motion->flushCacheWithChildren();
-            $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
+            $form->setAttributes([$post, $_FILES]);
             try {
                 $form->saveMotion($motion);
+                if (isset($post['sections'])) {
+                    $form->updateTextRewritingAmendments($motion, $post['sections']);
+                }
 
                 ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
 
@@ -365,6 +369,7 @@ class MotionController extends Base
                 }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
+                $form->setSectionTextWithoutSaving($motion, $post['sections']);
             }
         }
 

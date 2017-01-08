@@ -2,15 +2,22 @@
 
 namespace app\controllers;
 
+use app\components\diff\AmendmentRewriter;
+use app\components\diff\DiffRenderer;
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\User;
+use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
+use app\models\sectionTypes\ISectionType;
+use app\models\forms\MergeSingleAmendmentForm;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -45,7 +52,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -72,7 +81,7 @@ class AmendmentController extends Base
         if (count($motions) == 0) {
             $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
         }
-        $amendments = [];
+        $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
             if ($texTemplate === null) {
@@ -109,7 +118,9 @@ class AmendmentController extends Base
         if (!$amendment) {
             return '';
         }
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -142,7 +153,8 @@ class AmendmentController extends Base
             $adminEdit = null;
         }
 
-        if (!$amendment->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
         }
 
@@ -173,7 +185,23 @@ class AmendmentController extends Base
 
 
         return $this->render('view', $amendmentViewParams);
+    }
 
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionAjaxDiff($motionSlug, $amendmentId)
+    {
+        $this->layout = 'column2';
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            return '';
+        }
+
+        return $this->renderPartial('ajax_diff', ['amendment' => $amendment]);
     }
 
     /**
@@ -221,6 +249,156 @@ class AmendmentController extends Base
                 'deleteDraftId' => \Yii::$app->request->get('draftId'),
             ]);
         }
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws Access
+     * @throws NotFound
+     */
+    public function actionGetMergeCollissions($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        if (!$amendment->canMergeIntoMotion()) {
+            throw new Access('Not allowed to use this function');
+        }
+
+        $newSectionParas       = \Yii::$app->request->post('newSections', []);
+        $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
+        $newSections           = [];
+        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
+                $section->getOriginalMotionSection()->data,
+                $section->data,
+                (isset($newSectionParas[$section->sectionId]) ? $newSectionParas[$section->sectionId] : [])
+            );
+        }
+
+
+        $collissions = $amendments = [];
+        foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {
+            if ($amend->id == $amendment->id) {
+                continue;
+            }
+            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+                continue;
+            }
+            foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $debug = false;
+                $coll  = $section->getRewriteCollissions($newSections[$section->sectionId], false, $debug);
+
+                if (count($coll) > 0) {
+                    if (!in_array($amend, $amendments)) {
+                        $amendments[$amend->id]  = $amend;
+                        $collissions[$amend->id] = [];
+                    }
+                    $collissions[$amend->id][$section->sectionId] = $coll;
+                }
+            }
+        }
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
+            'amendments'  => $amendments,
+            'collissions' => $collissions,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @param int $newMotionId
+     * @return string
+     * @throws NotFound
+     */
+    public function actionMergeDone($motionSlug, $amendmentId, $newMotionId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        $motion = $this->consultation->getMotion($newMotionId);
+        if (!$motion) {
+            throw new NotFound('Motion not found');
+        }
+        return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $motion]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws Access
+     * @throws Internal
+     * @throws NotFound
+     */
+    public function actionMerge($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            throw new NotFound('Amendment not found');
+        }
+        if (!$amendment->canMergeIntoMotion()) {
+            throw new Access('Not allowed to use this function');
+        }
+
+        $motion = $amendment->getMyMotion();
+
+        if ($this->isPostSet('save')) {
+            $form = new MergeSingleAmendmentForm(
+                $amendment,
+                \Yii::$app->request->post('motionTitlePrefix'),
+                \Yii::$app->request->post('amendmentStatus'),
+                \Yii::$app->request->post('newParas', []),
+                \Yii::$app->request->post('amendmentOverride', []),
+                \Yii::$app->request->post('otherAmendmentsStatus', [])
+            );
+            if ($form->checkConsistency()) {
+                $newMotion = $form->performRewrite();
+
+                return $this->redirect(UrlHelper::createAmendmentUrl(
+                    $amendment,
+                    'merge-done',
+                    ['newMotionId' => $newMotion->id]
+                ));
+            } else {
+                return $this->showErrorpage(500, 'An internal consistance error occurred. ' .
+                    'This should never happen and smells like an error in the system.');
+            }
+        }
+
+        $paragraphSections = [];
+        $diffRenderer      = new DiffRenderer();
+        $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
+
+        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
+            $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
+            $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);
+
+            $paraLineNumbers = $section->getParagraphLineNumberHelper();
+            $paragraphs      = [];
+            foreach (array_keys($paragraphsDiff) as $paraNo) {
+                $paragraphs[$paraNo] = [
+                    'lineFrom' => $paraLineNumbers[$paraNo],
+                    'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
+                    'plain'    => $paragraphsPlain[$paraNo],
+                    'diff'     => $diffRenderer->renderHtmlWithPlaceholders($paragraphsDiff[$paraNo]),
+                ];
+            }
+
+            $paragraphSections[$section->sectionId] = $paragraphs;
+        }
+
+        return $this->render('merge', [
+            'motion'            => $motion,
+            'amendment'         => $amendment,
+            'paragraphSections' => $paragraphSections,
+        ]);
     }
 
     /**

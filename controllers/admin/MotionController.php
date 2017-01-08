@@ -12,6 +12,7 @@ use app\models\db\TexTemplate;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
+use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\components\motionTypeTemplates\Application as ApplicationTemplate;
@@ -107,7 +108,7 @@ class MotionController extends AdminBase
 
             $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
             if (strpos($pdfTemplate, 'php') === 0) {
-                $motionType->pdfLayout = IntVal(str_replace('php', '', $pdfTemplate));
+                $motionType->pdfLayout     = IntVal(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
             } elseif ($pdfTemplate) {
                 $motionType->texTemplateId = IntVal($pdfTemplate);
@@ -322,6 +323,35 @@ class MotionController extends AdminBase
      * @param int $motionId
      * @return string
      */
+    public function actionGetAmendmentRewriteCollissions($motionId)
+    {
+        $newSections = \Yii::$app->request->post('newSections', []);
+
+        /** @var Motion $motion */
+        $motion      = $this->consultation->getMotion($motionId);
+        $collissions = $amendments = [];
+        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                if (count($coll) > 0) {
+                    if (!in_array($amendment, $amendments)) {
+                        $amendments[$amendment->id]  = $amendment;
+                        $collissions[$amendment->id] = [];
+                    }
+                    $collissions[$amendment->id][$section->sectionId] = $coll;
+                }
+            }
+        }
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
+            'amendments'  => $amendments,
+            'collissions' => $collissions,
+        ]);
+    }
+
+    /**
+     * @param int $motionId
+     * @return string
+     */
     public function actionUpdate($motionId)
     {
         /** @var Motion $motion */
@@ -362,6 +392,10 @@ class MotionController extends AdminBase
             try {
                 $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
+                if (isset($post['sections'])) {
+                    $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
+                    $form->updateTextRewritingAmendments($motion, $post['sections'], $overrides);
+                }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }

@@ -99,7 +99,7 @@ return [
     'STATUS_SUBMITTED_SCREENED'    => 'Eingereicht',
     'STATUS_ACCEPTED'              => 'Angenommen',
     'STATUS_REJECTED'              => 'Abgelehnt',
-    'STATUS_MODIFIED_ACCEPTED'     => 'Modifizierte Übernahme',
+    'STATUS_MODIFIED_ACCEPTED'     => 'Modifiziert übernommen',
     'STATUS_MODIFIED'              => 'Modifziert',
     'STATUS_ADOPTED'               => 'Übernahme',
     'STATUS_COMPLETED'             => 'Erledigt',

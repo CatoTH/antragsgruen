@@ -144,4 +144,5 @@ return [
     'support_finish_btn'                 => 'Antrag offiziell einreichen',
     'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
+    'prefix_new_code'                    => 'neu',
 ];
