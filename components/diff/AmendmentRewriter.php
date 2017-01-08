@@ -132,20 +132,40 @@ class AmendmentRewriter
 
     /**
      * @param string $motionOldHtml
+     * @param string $amendmentHtml
+     * @param string[] $overwrites
+     * @return string
+     */
+    public static function calcNewSectionTextWithOverwrites($motionOldHtml, $amendmentHtml, $overwrites)
+    {
+        $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
+        $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
+        $matchingNewParagraphs = ArrayMatcher::computeMatchingAffectedParagraphs($motionOldParas, $amendmentParas);
+
+        foreach ($overwrites as $paraNo => $para) {
+            $matchingNewParagraphs[$paraNo] = $para;
+        }
+
+        return implode("\n", $matchingNewParagraphs);
+    }
+
+    /**
+     * @param string $motionOldHtml
      * @param string $motionNewHtml
      * @param string $amendmentHtml
      * @param boolean $asDiff
      * @param null|int[] $lineNumbers
-     * @return string[]
+     * @param bool $debug
+     * @return \string[]
      */
     public static function getCollidingParagraphs(
         $motionOldHtml,
         $motionNewHtml,
         $amendmentHtml,
         $asDiff = false,
-        $lineNumbers = null
-    )
-    {
+        $lineNumbers = null,
+        $debug = false
+    ) {
         $motionOldParas = HTMLTools::sectionSimpleHTML($motionOldHtml);
         $motionNewParas = HTMLTools::sectionSimpleHTML($motionNewHtml);
         $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentHtml);
@@ -153,17 +173,42 @@ class AmendmentRewriter
         $affectedByAmendment = static::computeAffectedParagraphs($motionOldParas, $amendmentParas, $asDiff);
         $affectedByNewMotion = static::computeAffectedParagraphs($motionOldParas, $motionNewParas, $asDiff);
 
+        if ($debug) {
+            echo "====\n";
+            var_dump($affectedByNewMotion);
+            var_dump($affectedByAmendment);
+            echo "====\n";
+        }
+
         $paraNos  = array_intersect(array_keys($affectedByNewMotion), array_keys($affectedByAmendment));
         $paras    = [];
         $diff     = new Diff();
         $renderer = new DiffRenderer();
+        if ($debug) {
+            var_dump($paraNos);
+        }
         foreach ($paraNos as $paraNo) {
             try {
-                static::createMerge($motionOldParas[$paraNo], $motionNewParas[$paraNo], $amendmentParas[$paraNo]);
+                if ($debug) {
+                    var_dump($motionOldParas[$paraNo]);
+                    var_dump($affectedByNewMotion[$paraNo]);
+                    var_dump($affectedByAmendment[$paraNo]);
+                }
+                $merge = static::createMerge(
+                    $motionOldParas[$paraNo],
+                    $affectedByNewMotion[$paraNo],
+                    $affectedByAmendment[$paraNo]
+                );
+                if ($debug) {
+                    var_dump($merge);
+                }
             } catch (\Exception $e) {
-                $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $motionNewParas[$paraNo]);
+                if ($debug) {
+                    echo "COLLISSION\n";
+                }
+                $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $affectedByNewMotion[$paraNo]);
                 $motionNewDiff = $renderer->renderHtmlWithPlaceholders($motionNewDiff);
-                $amendmentDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $amendmentParas[$paraNo]);
+                $amendmentDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $affectedByAmendment[$paraNo]);
                 $amendmentDiff = $renderer->renderHtmlWithPlaceholders($amendmentDiff);
                 $data          = [
                     'text'          => $affectedByAmendment[$paraNo],

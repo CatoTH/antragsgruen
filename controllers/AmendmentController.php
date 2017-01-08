@@ -272,13 +272,11 @@ class AmendmentController extends Base
         $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
         $newSections           = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $amendmentParas = HTMLTools::sectionSimpleHTML($section->data);
-            if (isset($newSectionParas[$section->sectionId])) {
-                foreach ($newSectionParas[$section->sectionId] as $paraNo => $para) {
-                    $amendmentParas[$paraNo] = $para;
-                }
-            }
-            $newSections[$section->sectionId] = implode("\n", $amendmentParas);
+            $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
+                $section->getOriginalMotionSection()->data,
+                $section->data,
+                (isset($newSectionParas[$section->sectionId]) ? $newSectionParas[$section->sectionId] : [])
+            );
         }
 
 
@@ -291,7 +289,9 @@ class AmendmentController extends Base
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $debug = false;
+                $coll  = $section->getRewriteCollissions($newSections[$section->sectionId], false, $debug);
+
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
                         $amendments[$amend->id]  = $amend;

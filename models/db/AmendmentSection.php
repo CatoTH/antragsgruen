@@ -265,10 +265,11 @@ class AmendmentSection extends IMotionSection
     /**
      * @param string $newMotionHtml
      * @param bool $asDiff
+     * @param bool $debug
      * @return array
      * @throws Internal
      */
-    public function getRewriteCollissions($newMotionHtml, $asDiff = false)
+    public function getRewriteCollissions($newMotionHtml, $asDiff = false, $debug = false)
     {
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');
@@ -279,7 +280,8 @@ class AmendmentSection extends IMotionSection
             $newMotionHtml,
             $this->data,
             $asDiff,
-            $this->getParagraphLineNumberHelper()
+            $this->getParagraphLineNumberHelper(),
+            $debug
         );
     }
 
