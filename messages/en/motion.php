@@ -7,7 +7,9 @@ return [
     'Motion submitted'              => 'Motion submitted',
     'create_prerequisites'          => 'Requirements for a motion',
     'amendment_create'              => 'Create an amendment',
+    'amendment_create_admin'        => 'only admins',
     'amendments_merge'              => 'Merge amendments',
+    'amendments_merge_noamend'      => 'Merge changes',
     'none_yet'                      => 'None yet',
     'motion_edit'                   => 'Edit %TYPE%',
     'motion_withdraw'               => 'Withdraw %TYPE%',
@@ -112,7 +114,6 @@ return [
     'support_orga'           => 'Organisation',
     'support_name'           => 'Name',
 
-    'amendments_merge_noamend'           => 'Merge amendments',
     'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nYou can send the following link to potentially interested people so they can support it:",
     'submitted_screening_email'          => "Hi,\n\nYou just sumitted a motion. It will now be screened and eventually be published. You will be notified seperatelly, once this happens.\n\nYou can see the motion here: %LINK%",
     'submitted_screening_email_subject'  => 'Motion submitted',

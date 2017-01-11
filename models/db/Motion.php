@@ -28,6 +28,7 @@ use yii\helpers\Html;
  * @property string $dateResolution
  * @property int $status
  * @property string $statusString
+ * @property int $nonAmendable
  * @property string $noteInternal
  * @property string $cache
  * @property int $textFixed
@@ -210,7 +211,7 @@ class Motion extends IMotion implements IRSSItem
     {
         return [
             [['consultationId', 'motionTypeId'], 'required'],
-            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed', 'agendaItemId'], 'number'],
+            [['id', 'consultationId', 'motionTypeId', 'status', 'textFixed', 'agendaItemId', 'nonAmendable'], 'number'],
             [['title'], 'safe'],
         ];
     }
@@ -463,6 +464,13 @@ class Motion extends IMotion implements IRSSItem
         $iAmAdmin = User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
+            if ($this->nonAmendable) {
+                if ($throwExceptions) {
+                    throw new NotAmendable('Not amendable in the current state', false);
+                } else {
+                    return false;
+                }
+            }
             $notAmendableStati = [
                 static::STATUS_DELETED,
                 static::STATUS_DRAFT,
@@ -487,6 +495,7 @@ class Motion extends IMotion implements IRSSItem
         }
         $policy  = $this->motionType->getAmendmentPolicy();
         $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
+        
         if (!$allowed) {
             if ($throwExceptions) {
                 $msg    = $policy->getPermissionDeniedAmendmentMsg();

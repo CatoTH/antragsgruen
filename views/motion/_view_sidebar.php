@@ -24,11 +24,14 @@ $sidebarRows = 0;
 
 try {
     $motion->isCurrentlyAmendable(true, true, true);
-    
+
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
     $title .= \Yii::t('motion', 'amendment_create');
+    if (!$motion->isCurrentlyAmendable(false, true)) {
+        $title .= ' <span class="onlyAdmins">(' . \Yii::t('motion', 'amendment_create_admin') . ')</span>';
+    }
     $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
     $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
         'rel="nofollow">' . $title . '</a>';

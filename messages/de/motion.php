@@ -7,6 +7,7 @@ return [
     'Motion submitted'                   => 'Antrag eingereicht',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
+    'amendment_create_admin'             => 'nur Admins',
     'amendments_merge'                   => 'Änderungsanträge einpflegen',
     'amendments_merge_noamend'           => 'Änderungen einpflegen',
     'none_yet'                           => 'Es gibt noch keine Anträge',

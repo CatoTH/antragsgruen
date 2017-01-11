@@ -407,6 +407,7 @@ class MotionController extends AdminBase
             $motion->noteInternal   = $modat['noteInternal'];
             $motion->status         = $modat['status'];
             $motion->agendaItemId   = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
+            $motion->nonAmendable   = (isset($modat['nonAmendable']) ? 1 : 0);
             $motion->dateResolution = '';
             if ($modat['dateResolution'] != '') {
                 $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateResolution']);

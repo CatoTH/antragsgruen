@@ -373,6 +373,7 @@ CREATE TABLE `###TABLE_PREFIX###motion` (
   `dateResolution`  TIMESTAMP   NULL     DEFAULT NULL,
   `status`          TINYINT(4)  NOT NULL,
   `statusString`    VARCHAR(55)          DEFAULT NULL,
+  `nonAmendable`    TINYINT(4)  NOT NULL DEFAULT '0',
   `noteInternal`    TEXT,
   `cache`           LONGTEXT    NOT NULL,
   `textFixed`       TINYINT(4)           DEFAULT '0',

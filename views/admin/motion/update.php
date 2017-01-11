@@ -120,7 +120,7 @@ if (count($consultation->agendaItems) > 0) {
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="motionTitle">';
-echo \Yii::t('admin', 'motion_titile');
+echo \Yii::t('admin', 'motion_title');
 echo ':</label><div class="col-md-9">';
 $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_titile')];
 echo Html::textInput('motion[title]', $motion->title, $options);
@@ -179,6 +179,17 @@ if (count($consultation->tags) > 0) {
     }
     echo '</div></div>';
 }
+
+echo '<div class="form-group">';
+echo '<label class="col-md-3 control-label" for="nonAmendable">';
+echo \Yii::t('admin', 'motion_non_amendable_title');
+echo ':</label><div class="col-md-9 nonAmendable">';
+echo '<label><input type="checkbox" name="motion[nonAmendable]" value="1"';
+if ($motion->nonAmendable) {
+    echo ' checked';
+}
+echo ' id="nonAmendable"> ' . \Yii::t('admin', 'motion_non_amendable') . '</label>';
+echo '</div></div>';
 
 
 echo '<div class="form-group">';
