@@ -9,6 +9,7 @@ use app\components\UrlHelper;
 use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
+use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\policies\All;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
@@ -720,15 +721,7 @@ class Motion extends IMotion implements IRSSItem
         }
         $this->save();
 
-        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this));
-        $mailText   = str_replace(
-            ['%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$this->title, $motionLink, $this->getInitiatorsStr()],
-            \Yii::t('motion', 'submitted_adminnoti_body')
-        );
-
-        // @TODO Use different texts depending on the status
-        $this->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'submitted_adminnoti_title'), $mailText);
+        new MotionSubmittedNotification($this);
     }
 
     /**

@@ -8,6 +8,7 @@ use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
@@ -677,15 +678,7 @@ class Amendment extends IMotion implements IRSSItem
         }
         $this->save();
 
-        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this));
-        $mailText      = str_replace(
-            ['%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$this->getTitle(), $amendmentLink, $this->getInitiatorsStr()],
-            \Yii::t('amend', 'submitted_adminnoti_body')
-        );
-
-        // @TODO Use different texts depending on the status
-        $this->getMyConsultation()->sendEmailToAdmins(\Yii::t('amend', 'submitted_adminnoti_title'), $mailText);
+        new AmendmentSubmittedNotification($this);
     }
 
     /**

@@ -6,7 +6,6 @@ use app\components\MotionSorter;
 use app\components\UrlHelper;
 use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\SearchResult;
 use yii\db\ActiveRecord;
@@ -508,7 +507,7 @@ class Consultation extends ActiveRecord
             }
         }
         /*
-         * @TODO: - Kommentare
+         * @TODO: - Comments
          */
         return $results;
     }
@@ -522,32 +521,6 @@ class Consultation extends ActiveRecord
             return true;
         }
         return false;
-    }
-
-    /**
-     * @param string $mailSubject
-     * @param string $mailText
-     */
-    public function sendEmailToAdmins($mailSubject, $mailText)
-    {
-        $mails = explode(',', $this->adminEmail);
-        foreach ($mails as $mail) {
-            if (trim($mail) != '') {
-                try {
-                    \app\components\mail\Tools::sendWithLog(
-                        EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                        $this->site,
-                        trim($mail),
-                        null,
-                        $mailSubject,
-                        $mailText
-                    );
-                } catch (MailNotSent $e) {
-                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                    \yii::$app->session->setFlash('error', $errMsg);
-                }
-            }
-        }
     }
 
     /**

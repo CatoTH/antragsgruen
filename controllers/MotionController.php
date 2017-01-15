@@ -16,6 +16,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
 use app\models\forms\MotionMergeAmendmentsForm;
+use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\sectionTypes\ISectionType;
 use yii\web\Response;
 
@@ -231,10 +232,7 @@ class MotionController extends Base
 
         $openedComments = [];
         if ($commentId > 0) {
-            foreach ($motion->getActiveSections() as $section) {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
-                    continue;
-                }
+            foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 foreach ($section->getTextParagraphObjects(false, true, true) as $paragraph) {
                     foreach ($paragraph->comments as $comment) {
                         if ($comment->id == $commentId) {
@@ -574,11 +572,7 @@ class MotionController extends Base
                 $newMotion->replacedMotion->save();
             }
 
-            $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($newMotion));
-
-            $mailText = \Yii::t('motion', 'edit_mail_body');
-            $mailText = str_replace(['%TITLE%', '%LINK%'], [$newMotion->title, $motionLink], $mailText);
-            $newMotion->getConsultation()->sendEmailToAdmins(\Yii::t('motion', 'edit_mail_title'), $mailText);
+            new MotionEditedNotification($newMotion);
 
             return $this->render('merge_amendments_done', ['newMotion' => $newMotion]);
         }
