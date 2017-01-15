@@ -20,14 +20,14 @@ $route          = 'admin/motion/listall';
 echo '<tr class="amendment amendment' . $entry->id . '">';
 echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
-echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
+echo '<td class="prefixCol">';
+echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
+echo '<a href="' . Html::encode($viewUrl) . '">';
 if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
 echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
-echo '<td class="titleCol">';
-echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
-echo '<span>';
+echo '<td class="titleCol"><span>';
 if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
