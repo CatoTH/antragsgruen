@@ -515,9 +515,10 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionTypeId
+     * @param int $version
      * @return string
      */
-    public function actionOpenslides($motionTypeId)
+    public function actionOpenslides($motionTypeId, $version = 1)
     {
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
@@ -538,9 +539,15 @@ class MotionController extends AdminBase
             }
         }
 
-        return $this->renderPartial('openslides_list', [
-            'motions' => $motions,
-        ]);
+        if ($version == 1) {
+            return $this->renderPartial('openslides1_list', [
+                'motions' => $motions,
+            ]);
+        } else {
+            return $this->renderPartial('openslides2_list', [
+                'motions' => $motions,
+            ]);
+        }
     }
 
     /**

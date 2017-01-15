@@ -5,6 +5,7 @@
 - Admins can now edit the motion text in the backend without breaking existing amendments. If there are conflicts between the changes made and the amendments, they have to be resolved manually.
 - Admins can merge an amendment into the base motion. This creates a new version of the motion. The original version of the motion and the amendment are kept for reference. If the changes of the amendment are conflicting with changes proposed by other amendments, the conflicts need to be resolved manually.
 - Single motions can now be set as non-amendable by the admin
+- Export to OpenSlides 2 is now supported
 - Internal: Port JavaScript modules to TypeScript
 
 ### Version 3.5.1 (2016-11-30)

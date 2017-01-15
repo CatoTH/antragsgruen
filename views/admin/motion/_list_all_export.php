@@ -51,7 +51,7 @@ foreach ($consultation->motionTypes as $motionType) {
             </div>
         </div>
     <?php } ?>
-    
+
     <div class="export">
         <span class="title">Export:</span>
 
@@ -94,9 +94,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     ?>
                 </ul>
             </div>
-            <?php
-        }
-        ?>
+        <?php } ?>
 
         <div class="dropdown dropdown-menu-left exportAmendmentDd">
             <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"
@@ -132,33 +130,56 @@ foreach ($consultation->motionTypes as $motionType) {
             </ul>
         </div>
 
-        <?php
-        $amendLink = UrlHelper::createUrl('admin/amendment/openslides');
-        $usersLink = UrlHelper::createUrl('admin/index/openslidesusers');
-        ?>
         <div class="dropdown dropdown-menu-left exportOpenslidesDd">
             <button class="btn btn-default dropdown-toggle" type="button" id="exportOpenslidesBtn"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= \Yii::t('export', 'btn_openslides') ?>
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="exportOpenslidesBtn">
-                <li>
-                    <?php
-                    $add = '<br><small>' . \Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
-                    echo Html::a(\Yii::t('admin', 'index_export_oslides_users') . $add, $usersLink, ['class' => 'users']);
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportOpenslidesBtn">
+                <li><?php
+                    $add       = '<br><small>' . \Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
+                    $title     = 'V1: ' . \Yii::t('admin', 'index_export_oslides_users') . $add;
+                    $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '1']);
+                    echo Html::a($title, $usersLink, ['class' => 'users']);
                     ?></li>
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
-                    $motionTypeUrl = UrlHelper::createUrl(['admin/motion/openslides', 'motionTypeId' => $motionType->id]);
-                    $title         = $motionType->titlePlural;
+                    $motionTypeUrl = UrlHelper::createUrl(
+                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id]
+                    );
+                    $title         = 'V1: ' . $motionType->titlePlural;
                     echo '<li>' .
                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
                         '</li>';
                 } ?>
-                <li>
-                    <?= Html::a(\Yii::t('admin', 'index_export_oslides_amend'), $amendLink, ['class' => 'amendments']) ?>
-                </li>
+                <li><?php
+                    $title     = 'V1: ' . \Yii::t('admin', 'index_export_oslides_amend');
+                    $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '1']);
+                    echo Html::a($title, $amendLink, ['class' => 'amendments']);
+                    ?></li>
+
+                <li><?php
+                    $add       = '<br><small>' . \Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
+                    $title     = 'V2: ' . \Yii::t('admin', 'index_export_oslides_users') . $add;
+                    $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '2']);
+                    echo Html::a($title, $usersLink, ['class' => 'users']);
+                    ?></li>
+                <?php
+                foreach ($consultation->motionTypes as $motionType) {
+                    $motionTypeUrl = UrlHelper::createUrl(
+                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
+                    );
+                    $title         = 'V2: ' . $motionType->titlePlural;
+                    echo '<li>' .
+                        Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
+                        '</li>';
+                } ?>
+                <li><?php
+                    $title = 'V2: ' . \Yii::t('admin', 'index_export_oslides_amend');
+                    $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '2']);
+                    echo Html::a($title, $amendLink, ['class' => 'amendments']);
+                    ?></li>
             </ul>
         </div>
     </div>

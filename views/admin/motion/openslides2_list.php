@@ -1,10 +1,10 @@
 <?php
 
-use app\models\db\Amendment;
+use app\models\db\Motion;
 
 /**
  * @var \yii\web\View $this
- * @var Amendment[] $amendments
+ * @var Motion[] $motions
  */
 
 /** @var \app\controllers\Base $controller */
@@ -13,17 +13,23 @@ $consultation = $controller->consultation;
 
 
 $data = [];
-foreach ($amendments as $amendment) {
+foreach ($motions as $motion) {
     $motionData   = [];
-    $motionData[] = $amendment->titlePrefix . \Yii::t('amend', 'amend_for') . $amendment->getMyMotion()->titlePrefix;
-    $motionData[] = $amendment->getMyMotion()->title;
+    $motionData[] = $motion->titlePrefix; // Identifier
+    $motionData[] = $motion->title; // Title
     $text         = '';
-    foreach ($amendment->getSortedSections(true) as $section) {
-        $text .= $section->getSectionType()->getAmendmentPlainHtml();
+    $reason       = '';
+    foreach ($motion->getSortedSections(true) as $section) {
+        $html = $section->getSectionType()->getMotionPlainHtml();
+        if ($section->getSettings()->title == \Yii::t('export', 'motion_reason')) {
+            $reason .= $html;
+        } else {
+            $text .= $html;
+        }
     }
     $motionData[] = str_replace("\r", "", $text);
-    $motionData[] = str_replace("\r", "", $amendment->changeExplanation);
-    $initiators   = $amendment->getInitiators();
+    $motionData[] = str_replace("\r", "", $reason);
+    $initiators = $motion->getInitiators();
     if (count($initiators) > 0) {
         if ($initiators[0]->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
             $motionData[] = $initiators[0]->organization;
@@ -33,8 +39,8 @@ foreach ($amendments as $amendment) {
     } else {
         $motionData[] = '';
     }
-    $topics = [];
-    foreach ($amendment->getMyMotion()->tags as $tag) {
+    $topics       = [];
+    foreach ($motion->tags as $tag) {
         $topics[] = $tag->title;
     }
     $motionData[] = implode(', ', $topics);
@@ -44,9 +50,9 @@ foreach ($amendments as $amendment) {
 
 $fp = fopen('php://output', 'w');
 
-fputcsv($fp, ['Identifier', 'Title', 'Text', 'Reason', 'Submitter', 'Category'], ';', '"');
+fputcsv($fp, ['identifier', 'title', 'text', 'reason', 'submitter', 'category'], ',', '"');
 
 foreach ($data as $arr) {
-    fputcsv($fp, $arr, ';', '"');
+    fputcsv($fp, $arr, ',', '"');
 }
 fclose($fp);
