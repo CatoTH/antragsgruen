@@ -117,6 +117,8 @@ return [
     'withdraw_no'                       => 'Doch nicht',
     'withdraw_yes'                      => 'Zurückziehen',
     'widthdraw_done'                    => 'Der Änderungsantrag wurde zurückgezogen.',
+    'withdrawn_adminnoti_title'         => 'Änderungsantrag zurückgezogen',
+    'withdrawn_adminnoti_body'          => "Ein Änderungsantrag wurde zurückgezogen.\nAntrag: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'title_amend_to'                    => 'Ändern in',
     'title_new'                         => 'Neuer Titel',
     'like_done'                         => 'Du stimmst diesem Änderungsantrag nun zu.',

@@ -9,6 +9,7 @@ use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
+use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
@@ -643,6 +644,7 @@ class Amendment extends IMotion implements IRSSItem
         $this->getMyMotion()->flushCacheStart();
 
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
+        new AmendmentWithdrawnNotification($this);
     }
 
     /**

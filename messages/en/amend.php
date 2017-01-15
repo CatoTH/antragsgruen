@@ -90,6 +90,8 @@ return [
     'withdraw_no'                       => 'No',
     'withdraw_yes'                      => 'Yes, withdraw',
     'widthdraw_done'                    => 'The amendment has been withdrawn.',
+    'withdrawn_adminnoti_title'         => 'Amendment withdrawn',
+    'withdrawn_adminnoti_body'          => "An amendment was withdrawn.\nMotion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'title_amend_to'                    => 'Change to',
     'title_new'                         => 'New title',
     'like_done'                         => 'You liked this amendment.',

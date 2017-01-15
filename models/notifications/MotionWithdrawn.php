@@ -5,12 +5,12 @@ namespace app\models\notifications;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 
-class MotionSubmitted extends Base implements IEmailAdmin
+class MotionWithdrawn extends Base implements IEmailAdmin
 {
     protected $motion;
 
     /**
-     * MotionSubmitted constructor.
+     * MotionWithdrawn constructor.
      * @param Motion $motion
      */
     public function __construct(Motion $motion)
@@ -26,13 +26,11 @@ class MotionSubmitted extends Base implements IEmailAdmin
      */
     public function getEmailAdminText()
     {
-        // @TODO Use different texts depending on the status
-
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
         return str_replace(
             ['%TITLE%', '%LINK%', '%INITIATOR%'],
             [$this->motion->title, $motionLink, $this->motion->getInitiatorsStr()],
-            \Yii::t('motion', 'submitted_adminnoti_body')
+            \Yii::t('motion', 'withdrawn_adminnoti_body')
         );
     }
 
@@ -41,6 +39,6 @@ class MotionSubmitted extends Base implements IEmailAdmin
      */
     public function getEmailAdminTitle()
     {
-        return \Yii::t('motion', 'submitted_adminnoti_title');
+        return \Yii::t('motion', 'withdrawn_adminnoti_title');
     }
 }

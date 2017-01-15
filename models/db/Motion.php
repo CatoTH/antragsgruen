@@ -10,6 +10,7 @@ use app\components\EmailNotifications;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
+use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\policies\All;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
@@ -688,6 +689,7 @@ class Motion extends IMotion implements IRSSItem
         $this->save();
         $this->flushCacheStart();
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
+        new MotionWithdrawnNotification($this);
     }
 
     /**

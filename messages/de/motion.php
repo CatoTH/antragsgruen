@@ -112,6 +112,8 @@ return [
     'withdraw_confirm'                   => 'Willst du diesen Antrag wirklich zurückziehen?',
     'withdraw_no'                        => 'Doch nicht',
     'withdraw_yes'                       => 'Zurückziehen',
+    'withdrawn_adminnoti_title'          => 'Antrag zurückgezogen',
+    'withdrawn_adminnoti_body'           => "Es wurde ein Antrag zurückgezogen.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'created_bread'                      => 'Angelegt',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',

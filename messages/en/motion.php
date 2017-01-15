@@ -96,6 +96,8 @@ return [
     'withdraw_confirm'          => 'Do you really want to withdraw this motion?',
     'withdraw_no'               => 'No',
     'withdraw_yes'              => 'Yes, withdraw',
+    'submitted_adminnoti_title' => 'Motion withdrawn',
+    'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'created_bread'             => 'Angelegt',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
