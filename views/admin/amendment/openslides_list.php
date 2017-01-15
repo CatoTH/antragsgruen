@@ -21,8 +21,8 @@ foreach ($amendments as $amendment) {
     foreach ($amendment->getSortedSections(true) as $section) {
         $text .= $section->getSectionType()->getAmendmentPlainHtml();
     }
-    $motionData[] = $text;
-    $motionData[] = $amendment->changeExplanation;
+    $motionData[] = str_replace("\r", "", $text);
+    $motionData[] = str_replace("\r", "", $amendment->changeExplanation);
     $initiators   = $amendment->getInitiators();
     if (count($initiators) > 0) {
         if ($initiators[0]->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {

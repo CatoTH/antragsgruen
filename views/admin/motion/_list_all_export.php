@@ -94,9 +94,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     ?>
                 </ul>
             </div>
-            <?php
-        }
-        ?>
+        <?php } ?>
 
         <div class="dropdown dropdown-menu-left exportAmendmentDd">
             <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"
@@ -138,7 +136,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?= \Yii::t('export', 'btn_openslides') ?>
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="exportOpenslidesBtn">
+            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportOpenslidesBtn">
                 <li><?php
                     $add       = '<br><small>' . \Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
                     $title     = 'V1: ' . \Yii::t('admin', 'index_export_oslides_users') . $add;

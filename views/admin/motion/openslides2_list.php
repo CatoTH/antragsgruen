@@ -27,8 +27,8 @@ foreach ($motions as $motion) {
             $text .= $html;
         }
     }
-    $motionData[] = $text;
-    $motionData[] = $reason;
+    $motionData[] = str_replace("\r", "", $text);
+    $motionData[] = str_replace("\r", "", $reason);
     $initiators = $motion->getInitiators();
     if (count($initiators) > 0) {
         if ($initiators[0]->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
