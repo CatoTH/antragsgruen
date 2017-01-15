@@ -7,6 +7,7 @@
 - Single motions can now be set as non-amendable by the admin
 - Export to OpenSlides 2 is now supported (OpenSlides v2.1 or later required)
 - If a motion or amendment is withdrawn, a notification is sent to the admin
+- A widget to show the content of an amendment in a popover is introduced, e.g. in the admin motion list
 - Internal: Port JavaScript modules to TypeScript
 
 ### Version 3.5.1 (2016-11-30)

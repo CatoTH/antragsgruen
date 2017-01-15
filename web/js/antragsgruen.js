@@ -1190,6 +1190,8 @@ function __t(category, str) {
             $el.popover({
                 html: true,
                 trigger: 'manual',
+                container: 'body',
+                template: '<div class="popover popover-amendment-ajax" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
                 content: function () {
                     var id = 'pop_' + (new Date()).getTime(),
                         content = '<div id="' + id + '">Loading...</div>',

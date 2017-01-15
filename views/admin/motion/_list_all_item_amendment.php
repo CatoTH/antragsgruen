@@ -1,4 +1,5 @@
 <?php
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
@@ -24,7 +25,9 @@ if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
 echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
-echo '<td class="titleCol"><span>';
+echo '<td class="titleCol">';
+echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
+echo '<span>';
 if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
