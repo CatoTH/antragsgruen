@@ -129,6 +129,7 @@ return [
 
     'con_email_from'          => 'Absender-Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',
+    'con_email_replyto_place' => 'Im Zweifelsfall einfach leer lassen',
     'con_h1'                  => 'Veranstaltungs-Einstellungen',
     'con_title_general'       => 'Allgemeine Einstellungen zur Veranstaltung',
     'con_maintainance'        => 'Wartungsmodus aktiv',

@@ -133,6 +133,7 @@ return [
 
     'con_email_from'          => 'From Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',
+    'con_email_replyto_place' => 'Leave empty if unsure',
     'con_h1'                  => 'Consultation-Settings',
     'con_title_general'       => 'General settings',
     'con_maintainance'        => 'Maintainance mode',

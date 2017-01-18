@@ -6,7 +6,7 @@ return [
     'step_purpose'    => 'Purpose',
     'step_motions'    => 'Motions',
     'step_amendments' => 'Amendments',
-    'step_special'    => 'Featues',
+    'step_special'    => 'Features',
     'step_site'       => 'Contact',
 
     'next'   => 'Next',
@@ -78,8 +78,8 @@ return [
     'agenda_yes'   => 'Yes',
 
     'opennow_title' => 'Publish this site immediatelly?',
-    'opennow_desc'  => 'If not, it will be createdin maintainance mode',
-    'opennow_no'    => 'Start in mainainance mode',
+    'opennow_desc'  => 'If not, it will be created in maintainance mode',
+    'opennow_no'    => 'Start in maintainance mode',
     'opennow_yes'   => 'Start immediatelly',
 
     'sitedate_title'          => 'Almost finished!',

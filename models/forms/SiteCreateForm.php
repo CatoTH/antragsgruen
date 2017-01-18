@@ -3,7 +3,6 @@
 namespace app\models\forms;
 
 use app\components\Tools;
-use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationMotionType;

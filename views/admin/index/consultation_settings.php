@@ -398,7 +398,7 @@ $handledSiteSettings = [];
         echo '<div class="form-group">
     <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
     <div class="col-sm-9">
-    <input type="email" name="siteSettings[emailReplyTo]" placeholder="Im Zweifelsfall einfach leer lassen" ' .
+    <input type="email" name="siteSettings[emailReplyTo]" placeholder="' . \Yii::t('admin', 'con_email_replyto_place') . '" ' .
             'value="' . Html::encode($siteSettings->emailReplyTo) . '" class="form-control" id="emailReplyTo">
 </div></div>';
         ?>
