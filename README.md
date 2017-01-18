@@ -48,6 +48,8 @@ cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.2.2"
 ./composer.phar install --prefer-dist
+npm install
+npm run build
 ```
 
 If you want to use the web-based installer (recommended):
@@ -127,7 +129,6 @@ You can enable debug mode by creating an empty file config/DEBUG.
 To compile the JavaScript- and CSS-Files, you need to install Gulp:
 ```bash
 npm install # Installs all required packages 
-npm run typings install # Installs the typings needed for TypeScript
 
 npm run build # Compiles the regular JS/CSS-files
 npm run watch # Listens for changes in JS/CSS-files and compiles them immediatelly
