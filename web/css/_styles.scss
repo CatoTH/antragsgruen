@@ -364,6 +364,13 @@ del.space, ins.space, del.formatting, ins.formatting {
       }
     }
   }
+  .paragraphHolder.hasCollissions {
+    background-color: #fff5f5;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
 }
 
 .userAccountForm {

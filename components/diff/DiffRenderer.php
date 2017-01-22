@@ -406,7 +406,7 @@ class DiffRenderer
     }
 
     /**
-     * @param \DOMNode $dom
+     * @param \DOMElement $dom
      * @return array
      */
     protected function renderHtmlWithPlaceholdersIntNormal($dom)

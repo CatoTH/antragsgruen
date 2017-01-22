@@ -733,6 +733,11 @@ class TextSimple extends ISectionType
             $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 
+        $paragraphCollissions = [];
+        foreach (array_keys($paragraphs) as $paragraphNo) {
+            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo);
+        }
+
         $out = '';
         foreach (array_keys($paragraphs) as $paragraphNo) {
             $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
@@ -756,10 +761,14 @@ class TextSimple extends ISectionType
                 $paragraphText .= $text;
             }
 
+            $out .= '<div class="paragraphHolder';
+            if (count($paragraphCollissions[$paragraphNo]) > 0) {
+                $out .= ' hasCollissions';
+            }
+            $out .= '" data-paragraph-no="' . $paragraphNo . '">';
             $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
-            $colliding = $merger->getCollidingParagraphGroups($paragraphNo);
-            foreach ($colliding as $amendmentId => $paraData) {
+            foreach ($paragraphCollissions[$paragraphNo] as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
                 $out .= '<div class="collidingParagraph"';
                 $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
@@ -787,9 +796,11 @@ class TextSimple extends ISectionType
 
                     $paragraphText .= $text;
                 }
+
                 $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
                 $out .= '</div>';
             }
+            $out .= '</div>';
         }
 
         return $out;
