@@ -107,12 +107,11 @@ export class AntragsgruenEditor {
                 'h2 h3 h4;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'div (paragraphHolder,hasCollissions);' +
+                'div [data-*](collidingParagraph,paragraphHolder,hasCollissions);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);' +
-                'section[data-*](collidingParagraph)';
+                'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul ol li {list-style-type};' +
