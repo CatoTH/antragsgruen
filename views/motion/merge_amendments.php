@@ -22,9 +22,10 @@ $layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
-$layout->loadCKEditor();
 $layout->loadFuelux();
-$layout->addOnLoadJS('jQuery.Antragsgruen.motionMergeAmendmentsForm();');
+$layout->loadCKEditor();
+//$layout->addOnLoadJS('jQuery.Antragsgruen.motionMergeAmendmentsForm();');
+$layout->setMainAMDModule('frontend/MotionMergeAmendments');
 
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();

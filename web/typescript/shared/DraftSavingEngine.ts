@@ -147,8 +147,7 @@ export class DraftSavingEngine {
             }
         });
         $(".form-group.amendmentStatus").each((i, el) => {
-            let $input = $(el).find("input[type=text].hidden"),
-                id = $(el).find(".selectlist").attr("id");
+            let id = $(el).find(".selectlist").attr("id");
             if (typeof(data[id]) != "undefined") {
                 $('#' + id).selectlist('selectByValue', data[id]);
             }
