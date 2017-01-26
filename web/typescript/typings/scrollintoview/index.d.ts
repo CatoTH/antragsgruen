@@ -1,4 +1,4 @@
-// Type definitions for fuelUX
+// Type definitions for scrollIntoView
 // Project:
 // Definitions by: Tobias Hößl <https://www.hoessl.eu/>
 // Definitions:

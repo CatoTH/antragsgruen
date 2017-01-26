@@ -51,7 +51,7 @@ if ($admin) {
     echo \Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
-    $layout->addOnLoadJS('jQuery.Antragsgruen.contentPageEdit();');
+    $layout->setMainAMDModule('frontend/ContentPageEdit');
 }
 
 echo '</div>';

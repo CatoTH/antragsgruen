@@ -6,7 +6,6 @@ use app\models\db\AmendmentSupporter;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * @var yii\web\View $this
@@ -69,7 +68,7 @@ if ($admin) {
     echo Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
-    $layout->addOnLoadJS('jQuery.Antragsgruen.contentPageEdit();');
+    $layout->setMainAMDModule('frontend/ContentPageEdit');
 }
 
 echo '</div>';

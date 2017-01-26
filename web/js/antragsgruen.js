@@ -162,14 +162,6 @@ function __t(category, str) {
 
     var $html = $('html');
 
-    var motionInitiatorShow = function () {
-        $(".motionData .contactShow").click(function (ev) {
-            ev.preventDefault();
-            $(this).addClass("hidden");
-            $(".motionData .contactDetails").removeClass("hidden");
-        });
-    };
-
     var draftSavingEngine = function (keyBase) {
         if (!$html.hasClass("localstorage")) {
             return;
@@ -488,169 +480,6 @@ function __t(category, str) {
     };
 
 
-    var contentPageEdit = function () {
-        $('.contentPage').each(function () {
-            var $this = $(this),
-                $form = $this.find('> form'),
-                $editCaller = $this.find('> .editCaller'),
-                $textHolder = $form.find('> .textHolder'),
-                $textSaver = $form.find('> .textSaver'),
-                editor = null;
-
-            $editCaller.click(function (ev) {
-                ev.preventDefault();
-                $editCaller.addClass("hidden");
-                $textHolder.attr('contenteditable', true);
-
-                editor = CKEDITOR.inline($textHolder.attr('id'), {
-                    scayt_sLang: 'de_DE',
-                    removePlugins: 'lite'
-                });
-
-                $textHolder.focus();
-                $textSaver.removeClass("hidden");
-            });
-            $textSaver.addClass("hidden");
-            $textSaver.find('button').click(function (ev) {
-                ev.preventDefault();
-
-                $.post($form.attr('action'), {
-                    'data': editor.getData(),
-                    '_csrf': $form.find('> input[name=_csrf]').val()
-                }, function (ret) {
-                    if (ret == '1') {
-                        $textSaver.addClass("hidden");
-                        editor.destroy();
-                        $textHolder.attr('contenteditable', false);
-                        $editCaller.removeClass("hidden");
-                    } else {
-                        alert('Something went wrong...');
-                    }
-                })
-            });
-        });
-    };
-
-    var motionShow = function () {
-        motionInitiatorShow();
-        var $paragraphs = $('.motionTextHolder .paragraph');
-        $paragraphs.find('.comment .shower').click(function (ev) {
-            ev.preventDefault();
-            var $this = $(this),
-                $commentHolder = $this.parents('.paragraph').first().find('.commentHolder');
-            $this.addClass('hidden');
-            $this.parent().find('.hider').removeClass('hidden');
-            $commentHolder.removeClass('hidden');
-            if (!$commentHolder.isOnScreen(0.1, 0.1)) {
-                $commentHolder.scrollintoview({top_offset: -100});
-            }
-        });
-
-        $paragraphs.find('.comment .hider').click(function (ev) {
-            var $this = $(this);
-            $this.addClass('hidden');
-            $this.parent().find('.shower').removeClass('hidden');
-
-            $this.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
-            ev.preventDefault();
-        });
-
-        $paragraphs.filter('.commentsOpened').find('.comment .shower').click();
-        $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').click();
-
-        $paragraphs.each(function () {
-            var $paragraph = $(this),
-                $paraFirstLine = $paragraph.find(".lineNumber").first(),
-                lineHeight = $paraFirstLine.height();
-
-            var amends = $paragraph.find(".bookmarks > .amendment");
-            amends = amends.sort(function (el1, el2) {
-                return $(el1).data("first-line") - $(el2).data("first-line");
-            });
-            $paragraph.find(".bookmarks").append(amends);
-
-            $paragraph.find('ul.bookmarks li.amendment').each(function () {
-                var $amendment = $(this),
-                    firstLine = $amendment.data("first-line"),
-                    targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
-                    $prevBookmark = $amendment.prevAll(),
-                    delta = targetOffset;
-                $prevBookmark.each(function () {
-                    var $pre = $(this);
-                    delta -= $pre.height();
-                    delta -= parseInt($pre.css("margin-top"));
-                    delta -= 7;
-                });
-                if (delta < 0) {
-                    delta = 0;
-                }
-                $amendment.css('margin-top', delta + "px");
-
-                $amendment.mouseover(function () {
-                    $paragraph.find("> .textOrig").addClass("hidden");
-                    $paragraph.find("> .textAmendment").addClass("hidden");
-                    $paragraph.find("> .textAmendment.amendment" + $amendment.find("a").data("id")).removeClass("hidden");
-                }).mouseout(function () {
-                    $paragraph.find("> .textOrig").removeClass("hidden");
-                    $paragraph.find("> .textAmendment").addClass("hidden");
-                });
-            });
-        });
-
-
-        $('.tagAdderHolder').click(function (ev) {
-            ev.preventDefault();
-            $(this).addClass("hidden");
-            $('#tagAdderForm').removeClass("hidden");
-        });
-
-        var s = location.hash.split('#comm');
-        if (s.length == 2) {
-            $('#comment' + s[1]).scrollintoview({top_offset: -100});
-        }
-
-        $("form.delLink").submit(function (ev) {
-            ev.preventDefault();
-            var form = this;
-            bootbox.confirm(__t("std", "del_confirm"), function (result) {
-                if (result) {
-                    form.submit();
-                }
-            });
-        });
-
-        $(".share_buttons a").click(function (ev) {
-            var target = $(this).attr("href");
-            if (window.open(target, '_blank', 'width=600,height=460')) {
-                ev.preventDefault();
-            }
-        });
-    };
-
-    var amendmentShow = function () {
-        motionInitiatorShow();
-        var s = location.hash.split('#comm');
-        if (s.length == 2) {
-            $('#comment' + s[1]).scrollintoview({top_offset: -100});
-        }
-
-        $("form.delLink").submit(function (ev) {
-            ev.preventDefault();
-            var form = this;
-            bootbox.confirm(__t("std", "del_confirm"), function (result) {
-                if (result) {
-                    form.submit();
-                }
-            });
-        });
-
-        $(".share_buttons a").click(function (ev) {
-            var target = $(this).attr("href");
-            if (window.open(target, '_blank', 'width=600,height=460')) {
-                ev.preventDefault();
-            }
-        });
-    };
 
     var defaultInitiatorForm = function () {
         var $fullTextHolder = $('#fullTextHolder'),
@@ -827,13 +656,9 @@ function __t(category, str) {
     };
 
     $.Antragsgruen = {
-        'motionShow': motionShow,
-        'amendmentShow': amendmentShow,
         'motionEditForm': motionEditForm,
-        'motionMergeAmendmentsForm': motionMergeAmendmentsForm,
         'amendmentEditForm': amendmentEditForm,
         'amendmentEditFormSinglePara': amendmentEditFormSinglePara,
-        'contentPageEdit': contentPageEdit,
         'defaultInitiatorForm': defaultInitiatorForm,
         'recalcAgendaCodes': recalcAgendaCodes
     };
