@@ -1,15 +1,15 @@
 declare let requirejs: any;
 
 (function ($: JQueryStatic) {
-    $("[data-antragsgruen-load-class]").each(function() {
+    $("[data-antragsgruen-load-class]").each(function () {
         let loadModule = $(this).data("antragsgruen-load-class");
         requirejs([loadModule]);
     });
 
-    $("[data-antragsgruen-widget]").each(function() {
+    $("[data-antragsgruen-widget]").each(function () {
         let $element = $(this),
             loadModule = $element.data("data-antragsgruen-widget");
-        requirejs([loadModule], function(util) {
+        requirejs([loadModule], function (util) {
             let className = loadModule.split('/');
             new window[className[className.length - 1]]($element);
         });
@@ -53,4 +53,35 @@ declare let requirejs: any;
             $('.amendmentAjaxTooltip').popover('hide');
         }
     });
+
+    // Needs to be synchronized with ConsultationAgendaItem:getSortedFromConsultation
+    let recalcAgendaNode = function ($ol) {
+        let currNumber = '0.',
+            $lis = $ol.find('> li.agendaItem');
+        $lis.each(function () {
+            let $li = $(this),
+                code = $li.data('code'),
+                currStr = '',
+                $subitems = $li.find('> ol');
+            if (code == '#') {
+                let parts = currNumber.split('.'),
+                    matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
+                    nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
+                    numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
+                parts[0] = nonNumeric + ++numeric;
+                currNumber = currStr = parts.join('.');
+            } else {
+                currStr = currNumber = code;
+            }
+
+            $li.find('> div > h3 .code').text(currStr);
+            if ($subitems.length > 0) {
+                recalcAgendaNode($subitems);
+            }
+        });
+    };
+    $('ol.motionListAgenda').on("antragsgruen:agenda-change", function () {
+        recalcAgendaNode($(this));
+    }).trigger("antragsgruen:agenda-change");
+
 }(jQuery));

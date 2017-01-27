@@ -1,9 +1,5 @@
 /// <reference path="../typings/nestedSortable/index.d.ts" />
 
-interface JQueryStatic {
-    Antragsgruen: any;
-}
-
 class AgendaEdit {
     constructor() {
         let adderClasses = 'agendaItemAdder mjs-nestedSortable-no-nesting mjs-nestedSortable-disabled',
@@ -49,7 +45,7 @@ class AgendaEdit {
             axis: 'y',
             update: function () {
                 showSaver();
-                $.Antragsgruen.recalcAgendaCodes();
+                $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
             }
         });
         $agenda.find('.agendaItem').each(function () {
@@ -79,7 +75,7 @@ class AgendaEdit {
                 if (result) {
                     showSaver();
                     $this.parents('li.agendaItem').first().remove();
-                    $.Antragsgruen.recalcAgendaCodes();
+                    $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
                 }
             });
         });
@@ -103,7 +99,7 @@ class AgendaEdit {
             $li.data('code', newCode);
             $li.find('> div > h3 .code').text(newCode);
             $li.find('> div > h3 .title').text(newTitle);
-            $.Antragsgruen.recalcAgendaCodes();
+            $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
         });
 
         $('#agendaEditSavingHolder').submit(function () {

@@ -15,8 +15,6 @@ use \app\models\settings\Consultation as ConsultationSettings;
  * @var bool $admin
  */
 
-$layout->addOnLoadJS('jQuery.Antragsgruen.recalcAgendaCodes();');
-
 $longVersion = ($consultation->getSettings()->startLayoutType == ConsultationSettings::START_LAYOUT_AGENDA_LONG);
 
 echo '<h2 class="green">' . \Yii::t('con', 'Agenda') . '</h2>';

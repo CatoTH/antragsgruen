@@ -414,41 +414,9 @@ function __t(category, str) {
         });
     };
 
-    // Needs to be synchronized with CunsultationAgendaItem:getSortedFromConsultation
-    var recalcAgendaCodes = function () {
-        var recalcAgendaNode = function ($ol) {
-                var currNumber = '0.',
-                    $lis = $ol.find('> li.agendaItem');
-                $lis.each(function () {
-                    var $li = $(this),
-                        code = $li.data('code'),
-                        currStr = '',
-                        $subitems = $li.find('> ol');
-                    if (code == '#') {
-                        var parts = currNumber.split('.'),
-                            matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
-                            nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
-                            numeric = (matches[2] == '' ? 1 : matches[2]);
-                        parts[0] = nonNumeric + ++numeric;
-                        currNumber = currStr = parts.join('.');
-                    } else {
-                        currStr = currNumber = code;
-                    }
-
-                    $li.find('> div > h3 .code').text(currStr);
-                    if ($subitems.length > 0) {
-                        recalcAgendaNode($subitems);
-                    }
-                });
-            },
-            $root = $('ol.motionListAgenda');
-        recalcAgendaNode($root);
-    };
-
     $.Antragsgruen = {
         'amendmentEditForm': amendmentEditForm,
         'amendmentEditFormSinglePara': amendmentEditFormSinglePara,
-        'defaultInitiatorForm': defaultInitiatorForm,
-        'recalcAgendaCodes': recalcAgendaCodes
+        'defaultInitiatorForm': defaultInitiatorForm
     };
 }(jQuery));
