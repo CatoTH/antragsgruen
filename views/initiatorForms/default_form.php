@@ -28,7 +28,7 @@ $layout     = $controller->layoutParams;
 $layout->loadDatepicker();
 $locale = Tools::getCurrentDateLocale();
 
-echo '<fieldset class="supporterForm supporterFormStd">';
+echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm">';
 
 echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
 
@@ -297,6 +297,3 @@ if ($hasSupporters && !$adminMode) {
 
 echo '</fieldset>';
 
-$controller->layoutParams->addOnLoadJS(
-    'jQuery.Antragsgruen.defaultInitiatorForm();'
-);

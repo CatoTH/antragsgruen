@@ -8,10 +8,12 @@ declare let requirejs: any;
 
     $("[data-antragsgruen-widget]").each(function () {
         let $element = $(this),
-            loadModule = $element.data("data-antragsgruen-widget");
-        requirejs([loadModule], function (util) {
+            loadModule = $element.data("antragsgruen-widget");
+        console.log(loadModule);
+        requirejs([loadModule], function (imports) {
             let className = loadModule.split('/');
-            new window[className[className.length - 1]]($element);
+            console.log(className, imports[className.length - 1], window[className[className.length - 1]]);
+            new imports[className[className.length - 1]]($element);
         });
     });
 
