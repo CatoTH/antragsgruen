@@ -132,6 +132,6 @@ echo '<div class="submitHolder content"><button type="submit" name="save" class=
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on');
 echo '</button></div>';
 
-$layout->setMainAMDModule('frontend/MotionEditForm');
+$layout->addAMDModule('frontend/MotionEditForm');
 
 echo Html::endForm();

@@ -128,6 +128,7 @@ foreach ($layout->onloadJs as $js) {
 }
 
 echo $layout->getAMDLoader();
+echo $layout->getAMDClasses();
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;

@@ -17,7 +17,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('user', 'my_acc_title');
 $layout->addBreadcrumb(\Yii::t('user', 'my_acc_bread'));
 $layout->robotsNoindex = true;
-$layout->setMainAMDModule('frontend/AccountEdit');
+$layout->addAMDModule('frontend/AccountEdit');
 
 
 $formUrl = \app\components\UrlHelper::createUrl('user/myaccount');

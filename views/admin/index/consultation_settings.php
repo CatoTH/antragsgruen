@@ -24,7 +24,7 @@ $this->title = \Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'));
 
-$layout->setMainAMDModule('backend/ConsultationSettings');
+$layout->addAMDModule('backend/ConsultationSettings');
 
 /**
  * @param \app\models\settings\Consultation $settings

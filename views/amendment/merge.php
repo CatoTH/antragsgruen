@@ -14,7 +14,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->loadCKEditor();
-$layout->setMainAMDModule('frontend/MergeSingleAmendment');
+$layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());

@@ -24,8 +24,7 @@ $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMoti
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
 $layout->loadCKEditor();
-//$layout->addOnLoadJS('jQuery.Antragsgruen.motionMergeAmendmentsForm();');
-$layout->setMainAMDModule('frontend/MotionMergeAmendments');
+$layout->addAMDModule('frontend/MotionMergeAmendments');
 
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();

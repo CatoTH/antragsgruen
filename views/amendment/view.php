@@ -24,7 +24,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller   = $this->context;
 $layout       = $controller->layoutParams;
-$layout->setMainAMDModule('frontend/AmendmentShow');
+$layout->addAMDModule('frontend/AmendmentShow');
 $consultation = $amendment->getMyConsultation();
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {

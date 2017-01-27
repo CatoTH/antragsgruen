@@ -18,7 +18,7 @@ $layout     = $controller->layoutParams;
 $this->title = \Yii::t('user', 'login_title');
 $layout->addBreadcrumb(\Yii::t('user', 'login_title'));
 $layout->robotsNoindex = true;
-$layout->setMainAMDModule('frontend/LoginForm');
+$layout->addAMDModule('frontend/LoginForm');
 
 if ($controller->site) {
     $loginMethods = $controller->site->getSettings()->loginMethods;

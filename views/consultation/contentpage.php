@@ -42,7 +42,7 @@ if ($admin) {
     echo \Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
-    $layout->setMainAMDModule('frontend/ContentPageEdit');
+    $layout->addAMDModule('frontend/ContentPageEdit');
 }
 
 echo '</div>';

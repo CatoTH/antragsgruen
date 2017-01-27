@@ -20,7 +20,7 @@ $this->title = 'Veranstaltungen verwalten';
 $layout->addCSS('css/formwizard.css');
 $layout->addCSS('css/manager.css');
 $layout->addCSS('css/backend.css');
-$layout->setMainAMDModule('backend/ConsultationCreate');
+$layout->addAMDModule('backend/ConsultationCreate');
 $layout->loadDatepicker();
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'cons_breadcrumb'));

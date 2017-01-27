@@ -24,7 +24,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$layout->setMainAMDModule('frontend/MotionShow');
+$layout->addAMDModule('frontend/MotionShow');
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));

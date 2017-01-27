@@ -44,7 +44,7 @@ if ($admin) {
     $layout->addJS('js/jquery.ui.touch-punch.js');
     $layout->addJS('js/jquery.mjs.nestedSortable.js');
 
-    $layout->setMainAMDModule('backend/AgendaEdit');
+    $layout->addAMDModule('backend/AgendaEdit');
 }
 
 if ($longVersion) {

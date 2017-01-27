@@ -26,7 +26,7 @@ $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
-$layout->setMainAMDModule('backend/AmendmentEdit');
+$layout->addAMDModule('backend/AmendmentEdit');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';

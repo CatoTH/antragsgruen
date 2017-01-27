@@ -28,7 +28,7 @@ class Layout
     public $fullWidth            = false;
     public $fullScreen           = false;
     public $mainCssFile          = null;
-    public $mainAMDModule        = null;
+    public $mainAMDModules       = [];
 
     /** @var LayoutHooks */
     public $hooks = null;
@@ -306,9 +306,9 @@ class Layout
     /**
      * @param string $module
      */
-    public function setMainAMDModule($module)
+    public function addAMDModule($module)
     {
-        $this->mainAMDModule = $module;
+        $this->mainAMDModules[] = $module;
     }
 
     /**
@@ -316,10 +316,20 @@ class Layout
      */
     public function getAMDLoader()
     {
-        if ($this->mainAMDModule) {
-            $module = $this->resourceUrl('js/build/' . $this->mainAMDModule);
-            $src    = $this->resourceUrl('npm/require.js');
-            return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '"></script>';
+        $module = $this->resourceUrl('js/build/Antragsgruen.js');
+        $src    = $this->resourceUrl('npm/require.js');
+        return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '"></script>';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAMDClasses()
+    {
+        $out = '';
+        foreach ($this->mainAMDModules as $module) {
+            $out .= '<meta data-antragsgruen-load-class="' . Html::encode($module) . '">' . "\n";
         }
+        return $out;
     }
 }

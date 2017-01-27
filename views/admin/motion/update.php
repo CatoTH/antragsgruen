@@ -29,7 +29,7 @@ $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 $layout->loadFuelux();
-$layout->setMainAMDModule('backend/MotionEdit');
+$layout->addAMDModule('backend/MotionEdit');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';

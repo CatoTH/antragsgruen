@@ -25,7 +25,7 @@ $layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
-$layout->setMainAMDModule('backend/MotionList');
+$layout->addAMDModule('backend/MotionList');
 
 $route   = 'admin/motion/listall';
 $hasTags = (count($controller->consultation->tags) > 0);
