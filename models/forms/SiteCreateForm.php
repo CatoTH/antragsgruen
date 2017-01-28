@@ -316,7 +316,7 @@ class SiteCreateForm extends Model
         } elseif ($this->motionsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
             $type->policyMotions = IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyMotions = IPolicy::POLICY_NOBODY;
+            $type->policyMotions = IPolicy::POLICY_ALL;
         }
         if (!$this->hasAmendments) {
             $type->policyAmendments = IPolicy::POLICY_NOBODY;
@@ -325,7 +325,7 @@ class SiteCreateForm extends Model
         } elseif ($this->amendmentsInitiatedBy == static::MOTION_INITIATED_LOGGED_IN) {
             $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
         } else {
-            $type->policyAmendments = IPolicy::POLICY_NOBODY;
+            $type->policyAmendments = IPolicy::POLICY_ALL;
         }
         if ($this->hasComments) {
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
