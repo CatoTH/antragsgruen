@@ -12,6 +12,7 @@ $form->saveForm();
 
 $I->wantTo('write a comment');
 $I->gotoConsultationHome()->gotoMotionView(2);
+$I->wait(1);
 $I->click('#section_2_5 .comment .shower');
 $I->seeElement('#section_2_5 .commentForm');
 $I->fillField('#comment_2_5_name', 'My \' \\ Name');

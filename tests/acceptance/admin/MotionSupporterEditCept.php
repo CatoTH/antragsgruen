@@ -6,9 +6,10 @@ $I->populateDBData1();
 
 $I->wantTo('edit a motion');
 $I->loginAndGotoMotionList('supporter', 'supporter')->gotoMotionEdit(116);
+$I->wait(1);
 $I->seeNumberOfElements('#motionSupporterHolder > ul > li', 0);
-$I->click('.supporterRowAdder');
-$I->click('.supporterRowAdder');
+$I->executeJS('$(".supporterRowAdder").click()');
+$I->executeJS('$(".supporterRowAdder").click()');
 $I->seeNumberOfElements('#motionSupporterHolder > ul > li', 2);
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterName").val("My Name 1");');
 $I->executeJS('$("#motionSupporterHolder > ul > li:nth(0) .supporterOrga").val("My Orga 1");');

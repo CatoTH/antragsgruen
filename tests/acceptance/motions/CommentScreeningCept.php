@@ -7,6 +7,7 @@ $I->populateDBData1();
 $I->wantTo('write a comment (logged out)');
 $I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
 
+$I->wait(0.5);
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
 $I->dontSee('Kommentar schreiben', '#section_21_1');
@@ -18,6 +19,7 @@ $I->wantTo('write a comment (without screening)');
 $I->loginAsStdUser();
 $I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
 
+$I->wait(0.5);
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
 $I->see('Kommentar schreiben', '#section_21_1');

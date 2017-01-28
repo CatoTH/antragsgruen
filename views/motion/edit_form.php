@@ -76,11 +76,12 @@ echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
 echo '</div>';
 
 
-echo Html::beginForm(
-    '',
-    'post',
-    ['id' => 'motionEditForm', 'class' => 'motionEditForm draftForm', 'enctype' => 'multipart/form-data']
-);
+echo Html::beginForm('', 'post', [
+    'id'                       => 'motionEditForm',
+    'class'                    => 'motionEditForm draftForm',
+    'enctype'                  => 'multipart/form-data',
+    'data-antragsgruen-widget' => 'frontend/MotionEditForm'
+]);
 
 echo '<div class="content">';
 
@@ -131,7 +132,5 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on');
 echo '</button></div>';
-
-$layout->addAMDModule('frontend/MotionEditForm');
 
 echo Html::endForm();

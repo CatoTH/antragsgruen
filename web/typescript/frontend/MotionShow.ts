@@ -51,7 +51,7 @@ class MotionShow {
 
     private showComment(ev) {
         ev.preventDefault();
-        let $node = $(ev.target),
+        let $node = $(ev.currentTarget),
             $commentHolder = $node.parents('.paragraph').first().find('.commentHolder');
         $node.addClass('hidden');
         $node.parent().find('.hider').removeClass('hidden');
@@ -62,7 +62,7 @@ class MotionShow {
     }
 
     private hideComment(ev) {
-        let $this = $(ev.target);
+        let $this = $(ev.currentTarget);
         $this.addClass('hidden');
         $this.parent().find('.shower').removeClass('hidden');
 

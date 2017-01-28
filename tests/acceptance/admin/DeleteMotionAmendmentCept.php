@@ -22,6 +22,7 @@ $I->see('Ä2');
 
 $I->wantTo('delete an amendment');
 $page->gotoAmendmentEdit(3);
+$I->wait(1);
 $I->click('.amendmentDeleteForm button');
 $I->wait(1);
 $I->acceptBootboxConfirm();

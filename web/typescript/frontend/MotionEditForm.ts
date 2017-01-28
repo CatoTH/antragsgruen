@@ -1,10 +1,10 @@
 import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
-class MotionEditForm {
+export class MotionEditForm {
     constructor(private $form: JQuery) {
         $(".input-group.date").datetimepicker({
-            locale: $("body").attr('lang'),
+            locale: $("html").attr('lang'),
             format: 'L'
         });
 
@@ -60,5 +60,3 @@ class MotionEditForm {
         }
     }
 }
-
-new MotionEditForm($("#motionEditForm"));

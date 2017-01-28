@@ -117,8 +117,10 @@ $I->dontSee('Test 123');
 $I->wantTo('edit the amendment as admin');
 
 $I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->wait(1);
 $I->dontSeeElement('#amendmentTextEditHolder');
-$I->click('#amendmentTextEditCaller button');
+$I->executeJS('$("#amendmentTextEditCaller button").click()');
+$I->wait(1);
 $I->seeElement('#amendmentTextEditHolder');
 
 $I->see('Test 789', '#sections_2_0_wysiwyg');
