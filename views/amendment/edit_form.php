@@ -80,11 +80,13 @@ echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
 </div>';
 
 
-echo Html::beginForm(
-    '',
-    'post',
-    ['id' => 'amendmentEditForm', 'class' => 'motionEditForm draftForm', 'enctype' => 'multipart/form-data']
-);
+echo Html::beginForm('', 'post', [
+    'id' => 'amendmentEditForm',
+    'class' => 'motionEditForm draftForm',
+    'enctype' => 'multipart/form-data',
+    'data-antragsgruen-widget' => 'frontend/AmendmentEdit',
+    'data-multi-paragraph-mode' => ($multipleParagraphs ? 1 : 0)
+]);
 
 echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
 <div class="content">
@@ -139,7 +141,5 @@ if (!$multipleParagraphs) {
 echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on');
 echo '</button></div>';
-
-$layout->addOnLoadJS('jQuery.Antragsgruen.amendmentEditForm(' . ($multipleParagraphs ? 1 : 0) . ');');
 
 echo Html::endForm();

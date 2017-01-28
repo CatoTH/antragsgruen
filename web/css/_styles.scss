@@ -269,6 +269,9 @@ del.space, ins.space, del.formatting, ins.formatting {
       cursor: pointer;
       &:hover {
         background-color: #f4f4f4;
+        > .texteditor {
+          background-color: transparent;
+        }
       }
     }
   }

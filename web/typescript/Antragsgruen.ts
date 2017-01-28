@@ -1,4 +1,5 @@
 declare let requirejs: any;
+declare let ANTRAGSGRUEN_STRINGS: string[][];
 
 (function ($: JQueryStatic) {
     $("[data-antragsgruen-load-class]").each(function () {
@@ -9,10 +10,8 @@ declare let requirejs: any;
     $("[data-antragsgruen-widget]").each(function () {
         let $element = $(this),
             loadModule = $element.data("antragsgruen-widget");
-        console.log(loadModule);
         requirejs([loadModule], function (imports) {
             let className = loadModule.split('/');
-            console.log(className, imports[className.length - 1], window[className[className.length - 1]]);
             new imports[className[className.length - 1]]($element);
         });
     });
@@ -86,4 +85,16 @@ declare let requirejs: any;
         recalcAgendaNode($(this));
     }).trigger("antragsgruen:agenda-change");
 
+    window['__t'] = function (category, str) {
+        if (typeof(ANTRAGSGRUEN_STRINGS) == "undefined") {
+            return '@TRANSLATION STRINGS NOT LOADED';
+        }
+        if (typeof(ANTRAGSGRUEN_STRINGS[category]) == "undefined") {
+            return "@UNKNOWN CATEGORY: " + category
+        }
+        if (typeof(ANTRAGSGRUEN_STRINGS[category][str]) == "undefined") {
+            return "@UNKNOWN STRING: " + category + " / " + str;
+        }
+        return ANTRAGSGRUEN_STRINGS[category][str];
+    };
 }(jQuery));

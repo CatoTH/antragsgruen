@@ -8,7 +8,7 @@ var gulp = require('gulp'),
 
     main_js_files = [
         "node_modules/bootstrap/dist/js/bootstrap.js", "node_modules/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
-        "node_modules/intl/dist/Intl.min.js", "web/js/antragsgruen.js"
+        "node_modules/intl/dist/Intl.min.js"
     ];
 
 gulp.task('copy-files', function() {

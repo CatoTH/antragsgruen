@@ -35,7 +35,7 @@ $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
 
 $I->executeJS('$(".agendaListEditing").find("> li.agendaItem").last().prependTo(".agendaListEditing");');
-$I->executeJS('$.Antragsgruen.recalcAgendaCodes();');
+$I->executeJS('$("ol.motionListAgenda").trigger("antragsgruen:agenda-change");');
 $I->see('1. Sonstiges', '.motionListAgenda');
 
 $I->executeJS('$(".agendaListEditing").find("> li").eq(2).find("> ol").children().last().find("a").click();');
@@ -58,7 +58,7 @@ $I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_I
 $I->wantTo('further change the agenda a bit');
 $I->see('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListAgenda").children().eq(0));');
-$I->executeJS('$.Antragsgruen.recalcAgendaCodes();');
+$I->executeJS('$("ol.motionListAgenda").trigger("antragsgruen:agenda-change");');
 $I->see('2. Wahl: Schatzmeister', '.motionListAgenda');
 $I->see('3. More Motions', '.motionListAgenda');
 $I->see('2. Anträge', '.motionListAgenda');

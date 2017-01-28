@@ -328,7 +328,7 @@ class Layout
     {
         $out = '';
         foreach ($this->mainAMDModules as $module) {
-            $out .= '<meta data-antragsgruen-load-class="' . Html::encode($module) . '">' . "\n";
+            $out .= '<span data-antragsgruen-load-class="' . Html::encode($module) . '"></span>' . "\n";
         }
         return $out;
     }

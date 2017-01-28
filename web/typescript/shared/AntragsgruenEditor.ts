@@ -143,8 +143,10 @@ export class AntragsgruenEditor {
 
         let initialized = this.$el.data("ckeditor_initialized");
         if (typeof (initialized) != "undefined" && initialized) {
+            console.error("Already initialized: " + id);
             return;
         }
+        
         this.$el.data("ckeditor_initialized", "1");
         this.$el.attr("contenteditable", "true");
 
