@@ -100,12 +100,12 @@ class Base extends Controller
             if (get_class($this) == UserController::class) {
                 return true;
             }
-            $allowedActions = ['maintainance', 'help', 'legal', 'privacy'];
+            $allowedActions = ['maintenance', 'help', 'legal', 'privacy'];
             if (get_class($this) == ConsultationController::class && in_array($action->id, $allowedActions)) {
                 return true;
             }
 
-            if ($this->testMaintainanceMode() || $this->testSiteForcedLogin()) {
+            if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
                 return false;
             }
             return true;
@@ -245,7 +245,7 @@ class Base extends Controller
     /**
      * @return bool
      */
-    public function testMaintainanceMode()
+    public function testMaintenanceMode()
     {
         if ($this->consultation == null) {
             return false;
@@ -253,8 +253,8 @@ class Base extends Controller
         /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
         $admin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
-        if ($settings->maintainanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl('consultation/maintainance'));
+        if ($settings->maintenanceMode && !$admin) {
+            $this->redirect(UrlHelper::createUrl('consultation/maintenance'));
             return true;
         }
         return false;

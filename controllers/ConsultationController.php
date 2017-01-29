@@ -245,9 +245,9 @@ class ConsultationController extends Base
     /**
      * @return string
      */
-    public function actionMaintainance()
+    public function actionMaintenance()
     {
-        return $this->renderContentPage('maintainance');
+        return $this->renderContentPage('maintenance');
     }
 
     /**

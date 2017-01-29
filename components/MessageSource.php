@@ -240,7 +240,7 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getPageData($consultation, $pageKey)
     {
         switch ($pageKey) {
-            case 'maintainance':
+            case 'maintenance':
                 $data                  = new PageData();
                 $data->pageTitle       = \Yii::t('base', 'content_maint_title');
                 $data->breadcrumbTitle = \Yii::t('base', 'content_maint_bread');

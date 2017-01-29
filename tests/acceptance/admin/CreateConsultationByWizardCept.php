@@ -87,7 +87,7 @@ $I->seeInField('#typeDeadlineMotions', '30.12.2028 20:00');
 $I->seeInField('#typeDeadlineAmendments', '30.11.2026 20:00');
 
 $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoConsultation();
-$I->seeCheckboxIsChecked('#maintainanceMode');
+$I->seeCheckboxIsChecked('#maintenanceMode');
 
 
 $I->wantTo('set the new consultation as standard');

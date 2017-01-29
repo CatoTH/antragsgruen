@@ -164,7 +164,7 @@ class SiteCreateForm extends Model
         }
 
         $settings                   = $con->getSettings();
-        $settings->maintainanceMode = !$this->openNow;
+        $settings->maintenanceMode = !$this->openNow;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
             $settings->screeningMotions = false;
         } else {

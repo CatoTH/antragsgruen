@@ -17,7 +17,7 @@ class Consultation
     // SETTINGS WITH TEST CASES
 
     /** @var bool */
-    public $maintainanceMode       = false;
+    public $maintenanceMode        = false;
     public $screeningMotions       = false;
     public $screeningAmendments    = false;
     public $lineNumberingGlobal    = false;

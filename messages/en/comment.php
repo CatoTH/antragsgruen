@@ -10,7 +10,7 @@ return [
     'screen_no'               => 'Delete',
     'comment_write_title'     => 'Write a comment',
     'name'                    => 'Name',
-    'email'                   => 'E-Mail',
+    'email'                   => 'E-mail',
     'text'                    => 'Text',
     'submit_comment'          => 'Submit',
     'link_comment'            => 'Link comment',

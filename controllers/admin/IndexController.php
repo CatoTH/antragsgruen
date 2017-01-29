@@ -71,7 +71,7 @@ class IndexController extends AdminBase
                 $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
                 $model->site->setSettings($siteSettings);
                 if ($model->site->currentConsultationId == $model->id) {
-                    $model->site->status = ($settings->maintainanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
+                    $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
                 $model->site->save();
 
@@ -263,7 +263,7 @@ class IndexController extends AdminBase
                 foreach ($site->consultations as $consultation) {
                     if ($consultation->id == $keys[0]) {
                         $site->currentConsultationId = $consultation->id;
-                        if ($consultation->getSettings()->maintainanceMode) {
+                        if ($consultation->getSettings()->maintenanceMode) {
                             $site->status = Site::STATUS_INACTIVE;
                         } else {
                             $site->status = Site::STATUS_ACTIVE;

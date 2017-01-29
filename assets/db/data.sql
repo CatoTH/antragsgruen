@@ -25,7 +25,9 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m160305_201135_support_separate_to_motions_and_amendments', '1457209261'),
   ('m160305_214526_support_likes_dislikes', '1457209261'),
   ('m160605_104819_remove_consultation_type', '1457209261'),
-  ('m161112_161536_add_date_delete', '1457209261')
+  ('m161112_161536_add_date_delete', '1457209261'),
+  ('m170111_182139_motions_non_amendable', '1457209261'),
+  ('m170129_173812_typo_maintenance', '1485711868')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'Start a Motion'                => 'Start a Motion',
+    'Start a Motion'                => 'Start a motion',
     'Confirm Motion'                => 'Confirm motion',
     'confirm_bread'                 => 'Confirm',
     'Motion submitted'              => 'Motion submitted',
@@ -15,7 +15,7 @@ return [
     'motion_withdraw'               => 'Withdraw %TYPE%',
     'motion_admin_edit'             => 'Admin: edit',
     'back_start'                    => 'Back',
-    'pdf_version'                   => 'PDF-Version',
+    'pdf_version'                   => 'PDF version',
     'Type'                          => 'Type',
     'Motion'                        => 'Motion',
     'Initiator'                     => 'Proposer',
@@ -26,7 +26,7 @@ return [
     'supporters_heading'            => 'Supporters',
     'supporting_you'                => 'You!',
     'supporting_none'               => 'none',
-    'supporting_logged_out_warning' => 'Attention: Your are not logged in. Supports can only be revoked for a very limited time when not being logged in.',
+    'supporting_logged_out_warning' => 'Attention: You are not logged in. Support can only be revoked for a very limited time if not logged in.',
     'likes_title'                   => 'Likes',
     'like'                          => 'Likes',
     'likes'                         => 'Likes',
@@ -64,18 +64,18 @@ return [
     'tag_del'                       => 'del',
     'tags_head'                     => 'Tags',
     'amends_none'                   => 'none',
-    'replaced_by_hint'              => 'Hint: this is a old version. The current version is available here:',
-    'confirmed_visible'             => 'You submitted the motion. It is visible immediatelly.',
+    'replaced_by_hint'              => 'Hint: this is an old version. The current version is available here:',
+    'confirmed_visible'             => 'You submitted the motion. It is visible immediately.',
     'confirmed_screening'           => 'You submitted the motion. It will be screened now.',
 
     'screened_hint'             => 'Screened',
-    'download_pdf'              => 'PDF-Version',
+    'download_pdf'              => 'PDF version',
     'motion_text'               => 'Motion text',
     'published_email_body'      => "Hi,\n\nyour motion has just been published on Antragsgrün. " .
         "You can see it here: %LINK%\n\n" .
         "Greetings,\n" .
-        "  The Antragsgrün-Team",
-    'published_email_title'     => 'Yor motion has been published',
+        "  The Antragsgrün Team",
+    'published_email_title'     => 'Your motion has been published',
     'back_to_motion'            => 'Back',
     'edit_done'                 => 'Edited motion',
     'edit_done_msg'             => 'The changes have been saved.',
@@ -98,12 +98,12 @@ return [
     'withdraw_yes'              => 'Yes, withdraw',
     'submitted_adminnoti_title' => 'Motion withdrawn',
     'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-    'created_bread'             => 'Angelegt',
+    'created_bread'             => 'Created',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .
-        'If you want to amend an existing motion instead, please open that motion first and choose "Create Amendment" on the sidebar to the right',
-    'create_explanation_title'  => 'Motion or Amendment?',
+        'If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
+    'create_explanation_title'  => 'Motion or amendment?',
 
     'support_collect_status' => 'Currently',
     'support_collect_min'    => 'min.',
@@ -116,25 +116,25 @@ return [
     'support_orga'           => 'Organisation',
     'support_name'           => 'Name',
 
-    'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nYou can send the following link to potentially interested people so they can support it:",
-    'submitted_screening_email'          => "Hi,\n\nYou just sumitted a motion. It will now be screened and eventually be published. You will be notified seperatelly, once this happens.\n\nYou can see the motion here: %LINK%",
+    'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nSend the following link to gain support for your motion:",
+    'submitted_screening_email'          => "Hi,\n\nYou just submitted a motion. It will now be screened and then published. You will be notified separately, once this happens.\n\nYou can see the motion here: %LINK%",
     'submitted_screening_email_subject'  => 'Motion submitted',
-    'submitted_supp_phase_email'         => "Hi,\n\nyou have created the motion.\nTo officially submit it, it needs at least %MIN% supporters.\n\nYou can send potentially interested persons the following link so they can support it: \n\n%LINK%\n",
+    'submitted_supp_phase_email'         => "Hi,\n\nyou have created the motion.\nTo officially submit it, it needs at least %MIN% supporters.\n\nSend the following link to gain support for your motion: \n\n%LINK%\n",
     'submitted_supp_phase_email_subject' => 'Motion created',
     'submitted_adminnoti_title'          => 'New motion',
     'submitted_adminnoti_body'           => "A new motion was created.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'support_collect_explanation_title'  => 'Find supporters',
-    'support_collect_explanation'        => 'Motions and amendments by individuals have to find at least %MIN% supporters to submit it. To submit such a motion, please proceed like this:<br><ol>
+    'support_collect_explanation'        => 'Motions and amendments submissions by individuals require at least %MIN% supporters to proceed. Please follow this procedure:<br><ol>
         <li><strong>Create a draft:</strong> Enter the motion and your contact data on this page. Please confirm on the following page that you want to create this motion.</li>
-        <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this motion on this page.</li>
-        <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After submitting, the supporting list ist closed.</li>
+        <li><strong>Finding supporters:</strong> Send the link to potential supporters. Everyone can access this page given this link. Everyone with the necessary privileges can support this motion on this page.</li>
+        <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After submitting, the support list is closed.</li>
         </ol>',
     'support'                            => 'Support',
-    'support_done'                       => 'Now you support this motion.',
+    'support_done'                       => 'You are now supporting this motion.',
     'support_collection_hint'            => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this motion on this page.',
-    'support_collection_reached_hint'    => 'This motion has reached the minimum number of supporters, but is not yet officially submitted. This is up to the proposer of this motion.',
-    'support_reached_email_subject'      => 'Your motion has reached enough supporters',
-    'support_reached_email_body'         => "Hi,<br><br>Your motion \"%TITLE%\" has reached the minimum number of supporters. You can officially submit it  here now:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the motion.",
+    'support_collection_reached_hint'    => 'This motion has the necessary number of supporters, but is not yet officially submitted. This is up to the motion proposer.',
+    'support_reached_email_subject'      => 'Your motion has enough supporters',
+    'support_reached_email_body'         => "Hi,<br><br>Your motion \"%TITLE%\" has the necessary number of supporters. You can officially submit it here now:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the motion.",
     'support_finish_btn'                 => 'Officially submit the motion',
     'support_finish_err'                 => 'This is not (yet) possible.',
     'support_finish_done'                => 'The motion is now officially submitted',

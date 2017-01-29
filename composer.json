@@ -13,7 +13,7 @@
     "party"
   ],
   "homepage": "https://www.antragsgruen.de/",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "require": {
     "php": ">=5.5.0",
     "fxp/composer-asset-plugin": "~1.2.2",

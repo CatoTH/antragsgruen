@@ -31,10 +31,10 @@ return [
     'procedure'             => 'Procedure',
     'mail_motion_x'         => 'motion %MOTION%',
     'mail_amendment_x_to_y' => 'amendment %AMENDMENT% to the motion %MOTION%',
-    'mail_body'             => "Hi %NAME%,\n\nI contact you because of your %MOTION%, which I am responsible for.",
+    'mail_body'             => "Hi %NAME%,\n\nI am contacting you because of your %MOTION%, which I am responsible for.",
     'filename_amendments'   => 'Amendment',
     'filename_motions'      => 'Motion',
-    'incl_withdrawn'        => 'Incl. Withdrawn',
+    'incl_withdrawn'        => 'Incl. withdrawn',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Amendments',
 ];

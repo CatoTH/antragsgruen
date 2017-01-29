@@ -57,15 +57,15 @@ $handledSiteSettings = [];
         <div>
             <label>
                 <?php
-                $handledSettings[] = 'maintainanceMode';
+                $handledSettings[] = 'maintenanceMode';
                 echo Html::checkbox(
-                    'settings[maintainanceMode]',
-                    $settings->maintainanceMode,
-                    ['id' => 'maintainanceMode']
+                    'settings[maintenanceMode]',
+                    $settings->maintenanceMode,
+                    ['id' => 'maintenanceMode']
                 );
                 ?>
-                <strong><?= \Yii::t('admin', 'con_maintainance') ?></strong>
-                <small><?= \Yii::t('admin', 'con_maintainance_hint') ?></small>
+                <strong><?= \Yii::t('admin', 'con_maintenance') ?></strong>
+                <small><?= \Yii::t('admin', 'con_maintenance_hint') ?></small>
             </label>
         </div>
 
