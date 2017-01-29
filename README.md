@@ -1,16 +1,21 @@
 Antragsgrün
 ===========
 
-Antragsgrün 3 is the third generation of the Content Management System built for the [German Green Party](https://www.gruene.de/) and the [German Federal Youth Council](http://www.dbjr.de/).
-It's a complete rewrite of the second generation and has some major advantages:
-* It's much more flexible on the structure of motions and wording. It even supports image uploading, e.g. for applications.
-* It supports multiple layouts for the website and the PDF-Export.
-* If follows test-driven design, using both unit and acceptance tests
-* The internal text is based completely on HTML and gets rid of the obsolete BBCode
-* The design of the motion supporter table is much cleaner and does not depend on the user database anymore
-* It's based on the more modern Yii2-framework
-* Many more small improvements
+The Online Motion Administration/Facilitator for Associations Conventions, General Assemblies and Party Conventions.
 
+Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and candidacies: from submission to administration and print template.
+
+A number of organisations are already using the tool successfully such as the federal association of the German Green Party or the German Federal Youth Council. It can be easily adapted to a variety of scenarios.
+
+Core functions:
+- Submit motions, proposals and discussion papers online
+- Clear amendment
+- Submitted amendments are displayed directly in the relevant text section.
+- Discuss motions
+- Sophisticated administration tools
+- Diverse export options
+- Great flexibility - it adapts to a lot of different use cases
+- Technically mature, data privacy-friendly
 
 
 Installation using the pre-bundled package
