@@ -46,8 +46,7 @@ class MergeSingleAmendmentForm extends Model
         $paragraphs,
         $otherAmendOverrides,
         $otherAmendStati
-    )
-    {
+    ) {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
         $this->oldMotion           = $amendment->getMyMotion();
@@ -224,6 +223,9 @@ class MergeSingleAmendmentForm extends Model
      */
     public function performRewrite()
     {
+        $this->oldMotion->slug = null;
+        $this->oldMotion->save();
+        
         $this->createNewMotion();
         $this->createNewMotionSections();
         $this->rewriteOtherAmendments();
