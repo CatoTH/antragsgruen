@@ -23,7 +23,7 @@ return [
     'amend_reason'          => 'Reason',
     'motion_reason'         => 'Reason',
     'agenda_item'           => 'Agenda',
-    'prefix_short'          => 'Code',
+    'prefix_short'          => 'Signature',
     'initiator'             => 'Proposer',
     'text'                  => 'Text',
     'tags'                  => 'Tags',

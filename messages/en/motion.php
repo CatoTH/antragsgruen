@@ -37,7 +37,7 @@ return [
     'like_withdraw'                 => 'Withdraw like',
     'button_submit'                 => 'Submit',
     'button_correct'                => 'Correct',
-    'Prefix'                        => 'Code',
+    'Prefix'                        => 'Signature',
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
     'consultation'                  => 'Consultation',
