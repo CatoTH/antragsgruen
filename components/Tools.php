@@ -2,8 +2,8 @@
 
 namespace app\components;
 
+use app\controllers\Base;
 use app\models\exceptions\Internal;
-use PHPExcel\Calculation\DateTime;
 
 class Tools
 {
@@ -32,6 +32,12 @@ class Tools
      */
     public static function getCurrentDateLocale()
     {
+        /** @var Base $controller */
+        $controller = \Yii::$app->controller;
+        if (is_a($controller, Base::class) && $controller->consultation) {
+            $locale = explode('-', $controller->consultation->wordingBase);
+            return $locale[0];
+        }
         return \Yii::$app->language;
     }
 
@@ -53,7 +59,11 @@ class Tools
             if (preg_match($pattern, $time, $matches)) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
-                    $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']
+                    $matches['year'],
+                    $matches['month'],
+                    $matches['day'],
+                    $matches['hour'],
+                    $matches['minute']
                 );
             }
         } elseif ($locale == 'en') {
@@ -63,7 +73,11 @@ class Tools
                 $hours = (strtolower($matches['ampm']) == 'pm' ? $matches['hour'] + 12 : $matches['hour']);
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
-                    $matches['year'], $matches['month'], $matches['day'], $hours, $matches['minute']
+                    $matches['year'],
+                    $matches['month'],
+                    $matches['day'],
+                    $hours,
+                    $matches['minute']
                 );
             }
 
@@ -72,7 +86,11 @@ class Tools
             if (preg_match($pattern, $time, $matches)) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
-                    $matches['year'], $matches['month'], $matches['day'], $matches['hour'], $matches['minute']
+                    $matches['year'],
+                    $matches['month'],
+                    $matches['day'],
+                    $matches['hour'],
+                    $matches['minute']
                 );
             }
         } else {
