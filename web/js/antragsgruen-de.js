@@ -17,10 +17,8 @@ ANTRAGSGRUEN_STRINGS = {
         "title_del_title": "Die Überschrift \"Kollidierender Änderungsantrag: ...\" entfernen",
         "title_del_colliding": "Den kompletten kollidierenden Block entfernen",
         "title": "Überschrift",
-        "insert_accept": "Übernehmen",
-        "insert_reject": "Verwerfen",
-        "delete_accept": "Löschen",
-        "delete_reject": "Behalten",
+        "change_accept": "Übernehmen",
+        "change_reject": "Verwerfen",
         "colliding_title": "Kollidierender ÄA"
     },
     "admin": {

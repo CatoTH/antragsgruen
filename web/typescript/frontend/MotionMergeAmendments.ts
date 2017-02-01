@@ -91,24 +91,45 @@ class MotionMergeChangeActions {
 
 
 class MotionMergeChangeTooltip {
-    constructor(private $element, currMouseX, private parent: MotionMergeAmendmentsTextarea) {
+    constructor(private $element, mouseX: number, mouseY: number, private parent: MotionMergeAmendmentsTextarea) {
+        let positionX: number = null,
+            positionY: number = null;
         $element.popover({
             'container': 'body',
             'animation': false,
             'trigger': 'manual',
-            'placement': 'bottom',
+            'placement': function (popover) {
+                let $popover = $(popover);
+                window.setTimeout(() => {
+                    let width = $popover.width(),
+                        elTop = $element.offset().top,
+                        elHeight = $element.height();
+                    if (positionX === null && width > 0) {
+                        positionX = (mouseX - width / 2);
+                        positionY = mouseY + 10;
+                        if (positionY < (elTop + 19)) {
+                            positionY = elTop + 19;
+                        }
+                        if (positionY > elTop + elHeight) {
+                            positionY = elTop + elHeight;
+                        }
+                    }
+                    console.log(positionX, positionY);
+                    $popover.css("left", positionX + "px");
+                    $popover.css("top", positionY + "px");
+                }, 1);
+                return "bottom";
+            },
             'html': true,
             'content': this.getContent.bind(this)
         });
 
         $element.popover('show');
-        let $popover = $element.find("> .popover"),
-            width = $popover.width();
-        $popover.css("left", Math.floor(currMouseX - (width / 2) + 20) + "px");
+        let $popover = $element.find("> .popover");
         $popover.on("mousemove", (ev) => {
             ev.stopPropagation();
         });
-        window.setTimeout(this.removePopupIfInactive.bind(this), 500);
+        window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
     }
 
     private getContent() {
@@ -130,19 +151,19 @@ class MotionMergeChangeTooltip {
         $el.find(".opener").attr("href", $myEl.data("link")).attr("title", __t("merge", "title_open_in_blank"));
         $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
         if ($myEl.hasClass("ice-ins")) {
-            $el.find("button.accept").text(__t("merge", "insert_accept")).click(this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "insert_reject")).click(this.reject.bind(this));
+            $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
+            $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
         } else if ($myEl.hasClass("ice-del")) {
-            $el.find("button.accept").text(__t("merge", "delete_accept")).click(this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "delete_reject")).click(this.reject.bind(this));
+            $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
+            $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
         } else if ($myEl[0].nodeName.toLowerCase() == 'li') {
             let $list = $myEl.parent();
             if ($list.hasClass("ice-ins")) {
-                $el.find("button.accept").text(__t("merge", "insert_accept")).click(this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "insert_reject")).click(this.reject.bind(this));
+                $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
+                $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
             } else if ($list.hasClass("ice-del")) {
-                $el.find("button.accept").text(__t("merge", "delete_accept")).click(this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "delete_reject")).click(this.reject.bind(this));
+                $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
+                $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
             } else {
                 console.log("unknown", $list);
             }
@@ -160,13 +181,7 @@ class MotionMergeChangeTooltip {
         if ($("body").find(".popover:hover").length > 0) {
             return window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
         }
-        this.$element.popover("hide").popover("destroy");
-
-        let cid = this.$element.data("cid");
-        if (cid == undefined) {
-            cid = this.$element.parent().data("cid");
-        }
-        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+        this.destroy();
     }
 
     private affectedChangesets() {
@@ -178,11 +193,16 @@ class MotionMergeChangeTooltip {
     }
 
     private performActionWithUI(action) {
+        let scrollX = window.scrollX,
+            scrollY = window.scrollY;
+
         this.parent.saveEditorSnapshot();
         this.destroy();
         action.call(this);
         $(".collidingParagraph:empty").remove();
         this.parent.focusTextarea();
+
+        window.scrollTo(scrollX, scrollY);
     }
 
     private accept() {
@@ -202,7 +222,13 @@ class MotionMergeChangeTooltip {
     }
 
     public destroy() {
-        this.$element.popover("hide").popover("destroy")
+        this.$element.popover("hide").popover("destroy");
+
+        let cid = this.$element.data("cid");
+        if (cid == undefined) {
+            cid = this.$element.parent().data("cid");
+        }
+        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
     }
 }
 
@@ -221,7 +247,6 @@ class MotionMergeConflictTooltip {
 
         let $popover = $("body > .popover"),
             width = $popover.width();
-        console.log($popover, $element, $element.offset().left, width, currMouseX);
         $popover.css("left", Math.floor($element.offset().left + currMouseX - (width / 2) + 20) + "px");
         $popover.on("mousemove", function (ev) {
             ev.stopPropagation();
@@ -236,13 +261,7 @@ class MotionMergeConflictTooltip {
         if ($("body").find(".popover:hover").length > 0) {
             return window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
         }
-        this.$element.popover("hide").popover("destroy");
-
-        let cid = this.$element.data("cid");
-        if (cid == undefined) {
-            cid = this.$element.parent().data("cid");
-        }
-        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+        this.destroy();
     }
 
     private performActionWithUI(action) {
@@ -285,7 +304,13 @@ class MotionMergeConflictTooltip {
     }
 
     public destroy() {
-        this.$element.popover("hide").popover("destroy")
+        let cid = this.$element.data("cid");
+        if (cid == undefined) {
+            cid = this.$element.parent().data("cid");
+        }
+        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+
+        this.$element.popover("hide").popover("destroy");
     }
 }
 
@@ -316,7 +341,6 @@ class MotionMergeAmendmentsTextarea {
             if (MotionMergeAmendments.activePopup) {
                 MotionMergeAmendments.activePopup.destroy();
             }
-            console.log(ev);
             MotionMergeAmendments.activePopup = new MotionMergeConflictTooltip(
                 $(ev.currentTarget), MotionMergeAmendments.currMouseX, this
             );
@@ -329,7 +353,7 @@ class MotionMergeAmendmentsTextarea {
                 MotionMergeAmendments.activePopup.destroy();
             }
             MotionMergeAmendments.activePopup = new MotionMergeChangeTooltip(
-                $(ev.target), MotionMergeAmendments.currMouseX, this
+                $(ev.target), ev.pageX, ev.pageY, this
             );
         });
     }
