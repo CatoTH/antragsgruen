@@ -204,11 +204,12 @@ class AmendmentSection extends IMotionSection
     public function diffToOrigParagraphs($origParagraphs, $splitListItems = true)
     {
         $cached = $this->getCacheItem('diffToOrigParagraphs');
-        if ($cached !== null) {
+        if ($cached !== null && false) {
             return $cached;
         }
 
-        $firstLine = $this->getFirstLineNumber();
+        $firstLine  = $this->getFirstLineNumber();
+        $lineLength = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
 
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
@@ -219,7 +220,8 @@ class AmendmentSection extends IMotionSection
             $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
             if ($firstDiffPos !== false) {
                 $unchanged             = mb_substr($diffPara, 0, $firstDiffPos);
-                $firstDiffLine         = $firstLine + mb_substr_count($unchanged, '###LINENUMBER###') - 1;
+                $lines                 = LineSplitter::countMotionParaLines($unchanged, $lineLength);
+                $firstDiffLine         = $firstLine + $lines - 1;
                 $amSec                 = new MotionSectionParagraphAmendment(
                     $this->amendmentId,
                     $this->sectionId,
@@ -229,7 +231,7 @@ class AmendmentSection extends IMotionSection
                 );
                 $amParagraphs[$paraNo] = $amSec;
             }
-            $firstLine += mb_substr_count($diffPara, '###LINENUMBER###');
+            $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
         }
 
         $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);

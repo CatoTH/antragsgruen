@@ -6,6 +6,7 @@ use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\models\db\AmendmentSection;
+use app\models\db\MotionSection;
 
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
@@ -21,14 +22,13 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
         $section   = AmendmentSection::findOne(['amendmentId' => $amendmentId, 'sectionId' => $sectionId]);
         $orig      = $section->getOriginalMotionSection();
         $origParas = HTMLTools::sectionSimpleHTML($orig->data);
-        $newParas = HTMLTools::sectionSimpleHTML($section->data);
+        $newParas  = HTMLTools::sectionSimpleHTML($section->data);
 
         return Diff::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);
     }
 
 
     /**
-     *
      */
     public function testAffectedParagraphs()
     {
@@ -65,5 +65,17 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
 
         $diff = $this->getAffected(270, 4);
         $this->assertEquals([], $diff);
+    }
+
+    /**
+     */
+    public function testLineNumbers()
+    {
+        /** @var MotionSection $section */
+        $section   = MotionSection::findOne(['motionId' => 2, 'sectionId' => 2]);
+        $paragraphs = $section->getTextParagraphObjects(true, true, true);
+        $this->assertEquals(4, $paragraphs[0]->amendmentSections[0]->firstAffectedLine);
+        $this->assertEquals(31, $paragraphs[7]->amendmentSections[0]->firstAffectedLine);
+        $this->assertEquals(27, $paragraphs[7]->amendmentSections[1]->firstAffectedLine);
     }
 }
