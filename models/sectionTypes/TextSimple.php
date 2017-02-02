@@ -774,7 +774,7 @@ class TextSimple extends ISectionType
                 $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
                 $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
                 $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
-                $out .= Html::a($amendment->getTitle(), UrlHelper::createAmendmentUrl($amendment));
+                $out .= Html::a($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
                 $out .= '</strong></p>';
                 $paragraphText = '';
 
