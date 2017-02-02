@@ -91,7 +91,7 @@ export class AntragsgruenEditor {
                 {name: 'colors'},
                 {name: 'others'}
             ],
-            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext',
+            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline',
             extraPlugins: 'tabletools',
             scayt_sLang: 'de_DE',
             title: title,

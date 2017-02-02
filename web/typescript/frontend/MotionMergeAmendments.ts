@@ -114,7 +114,6 @@ class MotionMergeChangeTooltip {
                             positionY = elTop + elHeight;
                         }
                     }
-                    console.log(positionX, positionY);
                     $popover.css("left", positionX + "px");
                     $popover.css("top", positionY + "px");
                 }, 1);
