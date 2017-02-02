@@ -10,13 +10,14 @@ class AntragsgruenApp
 
     public $dbConnection          = null;
     public $siteSubdomain         = null;
+    public $redis                 = null;
     public $prettyUrl             = true;
     public $tablePrefix           = '';
     public $resourceBase          = '/';
     public $baseLanguage          = 'de';
     public $randomSeed            = '';
     public $multisiteMode         = false;
-    public $domainPlain           = 'http://antragsgruen-v3.localhost/';
+    public $domainPlain           = 'http://antragsgruen.local/';
     public $domainSubdomain       = '';
     public $cookieDomain          = null;
     public $hasWurzelwerk         = false;

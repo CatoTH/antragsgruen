@@ -19,6 +19,7 @@
     "fxp/composer-asset-plugin": "~1.2.2",
     "yiisoft/yii2": "^2.0.11",
     "yiisoft/yii2-authclient": "^2.1.1",
+    "yiisoft/yii2-redis": "^2.0.5",
     "tecnickcom/tcpdf": "^6.2",
     "slm/mail": "^2.1.0",
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",

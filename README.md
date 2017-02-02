@@ -117,6 +117,23 @@ Necessary packets on Mac OS X:
 * Poppler ([Homebrew](http://brew.sh/)-Package)
 
 
+Using Redis
+-----------
+
+Add the following settings to your config.json (and adapt them to your needs):
+```json
+{
+    // ...
+    "redis": {
+        "hostname": "localhost",
+        "port": 6379,
+        "database": 0
+    },
+    // ...
+}
+```
+
+
 Command Line Commands
 ---------------------
 
