@@ -180,7 +180,7 @@ $I->see('Person 2');
 $I->wantTo('submit the motion');
 
 $I->submitForm('#motionConfirmForm', [], 'confirm');
-$I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+$I->see(mb_strtoupper('Antrag veröffentlicht'), 'h1');
 $I->submitForm('#motionConfirmedForm', [], '');
 
 $I->see('Another sample motion with supporters');

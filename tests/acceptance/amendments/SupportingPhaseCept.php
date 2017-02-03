@@ -43,7 +43,7 @@ $I->wait(0.2);
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
 
-$I->see('Um ihn offiziell einzureichen, benötigt er');
+$I->see('benötigt dieser mindestens 1 Unterstützer*innen.');
 
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
 $I->see('Unterstützer*innen sammeln', '.myAmendmentList');

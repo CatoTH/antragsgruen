@@ -43,10 +43,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
     'screened_hint'                     => 'Geprüft',
     'amend_for'                         => ' zu ',
-    'create_explanation'                => 'Ändere hier den Antrag so ab, wie du ihn gern sehen würdest.<br>' . "\n" .
+    'create_explanation'                => 'Bitte ändere unten den ursprünglichen Antragstext so ab, wie du ihn gerne beschlossen haben möchtest.<br>' . "\n" .
         'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
-        'Falls dein Änderungsantrag Hinweise an die Programmkommission enthält, kannst du diese als ' . "\n" .
-        '&quot;<strong>Redaktionelle Änderung</strong>&quot; beifügen.',
+        'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als "<strong>Redaktionelle Änderung</strong>" beifügen und entsprechend kennzeichnen.',
     'support_collect_explanation_title' => 'Unterstützer*innen sammeln',
     'support_collect_explanation'       => 'Änderungsanträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um zugelassen zu werden. Um einen solchen Änderungsantrag einzureichen, gehe wie folgt vor:<br>
 <ol>

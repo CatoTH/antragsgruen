@@ -11,19 +11,19 @@ use yii\helpers\Html;
  * @var Motion $newMotion
  */
 
-$this->title = 'Antrag geändert';
+$this->title = \Yii::t('amend', 'merge1_done_title');
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
+$layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {
     $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb('Änderungen übernehmen');
+$layout->addBreadcrumb(\Yii::t('amend', 'merge1_title'));
 
 ?>
 

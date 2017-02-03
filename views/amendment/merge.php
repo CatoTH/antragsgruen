@@ -17,8 +17,9 @@ $layout->loadCKEditor();
 $layout->addAMDModule('frontend/MergeSingleAmendment');
 $layout->addCSS('css/formwizard.css');
 
-$motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
-$layout->addBreadcrumb($amendment->getMyMotion()->motionType->titleSingular, $motionUrl);
+$motion    = $amendment->getMyMotion();
+$motionUrl = UrlHelper::createMotionUrl($motion);
+$layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {

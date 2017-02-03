@@ -30,7 +30,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
 if (!$motion->getConsultation()->getForcedMotion()) {
-    $layout->addBreadcrumb($motion->motionType->titleSingular);
+    $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
 $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getConsultation()->title . ', Antragsgrün)';

@@ -895,6 +895,18 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return string
+     */
+    public function getBreadcrumbTitle()
+    {
+        if ($this->titlePrefix && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
+            return $this->titlePrefix;
+        } else {
+            return $this->motionType->titleSingular;
+        }
+    }
+
+    /**
      * @param RSSExporter $feed
      */
     public function addToFeed(RSSExporter $feed)

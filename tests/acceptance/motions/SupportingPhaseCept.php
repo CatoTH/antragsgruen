@@ -121,7 +121,7 @@ $I->fillField('#sections_30', 'Title as normal person');
 $I->executeJS('CKEDITOR.instances.sections_31_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
-$I->see('Um ihn offiziell einzureichen, benötigt er nun mindestens 1 Unterstützer*innen.');
+$I->see('benötigt dieser mindestens 1 Unterstützer*innen.');
 
 
 $I->wantTo('check that motions created as organizations are not in supporting phase');

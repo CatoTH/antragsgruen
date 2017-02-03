@@ -46,7 +46,7 @@ $I->see('Hier kannst du nun den Text eingeben', 'button');
 
 $I->wantTo('create the motion');
 $I->submitForm('.createdForm', [], '');
-
+$I->wait(1);
 $I->see('Kapitel anlegen', 'h1');
 $I->fillField('#sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 0), 'Chapter title');
 $ckfield = 'sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1);

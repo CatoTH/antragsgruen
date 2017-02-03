@@ -20,7 +20,7 @@ class MotionCreatePage extends BasePage
         $this->saveForm();
         $this->actor->see(mb_strtoupper('Antrag bestätigen'), 'h1');
         $this->actor->submitForm('#motionConfirmForm', [], 'confirm');
-        $this->actor->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+        $this->actor->see(mb_strtoupper('Antrag veröffentlicht'), 'h1');
     }
 
     /**

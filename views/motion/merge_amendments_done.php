@@ -14,7 +14,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
-$layout->addBreadcrumb($newMotion->motionType->titleSingular, UrlHelper::createMotionUrl($newMotion));
+$layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_submitted'));
 
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_submitted_title'));

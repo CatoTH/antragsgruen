@@ -15,11 +15,12 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$motion     = $amendment->getMyMotion();
 
 $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
 
 $layout->robotsNoindex = true;
-$layout->addBreadcrumb($amendment->getMyMotion()->titlePrefix, UrlHelper::createMotionUrl($amendment->getMyMotion()));
+$layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
 $layout->addBreadcrumb(\Yii::t('amend', 'confirm'));
 

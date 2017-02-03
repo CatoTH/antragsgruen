@@ -86,8 +86,8 @@ $I->see('My real name');
 
 $I->wantTo('confirm the submitted motion');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
-$I->see(mb_strtoupper('Antrag eingereicht'), 'h1');
-$I->see('Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.');
+$I->see(mb_strtoupper('Antrag veröffentlicht'), 'h1');
+$I->see('Du hast den Antrag veröffentlicht. Er ist jetzt sofort sichtbar.');
 
 $I->submitForm('#motionConfirmedForm', [], '');
 

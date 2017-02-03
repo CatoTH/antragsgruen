@@ -61,6 +61,7 @@ if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
             <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
         </div>
+        <div class="hidden "
     </div>
     <?php
     if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {

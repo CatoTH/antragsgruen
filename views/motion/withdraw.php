@@ -13,7 +13,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
+$layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('motion', 'withdraw_bread'));
 
 $this->title = \Yii::t('motion', 'withdraw') . ': ' . $motion->getTitleWithPrefix();

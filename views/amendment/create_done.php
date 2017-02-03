@@ -12,10 +12,10 @@ use yii\helpers\Html;
  */
 
 $this->title = \Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
-$controller = $this->context;
-$motion = $amendment->getMyMotion();
+$controller  = $this->context;
+$motion      = $amendment->getMyMotion();
 
-$controller->layoutParams->addBreadcrumb($motion->titlePrefix, UrlHelper::createMotionUrl($motion));
+$controller->layoutParams->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createAmendmentUrl($amendment));
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
