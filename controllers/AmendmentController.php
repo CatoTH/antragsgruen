@@ -210,6 +210,25 @@ class AmendmentController extends Base
      * @param string $fromMode
      * @return string
      */
+    public function actionCreatedone($motionSlug, $amendmentId, $fromMode)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(
+            [
+                'id'       => $amendmentId,
+                'motionId' => $motion->id
+            ]
+        );
+        return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @param string $fromMode
+     * @return string
+     */
     public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
@@ -240,7 +259,7 @@ class AmendmentController extends Base
                 EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
             }
 
-            return $this->render('create_done', ['amendment' => $amendment, 'mode' => $fromMode]);
+            return $this->redirect(UrlHelper::createAmendmentUrl($amendment, 'createdone', ['fromMode' => $fromMode]));
 
         } else {
             return $this->render('create_confirm', [

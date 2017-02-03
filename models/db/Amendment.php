@@ -648,8 +648,9 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
      */
-    public function setInitialSubmitted()
+    public function needsCollectionPhase()
     {
         $needsCollectionPhase = false;
         $motionType           = $this->getMyMotion()->motionType;
@@ -666,8 +667,28 @@ class Amendment extends IMotion implements IRSSItem
                 $needsCollectionPhase = true;
             }
         }
+        return $needsCollectionPhase;
+    }
 
-        if ($needsCollectionPhase) {
+    /**
+     * @return string
+     */
+    public function getSubmitButtonLabel()
+    {
+        if ($this->needsCollectionPhase()) {
+            return \Yii::t('amend', 'button_submit_create');
+        } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
+            return \Yii::t('amend', 'button_submit_submit');
+        } else {
+            return \Yii::t('amend', 'button_submit_publish');
+        }
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        if ($this->needsCollectionPhase()) {
             $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getMyConsultation()->getSettings()->screeningAmendments) {
             $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;

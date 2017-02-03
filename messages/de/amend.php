@@ -23,12 +23,15 @@ return [
     'amendment_for'                     => 'Änderungsantrag zu',
     'amendment_for_prefix'              => 'Änderungsantrag zu %PREFIX%',
     'ajax_diff_title'                   => 'Änderungen',
-    'confirmed_visible'                 => 'Du hast den Änderungsantrag eingereicht. Er ist jetzt sofort sichtbar.',
+    'confirmed_visible'                 => 'Du hast den Änderungsantrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
-    'confirmed_support_phase'           => 'Du hast den Änderungsantrag eingestellt.<br>
-        Um ihn offiziell einzureichen, benötigt er nun <strong>mindestens %MIN% Unterstützer*innen</strong>.<br><br>
-        Du kannst Interessierten folgenden Link schicken, damit sie den Änderungsantrag dort unterstützen können:',
+    'confirmed_support_phase'           => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen.<br> 
+<br>
+Du kannst Interessierten folgenden Link schicken, damit sie deinen Änderungsantrag dort unterstützen können:',
+    'confirmed_support_phase_ww'        => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Änderungsantrag stellen.<br> 
+<br>
+Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.',
     'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
     'submitted_adminnoti_body'          => "Es wurde ein neuer Änderungsantrag eingereicht.\nAntrag: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
@@ -84,7 +87,15 @@ return [
     'edit_bread'                        => 'Bearbeiten',
     'reason'                            => 'Begründung',
     'amendment_requirement'             => 'Voraussetzungen für einen Änderungsantrag',
-    'button_submit'                     => 'Einreichen',
+    'submitted_create'                  => 'Änderungsantrag angelegt',
+    'submitted_submit'                  => 'Änderungsantrag eingereicht',
+    'submitted_publish'                 => 'Änderungsantrag veröffentlicht',
+    'created_bread_create'              => 'Angelegt',
+    'created_bread_submit'              => 'Eingereicht',
+    'created_bread_publish'             => 'Veröffentlicht',
+    'button_submit_create'              => 'Anlegen',
+    'button_submit_submit'              => 'Einreichen',
+    'button_submit_publish'             => 'Veröffentlichen',
     'button_correct'                    => 'Korrigieren',
     'confirm'                           => 'Bestätigen',
     'go_on'                             => 'Weiter',

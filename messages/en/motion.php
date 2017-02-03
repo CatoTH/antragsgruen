@@ -2,6 +2,7 @@
 
 return [
     'Start a Motion'                => 'Start a motion',
+    'Edit Motion'                   => 'Edit motion',
     'Confirm Motion'                => 'Confirm motion',
     'confirm_bread'                 => 'Confirm',
     'Motion submitted'              => 'Motion submitted',
@@ -35,7 +36,15 @@ return [
     'dislikes'                      => 'Dislikes',
     'dislikes_you'                  => 'You!',
     'like_withdraw'                 => 'Withdraw like',
-    'button_submit'                 => 'Submit',
+    'button_submit_create'          => 'Create',
+    'button_submit_submit'          => 'Submit',
+    'button_submit_publish'         => 'Publish',
+    'submitted_create'              => 'Created motion',
+    'submitted_submit'              => 'Submitted motion',
+    'submitted_publish'             => 'Published motion',
+    'created_bread_create'          => 'Created',
+    'created_bread_submit'          => 'Submitted',
+    'created_bread_publish'         => 'Published',
     'button_correct'                => 'Correct',
     'Prefix'                        => 'Signature',
     'Title'                         => 'Title',
@@ -98,7 +107,6 @@ return [
     'withdraw_yes'              => 'Yes, withdraw',
     'submitted_adminnoti_title' => 'Motion withdrawn',
     'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-    'created_bread'             => 'Created',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .

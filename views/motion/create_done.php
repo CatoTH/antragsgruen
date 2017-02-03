@@ -15,10 +15,17 @@ $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Mot
 
 $controller = $this->context;
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
-$controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread'));
 
-
-echo '<h1>' . Yii::t('motion', 'Motion submitted') . '</h1>';
+if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<h1>' . Yii::t('motion', 'submitted_create') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_create'));
+} elseif ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+    echo '<h1>' . Yii::t('motion', 'submitted_submit') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_submit'));
+} else {
+    echo '<h1>' . Yii::t('motion', 'submitted_publish') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_publish'));
+}
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
@@ -38,9 +45,29 @@ echo '</div>';
 echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
 
 if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
-    echo '<br><div class="alert alert-info promoUrl" role="alert">';
-    echo Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
-    echo '</div>';
+    $controller->layoutParams->addJS('npm/clipboard.min.js');
+    $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
+    ?><br>
+    <div class="alert alert-info promoUrl" role="alert" data-antragsgruen-widget="frontend/CopyUrlToClipboard">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing">
+                        <span class="glyphicon glyphicon-copy"></span>
+                    </button>
+                </span>
+                <input type="text" class="form-control" id="urlSharing" readonly value="<?= $encodedUrl ?>" title="URL">
+            </div>
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+            <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
+        </div>
+    </div>
+    <?php
+    if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {
+        echo '<div class="alert alert-info" role="alert">';
+        echo \Yii::t('motion', 'confirmed_support_phase_ww');
+        echo '</div>';
+    }
 }
 
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .

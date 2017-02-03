@@ -79,7 +79,7 @@ echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 echo '<div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> ' . \Yii::t('motion', 'button_submit') . '
+                <span class="glyphicon glyphicon-ok-sign"></span> ' . $motion->getSubmitButtonLabel() . '
             </button>
         </div>
         <div style="float: left;">

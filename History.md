@@ -6,6 +6,7 @@
 - Admins can merge an amendment into the base motion. This creates a new version of the motion. The original version of the motion and the amendment are kept for reference. If the changes of the amendment are conflicting with changes proposed by other amendments, the conflicts need to be resolved manually.
 - Single motions can now be set as non-amendable by the admin
 - Export to OpenSlides 2 is now supported (OpenSlides v2.1 or later required)
+- Improvements to the support collection phase
 - If a motion or amendment is withdrawn, a notification is sent to the admin
 - A widget to show the content of an amendment in a popover is introduced, e.g. in the admin motion list
 - Support for Redis as cache & session store

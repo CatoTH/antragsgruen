@@ -42,7 +42,8 @@
         "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
         "@types/sortablejs": "^1.3.30",
         "@types/typeahead": "^0.11.27",
-        "@types/bootstrap": "^3.3.32"
+        "@types/bootstrap": "^3.3.32",
+        "@types/clipboard": "^1.5.31"
     },
     "directories": {
         "bin": "./bin/"

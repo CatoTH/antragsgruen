@@ -8,15 +8,25 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
+ * @var \app\controllers\Base $controller
  */
 
 $this->title = \Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
+$controller = $this->context;
+$motion = $amendment->getMyMotion();
 
-$layout->breadcrumbs[] = $this->title;
-$layout->breadcrumbs[] = \Yii::t('amend', 'confirm_bread');
-
-
-echo '<h1>' . \Yii::t('amend', 'amendment_submitted') . '</h1>';
+$controller->layoutParams->addBreadcrumb($motion->titlePrefix, UrlHelper::createMotionUrl($motion));
+$controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createAmendmentUrl($amendment));
+if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('amend', 'created_bread_create'));
+} elseif ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+    echo '<h1>' . Yii::t('amend', 'submitted_submit') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('amend', 'created_bread_submit'));
+} else {
+    echo '<h1>' . Yii::t('amend', 'submitted_publish') . '</h1>';
+    $controller->layoutParams->addBreadcrumb(\Yii::t('amend', 'created_bread_publish'));
+}
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
@@ -36,9 +46,29 @@ echo '</div>';
 echo Html::beginForm(UrlHelper::createMotionUrl($amendment->getMyMotion()), 'post', ['id' => 'motionConfirmedForm']);
 
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
-    echo '<br><div class="alert alert-info promoUrl" role="alert">';
-    echo Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
-    echo '</div>';
+    $controller->layoutParams->addJS('npm/clipboard.min.js');
+    $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
+    ?><br>
+    <div class="alert alert-info promoUrl" role="alert" data-antragsgruen-widget="frontend/CopyUrlToClipboard">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing">
+                        <span class="glyphicon glyphicon-copy"></span>
+                    </button>
+                </span>
+                <input type="text" class="form-control" id="urlSharing" readonly value="<?= $encodedUrl ?>" title="URL">
+            </div>
+            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+            <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
+        </div>
+    </div>
+    <?php
+    if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {
+        echo '<div class="alert alert-info" role="alert">';
+        echo \Yii::t('amend', 'confirmed_support_phase_ww');
+        echo '</div>';
+    }
 }
 
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' . \Yii::t('amend', 'sidebar_back') .

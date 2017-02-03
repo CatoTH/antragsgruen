@@ -497,7 +497,7 @@ class Motion extends IMotion implements IRSSItem
         }
         $policy  = $this->motionType->getAmendmentPolicy();
         $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
-        
+
         if (!$allowed) {
             if ($throwExceptions) {
                 $msg    = $policy->getPermissionDeniedAmendmentMsg();
@@ -693,8 +693,9 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
      */
-    public function setInitialSubmitted()
+    public function needsCollectionPhase()
     {
         $needsCollectionPhase = false;
         if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
@@ -710,8 +711,28 @@ class Motion extends IMotion implements IRSSItem
                 $needsCollectionPhase = true;
             }
         }
+        return $needsCollectionPhase;
+    }
 
-        if ($needsCollectionPhase) {
+    /**
+     * @return string
+     */
+    public function getSubmitButtonLabel()
+    {
+        if ($this->needsCollectionPhase()) {
+            return \Yii::t('motion', 'button_submit_create');
+        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+            return \Yii::t('motion', 'button_submit_submit');
+        } else {
+            return \Yii::t('motion', 'button_submit_publish');
+        }
+    }
+
+    /**
+     */
+    public function setInitialSubmitted()
+    {
+        if ($this->needsCollectionPhase()) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
         } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;

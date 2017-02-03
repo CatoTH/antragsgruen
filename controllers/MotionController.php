@@ -291,6 +291,16 @@ class MotionController extends Base
         return $this->actionView($motionSlug, 0);
     }
 
+    /**
+     * @param string $motionSlug
+     * @param string $fromMode
+     * @return string
+     */
+    public function actionCreatedone($motionSlug, $fromMode)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
+    }
 
     /**
      * @param string $motionSlug
@@ -318,8 +328,7 @@ class MotionController extends Base
                 EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
-            return $this->render('create_done', ['motion' => $motion, 'mode' => $fromMode]);
-
+            return $this->redirect(UrlHelper::createMotionUrl($motion, 'createdone', ['fromMode' => $fromMode]));
         } else {
             $params                  = ['motion' => $motion, 'mode' => $fromMode];
             $params['deleteDraftId'] = $this->getRequestValue('draftId');

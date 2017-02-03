@@ -2,9 +2,9 @@
 
 return [
     'Start a Motion'                     => 'Antrag stellen',
+    'Edit Motion'                        => 'Antrag bearbeiten',
     'Confirm Motion'                     => 'Antrag bestätigen',
     'confirm_bread'                      => 'Bestätigen',
-    'Motion submitted'                   => 'Antrag eingereicht',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
     'amendment_create_admin'             => 'nur Admins',
@@ -35,7 +35,15 @@ return [
     'dislikes'                           => 'Ablehnung',
     'dislikes_you'                       => 'Du!',
     'like_withdraw'                      => 'Doch nicht',
-    'button_submit'                      => 'Einreichen',
+    'submitted_create'                   => 'Antrag angelegt',
+    'submitted_submit'                   => 'Antrag eingereicht',
+    'submitted_publish'                  => 'Antrag veröffentlicht',
+    'created_bread_create'               => 'Angelegt',
+    'created_bread_submit'               => 'Eingereicht',
+    'created_bread_publish'              => 'Veröffentlicht',
+    'button_submit_create'               => 'Anlegen',
+    'button_submit_submit'               => 'Einreichen',
+    'button_submit_publish'              => 'Veröffentlichen',
     'button_correct'                     => 'Korrigieren',
     'Prefix'                             => 'Antragsnummer',
     'Title'                              => 'Titel',
@@ -65,12 +73,16 @@ return [
     'tags_head'                          => 'Themenbereich',
     'amends_none'                        => 'keine',
     'replaced_by_hint'                   => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
-    'confirmed_visible'                  => 'Du hast den Antrag eingereicht. Er ist jetzt sofort sichtbar.',
+    'confirmed_visible'                  => 'Du hast den Antrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'                => 'Du hast den Antrag eingereicht. ' .
         'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
-    'confirmed_support_phase'            => 'Du hast den Antrag eingestellt.<br>
-        Um ihn offiziell einzureichen, benötigt er nun <strong>mindestens %MIN% Unterstützer*innen</strong>.<br><br>
-        Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:',
+    'confirmed_support_phase'            => 'Du hast den Antrag erfolgreich angelegt.<br>
+Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen.<br> 
+<br>
+Du kannst Interessierten folgenden Link schicken, damit sie deinen Antrag dort unterstützen können:',
+    'confirmed_support_phase_ww'         => 'Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Antrag stellen.<br> 
+<br>
+Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.',
     'submitted_screening_email'          => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
         "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
@@ -78,10 +90,10 @@ return [
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject'  => 'Antrag eingereicht',
-    'submitted_supp_phase_email'         => "Hallo\n\nDu hast den Antrag nun eingestellt.\n" .
+    'submitted_supp_phase_email'         => "Hallo %NAME%\n\nDu hast den Antrag nun angelegt.\n" .
         "Um ihn offiziell einzureichen, benötigt er mindestens %MIN% Unterstützer*innen.\n\n" .
         "Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:\n\n%LINK%\n",
-    'submitted_supp_phase_email_subject' => 'Antrag vorgeschlagen',
+    'submitted_supp_phase_email_subject' => 'Antrag erfolgreich angelegt',
     'submitted_adminnoti_title'          => 'Neuer Antrag',
     'submitted_adminnoti_body'           => "Es wurde ein neuer Antrag eingereicht.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'screened_hint'                      => 'Geprüft',
@@ -114,19 +126,18 @@ return [
     'withdraw_yes'                       => 'Zurückziehen',
     'withdrawn_adminnoti_title'          => 'Antrag zurückgezogen',
     'withdrawn_adminnoti_body'           => "Es wurde ein Antrag zurückgezogen.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
-    'created_bread'                      => 'Angelegt',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',
     'create_explanation'                 => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
         bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
-    'support_collect_explanation_title'  => 'Unterstützer*innen sammeln',
-    'support_collect_explanation'        => '(Änderungs-)Anträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um als eigenständiger Antrag zugelassen zu werden. Um einen solchen Antrag einzureichen, gehe wie folgt vor:<br>
+    'support_collect_explanation_title'  => 'Einen Antrag gemeinschaftlich stellen',
+    'support_collect_explanation'        => 'Ein Antrag, der nicht von Parteigremien gestellt wird, kann gemäß unserer Statuten auch gemeinschaftlich von x+1 Mitgliedern gestellt werden. Um einen solchen Antrag zu stellen und offiziell bei der Antragskommission einzureichen, gehe bitte wie folgt vor:<br>
 <ol>
-<li><strong>Antragsentwurf</strong>: Trage zunächst hier den Antrag ein und hinterlege deine Kontaktdaten. Bestätige auf der nächsten Seite, das du den Antrag einbringen willst.</li>
-<li><strong>Untertützung</strong>: Du erhältst dann einen Link, den du an potentielle Interessierte schicken kannst. Jeder, der den Link kennt, kann den Antragsentwurf einsehen. Jede*r Delegierte*r kann den Antrag nun hier auf Antragsgrün unterstützen.</li>
-<li><strong>Antrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Antrag offiziell einbringen. Sobald er offiziell eingebracht ist, können sich keine weiteren Unterstützer*innen mehr für diesen Antrag eintragen.</li>
+<li><strong>Antrag anlegen:</strong> Bitte lege auf dieser Seite deinen Antrag an und hinterlege deine (Kontakt-)Daten. Kontrolliere auf der nächsten Seite, ob alles richtig ist, und bestätige, dass du den Antrag wie gezeigt anlegen möchtest.</li>
+<li><strong>Unterstützung finden:</strong> Nach der Bestätigung erhältst du einen Link, den du Interessierten weiterleiten kannst. Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Antrag stellen. Bitte beachte, dass sich auch die Unterstützer*innen deines Antrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.</li>
+<li><strong>Antrag einreichen:</strong> Sobald sich die notwendigen x Unterstützer*innen gefunden haben, musst du den angelegten Antrag noch offiziell bei der Antragskommission einreichen. Dies veranlasst Du auch über Antragsgrün. Wir informieren dich selbstverständlich per E-Mail, sobald die notwendige Zahl der Unterstützer*innen erreicht ist.</li>
 </ol>',
     'support_collect_status'             => 'Aktueller Stand',
     'support_collect_min'                => 'min.',
