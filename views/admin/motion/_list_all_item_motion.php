@@ -24,7 +24,11 @@ echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a>
 echo '<td class="titleCol"><span>';
 echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
 echo '</span></td>';
-echo '<td>' . Html::encode($motionStati[$entry->status]) . '</td>';
+echo '<td>' . Html::encode($motionStati[$entry->status]);
+if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    echo ' (' . count($entry->getSupporters()) . ')';
+}
+echo '</td>';
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {
     if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {

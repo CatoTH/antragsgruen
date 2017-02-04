@@ -33,7 +33,11 @@ if ($lastMotion && $entry->motionId == $lastMotion->id) {
 }
 $title = (trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-');
 echo Html::a($title, $editUrl) . '</span></td>';
-echo '<td>' . Html::encode($amendmentStati[$entry->status]) . '</td>';
+echo '<td>' . Html::encode($amendmentStati[$entry->status]);
+if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+    echo ' (' . count($entry->getSupporters()) . ')';
+}
+echo '</td>';
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {
     if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
