@@ -53,7 +53,8 @@ if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing">
+                    <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing"
+                            title="<?= \Yii::t('motion', 'copy_to_clipboard') ?>">
                         <span class="glyphicon glyphicon-copy"></span>
                     </button>
                 </span>
@@ -62,6 +63,7 @@ if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
             <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
         </div>
+        <div class="hidden clipboard-done"><?= \Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
     if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {

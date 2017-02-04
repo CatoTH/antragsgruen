@@ -137,6 +137,8 @@ return [
         <li><strong>Finding supporters:</strong> Send the link to potential supporters. Everyone can access this page given this link. Everyone with the necessary privileges can support this motion on this page.</li>
         <li><strong>Submit the motion:</strong> Once %MIN% people are supporting this motion, you will receive a notification by e-mail. Now you can officially submit the motion. After submitting, the support list is closed.</li>
         </ol>',
+    'copy_to_clipboard'                  => 'Copy to clipboard',
+    'copy_to_clipboard_done'             => 'The URL has been copied to the clipboard.',
     'support'                            => 'Support',
     'support_done'                       => 'You are now supporting this motion.',
     'support_collection_hint'            => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this motion on this page.',

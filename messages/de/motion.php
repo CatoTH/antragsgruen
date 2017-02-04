@@ -83,6 +83,8 @@ Du kannst Interessierten folgenden Link schicken, damit sie deinen Antrag dort u
     'confirmed_support_phase_ww'         => 'Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Antrag stellen.<br> 
 <br>
 Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.',
+    'copy_to_clipboard'                  => 'Adresse in die Zwischenablage kopieren',
+    'copy_to_clipboard_done'             => 'Die Adresse wurde in die Zwischenablage kopiert.',
     'submitted_screening_email'          => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
         "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
         "Du wirst dann gesondert darüber benachrichtigt.\n\n" .

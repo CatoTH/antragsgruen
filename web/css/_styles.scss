@@ -312,8 +312,20 @@ del.space, ins.space, del.formatting, ins.formatting {
 
 #motionConfirmedForm {
   .promoUrl {
-    font-weight: bold;
-    font-family: $motionFixedFont;
+    input[type=text] {
+      font-weight: bold;
+      font-family: $motionFixedFont;
+    }
+    .clipboard-done {
+      text-align: center;
+      font-size: 0.8em;
+      color: green;
+      font-weight: normal;
+      margin-top: -13px;
+    }
+    button.btn {
+      padding-bottom: 7px;
+    }
   }
   .btnRow {
     padding: 15px;
