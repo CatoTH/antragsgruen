@@ -78,6 +78,7 @@ return [
     'confirmed_screening'           => 'You submitted the motion. It will be screened now.',
 
     'screened_hint'             => 'Screened',
+    'supporting_permitted'      => 'Berechtigung',
     'download_pdf'              => 'PDF version',
     'motion_text'               => 'Motion text',
     'published_email_body'      => "Hi,\n\nyour motion has just been published on Antragsgrün. " .

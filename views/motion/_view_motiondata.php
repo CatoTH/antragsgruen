@@ -4,6 +4,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\User;
+use app\models\policies\IPolicy;
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -78,6 +79,10 @@ if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
     echo '<span class="unscreened">' . Html::encode($statiNames[$motion->status]) . '</span>';
 } elseif ($motion->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
     echo '<span class="screened">' . \Yii::t('motion', 'screened_hint') . '</span>';
+} elseif ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+    echo Html::encode($statiNames[$motion->status]);
+    echo ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
+    echo IPolicy::getPolicyNames()[$motion->motionType->policySupportMotions] . ')</small>';
 } else {
     echo Html::encode($statiNames[$motion->status]);
 }

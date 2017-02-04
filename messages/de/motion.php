@@ -99,6 +99,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'submitted_adminnoti_title'          => 'Neuer Antrag',
     'submitted_adminnoti_body'           => "Es wurde ein neuer Antrag eingereicht.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'screened_hint'                      => 'Geprüft',
+    'supporting_permitted'               => 'Berechtigung',
     'download_pdf'                       => 'PDF-Version herunterladen',
     'motion_text'                        => 'Antragstext',
     'published_email_body'               => "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .

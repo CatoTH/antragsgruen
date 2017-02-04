@@ -22,16 +22,16 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\Base $controller */
-$controller   = $this->context;
-$layout       = $controller->layoutParams;
+$controller = $this->context;
+$layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
 $consultation = $amendment->getMyConsultation();
+$motion       = $amendment->getMyMotion();
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
     $layout->addBreadcrumb($amendment->getShortTitle());
 } else {
-    $motion = $amendment->getMyMotion();
     $motionUrl = UrlHelper::createMotionUrl($motion);
     $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
@@ -47,7 +47,7 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
-$minHeight = $sidebarRows * 40 - 100;
+$minHeight               = $sidebarRows * 40 - 100;
 $supportCollectingStatus = ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS);
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
@@ -56,7 +56,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('amend', 'motion') . ':</th>
                     <td>' .
-    Html::a($amendment->getMyMotion()->title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</td>
+    Html::a($motion->title, UrlHelper::createMotionUrl($motion)) . '</td>
                 </tr>
                 <tr>
                     <th>' . Yii::t('amend', 'initiator'), ':</th>
@@ -69,12 +69,20 @@ echo '</td></tr>
 
 $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Amendment::getStati();
-if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
-    echo '<span class="unscreened">' . Html::encode($statiNames[$amendment->status]) . '</span>';
-} elseif ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
-    echo '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
-} else {
-    echo Html::encode($statiNames[$amendment->status]);
+switch ($amendment->status) {
+    case Amendment::STATUS_SUBMITTED_UNSCREENED:
+        echo '<span class="unscreened">' . Html::encode($statiNames[$amendment->status]) . '</span>';
+        break;
+    case Amendment::STATUS_SUBMITTED_SCREENED:
+        echo '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
+        break;
+    case Amendment::STATUS_COLLECTING_SUPPORTERS:
+        echo Html::encode($statiNames[$amendment->status]);
+        echo ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
+        echo IPolicy::getPolicyNames()[$motion->motionType->policySupportAmendments] . ')</small>';
+        break;
+    default:
+        echo Html::encode($statiNames[$amendment->status]);
 }
 if (trim($amendment->statusString) != '') {
     echo " <small>(" . Html::encode($amendment->statusString) . ")</string>";
@@ -97,7 +105,7 @@ echo $controller->showErrors();
 
 if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
-    $min  = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+    $min  = $motion->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
     $curr = count($amendment->getSupporters());
     if ($curr >= $min) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_reached_hint'));
@@ -145,16 +153,16 @@ if ($amendment->changeExplanation != '') {
     echo '</section>';
 }
 
-$currUserId = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
-$supporters = $amendment->getSupporters();
-$supportPolicy = $amendment->getMyMotion()->motionType->getAmendmentSupportPolicy();
-$supportType = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
+$currUserId    = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
+$supporters    = $amendment->getSupporters();
+$supportPolicy = $motion->motionType->getAmendmentSupportPolicy();
+$supportType   = $motion->motionType->getAmendmentSupportTypeClass();
 
 if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
-    $iAmSupporting = false;
+    $iAmSupporting        = false;
     $anonymouslySupported = \app\models\db\AmendmentSupporter::getMyAnonymousSupportIds();
     if (count($supporters) > 0) {
         echo '<ul>';
@@ -178,7 +186,7 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
 
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
-if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOBODY) {
+if ($motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
     $form        = $commentForm;
@@ -217,9 +225,9 @@ if ($amendment->getMyMotion()->motionType->policyComments != IPolicy::POLICY_NOB
         }
     }
 
-    if ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
+    if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
         MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
-    } elseif ($amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+    } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
             \Yii::t('amend', 'comments_please_log_in') . '</div>';
