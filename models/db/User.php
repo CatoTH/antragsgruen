@@ -18,6 +18,9 @@ use yii\web\IdentityInterface;
  *
  * @property int $id
  * @property string $name
+ * @property string $nameGiven
+ * @property string $nameFamily
+ * @property string $organisation
  * @property string $email
  * @property int $emailConfirmed
  * @property string $auth
@@ -66,7 +69,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 
     /**
-     * @return null|User
+     * @return null|User|IdentityInterface
      */
     public static function getCurrentUser()
     {
@@ -786,6 +789,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function deleteAccount()
     {
         $this->name           = '';
+        $this->nameGiven      = '';
+        $this->nameFamily     = '';
+        $this->organisation   = '';
         $this->email          = '';
         $this->emailConfirmed = 0;
         $this->auth           = null;

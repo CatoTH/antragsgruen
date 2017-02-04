@@ -142,7 +142,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'support_already'                   => 'Du unterstützt diesen Änderungsantrag bereits',
     'support_collection_hint'           => 'Dieser Änderungsantrag ist noch nicht offiziell eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint'   => 'Dieser Änderungsantrag ist noch nicht offiziell eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
-    'support_reached_email_subject'     => 'Änderungsantrag: Unterstützer*innen-Anzahl erreicht',
+    'support_reached_email_subject'     => 'Dein Änderungsantrag: Unterstützer*innen-Anzahl erreicht',
     'support_reached_email_body'        => 'Hallo,<br><br>Dein Änderungsantrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht. Damit kannst du ihn ab jetzt hier einreichen:<br><br><strong>%LINK%</strong><br><br>Bitte beachte, dass es <strong>zwingend notwendig</strong> ist, ihn nun explizit einzureichen.<br><br>Mit freundlichen Grüßen,<br>  Das Antragsgrün-Team',
     'support_finish_btn'                => 'Änderungsantrag offiziell einreichen',
     'support_finish_err'                => 'Das ist derzeit (noch) nicht möglich',

@@ -564,6 +564,9 @@ CREATE TABLE `###TABLE_PREFIX###texTemplate` (
 CREATE TABLE `###TABLE_PREFIX###user` (
   `id`             INT(11)     NOT NULL,
   `name`           TEXT        NOT NULL,
+  `nameGiven`      TEXT        NOT NULL,
+  `nameFamily`     TEXT        NOT NULL,
+  `organisation`   TEXT        NOT NULL,
   `email`          VARCHAR(200)         DEFAULT NULL,
   `emailConfirmed` TINYINT(4)           DEFAULT '0',
   `auth`           VARCHAR(190)         DEFAULT NULL,

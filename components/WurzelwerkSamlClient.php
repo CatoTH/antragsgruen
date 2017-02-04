@@ -3,6 +3,7 @@
 namespace app\components;
 
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 use SimpleSAML_Auth_Simple;
 use yii\authclient\ClientInterface;
 use app\models\db\User;
@@ -54,18 +55,31 @@ class WurzelwerkSamlClient implements ClientInterface
         $username     = $this->params[static::PARAM_USERNAME][0];
         $auth         = User::wurzelwerkId2Auth($username);
 
+        /** @var User $user */
         $user = User::findOne(['auth' => $auth]);
-        if ($user) {
-            return $user;
+        if (!$user) {
+            $user = new User();
         }
 
-        $user                 = new User();
         $user->name           = $givenname . ' ' . $familyname;
+        $user->nameGiven      = $givenname;
+        $user->nameFamily     = $familyname;
         $user->email          = $email;
         $user->emailConfirmed = 1;
         $user->auth           = $auth;
         $user->status         = User::STATUS_CONFIRMED;
-        // @TODO Organization
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
+            $orgas = json_decode(file_get_contents($params->samlOrgaFile));
+            if ($organization && isset($orgas[$organization])) {
+                $user->organisation = $orgas[$organization];
+            } else {
+                $user->organisation = '';
+            }
+        }
+
         if (!$user->save()) {
             throw new \Exception('Could not create user: ' . $user->getErrors());
         }

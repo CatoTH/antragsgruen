@@ -115,7 +115,7 @@ class UserController extends Base
                 \yii::$app->session->setFlash('error', 'An error occurred: ' . $this->getRequestValue('openid_error'));
                 return $this->actionLogin($backUrl);
             } elseif ($this->getRequestValue('openid_mode') == 'cancel') {
-                \yii::$app->session->setFlash('error', 'Login abgebrochen');
+                \yii::$app->session->setFlash('error', 'Aborted login');
                 return $this->actionLogin($backUrl);
             } elseif ($client->validate()) {
                 $this->loginUser($client->getOrCreateUser());
