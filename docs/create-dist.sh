@@ -26,6 +26,9 @@ if [[ ! -d ./local/antragsgruen-$ANTRAGSGRUEN_VERSION ]]; then
     exit
 fi
 
+npm install
+gulp
+
 rsync -av --exclude='local' --exclude='./dist' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
@@ -44,6 +47,9 @@ mkdir runtime
 chmod 775 runtime
 chmod 775 web/assets
 
+cd web/js/bower/intl/locale-data
+find . -type f ! -name "de*" -exec rm {} \;
+cd ../../../../../
 rm -R web/js/bower/moment/src/
 rm -R web/js/src
 rm -R vendor/phpoffice/phpexcel/unitTests/

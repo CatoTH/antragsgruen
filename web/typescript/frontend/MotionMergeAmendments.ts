@@ -352,7 +352,7 @@ class MotionMergeAmendmentsTextarea {
                 MotionMergeAmendments.activePopup.destroy();
             }
             MotionMergeAmendments.activePopup = new MotionMergeChangeTooltip(
-                $(ev.target), ev.pageX, ev.pageY, this
+                $(ev.currentTarget), ev.pageX, ev.pageY, this
             );
         });
     }
