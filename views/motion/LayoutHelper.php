@@ -176,49 +176,42 @@ class LayoutHelper
         if (\Yii::$app->user->isGuest) {
             echo \app\components\AntiSpam::getJsProtectionHint($consultation->id);
         }
+        $user = User::getCurrentUser();
 
         $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;
 
         echo '<input type="hidden" name="comment[paragraphNo]" value="' . $paragraphNo . '">';
         echo '<input type="hidden" name="comment[sectionId]" value="' . $sectionId . '">';
 
-        $nameIsFixed = false; // @TODO
-        if (!$nameIsFixed) {
-            echo '
-            <div class="form-group">
-                <label for="' . $formIdPre . '_name" class="control-label col-sm-3">' . \Yii::t('comment', 'name') .
-                ':</label>
-                <div class="col-sm-9">
-                    <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name" ' .
-                'name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
+        $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
+
+        echo '<div class="form-group">
+            <label for="' . $formIdPre . '_name" class="control-label col-sm-3">' . \Yii::t('comment', 'name') .
+            ':</label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name" ' . $fixedReadOnly .
+                ' name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
                 </div>
             </div>
             <div class="form-group">
                 <label for="' . $formIdPre . '_email" class="control-label col-sm-3">' . \Yii::t('comment', 'email') .
-                ':</label>
+            ':</label>
                 <div class="col-sm-9">
                     <input type="email" class="form-control" id="' . $formIdPre . '_email" autocomplete="email" ' .
-                'name="comment[email]" value="' . Html::encode($form->email) . '"';
-            if ($consultation->getSettings()->commentNeedsEmail) {
-                echo ' required';
-            }
-            echo '>
+            $fixedReadOnly . ' name="comment[email]" value="' . Html::encode($form->email) . '"';
+        if ($consultation->getSettings()->commentNeedsEmail) {
+            echo ' required';
+        }
+        echo '>
                 </div>
             </div><div class="form-group">
             <label for="' . $formIdPre . '_text" class="control-label col-sm-3">' . \Yii::t('comment', 'text') .
-                ':</label>
+            ':</label>
                 <div class="col-sm-9">
                     <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
                     id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
                 </div>
             </div>';
-        } else {
-            echo '<div>
-            <label class="required sr-only">' . \Yii::t('comment', 'text') . '</label>
-            <textarea name="comment[text]"  title="Text" class="form-control" rows="5"
-                id="' . $formIdPre . '_text">' . Html::encode($form->text) . '</textarea>
-            </div>';
-        }
         echo '
     <div class="submitrow">
         <button class="btn btn-success" name="writeComment" type="submit">' . \Yii::t('comment', 'submit_comment') .
@@ -440,16 +433,19 @@ class LayoutHelper
                 echo '<label style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</label>';
                 echo '<div class="row">';
 
+                $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
                 echo '<div class="col-md-4">';
                 $name = ($user ? $user->name : '');
-                echo '<input type="text" name="motionSupportName" class="form-control" required
+                echo '<input type="text" name="motionSupportName" class="form-control" required ' . $fixedReadOnly . '
                 value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
                 echo '</div>';
 
                 if ($supportType->hasOrganizations()) {
+                    $orga = ($user ? $user->organization : '');
                     echo '<div class="col-md-4">';
-                    echo '<input type="text" name="motionSupportOrga" class="form-control" value=""
-                    placeholder="' . \Yii::t('motion', 'support_orga') . '" required>';
+                    echo '<input type="text" name="motionSupportOrga" class="form-control"
+                           value="' . Html::encode($orga) . '" placeholder="' . \Yii::t('motion', 'support_orga') . '" 
+                           required ' . $fixedReadOnly . '>';
                     echo '</div>';
                 }
 

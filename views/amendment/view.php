@@ -196,6 +196,11 @@ if ($motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
         $form              = new \app\models\forms\CommentForm();
         $form->paragraphNo = -1;
         $form->sectionId   = -1;
+        $user              = User::getCurrentUser();
+        if ($user) {
+            $form->name  = $user->name;
+            $form->email = $user->email;
+        }
     }
 
     $baseLink     = UrlHelper::createAmendmentUrl($amendment);

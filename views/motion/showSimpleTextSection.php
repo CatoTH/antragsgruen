@@ -80,8 +80,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
                 $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
             }
-            $line       = str_replace('<br>', '', $line);
-            $first3     = substr($line, 0, 3);
+            $line   = str_replace('<br>', '', $line);
+            $first3 = substr($line, 0, 3);
             if ($i > 0 && !in_array($first3, ['<ol', '<ul', '<p>', '<di'])) {
                 echo '<br>';
             }
@@ -142,6 +142,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 $form              = new \app\models\forms\CommentForm();
                 $form->paragraphNo = $paragraphNo;
                 $form->sectionId   = $section->sectionId;
+                $user              = User::getCurrentUser();
+                if ($user) {
+                    $form->name  = $user->name;
+                    $form->email = $user->email;
+                }
             }
 
             $screeningQueue = 0;

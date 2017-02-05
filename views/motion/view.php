@@ -208,6 +208,11 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
         $form              = new \app\models\forms\CommentForm();
         $form->paragraphNo = -1;
         $form->sectionId   = -1;
+        $user              = User::getCurrentUser();
+        if ($user) {
+            $form->name  = $user->name;
+            $form->email = $user->email;
+        }
     }
 
     $screeningQueue = 0;

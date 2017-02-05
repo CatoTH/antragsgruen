@@ -5,6 +5,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
+use app\models\db\User;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use yii\base\Model;
@@ -33,15 +34,17 @@ class CommentForm extends Model
     {
         $settings = $motion->getConsultation()->getSettings();
         if ($settings->commentNeedsEmail && trim($this->email) == '') {
-            throw new FormError('Keine E-Mail-Adresse angegeben');
+            throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
+
+        $user = User::getCurrentUser();
 
         $comment               = new MotionComment();
         $comment->motionId     = $motion->id;
         $comment->sectionId    = $this->sectionId;
         $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = $this->email;
-        $comment->name         = $this->name;
+        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
+        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
         $comment->text         = $this->text;
         $comment->dateCreation = date('Y-m-d H:i:s');
 
@@ -104,15 +107,17 @@ class CommentForm extends Model
     public function saveAmendmentComment(Amendment $amendment)
     {
         $settings = $amendment->getMyConsultation()->getSettings();
-        if ($settings->commentNeedsEmail && trim($this->email) == "") {
-            throw new FormError('No E-Mail-Address entered');
+        if ($settings->commentNeedsEmail && trim($this->email) == '') {
+            throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
+
+        $user = User::getCurrentUser();
 
         $comment               = new AmendmentComment();
         $comment->amendmentId  = $amendment->id;
         $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = $this->email;
-        $comment->name         = $this->name;
+        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
+        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
         $comment->text         = $this->text;
         $comment->dateCreation = date('Y-m-d H:i:s');
 

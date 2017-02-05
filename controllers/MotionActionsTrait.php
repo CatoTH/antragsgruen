@@ -222,8 +222,14 @@ trait MotionActionsTrait
         }
         $supportType = $motion->motionType->getMotionSupportTypeClass();
         $role        = MotionSupporter::ROLE_SUPPORTER;
-        $name        = \Yii::$app->request->post('motionSupportName', '');
-        $orga        = \Yii::$app->request->post('motionSupportOrga', '');
+        $user        = User::getCurrentUser();
+        if ($user && $user->fixedData) {
+            $name = $user->name;
+            $orga = $user->organization;
+        } else {
+            $name = \Yii::$app->request->post('motionSupportName', '');
+            $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        }
         if ($supportType->hasOrganizations() && $orga == '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;

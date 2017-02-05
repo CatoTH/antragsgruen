@@ -179,8 +179,14 @@ trait AmendmentActionsTrait
         }
         $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
         $role         = AmendmentSupporter::ROLE_SUPPORTER;
-        $name         = \Yii::$app->request->post('motionSupportName', '');
-        $orga         = \Yii::$app->request->post('motionSupportOrga', '');
+        $user         = User::getCurrentUser();
+        if ($user && $user->fixedData) {
+            $name = $user->name;
+            $orga = $user->organization;
+        } else {
+            $name = \Yii::$app->request->post('motionSupportName', '');
+            $orga = \Yii::$app->request->post('motionSupportOrga', '');
+        }
         if ($supportClass->hasOrganizations() && $orga == '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
