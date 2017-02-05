@@ -2,6 +2,7 @@
 
 namespace app\components\diff;
 
+use app\components\HashedStaticCache;
 use app\models\exceptions\Internal;
 
 class Diff
@@ -536,6 +537,12 @@ class Diff
      */
     public function compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting)
     {
+        $cache_deps = [$referenceParas, $newParas, $diffFormatting];
+        $cached = HashedStaticCache::getCache('compareHtmlParagraphs', $cache_deps);
+        if ($cached) {
+            return $cached;
+        }
+
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
         $this->setIgnoreStr('###LINENUMBER###');
@@ -571,6 +578,8 @@ class Diff
                 $pendingInsert = '';
             }
         }
+
+        HashedStaticCache::setCache('compareHtmlParagraphs', $cache_deps, $resolved);
 
         return $resolved;
     }

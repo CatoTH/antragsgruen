@@ -4,6 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
+use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
@@ -133,6 +134,7 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
+            /** @var MotionSupporter $supp*/
             echo '<li>';
             if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';

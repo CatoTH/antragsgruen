@@ -59,8 +59,8 @@ class Engine
     }
 
     /**
-     * @param string $strings1
-     * @param string $strings2
+     * @param string[] $strings1
+     * @param string[] $strings2
      * @return array
      */
     public function compareArrays($strings1, $strings2)
