@@ -1,3 +1,9 @@
+interface UserData {
+    fixed: boolean;
+    person_name: string;
+    person_organization: string;
+}
+
 export class DefaultInitiatorForm {
     private $supporterAdderRow: JQuery;
     private $fullTextHolder: JQuery;
@@ -6,31 +12,24 @@ export class DefaultInitiatorForm {
     private $supporterData: JQuery;
     private $editforms: JQuery;
 
-    private onChangePersonType() {
-        if ($('#personTypeOrga').prop('checked')) {
-            this.$initiatorData.find('.organizationRow').addClass("hidden");
-            this.$initiatorData.find('.contactNameRow').removeClass("hidden");
-            this.$initiatorData.find('.resolutionRow').removeClass("hidden");
-            this.$initiatorData.find('.adderRow').addClass("hidden");
-            $('.supporterData, .supporterDataHead').addClass("hidden");
-        } else {
-            this.$initiatorData.find('.organizationRow').removeClass("hidden");
-            this.$initiatorData.find('.contactNameRow').addClass("hidden");
-            this.$initiatorData.find('.resolutionRow').addClass("hidden");
-            this.$initiatorData.find('.adderRow').removeClass("hidden");
-            $('.supporterData, .supporterDataHead').removeClass("hidden");
-        }
-    }
+    private $otherInitiator: JQuery;
+    private otherInitiator: boolean = false;
+    private userData: UserData;
 
-    constructor() {
-        this.$editforms = $('#motionEditForm, #amendmentEditForm');
-        this.$supporterData = $('.supporterData');
-        this.$initiatorData = $('.initiatorData');
+    constructor($widget: JQuery) {
+        this.$editforms = $widget.parents('form').first();
+        this.$supporterData = $widget.find('.supporterData');
+        this.$initiatorData = $widget.find('.initiatorData');
         this.$initiatorAdderRow = this.$initiatorData.find('.adderRow');
         this.$fullTextHolder = $('#fullTextHolder');
         this.$supporterAdderRow = this.$supporterData.find('.adderRow');
 
-        $('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this)).first().trigger('change');
+        this.userData = $widget.data("user-data");
+
+        this.$otherInitiator = $widget.find("input[name=otherInitiator]");
+        this.$otherInitiator.change(this.onChangeOtherInitiator.bind(this)).trigger('change');
+
+        $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this)).first().trigger('change');
 
         this.$initiatorAdderRow.find('a').click(this.initiatorAddRow.bind(this));
         this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
@@ -46,6 +45,52 @@ export class DefaultInitiatorForm {
         }
 
         this.$editforms.submit(this.submit.bind(this));
+    }
+
+    private onChangeOtherInitiator() {
+        this.otherInitiator = (this.$otherInitiator.val() == 1 || this.$otherInitiator.prop("checked"));
+        this.onChangePersonType();
+    }
+
+    private onChangePersonType() {
+        if ($('#personTypeOrga').prop('checked')) {
+            this.setFieldsVisibilityOrganization();
+            this.setFieldsReadonlyOrganization();
+        } else {
+            this.setFieldsVisibilityPerson();
+            this.setFieldsReadonlyPerson();
+        }
+    }
+
+    private setFieldsVisibilityOrganization() {
+        this.$initiatorData.find('.organizationRow').addClass("hidden");
+        this.$initiatorData.find('.contactNameRow').removeClass("hidden");
+        this.$initiatorData.find('.resolutionRow').removeClass("hidden");
+        this.$initiatorData.find('.adderRow').addClass("hidden");
+        $('.supporterData, .supporterDataHead').addClass("hidden");
+    }
+
+    private setFieldsReadonlyOrganization() {
+        this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", false);
+        this.$initiatorData.find('#initiatorOrga').prop("readonly", false);
+    }
+
+    private setFieldsVisibilityPerson() {
+        this.$initiatorData.find('.organizationRow').removeClass("hidden");
+        this.$initiatorData.find('.contactNameRow').addClass("hidden");
+        this.$initiatorData.find('.resolutionRow').addClass("hidden");
+        this.$initiatorData.find('.adderRow').removeClass("hidden");
+        $('.supporterData, .supporterDataHead').removeClass("hidden");
+    }
+
+    private setFieldsReadonlyPerson() {
+        if (!this.userData.fixed || this.otherInitiator) {
+            this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", false);
+            this.$initiatorData.find('#initiatorOrga').prop("readonly", false);
+        } else {
+            this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", true).val(this.userData.person_name);
+            this.$initiatorData.find('#initiatorOrga').prop("readonly", true).val(this.userData.person_organization);
+        }
     }
 
     private initiatorAddRow(ev) {

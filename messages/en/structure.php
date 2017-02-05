@@ -91,6 +91,10 @@ return [
     'person_type_natural' => 'Natural person',
     'person_type_orga'    => 'Organisation',
 
+    'user_status_1'  => 'Unconfirmed',
+    'user_status_0'  => 'Confirmed',
+    'user_status_-1' => 'Deleted',
+
     'STATUS_DELETED'               => 'Deleted',
     'STATUS_WITHDRAWN'             => 'Withdrawn',
     'STATUS_UNCONFIRMED'           => 'Unconfirmed',

@@ -28,10 +28,6 @@ $layout     = $controller->layoutParams;
 $layout->loadDatepicker();
 $locale = Tools::getCurrentDateLocale();
 
-echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm">';
-
-echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
-
 if ($initiator->personType == ISupporter::PERSON_NATURAL) {
     $prePrimaryName = Html::encode($initiator->name);
 } else {
@@ -42,6 +38,17 @@ $preOrga        = Html::encode($initiator->organization);
 $preEmail       = Html::encode($initiator->contactEmail);
 $prePhone       = Html::encode($initiator->contactPhone);
 $preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
+
+$currentUser = \app\models\db\User::getCurrentUser();
+
+echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm"
+                data-user-data="' . Html::encode(json_encode([
+        'fixed'               => ($currentUser && $currentUser->fixedData),
+        'person_name'         => ($initiator->user ? $initiator->user->name : ''),
+        'person_organization' => ($initiator->user ? $initiator->user->organization : ''),
+    ])) . '">';
+
+echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
 
 echo '<div class="initiatorData form-horizontal content">';
 
@@ -140,7 +147,8 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NONE) {
     if ($motionType->contactEmail == ConsultationMotionType::CONTACT_REQUIRED && !$adminMode) {
         echo 'required ';
     }
-    echo 'autocomplete="email" value="' . Html::encode($preEmail) . '">
+
+    echo ' autocomplete="email" value="' . Html::encode($preEmail) . '">
     <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
@@ -296,4 +304,3 @@ if ($hasSupporters && !$adminMode) {
 
 
 echo '</fieldset>';
-

@@ -17,7 +17,7 @@ $I->loginAsStdUser();
 $I->wantTo('create a motion');
 
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
-$page->createMotion('Unscreened motion');
+$page->createMotion('Unscreened motion', true);
 $I->gotoConsultationHome();
 
 $I->seeElement('.motionListStd');

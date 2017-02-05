@@ -80,7 +80,7 @@ abstract class DefaultTypeBase extends ISupportType
      */
     protected function parseSupporters(ISupporter $model)
     {
-        $ret = [];
+        $ret  = [];
         $post = \Yii::$app->request->post();
         if (isset($post['supporters']) && is_array($post['supporters']['name'])) {
             foreach ($post['supporters']['name'] as $i => $name) {
@@ -256,9 +256,12 @@ abstract class DefaultTypeBase extends ISupportType
             $initiator       = new MotionSupporter();
             $initiator->role = MotionSupporter::ROLE_INITIATOR;
         }
-        $screeningPrivilege = User::currentUserHasPrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
-        $isForOther         = false;
-        if ($screeningPrivilege) {
+        $othersPrivilege = User::currentUserHasPrivilege(
+            $motionType->getConsultation(),
+            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
+        );
+        $isForOther      = false;
+        if ($othersPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
@@ -268,7 +271,7 @@ abstract class DefaultTypeBase extends ISupportType
                 'initiator'           => $initiator,
                 'moreInitiators'      => $moreInitiators,
                 'supporters'          => $supporters,
-                'allowOther'          => $screeningPrivilege,
+                'allowOther'          => $othersPrivilege,
                 'isForOther'          => $isForOther,
                 'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
                 'minSupporters'       => $this->getMinNumberOfSupporters(),
@@ -338,22 +341,31 @@ abstract class DefaultTypeBase extends ISupportType
     {
         /** @var MotionSupporter[] $return */
         $return = [];
-        
-        $post = \Yii::$app->request->post();
+
+        $post            = \Yii::$app->request->post();
+        $othersPrivilege = User::currentUserHasPrivilege(
+            $this->motionType->getConsultation(),
+            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
+        );
+        $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {
             $init         = new MotionSupporter();
             $init->userId = null;
+            $user         = null;
         } else {
-            if (isset($post['otherInitiator'])) {
+            if ($otherInitiator) {
+                $user   = null;
                 $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
                     if ($supporter->role == MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
+                        $user   = $supporter->user;
                         $userId = $supporter->userId;
                     }
                 }
             } else {
-                $userId = User::getCurrentUser()->id;
+                $user   = User::getCurrentUser();
+                $userId = $user->id;
             }
 
             $init = MotionSupporter::findOne(
@@ -376,11 +388,16 @@ abstract class DefaultTypeBase extends ISupportType
         $init->role     = MotionSupporter::ROLE_INITIATOR;
         $init->position = $posCount++;
         if ($init->personType == ISupporter::PERSON_NATURAL) {
-            $init->name = $post['Initiator']['primaryName'];
-            if (isset($post['Initiator']['organization'])) {
-                $init->organization = $post['Initiator']['organization'];
+            if ($user && $user->fixedData && !$otherInitiator) {
+                $init->name         = $user->name;
+                $init->organization = $user->organization;
             } else {
-                $init->organization = '';
+                $init->name = $post['Initiator']['primaryName'];
+                if (isset($post['Initiator']['organization'])) {
+                    $init->organization = $post['Initiator']['organization'];
+                } else {
+                    $init->organization = '';
+                }
             }
         } else {
             $init->organization = $post['Initiator']['primaryName'];
@@ -425,21 +442,31 @@ abstract class DefaultTypeBase extends ISupportType
     {
         /** @var AmendmentSupporter[] $return */
         $return = [];
-        $post = \Yii::$app->request->post();
+        $post   = \Yii::$app->request->post();
+
+        $othersPrivilege = User::currentUserHasPrivilege(
+            $this->motionType->getConsultation(),
+            User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
+        );
+        $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {
             $init         = new AmendmentSupporter();
             $init->userId = null;
+            $user         = null;
         } else {
-            if (isset($post['otherInitiator'])) {
+            if ($otherInitiator) {
                 $userId = null;
+                $user   = null;
                 foreach ($amendment->amendmentSupporters as $supporter) {
                     if ($supporter->role == AmendmentSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $userId = $supporter->userId;
+                        $user   = $supporter->user;
                     }
                 }
             } else {
-                $userId = User::getCurrentUser()->id;
+                $user   = User::getCurrentUser();
+                $userId = $user->id;
             }
 
             $init = AmendmentSupporter::findOne(
@@ -462,11 +489,16 @@ abstract class DefaultTypeBase extends ISupportType
         $init->role        = AmendmentSupporter::ROLE_INITIATOR;
         $init->position    = $posCount++;
         if ($init->personType == ISupporter::PERSON_NATURAL) {
-            $init->name = $post['Initiator']['primaryName'];
-            if (isset($post['Initiator']['organization'])) {
-                $init->organization = $post['Initiator']['organization'];
+            if ($user && $user->fixedData && !$otherInitiator) {
+                $init->name         = $user->name;
+                $init->organization = $user->organization;
             } else {
-                $init->organization = '';
+                $init->name = $post['Initiator']['primaryName'];
+                if (isset($post['Initiator']['organization'])) {
+                    $init->organization = $post['Initiator']['organization'];
+                } else {
+                    $init->organization = '';
+                }
             }
         } else {
             $init->organization = $post['Initiator']['primaryName'];

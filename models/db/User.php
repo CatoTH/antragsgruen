@@ -20,8 +20,9 @@ use yii\web\IdentityInterface;
  * @property string $name
  * @property string $nameGiven
  * @property string $nameFamily
- * @property string $organisation
+ * @property string $organization
  * @property string $email
+ * @property int $fixedData
  * @property int $emailConfirmed
  * @property string $auth
  * @property string $dateCreation
@@ -49,11 +50,12 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_CONFIRMED   = 0;
     const STATUS_DELETED     = -1;
 
-    const PRIVILEGE_ANY                   = 0;
-    const PRIVILEGE_CONSULTATION_SETTINGS = 1;
-    const PRIVILEGE_CONTENT_EDIT          = 2;
-    const PRIVILEGE_SCREENING             = 3;
-    const PRIVILEGE_MOTION_EDIT           = 4;
+    const PRIVILEGE_ANY                       = 0;
+    const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
+    const PRIVILEGE_CONTENT_EDIT              = 2;
+    const PRIVILEGE_SCREENING                 = 3;
+    const PRIVILEGE_MOTION_EDIT               = 4;
+    const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
 
     /**
      * @return string[]
@@ -61,9 +63,9 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getStati()
     {
         return [
-            1  => 'Nicht bestätigt',
-            0  => 'Bestätigt',
-            -1 => 'Gelöscht',
+            1  => \Yii::t('structure', 'user_status_1'),
+            0  => \Yii::t('structure', 'user_status_0'),
+            -1 => \Yii::t('structure', 'user_status_-1'),
         ];
     }
 
@@ -791,7 +793,8 @@ class User extends ActiveRecord implements IdentityInterface
         $this->name           = '';
         $this->nameGiven      = '';
         $this->nameFamily     = '';
-        $this->organisation   = '';
+        $this->organization   = '';
+        $this->fixedData      = 0;
         $this->email          = '';
         $this->emailConfirmed = 0;
         $this->auth           = null;

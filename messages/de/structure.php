@@ -91,6 +91,10 @@ return [
     'person_type_natural' => 'Natürliche Person',
     'person_type_orga'    => 'Organisation / Gremium',
 
+    'user_status_1'  => 'Nicht bestätigt',
+    'user_status_0'  => 'Bestätigt',
+    'user_status_-1' => 'Gelöscht',
+
     'STATUS_DELETED'               => 'Gelöscht',
     'STATUS_WITHDRAWN'             => 'Zurückgezogen',
     'STATUS_UNCONFIRMED'           => 'Unbestätigt',

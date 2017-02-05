@@ -64,6 +64,15 @@ abstract class ISupporter extends ActiveRecord
     }
 
     /**
+     * @return boolean
+     */
+    public function isDataFixed()
+    {
+        $user = $this->user;
+        return ($user && $user->fixedData == 1);
+    }
+
+    /**
      * @return string
      */
     public function getNameWithOrga()

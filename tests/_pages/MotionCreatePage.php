@@ -13,14 +13,19 @@ class MotionCreatePage extends BasePage
 
     /**
      * @param string $title
+     * @param bool $screeningNeeded
      */
-    public function createMotion($title = 'Testantrag 1')
+    public function createMotion($title = 'Testantrag 1', $screeningNeeded = false)
     {
         $this->fillInValidSampleData($title);
         $this->saveForm();
         $this->actor->see(mb_strtoupper('Antrag bestätigen'), 'h1');
         $this->actor->submitForm('#motionConfirmForm', [], 'confirm');
-        $this->actor->see(mb_strtoupper('Antrag veröffentlicht'), 'h1');
+        if ($screeningNeeded) {
+            $this->actor->see(mb_strtoupper('Antrag eingereicht'), 'h1');
+        } else {
+            $this->actor->see(mb_strtoupper('Antrag veröffentlicht'), 'h1');
+        }
     }
 
     /**

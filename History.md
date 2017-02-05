@@ -11,6 +11,7 @@
 - A widget to show the content of an amendment in a popover is introduced, e.g. in the admin motion list
 - Support for Redis as cache & session store
 - Internal: Port JavaScript modules to TypeScript
+- Improvements to the integration of Grünes Netz of the German Green Party: organization keys can be resolved and the transmitted name / organization are fixed
 
 ### Version 3.5.1 (2016-11-30)
 

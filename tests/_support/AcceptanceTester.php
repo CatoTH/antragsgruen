@@ -70,7 +70,7 @@ class AcceptanceTester extends \Codeception\Actor
     {
         if (is_numeric($motionSlug)) {
             /** @var \app\models\db\Motion $motion */
-            $motion = \app\models\db\Motion::findOne($motionSlug);
+            $motion     = \app\models\db\Motion::findOne($motionSlug);
             $motionSlug = $motion->getMotionSlug();
         }
         $page = MotionPage::openBy(
@@ -164,19 +164,29 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @param $username
+     * @param $password
      * @return $this
      */
-    public function loginAsStdAdmin()
+    protected function loginWithData($username, $password)
     {
         $this->see('LOGIN', '#loginLink');
         $this->click('#loginLink');
 
         $this->see('LOGIN', 'h1');
-        $this->fillField('#username', 'testadmin@example.org');
-        $this->fillField('#passwordInput', 'testadmin');
+        $this->fillField('#username', $username);
+        $this->fillField('#passwordInput', $password);
         $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function loginAsStdAdmin()
+    {
+        return $this->loginWithData('testadmin@example.org', 'testadmin');
     }
 
     /**
@@ -184,13 +194,7 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function loginAsGlobalAdmin()
     {
-        $this->see('LOGIN', '#loginLink');
-        $this->click('#loginLink');
-
-        $this->see('LOGIN', 'h1');
-        $this->fillField('#username', 'globaladmin@example.org');
-        $this->fillField('#passwordInput', 'testadmin');
-        $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+        return $this->loginWithData('globaladmin@example.org', 'testadmin');
     }
 
     /**
@@ -198,13 +202,23 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function loginAsStdUser()
     {
-        $this->see('LOGIN', '#loginLink');
-        $this->click('#loginLink');
+        return $this->loginWithData('testuser@example.org', 'testuser');
+    }
 
-        $this->see('LOGIN', 'h1');
-        $this->fillField('#username', 'testuser@example.org');
-        $this->fillField('#passwordInput', 'testuser');
-        $this->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+    /**
+     * @return $this
+     */
+    public function loginAsFixedDataUser()
+    {
+        return $this->loginWithData('fixeddata@example.org', 'testuser');
+    }
+
+    /**
+     * @return $this
+     */
+    public function loginAsFixedDataAdmin()
+    {
+        return $this->loginWithData('fixedadmin@example.org', 'testadmin');
     }
 
     /**

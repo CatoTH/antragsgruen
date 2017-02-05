@@ -9,7 +9,7 @@ $I->populateDBData1();
 $I->wantTo('create a new motion');
 
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
-$page->createMotion('random new motion');
+$page->createMotion('random new motion', false);
 
 $motionPage = $I->gotoMotion(true, $motionId);
 $I->see(mb_strtoupper('random new motion'), 'h1');

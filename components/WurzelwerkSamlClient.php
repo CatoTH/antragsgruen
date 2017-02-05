@@ -14,7 +14,7 @@ class WurzelwerkSamlClient implements ClientInterface
     const PARAM_USERNAME     = 'urn:oid:0.9.2342.19200300.100.1.1';
     const PARAM_GIVEN_NAME   = 'urn:oid:2.5.4.42';
     const PARAM_FAMILY_NAME  = 'urn:oid:2.5.4.4';
-    const PARAM_ORGANISATION = 'membershipOrganizationKey';
+    const PARAM_ORGANIZATION = 'membershipOrganizationKey';
 
     /** @var SimpleSAML_Auth_Simple */
     private $auth;
@@ -51,7 +51,7 @@ class WurzelwerkSamlClient implements ClientInterface
         $email        = $this->params[static::PARAM_EMAIL][0];
         $givenname    = $this->params[static::PARAM_GIVEN_NAME][0];
         $familyname   = $this->params[static::PARAM_FAMILY_NAME][0];
-        $organisation = $this->params[static::PARAM_ORGANISATION][0];
+        $organization = $this->params[static::PARAM_ORGANIZATION][0];
         $username     = $this->params[static::PARAM_USERNAME][0];
         $auth         = User::wurzelwerkId2Auth($username);
 
@@ -66,6 +66,7 @@ class WurzelwerkSamlClient implements ClientInterface
         $user->nameFamily     = $familyname;
         $user->email          = $email;
         $user->emailConfirmed = 1;
+        $user->fixedData      = 1;
         $user->auth           = $auth;
         $user->status         = User::STATUS_CONFIRMED;
 
@@ -73,10 +74,10 @@ class WurzelwerkSamlClient implements ClientInterface
         $params = \Yii::$app->params;
         if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
             $orgas = json_decode(file_get_contents($params->samlOrgaFile), true);
-            if ($organisation && isset($orgas[$organisation])) {
-                $user->organisation = $orgas[$organisation]['kurzname'];
+            if ($organization && isset($orgas[$organization])) {
+                $user->organization = $orgas[$organization]['kurzname'];
             } else {
-                $user->organisation = '';
+                $user->organization = '';
             }
         }
 

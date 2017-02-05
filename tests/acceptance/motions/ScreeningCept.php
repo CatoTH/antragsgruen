@@ -22,7 +22,7 @@ $I->gotoConsultationHome();
 $I->logout();
 
 $page = $I->gotoConsultationHome()->gotoMotionCreatePage();
-$page->createMotion($motionTitle);
+$page->createMotion($motionTitle, true);
 $I->see('Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.');
 
 $I->wantTo('check that the motion is not visible yet');
