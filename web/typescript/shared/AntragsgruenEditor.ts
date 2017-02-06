@@ -62,7 +62,7 @@ export class AntragsgruenEditor {
             this.maxLen = -1 * this.maxLen;
         }
 
-        this.editor.on('change', this.maxLenOnChange);
+        this.editor.on('change', this.maxLenOnChange.bind(this));
         this.maxLenOnChange();
     }
 

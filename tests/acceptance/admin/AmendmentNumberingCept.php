@@ -14,6 +14,7 @@ $I->seeOptionIsSelected('#amendmentNumbering', ByLine::getName());
 $I->gotoConsultationHome();
 $I->gotoMotion(true, 2);
 $I->click('.sidebarActions .amendmentCreate a');
+$I->wait(1);
 
 $I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();');
 $I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sauprei&szlig;");');

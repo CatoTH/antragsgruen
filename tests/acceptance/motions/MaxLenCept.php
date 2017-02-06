@@ -33,6 +33,7 @@ $I->seeInField('.section3 .maxLenInput input', 150);
 $I->wantTo('create a motion');
 
 $I->gotoConsultationHome()->gotoMotionCreatePage();
+$I->wait(1);
 
 $I->dontSee('Der Text ist zu lang');
 $I->see('Max. 20 Zeichen (Aktuell: 0)');
