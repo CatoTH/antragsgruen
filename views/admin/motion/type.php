@@ -165,6 +165,18 @@ echo '</div></div>';
 
 
 echo '<div class="form-group">';
+echo '<label class="col-md-4" style="text-align: right;">' . \Yii::t('admin', 'motion_type_contact_name');
+echo '</label><div class="col-md-8 contactDetails contactName">';
+$options = [
+    ConsultationMotionType::CONTACT_NONE       => \Yii::t('admin', 'motion_type_skip'),
+    ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
+    ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+];
+echo Html::radioList('type[contactName]', $motionType->contactName, $options, ['class' => 'form-control']);
+echo '</div></div>';
+
+
+echo '<div class="form-group">';
 echo '<label class="col-md-4" style="text-align: right;">' . \Yii::t('admin', 'motion_type_email');
 echo '</label><div class="col-md-8 contactDetails contactEMail">';
 $options = [

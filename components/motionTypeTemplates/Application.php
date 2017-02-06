@@ -29,6 +29,7 @@ trait Application
         $type->policyComments              = IPolicy::POLICY_NOBODY;
         $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->contactName                 = ConsultationMotionType::CONTACT_NONE;
         $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
         $type->supportType                 = ISupportType::ONLY_INITIATOR;

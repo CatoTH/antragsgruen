@@ -98,6 +98,7 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
   `name`           TEXT,
   `organization`   TEXT,
   `resolutionDate` DATE                                                         DEFAULT NULL,
+  `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
   `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
 )
@@ -204,6 +205,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `policySupportAmendments`     INT(11)      NOT NULL,
   `motionLikesDislikes`         INT(11)      NOT NULL,
   `amendmentLikesDislikes`      INT(11)      NOT NULL,
+  `contactName`                 TINYINT(4)   NOT NULL,
   `contactEmail`                TINYINT(4)   NOT NULL,
   `contactPhone`                TINYINT(4)   NOT NULL,
   `supportType`                 INT(11)      NOT NULL,
@@ -484,6 +486,7 @@ CREATE TABLE `###TABLE_PREFIX###motionSupporter` (
   `name`           TEXT,
   `organization`   TEXT,
   `resolutionDate` DATE                                                         DEFAULT NULL,
+  `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
   `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
 )

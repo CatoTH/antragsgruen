@@ -33,8 +33,8 @@ if ($initiator->personType == ISupporter::PERSON_NATURAL) {
 } else {
     $prePrimaryName = Html::encode($initiator->organization);
 }
-$preContactName = Html::encode($initiator->name);
 $preOrga        = Html::encode($initiator->organization);
+$preContactName = Html::encode($initiator->contactName);
 $preEmail       = Html::encode($initiator->contactEmail);
 $prePhone       = Html::encode($initiator->contactPhone);
 $preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
@@ -42,6 +42,7 @@ $preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 $currentUser = \app\models\db\User::getCurrentUser();
 
 echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm"
+                data-contact-name="' . IntVal($motionType->contactName) . '"
                 data-user-data="' . Html::encode(json_encode([
         'fixed'               => ($currentUser && $currentUser->fixedData),
         'person_name'         => ($currentUser ? $currentUser->name : ''),
@@ -136,6 +137,7 @@ echo '<div class="form-group contactNameRow">
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
     value="' . $preContactName . '" autocomplete="name">
+    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 

@@ -28,7 +28,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m161112_161536_add_date_delete', '1457209261'),
   ('m170111_182139_motions_non_amendable', '1457209261'),
   ('m170129_173812_typo_maintenance', '1485711868'),
-  ('m170204_191243_additional_user_fields', '1486235651')
+  ('m170204_191243_additional_user_fields', '1486235651'),
+  ('m170206_185458_supporter_contact_name', '1486410534')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

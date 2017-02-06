@@ -15,6 +15,7 @@ namespace app\models\db;
  * @property string $name
  * @property string $organization
  * @property string $resolutionDate
+ * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
  *
@@ -111,7 +112,7 @@ class MotionSupporter extends ISupporter
         return [
             [['motionId', 'position', 'role'], 'required'],
             [['id', 'motionId', 'position', 'userId', 'personType'], 'number'],
-            [['resolutionDate', 'contactEmail', 'contactPhone'], 'safe'],
+            [['resolutionDate', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
             [['position', 'comment', 'personType', 'name', 'organization'], 'safe'],
         ];
     }

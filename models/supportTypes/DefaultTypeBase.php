@@ -399,9 +399,10 @@ abstract class DefaultTypeBase extends ISupportType
                     $init->organization = '';
                 }
             }
+            $init->contactName = (isset($post['Initiator']['contactName']) ? $post['Initiator']['contactName'] : '');
         } else {
             $init->organization = $post['Initiator']['primaryName'];
-            $init->name         = $post['Initiator']['contactName'];
+            $init->contactName  = $post['Initiator']['contactName'];
         }
 
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
@@ -500,9 +501,10 @@ abstract class DefaultTypeBase extends ISupportType
                     $init->organization = '';
                 }
             }
+            $init->contactName = (isset($post['Initiator']['contactName']) ? $post['Initiator']['contactName'] : '');
         } else {
             $init->organization = $post['Initiator']['primaryName'];
-            $init->name         = $post['Initiator']['contactName'];
+            $init->contactName  = $post['Initiator']['contactName'];
         }
 
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);

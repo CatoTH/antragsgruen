@@ -15,6 +15,7 @@ use yii\helpers\Html;
  * @property string $name
  * @property string $organization
  * @property string $resolutionDate
+ * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
  *

@@ -163,7 +163,7 @@ class SiteCreateForm extends Model
             $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
         }
 
-        $settings                   = $con->getSettings();
+        $settings                  = $con->getSettings();
         $settings->maintenanceMode = !$this->openNow;
         if ($this->motionsInitiatedBy == static::MOTION_INITIATED_ADMINS) {
             $settings->screeningMotions = false;
@@ -338,6 +338,7 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions    = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments = IPolicy::POLICY_NOBODY;
+        $type->contactName             = ConsultationMotionType::CONTACT_NONE;
         if ($this->singleMotion) {
             $type->contactPhone = ConsultationMotionType::CONTACT_NONE;
             $type->contactEmail = ConsultationMotionType::CONTACT_NONE;
@@ -446,6 +447,7 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions    = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments = IPolicy::POLICY_NOBODY;
+        $type->contactName             = ConsultationMotionType::CONTACT_NONE;
         $type->contactPhone            = ConsultationMotionType::CONTACT_OPTIONAL;
         $type->contactEmail            = ConsultationMotionType::CONTACT_REQUIRED;
         if ($this->needsSupporters) {
@@ -617,7 +619,7 @@ class SiteCreateForm extends Model
 
         $params = AntragsgruenApp::getInstance();
         if ($params->mode == 'sandbox') {
-            $siteurl = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
+            $siteurl                   = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
             $welcomeHtml               = str_replace(
                 ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%', '%SITE_URL%'],
                 [$this->subdomain . '@example.org', 'admin', $siteurl],

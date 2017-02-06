@@ -181,3 +181,6 @@ run run test:acceptance```
 run run test:unit```
 * Run a single acceptence-test: ```
 npm run test:acceptance MotionCreateCept```
+
+
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)

@@ -226,6 +226,7 @@ class MotionController extends AdminBase
                     $motionType->policyComments              = IPolicy::POLICY_NOBODY;
                     $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
                     $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
+                    $motionType->contactName                 = ConsultationMotionType::CONTACT_NONE;
                     $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs = 1;

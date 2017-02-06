@@ -29,6 +29,7 @@ use yii\db\ActiveRecord;
  * @property int $policySupportAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
+ * @property int $contactName
  * @property int $contactEmail
  * @property int $contactPhone
  * @property int $supportType
@@ -262,16 +263,16 @@ class ConsultationMotionType extends ActiveRecord
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
-            [['policySupportAmendments', 'supportType'], 'required'],
-            [['contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position', 'status'], 'required'],
+            [['policySupportAmendments', 'supportType', 'status'], 'required'],
+            [['contactName', 'contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position'], 'required'],
 
-            [['id', 'consultationId', 'position', 'contactEmail', 'contactPhone', 'pdfLayout', 'status'], 'number'],
-            [['amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
-            [['layoutTwoCols'], 'number'],
+            [['id', 'consultationId', 'position', 'contactName', 'contactEmail', 'contactPhone'], 'number'],
+            [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
+            [['pdfLayout', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
-            [['motionPrefix', 'position', 'supportType', 'contactEmail', 'contactPhone', 'pdfLayout'], 'safe'],
-            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
+            [['motionPrefix', 'position', 'supportType', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
+            [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'layoutTwoCols'], 'safe'],
         ];
     }

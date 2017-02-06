@@ -15,6 +15,7 @@ export class DefaultInitiatorForm {
     private $otherInitiator: JQuery;
     private otherInitiator: boolean = false;
     private userData: UserData;
+    private contactNameForPersons: number;
 
     constructor($widget: JQuery) {
         this.$editforms = $widget.parents('form').first();
@@ -24,9 +25,10 @@ export class DefaultInitiatorForm {
         this.$fullTextHolder = $('#fullTextHolder');
         this.$supporterAdderRow = this.$supporterData.find('.adderRow');
 
-        this.userData = $widget.data("user-data");
+        this.userData = $widget.data('user-data');
+        this.contactNameForPersons = $widget.data('contact-name');
 
-        this.$otherInitiator = $widget.find("input[name=otherInitiator]");
+        this.$otherInitiator = $widget.find('input[name=otherInitiator]');
         this.$otherInitiator.change(this.onChangeOtherInitiator.bind(this)).trigger('change');
 
         $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this)).first().trigger('change');
@@ -63,33 +65,39 @@ export class DefaultInitiatorForm {
     }
 
     private setFieldsVisibilityOrganization() {
-        this.$initiatorData.find('.organizationRow').addClass("hidden");
-        this.$initiatorData.find('.contactNameRow').removeClass("hidden");
-        this.$initiatorData.find('.resolutionRow').removeClass("hidden");
-        this.$initiatorData.find('.adderRow').addClass("hidden");
-        $('.supporterData, .supporterDataHead').addClass("hidden");
+        this.$initiatorData.find('.organizationRow').addClass('hidden');
+        this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', false);
+        this.$initiatorData.find('.resolutionRow').removeClass('hidden');
+        this.$initiatorData.find('.adderRow').addClass('hidden');
+        $('.supporterData, .supporterDataHead').addClass('hidden');
     }
 
     private setFieldsReadonlyOrganization() {
-        this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", false);
-        this.$initiatorData.find('#initiatorOrga').prop("readonly", false);
+        this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
+        this.$initiatorData.find('#initiatorOrga').prop('readonly', false);
     }
 
     private setFieldsVisibilityPerson() {
-        this.$initiatorData.find('.organizationRow').removeClass("hidden");
-        this.$initiatorData.find('.contactNameRow').addClass("hidden");
-        this.$initiatorData.find('.resolutionRow').addClass("hidden");
-        this.$initiatorData.find('.adderRow').removeClass("hidden");
-        $('.supporterData, .supporterDataHead').removeClass("hidden");
+        this.$initiatorData.find('.organizationRow').removeClass('hidden');
+        if (this.contactNameForPersons == 2) {
+            this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', true);
+        } else if (this.contactNameForPersons == 1) {
+            this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', false);
+        } else {
+            this.$initiatorData.find('.contactNameRow').addClass('hidden').prop('required', false);
+        }
+        this.$initiatorData.find('.resolutionRow').addClass('hidden');
+        this.$initiatorData.find('.adderRow').removeClass('hidden');
+        $('.supporterData, .supporterDataHead').removeClass('hidden');
     }
 
     private setFieldsReadonlyPerson() {
         if (!this.userData.fixed || this.otherInitiator) {
-            this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", false);
-            this.$initiatorData.find('#initiatorOrga').prop("readonly", false);
+            this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', false);
+            this.$initiatorData.find('#initiatorOrga').prop('readonly', false);
         } else {
-            this.$initiatorData.find('#initiatorPrimaryName').prop("readonly", true).val(this.userData.person_name);
-            this.$initiatorData.find('#initiatorOrga').prop("readonly", true).val(this.userData.person_organization);
+            this.$initiatorData.find('#initiatorPrimaryName').prop('readonly', true).val(this.userData.person_name);
+            this.$initiatorData.find('#initiatorOrga').prop('readonly', true).val(this.userData.person_organization);
         }
     }
 
@@ -143,7 +151,7 @@ export class DefaultInitiatorForm {
         let lines = this.$fullTextHolder.find('textarea').val().split(";"),
             template = $('#newSupporterTemplate').data('html'),
             getNewElement = () => {
-                let $rows = this.$supporterData.find(".supporterRow");
+                let $rows = this.$supporterData.find('.supporterRow');
                 for (let i = 0; i < $rows.length; i++) {
                     let $row = $rows.eq(i);
                     if ($row.find(".name").val() == '' && $row.find(".organization").val() == '') return $row;
@@ -208,7 +216,7 @@ export class DefaultInitiatorForm {
         if ($('#personTypeOrga').prop('checked')) {
             if ($('#resolutionDate').val() == '') {
                 ev.preventDefault();
-                bootbox.alert(__t("std", "missing_resolution_date"));
+                bootbox.alert(__t('std', 'missing_resolution_date'));
             }
         }
     }
