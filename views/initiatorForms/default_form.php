@@ -44,8 +44,8 @@ $currentUser = \app\models\db\User::getCurrentUser();
 echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm"
                 data-user-data="' . Html::encode(json_encode([
         'fixed'               => ($currentUser && $currentUser->fixedData),
-        'person_name'         => ($initiator->user ? $initiator->user->name : ''),
-        'person_organization' => ($initiator->user ? $initiator->user->organization : ''),
+        'person_name'         => ($currentUser ? $currentUser->name : ''),
+        'person_organization' => ($currentUser ? $currentUser->organization : ''),
     ])) . '">';
 
 echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
