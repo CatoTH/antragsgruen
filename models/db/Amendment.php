@@ -217,8 +217,9 @@ class Amendment extends IMotion implements IRSSItem
                 } else {
                     $this->myMotion = Motion::findOne($this->motionId);
                 }
+            } else {
+                $this->myMotion = Motion::findOne($this->motionId);
             }
-            $this->myMotion = Motion::findOne($this->motionId);
         }
         return $this->myMotion;
     }
