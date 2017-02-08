@@ -15,17 +15,15 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Benachrichtigungen';
-$layout->addBreadcrumb('Benachrichtigungen');
+$this->title = \Yii::t('con', 'noti_title');
+$layout->addBreadcrumb(\Yii::t('con', 'noti_title'));
 
-echo '<h1>' . 'Benachrichtigungen' . '</h1>';
+echo '<h1>' . \Yii::t('con', 'noti_title') . '</h1>';
 
 if ($user->email == '' || !$user->emailConfirmed) {
-    $msg = '<strong>Keine E-Mail-Adresse</strong><br>
-  Um E-Mail-Benachrichtigungen zu nutzen, musst du eine E-Mail-Adresse angegeben dund bestätigt haben.
-  Du kannst das in deinen <a href="%URL%">Einstellungen</a> tun.';
     echo '<div class="content"><div class="alert alert-danger" role="alert">' .
-        str_replace('%URL%', UrlHelper::createUrl('user/myaccount'), $msg) . '</div></div>';
+        str_replace('%URL%', UrlHelper::createUrl('user/myaccount'), \Yii::t('con', 'noti_err_no_email')) .
+        '</div></div>';
     return;
 }
 
@@ -51,31 +49,31 @@ echo Html::beginForm($action, 'post', ['class' => 'notificationForm content']);
 echo $controller->showErrors();
 
 echo '<fieldset class="col-md-8 col-md-offset-2">
-<legend>Wann willst du per E-Mail benachrichtigt werden?</legend>
+<legend>' . \Yii::t('con', 'noti_triggers') . '</legend>
 
   <div class="checkbox">
     <label>' .
     Html::checkbox('notifications[]', $activeMotions, ['class' => 'notiMotion', 'value' => 'motion']) .
-    'Neue Anträge / Bewerbungen' .
+    \Yii::t('con', 'noti_motions') .
     '</label>
   </div>
 
   <div class="checkbox">
     <label>' .
     Html::checkbox('notifications[]', $activeAmendments, ['class' => 'notiAmendment', 'value' => 'amendment']) .
-    'Neue Änderungsanträge' .
+    \Yii::t('con', 'noti_amendments') .
     '</label>
   </div>
 
   <div class="checkbox">
     <label>' .
     Html::checkbox('notifications[]', $activeComments, ['class' => 'notiComment', 'value' => 'comment']) .
-    'Neue Anträge / Bewerbungen' .
+    \Yii::t('con', 'noti_comments') .
     '</label>
   </div>
 
 </fieldset>
 
     <div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('con', 'noti_save') . '</button>
 </div>' . Html::endForm();

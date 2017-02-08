@@ -36,6 +36,18 @@ return [
     'sb_feeds'             => 'Feeds',
     'search_no_query'      => 'To search term entered',
     'new_item'             => 'New item',
-    'activity_bc'                         => 'Activities',
-    'activity_title'                      => 'Activity log',
+
+    'activity_bc'    => 'Activities',
+    'activity_title' => 'Activity log',
+
+    'noti_title'        => 'Notifications',
+    'noti_bc'           => 'Notifications',
+    'noti_err_no_email' => '<strong>No E-mail-address</strong><br>
+  If you want to be notified about eventy by e-mail, you have to enter your address.<br><br>
+  You can do so in the <a href="%URL%">preferences</a>.',
+    'noti_triggers'     => 'What do you want to be notified about?',
+    'noti_motions'      => 'New motions / applications',
+    'noti_amendments'   => 'New amendments',
+    'noti_comments'     => 'New comments',
+    'noti_save'         => 'Save',
 ];
