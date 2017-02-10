@@ -167,6 +167,7 @@ return [
     'con_title_amendments'    => 'Amendments',
     'con_amend_number'        => 'Numbering',
     'con_amend_screening'     => '<strong>Screening</strong> of amendments',
+    'con_amend_editorial'     => 'Allow <strong>editorial change requests</strong> <small>(a separate text field)</small>',
     'con_title_comments'      => 'Comments',
     'con_comment_screening'   => '<strong>Screening</strong> of comments',
     'con_comment_email'       => 'Enforce entering the <strong>e-mail address</strong>',

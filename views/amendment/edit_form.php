@@ -89,20 +89,22 @@ echo Html::beginForm('', 'post', [
 ]);
 
 echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
-<div class="content">
+<div class="content">';
 
-<section class="editorialChange">
+
+if ($consultation->getSettings()->editorialAmendments) {
+    echo '<section class="editorialChange">
     <a href="#" class="opener">' . \Yii::t('amend', 'editorial_hint') . '</a>
     <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-full-html="0" data-max-len="0">
         <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
-    Html::encode($form->editorial) . '</textarea>
+        Html::encode($form->editorial) . '</textarea>
         <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
-echo $form->editorial;
-echo '</div>
+    echo $form->editorial;
+    echo '</div>
 </section>
 ';
-
+}
 
 foreach ($form->sections as $section) {
     echo $section->getSectionType()->getAmendmentFormField();

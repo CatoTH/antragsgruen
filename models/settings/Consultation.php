@@ -33,6 +33,7 @@ class Consultation
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
+    public $editorialAmendments    = true;
     public $minimalisticUI         = false;
     public $commentsSupportable    = false;
     public $screeningMotionsShown  = false;

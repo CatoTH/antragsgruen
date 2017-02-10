@@ -336,6 +336,18 @@ $handledSiteSettings = [];
                 ?>
             </label></div>
 
+        <div><label>
+                <?php
+                $handledSettings[] = 'editorialAmendments';
+                echo Html::checkbox(
+                    'settings[editorialAmendments]',
+                    $settings->editorialAmendments,
+                    ['id' => 'editorialAmendments']
+                );
+                echo \Yii::t('admin', 'con_amend_editorial');
+                ?>
+            </label></div>
+
 
     </div>
 

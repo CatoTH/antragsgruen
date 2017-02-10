@@ -169,6 +169,7 @@ Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge 
     'con_title_amendments'    => 'Änderungsanträge',
     'con_amend_number'        => 'Nummerierung',
     'con_amend_screening'     => '<strong>Freischaltung</strong> von Änderungsanträgen',
+    'con_amend_editorial'     => '<strong>Redaktionelle Änderungsanträge</strong> zulassen <small>(ein separates Textfeld für Anmerkungen an die Antragskommission)</small>',
     'con_title_comments'      => 'Kommentare',
     'con_comment_screening'   => '<strong>Freischaltung</strong> von Kommentaren',
     'con_comment_email'       => 'Angabe der <strong>E-Mail-Adresse</strong> erzwingen',
