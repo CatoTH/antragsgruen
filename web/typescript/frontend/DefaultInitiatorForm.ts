@@ -80,11 +80,14 @@ export class DefaultInitiatorForm {
     private setFieldsVisibilityPerson() {
         this.$initiatorData.find('.organizationRow').removeClass('hidden');
         if (this.contactNameForPersons == 2) {
-            this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', true);
+            this.$initiatorData.find('.contactNameRow').removeClass('hidden');
+            this.$initiatorData.find('.contactNameRow input').prop('required', true);
         } else if (this.contactNameForPersons == 1) {
-            this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', false);
+            this.$initiatorData.find('.contactNameRow').removeClass('hidden');
+            this.$initiatorData.find('.contactNameRow input').prop('required', false);
         } else {
-            this.$initiatorData.find('.contactNameRow').addClass('hidden').prop('required', false);
+            this.$initiatorData.find('.contactNameRow').addClass('hidden');
+            this.$initiatorData.find('.contactNameRow input').prop('required', false);
         }
         this.$initiatorData.find('.resolutionRow').addClass('hidden');
         this.$initiatorData.find('.adderRow').removeClass('hidden');
