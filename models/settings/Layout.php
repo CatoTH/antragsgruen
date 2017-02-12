@@ -177,18 +177,8 @@ class Layout
     {
         $jsLang = $this->getJSLanguageCode();
         $files  = [];
-        if (defined('YII_DEBUG') && YII_DEBUG && false) {
-            $files[] = $this->resourceUrl('js/bootstrap.js');
-            $files[] = $this->resourceUrl('js/bower/bootbox/bootbox.js');
-            $files[] = $this->resourceUrl('js/scrollintoview.js');
-            $files[] = $this->resourceUrl('js/jquery.isonscreen.js');
-            $files[] = $this->resourceUrl('js/bower/intl/dist/Intl.min.js');
-            $files[] = $this->resourceUrl('js/antragsgruen.js');
-            $files[] = $this->resourceUrl('js/antragsgruen-' . $jsLang . '.js');
-        } else {
-            $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
-            $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
-        }
+        $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
+        $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }

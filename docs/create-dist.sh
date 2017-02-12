@@ -49,6 +49,8 @@ chmod 775 web/assets
 
 find ./web/ -name "*\.map" -exec rm {} \;
 rm -R web/js/src
+rm -R web/js/bower
+rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
