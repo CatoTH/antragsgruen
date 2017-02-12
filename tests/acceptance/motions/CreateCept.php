@@ -23,11 +23,11 @@ $I->cantSeeCheckboxIsChecked("#personTypeOrga");
 $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
-$I->dontSee('Kontaktperson');
+$I->dontSee('Ansprechperson');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
-$I->see('Kontaktperson');
+$I->see('Ansprechperson');
 
 // Fill & Submit Form
 $I->wantTo('create a regular motion, but forgot the organization and resolution date');

@@ -25,7 +25,7 @@ $I->logout();
 
 $I->wantTo('enable/disable liking and disliking');
 $I->amOnPage($motionUrl);
-$I->see('Dieser Antrag ist noch nicht offiziell eingereicht.');
+$I->see('Dieser Antrag ist noch nicht eingereicht.');
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->dontSeeElement('button[name=motionSupport]');
 $I->dontSeeElement('section.likes');

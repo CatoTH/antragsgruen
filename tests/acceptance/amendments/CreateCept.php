@@ -37,11 +37,11 @@ $I->wantTo('modify the motion text');
 $I->dontSee('JavaScript aktiviert sein');
 $I->see('Gremium, LAG...');
 $I->dontSee('Beschlussdatum');
-$I->dontSee('Kontaktperson');
+$I->dontSee('Ansprechperson');
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
-$I->see('Kontaktperson');
+$I->see('Ansprechperson');
 
 $I->executeJS('window.newText = CKEDITOR.instances.sections_2_wysiwyg.getData();');
 $I->executeJS('window.newText = window.newText.replace(/woschechta Bayer/g, "Sauprei&szlig;");');
