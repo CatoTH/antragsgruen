@@ -18,7 +18,7 @@ $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
 $layout->loadFuelux();
-$layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
+$layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
 
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
