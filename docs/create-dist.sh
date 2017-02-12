@@ -47,10 +47,7 @@ mkdir runtime
 chmod 775 runtime
 chmod 775 web/assets
 
-cd web/js/bower/intl/locale-data
-find . -type f ! -name "de*" -exec rm {} \;
-cd ../../../../../
-rm -R web/js/bower/moment/src/
+find ./web/ -name "*\.map" -exec rm {} \;
 rm -R web/js/src
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
