@@ -4,8 +4,9 @@ return [
     'adminFunction'       => 'Admin feature',
     'iAmA'                => 'I am a...',
     'personNatural'       => 'Natural person',
-    'personOrganization'  => 'Organisation',
-    'orga_contact_name'   => 'Contact person',
+    'personOrganization'  => 'Organization',
+    'contactHead'         => 'Contact',
+    'orgaContactName'     => 'Contact person',
     'username'            => 'User',
     'name'                => 'Name',
     'orgaName'            => 'Organisation...',
@@ -25,8 +26,6 @@ return [
     'fullTextSyntax'      => 'Name 1, Org 1; Name 2, Org 2; Name 3; ...',
     'email_confirmed'     => 'E-mail address confirmed',
     'email_not_confirmed' => 'E-mail address not confirmed',
-    'contact_only_admion' => 'Contact, only visible for admins',
     'ww_profile'          => 'Wurzelwerk-Profile',
-    'contact_show'        => 'Contact data', // 'Kontaktdaten'
-    'contact_only_admin'  => 'Only visible to administrators',
+    'contact_show'        => 'Contact data',
 ];

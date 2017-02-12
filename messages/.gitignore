@@ -1,8 +1,8 @@
 *
 !.gitignore
-!de
-!de-bewerbung
-!de-parteitag
-!de-programm
-!en
-!en-gb
+!de/*
+!de-bewerbung/*
+!de-parteitag/*
+!de-programm/*
+!en/*
+!en-gb/*

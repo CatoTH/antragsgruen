@@ -40,7 +40,7 @@ class LayoutHelper
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
                 $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
                 $name .= \Yii::t('initiator', 'contact_show') . '</a>';
-                $name .= '<div class="contactDetails hidden">' . \Yii::t('initiator', 'contact_only_admin') . ': ';
+                $name .= '<div class="contactDetails hidden">' . \Yii::t('initiator', 'visibilityAdmins') . ': ';
                 if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                     if ($supp->name != '') {
                         $name .= Html::encode($supp->name) . ', ';

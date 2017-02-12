@@ -5,7 +5,8 @@ return [
     'iAmA'                => 'Ich bin eine...',
     'personNatural'       => 'Natürliche Person',
     'personOrganization'  => 'Organisation / Gremium',
-    'orga_contact_name'   => 'Kontaktperson',
+    'contactHead'         => 'Kontakt für Rückfragen',
+    'orgaContactName'     => 'Ansprechperson',
     'username'            => 'Benutzer*in',
     'name'                => 'Name',
     'orgaName'            => 'Gremium, LAG...',
@@ -26,6 +27,5 @@ return [
     'email_confirmed'     => 'E-Mail-Adresse bestätigt',
     'email_not_confirmed' => 'E-Mail-Adresse nicht bestätigt',
     'contact_show'        => 'Kontaktdaten',
-    'contact_only_admin'  => 'Nur als Admin sichtbar',
     'ww_profile'          => 'Wurzelwerk-Profil',
 ];

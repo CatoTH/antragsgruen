@@ -290,8 +290,16 @@ del.space, ins.space, del.formatting, ins.formatting {
   }
 
   .initiatorData {
-    .contactPrivacy {
-      font-size: 0.8em;
+    .contact-head {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      h3 {
+        font-size: 18px;
+        margin: 0;
+      }
+      .hint {
+        font-size: 12px;
+      }
     }
   }
 

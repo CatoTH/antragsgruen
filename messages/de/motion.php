@@ -133,14 +133,14 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'max_len_alert'                      => 'Der Text ist zu lang!',
     'create_explanation'                 => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
         Wenn du einen <em>Änderungsantrag</em> stellen willst, öffne auf der <a href="%HOME%">Startseite</a>
-        bitte den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
+        bitte zuerst den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
     'support_collect_explanation_title'  => 'Einen Antrag gemeinschaftlich stellen',
     'support_collect_explanation'        => 'Ein Antrag, der nicht von Parteigremien gestellt wird, kann gemäß unserer Statuten auch gemeinschaftlich von x+1 Mitgliedern gestellt werden. Um einen solchen Antrag zu stellen und offiziell bei der Antragskommission einzureichen, gehe bitte wie folgt vor:<br>
 <ol>
 <li><strong>Antrag anlegen:</strong> Bitte lege auf dieser Seite deinen Antrag an und hinterlege deine (Kontakt-)Daten. Kontrolliere auf der nächsten Seite, ob alles richtig ist, und bestätige, dass du den Antrag wie gezeigt anlegen möchtest.</li>
 <li><strong>Unterstützung finden:</strong> Nach der Bestätigung erhältst du einen Link, den du Interessierten weiterleiten kannst. Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Antrag stellen. Bitte beachte, dass sich auch die Unterstützer*innen deines Antrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.</li>
-<li><strong>Antrag einreichen:</strong> Sobald sich die notwendigen x Unterstützer*innen gefunden haben, musst du den angelegten Antrag noch offiziell bei der Antragskommission einreichen. Dies veranlasst Du auch über Antragsgrün. Wir informieren dich selbstverständlich per E-Mail, sobald die notwendige Zahl der Unterstützer*innen erreicht ist.</li>
+<li><strong>Antrag einreichen:</strong> Sobald sich die notwendigen %MIN% Unterstützer*innen gefunden haben, musst du den angelegten Antrag noch offiziell bei der Antragskommission einreichen. Dies veranlasst Du auch über Antragsgrün. Wir informieren dich selbstverständlich per E-Mail, sobald die notwendige Zahl der Unterstützer*innen erreicht ist.</li>
 </ol>',
     'support_collect_status'             => 'Aktueller Stand',
     'support_collect_min'                => 'min.',
@@ -154,10 +154,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_done'                       => 'Du unterstützt diesen Antrag nun.',
     'neutral_done'                       => 'Du stehst diesem Antrag wieder neutral gegenüber.',
     'support_already'                    => 'Du unterstützt diesen Antrag bereits',
-    'support_collection_hint'            => 'Dieser Antrag ist noch nicht offiziell eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
-    'support_collection_reached_hint'    => 'Dieser Antrag ist noch nicht offiziell eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
+    'support_collection_hint'            => 'Dieser Antrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
+    'support_collection_reached_hint'    => 'Dieser Antrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen. Eine Unterstützung des Antrags ist weiterhin möglich. ',
     'support_reached_email_subject'      => 'Dein Antrag: Unterstützer*innen-Anzahl erreicht',
-    'support_reached_email_body'         => 'Hallo,<br><br>Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht. Damit kannst du ihn ab jetzt hier einreichen:<br><br><strong>%LINK%</strong><br><br>Bitte beachte, dass es <strong>zwingend notwendig</strong> ist, ihn nun explizit einzureichen.<br><br>Mit freundlichen Grüßen,<br>  Das Antragsgrün-Team',
+    'support_reached_email_body'         => 'Hallo,<br><br>Gute Nachrichten! Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht.<br><br>Viele Grüße,<br>  Das Antragsgrün-Team',
     'support_finish_btn'                 => 'Antrag offiziell einreichen',
     'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',

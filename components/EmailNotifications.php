@@ -52,6 +52,9 @@ class EmailNotifications
             $plain = str_replace('%LINK%', $motionLink, $plain);
             $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
 
+            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
+            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
+
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
@@ -82,6 +85,7 @@ class EmailNotifications
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
         $plain      = \Yii::t('motion', 'published_email_body');
         $plain      = str_replace('%LINK%', $motionLink, $plain);
+        $plain      = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
         $title      = $motion->motionType->titleSingular . ': ' . $motion->title;
         $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
         $sections   = $motion->getSortedSections(true);
@@ -124,6 +128,7 @@ class EmailNotifications
             $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
 
             $emailText = str_replace('%TITLE%', $motion->getTitleWithPrefix(), $emailText);
+            $emailText = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $emailText);
             $html      = $emailText;
             $plain     = HTMLTools::toPlainText($html);
 
@@ -159,8 +164,8 @@ class EmailNotifications
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
             $plain         = str_replace(
-                ['%LINK%', '%MOTION%'],
-                [$amendmentLink, $amendment->getMyMotion()->titlePrefix],
+                ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
+                [$amendmentLink, $amendment->getMyMotion()->titlePrefix, $initiator[0]->getGivenNameOrFull()],
                 \Yii::t('amend', 'published_email_body')
             );
 
@@ -257,6 +262,7 @@ class EmailNotifications
             $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
 
             $emailText = str_replace('%TITLE%', $amendment->getTitle(), $emailText);
+            $emailText = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $emailText);
             $html      = $emailText;
             $plain     = HTMLTools::toPlainText($html);
 

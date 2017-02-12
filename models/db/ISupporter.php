@@ -140,4 +140,20 @@ abstract class ISupporter extends ActiveRecord
             }
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getGivenNameOrFull()
+    {
+        if ($this->user && $this->personType == static::PERSON_NATURAL) {
+            if ($this->user->nameGiven) {
+                return $this->user->nameGiven;
+            } else {
+                return $this->name;
+            }
+        } else {
+            return $this->name;
+        }
+    }
 }

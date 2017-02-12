@@ -131,13 +131,17 @@ echo '<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"
 echo '</div></div>
 </div>';
 
+
+echo '<div class="form-group row contact-head"><div class="col-sm-9 col-sm-offset-3 contact-head">' .
+    '<h3>' . \Yii::t('initiator', 'contactHead') . '</h3>' .
+    '<div class="hint">(' . \Yii::t('initiator', 'visibilityAdmins') . ')</div></div></div>';
+
 echo '<div class="form-group contactNameRow">
-  <label class="col-sm-3 control-label" for="initiatorContactName">' . Yii::t('initiator', 'orga_contact_name') .
+  <label class="col-sm-3 control-label" for="initiatorContactName">' . Yii::t('initiator', 'orgaContactName') .
     '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
     value="' . $preContactName . '" autocomplete="name">
-    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 
@@ -151,7 +155,6 @@ if ($motionType->contactEmail != ConsultationMotionType::CONTACT_NONE) {
     }
 
     echo ' autocomplete="email" value="' . Html::encode($preEmail) . '">
-    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 }
@@ -166,7 +169,6 @@ if ($motionType->contactPhone != ConsultationMotionType::CONTACT_NONE) {
         echo 'required ';
     }
     echo 'autocomplete="tel" value="' . Html::encode($prePhone) . '">
-    <div class="contactPrivacy">' . Yii::t('initiator', 'visibilityAdmins') . '</div>
   </div>
 </div>';
 }

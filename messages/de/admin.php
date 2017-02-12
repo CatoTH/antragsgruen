@@ -314,7 +314,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_pdf_layout'      => 'PDF-Layout',
     'motion_type_title_prefix'    => 'Antragskürzel-Präfix',
     'motion_type_email'           => 'E-Mail-Angabe',
-    'motion_type_contact_name'    => 'Alternative Kontaktperson',
+    'motion_type_contact_name'    => 'Alternative Ansprechperson',
     'motion_type_phone'           => 'Telefon-Angabe',
     'motion_type_skip'            => 'Nicht abfragen',
     'motion_type_optional'        => 'Freiwillig',
