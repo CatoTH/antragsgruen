@@ -26,6 +26,7 @@ class WurzelwerkSamlClient implements ClientInterface
      */
     public function __construct()
     {
+
         $this->auth   = new SimpleSAML_Auth_Simple('default-sp');
         $this->params = $this->auth->getAttributes();
     }

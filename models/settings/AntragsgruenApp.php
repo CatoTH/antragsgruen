@@ -41,6 +41,7 @@ class AntragsgruenApp
     public $pdfExportConcat       = true;
     public $pdfExportIntegFrame   = false;
     public $localLayouts          = [];
+    public $localMessages         = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
     public $mode                  = 'production'; // [production | sandbox]

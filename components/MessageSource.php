@@ -78,18 +78,21 @@ class MessageSource extends \yii\i18n\MessageSource
      */
     public static function getLanguageVariants($language)
     {
+        /** @var AntragsgruenApp $params */
+        $params        = \Yii::$app->params;
+        $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
         if ($language == 'de') {
-            return [
+            return array_merge([
                 'de-parteitag' => 'Konferenz / Parteitag',
                 'de-bewerbung' => 'Bewerbungsverfahren',
                 'de-programm'  => 'Programmdiskussion',
-            ];
+            ], $localMessages);
         };
         if ($language == 'en') {
-            return [
+            return array_merge([
                 'en-uk'       => 'English (UK)',
                 'en-congress' => 'Convention',
-            ];
+            ], $localMessages);
         }
         return [];
     }

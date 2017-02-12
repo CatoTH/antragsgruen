@@ -102,6 +102,26 @@ A hint regarding the AGPL license and themes: custom stylesheets and images and 
 Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
 
 
+Creating custom language variants
+---------------------------------
+
+Every single message in the user interface can be modified using the web-based translation tool. Just log in as admin and go to Settings / Einstellungen -> Edit the language / Sprache anpassen.
+
+In multi-site-instances, there might be a need to share language variante between different sites. In that case, file-based modifications are necessary:
+* Create a directory ```messages/en-variant```
+* Copy the contents of the base language (messages/en, in this case) to this directory and edit the translated strings. If a string is missing, the messages of the directory named by the first part before the dash will be used as fallback ("en", in this case).
+* Add a ```localMessages```-configuration to your config/config.json as shown below.
+* Now this language variant is selectable in the "Edit the language"-settings-page.
+```json
+{
+    "localMessages": {
+        "en": {
+            "en-variant": "My new language variant"
+        }
+    }
+}
+```
+
 LaTeX/XeTeX-based PDF-rendering:
 --------------------------------
 
@@ -123,13 +143,11 @@ Using Redis
 Add the following settings to your config.json (and adapt them to your needs):
 ```json
 {
-    // ...
     "redis": {
         "hostname": "localhost",
         "port": 6379,
         "database": 0
-    },
-    // ...
+    }
 }
 ```
 
