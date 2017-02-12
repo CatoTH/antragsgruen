@@ -7,6 +7,7 @@ return [
     'create_new'           => 'Create...',
     'deadline_circle'      => 'Deadline',
     'My Motions'           => 'My motions',
+    'All Motions'          => 'Motions',
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',
     'Other Motions'        => 'Other motions',

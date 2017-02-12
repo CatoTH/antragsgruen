@@ -75,8 +75,6 @@ echo '</div>';
 
 echo $controller->showErrors();
 
-require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');
-
 if ($myself) {
     if (count($myMotions)) {
         echo '<h3 class="green">' . Yii::t('con', 'My Motions') . '</h3>';
@@ -149,3 +147,5 @@ if ($myself) {
         echo '</ul></div>';
     }
 }
+
+require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');

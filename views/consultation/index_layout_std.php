@@ -8,6 +8,8 @@ use app\views\consultation\LayoutHelper;
  * @var Consultation $consultation
  */
 
+echo '<h2 class="green">' . \Yii::t('con', 'All Motions') . '</h2>';
+
 $motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
     echo '<ul class="motionListStd layout1">';

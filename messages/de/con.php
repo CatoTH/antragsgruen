@@ -7,6 +7,7 @@ return [
     'create_new'           => 'Anlegen...',
     'deadline_circle'      => 'Antrags&shy;schluss',
     'My Motions'           => 'Meine Anträge',
+    'All Motions'          => 'Anträge',
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',
