@@ -65,10 +65,12 @@ export class DefaultInitiatorForm {
     }
 
     private setFieldsVisibilityOrganization() {
+        this.$initiatorData.addClass('type-organization').removeClass('type-person');
         this.$initiatorData.find('.organizationRow').addClass('hidden');
-        this.$initiatorData.find('.contactNameRow').removeClass('hidden').prop('required', false);
+        this.$initiatorData.find('.contactNameRow').removeClass('hidden');
         this.$initiatorData.find('.resolutionRow').removeClass('hidden');
         this.$initiatorData.find('.adderRow').addClass('hidden');
+        this.$initiatorData.find('#initiatorPrimaryName').val('');
         $('.supporterData, .supporterDataHead').addClass('hidden');
     }
 
@@ -78,6 +80,7 @@ export class DefaultInitiatorForm {
     }
 
     private setFieldsVisibilityPerson() {
+        this.$initiatorData.removeClass('type-organization').addClass('type-person');
         this.$initiatorData.find('.organizationRow').removeClass('hidden');
         if (this.contactNameForPersons == 2) {
             this.$initiatorData.find('.contactNameRow').removeClass('hidden');

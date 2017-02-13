@@ -301,6 +301,16 @@ del.space, ins.space, del.formatting, ins.formatting {
         font-size: 12px;
       }
     }
+
+    .only-person, .only-organization {
+      display: none;
+    }
+    &.type-person .only-person {
+      display: inherit;
+    }
+    &.type-organization .only-organization {
+      display: inherit;
+    }
   }
 
   .supporterRow, .initiatorRow {

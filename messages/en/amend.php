@@ -128,7 +128,7 @@ return [
     'support'                           => 'Support',
     // 'Unterstützen'
     'support_question'                  => 'Do you really want to support this amendment?',
-    'support_orga'                      => 'Organisation',
+    'support_orga'                      => 'Organization',
     'support_name'                      => 'Name',
     'support_done'                      => 'You are now supporting this amendment',
     'support_already'                   => 'You are already supporting this amendment',

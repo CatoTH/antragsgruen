@@ -106,7 +106,12 @@ if ($adminMode) {
 }
 
 echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorPrimaryName">' . Yii::t('initiator', 'name') . '</label>
+  <label class="col-sm-3 control-label" for="initiatorPrimaryName">';
+
+echo '<span class="only-person">' . Yii::t('initiator', 'name') . '</span>';
+echo '<span class="only-organization">' . Yii::t('initiator', 'nameOrga') . '</span>';
+
+echo '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
         value="' . $prePrimaryName . '" autocomplete="name" required>

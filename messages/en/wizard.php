@@ -7,7 +7,7 @@ return [
     'step_motions'    => 'Motions',
     'step_amendments' => 'Amendments',
     'step_special'    => 'Special cases',
-    'step_site'       => 'Organisational issues',
+    'step_site'       => 'Organizational issues',
 
     'next'   => 'Next',
     'prev'   => 'Back',
@@ -83,9 +83,9 @@ return [
     'opennow_yes'   => 'Start immediately',
 
     'sitedate_title'          => 'Almost finished!',
-    'sitedate_desc'           => 'Just some more organisation questions...',
+    'sitedate_desc'           => 'Just some more organization questions...',
     'sitedata_sitetitle'      => 'Name of this site / this consultation',
-    'sitedata_organization'   => 'Name of the organisation of this consultation',
+    'sitedata_organization'   => 'Name of the organization of this consultation',
     'sitedata_subdomain'      => 'Site URL',
     'sitedata_subdomain_hint' => 'Only letters, numbers, "_" and "-" are allowed.',
     'sitedata_contact'        => 'Contact address',
@@ -99,7 +99,7 @@ return [
     'created_goto_manifesto' => 'Now you can create the manifesto',
 
     'sandbox_dummy_contact' => 'Test contact',
-    'sandbox_dummy_orga'    => 'Organisation X',
+    'sandbox_dummy_orga'    => 'Organiszation X',
     'sandbox_dummy_title'   => 'Test event',
     'sandbox_dummy_welcome' => '<h2>Welcome to Antragsgrün!</h2><br><br>
                                 On this sandbox site, you can freely test all Antragsgrün features.

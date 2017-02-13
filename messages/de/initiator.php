@@ -9,6 +9,7 @@ return [
     'orgaContactName'     => 'Ansprechperson',
     'username'            => 'Benutzer*in',
     'name'                => 'Name',
+    'nameOrga'            => 'Name des Gremiums',
     'orgaName'            => 'Gremium, LAG...',
     'orgaResolution'      => 'Beschlussdatum',
     'visibilityAdmins'    => 'Wird nur Administrator*innen angezeigt',

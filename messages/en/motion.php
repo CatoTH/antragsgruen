@@ -122,7 +122,7 @@ return [
     'neutral_done'           => 'You withdrew your like or dislike.',
     'support_question'       => 'Do you want to support this motion?',
     'support_already'        => 'You already support this motion',
-    'support_orga'           => 'Organisation',
+    'support_orga'           => 'Organization',
     'support_name'           => 'Name',
 
     'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nSend the following link to gain support for your motion:",

@@ -89,7 +89,7 @@ return [
     'role_dislikes'  => 'Dislikes',
 
     'person_type_natural' => 'Natural person',
-    'person_type_orga'    => 'Organisation',
+    'person_type_orga'    => 'Organization',
 
     'user_status_1'  => 'Unconfirmed',
     'user_status_0'  => 'Confirmed',
@@ -126,7 +126,7 @@ return [
 
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by proposer',
-    'supp_collect_before'     => 'Collecting phase before publication (not for organisations)',
+    'supp_collect_before'     => 'Collecting phase before publication (not for organizations)',
 
     'activity_none'                       => 'No activity yet',
     'activity_someone'                    => 'Someone',
