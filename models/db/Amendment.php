@@ -555,7 +555,11 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function canWithdraw()
     {
-        if (!in_array($this->status, [Amendment::STATUS_SUBMITTED_SCREENED, Amendment::STATUS_SUBMITTED_UNSCREENED])) {
+        if (!in_array($this->status, [
+            Amendment::STATUS_SUBMITTED_SCREENED,
+            Amendment::STATUS_SUBMITTED_UNSCREENED,
+            Amendment::STATUS_COLLECTING_SUPPORTERS
+        ])) {
             return false;
         }
         return $this->iAmInitiator();

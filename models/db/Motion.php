@@ -434,7 +434,11 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canWithdraw()
     {
-        if (!in_array($this->status, [Motion::STATUS_SUBMITTED_SCREENED, Motion::STATUS_SUBMITTED_UNSCREENED])) {
+        if (!in_array($this->status, [
+            Motion::STATUS_SUBMITTED_SCREENED,
+            Motion::STATUS_SUBMITTED_UNSCREENED,
+            Motion::STATUS_COLLECTING_SUPPORTERS
+        ])) {
             return false;
         }
         return $this->iAmInitiator();
@@ -445,10 +449,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canMergeAmendments()
     {
-        if ($this->iAmInitiator()) {
-            return true;
-        }
-        if (User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+        if (User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
         return false;
