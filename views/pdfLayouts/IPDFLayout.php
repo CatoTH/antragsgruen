@@ -79,7 +79,7 @@ abstract class IPDFLayout
     }
 
     /**
-     * @return TCPDF
+     * @return \FPDI
      */
     abstract public function createPDFClass();
 

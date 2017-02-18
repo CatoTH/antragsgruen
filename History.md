@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.7.0 [Not yet released]
+
+- A combined PDF of a motion and all attached amendments is available in the admin-motion-list
+
 ## Version 3.6.0 [Not yet released]
 
 - Admins can now edit the motion text in the backend without breaking existing amendments. If there are conflicts between the changes made and the amendments, they have to be resolved manually.

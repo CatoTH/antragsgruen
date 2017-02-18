@@ -212,7 +212,7 @@ class ByLDK extends IPDFLayout
     }
 
     /**
-     * @return TCPDF
+     * @return \FPDI
      */
     public function createPDFClass()
     {

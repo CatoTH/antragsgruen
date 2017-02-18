@@ -136,6 +136,15 @@ Necessary packets on Mac OS X:
 * [MacTeX](http://www.tug.org/mactex/)
 * Poppler ([Homebrew](http://brew.sh/)-Package)
 
+Add the following settings to your config.json (and adapt them to your needs):
+
+```json
+{
+    "xelatexPath": "/usr/bin/xelatex",
+    "xdvipdfmx": "/usr/bin/xdvipdfmx",
+    "pdfunitePath": "/usr/bin/pdfunite"
+}
+```
 
 Using Redis
 -----------

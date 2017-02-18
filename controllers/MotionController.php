@@ -131,6 +131,36 @@ class MotionController extends Base
     }
 
     /**
+     * @param string $motionSlug
+     * @return string
+     */
+    public function actionPdfamendcollection($motionSlug)
+    {
+        $motion = $this->getMotionWithCheck($motionSlug);
+
+        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+
+        $amendments = $motion->getVisibleAmendmentsSorted();
+
+        $filename                    = $motion->getFilenameBase(false) . '.collection.pdf';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+
+        if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
+            return $this->renderPartial('pdf_amend_collection_tcpdf', [
+                'motion' => $motion, 'amendments' => $amendments
+            ]);
+        } else {
+            return $this->renderPartial('pdf_amend_collection_tcpdf', [
+                'motion' => $motion, 'amendments' => $amendments
+            ]);
+        }
+    }
+
+    /**
      * @param string $motionTypeId
      * @param int $withdrawn
      * @return string

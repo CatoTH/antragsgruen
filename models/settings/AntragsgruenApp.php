@@ -38,6 +38,7 @@ class AntragsgruenApp
     public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
+    public $pdfunitePath          = null;
     public $pdfExportConcat       = true;
     public $pdfExportIntegFrame   = false;
     public $localLayouts          = [];
