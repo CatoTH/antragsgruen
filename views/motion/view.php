@@ -56,15 +56,27 @@ echo $controller->showErrors();
 
 
 if ($supportCollectingStatus) {
-    echo '<div class="alert alert-info supportCollectionHint" role="alert">';
+    echo '<div class="content" style="margin-top: 0;">';
+    echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
     $min  = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
     $curr = count($motion->getSupporters());
     if ($curr >= $min) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_reached_hint'));
     } else {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
+
+        if ($motion->motionType->policySupportMotions != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+            $loginUrl   = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+            echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
+            echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
+                '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
+                \Yii::t('base', 'menu_login') . '</a>';
+
+            echo Html::encode(\Yii::t('structure', 'policy_logged_supp_denied'));
+            echo '</div>';
+        }
     }
-    echo '</div>';
+    echo '</div></div>';
 }
 if ($motion->canFinishSupportCollection()) {
     echo Html::beginForm('', 'post', ['class' => 'motionSupportFinishForm']);
@@ -134,7 +146,7 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
-            /** @var MotionSupporter $supp*/
+            /** @var MotionSupporter $supp */
             echo '<li>';
             if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';

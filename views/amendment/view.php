@@ -112,6 +112,16 @@ if ($supportCollectingStatus) {
     } else {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_hint'));
     }
+    if ($motion->motionType->policySupportAmendments != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+        echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
+        echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
+            '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
+            \Yii::t('base', 'menu_login') . '</a>';
+
+        echo Html::encode(\Yii::t('structure', 'policy_logged_supp_denied'));
+        echo '</div>';
+    }
     echo '</div>';
 }
 if ($amendment->canFinishSupportCollection()) {
