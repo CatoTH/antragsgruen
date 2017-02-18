@@ -28,6 +28,7 @@ return [
     'supporting_you'                => 'You!',
     'supporting_none'               => 'none',
     'supporting_logged_out_warning' => 'Attention: You are not logged in. Support can only be revoked for a very limited time if not logged in.',
+    'supporting_no_orga_error'      => 'Attention: Your organisation could not be identified, which is necessary to support motions. Please contact the administrators to resolve this problem.',
     'likes_title'                   => 'Likes',
     'like'                          => 'Likes',
     'likes'                         => 'Likes',

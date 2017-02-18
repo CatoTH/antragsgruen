@@ -190,7 +190,7 @@ class LayoutHelper
             ':</label>
             <div class="col-sm-9">
                 <input type="text" class="form-control col-sm-9" id="' . $formIdPre . '_name" ' . $fixedReadOnly .
-                ' name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
+            ' name="comment[name]" value="' . Html::encode($form->name) . '" required autocomplete="name">
                 </div>
             </div>
             <div class="form-group">
@@ -430,36 +430,10 @@ class LayoutHelper
                 echo '</button>';
                 echo '</div>';
             } else {
-                echo '<label style="margin-top: 10px;">' . \Yii::t('motion', 'support_question') . '</label>';
-                echo '<div class="row">';
-
-                $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
-                echo '<div class="col-md-4">';
-                $name = ($user ? $user->name : '');
-                echo '<input type="text" name="motionSupportName" class="form-control" required ' . $fixedReadOnly . '
-                value="' . Html::encode($name) . '" placeholder="' . \Yii::t('motion', 'support_name') . '">';
-                echo '</div>';
-
-                if ($supportType->hasOrganizations()) {
-                    $orga = ($user ? $user->organization : '');
-                    echo '<div class="col-md-4">';
-                    echo '<input type="text" name="motionSupportOrga" class="form-control"
-                           value="' . Html::encode($orga) . '" placeholder="' . \Yii::t('motion', 'support_orga') . '" 
-                           required ' . $fixedReadOnly . '>';
-                    echo '</div>';
-                }
-
-                echo '<div class="col-md-4" style="text-align: right">';
-                echo '<button type="submit" name="motionSupport" class="btn btn-success">';
-                echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'support');
-                echo '</button></div>';
-
-                echo '</div>';
-
-                if (!$user) {
-                    echo '<div class="row"><div class="col-md-8" style="font-size: 0.8em; margin-top: 6px;">' .
-                        \Yii::t('motion', 'supporting_logged_out_warning') . '</div></div>';
-                }
+                echo \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
+                    'user'        => $user,
+                    'supportType' => $supportType,
+                ]);
             }
             echo Html::endForm();
         } else {
@@ -603,8 +577,12 @@ class LayoutHelper
      */
     public static function getShareButtons($url, $title)
     {
-        $twitter  = Html::encode('https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url));
-        $facebook = Html::encode('https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url));
+        $twitter  = Html::encode(
+            'https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url)
+        );
+        $facebook = Html::encode(
+            'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
+        );
         return '<div class="share_buttons"><ul>
               <li class="twitter"><a href="' . $twitter . '" title="Bei Twitter teilen">
                  <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
