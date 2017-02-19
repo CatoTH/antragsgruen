@@ -94,6 +94,7 @@ class LayoutHelper
      */
     public static function printToPDF(\FPDI $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
     {
+        $pdf->startPageGroup();
         $pdf->AddPage();
 
         $pdfLayout->printAmendmentHeader($amendment);

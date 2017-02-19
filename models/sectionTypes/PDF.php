@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\components\VarStream;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
+use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -144,16 +145,16 @@ class PDF extends ISectionType
         $pdf->setY($pdf->getY() + $abs);
 
         $title = $this->section->getSettings()->title;
-        if (str_replace('pdf','',strtolower($title))==strtolower($title)) {
+        if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
             $title .= ' [PDF]';
         }
-        $pdf->writeHTML('<h3>'.$title.'</h3>');
+        $pdf->writeHTML('<h3>' . $title . '</h3>');
 
         $data = base64_decode($this->section->data);
 
-        $pageCount = $pdf->setSourceFile(VarStream::createReference( $data ));
+        $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
 
-        $pdim = $pdf->getPageDimensions();
+        $pdim      = $pdf->getPageDimensions();
         $printArea = array(
             'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
             'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
@@ -162,12 +163,11 @@ class PDF extends ISectionType
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
             $page = $pdf->ImportPage($pageNo);
-            $dim = $pdf->getTemplatesize($page);
+            $dim  = $pdf->getTemplatesize($page);
             if ($params->pdfExportConcat) {
                 $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']), false, false, false);
                 $pdf->useTemplate($page);
-            }
-            else {
+            } else {
                 $scale = min(array(
                     1,
                     $printArea['w'] / $dim['w'],
@@ -177,32 +177,29 @@ class PDF extends ISectionType
                     'w' => $scale * $dim['w'],
                     'h' => $scale * $dim['h'],
                 );
-                $curX = $pdf->getX();
+                $curX  = $pdf->getX();
                 if ($curX > $pdim['lm'] and $print['w'] < $pdim['wk'] - ($curX + $pdim['rm'])) {
                     $curX += $abs;
                     $curY = $pdf->getY() - $lastprint['h'];
-                }
-                else {
+                } else {
                     $curX = $pdim['lm'];
                     $curY = $pdf->getY() + $abs;
                 }
                 $print['x'] = $curX;
                 if ($print['h'] < $pdim['hk'] - ($curY + $pdim['bm'])) {
                     $print['y'] = $curY;
-                }
-                else {
+                } else {
                     $pdf->AddPage();
                     $print['y'] = $pdim['tm'];
                 }
                 $pdf->useTemplate($page, $print['x'], $print['y'], $print['w'], $print['h']);
 
                 if (is_numeric($params->pdfExportIntegFrame)) {
-                    $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', ['all' => ['width'=>$params->pdfExportIntegFrame, 'color'=>[0, 0, 0], 'dash' => 0]]);
-                }
-                elseif (is_array($params->pdfExportIntegFrame)) {
-                    $config = $params->pdfExportIntegFrame;
-                    $color = [0,0,0];
-                    $lw = 0.1;
+                    $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', ['all' => ['width' => $params->pdfExportIntegFrame, 'color' => [0, 0, 0], 'dash' => 0]]);
+                } elseif (is_array($params->pdfExportIntegFrame)) {
+                    $config   = $params->pdfExportIntegFrame;
+                    $color    = [0, 0, 0];
+                    $lw       = 0.1;
                     $absolute = true;
                     if (isset($config['color'])) {
                         $color = $config['color'];
@@ -218,36 +215,32 @@ class PDF extends ISectionType
                     }
                     foreach ($config as $key => $length) {
                         if (in_array($key, ['tld', 'tlr', 'trd', 'trl', 'blu', 'blr', 'bru', 'brl'])) {
-                            if (in_array(substr($key,-1), ['u','l'])) {
+                            if (in_array(substr($key, -1), ['u', 'l'])) {
                                 $length = -$length;
                             }
                             if (!$abs) {
-                                if (in_array(substr($key,-1), ['r','l'])) {
+                                if (in_array(substr($key, -1), ['r', 'l'])) {
                                     $length = $length * $print['w'];
-                                }
-                                else {
+                                } else {
                                     $length = $length * $print['h'];
                                 }
                             }
                             $larr = [];
-                            if (in_array(substr($key,-1), ['u','d'])) {
+                            if (in_array(substr($key, -1), ['u', 'd'])) {
                                 $larr['x'] = 0;
                                 $larr['y'] = $length;
-                            }
-                            else {
+                            } else {
                                 $larr['x'] = $length;
                                 $larr['y'] = 0;
                             }
-                            if (substr($key,0,1) == 't') {
+                            if (substr($key, 0, 1) == 't') {
                                 $line['y'] = $print['y'];
-                            }
-                            else {
+                            } else {
                                 $line['y'] = $print['y'] + $print['h'];
                             }
-                            if (substr($key,1,1) == 'l') {
+                            if (substr($key, 1, 1) == 'l') {
                                 $line['x'] = $print['x'];
-                            }
-                            else {
+                            } else {
                                 $line['x'] = $print['x'] + $print['w'];
                             }
                             $pdf->Line($line['x'], $line['y'], $line['x'] + $larr['x'], $line['y'] + $larr['y'], ['width' => $linewith, 'color' => $color]);

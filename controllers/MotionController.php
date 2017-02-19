@@ -182,6 +182,7 @@ class MotionController extends Base
             foreach ($motions as $motion) {
                 if ($texTemplate === null) {
                     $texTemplate = $motion->motionType->texTemplate;
+                    $motionsFiltered[] = $motion;
                 } elseif ($motion->motionType->texTemplate == $texTemplate) {
                     $motionsFiltered[] = $motion;
                 }

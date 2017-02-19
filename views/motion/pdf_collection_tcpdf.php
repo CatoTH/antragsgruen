@@ -26,18 +26,11 @@ $pdf->SetSubject(Yii::t('export', 'all_motions_title'));
 
 try {
     foreach ($motions as $motion) {
-        // add a page
-        $pdf->AddPage();
-
-        $pdfLayout->printMotionHeader($motion);
-
-        foreach ($motion->getSortedSections(true) as $section) {
-            $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
-        }
+        \app\views\motion\LayoutHelper::printToPDF($pdf, $pdfLayout, $motion);
     }
 
 } catch (\Exception $e) {
-    echo 'Ein Fehler trat auf: ' . Html::encode($e);
+    echo 'Error: ' . Html::encode($e);
     die();
 }
 

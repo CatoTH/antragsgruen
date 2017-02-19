@@ -66,7 +66,7 @@ class BDKPDF extends \FPDI
         $this->Cell(
             185,
             10,
-            Yii::t('export', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
+            Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
             0,
             false,
             'R',

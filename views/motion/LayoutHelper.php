@@ -18,6 +18,7 @@ use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -274,6 +275,24 @@ class LayoutHelper
         }
 
         return $content;
+    }
+
+    /**
+     * @param \FPDI $pdf
+     * @param IPDFLayout $pdfLayout
+     * @param Motion $motion
+     * @throws \app\models\exceptions\Internal
+     */
+    public static function printToPDF(\FPDI $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    {
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
+        $pdfLayout->printMotionHeader($motion);
+
+        foreach ($motion->getSortedSections(true) as $section) {
+            $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+        }
     }
 
     /**

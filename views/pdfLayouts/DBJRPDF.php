@@ -39,7 +39,7 @@ class DBJRPDF extends \FPDI
         $this->Cell(
             0,
             10,
-            Yii::t('export', 'Page') . ' ' . $this->getAliasNumPage() . ' / ' . $this->getAliasNbPages(),
+            Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
             0,
             false,
             'C',

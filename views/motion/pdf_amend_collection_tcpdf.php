@@ -19,15 +19,7 @@ $pdf->SetTitle(Yii::t('export', 'all_amendments_title'));
 $pdf->SetSubject(Yii::t('export', 'all_amendments_title'));
 
 try {
-    // add a page
-    $pdf->AddPage();
-
-    $pdfLayout->printMotionHeader($motion);
-
-    foreach ($motion->getSortedSections(true) as $section) {
-        $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
-    }
-
+    \app\views\motion\LayoutHelper::printToPDF($pdf, $pdfLayout, $motion);
 
     foreach ($amendments as $amendment) {
         \app\views\amendment\LayoutHelper::printToPDF($pdf, $pdfLayout, $amendment);
