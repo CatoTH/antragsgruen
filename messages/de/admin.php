@@ -118,6 +118,7 @@ return [
     'list_am_unscreened_pl'       => 'Die ausgewählten Anträge wurden zurückgezogen.',
     'list_am_deleted_pl'          => 'Die ausgewählten Anträge wurden gelöscht.',
     'list_new'                    => 'Neu',
+    'list_pdf_amend'              => 'PDF + ÄAs',
     'filter_na'                   => '- egal -',
     'filter_title'                => 'Titel',
     'filter_status'               => 'Status',

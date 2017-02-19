@@ -120,6 +120,7 @@ return [
     'list_am_unscreened_pl'       => 'The selected amendments were unscreened.',
     'list_am_deleted_pl'          => 'The selected amendments were deleted.',
     'list_new'                    => 'Create',
+    'list_pdf_amend'              => 'PDF + Amends',
     'filter_na'                   => '- all -',
     'filter_title'                => 'Title',
     'filter_status'               => 'Status',

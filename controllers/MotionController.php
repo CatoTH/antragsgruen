@@ -150,8 +150,8 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
         if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
-            return $this->renderPartial('pdf_amend_collection_tcpdf', [
-                'motion' => $motion, 'amendments' => $amendments
+            return $this->renderPartial('pdf_amend_collection_tex', [
+                'motion' => $motion, 'amendments' => $amendments, 'texTemplate' => $motion->motionType->texTemplate
             ]);
         } else {
             return $this->renderPartial('pdf_amend_collection_tcpdf', [

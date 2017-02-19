@@ -48,6 +48,11 @@ if ($hasTags) {
 echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout != -1) {
     echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
+    echo Html::a(
+        \Yii::t('admin', 'list_pdf_amend'),
+            UrlHelper::createMotionUrl($entry, 'pdfamendcollection'),
+            ['class' => 'pdfamend']
+        ) . ' / ';
 }
 echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
 echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);

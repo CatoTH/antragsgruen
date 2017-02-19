@@ -1,9 +1,5 @@
 # Version history
 
-## Version 3.7.0 [Not yet released]
-
-- A combined PDF of a motion and all attached amendments is available in the admin-motion-list
-
 ## Version 3.6.0 [Not yet released]
 
 - Admins can now edit the motion text in the backend without breaking existing amendments. If there are conflicts between the changes made and the amendments, they have to be resolved manually.
@@ -15,6 +11,8 @@
 - Editorial changes in amendments can be deactivated
 - If a motion or amendment is withdrawn, a notification is sent to the admin
 - A widget to show the content of an amendment in a popover is introduced, e.g. in the admin motion list
+- A combined PDF of a motion and all attached amendments is available in the admin-motion-list
+- In PDF-collections with page numbers, the page numbering is done on a per-motion/amendment-basis now, not for the whole collection
 - Support for Redis as cache & session store
 - Internal: Port JavaScript modules to TypeScript
 - Improvements to the integration of Grünes Netz of the German Green Party: organization keys can be resolved and the transmitted name / organization are fixed
