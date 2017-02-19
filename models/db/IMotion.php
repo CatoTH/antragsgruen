@@ -19,25 +19,48 @@ use yii\db\ActiveRecord;
  */
 abstract class IMotion extends ActiveRecord
 {
-    const STATUS_DELETED               = -2;
-    const STATUS_WITHDRAWN             = -1;
-    const STATUS_UNCONFIRMED           = 0;
-    const STATUS_DRAFT                 = 1;
-    const STATUS_SUBMITTED_UNSCREENED  = 2;
-    const STATUS_SUBMITTED_SCREENED    = 3;
-    const STATUS_ACCEPTED              = 4;
-    const STATUS_REJECTED              = 5;
-    const STATUS_MODIFIED_ACCEPTED     = 6;
-    const STATUS_MODIFIED              = 7;
-    const STATUS_ADOPTED               = 8;
-    const STATUS_COMPLETED             = 9;
-    const STATUS_REFERRED              = 10;
-    const STATUS_VOTE                  = 11;
-    const STATUS_PAUSED                = 12;
-    const STATUS_MISSING_INFORMATION   = 13;
-    const STATUS_DISMISSED             = 14;
+    // The motion has been deleted and is not visible anymore. Only admins can delete a motion.
+    const STATUS_DELETED = -2;
+
+    // The motion has been withdrawn, either by the user or the admin.
+    const STATUS_WITHDRAWN = -1;
+
+    // @TODO Is this status actually used?
+    const STATUS_UNCONFIRMED = 0;
+
+    // The user has written the motion, but not yet confirmed to submit it.
+    const STATUS_DRAFT = 1;
+
+    // The user has submitted the motion, but it's not yet visible. It's up to the admin to screen it now.
+    const STATUS_SUBMITTED_UNSCREENED = 2;
+
+    // The default state once the motion is visible
+    const STATUS_SUBMITTED_SCREENED = 3;
+
+    // This are stati motions and amendments get as their final state.
+    // "Processed" is mostly used for amendments after merging amendments into th motion,
+    // if it's unclear if it was adopted or rejected.
+    const STATUS_ACCEPTED          = 4;
+    const STATUS_REJECTED          = 5;
+    const STATUS_MODIFIED_ACCEPTED = 6;
+    const STATUS_PROCESSED         = 17;
+
+    // The initiator is still collecting supporters to actually submit this motion.
+    // It's visible only to those who know the link to it.
     const STATUS_COLLECTING_SUPPORTERS = 15;
-    const STATUS_DRAFT_ADMIN           = 16;
+
+    // Not yet visible, it's up to the admin to submit it
+    const STATUS_DRAFT_ADMIN = 16;
+
+    // Purely informational statuses
+    const STATUS_MODIFIED            = 7;
+    const STATUS_ADOPTED             = 8;
+    const STATUS_COMPLETED           = 9;
+    const STATUS_REFERRED            = 10;
+    const STATUS_VOTE                = 11;
+    const STATUS_PAUSED              = 12;
+    const STATUS_MISSING_INFORMATION = 13;
+    const STATUS_DISMISSED           = 14;
 
     /**
      * @return string[]
@@ -64,6 +87,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_DISMISSED             => \Yii::t('structure', 'STATUS_DISMISSED'),
             static::STATUS_COLLECTING_SUPPORTERS => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
             static::STATUS_DRAFT_ADMIN           => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
+            static::STATUS_PROCESSED             => \Yii::t('structure', 'STATUS_PROCESSED'),
         ];
     }
 
@@ -72,7 +96,12 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatiMarkAsDoneOnRewriting()
     {
-        return [static::STATUS_ACCEPTED, static::STATUS_REJECTED, static::STATUS_MODIFIED_ACCEPTED];
+        return [
+            static::STATUS_PROCESSED,
+            static::STATUS_ACCEPTED,
+            static::STATUS_REJECTED,
+            static::STATUS_MODIFIED_ACCEPTED,
+        ];
     }
 
     /**

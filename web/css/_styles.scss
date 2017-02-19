@@ -533,8 +533,11 @@ ul.searchResults {
   .pillbox > .pill-group {
     list-style-type: none;
   }
-  .selectlist .btn.dropdown-toggle {
+  .selectlist {
     position: relative;
+    .btn.dropdown-toggle {
+      position: relative;
+    }
   }
 }
 

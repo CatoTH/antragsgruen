@@ -492,15 +492,17 @@ class LayoutHelper
     <div class="col-md-9">';
             $statiAll                  = $amendment->getStati();
             $stati                     = [
+                Amendment::STATUS_PROCESSED         => $statiAll[Amendment::STATUS_PROCESSED],
                 Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],
                 Amendment::STATUS_REJECTED          => $statiAll[Amendment::STATUS_REJECTED],
                 Amendment::STATUS_MODIFIED_ACCEPTED => $statiAll[Amendment::STATUS_MODIFIED_ACCEPTED],
             ];
-            $stati[$amendment->status] = 'unverändert: ' . $statiAll[$amendment->status];
+            $stati[$amendment->status] = \Yii::t('amend', 'merge_status_unchanged') . ': ' .
+                $statiAll[$amendment->status];
             if (isset($statusOverrides[$amendment->id])) {
                 $statusPre = $statusOverrides[$amendment->id];
             } else {
-                $statusPre = $amendment->status;
+                $statusPre = Amendment::STATUS_PROCESSED;
             }
             $opts = ['id' => 'amendmentStatus' . $amendment->id];
             echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre, $opts);

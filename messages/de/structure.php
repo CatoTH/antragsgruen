@@ -114,6 +114,7 @@ return [
     'STATUS_DISMISSED'             => 'Nicht zugelassen',
     'STATUS_COLLECTING_SUPPORTERS' => 'Unterstützer*innen sammeln',
     'STATUS_DRAFT_ADMIN'           => 'Entwurf (Admin)',
+    'STATUS_PROCESSED'             => 'Behandelt',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

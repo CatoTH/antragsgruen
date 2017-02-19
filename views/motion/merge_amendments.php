@@ -167,6 +167,7 @@ if (count($editorials) > 0) {
 
 
 $jsStati = [
+    'processed'         => Amendment::STATUS_PROCESSED,
     'accepted'          => Amendment::STATUS_ACCEPTED,
     'rejected'          => Amendment::STATUS_REJECTED,
     'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,

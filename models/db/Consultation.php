@@ -389,6 +389,7 @@ class Consultation extends ActiveRecord
             $invisible[] = IMotion::STATUS_WITHDRAWN;
             $invisible[] = IMotion::STATUS_MODIFIED;
             $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
+            $invisible[] = IMotion::STATUS_PROCESSED;
         }
         return $invisible;
     }
