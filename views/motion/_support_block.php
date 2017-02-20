@@ -14,7 +14,7 @@ $disableSubmit = '';
 ?>
     <label style="margin-top: 10px;"><?= \Yii::t('motion', 'support_question') ?></label>
 <?php
-if ($supportType->hasOrganizations() && $user->organization == '' && $user->fixedData) {
+if ($supportType->hasOrganizations() && $user && $user->organization == '' && $user->fixedData) {
     echo '<div class="alert alert-danger" role="alert">';
     echo \Yii::t('motion', 'supporting_no_orga_error');
     echo '</div>';
