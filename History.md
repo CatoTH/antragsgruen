@@ -14,6 +14,7 @@
 - A combined PDF of a motion and all attached amendments is available in the admin-motion-list
 - In PDF-collections with page numbers, the page numbering is done on a per-motion/amendment-basis now, not for the whole collection
 - Support for Redis as cache & session store
+- Improvements to the OpenDocument-Export
 - Internal: Port JavaScript modules to TypeScript
 - Improvements to the integration of Grünes Netz of the German Green Party: organization keys can be resolved and the transmitted name / organization are fixed
 
