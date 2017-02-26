@@ -178,9 +178,9 @@ Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge 
     'con_email_admins'        => 'Admins',
     'con_send_motion_email'   => 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die Antragsteller*in schicken',
 
-    'siteacc_bread'               => 'Zugang',
-    'siteacc_title'               => 'Zugang zur Seite',
-    'siteacc_policywarning'       => '<h3>Hinweis:</h3>
+    'siteacc_bread'            => 'Zugang',
+    'siteacc_title'            => 'Zugang zur Seite',
+    'siteacc_policywarning'    => '<h3>Hinweis:</h3>
 Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
  von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
  das nicht der Fall.<br>
@@ -188,22 +188,22 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
  Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
  dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
  Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
-    'siteacc_policy_login'        => 'Auf Benutzer*innen einschränken',
-    'siteacc_forcelogin'          => 'Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. <em>lesen</em>)',
-    'siteacc_managedusers'        => 'Nur ausgewählten Benutzer*innen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>',
-    'siteacc_logins'              => 'Folgende Login-Varianten sind möglich',
-    'siteacc_useraccounts'        => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
-    'siteacc_ww'                  => 'Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>',
-    'siteacc_otherlogins'         => 'Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>',
-    'siteacc_admins_title'        => 'Administrator*innen der Reihe',
-    'siteacc_admins_add'          => 'Neu eintragen',
-    'siteacc_add_ww'              => 'Wurzelwerk-Name',
-    'siteacc_add_email'           => 'E-Mail-Adresse',
-    'siteacc_add_name_title'      => 'Wurzelwerk-Benutzer*innenname / E-Mail-Adresse',
-    'siteacc_add_name_place'      => 'Name',
-    'siteacc_add_btn'             => 'Hinzufügen',
-    'siteacc_accounts_title'      => 'Benutzer*innen-Accounts',
-    'siteacc_email_text_pre'      => 'Hallo,
+    'siteacc_policy_login'     => 'Auf Benutzer*innen einschränken',
+    'siteacc_forcelogin'       => 'Nur eingeloggte Benutzer*innen dürfen zugreifen (inkl. <em>lesen</em>)',
+    'siteacc_managedusers'     => 'Nur ausgewählten Benutzer*innen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>',
+    'siteacc_logins'           => 'Folgende Login-Varianten sind möglich',
+    'siteacc_useraccounts'     => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
+    'siteacc_ww'               => 'Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>',
+    'siteacc_otherlogins'      => 'Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>',
+    'siteacc_admins_title'     => 'Administrator*innen der Reihe',
+    'siteacc_admins_add'       => 'Neu eintragen',
+    'siteacc_add_ww'           => 'Wurzelwerk-Name',
+    'siteacc_add_email'        => 'E-Mail-Adresse',
+    'siteacc_add_name_title'   => 'Wurzelwerk-Benutzer*innenname / E-Mail-Adresse',
+    'siteacc_add_name_place'   => 'Name',
+    'siteacc_add_btn'          => 'Hinzufügen',
+    'siteacc_accounts_title'   => 'Benutzer*innen-Accounts',
+    'siteacc_email_text_pre'   => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
         'auf der du über unseren Entwurf mitdiskutieren kannst.
@@ -214,7 +214,7 @@ Hier ist der Zugang:
 
 Liebe Grüße,
   Das Antragsgrün-Team',
-    'siteacc_acc_expl_mail'       => '<h3>Erklärung:</h3>
+    'siteacc_acc_expl_mail'    => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
@@ -224,68 +224,69 @@ Falls sie noch keinen eigenen Zugang auf Antragsgrün hatten, wird automatisch e
 und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 (ansonsten verschwindet das %ACCOUNT% ersatzlos).<br>
 <strong>%LINK%</strong> wird immer durch einen Link auf die Antragsgrün-Seite ersetzt.',
-    'siteacc_acc_expl_nomail'     => '<h3>Erklärung:</h3>
+    'siteacc_acc_expl_nomail'  => '<h3>Erklärung:</h3>
 Wenn die Antragsgrün-Seite oder die Antrags-/Kommentier-Funktion nur für bestimmte Mitglieder zugänglich sein soll,
 kannst du hier die Benutzer*innen anlegen, die Zugriff haben sollen.<br>
 <br>
 Um Benutzer*innen anzulegen, gib weiter unten die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
 Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die Nutzer*innen schicken.<br><br>' .
         'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
-    'siteacc_existing_users'      => 'Bereits eingetragene Benutzer*innen',
-    'siteacc_user_name'           => 'Name',
-    'siteacc_user_login'          => 'Login',
-    'siteacc_user_read'           => 'Lesen',
-    'siteacc_user_write'          => 'Anlegen',
-    'siteacc_perm_read'           => 'Leserechte',
-    'siteacc_perm_write'          => 'Schreibrechte',
-    'siteacc_new_users'           => 'Benutzer*innen eintragen',
-    'siteacc_new_emails'          => 'E-Mail-Adressen:<br>
+    'siteacc_existing_users'   => 'Bereits eingetragene Benutzer*innen',
+    'siteacc_user_name'        => 'Name',
+    'siteacc_user_login'       => 'Login',
+    'siteacc_user_read'        => 'Lesen',
+    'siteacc_user_write'       => 'Anlegen',
+    'siteacc_perm_read'        => 'Leserechte',
+    'siteacc_perm_write'       => 'Schreibrechte',
+    'siteacc_new_users'        => 'Benutzer*innen eintragen',
+    'siteacc_new_emails'       => 'E-Mail-Adressen:<br>
                 <small>(Genau eine E-Mail-Adresse pro Zeile)</small>',
-    'siteacc_new_pass'            => 'Passwörter:<br>
+    'siteacc_new_pass'         => 'Passwörter:<br>
                 <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
-    'siteacc_new_names'           => 'Namen der Benutzer*innen:<br>
+    'siteacc_new_names'        => 'Namen der Benutzer*innen:<br>
                 <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
-    'siteacc_new_text'            => 'Text der E-Mail',
-    'siteacc_new_do'              => 'Berechtigen / Anlegen',
-    'siteacc_admin_add_done'      => '%username% hat nun auch Admin-Rechte.',
-    'siteacc_admin_add_had'       => '%username% hatte bereits Admin-Rechte.',
-    'siteacc_admin_del_done'      => 'Die Admin-Rechte wurden entzogen.',
-    'siteacc_admin_del_notf'      => 'Es gibt keinen Zugang mit diesem Namen',
-    'siteacc_mail_yourdata'       => "Du kannst dich mit folgenden Angaben einloggen:\nBenutzer*innenname: %EMAIL%\n" .
+    'siteacc_new_text'         => 'Text der E-Mail',
+    'siteacc_new_do'           => 'Berechtigen / Anlegen',
+    'siteacc_admin_add_done'   => '%username% hat nun auch Admin-Rechte.',
+    'siteacc_admin_add_had'    => '%username% hatte bereits Admin-Rechte.',
+    'siteacc_admin_del_done'   => 'Die Admin-Rechte wurden entzogen.',
+    'siteacc_admin_del_notf'   => 'Es gibt keinen Zugang mit diesem Namen',
+    'siteacc_mail_yourdata'    => "Du kannst dich mit folgenden Angaben einloggen:\nBenutzer*innenname: %EMAIL%\n" .
         "Passwort: %PASSWORD%",
-    'siteacc_mail_youracc'        => 'Du kannst dich mit deinem Benutzer*innenname %EMAIL% einloggen.',
-    'sitacc_admmail_subj'         => 'Antragsgrün-Administration',
-    'sitacc_admmail_body'         => "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
+    'siteacc_mail_youracc'     => 'Du kannst dich mit deinem Benutzer*innenname %EMAIL% einloggen.',
+    'sitacc_admmail_subj'      => 'Antragsgrün-Administration',
+    'sitacc_admmail_body'      => "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
         "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
-    'siteacc_err_linenumber'      => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
-    'siteacc_err_occ'             => 'Es sind Fehler aufgetreten',
-    'siteacc_user_had'            => 'Folgende Benutzer*innen hatten bereits Zugriff',
-    'siteacc_user_added_1'        => '%NUM% BenutzerIn wurde eingetragen.',
-    'siteacc_user_added_x'        => '%NUM% Benutzer*innen wurden eingetragen.',
-    'siteacc_user_added_0'        => 'Es wurde niemand eingetragen.',
-    'siteacc_user_saved'          => 'Die Berechtigungen wurden gespeichert.',
-    'siteacc_user_restr_done'     => 'Nur noch eingetragene Benutzer*innen können Einträge erstellen.',
-    'Translation / Wording'       => 'Sprache anpassen',
-    'Base language variant'       => 'Basis-Sprachversion',
-    'tabulardatatype_string'      => 'Text',
-    'tabulardatatype_integer'     => 'Zahl',
-    'tabulardatatype_date'        => 'Datum',
-    'internal_note'               => 'Interne Notiz',
-    'amend_edit_title'            => 'Änderungsantrag bearbeiten',
-    'amend_show'                  => 'Änderungsantrag anzeigen',
-    'amend_del'                   => 'Änderungsantrag löschen',
-    'amend_screen_as_x'           => 'Freischalten als %PREFIX%',
-    'amend_prefix_placeholder'    => 'z.B. "Ä1", "A23-0042"',
-    'amend_prefix_unique'         => 'Muss eindeutig sein',
-    'amend_created_at'            => 'Angelegt am',
-    'amend_resoluted_on'          => 'Beschlossen am',
-    'amend_edit_text_title'       => 'Text bearbeiten',
-    'amend_edit_text'             => 'Bearbeiten',
-    'amend_deleted'               => 'Der Änderungsantrag wurde gelöscht.',
-    'amend_screened'              => 'Der Änderungsantrag wurde freigeschaltet.',
-    'amend_prefix_collission'     => 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.',
-    'no_access'                   => 'Kein Zugriff auf diese Seite',
-    'amend_pdf_list'              => 'Änderungsantrags-PDFs',
+    'siteacc_err_linenumber'   => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
+    'siteacc_err_occ'          => 'Es sind Fehler aufgetreten',
+    'siteacc_user_had'         => 'Folgende Benutzer*innen hatten bereits Zugriff',
+    'siteacc_user_added_1'     => '%NUM% BenutzerIn wurde eingetragen.',
+    'siteacc_user_added_x'     => '%NUM% Benutzer*innen wurden eingetragen.',
+    'siteacc_user_added_0'     => 'Es wurde niemand eingetragen.',
+    'siteacc_user_saved'       => 'Die Berechtigungen wurden gespeichert.',
+    'siteacc_user_restr_done'  => 'Nur noch eingetragene Benutzer*innen können Einträge erstellen.',
+    'Translation / Wording'    => 'Sprache anpassen',
+    'Base language variant'    => 'Basis-Sprachversion',
+    'tabulardatatype_string'   => 'Text',
+    'tabulardatatype_integer'  => 'Zahl',
+    'tabulardatatype_date'     => 'Datum',
+    'internal_note'            => 'Interne Notiz',
+    'amend_edit_title'         => 'Änderungsantrag bearbeiten',
+    'amend_show'               => 'Änderungsantrag anzeigen',
+    'amend_del'                => 'Änderungsantrag löschen',
+    'amend_screen_as_x'        => 'Freischalten als %PREFIX%',
+    'amend_prefix_placeholder' => 'z.B. "Ä1", "A23-0042"',
+    'amend_prefix_unique'      => 'Muss eindeutig sein',
+    'amend_created_at'         => 'Angelegt am',
+    'amend_resoluted_on'       => 'Beschlossen am',
+    'amend_edit_text_title'    => 'Text bearbeiten',
+    'amend_edit_text'          => 'Bearbeiten',
+    'amend_deleted'            => 'Der Änderungsantrag wurde gelöscht.',
+    'amend_screened'           => 'Der Änderungsantrag wurde freigeschaltet.',
+    'amend_prefix_collission'  => 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.',
+    'no_access'                => 'Kein Zugriff auf diese Seite',
+    'amend_pdf_list'           => 'Änderungsantrags-PDFs',
+
     'motion_type_edit'            => 'Antragstyp bearbeiten',
     'motion_type_names'           => 'Bezeichnung',
     'motion_type_initiator'       => 'Antragsteller*in / Unterstützer*innen',
@@ -339,6 +340,15 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_amend_deadline'  => 'ÄA-Antragsschluss',
     'motion_type_deadline_mot'    => 'Anträge',
     'motion_type_supp_min'        => 'Unterstützer*innen',
+
+    'motion_type_initiators_merge'             => 'Dürfen Antragsteller*innen Änderungsanträge selbständig übernehmen?',
+    'motion_type_initiators_merge_yes'         => 'Ja, inklusive Kollissionen',
+    'motion_type_initiators_merge_yes_hint'    => '@TODO',
+    'motion_type_initiators_merge_nocoll'      => 'Ja, wenn es keine Kollissionen gibt',
+    'motion_type_initiators_merge_nocoll_hint' => '@TODO',
+    'motion_type_initiators_merge_no'          => 'Nein, nur Admins',
+
+    'motion_section_title'        => 'Antrags-Abschnitte',
     'motion_section_del'          => 'Abschnitt löschen',
     'motion_section_add'          => 'Abschnitt hinzufügen',
     'motion_section_add_line'     => 'Zeile hinzufügen',
@@ -355,12 +365,14 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_comm_para'    => 'Pro Absatz',
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
-    'todo_title'                  => 'To Do',
-    'todo_from'                   => 'Von',
-    'todo_motion_screen'          => '%TYPE% freischalten',
-    'todo_amendment_screen'       => 'Änderungsantrag freischalten',
-    'todo_comment_screen'         => 'Kommentar freischalten',
-    'todo_comment_to'             => 'Zu',
+
+    'todo_title'            => 'To Do',
+    'todo_from'             => 'Von',
+    'todo_motion_screen'    => '%TYPE% freischalten',
+    'todo_amendment_screen' => 'Änderungsantrag freischalten',
+    'todo_comment_screen'   => 'Kommentar freischalten',
+    'todo_comment_to'       => 'Zu',
+
     'cons_new_created'            => 'Die neue Veranstaltung wurde angelegt.',
     'cons_std_set_done'           => 'Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.',
     'cons_delete_title'           => 'Veranstaltung löschen',

@@ -25,7 +25,8 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?= \Yii::t('admin', 'motion_type_perm_motion') ?>
     </label>
     <div class="col-md-8">
-        <?= Html::dropDownList(
+        <?php
+        echo Html::dropDownList(
             'type[policyMotions]',
             $motionType->policyMotions,
             $policies,
@@ -42,7 +43,8 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?= \Yii::t('admin', 'motion_type_perm_supp_mot') ?>
     </label>
     <div class="col-md-8">
-        <?= Html::dropDownList(
+        <?php
+        echo Html::dropDownList(
             'type[policySupportMotions]',
             $motionType->policySupportMotions,
             $policies,
@@ -85,7 +87,8 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?= \Yii::t('admin', 'motion_type_perm_amend') ?>
     </label>
     <div class="col-md-8">
-        <?= Html::dropDownList(
+        <?php
+        echo Html::dropDownList(
             'type[policyAmendments]',
             $motionType->policyAmendments,
             $policies,
@@ -95,11 +98,8 @@ foreach (IPolicy::getPolicies() as $policy) {
 </div>
 <div class="form-group checkbox" id="typeAmendSinglePara">
     <div class="checkbox col-md-8 col-md-offset-4"><label>
-            <input type="checkbox" name="type[amendSinglePara]" <?php
-            if (!$motionType->amendmentMultipleParagraphs) {
-                echo ' checked';
-            }
-            ?>> <?= \Yii::t('admin', 'motion_type_amend_singlep') ?></label></div>
+            <?=Html::checkbox('type[amendSinglePara]', !$motionType->amendmentMultipleParagraphs)?>
+            <?= \Yii::t('admin', 'motion_type_amend_singlep') ?></label></div>
 </div>
 
 
@@ -110,7 +110,8 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?= \Yii::t('admin', 'motion_type_perm_supp_amend') ?>
     </label>
     <div class="col-md-8">
-        <?= Html::dropDownList(
+        <?php
+        echo Html::dropDownList(
             'type[policySupportAmendments]',
             $motionType->policySupportAmendments,
             $policies,
@@ -153,7 +154,8 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?= \Yii::t('admin', 'motion_type_perm_comment') ?>
     </label>
     <div class="col-md-8">
-        <?= Html::dropDownList(
+        <?php
+        echo Html::dropDownList(
             'type[policyComments]',
             $motionType->policyComments,
             $policies,
@@ -162,3 +164,45 @@ foreach (IPolicy::getPolicies() as $policy) {
     </div>
 </div>
 
+<!-- Are initiators allowed to merge amendments into their motions -->
+
+<div class="form-group initiatorsCanMergeRow">
+    <div class="col-md-4 control-label">
+        <?= \Yii::t('admin', 'motion_type_initiators_merge') ?>
+    </div>
+    <div class="col-md-8">
+        <label><?php
+            echo Html::radio(
+                'type[initiatorsCanMergeAmendments]',
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NEVER),
+                [
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_NEVER,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NEVER,
+                ]
+            );
+            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_no') ?>
+        </label>
+        <label><?php
+            echo Html::radio(
+                'type[initiatorsCanMergeAmendments]',
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION),
+                [
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
+                ]
+            );
+            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
+        </label>
+        <label><?php
+            echo Html::radio(
+                'type[initiatorsCanMergeAmendments]',
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION),
+                [
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
+                ]
+            )
+            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
+        </label>
+    </div>
+</div>

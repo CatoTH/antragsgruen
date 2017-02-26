@@ -398,6 +398,16 @@ label.legend {
       margin-right: 20px;
     }
   }
+  .initiatorsCanMergeRow {
+    .control-label {
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      font-weight: normal;
+      cursor: pointer;
+    }
+  }
   .form-group.checkbox {
     margin-top: -13px;
     margin-bottom: 13px;
