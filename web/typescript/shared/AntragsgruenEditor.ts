@@ -125,6 +125,11 @@ export class AntragsgruenEditor {
         if (trackChanged) {
             ckeditorConfig.extraPlugins += ',lite';
             ckeditorConfig['lite'] = {tooltips: false};
+
+            // Undo and Track changes are incompatible
+            // https://github.com/CatoTH/antragsgruen/issues/224
+            // http://dev.ckeditor.com/ticket/14854
+            ckeditorConfig['removePlugins'] += ',undo';
         } else {
             ckeditorConfig['removePlugins'] += ',lite';
         }
