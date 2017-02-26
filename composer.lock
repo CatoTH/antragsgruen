@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f6df4ab9a458e0eaa17d0ce04841b417",
-    "content-hash": "ad3183a9e7bdbe9682f3fb1e85c8ed8a",
+    "hash": "9898fc4ef2534393f62d783e8da17b09",
+    "content-hash": "ede3155371df109189cbfd2cff931e8c",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -155,16 +155,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.7",
+            "version": "0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "1b3b481c4e5798ead8905b6b0d2ead7d78326c85"
+                "reference": "c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/1b3b481c4e5798ead8905b6b0d2ead7d78326c85",
-                "reference": "1b3b481c4e5798ead8905b6b0d2ead7d78326c85",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866",
+                "reference": "c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866",
                 "shasum": ""
             },
             "require": {
@@ -196,7 +196,7 @@
                 "ods",
                 "odt"
             ],
-            "time": "2017-02-25 10:02:32"
+            "time": "2017-02-26 12:55:44"
         },
         {
             "name": "cebe/markdown",
@@ -2918,25 +2918,30 @@
         },
         {
             "name": "phpunit/php-timer",
-            "version": "1.0.8",
+            "version": "1.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-timer.git",
-                "reference": "38e9124049cf1a164f1e4537caf19c99bf1eb260"
+                "reference": "3dcf38ca72b158baf0bc245e9184d3fdffa9c46f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/38e9124049cf1a164f1e4537caf19c99bf1eb260",
-                "reference": "38e9124049cf1a164f1e4537caf19c99bf1eb260",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/3dcf38ca72b158baf0bc245e9184d3fdffa9c46f",
+                "reference": "3dcf38ca72b158baf0bc245e9184d3fdffa9c46f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": "^5.3.3 || ^7.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4|~5"
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
             "autoload": {
                 "classmap": [
                     "src/"
@@ -2958,7 +2963,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2017-02-26 11:10:40"
         },
         {
             "name": "phpunit/php-token-stream",

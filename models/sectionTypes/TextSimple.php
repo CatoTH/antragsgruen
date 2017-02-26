@@ -510,8 +510,8 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         $hasLineNumbers = $section->getSettings()->lineNumbers;
-        $fixedWidth = $section->getSettings()->fixedWidth;
-        $firstLine = $section->getFirstLineNumber();
+        $fixedWidth     = $section->getSettings()->fixedWidth;
+        $firstLine      = $section->getFirstLineNumber();
 
         $title = Exporter::encodePlainString($section->getSettings()->title);
         if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
@@ -520,7 +520,7 @@ class TextSimple extends ISectionType
         $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
 
         $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
-        $tex2 = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
+        $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
 
         if (!$tex2) {
             $tex2 = '';
@@ -570,7 +570,7 @@ class TextSimple extends ISectionType
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
         $cacheDeps = [$firstLine, $lineLength, $section->getOriginalMotionSection()->data, $section->data];
-        $tex = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
+        $tex       = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
 
         if (!$tex) {
             $formatter = new AmendmentSectionFormatter();
@@ -659,6 +659,11 @@ class TextSimple extends ISectionType
                 if (mb_substr($html, 0, 1) != '<') {
                     $html = '<p>' . $html . '</p>';
                 }
+
+                $html = str_replace('<br><ul>', '<ul>', $html);
+                $html = str_replace('<br><ol>', '<ol>', $html);
+                $html = str_replace('<br><li>', '<li>', $html);
+
                 $html = HTMLTools::correctHtmlErrors($html);
                 $odt->addHtmlTextBlock($html, true);
             }
