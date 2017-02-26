@@ -343,9 +343,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
 
     'motion_type_initiators_merge'             => 'Dürfen Antragsteller*innen Änderungsanträge selbständig übernehmen?',
     'motion_type_initiators_merge_yes'         => 'Ja, inklusive Kollissionen',
-    'motion_type_initiators_merge_yes_hint'    => '@TODO',
+    'motion_type_initiators_merge_yes_hint'    => 'ACHTUNG: in diesem Fall können Antragsteller*innen unter Umständen Änderungsanträge anderer Personen ändern, um Kollission zu beheben.',
     'motion_type_initiators_merge_nocoll'      => 'Ja, wenn es keine Kollissionen gibt',
-    'motion_type_initiators_merge_nocoll_hint' => '@TODO',
+    'motion_type_initiators_merge_nocoll_hint' => 'Falls es Kollissionen gibt, muss ein Admin kontaktiert werden',
     'motion_type_initiators_merge_no'          => 'Nein, nur Admins',
 
     'motion_section_title'        => 'Antrags-Abschnitte',
