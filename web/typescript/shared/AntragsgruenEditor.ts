@@ -163,6 +163,11 @@ export class AntragsgruenEditor {
             (this.$el.data('enter-mode') == 'br' ? CKEDITOR.ENTER_BR : CKEDITOR.ENTER_P)
         );
 
+        // This prevents strange behavior in chrome: after switching from the WYSIWYG editor field to a regular input,
+        // the focus of the new input field was lost after 200ms
+        let focusManager: any = CKEDITOR.focusManager;
+        focusManager._.blurDelay = 0;
+
         this.editor = CKEDITOR.inline(id, ckeditorConfig);
 
         this.initMaxLen();
