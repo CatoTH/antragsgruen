@@ -53,10 +53,13 @@ echo $controller->showErrors();
 if ($form->motion->motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motion->motionType->getAmendmentSupportTypeClass();
+    $str = \Yii::t('amend', 'support_collect_explanation');
+    $str = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
+    $str = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
+
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('amend', 'support_collect_explanation_title') . '</div>' .
-        str_replace('%MIN%', $supp->getMinNumberOfSupporters(), \Yii::t('amend', 'support_collect_explanation')) .
-        '<br><br>';
+        $str . '<br><br>';
 }
 
 $amendmentPolicy = $form->motion->motionType->getAmendmentPolicy();

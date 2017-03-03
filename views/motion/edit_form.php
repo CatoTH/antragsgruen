@@ -49,10 +49,13 @@ if (in_array($form->motionType->policyAmendments, $publicPolicies)) {
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motionType->getMotionSupportTypeClass();
+    $str = \Yii::t('motion', 'support_collect_explanation');
+    $str = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
+    $str = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
+
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
-        str_replace('%MIN%', $supp->getMinNumberOfSupporters(), \Yii::t('motion', 'support_collect_explanation')) .
-        '<br><br>';
+        $str . '<br><br>';
 }
 
 
