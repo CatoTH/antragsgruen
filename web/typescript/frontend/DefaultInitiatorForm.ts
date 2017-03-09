@@ -17,6 +17,8 @@ export class DefaultInitiatorForm {
     private userData: UserData;
     private contactNameForPersons: number;
 
+    private wasPerson: boolean = false;
+
     constructor($widget: JQuery) {
         this.$editforms = $widget.parents('form').first();
         this.$supporterData = $widget.find('.supporterData');
@@ -58,9 +60,14 @@ export class DefaultInitiatorForm {
         if ($('#personTypeOrga').prop('checked')) {
             this.setFieldsVisibilityOrganization();
             this.setFieldsReadonlyOrganization();
+            if (this.wasPerson) {
+                this.$initiatorData.find('#initiatorPrimaryName').val('');
+            }
+            this.wasPerson = false;
         } else {
             this.setFieldsVisibilityPerson();
             this.setFieldsReadonlyPerson();
+            this.wasPerson = true;
         }
     }
 
@@ -70,7 +77,6 @@ export class DefaultInitiatorForm {
         this.$initiatorData.find('.contactNameRow').removeClass('hidden');
         this.$initiatorData.find('.resolutionRow').removeClass('hidden');
         this.$initiatorData.find('.adderRow').addClass('hidden');
-        this.$initiatorData.find('#initiatorPrimaryName').val('');
         $('.supporterData, .supporterDataHead').addClass('hidden');
     }
 
