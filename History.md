@@ -4,7 +4,7 @@
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary. 
 
-## Version 3.6.0 [Not yet released]
+## Version 3.6.0 (2017-02-17)
 
 - Admins can now edit the motion text in the backend without breaking existing amendments. If there are conflicts between the changes made and the amendments, they have to be resolved manually.
 - Admins can merge an amendment into the base motion. This creates a new version of the motion. The original version of the motion and the amendment are kept for reference. If the changes of the amendment are conflicting with changes proposed by other amendments, the conflicts need to be resolved manually.

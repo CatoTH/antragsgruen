@@ -137,7 +137,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
         bitte zuerst den zu ändernden Antrag und wähle dann rechts oben "Änderungsantrag stellen".',
     'create_explanation_title'           => 'Antrag oder Änderungsantrag?',
     'support_collect_explanation_title'  => 'Einen Antrag gemeinschaftlich stellen',
-    'support_collect_explanation'        => 'Ein Antrag, der nicht von Parteigremien gestellt wird, kann gemäß unserer Statuten auch gemeinschaftlich von x+1 Mitgliedern gestellt werden. Um einen solchen Antrag zu stellen und offiziell bei der Antragskommission einzureichen, gehe bitte wie folgt vor:<br>
+    'support_collect_explanation'        => 'Ein Antrag, der nicht von Parteigremien gestellt wird, kann gemäß unserer Statuten auch gemeinschaftlich von %MIN+1% Mitgliedern gestellt werden. Um einen solchen Antrag zu stellen und offiziell bei der Antragskommission einzureichen, gehe bitte wie folgt vor:<br>
 <ol>
 <li><strong>Antrag anlegen:</strong> Bitte lege auf dieser Seite deinen Antrag an und hinterlege deine (Kontakt-)Daten. Kontrolliere auf der nächsten Seite, ob alles richtig ist, und bestätige, dass du den Antrag wie gezeigt anlegen möchtest.</li>
 <li><strong>Unterstützung finden:</strong> Nach der Bestätigung erhältst du einen Link, den du Interessierten weiterleiten kannst. Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Antrag stellen. Bitte beachte, dass sich auch die Unterstützer*innen deines Antrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.</li>
