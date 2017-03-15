@@ -97,6 +97,7 @@ return [
 
     'STATUS_DELETED'               => 'Gelöscht',
     'STATUS_WITHDRAWN'             => 'Zurückgezogen',
+    'STATUS_WITHDRAWN_INVISIBLE'   => 'Zurückgezogen (unsichtbar)',
     'STATUS_UNCONFIRMED'           => 'Unbestätigt',
     'STATUS_DRAFT'                 => 'Entwurf',
     'STATUS_SUBMITTED_UNSCREENED'  => 'Eingereicht (ungeprüft)',

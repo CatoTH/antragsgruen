@@ -682,8 +682,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function withdraw()
     {
-        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati())) {
+        if ($this->status == Motion::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
+        } elseif (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati())) {
+            $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
         }
