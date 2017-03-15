@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.1 (Not yet released)
+
+- When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status
+
 ## Version 3.6.0 (2017-02-17)
 
 - Admins can now edit the motion text in the backend without breaking existing amendments. If there are conflicts between the changes made and the amendments, they have to be resolved manually.
