@@ -97,6 +97,7 @@ return [
 
     'STATUS_DELETED'               => 'Deleted',
     'STATUS_WITHDRAWN'             => 'Withdrawn',
+    'STATUS_WITHDRAWN_INVISIBLE'   => 'Withdrawn (invisible)',
     'STATUS_UNCONFIRMED'           => 'Unconfirmed',
     'STATUS_DRAFT'                 => 'Draft',
     'STATUS_SUBMITTED_UNSCREENED'  => 'Submitted (unscreened)',

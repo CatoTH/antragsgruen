@@ -381,6 +381,7 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
+            IMotion::STATUS_WITHDRAWN_INVISIBLE,
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;

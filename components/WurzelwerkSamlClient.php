@@ -52,7 +52,7 @@ class WurzelwerkSamlClient implements ClientInterface
         $email        = $this->params[static::PARAM_EMAIL][0];
         $givenname    = $this->params[static::PARAM_GIVEN_NAME][0];
         $familyname   = $this->params[static::PARAM_FAMILY_NAME][0];
-        $organization = $this->params[static::PARAM_ORGANIZATION][0];
+        $organization = substr($this->params[static::PARAM_ORGANIZATION][0], 0, 6);
         $username     = $this->params[static::PARAM_USERNAME][0];
         $auth         = User::wurzelwerkId2Auth($username);
 

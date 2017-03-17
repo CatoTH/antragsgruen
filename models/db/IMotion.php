@@ -24,6 +24,7 @@ abstract class IMotion extends ActiveRecord
 
     // The motion has been withdrawn, either by the user or the admin.
     const STATUS_WITHDRAWN = -1;
+    const STATUS_WITHDRAWN_INVISIBLE = -3;
 
     // @TODO Is this status actually used?
     const STATUS_UNCONFIRMED = 0;
@@ -88,6 +89,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_COLLECTING_SUPPORTERS => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
             static::STATUS_DRAFT_ADMIN           => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
             static::STATUS_PROCESSED             => \Yii::t('structure', 'STATUS_PROCESSED'),
+            static::STATUS_WITHDRAWN_INVISIBLE   => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
         ];
     }
 
