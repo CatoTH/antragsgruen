@@ -559,7 +559,8 @@ class Amendment extends IMotion implements IRSSItem
             Amendment::STATUS_SUBMITTED_SCREENED,
             Amendment::STATUS_SUBMITTED_UNSCREENED,
             Amendment::STATUS_COLLECTING_SUPPORTERS
-        ])) {
+        ])
+        ) {
             return false;
         }
         return $this->iAmInitiator();
@@ -582,11 +583,27 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $ignoreCollissionProblems
      * @return bool
      */
-    public function canMergeIntoMotion()
+    public function canMergeIntoMotion($ignoreCollissionProblems = false)
     {
-        return $this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT);
+        if ($this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+            return true;
+        } elseif ($this->getMyMotion()->iAmInitiator()) {
+            $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;
+            if ($policy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+                return true;
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && $ignoreCollissionProblems) {
+                return true;
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && !$ignoreCollissionProblems) {
+                return (count($this->getCollidingAmendments()) == 0);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -634,6 +651,32 @@ class Amendment extends IMotion implements IRSSItem
             $this->changedParagraphCache = $paragraphs;
         }
         return $paragraphs;
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getCollidingAmendments()
+    {
+        $mySections = [];
+        foreach ($this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $mySections[$section->sectionId] = $section->data;
+        }
+
+        $colliding = [];
+        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {
+            if ($amend->id == $this->id) {
+                continue;
+            }
+            foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($mySections[$section->sectionId], false, false);
+                if (count($coll) > 0) {
+                    $colliding[$amend->id] = $amend;
+                }
+            }
+        }
+
+        return $colliding;
     }
 
     /**

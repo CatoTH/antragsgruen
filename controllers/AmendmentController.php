@@ -361,7 +361,14 @@ class AmendmentController extends Base
             throw new NotFound('Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
-            throw new Access('Not allowed to use this function');
+            if ($amendment->canMergeIntoMotion(true)) {
+                return $this->render('merge_err_collission', [
+                    'amendment'           => $amendment,
+                    'collidingAmendments' => $amendment->getCollidingAmendments()
+                ]);
+            } else {
+                throw new Access('Not allowed to use this function');
+            }
         }
 
         $motion = $amendment->getMyMotion();
