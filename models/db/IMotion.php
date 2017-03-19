@@ -23,7 +23,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_DELETED = -2;
 
     // The motion has been withdrawn, either by the user or the admin.
-    const STATUS_WITHDRAWN = -1;
+    const STATUS_WITHDRAWN           = -1;
     const STATUS_WITHDRAWN_INVISIBLE = -3;
 
     // @TODO Is this status actually used?
@@ -33,7 +33,8 @@ abstract class IMotion extends ActiveRecord
     const STATUS_DRAFT = 1;
 
     // The user has submitted the motion, but it's not yet visible. It's up to the admin to screen it now.
-    const STATUS_SUBMITTED_UNSCREENED = 2;
+    const STATUS_SUBMITTED_UNSCREENED         = 2;
+    const STATUS_SUBMITTED_UNSCREENED_CHECKED = 18;
 
     // The default state once the motion is visible
     const STATUS_SUBMITTED_SCREENED = 3;
@@ -69,27 +70,28 @@ abstract class IMotion extends ActiveRecord
     public static function getStati()
     {
         return [
-            static::STATUS_DELETED               => \Yii::t('structure', 'STATUS_DELETED'),
-            static::STATUS_WITHDRAWN             => \Yii::t('structure', 'STATUS_WITHDRAWN'),
-            static::STATUS_UNCONFIRMED           => \Yii::t('structure', 'STATUS_UNCONFIRMED'),
-            static::STATUS_DRAFT                 => \Yii::t('structure', 'STATUS_DRAFT'),
-            static::STATUS_SUBMITTED_UNSCREENED  => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
-            static::STATUS_SUBMITTED_SCREENED    => \Yii::t('structure', 'STATUS_SUBMITTED_SCREENED'),
-            static::STATUS_ACCEPTED              => \Yii::t('structure', 'STATUS_ACCEPTED'),
-            static::STATUS_REJECTED              => \Yii::t('structure', 'STATUS_REJECTED'),
-            static::STATUS_MODIFIED_ACCEPTED     => \Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
-            static::STATUS_MODIFIED              => \Yii::t('structure', 'STATUS_MODIFIED'),
-            static::STATUS_ADOPTED               => \Yii::t('structure', 'STATUS_ADOPTED'),
-            static::STATUS_COMPLETED             => \Yii::t('structure', 'STATUS_COMPLETED'),
-            static::STATUS_REFERRED              => \Yii::t('structure', 'STATUS_REFERRED'),
-            static::STATUS_VOTE                  => \Yii::t('structure', 'STATUS_VOTE'),
-            static::STATUS_PAUSED                => \Yii::t('structure', 'STATUS_PAUSED'),
-            static::STATUS_MISSING_INFORMATION   => \Yii::t('structure', 'STATUS_MISSING_INFORMATION'),
-            static::STATUS_DISMISSED             => \Yii::t('structure', 'STATUS_DISMISSED'),
-            static::STATUS_COLLECTING_SUPPORTERS => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
-            static::STATUS_DRAFT_ADMIN           => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
-            static::STATUS_PROCESSED             => \Yii::t('structure', 'STATUS_PROCESSED'),
-            static::STATUS_WITHDRAWN_INVISIBLE   => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
+            static::STATUS_DELETED                      => \Yii::t('structure', 'STATUS_DELETED'),
+            static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
+            static::STATUS_UNCONFIRMED                  => \Yii::t('structure', 'STATUS_UNCONFIRMED'),
+            static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
+            static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
+            static::STATUS_SUBMITTED_UNSCREENED_CHECKED => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
+            static::STATUS_SUBMITTED_SCREENED           => \Yii::t('structure', 'STATUS_SUBMITTED_SCREENED'),
+            static::STATUS_ACCEPTED                     => \Yii::t('structure', 'STATUS_ACCEPTED'),
+            static::STATUS_REJECTED                     => \Yii::t('structure', 'STATUS_REJECTED'),
+            static::STATUS_MODIFIED_ACCEPTED            => \Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
+            static::STATUS_MODIFIED                     => \Yii::t('structure', 'STATUS_MODIFIED'),
+            static::STATUS_ADOPTED                      => \Yii::t('structure', 'STATUS_ADOPTED'),
+            static::STATUS_COMPLETED                    => \Yii::t('structure', 'STATUS_COMPLETED'),
+            static::STATUS_REFERRED                     => \Yii::t('structure', 'STATUS_REFERRED'),
+            static::STATUS_VOTE                         => \Yii::t('structure', 'STATUS_VOTE'),
+            static::STATUS_PAUSED                       => \Yii::t('structure', 'STATUS_PAUSED'),
+            static::STATUS_MISSING_INFORMATION          => \Yii::t('structure', 'STATUS_MISSING_INFORMATION'),
+            static::STATUS_DISMISSED                    => \Yii::t('structure', 'STATUS_DISMISSED'),
+            static::STATUS_COLLECTING_SUPPORTERS        => \Yii::t('structure', 'STATUS_COLLECTING_SUPPORTERS'),
+            static::STATUS_DRAFT_ADMIN                  => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
+            static::STATUS_PROCESSED                    => \Yii::t('structure', 'STATUS_PROCESSED'),
+            static::STATUS_WITHDRAWN_INVISIBLE          => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
         ];
     }
 

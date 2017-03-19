@@ -3,6 +3,7 @@
 ### Version 3.6.1 (Not yet released)
 
 - When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status
+- An optional new internal status "Submitted (screened, not yet published)" was introduced between "unscreened" and "screened". 
 - Bugfix: When editing a motion submitted by an organization, the organization name was blank in the admin interface
 - Bugfix: The entered HTML code was not cleaned when editing a motion from the admin interface
 
