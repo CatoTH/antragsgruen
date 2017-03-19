@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\diff\AmendmentDiffMerger;
+use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -135,22 +136,26 @@ class MotionSection extends IMotionSection
      */
     public function getTextParagraphLines()
     {
-        $cached = $this->getCacheItem('getTextParagraphLines');
-        if ($cached !== null) {
-            return $cached;
-        }
-
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
+
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
+        $cacheDeps = [$lineLength, $this->data];
+        $cache = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
+        if ($cache) {
+            return $cache;
+        }
+
         $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
         $paragraphsLines = [];
         foreach ($paragraphs as $paraNo => $paragraph) {
             $lines = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
             $paragraphsLines[$paraNo] = $lines;
         }
-        $this->setCacheItem('getTextParagraphLines', $paragraphsLines);
+
+        HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphsLines);
+
         return $paragraphsLines;
     }
 

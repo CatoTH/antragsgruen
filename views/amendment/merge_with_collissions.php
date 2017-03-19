@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Amendment $amendment
+ * @var \app\models\db\Consultation $consultation
  * @var string[][] $paragraphSections
  */
 

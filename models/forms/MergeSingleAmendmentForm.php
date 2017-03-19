@@ -67,7 +67,7 @@ class MergeSingleAmendmentForm extends Model
             $amendmentParas = $section->getParagraphsRelativeToOriginal();
             if (isset($this->paragraphs[$section->sectionId])) {
                 foreach ($this->paragraphs[$section->sectionId] as $paraNo => $para) {
-                    $amendmentParas[$paraNo] = $para['modified'];
+                    $amendmentParas[$paraNo] = $para;
                 }
             }
             $newSections[$section->sectionId] = implode("\n", $amendmentParas);
@@ -85,6 +85,9 @@ class MergeSingleAmendmentForm extends Model
 
         foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             if ($this->mergeAmendment->id == $amendment->id) {
+                continue;
+            }
+            if (!isset($this->otherAmendStati[$amendment->id])) {
                 continue;
             }
             if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
@@ -175,6 +178,9 @@ class MergeSingleAmendmentForm extends Model
             if ($amendment->id == $this->mergeAmendment->id) {
                 continue;
             }
+            if (!isset($this->otherAmendStati[$amendment->id])) {
+                continue;
+            }
             if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
                 continue;
             }
@@ -206,6 +212,9 @@ class MergeSingleAmendmentForm extends Model
     {
         foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             if ($amendment->id == $this->mergeAmendment->id) {
+                continue;
+            }
+            if (!isset($this->otherAmendStati[$amendment->id])) {
                 continue;
             }
             if (!in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {

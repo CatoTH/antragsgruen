@@ -153,6 +153,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_step1_title'         => 'Status festlegen',
     'merge1_step2_title'         => 'Änderungen angeben',
     'merge1_step3_title'         => 'Kollissionen beheben',
+    'merge1_intro_user'          => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+            Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
+            bleiben aber abrufbar.',
     'merge1_introduction'        => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>

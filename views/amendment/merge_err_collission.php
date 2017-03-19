@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
+ * @var \app\models\db\Consultation $consultation
  * @var Amendment $amendment
  * @var Amendment[] $collidingAmendments
  */

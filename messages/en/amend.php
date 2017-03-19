@@ -145,6 +145,7 @@ return [
     'merge1_step1_title'         => 'Set status',
     'merge1_step2_title'         => 'Specify changes',
     'merge1_step3_title'         => 'Handle collisions',
+    'merge1_intro_user'          => 'Once the changes of this amendment are adopted, a new version of the motion including these changes is created. The original version and this amendment will be kept for reference.',
     'merge1_introduction'        => 'Once the changes of this amendment are adopted, a new version of the motion including these changes is created. The original version and this amendment will be kept for reference.<br><br>If adopting this amendment makes other amendments redundant, please mark them as such.<br><br><strong>Hint:</strong> if this changes parts of the motion that are affected by other amendments, a collision will occur. In this case, you need to manual edit the colliding amendments.',
     'merge1_status_intro'        => 'If other amendments are made redundant by this change (e.g. if they were covered by this amendment or rejected in favour of this one), you can mark them as such.<br>Amendments marked as rejected or adopted (modified) here do not lead to collisions.',
     'merge1_collission_intro'    => '<strong>There is a collision with an amendment</strong><br><br>The changes made are in conflict with an amendment. You need to edit the affected text passage of the amendment manually. Please rewrite the following text passages of the amendment to include the above changes, but <strong>preserve the meaning of the amendment</strong>.',

@@ -9,6 +9,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
+use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
@@ -284,7 +285,8 @@ class AmendmentController extends Base
             throw new NotFound('Amendment not found');
         }
         if (!$amendment->canMergeIntoMotion()) {
-            throw new Access('Not allowed to use this function');
+            \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         $newSectionParas       = \Yii::$app->request->post('newSections', []);
@@ -367,21 +369,49 @@ class AmendmentController extends Base
                     'collidingAmendments' => $amendment->getCollidingAmendments()
                 ]);
             } else {
-                throw new Access('Not allowed to use this function');
+                \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
+                return $this->redirect(UrlHelper::createUrl('consultation/index'));
             }
         }
 
-        $motion = $amendment->getMyMotion();
+        $motion        = $amendment->getMyMotion();
+        $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
+
+        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+            $collisionHandling = true;
+        } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+            $collisionHandling = true;
+        } else {
+            $collisionHandling = false;
+        }
 
         if ($this->isPostSet('save')) {
-            $form = new MergeSingleAmendmentForm(
-                $amendment,
-                \Yii::$app->request->post('motionTitlePrefix'),
-                \Yii::$app->request->post('amendmentStatus'),
-                \Yii::$app->request->post('newParas', []),
-                \Yii::$app->request->post('amendmentOverride', []),
-                \Yii::$app->request->post('otherAmendmentsStatus', [])
-            );
+            if ($collisionHandling) {
+                $form = new MergeSingleAmendmentForm(
+                    $amendment,
+                    \Yii::$app->request->post('motionTitlePrefix'),
+                    \Yii::$app->request->post('amendmentStatus'),
+                    \Yii::$app->request->post('newParas', []),
+                    \Yii::$app->request->post('amendmentOverride', []),
+                    \Yii::$app->request->post('otherAmendmentsStatus', [])
+                );
+            } else {
+                $newParas = [];
+                foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                    $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+                    $amendParas      = HTMLTools::sectionSimpleHTML($section->data);
+                    $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendParas, false);
+                    $newParas[$section->sectionId] = $paragraphsPlain;
+                }
+                $form = new MergeSingleAmendmentForm(
+                    $amendment,
+                    \Yii::$app->request->post('motionTitlePrefix'),
+                    Amendment::STATUS_ACCEPTED,
+                    $newParas,
+                    [],
+                    []
+                );
+            }
             if ($form->checkConsistency()) {
                 $newMotion = $form->performRewrite();
 
@@ -420,11 +450,19 @@ class AmendmentController extends Base
             $paragraphSections[$section->sectionId] = $paragraphs;
         }
 
-        return $this->render('merge', [
-            'motion'            => $motion,
-            'amendment'         => $amendment,
-            'paragraphSections' => $paragraphSections,
-        ]);
+        if ($collisionHandling) {
+            return $this->render('merge_with_collissions', [
+                'motion'            => $motion,
+                'amendment'         => $amendment,
+                'paragraphSections' => $paragraphSections,
+            ]);
+        } else {
+            return $this->render('merge_without_collissions', [
+                'motion'            => $motion,
+                'amendment'         => $amendment,
+                'paragraphSections' => $paragraphSections,
+            ]);
+        }
     }
 
     /**
