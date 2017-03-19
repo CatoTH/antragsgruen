@@ -3,6 +3,8 @@
 ### Version 3.6.1 (Not yet released)
 
 - When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status
+- Bugfix: When editing a motion submitted by an organization, the organization name was blank in the admin interface
+- Bugfix: The entered HTML code was not cleaned when editing a motion from the admin interface
 
 ## Version 3.6.0 (2017-02-17)
 
