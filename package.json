@@ -25,7 +25,7 @@
         "intl": "^1.2.5",
         "bootbox": "^4.4.0",
         "pdfjs-dist": "^1.6.361",
-        "eonasdan-bootstrap-datetimepicker": "^4.17.43",
+        "eonasdan-bootstrap-datetimepicker": "^4.17.47",
         "html5shiv": "^3.7.3",
         "typeahead.js": "^0.11.1",
         "fuelux": "^3.15.11",
