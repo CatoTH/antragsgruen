@@ -13,5 +13,9 @@ extensions:
     enabled:
         - Codeception\Extension\RunFailed
 modules:
+  config:
+    Yii2:
+      configFile: 'config/test.php'
+      cleanup: false
 config:
     test_entry_url: http://localhost:8081/index-test.php
