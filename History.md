@@ -1,6 +1,6 @@
 # Version history
 
-### Version 3.6.1 (Not yet released)
+### Version 3.6.1 (2017-03-19)
 
 - When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status
 - An optional new internal status "Submitted (screened, not yet published)" was introduced between "unscreened" and "screened". 
