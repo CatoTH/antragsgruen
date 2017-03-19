@@ -10,6 +10,7 @@
     border-radius: 0;
     margin-left: -1px;
     margin-right: -1px;
+    overflow: hidden;
 }
 
 .fuelux .wizard:before,
