@@ -385,6 +385,7 @@ class Consultation extends ActiveRecord
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
+            $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         }
         if ($withdrawnInvisible) {
             $invisible[] = IMotion::STATUS_WITHDRAWN;

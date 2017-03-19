@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
@@ -395,7 +396,11 @@ class MotionController extends AdminBase
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
                     $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
-                    $form->updateTextRewritingAmendments($motion, $post['sections'], $overrides);
+                    $newHtmls = [];
+                    foreach ($post['sections'] as $sectionId => $html) {
+                        $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
+                    }
+                    $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
