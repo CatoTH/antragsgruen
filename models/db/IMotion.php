@@ -98,6 +98,17 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return int[]
      */
+    public static function getScreeningStati()
+    {
+        return [
+            static::STATUS_SUBMITTED_UNSCREENED,
+            static::STATUS_SUBMITTED_UNSCREENED_CHECKED
+        ];
+    }
+
+    /**
+     * @return int[]
+     */
     public static function getStatiMarkAsDoneOnRewriting()
     {
         return [
