@@ -86,25 +86,25 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
 
     <div class="form-group">
         <label for="newTitle" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_title') ?>:</label>
-        <div class="col-md-8">
-            <?= Html::input(
+        <div class="col-md-8"><?php
+            echo Html::input(
                 'text',
                 'newConsultation[title]',
                 $createForm->title,
                 array_merge($textOpts, ['id' => 'newTitle'])
-            ) ?>
+            ); ?>
         </div>
     </div>
 
     <div class="form-group">
         <label for="newShort" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_short') ?>:</label>
-        <div class="col-md-4">
-            <?= Html::input(
+        <div class="col-md-4"><?php
+            echo Html::input(
                 'text',
                 'newConsultation[titleShort]',
                 $createForm->titleShort,
                 array_merge($textOpts, ['id' => 'newShort'])
-            ) ?>
+            ); ?>
         </div>
     </div>
 
@@ -133,12 +133,12 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 <?= \Yii::t('admin', 'cons_create_std') ?>:
             </label>
             <div class="col-md-8 checkbox">
-                <label>
-                    <?= Html::checkbox(
+                <label><?php
+                    echo Html::checkbox(
                         'newConsultation[setStandard]',
                         $createForm->setAsDefault,
                         ['id' => 'newSetStandard']
-                    ) ?>
+                    ); ?>
                     <?= \Yii::t('admin', 'cons_create_std_do') ?>
                 </label>
             </div>
@@ -180,12 +180,12 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 </button>
             </div>
         </div>
-        <div class="settingsTypeWizard siteCreate fuelux">
-            <?= $this->render(
-                '../../createsite_wizard/index',
+        <div class="settingsTypeWizard siteCreate fuelux"><?php
+            echo $this->render(
+                '../../createsiteWizard/index',
                 ['model' => $wizardModel, 'errors' => [], 'mode' => 'consultation']
-            ) ?>
-        </div>
+            );
+        ?></div>
 
     </div>
 

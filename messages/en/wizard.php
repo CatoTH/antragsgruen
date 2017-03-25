@@ -67,6 +67,11 @@ return [
     'amend_singlepara_single' => 'Only one passage',
     'amend_singlepara_multi'  => 'Multiple passages',
 
+    'amend_merging_title'  => 'Adopting amendments',
+    'amend_merging_desc'   => 'Are proposers of motions allowed to adopt amendments by themselves?',
+    'amend_merging_yes'    => 'Yes',
+    'amend_merging_no'     => 'No',
+
     'comments_title' => 'Comments to motions?',
     'comments_desc'  => 'Are users allowed to comment on motions and amendments?',
     'comments_no'    => 'No',

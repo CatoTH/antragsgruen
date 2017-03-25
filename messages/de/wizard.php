@@ -67,6 +67,11 @@ return [
     'amend_singlepara_single' => 'Nur eine Textstelle',
     'amend_singlepara_multi'  => 'Mehrere Textstellen',
 
+    'amend_merging_title'  => 'Änderungsanträge übernehmen',
+    'amend_merging_desc'   => 'Dürfen Antragsteller*innen von Anträgen zugehörige Änderungsanträge selbständig übernehmen?',
+    'amend_merging_yes'    => 'Ja',
+    'amend_merging_no'     => 'Nein',
+
     'comments_title' => 'Kommentieren von Anträgen?',
     'comments_desc'  => 'Benutzer*innen können (Änderungs-)Anträge absatzweise kommentieren',
     'comments_no'    => 'Nein',

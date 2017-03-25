@@ -25,7 +25,7 @@ $mode = ($controller->getParams()->mode == 'sandbox' ? 'sandbox' : 'subdomain');
 <div class="fuelux">
     <?php echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']); ?>
 
-    <?= $this->render('../createsite_wizard/index', ['model' => $model, 'errors' => $errors, 'mode' => $mode]) ?>
+    <?= $this->render('../createsiteWizard/index', ['model' => $model, 'errors' => $errors, 'mode' => $mode]) ?>
 
     <?= Html::endForm() ?>
 </div>
