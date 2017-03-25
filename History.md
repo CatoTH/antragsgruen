@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.2 [Not yet released]
+
+- Creating a motion/amendment using another one as template works now in combination with the support colling phase
+
 ### Version 3.6.1 (2017-03-19)
 
 - When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status

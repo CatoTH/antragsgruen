@@ -181,7 +181,7 @@ class MotionController extends Base
             $motionsFiltered = [];
             foreach ($motions as $motion) {
                 if ($texTemplate === null) {
-                    $texTemplate = $motion->motionType->texTemplate;
+                    $texTemplate       = $motion->motionType->texTemplate;
                     $motionsFiltered[] = $motion;
                 } elseif ($motion->motionType->texTemplate == $texTemplate) {
                     $motionsFiltered[] = $motion;
@@ -490,11 +490,28 @@ class MotionController extends Base
             }
         }
 
-        $form = new MotionEditForm($motionType, $agendaItem, null);
+        $form        = new MotionEditForm($motionType, $agendaItem, null);
+        $supportType = $motionType->getMotionSupportTypeClass();
+        $iAmAdmin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
                 $motion = $form->createMotion();
+
+                // Supporting members are not collected in the form, but need to be copied a well
+                if ($supportType->collectSupportersBeforePublication() && $adoptInitiators && $iAmAdmin) {
+                    $adoptMotion = $this->consultation->getMotion($adoptInitiators);
+                    foreach ($adoptMotion->motionSupporters as $supp) {
+                        if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
+                            $suppNew = new MotionSupporter();
+                            $suppNew->setAttributes($supp->getAttributes());
+                            $suppNew->id          = null;
+                            $suppNew->motionId = $motion->id;
+                            $suppNew->save();
+                        }
+                    }
+                }
+
                 return $this->redirect(UrlHelper::createMotionUrl($motion, 'createconfirm', [
                     'fromMode' => 'create',
                     'draftId'  => $this->getRequestValue('draftId'),
