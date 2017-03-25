@@ -231,7 +231,6 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-
     /**
      * @param Consultation $consultation
      * @param int $limit
@@ -257,7 +256,7 @@ class Motion extends IMotion implements IRSSItem
     public static function getScreeningMotions(Consultation $consultation)
     {
         $query = Motion::find();
-        $query->where('motion.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->where('motion.status IN (' . implode(', ', static::getScreeningStati()) . ')');
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->orderBy("dateCreation DESC");
 
@@ -442,7 +441,8 @@ class Motion extends IMotion implements IRSSItem
             Motion::STATUS_SUBMITTED_SCREENED,
             Motion::STATUS_SUBMITTED_UNSCREENED,
             Motion::STATUS_COLLECTING_SUPPORTERS
-        ])) {
+        ])
+        ) {
             return false;
         }
         return $this->iAmInitiator();

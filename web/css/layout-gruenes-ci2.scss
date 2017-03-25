@@ -309,6 +309,16 @@ footer.footer {
     li a, .icon {
       color: #46962b;
     }
+
+
+    button {
+      color: #46962b;
+      text-align: left;
+      padding: 10px 0;
+      &:hover {
+        background-color: #eee;
+      }
+    }
   }
   .nav-list {
     margin-bottom: 0;

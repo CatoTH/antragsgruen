@@ -49,12 +49,12 @@ class WurzelwerkSamlClient implements ClientInterface
      */
     public function getOrCreateUser()
     {
-        $email        = $this->params[static::PARAM_EMAIL][0];
-        $givenname    = $this->params[static::PARAM_GIVEN_NAME][0];
-        $familyname   = $this->params[static::PARAM_FAMILY_NAME][0];
-        $organization = substr($this->params[static::PARAM_ORGANIZATION][0], 0, 6);
-        $username     = $this->params[static::PARAM_USERNAME][0];
-        $auth         = User::wurzelwerkId2Auth($username);
+        $email         = $this->params[static::PARAM_EMAIL][0];
+        $givenname     = $this->params[static::PARAM_GIVEN_NAME][0];
+        $familyname    = $this->params[static::PARAM_FAMILY_NAME][0];
+        $organizations = ($this->params[static::PARAM_ORGANIZATION] ? $this->params[static::PARAM_ORGANIZATION] : []);
+        $username      = $this->params[static::PARAM_USERNAME][0];
+        $auth          = User::wurzelwerkId2Auth($username);
 
         /** @var User $user */
         $user = User::findOne(['auth' => $auth]);
@@ -75,10 +75,12 @@ class WurzelwerkSamlClient implements ClientInterface
         $params = \Yii::$app->params;
         if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
             $orgas = json_decode(file_get_contents($params->samlOrgaFile), true);
-            if ($organization && isset($orgas[$organization])) {
-                $user->organization = $orgas[$organization]['kurzname'];
-            } else {
-                $user->organization = '';
+            $user->organization = '';
+            foreach ($organizations as $organization) {
+                $orgaKv = substr($organization, 0, 6);
+                if (isset($orgas[$orgaKv])) {
+                    $user->organization = $orgas[$orgaKv]['kurzname'];
+                }
             }
         }
 

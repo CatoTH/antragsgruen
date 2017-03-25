@@ -5,6 +5,10 @@
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
+### Version 3.6.2 [Not yet released]
+
+- Creating a motion/amendment using another one as template works now in combination with the support colling phase
+
 ### Version 3.6.1 (2017-03-19)
 
 - When withdrawing a motion that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status

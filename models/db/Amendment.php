@@ -411,7 +411,7 @@ class Amendment extends IMotion implements IRSSItem
     public static function getScreeningAmendments(Consultation $consultation)
     {
         $query = Amendment::find();
-        $query->where('amendment.status = ' . static::STATUS_SUBMITTED_UNSCREENED);
+        $query->where('amendment.status IN (' . implode(', ', static::getScreeningStati()) . ')');
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($consultation) {

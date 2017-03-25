@@ -551,12 +551,29 @@ class AmendmentController extends Base
             }
         }
 
-        $form = new AmendmentEditForm($motion, null);
+        $form        = new AmendmentEditForm($motion, null);
+        $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
+        $iAmAdmin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
                 $amendment = $form->createAmendment();
-                $nextUrl   = [
+
+                // Supporting members are not collected in the form, but need to be copied a well
+                if ($supportType->collectSupportersBeforePublication() && $adoptInitiators && $iAmAdmin) {
+                    $adoptAmend = $this->consultation->getAmendment($adoptInitiators);
+                    foreach ($adoptAmend->amendmentSupporters as $supp) {
+                        if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
+                            $suppNew = new AmendmentSupporter();
+                            $suppNew->setAttributes($supp->getAttributes());
+                            $suppNew->id          = null;
+                            $suppNew->amendmentId = $amendment->id;
+                            $suppNew->save();
+                        }
+                    }
+                }
+
+                $nextUrl = [
                     'amendment/createconfirm',
                     'motionSlug'  => $motionSlug,
                     'amendmentId' => $amendment->id,
@@ -575,7 +592,6 @@ class AmendmentController extends Base
         if (count($form->supporters) == 0) {
             $supporter       = new AmendmentSupporter();
             $supporter->role = AmendmentSupporter::ROLE_INITIATOR;
-            $iAmAdmin        = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
