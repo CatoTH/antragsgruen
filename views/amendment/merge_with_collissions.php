@@ -32,10 +32,8 @@ $this->title = $amendment->getTitle() . ': ' . \Yii::t('amend', 'merge1_title');
 
 /** @var Amendment[] $otherAmendments */
 $otherAmendments = [];
-foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $otherAmend) {
-    if ($otherAmend->id != $amendment->id) {
-        $otherAmendments[] = $otherAmend;
-    }
+foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]) as $otherAmend) {
+    $otherAmendments[] = $otherAmend;
 }
 $needsCollissionCheck = (count($otherAmendments) > 0);
 

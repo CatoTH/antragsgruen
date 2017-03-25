@@ -302,10 +302,7 @@ class AmendmentController extends Base
 
 
         $collissions = $amendments = [];
-        foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {
-            if ($amend->id == $amendment->id) {
-                continue;
-            }
+        foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]) as $amend) {
             if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
                 continue;
             }
@@ -403,13 +400,17 @@ class AmendmentController extends Base
                     $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendParas, false);
                     $newParas[$section->sectionId] = $paragraphsPlain;
                 }
+                $newAmendmentStati = [];
+                foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
+                    $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
+                }
                 $form = new MergeSingleAmendmentForm(
                     $amendment,
                     \Yii::$app->request->post('motionTitlePrefix'),
                     Amendment::STATUS_ACCEPTED,
                     $newParas,
                     [],
-                    []
+                    $newAmendmentStati
                 );
             }
             if ($form->checkConsistency()) {

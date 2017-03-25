@@ -664,10 +664,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $colliding = [];
-        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollissionDetection() as $amend) {
-            if ($amend->id == $this->id) {
-                continue;
-            }
+        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$this]) as $amend) {
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollissions($mySections[$section->sectionId], false, false);
                 if (count($coll) > 0) {

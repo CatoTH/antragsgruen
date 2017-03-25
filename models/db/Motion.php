@@ -317,12 +317,16 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param null|Amendment[] $exclude
      * @return Amendment[]
      */
-    public function getAmendmentsRelevantForCollissionDetection()
+    public function getAmendmentsRelevantForCollissionDetection($exclude = null)
     {
         $amendments = [];
         foreach ($this->amendments as $amendment) {
+            if ($exclude && in_array($amendment, $exclude)) {
+                continue;
+            }
             if ($amendment->status != Amendment::STATUS_DELETED && $amendment->status != Amendment::STATUS_DRAFT) {
                 $amendments[] = $amendment;
             }
