@@ -17,27 +17,28 @@ trait Motion
      */
     public static function doCreateMotionType(Consultation $consultation)
     {
-        $type                              = new ConsultationMotionType();
-        $type->consultationId              = $consultation->id;
-        $type->titleSingular               = \Yii::t('structure', 'preset_motion_singular');
-        $type->titlePlural                 = \Yii::t('structure', 'preset_motion_plural');
-        $type->createTitle                 = \Yii::t('structure', 'preset_motion_call');
-        $type->position                    = 0;
-        $type->policyMotions               = IPolicy::POLICY_ALL;
-        $type->policyAmendments            = IPolicy::POLICY_ALL;
-        $type->policyComments              = IPolicy::POLICY_ALL;
-        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->contactName                 = ConsultationMotionType::CONTACT_NONE;
-        $type->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail                = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->supportType                 = ISupportType::ONLY_INITIATOR;
-        $type->texTemplateId               = 1;
-        $type->amendmentMultipleParagraphs = 1;
-        $type->motionLikesDislikes         = 0;
-        $type->amendmentLikesDislikes      = 0;
-        $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
-        $type->layoutTwoCols               = 0;
+        $type                               = new ConsultationMotionType();
+        $type->consultationId               = $consultation->id;
+        $type->titleSingular                = \Yii::t('structure', 'preset_motion_singular');
+        $type->titlePlural                  = \Yii::t('structure', 'preset_motion_plural');
+        $type->createTitle                  = \Yii::t('structure', 'preset_motion_call');
+        $type->position                     = 0;
+        $type->policyMotions                = IPolicy::POLICY_ALL;
+        $type->policyAmendments             = IPolicy::POLICY_ALL;
+        $type->policyComments               = IPolicy::POLICY_ALL;
+        $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
+        $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+        $type->contactName                  = ConsultationMotionType::CONTACT_NONE;
+        $type->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
+        $type->contactEmail                 = ConsultationMotionType::CONTACT_REQUIRED;
+        $type->supportType                  = ISupportType::ONLY_INITIATOR;
+        $type->texTemplateId                = 1;
+        $type->amendmentMultipleParagraphs  = 1;
+        $type->motionLikesDislikes          = 0;
+        $type->amendmentLikesDislikes       = 0;
+        $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
+        $type->layoutTwoCols                = 0;
         $type->save();
 
         return $type;

@@ -157,7 +157,7 @@ class MotionController extends AdminBase
                 if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
                 }
-                $motionType->motionLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->motionLikesDislikes    |= ISupportType::LIKEDISLIKE_SUPPORT;
                 $motionType->amendmentLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
                 $motionType->save();
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
@@ -219,21 +219,22 @@ class MotionController extends AdminBase
                     }
                 }
                 if (!$motionType) {
-                    $motionType                              = new ConsultationMotionType();
-                    $motionType->consultationId              = $this->consultation->id;
-                    $motionType->layoutTwoCols               = 0;
-                    $motionType->policyMotions               = IPolicy::POLICY_ALL;
-                    $motionType->policyAmendments            = IPolicy::POLICY_ALL;
-                    $motionType->policyComments              = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
-                    $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
-                    $motionType->contactName                 = ConsultationMotionType::CONTACT_NONE;
-                    $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->amendmentMultipleParagraphs = 1;
-                    $motionType->position                    = 0;
-                    $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
-                    $motionType->status                      = 0;
+                    $motionType                               = new ConsultationMotionType();
+                    $motionType->consultationId               = $this->consultation->id;
+                    $motionType->layoutTwoCols                = 0;
+                    $motionType->policyMotions                = IPolicy::POLICY_ALL;
+                    $motionType->policyAmendments             = IPolicy::POLICY_ALL;
+                    $motionType->policyComments               = IPolicy::POLICY_NOBODY;
+                    $motionType->policySupportMotions         = IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments      = IPolicy::POLICY_ALL;
+                    $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+                    $motionType->contactName                  = ConsultationMotionType::CONTACT_NONE;
+                    $motionType->contactEmail                 = ConsultationMotionType::CONTACT_OPTIONAL;
+                    $motionType->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
+                    $motionType->amendmentMultipleParagraphs  = 1;
+                    $motionType->position                     = 0;
+                    $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
+                    $motionType->status                       = 0;
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
@@ -334,7 +335,7 @@ class MotionController extends AdminBase
         $collissions = $amendments = [];
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
                         $amendments[$amendment->id]  = $amendment;
@@ -396,7 +397,7 @@ class MotionController extends AdminBase
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
                     $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
-                    $newHtmls = [];
+                    $newHtmls  = [];
                     foreach ($post['sections'] as $sectionId => $html) {
                         $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
                     }

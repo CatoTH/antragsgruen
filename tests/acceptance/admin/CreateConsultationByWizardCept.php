@@ -58,6 +58,9 @@ $I->click('#panelAmendDeadline .value-1');
 $I->fillField('#panelAmendDeadline .value-1 .date input', '30.11.2026 20:00');
 $I->click('#panelAmendDeadline button.btn-next');
 
+$I->click('#panelAmendMerging .value-1');
+$I->click('#panelAmendMerging button.btn-next');
+
 $I->click('#panelAmendScreening .value-1');
 $I->click('#panelAmendScreening button.btn-next');
 
