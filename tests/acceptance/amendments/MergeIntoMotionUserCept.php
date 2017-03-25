@@ -24,6 +24,11 @@ $I->logout();
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
 
+$I->gotoMotion(true, 2);
+$I->see('Ä2', '.bookmarks');
+$I->see('Ä7', '.bookmarks');
+$I->see('Biawambn gscheid: Griasd', 'p');
+
 $I->gotoAmendment(true, 2, 3);
 $I->see('In den Antrag übernehmen', '#sidebar');
 $I->click('#sidebar .mergeIntoMotion a');
@@ -37,4 +42,22 @@ $I->gotoAmendment(true, 2, 276);
 $I->see('In den Antrag übernehmen', '#sidebar');
 $I->click('#sidebar .mergeIntoMotion a');
 $I->seeElement('#amendmentMergeForm');
+$I->fillField('#motionTitlePrefix', 'A2new');
+$I->submitForm('#amendmentMergeForm', [], 'save');
+$I->see('Der Änderungsantrag wurde eingepflegt.');
+$I->click('.btn-primary');
 
+$I->wantTo('see the new motion');
+$I->see('A2new', 'h1');
+$I->see('Ä2', '.bookmarks');
+$I->dontSee('Ä7', '.bookmarks');
+$I->dontSee('Biawambn gscheid: Griasd', 'p');
+$I->see('Biawambn gscheid:', 'p');
+$I->see('Griasd eich midnand', 'p');
+
+$I->wantTo('see the old motion');
+$I->see('A2', '.replacesMotion');
+$I->click('.replacesMotion a');
+$I->see('A2:', 'h1');
+$I->dontSee('Ä2', '.bookmarks');
+$I->see('Ä7', '.bookmarks');
