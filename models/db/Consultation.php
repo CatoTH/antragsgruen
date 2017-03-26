@@ -242,6 +242,21 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param int $type
+     * @return UserNotification[]
+     */
+    public function getUserNotificationsType($type)
+    {
+        $notis = [];
+        foreach ($this->userNotifications as $userNotification) {
+            if ($userNotification->notificationType == $type) {
+                $notis[] = $userNotification;
+            }
+        }
+        return $notis;
+    }
+
+    /**
      * @param int $motionTypeId
      * @return ConsultationMotionType
      * @throws NotFound
@@ -592,7 +607,7 @@ class Consultation extends ActiveRecord
      */
     public function setDeleted()
     {
-        $this->urlPath    = null;
+        $this->urlPath      = null;
         $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
     }

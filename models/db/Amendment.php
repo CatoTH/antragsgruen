@@ -8,12 +8,12 @@ use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
-use app\components\EmailNotifications;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -795,20 +795,10 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::log($this->getMyConsultation(), $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
 
         if ($this->datePublication === null) {
-            $motionType = UserNotification::NOTIFICATION_NEW_AMENDMENT;
-            $notified   = [];
-            foreach ($this->getMyConsultation()->userNotifications as $noti) {
-                if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
-                    $noti->user->notifyAmendment($this);
-                    $notified[]             = $noti->userId;
-                    $noti->lastNotification = date('Y-m-d H:i:s');
-                    $noti->save();
-                }
-            }
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            EmailNotifications::sendAmendmentOnPublish($this);
+            new AmendmentPublishedNotification($this);
         }
     }
 

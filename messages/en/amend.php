@@ -77,7 +77,7 @@ return [
     'published_email_title'             => 'Your amendment has been published',
     'sidebar_adminedit'                 => 'Admin: edit',
     'sidebar_back'                      => 'Back to the motion',
-    'sidebar_mergeintomotion'           => 'Merge into motion',
+    'sidebar_mergeintomotion'           => 'Adopt changes into motion',
     'back_to_amend'                     => 'Back to the amendment',
     'initiated_by'                      => 'Submitted by',
     'confirm_bread'                     => 'Confirm',

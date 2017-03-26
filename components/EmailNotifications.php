@@ -154,53 +154,6 @@ class EmailNotifications
     /**
      * @param Amendment $amendment
      */
-    public static function sendAmendmentOnPublish(Amendment $amendment)
-    {
-        if (!$amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-            return;
-        }
-
-        $initiator = $amendment->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-            $plain         = str_replace(
-                ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
-                [$amendmentLink, $amendment->getMyMotion()->titlePrefix, $initiator[0]->getGivenNameOrFull()],
-                \Yii::t('amend', 'published_email_body')
-            );
-
-            $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-            $sections = $amendment->getSortedSections(true);
-            foreach ($sections as $section) {
-                $amendmentHtml .= '<div>';
-                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-                $amendmentHtml .= '</div>';
-            }
-
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-            $plain .= HTMLTools::toPlainText($html);
-
-            try {
-                MailTools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $amendment->getMyConsultation()->site,
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    \Yii::t('amend', 'published_email_title'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-                $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                \yii::$app->session->setFlash('error', $errMsg);
-            }
-        }
-    }
-
-    /**
-     * @param Amendment $amendment
-     */
     public static function sendAmendmentSubmissionConfirm(Amendment $amendment)
     {
         if (!$amendment->getMyConsultation()->getSettings()->initiatorConfirmEmails) {

@@ -11,6 +11,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\db\UserNotification;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
@@ -359,6 +360,14 @@ class MotionController extends Base
                 EmailNotifications::sendMotionSubmissionConfirm($motion);
             }
 
+            if (User::getCurrentUser()) {
+                UserNotification::addNotification(
+                    User::getCurrentUser(),
+                    $this->consultation,
+                    UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION
+                );
+            }
+
             return $this->redirect(UrlHelper::createMotionUrl($motion, 'createdone', ['fromMode' => $fromMode]));
         } else {
             $params                  = ['motion' => $motion, 'mode' => $fromMode];
@@ -505,7 +514,7 @@ class MotionController extends Base
                         if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
                             $suppNew = new MotionSupporter();
                             $suppNew->setAttributes($supp->getAttributes());
-                            $suppNew->id          = null;
+                            $suppNew->id       = null;
                             $suppNew->motionId = $motion->id;
                             $suppNew->save();
                         }

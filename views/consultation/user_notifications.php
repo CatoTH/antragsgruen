@@ -28,7 +28,7 @@ if ($user->email == '' || !$user->emailConfirmed) {
 }
 
 
-$activeMotions = $activeAmendments = $activeComments = false;
+$activeMotions = $activeAmendments = $activeComments = $activeAmendmentMyMotion = false;
 foreach ($notifications as $noti) {
     switch ($noti->notificationType) {
         case UserNotification::NOTIFICATION_NEW_MOTION:
@@ -40,6 +40,8 @@ foreach ($notifications as $noti) {
         case UserNotification::NOTIFICATION_NEW_COMMENT:
             $activeComments = true;
             break;
+        case UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION:
+            $activeAmendmentMyMotion = true;
     }
 }
 
@@ -53,21 +55,44 @@ echo '<fieldset class="col-md-8 col-md-offset-2">
 
   <div class="checkbox">
     <label>' .
-    Html::checkbox('notifications[]', $activeMotions, ['class' => 'notiMotion', 'value' => 'motion']) .
+    Html::checkbox(
+        'notifications[]',
+        $activeMotions,
+        ['class' => 'notiMotion', 'value' => 'motion']
+    ) .
     \Yii::t('con', 'noti_motions') .
     '</label>
   </div>
 
   <div class="checkbox">
     <label>' .
-    Html::checkbox('notifications[]', $activeAmendments, ['class' => 'notiAmendment', 'value' => 'amendment']) .
+    Html::checkbox(
+        'notifications[]',
+        $activeAmendments,
+        ['class' => 'notiAmendment', 'value' => 'amendment']
+    ) .
     \Yii::t('con', 'noti_amendments') .
     '</label>
   </div>
 
   <div class="checkbox">
     <label>' .
-    Html::checkbox('notifications[]', $activeComments, ['class' => 'notiComment', 'value' => 'comment']) .
+    Html::checkbox(
+        'notifications[]',
+        $activeAmendmentMyMotion,
+        ['class' => 'amendmentMyMotion', 'value' => 'amendmentMyMotion']
+    ) .
+    \Yii::t('con', 'noti_amendments_my_motion') .
+    '</label>
+  </div>
+
+  <div class="checkbox">
+    <label>' .
+    Html::checkbox(
+        'notifications[]',
+        $activeComments,
+        ['class' => 'notiComment', 'value' => 'comment']
+    ) .
     \Yii::t('con', 'noti_comments') .
     '</label>
   </div>

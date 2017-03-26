@@ -554,22 +554,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @param Amendment $amendment
-     */
-    public function notifyAmendment(Amendment $amendment)
-    {
-        $motionTitle = $amendment->getMyMotion()->getTitleWithPrefix();
-        $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
-        $link        = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-        $text        = str_replace(
-            ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$amendment->getMyConsultation()->title, $motionTitle, $link],
-            \Yii::t('user', 'noti_new_motion_body')
-        );
-        $this->notificationEmail($amendment->getMyConsultation(), $subject, $text);
-    }
-
-    /**
      * @param IComment $comment
      */
     public function notifyComment(IComment $comment)

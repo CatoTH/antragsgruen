@@ -41,14 +41,15 @@ return [
     'activity_bc'    => 'Activities',
     'activity_title' => 'Activity log',
 
-    'noti_title'        => 'Notifications',
-    'noti_bc'           => 'Notifications',
-    'noti_err_no_email' => '<strong>No E-mail-address</strong><br>
+    'noti_title'                => 'Notifications',
+    'noti_bc'                   => 'Notifications',
+    'noti_err_no_email'         => '<strong>No E-mail-address</strong><br>
   If you want to be notified about eventy by e-mail, you have to enter your address.<br><br>
   You can do so in the <a href="%URL%">preferences</a>.',
-    'noti_triggers'     => 'What do you want to be notified about?',
-    'noti_motions'      => 'New motions / applications',
-    'noti_amendments'   => 'New amendments',
-    'noti_comments'     => 'New comments',
-    'noti_save'         => 'Save',
+    'noti_triggers'             => 'What do you want to be notified about?',
+    'noti_motions'              => 'New motions / applications',
+    'noti_amendments'           => 'New amendments (all)',
+    'noti_amendments_my_motion' => 'New amendments (my motions)',
+    'noti_comments'             => 'New comments',
+    'noti_save'                 => 'Save',
 ];

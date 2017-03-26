@@ -41,14 +41,15 @@ return [
     'activity_bc'    => 'Aktivitäten',
     'activity_title' => 'Aktivitäts-Protokoll',
 
-    'noti_title'        => 'Benachrichtigungen',
-    'noti_bc'           => 'Benachrichtigungen',
-    'noti_err_no_email' => '<strong>Keine E-Mail-Adresse</strong><br>
+    'noti_title'                => 'Benachrichtigungen',
+    'noti_bc'                   => 'Benachrichtigungen',
+    'noti_err_no_email'         => '<strong>Keine E-Mail-Adresse</strong><br>
   Um E-Mail-Benachrichtigungen zu nutzen, musst du eine E-Mail-Adresse angegeben dund bestätigt haben.
   Du kannst das in deinen <a href="%URL%">Einstellungen</a> tun.',
-    'noti_triggers'     => 'Wann willst du per E-Mail benachrichtigt werden?',
-    'noti_motions'      => 'Neue Anträge / Bewerbungen',
-    'noti_amendments'   => 'Neue Änderungsanträge',
-    'noti_comments'     => 'Neue Kommentare',
-    'noti_save'         => 'Speichern',
+    'noti_triggers'             => 'Wann willst du per E-Mail benachrichtigt werden?',
+    'noti_motions'              => 'Neue Anträge / Bewerbungen',
+    'noti_amendments'           => 'Neue Änderungsanträge (alle Anträge)',
+    'noti_amendments_my_motion' => 'Neue Änderungsanträge (meine Anträge)',
+    'noti_comments'             => 'Neue Kommentare',
+    'noti_save'                 => 'Speichern',
 ];
