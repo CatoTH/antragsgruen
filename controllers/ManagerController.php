@@ -32,6 +32,16 @@ class ManagerController extends Base
             \Yii::$app->request->enableCookieValidation = false;
         }
 
+        if (!$this->getParams()->multisiteMode) {
+            return false;
+        }
+
+        $currentHost = parse_url(\Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
+        $managerHost = parse_url($this->getParams()->domainPlain, PHP_URL_HOST);
+        if ($currentHost != $managerHost) {
+            return $this->redirect($this->getParams()->domainPlain, 301);
+        }
+
         return parent::beforeAction($action);
     }
 
@@ -60,7 +70,7 @@ class ManagerController extends Base
 
         $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
         $html         = '<ul class="nav nav-list current-uses-list">';
-        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
+        $html         .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sitesCurrent as $data) {
             $html .= '<li>';
             if ($data['organization'] != '') {
@@ -68,14 +78,14 @@ class ManagerController extends Base
             }
             $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
         }
-        $html .= '</ul>';
+        $html                            .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
 
 
         $sitesOld = $this->getParams()->getBehaviorClass()->getManagerOldSidebarSites($sitesOld);
         $html     = '<ul class="nav nav-list current-uses-list old-uses-list">';
-        $html .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_old_uses') . '</li>';
-        $html .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');
+        $html     .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_old_uses') . '</li>';
+        $html     .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');
             $(\'.old-uses-list .shower\').addClass(\'hidden\'); return false;" style="font-style: italic;">' .
             \Yii::t('manager', 'sidebar_old_uses_show') . '</a></li>';
 
@@ -86,7 +96,7 @@ class ManagerController extends Base
             }
             $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
         }
-        $html .= '</ul>';
+        $html                            .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
 
     }
