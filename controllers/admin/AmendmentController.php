@@ -151,7 +151,7 @@ class AmendmentController extends AdminBase
         $form = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
         $form->setAdminMode(true);
 
-        if ($this->isPostSet('screen') && $amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+        if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
             } else {

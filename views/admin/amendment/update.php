@@ -57,7 +57,7 @@ echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 echo $controller->showErrors();
 
 
-if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+if ($amendment->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
     $newRev = $amendment->titlePrefix;
     if ($newRev == '') {

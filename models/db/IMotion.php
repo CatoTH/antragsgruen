@@ -107,6 +107,14 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function isInScreeningProcess()
+    {
+        return in_array($this->status, IMotion::getScreeningStati());
+    }
+
+    /**
      * @return int[]
      */
     public static function getStatiMarkAsDoneOnRewriting()

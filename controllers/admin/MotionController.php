@@ -369,7 +369,7 @@ class MotionController extends AdminBase
         $form = new MotionEditForm($motion->motionType, $motion->agendaItem, $motion);
         $form->setAdminMode(true);
 
-        if ($this->isPostSet('screen') && $motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+        if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
             } else {

@@ -71,6 +71,7 @@ $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
 $statiNames            = Amendment::getStati();
 switch ($amendment->status) {
     case Amendment::STATUS_SUBMITTED_UNSCREENED:
+    case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
         echo '<span class="unscreened">' . Html::encode($statiNames[$amendment->status]) . '</span>';
         break;
     case Amendment::STATUS_SUBMITTED_SCREENED:

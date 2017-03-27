@@ -84,7 +84,7 @@ foreach ($tagIds as $tagId) {
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
-        if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+        if ($motion->isInScreeningProcess()) {
             $classes[] = 'unscreened';
         }
         echo '<tr class="' . implode(' ', $classes) . '">';
