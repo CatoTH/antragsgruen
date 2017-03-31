@@ -289,9 +289,19 @@ class AmendmentController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $newSectionParas       = \Yii::$app->request->post('newSections', []);
-        $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
-        $newSections           = [];
+        $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]);
+
+        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+            $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
+        } else {
+            $otherAmendmentsStatus = [];
+            foreach ($otherAmendments as $newAmendment) {
+                $otherAmendmentsStatus[$newAmendment->id] = $newAmendment->status;
+            }
+        }
+
+        $newSectionParas = \Yii::$app->request->post('newSections', []);
+        $newSections     = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
                 $section->getOriginalMotionSection()->data,
@@ -300,9 +310,8 @@ class AmendmentController extends Base
             );
         }
 
-
         $collissions = $amendments = [];
-        foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]) as $amend) {
+        foreach ($otherAmendments as $amend) {
             if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
                 continue;
             }
@@ -375,14 +384,26 @@ class AmendmentController extends Base
         $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
 
         if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
-            $collisionHandling = true;
+            $collisionHandling   = true;
+            $allowStatusChanging = true;
         } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
-            $collisionHandling = true;
+            $collisionHandling   = true;
+            $allowStatusChanging = false;
         } else {
-            $collisionHandling = false;
+            $collisionHandling   = false;
+            $allowStatusChanging = false;
         }
 
         if ($this->isPostSet('save')) {
+            if ($allowStatusChanging) {
+                $newAmendmentStati = \Yii::$app->request->post('otherAmendmentsStatus', []);
+            } else {
+                $newAmendmentStati = [];
+                foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
+                    $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
+                }
+            }
+
             if ($collisionHandling) {
                 $form = new MergeSingleAmendmentForm(
                     $amendment,
@@ -390,7 +411,7 @@ class AmendmentController extends Base
                     \Yii::$app->request->post('amendmentStatus'),
                     \Yii::$app->request->post('newParas', []),
                     \Yii::$app->request->post('amendmentOverride', []),
-                    \Yii::$app->request->post('otherAmendmentsStatus', [])
+                    $newAmendmentStati
                 );
             } else {
                 $newParas = [];
@@ -398,11 +419,8 @@ class AmendmentController extends Base
                     $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
                     $amendParas      = HTMLTools::sectionSimpleHTML($section->data);
                     $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendParas, false);
+
                     $newParas[$section->sectionId] = $paragraphsPlain;
-                }
-                $newAmendmentStati = [];
-                foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
-                    $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
                 }
                 $form = new MergeSingleAmendmentForm(
                     $amendment,
@@ -453,9 +471,10 @@ class AmendmentController extends Base
 
         if ($collisionHandling) {
             return $this->render('merge_with_collissions', [
-                'motion'            => $motion,
-                'amendment'         => $amendment,
-                'paragraphSections' => $paragraphSections,
+                'motion'              => $motion,
+                'amendment'           => $amendment,
+                'paragraphSections'   => $paragraphSections,
+                'allowStatusChanging' => $allowStatusChanging
             ]);
         } else {
             return $this->render('merge_without_collissions', [

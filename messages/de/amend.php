@@ -164,6 +164,12 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
             Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
+    'merge1_introduction_user'   => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+            Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
+            bleiben aber abrufbar.<br><br>
+            <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
+            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.
+            In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
     'merge1_status_intro'        => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
             (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zu Gunsten dieses abgelehnt wurden)
             können sie hier entsprechend markiert werden.<br>
@@ -196,8 +202,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_submitted_on'        => 'am',
     'merge1_no_collissions'      => 'Keine Konflikte zu bestehenden Änderungsanträgen',
     'merge1_manual_changes'      => 'Vorgenommene Änderungen',
-    'merge1_manual_amend'        => 'Änderungen des Änderungsantrags',
-    'merge1_manual_new'          => 'Neuer Änderungsantrag',
+    'merge1_manual_amend'        => 'Änderungen des kollidierenden Änderungsantrags %AMEND%',
+    'merge1_manual_new'          => 'Neue Version des kollidierenden Änderungsantrags %AMEND%',
     'merge1_err_collission'      => 'Kann nicht automatisch übernommen werden',
     'merge1_err_collission_desc' => 'Dieser Änderungsantrag kann leider nicht direkt übernommen werden, da sich einige Änderungen mit Änderungen anderer Änderungsanträge überschneiden. Die kollidierenden Änderungsanträge müssen zunächst zurückgezogen oder von den Antragsteller*innen oder den Administrator*innen angepasst werden. Melde sich bei Fragen am besten direkt bei den Administrator*innen, um diesen Konflikt zu lösen.<br><br>Um folgende Änderungsanträge geht es konkret:',
 ];

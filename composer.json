@@ -25,9 +25,10 @@
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
     "phpoffice/phpexcel": "^1.8.1",
     "catoth/html2opendocument": "0.8",
-    "simplesamlphp/simplesamlphp": "^1.14.11",
+    "simplesamlphp/simplesamlphp": "^1.14.12",
     "zendframework/zend-servicemanager": "^3.3.0",
-    "setasign/fpdi-tcpdf": "^1.6"
+    "setasign/fpdi-tcpdf": "^1.6",
+    "phpseclib/mcrypt_compat": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.0.9",

@@ -8,6 +8,7 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
  * @var string[][] $paragraphSections
+ * @var bool $allowStatusChanging
  */
 
 /** @var \app\controllers\Base $controller */
@@ -47,11 +48,14 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
             <li data-target="#step1" class="goto_step1">
                 <?= \Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>
             </li>
-            <?php if ($needsCollissionCheck) { ?>
+            <?php
+            if ($needsCollissionCheck) { ?>
                 <li data-target="#step2" class="goto_step2">
                     <?= \Yii::t('amend', 'merge1_step2_title') ?><span class="chevron"></span>
                 </li>
-            <?php } ?>
+            <?php
+            }
+            ?>
             <li data-target="#step3" class="goto_step3">
                 <?= \Yii::t('amend', 'merge1_step3_title') ?><span class="chevron"></span>
             </li>
@@ -60,8 +64,9 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
 <?php
 
 echo $this->render('_merge_step1', [
-    'amendment'       => $amendment,
-    'otherAmendments' => $otherAmendments,
+    'amendment'           => $amendment,
+    'otherAmendments'     => $otherAmendments,
+    'allowStatusChanging' => $allowStatusChanging
 ]);
 echo $this->render('_merge_step2', [
     'amendment'            => $amendment,
