@@ -40,7 +40,7 @@ echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
 echo '<div class="motionData">';
 
-if (!$motion->getConsultation()->getSettings()->minimalisticUI) {
+if (!$motion->getMyConsultation()->getSettings()->minimalisticUI) {
     include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
 }
 

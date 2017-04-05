@@ -80,7 +80,7 @@ trait MotionActionsTrait
 
         try {
             $comment = $commentForm->saveMotionComment($motion);
-            ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
+            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
             if ($comment->status == MotionComment::STATUS_SCREENING) {
                 \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
@@ -115,7 +115,11 @@ trait MotionActionsTrait
         if (!$comment->save(false)) {
             throw new DB($comment->getErrors());
         }
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+        ConsultationLog::logCurrUser(
+            $motion->getMyConsultation(),
+            ConsultationLog::MOTION_COMMENT_DELETE,
+            $comment->id
+        );
 
         \Yii::$app->session->setFlash('success', \Yii::t('comment', 'del_done'));
     }
@@ -141,7 +145,11 @@ trait MotionActionsTrait
 
         $motion->refresh();
 
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
+        ConsultationLog::logCurrUser(
+            $motion->getMyConsultation(),
+            ConsultationLog::MOTION_COMMENT_SCREEN,
+            $comment->id
+        );
 
         $comment->sendPublishNotifications();
     }
@@ -167,7 +175,11 @@ trait MotionActionsTrait
 
         $motion->refresh();
 
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_COMMENT_DELETE, $comment->id);
+        ConsultationLog::logCurrUser(
+            $motion->getMyConsultation(),
+            ConsultationLog::MOTION_COMMENT_DELETE,
+            $comment->id
+        );
     }
 
     /**
@@ -202,7 +214,7 @@ trait MotionActionsTrait
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'));
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_LIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_LIKE, $motion->id);
     }
 
     /**
@@ -240,7 +252,7 @@ trait MotionActionsTrait
         }
 
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
         if (count($motion->getSupporters()) == $supportType->getMinNumberOfSupporters()) {
             EmailNotifications::sendMotionSupporterMinimumReached($motion);
@@ -257,7 +269,7 @@ trait MotionActionsTrait
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'));
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_DISLIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_DISLIKE, $motion->id);
     }
 
     /**
@@ -278,7 +290,7 @@ trait MotionActionsTrait
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
 
@@ -300,7 +312,7 @@ trait MotionActionsTrait
             EmailNotifications::sendMotionSubmissionConfirm($motion);
         }
 
-        ConsultationLog::logCurrUser($motion->getConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
+        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT_FINISH, $motion->id);
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_finish_done'));
     }
 
@@ -313,7 +325,7 @@ trait MotionActionsTrait
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($motion->getConsultation()->tags as $tag) {
+        foreach ($motion->getMyConsultation()->tags as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
                 $motion->link('tags', $tag);
             }
@@ -329,7 +341,7 @@ trait MotionActionsTrait
         if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
-        foreach ($motion->getConsultation()->tags as $tag) {
+        foreach ($motion->getMyConsultation()->tags as $tag) {
             if ($tag->id == \Yii::$app->request->post('tagId')) {
                 $motion->unlink('tags', $tag, true);
             }

@@ -155,7 +155,6 @@ class SiteCreateWizard {
     }
 
     subdomainChange(ev) {
-        console.log(ev, ev.currentTarget);
         let $this = $(ev.currentTarget),
             subdomain = $this.val(),
             $group = $this.parents(".subdomainRow").first(),

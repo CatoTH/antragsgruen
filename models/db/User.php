@@ -547,10 +547,10 @@ class User extends ActiveRecord implements IdentityInterface
         $link    = UrlHelper::absolutizeLink($link);
         $text    = str_replace(
             ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$motion->getConsultation()->title, $motion->getTitleWithPrefix(), $link],
+            [$motion->getMyConsultation()->title, $motion->getTitleWithPrefix(), $link],
             \Yii::t('user', 'noti_new_motion_body')
         );
-        $this->notificationEmail($motion->getConsultation(), $subject, $text);
+        $this->notificationEmail($motion->getMyConsultation(), $subject, $text);
     }
 
     /**

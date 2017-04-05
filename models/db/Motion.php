@@ -89,19 +89,6 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return Consultation
-     */
-    public function getConsultation()
-    {
-        $current = Consultation::getCurrent();
-        if ($current && $current->getMotion($this->id)) {
-            return $current;
-        } else {
-            return Consultation::findOne($this->consultationId);
-        }
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAmendments()
@@ -195,7 +182,12 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getMyConsultation()
     {
-        return $this->getConsultation(); // @TODO remove this method
+        $current = Consultation::getCurrent();
+        if ($current && $current->getMotion($this->id)) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
     }
 
     /**
@@ -269,7 +261,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getTitleWithPrefix()
     {
-        if ($this->getConsultation()->getSettings()->hideTitlePrefix) {
+        if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->title;
         }
 
@@ -308,7 +300,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $amendments = [];
         foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, $this->getConsultation()->getInvisibleAmendmentStati(!$includeWithdrawn))) {
+            if (!in_array($amend->status, $this->getMyConsultation()->getInvisibleAmendmentStati(!$includeWithdrawn))) {
                 $amendments[] = $amend;
             }
         }
@@ -340,7 +332,7 @@ class Motion extends IMotion implements IRSSItem
     public function getVisibleAmendmentsSorted($includeWithdrawn = true)
     {
         $amendments = $this->getVisibleAmendments($includeWithdrawn);
-        return MotionSorter::getSortedAmendments($this->getConsultation(), $amendments);
+        return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }
 
     /**
@@ -417,7 +409,7 @@ class Motion extends IMotion implements IRSSItem
             return false;
         }
 
-        if ($this->getConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
+        if ($this->getMyConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
             if ($this->motionType->motionDeadlineIsOver()) {
                 return false;
             } else {
@@ -453,7 +445,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canMergeAmendments()
     {
-        if (User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+        if (User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
         return false;
@@ -468,7 +460,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
     {
-        $iAmAdmin = User::currentUserHasPrivilege($this->getConsultation(), User::PRIVILEGE_ANY);
+        $iAmAdmin = User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
             if ($this->nonAmendable) {
@@ -537,10 +529,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isSocialSharable()
     {
-        if ($this->getConsultation()->site->getSettings()->forceLogin) {
+        if ($this->getMyConsultation()->site->getSettings()->forceLogin) {
             return false;
         }
-        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
             return false;
         }
         return true;
@@ -588,9 +580,9 @@ class Motion extends IMotion implements IRSSItem
             return $cached;
         }
 
-        if ($this->getConsultation()->getSettings()->lineNumberingGlobal) {
-            $motions      = $this->getConsultation()->getVisibleMotions(false);
-            $motionBlocks = MotionSorter::getSortedMotions($this->getConsultation(), $motions);
+        if ($this->getMyConsultation()->getSettings()->lineNumberingGlobal) {
+            $motions      = $this->getMyConsultation()->getVisibleMotions(false);
+            $motionBlocks = MotionSorter::getSortedMotions($this->getMyConsultation(), $motions);
             $lineNo       = 1;
             foreach ($motionBlocks as $motions) {
                 foreach ($motions as $motion) {
@@ -689,14 +681,14 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->status == Motion::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
-        } elseif (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati())) {
+        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
         }
         $this->save();
         $this->flushCacheStart();
-        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
         new MotionWithdrawnNotification($this);
     }
 
@@ -729,7 +721,7 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             return \Yii::t('motion', 'button_submit_create');
-        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
             return \Yii::t('motion', 'button_submit_submit');
         } else {
             return \Yii::t('motion', 'button_submit_publish');
@@ -742,12 +734,12 @@ class Motion extends IMotion implements IRSSItem
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
-        } elseif ($this->getConsultation()->getSettings()->screeningMotions) {
+        } elseif ($this->getMyConsultation()->getSettings()->screeningMotions) {
             $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         } else {
             $this->status = Motion::STATUS_SUBMITTED_SCREENED;
             if ($this->statusString == '') {
-                $this->titlePrefix = $this->getConsultation()->getNextMotionPrefix($this->motionTypeId);
+                $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
             }
         }
         $this->save();
@@ -761,11 +753,11 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix == '') {
-            $this->titlePrefix = $this->getConsultation()->getNextMotionPrefix($this->motionTypeId);
+            $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
         }
         $this->save(true);
         $this->onPublish();
-        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_SCREEN, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_SCREEN, $this->id);
     }
 
     /**
@@ -774,7 +766,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
-        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
     }
 
     /**
@@ -783,7 +775,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $this->status = Motion::STATUS_DELETED;
         $this->save();
-        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_DELETE, $this->id);
+        ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_DELETE, $this->id);
     }
 
     /**
@@ -796,12 +788,12 @@ class Motion extends IMotion implements IRSSItem
 
         $init   = $this->getInitiators();
         $initId = (count($init) > 0 ? $init[0]->userId : null);
-        ConsultationLog::log($this->getConsultation(), $initId, ConsultationLog::MOTION_PUBLISH, $this->id);
+        ConsultationLog::log($this->getMyConsultation(), $initId, ConsultationLog::MOTION_PUBLISH, $this->id);
 
         if ($this->datePublication === null) {
             $motionType = UserNotification::NOTIFICATION_NEW_MOTION;
             $notified   = [];
-            foreach ($this->getConsultation()->userNotifications as $noti) {
+            foreach ($this->getMyConsultation()->userNotifications as $noti) {
                 if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
                     $noti->user->notifyMotion($this);
                     $notified[]             = $noti->userId;
@@ -821,10 +813,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function setTextFixedIfNecessary($save = true)
     {
-        if ($this->getConsultation()->getSettings()->adminsMayEdit) {
+        if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
         }
-        if (in_array($this->status, $this->getConsultation()->getInvisibleMotionStati())) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
             return;
         }
         $this->textFixed = 1;
@@ -837,8 +829,8 @@ class Motion extends IMotion implements IRSSItem
      */
     public function flushCacheStart()
     {
-        if ($this->getConsultation()->cacheOneMotionAffectsOthers()) {
-            $this->getConsultation()->flushCacheWithChildren();
+        if ($this->getMyConsultation()->cacheOneMotionAffectsOthers()) {
+            $this->getMyConsultation()->flushCacheWithChildren();
         } else {
             $this->flushCacheWithChildren();
         }
@@ -994,7 +986,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function findAmendmentWithPrefix($prefix, $ignore = null)
     {
-        $numbering = $this->getConsultation()->getAmendmentNumbering();
+        $numbering = $this->getMyConsultation()->getAmendmentNumbering();
         return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
     }
 

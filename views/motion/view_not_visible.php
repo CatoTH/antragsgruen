@@ -15,11 +15,12 @@ $layout->robotsNoindex = true;
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
-if (!$motion->getConsultation()->getForcedMotion()) {
+if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->motionType->titleSingular);
 }
 
-$this->title = \Yii::t('motion', 'err_not_visible_yet_title') . ' (' . $motion->getConsultation()->title . ', Antragsgrün)';
+$this->title = \Yii::t('motion', 'err_not_visible_yet_title') .
+    ' (' . $motion->getMyConsultation()->title . ', Antragsgrün)';
 
 include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 

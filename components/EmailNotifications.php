@@ -17,7 +17,7 @@ class EmailNotifications
      */
     public static function sendMotionSubmissionConfirm(Motion $motion)
     {
-        if (!$motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
+        if (!$motion->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
             return;
         }
 
@@ -76,7 +76,7 @@ class EmailNotifications
      */
     public static function sendMotionOnPublish(Motion $motion)
     {
-        if (!$motion->getConsultation()->getSettings()->initiatorConfirmEmails) {
+        if (!$motion->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
             return;
         }
 
@@ -103,7 +103,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $motion->getConsultation()->site,
+                    $motion->getMyConsultation()->site,
                     trim($initiator[0]->contactEmail),
                     null,
                     \Yii::t('motion', 'published_email_title'),

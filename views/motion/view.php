@@ -30,15 +30,15 @@ $layout->addAMDModule('frontend/MotionShow');
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
 }
-if (!$motion->getConsultation()->getForcedMotion()) {
+if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getConsultation()->title . ', Antragsgrün)';
+$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ', Antragsgrün)';
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
-$minimalisticUi          = $motion->getConsultation()->getSettings()->minimalisticUI;
+$minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimalisticUI;
 $minHeight               = $sidebarRows * 40 - 100;
 $supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS);
 
@@ -104,7 +104,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
         $right .= '</section>';
     } else {
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type;
-        if ($motion->getConsultation()->getSettings()->lineLength > 80) {
+        if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
@@ -207,7 +207,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() != Nobody::getPolicyID()) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
-    $screeningAdmin = User::currentUserHasPrivilege($motion->getConsultation(), User::PRIVILEGE_SCREENING);
+    $screeningAdmin = User::currentUserHasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
     $screening = \Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {
@@ -254,7 +254,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     }
 
     if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
-        LayoutHelper::showCommentForm($form, $motion->getConsultation(), -1, -1);
+        LayoutHelper::showCommentForm($form, $motion->getMyConsultation(), -1, -1);
     } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
         echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .

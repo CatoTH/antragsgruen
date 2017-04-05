@@ -13,7 +13,7 @@ use yii\helpers\Html;
 /** @var Motion[] $replacedByMotions */
 $replacedByMotions = [];
 foreach ($motion->replacedByMotions as $replMotion) {
-    if (!in_array($replMotion->status, $motion->getConsultation()->getInvisibleMotionStati())) {
+    if (!in_array($replMotion->status, $motion->getMyConsultation()->getInvisibleMotionStati())) {
         $replacedByMotions[] = $replMotion;
     }
 }
@@ -101,7 +101,7 @@ if ($adminEdit) {
     $sidebarRows++;
 }
 
-if (!$motion->getConsultation()->getForcedMotion()) {
+if (!$motion->getMyConsultation()->getForcedMotion()) {
     $html .= '<li class="back">';
     $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
     $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';

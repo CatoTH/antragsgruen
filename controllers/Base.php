@@ -397,7 +397,7 @@ class Base extends Controller
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (is_object($checkMotion) && strtolower($checkMotion->getConsultation()->urlPath) != $consultationId) {
+        if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) != $consultationId) {
             Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }

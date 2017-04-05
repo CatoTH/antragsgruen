@@ -22,7 +22,7 @@ echo '<div class="content">';
 /** @var Motion[] $replacedByMotions */
 $replacedByMotions = [];
 foreach ($motion->replacedByMotions as $replMotion) {
-    if (!in_array($replMotion->status, $motion->getConsultation()->getInvisibleMotionStati())) {
+    if (!in_array($replMotion->status, $motion->getMyConsultation()->getInvisibleMotionStati())) {
         $replacedByMotions[] = $replMotion;
     }
 }
@@ -51,7 +51,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('motion', 'consultation') . ':</th>
                     <td>' .
-    Html::a($motion->getConsultation()->title, UrlHelper::createUrl('consultation/index')) . '</td>
+    Html::a($motion->getMyConsultation()->title, UrlHelper::createUrl('consultation/index')) . '</td>
                 </tr>';
 
 if ($motion->agendaItem) {
@@ -73,7 +73,7 @@ if (count($initiators) > 0) {
 }
 echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th><td>';
 
-$screeningMotionsShown = $motion->getConsultation()->getSettings()->screeningMotionsShown;
+$screeningMotionsShown = $motion->getMyConsultation()->getSettings()->screeningMotionsShown;
 $statiNames            = Motion::getStati();
 if ($motion->isInScreeningProcess()) {
     echo '<span class="unscreened">' . Html::encode($statiNames[$motion->status]) . '</span>';
@@ -109,7 +109,7 @@ echo '<tr><th>' . \Yii::t('motion', 'submitted_on') . ':</th>
                 </tr>';
 
 $admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
-if ($admin && count($motion->getConsultation()->tags) > 0) {
+if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     echo '<tr><th>' . \Yii::t('motion', 'tag_tags') . ':</th><td class="tags">';
 
     $tags         = [];
@@ -130,7 +130,7 @@ if ($admin && count($motion->getConsultation()->tags) > 0) {
     echo '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
         <option>-</option>';
 
-    foreach ($motion->getConsultation()->tags as $tag) {
+    foreach ($motion->getMyConsultation()->tags as $tag) {
         if (!in_array($tag->id, $used_tag_ids)) {
             echo '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
         }

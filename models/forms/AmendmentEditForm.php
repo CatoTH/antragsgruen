@@ -210,7 +210,7 @@ class AmendmentEditForm extends Model
         $amendment->status            = Motion::STATUS_DRAFT;
         $amendment->statusString      = '';
         $amendment->motionId          = $this->motion->id;
-        $amendment->textFixed         = ($this->motion->getConsultation()->getSettings()->adminsMayEdit ? 0 : 1);
+        $amendment->textFixed         = ($this->motion->getMyConsultation()->getSettings()->adminsMayEdit ? 0 : 1);
         $amendment->titlePrefix       = '';
         $amendment->dateCreation      = date('Y-m-d H:i:s');
         $amendment->changeEditorial   = $this->editorial;

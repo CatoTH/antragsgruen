@@ -33,7 +33,7 @@ class GlobalCompact extends IAmendmentNumbering
     public function getAmendmentNumber(Amendment $amendment, Motion $motion)
     {
         $prefixes = [];
-        foreach ($motion->getConsultation()->motions as $mot) {
+        foreach ($motion->getMyConsultation()->motions as $mot) {
             foreach ($mot->amendments as $amend) {
                 $prefixes[] = $amend->titlePrefix;
             }
@@ -51,7 +51,7 @@ class GlobalCompact extends IAmendmentNumbering
     public function findAmendmentWithPrefix(Motion $motion, $prefix, $ignore = null)
     {
         $prefixNorm = trim(mb_strtoupper($prefix));
-        foreach ($motion->getConsultation()->motions as $mot) {
+        foreach ($motion->getMyConsultation()->motions as $mot) {
             if ($mot->status == Motion::STATUS_DELETED) {
                 continue;
             }
