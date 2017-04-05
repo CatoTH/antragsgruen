@@ -19,7 +19,7 @@ $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUr
 if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('motion', 'submitted_create') . '</h1>';
     $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_create'));
-} elseif ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+} elseif ($motion->isInScreeningProcess()) {
     echo '<h1>' . Yii::t('motion', 'submitted_submit') . '</h1>';
     $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_submit'));
 } else {
@@ -32,7 +32,7 @@ echo '<div class="alert alert-success" role="alert">';
 if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
     echo \Yii::t('motion', 'confirmed_visible');
 }
-if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+if ($motion->isInScreeningProcess()) {
     echo \Yii::t('motion', 'confirmed_screening');
 }
 if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {

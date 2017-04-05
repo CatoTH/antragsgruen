@@ -20,7 +20,7 @@ $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createAmendmen
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('amend', 'submitted_create') . '</h1>';
     $controller->layoutParams->addBreadcrumb(\Yii::t('amend', 'created_bread_create'));
-} elseif ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+} elseif ($amendment->isInScreeningProcess()) {
     echo '<h1>' . Yii::t('amend', 'submitted_submit') . '</h1>';
     $controller->layoutParams->addBreadcrumb(\Yii::t('amend', 'created_bread_submit'));
 } else {
@@ -33,7 +33,7 @@ echo '<div class="alert alert-success" role="alert">';
 if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
     echo \Yii::t('amend', 'confirmed_visible');
 }
-if ($amendment->status == Amendment::STATUS_SUBMITTED_UNSCREENED) {
+if ($amendment->isInScreeningProcess()) {
     echo \Yii::t('amend', 'confirmed_screening');
 }
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {

@@ -483,6 +483,7 @@ class Motion extends IMotion implements IRSSItem
                 static::STATUS_DRAFT,
                 static::STATUS_COLLECTING_SUPPORTERS,
                 static::STATUS_SUBMITTED_UNSCREENED,
+                static::STATUS_SUBMITTED_UNSCREENED_CHECKED,
                 static::STATUS_DRAFT_ADMIN,
             ];
             if (in_array($this->status, $notAmendableStati)) {

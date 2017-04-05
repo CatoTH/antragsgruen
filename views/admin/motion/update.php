@@ -55,7 +55,7 @@ echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 echo $controller->showErrors();
 
 
-if ($motion->status == Motion::STATUS_SUBMITTED_UNSCREENED) {
+if ($motion->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev == '') {
