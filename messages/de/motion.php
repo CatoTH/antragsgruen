@@ -93,7 +93,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'submitted_screening_email_subject'  => 'Antrag eingereicht',
-    'submitted_supp_phase_email'         => "Hallo %NAME%\n\nDu hast den Antrag nun angelegt.\n" .
+    'submitted_supp_phase_email'         => "Hallo %NAME_GIVEN%\n\nDu hast den Antrag nun angelegt.\n" .
         "Um ihn offiziell einzureichen, benötigt er mindestens %MIN% Unterstützer*innen.\n\n" .
         "Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:\n\n%LINK%\n",
     'submitted_supp_phase_email_subject' => 'Antrag erfolgreich angelegt',
