@@ -641,9 +641,9 @@ class Amendment extends IMotion implements IRSSItem
     public function withdraw()
     {
         if ($this->status == Amendment::STATUS_DRAFT) {
-            $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
-        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
             $this->status = static::STATUS_DELETED;
+        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
+            $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
         }
