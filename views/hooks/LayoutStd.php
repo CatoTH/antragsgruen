@@ -59,7 +59,8 @@ class LayoutStd extends LayoutHooks
 
     public function getAntragsgruenAd()
     {
-        return '<div class="antragsgruenAd well">
+        if (\Yii::$app->language == 'de') {
+            return '<div class="antragsgruenAd well">
         <div class="nav-header">Dein Antragsgrün</div>
         <div class="content">
             Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
@@ -70,6 +71,19 @@ class LayoutStd extends LayoutHooks
             </div>
         </div>
     </div>';
+        } else {
+            return '<div class="antragsgruenAd well">
+        <div class="nav-header">Using Antragsgrün</div>
+        <div class="content">
+            Du you want to use Antragsgrün / motion.tools for your own assemly?
+            <div>
+                <a href="https://motion.tools/" title="Informations about using Antragsgrün" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Information
+                </a>
+            </div>
+        </div>
+    </div>';
+        }
     }
 
     public function getSearchForm()

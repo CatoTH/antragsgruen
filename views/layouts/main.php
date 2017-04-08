@@ -52,6 +52,13 @@ if ($layout->robotsNoindex || \app\models\settings\AntragsgruenApp::getInstance(
     echo '<meta name="robots" content="index, follow">' . "\n";
 }
 
+if ($layout->canonicalUrl) {
+    echo '<link rel="canonical" href="' . Html::encode($layout->canonicalUrl) . '">' . "\n";
+}
+foreach ($layout->alternateLanuages as $lang => $url) {
+    echo '<link rel="alternate" hreflang="' . Html::encode($lang) . '" href="' . Html::encode($url) . '">' . "\n";
+}
+
 echo '<!--[if lt IE 9]>
     <script src="' . $layout->resourceUrl('npm/html5shiv.min.js') . '"></script>
     <![endif]-->

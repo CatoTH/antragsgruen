@@ -106,10 +106,14 @@ class ManagerController extends Base
      */
     public function actionIndex()
     {
-        $this->layout = 'column2';
-
-        $this->addSidebar();
-        return $this->render('index');
+        if (\Yii::$app->language == 'de') {
+            $this->layout = 'column2';
+            $this->addSidebar();
+            return $this->render('index_de');
+        } else {
+            $this->layout = 'column1';
+            return $this->render('index_en');
+        }
     }
 
     /**
