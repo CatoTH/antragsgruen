@@ -30,6 +30,7 @@ class ManagerController extends Base
         if (in_array($action->id, ['antragsgrueninit', 'antragsgrueninitdbtest'])) {
             // No cookieValidationKey is set in the beginning
             \Yii::$app->request->enableCookieValidation = false;
+            return parent::beforeAction($action);
         }
 
         if (!$this->getParams()->multisiteMode) {
