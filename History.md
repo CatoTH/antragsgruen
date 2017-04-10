@@ -1,6 +1,6 @@
 # Version history
 
-### Version 3.6.2 [Not yet released]
+### Version 3.6.2 (2017-04-10)
 
 - Bugfix: Creating a motion/amendment using another one as template works now in combination with the support colling phase
 - Bugfix: The main page of the manager (introduction to Antragsgrün) was reachable on subdomains / from within a consultation
