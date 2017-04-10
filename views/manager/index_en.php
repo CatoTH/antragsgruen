@@ -60,7 +60,7 @@ $params = \Yii::$app->params;
             RSS-Feeds
         </li>
         <li><strong>Technically mature, data privacy-friendly</strong><br>
-            Open source software, verifiable functionality. small black box.<br>
+            Open source software, verifiable functionality. No black box.<br>
             Our servers are all located within the European Union.<br>
             No external tracking services, advertisements or similar.<br>
             Standard encrypted transmission.<br>
@@ -86,7 +86,8 @@ $params = \Yii::$app->params;
         <a href="http://sandbox.motion.tools/createsite" class="btn btn-default">Create test version</a>
     </p>
 
-    <p style="margin-top: 35px;"><strong>Are there functions missing? Do you require professional support and special adaptations?</strong></p>
+    <p style="margin-top: 35px;"><strong>Are there functions missing?
+            Do you require professional support and special adaptations?</strong></p>
     <p>If you need customised programming or you would like us to host Antragsgrün on a designated domain, we implement
         this at an hourly rate.</p>
     <p>
