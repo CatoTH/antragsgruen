@@ -407,14 +407,70 @@ class AmendmentDiffMerger
     }
 
     /**
-     * @param int $paraNo
+     * @param array $words
+     * @param int $maxDistance
      * @return array
      */
-    public function getCollidingParagraphGroups($paraNo)
+    public static function stripDistantUnchangedWords($words, $maxDistance)
+    {
+        $distance = null;
+        $numWords = count($words);
+        foreach ($words as $i => $word) {
+            $words[$i]['distance'] = null;
+        }
+        for ($i = 0; $i < $numWords; $i++) {
+            if ($words[$i]['modification']) {
+                $distance = 0;
+            } else {
+                if ($distance === null) {
+                    continue;
+                }
+                if (trim(strip_tags($words[$i]['orig'])) != '') {
+                    $distance++;
+                }
+                $words[$i]['distance'] = $distance;
+            }
+        }
+        for ($i = $numWords - 1; $i >= 0; $i--) {
+            if ($words[$i]['modification']) {
+                $distance = 0;
+            } else {
+                if ($distance === null) {
+                    continue;
+                }
+                if (trim(strip_tags($words[$i]['orig'])) != '') {
+                    $distance++;
+                }
+                if ($words[$i]['distance'] === null || $words[$i]['distance'] > $distance) {
+                    $words[$i]['distance'] = $distance;
+                }
+            }
+        }
+
+        foreach ($words as $i => $word) {
+            if (strpos($word['orig'], '<') === false && trim($word['orig']) != '') {
+                if ($words[$i]['distance'] == ($maxDistance + 1)) {
+                    $words[$i]['orig'] = ' … ';
+                } elseif ($words[$i]['distance'] > ($maxDistance + 1)) {
+                    $words[$i]['orig'] = '';
+                }
+            }
+            unset($words[$i]['distance']);
+        }
+
+        return $words;
+    }
+
+    /**
+     * @param int $paraNo
+     * @param int|null $stripDistantUnchangedWords
+     * @return array
+     */
+    public function getCollidingParagraphGroups($paraNo, $stripDistantUnchangedWords = null)
     {
         $grouped = [];
 
-        foreach ($this->paraData[$paraNo]['collidingParagraphs'] as $section) {
+        foreach ($this->paraData[$paraNo]['collidingParagraphs'] as $changeSet) {
             $words = [];
             foreach ($this->paraData[$paraNo]['origTokenized'] as $token) {
                 $words[] = [
@@ -423,11 +479,14 @@ class AmendmentDiffMerger
                     'modifiedBy'   => null,
                 ];
             }
-            foreach ($section['diff'] as $i => $token) {
+            foreach ($changeSet['diff'] as $i => $token) {
                 if (isset($token['amendmentId'])) {
                     $words[$i]['modification'] = $token['diff'];
                     $words[$i]['modifiedBy']   = $token['amendmentId'];
                 }
+            }
+            if ($stripDistantUnchangedWords) {
+                $words = $this->stripDistantUnchangedWords($words, $stripDistantUnchangedWords);
             }
             $data = $this->groupParagraphData(['words' => $words]);
             foreach ($data as $i => $dat) {
@@ -435,7 +494,7 @@ class AmendmentDiffMerger
                     $data[$i]['text'] = $this->stripUnchangedLiFromColliding($dat['text']);
                 }
             }
-            $grouped[$section['amendment']] = $data;
+            $grouped[$changeSet['amendment']] = $data;
         }
 
         return $grouped;

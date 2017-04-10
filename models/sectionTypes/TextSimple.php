@@ -115,7 +115,7 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setAmendmentData($data)
@@ -636,7 +636,7 @@ class TextSimple extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printMotionToODT(Text $odt)
     {
@@ -679,7 +679,7 @@ class TextSimple extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printAmendmentToODT(Text $odt)
     {
@@ -740,7 +740,7 @@ class TextSimple extends ISectionType
 
         $paragraphCollissions = [];
         foreach (array_keys($paragraphs) as $paragraphNo) {
-            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo);
+            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
         }
 
         $out = '';
