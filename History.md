@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.3 [Not released yet]
+
+- Bugfix: Remove "consultation/index" from the URL in single-site-installations 
+
 ### Version 3.6.2 (2017-04-10)
 
 - Bugfix: Creating a motion/amendment using another one as template works now in combination with the support colling phase
