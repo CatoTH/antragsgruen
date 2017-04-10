@@ -77,7 +77,7 @@ class LayoutStd extends LayoutHooks
         <div class="content">
             Du you want to use Antragsgrün / motion.tools for your own assemly?
             <div>
-                <a href="https://motion.tools/" title="Informations about using Antragsgrün" class="btn btn-primary">
+                <a href="https://motion.tools/" title="Information about using Antragsgrün" class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right"></span> Information
                 </a>
             </div>
@@ -116,12 +116,14 @@ class LayoutStd extends LayoutHooks
         $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
         $description = $motionType->createTitle;
 
-        $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
+        $this->layout->menusHtml[]          =
+            '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($link) . '"
                     title="' . Html::encode($description) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
             '</a></div></div>';
-        $this->layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
+        $this->layout->menusSmallAttachment =
+            '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
     }
 }

@@ -7,6 +7,10 @@
 - When merging all amendments into the motion at once and a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
+### Version 3.6.3 [Not released yet]
+
+- Bugfix: Remove "consultation/index" from the URL in single-site-installations 
+
 ### Version 3.6.2 (2017-04-10)
 
 - Bugfix: Creating a motion/amendment using another one as template works now in combination with the support colling phase

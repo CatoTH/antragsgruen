@@ -87,6 +87,8 @@ if ($params->multisiteMode) {
             $urlRules[str_replace('https://', 'https://www.', $key)] = $val;
         }
     }
+} else {
+    $urlRules[$dom] = 'consultation/index';
 }
 
 return $urlRules;
