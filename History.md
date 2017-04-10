@@ -1,7 +1,8 @@
 # Version history
 
-### Version 3.6.3 [Not released yet]
+### Version 3.6.3 (2017-04-10)
 
+- Bugfix: The installation was broken
 - Bugfix: Remove "consultation/index" from the URL in single-site-installations 
 
 ### Version 3.6.2 (2017-04-10)
