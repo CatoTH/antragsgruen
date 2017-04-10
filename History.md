@@ -6,12 +6,13 @@
 - Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
-### Version 3.6.2 [Not yet released]
+### Version 3.6.2 (2017-04-10)
 
 - Bugfix: Creating a motion/amendment using another one as template works now in combination with the support colling phase
 - Bugfix: The main page of the manager (introduction to Antragsgrün) was reachable on subdomains / from within a consultation
 - Bugfix: Withdrawing an amendments that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status (was implemented in 3.6.1, but not correctly)
 - Bugfix: ODT-Export of amendments did not work when the base motion did not have a prefix
+- Bugfix: a broken placeholer in a motion-supporting-INPUT
 
 ### Version 3.6.1 (2017-03-19)
 

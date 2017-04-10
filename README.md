@@ -17,6 +17,11 @@ Core functions:
 - Great flexibility - it adapts to a lot of different use cases
 - Technically mature, data privacy-friendly
 
+Using the hosted version / testing it
+-------------------------------------
+
+- German: [https://antragsgruen.de](https://antragsgruen.de/)
+- English: [https://motion.tools](https://motion.tools/)
 
 Installation using the pre-bundled package
 ------------------------------------------
@@ -26,7 +31,7 @@ Requirements:
 - A fully configured web server running PHP
 
 Installation:
-- Download the latest package of Antragsgrün: [antragsgruen-3.6.1.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.6.1.tar.bz2)
+- Download the latest package of Antragsgrün: [antragsgruen-3.6.2.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.6.2.tar.bz2)
 - Extract the contents into your web folder
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
