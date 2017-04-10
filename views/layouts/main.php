@@ -86,7 +86,8 @@ echo '</head>';
 
 echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
-echo '<script src="' . $layout->resourceUrl('js/modernizr.js') . '"></script>';
+$modernizr = file_get_contents(\Yii::$app->basePath . '/web/js/modernizr.js');
+echo '<script>' . $modernizr . '</script>' . "\n";
 
 $this->beginBody();
 
