@@ -5,6 +5,7 @@
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
 - Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
 - When merging all amendments into the motion at once and a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
+- Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
 ### Version 3.6.3 (2017-04-10)

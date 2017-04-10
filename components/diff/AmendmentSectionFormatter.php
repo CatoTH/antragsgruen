@@ -1,9 +1,11 @@
 <?php
+
 namespace app\components\diff;
 
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\exceptions\Internal;
+use yii\helpers\Html;
 
 class AmendmentSectionFormatter
 {
@@ -60,6 +62,116 @@ class AmendmentSectionFormatter
         return implode('', $linesOut);
     }
 
+    /**
+     * @param string $paragraphs
+     * @return array
+     */
+    public static function extractInsDelBlocks($paragraphs)
+    {
+        $detectInsDel = function ($str) {
+            if (stripos($str, '<ins') !== false || stripos($str, '</ins') !== false) {
+                return true;
+            }
+            if (stripos($str, '<del') !== false || stripos($str, '</del') !== false) {
+                return true;
+            }
+            return false;
+        };
+
+        $blocks = ['ins' => [], 'del' => []];
+        do {
+            $pre        = $paragraphs;
+            $paragraphs = preg_replace_callback(
+                '/<p><del>(?<del>.*)<\/del><ins>(?<ins>.*)<\/ins><\/p>/siu',
+                function ($matches) use (&$blocks, $detectInsDel) {
+                    if ($detectInsDel($matches['ins'] . $matches['del'])) {
+                        return $matches[0];
+                    }
+                    $blocks['ins'][] = '<p class="inserted">' . $matches['ins'] . '</p>';
+                    $blocks['del'][] = '<p class="deleted">' . $matches['del'] . '</p>';
+                    return '';
+                },
+                $paragraphs
+            );
+            $paragraphs = preg_replace_callback(
+                '/<p><del>(?<del>.*)<\/del><\/p>/siu',
+                function ($matches) use (&$blocks, $detectInsDel) {
+                    if ($detectInsDel($matches['del'])) {
+                        return $matches[0];
+                    }
+                    $blocks['del'][] = '<p class="deleted">' . $matches['del'] . '</p>';
+                    return '';
+                },
+                $paragraphs
+            );
+            $paragraphs = preg_replace_callback(
+                '/<p><ins>(?<ins>.*)<\/ins><\/p>/siu',
+                function ($matches) use (&$blocks, $detectInsDel) {
+                    if ($detectInsDel($matches['ins'])) {
+                        return $matches[0];
+                    }
+                    $blocks['ins'][] = '<p class="inserted">' . $matches['ins'] . '</p>';
+                    return '';
+                },
+                $paragraphs
+            );
+            $paragraphs = preg_replace_callback(
+                '/<p class=["\']?inserted["\']?>(.*)<\/p>/siu',
+                function ($matches) use (&$blocks) {
+                    $blocks['ins'][] = $matches[0];
+                    return '';
+                },
+                $paragraphs
+            );
+            $paragraphs = preg_replace_callback(
+                '/<p class=["\']?deleted["\']?>(.*)<\/p>/siu',
+                function ($matches) use (&$blocks) {
+                    $blocks['del'][] = $matches[0];
+                    return '';
+                },
+                $paragraphs
+            );
+        } while ($pre != $paragraphs);
+
+        if (trim($paragraphs) != '') {
+            // Something remains => it's not a pure replacement
+            return null;
+        } else {
+            return $blocks;
+        }
+    }
+
+    /**
+     * @param array $diffSections
+     * @return array
+     */
+    public static function groupConsecutiveChangeBlocks($diffSections)
+    {
+        $pendingBlocks = null;
+        $blocksOut     = [];
+        foreach ($diffSections as $diffSection) {
+            if ($blocks = static::extractInsDelBlocks($diffSection)) {
+                if ($pendingBlocks) {
+                    $pendingBlocks['ins'] = array_merge($pendingBlocks['ins'], $blocks['ins']);
+                    $pendingBlocks['del'] = array_merge($pendingBlocks['del'], $blocks['del']);
+                } else {
+                    $pendingBlocks = $blocks;
+                }
+            } else {
+                if ($pendingBlocks) {
+                    $blocksOut     = array_merge($blocksOut, $pendingBlocks['del']);
+                    $blocksOut     = array_merge($blocksOut, $pendingBlocks['ins']);
+                    $pendingBlocks = null;
+                }
+                $blocksOut[] = $diffSection;
+            }
+        }
+        if ($pendingBlocks) {
+            $blocksOut = array_merge($blocksOut, $pendingBlocks['del']);
+            $blocksOut = array_merge($blocksOut, $pendingBlocks['ins']);
+        }
+        return $blocksOut;
+    }
 
 
     /**
@@ -71,7 +183,7 @@ class AmendmentSectionFormatter
     public function getDiffGroupsWithNumbers($lineLength, $diffFormatting)
     {
         try {
-            $originals = [];
+            $originals     = [];
             $newParagraphs = [];
             foreach ($this->paragraphsOriginal as $section) {
                 $originals[] = static::addLineNumberPlaceholders($section, $lineLength);
@@ -80,13 +192,14 @@ class AmendmentSectionFormatter
                 // Besides adding line numbers, addLineNumberPlaceholders also breaks overly long words into parts
                 // and addes a dash at the end of the first line. We need to do this on the amendments as well,
                 // even if we don't need the line number markers
-                $newParagraph = static::addLineNumberPlaceholders($newParagraph, $lineLength);
-                $newParagraph = str_replace('###LINENUMBER###', '', $newParagraph);
+                $newParagraph    = static::addLineNumberPlaceholders($newParagraph, $lineLength);
+                $newParagraph    = str_replace('###LINENUMBER###', '', $newParagraph);
                 $newParagraphs[] = $newParagraph;
             }
 
-            $diff = new Diff();
+            $diff         = new Diff();
             $diffSections = $diff->compareHtmlParagraphs($originals, $newParagraphs, $diffFormatting);
+            $diffSections = static::groupConsecutiveChangeBlocks($diffSections);
             $htmlDiff     = implode("\n", $diffSections);
 
             $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, $this->firstLine);
