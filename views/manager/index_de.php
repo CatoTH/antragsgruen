@@ -13,6 +13,8 @@ use yii\helpers\Html;
 $this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
+$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/';
+$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;

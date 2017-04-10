@@ -29,6 +29,8 @@ class Layout
     public $fullScreen           = false;
     public $mainCssFile          = null;
     public $mainAMDModules       = [];
+    public $canonicalUrl         = null;
+    public $alternateLanuages    = [];
 
     /** @var LayoutHooks */
     public $hooks = null;
@@ -175,8 +177,8 @@ class Layout
      */
     public function getJSFiles()
     {
-        $jsLang = $this->getJSLanguageCode();
-        $files  = [];
+        $jsLang  = $this->getJSLanguageCode();
+        $files   = [];
         $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
         $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
         foreach ($this->extraJs as $extraJs) {

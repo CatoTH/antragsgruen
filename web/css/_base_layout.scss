@@ -67,6 +67,10 @@ a {
   h1 {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
     margin: -1px;
+    small {
+      color: white;
+      font-size: 12px;
+    }
   }
   h2.green, h3.green, .nav-header, legend.green {
     @include stdHeading($headingSecondaryText, $headingSecondaryBackground);

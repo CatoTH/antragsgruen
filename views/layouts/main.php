@@ -52,6 +52,12 @@ if ($layout->robotsNoindex || \app\models\settings\AntragsgruenApp::getInstance(
     echo '<meta name="robots" content="index, follow">' . "\n";
 }
 
+if ($layout->canonicalUrl) {
+    echo '<link rel="canonical" href="' . Html::encode($layout->canonicalUrl) . '">' . "\n";
+}
+foreach ($layout->alternateLanuages as $lang => $url) {
+    echo '<link rel="alternate" hreflang="' . Html::encode($lang) . '" href="' . Html::encode($url) . '">' . "\n";
+}
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
