@@ -6,6 +6,7 @@
 - Bugfix: The main page of the manager (introduction to Antragsgrün) was reachable on subdomains / from within a consultation
 - Bugfix: Withdrawing an amendments that is not yet visible, the motion is not deleted anymore, but gets a special withdrawn status (was implemented in 3.6.1, but not correctly)
 - Bugfix: ODT-Export of amendments did not work when the base motion did not have a prefix
+- Bugfix: a broken placeholer in a motion-supporting-INPUT
 
 ### Version 3.6.1 (2017-03-19)
 

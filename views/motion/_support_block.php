@@ -24,20 +24,22 @@ if ($supportType->hasOrganizations() && $user && $user->organization == '' && $u
     <div class="row">
         <div class="col-md-4">
             <input type="text" name="motionSupportName" class="form-control" required <?= $fixedReadOnly ?>
-                   value="<?= Html::encode($name) ?>" placeholder="' . \Yii::t('motion', 'support_name') . '">
+                   value="<?= Html::encode($name) ?>"
+                   placeholder="<?= Html::encode(\Yii::t('motion', 'support_name')) ?>">
         </div>
         <?php
         if ($supportType->hasOrganizations()) {
             $orga = ($user ? $user->organization : '');
             echo '<div class="col-md-4">';
             echo '<input type="text" name="motionSupportOrga" class="form-control"
-                           value="' . Html::encode($orga) . '" placeholder="' . \Yii::t('motion', 'support_orga') . '" 
+                           value="' . Html::encode($orga) . '"
+                           placeholder="' . Html::encode(\Yii::t('motion', 'support_orga')) . '" 
                            required ' . $fixedReadOnly . '>';
             echo '</div>';
         }
         ?>
         <div class="col-md-4" style="text-align: right">
-            <button type="submit" name="motionSupport" class="btn btn-success" <?=$disableSubmit?>>
+            <button type="submit" name="motionSupport" class="btn btn-success" <?= $disableSubmit ?>>
                 <span class="glyphicon glyphicon-thumbs-up"></span>
                 <?= \Yii::t('motion', 'support') ?>
             </button>
