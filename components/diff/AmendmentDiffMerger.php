@@ -199,18 +199,48 @@ class AmendmentDiffMerger
     }
 
     /**
+     * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collission.
+     *
      * @param int $paraNo
-     * @param array $diff
-     * @return bool;
+     * @param array $changeSet
+     * @return array
      */
-    private function checkIsDiffColliding($paraNo, $diff)
+    private function groupChangeSet($paraNo, $changeSet)
     {
-        for ($i = 0; $i < count($diff); $i++) {
-            if ($this->paraData[$paraNo]['words'][$i]['modifiedBy'] > 0 && isset($diff[$i]['amendmentId'])) {
-                return true;
+        $foundGroups = [];
+
+        $currTokens        = null;
+        $currGroupCollides = null;
+
+        foreach ($changeSet['diff'] as $i => $token) {
+            if (isset($token['amendmentId'])) {
+                if ($currTokens === null) {
+                    $currGroupCollides = false;
+                    $currTokens        = [];
+                }
+                $currTokens[$i] = $token;
+                if ($this->paraData[$paraNo]['words'][$i]['modifiedBy'] > 0) {
+                    $currGroupCollides = true;
+                }
+            } else {
+                if ($currTokens !== null) {
+                    $foundGroups[]     = [
+                        'tokens'   => $currTokens,
+                        'collides' => $currGroupCollides
+                    ];
+                    $currTokens        = null;
+                    $currGroupCollides = null;
+                }
             }
         }
-        return false;
+        if ($currTokens !== null) {
+            $foundGroups[] = [
+                'tokens'   => $currTokens,
+                'collides' => $currGroupCollides
+            ];
+        }
+
+        return $foundGroups;
     }
 
     /**
@@ -220,13 +250,33 @@ class AmendmentDiffMerger
     public function mergeParagraph($paraNo, $changeSet)
     {
         $words = $this->paraData[$paraNo]['words'];
-        foreach ($changeSet['diff'] as $i => $token) {
-            if (isset($token['amendmentId'])) {
+
+        $paragraphHadCollissions = false;
+        $groups                  = $this->groupChangeSet($paraNo, $changeSet);
+        foreach ($groups as $group) {
+            // Transfer the diff from the non-colliding groups to the merged diff and remove the from the changeset.
+            // The changeset that remains will contain the un-mergable collissions
+
+            if ($group['collides']) {
+                $paragraphHadCollissions = true;
+                continue;
+            }
+
+            foreach ($group['tokens'] as $i => $token) {
+                // Apply the changes to the paragraph
                 $words[$i]['modification'] = $token['diff'];
                 $words[$i]['modifiedBy']   = $token['amendmentId'];
+
+                // Only the colliding changes are left in the changeset
+                unset($changeSet['diff'][$i]['amendmentId']);
+                $changeSet['diff'][$i]['diff'] = $changeSet['diff'][$i]['word'];
             }
         }
+
         $this->paraData[$paraNo]['words'] = $words;
+        if ($paragraphHadCollissions) {
+            $this->paraData[$paraNo]['collidingParagraphs'][] = $changeSet;
+        }
     }
 
     /**
@@ -237,11 +287,7 @@ class AmendmentDiffMerger
 
         foreach ($this->diffParagraphs as $paraNo => $para) {
             foreach ($para as $changeSet) {
-                if ($this->checkIsDiffColliding($paraNo, $changeSet['diff'])) {
-                    $this->paraData[$paraNo]['collidingParagraphs'][] = $changeSet;
-                } else {
-                    $this->mergeParagraph($paraNo, $changeSet);
-                }
+                $this->mergeParagraph($paraNo, $changeSet);
             }
         }
     }
@@ -268,8 +314,8 @@ class AmendmentDiffMerger
             if ($word['modifiedBy'] !== null) {
                 if ($pendingCurrAmend == 0 && $word['orig'] != '') {
                     if (mb_strpos($word['modification'], $word['orig']) === 0) {
-                        $shortened = mb_substr($word['modification'], mb_strlen($word['orig']));
-                        $pending .= $word['orig'];
+                        $shortened            = mb_substr($word['modification'], mb_strlen($word['orig']));
+                        $pending              .= $word['orig'];
                         $word['modification'] = $shortened;
                     }
                 }
