@@ -17,6 +17,11 @@ Core functions:
 - Great flexibility - it adapts to a lot of different use cases
 - Technically mature, data privacy-friendly
 
+Using the hosted version / testing it
+-------------------------------------
+
+- German: [https://antragsgruen.de](https://antragsgruen.de/)
+- English: [https://motion.tools](https://motion.tools/)
 
 Installation using the pre-bundled package
 ------------------------------------------
