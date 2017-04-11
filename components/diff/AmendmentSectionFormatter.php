@@ -82,41 +82,27 @@ class AmendmentSectionFormatter
         do {
             $pre        = $paragraphs;
             $paragraphs = preg_replace_callback(
-                '/<p><del>(?<del>.*)<\/del><ins>(?<ins>.*)<\/ins><\/p>/siu',
+                '/<(?<tag>p|div)>(<del>(?<del>.*)<\/del>)?(<ins>(?<ins>.*)<\/ins>)?<\/\1>/siu',
                 function ($matches) use (&$blocks, $detectInsDel) {
-                    if ($detectInsDel($matches['ins'] . $matches['del'])) {
-                        return $matches[0];
+                    $tag = $matches['tag'];
+                    if (isset($matches['ins'])) {
+                        if ($detectInsDel($matches['ins'])) {
+                            return $matches[0];
+                        }
+                        $blocks['ins'][] = '<' . $tag . ' class="inserted">' . $matches['ins'] . '</' . $tag . '>';
                     }
-                    $blocks['ins'][] = '<p class="inserted">' . $matches['ins'] . '</p>';
-                    $blocks['del'][] = '<p class="deleted">' . $matches['del'] . '</p>';
+                    if (isset($matches['del'])) {
+                        if ($detectInsDel($matches['del'])) {
+                            return $matches[0];
+                        }
+                        $blocks['del'][] = '<' . $tag . ' class="deleted">' . $matches['del'] . '</' . $tag . '>';
+                    }
                     return '';
                 },
                 $paragraphs
             );
             $paragraphs = preg_replace_callback(
-                '/<p><del>(?<del>.*)<\/del><\/p>/siu',
-                function ($matches) use (&$blocks, $detectInsDel) {
-                    if ($detectInsDel($matches['del'])) {
-                        return $matches[0];
-                    }
-                    $blocks['del'][] = '<p class="deleted">' . $matches['del'] . '</p>';
-                    return '';
-                },
-                $paragraphs
-            );
-            $paragraphs = preg_replace_callback(
-                '/<p><ins>(?<ins>.*)<\/ins><\/p>/siu',
-                function ($matches) use (&$blocks, $detectInsDel) {
-                    if ($detectInsDel($matches['ins'])) {
-                        return $matches[0];
-                    }
-                    $blocks['ins'][] = '<p class="inserted">' . $matches['ins'] . '</p>';
-                    return '';
-                },
-                $paragraphs
-            );
-            $paragraphs = preg_replace_callback(
-                '/<p class=["\']?inserted["\']?>(.*)<\/p>/siu',
+                '/<(?<tag>p|ul|ol|div) class=["\']?inserted["\']?>(.*)<\/\1>/siu',
                 function ($matches) use (&$blocks) {
                     $blocks['ins'][] = $matches[0];
                     return '';
@@ -124,7 +110,7 @@ class AmendmentSectionFormatter
                 $paragraphs
             );
             $paragraphs = preg_replace_callback(
-                '/<p class=["\']?deleted["\']?>(.*)<\/p>/siu',
+                '/<(?<tag>p|ul|ol|div) class=["\']?deleted["\']?>(.*)<\/\1>/siu',
                 function ($matches) use (&$blocks) {
                     $blocks['del'][] = $matches[0];
                     return '';

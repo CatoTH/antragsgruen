@@ -233,14 +233,17 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         $blocks = [
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet</del><ins>Bavaria ipsum</ins></p><p class="inserted">Another inserted paragraph</p>',
+            '<ul class="deleted"><li>###LINENUMBER###Old list</li></ul><ol class="inserted"><li>New list</li></ol>'
         ];
         $grouped = AmendmentSectionFormatter::groupConsecutiveChangeBlocks($blocks);
         $this->assertEquals([
             '<p class="deleted">###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</p>',
             '<p class="deleted">###LINENUMBER###Lorem ipsum dolor sit amet</p>',
+            '<ul class="deleted"><li>###LINENUMBER###Old list</li></ul>',
             '<p class="inserted">Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</p>',
             '<p class="inserted">Bavaria ipsum</p>',
             '<p class="inserted">Another inserted paragraph</p>',
+            '<ol class="inserted"><li>New list</li></ol>',
         ], $grouped);
     }
 
