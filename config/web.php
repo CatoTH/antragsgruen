@@ -7,6 +7,8 @@ require_once($configDir . 'AntragsgruenApp.php');
 
 if (YII_ENV == 'test') {
     $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config_tests.json';
+} elseif (isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
+    $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'];
 } else {
     $configFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.json';
 }
