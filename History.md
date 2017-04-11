@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.4 [Not released yet]
+
+- Compatibility: The installation should now work with disabled POSIX-extension
+
 ### Version 3.6.3 (2017-04-10)
 
 - Bugfix: The installation was broken

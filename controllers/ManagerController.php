@@ -313,8 +313,12 @@ class ManagerController extends Base
 
         $editable = is_writable($configfile);
 
-        $myUsername         = posix_getpwuid(posix_geteuid());
-        $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configfile;
+        if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+            $myUsername         = posix_getpwuid(posix_geteuid());
+            $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configfile;
+        } else {
+            $makeEditabeCommand = 'not available';
+        }
 
         return $this->render('siteconfig', [
             'config'             => $config,
@@ -398,13 +402,22 @@ class ManagerController extends Base
             return $this->showErrorpage(403, $msg);
         }
 
-        $myUsername = posix_getpwuid(posix_geteuid());
         if (file_exists($configFile)) {
             $editable           = is_writable($configFile);
-            $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
+            if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+                $myUsername         = posix_getpwuid(posix_geteuid());
+                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
+            } else {
+                $makeEditabeCommand = 'not available';
+            }
         } else {
             $editable           = is_writable($configDir);
-            $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
+            if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
+                $myUsername         = posix_getpwuid(posix_geteuid());
+                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
+            } else {
+                $makeEditabeCommand = 'not available';
+            }
         }
 
         $delInstallFileCmd = 'rm ' . $installFile;
