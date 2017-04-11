@@ -8,6 +8,10 @@
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
+### Version 3.6.4 [Not released yet]
+
+- Compatibility: The installation should now work with disabled POSIX-extension
+
 ### Version 3.6.3 (2017-04-10)
 
 - Bugfix: The installation was broken
