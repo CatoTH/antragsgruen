@@ -3,6 +3,7 @@ import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 export class AmendmentEdit {
     private lang: string;
     private $spmParagraphs: JQuery;
+    private hasChanged: boolean = false;
 
     constructor(private $form: JQuery) {
         let multiParagraphMode = $form.data("multi-paragraph-mode");
@@ -18,6 +19,10 @@ export class AmendmentEdit {
         } else {
             this.spmInit();
         }
+
+        $form.on("submit", () => {
+            $(window).off("beforeunload", AmendmentEdit.onLeavePage);
+        });
     }
 
     private initEditorialOpener() {
@@ -37,6 +42,7 @@ export class AmendmentEdit {
             $textarea.parents("form").submit(() => {
                 $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
             });
+            $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
         });
 
         if ($("#amendmentEditorial").val() != '') {
@@ -61,6 +67,9 @@ export class AmendmentEdit {
                     $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
                 }
             });
+
+            // The editor doesn't trigger change-events when tracking changes is enabled, therefore this work-around
+            $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
         });
     }
 
@@ -100,6 +109,10 @@ export class AmendmentEdit {
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
+
+        // The editor doesn't trigger change-events when tracking changes is enabled, therefore this work-around
+        $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
+
         $textarea.focus();
     }
 
@@ -129,6 +142,9 @@ export class AmendmentEdit {
                 $textarea.parent().find("textarea.consolidated").val(editor.getData());
             }
         });
+
+        // The editor doesn't trigger change-events when tracking changes is enabled, therefore this work-around
+        $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
     }
 
     private spmInit() {
@@ -148,5 +164,16 @@ export class AmendmentEdit {
                 $("#section_holder_" + sectionId + "_" + paraNo).click();
             }
         });
+    }
+
+    public static onLeavePage(): string {
+        return __t("std", "leave_changed_page");
+    }
+
+    public onContentChanged() {
+        if (!this.hasChanged) {
+            this.hasChanged = true;
+            $(window).on("beforeunload", AmendmentEdit.onLeavePage);
+        }
     }
 }

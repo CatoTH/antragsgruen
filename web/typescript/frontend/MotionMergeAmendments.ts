@@ -426,6 +426,15 @@ class MotionMergeAmendments {
             origMotionId = $draftHint.data("orig-motion-id"),
             newMotionId = $draftHint.data("new-motion-id");
         new DraftSavingEngine($form, $draftHint, "motionmerge_" + origMotionId + "_" + newMotionId);
+
+        this.$form.on("submit", () => {
+            $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
+        });
+        $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
+    }
+
+    public static onLeavePage(): string {
+        return __t("std", "leave_changed_page");
     }
 
     public addSubmitListener(cb) {

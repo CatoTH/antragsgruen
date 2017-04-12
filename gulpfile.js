@@ -94,6 +94,7 @@ gulp.task('build-css', function () {
 
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
+    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
     gulp.watch(['./web/typescript/**/*.ts'], ['build-typescript']);
 });

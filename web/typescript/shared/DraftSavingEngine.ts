@@ -1,6 +1,7 @@
 export class DraftSavingEngine {
     private $html: JQuery;
     private localKey: string;
+    private isChanged: boolean = false;
 
     constructor(private $form: JQuery, private $draftHint: JQuery, keyBase: string) {
         this.$html = $('html');
@@ -106,8 +107,10 @@ export class DraftSavingEngine {
         if (foundChanged) {
             data['lastEdit'] = new Date().getTime();
             localStorage.setItem(this.localKey, JSON.stringify(data));
+            this.isChanged = true;
         } else {
             localStorage.removeItem(this.localKey);
+            this.isChanged = false;
         }
     }
 
@@ -161,5 +164,9 @@ export class DraftSavingEngine {
         if (this.$draftHint.find("ul").children().length == 0) {
             this.$draftHint.addClass("hidden");
         }
+    }
+
+    public hasChanges(): boolean {
+        return this.isChanged;
     }
 }

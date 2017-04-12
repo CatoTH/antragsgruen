@@ -10,7 +10,8 @@ ANTRAGSGRUEN_STRINGS = {
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
         "pw_x_chars": "Das Passwort muss mindestens %NUM% Zeichen lang sein.",
         "pw_min_x_chars": "Min. %NUM% Zeichen",
-        "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'
+        "pw_no_match": "Die beiden Passwörter stimmen nicht überein.",
+        "leave_changed_page": "Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?"
     },
     "merge": {
         "initiated_by": "Gestellt von",
