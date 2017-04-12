@@ -33,7 +33,7 @@ class LoginUsernamePasswordForm extends Model
     {
         return [
             [['username', 'password'], 'required'],
-            ['contact', 'required', 'message' => 'Du musst eine Kontaktadresse angeben.'],
+            ['contact', 'required', 'message' => \Yii::t('user', 'err_contact_required')],
             [['createAccount', 'hasComments', 'openNow'], 'boolean'],
             [['username', 'password', 'passwordConfirm', 'name', 'createAccount'], 'safe'],
         ];
@@ -49,22 +49,17 @@ class LoginUsernamePasswordForm extends Model
         $params   = ['user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
         $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
-        $sendText = "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n";
-        $sendText .= "%bestLink%\n\n"
-            . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %code%\n\n"
-            . "Liebe Grüße,\n\tDas Antragsgrün-Team.";
-
         \app\components\mail\Tools::sendWithLog(
             EMailLog::TYPE_REGISTRATION,
             null,
             $this->username,
             $user->id,
-            'Anmeldung bei Antragsgrün',
-            $sendText,
+            \Yii::t('user', 'create_emailconfirm_title'),
+            \Yii::t('user', 'create_emailconfirm_msg'),
             '',
             [
-                '%code%'     => $bestCode,
-                '%bestLink%' => $link,
+                '%CODE%'      => $bestCode,
+                '%BEST_LINK%' => $link,
             ]
         );
     }
@@ -83,23 +78,23 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
-            $this->error = 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.';
+            $this->error = \Yii::t('user', 'create_err_siteaccess');
             throw new Login($this->error);
         }
-        if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]+$/siu", $this->username)) {
-            $this->error = 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.';
+        if (!preg_match("/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]+$/siu", $this->username)) {
+            $this->error = \Yii::t('user', 'create_err_emailinvalid');
             throw new Login($this->error);
         }
         if (strlen($this->password) < static::PASSWORD_MIN_LEN) {
-            $this->error = 'Das Passwort muss mindestens sechs Buchstaben lang sein.';
+            $this->error = str_replace('%MINLEN%', static::PASSWORD_MIN_LEN, \Yii::t('user', 'create_err_pwdlength'));
             throw new Login($this->error);
         }
         if ($this->password != $this->passwordConfirm) {
-            $this->error = 'Die beiden angegebenen Passwörter stimmen nicht überein.';
+            $this->error = \Yii::t('user', 'create_err_pwdmismatch');
             throw new Login($this->error);
         }
         if ($this->name == '') {
-            $this->error = 'Bitte gib deinen Namen ein.';
+            $this->error = \Yii::t('user', 'create_err_noname');
             throw new Login($this->error);
         }
 
@@ -107,7 +102,7 @@ class LoginUsernamePasswordForm extends Model
         $existing = User::findOne(['auth' => $auth]);
         if ($existing) {
             /** @var User $existing */
-            $this->error = 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse (' . $this->username . ')';
+            $this->error = \Yii::t('user', 'create_err_emailexists') . ' (' . $this->username . ')';
             throw new Login($this->error);
         }
     }
@@ -163,8 +158,8 @@ class LoginUsernamePasswordForm extends Model
     {
         $wwlike = "openid:https://service.gruene.de/%";
         $auth   = "openid:https://service.gruene.de/openid/" . $this->username;
-        $sql    = "SELECT * FROM user WHERE auth = '" . addslashes($auth) . "'";
-        $sql .= " OR (auth LIKE '$wwlike' AND email = '" . addslashes($this->username) . "')";
+        $sql    = "SELECT * FROM `user` WHERE `auth` = '" . addslashes($auth) . "'";
+        $sql    .= " OR (auth LIKE '$wwlike' AND email = '" . addslashes($this->username) . "')";
         return User::findBySql($sql)->all();
     }
 
@@ -173,8 +168,8 @@ class LoginUsernamePasswordForm extends Model
      */
     private function getCandidatesStdLogin()
     {
-        $sql_where1 = "auth = 'email:" . addslashes($this->username) . "'";
-        return User::findBySql("SELECT * FROM user WHERE $sql_where1")->all();
+        $sql_where1 = "`auth` = 'email:" . addslashes($this->username) . "'";
+        return User::findBySql("SELECT * FROM `user` WHERE $sql_where1")->all();
     }
 
     /**
@@ -215,13 +210,13 @@ class LoginUsernamePasswordForm extends Model
         }
 
         if (!in_array(SiteSettings::LOGIN_STD, $methods)) {
-            $this->error = 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.';
+            $this->error = \Yii::t('user', 'login_err_siteaccess');
             throw new Login($this->error);
         }
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) == 0) {
-            $this->error = 'Benutzer*innenname nicht gefunden.';
+            $this->error = \Yii::t('user', 'login_err_username');
             throw new Login($this->error);
         }
         foreach ($candidates as $tryUser) {
@@ -229,7 +224,7 @@ class LoginUsernamePasswordForm extends Model
                 return $tryUser;
             }
         }
-        $this->error = 'Falsches Passwort.';
+        $this->error = \Yii::t('user', 'login_err_password');
         throw new Login($this->error);
     }
 

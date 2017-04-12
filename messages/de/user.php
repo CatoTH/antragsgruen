@@ -83,6 +83,59 @@ return [
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
 
+    'login_err_password'      => 'Falsches Passwort',
+    'login_err_username'      => 'Benutzer*innenname nicht gefunden',
+    'login_err_siteaccess'    => 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.',
+    'create_err_emailexists'  => 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse',
+    'create_err_siteaccess'   => 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.',
+    'create_err_emailinvalid' => 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.',
+    'create_err_pwdlength'    => 'Das Passwort muss mindestens %MINLEN% Buchstaben lang sein.',
+    'create_err_pwdmismatch'  => 'Die beiden angegebenen Passwörter stimmen nicht überein.',
+    'create_err_noname'       => 'Bitte gib deinen Namen ein.',
+    'err_contact_required'    => 'Du musst eine Kontaktadresse angeben.',
+
+    'create_emailconfirm_title' => 'Anmeldung bei Antragsgrün',
+    'create_emailconfirm_msg'   =>
+        "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n" .
+        "%BEST_LINK%\n\n"
+        . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %CODE%\n\n"
+        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
+
     'access_denied_title' => 'Kein Zugriff',
     'access_denied_body'  => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator*innen dieser Seite (Impressum).',
+
+    'confirm_title'     => 'Zugang bestätigen',
+    'confirm_username'  => 'E-Mail-Adresse / Benutzer*innenname',
+    'confirm_mail_sent' => 'Dir wurde eben eine E-Mail an die angegebene Adresse geschickt.
+                            Bitte bestätige den Empfang dieser E-Mail, indem du den Link darin aufrufst oder
+                            hier den Code in der E-Mail eingibst.',
+    'confirm_code'      => 'Bestätigungs-Code',
+    'confirm_btn_do'    => 'Bestätigen',
+
+    'confirmed_title' => 'Zugang bestätigt',
+    'confirmed_msg'   => 'Alles klar! Dein zugang ist freigeschaltet und du kannst loslegen!',
+
+    'recover_title'       => 'Passwort zurücksetzen',
+    'recover_step1'       => '1. Gib deine E-Mail-Adresse ein',
+    'recover_email_place' => 'meine@email-adresse.de',
+    'recover_send_email'  => 'Bestätigungs-Mail schicken',
+    'recover_step2'       => '2. Setze ein neues Passwort',
+    'recover_email'       => 'E-Mail-Adresse',
+    'recover_code'        => 'Bestätigungs-Code',
+    'recover_new_pwd'     => 'Neues Passwort',
+    'recover_set_pwd'     => 'Neues Passwort setzen',
+
+    'recovered_title' => 'Passwort geändert',
+    'recovered_msg'   => 'Alles klar! Dein Passwort wurde geändert.',
+
+    'deleted_title' => 'Zugang gelöscht',
+    'deleted_msg'   => 'Der Zugang wurde gelöscht.',
+
+    'no_noti_title'        => 'Benachrichtigungen abbestellen',
+    'no_noti_bc'           => 'Benachrichtigungen',
+    'no_noti_unchanged'    => 'Benachrichtigungen unverändert lassen',
+    'no_noti_consultation' => 'Benachrichtigungen dieser Veranstaltung (%NAME%) abbestellen',
+    'no_noti_all'          => 'Alle Antragsgrün-Benachrichtigungen abbestellen',
+    'no_noti_blacklist'    => 'Grundsätzlich keine E-Mails mehr an meine E-Mail-Adresse <small>(auch keine Passwort-Wiederherstellungs-Mails etc.)</small>',
+    'no_noti_save'         => 'Speichern',
 ];

@@ -230,7 +230,7 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
      */
     public function testGroupingChangedBlocks1()
     {
-        $blocks = [
+        $blocks  = [
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet</del><ins>Bavaria ipsum</ins></p><p class="inserted">Another inserted paragraph</p>',
             '<ul class="deleted"><li>###LINENUMBER###Old list</li></ul><ol class="inserted"><li>New list</li></ol>'
@@ -249,14 +249,47 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
     /**
      */
+    public function testSeveralUnchangedLinesAtBeginning1()
+    {
+        $strPre  = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
+        $strPost = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals(1, count($diffGroups));
+        $this->assertEquals(3, $diffGroups[0]['lineFrom']);
+        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+    }
+
+    /**
+     */
     public function testGroupingChangedBlocks2()
     {
         // To cases in which the grouping has no effect: nested INS/DEL-Tags, and Paragraphs that are nur purely inserted/deleted
-        $blocks = [
+        $blocks  = [
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt <ins>ut</ins> labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
             '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet</del><ins>Bavaria ipsum</ins>Test</p><p class="inserted">Another inserted paragraph</p>',
         ];
         $grouped = AmendmentSectionFormatter::groupConsecutiveChangeBlocks($blocks);
         $this->assertEquals($blocks, $grouped);
+    }
+
+    public function testSeveralUnchangedLinesAtBeginning2()
+    {
+        $strPre  = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
+        $strPost = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
+
+        $this->assertEquals(1, count($diffGroups));
+        $this->assertEquals(2, $diffGroups[0]['lineFrom']);
+        $this->assertEquals(5, $diffGroups[0]['lineTo']);
     }
 }

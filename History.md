@@ -8,9 +8,14 @@
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
-### Version 3.6.4 [Not released yet]
+### Version 3.6.5 [not released yet]
+
+- Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).
+
+### Version 3.6.4 (2017-04-12)
 
 - Compatibility: The installation should now work with disabled POSIX-extension
+- Internationalization: Some strings in the login/account-creation-process were translated to english
 
 ### Version 3.6.3 (2017-04-10)
 

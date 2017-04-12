@@ -78,6 +78,57 @@ return [
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
 
+    'login_err_password'      => 'Invalid password.',
+    'login_err_username'      => 'Username not found.',
+    'login_err_siteaccess'    => 'This account is not eligible to log in to this site.',
+    'create_err_emailexists'  => 'This e-mail-address is already registered to another account',
+    'create_err_siteaccess'   => 'Creating accounts is not allowed for this site.',
+    'create_err_emailinvalid' => 'Please enter a valid e-mailaddress.',
+    'create_err_pwdlength'    => 'The password needs to be at least %MINLEN% characters long.',
+    'create_err_pwdmismatch'  => 'The two passwords entered do not match.',
+    'create_err_noname'       => 'Please enter your name.',
+    'err_contact_required'    => 'You need to enter a contact address.',
+
+    'create_emailconfirm_title' => 'Registration at Antragsgrün / motion.tools',
+    'create_emailconfirm_msg'   =>
+        "Hi,\n\nplease click on the following link to confirm your account:\n" .
+        "%BEST_LINK%\n\n"
+        . "...or enter the following code on the site: %CODE%\n\n"
+        . "With kind regards,\n\tTeam Antragsgrün",
+
     'access_denied_title' => 'No access',
     'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
+
+    'confirm_title'     => 'Confirm your account',
+    'confirm_username'  => 'E-mail-address / username',
+    'confirm_mail_sent' => 'An email was just sent to your address. Plase confirm receiving this mail by clicking on the link in the mail of by entering the given code on this page.',
+    'confirm_code'      => 'Confirmation code',
+    'confirm_btn_do'    => 'Confirm',
+
+    'confirmed_title' => 'Account confirmed',
+    'confirmed_msg'   => 'Your\'re all set! Your account is confirmed and you are good to go.',
+
+    'recover_title'       => 'Password recovery',
+    'recover_step1'       => '1. Enter your e-mail-address',
+    'recover_email_place' => 'my@email-address.org',
+    'recover_send_email'  => 'Send confirmation-e-mail',
+    'recover_step2'       => '2. Set a new password',
+    'recover_email'       => 'E-mail-address',
+    'recover_code'        => 'Confirmation code',
+    'recover_new_pwd'     => 'New password',
+    'recover_set_pwd'     => 'Set new password',
+
+    'recovered_title' => 'New password set',
+    'recovered_msg'   => 'Your password has been changed.',
+
+    'deleted_title' => 'Account deleted',
+    'deleted_msg'   => 'Your account has been deleted.',
+
+    'no_noti_title'        => 'Unsubscribe from notifications',
+    'no_noti_bc'           => 'Notifications',
+    'no_noti_unchanged'    => 'Leave the notifications as they are',
+    'no_noti_consultation' => 'Unsubscribe from notifications of this consultation (%NAME%)',
+    'no_noti_all'          => 'Unsubscribe from all notifications',
+    'no_noti_blacklist'    => 'No e-mails at all <small>(including password-recovery-emails etc.)</small>',
+    'no_noti_save'         => 'Save',
 ];

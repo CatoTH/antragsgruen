@@ -6,9 +6,9 @@ class LoginForm {
             if ($(this).prop("checked")) {
                 $("#pwdConfirm").removeClass('hidden');
                 $("#regName").removeClass('hidden').find("input").attr("required", "required");
-                $("#passwordInput").attr("placeholder", "Min. " + pwMinLen + " Zeichen");
-                $("#create_str").removeClass('hidden');
-                $("#login_str").addClass('hidden');
+                $("#passwordInput").attr("placeholder", __t("std", "pw_min_x_chars").replace(/%NUM%/, pwMinLen));
+                $("#createStr").removeClass('hidden');
+                $("#loginStr").addClass('hidden');
             } else {
                 $("#pwdConfirm").addClass('hidden');
                 $("#regName").addClass('hidden').find("input").removeAttr("required");
