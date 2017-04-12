@@ -21,7 +21,7 @@ class AffectedLinesFilterTest extends TestBase
             '###LINENUMBER###Test 5</del><p class="inserted">Neuer Text.</p></li></ul>',
         ];
         $expected  = [
-            ['text' => '<ul><li><del>###LINENUMBER###Test 3 ###LINENUMBER###Test 4 ###LINENUMBER###Test 5</del></li></ul>' .
+            ['text' => '<ul><li>###LINENUMBER###<del>Test 3 ###LINENUMBER###Test 4 ###LINENUMBER###Test 5</del></li></ul>' .
                 '<ul><li><p class="inserted">Neuer Text.</p></li></ul>',
              'lineFrom' => 3, 'lineTo' => 5],
         ];

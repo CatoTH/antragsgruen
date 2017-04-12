@@ -225,4 +225,39 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // - <li>s that are changed
         // - <li>s that are deleted
     }
+
+/**
+     */
+    public function testSeveralUnchangedLinesAtBeginning1()
+    {
+        $strPre  = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
+        $strPost = '<p>Über den Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals(1, count($diffGroups));
+        $this->assertEquals(3, $diffGroups[0]['lineFrom']);
+        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+    }
+
+    /**
+     */
+    public function testSeveralUnchangedLinesAtBeginning2()
+    {
+        $strPre  = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';
+        $strPost = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Bei ungewollter Schwangerschaft brauchen Frauen wohnortnahe Unterstützung und Hilfe, keine Bevormundung und keine Strafe. Erst recht brauchen sie keinen Rückschritt bei bereits erkämpften Rechten und keine Einschränkungen erreichter Freiheiten.</p>';
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($strPre);
+        $formatter->setTextNew($strPost);
+        $formatter->setFirstLineNo(1);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers(92, DiffRenderer::FORMATTING_CLASSES);
+
+        $this->assertEquals(1, count($diffGroups));
+        $this->assertEquals(2, $diffGroups[0]['lineFrom']);
+        $this->assertEquals(5, $diffGroups[0]['lineTo']);
+    }
 }

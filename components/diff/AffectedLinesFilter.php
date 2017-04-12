@@ -56,7 +56,7 @@ class AffectedLinesFilter
         $affectedBlocks        = [];
         $middleUnchangedBlocks = [];
 
-        foreach ($blocks as $block) {
+        foreach ($blocks as $blockNo => $block) {
             if ($block['text'] == '') {
                 continue;
             }
@@ -85,7 +85,7 @@ class AffectedLinesFilter
                 $addBlock = true;
             }
             if ($addBlock) {
-                if (count($middleUnchangedBlocks) == 1) {
+                if (count($middleUnchangedBlocks) == 1 && $blockNo > 1) {
                     $affectedBlocks[] = $middleUnchangedBlocks[0];
                 }
                 $affectedBlocks[]      = $block;
@@ -223,6 +223,9 @@ class AffectedLinesFilter
      */
     public static function splitToAffectedLines($html, $firstLine)
     {
+        // <del>###LINENUMBER### would mark the previous line as affected as well
+        $html = str_replace('<del>###LINENUMBER###', '###LINENUMBER###<del>', $html);
+
         $dom = HTMLTools::html2DOM($html);
         if (is_a($dom, \DOMText::class)) {
             return [];
