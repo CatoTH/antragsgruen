@@ -8,7 +8,8 @@ use app\models\exceptions\Internal;
 class Diff
 {
     const MAX_LINE_CHANGE_RATIO_MIN_LEN = 100;
-    const MAX_LINE_CHANGE_RATIO         = 0.4;
+    const MAX_LINE_CHANGE_RATIO         = 0.6;
+    const MAX_LINE_CHANGE_RATIO_PART    = 0.4;
 
     // # is necessary for placeholders like ###LINENUMBER###
     public static $WORD_BREAKING_CHARS = [' ', ',', '.', '#', '-', '?', '!', ':', '<', '>'];
@@ -383,6 +384,15 @@ class Diff
         $combined = str_replace(DiffRenderer::DEL_END . DiffRenderer::DEL_START, '', $combined);
         $combined = str_replace(DiffRenderer::INS_END . DiffRenderer::INS_START, '', $combined);
 
+        // If too much of the whole paragraph changes, then we don't display an inline diff anymore
+        if (strpos($combined, DiffRenderer::DEL_START) !== false &&
+            strpos($combined, DiffRenderer::INS_START) !== false) {
+            $changeRatio = $this->computeLineDiffChangeRatio($lineOld, $combined);
+            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
+                return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
+            }
+        }
+
         $split = $this->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
         list($prefix, $middleOrig, $middleNew, $middleDiff, $postfix) = $split;
 
@@ -390,7 +400,7 @@ class Diff
         $breaksList = (mb_stripos($middleDiff, '</li>') !== false);
         if ($middleLen > static::MAX_LINE_CHANGE_RATIO_MIN_LEN && !$breaksList) {
             $changeRatio = $this->computeLineDiffChangeRatio($middleOrig, $middleDiff);
-            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO) {
+            if ($changeRatio > static::MAX_LINE_CHANGE_RATIO_PART) {
                 $combined = $prefix;
                 $combined .= $this->wrapWithDelete($middleOrig);
                 $combined .= $this->wrapWithInsert($middleNew);
