@@ -392,6 +392,10 @@ class MotionMergeAmendmentsTextarea {
         this.$holder.find(".texteditor").focus();
     }
 
+    public getContent(): string {
+        return this.texteditor.getData();
+    }
+
     constructor(private $holder: JQuery, private rootObject: MotionMergeAmendments) {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
@@ -409,16 +413,18 @@ class MotionMergeAmendmentsTextarea {
     }
 }
 
-class MotionMergeAmendments {
+export class MotionMergeAmendments {
     public static activePopup: MotionMergeChangeTooltip | MotionMergeConflictTooltip = null;
     public static currMouseX: number = null;
 
     public $draftSavingPanel: JQuery;
+    private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
 
     constructor(private $form: JQuery) {
         $(".wysiwyg-textarea").each((i, el) => {
-            new MotionMergeAmendmentsTextarea($(el), this);
-            $(el).on("mousemove", (ev) => {
+            let $el = $(el);
+            this.textareas[$el.attr("id")] = new MotionMergeAmendmentsTextarea($el, this);
+            $el.on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
         });
@@ -441,9 +447,13 @@ class MotionMergeAmendments {
 
     private saveDraft() {
         let sections = {};
+        for (let id of Object.getOwnPropertyNames(this.textareas)) {
+            console.log(id);
+            sections[id.replace('section_holder_', '')] = this.textareas[id].getContent();
+        }
 
         $.post(this.$form.data('draftSaving'), {
-            'public': (this.$draftSavingPanel.find('input[name=public]') ? 1 : 0),
+            'public': (this.$draftSavingPanel.find('input[name=public]').prop('checked') ? 1 : 0),
             'sections': sections,
             '_csrf': this.$form.find('> input[name=_csrf]').val()
         }, (ret) => {
@@ -461,5 +471,3 @@ class MotionMergeAmendments {
         this.$draftSavingPanel.find('.saveSraft').on('click', this.saveDraft.bind(this));
     }
 }
-
-new MotionMergeAmendments($(".motionMergeForm"));

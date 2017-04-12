@@ -5,8 +5,6 @@ namespace app\models\forms;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 
 class MotionMergeAmendmentsDraftForm
 {
@@ -26,7 +24,7 @@ class MotionMergeAmendmentsDraftForm
             ->where(['parentMotionId' => $origMotion->id])
             ->andWhere(['status' => $draftStati])->one();
         if ($this->draft) {
-            $this->draft->dateCreation   = date('Y-m-d H:i:s');
+            $this->draft->dateCreation = date('Y-m-d H:i:s');
         } else {
             $this->draft = new Motion();
             $this->draft->setAttributes($this->origMotion->getAttributes(), false);
@@ -36,6 +34,29 @@ class MotionMergeAmendmentsDraftForm
             $this->draft->titlePrefix    = '';
             $this->draft->parentMotionId = $this->origMotion->id;
         }
+    }
+
+    /**
+     * @param int $sectionId
+     * @return MotionSection
+     * @throws Internal
+     */
+    private function getSection($sectionId)
+    {
+        foreach ($this->draft->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                return $section;
+            }
+        }
+        foreach ($this->origMotion->sections as $section) {
+            if ($section->sectionId == $sectionId) {
+                $newSection = new MotionSection();
+                $newSection->setAttributes($section->getAttributes(), false);
+                $newSection->motionId = $this->draft->id;
+                return $newSection;
+            }
+        }
+        throw new Internal('Invalid section');
     }
 
     /**
@@ -51,8 +72,13 @@ class MotionMergeAmendmentsDraftForm
         }
         $this->draft->save();
 
-        foreach ($sections as $section) {
-
+        foreach ($this->origMotion->sections as $origSection) {
+            $section = $this->getSection($origSection->sectionId);
+            if (isset($sections[$section->sectionId])) {
+                $section->dataRaw = $sections[$section->sectionId];
+                $section->data    = '';
+            }
+            $section->save();
         }
     }
 }

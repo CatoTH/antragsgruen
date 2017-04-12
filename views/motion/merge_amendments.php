@@ -24,7 +24,6 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
 $layout->loadCKEditor();
-$layout->addAMDModule('frontend/MotionMergeAmendments');
 
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
@@ -77,23 +76,24 @@ echo '</div>';
 
 
 echo Html::beginForm('', 'post', [
-    'class' => 'motionMergeForm fuelux',
-    'enctype' => 'multipart/form-data',
-    'data-draft-saving' => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
+    'class'                    => 'motionMergeForm fuelux',
+    'enctype'                  => 'multipart/form-data',
+    'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
+    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
 ]);
 
 ?>
-<section id="draftSavingPanel">
-    <h2>Zwischenstand</h2>
+    <section id="draftSavingPanel">
+        <h2>Zwischenstand</h2>
 
-    <label class="public">
-        <input type="checkbox" name="public">
-        Öffentlich sichtbar
-    </label>
+        <label class="public">
+            <input type="checkbox" name="public">
+            Öffentlich sichtbar
+        </label>
 
-    <div class="lastSaved">Zuletzt gespeichert: <span class="value"></span></div>
-    <button class="saveSraft btn btn-default btn-xs" type="button">Speichern</button>
-</section>
+        <div class="lastSaved">Zuletzt gespeichert: <span class="value"></span></div>
+        <button class="saveSraft btn btn-default btn-xs" type="button">Speichern</button>
+    </section>
 <?php
 
 
@@ -157,16 +157,16 @@ echo '</div></section>';
 $editorials = [];
 foreach ($motion->getVisibleAmendments(false) as $amendment) {
     if ($amendment->changeEditorial != '') {
-        $str = '<div class="amendment content"><h3>';
-        $str .= str_replace(
+        $str          = '<div class="amendment content"><h3>';
+        $str          .= str_replace(
             ['%TITLE%', '%INITIATOR%'],
             [$amendment->titlePrefix, $amendment->getInitiatorsStr()],
             \Yii::t('amend', 'merge_amend_by')
         );
-        $str .= '</h3>';
-        $str .= '<div class="text">';
-        $str .= $amendment->changeEditorial;
-        $str .= '</div></div>';
+        $str          .= '</h3>';
+        $str          .= '<div class="text">';
+        $str          .= $amendment->changeEditorial;
+        $str          .= '</div></div>';
         $editorials[] = $str;
     }
 }
