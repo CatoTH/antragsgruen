@@ -1,1 +1,1 @@
-{"version":3,"sources":["manager/InitSite.ts"],"names":["SiteCreateWizard","$"],"mappings":"oFAEA,IAAIA,kBAAiBC,EAAE","file":"InitSite.js","sourcesContent":["import \"../shared/SiteCreateWizard\";\n\nnew SiteCreateWizard($(\"form.siteCreate\"));\n"]}
+{"version":3,"sources":["manager/InitSite.ts"],"names":["SiteCreateWizard","$"],"mappings":"sIAEA,GAAIA,kBAAiBC,EAAE","file":"InitSite.js","sourcesContent":["import \"../shared/SiteCreateWizard\";\n\nnew SiteCreateWizard($(\"form.siteCreate\"));\n"]}

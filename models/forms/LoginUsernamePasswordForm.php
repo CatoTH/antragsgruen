@@ -86,7 +86,7 @@ class LoginUsernamePasswordForm extends Model
             throw new Login($this->error);
         }
         if (strlen($this->password) < static::PASSWORD_MIN_LEN) {
-            $this->error = \Yii::t('user', 'create_err_pwdlength');
+            $this->error = str_replace('%MINLEN%', static::PASSWORD_MIN_LEN, \Yii::t('user', 'create_err_pwdlength'));
             throw new Login($this->error);
         }
         if ($this->password != $this->passwordConfirm) {

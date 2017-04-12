@@ -86,7 +86,7 @@ return [
     'create_err_emailexists'  => 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse',
     'create_err_siteaccess'   => 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.',
     'create_err_emailinvalid' => 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.',
-    'create_err_pwdlength'    => 'Das Passwort muss mindestens sechs Buchstaben lang sein.',
+    'create_err_pwdlength'    => 'Das Passwort muss mindestens %MINLEN% Buchstaben lang sein.',
     'create_err_pwdmismatch'  => 'Die beiden angegebenen Passwörter stimmen nicht überein.',
     'create_err_noname'       => 'Bitte gib deinen Namen ein.',
     'err_contact_required'    => 'Du musst eine Kontaktadresse angeben.',

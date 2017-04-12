@@ -81,7 +81,7 @@ return [
     'create_err_emailexists'  => 'This e-mail-address is already registered to another account',
     'create_err_siteaccess'   => 'Creating accounts is not allowed for this site.',
     'create_err_emailinvalid' => 'Please enter a valid e-mailaddress.',
-    'create_err_pwdlength'    => 'The password needs to be at least 6 characters long.',
+    'create_err_pwdlength'    => 'The password needs to be at least %MINLEN% characters long.',
     'create_err_pwdmismatch'  => 'The two passwords entered do not match.',
     'create_err_noname'       => 'Please enter your name.',
     'err_contact_required'    => 'You need to enter a contact address.',
