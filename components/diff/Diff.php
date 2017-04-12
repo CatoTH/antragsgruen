@@ -589,8 +589,11 @@ class Diff
         $resolved      = [];
         foreach ($diffSections as $diffS) {
             $diffS = str_replace('<del>###LINENUMBER###</del>', '###LINENUMBER###', $diffS);
-            $diffS = str_replace('<del style="color: red; text-decoration: line-through;">###LINENUMBER###</del>',
-                '###LINENUMBER###', $diffS);
+            $diffS = str_replace(
+                '<del style="color: red; text-decoration: line-through;">###LINENUMBER###</del>',
+                '###LINENUMBER###',
+                $diffS
+            );
             if (preg_match('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', $diffS)) {
                 $str = preg_replace('/<del( [^>]*)?>###EMPTYINSERTED###<\/del>/siu', '', $diffS);
                 if (count($resolved) > 0) {
@@ -611,14 +614,13 @@ class Diff
     }
 
     /**
-     * @param string $orig
      * @param string $diff
      * @param array $amParams
      * @return array
      */
-    public function convertToWordArray($orig, $diff, $amParams)
+    public function convertToWordArray($diff, $amParams)
     {
-        $wordSplitChars = [' ', '-', '>', '<', ':', '.'];
+        $splitChars = [' ', '-', '>', '<', ':', '.'];
         $words          = [
             0 => [
                 'word' => '',
@@ -654,7 +656,11 @@ class Diff
                 } elseif ($inDel) {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || (in_array($diffPartWord, $wordSplitChars) && $diffPartWord != ' ' && $diffPartWord != '-') || $diffPartWord[0] == '<');
+                        $isNewWord    = (
+                            in_array($prevLastChar, $splitChars) ||
+                            (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
+                            $diffPartWord[0] == '<'
+                        );
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
                             $words[$originalWordPos] = [
@@ -673,7 +679,11 @@ class Diff
                 } else {
                     foreach ($diffPartWords as $diffPartWord) {
                         $prevLastChar = mb_substr($words[$originalWordPos]['word'], -1, 1);
-                        $isNewWord    = (in_array($prevLastChar, $wordSplitChars) || (in_array($diffPartWord, $wordSplitChars) && $diffPartWord != ' ' && $diffPartWord != '-') || $diffPartWord[0] == '<');
+                        $isNewWord    = (
+                            in_array($prevLastChar, $splitChars) ||
+                            (in_array($diffPartWord, $splitChars) && $diffPartWord != ' ' && $diffPartWord != '-') ||
+                            $diffPartWord[0] == '<'
+                        );
 
                         if ($isNewWord || $originalWordPos == 0) {
                             $originalWordPos++;
@@ -718,7 +728,8 @@ class Diff
             if ($origArr[$i] != $wordArr[$i]['word']) {
                 var_dump($wordArr);
                 var_dump($origArr);
-                throw new Internal('Inconsistency; first difference at pos: ' . $i . ' ("' . $origArr[$i] . '" vs. "' . $wordArr[$i]['word'] . '")');
+                throw new Internal('Inconsistency; first difference at pos: ' . $i .
+                    ' ("' . $origArr[$i] . '" vs. "' . $wordArr[$i]['word'] . '")');
             }
         }
         if (count($wordArr) != count($origArr)) {
@@ -749,7 +760,7 @@ class Diff
         for ($i = 0; $i < count($adjustedRef); $i++) {
             if ($adjustedRef[$i] == '###EMPTYINSERTED###') {
                 $diffLine  = $this->computeLineDiff('', $adjustedMatching[$i]);
-                $wordArray = $this->convertToWordArray('', $diffLine, $amParams);
+                $wordArray = $this->convertToWordArray($diffLine, $amParams);
                 if (count($wordArray) != 1 || $wordArray[0]['word'] != '') {
                     throw new Internal('Inserted Paragraph Incosistency');
                 }
@@ -766,7 +777,7 @@ class Diff
                 $origLine    = $adjustedRef[$i];
                 $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
                 $diffLine    = $this->computeLineDiff($origLine, $matchingRow);
-                $wordArray   = $this->convertToWordArray($origLine, $diffLine, $amParams);
+                $wordArray   = $this->convertToWordArray($diffLine, $amParams);
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert != '') {
                     $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];
