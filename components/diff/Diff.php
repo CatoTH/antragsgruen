@@ -306,6 +306,29 @@ class Diff
     }
 
     /**
+     * @param $lineOldArr
+     * @param $lineNewArr
+     * @return boolean
+     */
+    public function htmlParagraphTypeChanges($lineOldArr, $lineNewArr)
+    {
+        if (count($lineOldArr) === 0 || count($lineNewArr) === 0) {
+            return false;
+        }
+        if (!preg_match('/^<(?<nodeType>\w+)[ >]/siu', $lineOldArr[0], $matches)) {
+            return false;
+        } else {
+            $nodeType1 = $matches['nodeType'];
+        }
+        if (!preg_match('/^<(?<nodeType>\w+)[ >]/siu', $lineNewArr[0], $matches)) {
+            return false;
+        } else {
+            $nodeType2 = $matches['nodeType'];
+        }
+        return ($nodeType1 != $nodeType2);
+    }
+
+    /**
      * @param string $lineOld
      * @param string $lineNew
      * @return string
@@ -317,6 +340,10 @@ class Diff
         $lineOldArr   = static::tokenizeLine($lineOld);
         $lineNewArr   = static::tokenizeLine($lineNew);
 
+        if ($this->htmlParagraphTypeChanges($lineOldArr, $lineNewArr)) {
+            return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
+        }
+
         $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
 
         $return = $this->groupOperations($return, '');
@@ -325,8 +352,7 @@ class Diff
             if ($return[$i][1] == Engine::UNMODIFIED) {
                 $computedStrs[] = $return[$i][0];
             } elseif ($return[$i][1] == Engine::DELETED) {
-                if (
-                    isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED &&
+                if (isset($return[$i + 1]) && $return[$i + 1][1] == Engine::INSERTED &&
                     strlen($return[$i + 1][0]) > 0 && $return[$i + 1][0][0] != '<'
                 ) {
                     $computedStrs[] = $this->computeWordDiff($return[$i][0], $return[$i + 1][0]);

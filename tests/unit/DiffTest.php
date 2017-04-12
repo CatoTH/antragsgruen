@@ -39,6 +39,18 @@ class DiffTest extends TestBase
 
     /**
      */
+    public function testNoChangingParagraphTypes()
+    {
+        $orig     = '<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>';
+        $new      = '<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>';
+        $expected = '###DEL_START###<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>###DEL_END######INS_START###<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>###INS_END###';
+        $diff     = new Diff();
+        $out      = $diff->computeLineDiff($orig, $new);
+        $this->assertEquals($expected, $out);
+    }
+
+    /**
+     */
     public function testBreakListpintIntoTwo()
     {
         $this->markTestIncomplete('Does not work yet');
@@ -837,7 +849,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         ];
         $diff   = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
 }
