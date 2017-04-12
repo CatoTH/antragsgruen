@@ -95,4 +95,37 @@ return [
 
     'access_denied_title' => 'No access',
     'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
+
+    'confirm_title'     => 'Confirm your account',
+    'confirm_username'  => 'E-mail-address / username',
+    'confirm_mail_sent' => 'An email was just sent to your address. Plase confirm receiving this mail by clicking on the link in the mail of by entering the given code on this page.',
+    'confirm_code'      => 'Confirmation code',
+    'confirm_btn_do'    => 'Confirm',
+
+    'confirmed_title' => 'Account confirmed',
+    'confirmed_msg'   => 'Your\'re all set! Your account is confirmed and you are good to go.',
+
+    'recover_title'       => 'Password recovery',
+    'recover_step1'       => '1. Enter your e-mail-address',
+    'recover_email_place' => 'my@email-address.org',
+    'recover_send_email'  => 'Send confirmation-e-mail',
+    'recover_step2'       => '2. Set a new password',
+    'recover_email'       => 'E-mail-address',
+    'recover_code'        => 'Confirmation code',
+    'recover_new_pwd'     => 'New password',
+    'recover_set_pwd'     => 'Set new password',
+
+    'recovered_title' => 'New password set',
+    'recovered_msg'   => 'Your password has been changed.',
+
+    'deleted_title' => 'Account deleted',
+    'deleted_msg'   => 'Your account has been deleted.',
+
+    'no_noti_title'        => 'Unsubscribe from notifications',
+    'no_noti_bc'           => 'Notifications',
+    'no_noti_unchanged'    => 'Leave the notifications as they are',
+    'no_noti_consultation' => 'Unsubscribe from notifications of this consultation (%NAME%)',
+    'no_noti_all'          => 'Unsubscribe from all notifications',
+    'no_noti_blacklist'    => 'No e-mails at all <small>(including password-recovery-emails etc.)</small>',
+    'no_noti_save'         => 'Save',
 ];
