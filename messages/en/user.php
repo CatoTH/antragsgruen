@@ -75,6 +75,24 @@ return [
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
 
+    'login_err_password'      => 'Invalid password.',
+    'login_err_username'      => 'Username not found.',
+    'login_err_siteaccess'    => 'This account is not eligible to log in to this site.',
+    'create_err_emailexists'  => 'This e-mail-address is already registered to another account',
+    'create_err_siteaccess'   => 'Creating accounts is not allowed for this site.',
+    'create_err_emailinvalid' => 'Please enter a valid e-mailaddress.',
+    'create_err_pwdlength'    => 'The password needs to be at least 6 characters long.',
+    'create_err_pwdmismatch'  => 'The two passwords entered do not match.',
+    'create_err_noname'       => 'Please enter your name.',
+    'err_contact_required'    => 'You need to enter a contact address.',
+
+    'create_emailconfirm_title' => 'Registration at Antragsgrün / motion.tools',
+    'create_emailconfirm_msg'   =>
+        "Hi,\n\nplease click on the following link to confirm your account:\n" .
+        "%BEST_LINK%\n\n"
+        . "...or enter the following code on the site: %CODE%\n\n"
+        . "With kind regards,\n\tTeam Antragsgrün",
+
     'access_denied_title' => 'No access',
     'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
 ];

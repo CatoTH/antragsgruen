@@ -3,6 +3,7 @@
 ### Version 3.6.4 [Not released yet]
 
 - Compatibility: The installation should now work with disabled POSIX-extension
+- Internationalization: Some strings in the login/account-creation-process were translated to english
 
 ### Version 3.6.3 (2017-04-10)
 

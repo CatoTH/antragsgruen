@@ -80,6 +80,24 @@ return [
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
 
+    'login_err_password'      => 'Falsches Passwort',
+    'login_err_username'      => 'Benutzer*innenname nicht gefunden',
+    'login_err_siteaccess'    => 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.',
+    'create_err_emailexists'  => 'Es existiert bereits ein Zugang mit dieser E-Mail-Adresse',
+    'create_err_siteaccess'   => 'Das Anlegen von Accounts ist bei dieser Veranstaltung nicht möglich.',
+    'create_err_emailinvalid' => 'Bitte gib eine gültige E-Mail-Adresse als Benutzer*innenname ein.',
+    'create_err_pwdlength'    => 'Das Passwort muss mindestens sechs Buchstaben lang sein.',
+    'create_err_pwdmismatch'  => 'Die beiden angegebenen Passwörter stimmen nicht überein.',
+    'create_err_noname'       => 'Bitte gib deinen Namen ein.',
+    'err_contact_required'    => 'Du musst eine Kontaktadresse angeben.',
+
+    'create_emailconfirm_title' => 'Anmeldung bei Antragsgrün',
+    'create_emailconfirm_msg'   =>
+        "Hallo,\n\num deinen Antragsgrün-Zugang zu aktivieren, klicke entweder auf folgenden Link:\n" .
+        "%BEST_LINK%\n\n"
+        . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %CODE%\n\n"
+        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
+
     'access_denied_title' => 'Kein Zugriff',
     'access_denied_body'  => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator*innen dieser Seite (Impressum).',
 ];
