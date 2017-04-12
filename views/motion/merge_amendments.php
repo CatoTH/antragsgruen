@@ -73,15 +73,28 @@ echo '<div class="alert alert-info alert-dismissible" role="alert">
 
 echo $controller->showErrors();
 
-echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
-    data-new-motion-id="' . $form->newMotion->id . '" data-orig-motion-id="' . $form->origMotion->id . '">' .
-    \Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
-</div>';
-
 echo '</div>';
 
 
-echo Html::beginForm('', 'post', ['class' => 'motionMergeForm fuelux', 'enctype' => 'multipart/form-data']);
+echo Html::beginForm('', 'post', [
+    'class' => 'motionMergeForm fuelux',
+    'enctype' => 'multipart/form-data',
+    'data-draft-saving' => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
+]);
+
+?>
+<section id="draftSavingPanel">
+    <h2>Zwischenstand</h2>
+
+    <label class="public">
+        <input type="checkbox" name="public">
+        Öffentlich sichtbar
+    </label>
+
+    <div class="lastSaved">Zuletzt gespeichert: <span class="value"></span></div>
+    <button class="saveSraft btn btn-default btn-xs" type="button">Speichern</button>
+</section>
+<?php
 
 
 echo '<section class="newMotion">

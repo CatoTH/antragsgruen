@@ -1,6 +1,5 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
-import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 
 class MotionMergeChangeActions {
     public static accept(node: Element) {
@@ -411,8 +410,10 @@ class MotionMergeAmendmentsTextarea {
 }
 
 class MotionMergeAmendments {
-    public static activePopup: MotionMergeChangeTooltip|MotionMergeConflictTooltip = null;
+    public static activePopup: MotionMergeChangeTooltip | MotionMergeConflictTooltip = null;
     public static currMouseX: number = null;
+
+    public $draftSavingPanel: JQuery;
 
     constructor(private $form: JQuery) {
         $(".wysiwyg-textarea").each((i, el) => {
@@ -422,15 +423,12 @@ class MotionMergeAmendments {
             });
         });
 
-        let $draftHint = $("#draftHint"),
-            origMotionId = $draftHint.data("orig-motion-id"),
-            newMotionId = $draftHint.data("new-motion-id");
-        new DraftSavingEngine($form, $draftHint, "motionmerge_" + origMotionId + "_" + newMotionId);
-
         this.$form.on("submit", () => {
             $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
         });
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
+
+        this.initDraftSaving();
     }
 
     public static onLeavePage(): string {
@@ -439,6 +437,28 @@ class MotionMergeAmendments {
 
     public addSubmitListener(cb) {
         this.$form.submit(cb);
+    }
+
+    private saveDraft() {
+        let sections = {};
+
+        $.post(this.$form.data('draftSaving'), {
+            'public': (this.$draftSavingPanel.find('input[name=public]') ? 1 : 0),
+            'sections': sections,
+            '_csrf': this.$form.find('> input[name=_csrf]').val()
+        }, (ret) => {
+            if (ret['success']) {
+                let date = new Date();
+                this.$draftSavingPanel.find('.lastSaved .value').text(date.getHours() + ':' + date.getMinutes());
+            } else {
+                alert(ret['error']);
+            }
+        });
+    }
+
+    private initDraftSaving() {
+        this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
+        this.$draftSavingPanel.find('.saveSraft').on('click', this.saveDraft.bind(this));
     }
 }
 

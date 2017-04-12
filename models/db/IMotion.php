@@ -54,6 +54,10 @@ abstract class IMotion extends ActiveRecord
     // Not yet visible, it's up to the admin to submit it
     const STATUS_DRAFT_ADMIN = 16;
 
+    // Saved drafts while merging amendments into an motion
+    const STATUS_MERGING_DRAFT_PUBLIC = 19;
+    const STATUS_MERGING_DRAFT_PRIVATE = 20;
+
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
     const STATUS_ADOPTED             = 8;
@@ -92,6 +96,8 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_DRAFT_ADMIN                  => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
             static::STATUS_PROCESSED                    => \Yii::t('structure', 'STATUS_PROCESSED'),
             static::STATUS_WITHDRAWN_INVISIBLE          => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
+            static::STATUS_MERGING_DRAFT_PUBLIC         => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC'),
+            static::STATUS_MERGING_DRAFT_PRIVATE        => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
         ];
     }
 

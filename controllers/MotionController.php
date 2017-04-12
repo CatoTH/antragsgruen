@@ -16,6 +16,7 @@ use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionEditForm;
+use app\models\forms\MotionMergeAmendmentsDraftForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\sectionTypes\ISectionType;
@@ -708,5 +709,31 @@ class MotionController extends Base
 
         $params = ['motion' => $motion, 'form' => $form, 'amendmentStati' => $amendStati];
         return $this->render('merge_amendments', $params);
+    }
+
+    /**
+     * @param $motionSlug
+     * @return string
+     */
+    public function actionSaveMergingDraft($motionSlug)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return json_encode(['success' => false, 'error' => 'Motion not found']);
+        }
+        if (!$motion->canMergeAmendments()) {
+            return json_encode(['success' => false, 'error' => 'Motion not editable']);
+        }
+
+        $form = new MotionMergeAmendmentsDraftForm($motion);
+        $form->save(
+            \Yii::$app->request->post('public', 0),
+            \Yii::$app->request->post('sections', [])
+        );
+
+        return json_encode(['success' => true]);
     }
 }

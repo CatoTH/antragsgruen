@@ -404,6 +404,27 @@ del.space, ins.space, del.formatting, ins.formatting {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
   }
+  #draftSavingPanel {
+    position: fixed;
+    bottom: 0;
+    right: 100px;
+    width: 250px;
+    padding: 10px;
+    background: white;
+    border: solid 1px #ccc;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom: none;
+
+    label {
+      font-weight: normal;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+  }
 }
 
 .userAccountForm {
