@@ -317,15 +317,6 @@ class MotionController extends Base
 
     /**
      * @param string $motionSlug
-     * @return string
-     */
-    public function actionConsolidated($motionSlug)
-    {
-        return $this->actionView($motionSlug, 0);
-    }
-
-    /**
-     * @param string $motionSlug
      * @param string $fromMode
      * @return string
      */
