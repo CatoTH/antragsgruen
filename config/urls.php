@@ -14,8 +14,8 @@ $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'
 
 $consultationPaths = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml';
-$motionPaths .= '|mergeamendments|mergeamendmentconfirm|withdraw|viewimage|viewpdf|embeddedpdf';
+$motionPaths = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
+$motionPaths .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|withdraw';
 $amendPaths = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collissions|ajax-diff';
 $userPaths  = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
 $userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';

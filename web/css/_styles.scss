@@ -355,6 +355,23 @@ del.space, ins.space, del.formatting, ins.formatting {
   margin-bottom: 20px;
 }
 
+.motionMergeInitForm {
+  .alert {
+    margin-bottom: 25px;
+  }
+  .radio {
+    margin-top: 15px;
+  }
+  .select {
+    margin-left: 20px;
+    margin-top: 10px;
+  }
+  .save-row {
+    margin-top: 25px;
+    text-align: center;
+  }
+}
+
 .motionMergeForm {
   .submitHolder {
     text-align: right;

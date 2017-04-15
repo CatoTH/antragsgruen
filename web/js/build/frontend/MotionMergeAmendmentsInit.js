@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var o=function(){function e(e){this.$form=e;var n=e.find(".all label"),o=e.find(".single label");e.find(".single select");n.on("checked.fu.radio",function(){console.log("all")}),o.on("checked.fu.radio",function(){console.log("single")})}return e}();n.MotionMergeAmendmentsInit=o});
+//# sourceMappingURL=MotionMergeAmendmentsInit.js.map

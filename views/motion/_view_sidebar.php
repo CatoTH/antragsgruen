@@ -66,7 +66,7 @@ if ($motion->canMergeAmendments()) {
     $title   = (count($motion->getVisibleAmendments(false)) > 0 ? 'amendments_merge' : 'amendments_merge_noamend');
     $title   = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', $title);
-    $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+    $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'merge-amendments-init')) . '</li>';
     $html .= $mergeLi;
     $layout->menusHtmlSmall[] = $mergeLi;
     $sidebarRows++;

@@ -583,10 +583,30 @@ class MotionController extends Base
 
     /**
      * @param string $motionSlug
+     * @return string
+     */
+    public function actionMergeAmendmentsInit($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        return $this->render('merge_amendments_init', ['motion' => $motion]);
+    }
+
+    /**
+     * @param string $motionSlug
      * @param string $amendmentStati
      * @return string
      */
-    public function actionMergeamendmentconfirm($motionSlug, $amendmentStati = '')
+    public function actionMergeAmendmentsConfirm($motionSlug, $amendmentStati = '')
     {
         $newMotion = $this->consultation->getMotion($motionSlug);
         if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
@@ -597,7 +617,7 @@ class MotionController extends Base
         $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
 
         if ($this->isPostSet('modify')) {
-            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'mergeamendments', [
+            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments', [
                 'newMotionId'    => $newMotion->id,
                 'amendmentStati' => $amendmentStati
             ]));
@@ -649,7 +669,7 @@ class MotionController extends Base
      * @param string $amendmentStati
      * @return string
      */
-    public function actionMergeamendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
+    public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -685,7 +705,7 @@ class MotionController extends Base
                 $form->setAttributes(\Yii::$app->request->post());
                 try {
                     $newMotion = $form->createNewMotion();
-                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'mergeamendmentconfirm', [
+                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendment-confirm', [
                         'fromMode'       => 'create',
                         'amendmentStati' => json_encode($form->amendStatus),
                         'draftId'        => $this->getRequestValue('draftId'),

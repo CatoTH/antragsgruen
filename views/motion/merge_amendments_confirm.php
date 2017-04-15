@@ -62,7 +62,3 @@ echo '<div class="content">
     </div>';
 
 echo Html::endForm();
-
-if ($deleteDraftId) {
-    $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
-}

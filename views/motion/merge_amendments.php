@@ -75,7 +75,7 @@ echo $controller->showErrors();
 echo '</div>';
 
 
-echo Html::beginForm('', 'post', [
+echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
     'class'                    => 'motionMergeForm fuelux',
     'enctype'                  => 'multipart/form-data',
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
