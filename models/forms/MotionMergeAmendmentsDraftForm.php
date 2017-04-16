@@ -62,6 +62,7 @@ class MotionMergeAmendmentsDraftForm
     /**
      * @param int $public
      * @param string[] $sections
+     * @return Motion
      */
     public function save($public, $sections)
     {
@@ -80,5 +81,7 @@ class MotionMergeAmendmentsDraftForm
             }
             $section->save();
         }
+
+        return $this->draft;
     }
 }

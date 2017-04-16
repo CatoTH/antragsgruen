@@ -91,16 +91,21 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
 ]);
 
 ?>
-    <section id="draftSavingPanel">
-        <h2>Zwischenstand</h2>
-
+    <section id="draftSavingPanel" data-resumed-date="<?= ($resumeDraft ? $resumeDraft->dateCreation : '') ?>">
+        <h2><?= \Yii::t('amend', 'merge_draft_title') ?></h2>
         <label class="public">
             <input type="checkbox" name="public">
-            Öffentlich sichtbar
+            <?= \Yii::t('amend', 'merge_draft_public') ?>
         </label>
-
-        <div class="lastSaved">Zuletzt gespeichert: <span class="value"></span></div>
-        <button class="saveSraft btn btn-default btn-xs" type="button">Speichern</button>
+        <div class="save">
+            <div class="lastSaved">
+                <?= \Yii::t('amend', 'merge_draft_date') ?>:
+                <span class="value"></span>
+                <span class="none"><?= \Yii::t('amend', 'merge_draft_not_saved') ?></span>
+            </div>
+            <button class="saveDraft btn btn-default btn-xs"
+                    type="button"><?= \Yii::t('amend', 'merge_draft_save') ?></button>
+        </div>
     </section>
 <?php
 

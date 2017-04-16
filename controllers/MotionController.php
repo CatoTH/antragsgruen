@@ -749,11 +749,11 @@ class MotionController extends Base
         }
 
         $form = new MotionMergeAmendmentsDraftForm($motion);
-        $form->save(
+        $draft = $form->save(
             \Yii::$app->request->post('public', 0),
             \Yii::$app->request->post('sections', [])
         );
 
-        return json_encode(['success' => true]);
+        return json_encode(['success' => true, 'date' => $draft->dateCreation]);
     }
 }

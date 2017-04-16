@@ -445,10 +445,23 @@ export class MotionMergeAmendments {
         this.$form.submit(cb);
     }
 
+    private setDraftDate(date: Date) {
+        this.$draftSavingPanel.find(".lastSaved .none").hide();
+
+        let options = {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric',
+                hour12: false
+            },
+            lang: string = $("html").attr("lang"),
+            formatted = new Intl.DateTimeFormat(lang, options).format(date);
+
+        this.$draftSavingPanel.find(".lastSaved .value").text(formatted);
+    }
+
     private saveDraft() {
         let sections = {};
         for (let id of Object.getOwnPropertyNames(this.textareas)) {
-            console.log(id);
             sections[id.replace('section_holder_', '')] = this.textareas[id].getContent();
         }
 
@@ -458,8 +471,7 @@ export class MotionMergeAmendments {
             '_csrf': this.$form.find('> input[name=_csrf]').val()
         }, (ret) => {
             if (ret['success']) {
-                let date = new Date();
-                this.$draftSavingPanel.find('.lastSaved .value').text(date.getHours() + ':' + date.getMinutes());
+                this.setDraftDate(new Date(ret['date']));
             } else {
                 alert(ret['error']);
             }
@@ -468,6 +480,15 @@ export class MotionMergeAmendments {
 
     private initDraftSaving() {
         this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
-        this.$draftSavingPanel.find('.saveSraft').on('click', this.saveDraft.bind(this));
+        this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
+
+        if (this.$draftSavingPanel.data("resumed-date")) {
+            let date = new Date(this.$draftSavingPanel.data("resumed-date"));
+            this.setDraftDate(date);
+        }
+
+        if ($("#yii-debug-toolbar").length > 0) {
+            this.$draftSavingPanel.addClass('withDebugBar');
+        }
     }
 }
