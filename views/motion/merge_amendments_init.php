@@ -21,22 +21,27 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 
 ?>
-    <h1><?= Html::encode($this->title) ?></h1>
-<?= Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments-init'), 'post', [
-    'class'                    => 'motionMergeInitForm fuelux',
-    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsInit',
-]) ?>
+<h1><?= Html::encode($this->title) ?></h1>
+<div class="motionMergeInit">
+
     <div class="content">
-
         <div class="alert alert-info" role="alert">
-            Test
+            To Do: Explanation
         </div>
+    </div>
 
-        <h2 class="green">Merge all amendments at once</h2>
-
-        <div class="explanation">
-            Explanation
-        </div>
+    <h2 class="green"><?= \Yii::t('amend', 'merge_init_all') ?></h2>
+    <div class="content">
+        <?php
+        if ($draft) { ?>
+            <div class="alert alert-info" role="alert">
+                <?php
+                $date = \app\components\Tools::formatMysqlDateTime($draft->dateCreation);
+                echo str_replace('%DATE%', $date, \Yii::t('amend', 'merge_init_draft_hint'));
+                ?>
+            </div>
+            <?php
+        } ?>
 
         <div class="merge-all-row">
             <?php
@@ -46,12 +51,12 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 ?>
                 <div>
                     <a href="<?= Html::encode($mergeUrl) ?>" class="btn btn-default discard">
-                        Discard draft, start anew
+                        <?= \Yii::t('amend', 'merge_init_all_discard') ?>
                     </a>
                 </div>
                 <div>
                     <a href="<?= Html::encode($mergeContUrl) ?>" class="btn btn-primary">
-                        Continue
+                        <?= \Yii::t('amend', 'merge_init_all_continue') ?>
                     </a>
                 </div>
                 <?php
@@ -60,16 +65,17 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 ?>
                 <div>
                     <a href="<?= Html::encode($mergeUrl) ?>" class="btn btn-primary">
-                        Start merging all amendments
+                        <?= \Yii::t('amend', 'merge_init_all_start') ?>
                     </a>
                 </div>
                 <?php
             }
             ?>
         </div>
+    </div>
 
-        <h2 class="green">Merge a single amendment</h2>
-
+    <h2 class="green"><?= \Yii::t('amend', 'merge_init_single') ?></h2>
+    <div class="content">
         <ul class="merge-single">
             <?php
             foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
@@ -88,4 +94,4 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
             ?>
         </ul>
     </div>
-<?= Html::endForm();
+</div>
