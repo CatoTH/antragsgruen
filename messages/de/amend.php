@@ -54,6 +54,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
 <li><strong>Änderungsantrag einbringen</strong>: Sobald sich %MIN% Unterstützer*innen gefunden haben, bekommst du eine Benachrichtigungs-E-Mail. Ab dann kannst du den Änderungsantrag offiziell einbringen. Auch danach ist es noch möglich, dass sich Unterstützer*innen für diesen Änderungsantrag eintragen.</li>
 </ol>',
     'editorial_hint'                    => 'Redaktionelle Änderung',
+    'merge_init_title'                  => '„%NAME%“ überarbeiten',
     'merge_status_unchanged'            => 'unverändert',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'merge_bread'                       => 'Überarbeiten',

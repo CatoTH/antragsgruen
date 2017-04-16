@@ -31,6 +31,7 @@ return [
     'create_explanation'        => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
         'Please note, you can request &quot;Editorial changes&quot;.',
     'editorial_hint'            => 'Editorial hint',
+    'merge_init_title'          => 'Refactor "%NAME%"',
     'merge_status_unchanged'    => 'unchanged',
     'merge_amend_stati'         => 'Status of the amendments',
     'merge_bread'               => 'Revise',

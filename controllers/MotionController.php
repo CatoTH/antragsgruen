@@ -598,7 +598,12 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        return $this->render('merge_amendments_init', ['motion' => $motion]);
+        $draft = Motion::findOne([
+            'parentMotionId' => $motion->id,
+            'status'         => [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE],
+        ]);
+
+        return $this->render('merge_amendments_init', ['motion' => $motion, 'draft' => $draft]);
     }
 
     /**

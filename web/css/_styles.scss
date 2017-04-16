@@ -356,19 +356,43 @@ del.space, ins.space, del.formatting, ins.formatting {
 }
 
 .motionMergeInitForm {
-  .alert {
-    margin-bottom: 25px;
+  h2.green {
+    margin-bottom: 20px;
+    margin-top: 50px;
   }
-  .radio {
-    margin-top: 15px;
+  .explanation {
+    margin-top: 20px;
+    margin-bottom: 20px;
   }
-  .select {
-    margin-left: 20px;
-    margin-top: 10px;
+  .merge-all-row {
+    display: table;
+    width: 100%;
+    > div {
+      display: table-cell;
+      width: 50%;
+      text-align: center;
+    }
   }
-  .save-row {
-    margin-top: 25px;
-    text-align: center;
+  .merge-single {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      clear: both;
+      margin: 15px 0;
+      padding: 0;
+      .title {
+        font-weight: bold;
+      }
+      .initiator {
+        font-size: 0.8em;
+        color: gray;
+      }
+    }
+    .amendmentAjaxTooltip {
+      float: left;
+      margin-right: 10px;
+    }
   }
 }
 
