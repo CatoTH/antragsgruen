@@ -598,12 +598,7 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $draft = Motion::findOne([
-            'parentMotionId' => $motion->id,
-            'status'         => [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE],
-        ]);
-
-        return $this->render('merge_amendments_init', ['motion' => $motion, 'draft' => $draft]);
+        return $this->render('merge_amendments_init', ['motion' => $motion]);
     }
 
     /**
@@ -687,6 +682,11 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
+        $resumeDraft = $motion->getMergingDraft();
+        if ($resumeDraft && \Yii::$app->request->get('discard', 0) == 1) {
+            $resumeDraft = null;
+        }
+
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
             if (!$newMotion || $newMotion->parentMotionId != $motion->id) {
@@ -723,8 +723,12 @@ class MotionController extends Base
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $params = ['motion' => $motion, 'form' => $form, 'amendmentStati' => $amendStati];
-        return $this->render('merge_amendments', $params);
+        return $this->render('merge_amendments', [
+            'motion'         => $motion,
+            'form'           => $form,
+            'amendmentStati' => $amendStati,
+            'resumeDraft'    => $resumeDraft,
+        ]);
     }
 
     /**

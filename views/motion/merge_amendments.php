@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var Motion $motion
  * @var MotionMergeAmendmentsForm $form
  * @var array $amendmentStati
+ * @var null|Motion $resumeDraft
  */
 
 /** @var \app\controllers\Base $controller */
@@ -32,6 +33,13 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 $newSections = [];
 foreach ($form->newMotion->getSortedSections(false) as $section) {
     $newSections[$section->sectionId] = $section;
+}
+if ($resumeDraft) {
+    foreach ($resumeDraft->sections as $section) {
+        if (!isset($newSections[$section->sectionId])) {
+            $newSections[$section->sectionId] = $section;
+        }
+    }
 }
 
 
