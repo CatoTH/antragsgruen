@@ -452,13 +452,19 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param boolean $onlyPublic
      * @return Motion|null
      */
-    public function getMergingDraft()
+    public function getMergingDraft($onlyPublic)
     {
+        if ($onlyPublic) {
+            $status = [Motion::STATUS_MERGING_DRAFT_PUBLIC];
+        } else {
+            $status = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
+        }
         return Motion::findOne([
             'parentMotionId' => $this->id,
-            'status'         => [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE],
+            'status'         => $status,
         ]);
     }
 

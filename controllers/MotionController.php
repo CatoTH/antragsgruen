@@ -585,6 +585,41 @@ class MotionController extends Base
      * @param string $motionSlug
      * @return string
      */
+    public function actionMergeAmendmentsPublic($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $draft = $motion->getMergingDraft(true);
+        if (!$draft) {
+            return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
+        }
+
+        return $this->render('merge_amendments_public', ['motion' => $motion, 'draft' => $draft]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     */
+    public function actionMergeAmendmentsPublicAjax($motionSlug)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+        }
+
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     */
     public function actionMergeAmendmentsInit($motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
@@ -682,7 +717,7 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $resumeDraft = $motion->getMergingDraft();
+        $resumeDraft = $motion->getMergingDraft(false);
         if ($resumeDraft && \Yii::$app->request->get('discard', 0) == 1) {
             $resumeDraft = null;
         }
@@ -748,7 +783,7 @@ class MotionController extends Base
             return json_encode(['success' => false, 'error' => 'Motion not editable']);
         }
 
-        $form = new MotionMergeAmendmentsDraftForm($motion);
+        $form  = new MotionMergeAmendmentsDraftForm($motion);
         $draft = $form->save(
             \Yii::$app->request->post('public', 0),
             \Yii::$app->request->post('sections', [])

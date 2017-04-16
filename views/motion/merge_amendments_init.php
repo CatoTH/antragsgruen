@@ -12,7 +12,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-$draft      = $motion->getMergingDraft();
+$draft      = $motion->getMergingDraft(false);
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), \Yii::t('amend', 'merge_init_title'));
 $layout->robotsNoindex = true;

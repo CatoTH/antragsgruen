@@ -117,11 +117,11 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     foreach ($motion->tags as $tag) {
         $used_tag_ids[] = $tag->id;
         $str            = Html::encode($tag->title);
-        $str .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
-        $str .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
-        $str .= '<button type="submit" name="motionDelTag">' . \Yii::t('motion', 'tag_del') . '</button>';
-        $str .= Html::endForm();
-        $tags[] = $str;
+        $str            .= Html::beginForm('', 'post', ['class' => 'form-inline delTagForm delTag' . $tag->id]);
+        $str            .= '<input type="hidden" name="tagId" value="' . $tag->id . '">';
+        $str            .= '<button type="submit" name="motionDelTag">' . \Yii::t('motion', 'tag_del') . '</button>';
+        $str            .= Html::endForm();
+        $tags[]         = $str;
     }
     echo implode(', ', $tags);
 
@@ -154,6 +154,15 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     echo Html::encode(implode(', ', $tags));
 
     echo '</td></tr>';
+}
+
+if ((!isset($skip_drafts) || !$skip_drafts) && $motion->getMergingDraft(true)) {
+    echo '<tr class="mergingDraft"><th>';
+    echo \Yii::t('motion', 'merging_draft_th');
+    echo '</th><td>';
+    $url = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
+    echo str_replace('%URL%', Html::encode($url), \Yii::t('motion', 'merging_draft_td'));
+    echo '</td></tr>' . "\n";
 }
 
 echo '</table></div>';
