@@ -10,6 +10,8 @@ $I->dontSeeElement('.sidebarActions .mergeamendments');
 $I->wantTo('merge the amendments');
 $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
+$I->see('Einpflegen beginnen');
+$I->click('.merge-all-row .btn-primary');
 $I->see('annehmen oder ablehnen');
 $I->see('kollidierende Änderungsanträge');
 $I->see('Neuer Punkt', '.ice-ins');
