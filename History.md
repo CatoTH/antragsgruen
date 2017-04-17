@@ -9,6 +9,8 @@
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
+This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
+
 ### Version 3.6.5 [not released yet]
 
 - Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).
@@ -55,6 +57,8 @@
 - Improvements to the OpenDocument-Export
 - Internal: Port JavaScript modules to TypeScript
 - Improvements to the integration of Grünes Netz of the German Green Party: organization keys can be resolved and the transmitted name / organization are fixed
+
+This release was mainly sponsored by the [German Green Party](https://www.gruene.de/).
 
 ### Version 3.5.1 (2016-11-30)
 
