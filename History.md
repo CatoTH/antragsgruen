@@ -14,6 +14,7 @@ This release was mainly sponsored by the [German Federal Youth Council](http://w
 ### Version 3.6.5 [not released yet]
 
 - Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).
+- Bugfix: Better error handling when uploading images or PDFs
 
 ### Version 3.6.4 (2017-04-12)
 
