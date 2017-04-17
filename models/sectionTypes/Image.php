@@ -15,13 +15,18 @@ use CatoTH\HTML2OpenDocument\Text;
 class Image extends ISectionType
 {
     /**
-     * @return string
+     * @return null|string
      */
     public function getImageUrl()
     {
         /** @var MotionSection $section */
         $section = $this->section;
-        $url     = UrlHelper::createUrl(
+        $motion  = $section->getMotion();
+        if (!$motion || !$section->data) {
+            return null;
+        }
+
+        $url = UrlHelper::createUrl(
             [
                 'motion/viewimage',
                 'motionSlug' => $section->getMotion()->getMotionSlug(),
@@ -38,9 +43,10 @@ class Image extends ISectionType
     {
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
+        $url  = $this->getImageUrl();
         $str  = '';
-        if ($this->section->data) {
-            $str .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image"
+        if ($url) {
+            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image"
             style="float: right; max-width: 100px; max-height: 100px; margin-left: 20px;">';
             $required = false;
         } else {
@@ -52,7 +58,7 @@ class Image extends ISectionType
             <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
             ' name="sections[' . $type->id . ']">
         </div>';
-        if ($this->section->data) {
+        if ($url) {
             $str .= '<br style="clear: both;">';
         }
         return $str;
@@ -98,7 +104,7 @@ class Image extends ISectionType
         if (!isset($data['tmp_name'])) {
             throw new FormError('Invalid Image');
         }
-        $mime = mime_content_type($data['tmp_name']);
+        $mime      = mime_content_type($data['tmp_name']);
         $imagedata = getimagesize($data['tmp_name']);
         if (!$imagedata) {
             throw new FormError('Could not read image.');
@@ -238,7 +244,6 @@ class Image extends ISectionType
      */
     public function getMotionPlainText()
     {
-
         return '[BILD]';
     }
 
@@ -300,7 +305,7 @@ class Image extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printMotionToODT(Text $odt)
     {
@@ -310,7 +315,7 @@ class Image extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printAmendmentToODT(Text $odt)
     {

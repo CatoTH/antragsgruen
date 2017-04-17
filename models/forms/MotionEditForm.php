@@ -32,6 +32,9 @@ class MotionEditForm extends Model
     /** @var null|int */
     public $motionId = null;
 
+    /** @var string[] */
+    public $fileUploadErrors = [];
+
     private $adminMode = false;
 
     /**
@@ -118,6 +121,8 @@ class MotionEditForm extends Model
      */
     public function setAttributes($data, $safeOnly = true)
     {
+        $this->fileUploadErrors = [];
+
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
         foreach ($this->sections as $section) {
@@ -141,6 +146,12 @@ class MotionEditForm extends Model
                     }
                     $section->getSectionType()->setMotionData($data);
                 }
+                if (!empty($files['sections']['error'][$section->sectionId])) {
+                    $error = $files['sections']['error'][$section->sectionId];
+                    if ($error === UPLOAD_ERR_INI_SIZE || $error == UPLOAD_ERR_FORM_SIZE) {
+                        $this->fileUploadErrors[] = $section->getSettings()->title . ': Uploaded file is too big';
+                    }
+                }
             }
         }
     }
@@ -161,6 +172,7 @@ class MotionEditForm extends Model
                 $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
+        $errors = array_merge($errors, $this->fileUploadErrors);
 
         try {
             $this->motionType->getMotionSupportTypeClass()->validateMotion();
@@ -300,6 +312,7 @@ class MotionEditForm extends Model
                 $errors[] = str_replace('%MAX%', $type->title, \Yii::t('base', 'err_max_len_exceed'));
             }
         }
+        $errors = array_merge($errors, $this->fileUploadErrors);
 
         $this->motionType->getMotionSupportTypeClass()->validateMotion();
 
