@@ -25,7 +25,7 @@ $I->wantTo('Create an account');
 $I->fillField(['id' => 'username'], 'non_existant@example.org');
 $I->fillField(['id' => 'passwordInput'], 'doesntmatter');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->see('Benutzer*innenname nicht gefunden.');
+$I->see('Benutzer*innenname nicht gefunden');
 
 $I->cantSee('Passwort (Bestätigung):');
 $I->checkOption(['id' => 'createAccount']);
@@ -37,20 +37,20 @@ $I->fillField(['id' => 'name'], 'Tester');
 $I->fillField('#passwordInput', 'n');
 $I->fillField('#passwordConfirm', 'n');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->seeBootboxDialog('Das Passwort muss mindestens 4 Buchstaben haben.');
+$I->seeBootboxDialog('Das Passwort muss mindestens 4 Zeichen lang sein.');
 $I->acceptBootboxAlert();
 
 $I->fillField('#passwordInput', 'newuser');
 $I->fillField('#passwordConfirm', 'newuser2');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein.');
+$I->seeBootboxDialog('Die beiden Passwörter stimmen nicht überein');
 $I->acceptBootboxAlert();
 
 
 $I->fillField(['id' => 'passwordInput'], 'testpassword');
 $I->fillField(['id' => 'passwordConfirm'], 'testpassword');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
-$I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
+$I->see(mb_strtoupper('Zugang bestätigen'), 'h1');
 
 
 
@@ -60,7 +60,7 @@ $I->fillField(['id' => 'code'], 'somethingcompletelywrong');
 $I->submitForm('#confirmAccountForm', []);
 
 
-$I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
+$I->see(mb_strtoupper('Zugang bestätigen'), 'h1');
 $I->see('Der angegebene Code stimmt leider nicht.');
 
 

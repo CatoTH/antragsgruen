@@ -20,7 +20,7 @@ $I->click('#myAccountLink');
 $I->fillField('#userName', 'My new name');
 $I->fillField('#userPwd', '123');
 $I->submitForm('.userAccountForm', [], 'save');
-$I->seeBootboxDialog('Das Passwort muss mindestens 4 Buchstaben');
+$I->seeBootboxDialog('Das Passwort muss mindestens 4 Zeichen');
 $I->acceptBootboxConfirm();
 
 $I->fillField('#userPwd', '1234');
@@ -47,7 +47,7 @@ $I->fillField('#username', 'testuser@example.org');
 $I->fillField('#passwordInput', 'testuser');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
-$I->see('Falsches Passwort.');
+$I->see('Falsches Passwort');
 $I->fillField('#passwordInput', '1234');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
