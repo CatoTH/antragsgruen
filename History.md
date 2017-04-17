@@ -11,10 +11,11 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.5 [not released yet]
+### Version 3.6.5 (2017-04-17)
 
 - Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).
 - Bugfix: Better error handling when uploading images or PDFs
+- Bugfix: Wrong label when confirming an account
 
 ### Version 3.6.4 (2017-04-12)
 

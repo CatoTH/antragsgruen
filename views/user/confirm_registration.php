@@ -42,7 +42,7 @@ echo '>
         </div></div>
 
     <div class="row"><div class="form-group col-md-6">
-        <label for="code">' . \Yii::t('user', 'confirm_username') . ':</label>
+        <label for="code">' . \Yii::t('user', 'confirm_code') . ':</label>
         <input type="text" name="code" value="" id="code" class="form-control">
     </div></div>
 
