@@ -2,8 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
 /**
@@ -20,20 +18,10 @@ $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
+$layout->loadBootstrapToggle();
 
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
-
-/** @var MotionSection[] $newSections */
-$newSections = [];
-foreach ($motion->getSortedSections(false) as $section) {
-    $newSections[$section->sectionId] = $section;
-}
-foreach ($draft->sections as $section) {
-    if (!isset($newSections[$section->sectionId])) {
-        $newSections[$section->sectionId] = $section;
-    }
-}
 
 ?>
     <h1><?= Html::encode($motion->getTitleWithPrefix()) ?></h1>
@@ -50,86 +38,39 @@ foreach ($draft->sections as $section) {
             </tr>
             <tr>
                 <th><?= \Yii::t('amend', 'merge_draft_date') ?></th>
-                <td class="mergeDraftDate"><?= \app\components\Tools::formatMysqlDateTime($motion->dateCreation) ?></td>
+                <td class="mergeDraftDate"><?= \app\components\Tools::formatMysqlDateTime($draft->dateCreation) ?></td>
             </tr>
         </table>
     </div>
-    <section class="motionTextHolder">
+    <section class="motionTextHolder mergePublicDraft"
+             data-reload-url="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'merge-amendments-public-ajax')) ?>"
+             data-antragsgruen-widget="frontend/MotionMergeAmendmentsPublic">
         <h2 class="green"><?= \Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="alert alert-info" role="alert"><?= \Yii::t('motion', 'merging_draft_warning') ?></div>
+                </div>
+                <div class="col-md-3 motionUpdateWidget">
+                    <div>
+                        <button id="updateBtn" class="btn btn-sm btn-default">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                        </button>
 
-            <div class="alert alert-info" role="alert"><?= \Yii::t('motion', 'merging_draft_warning') ?></div>
+                        <label class="sr-only" for="autoUpdateToggle"></label>
+                        <input type="checkbox" id="autoUpdateToggle" checked data-onstyle="success" data-size="small"
+                               data-toggle="toggle" data-on="Auto-Update" data-off="Auto-Update">
+                    </div>
+                    <div class="saved">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        Saved
+                    </div>
+                </div>
+            </div>
 
-            <?php
-            foreach ($motion->getSortedSections(false) as $section) {
-                $type = $section->getSettings();
-                if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-                    $htmlId = 'sections_' . $type->id;
-                    echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
-                    echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-                    echo '<div class="text textOrig';
-                    if ($section->getSettings()->fixedWidth) {
-                        echo ' fixedWidthFont';
-                    }
-                    echo '" id="' . $htmlId . '">' . Html::encode($section->data);
-                    echo '</div></div>';
-
-                } elseif ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                    /** @var TextSimple $simpleSection */
-                    $simpleSection = $section->getSectionType();
-
-                    $htmlId = 'sections_' . $type->id;
-
-                    echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
-                    echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-
-                    echo '<div class="text textOrig';
-                    if ($section->getSettings()->fixedWidth) {
-                        echo ' fixedWidthFont';
-                    }
-                    echo '" id="' . $htmlId . '">';
-
-                    if (isset($newSections[$section->sectionId])) {
-                        echo $newSections[$section->sectionId]->dataRaw;
-                    } else {
-                        echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
-                    }
-
-                    echo '</div></div>';
-                } else {
-                    if (isset($newSections[$section->sectionId])) {
-                        echo $newSections[$section->sectionId]->getSectionType()->getSimple(false);
-                    } else {
-                        echo $section->getSectionType()->getSimple(false);
-                    }
-                }
-            }
-            ?>
+            <div class="draftContent motionMergeStyles">
+                <?= $this->render('_merge_amendments_public', ['motion' => $motion, 'draft' => $draft]) ?>
+            </div>
         </div>
     </section>
 <?php
-
-$editorials = [];
-foreach ($motion->getVisibleAmendments(false) as $amendment) {
-    if ($amendment->changeEditorial != '') {
-        $str          = '<div class="amendment content"><h3>';
-        $str          .= str_replace(
-            ['%TITLE%', '%INITIATOR%'],
-            [$amendment->titlePrefix, $amendment->getInitiatorsStr()],
-            \Yii::t('amend', 'merge_amend_by')
-        );
-        $str          .= '</h3>';
-        $str          .= '<div class="text">';
-        $str          .= $amendment->changeEditorial;
-        $str          .= '</div></div>';
-        $editorials[] = $str;
-    }
-}
-if (count($editorials) > 0) {
-    ?>
-    <section class="editorialAmendments">
-        <h2 class="green"><?= \Yii::t('amend', 'merge_amend_editorials') ?></h2>
-        <div><?= implode('', $editorials) ?></div>
-    </section>
-    <?php
-}

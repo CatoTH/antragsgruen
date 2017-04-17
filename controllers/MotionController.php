@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
 use app\models\db\ConsultationAgendaItem;
@@ -614,6 +615,16 @@ class MotionController extends Base
             return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
+        $draft = $motion->getMergingDraft(true);
+        if (!$draft) {
+            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_draft_not_found')]);
+        }
+
+        return json_encode([
+            'success' => true,
+            'html'    => $this->renderPartial('_merge_amendments_public', ['motion' => $motion, 'draft' => $draft]),
+            'date'    => Tools::formatMysqlDateTime($draft->dateCreation),
+        ]);
     }
 
     /**

@@ -229,6 +229,14 @@ class Layout
 
     /**
      */
+    public function loadBootstrapToggle()
+    {
+        $this->addJS('npm/bootstrap-toggle.min.js');
+        $this->addCSS('npm/bootstrap-toggle.min.css');
+    }
+
+    /**
+     */
     public function loadSortable()
     {
         $this->addJS('npm/Sortable.min.js');
