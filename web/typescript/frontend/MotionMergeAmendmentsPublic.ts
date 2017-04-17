@@ -16,11 +16,11 @@ export class MotionMergeAmendmentsPublic {
         this.initUpdateWidget();
     }
 
-    private showSaved() {
-        let $saved = this.$updateWidget.find('.saved');
-        $saved.addClass('active');
+    private showUpdated() {
+        let $updated = this.$updateWidget.find('.updated');
+        $updated.addClass('active');
         window.setTimeout(() => {
-            $saved.removeClass('active');
+            $updated.removeClass('active');
         }, 2000);
     }
 
@@ -33,7 +33,7 @@ export class MotionMergeAmendmentsPublic {
             this.$draftContent.html(data.html);
             this.$dateField.text(data.date);
             if (showMsg) {
-                this.showSaved();
+                this.showUpdated();
             }
         });
     }
@@ -60,8 +60,18 @@ export class MotionMergeAmendmentsPublic {
         this.updateUrl = this.$widget.data('reload-url');
 
         let $toggle = this.$updateWidget.find('#autoUpdateToggle');
+        if (localStorage) {
+            let state = localStorage.getItem('merging-draft-auto-update');
+            if (state !== null) {
+                $toggle.prop('checked', (state == '1'));
+            }
+        }
         $toggle.change(() => {
-            if ($toggle.prop('checked')) {
+            let active: boolean = $toggle.prop('checked');
+            if (localStorage) {
+                localStorage.setItem('merging-draft-auto-update', (active ? '1' : '0'));
+            }
+            if (active) {
                 this.startInterval();
             } else {
                 this.stopInterval();

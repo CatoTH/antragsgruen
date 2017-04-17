@@ -6,6 +6,7 @@ use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\TextSimple;
+use \app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -90,11 +91,18 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
 ]);
 
+
+$draftIsPublic   = ($resumeDraft && $resumeDraft->status == Motion::STATUS_MERGING_DRAFT_PUBLIC);
+$publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
 ?>
     <section id="draftSavingPanel" data-resumed-date="<?= ($resumeDraft ? $resumeDraft->dateCreation : '') ?>">
         <h2><?= \Yii::t('amend', 'merge_draft_title') ?></h2>
         <label class="public">
-            <input type="checkbox" name="public">
+            <a href="<?= Html::encode($publicDraftLink) ?>" target="_blank"
+               class="publicLink <?= ($draftIsPublic ? '' : 'hidden') ?>">
+                <span class="glyphicon glyphicon-share"></span>
+            </a>
+            <input type="checkbox" name="public" <?= ($draftIsPublic ? 'checked' : '') ?>>
             <?= \Yii::t('amend', 'merge_draft_public') ?>
         </label>
         <div class="save">
@@ -107,64 +115,67 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
                     type="button"><?= \Yii::t('amend', 'merge_draft_save') ?></button>
         </div>
     </section>
+
+    <section class="newMotion">
+        <h2 class="green"><?= \Yii::t('amend', 'merge_new_text') ?></h2>
+        <div class="content">
+
+            <?php
+            $changesets = [];
+
+            foreach ($motion->getSortedSections(false) as $section) {
+                $type = $section->getSettings();
+                if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                    /** @var TextSimple $simpleSection */
+                    $simpleSection = $section->getSectionType();
+
+                    $nameBase = 'sections[' . $type->id . ']';
+                    $htmlId   = 'sections_' . $type->id;
+                    $holderId = 'section_holder_' . $type->id;
+
+                    echo '<div class="form-group wysiwyg-textarea" id="' . $holderId . '" data-fullHtml="0">';
+                    echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
+
+                    echo '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
+                        'title="' . Html::encode($type->title) . '"></textarea>';
+                    echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
+                        'title="' . Html::encode($type->title) . '"></textarea>';
+                    echo '<div class="texteditor boxed ICE-Tracking';
+                    if ($section->getSettings()->fixedWidth) {
+                        echo ' fixedWidthFont';
+                    }
+                    echo '" data-allow-diff-formattings="1" ' .
+                        'id="' . $htmlId . '_wysiwyg" title="">';
+
+                    if (isset($newSections[$section->sectionId])) {
+                        echo $newSections[$section->sectionId]->dataRaw;
+                    } else {
+                        echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
+                    }
+
+                    echo '</div>';
+
+                    echo '<div class="mergeActionHolder" style="margin-top: 5px; margin-bottom: 5px;">';
+                    echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
+                        \Yii::t('amend', 'merge_accept_all') . '</button> ';
+                    echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
+                        \Yii::t('amend', 'merge_reject_all') . '</button>';
+                    echo '</div>';
+
+                    echo '</div>';
+                } else {
+                    if (isset($newSections[$section->sectionId])) {
+                        echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
+                    } else {
+                        echo $section->getSectionType()->getMotionFormField();
+                    }
+                }
+            }
+
+            ?>
+        </div>
+    </section>
 <?php
-
-
-echo '<section class="newMotion">
-<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
-<div class="content">';
-
-$changesets = [];
-
-foreach ($motion->getSortedSections(false) as $section) {
-    $type = $section->getSettings();
-    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-        /** @var TextSimple $simpleSection */
-        $simpleSection = $section->getSectionType();
-
-        $nameBase = 'sections[' . $type->id . ']';
-        $htmlId   = 'sections_' . $type->id;
-
-        echo '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '" data-fullHtml="0">';
-        echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-
-        echo '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
-            'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
-            'title="' . Html::encode($type->title) . '"></textarea>';
-        echo '<div class="texteditor boxed ICE-Tracking';
-        if ($section->getSettings()->fixedWidth) {
-            echo ' fixedWidthFont';
-        }
-        echo '" data-allow-diff-formattings="1" ' .
-            'id="' . $htmlId . '_wysiwyg" title="">';
-
-        if (isset($newSections[$section->sectionId])) {
-            echo $newSections[$section->sectionId]->dataRaw;
-        } else {
-            echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
-        }
-
-        echo '</div>';
-
-        echo '<div class="mergeActionHolder" style="margin-top: 5px; margin-bottom: 5px;">';
-        echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
-            \Yii::t('amend', 'merge_accept_all') . '</button> ';
-        echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
-            \Yii::t('amend', 'merge_reject_all') . '</button>';
-        echo '</div>';
-
-        echo '</div>';
-    } else {
-        if (isset($newSections[$section->sectionId])) {
-            echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
-        } else {
-            echo $section->getSectionType()->getMotionFormField();
-        }
-    }
-}
-
-echo '</div></section>';
 
 
 $editorials = [];
@@ -184,11 +195,12 @@ foreach ($motion->getVisibleAmendments(false) as $amendment) {
     }
 }
 if (count($editorials) > 0) {
-    echo '<section class="editorialAmendments">
-<h2 class="green">' . \Yii::t('amend', 'merge_amend_editorials') . '</h2>
-<div>';
-    echo implode('', $editorials);
-    echo '</div></section>';
+    ?>
+    <section class="editorialAmendments">
+        <h2 class="green"><?= \Yii::t('amend', 'merge_amend_editorials') ?></h2>
+        <div><?= implode('', $editorials) ?></div>
+    </section>
+    <?php
 }
 
 
@@ -199,13 +211,18 @@ $jsStati = [
     'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,
 ];
 
-echo '<section class="newAmendments" data-stati="' . Html::encode(json_encode($jsStati)) . '">';
-\app\views\motion\LayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendmentsSorted(), $amendmentStati);
-echo '</section>';
+?>
+
+    <section class="newAmendments" data-stati="<?= Html::encode(json_encode($jsStati)) ?>">
+        <?php MotionLayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendmentsSorted(), $amendmentStati); ?>
+    </section>
 
 
-echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">
-    <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on') . '
-</button></div>';
+    <div class="submitHolder content">
+        <button type="submit" name="save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-chevron-right"></span> <?= \Yii::t('amend', 'go_on') ?>
+        </button>
+    </div>
 
+<?php
 echo Html::endForm();

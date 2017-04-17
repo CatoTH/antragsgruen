@@ -464,14 +464,20 @@ export class MotionMergeAmendments {
         for (let id of Object.getOwnPropertyNames(this.textareas)) {
             sections[id.replace('section_holder_', '')] = this.textareas[id].getContent();
         }
+        let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
         $.post(this.$form.data('draftSaving'), {
-            'public': (this.$draftSavingPanel.find('input[name=public]').prop('checked') ? 1 : 0),
+            'public': (isPublic ? 1 : 0),
             'sections': sections,
             '_csrf': this.$form.find('> input[name=_csrf]').val()
         }, (ret) => {
             if (ret['success']) {
                 this.setDraftDate(new Date(ret['date']));
+                if (isPublic) {
+                    this.$form.find('.publicLink').removeClass('hidden');
+                } else {
+                    this.$form.find('.publicLink').addClass('hidden');
+                }
             } else {
                 alert(ret['error']);
             }
@@ -481,6 +487,7 @@ export class MotionMergeAmendments {
     private initDraftSaving() {
         this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
         this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
+        this.$draftSavingPanel.find('input[name=public]').on('change', this.saveDraft.bind(this));
 
         if (this.$draftSavingPanel.data("resumed-date")) {
             let date = new Date(this.$draftSavingPanel.data("resumed-date"));

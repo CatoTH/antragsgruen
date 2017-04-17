@@ -58,12 +58,14 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
                         </button>
 
                         <label class="sr-only" for="autoUpdateToggle"></label>
-                        <input type="checkbox" id="autoUpdateToggle" checked data-onstyle="success" data-size="small"
-                               data-toggle="toggle" data-on="Auto-Update" data-off="Auto-Update">
+                        <input type="checkbox" id="autoUpdateToggle" checked
+                               data-onstyle="success" data-size="small" data-toggle="toggle"
+                               data-on="<?= Html::encode(\Yii::t('amend', 'merge_draft_auto_update')) ?>"
+                               data-off="<?= Html::encode(\Yii::t('amend', 'merge_draft_auto_update')) ?>">
                     </div>
-                    <div class="saved">
+                    <div class="updated">
                         <span class="glyphicon glyphicon-ok"></span>
-                        Saved
+                        <?=\Yii::t('amend', 'merge_draft_updated')?>
                     </div>
                 </div>
             </div>

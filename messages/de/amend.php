@@ -66,6 +66,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_draft_date'                  => 'Stand',
     'merge_draft_not_saved'             => 'nicht gespeichert',
     'merge_draft_save'                  => 'Speichern',
+    'merge_draft_auto_update'           => 'Auto-Update',
+    'merge_draft_updated'               => 'Aktualisiert',
     'merge_status_unchanged'            => 'unverändert',
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'merge_bread'                       => 'Überarbeiten',
