@@ -1,6 +1,6 @@
 # Version history
 
-### Version 3.6.5 [not released yet]
+### Version 3.6.5 (2017-04-17)
 
 - Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).
 - Bugfix: Better error handling when uploading images or PDFs
