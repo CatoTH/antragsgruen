@@ -7,7 +7,7 @@
     },
     "scripts": {
         "typings": "node_modules/.bin/typings",
-        "test:phantomjs": "node_modules/.bin/phantomjs --webdriver=444",
+        "test:phantomjs": "node_modules/.bin/phantomjs --webdriver=4444",
         "test:server": "tests/start_debug_server.sh",
         "test:acceptance": "vendor/bin/codecept run acceptance",
         "test:unit": "vendor/bin/codecept run unit",
