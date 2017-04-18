@@ -239,6 +239,11 @@ trait SiteAccessTrait
     {
         $site = $this->site;
 
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILAGE_ADMIN_USERS)) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+            return false;
+        }
+
         $post = \Yii::$app->request->post();
 
         if ($this->isPostSet('saveLogin')) {

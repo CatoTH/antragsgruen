@@ -7,6 +7,7 @@
 - When merging all amendments into the motion at once, drafts are saved periodically and can be set as public. This way, regular users have read-only access to the current work-in-progress draft of the revised motion.
 - When merging all amendments into the motion at once and a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
+- Administrators can now be set per consultation, without granting them access to all consultations of this site
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
