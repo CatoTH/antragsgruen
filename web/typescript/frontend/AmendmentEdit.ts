@@ -173,7 +173,9 @@ export class AmendmentEdit {
     public onContentChanged() {
         if (!this.hasChanged) {
             this.hasChanged = true;
-            $(window).on("beforeunload", AmendmentEdit.onLeavePage);
+            if (!$("body").hasClass('testing')) {
+                $(window).on("beforeunload", AmendmentEdit.onLeavePage);
+            }
         }
     }
 }

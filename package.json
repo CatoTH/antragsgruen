@@ -7,8 +7,6 @@
     },
     "scripts": {
         "typings": "node_modules/.bin/typings",
-        "test:phantomjs": "node_modules/.bin/phantomjs --webdriver=4444",
-        "test:server": "tests/start_debug_server.sh",
         "test:acceptance": "vendor/bin/codecept run acceptance",
         "test:unit": "vendor/bin/codecept run unit",
         "watch": "gulp watch",
@@ -21,7 +19,6 @@
         "gulp-sass": "^2.3.2",
         "gulp-sourcemaps": "^1.9.1",
         "pa11y": "^4.0.1",
-        "phantomjs-prebuilt": "^2.1.12",
         "intl": "^1.2.5",
         "bootbox": "^4.4.0",
         "pdfjs-dist": "^1.6.361",

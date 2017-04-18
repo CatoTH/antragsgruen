@@ -108,7 +108,7 @@ $I->wantTo('check if the amendment is correctly displayed');
 $I->gotoConsultationHome();
 $I->click('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('Bavaria ipsum dolor', '.deleted');
-$I->see('Test 789', 'ins');
+$I->see('Test 789', '.inserted');
 $I->dontSee('Test 456');
 $I->dontSee('Test 123');
 

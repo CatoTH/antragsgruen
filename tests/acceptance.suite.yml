@@ -17,13 +17,13 @@ modules:
         - \Helper\ConfigurationChanger
     config:
         \Helper\AntragsgruenWebDriver:
-            url: 'http://localhost:8081/'
+            url: 'http://antragsgruen-test.local/'
             host: 127.0.0.1
             port: 4444
-            browser: firefox
+            browser: chrome
             window_size: 1024x768
-            wait: 0
-            http_proxy: direct
+            wait: 1
+            #http_proxy: direct
             capabilities:
                 unexpectedAlertBehaviour: 'accept'
         \Helper\AccessibilityValidator:

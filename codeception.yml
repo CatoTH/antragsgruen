@@ -18,4 +18,4 @@ modules:
       configFile: 'config/test.php'
       cleanup: false
 config:
-    test_entry_url: http://localhost:8081/index-test.php
+    test_entry_url: http://antragsgruen-test.local/index-test.php

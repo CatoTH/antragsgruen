@@ -73,6 +73,11 @@
 
     $.fn.extend({
         scrollintoview: function (options) {
+            if ($("body").hasClass('testing')) {
+                // JS-based scrolling seems to disturb chrome / webdriver
+                return;
+            }
+
             /// <summary>Scrolls the first element in the set into view by scrolling its closest scrollable parent.</summary>
             /// <param name="options" type="Object">Additional options that can configure scrolling:
             ///        duration (default: "fast") - jQuery animation speed (can be a duration string or number of milliseconds)

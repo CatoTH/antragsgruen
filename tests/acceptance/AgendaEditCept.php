@@ -17,7 +17,7 @@ $page = ConsultationHomePage::openBy(
 );
 
 $I->see('Parteitag', 'h1');
-$I->dontSeeElement('.moveHandle');
+$I->dontSeeElementInDOM('.moveHandle');
 $I->see('0. Tagesordnung', '.motionListAgenda');
 $I->see('1. Wahl: 1. Vorsitzende', '.motionListAgenda');
 $I->see('3. Sonstiges', '.motionListAgenda');
@@ -29,7 +29,7 @@ $I->wantTo('edit the agenda a bit');
 
 $I->loginAsStdAdmin();
 $I->see('Parteitag', 'h1');
-$I->seeElement('.moveHandle');
+$I->seeElementInDOM('.moveHandle');
 $I->see('Tagesordnung', '.motionListAgenda');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
@@ -80,9 +80,11 @@ $I->wantTo('delete the two modified items');
 
 $I->see('Sonstwas');
 $I->see('More motions');
+$I->moveMouseOver('#agendaitem_5 > div > h3');
 $I->click('#agendaitem_5 > div > h3 .delAgendaItem');
 $I->seeBootboxDialog('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?');
 $I->acceptBootboxConfirm();
+$I->moveMouseOver('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
 $I->click('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3 .delAgendaItem');
 $I->seeBootboxDialog('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?');
 $I->acceptBootboxConfirm();

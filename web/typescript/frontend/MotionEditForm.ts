@@ -39,7 +39,9 @@ export class MotionEditForm {
         editor.getEditor().on('change', () => {
             if (!this.hasChanged) {
                 this.hasChanged = true;
-                $(window).on("beforeunload", MotionEditForm.onLeavePage);
+                if (!$("body").hasClass('testing')) {
+                    $(window).on("beforeunload", MotionEditForm.onLeavePage);
+                }
             }
         });
     }
