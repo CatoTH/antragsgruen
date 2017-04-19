@@ -12,8 +12,14 @@
   .content {
     overflow: visible;
   }
-  input[type="radio"], input[type="checkbox"] {
-    margin-right: 10px;
+  td.type, th.type {
+    text-align: center;
+  }
+  td.del, th.del {
+    text-align: center;
+  }
+  .save-row {
+    text-align: center;
   }
 }
 

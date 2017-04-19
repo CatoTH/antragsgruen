@@ -8,6 +8,7 @@ use app\models\settings\Site as SiteSettings;
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
+ * @var array $admins
  * @var bool $policyWarning
  */
 

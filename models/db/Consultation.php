@@ -30,7 +30,6 @@ use yii\db\ActiveRecord;
  *
  * @property Site $site
  * @property Motion[] $motions
- * @property User[] $admins
  * @property ConsultationText[] $texts
  * @property ConsultationOdtTemplate[] $odtTemplates
  * @property ConsultationSettingsTag[] $tags
@@ -94,16 +93,6 @@ class Consultation extends ActiveRecord
     public function getSite()
     {
         return $this->hasOne(Site::class, ['id' => 'siteId']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAdmins()
-    {
-        return $this->hasMany(User::class, ['id' => 'userId'])
-            ->viaTable('consultationAdmin', ['consultationId' => 'id'])
-            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
     /**

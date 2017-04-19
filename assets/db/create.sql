@@ -132,19 +132,6 @@ CREATE TABLE `###TABLE_PREFIX###consultation` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `consultationAdmin`
---
-
-CREATE TABLE `###TABLE_PREFIX###consultationAdmin` (
-  `consultationId` INT(11) NOT NULL,
-  `userId`         INT(11) NOT NULL
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `consultationAgendaItem`
 --
 
@@ -655,14 +642,6 @@ ALTER TABLE `###TABLE_PREFIX###consultation`
   ADD KEY `fk_consultation_siteIdx` (`siteId`);
 
 --
--- Indexes for table `consultationAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###consultationAdmin`
-  ADD PRIMARY KEY (`consultationId`, `userId`),
-  ADD KEY `fk_consultation_userIdx` (`userId`),
-  ADD KEY `fk_consultationIdx` (`consultationId`);
-
---
 -- Indexes for table `consultationAgendaItem`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
@@ -1027,17 +1006,6 @@ ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###consultation`
   ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
---
--- Constraints for table `consultationAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###consultationAdmin`
-  ADD CONSTRAINT `fk_consultation_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 

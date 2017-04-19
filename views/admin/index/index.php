@@ -66,7 +66,7 @@ echo Html::a(\Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl
 echo '</li>';
 echo '</ul></li>';
 
-if (User::currentUserHasPrivilege($consultation, User::PRIVILAGE_ADMIN_USERS)) {
+if (User::currentUserHasPrivilege($consultation, User::PRIVILAGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_access'),
@@ -74,15 +74,16 @@ if (User::currentUserHasPrivilege($consultation, User::PRIVILAGE_ADMIN_USERS)) {
         ['class' => 'siteAccessLink']
     );
     echo '</li>';
-}
 
-echo '<li>';
-echo Html::a(
-    \Yii::t('admin', 'index_site_consultations'),
-    UrlHelper::createUrl('admin/index/siteconsultations'),
-    ['class' => 'siteConsultationsLink']
-);
-echo '</li>';
+    echo '<li>';
+    echo Html::a(
+        \Yii::t('admin', 'index_site_consultations'),
+        UrlHelper::createUrl('admin/index/siteconsultations'),
+        ['class' => 'siteConsultationsLink']
+    );
+    echo '</li>';
+
+}
 
 if (User::currentUserIsSuperuser()) {
     echo '<li>';

@@ -39,7 +39,6 @@ use yii\web\IdentityInterface;
  * @property null|MotionComment[] $motionComments
  * @property null|MotionSupporter[] $motionSupports
  * @property Site[] $adminSites
- * @property Consultation[] $adminConsultations
  * @property ConsultationUserPrivilege[] $consultationPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $notifications
@@ -57,7 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SCREENING                 = 3;
     const PRIVILEGE_MOTION_EDIT               = 4;
     const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    const PRIVILAGE_ADMIN_USERS               = 6;
+    const PRIVILAGE_SITE_ADMIN                = 6;
 
     /**
      * @return string[]
@@ -178,15 +177,6 @@ class User extends ActiveRecord implements IdentityInterface
     public function getAdminSites()
     {
         return $this->hasMany(Site::class, ['id' => 'siteId'])->viaTable('siteAdmin', ['userId' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getAdminConsultations()
-    {
-        return $this->hasMany(Consultation::class, ['id' => 'consultationId'])
-            ->viaTable('consultationAdmin', ['userId' => 'id']);
     }
 
     /**
@@ -605,13 +595,13 @@ class User extends ActiveRecord implements IdentityInterface
 
         // Only site adminitrators are allowed to administer users.
         // All other rights are granted to every consultation-level administrator
-        if ($privilege == User::PRIVILAGE_ADMIN_USERS) {
+        if ($privilege == User::PRIVILAGE_SITE_ADMIN) {
             return false;
         }
 
-        foreach ($consultation->admins as $admin) {
-            if ($admin->id == $this->id) {
-                return true;
+        foreach ($consultation->userPrivileges as $privilege) {
+            if ($privilege->userId == $this->id) {
+                return $privilege->containsPrivilege($privilege);
             }
         }
 
