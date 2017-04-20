@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.6 [Not released yet]
+
+- Bugfix: When cloning a motion type, the possible ways of liking/supporting a motion were not copied to the new motion type
+
 ### Version 3.6.5 (2017-04-17)
 
 - Bugfix: Displaying the affected lines of an amendment sometimes began one, sometimes even two lines too early (and therefore the line numbering).

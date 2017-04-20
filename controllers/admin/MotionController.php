@@ -157,7 +157,7 @@ class MotionController extends AdminBase
                 if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
                 }
-                $motionType->motionLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->motionLikesDislikes    |= ISupportType::LIKEDISLIKE_SUPPORT;
                 $motionType->amendmentLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
                 $motionType->save();
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
@@ -227,6 +227,8 @@ class MotionController extends AdminBase
                     $motionType->policyComments              = IPolicy::POLICY_NOBODY;
                     $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
                     $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
+                    $motionType->motionLikesDislikes         = 0;
+                    $motionType->amendmentLikesDislikes      = 0;
                     $motionType->contactName                 = ConsultationMotionType::CONTACT_NONE;
                     $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
@@ -239,13 +241,11 @@ class MotionController extends AdminBase
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }
             }
-            $motionType->titleSingular          = $type['titleSingular'];
-            $motionType->titlePlural            = $type['titlePlural'];
-            $motionType->createTitle            = $type['createTitle'];
-            $motionType->pdfLayout              = $type['pdfLayout'];
-            $motionType->motionPrefix           = $type['motionPrefix'];
-            $motionType->motionLikesDislikes    = 0;
-            $motionType->amendmentLikesDislikes = 0;
+            $motionType->titleSingular = $type['titleSingular'];
+            $motionType->titlePlural   = $type['titlePlural'];
+            $motionType->createTitle   = $type['createTitle'];
+            $motionType->pdfLayout     = $type['pdfLayout'];
+            $motionType->motionPrefix  = $type['motionPrefix'];
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();
@@ -334,7 +334,7 @@ class MotionController extends AdminBase
         $collissions = $amendments = [];
         foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll            = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
                         $amendments[$amendment->id]  = $amendment;
@@ -396,7 +396,7 @@ class MotionController extends AdminBase
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
                     $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
-                    $newHtmls = [];
+                    $newHtmls  = [];
                     foreach ($post['sections'] as $sectionId => $html) {
                         $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
                     }
