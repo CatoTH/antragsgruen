@@ -47,8 +47,8 @@ Line 2, part 2</li></ul>',
      */
     public function testLinkAttributeEncoding()
     {
-        $orig   = '<a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a>';
-        $expect = ['<a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a>'];
+        $orig   = '<p><a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a></p>';
+        $expect = ['<p><a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a></p>'];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
         $out  = HTMLTools::sectionSimpleHTML($orig);

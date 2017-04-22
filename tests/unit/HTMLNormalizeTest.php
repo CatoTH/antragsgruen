@@ -10,6 +10,25 @@ class HTMLNormalizeTest extends TestBase
 {
     use Specify;
 
+    /**
+     */
+    public function testWrapPureTextWithP()
+    {
+        $textIn = "<p>Normal Text</p>\nText with no parent element<p>Normal text again</p>";
+        $expect = "<p>Normal Text</p>\n<p>Text with no parent element</p>\n<p>Normal text again</p>";
+        $out    = HTMLTools::cleanSimpleHtml($textIn);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testWrapInlinedTextWithP()
+    {
+        $textIn = '<p>Normal Text</p>Text <strong>with no</strong> parent <em>element</em><p>Normal text again</p>';
+        $expect = "<p>Normal Text</p>\n<p>Text <strong>with no</strong> parent <em>element</em></p>\n<p>Normal text again</p>";
+        $out    = HTMLTools::cleanSimpleHtml($textIn);
+        $this->assertEquals($expect, $out);
+    }
 
     /**
      */
@@ -74,19 +93,19 @@ class HTMLNormalizeTest extends TestBase
         $orig   = "<p>Test<br><span style='color: red;'>Test2</span><br><span></span>";
         $expect = "<p>Test<br>\nTest2<br>\n";
 
-        $orig .= "<strong onClick=\"alert('Alarm!');\">Test3</strong><br><br>\r\r";
+        $orig   .= "<strong onClick=\"alert('Alarm!');\">Test3</strong><br><br>\r\r";
         $expect .= "<strong>Test3</strong><br>\n<br>\n";
 
-        $orig .= "Test4</p><ul><li>Test</li>\r";
+        $orig   .= "Test4</p><ul><li>Test</li>\r";
         $expect .= "Test4</p>\n<ul>\n<li>Test</li>\n";
 
-        $orig .= "<li>Test2\n<s>Test3</s></li>\r\n\r\n</ul>";
+        $orig   .= "<li>Test2\n<s>Test3</s></li>\r\n\r\n</ul>";
         $expect .= "<li>Test2\nTest3</li>\n</ul>\n";
 
-        $orig .= "<a href='http://www.example.org/'>Example</a><u>Underlined</u>";
-        $expect .= "<a href=\"http://www.example.org/\">Example</a>Underlined";
+        $orig   .= "<p><a href='http://www.example.org/'>Example</a><u>Underlined</u></p>";
+        $expect .= "<p><a href=\"http://www.example.org/\">Example</a>Underlined</p>";
 
-        $orig .= "<!-- Comment -->";
+        $orig   .= "<!-- Comment -->";
         $expect .= "";
 
         $out = HTMLTools::cleanSimpleHtml($orig);
@@ -97,8 +116,8 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testAllowUnderlines()
     {
-        $orig   = "<span class='underline'>Underlined</span> Normal";
-        $expect = '<span class="underline">Underlined</span> Normal';
+        $orig   = "<p><span class='underline'>Underlined</span> Normal</p>";
+        $expect = '<p><span class="underline">Underlined</span> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -106,10 +125,10 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
-    public function testAllowH2H3H4()
+    public function testAllowH1H2H3H4()
     {
         $orig   = '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4>';
-        $expect = 'H1<h2>H2</h2><h3>H3</h3><h4>H4</h4>';
+        $expect = '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -119,8 +138,8 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testAllowStrike()
     {
-        $orig   = "<span class='strike'>Strike</span> Normal";
-        $expect = '<span class="strike">Strike</span> Normal';
+        $orig   = "<p><span class='strike'>Strike</span> Normal</p>";
+        $expect = '<p><span class="strike">Strike</span> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -130,14 +149,14 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testAllowSubscript()
     {
-        $orig   = "<span class='subscript'>Subscript</span> Normal";
-        $expect = '<span class="subscript">Subscript</span> Normal';
+        $orig   = "<p><span class='subscript'>Subscript</span> Normal</p>";
+        $expect = '<p><span class="subscript">Subscript</span> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
-        $orig   = "<sub>Subscript</sub> Normal";
-        $expect = '<sub>Subscript</sub> Normal';
+        $orig   = "<p><sub>Subscript</sub> Normal</p>";
+        $expect = '<p><sub>Subscript</sub> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -147,14 +166,14 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testSuperscript()
     {
-        $orig   = "<span class='superscript'>Superscript</span> Normal";
-        $expect = '<span class="superscript">Superscript</span> Normal';
+        $orig   = "<p><span class='superscript'>Superscript</span> Normal</p>";
+        $expect = '<p><span class="superscript">Superscript</span> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
-        $orig   = "<sup>Superscript</sup> Normal";
-        $expect = '<sup>Superscript</sup> Normal';
+        $orig   = "<p><sup>Superscript</sup> Normal</p>";
+        $expect = '<p><sup>Superscript</sup> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -164,15 +183,15 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testStripUnknown()
     {
-        $orig   = "<span class='unknown'>Strike</span> Normal";
-        $expect = 'Strike Normal';
+        $orig   = "<p><span class='unknown'>Strike</span> Normal</p>";
+        $expect = '<p>Strike Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
 
-        $orig   = "<span class='strike unknown'>Strike</span> Normal";
-        $expect = '<span class="strike">Strike</span> Normal';
+        $orig   = "<p><span class='strike unknown'>Strike</span> Normal</p>";
+        $expect = '<p><span class="strike">Strike</span> Normal</p>';
 
         $out = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
@@ -222,8 +241,8 @@ class HTMLNormalizeTest extends TestBase
      */
     public function testLigatures()
     {
-        $orig   = 'ﬁ is fi and ﬂ is fl';
-        $expect = 'fi is fi and fl is fl';
+        $orig   = '<p>ﬁ is fi and ﬂ is fl</p>';
+        $expect = '<p>fi is fi and fl is fl</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
         $this->assertNotEquals($out, $orig);
@@ -250,8 +269,8 @@ Test 2.</p>
      */
     public function testUmlautDomains()
     {
-        $orig   = 'Test <a href="http://www.hössl.org">My Domain</a>';
-        $expect = 'Test <a href="http://www.xn--hssl-5qa.org">My Domain</a>';
+        $orig   = '<p>Test <a href="http://www.hössl.org">My Domain</a></p>';
+        $expect = '<p>Test <a href="http://www.xn--hssl-5qa.org">My Domain</a></p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
@@ -260,8 +279,8 @@ Test 2.</p>
      */
     public function testStripDelTags()
     {
-        $orig   = 'Test <del>this should <strong>be</strong> deleted</del> more <del>this as well</del>.';
-        $expect = 'Test more .';
+        $orig   = '<p>Test <del>this should <strong>be</strong> deleted</del> more <del>this as well</del>.</p>';
+        $expect = '<p>Test more .</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
 
@@ -271,8 +290,8 @@ Test 2.</p>
      */
     public function testDontStripInsTags()
     {
-        $orig   = 'Test <ins>this should <strong>be</strong> inserted</ins> more <ins>this as well</ins>.';
-        $expect = 'Test this should <strong>be</strong> inserted more this as well.';
+        $orig   = '<p>Test <ins>this should <strong>be</strong> inserted</ins> more <ins>this as well</ins>.</p>';
+        $expect = '<p>Test this should <strong>be</strong> inserted more this as well.</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }
@@ -281,8 +300,8 @@ Test 2.</p>
      */
     public function testNormalizeUmlauts()
     {
-        $orig   = chr(195) . chr(164) . chr(97) . chr(204) . chr(136);
-        $expect = 'ää';
+        $orig   = '<p>' . chr(195) . chr(164) . chr(97) . chr(204) . chr(136) . '</p>';
+        $expect = '<p>ää</p>';
         $this->assertNotEquals($expect, $orig);
 
         $out = HTMLTools::cleanSimpleHtml($orig);

@@ -2,6 +2,7 @@
 
 ### Version 3.6.6 [Not released yet]
 
+- Bugfix: When editing a whole block of text when creating an amendment, this could lead to faulty amendment indicating changes at places that were not changed at all.
 - Bugfix: When cloning a motion type, the possible ways of liking/supporting a motion were not copied to the new motion type
 
 ### Version 3.6.5 (2017-04-17)
