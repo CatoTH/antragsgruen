@@ -143,11 +143,19 @@ export class AntragsgruenEditor {
         return this.editor;
     }
 
+    public static destroyInstanceById(id: string) {
+        let editor = CKEDITOR.instances[id];
+        editor.destroy();
+        let $el: JQuery = $("#" + id);
+        $el.data("ckeditor_initialized", "0");
+        $el.attr("contenteditable", "false");
+    }
+
     constructor(id) {
         this.$el = $("#" + id);
 
         let initialized = this.$el.data("ckeditor_initialized");
-        if (typeof (initialized) != "undefined" && initialized) {
+        if (typeof (initialized) != "undefined" && initialized == "1") {
             console.error("Already initialized: " + id);
             return;
         }

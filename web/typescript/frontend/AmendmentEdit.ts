@@ -109,7 +109,11 @@ export class AmendmentEdit {
         let $para = $(ev.target).parents(".wysiwyg-textarea"),
             $textarea = $para.find(".texteditor"),
             id = $textarea.attr("id");
-        $("#" + id).attr("contenteditable", "false");
+
+        if (typeof(CKEDITOR.instances[$textarea.attr("id")]) !== "undefined") {
+            AntragsgruenEditor.destroyInstanceById($textarea.attr("id"));
+        }
+
         $textarea.html($para.data("original"));
         $para.removeClass("modified");
         this.spmSetModifyable();
