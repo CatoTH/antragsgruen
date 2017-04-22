@@ -228,6 +228,8 @@ class MotionController extends AdminBase
                     $motionType->policySupportMotions         = IPolicy::POLICY_ALL;
                     $motionType->policySupportAmendments      = IPolicy::POLICY_ALL;
                     $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+                    $motionType->motionLikesDislikes          = 0;
+                    $motionType->amendmentLikesDislikes       = 0;
                     $motionType->contactName                  = ConsultationMotionType::CONTACT_NONE;
                     $motionType->contactEmail                 = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
@@ -240,13 +242,11 @@ class MotionController extends AdminBase
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
                 }
             }
-            $motionType->titleSingular          = $type['titleSingular'];
-            $motionType->titlePlural            = $type['titlePlural'];
-            $motionType->createTitle            = $type['createTitle'];
-            $motionType->pdfLayout              = $type['pdfLayout'];
-            $motionType->motionPrefix           = $type['motionPrefix'];
-            $motionType->motionLikesDislikes    = 0;
-            $motionType->amendmentLikesDislikes = 0;
+            $motionType->titleSingular = $type['titleSingular'];
+            $motionType->titlePlural   = $type['titlePlural'];
+            $motionType->createTitle   = $type['createTitle'];
+            $motionType->pdfLayout     = $type['pdfLayout'];
+            $motionType->motionPrefix  = $type['motionPrefix'];
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();

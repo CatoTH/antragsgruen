@@ -185,7 +185,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
  von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist
  das nicht der Fall.<br>
  <br>
- Falls die nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
+ Falls die Seite nur für unten eingetragene Benutzer*innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
  dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer*innen
  Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
     'siteacc_policy_login'     => 'Auf Benutzer*innen einschränken',

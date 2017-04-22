@@ -117,6 +117,64 @@ class HTMLTools
         return $str;
     }
 
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function wrapOrphanedTextWithP($html)
+    {
+        $dom = static::html2DOM($html);
+
+        $hasChanged = false;
+        /** @var \DOMElement $wrapP */
+        $wrapP = null;
+        for ($i = 0; $i < $dom->childNodes->length; $i++) {
+            $childNode = $dom->childNodes->item($i);
+            /** @var \DOMNode $childNode */
+            $isText   = is_a($childNode, \DOMText::class);
+            $isInline = !in_array($childNode->nodeName, static::$KNOWN_BLOCK_ELEMENTS);
+            if ($isText || $isInline) {
+                $hasChanged = true;
+                if ($wrapP === null) {
+                    $wrapP = $dom->ownerDocument->createElement('p');
+                }
+                $dom->removeChild($childNode);
+                $wrapP->appendChild($childNode);
+                $i--;
+            } else {
+                if ($wrapP) {
+                    if ($wrapP->childNodes->length > 1 || trim($wrapP->childNodes->item(0)->nodeValue) != '') {
+                        $first = $wrapP->childNodes->item(0);
+                        $last  = $wrapP->childNodes->item($wrapP->childNodes->length - 1);
+                        if (is_a($first, \DOMText::class)) {
+                            $first->nodeValue = preg_replace('/^[ \\n]*/', '', $first->nodeValue);
+                        }
+                        if (is_a($last, \DOMText::class)) {
+                            $last->nodeValue = preg_replace('/\s*$/', '', $last->nodeValue);
+                        }
+                        $dom->insertBefore($wrapP, $childNode);
+                    }
+                    $wrapP = null;
+                }
+            }
+        }
+        if ($wrapP && ($wrapP->childNodes->length > 1 || trim($wrapP->childNodes->item(0)->nodeValue) != '')) {
+            $first = $wrapP->childNodes->item(0);
+            $last  = $wrapP->childNodes->item($wrapP->childNodes->length - 1);
+            if (is_a($first, \DOMText::class)) {
+                $first->nodeValue = preg_replace('/^\s*/', '', $first->nodeValue);
+            }
+            if (is_a($last, \DOMText::class)) {
+                $last->nodeValue = preg_replace('/\s*$/', '', $last->nodeValue);
+            }
+            $dom->appendChild($wrapP);
+        }
+        if ($hasChanged) {
+            return static::renderDomToHtml($dom, true);
+        } else {
+            return $html;
+        }
+    }
 
     /**
      * @param string $htmlIn
@@ -143,7 +201,7 @@ class HTMLTools
         $html = HtmlPurifier::process(
             $html,
             function ($config) {
-                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre,h2,h3,h4';
+                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre,h1,h2,h3,h4';
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
@@ -167,6 +225,10 @@ class HTMLTools
             }
         );
         $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
+
+        // Text always needs to be in a block container. This is the normal case anyway,
+        // however sometimes CKEditor + Lite Change Tracking produces messed up HTML that we need to fix here
+        $html = static::wrapOrphanedTextWithP($html);
 
         $html = str_ireplace("</li>", "</li>\n", $html);
         $html = str_ireplace("<ul>", "<ul>\n", $html);
@@ -358,11 +420,11 @@ class HTMLTools
      */
     public static function removeSectioningFragments($html)
     {
-        $body = static::html2DOM($html);
+        $body     = static::html2DOM($html);
         $children = $body->childNodes;
         for ($i = 0; $i < $children->length; $i++) {
             $appendToPrev = false;
-            $child = $children->item($i);
+            $child        = $children->item($i);
             if (is_a($child, \DOMText::class) && trim($child->nodeValue) == '') {
                 $body->removeChild($child);
                 $i--;
@@ -768,7 +830,7 @@ class HTMLTools
      */
     public static function stripInsDelMarkers($html)
     {
-        $body = static::html2DOM($html);
+        $body         = static::html2DOM($html);
         $strippedBody = static::stripInsDelMarkersInt($body);
         $str          = '';
         foreach ($strippedBody[0]->childNodes as $child) {
