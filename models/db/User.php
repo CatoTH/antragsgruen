@@ -599,9 +599,9 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
-        foreach ($consultation->userPrivileges as $privilege) {
-            if ($privilege->userId == $this->id) {
-                return $privilege->containsPrivilege($privilege);
+        foreach ($consultation->userPrivileges as $userPrivilege) {
+            if ($userPrivilege->userId == $this->id) {
+                return $userPrivilege->containsPrivilege($privilege);
             }
         }
 

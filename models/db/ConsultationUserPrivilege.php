@@ -146,6 +146,8 @@ class ConsultationUserPrivilege extends ActiveRecord
     public function containsPrivilege($permission)
     {
         switch ($permission) {
+            case User::PRIVILEGE_ANY:
+                return ($this->adminSuper == 1 || $this->adminContentEdit == 1 || $this->adminScreen);
             case User::PRIVILEGE_CONSULTATION_SETTINGS:
                 return ($this->adminSuper == 1);
             case User::PRIVILEGE_CONTENT_EDIT:

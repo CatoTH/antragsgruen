@@ -18,10 +18,10 @@ use yii\helpers\Html;
             <table class="table">
                 <thead>
                 <tr>
-                    <th>Benutzer*in</th>
-                    <th class="type">Diese Veranstaltung</th>
-                    <th class="type">Alle Veranstaltungen</th>
-                    <th class="del">Austragen</th>
+                    <th><?= \Yii::t('admin', 'siteacc_admins_user') ?></th>
+                    <th class="type"><?= \Yii::t('admin', 'siteacc_admins_one_con') ?></th>
+                    <th class="type"><?= \Yii::t('admin', 'siteacc_admins_all_cons') ?></th>
+                    <th class="del"><?= \Yii::t('admin', 'siteacc_admins_del') ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -47,17 +47,23 @@ use yii\helpers\Html;
                         <td class="type">
                             <input type="radio" name="adminType[<?= $user->id ?>]" value="consultation"
                                 <?= ($type == 'consultation' ? 'checked' : '') ?>
-                                <?= ($isMe ? 'disabled' : '') ?> title="Diese Veranstaltung">
+                                <?= ($isMe ? 'disabled' : '') ?>
+                                   title="<?= Html::encode(\Yii::t('admin', 'siteacc_admins_one_con')) ?>">
                         </td>
                         <td class="type">
                             <input type="radio" name="adminType[<?= $user->id ?>]" value="site"
                                 <?= ($type == 'site' ? 'checked' : '') ?>
-                                <?= ($isMe ? 'disabled' : '') ?> title="Alle Veranstaltungen">
+                                <?= ($isMe ? 'disabled' : '') ?>
+                                   title="<?= Html::encode(\Yii::t('admin', 'siteacc_admins_all_cons')) ?>">
                         </td>
                         <td class="del">
-                            <button class="link removeAdmin" type="button" data-id="<?= $user->id ?>">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
+                            <?php
+                            if (!$isMe) { ?>
+                                <button class="link removeAdmin" type="button" data-id="<?= $user->id ?>">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                                <?php
+                            } ?>
                         </td>
                     </tr>
                     <?php

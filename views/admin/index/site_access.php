@@ -105,4 +105,3 @@ if ($controller->consultation) {
 
     include('_site_access_admins.php');
 }
-

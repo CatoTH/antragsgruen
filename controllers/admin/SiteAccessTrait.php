@@ -344,12 +344,12 @@ trait SiteAccessTrait
         if ($this->isPostSet('removeAdmin')) {
             /** @var User $todel */
             $todel = User::findOne($post['removeAdmin']);
-            if ($todel) {
+            if ($todel && $todel->id != User::getCurrentUser()->id) {
                 $this->site->unlink('admins', $todel, true);
                 $this->unlinkConsultationAdmin($todel);
-                \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_admin_del_done'));
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_admin_del_done'));
             } else {
-                \Yii::$app->session->setFlash('error_login', \Yii::t('admin', 'siteacc_admin_del_notf'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_admin_del_notf'));
             }
         }
 
