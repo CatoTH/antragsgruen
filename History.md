@@ -1,5 +1,6 @@
 # Version history
 
+<<<<<<< HEAD
 ## Version 3.7.0 [Not yet released]
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
@@ -12,11 +13,13 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.6 [Not released yet]
+### Version 3.6.6 (2017-04-24)
 
 - Bugfix: Fix a race condition in the editor when creating amendments in Single-Paragraph-Mode (fixes #227)
 - Bugfix: When editing a whole block of text when creating an amendment, this could lead to faulty amendment indicating changes at places that were not changed at all.
 - Bugfix: When cloning a motion type, the possible ways of liking/supporting a motion were not copied to the new motion type
+- Bugfix: Motions/Amendments in the state "Draft (Admin)" should be readable if you know the link, as it comes after "Collection Supporters"
+- Bugfix: never display "line 0", fall back to "line 1" instead.
 
 ### Version 3.6.5 (2017-04-17)
 

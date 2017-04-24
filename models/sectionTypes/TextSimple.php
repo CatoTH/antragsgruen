@@ -435,7 +435,8 @@ class TextSimple extends ISectionType
                     $out .= \yii::t('diff', 'line_to_ins');
                 }
             }
-            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $diff['lineFrom']], $out) . '</h4>';
+            $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);
+            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $lineFrom], $out) . '</h4>';
             $out .= '<div>';
             if ($diff['text'][0] != '<') {
                 $out .= '<p>' . $diff['text'] . '</p>';

@@ -422,7 +422,6 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_DELETED,
             IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
-            IMotion::STATUS_DRAFT_ADMIN,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
         ];
