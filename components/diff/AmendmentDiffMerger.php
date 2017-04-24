@@ -94,6 +94,8 @@ class AmendmentDiffMerger
         $diff     = new Diff();
         $amParams = ['amendmentId' => $amendmentId];
         $paraArr  = $diff->compareHtmlParagraphsToWordArray($this->sectionParagraphs, $amendingParas, $amParams);
+        $paraArr  = MovingParagraphDetector::markupWordArrays($paraArr);
+        var_dump($paraArr);
 
         foreach ($paraArr as $paraNo => $wordArr) {
             $hasChanges = false;

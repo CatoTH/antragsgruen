@@ -45,30 +45,29 @@ class MovingParagraphDetector
 
     /**
      * @param string $paragraph
-     * @param array $match
-     * @param array $other
+     * @param string $matchFull
+     * @param int $otherPara
      * @param string $parId
      * @return string
      */
-    private static function addMarkup($paragraph, $match, $other, $parId)
+    private static function addMarkup($paragraph, $matchFull, $otherPara, $parId)
     {
-        $pattern = '/^<(?<tag>\w+)' .
-            '(?<inbetween> [^>]*class *= *["\'])' .
-            '(?<classes>[^"\']*)' .
-            '(?<remainder>["\'][^>]*>)/siu';
+        $new = preg_replace_callback('/^(?<tag><\w+)(?<atts>[^>]*)>/siu', function ($matches) use ($otherPara, $parId) {
+            $atts = $matches['atts'];
 
-        $new = preg_replace_callback($pattern, function ($matches) use ($other, $parId) {
-            $classes   = explode(' ', $matches['classes']);
-            $classes[] = 'moved';
+            if (preg_match('/class=["\'](?<classes>[^\']*)["\']/siu', $atts, $matches2)) {
+                $classes   = explode(' ', $matches2['classes']);
+                $classes[] = 'moved';
+                $atts      = str_replace($matches2[0], 'class="' . implode(' ', $classes) . '"', $atts);
+            } else {
+                $atts .= ' class="moved"';
+            }
 
-            $repl = '<' . $matches['tag'] . ' data-moving-partner-id="' . $parId . '"';
-            $repl .= ' data-moving-partner-paragraph="' . $other['para'] . '"';
-            $repl .= $matches['inbetween'] . implode(' ', $classes) . $matches['remainder'];
+            return $matches['tag'] . ' data-moving-partner-id="' . $parId . '"' .
+                ' data-moving-partner-paragraph="' . $otherPara . '"' . $atts . '>';
+        }, $matchFull);
 
-            return $repl;
-        }, $match['full']);
-
-        return str_replace($match['full'], $new, $paragraph);
+        return str_replace($matchFull, $new, $paragraph);
     }
 
     /**
@@ -84,8 +83,121 @@ class MovingParagraphDetector
             foreach ($deleted as $del) {
                 if (static::compareMovedParagraphs($ins['inner'], $del['inner'])) {
                     $pairid              = static::$MOVING_PARTNER_COUNT++;
-                    $paras[$ins['para']] = static::addMarkup($paras[$ins['para']], $ins, $del, $pairid);
-                    $paras[$del['para']] = static::addMarkup($paras[$del['para']], $del, $ins, $pairid);
+                    $paras[$ins['para']] = static::addMarkup($paras[$ins['para']], $ins['full'], $del['para'], $pairid);
+                    $paras[$del['para']] = static::addMarkup($paras[$del['para']], $del['full'], $ins['para'], $pairid);
+                }
+            }
+        }
+
+        return $paras;
+    }
+
+    /**
+     * @param string $html
+     * @return string[]
+     */
+    private static function getBlocks($html)
+    {
+        $found = [];
+        preg_match_all('/<(?<tag>div|p|ul|li|blockquote|h1|h2|h3|h4|h5|h6)[^>]*>.*<\/\1>/siuU', $html, $matches);
+        foreach ($matches[0] as $html) {
+            $found[] = $html;
+        }
+        return $found;
+    }
+
+    /**
+     * @param array $paras
+     * @return array
+     */
+    private static function extractInsertsFromArrays($paras)
+    {
+        $inserts = [];
+        foreach ($paras as $paraNo => $para) {
+            foreach ($para as $wordNo => $word) {
+                if (strpos($word['diff'], '###INS_START###') !== false) {
+                    $txt = explode('###INS_START###', $word['diff']);
+                    $txt = explode('###INS_END###', $txt[1]);
+                    foreach (static::getBlocks($txt[0]) as $block) {
+                        $inserts[] = [
+                            'para' => $paraNo,
+                            'word' => $wordNo,
+                            'html' => $block,
+                        ];
+                    }
+                }
+            }
+        }
+        return $inserts;
+    }
+
+    /**
+     * @param array $paras
+     * @return array
+     */
+    private static function extractDeletesFromArray($paras)
+    {
+        $deletes = [];
+        foreach ($paras as $paraNo => $para) {
+            $currDelBlockStart = null;
+            $currDelBlock      = null;
+            foreach ($para as $wordNo => $word) {
+                if ($currDelBlockStart === null) {
+                    // If a DEL starts and ends at the same word, it only deletes a single word
+                    // As we're only interested in larger deleted blocks, we can ignore those cases here
+                    if (strpos($word['diff'], '###DEL_START###') !== false &&
+                        strpos($word['diff'], '###DEL_END###') === false
+                    ) {
+                        $x                 = explode('###DEL_START###', $word['diff']);
+                        $currDelBlock      = $x[1];
+                        $currDelBlockStart = $wordNo;
+                    }
+                } else {
+                    if (strpos($word['diff'], '###DEL_END###') !== false) {
+                        $x            = explode('###DEL_END###', $word['diff']);
+                        $currDelBlock .= $x[0];
+                        foreach (static::getBlocks($currDelBlock) as $block) {
+                            $deletes[] = [
+                                'para' => $paraNo,
+                                'word' => $wordNo,
+                                'html' => $block,
+                            ];
+                        }
+                        $currDelBlock      = null;
+                        $currDelBlockStart = null;
+                    } else {
+                        $currDelBlock .= $word['diff'];
+                    }
+                }
+            }
+        }
+
+        return $deletes;
+    }
+
+    /**
+     * @param array $paras
+     * @return array
+     */
+    public static function markupWordArrays($paras)
+    {
+        $inserts = static::extractInsertsFromArrays($paras);
+        $deletes = static::extractDeletesFromArray($paras);
+
+        echo "\n\nMOVING\n\n";
+        var_dump($inserts);
+        var_dump($deletes);
+        echo "\n";
+
+        foreach ($inserts as $insert) {
+            foreach ($deletes as $delete) {
+                if (static::compareMovedParagraphs($insert['html'], $delete['html'])) {
+                    var_dump("FOUND MOVE");
+                    $pairid = static::$MOVING_PARTNER_COUNT++;
+                    $markedupIns = static::addMarkup($insert['html'], $insert['html'], $delete['para'], $pairid);
+                    $markedupDel = static::addMarkup($delete['html'], $delete['html'], $insert['para'], $pairid);
+                    var_dump($markedupIns);
+                    var_dump($markedupDel);
                 }
             }
         }
