@@ -1,6 +1,6 @@
 # Version history
 
-### Version 3.6.6 [Not released yet]
+### Version 3.6.6 (2017-04-24)
 
 - Bugfix: Fix a race condition in the editor when creating amendments in Single-Paragraph-Mode (fixes #227)
 - Bugfix: When editing a whole block of text when creating an amendment, this could lead to faulty amendment indicating changes at places that were not changed at all.
