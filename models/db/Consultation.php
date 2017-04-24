@@ -405,7 +405,6 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_DELETED,
             IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
-            IMotion::STATUS_DRAFT_ADMIN,
         ];
         return $invisible;
     }
