@@ -6,6 +6,7 @@
 - Bugfix: When editing a whole block of text when creating an amendment, this could lead to faulty amendment indicating changes at places that were not changed at all.
 - Bugfix: When cloning a motion type, the possible ways of liking/supporting a motion were not copied to the new motion type
 - Bugfix: Motions/Amendments in the state "Draft (Admin)" should be readable if you know the link, as it comes after "Collection Supporters"
+- Bugfix: never display "line 0", fall back to "line 1" instead.
 
 ### Version 3.6.5 (2017-04-17)
 
