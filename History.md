@@ -1,6 +1,5 @@
 # Version history
 
-<<<<<<< HEAD
 ## Version 3.7.0 [Not yet released]
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
