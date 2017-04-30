@@ -12,6 +12,10 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
+### Version 3.6.7 [not released yet]
+
+- Bugfix: the site configuration was not accessible
+
 ### Version 3.6.6 (2017-04-24)
 
 - Bugfix: Fix a race condition in the editor when creating amendments in Single-Paragraph-Mode (fixes #227)
