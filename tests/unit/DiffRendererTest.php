@@ -203,4 +203,15 @@ class DiffRendererTest extends TestBase
         $str = '<pre> class="inserted" Blabla';
         $this->assertEquals(0, DiffRenderer::paragraphContainsDiff($str));
     }
+
+    /**
+     */
+    public function testKeepMovedParagraphMarkup()
+    {
+        $renderer = new DiffRenderer();
+
+        $html     = '###INS_START###<p data-moving-partner-id="1" data-moving-partner-paragraph="3" class="moved">Test 1 Test 2</p>###INS_END###';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<p class="moved inserted" data-moving-partner-id="1" data-moving-partner-paragraph="3">Test 1 Test 2</p>', $rendered);
+    }
 }

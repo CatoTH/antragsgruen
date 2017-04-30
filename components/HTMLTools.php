@@ -108,12 +108,16 @@ class HTMLTools
                 foreach ($conf as $key => $val) {
                     $config->set($key, $val);
                 }
+                $def = $config->getHTMLDefinition(true);
+                $def->info_global_attr['data-moving-partner-id'] = new \HTMLPurifier_AttrDef_Text();
+                $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
             }
         );
         $str = static::cleanMessedUpHtmlCharacters($str);
         if (static::isStringCachable($htmlIn)) {
             \Yii::$app->getCache()->set($cacheKey, $str);
         }
+
         return $str;
     }
 

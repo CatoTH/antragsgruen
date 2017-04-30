@@ -47,12 +47,12 @@ class MovingParagraphDetector
      * @param string $paragraph
      * @param string $matchFull
      * @param int $otherPara
-     * @param string $parId
+     * @param string $pairId
      * @return string
      */
-    private static function addMarkup($paragraph, $matchFull, $otherPara, $parId)
+    private static function addMarkup($paragraph, $matchFull, $otherPara, $pairId)
     {
-        $new = preg_replace_callback('/^(?<tag><\w+)(?<atts>[^>]*)>/siu', function ($matches) use ($otherPara, $parId) {
+        $new = preg_replace_callback('/(?<tag><\w+)(?<atts>[^>]*)>/siu', function ($matches) use ($otherPara, $pairId) {
             $atts = $matches['atts'];
 
             if (preg_match('/class=["\'](?<classes>[^\']*)["\']/siu', $atts, $matches2)) {
@@ -63,7 +63,7 @@ class MovingParagraphDetector
                 $atts .= ' class="moved"';
             }
 
-            return $matches['tag'] . ' data-moving-partner-id="' . $parId . '"' .
+            return $matches['tag'] . ' data-moving-partner-id="' . $pairId . '"' .
                 ' data-moving-partner-paragraph="' . $otherPara . '"' . $atts . '>';
         }, $matchFull);
 
@@ -120,9 +120,10 @@ class MovingParagraphDetector
                     $txt = explode('###INS_END###', $txt[1]);
                     foreach (static::getBlocks($txt[0]) as $block) {
                         $inserts[] = [
-                            'para' => $paraNo,
-                            'word' => $wordNo,
-                            'html' => $block,
+                            'para'      => $paraNo,
+                            'word_from' => $wordNo,
+                            'word_to'   => $wordNo,
+                            'html'      => $block,
                         ];
                     }
                 }
@@ -158,9 +159,10 @@ class MovingParagraphDetector
                         $currDelBlock .= $x[0];
                         foreach (static::getBlocks($currDelBlock) as $block) {
                             $deletes[] = [
-                                'para' => $paraNo,
-                                'word' => $wordNo,
-                                'html' => $block,
+                                'para'      => $paraNo,
+                                'word_from' => $currDelBlockStart,
+                                'word_to'   => $wordNo,
+                                'html'      => $block,
                             ];
                         }
                         $currDelBlock      = null;
@@ -184,20 +186,26 @@ class MovingParagraphDetector
         $inserts = static::extractInsertsFromArrays($paras);
         $deletes = static::extractDeletesFromArray($paras);
 
-        echo "\n\nMOVING\n\n";
-        var_dump($inserts);
-        var_dump($deletes);
-        echo "\n";
-
         foreach ($inserts as $insert) {
             foreach ($deletes as $delete) {
                 if (static::compareMovedParagraphs($insert['html'], $delete['html'])) {
-                    var_dump("FOUND MOVE");
                     $pairid = static::$MOVING_PARTNER_COUNT++;
-                    $markedupIns = static::addMarkup($insert['html'], $insert['html'], $delete['para'], $pairid);
-                    $markedupDel = static::addMarkup($delete['html'], $delete['html'], $insert['para'], $pairid);
-                    var_dump($markedupIns);
-                    var_dump($markedupDel);
+                    for ($i = $insert['word_from']; $i <= $insert['word_to']; $i++) {
+                        $paras[$insert['para']][$i]['diff'] = static::addMarkup(
+                            $paras[$insert['para']][$i]['diff'],
+                            $paras[$insert['para']][$i]['diff'],
+                            $delete['para'],
+                            $pairid
+                        );
+                    }
+                    for ($i = $delete['word_from']; $i <= $delete['word_to']; $i++) {
+                        $paras[$delete['para']][$i]['diff'] = static::addMarkup(
+                            $paras[$delete['para']][$i]['diff'],
+                            $paras[$delete['para']][$i]['diff'],
+                            $insert['para'],
+                            $pairid
+                        );
+                    }
                 }
             }
         }
