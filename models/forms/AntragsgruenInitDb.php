@@ -53,7 +53,7 @@ class AntragsgruenInitDb extends Model
         return [
             [['sqlType', 'adminUsername', 'adminPassword'], 'required'],
             [['sqlType', 'sqlHost', 'sqlUsername', 'sqlDB', 'sqlCreateTables'], 'safe'],
-            [['adminUsername', 'adminPassword'], 'safe'],
+            [['adminUsername', 'adminPassword', 'language'], 'safe'],
         ];
     }
 
@@ -306,5 +306,6 @@ class AntragsgruenInitDb extends Model
     {
         $config->dbConnection = $this->getDBConfig();
         $config->adminUserIds = $this->adminIds;
+        $config->baseLanguage = $this->language;
     }
 }

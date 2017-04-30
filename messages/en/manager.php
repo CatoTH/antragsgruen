@@ -69,4 +69,12 @@ return [
     'email_mailgun'           => 'Mailgun',
     'mailgun_api'             => 'Mailgun\s API-Key',
     'mailgun_domain'          => 'E-mail domain',
+
+    'done_title' => 'Antragsgrün installed',
+    'done_no_del_msg' => 'Please delete the file config/INSTALLING to finish the installation.
+                Depending on the operating system, the command for this is something like:<pre>%DELCMD%</pre>
+                After doing so, reload this page.',
+    'done_nextstep' => 'Great! Now you can set up some more details.
+                Antragsgrün is now available at the following address: %LINK%',
+    'done_details' => 'Detailed settings',
 ];

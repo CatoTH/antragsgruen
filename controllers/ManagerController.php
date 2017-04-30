@@ -369,7 +369,7 @@ class ManagerController extends Base
                 $siteForm->create($admin);
 
                 unlink($installFile);
-                return $this->render('antragsgruen_init_done', [
+                echo $this->render('antragsgruen_init_done', [
                     'installFileDeletable' => is_writable($configDir),
                     'delInstallFileCmd'    => $delInstallFileCmd,
                 ]);

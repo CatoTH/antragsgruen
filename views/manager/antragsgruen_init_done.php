@@ -12,7 +12,7 @@ use yii\helpers\Html;
 
 
 $controller  = $this->context;
-$this->title = 'Antragsgrün installieren';
+$this->title = \Yii::t('manager', 'done_title');
 
 /** @var \app\controllers\admin\IndexController $controller */
 $controller            = $this->context;
@@ -20,7 +20,7 @@ $layout                = $controller->layoutParams;
 $layout->robotsNoindex = true;
 
 
-echo '<h1>' . 'Antragsgrün installieren' . '</h1>';
+echo '<h1>' . \Yii::t('manager', 'done_title') . '</h1>';
 $settingsUrl = UrlHelper::createUrl('manager/siteconfig');
 echo Html::beginForm($settingsUrl, 'get', ['class' => 'antragsgruenInitForm form-horizontal']);
 
@@ -32,24 +32,18 @@ $link = '<br>' . Html::a($link, $link) . '<br><br>';
 
 if (!$installFileDeletable) {
     echo '<div class="alert alert-info" role="alert">';
-    echo str_replace('%DELCMD%', Html::encode($delInstallFileCmd), 'Um den Installationsmodus zu beenden,
-                lösche die Datei config/INSTALLING.
-                Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>%DELCMD%</pre>
-                Rufe danach diese Seite hier neu auf.
-                ');
+    echo str_replace('%DELCMD%', Html::encode($delInstallFileCmd), \Yii::t('manager', 'done_no_del_msg'));
     echo '</div>';
 } else {
-   echo '<div class="alert alert-success" role="alert">
+    echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 <span class="sr-only">Success:</span>
-                ' . str_replace('%LINK%', $link, 'Alles klar! Du kannst nun im Folgenden noch ein
-                paar Detaileinstellungen vornehmen.
-                Die Antragsgrün-Version ist nun unter folgender Adresse erreichbar: %LINK%') . '
+                ' . str_replace('%LINK%', $link, \Yii::t('manager', 'done_nextstep')) . '
             </div>';
 
     echo '<div class="saveholder">';
     echo '<button class="btn btn-success" name="finishInit">';
-    echo 'Detaileinstellungen';
+    echo \Yii::t('manager', 'done_details');
     echo '</button></div>';
 }
 

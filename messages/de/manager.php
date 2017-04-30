@@ -69,4 +69,12 @@ return [
     'welcome'                 => 'Willkommen!',
     'site_err_subdomain'      => 'Diese Subdomain wird bereits verwendet.',
     'site_err_contact'        => 'Du musst eine Kontaktadresse angeben.',
+
+    'done_title' => 'Antragsgrün installieren',
+    'done_no_del_msg' => 'Um den Installationsmodus zu beenden, lösche die Datei config/INSTALLING.
+                Je nach Betriebssystem könnte der Befehl dazu z.B. folgendermaßen lauten:<pre>%DELCMD%</pre>
+                Rufe danach diese Seite hier neu auf.',
+    'done_nextstep' => 'Alles klar! Du kannst nun im Folgenden noch ein paar Detaileinstellungen vornehmen.
+                Die Antragsgrün-Version ist nun unter folgender Adresse erreichbar: %LINK%',
+    'done_details' => 'Detaileinstellungen',
 ];
