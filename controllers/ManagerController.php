@@ -200,9 +200,6 @@ class ManagerController extends Base
         if ($this->getParams()->mode == 'sandbox') {
             $model->setSandboxParams();
         }
-        if (!$this->getParams()->multisiteMode) {
-            $model->openNow = true;
-        }
 
         return $this->render(
             'createsite',
@@ -379,6 +376,9 @@ class ManagerController extends Base
             } catch (\Exception $e) {
                 \yii::$app->session->setFlash('error', $e->getMessage());
             }
+        }
+        if (!$this->getParams()->multisiteMode) {
+            $siteForm->openNow = true;
         }
 
         return $this->render('antragsgruen_init_site', [
