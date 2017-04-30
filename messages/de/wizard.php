@@ -96,6 +96,8 @@ return [
     'sitedata_contact'        => 'Kontaktadresse',
     'sitedata_contact_hint'   => 'Name, E-Mail, postalische Adresse fürs Impressum',
     'sitedata_subdomain_err'  => 'Die Subdomain "%SUBDOMAIN%" ist nicht verfügbar.',
+    'sitedata_prettyurl'      => '"Hübsche" URLs (benötigt URL-Rewriting)',
+    'sitedata_system_email'   => 'System-E-Mail-Adresse',
 
     'created_title'          => 'Veranstaltung angelegt',
     'created_msg'            => 'Die Veranstaltung wurde angelegt.',

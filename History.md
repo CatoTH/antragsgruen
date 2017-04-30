@@ -12,8 +12,9 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.7 [not released yet]
+### Version 3.6.7 (2017-04-30)
 
+- The installation wizard is now internationalized, using english as default language
 - Bugfix: the site configuration was not accessible
 
 ### Version 3.6.6 (2017-04-24)

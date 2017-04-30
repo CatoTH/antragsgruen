@@ -377,6 +377,9 @@ class ManagerController extends Base
                 \yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
+        if (!$this->getParams()->multisiteMode) {
+            $siteForm->openNow = true;
+        }
 
         return $this->render('antragsgruen_init_site', [
             'form'                 => $siteForm,
@@ -386,9 +389,10 @@ class ManagerController extends Base
     }
 
     /**
+     * @param string $language
      * @return string
      */
-    public function actionAntragsgrueninit()
+    public function actionAntragsgrueninit($language = 'en')
     {
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -403,7 +407,7 @@ class ManagerController extends Base
         }
 
         if (file_exists($configFile)) {
-            $editable           = is_writable($configFile);
+            $editable = is_writable($configFile);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
@@ -411,7 +415,7 @@ class ManagerController extends Base
                 $makeEditabeCommand = 'not available';
             }
         } else {
-            $editable           = is_writable($configDir);
+            $editable = is_writable($configDir);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
@@ -423,6 +427,10 @@ class ManagerController extends Base
         $delInstallFileCmd = 'rm ' . $installFile;
 
         $dbForm = new AntragsgruenInitDb($configFile);
+        if (isset(MessageSource::getBaseLanguages()[$language])) {
+            $dbForm->language    = $language;
+            \Yii::$app->language = $language;
+        }
 
 
         $post = \Yii::$app->request->post();
@@ -494,33 +502,6 @@ class ManagerController extends Base
                 'alreadyCreated' => null,
             ]);
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function actionPaymentadmin()
-    {
-        if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-        }
-
-        /** @var Site[] $sites */
-        $sites = Site::find()->where('status != ' . Site::STATUS_DELETED)->all();
-
-        if ($this->isPostSet('save')) {
-            $set    = \Yii::$app->request->post('billSent', []);
-            $active = \Yii::$app->request->post('siteActive', []);
-            foreach ($sites as $site) {
-                $settings           = $site->getSettings();
-                $settings->billSent = (in_array($site->id, $set) ? 1 : 0);
-                $site->setSettings($settings);
-                $site->status = (in_array($site->id, $active) ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE);
-                $site->save();
-            }
-        }
-
-        return $this->render('payment_admin', ['sites' => $sites]);
     }
 
     /**

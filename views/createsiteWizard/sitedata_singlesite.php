@@ -28,7 +28,7 @@ use yii\helpers\Html;
                 </div>
 
                 <div class="form-group">
-                    <label class="name" for="siteTitle"><?= 'System-E-Mail-Adresse' ?>:</label>
+                    <label class="name" for="siteTitle"><?= $t('sitedata_system_email') ?>:</label>
                     <?= Html::input(
                         'email',
                         'SiteCreateForm[siteEmail]',
@@ -40,7 +40,7 @@ use yii\helpers\Html;
                 <div class="form-group">
                     <label>
                         <?= Html::checkbox('SiteCreateForm[prettyUrls]', $model->prettyUrls, ['id' => 'prettyUrls']) ?>
-                        "Hübsche" URLs (benötigt URL-Rewriting)
+                        <?= $t('sitedata_prettyurl') ?>
                     </label>
                 </div>
 

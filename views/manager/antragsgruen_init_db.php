@@ -1,6 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /**
@@ -21,9 +22,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->loadFuelux();
 $layout->robotsNoindex = true;
-$layout->addJS('js/manager.js');
 $layout->addCSS('css/manager.css');
-$layout->addOnLoadJS('$.SiteManager.antragsgruenInitDb();');
 
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
@@ -56,11 +55,7 @@ if ($form->isConfigured()) {
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
         <span class="sr-only">Hint:</span>';
 
-            echo '<strong>Die Datenbanktabellen sind allerdings noch nicht angelegt.</strong>
-            Um das zu erledigen, nutze entweder die Funktion unten, oder rufe den Kommandozeilenbefehl auf:
-            <pre>./yii database/create</pre>
-            Die SQL-Skripte, um die Tabellen händisch zu erzeugen, liegen hier:
-            <pre>assets/db/create.sql</pre>';
+            echo \Yii::t('manager', 'config_create_tables');
             echo '</div>';
         }
     } catch (\Exception $e) {
@@ -83,122 +78,139 @@ echo '</div>';
 echo Html::endForm();
 
 
-echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
+echo Html::beginForm('', 'post', [
+    'class'                    => 'antragsgruenInitForm form-horizontal fuelux',
+    'data-antragsgruen-widget' => 'manager/InitDb',
+]);
 
-echo '<h2 class="green">' . 'Datenbank' . '</h2>';
-echo '<div class="content">';
-
-echo '<div class="form-group sqlType">
-    <label class="col-sm-4 control-label" for="sqlType">' . 'Datenbank-Typ' . ':</label>
-    <div class="col-sm-8">';
-echo HTMLTools::fueluxSelectbox(
-    'sqlType',
-    [
-        'mysql' => 'MySQL / MariaDB',
-    ],
-    $form->sqlType,
-    ['id' => 'sqlType']
-);
-echo '</div>
-</div>';
-
-echo '<div class="form-group sqlOption mysqlOption">
-    <label class="col-sm-4 control-label" for="sqlHost">' . 'Servername' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="sqlHost" placeholder="localhost"
-        value="' . Html::encode($form->sqlHost) . '" class="form-control" id="sqlHost">
+?>
+    <h2 class="green"><?= \Yii::t('manager', 'config_lang') ?></h2>
+    <div class="content">
+        <div class="form-group language">
+            <label class="col-sm-4 control-label" for="language"><?= \Yii::t('manager', 'config_lang') ?>:</label>
+            <div class="col-sm-8"><?php
+                echo HTMLTools::fueluxSelectbox(
+                    'language',
+                    \app\components\MessageSource::getBaseLanguages(),
+                    $form->language,
+                    ['id' => 'language']
+                );
+                ?></div>
+        </div>
     </div>
-</div>';
 
-echo '<div class="form-group sqlOption mysqlOption">
-    <label class="col-sm-4 control-label" for="sqlUsername">' . 'Benutzername' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="sqlUsername"
-        value="' . Html::encode($form->sqlUsername) . '" class="form-control" id="sqlUsername">
+    <h2 class="green"><?= \Yii::t('manager', 'config_db') ?></h2>
+    <div class="content">
+
+        <div class="form-group sqlType">
+            <label class="col-sm-4 control-label" for="sqlType"><?= \Yii::t('manager', 'config_db_type') ?>:</label>
+            <div class="col-sm-8"><?php
+                echo HTMLTools::fueluxSelectbox(
+                    'sqlType',
+                    [
+                        'mysql' => 'MySQL / MariaDB',
+                    ],
+                    $form->sqlType,
+                    ['id' => 'sqlType']
+                );
+                ?></div>
+        </div>
+
+        <div class="form-group sqlOption mysqlOption">
+            <label class="col-sm-4 control-label" for="sqlHost"><?= \Yii::t('manager', 'config_db_host') ?>:</label>
+            <div class="col-sm-8">
+                <input type="text" name="sqlHost" placeholder="localhost"
+                       value="<?= Html::encode($form->sqlHost) ?>" class="form-control" id="sqlHost">
+            </div>
+        </div>
+
+        <div class="form-group sqlOption mysqlOption">
+            <label class="col-sm-4 control-label" for="sqlUsername"><?= \Yii::t('manager', 'config_db_username') ?>
+                :</label>
+            <div class="col-sm-8">
+                <input type="text" name="sqlUsername"
+                       value="<?= Html::encode($form->sqlUsername) ?>" class="form-control" id="sqlUsername">
+            </div>
+        </div>
+
+        <div class="form-group sqlOption mysqlOption">
+            <label class="col-sm-4 control-label" for="sqlPassword"><?= \Yii::t('manager', 'config_db_password') ?>
+                :</label>
+            <div class="col-sm-8">
+                <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"<?php
+                if ($form->sqlPassword != '') {
+                    echo ' placeholder="' . \Yii::t('manager', 'config_db_password_unch') . '"';
+                }
+                ?>>
+                <label style="font-weight: normal; font-size: 0.9em;">
+                    <input type="checkbox" name="sqlPasswordNone" value="" id="sqlPasswordNone">
+                    <?= \Yii::t('manager', 'config_db_no_password') ?>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group sqlOption mysqlOption">
+            <label class="col-sm-4 control-label" for="sqlDB"><?= \Yii::t('manager', 'config_db_dbname') ?>:</label>
+            <div class="col-sm-8">
+                <input type="text" name="sqlDB"
+                       value="<?= Html::encode($form->sqlDB) ?>" class="form-control" id="sqlDB">
+            </div>
+        </div>
+
+        <div class="testDB">
+            <button type="button" name="testDB" class="btn btn-default testDBcaller"
+                    data-url="<?= Html::encode(UrlHelper::createUrl('manager/antragsgrueninitdbtest')) ?>">
+                <?= \Yii::t('manager', 'config_db_test') ?></button>
+            <div class="testDBRpending hidden"><?= \Yii::t('manager', 'config_db_testing') ?>...</div>
+            <div class="testDBerror hidden">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                <span class="result"></span>
+            </div>
+            <div class="testDBsuccess hidden">
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                <?= \Yii::t('manager', 'config_db_test_succ') ?>
+            </div>
+        </div>
+
+
+        <div class="createTables"><label>
+                <?= Html::checkbox('sqlCreateTables', $form->sqlCreateTables, ['id' => 'sqlCreateTables']) ?>
+                <?= \Yii::t('manager', 'config_db_create') ?>
+            </label>
+            <div class="alreadyCreatedHint"><?= \Yii::t('manager', 'config_db_create_hint') ?></div>
+        </div>
     </div>
-</div>';
 
-echo '<div class="form-group sqlOption mysqlOption">
-    <label class="col-sm-4 control-label" for="sqlPassword">' . 'Passwort' . ':</label>
-    <div class="col-sm-8">
-        <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"';
-if ($form->sqlPassword != '') {
-    echo ' placeholder="' . 'Unverändert lassen' . '"';
-}
-echo '>
-        <label style="font-weight: normal; font-size: 0.9em;">
-            <input type="checkbox" name="sqlPasswordNone" value="" id="sqlPasswordNone">
-            Kein Passwort
-        </label>
-    </div>
-</div>';
+    <h2 class="green"><?= \Yii::t('manager', 'config_admin') ?></h2>
+    <div class="content">
 
-echo '<div class="form-group sqlOption mysqlOption">
-    <label class="col-sm-4 control-label" for="sqlDB">' . 'Datenbank-Name' . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="sqlDB"
-        value="' . Html::encode($form->sqlDB) . '" class="form-control" id="sqlDB">
-    </div>
-</div>';
-
-$verifyDBUrl = \app\components\UrlHelper::createUrl('manager/antragsgrueninitdbtest');
-echo '<div class="testDB">
-<button type="button" name="testDB" class="btn btn-default testDBcaller"
-data-url="' . Html::encode($verifyDBUrl) . '">Datenbank testen</button>
-<div class="testDBRpending hidden">Prüfe...</div>
-<div class="testDBerror hidden">
-    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-    <span class="result"></span>
-</div>
-<div class="testDBsuccess hidden">
-    <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-    ' . 'Erfolg' . '
-</div>
-</div>';
-
-
-echo '<div class="createTables"><label>';
-echo Html::checkbox('sqlCreateTables', $form->sqlCreateTables, ['id' => 'sqlCreateTables']);
-echo 'Notwendige Datenbanktabellen automatisch anlegen';
-echo '</label>';
-echo '<div class="alreadyCreatedHint">' . '(nicht nötig, bereits vorhanden; aber auch nicht schädlich)' . '</div>';
-echo '</div>';
-echo '</div>';
-
-if ($form->sqlHost != '' || $form->sqlFile != '' || $form->sqlUsername != '') {
-    $layout->addOnLoadJS('$(".testDBcaller").click();');
-}
-
-
-echo '<h2 class="green">' . 'Admin-Zugang' . '</h2>';
-echo '<div class="content">';
-
-if ($form->hasAdminAccount()) {
-    echo '<strong>Bereits angelegt.</strong><br>';
-    echo 'Falls das ein Fehler ist: entferne die "adminUserIds"-Einträge in der config/config.json.';
-} else {
-    echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="adminUsername">' . 'Benutzername (E-Mail)' . ':</label>
+        <?php
+        if ($form->hasAdminAccount()) {
+            echo '<strong>' . \Yii::t('manager', 'config_admin_already') . '</strong><br>';
+            echo \Yii::t('manager', 'config_admin_alreadyh');
+        } else {
+            echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="adminUsername">' . \Yii::t('manager', 'config_admin_email') . ':</label>
     <div class="col-sm-8">
         <input type="email" required name="adminUsername"
         value="' . Html::encode($form->adminUsername) . '" class="form-control" id="adminUsername">
     </div>
 </div>';
 
-    echo '<div class="form-group">
-    <label class="col-sm-4 control-label" for="adminPassword">' . 'Passwort' . ':</label>
+            echo '<div class="form-group">
+    <label class="col-sm-4 control-label" for="adminPassword">' . \Yii::t('manager', 'config_admin_pwd') . ':</label>
     <div class="col-sm-8">
         <input type="password" required name="adminPassword" value="" class="form-control" id="adminPassword">
     </div>
 </div>';
-}
-
-echo '</div>';
-
-
-echo '<div class="content saveholder">
-<button type="submit" name="saveDb" class="btn btn-primary">Speichern</button>
-</div>';
+        }
+        ?>
+    </div>
 
 
+    <div class="content saveholder">
+        <button type="submit" name="saveDb" class="btn btn-primary"><?= \Yii::t('base', 'save') ?></button>
+    </div>
+
+<?php
 echo Html::endForm();

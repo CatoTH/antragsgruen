@@ -96,6 +96,8 @@ return [
     'sitedata_contact'        => 'Contact address',
     'sitedata_contact_hint'   => 'Name, e-mail, postal address for the imprint',
     'sitedata_subdomain_err'  => 'The subdomain "%SUBDOMAIN%" is not available.',
+    'sitedata_prettyurl'      => '"Pretty" URLs (needs URL-rewriting)',
+    'sitedata_system_email'   => 'System e-mail-address',
 
     'created_title'          => 'Site created',
     'created_msg'            => 'The site has been created.',
