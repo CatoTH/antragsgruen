@@ -499,33 +499,6 @@ class ManagerController extends Base
     /**
      * @return string
      */
-    public function actionPaymentadmin()
-    {
-        if (!User::currentUserIsSuperuser()) {
-            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
-        }
-
-        /** @var Site[] $sites */
-        $sites = Site::find()->where('status != ' . Site::STATUS_DELETED)->all();
-
-        if ($this->isPostSet('save')) {
-            $set    = \Yii::$app->request->post('billSent', []);
-            $active = \Yii::$app->request->post('siteActive', []);
-            foreach ($sites as $site) {
-                $settings           = $site->getSettings();
-                $settings->billSent = (in_array($site->id, $set) ? 1 : 0);
-                $site->setSettings($settings);
-                $site->status = (in_array($site->id, $active) ? Site::STATUS_ACTIVE : Site::STATUS_INACTIVE);
-                $site->save();
-            }
-        }
-
-        return $this->render('payment_admin', ['sites' => $sites]);
-    }
-
-    /**
-     * @return string
-     */
     public function actionUserlist()
     {
         if (!User::currentUserIsSuperuser()) {
