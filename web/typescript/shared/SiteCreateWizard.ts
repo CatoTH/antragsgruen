@@ -71,7 +71,6 @@ class SiteCreateWizard {
 
     showPanel($panel: JQuery) {
         this.data = this.getWizardState();
-        console.log(this.data);
 
         let step = $panel.data("tab");
         this.$root.find(".wizard .steps li").removeClass("active");
@@ -89,7 +88,6 @@ class SiteCreateWizard {
                 isCorrect = true;
             }
             if (!isCorrect) {
-                console.log("change");
                 window.location.hash = "#" + $panel.attr("id").substring(5);
             }
         } catch (e) {

@@ -16,12 +16,13 @@ $controller  = $this->context;
 $this->title = \yii::t('manager', 'title_install');
 $layout      = $controller->layoutParams;
 $layout->loadFuelux();
-$layout->addJS('js/manager.js');
-$layout->addOnLoadJS('$.SiteManager.siteConfig();');
 
 
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
-echo Html::beginForm('', 'post', ['class' => 'siteConfigForm form-horizontal fuelux']);
+echo Html::beginForm('', 'post', [
+    'class'                    => 'siteConfigForm form-horizontal fuelux',
+    'data-antragsgruen-widget' => 'manager/SiteConfig',
+]);
 
 
 echo '<div class="content">';

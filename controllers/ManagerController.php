@@ -386,9 +386,10 @@ class ManagerController extends Base
     }
 
     /**
+     * @param string $language
      * @return string
      */
-    public function actionAntragsgrueninit()
+    public function actionAntragsgrueninit($language = 'en')
     {
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -403,7 +404,7 @@ class ManagerController extends Base
         }
 
         if (file_exists($configFile)) {
-            $editable           = is_writable($configFile);
+            $editable = is_writable($configFile);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
@@ -411,7 +412,7 @@ class ManagerController extends Base
                 $makeEditabeCommand = 'not available';
             }
         } else {
-            $editable           = is_writable($configDir);
+            $editable = is_writable($configDir);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
                 $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
@@ -423,6 +424,10 @@ class ManagerController extends Base
         $delInstallFileCmd = 'rm ' . $installFile;
 
         $dbForm = new AntragsgruenInitDb($configFile);
+        if (isset(MessageSource::getBaseLanguages()[$language])) {
+            $dbForm->language    = $language;
+            \Yii::$app->language = $language;
+        }
 
 
         $post = \Yii::$app->request->post();

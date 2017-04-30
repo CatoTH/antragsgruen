@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\forms;
 
 use app\models\db\User;
@@ -11,12 +12,14 @@ class AntragsgruenInitDb extends Model
 {
     use AntragsgruenInitConfigwriteTrait;
 
+    /** @var string */
+    public $language = 'en';
+
     public $sqlType        = 'mysql';
     public $sqlHost;
     public $sqlUsername;
     public $sqlPassword;
     public $sqlDB;
-    public $sqlFile;
     public $sqlTablePrefix = '';
 
     public $adminUsername;
@@ -49,7 +52,7 @@ class AntragsgruenInitDb extends Model
     {
         return [
             [['sqlType', 'adminUsername', 'adminPassword'], 'required'],
-            [['sqlType', 'sqlHost', 'sqlFile', 'sqlUsername', 'sqlDB', 'sqlCreateTables'], 'safe'],
+            [['sqlType', 'sqlHost', 'sqlUsername', 'sqlDB', 'sqlCreateTables'], 'safe'],
             [['adminUsername', 'adminPassword'], 'safe'],
         ];
     }
@@ -64,7 +67,7 @@ class AntragsgruenInitDb extends Model
 
         if (isset($values['sqlPassword']) && $values['sqlPassword'] != '') {
             $this->sqlPassword = $values['sqlPassword'];
-        } elseif (isset($post['sqlPasswordNone'])) {
+        } elseif (isset($values['sqlPasswordNone'])) {
             $this->sqlPassword = '';
         }
         $this->sqlCreateTables = isset($values['sqlCreateTables']);
@@ -271,7 +274,7 @@ class AntragsgruenInitDb extends Model
             if (!in_array($user->id, $this->adminIds)) {
                 $this->adminIds[] = $user->id;
             }
-            $this->adminUser  = $user;
+            $this->adminUser = $user;
         } else {
             $this->createAdminAccount();
         }

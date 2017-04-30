@@ -2,6 +2,7 @@
 
 ### Version 3.6.7 [not released yet]
 
+- The installation wizard is now internationalized, using english as default language
 - Bugfix: the site configuration was not accessible
 
 ### Version 3.6.6 (2017-04-24)
