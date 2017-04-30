@@ -237,6 +237,13 @@ class SiteCreateWizard {
             }
         });
 
+        $form.find("#panelSiteData input").on("keypress", function (ev) {
+            let original: any = ev.originalEvent;
+            if (original.charCode == 13) {
+                ev.preventDefault();
+            }
+        });
+
         let obj = this;
         $form.find(".navigation .btn-next").click(function (ev) {
             if ($(this).attr("type") == "submit") {
@@ -250,9 +257,6 @@ class SiteCreateWizard {
             if (window.location.hash != "") {
                 window.history.back();
             }
-        });
-        $form.submit(function () {
-
         });
 
         $(window).on("hashchange", (ev) => {

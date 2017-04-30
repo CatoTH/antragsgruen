@@ -200,6 +200,9 @@ class ManagerController extends Base
         if ($this->getParams()->mode == 'sandbox') {
             $model->setSandboxParams();
         }
+        if (!$this->getParams()->multisiteMode) {
+            $model->openNow = true;
+        }
 
         return $this->render(
             'createsite',
@@ -369,7 +372,7 @@ class ManagerController extends Base
                 $siteForm->create($admin);
 
                 unlink($installFile);
-                echo $this->render('antragsgruen_init_done', [
+                return $this->render('antragsgruen_init_done', [
                     'installFileDeletable' => is_writable($configDir),
                     'delInstallFileCmd'    => $delInstallFileCmd,
                 ]);
