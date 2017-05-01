@@ -30,6 +30,21 @@ class MotionShow {
 
         $("form.delLink").submit(this.delSubmit.bind(this));
         $(".share_buttons a").click(this.shareLinkClicked.bind(this));
+
+        this.markMovedParagraphs();
+    }
+
+    private markMovedParagraphs() {
+        // Remove double markup
+        $(".motionTextHolder .moved .moved").removeClass('moved');
+
+        $(".motionTextHolder .moved").each(function () {
+            let $node = $(this);
+            if ($node[0].nodeName === 'LI') {
+                $node = $node.parent();
+            }
+            $('<div class="movedParagraphHint">' + __t('std', 'moved_paragraph') + ':</div>').insertBefore($node);
+        });
     }
 
     private delSubmit(ev) {

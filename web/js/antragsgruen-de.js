@@ -11,7 +11,8 @@ ANTRAGSGRUEN_STRINGS = {
         "pw_x_chars": "Das Passwort muss mindestens %NUM% Zeichen lang sein.",
         "pw_min_x_chars": "Min. %NUM% Zeichen",
         "pw_no_match": "Die beiden Passwörter stimmen nicht überein.",
-        "leave_changed_page": "Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?"
+        "leave_changed_page": "Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?",
+        "moved_paragraph": "Verschobener Absatz"
     },
     "merge": {
         "initiated_by": "Gestellt von",
