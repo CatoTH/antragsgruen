@@ -12,7 +12,8 @@ ANTRAGSGRUEN_STRINGS = {
         "pw_min_x_chars": "Min. %NUM% Zeichen",
         "pw_no_match": "Die beiden Passwörter stimmen nicht überein.",
         "leave_changed_page": "Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?",
-        "moved_paragraph": "Verschobener Absatz"
+        "moved_paragraph_from": "Verschoben von Absatz ##PARA## (Zeile ##LINE##)",
+        "moved_paragraph_to": "Verschoben zu Absatz ##PARA## (Zeile ##LINE##)"
     },
     "merge": {
         "initiated_by": "Gestellt von",

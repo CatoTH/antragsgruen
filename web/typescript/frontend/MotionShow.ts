@@ -39,11 +39,26 @@ class MotionShow {
         $(".motionTextHolder .moved .moved").removeClass('moved');
 
         $(".motionTextHolder .moved").each(function () {
-            let $node = $(this);
+            let $node = $(this),
+                paragraphNew = $node.data('moving-partner-paragraph'),
+                sectionId = $node.parents('.paragraph').first().attr('id').split('_')[1],
+                paragraphNewFirstline = $('#section_' + sectionId + '_' + paragraphNew).find('.lineNumber').first().data('line-number'),
+                msg: string;
+
+            if ($node.hasClass('inserted')) {
+                msg = __t('std', 'moved_paragraph_from');
+            } else {
+                msg = __t('std', 'moved_paragraph_to');
+            }
+            msg = msg.replace(/##LINE##/, paragraphNewFirstline).replace(/##PARA##/, (paragraphNew + 1));
+                console.log('Moved to paragraph:', sectionId, paragraphNew, paragraphNewFirstline);
+
             if ($node[0].nodeName === 'LI') {
                 $node = $node.parent();
             }
-            $('<div class="movedParagraphHint">' + __t('std', 'moved_paragraph') + ':</div>').insertBefore($node);
+            let $msg = $('<div class="movedParagraphHint"></div>');
+            $msg.text(msg);
+            $msg.insertBefore($node);
         });
     }
 
