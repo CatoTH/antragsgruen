@@ -105,6 +105,7 @@ class MessageSource extends \yii\i18n\MessageSource
         return [
             'de' => 'Deutsch',
             'en' => 'English',
+            'fr' => 'Français',
         ];
     }
 
