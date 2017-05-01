@@ -24,11 +24,11 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    const FIRST_FREE_MOTION_ID              = 117;
-    const FIRST_FREE_MOTION_TITLE_PREFIX    = 'A7';
+    const FIRST_FREE_MOTION_ID              = 118;
+    const FIRST_FREE_MOTION_TITLE_PREFIX    = 'A8';
     const FIRST_FREE_AMENDMENT_TITLE_PREFIX = 'Ä8';
     const FIRST_FREE_MOTION_SECTION         = 33;
-    const FIRST_FREE_AMENDMENT_ID           = 278;
+    const FIRST_FREE_AMENDMENT_ID           = 279;
     const FIRST_FREE_AGENDA_ITEM_ID         = 15;
     const FIRST_FREE_COMMENT_ID             = 1;
     const FIRST_FREE_MOTION_TYPE            = 11;
@@ -92,7 +92,7 @@ class AcceptanceTester extends \Codeception\Actor
      * @param bool $check
      * @param string $motionSlug
      * @param int $amendmentId
-     * @return MotionPage
+     * @return AmendmentPage
      */
     public function gotoAmendment($check = true, $motionSlug = '2', $amendmentId = 1)
     {
