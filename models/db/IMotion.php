@@ -251,6 +251,11 @@ abstract class IMotion extends ActiveRecord
     abstract public function getLikeDislikeSettings();
 
     /**
+     * @return boolean
+     */
+    abstract public function isDeadlineOver();
+
+    /**
      * @return bool
      */
     public function isSupportingPossibleAtThisStatus()
@@ -262,6 +267,9 @@ abstract class IMotion extends ActiveRecord
             if ($this->status != IMotion::STATUS_COLLECTING_SUPPORTERS) {
                 return false;
             }
+        }
+        if ($this->isDeadlineOver()) {
+            return false;
         }
         return true;
     }

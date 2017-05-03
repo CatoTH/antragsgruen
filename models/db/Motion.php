@@ -523,6 +523,9 @@ class Motion extends IMotion implements IRSSItem
         if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
             return false;
         }
+        if ($this->isDeadlineOver()) {
+            return false;
+        }
         $supporters    = count($this->getSupporters());
         $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
         return ($supporters >= $minSupporters);
@@ -1008,5 +1011,13 @@ class Motion extends IMotion implements IRSSItem
     public function getLikeDislikeSettings()
     {
         return $this->motionType->motionLikesDislikes;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDeadlineOver()
+    {
+        return $this->motionType->motionDeadlineIsOver();
     }
 }
