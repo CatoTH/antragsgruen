@@ -116,15 +116,17 @@ class MovingParagraphDetector
         foreach ($paras as $paraNo => $para) {
             foreach ($para as $wordNo => $word) {
                 if (strpos($word['diff'], '###INS_START###') !== false) {
-                    $txt = explode('###INS_START###', $word['diff']);
-                    $txt = explode('###INS_END###', $txt[1]);
-                    foreach (static::getBlocks($txt[0]) as $block) {
-                        $inserts[] = [
-                            'para'      => $paraNo,
-                            'word_from' => $wordNo,
-                            'word_to'   => $wordNo,
-                            'html'      => $block,
-                        ];
+                    $insBlocks = explode('###INS_START###', $word['diff']);
+                    for ($i = 1; $i < count($insBlocks); $i++) {
+                        $txt = explode('###INS_END###', $insBlocks[$i]);
+                        foreach (static::getBlocks($txt[0]) as $block) {
+                            $inserts[] = [
+                                'para'      => $paraNo,
+                                'word_from' => $wordNo,
+                                'word_to'   => $wordNo,
+                                'html'      => $block,
+                            ];
+                        }
                     }
                 }
             }
