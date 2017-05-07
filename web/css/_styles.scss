@@ -431,6 +431,25 @@ del.space, ins.space, del.formatting, ins.formatting {
     margin-bottom: 15px;
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
+    position: relative;
+    &:before {
+      content: attr(data-collission-start-msg);
+      position: absolute;
+      top: -13px;
+      text-align: center;
+      font-size: 0.7em;
+      color: gray;
+      width: 100%;
+    }
+    &:after {
+      content: attr(data-collission-end-msg);
+      position: absolute;
+      bottom: -13px;
+      text-align: center;
+      font-size: 0.7em;
+      color: gray;
+      width: 100%;
+    }
   }
   .moved {
     margin-top: 15px;

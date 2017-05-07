@@ -28,7 +28,9 @@ ANTRAGSGRUEN_STRINGS = {
         "insert_reject": "Reject",
         "delete_accept": "Delete",
         "delete_reject": "Keep it",
-        "colliding_title": "Colliding amendm."
+        "colliding_title": "Colliding amendm.",
+        "colliding_start": "Collissions start here",
+        "colliding_end": "Collissions end here"
     },
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",

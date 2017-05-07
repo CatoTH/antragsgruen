@@ -291,13 +291,23 @@ class MotionMergeConflictTooltip {
                 let $para = $this.parents(".collidingParagraph");
                 $para.css({"overflow": "hidden"}).height($para.height());
                 $para.animate({"height": "0"}, 250, function () {
+                    let $parent = $para.parents(".paragraphHolder");
                     $para.remove();
+                    if ($parent.find(".collidingParagraph").length == 0) {
+                        $parent.removeClass("hasCollissions");
+                    }
                 });
             });
         });
         $el.find(".delTitle").click(() => {
             this.performActionWithUI.call(this, () => {
+                let $para = $this.parents(".collidingParagraph");
                 $this.remove();
+                $para.removeClass("collidingParagraph");
+                let $parent = $para.parents(".paragraphHolder");
+                if ($parent.find(".collidingParagraph").length == 0) {
+                    $parent.removeClass("hasCollissions");
+                }
             });
         });
         return $el;
@@ -333,6 +343,11 @@ class MotionMergeAmendmentsTextarea {
         // Remove double markup
         $text.find(".moved .moved").removeClass('moved');
         $text.find(".moved").each(this.markupMovedParagraph.bind(this));
+
+        // Add hints about starting / ending collissions
+        $text.find(".hasCollissions")
+            .attr("data-collission-start-msg", __t('merge', 'colliding_start'))
+            .attr("data-collission-end-msg", __t('merge', 'colliding_end'));
 
         let newText = $text.html();
         this.texteditor.setData(newText);
@@ -414,7 +429,8 @@ class MotionMergeAmendmentsTextarea {
     }
 
     public focusTextarea() {
-        this.$holder.find(".texteditor").focus();
+        //this.$holder.find(".texteditor").focus();
+        // This lead to strange cursor behavior, e.g. when removing a colliding paragraph
     }
 
     public getContent(): string {

@@ -25,7 +25,9 @@ ANTRAGSGRUEN_STRINGS = {
         "title": "Überschrift",
         "change_accept": "Übernehmen",
         "change_reject": "Verwerfen",
-        "colliding_title": "Kollidierender ÄA"
+        "colliding_title": "Kollidierender ÄA",
+        "colliding_start": "Ab hier Kollissionen",
+        "colliding_end": "Bis hier Kollissionen"
     },
     "admin": {
         "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",
