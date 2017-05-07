@@ -12,6 +12,10 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
+### Version 3.6.8 [not released yet]
+
+- The deadline of motion / amendments now also affects supporting the motion / amendment in the support collecting phase
+
 ### Version 3.6.7 (2017-04-30)
 
 - The installation wizard is now internationalized, using english as default language

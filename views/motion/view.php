@@ -40,7 +40,7 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimalisticUI;
 $minHeight               = $sidebarRows * 40 - 100;
-$supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS);
+$supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
 
@@ -171,7 +171,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
-    if ($motion->isCurrentlyAmendable(true, true)) {
+    if ($motion->isCurrentlyAmendable(false, true)) {
         echo '<div class="pull-right">';
         $title = '<span class="icon glyphicon glyphicon-flash"></span>';
         $title .= \Yii::t('motion', 'amendment_create');
