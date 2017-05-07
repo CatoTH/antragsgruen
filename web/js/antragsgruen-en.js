@@ -13,8 +13,10 @@ ANTRAGSGRUEN_STRINGS = {
         "pw_min_x_chars": "Min. %NUM% characters",
         "pw_no_match": "The passwords do not match.",
         "leave_changed_page": "There are unsaved changes. Do you really want to leave this page and discard those changes?",
-        "moved_paragraph_from": "Moved from paragraph ##PARA## (line ##LINE##)",
-        "moved_paragraph_to": "Moved to paragraph ##PARA##(line ##LINE##)"
+        "moved_paragraph_from": "Moved from paragraph ##PARA##",
+        "moved_paragraph_to": "Moved to paragraph ##PARA##",
+        "moved_paragraph_from_line": "Moved from paragraph ##PARA## (line ##LINE##)",
+        "moved_paragraph_to_line": "Moved to paragraph ##PARA##(line ##LINE##)"
     },
     "merge": {
         "initiated_by": "Proposed by",

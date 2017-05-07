@@ -432,6 +432,23 @@ del.space, ins.space, del.formatting, ins.formatting {
     border-top: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
   }
+  .moved {
+    margin-top: 15px;
+    position: relative;
+    &:before {
+      display: block;
+      content: attr(data-moving-msg);
+      // Absolute positioning is necessary, otherwise we can't cancel the text-decoration propert
+      position: absolute;
+      top: -15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.8em;
+      color: gray;
+    }
+  }
 }
 
 .motionMergeForm {

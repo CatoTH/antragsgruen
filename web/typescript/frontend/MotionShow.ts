@@ -46,12 +46,11 @@ class MotionShow {
                 msg: string;
 
             if ($node.hasClass('inserted')) {
-                msg = __t('std', 'moved_paragraph_from');
+                msg = __t('std', 'moved_paragraph_from_line');
             } else {
-                msg = __t('std', 'moved_paragraph_to');
+                msg = __t('std', 'moved_paragraph_to_line');
             }
             msg = msg.replace(/##LINE##/, paragraphNewFirstline).replace(/##PARA##/, (paragraphNew + 1));
-                console.log('Moved to paragraph:', sectionId, paragraphNew, paragraphNewFirstline);
 
             if ($node[0].nodeName === 'LI') {
                 $node = $node.parent();

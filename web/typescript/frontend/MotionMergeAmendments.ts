@@ -328,8 +328,33 @@ class MotionMergeAmendmentsTextarea {
             $this.removeClass("appendHint").removeData("append-hint");
         });
 
+        // Remove double markup
+        $text.find(".moved .moved").removeClass('moved');
+        $text.find(".moved").each(this.markupMovedParagraph.bind(this));
+
         let newText = $text.html();
+        console.log(newText);
         this.texteditor.setData(newText);
+    }
+
+    private markupMovedParagraph(i, el) {
+        let $node = $(el),
+            paragraphNew = $node.data('moving-partner-paragraph'),
+            msg: string;
+
+        if ($node.hasClass('inserted')) {
+            msg = __t('std', 'moved_paragraph_from');
+        } else {
+            msg = __t('std', 'moved_paragraph_to');
+        }
+        msg = msg.replace(/##PARA##/, (paragraphNew + 1));
+
+        if ($node[0].nodeName === 'LI') {
+            $node = $node.parent();
+        }
+
+        $node.attr("data-moving-msg", msg);
+        console.log($node, msg);
     }
 
     private initializeTooltips() {
