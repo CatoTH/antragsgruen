@@ -41,7 +41,8 @@ class MotionMergeChangeActions {
 
     public static insertAccept(node: Element) {
         let $this: JQuery = $(node);
-        $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+        $this.removeClass("ice-cts ice-ins appendHint moved");
+        $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
         if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
             $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
         }
@@ -55,7 +56,8 @@ class MotionMergeChangeActions {
 
     public static deleteReject(node: Element) {
         let $this: JQuery = $(node);
-        $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+        $this.removeClass("ice-cts ice-del appendHint");
+        $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
         if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
             $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
         }
@@ -333,7 +335,6 @@ class MotionMergeAmendmentsTextarea {
         $text.find(".moved").each(this.markupMovedParagraph.bind(this));
 
         let newText = $text.html();
-        console.log(newText);
         this.texteditor.setData(newText);
     }
 
@@ -354,7 +355,6 @@ class MotionMergeAmendmentsTextarea {
         }
 
         $node.attr("data-moving-msg", msg);
-        console.log($node, msg);
     }
 
     private initializeTooltips() {
