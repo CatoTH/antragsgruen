@@ -3,6 +3,7 @@
 ### Version 3.6.8 [not released yet]
 
 - The deadline of motion / amendments now also affects supporting the motion / amendment in the support collecting phase
+- Bugfix: Nested agenda items were not always sorted correctly 
 
 ### Version 3.6.7 (2017-04-30)
 
