@@ -4,6 +4,7 @@
 
 - The deadline of motion / amendments now also affects supporting the motion / amendment in the support collecting phase
 - Bugfix: Nested agenda items were not always sorted correctly 
+- Bugfix: The amendment PDF-collection did not export all amendments if multiple motion types were present
 
 ### Version 3.6.7 (2017-04-30)
 

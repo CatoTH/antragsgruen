@@ -86,8 +86,6 @@ class AmendmentController extends Base
         foreach ($motions as $motion) {
             if ($texTemplate === null) {
                 $texTemplate = $motion->motionType->texTemplate;
-            } elseif ($texTemplate != $motion->motionType->texTemplate) {
-                continue;
             }
             $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
         }

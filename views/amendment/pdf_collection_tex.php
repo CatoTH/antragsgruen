@@ -23,7 +23,7 @@ try {
     $exporter = new Exporter($layout, $params);
     $contents = [];
     foreach ($amendments as $amendment) {
-        $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment, $texTemplate);
     }
     echo $exporter->createPDF($contents);
 } catch (\Exception $e) {
