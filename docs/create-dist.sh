@@ -37,7 +37,7 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.2.2"
 ./composer.phar install --no-dev
 
-rm -R local dist docker-vagrant .DS_Store .idea
+rm -R local dist docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
 rm config/DEBUG config/config.template.json
 rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml
 rm web/index-test.php
@@ -54,6 +54,9 @@ rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
+find vendor -type l -exec rm {} \;
+find vendor/zendframework -name "doc" -exec rm -R {} \;
+rm -R vendor/cebe/markdown/tests
 rm -R tests/
 find . -name ".git" -exec rm -rf {} \;
 rm config/config.json
