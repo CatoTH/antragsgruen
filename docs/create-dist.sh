@@ -3,10 +3,10 @@
 # Releasing:
 # - Increase version number in config/defines.php
 # - Write Changelog
-# - Execute this script (docs/create-dist.sh)
-# - Upload the generated .tar.bz2-file
 # - Update README.md
-# - Commit this changes to repository and tag the new version
+# - Commit this changes to repository
+# - Execute this script (docs/create-dist.sh)
+# - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
 
 if [[ ! -d ./controllers ]]; then
     echo "Please run this script from the project's root directory"
@@ -65,3 +65,4 @@ touch config/INSTALLING
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
+zip -r ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.zip antragsgruen-$ANTRAGSGRUEN_VERSION

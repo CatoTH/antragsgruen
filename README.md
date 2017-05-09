@@ -36,6 +36,14 @@ Installation:
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
 
+Updating a existing installation using the pre-bundled package
+--------------------------------------------------------------
+
+- Download the latest package of Antragsgrün
+- Extract the files to your web folder, overwriting all existing files. The configuration (in config/config.json) will not be affected by this.
+- Remove the ``config/INSTALLING`` file
+- Execute ``./yii migrate`` on the command line to apply database changes
+
 
 Installation
 ------------
