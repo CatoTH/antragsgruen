@@ -253,7 +253,7 @@ if ($hasPDF) {
                 continue;
             }
             $pdfLink = UrlHelper::createUrl(['motion/pdfcollection', 'motionTypeId' => $motionType->id]);
-            $name = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
+            $name = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all_short');
             $name .= ': ' . Html::encode($motionType->titlePlural);
             $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 

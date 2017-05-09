@@ -84,6 +84,7 @@ class AmendmentController extends Base
         $amendments  = [];
         $texTemplate = null;
         foreach ($motions as $motion) {
+            // If we have multiple motion types, we just take the template from the first one.
             if ($texTemplate === null) {
                 $texTemplate = $motion->motionType->texTemplate;
             }
