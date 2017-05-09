@@ -111,7 +111,7 @@ class UrlHelper
     }
 
     /**
-     * @param string $route
+     * @param string|array $route
      * @return string
      */
     public static function createLoginUrl($route)

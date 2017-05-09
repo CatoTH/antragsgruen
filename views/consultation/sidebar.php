@@ -245,13 +245,29 @@ if ($consultation->getSettings()->showFeeds) {
 }
 
 if ($hasPDF) {
-    $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
-    $pdfLink = UrlHelper::createUrl('motion/pdfcollection');
-    $html    = '<div class="sidebar-box"><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
-    $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
+    $opts = ['class' => 'motionPdfCompilation'];
+    $html = '<div class="sidebar-box"><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
+    if (count($consultation->motionTypes) > 1) {
+        foreach ($consultation->motionTypes as $motionType) {
+            if (count($motionType->getVisibleMotions(false)) == 0) {
+                continue;
+            }
+            $pdfLink = UrlHelper::createUrl(['motion/pdfcollection', 'motionTypeId' => $motionType->id]);
+            $name = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
+            $name .= ': ' . Html::encode($motionType->titlePlural);
+            $html .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
-    $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, ['class' => 'motionPdfCompilation']);
-    $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
+            $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+            $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
+        }
+    } else {
+        $pdfLink = UrlHelper::createUrl('motion/pdfcollection');
+        $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
+        $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
+
+        $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+        $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
+    }
 
     if ($hasAmendments) {
         $amendmentPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
