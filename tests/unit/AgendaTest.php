@@ -10,6 +10,59 @@ class AgendaTest extends DBTestBase
 {
     /**
      */
+    public function testSortingChildItems()
+    {
+        /** @var ConsultationAgendaItem $item6 */
+        $item6       = ConsultationAgendaItem::findOne(6);
+        $item6->code = 'V';
+        $item6->save();
+
+        $newItem                 = new ConsultationAgendaItem();
+        $newItem->consultationId = $item6->consultationId;
+        $newItem->parentItemId   = $item6->id;
+        $newItem->position       = 1;
+        $newItem->title          = 'New Item 1';
+        $newItem->code           = '#';
+        $newItem->save();
+        $item6->refresh();
+
+        $newItem2                 = new ConsultationAgendaItem();
+        $newItem2->consultationId = $item6->consultationId;
+        $newItem2->parentItemId   = $item6->id;
+        $newItem2->position       = 3;
+        $newItem2->title          = 'New Item 2';
+        $newItem2->code           = '#';
+        $newItem2->save();
+
+        $newItem3                 = new ConsultationAgendaItem();
+        $newItem3->consultationId = $item6->consultationId;
+        $newItem3->parentItemId   = $item6->id;
+        $newItem3->position       = 2;
+        $newItem3->title          = 'New Item 3';
+        $newItem3->code           = '#';
+        $newItem3->save();
+
+        /** @var Consultation $consultation */
+        $consultation = Consultation::findOne(3);
+        $pos1 = $pos2 = $pos3 = null;
+        foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $i =>$item) {
+            if ($item->title == 'New Item 1') {
+                $pos1 = $i;
+            }
+            if ($item->title == 'New Item 2') {
+                $pos2 = $i;
+            }
+            if ($item->title == 'New Item 3') {
+                $pos3 = $i;
+            }
+        }
+
+        $this->assertLessThan($pos3, $pos1);
+        $this->assertLessThan($pos2, $pos3);
+    }
+
+    /**
+     */
     public function testNonNumericAgenda()
     {
         /** @var ConsultationAgendaItem $item6 */

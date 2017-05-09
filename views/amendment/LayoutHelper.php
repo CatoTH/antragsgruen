@@ -8,6 +8,7 @@ use app\components\latex\Exporter;
 use app\components\latex\Layout;
 use app\models\db\Amendment;
 use app\models\db\ISupporter;
+use app\models\db\TexTemplate;
 use app\models\sectionTypes\TextSimple;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
@@ -18,13 +19,13 @@ class LayoutHelper
 {
     /**
      * @param Amendment $amendment
+     * @param TexTemplate $texTemplate
      * @return Content
-     * @throws \app\models\exceptions\Internal
      */
-    public static function renderTeX(Amendment $amendment)
+    public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate)
     {
         $content           = new Content();
-        $content->template = $amendment->getMyMotion()->motionType->texTemplate->texContent;
+        $content->template = $texTemplate->texContent;
         $content->title    = $amendment->getMyMotion()->title;
         if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
             $content->titlePrefix = $amendment->titlePrefix;
@@ -150,7 +151,7 @@ class LayoutHelper
         /** @var AntragsgruenApp $params */
         $params   = \yii::$app->params;
         $exporter = new Exporter($layout, $params);
-        $content  = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        $content  = \app\views\amendment\LayoutHelper::renderTeX($amendment, $texTemplate);
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
         return $pdf;

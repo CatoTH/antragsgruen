@@ -12,9 +12,13 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.8 [not released yet]
+### Version 3.6.8 (2017-05-09)
 
 - The deadline of motion / amendments now also affects supporting the motion / amendment in the support collecting phase
+- Bugfix: Nested agenda items were not always sorted correctly 
+- Bugfix: The amendment PDF-collection did not export all amendments if multiple motion types were present
+- Bugfix: In the consultation sidebar, not all motion PDF-collections had an own link if multiple motion types were present
+- Improvements in the packaging, deleting some unnecessary and symbolic links leading to warnings when extracting the files on Windows or uploading them using FTP
 
 ### Version 3.6.7 (2017-04-30)
 

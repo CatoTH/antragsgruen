@@ -151,7 +151,7 @@ class ConsultationAgendaItem extends ActiveRecord
             /** @var ConsultationAgendaItem $item */
             $items         = [];
             $currShownCode = '0.';
-            $children      = static::getItemsByParent($consultation, $item->id);
+            $children      = static::sortItems(static::getItemsByParent($consultation, $item->id));
             foreach ($children as $child) {
                 $currShownCode = $calcNewShownCode($currShownCode, $child->code);
                 $prevCode = $fullCodePrefix . ($fullCodePrefix[strlen($fullCodePrefix) - 1] == '.' ? '' : '.');

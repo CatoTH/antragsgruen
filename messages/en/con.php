@@ -22,6 +22,7 @@ return [
     'feed'                 => 'Feed',
     'feeds'                => 'Feeds',
     'pdf_all'              => 'All motions',
+    'pdf_all_short'        => 'PDFs',
     'pdf_motions'          => 'PDFs: motions',
     'pdf_amendments'       => 'All amendments',
     'pdf_amendments_small' => 'PDFs: amendments',
