@@ -206,9 +206,11 @@ class Exporter
                     return $content . "\n";
                 case 'strong':
                 case 'b':
+                    $content = preg_replace("/\\n{2,}/siu", "\n", $content);
                     return '\textbf{' . $content . '}';
                 case 'em':
                 case 'i':
+                    $content = preg_replace("/\\n{2,}/siu", "\n", $content);
                     return '\emph{' . $content . '}';
                 case 'u':
                     // return '\uline{' . $content . '}';
