@@ -12,6 +12,10 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
+### Version 3.6.9 [Not released yet]
+
+- Bugfix: In some very rare cases, a bold formatting in the PDF-Export was not finished correctly, leading to the rest of the document appearing as bold.
+
 ### Version 3.6.8 (2017-05-09)
 
 - The deadline of motion / amendments now also affects supporting the motion / amendment in the support collecting phase
