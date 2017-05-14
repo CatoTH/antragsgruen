@@ -25,13 +25,7 @@ $layout->addBreadcrumb('Erweitert');
 echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
 
-<div class="alert alert-info" role="alert">
-    <strong>Hinweis:</strong>
-    Diese Seite wird es ermöglichen, beliebige Texte auf der Antragsgrün-Seite anpassen zu können,
-    ist allerdings erst an sehr wenig Stellen umgesetzt. Falls Interesse an dieser Funktion
-    besteht, <a href="https://github.com/CatoTH">melde dich</a> einfach.
-</div>
-';
+<div class="alert alert-info" role="alert">' . \Yii::t('admin', 'translating_hint') . '</div>';
 
 
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);
@@ -52,7 +46,7 @@ echo Html::dropDownList(
 echo '</div></fieldset>';
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="save" class="btn btn-primary">'  .\Yii::t('base', 'save') . '</button>
 </div>';
 
 echo Html::endForm();
@@ -104,7 +98,7 @@ foreach ($strings as $stringKey => $stringOrig) {
 
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">Speichern</button>
+<button type="submit" name="save" class="btn btn-primary">'  .\Yii::t('base', 'save') . '</button>
 </div>';
 
 

@@ -270,6 +270,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_user_saved'       => 'Die Berechtigungen wurden gespeichert.',
     'siteacc_user_restr_done'  => 'Nur noch eingetragene Benutzer*innen können Einträge erstellen.',
     'Translation / Wording'    => 'Sprache anpassen',
+    'translating_hint'         => 'Auf dieser Seite können die Texte der Benutzeroberfläche von Antragsgrün angepasst werden. Falls du eine komplett neue Sprache anlegen und allen anderen Nutzer*innen von Antragsgrün bereit stellen willst, <a href="https://github.com/CatoTH">melde dich</a> einfach bei uns.',
     'Base language variant'    => 'Basis-Sprachversion',
     'tabulardatatype_string'   => 'Text',
     'tabulardatatype_integer'  => 'Zahl',
