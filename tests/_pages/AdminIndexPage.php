@@ -25,18 +25,6 @@ class AdminIndexPage extends BasePage
         return new AdminMotionTypePage($this->actor);
     }
 
-
-    /**
-     * @TODO Delete MotionIndex page?
-     * @return AdminMotionIndexPage
-     */
-    public function gotoMotionIndex()
-    {
-        $this->actor->click('.motionIndex');
-        $this->actor->see(mb_strtoupper('Anträge'), 'h1');
-        return new AdminMotionIndexPage($this->actor);
-    }
-
     /**
      * @return AdminConsultationPage
      */
@@ -47,10 +35,12 @@ class AdminIndexPage extends BasePage
     }
 
     /**
+     * @return AdminSiteAccessPage
      */
     public function gotoSiteAccessPage()
     {
         $this->actor->click('.siteAccessLink');
+        return new AdminSiteAccessPage($this->actor);
     }
 
     /**

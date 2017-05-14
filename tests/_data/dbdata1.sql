@@ -1463,7 +1463,18 @@ VALUES
   (6, 'Fixed Admin', 'Fixed', 'Admin', 'MotionTools', 1, 'fixedadmin@example.org', 1, 'email:fixedadmin@example.org',
       '2017-02-03 20:08:14', 0, '$2y$10$tDnD91WMHaiWOgVvdZaxOeoxYGXYIvotpKAzbIY26jUNHf6awCKfK',
    0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
+   NULL, NULL, NULL, NULL),
+  (7, 'Single-Consultation Admin', 'Single-Consultation', 'Admin', 'MotionTools', 1, 'consultationadmin@example.org', 1, 'email:consultationadmin@example.org',
+      '2017-05-14 20:08:14', 0, '$2y$10$k3eNIEkmEOklzADVZLiqAezlPNh.IAytfPOJ2CI2c6g4PF9IVnbF6',
+   0x33663062343836336632393839643866383961396162386532626133336232363465373065663361000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000,
    NULL, NULL, NULL, NULL);
+
+--
+-- Dumping data for table `consultationUserPrivilege`
+--
+
+INSERT INTO `###TABLE_PREFIX###consultationUserPrivilege` (`userId`, `consultationId`, `privilegeView`, `privilegeCreate`, `adminSuper`, `adminContentEdit`, `adminScreen`) VALUES
+(7, 1, 0, 0, 1, 1, 1);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;

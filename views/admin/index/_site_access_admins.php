@@ -19,8 +19,8 @@ use yii\helpers\Html;
                 <thead>
                 <tr>
                     <th><?= \Yii::t('admin', 'siteacc_admins_user') ?></th>
-                    <th class="type"><?= \Yii::t('admin', 'siteacc_admins_one_con') ?></th>
-                    <th class="type"><?= \Yii::t('admin', 'siteacc_admins_all_cons') ?></th>
+                    <th class="type type-con"><?= \Yii::t('admin', 'siteacc_admins_one_con') ?></th>
+                    <th class="type type-site"><?= \Yii::t('admin', 'siteacc_admins_all_cons') ?></th>
                     <th class="del"><?= \Yii::t('admin', 'siteacc_admins_del') ?></th>
                 </tr>
                 </thead>
@@ -44,13 +44,13 @@ use yii\helpers\Html;
                             }
                             ?>
                         </td>
-                        <td class="type">
+                        <td class="type type-con">
                             <input type="radio" name="adminType[<?= $user->id ?>]" value="consultation"
                                 <?= ($type == 'consultation' ? 'checked' : '') ?>
                                 <?= ($isMe ? 'disabled' : '') ?>
                                    title="<?= Html::encode(\Yii::t('admin', 'siteacc_admins_one_con')) ?>">
                         </td>
-                        <td class="type">
+                        <td class="type type-site">
                             <input type="radio" name="adminType[<?= $user->id ?>]" value="site"
                                 <?= ($type == 'site' ? 'checked' : '') ?>
                                 <?= ($isMe ? 'disabled' : '') ?>
@@ -59,7 +59,8 @@ use yii\helpers\Html;
                         <td class="del">
                             <?php
                             if (!$isMe) { ?>
-                                <button class="link removeAdmin" type="button" data-id="<?= $user->id ?>">
+                                <button class="link removeAdmin removeAdmin<?= $user->id ?>"
+                                        type="button" data-id="<?= $user->id ?>">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                                 <?php
@@ -81,11 +82,11 @@ use yii\helpers\Html;
             <br>
 
             <?php
-            echo Html::beginForm('', 'post', ['id' => 'adminForm', 'class' => 'adminForm form-horizontal']);
+            echo Html::beginForm('', 'post', ['id' => 'adminAddForm', 'class' => 'adminForm form-horizontal']);
             ?>
             <h4><?= \Yii::t('admin', 'siteacc_admins_add') ?></h4>
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 admin-type">
                     <?= HTMLTools::fueluxSelectbox('addType', [
                         'wurzelwerk' => \Yii::t('admin', 'siteacc_add_ww') . ':',
                         'email'      => \Yii::t('admin', 'siteacc_add_email') . ':',

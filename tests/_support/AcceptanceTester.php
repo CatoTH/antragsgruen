@@ -190,6 +190,14 @@ class AcceptanceTester extends \Codeception\Actor
     }
 
     /**
+     * @return $this
+     */
+    public function loginAsConsultationAdmin()
+    {
+        return $this->loginWithData('consultationadmin@example.org', 'consultationadmin');
+    }
+
+    /**
      *
      */
     public function loginAsGlobalAdmin()

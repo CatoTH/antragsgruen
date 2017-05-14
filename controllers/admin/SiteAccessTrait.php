@@ -32,6 +32,8 @@ trait SiteAccessTrait
         try {
             $privilege = $this->consultation->getUserPrivilege($user);
 
+            $privilege->privilegeView    = 1;
+            $privilege->privilegeCreate  = 1;
             $privilege->adminSuper       = 1;
             $privilege->adminScreen      = 1;
             $privilege->adminContentEdit = 1;
@@ -39,6 +41,9 @@ trait SiteAccessTrait
 
             $str = \Yii::t('admin', 'siteacc_admin_add_done');
             \Yii::$app->session->setFlash('success', str_replace('%username%', $username, $str));
+
+            $this->consultation->refresh();
+            $this->site->refresh();
         } catch (IntegrityException $e) {
             if (mb_strpos($e->getMessage(), 1062) !== false) {
                 $str = str_replace('%username%', $username, \Yii::t('admin', 'siteacc_admin_add_had'));
