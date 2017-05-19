@@ -254,21 +254,22 @@
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
     padding-left: 20px;
+    position: relative;
+
+    .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
+      color: $colorDelLink;
+      position: absolute;
+      top: 5px;
+      right: 10px;
+    }
 
     > div {
       margin-bottom: 5px;
       padding: 5px 10px 10px;
 
       > h3 {
-        position: relative;
         overflow: auto;
         padding: 2px;
-        .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
-          color: $colorDelLink;
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
         html.no-touchevents & .delAgendaItem {
           visibility: hidden;
         }

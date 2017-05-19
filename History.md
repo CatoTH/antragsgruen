@@ -8,6 +8,7 @@
 - When merging all amendments into the motion at once and a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - Administrators can now be set per consultation, without granting them access to all consultations of this site
+- Several small improvements to the inline editing of the agenda
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
