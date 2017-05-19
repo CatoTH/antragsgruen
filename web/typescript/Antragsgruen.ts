@@ -22,6 +22,8 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         $hint.remove();
     });
 
+    bootbox.setLocale($("html").attr("lang").split("_")[0]);
+
     $(document).on('click', '.amendmentAjaxTooltip', function (ev) {
         let $el = $(ev.currentTarget);
         if ($el.data('initialized') == '0') {
