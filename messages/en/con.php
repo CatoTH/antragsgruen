@@ -8,6 +8,7 @@ return [
     'deadline_circle'      => 'Deadline',
     'My Motions'           => 'My motions',
     'All Motions'          => 'Motions',
+    'no_motions_yet'       => 'No motions yet',
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',
     'Other Motions'        => 'Other motions',

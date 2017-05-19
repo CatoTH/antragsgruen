@@ -8,6 +8,7 @@ return [
     'deadline_circle'      => 'Antrags&shy;schluss',
     'My Motions'           => 'Meine Anträge',
     'All Motions'          => 'Anträge',
+    'no_motions_yet'       => 'Es gibt noch keine Anträge',
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',
