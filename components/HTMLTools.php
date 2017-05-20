@@ -783,7 +783,7 @@ class HTMLTools
         if ($node->nodeName == 'ins') {
             $children = [];
             while ($node->childNodes->length > 0) {
-                $child = $node->childNodes[0];
+                $child = $node->childNodes->item(0);
                 $node->removeChild($child);
                 $children[] = $child;
             }
@@ -812,7 +812,7 @@ class HTMLTools
 
         $children = [];
         while ($node->childNodes->length > 0) {
-            $child = $node->childNodes[0];
+            $child = $node->childNodes->item(0);
             $node->removeChild($child);
             $modifiedChild = static::stripInsDelMarkersInt($child);
             $children      = array_merge($children, $modifiedChild);
