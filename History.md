@@ -16,6 +16,7 @@ This release was mainly sponsored by the [German Federal Youth Council](http://w
 ### Version 3.6.9 [Not released yet]
 
 - Bugfix: In some very rare cases, a bold formatting in the PDF-Export was not finished correctly, leading to the rest of the document appearing as bold.
+- Bugfix: Merging amendments did not work with PHP 5.5
 
 ### Version 3.6.8 (2017-05-09)
 
