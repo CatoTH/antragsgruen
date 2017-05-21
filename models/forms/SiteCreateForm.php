@@ -154,12 +154,9 @@ class SiteCreateForm extends Model
      */
     public function createConsultation(Consultation $con)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
-        if ($params->baseLanguage == 'en') {
+        if (\Yii::$app->language == 'en') {
             $con->wordingBase = 'en';
         } else {
             $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
