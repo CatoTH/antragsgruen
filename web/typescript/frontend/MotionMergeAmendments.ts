@@ -507,36 +507,71 @@ export class MotionMergeAmendments {
         }
         let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
-        $.post(this.$form.data('draftSaving'), {
-            'public': (isPublic ? 1 : 0),
-            'sections': sections,
-            '_csrf': this.$form.find('> input[name=_csrf]').val()
-        }, (ret) => {
-            if (ret['success']) {
-                this.setDraftDate(new Date(ret['date']));
-                if (isPublic) {
-                    this.$form.find('.publicLink').removeClass('hidden');
+        $.ajax({
+            type: "POST",
+            url: this.$form.data('draftSaving'),
+            data: {
+                'public': (isPublic ? 1 : 0),
+                'sections': sections,
+                '_csrf': this.$form.find('> input[name=_csrf]').val()
+            },
+            success: (ret) => {
+                if (ret['success']) {
+                    this.$draftSavingPanel.find('.savingError').addClass('hidden');
+                    this.setDraftDate(new Date(ret['date']));
+                    if (isPublic) {
+                        this.$form.find('.publicLink').removeClass('hidden');
+                    } else {
+                        this.$form.find('.publicLink').addClass('hidden');
+                    }
                 } else {
-                    this.$form.find('.publicLink').addClass('hidden');
+                    this.$draftSavingPanel.find('.savingError').removeClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorNetwork').addClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
                 }
-            } else {
-                alert(ret['error']);
+            },
+            error: () => {
+                this.$draftSavingPanel.find('.savingError').removeClass('hidden');
+                this.$draftSavingPanel.find('.savingError .errorNetwork').removeClass('hidden');
+                this.$draftSavingPanel.find('.savingError .errorHolder').text('').addClass('hidden');
             }
         });
+    }
+
+    private initAutosavingDraft() {
+        let $toggle: JQuery = this.$draftSavingPanel.find('input[name=autosave]');
+
+        window.setInterval(() => {
+            if ($toggle.prop('checked')) {
+                this.saveDraft();
+            }
+        }, 5000);
+
+        if (localStorage) {
+            let state = localStorage.getItem('merging-draft-auto-save');
+            if (state !== null) {
+                $toggle.prop('checked', (state == '1'));
+            }
+        }
+        $toggle.change(() => {
+            let active: boolean = $toggle.prop('checked');
+            if (localStorage) {
+                localStorage.setItem('merging-draft-auto-save', (active ? '1' : '0'));
+            }
+        }).trigger('change');
     }
 
     private initDraftSaving() {
         this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
         this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
         this.$draftSavingPanel.find('input[name=public]').on('change', this.saveDraft.bind(this));
+        this.initAutosavingDraft();
 
         if (this.$draftSavingPanel.data("resumed-date")) {
             let date = new Date(this.$draftSavingPanel.data("resumed-date"));
             this.setDraftDate(date);
         }
 
-        if ($("#yii-debug-toolbar").length > 0) {
-            this.$draftSavingPanel.addClass('withDebugBar');
-        }
+        $("#yii-debug-toolbar").remove();
     }
 }

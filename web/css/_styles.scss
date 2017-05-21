@@ -500,9 +500,6 @@ del.space, ins.space, del.formatting, ins.formatting {
   #draftSavingPanel {
     position: fixed;
     bottom: 0;
-    &.withDebugBar {
-      bottom: 42px;
-    }
     right: 30px;
     width: 250px;
     z-index: 10;
@@ -529,9 +526,19 @@ del.space, ins.space, del.formatting, ins.formatting {
     .public {
       padding: 5px;
     }
+    .autosave {
+      padding: 5px;
+    }
     .publicLink {
       float: right;
       margin-right: 5px;
+    }
+    .savingError {
+      padding: 5px;
+      margin-top: -5px;
+      border-bottom: solid 1px #ccc;
+      background-color: #ff4444;
+      color: black;
     }
     .save {
       padding: 5px;
@@ -552,9 +559,20 @@ del.space, ins.space, del.formatting, ins.formatting {
       h2 {
         border-bottom: solid 1px #ccc;
       }
+      .save {
+        padding: 0 5px 5px 5px;
+      }
       .public {
+        display: block;
+        padding-bottom: 0;
+      }
+      .autosave {
         border-bottom: solid 1px #ccc;
         display: block;
+        padding-top: 0;
+      }
+      .lastSaved {
+        margin-top: 2px;
       }
     }
     @media screen and (max-width: 1100px) {
@@ -562,17 +580,24 @@ del.space, ins.space, del.formatting, ins.formatting {
       left: 0;
       width: 100%;
       display: table;
+      .hideSmall {
+        display: none;
+      }
       > * {
         display: table-cell;
         vertical-align: middle;
         line-height: 25px;
       }
       > h2 {
-        width: 25%;
+        width: 20%;
         border-right: solid 1px #ccc;
       }
       > .public {
-        width: 35%;
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      .autosave {
+        width: 20%;
         border-right: solid 1px #ccc;
       }
       > .save {

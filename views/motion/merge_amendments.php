@@ -105,6 +105,13 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
             <input type="checkbox" name="public" <?= ($draftIsPublic ? 'checked' : '') ?>>
             <?= \Yii::t('amend', 'merge_draft_public') ?>
         </label>
+        <label class="autosave">
+            <input type="checkbox" name="autosave" checked> <?= \Yii::t('amend', 'merge_draft_auto_save') ?>
+        </label>
+        <div class="savingError hidden">
+            <div class="errorNetwork"><?= \Yii::t('amend', 'merge_draft_err_saving') ?></div>
+            <div class="errorHolder"></div>
+        </div>
         <div class="save">
             <div class="lastSaved">
                 <?= \Yii::t('amend', 'merge_draft_date') ?>:
