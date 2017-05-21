@@ -24,6 +24,7 @@ $mode = ($controller->getParams()->mode == 'sandbox' ? 'sandbox' : 'subdomain');
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="fuelux">
     <?php echo Html::beginForm(Url::toRoute('manager/createsite'), 'post', ['class' => 'siteCreate']); ?>
+    <input type="hidden" name="language" value="<?= Html::encode(\Yii::$app->language) ?>">
 
     <?= $this->render('../createsiteWizard/index', ['model' => $model, 'errors' => $errors, 'mode' => $mode]) ?>
 

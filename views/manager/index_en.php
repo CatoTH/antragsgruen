@@ -83,7 +83,7 @@ $params = \Yii::$app->params;
         version without the need to provide contact details. The version is available for three days:
     </p>
     <p style="text-align: right;">
-        <a href="http://sandbox.motion.tools/createsite" class="btn btn-default">Create test version</a>
+        <a href="http://sandbox.motion.tools/createsite?language=en" class="btn btn-default">Create test version</a>
     </p>
 
     <p style="margin-top: 35px;"><strong>Are there functions missing?

@@ -175,6 +175,11 @@ class ManagerController extends Base
     {
         $this->requireEligibleToCreateUser();
 
+        $language = $this->getRequestValue('language');
+        if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
+            \Yii::$app->language = $language;
+        }
+
         $model  = new SiteCreateForm();
         $errors = [];
 
