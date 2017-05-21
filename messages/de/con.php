@@ -22,6 +22,7 @@ return [
     'feed'                 => 'Feed',
     'feeds'                => 'Feeds',
     'pdf_all'              => 'Alle PDFs zusammen',
+    'pdf_all_short'        => 'Alle PDFs',
     'pdf_motions'          => 'PDFs: Anträge',
     'pdf_amendments'       => 'Alle Änderungsanträge gesammelt',
     'pdf_amendments_small' => 'PDFs: Änderungsanträge',

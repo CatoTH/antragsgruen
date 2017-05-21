@@ -48,7 +48,10 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
 $minHeight               = $sidebarRows * 40 - 100;
-$supportCollectingStatus = ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS);
+$supportCollectingStatus = (
+    $amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS &&
+    !$amendment->isDeadlineOver()
+);
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
 

@@ -3,10 +3,10 @@
 # Releasing:
 # - Increase version number in config/defines.php
 # - Write Changelog
-# - Execute this script (docs/create-dist.sh)
-# - Upload the generated .tar.bz2-file
 # - Update README.md
-# - Commit this changes to repository and tag the new version
+# - Commit this changes to repository
+# - Execute this script (docs/create-dist.sh)
+# - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
 
 if [[ ! -d ./controllers ]]; then
     echo "Please run this script from the project's root directory"
@@ -37,7 +37,7 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.2.2"
 ./composer.phar install --no-dev
 
-rm -R local dist docker-vagrant .DS_Store .idea
+rm -R local dist docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
 rm config/DEBUG config/config.template.json
 rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml
 rm web/index-test.php
@@ -54,6 +54,9 @@ rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
+find vendor -type l -exec rm {} \;
+find vendor/zendframework -name "doc" -exec rm -R {} \;
+rm -R vendor/cebe/markdown/tests
 rm -R tests/
 find . -name ".git" -exec rm -rf {} \;
 rm config/config.json
@@ -62,3 +65,4 @@ touch config/INSTALLING
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
+zip -r ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.zip antragsgruen-$ANTRAGSGRUEN_VERSION

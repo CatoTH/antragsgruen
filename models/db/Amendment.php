@@ -576,6 +576,9 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->status != Amendment::STATUS_COLLECTING_SUPPORTERS) {
             return false;
         }
+        if ($this->isDeadlineOver()) {
+            return false;
+        }
         $supporters    = count($this->getSupporters());
         $minSupporters = $this->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
         return ($supporters >= $minSupporters);
@@ -926,5 +929,13 @@ class Amendment extends IMotion implements IRSSItem
     public function getLikeDislikeSettings()
     {
         return $this->getMyMotion()->motionType->amendmentLikesDislikes;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDeadlineOver()
+    {
+        return $this->getMyMotion()->motionType->amendmentDeadlineIsOver();
     }
 }

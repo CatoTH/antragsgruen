@@ -28,7 +28,7 @@ try {
     $contents[] = \app\views\motion\LayoutHelper::renderTeX($motion);
 
     foreach ($amendments as $amendment) {
-        $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment);
+        $contents[] = \app\views\amendment\LayoutHelper::renderTeX($amendment, $texTemplate);
     }
     echo $exporter->createPDF($contents);
 } catch (\Exception $e) {
