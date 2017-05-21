@@ -2,37 +2,48 @@ import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 
 class MotionMergeChangeActions {
+    public static removeEmptyParagraphs() {
+        $('.paragraphHolder').each((i, el) => {
+            if (el.childNodes.length == 0) {
+                $(el).remove();
+            }
+        });
+    }
+
     public static accept(node: Element) {
-        if ($(node).hasClass("ice-ins")) {
+        let $node = $(node);
+        if ($node.hasClass("ice-ins")) {
             MotionMergeChangeActions.insertAccept(node);
         }
-        if ($(node).hasClass("ice-del")) {
+        if ($node.hasClass("ice-del")) {
             MotionMergeChangeActions.deleteAccept(node);
         }
     }
 
     public static reject(node: Element) {
-        if ($(node).hasClass("ice-ins")) {
-            MotionMergeChangeActions.insertReject(node);
+        let $node = $(node);
+        if ($node.hasClass("ice-ins")) {
+            MotionMergeChangeActions.insertReject($node);
         }
-        if ($(node).hasClass("ice-del")) {
-            MotionMergeChangeActions.deleteReject(node);
+        if ($node.hasClass("ice-del")) {
+            MotionMergeChangeActions.deleteReject($node);
         }
     }
 
-    public static insertReject(node: Element) {
+    public static insertReject($node: JQuery) {
         let $removeEl: JQuery,
-            name = node.nodeName.toLowerCase();
+            name = $node[0].nodeName.toLowerCase();
         if (name == 'li') {
-            $removeEl = $(node).parent();
+            $removeEl = $node.parent();
         } else {
-            $removeEl = $(node);
+            $removeEl = $node;
         }
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
             $removeEl.css("overflow", "hidden").height($removeEl.height());
             $removeEl.animate({"height": "0"}, 250, function () {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
+                MotionMergeChangeActions.removeEmptyParagraphs();
             });
         } else {
             $removeEl.remove();
@@ -54,18 +65,18 @@ class MotionMergeChangeActions {
         }
     }
 
-    public static deleteReject(node: Element) {
-        let $this: JQuery = $(node);
-        $this.removeClass("ice-cts ice-del appendHint");
-        $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
-        if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
-            $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+    public static deleteReject($node: JQuery) {
+        $node.removeClass("ice-cts ice-del appendHint");
+        $node.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
+        let nodeName = $node[0].nodeName.toLowerCase();
+        if (nodeName == 'ul' || nodeName == 'ol') {
+            $node.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
         }
-        if (node.nodeName.toLowerCase() == 'li') {
-            $this.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+        if (nodeName == 'li') {
+            $node.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
         }
-        if (node.nodeName.toLowerCase() == 'del') {
-            $this.replaceWith($this.html());
+        if (nodeName == 'del') {
+            $node.replaceWith($node.html());
         }
     }
 
@@ -83,6 +94,7 @@ class MotionMergeChangeActions {
             $removeEl.animate({"height": "0"}, 250, function () {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
+                MotionMergeChangeActions.removeEmptyParagraphs();
             });
         } else {
             $removeEl.remove();
@@ -417,10 +429,10 @@ class MotionMergeAmendmentsTextarea {
             $(el).remove();
         });
         this.$holder.find(".ice-ins").each((i, el) => {
-            MotionMergeChangeActions.insertReject(el);
+            MotionMergeChangeActions.insertReject($(el));
         });
         this.$holder.find(".ice-del").each((i, el) => {
-            MotionMergeChangeActions.deleteReject(el);
+            MotionMergeChangeActions.deleteReject($(el));
         });
     }
 
