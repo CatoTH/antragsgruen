@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\components\MessageSource;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\views\hooks\LayoutHooks;
@@ -79,6 +80,12 @@ class Layout
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->titleSingular;
             } else {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->titleShort;
+            }
+        }
+        if ($consultation) {
+            $language = substr($consultation->wordingBase, 0, 2);
+            if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
+                \Yii::$app->language = $language;
             }
         }
     }

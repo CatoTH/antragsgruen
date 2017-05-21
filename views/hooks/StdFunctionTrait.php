@@ -189,7 +189,8 @@ trait StdFunctionTrait
                     title="' . Html::encode($description) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
             '</a></div></div>';
-        $this->layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
+        $this->layout->menusSmallAttachment =
+            '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
     }
 }
