@@ -123,7 +123,7 @@ return [
     'section_comment_paragraph' => 'Einzelne Absätze sind kommentierbar',
 
     'home_layout_std'         => 'Standard',
-    'home_layout_tags'        => 'Tabellarisch, gegliedert nach Schlagworten',
+    'home_layout_tags'        => 'Themen / Schlagworte',
     'home_layout_agenda'      => 'Tagesordnung',
     'home_layout_agenda_long' => 'Tagesordnung (viele Anträge)',
 

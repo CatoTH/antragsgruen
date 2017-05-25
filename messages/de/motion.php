@@ -71,7 +71,7 @@ return [
     'tag_select'                         => 'Thema aussuchen',
     'tag_new'                            => 'Neu',
     'tag_del'                            => 'del',
-    'tags_head'                          => 'Themenbereich',
+    'tags_head'                          => 'Themen',
     'merging_draft_th'                   => 'Überarbeitung',
     'merging_draft_td'                   => 'Der Antrag wird gerade überarbeitet.<br><a href="%URL%"><span class="glyphicon glyphicon-chevron-right"></span> Zwischenstand anzeigen</a>',
     'merging_draft_warning'              => 'Dies ist kein beschlossener Antrag, sondern ein Bearbeitungs-Zwischenstand!',

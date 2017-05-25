@@ -83,7 +83,7 @@ return [
     'motion_del'                  => 'Delete motion',
     'motion_new_base_on_this'     => 'Create a new motion based on this one',
     'motion_show'                 => 'Show motion',
-    'motion_topics'               => 'Topics',
+    'motion_topics'               => 'Tags',
     'motion_note_internal'        => 'Internal remark',
     'list_head_title'             => 'List: motions, amendments',
     'list_action'                 => 'Action',
