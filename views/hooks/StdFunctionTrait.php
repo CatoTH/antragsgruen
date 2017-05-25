@@ -42,6 +42,9 @@ trait StdFunctionTrait
             } else {
                 $startLink = UrlHelper::createUrl('manager/index');
                 $out .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
+
+                $helpLink = UrlHelper::createUrl('manager/help');
+                $out .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
             }
 
             if (!User::getCurrentUser() && !$minimalistic) {

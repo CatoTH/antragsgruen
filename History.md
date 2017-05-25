@@ -9,6 +9,7 @@
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - Administrators can now be set per consultation, without granting them access to all consultations of this site
 - Several improvements to the inline editing of the agenda
+- A more detailed manual about the functionality of Antragsgrün is provided
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).

@@ -218,6 +218,18 @@ class ManagerController extends Base
     /**
      * @return string
      */
+    public function actionHelp()
+    {
+        if (\Yii::$app->language == 'de') {
+            return $this->render('help_de');
+        } else {
+            return $this->render('help_en');
+        }
+    }
+
+    /**
+     * @return string
+     */
     public function actionSiteLegal()
     {
         return $this->renderContentPage('legal');
