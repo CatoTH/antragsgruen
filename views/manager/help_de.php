@@ -19,6 +19,147 @@ $params = \Yii::$app->params;
 ?>
 <h1>Antragsgrün - das grüne Antragstool</h1>
 
-<div class="content">
-    @TODO
+<div class="content managerHelpPage">
+
+<h2>Grundlegender Aufbau einer Antragsgrün-Seite</h2>
+
+    <h3>Anträge / Änderungsanträge</h3>
+    <p>Als Anträge werden alle eigenständige Dokumente bezeichnet, die auf Antragsgrün eingestellt werden können. Anträge für Parteitage, Mitgliederversammlungen usw. sind einer der häufigsten Einsatzgebiete für Antragsgrün, daher verwenden wir den Begriff stellvertretend für alle Dokumenttypen. Tatsächlich können auch Wahlprogramme, Textentwürfe, Bewerbungen einschließlich Fotos, Satzungen usw. verwaltet werden.</p>
+    <p>Änderungsanträge beziehen sich unmittelbar auf einen Antrag (bzw. andere eingestellte Texte) und haben den Zweck, diesen zu verändern. Antragsgrün will vor allem die Handhabung vieler Änderungsanträge pro Antrag vereinfachen und formalisiert diese daher stark: beim Einreichen eines Änderungsantrags muss explizit angegeben werden, die der Antrag nach der beantragten Änderung aussehen soll. Antragsgrün kann so automatisch die tatsächlichen Änderungen feststellen, den ursprünglichen Antrag so annotieren, dass leicht ersichtlich ist, zu welchen Passagen es Alternativvorschläge gibt, und auf Wunsch die Änderungen in den ursprünglichen Antrag übernehmen.</p>
+    <p>Sowohl beim Einreichen von Anträgen als auch bei Änderungsanträgen können zusätzliche Informationen über die einreichende Person bzw. die einreichende Personengruppe abgefragt werden, um sich den organisatorischen Vorgaben der jeweiligen Organisation anzupassen.</p>
+
+    <h3>Veranstaltungen</h3>
+    <p>Eine „Veranstaltung“ - manchmal auch „Programmdiskussion“ bezeichnet, ist die Sammlung aller Anträge, die zeitgleich diskutiert werden können. Das kann eine konkrete Verbandstagung, der Entwurf eines Wahlprogramms (in dem die einzelnen Kapitel jeweils eigene „Anträge“ sind) oder eine Wahl sein, für die Bewerbungen gesammelt werden.</p>
+    <p>Jede Antragsgrün-Seite hat mindestens eine solche Veranstaltung, kann aber beliebig viele haben: wenn also eine Veranstaltung wiederholt stattfindet, muss nicht für jede eine neue Antragsgrün-Seite eingerichtet werden oder erst die alten Anträge gelöscht werden. Links auf frühere Anträge und Veranstaltungen bleiben für Archivzwecke erhalten, die Startseite zeigt aber jeweils die aktuellste Veranstaltung ein.</p>
+    <p>Neue Veranstaltungen innerhalb der selben Seite können unter „Einstellungen“ unter „Weitere Veranstaltungen anlegen / verwalten“ eingerichtet werden, hier kann auch festgelegt werden, welche standardmäßig angezeigt werden soll.</p>
+    <!-- @TODO: Verzeichnis -->
+
+    <h3>Antragstypen / Motion Type</h3>
+    <p>Innerhalb einer Veranstaltung kann es verschieden strukturierte Dokumente geben – oder Dokumente, die unterschiedlichen Regelungen unterliegen, z.B. was Antragsfristen oder Berechtigungen zum Anlegen angeht. Beispielsweise benötigen Bewerbungen andere Angaben (Name, Selbstvorstellung, Foto, weitere Angaben, …) als Anträge (Titel, Antragstext, Begründung) und bieten üblicherweise keine Möglichkeit, Änderungsanträge zu stellen. Für manche Veranstaltungen soll es die Möglichkeit für Dringlichkeitsanträge geben, die gesondert von regulären Anträgen mit späterem Antragsschluss eingereicht werden können.</p>
+    <p>Um diese Flexibilität zu ermöglichen, unterstützt jede Veranstaltung auf Antragsgrün beliebig viele Antragstypen. Jeder Antragstyp hat einen eigenen Namen, Struktur, Berechtigungen usw. und jeder eingereichte Antrag gehört zu genau einem Antragstypen.</p>
+    <p>Die verschiedenen Antragstypen können direkt unter „Einstellungen“ bei „Antragstypen bearbeiten“ verwaltet werden.</p>
+
+    <h3>Tagesordnungspunkte</h3>
+    <p>Tagesordnungen sind eine Funktion von Antragsgrün, die auf Wunsch aktiviert werden kann, aber nicht obligatorisch ist.</p>
+    <p>Wenn eine Tagesordnung verwendet wird, werden auch alle Anträge jeweils einem Tagesordnungspunkt zugeordnet. Daher arbeitet die Tagesordnung eng mit den Antragstypen zusammen: für jeden Tagesordnungspunkt kann (muss aber nicht) bei der Einrichtung der Seite ein Antragstyp ausgewählt werden. Damit können dann für diese Tagesordnungspunkte Anträge von genau diesem Typ eingereicht werden, die dann anschließend hier erscheinen. Für eine Vorstandswahl könnte es beispielsweise für die Wahl eines jeden Vorstandsposten einen Tagesordnungspunkt geben, jeder mit dem Antragstyp „Bewerbung“; so können dann Bewerbungen gezielt für einen bestimmten Posten eingereicht werden.</p>
+    <p>Um Tagesordnungen zu aktivieren: Erst unter „Einstellungen“ in der Unterseite „Diese Veranstaltung“ bei „Startseiten-Design“ einen der beiden Tagesordnungspunkt-Punkte auswählen. Dann kann man auf der Startseite neue Tagesordnungspunkte anlegen.</p>
+    <!-- @TODO: Genauere Erklärung zur Nummerierung von Tagesordnungspunkten -->
+
+    <h2>Arbeitsabläufe: Antragstellung, Freischaltung, Berechtigungen</h2>
+
+    <h3>Antragsteller*innen / Unterstützer*innen</h3>
+    <p>Je nach Organisation und Veranstaltung gibt es unterschiedliche Voraussetzungen, die erfüllt sein müssen, um einen (Änderungs-)Antrag zu stellen. Antragsgrün versucht, die wichtigsten Fälle abzudecken:</p>
+    <ul>
+        <li>Im einfachsten Fall kann einfach von jeder und jedem ein Antrag eingereicht werden, evtl. gekoppelt an ein Login.</li>
+        <li>In einigen Organisationen ist es nötig, für einen Antrag auch noch eine bestimmte Zahl an unterstützender Personen zu benennen, die den Antrag mit tragen. Die Namen (und ggf. Organisationsgliederungen) der unterstützenden Personen werden von der Antragsteller*in hier mit angegeben. Falls der Antrag von einem Gremium gestellt wird, entfällt diese Angabe.</li>
+        <li>Wenn technisch sichergestellt werden muss, dass im vorigen Fall auch jede unterstützende Person auch tatsächlich hinter dem Antrag steht, ist es möglich, dem Einreichen eines Antrags eine explizite „Unterstützung sammeln“-Phase voranzustellen. Dann kann der Antrag zunächst angelegt werden, gilt aber noch nicht offiziell als eingereicht: erst einmal haben andere Personen die Möglichkeit, sich auf die Unterstützungsliste zu stellen. Sobald die Mindestzahl an Unterstützer*innen zusammengekommen ist, kann der Antrag tatsächlich eingereicht werden. Wegen dem vergleichsweise hohen Aufwand durch dieses Vorgehen kommt dies im Allgemeinen nur in sehr großen Veranstaltungen zum Einsatz.</li>
+        </ul>
+    <p>Pro Antragstyp kann separat eine der genannten Varianten vergeben werden. Die Auswahl dafür findet sich unter „Einstellungen“ → Antragstypen bearbeiten → Antragsteller*in / Unterstützer*innen.</p>
+    <p>Für die dritte Variante mit einer vorgeschalteten Unterstützungsphase muss bei „(Änderung-)Anträge unterstützen“ außerdem die Berechtigung auf „Eingeloggte“ beschränkt werden und die Möglichkeit „Offiziell unterstützen“ aktiviert werden.</p>
+    <p>Wenn Sie weitere Möglichkeiten benötigen, kontaktieren Sie uns.</p>
+
+    <h3>Freischaltung von Anträgen</h3>
+    <p>Es ist oft gewünscht, eingereichte Anträge vor der Veröffentlichung noch redaktionell zu prüfen, z.B. durch eine Programm- oder Antragskommission. In Fällen, in denen das Einreichen eines Antrags ohne Login zugelassen wird, ist das sehr empfehlenswert, um eventuelle Einträge durch Spam-Bots abzufangen. Drei Möglichkeiten gibt es, die für alle Anträge gemeinsam, und für alle Änderungsanträge gemeinsam gewählt werden können:</p>
+    <ul>
+        <li>Keine Freischaltung: Anträge sind nach der Einreichung sofort sichtbar</li>
+        <li>Freischaltung: Anträge müssen zuerst durch einen Admin geprüft werden, bevor sie sichtbar sind</li>
+        <li>Eine Mischung aus beiden: Anträge können sofort sichtbar sein, müssen aber dennoch durch einen Admin geprüft werden. Bis dahin werden sie angezeigt, allerdings ausgegraut und als noch nicht geprüft markiert.</li>
+    </ul>
+    <p>Die Einstellung hierfür findet sich unter „Einstellungen“ → „Diese Veranstaltung“. Relevant sind die Punkte „Freischaltung von Anträgen“, „Freischaltung von Änderungsanträgen“ und „Anträge (ausgegraut) anzeigen, auch wenn sie noch nicht freigeschaltet sind“.</p>
+
+    <h3>Login / Berechtigungen</h3>
+    <p>Antragsgrün ist grundsätzlich so ausgelegt, dass verschiedene Login-Möglichkeiten verwendet werden können und Funktionen wie das Stellen von Anträgen, das Kommentieren oder Unterstützen von Anträgen auf eingeloggte Mitglieder zu beschränken.</p>
+    <p>Standardmäßig ist es möglich, sich mit seiner E-Mail-Adresse bei einer Antragsgrün-Version zu registrieren und damit die entsprechenden Funktionen zu nutzen. Für geschlossene Benutzerkreise ist es möglich, das Login auf bekannte Mitglieder zu beschränken, also das selbstständige Registrieren mit einer neuen E-Mail-Adresse zu deaktivieren und stattdessen Einladungen an eine Liste an E-Mail-Adressen zu schicken. Diese Funktion findet sich unter „Einstellungen“ im Punkt „Login / Benutzer*innen / Admins“. Es muss der Punkt „Nur ausgewählten Benutzer*innen das Login erlauben“ aktiviert werden. Anschließend erscheint weiter unten der Punkt „Benutzer*innen-Accounts“, in dem neue Mitglieder eingeladen werden können.</p>
+    <p>Wenn Antragsgrün in Organisationen verwendet werden soll, die eine Single-Sign-On-Lösung verwenden, lässt sich die Authentifizierung auf weitere Mechanismen ausweiten; produktiv kamen Bereits OpenID- sowie SAML-Konnektoren zum Einsatz. Für weitere Informationen schreiben Sie uns bitte einfach an.</p>
+
+    <h3>Antragsschluss</h3>
+    <p>Wenn das Einreichen von Anträgen oder Änderungsanträgen nur bis zu einem bestimmten Zeitpunkt möglich sein soll, gibt es die Möglichkeit, jeweils einen Antragsschluss zu definieren. Pro Antragstyp sind eigene Fristen möglich.</p>
+    <p>Die Einstellung hierfür sind zu finden unter: „Einstellungen“ → Antragstyp bearbeiten → Antragsschluss.</p>
+
+    <h3>Benachrichtigungen</h3>
+    <p>Antragsgrün bietet eine Reihe an Funktionen, Interessierte über relevante Ereignisse zu informieren. Alle Benachrichtigungen werden dabei per E-Mail versandt.</p>
+    <p>Für Teilnehmer*innen sind die meisten Benachrichtigungen optional. Nachdem man sich mit seiner E-Mail-Adresse registriert hat, kann man auf der Startseite in der Sidebar den Punkt „E-Mail-Benachrichtigungen“ auswählen. Hier lässt sich jeweils einzeln auswählen, ob man über neue Anträge, neue Änderungsanträge und neue Kommentare benachrichtigt werden soll. Standardmäßig wird man über neu gestellte Änderungsanträge zu Anträgen benachrichtigt, die man selbst eingelegt hat. Außerdem werden  Antragsteller*innen benachrichtigt, wenn ein eingereichter Antrag geprüft und damit dann öffentlich verfügbar ist.</p>
+    <p>Für Administrator*innen ist besonders relevant, wenn neue (Änderung-)Anträge eingereicht werden, die geprüft werden müssen. Darüber hinaus gibt es Benachrichtigungen, wenn bereits eingereichte Anträge zurückgezogen oder nachträglich bearbeitet werden.</p>
+    <p>Jenseits von E-Mail-Benachrichtigungen werden auch mehrere RSS-Feeds unterstützt, um darüber über die neuesten Anträge, Änderungsanträge und Kommentare einer Veranstaltung informiert zu bleiben. Die Feeds befinden sich auf der Startseite in der Sidebar rechts.</p>
+
+<h2>Änderungsanträge übernehmen / einpflegen</h2>
+    <p>@TODO</p>
+    <!--
+Änderungsanträge einpflegen
+Einzelne Änderungsanträge
+Durch den Admin
+Durch die Antragsteller*in
+Alle auf einmal:
+Vorgehen
+Zwischenstand projizieren
+-->
+
+<h2>Export-Funktionen</h2>
+    <h3>PDF</h3>
+    <p>Sowohl Anträge als auch Änderungsanträge lassen sich automatisch in druckfertige PDF-Dokumente exportieren. Um die Handhabung gerade bei größeren Veranstaltungen mit mehreren hundert Anträgen zu erleichtern, gibt es nicht nur ein PDF pro Antrag, sondern einerseits auch immer aktuelle Sammel-PDFs mit allen Anträgen bzw. Änderungsanträgen, und andererseits den Download eines ZIP-Archivs aller verfügbaren Einzel-PDFs.</p>
+    <p>Es werden mehrere PDF-Layouts unterstützt, die verschiedene Einsatzgebiete abdecken. Falls Sie für Ihre Veranstaltung ein spezielles PDF-Template benötigen, können gerne bei der Umsetzung helfen.</p>
+
+    <h3>OpenDocument / Textverarbeitungsdokument</h3>
+    <p>Anträge und Änderungsanträge können auch im OpenDocument-Format (.odt) exportiert werden, womit die Texte mitsamt allen Formatierungen in gängigen Textverarbeitungsprogrammen weiterbearbeitet werden können.</p>
+    <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“.</p>
+
+    <h3>Änderungsanträge in Tabellenform</h3>
+    <p>Manche Programmkommissionen bevorzugen eine Darstellung aller Änderungsanträge einer Veranstaltung mitsamt den beantragten Änderungen in einem Tabellendokument. Dafür unterstützt Antragsgrün den Export aller Änderungsanträge in ein OpenDocument Spreadsheet-Dokument, das z.B. mit OpenOffice oder LibreOffice leicht bearbeitet werden kann.</p>
+    <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“.</p>
+
+    <h3>Openslides / CSV</h3>
+    <p>Die OpenSource-Software OpenSlides wird von vielen Organisationen gerne für die Veranstaltungsorganisation direkt vor Ort eingesetzt, z.B. um Anträge auf dem Beamer darzustellen, Redelisten zu führen und Wahlen zu protokollieren. Daher bietet Antragsgrün auch einen CSV-Export, der speziell auf das Import-Format von OpenSlides angepasst ist. Anträge und Änderungsanträge, die im Vorfeld einer Tagung in Antragsgrün eingereicht und vorbereitet wurden, können so kurz vor der Tagung leicht in einen bestehenden Openslides-Ablauf integriert werden.</p>
+    <p>Den Export gibt es für Admins der Veranstaltung im Menüpunkt „Antragsliste“.</p>
+
+    <h3>HTML, Plain Text, RSS, Weitere Formate</h3>
+    <p>Generell ist es recht leicht, weitere Formate zu unterstützen. Ein paar weitere Formate werden daher bereits unterstützt: z.B. ein Export in reine formlose HTML-Seiten, in Plain-Text, und auch RSS-Feeds der aktuellen Anträge gibt es.</p>
+    <p>Falls weitere Formate benötigt werden, kontaktieren Sie uns einfach.</p>
+
+<h2>Weitere Funktionen</h2>
+    <h3>Layout-Anpassbarkeit</h3>
+    <p>Verschiedene Aspekte des Layouts von Antragsgrün lassen sich über das Administrationsinterface anpassen – die meisten davon unter „Einstellungen“ → „Diese Veranstaltung“ → „Aussehen“.</p>
+    <p>Am stärksten wirkt sich die „Layout“-Einstellung aus: sie verändert das komplette Aussehen der Seite und wird genutzt, um eine entwickelte Anpassung an ein Corporate Design zu aktivieren. Neben dem „Antragsgrün-Standard“-Layout gibt es derzeit Layouts, die teils für den Deutschen Bundesjugendring, teils für Bündnis 90 / Die Grünen entwickelt wurden. Weitere grundlegend andere Layouts können entweder von halbwegs versierten Web-Entwickler*innen selbst entwickelt werden (siehe „Developing custom themes“ auf https://github.com/CatoTH/antragsgruen), oder bei uns in Auftrag gegeben werden.</p>
+    <p>Für den Aufbau der Startseite gibt es mehrere Varianten („Layout-Design“ in den Einstellungen), die sich für verschiedene Einsatzzwecke eignen. Insbesondere kann darüber eingestellt werden, ob eine Tagesordnung auf der Startseite angezeigt werden soll, wie die Anträge in Bezug zur Tagesordnung angezeigt werden sollen, oder ob die Anträge nach selbst definierten Schlagworten bzw. Themen gegliedert werden sollen (siehe weiter unten im Punkt „Themen“).</p>
+    <p>Darüber hinaus lässt sich ein eigenes Logo verlinken und verschiedene Aspekte der Seite lassen sich ausblenden.</p>
+
+    <h3>Zeilennummerierung</h3>
+    <p>Für viele Organisationen, die mit vielen Anträgen arbeiten, ist ein konsistentes Zeilennummerierungssystem essenziell wichtig. Bei Antragsgrün wird daher großer Wert darauf gelegt, das überall zu berücksichtigen: die maximale Länge einer Zeile lässt sich einmal festlegen („Einstellungen“ → „Diese Veranstaltung“ → „Maximale Zeilenlänge“) und wird überall berücksichtigt: bei der Anzeige der Anträge, dem PDF-Download und dem Export in Textverarbeitung-Dokumente, und auch in der Einleitung von Änderungsanträgen („Einfügung in Zeile ##“) wird die Zeilennummerierung automatisch richtig ermittelt, um Fehler zu vermeiden.</p>
+
+    <h3>Redaktionelle Änderungsanträge</h3>
+    <p>Für manche Änderungsanträge eignet sich das „eigentliche“ Prinzip der Änderungsanträge bei Antragsgrün nur eingeschränkt: sollen beispielsweise in einem gesamten langen Antrag sämtliche Vorkommnisse eines Begriffs durch einen anderen Begriff ersetzt werden, wäre es mühselig und unübersichtlich, als Antragsteller*in jeden Begriff einzeln zu ersetzen. Für solche Fälle gibt es die Möglichkeit, redaktionelle Änderungsanträge zu stellen: hier wird die beantragte Änderung in normaler Anweisungsform geschrieben, und im Falle einer Übernahme obliegt es der Antragskommission, die Änderungen tatsächlich durchzuführen. Eine automatisch Übernahme ist damit natürlich nicht möglich.</p>
+    <p>Sind solche Änderungsanträge nicht gewünscht, lassen sie sich auch aktivieren: „Einstellungen“ → „Diese Veranstaltung“ → „Änderungsanträge“ → „Redaktionelle Änderungsanträge zulassen“.</p>
+
+    <h3>Antragskürzel</h3>
+    <p>Es ist gängige Praxis bei vielen Konferenzen, dass alle Anträge und Änderungsanträge eindeutige Kürzel versehen bekommen – z.B. „A1“ für Antrag Nr. 1 oder „Ä2“ für Änderungsantrag Nr. 2. Antragsgrün unterstützt sowohl die automatische als auch händische Vergabe dieser Kürzel nach verschiedenen Schemata.</p>
+    <p>Für Anträge wird im Antragstyp ein Basis-Kürzel gesetzt, im oberen Fall z.B. „A“. Alle Anträge dieses Typs, die eingereicht werden, werden standardmäßig damit durchnummeriert – also „A1“, „A2“ usw.. Das Kürzel eines Antrags kann jederzeit vom Admin geändert werden – es darf allerdings jederzeit nur einen einzigen Antrag mit einem bestimmten Kürzel geben. Soll verschiedene Basis-Kürzel geben wie z.B. „A“ für reguläre Anträge und „D“ für Dringlichkeitsanträge und diese Kürzel automatisch vergeben werden, müssen dafür mehrere Antragstypen angelegt werden.</p>
+    <p>Für Änderungsanträge gibt es verschiedene Schemata, die unter „Einstellungen“ → „Diese Veranstaltung“ → „Änderungsanträge“ → „Nummerierung“ ausgewählt werden können. Zur Auswahl steht:</p>
+    <ul>
+        <li>Eine einfache durchgehende Nummerierung aller Änderungsanträge („Ä1“, „Ä2“, …)</li>
+        <li>Eine durchgehende Nummerierung pro Antrag („Ä1 zu A1“, „Ä2 zu A1“, „Ä1 zu A2“, …)</li>
+        <li>Eine Nummerierung, die sich an der Zeilennummer der ersten zu ändernden Zeile des Antrags anlehnt („A1-23“, wenn Zeile 23 die erste ist, die geändert werden soll)</li>
+        </ul>
+
+    <h3>Themen / Tags</h3>
+    <p>Anträge lassen sich auf der Startseite nicht nur streng hierarchisch in einer Tagesordnung darstellen, sondern auch nach nach vorgegebenen Schlagworten gliedern. Der wichtigste Unterschied dabei ist, dass ein Antrag auch mehrere Themen / Schlagworte gleichzeitig haben kann (auf der Startseite also z.B. sowohl unter „Verkehr“ als auch „Umwelt“ auftauchen kann). Welche Themen zur Auswahl stehen, kann von der Leitung der Veranstaltung vorgegeben werden. Antragsteller*innen können beim Einreichen eines Antrags Themen auswählen.</p>
+    <p>Man aktiviert diese Darstellung unter „Einstellungen“ → „Diese Veranstaltung“, indem man zuerst bei „Startseiten-Design“ den Punkt „Themen / Schlagworte“ wählt und weiter unten bei „Anträge“ die verschiedenen Themen anlegt, die zur Auswahl stehen sollen. Im allgemeinen wird auch die Einstellung „Mehrere Themen pro Antrag möglich“ gleich darunter empfehlenswert sein.</p>
+
+    <h3>Kommentare</h3>
+    <p>Sowohl Anträge als auch Änderungsanträge können kommentiert werden, sofern dies von der Veranstaltungsleitung nicht deaktiviert wird. Generell lässt sich pro Antragstyp festlegen, ob Kommentare möglich sein sollen (z.B. kann dies bei Anträgen aktiviert und bei Bewerbungen deaktiviert werden) und ob für Kommentar ein Login notwendig sein soll oder nicht. Diese Einstellung findet sich unter „Einstellungen“ → „Antragstypen bearbeiten“ → „Berechtigungen“.</p>
+    <p>Bei Anträgen ist es außerdem auch möglich, dass der Antragstext absatzweise kommentiert wird, nicht nur als Ganzes. Dadurch ist es gerade bei längeren Anträgen leichter zu erkennen, welche Abschnitte besonders stark diskutiert werden, bzw. auf welchen Teil des Antrags sich ein Kommentar bezieht. Diese Möglichkeit muss von der Veranstaltungsleiter allerdings erst explizit freigegeben werden: in den Einstellungen des Antragstyps gibt es weiter unten die Übersicht der „Antrags-Abschnitte“. Im „Antragstext“ kann man unter „Kommentare“ dafür „Pro Absatz“ auswählen.</p>
+    <p>Grundsätzlich lässt sich auch einstellen, dass Kommentare erst freigeschaltet werden müssen, bevor sie für alle sichtbar sind. Das ist vor allem dann interessant, wenn Kommentare nicht an ein Login gebunden sind. Dies wird global für die ganze Veranstaltung eingestellt, unter „Einstellungen“ → „Diese Veranstaltung“ → „Kommentare“ → „Freischaltung von Kommentaren“. Hier lässt sich außerdem auch einstellen, ob die Angabe einer Kontakt-E-Mail-Adresse erzwungen werden soll.</p>
+
+    <h3>Zustimmung / Ablehnung</h3>
+    <p>Auf Wunsch kann Besucher*innen der Seite die Möglichkeit gegeben werden, Anträgen die Zustimmung oder Ablehnung auszudrücken. Die Möglichkeit kann pro Antragstyp sowohl für die Anträge als auch für die zugehörigen Änderungsanträge jeweils einzeln aktivieren oder deaktivieren. Dazu wählt man unter „Einstellungen“ → „Antragstyp bearbeiten“ → „Berechtigungen“ bei „Anträge unterstützen“ bzw. „Änderungsanträge unterstützen“ aus, wer diese Funktion alles nutzen können soll, und ob es nur Zustimmung, Ablehnung oder beides geben soll. (Das „Offiziell unterstützen“  spielt in diesem Zusammenhang keine Rolle, sondern wird für die „Unterstützung sammeln“-Phase verwendet, die weiter beschrieben wurde)</p>
+
+    <h3>Übersetzung der Seite / Anpassungen des Wordings</h3>
+    <p>Antragsgrün unterstützt drei Stufen der sprachlichen Anpassung:</p>
+    <ul>
+        <li>Pro Veranstaltung lassen sich sämtliche Texte auf der Oberfläche von Antragsgrün über die Administrations-Oberfläche anpassen, unter „Einstellungen“ → „Sprache anpassen“. Diese Möglichkeit lässt sich beispielsweise dazu verwenden, einzelne Begriffe anzupassen, E-Mail-Texte zu ändern, vom „Du“ auf das „Sie“ zu wechseln oder eine andere Form der geschlechtergerechten Sprache einzubauen.</li>
+        <li>Komplette Übersetzungen: Antragsgrün ist darauf ausgelegt, in beliebige Sprachen übersetzt werden zu können – aktuell gibt es eine englische und eine deutsche Sprachfassung. Dies ist allerdings nicht mehr über eine Web-Oberfläche möglich, sondern erfordert Eingriffe in den Programmcode. Falls Sie eine Übersetzung planen, kontaktieren Sie uns einfach, wir helfen hier gerne (und würden uns freuen, wenn die Übersetzung dann auch Teil des Open-Source-Projekts werden könnte).</li>
+        <li>
+            Als Mittelding zwischen den beiden Lösungen gibt es noch die Möglichkeit, Sprachvarianten anzulegen – also Übersetzungen, die im großen und ganzen einer regulären Sprache entsprechen, aber nur einzelne Begriffe ändern. Auch über diesen Mechanismus wäre eine „Du“ → „Sie“-Übersetzung denkbar, oder natürlich Unterscheidungen wie „Englisch (britisch)“ und „Englisch (US)“. Auch diese Variante erfordert einen Eingriff in den Programmcode. Der wichtigste Unterschied zur Eingabe über die Web-Oberfläche (Punkt 1) ist, dass die Übersetzung dann allen Veranstaltungen zur Verfügung steht, und Bestandteil der offiziellen Antragsgrün-Distribution werden kann.<br>
+            Welche Sprachvariante verwendet werden soll, kann pro Veranstaltung unter „Einstellungen“ → „Sprache anpassen“ → „Basis-Sprachversion“ ausgewählt werden.
+        </li>
+     </ul>
+
 </div>
