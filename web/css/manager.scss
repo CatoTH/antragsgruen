@@ -45,6 +45,9 @@
 }
 
 .managerHelpPage {
+  .well &.content {
+    padding: 15px 40px 30px;
+  }
   font-size: 16px;
   h2 {
     margin-top: 40px;
@@ -59,6 +62,17 @@
   li {
     margin-top: 10px;
     margin-bottom: 10px;
+  }
+  .toc {
+    list-style-type: none;
+    margin: 20px 0 60px;
+    padding: 0;
+    ul {
+      margin-top: 0;
+    }
+    > li > a {
+      font-weight: bold;
+    }
   }
 }
 
