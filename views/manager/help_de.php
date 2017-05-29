@@ -21,7 +21,7 @@ $params = \Yii::$app->params;
 
 <div class="content managerHelpPage">
 
-<h2>Grundlegender Aufbau einer Antragsgrün-Seite</h2>
+<h2>Antragsgrün - Funktionsübersicht und Handbuch</h2>
 
     <h3>Anträge / Änderungsanträge</h3>
     <p>Als Anträge werden alle eigenständige Dokumente bezeichnet, die auf Antragsgrün eingestellt werden können. Anträge für Parteitage, Mitgliederversammlungen usw. sind einer der häufigsten Einsatzgebiete für Antragsgrün, daher verwenden wir den Begriff stellvertretend für alle Dokumenttypen. Tatsächlich können auch Wahlprogramme, Textentwürfe, Bewerbungen einschließlich Fotos, Satzungen usw. verwaltet werden.</p>
@@ -83,16 +83,35 @@ $params = \Yii::$app->params;
     <p>Jenseits von E-Mail-Benachrichtigungen werden auch mehrere RSS-Feeds unterstützt, um darüber über die neuesten Anträge, Änderungsanträge und Kommentare einer Veranstaltung informiert zu bleiben. Die Feeds befinden sich auf der Startseite in der Sidebar rechts.</p>
 
 <h2>Änderungsanträge übernehmen / einpflegen</h2>
-    <p>@TODO</p>
-    <!--
-Änderungsanträge einpflegen
-Einzelne Änderungsanträge
-Durch den Admin
-Durch die Antragsteller*in
-Alle auf einmal:
-Vorgehen
-Zwischenstand projizieren
--->
+    <p>Antragsgrün bietet mehrere Möglichkeiten, wie die in Änderungsanträgen vorgeschlagenen Änderungen in Anträge übernommen werden können. Es kann entweder ein einzelner Änderungsantrag übernommen werden, während andere Änderungsanträge zum Antrag aufrecht erhalten bleiben, oder es kann aus allen Änderungsanträgen eine gemeinsame neue Fassung des Antrags erstellt werden.</p>
+    <p>Wichtig als Vorbemerkung hierzu ist nur zu wissen: wenn es zwei oder mehr Änderungsanträge gibt, die Änderungen an der selben Textstelle vornehmen wollen, kommt es hier zu Konflikten zwischen diesen Änderungsanträgen, die händisch aufgelöst werden müssen – was oft nicht ganz trivial ist.</p>
+    <p>Das grundsätzliche Prinzip bei beiden Varianten ist dabei: durch die Übernahme des Änderungsantrags bzw. der Änderungsanträge entsteht eine neue Version des Antrags mit dem neuen Text. Die alte Version bleibt zusammen mit den Änderungsanträgen erhalten, sodass transparent bleibt, was sich an einem Antrag geändert hat. Wenn nur ein einzelner Änderungsantrag übernommen wird, verbleiben diejenigen anderen Änderungsanträge bei der alten Version, die in diesem Zuge als abgelehnt oder (Modifiziert) Angenommen markiert wurden, während diejenigen, die auf „Unverändert: Eingereicht“ verbleiben mit in die neue Version des Antrags übernommen werden.</p>
+
+    <h3>Einzelne Änderungsanträge einpflegen</h3>
+    <p>Die Möglichkeit, einen einzelnen Änderungsantrag zu übernehmen, befindet sich in der normalen Ansicht des Änderungsantrags in der rechten Sidebar unter „In den Antrag übernehmen“.</p>
+    <p>Der Vorgang besteht aus mehreren Schritten. Im ersten Schritt kann das Kürzel der neuen Antragsversion vergeben werden, die durch diese Übernahme entsteht. Außerdem kann auch angegeben werden, ob sich durch diese Übernahme eventuell andere Änderungsanträge erübrigen. Das ist insbesondere deshalb relevant, da mit Änderungsanträgen, die sich dadurch erübrigen, im weiteren Verlauf keine Konflikte mehr entstehen können.</p>
+    <p>Im nächsten Schritt kann angegeben werden, ob der Änderungsantrag eins zu eins so wie gestellt übernommen wird, oder ob es eine modifizierte Übernahme sein soll. In letzterem Fall kann man die betroffenen Absätze noch einmal nachbearbeiten.</p>
+    <p>Im letzten Schritt wird nun überprüft, ob sich die Änderungen möglicherweise mit Änderungsanträgen, die sich auf die selbe Textstellen beziehen und aufrecht erhalten bleiben, in die Quere kommen. Das kann beispielsweise passieren, wenn ein Satz umformuliert wird, in dem ein anderer Änderungsantrag ein Wort ersetzen will, oder ein Absatz gestrichen werden soll, in dem ein anderer Änderungsantrag etwas ergänzen will (und trotzdem aufrecht erhalten wird). In diesem Fall muss händisch nachkorrigiert werden: bei jedem kollidierende Absatz muss auf Basis des neuen Antragstextes der Änderungsantrag noch einmal so neu formuliert werden, wie es dem Sinn des ursprünglichen Änderungsantrags entspricht. Da dies nicht ganz simpel ist, empfiehlt es sich, diese Situation möglichst zu vermeiden – z.B. indem von vorn herein darauf geachtet wird, nur wenige sonst kollidierende Änderungsanträge aufrecht zu erhalten, oder aber unstrittige Änderungsanträge so früh wie möglich zu übernehmen, bevor weitere Änderungsanträge eingereicht werden, die möglicherweise kollidieren.</p>
+
+    <p>Die Möglichkeit, Änderungsanträge zu übernehmen, steht standardmäßig erst einmal nur der Veranstaltungsleitung / den Admins offen, kann jedoch auch in zwei Schritten den Initiator*innen des betroffenen Antrags eingeräumt werden:</p>
+    <ul>
+        <li>Im einfachen Fall können Antragsteller*innen Änderungsanträge dann selbständig übernehmen, wenn die Änderung unmodifiziert übernommen werden und solange es keine Kollisionen mit anderen Änderungsanträgen gibt. Alle anderen Änderungsanträge bleiben in diesem Fall erhalten. Hier gibt es also keine Möglichkeit für die Antragsteller*in, einen Änderungsantrag selbständig abzulehnen oder zu ändern.</li>
+        <li>Im schwierigeren Fall kann die komplette Funktionalität genutzt werden, die auch Admins zur Verfügung steht. Da dies auch heißt, dass im Kollisionsfall die kollidierenden Änderungsanträge verändert werden können, ist dies nur in klar kooperativen Fällen empfehlenswert, in denen auch alle Beteiligte das oben beschriebene Prinzip verstehen.</li>
+    </ul>
+    <p>Die zugehörige Einstellung kann unter „Einstellungen“ → „Antragstypen bearbeiten“ → „Dürfen Antragsteller*innen Änderungsanträge selbständig übernehmen?“</p>
+
+    <h3>Alle Änderungsanträge einpflegen</h3>
+    <p>Sollen alle Änderungsanträge auf einmal bearbeitet und daraus die Beschlussfassung des Antrags erzeugt werden, gibt es hierfür einen eigenen Bearbeitungsmodus: man findet ihn beim Antrag in der Sidebar als „Änderungsanträge einpflegen“. Er steht den Administrator*innen der Veranstaltung zur Verfügung.</p>
+    <p>Diese Funktion basiert darauf, dass der ursprüngliche Text des Antrags angezeigt wird, und sämtliche vorgeschlagenen Änderungen innerhalb des Textes angezeigt werden. Man geht nun Änderung für Änderung durch und kann die Änderung jeweils übernehmen oder Verwerfen. Vorgeschlagene Streichungen von Texten erscheinen beispielsweise durchgestrichen rot – übernimmt man diese Änderung, verschwindet der Text endgültig, während ein Verwerfen dieser Änderung die Passage wieder als regulären Text erscheinen lässt. Darüber hinaus kann der Text auch beliebig bearbeitet werden, um so beispielsweise redaktionelle Änderungswünsche einzupflegen.</p>
+    <p>Allerdings kann es auch bei dieser Darstellungsart zu Komplikationen führen, wenn sich zwei Änderungsanträge auf die selbe Stelle beziehen. Antragsgrün versucht dann, möglichst viele der Änderungen innerhalb des Fließtextes darzustellen. Diejenigen, bei denen das nicht möglich ist, werden unterhalb des betroffenen Absatzes als „Kollidierender Änderungsantrag“ dargestellt. Der Konflikt muss letztlich redaktionell aufgelöst werden, der kollidierende Absatz anschließend gelöscht.</p>
+    <p>Um die Anzahl solcher Konflikte zu minimieren, gibt es vor dem Start des Bearbeitens abgefragt, welche Änderungsanträge mit in die Zusammenstellung aufgenommen werden sollen – Änderungsanträge, die abgelehnt wurden oder Globalalternativen darstellen und daher zu einer Vielzahl an Konflikten führen können, können so von der Vorlage für die neue Antragsfassung ausgenommen werden.</p>
+    <p>Wichtig ist noch, am Ende den neuen Status der Änderungsanträge festzulegen (angenommen, abgelehnt usw.), da das nicht automatisiert ermittelt werden kann. Das hat keinen direkten Einfluss auf die neue Antragsversion, sondern dient der Information der Antragsteller*innen.</p>
+
+    <h4>(Öffentliche) Zwischenstände</h4>
+    <p>Da das Zusammenführen der Änderungsanträge gerade bei längeren Anträgen mit vielen Änderungsanträgen einige Zeit in Anspruch nehmen kann, ist es hier besonders wichtig, dass im Falle eines Fehlers (Computerabsturz etc.) nicht die gesamte Arbeit von neuem begonnen werden muss. Daher gibt es hier Zwischenstände, die automatisch etwa einmal pro Minute gespeichert werden. Wird die „Anträge zusammenführen“-Seite erneut aufgerufen, ohne dass das Bearbeiten zuvor abgeschlossen wurde, erhält man die Möglichkeit, beim zuletzt gespeicherten Zwischenstand weiterzumachen.</p>
+    <p><strong>Achtung:</strong> Zwischenstände können nur gespeichert werden, so lange auch Internetverbindung besteht.</p>
+
+    <p>Es gibt Veranstaltungen, auf denen dieses Überarbeiten des Antrags in Beteiligung von verschiedenen Personen, z.B. den Antragsteler*innen geschieht. Für solche Fälle gibt es die Möglichkeit, den jeweils aktuellsten Zwischenstand öffentlich einsehbar zu machen, sodass alle jederzeit im Bilde sind, wie der aktuelle Bearbeitungstand aussieht. Dies kann während dem Einpflegen der Änderungsanträge aktiviert werden: in dem kleinen „Zwischenstand“-Fensterchen rechts unten im Bildschirm der Punkt „Öffentlich sichtbar“. Wird dort das Häkchen gesetzt, erscheint einerseits ein direkter Link auf den öffentlichen Zwischenstand, andererseits wird dann auch auf der regulären Antragsseite über dem Antragstext ein „Zwischenstand anzeigen“-Link eingeblendet. Der öffentliche Zwischenstand kann vom Betrachtenden optional so eingestellt werden, dass er sich einmal alle zehn Sekunden automatisch aktualisiert.</p>
 
 <h2>Export-Funktionen</h2>
     <h3>PDF</h3>
@@ -118,7 +137,7 @@ Zwischenstand projizieren
 <h2>Weitere Funktionen</h2>
     <h3>Layout-Anpassbarkeit</h3>
     <p>Verschiedene Aspekte des Layouts von Antragsgrün lassen sich über das Administrationsinterface anpassen – die meisten davon unter „Einstellungen“ → „Diese Veranstaltung“ → „Aussehen“.</p>
-    <p>Am stärksten wirkt sich die „Layout“-Einstellung aus: sie verändert das komplette Aussehen der Seite und wird genutzt, um eine entwickelte Anpassung an ein Corporate Design zu aktivieren. Neben dem „Antragsgrün-Standard“-Layout gibt es derzeit Layouts, die teils für den Deutschen Bundesjugendring, teils für Bündnis 90 / Die Grünen entwickelt wurden. Weitere grundlegend andere Layouts können entweder von halbwegs versierten Web-Entwickler*innen selbst entwickelt werden (siehe „Developing custom themes“ auf https://github.com/CatoTH/antragsgruen), oder bei uns in Auftrag gegeben werden.</p>
+    <p>Am stärksten wirkt sich die „Layout“-Einstellung aus: sie verändert das komplette Aussehen der Seite und wird genutzt, um eine entwickelte Anpassung an ein Corporate Design zu aktivieren. Neben dem „Antragsgrün-Standard“-Layout gibt es derzeit Layouts, die teils für den Deutschen Bundesjugendring, teils für Bündnis 90 / Die Grünen entwickelt wurden. Weitere grundlegend andere Layouts können entweder von halbwegs versierten Web-Entwickler*innen selbst entwickelt werden (siehe „<a href="https://github.com/CatoTH/antragsgruen">Developing custom themes</a>“), oder bei uns in Auftrag gegeben werden.</p>
     <p>Für den Aufbau der Startseite gibt es mehrere Varianten („Layout-Design“ in den Einstellungen), die sich für verschiedene Einsatzzwecke eignen. Insbesondere kann darüber eingestellt werden, ob eine Tagesordnung auf der Startseite angezeigt werden soll, wie die Anträge in Bezug zur Tagesordnung angezeigt werden sollen, oder ob die Anträge nach selbst definierten Schlagworten bzw. Themen gegliedert werden sollen (siehe weiter unten im Punkt „Themen“).</p>
     <p>Darüber hinaus lässt sich ein eigenes Logo verlinken und verschiedene Aspekte der Seite lassen sich ausblenden.</p>
 
