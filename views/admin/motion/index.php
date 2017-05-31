@@ -29,7 +29,7 @@ echo '<ul>';
 foreach ($motions as $motion) {
     $url = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
     echo '<li><a href="' . Html::encode($url) . '" class="motionEditLink' . $motion->id . '">';
-    echo Html::encode($motion->getTitleWithPrefix());
+    echo $motion->getEncodedTitleWithPrefix();
     echo '</a></li>';
 }
 echo '</ul>';
