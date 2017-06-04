@@ -39,7 +39,11 @@ class MovingParagraphDetectorTest extends DBTestBase
         /** @var MotionSection $section */
         foreach ($motion->sections as $section) {
             if ($section->sectionId == 2) {
-                $merger     = $section->getAmendmentDiffMerger();
+                $amendments = [];
+                foreach ($motion->getVisibleAmendments() as $amendment) {
+                    $amendments[] = $amendment->id;
+                }
+                $merger     = $section->getAmendmentDiffMerger($amendments);
                 $paragraphs = $section->getTextParagraphObjects(false, false, false);
                 foreach (array_keys($paragraphs) as $paragraphNo) {
                     $groupedParaData = $merger->getGroupedParagraphData($paragraphNo);

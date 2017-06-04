@@ -141,16 +141,16 @@ class MotionSection extends IMotionSection
         }
 
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
-        $cacheDeps = [$lineLength, $this->data];
-        $cache = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
+        $cacheDeps  = [$lineLength, $this->data];
+        $cache      = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
         if ($cache) {
             return $cache;
         }
 
-        $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+        $paragraphs      = HTMLTools::sectionSimpleHTML($this->data);
         $paragraphsLines = [];
         foreach ($paragraphs as $paraNo => $paragraph) {
-            $lines = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
+            $lines                    = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
             $paragraphsLines[$paraNo] = $lines;
         }
 
@@ -216,7 +216,7 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+                $paragraphs   = HTMLTools::sectionSimpleHTML($this->data);
                 $amParagraphs = $amSec->diffToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
@@ -298,14 +298,23 @@ class MotionSection extends IMotionSection
     private $amendmentDiffMerger = null;
 
     /**
+     * @param int[] $toMergeAmendmentIds
+     *
      * @return AmendmentDiffMerger
      */
-    public function getAmendmentDiffMerger()
+    public function getAmendmentDiffMerger($toMergeAmendmentIds)
     {
         if (is_null($this->amendmentDiffMerger)) {
+            $sections = [];
+            foreach ($this->amendingSections as $section) {
+                if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
+                    $sections[] = $section;
+                }
+            }
+
             $merger = new AmendmentDiffMerger();
             $merger->initByMotionSection($this);
-            $merger->addAmendingSections($this->amendingSections);
+            $merger->addAmendingSections($sections);
             $merger->mergeParagraphs();
             $this->amendmentDiffMerger = $merger;
         }

@@ -14,6 +14,7 @@ use yii\helpers\Html;
  * @var Motion $motion
  * @var MotionMergeAmendmentsForm $form
  * @var array $amendmentStati
+ * @var int[] $toMergeAmendmentIds
  * @var null|Motion $resumeDraft
  */
 
@@ -58,7 +59,7 @@ foreach ($motion->getSortedSections(false) as $section) {
     $type = $section->getSettings();
     if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         if (!isset($newSections[$section->sectionId])) {
-            $diffMerger = $section->getAmendmentDiffMerger();
+            $diffMerger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
             if ($diffMerger->hasCollodingParagraphs()) {
                 $hasCollidingParagraphs = true;
             }
@@ -157,7 +158,7 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
                     if (isset($newSections[$section->sectionId])) {
                         echo $newSections[$section->sectionId]->dataRaw;
                     } else {
-                        echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
+                        echo $simpleSection->getMotionTextWithInlineAmendments($toMergeAmendmentIds, $changesets);
                     }
 
                     echo '</div>';

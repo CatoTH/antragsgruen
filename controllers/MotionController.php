@@ -728,11 +728,6 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $resumeDraft = $motion->getMergingDraft(false);
-        if ($resumeDraft && \Yii::$app->request->get('discard', 0) == 1) {
-            $resumeDraft = null;
-        }
-
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
             if (!$newMotion || $newMotion->parentMotionId != $motion->id) {
@@ -748,8 +743,7 @@ class MotionController extends Base
             $newMotion->refresh();
         }
 
-        $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
-        $form       = new MotionMergeAmendmentsForm($motion, $newMotion);
+        $form = new MotionMergeAmendmentsForm($motion, $newMotion);
 
         try {
             if ($this->isPostSet('save')) {
@@ -769,11 +763,27 @@ class MotionController extends Base
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
+        $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
+
+        $resumeDraft = $motion->getMergingDraft(false);
+        if ($resumeDraft && \Yii::$app->request->post('discard', 0) == 1) {
+            $resumeDraft = null;
+        }
+
+        $toMergeAmendmentIds = [];
+        $postAmendIds        = \Yii::$app->request->post('amendments', null);
+        foreach ($motion->getVisibleAmendments() as $amendment) {
+            if ($postAmendIds === null || isset($postAmendIds[$amendment->id])) {
+                $toMergeAmendmentIds[] = $amendment->id;
+            }
+        }
+
         return $this->render('merge_amendments', [
-            'motion'         => $motion,
-            'form'           => $form,
-            'amendmentStati' => $amendStati,
-            'resumeDraft'    => $resumeDraft,
+            'motion'              => $motion,
+            'form'                => $form,
+            'amendmentStati'      => $amendStati,
+            'resumeDraft'         => $resumeDraft,
+            'toMergeAmendmentIds' => $toMergeAmendmentIds,
         ]);
     }
 

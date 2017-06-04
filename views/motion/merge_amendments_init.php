@@ -38,45 +38,58 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 <?php
                 $date = \app\components\Tools::formatMysqlDateTime($draft->dateCreation);
                 echo str_replace('%DATE%', $date, \Yii::t('amend', 'merge_init_draft_hint'));
-                ?>
-            </div>
-            <?php
-        } ?>
 
-        <div class="merge-all-row">
-            <?php
-            if ($draft) {
                 $mergeContUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments', ['resume' => $draft->id]);
-                $mergeUrl     = UrlHelper::createMotionUrl($motion, 'merge-amendments', ['discard' => '1']);
                 ?>
-                <div>
-                    <a href="<?= Html::encode($mergeUrl) ?>" class="btn btn-default discard">
-                        <?= \Yii::t('amend', 'merge_init_all_discard') ?>
-                    </a>
-                </div>
-                <div>
+                <div class="pull-right">
                     <a href="<?= Html::encode($mergeContUrl) ?>" class="btn btn-primary">
                         <?= \Yii::t('amend', 'merge_init_all_continue') ?>
                     </a>
                 </div>
+            </div>
+            <?php
+        } ?>
+
+        <?php
+        $formUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments');
+        echo Html::beginForm($formUrl, 'post', ['class' => 'mergeAllRow']);
+        ?>
+        <div class="toMergeAmendments">
+            <h3><?= \Yii::t('amend', 'merge_init_all_amendments') ?></h3>
+            <ul>
                 <?php
-            } else {
-                $mergeUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments');
+                foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
+                    echo '<li><label>';
+                    echo Html::checkbox('amendments[' . $amend->id . ']', true);
+                    echo ' ' . Html::encode($amend->getTitle());
+                    echo \app\components\HTMLTools::amendmentDiffTooltip($amend);
+                    echo '</label></li>';
+                }
                 ?>
-                <div>
-                    <a href="<?= Html::encode($mergeUrl) ?>" class="btn btn-primary">
-                        <?= \Yii::t('amend', 'merge_init_all_start') ?>
-                    </a>
-                </div>
-                <?php
-            }
-            ?>
+            </ul>
         </div>
+        <?php
+        if ($draft) {
+            ?>
+            <input type="hidden" name="discard" value="1">
+            <button type="submit" class="btn btn-default discard pull-right">
+                <?= \Yii::t('amend', 'merge_init_all_discard') ?>
+            </button>
+            <?php
+        } else {
+            ?>
+            <button type="submit" class="btn btn-primary pull-right">
+                <?= \Yii::t('amend', 'merge_init_all_start') ?>
+            </button>
+            <?php
+        }
+        echo Html::endForm();
+        ?>
     </div>
 
     <h2 class="green"><?= \Yii::t('amend', 'merge_init_single') ?></h2>
     <div class="content">
-        <ul class="merge-single">
+        <ul class="mergeSingle">
             <?php
             foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
                 $mergeUrl = UrlHelper::createAmendmentUrl($amendment, 'merge');

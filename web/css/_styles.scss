@@ -376,16 +376,26 @@ del.space, ins.space, del.formatting, ins.formatting {
     margin-top: 20px;
     margin-bottom: 20px;
   }
-  .merge-all-row {
-    display: table;
-    width: 100%;
-    > div {
-      display: table-cell;
-      width: 50%;
-      text-align: center;
+  .alert-info {
+    a.btn {
+      margin-top: -7px;
     }
   }
-  .merge-single {
+  .mergeAllRow {
+    h3 {
+      margin-top: 50px;
+      font-size: 16px;
+    }
+    ul {
+      list-style-type: none;
+      margin: 0 0 0 40px;
+      padding: 0;
+    }
+    label {
+      font-weight: normal;
+    }
+  }
+  .mergeSingle {
     list-style-type: none;
     margin: 0;
     padding: 0;

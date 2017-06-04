@@ -51,7 +51,11 @@ foreach ($motion->getSortedSections(false) as $section) {
         if (isset($newSections[$section->sectionId])) {
             echo $newSections[$section->sectionId]->dataRaw;
         } else {
-            echo $simpleSection->getMotionTextWithInlineAmendments($changesets);
+            $amendmentIds = [];
+            foreach ($motion->getVisibleAmendments() as $amendment) {
+                $amendmentIds[] = $amendment->id;
+            }
+            echo $simpleSection->getMotionTextWithInlineAmendments($amendmentIds, $changesets);
         }
 
         echo '</div></div>';

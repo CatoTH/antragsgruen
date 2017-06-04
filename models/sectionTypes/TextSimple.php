@@ -723,14 +723,15 @@ class TextSimple extends ISectionType
     private static $CHANGESET_COUNTER = 0;
 
     /**
+     * @param int[] $toMergeAmendmentIds
      * @param array $changeset
      * @return string
      */
-    public function getMotionTextWithInlineAmendments(&$changeset)
+    public function getMotionTextWithInlineAmendments($toMergeAmendmentIds, &$changeset)
     {
         /** @var MotionSection $section */
         $section    = $this->section;
-        $merger     = $section->getAmendmentDiffMerger();
+        $merger     = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
         $paragraphs = $section->getTextParagraphObjects(false, false, false);
 
         /** @var Amendment[] $amendmentsById */
