@@ -132,7 +132,7 @@ return [
     'submitted_supp_phase_email'         => "Salut,\n\nTu as créé la motion.\nour la déposer officiellement, il faut au moins %MIN% soutiens.\n\nEnvoie le lien suivant pour collecter des soutiens pour ta motion : \n\n%LINK%\n",
     'submitted_supp_phase_email_subject' => 'Motion créee',
     'submitted_adminnoti_title'          => 'Nouvelle motion',
-    'submitted_adminnoti_body'           => "Une nouvelle a été créée.\nTitre : %TITLE%\Auteur : %INITIATOR%\nLien : %LINK%",
+    'submitted_adminnoti_body'           => "Une nouvelle a été créée.\nTitre : %TITLE%\nAuteur : %INITIATOR%\nLien : %LINK%",
     'support_collect_explanation_title'  => 'Trouver des soutiens',
     'support_collect_explanation'        => 'Le dépôt de motions d\'amendements par des individus requiert au moins %MIN% soutiens pour être possible. Merci de suivre cette procédure :<br><ol>
         <li><strong>Créer un brouillon :</strong> Entre la motion et ton contact sur cette page. Confirme sur la page suivante que tu veux créer cette motion.</li>
