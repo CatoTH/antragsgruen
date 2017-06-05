@@ -42,7 +42,7 @@ $minimalisticUi          = $motion->getConsultation()->getSettings()->minimalist
 $minHeight               = $sidebarRows * 40 - 100;
 $supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
-echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 
 echo $layout->getMiniMenu('motionSidebarSmall');
 

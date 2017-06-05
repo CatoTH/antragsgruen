@@ -284,6 +284,18 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return string
      */
+    public function getEncodedTitleWithPrefix()
+    {
+        $title = $this->getTitleWithPrefix();
+        $title = Html::encode($title);
+        $title = str_replace(" - \n", "<br>", $title);
+        $title = str_replace("\n", "<br>", $title);
+        return $title;
+    }
+
+    /**
+     * @return string
+     */
     public function getNewTitlePrefix()
     {
         $new = \Yii::t('motion', 'prefix_new_code');

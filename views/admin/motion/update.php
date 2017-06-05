@@ -50,7 +50,7 @@ $html .= '</ul>';
 $layout->menusHtml[] = $html;
 
 
-echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 
 echo $controller->showErrors();
 

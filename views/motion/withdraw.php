@@ -18,7 +18,7 @@ $layout->addBreadcrumb(\Yii::t('motion', 'withdraw_bread'));
 
 $this->title = \Yii::t('motion', 'withdraw') . ': ' . $motion->getTitleWithPrefix();
 
-echo '<h1>' . \Yii::t('motion', 'withdraw') . ': ' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+echo '<h1>' . \Yii::t('motion', 'withdraw') . ': ' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'content withdrawForm']);
 
 echo '<div class="ask">' . \Yii::t('motion', 'withdraw_confirm') . '</div>';

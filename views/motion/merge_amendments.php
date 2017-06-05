@@ -36,7 +36,7 @@ foreach ($form->newMotion->getSortedSections(false) as $section) {
 }
 
 
-echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>';
+echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 
 echo '<div class="motionData">';
 
