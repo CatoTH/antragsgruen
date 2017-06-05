@@ -66,6 +66,19 @@ class Tools
                     $matches['minute']
                 );
             }
+        } elseif ($locale == 'fr') {
+            $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4}) ' .
+                '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                return sprintf(
+                    '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
+                    $matches['year'],
+                    $matches['month'],
+                    $matches['day'],
+                    $matches['hour'],
+                    $matches['minute']
+                );
+            }
         } elseif ($locale == 'en') {
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
                 '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
@@ -117,6 +130,8 @@ class Tools
 
         if ($locale == 'de') {
             return $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'];
+        } elseif ($locale == 'fr') {
+            return $matches['day'] . '/' . $matches['month'] . '/' . $matches['year'];
         } elseif ($locale == 'en') {
             return $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'];
         } else {
@@ -138,6 +153,11 @@ class Tools
 
         if ($locale == 'de') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return sprintf('%1$04d-%2$02d-%3$02d', $matches['year'], $matches['month'], $matches['day']);
+            }
+        } elseif ($locale == 'fr') {
+            $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4})$/';
             if (preg_match($pattern, $date, $matches)) {
                 return sprintf('%1$04d-%2$02d-%3$02d', $matches['year'], $matches['month'], $matches['day']);
             }
@@ -174,6 +194,10 @@ class Tools
             $date = $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
             return $date;
+        } elseif ($locale == 'fr') {
+            $date = $matches['day'] . '/' . $matches['month'] . '/' . $matches['year'] . ' ';
+            $date .= $matches['hour'] . ':' . $matches['minute'];
+            return $date;
         } elseif ($locale == 'en') {
             $date = $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
@@ -200,6 +224,8 @@ class Tools
 
         if ($locale == 'de') {
             return $time->format('d.m.Y H:i');
+        } elseif ($locale == 'fr') {
+            return $time->format('d/m/Y H:i');
         } elseif ($locale == 'en') {
             return $time->format('m/d/Y H:i');
         } else {
@@ -248,6 +274,9 @@ class Tools
         if ($locale == 'de') {
             $date = explode('-', substr($mysqldate, 0, 10));
             return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
+        } elseif ($locale == 'fr') {
+            $date = explode('-', substr($mysqldate, 0, 10));
+            return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
         } elseif ($locale == 'en') {
             $date = explode('-', substr($mysqldate, 0, 10));
             return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
@@ -273,7 +302,7 @@ class Tools
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
-        if ($locale !== 'de' && $locale !== 'en') {
+        if ($locale !== 'de' && $locale !== 'en' && $locale != 'fr') {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 

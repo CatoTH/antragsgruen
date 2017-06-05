@@ -409,7 +409,7 @@ class ManagerController extends Base
      * @param string $language
      * @return string
      */
-    public function actionAntragsgrueninit($language = 'en')
+    public function actionAntragsgrueninit($language = '')
     {
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -444,6 +444,9 @@ class ManagerController extends Base
         $delInstallFileCmd = 'rm ' . $installFile;
 
         $dbForm = new AntragsgruenInitDb($configFile);
+        if ($language == '') {
+            $language = $dbForm->language;
+        }
         if (isset(MessageSource::getBaseLanguages()[$language])) {
             $dbForm->language    = $language;
             \Yii::$app->language = $language;

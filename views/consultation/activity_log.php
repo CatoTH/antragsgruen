@@ -39,7 +39,7 @@ if (count($entries) == 0) {
         echo $entry->getTimeAgoFormatted() . '</div>';
 
         if ($motion = $entry->getMotion()) {
-            echo '<div class="motion">' . Html::encode($motion->getTitleWithPrefix()) . '</div>';
+            echo '<div class="motion">' . $motion->getEncodedTitleWithPrefix() . '</div>';
         }
 
         echo '<div class="description">' . $entry->formatLogEntry() . '</div>';

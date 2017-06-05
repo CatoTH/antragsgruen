@@ -14,7 +14,7 @@ class AntragsgruenApp
     public $prettyUrl             = true;
     public $tablePrefix           = '';
     public $resourceBase          = '/';
-    public $baseLanguage          = 'de';
+    public $baseLanguage          = 'en';
     public $randomSeed            = '';
     public $multisiteMode         = false;
     public $domainPlain           = 'http://antragsgruen.local/';

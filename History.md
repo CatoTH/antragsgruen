@@ -16,8 +16,9 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.9 [Not released yet]
+### Version 3.6.9 (2017-06-05)
 
+- Feature: A French translation is provided, thanks to the work of Antoine Tifine of Les Jeunes Écologistes
 - Bugfix: In some very rare cases, a bold formatting in the PDF-Export was not finished correctly, leading to the rest of the document appearing as bold.
 - Bugfix: Merging amendments did not work with PHP 5.5
 

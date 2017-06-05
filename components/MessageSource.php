@@ -94,6 +94,11 @@ class MessageSource extends \yii\i18n\MessageSource
                 'en-congress' => 'Convention',
             ], $localMessages);
         }
+        if ($language == 'fr') {
+            return array_merge([
+                'fr' => 'Français',
+            ], $localMessages);
+        }
         return [];
     }
 
@@ -105,6 +110,7 @@ class MessageSource extends \yii\i18n\MessageSource
         return [
             'de' => 'Deutsch',
             'en' => 'English',
+            'fr' => 'Français',
         ];
     }
 

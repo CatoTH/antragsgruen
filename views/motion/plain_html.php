@@ -10,12 +10,12 @@ echo '<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>' . Html::encode($motion->getTitleWithPrefix()) . '</title>
+    <title>' . $motion->getEncodedTitleWithPrefix() . '</title>
 </head>
 
 <body>';
 
-echo '<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>
+echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>
 
 <table><tbody>
 <tr>';

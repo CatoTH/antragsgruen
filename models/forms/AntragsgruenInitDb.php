@@ -43,6 +43,7 @@ class AntragsgruenInitDb extends Model
         $config = $this->readConfigFromFile($configFile);
         $this->setDatabaseFromParams($config->dbConnection);
         $this->adminIds = ($config->adminUserIds ? $config->adminUserIds : []);
+        $this->language = $config->baseLanguage;
     }
 
     /**
