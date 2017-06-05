@@ -124,13 +124,16 @@ class Layout
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getHTMLLanguageCode()
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
             $params = \yii::$app->params;
             $lang   = explode('-', $params->baseLanguage);
-            if (in_array($lang[0], MessageSource::getBaseLanguages())) {
+            if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
                 return $lang[0];
             } else {
                 return 'en';
@@ -138,7 +141,7 @@ class Layout
         }
         $langs = explode(',', $this->consultation->wordingBase);
         $lang  = explode('-', $langs[0]);
-        if (in_array($lang[0], MessageSource::getBaseLanguages())) {
+        if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
             return $lang[0];
         } else {
             return 'en';
