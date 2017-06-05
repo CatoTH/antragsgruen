@@ -157,10 +157,10 @@ class SiteCreateForm extends Model
 
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
-        if ($params->baseLanguage == 'en') {
-            $con->wordingBase = 'en';
-        } else {
+        if ($params->baseLanguage == 'de') {
             $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
+        } else {
+            $con->wordingBase = $params->baseLanguage;
         }
 
         $settings                  = $con->getSettings();

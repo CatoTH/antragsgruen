@@ -5,6 +5,7 @@
 - Bugfix: In some very rare cases, a bold formatting in the PDF-Export was not finished correctly, leading to the rest of the document appearing as bold.
 - Bugfix: Merging amendments did not work with PHP 5.5
 - Feature: Line breaks in motion titles are supported
+- Feature: A French translation is provided
 
 ### Version 3.6.8 (2017-05-09)
 

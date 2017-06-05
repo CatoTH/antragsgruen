@@ -2,6 +2,7 @@
 
 namespace app\models\settings;
 
+use app\components\MessageSource;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\views\hooks\LayoutHooks;
@@ -123,22 +124,25 @@ class Layout
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getHTMLLanguageCode()
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
             $params = \yii::$app->params;
             $lang   = explode('-', $params->baseLanguage);
-            if ($lang[0] == 'de') {
-                return 'de';
+            if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
+                return $lang[0];
             } else {
                 return 'en';
             }
         }
         $langs = explode(',', $this->consultation->wordingBase);
         $lang  = explode('-', $langs[0]);
-        if ($lang[0] == 'de') {
-            return 'de';
+        if (isset(MessageSource::getBaseLanguages()[$lang[0]])) {
+            return $lang[0];
         } else {
             return 'en';
         }
@@ -153,22 +157,18 @@ class Layout
             /** @var AntragsgruenApp $params */
             $params = \yii::$app->params;
             $lang   = explode('-', $params->baseLanguage);
-            if ($lang[0] == 'de') {
-                return 'de';
-            } elseif ($params->baseLanguage == 'en-gb') {
+            if ($params->baseLanguage == 'en-gb') {
                 return 'en-gb';
             } else {
-                return 'en';
+                return $lang[0];
             }
         }
         $langs = explode(',', $this->consultation->wordingBase);
         $lang  = explode('-', $langs[0]);
-        if ($lang[0] == 'de') {
-            return 'de';
-        } elseif ($langs[0] == 'en-gb') {
+        if ($langs[0] == 'en-gb') {
             return 'en-gb';
         } else {
-            return 'en';
+            return $lang[0];
         }
     }
 
@@ -180,7 +180,7 @@ class Layout
         $jsLang  = $this->getJSLanguageCode();
         $files   = [];
         $files[] = $this->resourceUrl('js/build/antragsgruen.min.js');
-        $files[] = $this->resourceUrl('js/build/antragsgruen-' . $jsLang . '.min.js');
+        $files[] = $this->resourceUrl('js/antragsgruen-' . $jsLang . '.js');
         foreach ($this->extraJs as $extraJs) {
             $files[] = $this->resourceUrl($extraJs);
         }
