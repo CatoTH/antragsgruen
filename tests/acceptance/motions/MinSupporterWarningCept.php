@@ -24,6 +24,7 @@ $I->acceptBootboxAlert();
 $I->wantTo('make sure it does not appear for organizations');
 
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->fillField('#initiatorPrimaryName', 'Meine Organisation');
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');

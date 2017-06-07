@@ -8,6 +8,7 @@ $I->wantTo('write a comment, but forget my name');
 $I->gotoConsultationHome()->gotoMotionView(2);
 
 $I->see('Kommentar schreiben', 'section.comments');
+$I->executeJS('$("#comment_-1_-1_name").removeAttr("required");');
 $I->fillField('#comment_-1_-1_name', '');
 $I->fillField('#comment_-1_-1_email', 'test@example.org');
 $I->fillField('#comment_-1_-1_text', 'Some Text');
@@ -26,7 +27,7 @@ $I->submitForm('section.comments .commentForm', [], 'writeComment');
 
 $I->see(mb_strtoupper('My Name'), 'section.comments .motionComment');
 $I->see('Some Text', 'section.comments .motionComment');
-$I->dontSee('section.comments .motionComment .delLink');
+$I->dontSeeElementInDOM('section.comments .motionComment .delLink');
 
 
 
@@ -49,7 +50,7 @@ $I->gotoConsultationHome()->gotoMotionView(2);
 
 $I->see('Kommentar schreiben', 'section.comments');
 
-$I->seeElement('section.comments .motionComment .delLink');
+$I->seeElementInDOM('section.comments .motionComment .delLink');
 
 $I->submitForm('section.comments .motionComment .delLink', [], '');
 $I->seeBootboxDialog('Wirklich löschen');

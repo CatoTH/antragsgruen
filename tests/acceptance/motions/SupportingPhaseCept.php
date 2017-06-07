@@ -81,6 +81,7 @@ $I->see('aktueller Stand: 0');
 
 $I->wantTo('support it again');
 
+$I->executeJS('$("input[name=motionSupportOrga]").removeAttr("required");');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->dontSee('Du unterstützt diesen Antrag nun.');
 $I->see('No organization entered');
@@ -130,6 +131,7 @@ $I->gotoConsultationHome(false, 'supporter', 'supporter')->gotoMotionCreatePage(
 $I->fillField('#sections_30', 'Title as organization');
 $I->executeJS('CKEDITOR.instances.sections_31_wysiwyg.setData("<p><strong>Test</strong></p>");');
 $I->checkOption('#personTypeOrga');
+$I->fillField('#initiatorPrimaryName', 'My organization');
 $I->fillField('#resolutionDate', '01.01.2016');
 $I->submitForm('#motionEditForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');
