@@ -186,6 +186,9 @@ class MessageSource extends \yii\i18n\MessageSource
         };
         $languages = explode(',', $consultation->wordingBase);
 
+        $baseFile = $this->getMessageFilePath($category, 'en');
+        $origMessages = $this->loadMessagesFromFile($baseFile);
+
         $baseMessages = $extMessages = [];
         foreach ($languages as $lang) {
             $parts = explode('-', $lang);
@@ -212,7 +215,7 @@ class MessageSource extends \yii\i18n\MessageSource
             }
         }
 
-        return array_merge($baseMessages, $extMessages, $conSpecific);
+        return array_merge($origMessages, $baseMessages, $extMessages, $conSpecific);
     }
 
 
