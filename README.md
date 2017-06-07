@@ -22,6 +22,7 @@ Using the hosted version / testing it
 
 - German: [https://antragsgruen.de](https://antragsgruen.de/)
 - English: [https://motion.tools](https://motion.tools/)
+- French (test version only): [http://motion.tools](http://sandbox.motion.tools/createsite?language=fr)
 
 Installation using the pre-bundled package
 ------------------------------------------
