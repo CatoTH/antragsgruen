@@ -13,6 +13,7 @@
 - Several improvements to the inline editing of the agenda
 - A more detailed manual about the functionality of Antragsgrün is provided
 - We don't pretend anymore you could use Antragsgrün with IE <=9
+- Updates to several core libraries
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
