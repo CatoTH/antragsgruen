@@ -59,6 +59,7 @@ $I->wantTo('make some changes to the motion');
 $I->fillField(['name' => 'sections[1]'], 'Testantrag 2');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p><strong>Another string</strong></p>");');
 $I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("<p><em>Italic is beautiful as well</em></p>");');
+$I->executeJS('$("#initiatorPrimaryName").removeAttr("required");');
 $I->fillField(['name' => 'Initiator[primaryName]'], '');
 $I->fillField(['name' => 'Initiator[contactEmail]'], 'test2@example.org');
 $I->fillField(['name' => 'Initiator[contactPhone]'], '+49-123-456789');

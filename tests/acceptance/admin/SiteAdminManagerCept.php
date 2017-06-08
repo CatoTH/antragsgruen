@@ -21,8 +21,11 @@ $I->see(mb_strtoupper('Administrator*innen der Reihe'), 'h2');
 $I->wantTo('Add testuser as admin');
 $I->executeJS('$("input[name=addType]").val("email");');
 $I->fillField('#addUsername', 'testuser@example.org');
-$I->submitForm('#adminForm', [], 'addAdmin');
+$I->submitForm('#adminAddForm', [], 'addAdmin');
 $I->see('testuser@example.org');
+
+$I->checkOption('.admin2 .type-site input');
+$I->submitForm('#adminForm', [], 'saveAdmin');
 
 $I->wantTo('Login in as testuser');
 $I->logout();
@@ -37,7 +40,7 @@ $I->gotoStdAdminPage()->gotoSiteAccessPage();
 
 $I->executeJS('$("input[name=addType]").val("wurzelwerk");');
 $I->fillField('#addUsername', 'HoesslTo');
-$I->submitForm('#adminForm', [], 'addAdmin');
+$I->submitForm('#adminAddForm', [], 'addAdmin');
 $I->see('HoesslTo');
 
 

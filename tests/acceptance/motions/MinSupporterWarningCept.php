@@ -32,6 +32,7 @@ $I->acceptBootboxAlert();
 
 
 $I->fillField('#resolutionDate', '01.01.2000');
+$I->executeJS('$("[required]").removeAttr("required");');
 $I->submitForm('#motionEditForm', [], 'save');
 
 $I->dontSeeBootboxDialog('Es müssen mindestens 19 Unterstützer*innen angegeben werden');

@@ -13,6 +13,7 @@ $I->click('.sidebarActions .amendmentCreate a');
 
 $I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->fillField('#initiatorEmail', 'test@example.org');
+$I->executeJS('$("[required]").removeAttr("required");');
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es müssen mindestens 19 Unterstützer*innen angegeben werden');
@@ -22,6 +23,7 @@ $I->acceptBootboxAlert();
 $I->wantTo('make sure it does not appear for organizations');
 
 $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATION);
+$I->fillField('#initiatorPrimaryName', 'Mein Name');
 $I->submitForm('#amendmentEditForm', [], 'save');
 
 $I->seeBootboxDialog('Es muss ein Beschlussdatum angegeben werden');

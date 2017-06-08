@@ -29,8 +29,11 @@ if ($cid0 != 2 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
     $I->fail('wrong number of cid\'s: ' . $cid0 . ' / ' . $cid1 . ' / ' . $cid2 . ' / ' . $cid3);
 }
 
-$I->executeJS('$("[data-cid=1] .appendHint").trigger("mouseover"); $("button.reject").click();');
+// Neuer Punkt einfügen
+$I->executeJS('$("[data-cid=2] .appendHint").trigger("mouseover"); $("button.reject").click();');
+// Oamoi a Map einfügen
 $I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.accept").click();');
+// Woibbadinga damischa raus, Schooe rein
 $I->executeJS('$("[data-cid=16].appendHint").first().trigger("mouseover"); $("button.accept").click();');
 $I->wait(1);
 
@@ -44,12 +47,15 @@ $I->dontSee('Schooe', '#section_holder_4 .ice-ins');
 $I->see('Schooe', '#section_holder_4');
 
 $I->see('Something');
-$I->click('#section_holder_2 .rejectAllChanges');
+$I->executeJS('$("#section_holder_2 .rejectAllChanges").click();');
 $I->dontSee('Something');
 
 // @TODO Set amendment status
 // @TODO cid=3 should not be colliding
 
+$I->executeJS('$(".none").remove();'); // for some reason necessary...
+$I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
+$I->wait(1);
 $I->submitForm('.motionMergeForm', [], 'save');
 
 $I->see('Überarbeitung kontrollieren', 'h1');
