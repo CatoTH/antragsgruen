@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->wantTo('test the list of motions in ODS-Format');
+$I->wantTo('test the list of motions in OpenSlides-Format');
 $I->loginAndGotoMotionList();
 $I->click('#exportOpenslidesBtn');
 $I->seeElement('.exportOpenslidesDd .users');
@@ -28,6 +28,6 @@ $file = $I->downloadLink('.exportOpenslidesDd .amendments');
 if (strlen($file) == 0) {
     $I->fail('File has no content');
 }
-if (mb_strpos($file, 'Von Zeile 8 bis 9') === false) {
-    $I->fail('Amendment file has not all content');
+if (mb_strpos($file, 'Von Zeile 9 bis 10') === false) {
+    $I->fail('Amendment file has not all content: ' . $file);
 }
