@@ -750,7 +750,7 @@ class MotionController extends Base
                 $form->setAttributes(\Yii::$app->request->post());
                 try {
                     $newMotion = $form->createNewMotion();
-                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendment-confirm', [
+                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm', [
                         'fromMode'       => 'create',
                         'amendmentStati' => json_encode($form->amendStatus),
                         'draftId'        => $this->getRequestValue('draftId'),
