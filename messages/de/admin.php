@@ -150,6 +150,7 @@ Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge 
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Logo-URL',
     'con_ci'                  => 'Layout',
+    'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseiten-Design',
     'con_line_len'            => 'Maximale Zeilenlänge',
     'con_title_motions'       => 'Anträge',

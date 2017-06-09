@@ -129,7 +129,7 @@ $handledSiteSettings = [];
         </fieldset>
 
     </div>
-    <h2 class="green">Aussehen</h2>
+    <h2 class="green"><?= \Yii::t('admin', 'con_appearance') ?></h2>
     <div class="content">
 
 

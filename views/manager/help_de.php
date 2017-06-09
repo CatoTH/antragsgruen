@@ -410,7 +410,7 @@ $params = \Yii::$app->params;
         versierten Web-Entwickler*innen selbst entwickelt werden (siehe „<a
                 href="https://github.com/CatoTH/antragsgruen">Developing custom themes</a>“), oder bei uns in Auftrag
         gegeben werden.</p>
-    <p>Für den Aufbau der Startseite gibt es mehrere Varianten („Layout-Design“ in den Einstellungen), die sich für
+    <p>Für den Aufbau der Startseite gibt es mehrere Varianten („Startseiten-Design“ in den Einstellungen), die sich für
         verschiedene Einsatzzwecke eignen. Insbesondere kann darüber eingestellt werden, ob eine Tagesordnung auf der
         Startseite angezeigt werden soll, wie die Anträge in Bezug zur Tagesordnung angezeigt werden sollen, oder ob die
         Anträge nach selbst definierten Schlagworten bzw. Themen gegliedert werden sollen (siehe weiter unten im Punkt
@@ -425,6 +425,9 @@ $params = \Yii::$app->params;
         Zeilenlänge“) und wird überall berücksichtigt: bei der Anzeige der Anträge, dem PDF-Download und dem Export in
         Textverarbeitung-Dokumente, und auch in der Einleitung von Änderungsanträgen („Einfügung in Zeile ##“) wird die
         Zeilennummerierung automatisch richtig ermittelt, um Fehler zu vermeiden.</p>
+    <p>Wird über Antragsgrün ein Programmentwurf diskutiert, der in mehrere Kapitel unterteilt wird, die aber
+        durchgehend durchnummeriert werden sollen, kann dies explizit aktiviert werden: unter „Einstellungen“ → „diese
+        Veranstaltung“ → „Anträge“ → „Zeilennummerierung durchgehend für die ganze Veranstaltung“.</p>
 
     <h3 id="redaktionelle_aes">Redaktionelle Änderungsanträge</h3>
     <p>Für manche Änderungsanträge eignet sich das „eigentliche“ Prinzip der Änderungsanträge bei Antragsgrün nur

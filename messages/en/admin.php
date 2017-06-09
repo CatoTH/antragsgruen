@@ -148,6 +148,7 @@ return [
     'con_fb_img'              => 'Facebook image',
     'con_logo_url'            => 'Logo URL',
     'con_ci'                  => 'Layout',
+    'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage style',
     'con_line_len'            => 'Line length',
     'con_title_motions'       => 'Motions',
