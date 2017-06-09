@@ -6,6 +6,7 @@ ANTRAGSGRUEN_STRINGS = {
         "del_confirm": "Really delete it?",
         "draft_del": "Delete draft",
         "draft_del_confirm": "Really delete this draft?",
+        "draft_date": "Draft date",
         "draft_restore_confirm": "Really restore this draft?",
         "min_x_supporter": "You have to enter at least %NUM% supporters.",
         "missing_resolution_date": "A resolution date has to be entered.",

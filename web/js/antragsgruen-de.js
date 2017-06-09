@@ -5,6 +5,7 @@ ANTRAGSGRUEN_STRINGS = {
         "del_confirm": "Wirklich löschen?",
         "draft_del": "Entwurf löschen",
         "draft_del_confirm": "Entwurf wirklich löschen?",
+        "draft_date": "Entwurf vom",
         "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
         "min_x_supporter": "Es müssen mindestens %NUM% Unterstützer*innen angegeben werden.",
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",

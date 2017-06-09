@@ -157,7 +157,7 @@ return [
     'con_single_motion_mode'  => 'Only a <string>single motion</string> is being discussed, no motion overview page will be shown.',
     'con_force_motion'        => 'The following motion',
     'con_line_number_global'  => '<strong>Global line numbering</strong> throughout the whole consultation',
-    'con_motion_screening'    => '<strong>Screening</strong> of amendments',
+    'con_motion_screening'    => '<strong>Screening</strong> of motions',
     'con_admins_may_edit'     => 'Admins may edit texts after publication.',
     'con_odt_has_lines'       => '<strong>ODT-Export</strong>: Line numbers and fixed line breaks',
     'con_initiators_may_edit' => 'Motion proposers may edit them after publication.',
@@ -176,34 +176,32 @@ return [
     'con_email_admins'        => 'Admins',
     'con_send_motion_email'   => 'Send a confirmation e-mail to the proposer of a motion when it is published',
 
-    'siteacc_bread'           => 'Access',
-    'siteacc_title'           => 'Access to this site',
-    /*
-'siteacc_policywarning'       => '<h3>Hinweis:</h3>
-The user administration below is only fully functional when read rights or the right to generate motions, amendments, comments, etc. are set to “Only logged in user”. Currently, this is not the case.<br>
+    'siteacc_bread'              => 'Access',
+    'siteacc_title'              => 'Access to this site',
+    'siteacc_policywarning'      => '<h3>Hint:</h3>
+The user administration below is only fully functional when read rights or the right to generate motions, amendments, comments, etc. are set to “Registered users”. Currently, this is not the case.<br>
 <br>
-If this should only be <em>visible</em> to users included below, select the settings immediately below the reference. If the page should be visible to all but only registered users can submit motions, then you can set this automatically here:',
-    */
-    'siteacc_policy_login'    => 'Restrict to users',
-    'siteacc_forcelogin'      => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
-    'siteacc_managedusers'    => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
-    'siteacc_logins'          => 'The following login variants are possible',
-    'siteacc_useraccounts'    => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
-    'siteacc_ww'              => 'Wurzelwerk <small>(everyone with access to German Wurzelwerk)</small>',
-    'siteacc_otherlogins'     => 'Other methods <small>(OpenID, maybe Facebook / Twitter in the future)</small>',
-    'siteacc_admins_title'    => 'Administrators of this site',
-    'siteacc_admins_add'      => 'Add',
-    'siteacc_admins_user'     => 'User',
-    'siteacc_admins_del'      => 'Remove',
-    'siteacc_admins_all_cons' => 'All consultations',
-    'siteacc_admins_one_con'  => 'This consultation',
-    'siteacc_add_ww'          => 'Wurzelwerk name',
-    'siteacc_add_email'       => 'E-mail address',
-    'siteacc_add_name_title'  => 'Wurzelwerk username / E-mail address',
-    'siteacc_add_name_place'  => 'Name',
-    'siteacc_add_btn'         => 'Add',
-    'siteacc_accounts_title'  => 'User accounts',
-    'siteacc_email_text_pre'  => 'Hi,
+If this site should only be <em>visible</em> to users included below, select the settings immediately below the reference. If the site should be visible to all but only registered users can submit motions, then you can set this automatically here:',
+    'siteacc_policy_login'       => 'Restrict to users',
+    'siteacc_forcelogin'         => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
+    'siteacc_managedusers'       => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
+    'siteacc_logins'             => 'The following login variants are possible',
+    'siteacc_useraccounts'       => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
+    'siteacc_ww'                 => 'Wurzelwerk <small>(everyone with access to German Wurzelwerk)</small>',
+    'siteacc_otherlogins'        => 'Other methods <small>(OpenID, maybe Facebook / Twitter in the future)</small>',
+    'siteacc_admins_title'       => 'Administrators of this site',
+    'siteacc_admins_add'         => 'Add',
+    'siteacc_admins_user'        => 'User',
+    'siteacc_admins_del'         => 'Remove',
+    'siteacc_admins_all_cons'    => 'All consultations',
+    'siteacc_admins_one_con'     => 'This consultation',
+    'siteacc_add_ww'             => 'Wurzelwerk name',
+    'siteacc_add_email'          => 'E-mail address',
+    'siteacc_add_name_title'     => 'Wurzelwerk username / E-mail address',
+    'siteacc_add_name_place'     => 'Name',
+    'siteacc_add_btn'            => 'Add',
+    'siteacc_accounts_title'     => 'User accounts',
+    'siteacc_email_text_pre'     => 'Hi,
 
 we have just created an Antragsgün account for you. Now you can join the discussion on the  motions / drafts.
 Here is your login data:
@@ -213,6 +211,22 @@ Here is your login data:
 
 Good-bye,
   Team Antragsgrün',
+    'siteacc_acc_expl_mail'      => '<h3>Explanation:</h3>
+If this whole site or some functionality on it should only be accessible for specific persons,
+you can specify these persons below.<br>
+<br>
+To grant access to persons, enter their e-mail-addresses in the text field below.
+By submitting the form ("Create"), an invitation e-mail will be sent to the given addresses.<br>
+If the users entered do not have an account yet, one will be created automatically.
+The <strong>%ACCOUNT%</strong> in the e-mail text will be replaced by the user data.<br>
+<strong>%LINK%</strong> will be replaced by a link to this site.',
+    'siteacc_acc_expl_nomail'    => '<h3>Explanation:</h3>
+If this whole site or some functionality on it should only be accessible for specific persons,
+you can specify these persons below.<br>
+<br>
+To grant access to persons, enter their e-mail-addresses in the text field below.
+As there is <strong>no e-mail-delivery configured</strong>, it is necessary that you enter the passwords for the users here and send the passwords to them manually.<br><br>' .
+        'However, for <strong>privacy reasons</strong> it would be more advisible to configure the e-mail-delivery and let Antragsgrün create the passwords internally and send the passwords to the users automatically.',
 
     'siteacc_existing_users'     => 'Existing users',
     'siteacc_user_name'          => 'Name',

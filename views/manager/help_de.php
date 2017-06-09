@@ -25,52 +25,99 @@ $params = \Yii::$app->params;
 
     <ul class="toc">
         <li>
-            <a href="#grundlegender_aufbau" onClick="$('#grundlegender_aufbau').scrollintoview({top_offset: -30}); return false;">Grundlegender Aufbau einer Antragsgrün-Seite</a>
+            <a href="#grundlegender_aufbau"
+               onClick="$('#grundlegender_aufbau').scrollintoview({top_offset: -30}); return false;">Grundlegender
+                Aufbau einer Antragsgrün-Seite</a>
             <ul>
-                <li><a href="#antraege" onClick="$('#antraege').scrollintoview({top_offset: -30}); return false;">Anträge / Änderungsanträge</a></li>
-                <li><a href="#veranstaltungen" onClick="$('#veranstaltungen').scrollintoview({top_offset: -30}); return false;">Veranstaltungen</a></li>
-                <li><a href="#antragstypen" onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen / Motion Type</a></li>
-                <li><a href="#tagesordnung" onClick="$('#tagesordnung').scrollintoview({top_offset: -30}); return false;">Tagesordnungspunkte</a></li>
+                <li><a href="#antraege" onClick="$('#antraege').scrollintoview({top_offset: -30}); return false;">Anträge
+                        / Änderungsanträge</a></li>
+                <li><a href="#veranstaltungen"
+                       onClick="$('#veranstaltungen').scrollintoview({top_offset: -30}); return false;">Veranstaltungen</a>
+                </li>
+                <li><a href="#antragstypen"
+                       onClick="$('#antragstypen').scrollintoview({top_offset: -30}); return false;">Antragstypen /
+                        Motion Type</a></li>
+                <li><a href="#tagesordnung"
+                       onClick="$('#tagesordnung').scrollintoview({top_offset: -30}); return false;">Tagesordnungspunkte</a>
+                </li>
             </ul>
         </li>
         <li>
-            <a href="#arbeitsablauf" onClick="$('#arbeitsablauf').scrollintoview({top_offset: -30}); return false;">Arbeitsabläufe: Antragstellung, Freischaltung, Berechtigungen</a>
+            <a href="#arbeitsablauf" onClick="$('#arbeitsablauf').scrollintoview({top_offset: -30}); return false;">Arbeitsabläufe:
+                Antragstellung, Freischaltung, Berechtigungen</a>
             <ul>
-                <li><a href="#antragsteller_innen" onClick="$('#antragsteller_innen').scrollintoview({top_offset: -30}); return false;">Antragsteller*innen / Unterstützer*innen</a></li>
-                <li><a href="#freischaltung" onClick="$('#freischaltung').scrollintoview({top_offset: -30}); return false;">Freischaltung von Anträgen</a></li>
-                <li><a href="#login" onClick="$('#login').scrollintoview({top_offset: -30}); return false;">Login / Berechtigungen</a></li>
-                <li><a href="#antragsschluss" onClick="$('#antragsschluss').scrollintoview({top_offset: -30}); return false;">Antragsschluss</a></li>
-                <li><a href="#benachrichtigungen" onClick="$('#benachrichtigungen').scrollintoview({top_offset: -30}); return false;">Benachrichtigungen</a></li>
+                <li><a href="#antragsteller_innen"
+                       onClick="$('#antragsteller_innen').scrollintoview({top_offset: -30}); return false;">Antragsteller*innen
+                        / Unterstützer*innen</a></li>
+                <li><a href="#freischaltung"
+                       onClick="$('#freischaltung').scrollintoview({top_offset: -30}); return false;">Freischaltung von
+                        Anträgen</a></li>
+                <li><a href="#login" onClick="$('#login').scrollintoview({top_offset: -30}); return false;">Login /
+                        Berechtigungen</a></li>
+                <li><a href="#antragsschluss"
+                       onClick="$('#antragsschluss').scrollintoview({top_offset: -30}); return false;">Antragsschluss</a>
+                </li>
+                <li><a href="#benachrichtigungen"
+                       onClick="$('#benachrichtigungen').scrollintoview({top_offset: -30}); return false;">Benachrichtigungen</a>
+                </li>
             </ul>
         </li>
         <li>
-            <a href="#aes_uebernehmen" onClick="$('#aes_uebernehmen').scrollintoview({top_offset: -30}); return false;">Änderungsanträge übernehmen / einpflegen</a>
+            <a href="#aes_uebernehmen" onClick="$('#aes_uebernehmen').scrollintoview({top_offset: -30}); return false;">Änderungsanträge
+                übernehmen / einpflegen</a>
             <ul>
-                <li><a href="#einzelne_uebernehmen" onClick="$('#einzelne_uebernehmen').scrollintoview({top_offset: -30}); return false;">Einzelne Änderungsanträge einpflegen</a></li>
-                <li><a href="#alle_uebernehmen" onClick="$('#alle_uebernehmen').scrollintoview({top_offset: -30}); return false;">Alle Änderungsanträge einpflegen / (Öffentliche) Zwischenstände</a></li>
+                <li><a href="#einzelne_uebernehmen"
+                       onClick="$('#einzelne_uebernehmen').scrollintoview({top_offset: -30}); return false;">Einzelne
+                        Änderungsanträge einpflegen</a></li>
+                <li><a href="#alle_uebernehmen"
+                       onClick="$('#alle_uebernehmen').scrollintoview({top_offset: -30}); return false;">Alle
+                        Änderungsanträge einpflegen / (Öffentliche) Zwischenstände</a></li>
             </ul>
         </li>
         <li>
-            <a href="#export" onClick="$('#export').scrollintoview({top_offset: -30}); return false;">Export-Funktionen</a>
+            <a href="#export"
+               onClick="$('#export').scrollintoview({top_offset: -30}); return false;">Export-Funktionen</a>
             <ul>
-                <li><a href="#export_pdf" onClick="$('#export_pdf').scrollintoview({top_offset: -30}); return false;">PDF</a></li>
-                <li><a href="#export_opendocument" onClick="$('#export_opendocument').scrollintoview({top_offset: -30}); return false;">OpenDocument / Textverarbeitungsdokument</a></li>
-                <li><a href="#export_tabelle" onClick="$('#export_tabelle').scrollintoview({top_offset: -30}); return false;">Änderungsanträge in Tabellenform</a></li>
-                <li><a href="#export_openslides" onClick="$('#export_openslides').scrollintoview({top_offset: -30}); return false;">Openslides / CSV</a></li>
-                <li><a href="#export_weitere" onClick="$('#export_weitere').scrollintoview({top_offset: -30}); return false;">HTML, Plain Text, RSS, Weitere Formate</a></li>
+                <li><a href="#export_pdf" onClick="$('#export_pdf').scrollintoview({top_offset: -30}); return false;">PDF</a>
+                </li>
+                <li><a href="#export_opendocument"
+                       onClick="$('#export_opendocument').scrollintoview({top_offset: -30}); return false;">OpenDocument
+                        / Textverarbeitungsdokument</a></li>
+                <li><a href="#export_tabelle"
+                       onClick="$('#export_tabelle').scrollintoview({top_offset: -30}); return false;">Änderungsanträge
+                        in Tabellenform</a></li>
+                <li><a href="#export_openslides"
+                       onClick="$('#export_openslides').scrollintoview({top_offset: -30}); return false;">Openslides /
+                        CSV</a></li>
+                <li><a href="#export_weitere"
+                       onClick="$('#export_weitere').scrollintoview({top_offset: -30}); return false;">HTML, Plain Text,
+                        RSS, Weitere Formate</a></li>
             </ul>
         </li>
         <li>
-            <a href="#weitere_funktionen" onClick="$('#weitere_funktionen').scrollintoview({top_offset: -30}); return false;">Weitere Funktionen</a>
+            <a href="#weitere_funktionen"
+               onClick="$('#weitere_funktionen').scrollintoview({top_offset: -30}); return false;">Weitere
+                Funktionen</a>
             <ul>
-                <li><a href="#layout" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Layout-Anpassbarkeit</a></li>
-                <li><a href="#zeilennummerierung" onClick="$('#zeilennummerierung').scrollintoview({top_offset: -30}); return false;">Zeilennummerierung</a></li>
-                <li><a href="#redaktionelle_aes" onClick="$('#redaktionelle_aes').scrollintoview({top_offset: -30}); return false;">Redaktionelle Änderungsanträge</a></li>
-                <li><a href="#antragskuerzel" onClick="$('#antragskuerzel').scrollintoview({top_offset: -30}); return false;">Antragskürzel</a></li>
-                <li><a href="#themen" onClick="$('#themen').scrollintoview({top_offset: -30}); return false;">Themen / Tags</a></li>
-                <li><a href="#kommentare" onClick="$('#kommentare').scrollintoview({top_offset: -30}); return false;">Kommentare</a></li>
-                <li><a href="#zustimmung" onClick="$('#zustimmung').scrollintoview({top_offset: -30}); return false;">Zustimmung / Ablehnung</a></li>
-                <li><a href="#uebersetzen" onClick="$('#uebersetzen').scrollintoview({top_offset: -30}); return false;">Übersetzung der Seite / Anpassungen des Wordings</a></li>
+                <li><a href="#layout" onClick="$('#layout').scrollintoview({top_offset: -30}); return false;">Layout-Anpassbarkeit</a>
+                </li>
+                <li><a href="#zeilennummerierung"
+                       onClick="$('#zeilennummerierung').scrollintoview({top_offset: -30}); return false;">Zeilennummerierung</a>
+                </li>
+                <li><a href="#redaktionelle_aes"
+                       onClick="$('#redaktionelle_aes').scrollintoview({top_offset: -30}); return false;">Redaktionelle
+                        Änderungsanträge</a></li>
+                <li><a href="#antragskuerzel"
+                       onClick="$('#antragskuerzel').scrollintoview({top_offset: -30}); return false;">Antragskürzel</a>
+                </li>
+                <li><a href="#themen" onClick="$('#themen').scrollintoview({top_offset: -30}); return false;">Themen /
+                        Tags</a></li>
+                <li><a href="#kommentare" onClick="$('#kommentare').scrollintoview({top_offset: -30}); return false;">Kommentare</a>
+                </li>
+                <li><a href="#zustimmung" onClick="$('#zustimmung').scrollintoview({top_offset: -30}); return false;">Zustimmung
+                        / Ablehnung</a></li>
+                <li><a href="#uebersetzen" onClick="$('#uebersetzen').scrollintoview({top_offset: -30}); return false;">Übersetzung
+                        der Seite / Anpassungen des Wordings</a></li>
             </ul>
         </li>
     </ul>
@@ -182,9 +229,9 @@ $params = \Yii::$app->params;
         wenn sie noch nicht freigeschaltet sind“.</p>
 
     <h3 id="login">Login / Berechtigungen</h3>
-    <p>Antragsgrün ist grundsätzlich so ausgelegt, dass verschiedene Login-Möglichkeiten verwendet werden können und
-        Funktionen wie das Stellen von Anträgen, das Kommentieren oder Unterstützen von Anträgen auf eingeloggte
-        Mitglieder zu beschränken.</p>
+    <p>Funktionen wie das Stellen von Anträgen, das Kommentieren oder Unterstützen von Anträgen können auf eingeloggte
+        Mitglieder beschränkt werden. Antragsgrün unterstützt dabei grundsätzlich verschiedene verschiedene
+        Login-Mechanismen.</p>
     <p>Standardmäßig ist es möglich, sich mit seiner E-Mail-Adresse bei einer Antragsgrün-Version zu registrieren und
         damit die entsprechenden Funktionen zu nutzen. Für geschlossene Benutzerkreise ist es möglich, das Login auf
         bekannte Mitglieder zu beschränken, also das selbstständige Registrieren mit einer neuen E-Mail-Adresse zu

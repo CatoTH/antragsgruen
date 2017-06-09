@@ -1,4 +1,5 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 
 export class AmendmentEdit {
     private lang: string;
@@ -19,6 +20,12 @@ export class AmendmentEdit {
         } else {
             this.spmInit();
         }
+
+        let $draftHint = $("#draftHint"),
+            draftMotionId = $draftHint.data("motion-id"),
+            draftAmendmentId = $draftHint.data("amendment-id");
+
+        new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionId + "_" + draftAmendmentId);
 
         $form.on("submit", () => {
             $(window).off("beforeunload", AmendmentEdit.onLeavePage);

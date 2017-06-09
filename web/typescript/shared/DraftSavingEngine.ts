@@ -30,7 +30,7 @@ export class DraftSavingEngine {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
                     hour: 'numeric', minute: 'numeric'
                 }).format(lastEdit);
-                $link.find('.restore').text('Entwurf vom: ' + dateStr).click((ev) => {
+                $link.find('.restore').text(__t("std", "draft_date") + ': ' + dateStr).click((ev) => {
                     ev.preventDefault();
                     let $li = $(ev.delegateTarget).parents("li").first();
                     bootbox.confirm(__t("std", "draft_restore_confirm"), (result) => {
