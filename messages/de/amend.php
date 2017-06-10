@@ -55,7 +55,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
 </ol>',
     'editorial_hint'                    => 'Redaktionelle Änderung',
     'merge_init_title'                  => '„%NAME%“ überarbeiten',
-    'merge_init_draft_hint'             => 'Es gibt einen Entwurf vom %DATE% Uhr.',
+    'merge_init_draft_hint'             => 'Es gibt einen Entwurf: %DATE% Uhr',
     'merge_init_all'                    => 'Alle Änderungsanträge einpflegen',
     'merge_init_all_discard'            => 'Zwischenstand verwerfen, neu anfangen',
     'merge_init_all_continue'           => 'Weiter mit dem Zwischenstand',

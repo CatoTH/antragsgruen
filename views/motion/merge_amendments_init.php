@@ -34,7 +34,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
     <div class="content">
         <?php
         if ($draft) { ?>
-            <div class="alert alert-info" role="alert">
+            <div class="alert alert-info draftExistsAlert" role="alert">
                 <?php
                 $date = \app\components\Tools::formatMysqlDateTime($draft->dateCreation);
                 echo str_replace('%DATE%', $date, \Yii::t('amend', 'merge_init_draft_hint'));
@@ -60,7 +60,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 <?php
                 foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
                     echo '<li><label>';
-                    echo Html::checkbox('amendments[' . $amend->id . ']', true);
+                    echo Html::checkbox('amendments[' . $amend->id . ']', true, ['class' => 'amendment' . $amend->id]);
                     echo ' ' . Html::encode($amend->getTitle());
                     echo \app\components\HTMLTools::amendmentDiffTooltip($amend);
                     echo '</label></li>';

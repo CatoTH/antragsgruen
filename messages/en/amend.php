@@ -32,7 +32,7 @@ return [
         'Please note, you can request &quot;Editorial changes&quot;.',
     'editorial_hint'            => 'Editorial hint',
     'merge_init_title'          => 'Refactor "%NAME%"',
-    'merge_init_draft_hint'     => 'There is a draft from %DATE%.',
+    'merge_init_draft_hint'     => 'There is a draft: %DATE%',
     'merge_init_all'            => 'Merge all amendments at once',
     'merge_init_all_discard'    => 'Discard draft, start anew',
     'merge_init_all_continue'   => 'Continue with draft',
