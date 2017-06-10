@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var \app\models\forms\AntragsgruenInitSite $form
+ * @var string $consultationUrl
  * @var string $delInstallFileCmd
  * @var bool $installFileDeletable
  */
@@ -27,8 +27,7 @@ echo Html::beginForm($settingsUrl, 'get', ['class' => 'antragsgruenInitForm form
 echo '<div class="content">';
 echo $controller->showErrors();
 
-$link = UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index'));
-$link = '<br>' . Html::a($link, $link) . '<br><br>';
+$link = '<br>' . Html::a($consultationUrl, $consultationUrl) . '<br><br>';
 
 if (!$installFileDeletable) {
     echo '<div class="alert alert-info" role="alert">';

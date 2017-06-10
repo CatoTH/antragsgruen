@@ -378,17 +378,24 @@ class ManagerController extends Base
             try {
                 $post = \Yii::$app->request->post();
                 $siteForm->setAttributes($post['SiteCreateForm']);
-                $siteForm->prettyUrls = isset($post['prettyUrls']);
+                $siteForm->prettyUrls = isset($post['SiteCreateForm']['prettyUrls']);
 
                 $siteForm->saveConfig();
 
                 $admin = User::findOne($siteForm->readConfigFromFile()->adminUserIds[0]);
                 $siteForm->create($admin);
 
+                Yii::$app->user->login($admin, $this->getParams()->autoLoginDuration);
+
+                $consultationUrl = UrlHelper::createUrl('consultation/index');
+                $consultationUrl = UrlHelper::absolutizeLink($consultationUrl);
+                $consultationUrl = str_replace('consultation/index', '', $consultationUrl);
+
                 unlink($installFile);
                 return $this->render('antragsgruen_init_done', [
                     'installFileDeletable' => is_writable($configDir),
                     'delInstallFileCmd'    => $delInstallFileCmd,
+                    'consultationUrl'      => $consultationUrl,
                 ]);
             } catch (\Exception $e) {
                 \yii::$app->session->setFlash('error', $e->getMessage());

@@ -47,6 +47,7 @@ $urlRules = [
     $domadmin . 'ae_pdf_list'                                   => 'admin/index/aePDFList',
     $domadmin . 'admins'                                        => 'admin/index/admins',
     $domadmin . 'consultations'                                 => 'admin/index/consultations',
+    $domadmin . 'siteconfig'                                    => 'manager/siteconfig',
 
     $dom . '<_a:(' . $userPaths . ')>' => 'user/<_a>',
     $dom . 'checkemail'                => 'user/ajaxIsEmailRegistered',

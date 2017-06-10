@@ -51,7 +51,9 @@ class UrlHelper
      */
     private static function getParams()
     {
-        return \Yii::$app->params;
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        return $app;
     }
 
 
@@ -205,7 +207,7 @@ class UrlHelper
     /**
      * @param Motion $motion
      * @param string $mode
-     * @param array $params
+     * @param array $addParams
      * @return string
      */
     public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])

@@ -211,7 +211,7 @@ echo Html::checkbox(
     'confirmEmailAddresses',
     $config->confirmEmailAddresses,
     ['id' => 'confirmEmailAddresses']
-);
+) . ' ';
 echo \Yii::t('manager', 'confirm_email_addresses') . '</label></div>';
 
 

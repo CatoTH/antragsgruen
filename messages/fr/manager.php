@@ -67,7 +67,7 @@ return [
     'site_err_subdomain'      => 'Ce sous-domaine est déjà utilisé.',
     'site_err_contact'        => 'Vous devez entrer une adresse de contact.',
     'email_mailgun'           => 'Mailgun',
-    'mailgun_api'             => 'Mailgun\s API-Key',
+    'mailgun_api'             => 'Mailgun\'s API-Key',
     'mailgun_domain'          => 'Domaine email',
 
     'done_title' => 'Antragsgrün installé',

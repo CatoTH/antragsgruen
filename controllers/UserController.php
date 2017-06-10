@@ -325,7 +325,7 @@ class UserController extends Base
         if ($this->isPostSet('recover')) {
             /** @var User $user */
             $user     = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
-            $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+            $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
             if (!$user) {
                 $msg = str_replace('%USER%', $this->getRequestValue('email'), \Yii::t('user', 'err_user_notfound'));
                 \yii::$app->session->setFlash('error', $msg);
@@ -374,7 +374,7 @@ class UserController extends Base
         $this->forceLogin();
 
         $user     = User::getCurrentUser();
-        $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+        $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
         if ($this->isPostSet('resendEmailChange')) {
             $changeRequested = $user->getChangeRequestedEmailAddress();
