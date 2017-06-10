@@ -3,6 +3,7 @@
 @import "bootstrap-3.3.7-sass/bootstrap/variables";
 @import "bootstrap-3.3.7-sass/bootstrap/glyphicons";
 @import "bootstrap-3.3.7-sass/bootstrap/mixins";
+@import "bootstrap-3.3.7-sass/bootstrap/tooltip";
 
 .adminForm {
   label {
@@ -11,8 +12,14 @@
   .content {
     overflow: visible;
   }
-  input[type="radio"], input[type="checkbox"] {
-    margin-right: 10px;
+  td.type, th.type {
+    text-align: center;
+  }
+  td.del, th.del {
+    text-align: center;
+  }
+  .save-row {
+    text-align: center;
   }
 }
 
@@ -396,6 +403,16 @@ label.legend {
     label {
       font-weight: normal;
       margin-right: 20px;
+    }
+  }
+  .initiatorsCanMergeRow {
+    .control-label {
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      font-weight: normal;
+      cursor: pointer;
     }
   }
   .form-group.checkbox {

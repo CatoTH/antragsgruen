@@ -11,6 +11,7 @@ $I->see('Kommentar schreiben', 'section.comments');
 $I->fillField('#comment_-1_-1_name', '');
 $I->fillField('#comment_-1_-1_email', 'test@example.org');
 $I->fillField('#comment_-1_-1_text', 'Some Text');
+$I->executeJS('$("[required]").removeAttr("required");');
 $I->submitForm('section.comments .commentForm', [], 'writeComment');
 
 $I->see('Bitte gib deinen Namen an');
@@ -27,7 +28,7 @@ $I->submitForm('section.comments .commentForm', [], 'writeComment');
 
 $I->see('My Name', 'section.comments .motionComment');
 $I->see('Some Text', 'section.comments .motionComment');
-$I->cantSeeElement('section.comments .motionComment .delLink');
+$I->cantSeeElementInDOM('section.comments .motionComment .delLink');
 $I->gotoConsultationHome();
 $I->click('#sidebar .feedAll');
 $I->seeInPageSource('My Name');
@@ -50,7 +51,7 @@ $I->gotoAmendment();
 
 
 $I->see('Kommentar schreiben', 'section.comments');
-$I->seeElement('section.comments .motionComment .delLink');
+$I->seeElementInDOM('section.comments .motionComment .delLink');
 $I->submitForm('section.comments .motionComment .delLink', [], '');
 $I->seeBootboxDialog('Wirklich löschen', '.bootbox');
 $I->acceptBootboxConfirm();

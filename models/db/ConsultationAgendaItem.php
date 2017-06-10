@@ -136,10 +136,14 @@ class ConsultationAgendaItem extends ActiveRecord
         $calcNewShownCode = function ($currShownCode, $newInternalCode) {
             if ($newInternalCode == '#') {
                 $currParts = explode('.', $currShownCode);
-                preg_match('/^(?<non_numeric>.*[^0-9])?(?<numeric>[0-9]*)$/su', $currParts[0], $matches);
-                $nonNumeric = $matches['non_numeric'];
-                $numeric = ($matches['numeric'] == '' ? 1 : $matches['numeric']);
-                $currParts[0] = $nonNumeric . ++$numeric;
+                if (preg_match('/^[a-z]$/siu', $currParts[0])) { // Single alphabetical characters
+                    $currParts[0] = chr(ord($currParts[0]) + 1);
+                } else {  // Numbers or mixtures of alphabetical characters and numbers
+                    preg_match('/^(?<non_numeric>.*[^0-9])?(?<numeric>[0-9]*)$/su', $currParts[0], $matches);
+                    $nonNumeric   = $matches['non_numeric'];
+                    $numeric      = ($matches['numeric'] == '' ? 1 : $matches['numeric']);
+                    $currParts[0] = $nonNumeric . ++$numeric;
+                }
                 return implode('.', $currParts);
             } else {
                 return $newInternalCode;

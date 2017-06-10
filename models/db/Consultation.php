@@ -242,6 +242,21 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param int $type
+     * @return UserNotification[]
+     */
+    public function getUserNotificationsType($type)
+    {
+        $notis = [];
+        foreach ($this->userNotifications as $userNotification) {
+            if ($userNotification->notificationType == $type) {
+                $notis[] = $userNotification;
+            }
+        }
+        return $notis;
+    }
+
+    /**
      * @param int $motionTypeId
      * @return ConsultationMotionType
      * @throws NotFound
@@ -382,6 +397,8 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
             IMotion::STATUS_WITHDRAWN_INVISIBLE,
+            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
+            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
@@ -405,6 +422,8 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_DELETED,
             IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
+            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
+            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
         ];
         return $invisible;
     }
@@ -591,7 +610,7 @@ class Consultation extends ActiveRecord
      */
     public function setDeleted()
     {
-        $this->urlPath    = null;
+        $this->urlPath      = null;
         $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
     }

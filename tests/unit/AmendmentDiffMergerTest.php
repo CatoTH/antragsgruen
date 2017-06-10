@@ -62,9 +62,8 @@ class AmendmentDiffMergerTest extends TestBase
         $merger->mergeParagraphs();
 
         $this->assertEquals([
-            ['amendment' => 0, 'text' => '<p>'],
-            ['amendment' => 1, 'text' => '###DEL_START###Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag ###DEL_END######INS_START###Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>' . "\n" . '<p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>' . "\n" . '<p>###INS_END###'],
-            ['amendment' => 0, 'text' => 'zu einer weniger gewaltvollen Gesellschaft.</p>'],
+            ['amendment' => 0, 'text' => ''],
+            ['amendment' => 1, 'text' => '###DEL_START###<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>###DEL_END######INS_START###<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>' . "\n" . '<p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>' . "\n" . '<p>zu einer weniger gewaltvollen Gesellschaft.</p>###INS_END###'],
         ],
             $merger->getGroupedParagraphData(0)
         );
@@ -153,7 +152,23 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         $this->assertEquals([
             [
                 'amendment' => 0,
-                'text'      => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi ',
+                'text'      => '<p>',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###DEL_START###Woibbadinga damischa ###DEL_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'owe gwihss Sauwedda ded ',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START###Hier was Neues ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi ',
             ],
             [
                 'amendment' => 3,
@@ -169,15 +184,91 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             ],
             [
                 'amendment' => 0,
-                'text'      => 'ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
-            ]
+                'text'      => 'ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, ',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START###und hier was Neues ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'gsuffa Oachkatzlschwoaf hod Wiesn.</p>',
+            ],
         ], $merger->getGroupedParagraphData(0));
 
         $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertFalse(isset($colliding[1]));
         $this->assertTrue(isset($colliding[2]));
-        $this->assertEquals('###DEL_START###Woibbadinga damischa ###DEL_END###', $colliding[2][1]['text']);
+        $this->assertFalse(isset($colliding[3]));
+        $this->assertEquals('###INS_START###schena ###INS_END###', $colliding[2][1]['text']);
     }
 
+    /**
+     */
+    public function testMergeWithComplication2()
+    {
+        $origText = '<p>test1 test3 test5 test7 test9 test11 test13 test15 test17 test19 test21 test23 test25</p>';
+
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
+
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>']);
+        $merger->mergeParagraphs();
+
+        $this->assertEquals([
+            [
+                'amendment' => 0,
+                'text'      => '<p>test1 test3 test5 ',
+            ],
+            [
+                'amendment' => 1,
+                'text'      => '###INS_START###test6 ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'test7 test9 ',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START###test10 ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'test11 test13 test15 ',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START###test16.2 ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'test17 test19 test21 ',
+            ],
+            [
+                'amendment' => 1,
+                'text'      => '###INS_START###test22 ###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => 'test23 test25',
+            ],
+            [
+                'amendment' => 2,
+                'text'      => '###INS_START### test26###INS_END###',
+            ],
+            [
+                'amendment' => 0,
+                'text'      => '</p>',
+            ],
+        ], $merger->getGroupedParagraphData(0));
+
+        $colliding = $merger->getCollidingParagraphGroups(0);
+        $this->assertTrue(isset($colliding[1]));
+        $this->assertEquals('###INS_START###test16.1 ###INS_END###', $colliding[1][1]['text']);
+    }
 
     /**
      */

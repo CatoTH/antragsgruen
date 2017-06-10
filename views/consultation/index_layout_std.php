@@ -18,3 +18,7 @@ foreach ($motions as $name => $motns) {
     }
     echo '</ul>';
 }
+
+if (count($motions) === 0) {
+    echo '<div class="content noMotionsYet">' . \Yii::t('con', 'no_motions_yet') . '</div>';
+}

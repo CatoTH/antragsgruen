@@ -67,7 +67,7 @@ class MergeSingleAmendmentForm extends Model
             $amendmentParas = $section->getParagraphsRelativeToOriginal();
             if (isset($this->paragraphs[$section->sectionId])) {
                 foreach ($this->paragraphs[$section->sectionId] as $paraNo => $para) {
-                    $amendmentParas[$paraNo] = $para['modified'];
+                    $amendmentParas[$paraNo] = $para;
                 }
             }
             $newSections[$section->sectionId] = implode("\n", $amendmentParas);
@@ -83,8 +83,8 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            if ($this->mergeAmendment->id == $amendment->id) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStati[$amendment->id])) {
                 continue;
             }
             if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
@@ -171,8 +171,8 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            if ($amendment->id == $this->mergeAmendment->id) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStati[$amendment->id])) {
                 continue;
             }
             if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
@@ -204,8 +204,8 @@ class MergeSingleAmendmentForm extends Model
      */
     private function setDoneAmendmentsStatuses()
     {
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
-            if ($amendment->id == $this->mergeAmendment->id) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStati[$amendment->id])) {
                 continue;
             }
             if (!in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {

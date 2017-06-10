@@ -9,6 +9,7 @@ interface WizardState {
     minSupporters: number;
     hasAmendments: number;
     amendSinglePara: number;
+    amendMerging: number;
     amendmentInitiatedBy: number;
     amendmentDeadlineExists: number;
     amendmentDeadline: string;
@@ -55,6 +56,7 @@ class SiteCreateWizard {
             minSupporters: this.$root.find("input.minSupporters").val(),
             hasAmendments: this.getRadioValue('hasAmendments', 1),
             amendSinglePara: this.getRadioValue('amendSinglePara', 0),
+            amendMerging: this.getRadioValue('amendMerging', 0),
             amendmentInitiatedBy: this.getRadioValue('amendmentWho', 1),
             amendmentDeadlineExists: this.getRadioValue('amendmentDeadline', 0),
             amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val(),
@@ -134,6 +136,8 @@ class SiteCreateWizard {
                     return "#panelAmendDeadline";
                 }
             case 'panelAmendDeadline':
+                return '#panelAmendMerging';
+            case 'panelAmendMerging':
                 return "#panelAmendScreening";
             case 'panelAmendScreening':
                 return "#panelComments";
@@ -148,6 +152,43 @@ class SiteCreateWizard {
             case 'panelOpenNow':
                 return "#panelSiteData";
         }
+    }
+
+    subdomainChange(ev) {
+        let $this = $(ev.currentTarget),
+            subdomain = $this.val(),
+            $group = $this.parents(".subdomainRow").first(),
+            requesturl = $this.data("query-url").replace(/SUBDOMAIN/, subdomain),
+            $err = $group.find(".subdomainError");
+
+        if (subdomain == "") {
+            $err.addClass("hidden");
+            $group.removeClass("has-error").removeClass("has-success");
+            return;
+        }
+        if (!subdomain.match(/^[A-Z0-9äöü](?:[A-Z0-9äöü_\-]{0,61}[A-Z0-9äöü])?$/i)) {
+            $group.removeClass("has-success").addClass("has-error");
+            this.$root.find("button[type=submit]").prop("disabled", true);
+            return;
+        }
+        $.get(requesturl, (ret) => {
+            if (ret['available']) {
+                $err.addClass("hidden");
+                $group.removeClass("has-error");
+                this.$root.find("button[type=submit]").prop("disabled", false);
+                if (ret['subdomain'] == $this.val()) {
+                    $group.addClass("has-success");
+                }
+            } else {
+                $err.removeClass("hidden");
+                $err.html($err.data("template").replace(/%SUBDOMAIN%/, ret['subdomain']));
+                $group.removeClass("has-success");
+                if (ret['subdomain'] == $this.val()) {
+                    this.$root.find("button[type=submit]").prop("disabled", true);
+                    $group.addClass("has-error");
+                }
+            }
+        });
     }
 
     initEvents() {
@@ -186,42 +227,7 @@ class SiteCreateWizard {
         $form.find("input.minSupporters").change(function () {
             $("input.needsSupporters").prop("checked", true).change();
         });
-        $form.find("#siteSubdomain").on("keyup change", function () {
-            let $this = $(this),
-                subdomain = $this.val(),
-                $group = $this.parents(".subdomainRow").first(),
-                requesturl = $this.data("query-url").replace(/SUBDOMAIN/, subdomain),
-                $err = $group.find(".subdomainError");
-
-            if (subdomain == "") {
-                $err.addClass("hidden");
-                $group.removeClass("has-error").removeClass("has-success");
-                return;
-            }
-            if (!subdomain.match(/^[A-Z0-9äöü](?:[A-Z0-9äöü_\-]{0,61}[A-Z0-9äöü])?$/i)) {
-                $group.removeClass("has-success").addClass("has-error");
-                $form.find("button[type=submit]").prop("disabled", true);
-                return;
-            }
-            $.get(requesturl, function (ret) {
-                if (ret['available']) {
-                    $err.addClass("hidden");
-                    $group.removeClass("has-error");
-                    $form.find("button[type=submit]").prop("disabled", false);
-                    if (ret['subdomain'] == $this.val()) {
-                        $group.addClass("has-success");
-                    }
-                } else {
-                    $err.removeClass("hidden");
-                    $err.html($err.data("template").replace(/%SUBDOMAIN%/, ret['subdomain']));
-                    $group.removeClass("has-success");
-                    if (ret['subdomain'] == $this.val()) {
-                        $form.find("button[type=submit]").prop("disabled", true);
-                        $group.addClass("has-error");
-                    }
-                }
-            });
-        });
+        $form.find("#siteSubdomain").on("keyup change", this.subdomainChange.bind(this));
         $form.find("#siteTitle").on("keyup change", function () {
             if ($(this).val().length >= 5) {
                 $(this).parents(".form-group").first().addClass("has-success");

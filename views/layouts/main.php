@@ -58,28 +58,13 @@ if ($layout->canonicalUrl) {
 foreach ($layout->alternateLanuages as $lang => $url) {
     echo '<link rel="alternate" hreflang="' . Html::encode($lang) . '" href="' . Html::encode($url) . '">' . "\n";
 }
-
-echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('npm/html5shiv.min.js') . '"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="' . $layout->resourceUrl('css/antragsgruen-ie7.css') . '">
-    <![endif]-->
-';
-
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
 
 echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
-echo '<!--[if lt IE 9]>
-    <script src="' . $layout->resourceUrl('js/jquery-1.12.4.min.js') . '"></script>
-    <![endif]-->
-    <!--[if gte IE 9]> -->
-    <script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
-    <!--<![endif]-->
-
+echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="114x114" href="' . $resourceBase . 'apple-touch-icon-114x114.png">
     <link rel="apple-touch-icon" sizes="72x72" href="' . $resourceBase . 'apple-touch-icon-72x72.png">
@@ -99,9 +84,14 @@ echo '<!--[if lt IE 9]>
 
 echo '</head>';
 
+if (defined('YII_ENV') && YII_ENV == 'test') {
+    $bodyClasses[] = 'testing';
+}
+
 echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
-echo '<script src="' . $layout->resourceUrl('js/modernizr.js') . '"></script>';
+$modernizr = file_get_contents(\Yii::$app->basePath . '/web/js/modernizr.js');
+echo '<script>' . $modernizr . '</script>' . "\n";
 
 $this->beginBody();
 

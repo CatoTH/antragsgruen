@@ -171,7 +171,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
 
             if ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
-                LayoutHelper::showCommentForm($form, $motion->getConsultation(), $section->sectionId, $paragraphNo);
+                LayoutHelper::showCommentForm($form, $motion->getMyConsultation(), $section->sectionId, $paragraphNo);
             } elseif ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
                 echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';

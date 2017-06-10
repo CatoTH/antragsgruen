@@ -82,6 +82,12 @@ class Layout
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->titleShort;
             }
         }
+        if ($consultation) {
+            $language = substr($consultation->wordingBase, 0, 2);
+            if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
+                \Yii::$app->language = $language;
+            }
+        }
     }
 
     /**
@@ -225,6 +231,14 @@ class Layout
     {
         $this->addJS('npm/fuelux.min.js');
         $this->addCSS('npm/fuelux.min.css');
+    }
+
+    /**
+     */
+    public function loadBootstrapToggle()
+    {
+        $this->addJS('npm/bootstrap-toggle.min.js');
+        $this->addCSS('npm/bootstrap-toggle.min.css');
     }
 
     /**

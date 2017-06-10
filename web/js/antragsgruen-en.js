@@ -6,12 +6,18 @@ ANTRAGSGRUEN_STRINGS = {
         "del_confirm": "Really delete it?",
         "draft_del": "Delete draft",
         "draft_del_confirm": "Really delete this draft?",
+        "draft_date": "Draft date",
         "draft_restore_confirm": "Really restore this draft?",
         "min_x_supporter": "You have to enter at least %NUM% supporters.",
         "missing_resolution_date": "A resolution date has to be entered.",
         "pw_x_chars": "The password needs to be at least %NUM% characters long.",
         "pw_min_x_chars": "Min. %NUM% characters",
-        "pw_no_match": 'The passwords do not match.'
+        "pw_no_match": "The passwords do not match.",
+        "leave_changed_page": "There are unsaved changes. Do you really want to leave this page and discard those changes?",
+        "moved_paragraph_from": "Moved from paragraph ##PARA##",
+        "moved_paragraph_to": "Moved to paragraph ##PARA##",
+        "moved_paragraph_from_line": "Moved from paragraph ##PARA## (line ##LINE##)",
+        "moved_paragraph_to_line": "Moved to paragraph ##PARA##(line ##LINE##)"
     },
     "merge": {
         "initiated_by": "Proposed by",
@@ -19,11 +25,11 @@ ANTRAGSGRUEN_STRINGS = {
         "title_del_title": "Remove the headline \"Colliding Amendment: ...\"",
         "title_del_colliding": "Rmove the whole colliding paragraph",
         "title": "Headline",
-        "insert_accept": "Accept",
-        "insert_reject": "Reject",
-        "delete_accept": "Delete",
-        "delete_reject": "Keep it",
-        "colliding_title": "Colliding amendm."
+        "change_accept": "Accept",
+        "change_reject": "Reject",
+        "colliding_title": "Colliding amendm.",
+        "colliding_start": "Collissions start here",
+        "colliding_end": "Collissions end here"
     },
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",

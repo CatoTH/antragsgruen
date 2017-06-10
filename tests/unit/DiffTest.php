@@ -15,6 +15,18 @@ class DiffTest extends TestBase
 
     /**
      */
+    public function testShortLineWithManyChanges()
+    {
+        $orig     = '<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>';
+        $new      = '<p>Der Bundesvorstand untersetzt, in Vorbereitung der Bundestagswahl, diese Forderungen mit konkreten Reformvorhaben.</p>';
+        $expected = '###DEL_START###<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>###DEL_END######INS_START###<p>Der Bundesvorstand untersetzt, in Vorbereitung der Bundestagswahl, diese Forderungen mit konkreten Reformvorhaben.</p>###INS_END###';
+        $diff     = new Diff();
+        $out      = $diff->computeLineDiff($orig, $new);
+        $this->assertEquals($expected, $out);
+    }
+
+    /**
+     */
     public function testNoDiffInLink()
     {
         $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
@@ -32,6 +44,18 @@ class DiffTest extends TestBase
         $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
         $new      = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, doch das Blindtextchen ließ sich nicht beirren.</p></li><li><p>Noch eine neuer Punkt an dritter Stelle</p></li></ul></li></ul>';
         $expected = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, ###DEL_START###da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, ###DEL_END###doch das Blindtextchen ließ sich nicht beirren.###INS_START###</p></li><li><p>Noch eine neuer Punkt an dritter Stelle###INS_END###</p></li></ul></li></ul>';
+        $diff     = new Diff();
+        $out      = $diff->computeLineDiff($orig, $new);
+        $this->assertEquals($expected, $out);
+    }
+
+    /**
+     */
+    public function testNoChangingParagraphTypes()
+    {
+        $orig     = '<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>';
+        $new      = '<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>';
+        $expected = '###DEL_START###<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>###DEL_END######INS_START###<ul><li>in Gesprächen mit (Vertreter*innen) der SPD, der Linkspartei und der Grünen</li></ul>###INS_END###';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
         $this->assertEquals($expected, $out);
@@ -448,8 +472,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $expect = [
             '<p>Unchanging line</p>',
-            '<p><del>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</del>' .
-            '<ins>Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</ins></p>'];
+            '<p class="deleted">Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</p>' .
+            '<p class="inserted">Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>'];
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
@@ -837,7 +861,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         ];
         $diff   = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
-        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
 }

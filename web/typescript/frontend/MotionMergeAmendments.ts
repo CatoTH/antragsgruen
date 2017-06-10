@@ -1,39 +1,49 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
-import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 
 class MotionMergeChangeActions {
+    public static removeEmptyParagraphs() {
+        $('.paragraphHolder').each((i, el) => {
+            if (el.childNodes.length == 0) {
+                $(el).remove();
+            }
+        });
+    }
+
     public static accept(node: Element) {
-        if ($(node).hasClass("ice-ins")) {
+        let $node = $(node);
+        if ($node.hasClass("ice-ins")) {
             MotionMergeChangeActions.insertAccept(node);
         }
-        if ($(node).hasClass("ice-del")) {
+        if ($node.hasClass("ice-del")) {
             MotionMergeChangeActions.deleteAccept(node);
         }
     }
 
     public static reject(node: Element) {
-        if ($(node).hasClass("ice-ins")) {
-            MotionMergeChangeActions.insertReject(node);
+        let $node = $(node);
+        if ($node.hasClass("ice-ins")) {
+            MotionMergeChangeActions.insertReject($node);
         }
-        if ($(node).hasClass("ice-del")) {
-            MotionMergeChangeActions.deleteReject(node);
+        if ($node.hasClass("ice-del")) {
+            MotionMergeChangeActions.deleteReject($node);
         }
     }
 
-    public static insertReject(node: Element) {
+    public static insertReject($node: JQuery) {
         let $removeEl: JQuery,
-            name = node.nodeName.toLowerCase();
+            name = $node[0].nodeName.toLowerCase();
         if (name == 'li') {
-            $removeEl = $(node).parent();
+            $removeEl = $node.parent();
         } else {
-            $removeEl = $(node);
+            $removeEl = $node;
         }
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
             $removeEl.css("overflow", "hidden").height($removeEl.height());
             $removeEl.animate({"height": "0"}, 250, function () {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
+                MotionMergeChangeActions.removeEmptyParagraphs();
             });
         } else {
             $removeEl.remove();
@@ -42,7 +52,8 @@ class MotionMergeChangeActions {
 
     public static insertAccept(node: Element) {
         let $this: JQuery = $(node);
-        $this.removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
+        $this.removeClass("ice-cts ice-ins appendHint moved");
+        $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
         if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
             $this.children().removeClass("ice-cts").removeClass("ice-ins").removeClass("appendHint");
         }
@@ -54,17 +65,18 @@ class MotionMergeChangeActions {
         }
     }
 
-    public static deleteReject(node: Element) {
-        let $this: JQuery = $(node);
-        $this.removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
-        if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
-            $this.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+    public static deleteReject($node: JQuery) {
+        $node.removeClass("ice-cts ice-del appendHint");
+        $node.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
+        let nodeName = $node[0].nodeName.toLowerCase();
+        if (nodeName == 'ul' || nodeName == 'ol') {
+            $node.children().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
         }
-        if (node.nodeName.toLowerCase() == 'li') {
-            $this.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
+        if (nodeName == 'li') {
+            $node.parent().removeClass("ice-cts").removeClass("ice-del").removeClass("appendHint");
         }
-        if (node.nodeName.toLowerCase() == 'del') {
-            $this.replaceWith($this.html());
+        if (nodeName == 'del') {
+            $node.replaceWith($node.html());
         }
     }
 
@@ -82,6 +94,7 @@ class MotionMergeChangeActions {
             $removeEl.animate({"height": "0"}, 250, function () {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
+                MotionMergeChangeActions.removeEmptyParagraphs();
             });
         } else {
             $removeEl.remove();
@@ -290,13 +303,23 @@ class MotionMergeConflictTooltip {
                 let $para = $this.parents(".collidingParagraph");
                 $para.css({"overflow": "hidden"}).height($para.height());
                 $para.animate({"height": "0"}, 250, function () {
+                    let $parent = $para.parents(".paragraphHolder");
                     $para.remove();
+                    if ($parent.find(".collidingParagraph").length == 0) {
+                        $parent.removeClass("hasCollissions");
+                    }
                 });
             });
         });
         $el.find(".delTitle").click(() => {
             this.performActionWithUI.call(this, () => {
+                let $para = $this.parents(".collidingParagraph");
                 $this.remove();
+                $para.removeClass("collidingParagraph");
+                let $parent = $para.parents(".paragraphHolder");
+                if ($parent.find(".collidingParagraph").length == 0) {
+                    $parent.removeClass("hasCollissions");
+                }
             });
         });
         return $el;
@@ -329,8 +352,36 @@ class MotionMergeAmendmentsTextarea {
             $this.removeClass("appendHint").removeData("append-hint");
         });
 
+        // Remove double markup
+        $text.find(".moved .moved").removeClass('moved');
+        $text.find(".moved").each(this.markupMovedParagraph.bind(this));
+
+        // Add hints about starting / ending collissions
+        $text.find(".hasCollissions")
+            .attr("data-collission-start-msg", __t('merge', 'colliding_start'))
+            .attr("data-collission-end-msg", __t('merge', 'colliding_end'));
+
         let newText = $text.html();
         this.texteditor.setData(newText);
+    }
+
+    private markupMovedParagraph(i, el) {
+        let $node = $(el),
+            paragraphNew = $node.data('moving-partner-paragraph'),
+            msg: string;
+
+        if ($node.hasClass('inserted')) {
+            msg = __t('std', 'moved_paragraph_from');
+        } else {
+            msg = __t('std', 'moved_paragraph_to');
+        }
+        msg = msg.replace(/##PARA##/, (paragraphNew + 1));
+
+        if ($node[0].nodeName === 'LI') {
+            $node = $node.parent();
+        }
+
+        $node.attr("data-moving-msg", msg);
     }
 
     private initializeTooltips() {
@@ -378,10 +429,10 @@ class MotionMergeAmendmentsTextarea {
             $(el).remove();
         });
         this.$holder.find(".ice-ins").each((i, el) => {
-            MotionMergeChangeActions.insertReject(el);
+            MotionMergeChangeActions.insertReject($(el));
         });
         this.$holder.find(".ice-del").each((i, el) => {
-            MotionMergeChangeActions.deleteReject(el);
+            MotionMergeChangeActions.deleteReject($(el));
         });
     }
 
@@ -390,7 +441,12 @@ class MotionMergeAmendmentsTextarea {
     }
 
     public focusTextarea() {
-        this.$holder.find(".texteditor").focus();
+        //this.$holder.find(".texteditor").focus();
+        // This lead to strange cursor behavior, e.g. when removing a colliding paragraph
+    }
+
+    public getContent(): string {
+        return this.texteditor.getData();
     }
 
     constructor(private $holder: JQuery, private rootObject: MotionMergeAmendments) {
@@ -410,27 +466,124 @@ class MotionMergeAmendmentsTextarea {
     }
 }
 
-class MotionMergeAmendments {
-    public static activePopup: MotionMergeChangeTooltip|MotionMergeConflictTooltip = null;
+export class MotionMergeAmendments {
+    public static activePopup: MotionMergeChangeTooltip | MotionMergeConflictTooltip = null;
     public static currMouseX: number = null;
+
+    public $draftSavingPanel: JQuery;
+    private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
 
     constructor(private $form: JQuery) {
         $(".wysiwyg-textarea").each((i, el) => {
-            new MotionMergeAmendmentsTextarea($(el), this);
-            $(el).on("mousemove", (ev) => {
+            let $el = $(el);
+            this.textareas[$el.attr("id")] = new MotionMergeAmendmentsTextarea($el, this);
+            $el.on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
         });
 
-        let $draftHint = $("#draftHint"),
-            origMotionId = $draftHint.data("orig-motion-id"),
-            newMotionId = $draftHint.data("new-motion-id");
-        new DraftSavingEngine($form, $draftHint, "motionmerge_" + origMotionId + "_" + newMotionId);
+        this.$form.on("submit", () => {
+            $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
+        });
+        $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
+
+        this.initDraftSaving();
+    }
+
+    public static onLeavePage(): string {
+        return __t("std", "leave_changed_page");
     }
 
     public addSubmitListener(cb) {
         this.$form.submit(cb);
     }
-}
 
-new MotionMergeAmendments($(".motionMergeForm"));
+    private setDraftDate(date: Date) {
+        this.$draftSavingPanel.find(".lastSaved .none").hide();
+
+        let options = {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: 'numeric', minute: 'numeric',
+                hour12: false
+            },
+            lang: string = $("html").attr("lang"),
+            formatted = new Intl.DateTimeFormat(lang, options).format(date);
+
+        this.$draftSavingPanel.find(".lastSaved .value").text(formatted);
+    }
+
+    private saveDraft() {
+        let sections = {};
+        for (let id of Object.getOwnPropertyNames(this.textareas)) {
+            sections[id.replace('section_holder_', '')] = this.textareas[id].getContent();
+        }
+        let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
+
+        $.ajax({
+            type: "POST",
+            url: this.$form.data('draftSaving'),
+            data: {
+                'public': (isPublic ? 1 : 0),
+                'sections': sections,
+                '_csrf': this.$form.find('> input[name=_csrf]').val()
+            },
+            success: (ret) => {
+                if (ret['success']) {
+                    this.$draftSavingPanel.find('.savingError').addClass('hidden');
+                    this.setDraftDate(new Date(ret['date']));
+                    if (isPublic) {
+                        this.$form.find('.publicLink').removeClass('hidden');
+                    } else {
+                        this.$form.find('.publicLink').addClass('hidden');
+                    }
+                } else {
+                    this.$draftSavingPanel.find('.savingError').removeClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorNetwork').addClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
+                }
+            },
+            error: () => {
+                this.$draftSavingPanel.find('.savingError').removeClass('hidden');
+                this.$draftSavingPanel.find('.savingError .errorNetwork').removeClass('hidden');
+                this.$draftSavingPanel.find('.savingError .errorHolder').text('').addClass('hidden');
+            }
+        });
+    }
+
+    private initAutosavingDraft() {
+        let $toggle: JQuery = this.$draftSavingPanel.find('input[name=autosave]');
+
+        window.setInterval(() => {
+            if ($toggle.prop('checked')) {
+                this.saveDraft();
+            }
+        }, 5000);
+
+        if (localStorage) {
+            let state = localStorage.getItem('merging-draft-auto-save');
+            if (state !== null) {
+                $toggle.prop('checked', (state == '1'));
+            }
+        }
+        $toggle.change(() => {
+            let active: boolean = $toggle.prop('checked');
+            if (localStorage) {
+                localStorage.setItem('merging-draft-auto-save', (active ? '1' : '0'));
+            }
+        }).trigger('change');
+    }
+
+    private initDraftSaving() {
+        this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
+        this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
+        this.$draftSavingPanel.find('input[name=public]').on('change', this.saveDraft.bind(this));
+        this.initAutosavingDraft();
+
+        if (this.$draftSavingPanel.data("resumed-date")) {
+            let date = new Date(this.$draftSavingPanel.data("resumed-date"));
+            this.setDraftDate(date);
+        }
+
+        $("#yii-debug-toolbar").remove();
+    }
+}

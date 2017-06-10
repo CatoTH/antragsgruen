@@ -24,7 +24,7 @@ $I->seeElement('.motionListStd');
 $I->dontSeeElement('.motionListStd .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->seeElement('.myAmendmentList .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
-$I->wantTo('check that other users don\' see it');
+$I->wantTo('check that other users don\'t see it');
 
 $I->logout();
 $I->gotoConsultationHome();

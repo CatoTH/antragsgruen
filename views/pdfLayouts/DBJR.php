@@ -58,7 +58,7 @@ class DBJR extends IPDFLayout
         $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);
-        $intro = $motion->getConsultation()->getSettings()->pdfIntroduction;
+        $intro = $motion->getMyConsultation()->getSettings()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);

@@ -35,7 +35,7 @@ $layout->addAMDModule('backend/ConsultationSettings');
 $boolSettingRow = function ($settings, $field, &$handledSettings, $description) {
     $handledSettings[] = $field;
     echo '<div><label>';
-    echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]);
+    echo Html::checkbox('settings[' . $field . ']', $settings->$field, ['id' => $field]) . ' ';
     echo $description;
     echo '</label></div>';
 };
@@ -129,7 +129,7 @@ $handledSiteSettings = [];
         </fieldset>
 
     </div>
-    <h2 class="green">Aussehen</h2>
+    <h2 class="green"><?= \Yii::t('admin', 'con_appearance') ?></h2>
     <div class="content">
 
 
@@ -200,7 +200,7 @@ $handledSiteSettings = [];
                     'settings[singleMotionMode]',
                     ($settings->forceMotion !== null),
                     ['id' => 'singleMotionMode']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_single_motion_mode');
                 ?>
             </label></div>
@@ -236,7 +236,7 @@ $handledSiteSettings = [];
                     'settings[lineNumberingGlobal]',
                     $settings->lineNumberingGlobal,
                     ['id' => 'lineNumberingGlobal']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_line_number_global');
                 ?>
             </label></div>
@@ -249,7 +249,7 @@ $handledSiteSettings = [];
                     'settings[screeningMotions]',
                     $settings->screeningMotions,
                     ['id' => 'screeningMotions']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_motion_screening');
                 ?>
             </label></div>
@@ -298,7 +298,7 @@ $handledSiteSettings = [];
                     'settings[allowMultipleTags]',
                     $settings->allowMultipleTags,
                     ['id' => 'allowMultipleTags']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_multiple_topics');
                 ?>
                 </label></div>
@@ -331,7 +331,7 @@ $handledSiteSettings = [];
                     'settings[screeningAmendments]',
                     $settings->screeningAmendments,
                     ['id' => 'screeningAmendments']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_amend_screening');
                 ?>
             </label></div>
@@ -343,7 +343,7 @@ $handledSiteSettings = [];
                     'settings[editorialAmendments]',
                     $settings->editorialAmendments,
                     ['id' => 'editorialAmendments']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_amend_editorial');
                 ?>
             </label></div>
@@ -362,7 +362,7 @@ $handledSiteSettings = [];
                     'settings[screeningComments]',
                     $settings->screeningComments,
                     ['id' => 'screeningComments']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_comment_screening');
                 ?>
             </label></div>
@@ -375,7 +375,7 @@ $handledSiteSettings = [];
                     'settings[commentNeedsEmail]',
                     $settings->commentNeedsEmail,
                     ['id' => 'commentNeedsEmail']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_comment_email');
                 ?>
             </label></div>
@@ -421,7 +421,7 @@ $handledSiteSettings = [];
                     'settings[initiatorConfirmEmails]',
                     $settings->initiatorConfirmEmails,
                     ['id' => 'initiatorConfirmEmails']
-                );
+                ) . ' ';
                 echo \Yii::t('admin', 'con_send_motion_email');
                 ?>
             </label></div>

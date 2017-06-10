@@ -32,7 +32,7 @@ class CommentForm extends Model
      */
     public function saveMotionComment(Motion $motion)
     {
-        $settings = $motion->getConsultation()->getSettings();
+        $settings = $motion->getMyConsultation()->getSettings();
         if ($settings->commentNeedsEmail && trim($this->email) == '') {
             throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }

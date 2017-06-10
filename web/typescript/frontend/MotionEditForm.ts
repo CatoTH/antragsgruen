@@ -2,6 +2,8 @@ import {DraftSavingEngine} from "../shared/DraftSavingEngine";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
 export class MotionEditForm {
+    private hasChanged: boolean = false;
+
     constructor(private $form: JQuery) {
         $(".input-group.date").datetimepicker({
             locale: $("html").attr('lang'),
@@ -16,6 +18,14 @@ export class MotionEditForm {
             draftMotionId = $draftHint.data("motion-id");
 
         new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionType + "_" + draftMotionId);
+
+        $form.on("submit", () => {
+            $(window).off("beforeunload", MotionEditForm.onLeavePage);
+        });
+    }
+
+    public static onLeavePage(): string {
+        return __t("std", "leave_changed_page");
     }
 
     private initWysiwyg(i, el) {
@@ -25,6 +35,14 @@ export class MotionEditForm {
 
         $textarea.parents("form").submit(function () {
             $textarea.parent().find("textarea").val(editor.getEditor().getData());
+        });
+        editor.getEditor().on('change', () => {
+            if (!this.hasChanged) {
+                this.hasChanged = true;
+                if (!$("body").hasClass('testing')) {
+                    $(window).on("beforeunload", MotionEditForm.onLeavePage);
+                }
+            }
         });
     }
 

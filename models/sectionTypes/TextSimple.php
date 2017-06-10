@@ -115,7 +115,7 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setAmendmentData($data)
@@ -637,7 +637,7 @@ class TextSimple extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printMotionToODT(Text $odt)
     {
@@ -680,7 +680,7 @@ class TextSimple extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
+     * @return void
      */
     public function printAmendmentToODT(Text $odt)
     {
@@ -723,14 +723,15 @@ class TextSimple extends ISectionType
     private static $CHANGESET_COUNTER = 0;
 
     /**
+     * @param int[] $toMergeAmendmentIds
      * @param array $changeset
      * @return string
      */
-    public function getMotionTextWithInlineAmendments(&$changeset)
+    public function getMotionTextWithInlineAmendments($toMergeAmendmentIds, &$changeset)
     {
         /** @var MotionSection $section */
         $section    = $this->section;
-        $merger     = $section->getAmendmentDiffMerger();
+        $merger     = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
         $paragraphs = $section->getTextParagraphObjects(false, false, false);
 
         /** @var Amendment[] $amendmentsById */
@@ -741,7 +742,7 @@ class TextSimple extends ISectionType
 
         $paragraphCollissions = [];
         foreach (array_keys($paragraphs) as $paragraphNo) {
-            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo);
+            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
         }
 
         $out = '';

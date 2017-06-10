@@ -100,9 +100,9 @@ class AmendmentRewriterCheckTest extends TestBase
      */
     public function testInParagraph1()
     {
-        $oldHtml       = '<p>Test 123 Bla <strong>STRONG</strong></p>';
-        $amendmentHtml = '<p>Bla<strong>STRONG</strong></p>';
-        $newHtml       = '<p>Test 123 Bla <strong>STRONG 2</strong></p>';
+        $oldHtml       = '<p>Test 123 Bla <strong>STRONG</strong> Some text to circumvent change quota</p>';
+        $amendmentHtml = '<p>Bla<strong>STRONG</strong> Some text to circumvent change quota</p>';
+        $newHtml       = '<p>Test 123 Bla <strong>STRONG 2</strong> Some text to circumvent change quota</p>';
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
         $this->assertTrue($rewritable);

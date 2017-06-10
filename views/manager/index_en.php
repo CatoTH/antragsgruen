@@ -1,5 +1,7 @@
 <?php
+use app\components\UrlHelper;
 use app\models\db\Site;
+use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
@@ -69,6 +71,12 @@ $params = \Yii::$app->params;
         </li>
     </ul>
 
+    <p style="text-align: center; font-weight: bold;">
+        <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            Manual / Detailed description of the functionality
+        </a>
+    </p>
 </div>
 
 <h2 id="selbst_nutzen" class="green">Pricing / Testing</h2>
@@ -83,7 +91,7 @@ $params = \Yii::$app->params;
         version without the need to provide contact details. The version is available for three days:
     </p>
     <p style="text-align: right;">
-        <a href="http://sandbox.motion.tools/createsite" class="btn btn-default">Create test version</a>
+        <a href="http://sandbox.motion.tools/createsite?language=en" class="btn btn-default">Create test version</a>
     </p>
 
     <p style="margin-top: 35px;"><strong>Are there functions missing?

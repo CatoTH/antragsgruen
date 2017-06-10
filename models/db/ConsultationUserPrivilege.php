@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use app\components\UrlHelper;
@@ -135,6 +136,30 @@ class ConsultationUserPrivilege extends ActiveRecord
             );
         } catch (MailNotSent $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * @param int $permission
+     * @return boolean
+     */
+    public function containsPrivilege($permission)
+    {
+        switch ($permission) {
+            case User::PRIVILEGE_ANY:
+                return ($this->adminSuper == 1 || $this->adminContentEdit == 1 || $this->adminScreen);
+            case User::PRIVILEGE_CONSULTATION_SETTINGS:
+                return ($this->adminSuper == 1);
+            case User::PRIVILEGE_CONTENT_EDIT:
+                return ($this->adminContentEdit == 1);
+            case User::PRIVILEGE_SCREENING:
+                return ($this->adminScreen == 1);
+            case User::PRIVILEGE_MOTION_EDIT:
+                return ($this->adminSuper == 1);
+            case User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
+                return ($this->adminSuper == 1);
+            default:
+                return false;
         }
     }
 }

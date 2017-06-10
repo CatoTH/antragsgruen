@@ -30,7 +30,7 @@ echo Html::beginForm('', 'post', ['class' => 'siteCreate antragsgruenInitForm fo
 
 echo $controller->showErrors();
 
-echo $this->render('../createsite_wizard/index', ['model' => $form, 'errors' => [], 'mode' => 'singlesite']);
+echo $this->render('../createsiteWizard/index', ['model' => $form, 'errors' => [], 'mode' => 'singlesite']);
 
 
 echo Html::endForm();

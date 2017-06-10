@@ -23,6 +23,8 @@ gulp.task('copy-files', function() {
     gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
 });
 
 gulp.task('pdfjs', function () {
@@ -94,6 +96,7 @@ gulp.task('build-css', function () {
 
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
+    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
     gulp.watch(['./web/typescript/**/*.ts'], ['build-typescript']);
 });

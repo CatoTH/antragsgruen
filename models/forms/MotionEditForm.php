@@ -305,6 +305,10 @@ class MotionEditForm extends Model
 
         foreach ($this->sections as $section) {
             $type = $section->getSettings();
+            if ($this->motionId && $type->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                // Updating the text is done separately, including amendment rewriting
+                continue;
+            }
             if ($section->data == '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }

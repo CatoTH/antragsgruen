@@ -37,10 +37,18 @@ a {
   }
 }
 
-.alert-info a {
-  color: darken($colorLinks, 5%);
-  &:hover {
-    color: lighten(darken($colorLinks, 5%), 15%);
+.alert-info {
+  a {
+    color: darken($colorLinks, 5%);
+    &:hover {
+      color: lighten(darken($colorLinks, 5%), 15%);
+    }
+    &.btn.btn-primary {
+      color: white;
+      &:hover {
+        color: white;
+      }
+    }
   }
 }
 

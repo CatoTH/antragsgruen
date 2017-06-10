@@ -96,7 +96,7 @@ class Image extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setMotionData($data)
@@ -138,7 +138,7 @@ class Image extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setAmendmentData($data)

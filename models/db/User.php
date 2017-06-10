@@ -56,6 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SCREENING                 = 3;
     const PRIVILEGE_MOTION_EDIT               = 4;
     const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
+    const PRIVILAGE_SITE_ADMIN                = 6;
 
     /**
      * @return string[]
@@ -547,26 +548,10 @@ class User extends ActiveRecord implements IdentityInterface
         $link    = UrlHelper::absolutizeLink($link);
         $text    = str_replace(
             ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$motion->getConsultation()->title, $motion->getTitleWithPrefix(), $link],
+            [$motion->getMyConsultation()->title, $motion->getTitleWithPrefix(), $link],
             \Yii::t('user', 'noti_new_motion_body')
         );
-        $this->notificationEmail($motion->getConsultation(), $subject, $text);
-    }
-
-    /**
-     * @param Amendment $amendment
-     */
-    public function notifyAmendment(Amendment $amendment)
-    {
-        $motionTitle = $amendment->getMyMotion()->getTitleWithPrefix();
-        $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
-        $link        = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-        $text        = str_replace(
-            ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$amendment->getMyConsultation()->title, $motionTitle, $link],
-            \Yii::t('user', 'noti_new_motion_body')
-        );
-        $this->notificationEmail($amendment->getMyConsultation(), $subject, $text);
+        $this->notificationEmail($motion->getMyConsultation(), $subject, $text);
     }
 
     /**
@@ -601,12 +586,25 @@ class User extends ActiveRecord implements IdentityInterface
         if (in_array($this->id, $params->adminUserIds)) {
             return true;
         }
-        // @TODO Respect privilege table
+
         foreach ($consultation->site->admins as $admin) {
             if ($admin->id == $this->id) {
                 return true;
             }
         }
+
+        // Only site adminitrators are allowed to administer users.
+        // All other rights are granted to every consultation-level administrator
+        if ($privilege == User::PRIVILAGE_SITE_ADMIN) {
+            return false;
+        }
+
+        foreach ($consultation->userPrivileges as $userPrivilege) {
+            if ($userPrivilege->userId == $this->id) {
+                return $userPrivilege->containsPrivilege($privilege);
+            }
+        }
+
         return false;
     }
 

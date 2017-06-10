@@ -27,6 +27,7 @@ use yii\db\ActiveRecord;
  * @property int $policyComments
  * @property int $policySupportMotions
  * @property int $policySupportAmendments
+ * @property int $initiatorsCanMergeAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
  * @property int $contactName
@@ -52,6 +53,10 @@ class ConsultationMotionType extends ActiveRecord
 
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
+
+    const INITIATORS_MERGE_NEVER = 0;
+    const INITIATORS_MERGE_NO_COLLISSION = 1;
+    const INITIATORS_MERGE_WITH_COLLISSION = 2;
 
     /**
      * @return string
@@ -263,17 +268,18 @@ class ConsultationMotionType extends ActiveRecord
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
-            [['policySupportAmendments', 'supportType', 'status'], 'required'],
+            [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'supportType', 'status'], 'required'],
             [['contactName', 'contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position'], 'required'],
 
             [['id', 'consultationId', 'position', 'contactName', 'contactEmail', 'contactPhone'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
-            [['pdfLayout', 'layoutTwoCols'], 'number'],
+            [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
+            [['initiatorsCanMergeAmendments', 'pdfLayout', 'layoutTwoCols'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
-            [['policySupportAmendments', 'layoutTwoCols'], 'safe'],
+            [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'layoutTwoCols'], 'safe'],
         ];
     }
 

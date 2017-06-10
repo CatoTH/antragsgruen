@@ -13,7 +13,7 @@ use yii\helpers\Html;
 /** @var Motion[] $replacedByMotions */
 $replacedByMotions = [];
 foreach ($motion->replacedByMotions as $replMotion) {
-    if (!in_array($replMotion->status, $motion->getConsultation()->getInvisibleMotionStati())) {
+    if (!in_array($replMotion->status, $motion->getMyConsultation()->getInvisibleMotionStati())) {
         $replacedByMotions[] = $replMotion;
     }
 }
@@ -66,7 +66,7 @@ if ($motion->canMergeAmendments()) {
     $title   = (count($motion->getVisibleAmendments(false)) > 0 ? 'amendments_merge' : 'amendments_merge_noamend');
     $title   = '<span class="icon glyphicon glyphicon-scissors"></span>' .
         Yii::t('motion', $title);
-    $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'mergeamendments')) . '</li>';
+    $mergeLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'merge-amendments-init')) . '</li>';
     $html .= $mergeLi;
     $layout->menusHtmlSmall[] = $mergeLi;
     $sidebarRows++;
@@ -101,7 +101,7 @@ if ($adminEdit) {
     $sidebarRows++;
 }
 
-if (!$motion->getConsultation()->getForcedMotion()) {
+if (!$motion->getMyConsultation()->getForcedMotion()) {
     $html .= '<li class="back">';
     $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
     $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';

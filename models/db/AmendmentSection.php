@@ -185,7 +185,7 @@ class AmendmentSection extends IMotionSection
     public function getParagraphLineNumberHelper()
     {
         $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data);
-        $lineLength      = $this->getMotion()->getConsultation()->getSettings()->lineLength;
+        $lineLength      = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
         $lineNumber      = $this->getFirstLineNumber();
         $paraLineNumbers = [];
         for ($paraNo = 0; $paraNo < count($motionParas); $paraNo++) {

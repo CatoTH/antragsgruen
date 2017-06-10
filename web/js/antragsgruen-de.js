@@ -5,12 +5,18 @@ ANTRAGSGRUEN_STRINGS = {
         "del_confirm": "Wirklich löschen?",
         "draft_del": "Entwurf löschen",
         "draft_del_confirm": "Entwurf wirklich löschen?",
+        "draft_date": "Entwurf vom",
         "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
         "min_x_supporter": "Es müssen mindestens %NUM% Unterstützer*innen angegeben werden.",
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
         "pw_x_chars": "Das Passwort muss mindestens %NUM% Zeichen lang sein.",
         "pw_min_x_chars": "Min. %NUM% Zeichen",
-        "pw_no_match": 'Die beiden Passwörter stimmen nicht überein.'
+        "pw_no_match": "Die beiden Passwörter stimmen nicht überein.",
+        "leave_changed_page": "Es gibt noch ungespeicherte Änderungen. Diese Seite wirklich verlassen?",
+        "moved_paragraph_from": "Verschoben von Absatz ##PARA##",
+        "moved_paragraph_to": "Verschoben zu Absatz ##PARA##",
+        "moved_paragraph_from_line": "Verschoben von Absatz ##PARA## (Zeile ##LINE##)",
+        "moved_paragraph_to_line": "Verschoben zu Absatz ##PARA## (Zeile ##LINE##)"
     },
     "merge": {
         "initiated_by": "Gestellt von",
@@ -20,7 +26,9 @@ ANTRAGSGRUEN_STRINGS = {
         "title": "Überschrift",
         "change_accept": "Übernehmen",
         "change_reject": "Verwerfen",
-        "colliding_title": "Kollidierender ÄA"
+        "colliding_title": "Kollidierender ÄA",
+        "colliding_start": "Ab hier Kollissionen",
+        "colliding_end": "Bis hier Kollissionen"
     },
     "admin": {
         "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",

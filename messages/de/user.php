@@ -61,6 +61,9 @@ return [
     'noti_new_amend_title'      => '[Antragsgrün] Neuer Änderungsantrag zu %TITLE%',
     'noti_new_amend_body'       => "Es wurde ein neuer Änderungsantrag eingereicht:\nAnlass: %CONSULTATION%\n" .
         "Antrag: %TITLE%\nLink: %LINK%",
+    'noti_amend_mymotion'       => "Es wurde ein neuer Änderungsantrag zu deinem Antrag eingereicht:\nAnlass: %CONSULTATION%\n" .
+        "Antrag: %TITLE%\nLink: %LINK%\n%MERGE_HINT%",
+    'noti_amend_mymotion_merge' => "\nWenn du diesem Änderungsantrag zustimmst, kannst du ihn in deinen Antrag übernehmen (\"In den Antrag übernehmen\" in der Sidebar)",
     'noti_new_comment_title'    => '[Antragsgrün] Neuer Kommentar zu %TITLE%',
     'noti_new_comment_body'     => "Es wurde ein neuer Kommentar zu %TITLE% geschrieben:\n%LINK%",
     'acc_grant_email_title'     => 'Antragsgrün-Zugriff',

@@ -1,5 +1,34 @@
 class MotionTypeEdit {
     constructor() {
+        $('#typeDeadlineMotionsHolder').datetimepicker({
+            locale: $('#typeDeadlineMotions').data('locale')
+        });
+        $('#typeDeadlineAmendmentsHolder').datetimepicker({
+            locale: $('#typeDeadlineAmendments').data('locale')
+        });
+        $('#typeSupportType').on('change', function () {
+            let hasSupporters = $(this).find("option:selected").data("has-supporters");
+            if (hasSupporters) {
+                $('#typeMinSupportersRow').removeClass("hidden");
+                $('#typeAllowMoreSupporters').removeClass("hidden");
+            } else {
+                $('#typeMinSupportersRow').addClass("hidden");
+                $('#typeAllowMoreSupporters').addClass("hidden");
+            }
+        }).change();
+
+        $('.deleteTypeOpener a').on('click', function (ev) {
+            ev.preventDefault();
+            $('.deleteTypeForm').removeClass('hidden');
+            $('.deleteTypeOpener').addClass('hidden');
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        this.initSectionList();
+    }
+
+    private initSectionList() {
         let $list = $('#sectionsList'),
             newCounter = 0;
 
@@ -94,30 +123,6 @@ class MotionTypeEdit {
                 handle: '.drag-data-handle',
                 animation: 150
             }));
-        });
-
-
-        $('#typeDeadlineMotionsHolder').datetimepicker({
-            locale: $('#typeDeadlineMotions').data('locale')
-        });
-        $('#typeDeadlineAmendmentsHolder').datetimepicker({
-            locale: $('#typeDeadlineAmendments').data('locale')
-        });
-        $('#typeSupportType').on('change', function () {
-            let hasSupporters = $(this).find("option:selected").data("has-supporters");
-            if (hasSupporters) {
-                $('#typeMinSupportersRow').removeClass("hidden");
-                $('#typeAllowMoreSupporters').removeClass("hidden");
-            } else {
-                $('#typeMinSupportersRow').addClass("hidden");
-                $('#typeAllowMoreSupporters').addClass("hidden");
-            }
-        }).change();
-
-        $('.deleteTypeOpener a').on('click', function (ev) {
-            ev.preventDefault();
-            $('.deleteTypeForm').removeClass('hidden');
-            $('.deleteTypeOpener').addClass('hidden');
         });
     }
 }

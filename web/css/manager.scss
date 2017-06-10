@@ -44,6 +44,38 @@
   }
 }
 
+.managerHelpPage {
+  .well &.content {
+    padding: 15px 40px 30px;
+  }
+  font-size: 16px;
+  h2 {
+    margin-top: 40px;
+  }
+  h3 {
+    margin-top: 25px;
+  }
+  ul, ol {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .toc {
+    list-style-type: none;
+    margin: 20px 0 60px;
+    padding: 0;
+    ul {
+      margin-top: 0;
+    }
+    > li > a {
+      font-weight: bold;
+    }
+  }
+}
+
 #sidebar {
   .current-uses-list.nav-list {
     > li {
@@ -60,19 +92,6 @@
         font-size: 0.9em;
         color: #767676;
         display: block;
-      }
-    }
-  }
-}
-
-.paymentAdmin {
-  table {
-    width: 100%;
-    td {
-      vertical-align: top;
-      padding-top: 10px;
-      .organization {
-        color: gray;
       }
     }
   }

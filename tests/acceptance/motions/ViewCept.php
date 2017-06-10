@@ -22,7 +22,7 @@ $I->seeElement('.sidebarActions .amendmentCreate');
 $I->seeElement('.sidebarActions .download');
 $I->dontSeeElement('.sidebarActions .edit');
 $I->seeElement('.sidebarActions .withdraw');
-$I->seeElement('.sidebarActions .mergeamendments');
+$I->dontSeeElement('.sidebarActions .mergeamendments');
 $I->dontSeeElement('.sidebarActions .adminEdit');
 $I->seeElement('.sidebarActions .back');
 

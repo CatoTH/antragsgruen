@@ -1,5 +1,22 @@
 # Version history
 
+## Version 3.7.0 [Not yet released]
+
+- Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
+- Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
+- When merging all amendments into the motion at once...
+  - drafts are saved periodically and can be set as public. This way, regular users have read-only access to the current work-in-progress draft of the revised motion.
+  - when a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
+  - it is now possible to exclude some amendments from merging, to prevent lots of collissions for amendments that replace major parts of the motion
+- Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
+- Administrators can now be set per consultation, without granting them access to all consultations of this site
+- Several improvements to the inline editing of the agenda
+- A more detailed manual about the functionality of Antragsgrün is provided
+- We don't pretend anymore you could use Antragsgrün with IE <=9
+- Updates to several core libraries
+
+This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
+
 ### Version 3.6.9 (2017-06-05)
 
 - Feature: A French translation is provided, thanks to the work of Antoine Tifine of Les Jeunes Écologistes
@@ -75,6 +92,8 @@
 - Improvements to the OpenDocument-Export
 - Internal: Port JavaScript modules to TypeScript
 - Improvements to the integration of Grünes Netz of the German Green Party: organization keys can be resolved and the transmitted name / organization are fixed
+
+This release was mainly sponsored by the [German Green Party](https://www.gruene.de/).
 
 ### Version 3.5.1 (2016-11-30)
 

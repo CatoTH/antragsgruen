@@ -30,6 +30,35 @@ class MotionShow {
 
         $("form.delLink").submit(this.delSubmit.bind(this));
         $(".share_buttons a").click(this.shareLinkClicked.bind(this));
+
+        this.markMovedParagraphs();
+    }
+
+    private markMovedParagraphs() {
+        // Remove double markup
+        $(".motionTextHolder .moved .moved").removeClass('moved');
+
+        $(".motionTextHolder .moved").each(function () {
+            let $node = $(this),
+                paragraphNew = $node.data('moving-partner-paragraph'),
+                sectionId = $node.parents('.paragraph').first().attr('id').split('_')[1],
+                paragraphNewFirstline = $('#section_' + sectionId + '_' + paragraphNew).find('.lineNumber').first().data('line-number'),
+                msg: string;
+
+            if ($node.hasClass('inserted')) {
+                msg = __t('std', 'moved_paragraph_from_line');
+            } else {
+                msg = __t('std', 'moved_paragraph_to_line');
+            }
+            msg = msg.replace(/##LINE##/, paragraphNewFirstline).replace(/##PARA##/, (paragraphNew + 1));
+
+            if ($node[0].nodeName === 'LI') {
+                $node = $node.parent();
+            }
+            let $msg = $('<div class="movedParagraphHint"></div>');
+            $msg.text(msg);
+            $msg.insertBefore($node);
+        });
     }
 
     private delSubmit(ev) {

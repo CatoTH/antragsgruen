@@ -59,7 +59,7 @@ if ($motion->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
     if ($newRev == '') {
-        $newRev = $motion->getConsultation()->getNextMotionPrefix($motion->motionTypeId);
+        $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
     }
 
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';

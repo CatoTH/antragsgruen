@@ -243,7 +243,7 @@ echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-pr
 echo '</div>';
 
 
-echo '<h2 class="green">Antrags-Abschnitte</h2>';
+echo '<h2 class="green">' . \Yii::t('admin', 'motion_section_title') . '</h2>';
 echo '<div class="content">';
 
 

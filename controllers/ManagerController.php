@@ -175,6 +175,11 @@ class ManagerController extends Base
     {
         $this->requireEligibleToCreateUser();
 
+        $language = $this->getRequestValue('language');
+        if ($language && isset(MessageSource::getBaseLanguages()[$language])) {
+            \Yii::$app->language = $language;
+        }
+
         $model  = new SiteCreateForm();
         $errors = [];
 
@@ -208,6 +213,18 @@ class ManagerController extends Base
                 'errors' => $errors
             ]
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function actionHelp()
+    {
+        if (\Yii::$app->language == 'de') {
+            return $this->render('help_de');
+        } else {
+            return $this->render('help_en');
+        }
     }
 
     /**

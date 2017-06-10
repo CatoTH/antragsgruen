@@ -8,12 +8,12 @@ use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
-use app\components\EmailNotifications;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -559,7 +559,8 @@ class Amendment extends IMotion implements IRSSItem
             Amendment::STATUS_SUBMITTED_SCREENED,
             Amendment::STATUS_SUBMITTED_UNSCREENED,
             Amendment::STATUS_COLLECTING_SUPPORTERS
-        ])) {
+        ])
+        ) {
             return false;
         }
         return $this->iAmInitiator();
@@ -585,11 +586,27 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $ignoreCollissionProblems
      * @return bool
      */
-    public function canMergeIntoMotion()
+    public function canMergeIntoMotion($ignoreCollissionProblems = false)
     {
-        return $this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT);
+        if ($this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
+            return true;
+        } elseif ($this->getMyMotion()->iAmInitiator()) {
+            $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;
+            if ($policy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+                return true;
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && $ignoreCollissionProblems) {
+                return true;
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && !$ignoreCollissionProblems) {
+                return (count($this->getCollidingAmendments()) == 0);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -637,6 +654,29 @@ class Amendment extends IMotion implements IRSSItem
             $this->changedParagraphCache = $paragraphs;
         }
         return $paragraphs;
+    }
+
+    /**
+     * @return Amendment[]
+     */
+    public function getCollidingAmendments()
+    {
+        $mySections = [];
+        foreach ($this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+            $mySections[$section->sectionId] = $section->data;
+        }
+
+        $colliding = [];
+        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$this]) as $amend) {
+            foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($mySections[$section->sectionId], false, false);
+                if (count($coll) > 0) {
+                    $colliding[$amend->id] = $amend;
+                }
+            }
+        }
+
+        return $colliding;
     }
 
     /**
@@ -758,20 +798,10 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::log($this->getMyConsultation(), $initId, ConsultationLog::AMENDMENT_PUBLISH, $this->id);
 
         if ($this->datePublication === null) {
-            $motionType = UserNotification::NOTIFICATION_NEW_AMENDMENT;
-            $notified   = [];
-            foreach ($this->getMyConsultation()->userNotifications as $noti) {
-                if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
-                    $noti->user->notifyAmendment($this);
-                    $notified[]             = $noti->userId;
-                    $noti->lastNotification = date('Y-m-d H:i:s');
-                    $noti->save();
-                }
-            }
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            EmailNotifications::sendAmendmentOnPublish($this);
+            new AmendmentPublishedNotification($this);
         }
     }
 

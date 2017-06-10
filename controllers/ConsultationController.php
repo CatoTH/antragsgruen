@@ -217,7 +217,12 @@ class ConsultationController extends Base
             } else {
                 UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
             }
-            \Yii::$app->session->setFlash('success', 'Gespeichert.');
+            if (in_array('amendmentMyMotion', $newNotis)) {
+                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
+            } else {
+                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
+            }
+            \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }
 
         $notifications = UserNotification::getUserConsultationNotis($user, $this->consultation);

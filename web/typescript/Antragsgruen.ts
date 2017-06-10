@@ -22,6 +22,8 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         $hint.remove();
     });
 
+    bootbox.setLocale($("html").attr("lang").split("_")[0]);
+
     $(document).on('click', '.amendmentAjaxTooltip', function (ev) {
         let $el = $(ev.currentTarget);
         if ($el.data('initialized') == '0') {
@@ -65,11 +67,15 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
                 currStr = '',
                 $subitems = $li.find('> ol');
             if (code == '#') {
-                let parts = currNumber.split('.'),
-                    matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
-                    nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
-                    numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
-                parts[0] = nonNumeric + ++numeric;
+                let parts = currNumber.split('.');
+                if (parts[0].match(/^[a-y]$/i)) { // Single alphabetical characters
+                    parts[0] = String.fromCharCode(parts[0].charCodeAt(0) + 1);
+                } else { // Numbers or mixtures of alphabetical characters and numbers
+                    let matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
+                        nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
+                        numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
+                    parts[0] = nonNumeric + ++numeric;
+                }
                 currNumber = currStr = parts.join('.');
             } else {
                 currStr = currNumber = code;

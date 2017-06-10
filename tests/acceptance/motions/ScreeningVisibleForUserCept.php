@@ -24,7 +24,7 @@ $I->seeElement('.motionListStd');
 $I->dontSee('Unscreened motion', '.motionListStd');
 $I->see('Unscreened motion', '.myMotionList');
 
-$I->wantTo('check that other users don\' see it');
+$I->wantTo('check that other users don\'t see it');
 
 $I->logout();
 $I->gotoConsultationHome();

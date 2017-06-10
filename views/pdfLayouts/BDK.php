@@ -49,7 +49,7 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
 
-        $title = $motion->getConsultation()->getSettings()->pdfIntroduction;
+        $title = $motion->getMyConsultation()->getSettings()->pdfIntroduction;
         $pdf->SetY(40);
         $pdf->SetFont("helvetica", "B", 13);
         $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');

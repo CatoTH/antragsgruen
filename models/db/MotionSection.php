@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\diff\AmendmentDiffMerger;
+use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\sectionTypes\ISectionType;
@@ -135,22 +136,26 @@ class MotionSection extends IMotionSection
      */
     public function getTextParagraphLines()
     {
-        $cached = $this->getCacheItem('getTextParagraphLines');
-        if ($cached !== null) {
-            return $cached;
-        }
-
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
+
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
-        $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+        $cacheDeps  = [$lineLength, $this->data];
+        $cache      = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
+        if ($cache) {
+            return $cache;
+        }
+
+        $paragraphs      = HTMLTools::sectionSimpleHTML($this->data);
         $paragraphsLines = [];
         foreach ($paragraphs as $paraNo => $paragraph) {
-            $lines = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
+            $lines                    = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
             $paragraphsLines[$paraNo] = $lines;
         }
-        $this->setCacheItem('getTextParagraphLines', $paragraphsLines);
+
+        HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphsLines);
+
         return $paragraphsLines;
     }
 
@@ -211,7 +216,7 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $paragraphs = HTMLTools::sectionSimpleHTML($this->data);
+                $paragraphs   = HTMLTools::sectionSimpleHTML($this->data);
                 $amParagraphs = $amSec->diffToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
@@ -293,14 +298,23 @@ class MotionSection extends IMotionSection
     private $amendmentDiffMerger = null;
 
     /**
+     * @param int[] $toMergeAmendmentIds
+     *
      * @return AmendmentDiffMerger
      */
-    public function getAmendmentDiffMerger()
+    public function getAmendmentDiffMerger($toMergeAmendmentIds)
     {
         if (is_null($this->amendmentDiffMerger)) {
+            $sections = [];
+            foreach ($this->amendingSections as $section) {
+                if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
+                    $sections[] = $section;
+                }
+            }
+
             $merger = new AmendmentDiffMerger();
             $merger->initByMotionSection($this);
-            $merger->addAmendingSections($this->amendingSections);
+            $merger->addAmendingSections($sections);
             $merger->mergeParagraphs();
             $this->amendmentDiffMerger = $merger;
         }

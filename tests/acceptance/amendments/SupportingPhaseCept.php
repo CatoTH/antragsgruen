@@ -37,7 +37,7 @@ $I->loginAsStdUser();
     'motionSlug'       => 116,
 ]);
 $I->click("#sidebar .amendmentCreate a");
-$I->wait(0.2);
+$I->wait(1);
 $I->fillField('#sections_30', 'New title');
 $I->wait(0.2);
 $I->submitForm('#amendmentEditForm', [], 'save');
@@ -58,8 +58,10 @@ $I->wantTo('check that amendments created as organizations are not in supporting
     'motionSlug'       => 116,
 ]);
 $I->click("#sidebar .amendmentCreate a");
+$I->wait(1);
 $I->fillField('#sections_30', 'Title as organization');
 $I->checkOption('#personTypeOrga');
+$I->fillField('#initiatorPrimaryName', 'My orga name');
 $I->fillField('#resolutionDate', '01.01.2016');
 $I->submitForm('#amendmentEditForm', [], 'save');
 $I->submitForm('#amendmentConfirmForm', [], 'confirm');
@@ -143,6 +145,7 @@ $I->see('aktueller Stand: 0');
 
 $I->wantTo('support it again');
 
+$I->executeJS('$("[required]").removeAttr("required");');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->dontSee('Du unterstützt diesen Änderungsantrag nun.');
 $I->see('No organization entered');

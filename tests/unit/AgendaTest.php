@@ -120,12 +120,12 @@ class AgendaTest extends DBTestBase
 
         $this->assertEquals('V', $item6->getShownCode(true));
         $this->assertEquals('V', $item6->getShownCode(false));
-        $this->assertEquals('V2', $item7->getShownCode(true));
-        $this->assertEquals('V2', $item7->getShownCode(false));
+        $this->assertEquals('W', $item7->getShownCode(true));
+        $this->assertEquals('W', $item7->getShownCode(false));
         $this->assertEquals('1.', $newItem->getShownCode(false));
         $this->assertEquals('V.1.', $newItem->getShownCode(true));
         $this->assertEquals('1.', $newItem2->getShownCode(false));
-        $this->assertEquals('V2.1.', $newItem2->getShownCode(true));
+        $this->assertEquals('W.1.', $newItem2->getShownCode(true));
         $this->assertEquals('2.', $newItem4->getShownCode(false));
         $this->assertEquals('V.1.2.', $newItem4->getShownCode(true));
     }

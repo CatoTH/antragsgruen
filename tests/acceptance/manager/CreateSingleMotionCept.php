@@ -52,6 +52,7 @@ $I->fillField('#sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 0), 
 $ckfield = 'sections_' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1);
 $I->executeJS('CKEDITOR.instances.' . $ckfield . '_wysiwyg.setData("<p>Chapter content</p>");');
 $I->fillField('#initiatorPrimaryName', 'My name');
+$I->executeJS('$("[required]").removeAttr("required");');
 $I->wait(1);
 $I->submitForm('#motionEditForm', [], 'save');
 $I->submitForm('#motionConfirmForm', [], 'confirm');

@@ -105,10 +105,10 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h2 h3 h4;' +
-                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint){list-style-type};' +
+                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved){list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'div [data-*](collidingParagraph,paragraphHolder,hasCollissions);' +
-                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead){border,margin,padding};' +
+                'div [data-*](collidingParagraph,paragraphHolder,hasCollissions,moved);' +
+                'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';

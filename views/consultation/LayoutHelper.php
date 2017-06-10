@@ -132,6 +132,7 @@ class LayoutHelper
             $opts = ['class' => 'form-control motionType'];
             echo Html::dropDownList('motionType', ($typeId > 0 ? $typeId : 0), $motionTypes, $opts);
             echo '<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
+            <a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>
             </form>';
         }
 

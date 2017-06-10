@@ -42,16 +42,17 @@ echo Html::a(
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']
 );
+echo '</li>';
+
 if (!$consultation->hasHelpPage()) {
-    echo '</li><li class="secondary">';
+    echo '<li class="secondary">';
     echo Html::a(
         Yii::t('admin', 'help_page_create'),
         UrlHelper::createUrl('consultation/help'),
         ['id' => 'helpCreateLink']
     );
+    echo '</li>';
 }
-echo '</li>';
-
 
 echo '<li>' . \Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
@@ -65,19 +66,24 @@ echo Html::a(\Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl
 echo '</li>';
 echo '</ul></li>';
 
-echo '<li>';
-echo Html::a(
-    \Yii::t('admin', 'index_site_access'),
-    UrlHelper::createUrl('admin/index/siteaccess'),
-    ['class' => 'siteAccessLink']
-);
-echo '</li><li>';
-echo Html::a(
-    \Yii::t('admin', 'index_site_consultations'),
-    UrlHelper::createUrl('admin/index/siteconsultations'),
-    ['class' => 'siteConsultationsLink']
-);
-echo '</li>';
+if (User::currentUserHasPrivilege($consultation, User::PRIVILAGE_SITE_ADMIN)) {
+    echo '<li>';
+    echo Html::a(
+        \Yii::t('admin', 'index_site_access'),
+        UrlHelper::createUrl('admin/index/siteaccess'),
+        ['class' => 'siteAccessLink']
+    );
+    echo '</li>';
+
+    echo '<li>';
+    echo Html::a(
+        \Yii::t('admin', 'index_site_consultations'),
+        UrlHelper::createUrl('admin/index/siteconsultations'),
+        ['class' => 'siteConsultationsLink']
+    );
+    echo '</li>';
+
+}
 
 if (User::currentUserIsSuperuser()) {
     echo '<li>';

@@ -81,7 +81,12 @@ $params = \Yii::$app->params;
         <li><strong>Wahlen / Abstimmungen</strong>.</li>
     </ul>
 
-
+    <p style="text-align: center; font-weight: bold;">
+        <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            Zur ausführlichen Funktionsbeschreibung und Hilfe
+        </a>
+    </p>
 </div>
 
 <h2 id="selbst_nutzen" class="green">Antragsgrün nutzen</h2>

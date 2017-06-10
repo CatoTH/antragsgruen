@@ -6,12 +6,21 @@ use yii\helpers\Html;
 
 /**
  * @var Amendment $amendment
+ * @var bool $allowStatusChanging
  */
 
 ?>
 <div class="step_1">
     <div class="content">
-        <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_introduction') ?></div>
+        <div class="alert alert-info">
+            <?php
+            if ($allowStatusChanging) {
+                echo \Yii::t('amend', 'merge1_introduction');
+            } else {
+                echo \Yii::t('amend', 'merge1_introduction_user');
+            }
+            ?>
+        </div>
 
         <div class="form-group">
             <label for="motionTitlePrefix"><?= \Yii::t('amend', 'merge1_motion_prefix') ?></label>
@@ -33,7 +42,7 @@ use yii\helpers\Html;
             </div>
         </div>
     </div>
-
+    <?php if ($allowStatusChanging) { ?>
     <fieldset class="otherAmendmentStatus">
         <h2 class="green"><?= \Yii::t('amend', 'merge1_other_status') ?></h2>
         <div class="content">
@@ -65,6 +74,7 @@ use yii\helpers\Html;
             ?>
         </div>
     </fieldset>
+    <?php } ?>
 
     <div class="content save-row">
         <button class="goto_2 btn btn-primary">

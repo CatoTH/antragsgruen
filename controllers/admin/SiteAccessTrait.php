@@ -27,12 +27,23 @@ trait SiteAccessTrait
      * @param User $user
      * @param string $username
      */
-    private function linkAdmin(User $user, $username)
+    private function linkConsultationAdmin(User $user, $username)
     {
         try {
-            $this->site->link('admins', $user);
+            $privilege = $this->consultation->getUserPrivilege($user);
+
+            $privilege->privilegeView    = 1;
+            $privilege->privilegeCreate  = 1;
+            $privilege->adminSuper       = 1;
+            $privilege->adminScreen      = 1;
+            $privilege->adminContentEdit = 1;
+            $privilege->save();
+
             $str = \Yii::t('admin', 'siteacc_admin_add_done');
             \Yii::$app->session->setFlash('success', str_replace('%username%', $username, $str));
+
+            $this->consultation->refresh();
+            $this->site->refresh();
         } catch (IntegrityException $e) {
             if (mb_strpos($e->getMessage(), 1062) !== false) {
                 $str = str_replace('%username%', $username, \Yii::t('admin', 'siteacc_admin_add_had'));
@@ -40,6 +51,55 @@ trait SiteAccessTrait
             } else {
                 \Yii::$app->session->setFlash('error_login', \Yii::t('base', 'err_unknown'));
             }
+        }
+    }
+
+    /**
+     * @param User $user
+     */
+    private function unlinkConsultationAdmin(User $user)
+    {
+        $privilege = $this->consultation->getUserPrivilege($user);
+
+        $privilege->adminSuper       = 0;
+        $privilege->adminScreen      = 0;
+        $privilege->adminContentEdit = 0;
+        $privilege->save();
+    }
+
+    /**
+     */
+    private function saveAdmins()
+    {
+        $permissions = \Yii::$app->request->post('adminType');
+        foreach ($permissions as $userId => $type) {
+            if ($userId == User::getCurrentUser()->id) {
+                continue;
+            }
+
+            $user = User::findOne($userId);
+            $privilege = $this->consultation->getUserPrivilege($user);
+
+            if ($type == 'site') {
+                try {
+                    $this->site->link('admins', $user);
+                } catch (\Exception $e) {
+                }
+
+                $privilege->adminSuper       = 0;
+                $privilege->adminScreen      = 0;
+                $privilege->adminContentEdit = 0;
+            } else {
+                $this->site->unlink('admins', $user, true);
+
+                $privilege->privilegeCreate  = 1;
+                $privilege->privilegeView    = 1;
+                $privilege->adminSuper       = 1;
+                $privilege->adminScreen      = 1;
+                $privilege->adminContentEdit = 1;
+            }
+
+            $privilege->save();
         }
     }
 
@@ -58,7 +118,7 @@ trait SiteAccessTrait
             $newUser->save();
         }
         /** @var User $newUser */
-        $this->linkAdmin($newUser, $username);
+        $this->linkConsultationAdmin($newUser, $username);
     }
 
     private function addAdminEmail($email)
@@ -82,7 +142,7 @@ trait SiteAccessTrait
             $authText = str_replace('%EMAIL%', $email, $authText);
         }
         /** @var User $newUser */
-        $this->linkAdmin($newUser, $email);
+        $this->linkConsultationAdmin($newUser, $email);
 
         $subject = \Yii::t('admin', 'sitacc_admmail_subj');
         $link    = UrlHelper::createUrl('consultation/index');
@@ -239,6 +299,11 @@ trait SiteAccessTrait
     {
         $site = $this->site;
 
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILAGE_SITE_ADMIN)) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+            return false;
+        }
+
         $post = \Yii::$app->request->post();
 
         if ($this->isPostSet('saveLogin')) {
@@ -276,14 +341,20 @@ trait SiteAccessTrait
             }
         }
 
+        if ($this->isPostSet('saveAdmin')) {
+            $this->saveAdmins();
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
+        }
+
         if ($this->isPostSet('removeAdmin')) {
             /** @var User $todel */
             $todel = User::findOne($post['removeAdmin']);
-            if ($todel) {
+            if ($todel && $todel->id != User::getCurrentUser()->id) {
                 $this->site->unlink('admins', $todel, true);
-                \Yii::$app->session->setFlash('success_login', \Yii::t('admin', 'siteacc_admin_del_done'));
+                $this->unlinkConsultationAdmin($todel);
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_admin_del_done'));
             } else {
-                \Yii::$app->session->setFlash('error_login', \Yii::t('admin', 'siteacc_admin_del_notf'));
+                \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_admin_del_notf'));
             }
         }
 
@@ -303,6 +374,17 @@ trait SiteAccessTrait
 
         $policyWarning = $this->needsPolicyWarning();
 
-        return $this->render('site_access', ['site' => $site, 'policyWarning' => $policyWarning]);
+        $admins = [];
+        foreach ($site->admins as $admin) {
+            $admins[$admin->id] = ["user" => $admin, "type" => 'site'];
+        }
+        foreach ($this->consultation->userPrivileges as $privilege) {
+            $isAdmin = ($privilege->adminSuper || $privilege->adminScreen || $privilege->adminContentEdit);
+            if (!isset($admins[$privilege->userId]) && $isAdmin) {
+                $admins[$privilege->userId] = ["user" => $privilege->user, "type" => 'consultation'];
+            }
+        }
+
+        return $this->render('site_access', ['site' => $site, 'policyWarning' => $policyWarning, 'admins' => $admins]);
     }
 }

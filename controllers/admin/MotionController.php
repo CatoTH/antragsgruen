@@ -219,23 +219,24 @@ class MotionController extends AdminBase
                     }
                 }
                 if (!$motionType) {
-                    $motionType                              = new ConsultationMotionType();
-                    $motionType->consultationId              = $this->consultation->id;
-                    $motionType->layoutTwoCols               = 0;
-                    $motionType->policyMotions               = IPolicy::POLICY_ALL;
-                    $motionType->policyAmendments            = IPolicy::POLICY_ALL;
-                    $motionType->policyComments              = IPolicy::POLICY_NOBODY;
-                    $motionType->policySupportMotions        = IPolicy::POLICY_ALL;
-                    $motionType->policySupportAmendments     = IPolicy::POLICY_ALL;
-                    $motionType->motionLikesDislikes         = 0;
-                    $motionType->amendmentLikesDislikes      = 0;
-                    $motionType->contactName                 = ConsultationMotionType::CONTACT_NONE;
-                    $motionType->contactEmail                = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->contactPhone                = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->amendmentMultipleParagraphs = 1;
-                    $motionType->position                    = 0;
-                    $motionType->supportType                 = ISupportType::ONLY_INITIATOR;
-                    $motionType->status                      = 0;
+                    $motionType                               = new ConsultationMotionType();
+                    $motionType->consultationId               = $this->consultation->id;
+                    $motionType->layoutTwoCols                = 0;
+                    $motionType->policyMotions                = IPolicy::POLICY_ALL;
+                    $motionType->policyAmendments             = IPolicy::POLICY_ALL;
+                    $motionType->policyComments               = IPolicy::POLICY_NOBODY;
+                    $motionType->policySupportMotions         = IPolicy::POLICY_ALL;
+                    $motionType->policySupportAmendments      = IPolicy::POLICY_ALL;
+                    $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+                    $motionType->motionLikesDislikes          = 0;
+                    $motionType->amendmentLikesDislikes       = 0;
+                    $motionType->contactName                  = ConsultationMotionType::CONTACT_NONE;
+                    $motionType->contactEmail                 = ConsultationMotionType::CONTACT_OPTIONAL;
+                    $motionType->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
+                    $motionType->amendmentMultipleParagraphs  = 1;
+                    $motionType->position                     = 0;
+                    $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
+                    $motionType->status                       = 0;
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);

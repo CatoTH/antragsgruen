@@ -226,7 +226,28 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
         // - <li>s that are deleted
     }
 
-/**
+    /**
+     */
+    public function testGroupingChangedBlocks1()
+    {
+        $blocks  = [
+            '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
+            '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet</del><ins>Bavaria ipsum</ins></p><p class="inserted">Another inserted paragraph</p>',
+            '<ul class="deleted"><li>###LINENUMBER###Old list</li></ul><ol class="inserted"><li>New list</li></ol>'
+        ];
+        $grouped = AmendmentSectionFormatter::groupConsecutiveChangeBlocks($blocks);
+        $this->assertEquals([
+            '<p class="deleted">###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt ut labore et dolore magna aliquyam erat</p>',
+            '<p class="deleted">###LINENUMBER###Lorem ipsum dolor sit amet</p>',
+            '<ul class="deleted"><li>###LINENUMBER###Old list</li></ul>',
+            '<p class="inserted">Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</p>',
+            '<p class="inserted">Bavaria ipsum</p>',
+            '<p class="inserted">Another inserted paragraph</p>',
+            '<ol class="inserted"><li>New list</li></ol>',
+        ], $grouped);
+    }
+
+    /**
      */
     public function testSeveralUnchangedLinesAtBeginning1()
     {
@@ -245,6 +266,17 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 
     /**
      */
+    public function testGroupingChangedBlocks2()
+    {
+        // To cases in which the grouping has no effect: nested INS/DEL-Tags, and Paragraphs that are nur purely inserted/deleted
+        $blocks  = [
+            '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy ###LINENUMBER###eirmod tempor invidunt <ins>ut</ins> labore et dolore magna aliquyam erat</del><ins>Zombie ipsum reversus ab viral inferno, nam rick grimes malum cerebro. De carne lumbering animata corpora quaeritis. Summus brains sit​​, morbo vel maleficia?</ins></p>',
+            '<p><del>###LINENUMBER###Lorem ipsum dolor sit amet</del><ins>Bavaria ipsum</ins>Test</p><p class="inserted">Another inserted paragraph</p>',
+        ];
+        $grouped = AmendmentSectionFormatter::groupConsecutiveChangeBlocks($blocks);
+        $this->assertEquals($blocks, $grouped);
+    }
+
     public function testSeveralUnchangedLinesAtBeginning2()
     {
         $strPre  = '<p>Körper selbst zu bestimmen, ist nicht leicht, wenn alle eine Meinung dazu haben. Wir setzen uns für das Selbstbestimmungsrecht von Frauen und Mädchen über ihren Körper ein. Daher verteidigen wir die Straffreiheit von Schwangerschaftsabbrüchen gegen die Angriffe von rechts. Frauen in Notlagen brauchen Unterstützung und Hilfe, keine Bevormundung und keine Strafe.</p>';

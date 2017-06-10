@@ -14,12 +14,14 @@ $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>'
 
 $consultationPaths = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
 $consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
-$motionPaths = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|consolidated';
-$motionPaths .= '|mergeamendments|mergeamendmentconfirm|withdraw|viewimage|viewpdf|embeddedpdf';
+$motionPaths = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
+$motionPaths .= '|withdraw';
+$motionPaths .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm';
+$motionPaths .= '|merge-amendments-public|merge-amendments-public-ajax';
 $amendPaths = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collissions|ajax-diff';
 $userPaths  = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
 $userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
-$domPlainPaths = 'site-legal|site-privacy|help|password|billing|createsite|savetextajax|siteconfig|antragsgrueninit';
+$domPlainPaths = 'site-legal|site-privacy|help|password|createsite|savetextajax|siteconfig|antragsgrueninit';
 $domPlainPaths .= '|check-subdomain|antragsgrueninitdbtest|userlist';
 $adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
 $adminMotionPaths    .= '|get-amendment-rewrite-collissions';

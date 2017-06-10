@@ -19,4 +19,4 @@ $I->fillField('#passwordConfirm', 'newuser');
 $I->fillField('#name', 'New User');
 $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 
-$I->see(mb_strtoupper('Bestätige deinen Zugang'), 'h1');
+$I->see(mb_strtoupper('Zugang bestätigen'), 'h1');

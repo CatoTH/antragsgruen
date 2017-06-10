@@ -37,6 +37,7 @@ class SiteCreateForm extends Model
     public $singleMotion    = false;
     public $hasAmendments   = true;
     public $amendSinglePara = false;
+    public $amendMerging    = false;
     public $motionScreening = true;
     public $amendScreening  = true;
 
@@ -98,6 +99,7 @@ class SiteCreateForm extends Model
         $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
         $this->motionScreening       = ($values['motionScreening'] == 1);
         $this->amendScreening        = ($values['amendScreening'] == 1);
+        $this->amendMerging          = ($values['amendMerging'] == 1);
         $this->motionsInitiatedBy    = IntVal($values['motionsInitiatedBy']);
         $this->amendmentsInitiatedBy = IntVal($values['amendInitiatedBy']);
         if ($values['motionsDeadlineExists']) {
@@ -152,15 +154,12 @@ class SiteCreateForm extends Model
      */
     public function createConsultation(Consultation $con)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
-        if ($params->baseLanguage == 'de') {
+        if (\Yii::$app->language == 'de') {
             $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
         } else {
-            $con->wordingBase = $params->baseLanguage;
+            $con->wordingBase = \Yii::$app->language;
         }
 
         $settings                  = $con->getSettings();
@@ -327,6 +326,11 @@ class SiteCreateForm extends Model
         } else {
             $type->policyAmendments = IPolicy::POLICY_ALL;
         }
+        if ($this->amendMerging) {
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+        } else {
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
+        }
         if ($this->hasComments) {
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {
                 $type->policyComments = $type->policyAmendments;
@@ -435,6 +439,11 @@ class SiteCreateForm extends Model
             $type->policyAmendments = IPolicy::POLICY_LOGGED_IN;
         } else {
             $type->policyAmendments = IPolicy::POLICY_ALL;
+        }
+        if ($this->amendMerging) {
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+        } else {
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
         if ($this->hasComments) {
             if (in_array($type->policyAmendments, [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN])) {

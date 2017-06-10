@@ -35,6 +35,14 @@ del.space, ins.space, del.formatting, ins.formatting {
   @extend label;
 }
 
+.toggle {
+  .toggle-group {
+    .btn {
+      border: none;
+    }
+  }
+}
+
 .texteditorBox {
   min-height: 100px;
   border: 1px solid #ccc;
@@ -146,6 +154,10 @@ del.space, ins.space, del.formatting, ins.formatting {
     width: 100%;
     > tbody > tr > th {
       width: 30%;
+    }
+
+    .mergingDraft > * {
+      padding-top: 15px;
     }
   }
   .tagAdderHolder:link, .tagAdderHolder:visited {
@@ -355,20 +367,58 @@ del.space, ins.space, del.formatting, ins.formatting {
   margin-bottom: 20px;
 }
 
-.motionMergeForm {
-  .submitHolder {
-    text-align: right;
+.motionMergeInit {
+  h2.green {
+    margin-bottom: 10px;
+    margin-top: 20px;
   }
-  .newAmendments {
-    .amendSubtitle {
+  .explanation {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .alert-info {
+    a.btn {
+      margin-top: -7px;
+    }
+  }
+  .mergeAllRow {
+    h3 {
+      margin-top: 50px;
+      font-size: 16px;
+    }
+    ul {
+      list-style-type: none;
+      margin: 0 0 0 40px;
+      padding: 0;
+    }
+    label {
       font-weight: normal;
-      font-size: 0.9em;
-    }
-    .control-label {
-      margin-top: -3px;
-      padding-top: 0;
     }
   }
+  .mergeSingle {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      clear: both;
+      margin: 15px 0;
+      padding: 0;
+      .title {
+        font-weight: bold;
+      }
+      .initiator {
+        font-size: 0.8em;
+        color: gray;
+      }
+    }
+    .amendmentAjaxTooltip {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+}
+
+.motionMergeStyles {
   .ICE-Tracking .ice-del, .ICE-Tracking .ice-del p {
     text-decoration: line-through;
     color: #880000;
@@ -385,6 +435,66 @@ del.space, ins.space, del.formatting, ins.formatting {
   .ICE-Tracking .ice-ins.hover, .ICE-Tracking .ice-ins.hover p {
     background-color: darken(rgba(100, 255, 100, 0.6), 10%);
   }
+  .paragraphHolder.hasCollissions {
+    background-color: #fff5f5;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    &:before {
+      content: attr(data-collission-start-msg);
+      position: absolute;
+      top: -13px;
+      text-align: center;
+      font-size: 0.7em;
+      color: gray;
+      width: 100%;
+    }
+    &:after {
+      content: attr(data-collission-end-msg);
+      position: absolute;
+      bottom: -13px;
+      text-align: center;
+      font-size: 0.7em;
+      color: gray;
+      width: 100%;
+    }
+  }
+  .moved {
+    margin-top: 15px;
+    position: relative;
+    &:before {
+      display: block;
+      content: attr(data-moving-msg);
+      // Absolute positioning is necessary, otherwise we can't cancel the text-decoration propert
+      position: absolute;
+      top: -15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.8em;
+      color: gray;
+    }
+  }
+}
+
+.motionMergeForm {
+  .submitHolder {
+    text-align: right;
+  }
+  .newAmendments {
+    .amendSubtitle {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+    .control-label {
+      margin-top: -3px;
+      padding-top: 0;
+    }
+  }
+
   .editorialAmendments {
     h3 {
       font-size: 1em;
@@ -397,12 +507,131 @@ del.space, ins.space, del.formatting, ins.formatting {
       }
     }
   }
-  .paragraphHolder.hasCollissions {
-    background-color: #fff5f5;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+  #draftSavingPanel {
+    position: fixed;
+    bottom: 0;
+    right: 30px;
+    width: 250px;
+    z-index: 10;
+    padding: 0;
+    background: white;
+    border: solid 1px #ccc;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom: none;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+
+    label {
+      font-weight: normal;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      padding: 5px;
+      background-color: #eee;
+    }
+    .public {
+      padding: 5px;
+    }
+    .autosave {
+      padding: 5px;
+    }
+    .publicLink {
+      float: right;
+      margin-right: 5px;
+    }
+    .savingError {
+      padding: 5px;
+      margin-top: -5px;
+      border-bottom: solid 1px #ccc;
+      background-color: #ff4444;
+      color: black;
+    }
+    .save {
+      padding: 5px;
+      overflow: auto;
+      .lastSaved {
+        float: left;
+      }
+      .saveDraft {
+        float: right;
+      }
+      .none {
+        font-size: 0.9em;
+        color: gray;
+        font-style: italic;
+      }
+    }
+    @media screen and (min-width: 1101px) {
+      h2 {
+        border-bottom: solid 1px #ccc;
+      }
+      .save {
+        padding: 0 5px 5px 5px;
+      }
+      .public {
+        display: block;
+        padding-bottom: 0;
+      }
+      .autosave {
+        border-bottom: solid 1px #ccc;
+        display: block;
+        padding-top: 0;
+      }
+      .lastSaved {
+        margin-top: 2px;
+      }
+    }
+    @media screen and (max-width: 1100px) {
+      right: 0;
+      left: 0;
+      width: 100%;
+      display: table;
+      .hideSmall {
+        display: none;
+      }
+      > * {
+        display: table-cell;
+        vertical-align: middle;
+        line-height: 25px;
+      }
+      > h2 {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      > .public {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      .autosave {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      > .save {
+        width: 40%;
+      }
+    }
+  }
+}
+
+.motionUpdateWidget {
+  text-align: right;
+  padding-top: 10px;
+
+  .updated {
+    text-align: center;
+    padding-top: 5px;
+    font-size: 0.8em;
+    color: green;
+    opacity: 0;
+    transition: opacity 0.1s;
+    &.active {
+      opacity: 1;
+      transition: opacity 0.1s;
+    }
   }
 }
 

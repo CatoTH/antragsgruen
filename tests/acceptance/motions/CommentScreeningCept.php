@@ -58,6 +58,7 @@ $I->loginAsStdUser();
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
 $I->see('Kommentar schreiben', '#section_21_1');
+$I->executeJS('$("#comment_21_1_email").removeAttr("required");');
 $I->fillField('#comment_21_1_name', 'Mein Name 2');
 $I->fillField('#comment_21_1_email', '');
 $I->fillField('#comment_21_1_text', 'Noch ein zweiter Kommentar');

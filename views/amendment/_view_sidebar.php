@@ -37,7 +37,7 @@ if ($amendment->canWithdraw()) {
     $sidebarRows++;
 }
 
-if ($amendment->canMergeIntoMotion()) {
+if ($amendment->canMergeIntoMotion(true)) {
     $html .= '<li class="mergeIntoMotion">';
     $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('amend', 'sidebar_mergeintomotion');
     $url = UrlHelper::createAmendmentUrl($amendment, 'merge');

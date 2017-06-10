@@ -43,11 +43,11 @@ foreach ($amendment->getActiveSections() as $section) {
                     <div class="content">
                         <div class="modifySelector">
                             <label>
-                                <input type="radio" name="<?= $nameBase ?>[modified]" value="0" checked>
+                                <input type="radio" name="modified_<?=$sectionId?>_<?=$paragraphNo?>" value="0" checked>
                                 <?= \Yii::t('amend', 'merge1_use_unchanged') ?>
                             </label>
                             <label>
-                                <input type="radio" name="<?= $nameBase ?>[modified]" value="1">
+                                <input type="radio" name="modified_<?=$sectionId?>_<?=$paragraphNo?>" value="1">
                                 <?= \Yii::t('amend', 'merge1_use_modified') ?>
                             </label>
                         </div>
@@ -57,7 +57,7 @@ foreach ($amendment->getActiveSections() as $section) {
                             </div>
                         </div>
                         <div class="affectedBlock">
-                            <textarea name="<?= $nameBase ?>[modified]" class="modifiedText" title=""></textarea>
+                            <textarea name="<?= $nameBase ?>" class="modifiedText" title=""></textarea>
                             <div id="new_paragraphs_<?= $sectionId ?>_<?= $paragraphNo ?>"
                                  class="<?= $fixedClass ?> texteditor texteditorBox"
                                  title="<?= \Yii::t('amend', 'merge1_modify_title') ?>" data-track-changed="1">

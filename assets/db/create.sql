@@ -132,19 +132,6 @@ CREATE TABLE `###TABLE_PREFIX###consultation` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `consultationAdmin`
---
-
-CREATE TABLE `###TABLE_PREFIX###consultationAdmin` (
-  `consultationId` INT(11) NOT NULL,
-  `userId`         INT(11) NOT NULL
-)
-  ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `consultationAgendaItem`
 --
 
@@ -186,33 +173,34 @@ CREATE TABLE `###TABLE_PREFIX###consultationLog` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
-  `id`                          INT(11)      NOT NULL,
-  `consultationId`              INT(11)      NOT NULL,
-  `titleSingular`               VARCHAR(100) NOT NULL,
-  `titlePlural`                 VARCHAR(100) NOT NULL,
-  `createTitle`                 VARCHAR(200) NOT NULL,
-  `motionPrefix`                VARCHAR(10)           DEFAULT NULL,
-  `position`                    INT(11)      NOT NULL,
-  `cssIcon`                     VARCHAR(100)          DEFAULT NULL,
-  `pdfLayout`                   INT(11)      NOT NULL DEFAULT '0',
-  `texTemplateId`               INT(11)               DEFAULT NULL,
-  `deadlineMotions`             TIMESTAMP    NULL     DEFAULT NULL,
-  `deadlineAmendments`          TIMESTAMP    NULL     DEFAULT NULL,
-  `policyMotions`               INT(11)      NOT NULL,
-  `policyAmendments`            INT(11)      NOT NULL,
-  `policyComments`              INT(11)      NOT NULL,
-  `policySupportMotions`        INT(11)      NOT NULL,
-  `policySupportAmendments`     INT(11)      NOT NULL,
-  `motionLikesDislikes`         INT(11)      NOT NULL,
-  `amendmentLikesDislikes`      INT(11)      NOT NULL,
-  `contactName`                 TINYINT(4)   NOT NULL,
-  `contactEmail`                TINYINT(4)   NOT NULL,
-  `contactPhone`                TINYINT(4)   NOT NULL,
-  `supportType`                 INT(11)      NOT NULL,
-  `supportTypeSettings`         TEXT,
-  `amendmentMultipleParagraphs` TINYINT(1)            DEFAULT NULL,
-  `status`                      SMALLINT(6)  NOT NULL,
-  `layoutTwoCols`               SMALLINT(6)           DEFAULT '0'
+  `id`                           INT(11)      NOT NULL,
+  `consultationId`               INT(11)      NOT NULL,
+  `titleSingular`                VARCHAR(100) NOT NULL,
+  `titlePlural`                  VARCHAR(100) NOT NULL,
+  `createTitle`                  VARCHAR(200) NOT NULL,
+  `motionPrefix`                 VARCHAR(10)           DEFAULT NULL,
+  `position`                     INT(11)      NOT NULL,
+  `cssIcon`                      VARCHAR(100)          DEFAULT NULL,
+  `pdfLayout`                    INT(11)      NOT NULL DEFAULT '0',
+  `texTemplateId`                INT(11)               DEFAULT NULL,
+  `deadlineMotions`              TIMESTAMP    NULL     DEFAULT NULL,
+  `deadlineAmendments`           TIMESTAMP    NULL     DEFAULT NULL,
+  `policyMotions`                INT(11)      NOT NULL,
+  `policyAmendments`             INT(11)      NOT NULL,
+  `policyComments`               INT(11)      NOT NULL,
+  `policySupportMotions`         INT(11)      NOT NULL,
+  `policySupportAmendments`      INT(11)      NOT NULL,
+  `initiatorsCanMergeAmendments` TINYINT(4)   NOT NULL DEFAULT '0',
+  `motionLikesDislikes`          INT(11)      NOT NULL,
+  `amendmentLikesDislikes`       INT(11)      NOT NULL,
+  `contactName`                  TINYINT(4)   NOT NULL,
+  `contactEmail`                 TINYINT(4)   NOT NULL,
+  `contactPhone`                 TINYINT(4)   NOT NULL,
+  `supportType`                  INT(11)      NOT NULL,
+  `supportTypeSettings`          TEXT,
+  `amendmentMultipleParagraphs`  TINYINT(1)            DEFAULT NULL,
+  `status`                       SMALLINT(6)  NOT NULL,
+  `layoutTwoCols`                SMALLINT(6)           DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -654,14 +642,6 @@ ALTER TABLE `###TABLE_PREFIX###consultation`
   ADD KEY `fk_consultation_siteIdx` (`siteId`);
 
 --
--- Indexes for table `consultationAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###consultationAdmin`
-  ADD PRIMARY KEY (`consultationId`, `userId`),
-  ADD KEY `fk_consultation_userIdx` (`userId`),
-  ADD KEY `fk_consultationIdx` (`consultationId`);
-
---
 -- Indexes for table `consultationAgendaItem`
 --
 ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
@@ -1026,17 +1006,6 @@ ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###consultation`
   ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION;
-
---
--- Constraints for table `consultationAdmin`
---
-ALTER TABLE `###TABLE_PREFIX###consultationAdmin`
-  ADD CONSTRAINT `fk_consultation_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_user_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
