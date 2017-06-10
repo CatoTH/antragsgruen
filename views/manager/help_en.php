@@ -70,8 +70,8 @@ $params = \Yii::$app->params;
             </ul>
         </li>
         <li>
-            <a href="#exports"
-               onClick="$('#exports').scrollintoview({top_offset: -30}); return false;">Exports</a>
+            <a href="#export_functions"
+               onClick="$('#export_functions').scrollintoview({top_offset: -30}); return false;">Exports</a>
             <ul>
                 <li><a href="#pdf" onClick="$('#pdf').scrollintoview({top_offset: -30}); return false;">PDF</a></li>
                 <li><a href="#odt" onClick="$('#odt').scrollintoview({top_offset: -30}); return false;">OpenDocument /
@@ -244,7 +244,7 @@ $params = \Yii::$app->params;
 
     <p>@TODO</p>
 
-    <h2 id="exports">Exports</h2>
+    <h2 id="export_functions">Exports</h2>
 
     <h3 id="pdf">PDF</h3>
 
