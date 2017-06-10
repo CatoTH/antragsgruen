@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
@@ -54,8 +55,8 @@ class ConsultationMotionType extends ActiveRecord
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
 
-    const INITIATORS_MERGE_NEVER = 0;
-    const INITIATORS_MERGE_NO_COLLISSION = 1;
+    const INITIATORS_MERGE_NEVER           = 0;
+    const INITIATORS_MERGE_NO_COLLISSION   = 1;
     const INITIATORS_MERGE_WITH_COLLISSION = 2;
 
     /**
@@ -171,6 +172,19 @@ class ConsultationMotionType extends ActiveRecord
     public function getAmendmentSupportTypeClass()
     {
         return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
+    }
+
+    /**
+     * @return Consultation
+     */
+    public function getMyConsultation()
+    {
+        $current = Consultation::getCurrent();
+        if ($current && $current->id == $this->consultationId) {
+            return $current;
+        } else {
+            return Consultation::findOne($this->consultationId);
+        }
     }
 
     /**
@@ -296,5 +310,52 @@ class ConsultationMotionType extends ActiveRecord
             }
         }
         return $return;
+    }
+
+    /**
+     * @param ConsultationMotionType $cmpMotionType
+     * @return boolean
+     */
+    public function isCompatibleTo(ConsultationMotionType $cmpMotionType)
+    {
+        $mySections  = $this->motionSections;
+        $cmpSections = $cmpMotionType->motionSections;
+
+        if (count($mySections) != count($cmpSections)) {
+            return false;
+        }
+        for ($i = 0; $i < count($mySections); $i++) {
+            if ($mySections[$i]->type != $cmpSections[$i]->type) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param ConsultationMotionType $cmpMotionType
+     * @return array
+     */
+    public function getSectionCompatibilityMapping(ConsultationMotionType $cmpMotionType)
+    {
+        $mapping = [];
+        for ($i = 0; $i < count($this->motionSections); $i++) {
+            $mapping[$this->motionSections[$i]->id] = $cmpMotionType->motionSections[$i]->id;
+        }
+        return $mapping;
+    }
+
+    /**
+     * @return ConsultationMotionType[]
+     */
+    public function getCompatibleMotionTypes()
+    {
+        $compatible = [];
+        foreach ($this->getMyConsultation()->motionTypes as $motionType) {
+            if ($motionType->isCompatibleTo($this)) {
+                $compatible[] = $motionType;
+            }
+        }
+        return $compatible;
     }
 }

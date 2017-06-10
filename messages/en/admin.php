@@ -78,6 +78,7 @@ return [
     'motion_non_amendable'        => 'Prevent amendments to this specific motion',
     'motion_agenda_item'          => 'Agenda item',
     'motion_status'               => 'Status',
+    'motion_type'                 => 'Motion type',
     'motion_replaces'             => 'Replaces',
     'motion_screen_as_x'          => 'Screen as %PREFIX%',
     'motion_del'                  => 'Delete motion',

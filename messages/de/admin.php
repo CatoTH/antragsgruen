@@ -76,6 +76,7 @@ return [
     'motion_non_amendable'        => 'Änderungsanträge speziell für diesen Antrag verhinden',
     'motion_agenda_item'          => 'Tagesordnungspunkt',
     'motion_status'               => 'Status',
+    'motion_type'                 => 'Antragstyp',
     'motion_replaces'             => 'Überarbeitete Fassung von',
     'motion_screen_as_x'          => 'Freischalten als %PREFIX%',
     'motion_del'                  => 'Antrag löschen',

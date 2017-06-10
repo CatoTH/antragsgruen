@@ -7,6 +7,7 @@ use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
+use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
@@ -1028,6 +1029,37 @@ class Motion extends IMotion implements IRSSItem
     public function getMyMotionType()
     {
         return $this->motionType;
+    }
+
+    /**
+     * @param ConsultationMotionType $motionType
+     * @throws FormError
+     */
+    public function setMotionType(ConsultationMotionType $motionType)
+    {
+        if (!$this->motionType->isCompatibleTo($motionType)) {
+            throw new FormError('This motion cannot be changed to the type ' . $motionType->titleSingular);
+        }
+        if (count($this->getSortedSections(false)) !== count($this->motionType->motionSections)) {
+            throw new FormError('This motion cannot be changed as it seems to be inconsistent');
+        }
+
+        foreach ($this->amendments as $amendment) {
+            $amendment->setMotionType($motionType);
+        }
+
+        $mySections = $this->getSortedSections(false);
+        for ($i = 0; $i < count($mySections); $i++) {
+            $mySections[$i]->sectionId = $motionType->motionSections[$i]->id;
+            if (!$mySections[$i]->save()) {
+                $err = print_r($mySections[$i]->getErrors(), true);
+                throw new FormError('Something terrible happened while changing the motion type: ' . $err);
+            }
+        }
+
+        $this->motionTypeId = $motionType->id;
+        $this->save();
+        $this->refresh();
     }
 
     /**

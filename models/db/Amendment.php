@@ -8,6 +8,7 @@ use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\exceptions\FormError;
 use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
@@ -951,6 +952,30 @@ class Amendment extends IMotion implements IRSSItem
     public function getMyMotionType()
     {
         return $this->getMyMotion()->motionType;
+    }
+
+    /**
+     * @param ConsultationMotionType $motionType
+     * @throws FormError
+     */
+    public function setMotionType(ConsultationMotionType $motionType)
+    {
+        if (!$this->getMyMotion()->motionType->isCompatibleTo($motionType)) {
+            throw new FormError('This amendment cannot be changed to the type ' . $motionType->titleSingular);
+        }
+
+        $typeMapping = $this->getMyMotion()->motionType->getSectionCompatibilityMapping($motionType);
+        $mySections = $this->getSortedSections(false);
+        for ($i = 0; $i < count($mySections); $i++) {
+            if (!isset($typeMapping[$mySections[$i]->sectionId])) {
+                continue;
+            }
+            $mySections[$i]->sectionId = $typeMapping[$mySections[$i]->sectionId];
+            if (!$mySections[$i]->save()) {
+                $err = print_r($mySections[$i]->getErrors(), true);
+                throw new FormError('Something terrible happened while changing the motion type: ' . $err);
+            }
+        }
     }
 
     /**

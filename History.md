@@ -10,6 +10,7 @@
   - it is now possible to exclude some amendments from merging, to prevent lots of collissions for amendments that replace major parts of the motion
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - Administrators can now be set per consultation, without granting them access to all consultations of this site
+- It's possible to change the motion type of a motion now after creating it. However, this works only between motion types that are structurally similar.
 - Several improvements to the inline editing of the agenda
 - A more detailed manual about the functionality of Antragsgrün is provided
 - We don't pretend anymore you could use Antragsgrün with IE <=9

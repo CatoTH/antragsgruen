@@ -78,6 +78,7 @@ return [
     'motion_non_amendable'        => 'Empêcher les amendements à cette motion en particulier',
     'motion_agenda_item'          => 'Point à l\'ordre du jour',
     'motion_status'               => 'Statut',
+    'motion_type'                 => 'Type de motion',
     'motion_replaces'             => 'Remplace',
     'motion_screen_as_x'          => 'Vérifier comme %PREFIX%',
     'motion_del'                  => 'Supprimer la motion',

@@ -392,6 +392,8 @@ class MotionController extends AdminBase
         }
 
         if ($this->isPostSet('save')) {
+            $modat                  = $post['motion'];
+
             try {
                 $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
@@ -407,7 +409,19 @@ class MotionController extends AdminBase
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            $modat                  = $post['motion'];
+            if ($modat['motionType'] != $motion->motionTypeId) {
+                try {
+                    /** @var ConsultationMotionType $newType */
+                    $newType = ConsultationMotionType::findOne($modat['motionType']);
+                    if (!$newType || $newType->consultationId != $motion->consultationId) {
+                        throw new FormError('The new motion type was not found');
+                    }
+                    $motion->setMotionType($newType);
+                } catch (FormError $e) {
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
+
             $motion->title          = $modat['title'];
             $motion->statusString   = $modat['statusString'];
             $motion->dateCreation   = Tools::dateBootstraptime2sql($modat['dateCreation']);
