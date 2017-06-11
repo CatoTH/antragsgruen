@@ -31,7 +31,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m170204_191243_additional_user_fields', '1486235651'),
   ('m170206_185458_supporter_contact_name', '1486410534'),
   ('m170226_134156_motionInitiatorsAmendmentMerging', '1489921851'),
-  ('m170419_182728_delete_consultation_admin', '1492626507')
+  ('m170419_182728_delete_consultation_admin', '1492626507'),
+  ('m170611_195343_global_alternatives', '1497211108')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

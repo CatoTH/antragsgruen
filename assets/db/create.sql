@@ -21,7 +21,8 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `status`                TINYINT(4)  NOT NULL,
   `statusString`          VARCHAR(55) NOT NULL,
   `noteInternal`          TEXT,
-  `textFixed`             TINYINT(4)           DEFAULT '0'
+  `textFixed`             TINYINT(4)           DEFAULT '0',
+  `globalAlternative`     TINYINT(4)           DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

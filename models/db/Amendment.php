@@ -36,6 +36,7 @@ use yii\helpers\Html;
  * @property string $statusString
  * @property string $noteInternal
  * @property int $textFixed
+ * @property int $globalAlternative
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
