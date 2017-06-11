@@ -65,6 +65,7 @@ return [
     'Resolution'                    => 'Décidé',
     'resoluted_on'                  => 'Décidé le',
     'submitted_on'                  => 'Déposé',
+    'created_on'                    => 'Créé',
     'tag_tags'                      => 'Tags',
     'tag'                           => 'Tag',
     'tags'                          => 'Tags',

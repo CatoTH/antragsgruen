@@ -14,6 +14,7 @@ return [
     'status'                 => 'Statut',
     'resoluted_on'           => 'Décidé le',
     'submitted_on'           => 'Déposé',
+    'created_on'             => 'Créé',
     'comments_title'         => 'Commentaires',
     'comment_screen_queue_1' => '1 commentaire en attente d\examen',
     'comment_screen_queue_x' => '%NUM% commentaires en attente d\examen',

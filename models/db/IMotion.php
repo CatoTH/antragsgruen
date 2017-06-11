@@ -121,6 +121,22 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return bool
+     */
+    public function isSubmitted()
+    {
+        return !in_array($this->status, [
+            IMotion::STATUS_DELETED,
+            IMotion::STATUS_UNCONFIRMED,
+            IMotion::STATUS_DRAFT,
+            IMotion::STATUS_COLLECTING_SUPPORTERS,
+            IMotion::STATUS_DRAFT_ADMIN,
+            IMotion::STATUS_MERGING_DRAFT_PRIVATE,
+            IMotion::STATUS_MERGING_DRAFT_PUBLIC,
+        ]);
+    }
+
+    /**
      * @return int[]
      */
     public static function getStatiMarkAsDoneOnRewriting()

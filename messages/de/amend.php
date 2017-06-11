@@ -14,6 +14,7 @@ return [
     'status'                            => 'Status',
     'resoluted_on'                      => 'Entschieden am',
     'submitted_on'                      => 'Eingereicht',
+    'created_on'                        => 'Angelegt',
     'comments_title'                    => 'Kommentare',
     'comments_screening_queue_1'        => '1 Kommentar wartet auf Freischaltung',
     'comments_screening_queue_x'        => '%NUM% Kommentare warten auf Freischaltung',

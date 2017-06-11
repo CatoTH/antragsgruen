@@ -99,7 +99,7 @@ if ($amendment->dateResolution != '') {
        <td>' . Tools::formatMysqlDate($amendment->dateResolution) . '</td>
      </tr>';
 }
-echo '<tr><th>' . \Yii::t('amend', 'submitted_on') . ':</th>
+echo '<tr><th>' . \Yii::t('amend', ($amendment->isSubmitted() ? 'submitted_on' : 'created_on')) . ':</th>
        <td>' . Tools::formatMysqlDateTime($amendment->dateCreation) . '</td>
                 </tr>';
 echo '</table>';

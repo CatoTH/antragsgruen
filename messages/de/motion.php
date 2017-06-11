@@ -64,6 +64,7 @@ return [
     'Resolution'                         => 'Beschlossen',
     'resoluted_on'                       => 'Entschieden am',
     'submitted_on'                       => 'Eingereicht',
+    'created_on'                         => 'Angelegt',
     'tag_tags'                           => 'Themenbereich',
     'tag'                                => 'Themenbereich',
     'tags'                               => 'Themenbereiche',

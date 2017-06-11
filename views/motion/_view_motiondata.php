@@ -104,7 +104,8 @@ if ($motion->dateResolution != '') {
        <td>' . Tools::formatMysqlDate($motion->dateResolution, null, false) . '</td>
      </tr>';
 }
-echo '<tr><th>' . \Yii::t('motion', 'submitted_on') . ':</th>
+
+echo '<tr><th>' . \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')) . ':</th>
        <td>' . Tools::formatMysqlDateTime($motion->dateCreation, null, false) . '</td>
                 </tr>';
 

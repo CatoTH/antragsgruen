@@ -775,6 +775,7 @@ class Motion extends IMotion implements IRSSItem
                 $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
             }
         }
+        $this->dateCreation = date('Y-m-d H:i:s');
         $this->save();
 
         new MotionSubmittedNotification($this);

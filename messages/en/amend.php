@@ -14,6 +14,7 @@ return [
     'status'                 => 'Status',
     'resoluted_on'           => 'Decided on',
     'submitted_on'           => 'Submitted',
+    'created_on'             => 'Created',
     'comments_title'         => 'Comments',
     'comment_screen_queue_1' => '1 comment waiting for screening',
     'comment_screen_queue_x' => '%NUM% comments waiting for screening',

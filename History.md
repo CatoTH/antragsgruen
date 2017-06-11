@@ -13,6 +13,7 @@
 - It's possible to change the motion type of a motion now after creating it. However, this works only between motion types that are structurally similar.
 - Several improvements to the inline editing of the agenda
 - A more detailed manual about the functionality of Antragsgrün is provided
+- The timestamp of a motion or amendment now shows the time when it has been officially submitted, not when the first draft has been created. The latter is still shown before the submission.
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 - Updates to several core libraries
 
