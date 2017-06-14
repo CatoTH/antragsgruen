@@ -27,8 +27,10 @@ class TextHTML extends ISectionType
     public function getAmendmentFormField()
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
-        $fixedWidth                                 = $this->section->getSettings()->fixedWidth;
-        return $this->getTextAmendmentFormField(true, $this->section->dataRaw, $fixedWidth);
+        $fixedWidth                           = $this->section->getSettings()->fixedWidth;
+
+        $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->data);
+        return $this->getTextAmendmentFormField(true, $pre, $fixedWidth);
     }
 
     /**
@@ -99,7 +101,7 @@ class TextHTML extends ISectionType
         // for striking through text
         $pattern = '/<span class="strike">(.*)<\/span>/iUs';
         $replace = '<s>${1}</s>';
-        $html = preg_replace($pattern, $replace, $html);
+        $html    = preg_replace($pattern, $replace, $html);
         // Some umlaut characters with unusual UTF-8-encoding (0x61CC88 for "ü")
         // are not shown correctly in PDF => convert them to the normal encoding
         if (function_exists('normalizer_normalize')) {

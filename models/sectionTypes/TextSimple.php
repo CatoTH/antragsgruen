@@ -39,7 +39,9 @@ class TextSimple extends ISectionType
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
         if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
-            return $this->getTextAmendmentFormField(false, $this->section->dataRaw, $fixedWidth);
+            var_dump($this->section->dataRaw);
+            $pre = ($this->section->dataRaw  ? $this->section->dataRaw : $this->section->data);
+            return $this->getTextAmendmentFormField(false, $pre, $fixedWidth);
         } else {
             return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
         }
