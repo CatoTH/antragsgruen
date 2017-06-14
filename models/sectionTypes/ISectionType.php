@@ -123,7 +123,7 @@ abstract class ISectionType
         }
         $str .= '" data-track-changed="1" data-enter-mode="br" data-no-strike="1" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
-        $str .= HTMLTools::prepareHTMLForCkeditor($this->section->dataRaw);
+        $str .= HTMLTools::prepareHTMLForCkeditor($data);
         $str .= '</div>';
 
         $str .= '</div>';

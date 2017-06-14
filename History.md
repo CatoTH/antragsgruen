@@ -19,6 +19,10 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
+### Version 3.6.10 [not released yet]
+
+- Bugfix: After rewriting an amendment while merging another amendment into th emotion, it could not be edited anymore, as the text as been empty 
+
 ### Version 3.6.9 (2017-06-05)
 
 - Feature: A French translation is provided, thanks to the work of Antoine Tifine of Les Jeunes Écologistes
