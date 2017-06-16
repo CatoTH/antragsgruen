@@ -151,6 +151,7 @@ class MergeSingleAmendmentForm extends Model
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->motionId = $this->newMotion->id;
+            $newSection->cache = '';
             if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
                 if (isset($newSections[$section->sectionId])) {
                     $newSection->data    = $newSections[$section->sectionId];

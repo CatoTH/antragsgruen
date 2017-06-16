@@ -2,6 +2,7 @@
 
 ### Version 3.6.10 [not released yet]
 
+- Bugfix: Merging a single amendment into a motion could crash the system if a new paragraph was inserted.
 - Bugfix: After rewriting an amendment while merging another amendment into th emotion, it could not be edited anymore, as the text as been empty 
 
 ### Version 3.6.9 (2017-06-05)
