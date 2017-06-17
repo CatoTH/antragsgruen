@@ -19,10 +19,10 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.10 [not released yet]
+### Version 3.6.10 (2017-06-17)
 
 - Bugfix: Merging a single amendment into a motion could crash the system if a new paragraph was inserted.
-- Bugfix: After rewriting an amendment while merging another amendment into th emotion, it could not be edited anymore, as the text as been empty 
+- Bugfix: After rewriting an amendment while merging another amendment into the motion, it could not be edited anymore, as the text has been empty 
 
 ### Version 3.6.9 (2017-06-05)
 
