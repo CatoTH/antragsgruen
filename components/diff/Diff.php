@@ -61,11 +61,21 @@ class Diff
 
     /**
      * @param string $line
+     * @return string
+     */
+    public static function normalizeForDiff($line)
+    {
+        return preg_replace("/<br>\\n+/siu", "<br>", $line);
+    }
+
+    /**
+     * @param string $line
      * @return string[]
      */
     public static function tokenizeLine($line)
     {
-        $htmlTag = '/(<[^>]+>)/siuU';
+        $line    = static::normalizeForDiff($line);
+        $htmlTag = '/(<br>\n+|<[^>]+>)/siu';
         $arr     = preg_split($htmlTag, $line, -1, PREG_SPLIT_DELIM_CAPTURE);
         $out     = [];
         foreach ($arr as $arr2) {
@@ -338,6 +348,8 @@ class Diff
     public function computeLineDiff($lineOld, $lineNew)
     {
         $computedStrs = [];
+        $lineOld      = static::normalizeForDiff($lineOld);
+        $lineNew      = static::normalizeForDiff($lineNew);
         $lineOldArr   = static::tokenizeLine($lineOld);
         $lineNewArr   = static::tokenizeLine($lineNew);
 
@@ -346,6 +358,7 @@ class Diff
         }
 
         $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
+        $return = $this->engine->moveWordOpsToMatchSentenceStructure($return);
 
         $return = $this->groupOperations($return, '');
 
@@ -633,14 +646,13 @@ class Diff
      */
     public function convertToWordArray($diff, $amParams)
     {
-        $splitChars = [' ', '-', '>', '<', ':', '.'];
-        $words      = [
+        $splitChars        = [' ', '-', '>', '<', ':', '.'];
+        $words             = [
             0 => [
                 'word' => '',
                 'diff' => '',
             ]
         ];
-
         $diffPartArr       = preg_split('/(###(?:INS|DEL)_(?:START|END)###)/siu', $diff, -1, PREG_SPLIT_DELIM_CAPTURE);
         $inDel             = $inIns = false;
         $originalWordPos   = 0;
@@ -791,6 +803,7 @@ class Diff
                 $matchingRow = str_replace('###EMPTYINSERTED###', '', $adjustedMatching[$i]);
                 $diffLine    = $this->computeLineDiff($origLine, $matchingRow);
                 $wordArray   = $this->convertToWordArray($diffLine, $amParams);
+
                 $this->checkWordArrayConsistency($origLine, $wordArray);
                 if ($pendingInsert != '') {
                     $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];

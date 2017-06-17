@@ -31,7 +31,7 @@ class DiffTest extends TestBase
     {
         $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $new      = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
-        $expected = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. ###DEL_START###Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. ###DEL_END###(<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
+        $expected = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit.###DEL_START### Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt.###DEL_END### (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
         $diff     = new Diff();
         $out      = $diff->computeLineDiff($orig, $new);
         $this->assertEquals($expected, $out);
@@ -862,6 +862,42 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diff   = new Diff();
         $diff->setIgnoreStr('###LINENUMBER###');
         $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals($expect, $arr);
+    }
+    
+    /**
+     */
+    public function testDeleteSentenceSecondSentanceBeginningAlike1()
+    {
+        $orig   = [
+            '<p>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>'
+        ];
+        $new    = [
+            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+        ];
+        $expect = [
+            '<p><del>###LINENUMBER###Lorem At vero eos et accusam et justo duo dolores. </del>Lorem ipsum dolor sit amet, ###LINENUMBER###consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et ###LINENUMBER###dolore magna aliquyam erat, sed diam voluptua.</p>',
+        ];
+        $diff   = new Diff();
+        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals($expect, $arr);
+    }
+    
+    /**
+     */
+    public function testDeleteSentenceSecondSentanceBeginningAlike2()
+    {
+        $orig   = [
+            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+        ];
+        $new    = [
+            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. sed diam Dolor veram Test bla<br>' . "\n<br>\n" . 'sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>'
+        ];
+        $expect = [
+            '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr. <ins>sed diam Dolor veram Test bla<br><br></ins>sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>',
+        ];
+        $diff   = new Diff();
+        $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
 }

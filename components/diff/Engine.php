@@ -237,14 +237,79 @@ class Engine
         return $diff;
     }
 
-    /** Returns the table of longest common subsequence lengths for the specified
+    /**
+     * @param array $words
+     * @param int $mode
+     * @param int $fromIdx
+     * @param int $toIdx
+     * @return array
+     */
+    private function moveWordOpsToMatchSentenceStructureWrapperBlock($words, $mode, $fromIdx, $toIdx)
+    {
+        $cnt = 0;
+
+        while (($fromIdx - $cnt) > 0 && ($toIdx - $cnt) > $fromIdx &&
+            $words[$fromIdx - $cnt - 1][1] === Engine::UNMODIFIED &&
+            $this->strCmp($words[$fromIdx - $cnt - 1][0], $words[$toIdx - $cnt][0]) &&
+            strpos($words[$toIdx - $cnt][0], '<') === false && strpos($words[$toIdx - $cnt][0], '>') === false &&
+            strpos($words[$toIdx - $cnt][0], '.') === false
+        ) {
+            $words[$fromIdx - $cnt - 1][1] = $mode;
+            $words[$toIdx - $cnt][1]       = Engine::UNMODIFIED;
+            $cnt++;
+        }
+
+        return $words;
+    }
+
+    /**
+     * @param array $words
+     * @return array
+     */
+    public function moveWordOpsToMatchSentenceStructure($words)
+    {
+        $lastMode   = null;
+        $blockStart = null;
+        $blocks     = [];
+
+        for ($i = 0; $i < count($words); $i++) {
+            if ($words[$i][1] == Engine::UNMODIFIED) {
+                if ($lastMode !== null && $lastMode !== Engine::UNMODIFIED) {
+                    $blocks[] = [$lastMode, $blockStart, $i - 1];
+                }
+                $blockStart = $i;
+                $lastMode   = Engine::UNMODIFIED;
+            } else {
+                if ($lastMode !== $words[$i][1]) {
+                    if ($lastMode !== null && $lastMode !== Engine::UNMODIFIED) {
+                        $blocks[] = [$lastMode, $blockStart, $i - 1];
+                    }
+                    $blockStart = $i;
+                    $lastMode   = $words[$i][1];
+                }
+            }
+        }
+        if ($lastMode !== null && $lastMode !== Engine::UNMODIFIED) {
+            $blocks[] = [$lastMode, $blockStart, $i - 1];
+        }
+
+        foreach ($blocks as $block) {
+            $words = $this->moveWordOpsToMatchSentenceStructureWrapperBlock($words, $block[0], $block[1], $block[2]);
+        }
+
+        return $words;
+    }
+
+    /**
+     * Returns the table of longest common subsequence lengths for the specified
      * sequences. The parameters are:
      *
-     * $sequence1 - the first sequence
-     * $sequence2 - the second sequence
-     * $start     - the starting index
-     * $end1      - the ending index for the first sequence
-     * $end2      - the ending index for the second sequence
+     * @param string $sequence1 - the first sequence
+     * @param string $sequence2 - the second sequence
+     * @param int $start        - the starting index
+     * @param int $end1         - the ending index for the first sequence
+     * @param int $end2         - the ending index for the second sequence
+     * @return array
      */
     private function computeTable($sequence1, $sequence2, $start, $end1, $end2)
     {
@@ -275,13 +340,15 @@ class Engine
         return $table;
     }
 
-    /** Returns the partial diff for the specificed sequences, in reverse order.
+    /**
+     * Returns the partial diff for the specificed sequences, in reverse order.
      * The parameters are:
      *
-     * $table     - the table returned by the computeTable function
-     * $sequence1 - the first sequence
-     * $sequence2 - the second sequence
-     * $start     - the starting index
+     * @param array $table     - the table returned by the computeTable function
+     * @param array $sequence1 - the first sequence
+     * @param array $sequence2 - the second sequence
+     * @param int $start       - the starting index
+     * @return array
      */
     private function generatePartialDiff($table, $sequence1, $sequence2, $start)
     {
@@ -320,13 +387,14 @@ class Engine
         return $diff;
     }
 
-    /** Returns a diff as a string, where unmodified lines are prefixed by '  ',
+    /**
+     * Returns a diff as a string, where unmodified lines are prefixed by '  ',
      * deletions are prefixed by '- ', and insertions are prefixed by '+ '. The
      * parameters are:
      *
-     * $diff      - the diff array
-     * $separator - the separator between lines; this optional parameter defaults
-     *              to "\n"
+     * @param array $diff       - the diff array
+     * @param string $separator - the separator between lines; this optional parameter defaults to "\n"
+     * @return string
      */
     public function toString($diff, $separator = "\n")
     {
@@ -357,13 +425,14 @@ class Engine
         return $string;
     }
 
-    /** Returns a diff as an HTML string, where unmodified lines are contained
+    /**
+     * Returns a diff as an HTML string, where unmodified lines are contained
      * within 'span' elements, deletions are contained within 'del' elements, and
      * insertions are contained within 'ins' elements. The parameters are:
      *
-     * $diff      - the diff array
-     * $separator - the separator between lines; this optional parameter defaults
-     *              to '<br>'
+     * @param array $diff       - the diff array
+     * @param string $separator - the separator between lines; this optional parameter defaults to '<br>'
+     * @return string
      */
     public function toHTML($diff, $separator = '<br>')
     {
@@ -399,13 +468,14 @@ class Engine
         return $html;
     }
 
-    /** Returns a diff as an HTML table. The parameters are:
+    /**
+     * Returns a diff as an HTML table. The parameters are:
      *
-     * $diff        - the diff array
-     * $indentation - indentation to add to every line of the generated HTML; this
-     *                optional parameter defaults to ''
-     * $separator   - the separator between lines; this optional parameter
-     *                defaults to '<br>'
+     * @param array $diff         - the diff array
+     * @param string $indentation - indentation to add to every line of the generated HTML;
+     *                              this optional parameter defaults to ''
+     * @param string $separator   - the separator between lines; this optional parameter defaults to '<br>'
+     * @return string
      */
     public function toTable($diff, $indentation = '', $separator = '<br>')
     {
@@ -472,13 +542,15 @@ class Engine
         return $html . $indentation . "</table>\n";
     }
 
-    /** Returns the content of the cell, for use in the toTable function. The
+    /**
+     * Returns the content of the cell, for use in the toTable function. The
      * parameters are:
      *
-     * $diff        - the diff array
-     * $separator   - the separator between lines
-     * $index       - the current index, passes by reference
-     * $type        - the type of line
+     * @param array $diff       - the diff array
+     * @param string $separator - the separator between lines
+     * @param int $index        - the current index, passes by reference
+     * @param $type             - the type of line
+     * @return string;
      */
     private function getCellContent($diff, $separator, &$index, $type)
     {
