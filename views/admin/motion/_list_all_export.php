@@ -2,6 +2,7 @@
 
 /** @var \app\controllers\Base $controller */
 use app\components\UrlHelper;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 $controller   = $this->context;
@@ -88,9 +89,11 @@ foreach ($consultation->motionTypes as $motionType) {
                     $title = \Yii::t('admin', 'index_export_ods_listall');
                     echo $getExportLinkLi($title, 'admin/motion/odslistall', $motionType->id, 'motionODSlist');
 
-                    $title = \Yii::t('admin', 'index_export_excel') .
-                        ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
-                    echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
+                    if (AntragsgruenApp::hasPhpExcel()) {
+                        $title = \Yii::t('admin', 'index_export_excel') .
+                            ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
+                        echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
+                    }
                     ?>
                 </ul>
             </div>

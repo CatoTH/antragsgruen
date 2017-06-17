@@ -52,7 +52,7 @@ class UserController extends Base
     {
         /** @var AntragsgruenApp $params */
         $params = Yii::$app->params;
-        if (!$params->hasSaml) {
+        if (!$params->isSamlActive()) {
             return 'SAML is not supported';
         }
 
@@ -284,7 +284,7 @@ class UserController extends Base
             $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
         }
 
-        if ($params->hasSaml) {
+        if ($params->isSamlActive()) {
             return $this->logoutSaml($backUrl);
         } else {
             \Yii::$app->user->logout();

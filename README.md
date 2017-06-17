@@ -163,6 +163,11 @@ Add the following settings to your config.json (and adapt them to your needs):
 Using Redis
 -----------
 
+Install the Yii2-Redis-package:
+```bash
+./composer.phar require composer require yiisoft/yii2-redis
+```
+
 Add the following settings to your config.json (and adapt them to your needs):
 ```json
 {

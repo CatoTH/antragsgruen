@@ -14,6 +14,7 @@ use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\components\motionTypeTemplates\Application as ApplicationTemplate;
@@ -392,7 +393,7 @@ class MotionController extends AdminBase
         }
 
         if ($this->isPostSet('save')) {
-            $modat                  = $post['motion'];
+            $modat = $post['motion'];
 
             try {
                 $form->setAttributes([$post, $_FILES]);
@@ -504,6 +505,11 @@ class MotionController extends AdminBase
      */
     public function actionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
+        if (!AntragsgruenApp::hasPhpExcel()) {
+            return $this->showErrorpage(500, 'The Excel package has not been installed. ' .
+                'To install it, execute "./composer.phar require phpoffice/phpexcel".');
+        }
+
         $withdrawn = ($withdrawn == 1);
 
         try {

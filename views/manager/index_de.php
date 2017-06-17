@@ -134,7 +134,7 @@ $params = \Yii::$app->params;
 
 <?php
 
-if ($params->hasWurzelwerk || $params->hasSaml) {
+if ($params->hasWurzelwerk || $params->isSamlActive()) {
     echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
 <div class="content infoSite">';
 

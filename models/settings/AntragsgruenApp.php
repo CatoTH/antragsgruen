@@ -66,8 +66,8 @@ class AntragsgruenApp
     private function isHttps()
     {
         // Needs to be equal to Yii2's web/Request.php
-        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-        || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1) ||
+            isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
     }
 
     /**
@@ -82,7 +82,7 @@ class AntragsgruenApp
             $this->resourceBase = $_SERVER['SCRIPT_NAME'];
             $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
             $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
-            $this->domainPlain .= '://' . $_SERVER['HTTP_HOST'] . '/';
+            $this->domainPlain  .= '://' . $_SERVER['HTTP_HOST'] . '/';
         }
     }
 
@@ -124,5 +124,21 @@ class AntragsgruenApp
         }
 
         \Yii::$app->cache->flush();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function hasPhpExcel()
+    {
+        return class_exists('\PHPExcel', true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSamlActive()
+    {
+        return (class_exists('\SimpleSAML_Auth_Simple') && $this->hasSaml);
     }
 }

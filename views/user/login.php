@@ -110,7 +110,7 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 }
 
 
-if ($params->hasSaml) {
+if ($params->isSamlActive()) {
     $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
     echo '<section class="loginSimplesaml">';
     if ($hide_ww_login) {
