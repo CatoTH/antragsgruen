@@ -54,4 +54,10 @@ return [
     'noti_amendments_my_motion' => 'New amendments (my motions)',
     'noti_comments'             => 'New comments',
     'noti_save'                 => 'Save',
+
+    'search_results_title' => 'Search: „%QUERY%“',
+    'search_results_bc'    => 'Search',
+    'search_results_none'  => 'No results found',
+    'search_results_1'     => '1 result',
+    'search_results_x'     => '%NUM% results',
 ];
