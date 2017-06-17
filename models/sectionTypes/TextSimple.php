@@ -39,7 +39,7 @@ class TextSimple extends ISectionType
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
         if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
-            $pre = ($this->section->dataRaw  ? $this->section->dataRaw : $this->section->data);
+            $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->data);
             return $this->getTextAmendmentFormField(false, $pre, $fixedWidth);
         } else {
             return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
@@ -68,7 +68,7 @@ class TextSimple extends ISectionType
 
         $type = $this->section->getSettings();
         $str  = '<div class="label">' . Html::encode($type->title) . '</div>';
-        $str .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
+        $str  .= '<div class="texteditorBox" data-section-id="' . $amSection->sectionId . '" ' .
             'data-changed-para-no="' . $changedParagraph . '">';
         foreach ($moParas as $paraNo => $moPara) {
             $nameBase = 'sections[' . $type->id . '][' . $paraNo . ']';
@@ -218,18 +218,18 @@ class TextSimple extends ISectionType
             return '';
         }
 
-        $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
-        $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+        $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str       .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text';
         if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';
         }
         $wrapStart .= '">';
-        $wrapEnd = '</div></section>';
-        $str .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
-        $str .= '</div>';
-        $str .= '</div>';
+        $wrapEnd   = '</div></section>';
+        $str       .= TextSimple::formatDiffGroup($diffGroups, $wrapStart, $wrapEnd, $firstLine);
+        $str       .= '</div>';
+        $str       .= '</div>';
 
         return $str;
     }
@@ -380,6 +380,23 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param string $text
+     * @return string
+     */
+    public static function stripAfterInsertedNewlines($text)
+    {
+        return preg_replace_callback('/((<br>\s*)*<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
+            $rest = $match['rest'];
+            if (strpos($rest, '<ins') !== false || strpos($rest, '<ins') !== false ||
+                strpos($rest, 'class="inserted"') !== false || strpos($rest, 'class="deleted"') !== false) {
+                return $match[0];
+            } else {
+                return '</ins>' . $match['end'];
+            }
+        }, $text);
+    }
+
+    /**
      * @param array $diffGroups
      * @param string $wrapStart
      * @param string $wrapEnd
@@ -391,6 +408,7 @@ class TextSimple extends ISectionType
         $out = '';
         foreach ($diffGroups as $diff) {
             $text      = $diff['text'];
+            $text      = static::stripAfterInsertedNewlines($text);
             $hasInsert = $hasDelete = false;
             if (mb_strpos($text, 'class="inserted"') !== false) {
                 $hasInsert = true;
@@ -404,8 +422,8 @@ class TextSimple extends ISectionType
             if (preg_match('/<del( [^>]*)?>/siu', $text)) {
                 $hasDelete = true;
             }
-            $out .= $wrapStart;
-            $out .= '<h4 class="lineSummary">';
+            $out            .= $wrapStart;
+            $out            .= '<h4 class="lineSummary">';
             $isInsertedLine = (mb_strpos($diff['text'], '###LINENUMBER###') === false);
             if ($isInsertedLine) {
                 if (($hasInsert && $hasDelete) || (!$hasInsert && !$hasDelete)) {
@@ -437,12 +455,12 @@ class TextSimple extends ISectionType
                 }
             }
             $lineFrom = ($diff['lineFrom'] < $firstLineOfSection ? $firstLineOfSection : $diff['lineFrom']);
-            $out = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $lineFrom], $out) . '</h4>';
-            $out .= '<div>';
-            if ($diff['text'][0] != '<') {
-                $out .= '<p>' . $diff['text'] . '</p>';
+            $out      = str_replace(['#LINETO#', '#LINEFROM#'], [$diff['lineTo'], $lineFrom], $out) . '</h4>';
+            $out      .= '<div>';
+            if ($text[0] != '<') {
+                $out .= '<p>' . $text . '</p>';
             } else {
-                $out .= $diff['text'];
+                $out .= $text;
             }
             $out .= '</div>';
             $out .= $wrapEnd;
@@ -588,9 +606,9 @@ class TextSimple extends ISectionType
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                 }
 
-                $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
                 $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
-                $tex .= Exporter::encodeHTMLString($html);
+                $tex  .= Exporter::encodeHTMLString($html);
             }
 
             HashedStaticCache::setCache('printAmendmentTeX', $cacheDeps, $tex);
@@ -777,13 +795,13 @@ class TextSimple extends ISectionType
             $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             foreach ($paragraphCollissions[$paragraphNo] as $amendmentId => $paraData) {
-                $amendment = $amendmentsById[$amendmentId];
-                $out .= '<div class="collidingParagraph"';
-                $out .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
-                $out .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
-                $out .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
-                $out .= Html::a($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
-                $out .= '</strong></p>';
+                $amendment     = $amendmentsById[$amendmentId];
+                $out           .= '<div class="collidingParagraph"';
+                $out           .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
+                $out           .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
+                $out           .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
+                $out           .= Html::a($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
+                $out           .= '</strong></p>';
                 $paragraphText = '';
 
                 foreach ($paraData as $part) {
