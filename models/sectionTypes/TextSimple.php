@@ -380,6 +380,8 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * Workaround for https://github.com/CatoTH/antragsgruen/issues/137#issuecomment-305686868
+     *
      * @param string $text
      * @return string
      */
@@ -387,8 +389,7 @@ class TextSimple extends ISectionType
     {
         return preg_replace_callback('/((<br>\s*)*<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
             $rest = $match['rest'];
-            if (strpos($rest, '<ins') !== false || strpos($rest, '<ins') !== false ||
-                strpos($rest, 'class="inserted"') !== false || strpos($rest, 'class="deleted"') !== false) {
+            if (strpos($rest, '<') !== false) {
                 return $match[0];
             } else {
                 return '</ins>' . $match['end'];
