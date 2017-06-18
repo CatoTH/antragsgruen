@@ -54,8 +54,8 @@ $I->see('Saupreiß', '#section_holder_2');
 $I->fillField('#sections_1', 'New title');
 
 $I->dontSeeElement('.editorialChange .wysiwyg-textarea');
-$I->click('.editorialChange .opener');
-$I->seeElement('.editorialChange .wysiwyg-textarea');
+$I->executeJS('$("input[name=editorialChange]").prop("checked", true).change();');
+$I->seeElement('#sectionHolderEditorial');
 $I->executeJS('CKEDITOR.instances.amendmentEditorial_wysiwyg.setData("<p>some meta text</p>");');
 
 $I->wantTo('submit the amendment with missing contact information');

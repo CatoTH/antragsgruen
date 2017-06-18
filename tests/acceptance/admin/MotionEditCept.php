@@ -65,6 +65,6 @@ $I->see('Wui helfgod Wiesn1');
 
 $I->wantTo('verify the changes are visible in the amendments');
 $I->gotoAmendment(true, 2, 274);
-$I->see('Wui helfgod Wiesn1Bla,');
+$I->see('Wui helfgod Wiesn1Bla');
 $I->gotoAmendment(true, 2, 3);
 $I->dontSee('Wui helfgod Wiesn');
