@@ -396,9 +396,11 @@ del.space, ins.space, del.formatting, ins.formatting {
       margin-top: -7px;
     }
   }
+  .draftExistsAlert {
+    margin-bottom: 50px;
+  }
   .mergeAllRow {
     h3 {
-      margin-top: 50px;
       font-size: 16px;
     }
     ul {

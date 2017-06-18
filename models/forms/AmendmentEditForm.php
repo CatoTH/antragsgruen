@@ -158,7 +158,7 @@ class AmendmentEditForm extends Model
         if (isset($values['amendmentReason'])) {
             $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
         }
-        if (isset($values['amendmentEditorial']) && isset($values['editorialChange'])) {
+        if (isset($values['amendmentEditorial'])) {
             $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
         } else {
             $this->editorial = '';

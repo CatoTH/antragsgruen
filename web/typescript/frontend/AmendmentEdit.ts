@@ -53,7 +53,11 @@ export class AmendmentEdit {
             if (CKEDITOR.instances['amendmentEditorial_wysiwyg'] === undefined) {
                 let editor: AntragsgruenEditor = new AntragsgruenEditor("amendmentEditorial_wysiwyg");
                 $textarea.parents("form").submit(() => {
-                    $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
+                    if (this.$form.find(".editorialChange input").prop("checked")) {
+                        $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
+                    } else {
+                        $textarea.parent().find("textarea.raw").val("");
+                    }
                 });
                 $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
             }

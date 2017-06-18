@@ -66,7 +66,7 @@ if ($supportCollectingStatus) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
 
         if ($motion->motionType->policySupportMotions != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
-            $loginUrl   = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
             echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
             echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
                 '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
@@ -115,7 +115,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
+        $main   .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
 
         $main .= '</section>';
     }
@@ -173,18 +173,32 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
     if ($motion->isCurrentlyAmendable(false, true)) {
         echo '<div class="pull-right">';
-        $title = '<span class="icon glyphicon glyphicon-flash"></span>';
-        $title .= \Yii::t('motion', 'amendment_create');
+        $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+        $title          .= \Yii::t('motion', 'amendment_create');
         $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
         echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .
             $title . '</a>';
         echo '</div>';
     }
 
+    // Global alternatives first, then sorted by titlePrefix
+    usort($amendments, function (Amendment $amend1, Amendment $amend2) {
+        if ($amend1->globalAlternative && !$amend2->globalAlternative) {
+            return -1;
+        }
+        if (!$amend1->globalAlternative && $amend2->globalAlternative) {
+            return 1;
+        }
+        return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
+    });
+
     if (count($amendments) > 0) {
         echo '<ul class="amendments">';
         foreach ($amendments as $amend) {
             echo '<li>';
+            if ($amend->globalAlternative) {
+                echo '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
+            }
             $aename = $amend->titlePrefix;
             if ($aename == '') {
                 $aename = $amend->id;

@@ -207,6 +207,9 @@ class MotionSection extends IMotionSection
         if ($includeAmendment) {
             $motion = $this->getConsultation()->getMotion($this->motionId);
             foreach ($motion->getVisibleAmendments(false) as $amendment) {
+                if ($amendment->globalAlternative) {
+                    continue;
+                }
                 $amSec = null;
                 foreach ($amendment->getActiveSections() as $section) {
                     if ($section->sectionId == $this->sectionId) {

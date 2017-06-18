@@ -60,8 +60,15 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 <?php
                 foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
                     echo '<li><label>';
-                    echo Html::checkbox('amendments[' . $amend->id . ']', true, ['class' => 'amendment' . $amend->id]);
+                    echo Html::checkbox(
+                        'amendments[' . $amend->id . ']',
+                        ($amend->globalAlternative == 0),
+                        ['class' => 'amendment' . $amend->id]
+                    );
                     echo ' ' . Html::encode($amend->getTitle());
+                    if ($amend->globalAlternative) {
+                        echo ' <small>(' . \Yii::t('amend', 'global_alternative') . ')</small>';
+                    }
                     echo \app\components\HTMLTools::amendmentDiffTooltip($amend);
                     echo '</label></li>';
                 }

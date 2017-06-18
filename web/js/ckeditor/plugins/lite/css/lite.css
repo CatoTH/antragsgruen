@@ -24,6 +24,7 @@ Written by (David *)Frenkiel - https://github.com/imdfl
 
 .ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins p {
 	background-color: #66ff66;
+	text-decoration: none;
 }
 
 .ICE-Tracking .ice-ins.ice-cts-1, .ICE-Tracking .ice-ins.ice-cts-1 > * {
