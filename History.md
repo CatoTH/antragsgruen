@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.0 [Not yet released]
+## Version 3.7.0 [Not released yet]
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
 - Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
@@ -19,6 +19,10 @@
 - Redis, Excel and SAML Authentication is not part of the default installation anymore, reducing the size of the package. It can still be installed as an optional dependency, though.
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
+
+### Version 3.6.10 [Not released yet]
+
+- Bugfix: When downloading PDFs and ODTs of amendments with Firefox, umlauts were not encoded correctly in the file name
 
 ### Version 3.6.10 (2017-06-17)
 
