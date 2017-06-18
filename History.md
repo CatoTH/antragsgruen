@@ -1,5 +1,9 @@
 # Version history
 
+### Version 3.6.10 [Not released yet]
+
+- Bugfix: When downloading PDFs and ODTs of amendments with Firefox, umlauts were not encoded correctly in the file name
+
 ### Version 3.6.10 (2017-06-17)
 
 - Bugfix: Merging a single amendment into a motion could crash the system if a new paragraph was inserted.

@@ -58,7 +58,7 @@ class AmendmentController extends Base
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
-        $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.pdf');
+        $filename                    = $amendment->getFilenameBase(false) . '.pdf';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
@@ -123,7 +123,7 @@ class AmendmentController extends Base
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
-        $filename                    = rawurlencode($amendment->getFilenameBase(false) . '.odt');
+        $filename                    = $amendment->getFilenameBase(false) . '.odt';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
