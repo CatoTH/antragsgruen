@@ -64,10 +64,11 @@ use yii\helpers\Html;
                 }
                 $stati[$otherAmend->status] = \Yii::t('amend', 'merge1_status_unchanged') . ': ' .
                     $statiAll[$amendment->status];
+                $statusPre = ($amendment->globalAlternative ? Amendment::STATUS_REJECTED : $otherAmend->status);
                 echo HTMLTools::fueluxSelectbox(
                     'otherAmendmentsStatus[' . $otherAmend->id . ']',
                     $stati,
-                    $otherAmend->status,
+                    $statusPre,
                     ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id]
                 );
                 echo '</div></div></div>';

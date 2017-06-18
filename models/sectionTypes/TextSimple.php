@@ -167,8 +167,6 @@ class TextSimple extends ISectionType
     public function getMotionPlainHtml()
     {
         $html = $this->section->data;
-        if (mb_strpos($html, 'strike') !== false) {
-        }
         $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
         $html = str_replace('<span class="strike">', '<span style="text-decoration: line-through;">', $html);
         return $html;
@@ -184,17 +182,23 @@ class TextSimple extends ISectionType
         $firstLine  = $section->getFirstLineNumber();
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-        if (count($diffGroups) == 0) {
-            return '';
-        }
+        if ($section->getAmendment()->globalAlternative) {
+            $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+            $str .= '<p><strong>' . \Yii::t('amend', 'global_alternative') . '</strong></p>';
+            $str .= $section->data;
+        } else {
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+            if (count($diffGroups) == 0) {
+                return '';
+            }
 
-        $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-        $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+            $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+            $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+        }
         return $str;
     }
 

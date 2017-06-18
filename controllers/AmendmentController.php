@@ -194,8 +194,6 @@ class AmendmentController extends Base
      */
     public function actionAjaxDiff($motionSlug, $amendmentId)
     {
-        $this->layout = 'column2';
-
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
             return '';
