@@ -13,7 +13,14 @@ export class AmendmentEdit {
         }
 
         this.lang = $("html").attr('lang');
-        this.initEditorialOpener();
+
+        this.$form.find(".editorialChange input").change(this.editorialOpenerClicked.bind(this)).change();
+        this.initGlobalAlternative();
+
+        $(".input-group.date").datetimepicker({
+            locale: this.lang,
+            format: 'L'
+        });
 
         if (multiParagraphMode) {
             this.initMultiParagraphMode();
@@ -32,35 +39,33 @@ export class AmendmentEdit {
         });
     }
 
-    private initEditorialOpener() {
-        let $opener = $(".editorialChange .opener");
+    private initGlobalAlternative() {
 
-        $(".input-group.date").datetimepicker({
-            locale: this.lang,
-            format: 'L'
-        });
-        $opener.click((ev) => {
-            ev.preventDefault();
-            let $holder = $(".editorialChange"),
-                $textarea = $holder.find(".texteditor");
-            $(ev.target).addClass("hidden");
-            $("#section_holder_editorial").removeClass("hidden");
-            let editor: AntragsgruenEditor = new AntragsgruenEditor("amendmentEditorial_wysiwyg");
-            $textarea.parents("form").submit(() => {
-                $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
-            });
-            $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
-        });
+    }
 
-        if ($("#amendmentEditorial").val() != '') {
-            $opener.click();
+    private editorialOpenerClicked() {
+        let $holder = this.$form.find("#sectionHolderEditorial"),
+            $textarea = $holder.find(".texteditor"),
+            active = this.$form.find(".editorialChange input").prop("checked");
+
+        if (active) {
+            $holder.removeClass("hidden");
+            if (CKEDITOR.instances['amendmentEditorial_wysiwyg'] === undefined) {
+                let editor: AntragsgruenEditor = new AntragsgruenEditor("amendmentEditorial_wysiwyg");
+                $textarea.parents("form").submit(() => {
+                    $textarea.parent().find("textarea.raw").val(editor.getEditor().getData());
+                });
+                $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
+            }
+        } else {
+            $holder.addClass("hidden");
         }
     }
 
     /* Multi paragraph mode */
 
     private initMultiParagraphMode() {
-        $(".wysiwyg-textarea:not(#section_holder_editorial)").each((i, el) => {
+        $(".wysiwyg-textarea:not(#sectionHolderEditorial)").each((i, el) => {
             let $holder = $(el),
                 $textarea = $holder.find(".texteditor");
 

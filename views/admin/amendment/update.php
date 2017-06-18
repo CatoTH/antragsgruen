@@ -180,7 +180,7 @@ if (!$amendment->textFixed) {
     }
 
     echo '<section class="editorialChange">
-    <div class="form-group wysiwyg-textarea" id="section_holder_editorial" data-full-html="0" data-max-len="0">
+    <div class="form-group wysiwyg-textarea" id="sectionHolderEditorial" data-full-html="0" data-max-len="0">
         <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
         Html::encode($form->editorial) . '</textarea>

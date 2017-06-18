@@ -32,6 +32,7 @@ return [
     'create_explanation'        => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
         'Please note, you can request &quot;Editorial changes&quot;.',
     'editorial_hint'            => 'Editorial hint',
+    'global_alternative'        => 'Global alternative',
     'merge_init_title'          => 'Refactor "%NAME%"',
     'merge_init_draft_hint'     => 'There is a draft: %DATE%',
     'merge_init_all'            => 'Merge all amendments at once',

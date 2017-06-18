@@ -348,6 +348,17 @@ $handledSiteSettings = [];
                 ?>
             </label></div>
 
+        <div><label>
+                <?php
+                $handledSettings[] = 'globalAlternatives';
+                echo Html::checkbox(
+                    'settings[globalAlternatives]',
+                    $settings->globalAlternatives,
+                    ['id' => 'globalAlternatives']
+                ) . ' ';
+                echo \Yii::t('admin', 'con_amend_globalalt');
+                ?>
+            </label></div>
 
     </div>
 

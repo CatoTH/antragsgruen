@@ -260,10 +260,25 @@ del.space, ins.space, del.formatting, ins.formatting {
   .submitHolder {
     text-align: right;
   }
-  .editorialChange {
-    overflow: auto;
-    .opener {
-      float: right;
+  .editorialGlobalBar {
+    background-color: #f7f7f7;
+    border-bottom: solid 1px #ccc;
+    padding: 0 20px;
+    font-size: 13px;
+
+    label {
+      display: inline-block;
+      width: 50%;
+      padding: 5px 0;
+      margin: 0;
+      font-weight: normal;
+      color: #777;
+      &:last-child {
+        text-align: right;
+      }
+    }
+    input {
+      margin-right: 5px;
     }
   }
   .single-paragraph {

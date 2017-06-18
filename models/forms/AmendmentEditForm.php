@@ -30,6 +30,8 @@ class AmendmentEditForm extends Model
     /** @var string */
     public $editorial = '';
 
+    public $globalAlternative = false;
+
     private $adminMode = false;
 
     /**
@@ -155,9 +157,14 @@ class AmendmentEditForm extends Model
         if (isset($values['amendmentReason'])) {
             $this->reason = HTMLTools::cleanSimpleHtml($values['amendmentReason']);
         }
-        if (isset($values['amendmentEditorial'])) {
+        if (isset($values['amendmentEditorial']) && isset($values['editorialChange'])) {
             $this->editorial = HTMLTools::cleanSimpleHtml($values['amendmentEditorial']);
+        } else {
+            $this->editorial = '';
         }
+
+        $globalAlternativesAllowed = $this->motion->getMyConsultation()->getSettings()->globalAlternatives;
+        $this->globalAlternative = (isset($values['globalAlternative']) && $globalAlternativesAllowed);
     }
 
 

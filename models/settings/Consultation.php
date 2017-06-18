@@ -40,6 +40,7 @@ class Consultation
     public $initiatorsMayReject    = false;
     public $allowMultipleTags      = false;
     public $odtExportHasLineNumers = true;
+    public $globalAlternatives     = true;
 
     /** @var int */
     public $lineLength      = 80;

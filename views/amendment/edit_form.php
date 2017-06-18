@@ -53,9 +53,9 @@ echo $controller->showErrors();
 if ($form->motion->motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motion->motionType->getAmendmentSupportTypeClass();
-    $str = \Yii::t('amend', 'support_collect_explanation');
-    $str = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
-    $str = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
+    $str  = \Yii::t('amend', 'support_collect_explanation');
+    $str  = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
+    $str  = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
 
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('amend', 'support_collect_explanation_title') . '</div>' .
@@ -84,29 +84,40 @@ echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
 
 
 echo Html::beginForm('', 'post', [
-    'id' => 'amendmentEditForm',
-    'class' => 'motionEditForm draftForm',
-    'enctype' => 'multipart/form-data',
-    'data-antragsgruen-widget' => 'frontend/AmendmentEdit',
+    'id'                        => 'amendmentEditForm',
+    'class'                     => 'motionEditForm draftForm',
+    'enctype'                   => 'multipart/form-data',
+    'data-antragsgruen-widget'  => 'frontend/AmendmentEdit',
     'data-multi-paragraph-mode' => ($multipleParagraphs ? 1 : 0)
 ]);
 
-echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>
-<div class="content">';
+echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>';
+
+if ($consultation->getSettings()->editorialAmendments || $consultation->getSettings()->globalAlternatives) {
+    echo '<section class="editorialGlobalBar">';
+    if ($consultation->getSettings()->globalAlternatives) {
+        echo '<label>' . Html::checkbox('globalAlternative', $form->globalAlternative) .
+            \Yii::t('amend', 'global_alternative') . '</label>';
+    }
+    if ($consultation->getSettings()->editorialAmendments) {
+        echo '<label class="editorialChange">' . Html::checkbox('editorialChange', $form->editorial != '') .
+            \Yii::t('amend', 'editorial_hint') . '</label>';
+    }
+    echo '</section>';
+}
+
+echo '<div class="content">';
 
 
-if ($consultation->getSettings()->editorialAmendments) {
-    echo '<section class="editorialChange">
-    <a href="#" class="opener">' . \Yii::t('amend', 'editorial_hint') . '</a>
-    <div class="form-group wysiwyg-textarea hidden" id="section_holder_editorial" data-full-html="0" data-max-len="0">
-        <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
-        <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
-        Html::encode($form->editorial) . '</textarea>
-        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
-    echo $form->editorial;
-    echo '</div>
-</section>
-';
+if ($consultation->getSettings()->editorialAmendments) { ?>
+    <div class="form-group wysiwyg-textarea hidden" id="sectionHolderEditorial"
+         data-full-html="0" data-max-len="0">
+        <label for="amendmentEditorial"><?= \Yii::t('amend', 'editorial_hint') ?></label>
+        <textarea name="amendmentEditorial" id="amendmentEditorial"
+                  class="raw"><?= Html::encode($form->editorial) ?></textarea>
+        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg"><?= $form->editorial ?></div>
+    </div>
+    <?php
 }
 
 foreach ($form->sections as $section) {

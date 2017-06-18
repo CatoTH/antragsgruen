@@ -101,7 +101,7 @@ $I->see(mb_strtoupper('Änderungsantrag zu A2 stellen'), 'h1');
 $I->seeInField(['name' => 'Initiator[primaryName]'], 'My company');
 $I->seeInField(['name' => 'Initiator[contactName]'], 'MeinKontakt');
 $I->seeInField(['name' => 'Initiator[resolutionDate]'], '12.01.2015');
-$I->see('some meta text', '#section_holder_editorial');
+$I->see('some meta text', '#sectionHolderEditorial');
 
 $I->executeJS('CKEDITOR.instances.amendmentReason_wysiwyg.setData("<p>This is my extended reason</p>");');
 
