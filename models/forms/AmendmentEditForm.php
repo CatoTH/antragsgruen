@@ -49,10 +49,11 @@ class AmendmentEditForm extends Model
             $motionSections[$section->sectionId] = $section;
         }
         if ($amendment) {
-            $this->amendmentId = $amendment->id;
-            $this->supporters  = $amendment->amendmentSupporters;
-            $this->reason      = $amendment->changeExplanation;
-            $this->editorial   = $amendment->changeEditorial;
+            $this->amendmentId       = $amendment->id;
+            $this->supporters        = $amendment->amendmentSupporters;
+            $this->reason            = $amendment->changeExplanation;
+            $this->editorial         = $amendment->changeEditorial;
+            $this->globalAlternative = ($amendment->globalAlternative == 1);
             foreach ($amendment->getActiveSections() as $section) {
                 $amendmentSections[$section->sectionId] = $section;
                 if ($section->data == '' && isset($motionSections[$section->sectionId])) {
@@ -164,7 +165,7 @@ class AmendmentEditForm extends Model
         }
 
         $globalAlternativesAllowed = $this->motion->getMyConsultation()->getSettings()->globalAlternatives;
-        $this->globalAlternative = (isset($values['globalAlternative']) && $globalAlternativesAllowed);
+        $this->globalAlternative   = (isset($values['globalAlternative']) && $globalAlternativesAllowed);
     }
 
 
@@ -222,6 +223,7 @@ class AmendmentEditForm extends Model
         $amendment->dateCreation      = date('Y-m-d H:i:s');
         $amendment->changeEditorial   = $this->editorial;
         $amendment->changeExplanation = $this->reason;
+        $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
         $amendment->changeText        = '';
         $amendment->cache             = '';
 
@@ -285,6 +287,7 @@ class AmendmentEditForm extends Model
         }
         $amendment->changeExplanation = $this->reason;
         $amendment->changeEditorial   = $this->editorial;
+        $amendment->globalAlternative = ($this->globalAlternative ? 1 : 0);
 
         if ($amendment->save()) {
             $motionType = $this->motion->motionType;

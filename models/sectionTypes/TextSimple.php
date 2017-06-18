@@ -201,10 +201,41 @@ class TextSimple extends ISectionType
     /**
      * @return string
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormattedGlobalAlternative()
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
+
+        $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str       .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+
+        $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
+        foreach ($htmlSections as $htmlSection) {
+            $str .= '<div class="paragraph"><div class="text';
+            if ($this->section->getSettings()->fixedWidth) {
+                $str .= ' fixedWidthFont';
+            }
+            $str .= '">' . $htmlSection . '</div></div>';
+        }
+
+        $str       .= '</div>';
+        $str       .= '</div>';
+
+        return $str;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmendmentFormatted()
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        if ($section->getAmendment()->globalAlternative) {
+            return $this->getAmendmentFormattedGlobalAlternative();
+        }
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
         $firstLine  = $section->getFirstLineNumber();
 

@@ -283,6 +283,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'amend_resoluted_on'         => 'Decided on',
     'amend_edit_text_title'      => 'Edit text',
     'amend_edit_text'            => 'Edit',
+    'amend_globalalt'            => 'Global alternative',
     'no_access'                  => 'No access to this site',
     'amend_pdf_list'             => 'Amendment PDFs',
     'motion_type_names'          => 'Names',

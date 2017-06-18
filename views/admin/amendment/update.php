@@ -83,7 +83,7 @@ echo '<div class="content form-horizontal">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="amendmentStatus">';
-echo 'Status';
+echo \Yii::t('admin', 'motion_status');
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'amendmentStatus'];
 echo Html::dropDownList('amendment[status]', $amendment->status, Amendment::getStati(), $options);
@@ -128,6 +128,14 @@ echo '<input type="text" class="form-control" name="amendment[dateResolution]" i
                 value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
 echo '</div></div></div>';
+
+
+echo '<div class="form-group">';
+echo '<label class="col-md-3 control-label" for="globalAlternative">';
+echo \Yii::t('admin', 'amend_globalalt');
+echo ':</label><div class="col-md-4">';
+echo Html::checkbox('amendment[globalAlternative]', $amendment->globalAlternative, ['id' => 'globalAlternative']);
+echo '</div></div>';
 
 
 echo '<div class="form-group">';

@@ -51,7 +51,7 @@ class AmendmentController extends AdminBase
     public function actionPdfziplist($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $zip = new \app\components\ZipWriter();
+        $zip       = new \app\components\ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($amendment));
@@ -73,7 +73,7 @@ class AmendmentController extends AdminBase
     public function actionOdtziplist($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $zip = new \app\components\ZipWriter();
+        $zip       = new \app\components\ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($amendment));
@@ -183,12 +183,13 @@ class AmendmentController extends AdminBase
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            $amdat                     = $post['amendment'];
-            $amendment->statusString   = $amdat['statusString'];
-            $amendment->dateCreation   = Tools::dateBootstraptime2sql($amdat['dateCreation']);
-            $amendment->noteInternal   = $amdat['noteInternal'];
-            $amendment->status         = $amdat['status'];
-            $amendment->dateResolution = '';
+            $amdat                        = $post['amendment'];
+            $amendment->statusString      = $amdat['statusString'];
+            $amendment->dateCreation      = Tools::dateBootstraptime2sql($amdat['dateCreation']);
+            $amendment->noteInternal      = $amdat['noteInternal'];
+            $amendment->status            = $amdat['status'];
+            $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
+            $amendment->dateResolution    = '';
             if ($amdat['dateResolution'] != '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
@@ -205,7 +206,6 @@ class AmendmentController extends AdminBase
             $amendment->getMyMotion()->flushCacheWithChildren();
             $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
-
         }
 
         return $this->render('update', ['amendment' => $amendment, 'form' => $form]);
