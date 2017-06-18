@@ -108,8 +108,8 @@ class HTMLTools
                 foreach ($conf as $key => $val) {
                     $config->set($key, $val);
                 }
-                $def = $config->getHTMLDefinition(true);
-                $def->info_global_attr['data-moving-partner-id'] = new \HTMLPurifier_AttrDef_Text();
+                $def                                                    = $config->getHTMLDefinition(true);
+                $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
                 $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
             }
         );
@@ -256,6 +256,23 @@ class HTMLTools
         if (static::isStringCachable($htmlIn)) {
             \Yii::$app->getCache()->set($cacheKey, $html);
         }
+
+        return $html;
+    }
+
+    /**
+     * @param string $html
+     * @return string
+     */
+    public static function stripEmptyBlockParagraphs($html)
+    {
+        do {
+            $htmlPre = $html;
+            $html    = preg_replace('/<(p|div|li|ul|ol|h1|h2|h3|h4|h5)>\s*<\/\1>/siu', '', $html);
+        } while ($htmlPre != $html);
+
+        $html = preg_replace("/\\n\s*\\n+/siu", "\n", $html);
+        $html = trim($html);
 
         return $html;
     }

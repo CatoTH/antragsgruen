@@ -126,7 +126,7 @@ class TextSimple extends ISectionType
         $post    = \Yii::$app->request->post();
 
         if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
-            $section->data    = HTMLTools::cleanSimpleHtml($data['consolidated']);
+            $section->data    = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($data['consolidated']));
             $section->dataRaw = $data['raw'];
         } else {
             $moSection = $section->getOriginalMotionSection();

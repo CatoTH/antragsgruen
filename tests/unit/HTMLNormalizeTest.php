@@ -12,6 +12,43 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
+    public function testStrippingEmptyBlocks()
+    {
+        $htmlIn = '<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Weit hinten, hinter den Wortbergen, fern der L&auml;nder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie in Buchstabhausen an der K&uuml;ste des Semantik, eines gro&szlig;en Sprachozeans. Ein kleines B&auml;chlein namens Duden flie&szlig;t durch ihren Ort und versorgt sie mit den n&ouml;tigen Regelialien.</del></p>
+
+<ul>
+	<li>
+	<p>Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen</p>
+	</li>
+	<li>
+	<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Nicht einmal von der allm&auml;chtigen Interpunktion werden die Blindtexte beherrscht.</del></p>
+
+	<ul>
+		<li class="ice-del ice-cts">
+		<p>ein geradezu unorthographisches Leben.</p>
+		</li>
+		<li>
+		<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Der gro&szlig;e Oxmox riet ihr davon ab, da es dort wimmele von b&ouml;sen Kommata, wilden Fragezeichen und hinterh&auml;ltigen Semikoli, doch das Blindtextchen lie&szlig; sich nicht beirren.</del></p>
+		</li>
+	</ul>
+	</li>
+	<li>
+	<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Es packte seine sieben Versalien, schob sich sein Initial in den G&uuml;rtel und machte sich auf den Weg.</del></p>
+	</li>
+</ul>
+<p>Test remains</p>
+<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Wehm&uuml;tig lief ihm eine rhetorische Frage &uuml;ber die Wange, dann setzte es seinen Weg fort. Unterwegs traf es eine Copy.</del></p>
+';
+        $htmlOut = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($htmlIn));
+        $expect = "<ul>\n<li>\n<p>Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen</p>\n</li>\n" .
+            "<li>\n<ul>\n<li>\n <p>ein geradezu unorthographisches Leben.</p>\n</li>\n</ul>\n</li>\n" .
+            "</ul>\n<p>Test remains</p>";
+
+        $this->assertEquals($expect, $htmlOut);
+    }
+
+    /**
+     */
     public function testWrapPureTextWithP()
     {
         $textIn = "<p>Normal Text</p>\nText with no parent element<p>Normal text again</p>";
