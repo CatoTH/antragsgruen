@@ -208,11 +208,11 @@ class TextSimple extends ISectionType
     public function getAmendmentFormattedGlobalAlternative()
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
-        $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str       .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
-        $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
+        $str = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
+        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
 
         $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
         foreach ($htmlSections as $htmlSection) {
@@ -223,8 +223,8 @@ class TextSimple extends ISectionType
             $str .= '">' . $htmlSection . '</div></div>';
         }
 
-        $str       .= '</div>';
-        $str       .= '</div>';
+        $str .= '</div>';
+        $str .= '</div>';
 
         return $str;
     }
@@ -352,36 +352,45 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $firstLine  = $section->getFirstLineNumber();
-        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
-
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-
-        if (count($diffGroups) > 0) {
+        if ($section->getAmendment()->globalAlternative) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
                 $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                 $pdf->ln(7);
             }
 
-            $html               = static::formatDiffGroup($diffGroups);
-            $replaces           = [];
-            $replaces['<ins ']  = '<span ';
-            $replaces['</ins>'] = '</span>';
-            $replaces['<del ']  = '<span ';
-            $replaces['</del>'] = '</span>';
-            $html               = str_replace(array_keys($replaces), array_values($replaces), $html);
+            $pdf->writeHTMLCell(170, '', 24, '', $section->data, 0, 1, 0, true, '', true);
+        } else {
+            $firstLine  = $section->getFirstLineNumber();
+            $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-            // instead of <span class="strike"></span> TCPDF can only handle <s></s>
-            // for striking through text
-            $pattern = '/<span class="strike">(.*)<\/span>/iUs';
-            $replace = '<s>${1}</s>';
-            $html    = preg_replace($pattern, $replace, $html);
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
-            $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
+            if (count($diffGroups) > 0) {
+                if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+                    $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+                    $pdf->ln(7);
+                }
+
+                $html               = static::formatDiffGroup($diffGroups);
+                $replaces           = [];
+                $replaces['<ins ']  = '<span ';
+                $replaces['</ins>'] = '</span>';
+                $replaces['<del ']  = '<span ';
+                $replaces['</del>'] = '</span>';
+                $html               = str_replace(array_keys($replaces), array_values($replaces), $html);
+
+                // instead of <span class="strike"></span> TCPDF can only handle <s></s>
+                // for striking through text
+                $pattern = '/<span class="strike">(.*)<\/span>/iUs';
+                $replace = '<s>${1}</s>';
+                $html    = preg_replace($pattern, $replace, $html);
+
+                $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
+            }
         }
         $pdf->ln(7);
     }
@@ -625,17 +634,14 @@ class TextSimple extends ISectionType
         $firstLine  = $section->getFirstLineNumber();
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $cacheDeps = [$firstLine, $lineLength, $section->getOriginalMotionSection()->data, $section->data];
+        $cacheDeps = [
+            $firstLine, $lineLength, $section->getOriginalMotionSection()->data, $section->data,
+            $section->getAmendment()->globalAlternative
+        ];
         $tex       = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
 
         if (!$tex) {
-            $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-            $formatter->setTextNew($section->data);
-            $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-
-            if (count($diffGroups) > 0) {
+            if ($section->getAmendment()->globalAlternative) {
                 $title = Exporter::encodePlainString($section->getSettings()->title);
                 if ($title == \Yii::t('motion', 'motion_text')) {
                     $titPattern = \Yii::t('amend', 'amendment_for_prefix');
@@ -643,8 +649,25 @@ class TextSimple extends ISectionType
                 }
 
                 $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-                $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
-                $tex  .= Exporter::encodeHTMLString($html);
+                $tex  .= Exporter::encodeHTMLString($section->data);
+            } else {
+                $formatter = new AmendmentSectionFormatter();
+                $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+                $formatter->setTextNew($section->data);
+                $formatter->setFirstLineNo($firstLine);
+                $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+
+                if (count($diffGroups) > 0) {
+                    $title = Exporter::encodePlainString($section->getSettings()->title);
+                    if ($title == \Yii::t('motion', 'motion_text')) {
+                        $titPattern = \Yii::t('amend', 'amendment_for_prefix');
+                        $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
+                    }
+
+                    $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                    $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
+                    $tex  .= Exporter::encodeHTMLString($html);
+                }
             }
 
             HashedStaticCache::setCache('printAmendmentTeX', $cacheDeps, $tex);
@@ -672,6 +695,11 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
+
+        if ($section->getAmendment()->globalAlternative) {
+            return $section->data;
+        }
+
         $firstLine  = $section->getFirstLineNumber();
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
@@ -741,26 +769,34 @@ class TextSimple extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
-        $firstLine  = $section->getFirstLineNumber();
-        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+        if ($section->getAmendment()->globalAlternative) {
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
 
-        if (count($diffGroups) == 0) {
-            return;
+            $html = HTMLTools::correctHtmlErrors($section->data);
+            $odt->addHtmlTextBlock($html, false);
+        } else {
+            $firstLine  = $section->getFirstLineNumber();
+            $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
+
+            $formatter = new AmendmentSectionFormatter();
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextNew($section->data);
+            $formatter->setFirstLineNo($firstLine);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+            if (count($diffGroups) == 0) {
+                return;
+            }
+
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+
+            $firstLine = $section->getFirstLineNumber();
+            $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+
+            $html = HTMLTools::correctHtmlErrors($html);
+            $odt->addHtmlTextBlock($html, false);
         }
-
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-
-        $firstLine = $section->getFirstLineNumber();
-        $html      = TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
-
-        $html = HTMLTools::correctHtmlErrors($html);
-        $odt->addHtmlTextBlock($html, false);
     }
 
     /**
@@ -835,8 +871,8 @@ class TextSimple extends ISectionType
                 $out           .= '<div class="collidingParagraph"';
                 $out           .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
                 $out           .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
-                $out           .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding') . ': ';
-                $out           .= Html::a($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
+                $out           .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding');
+                $out           .= ': ' . Html::a($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
                 $out           .= '</strong></p>';
                 $paragraphText = '';
 
