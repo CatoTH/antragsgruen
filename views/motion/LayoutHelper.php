@@ -558,12 +558,6 @@ class LayoutHelper
             'trustHtml'    => true,
         ]);
 
-        $DEBUG = (isset($_REQUEST['src']) && YII_ENV == 'dev');
-
-        if ($DEBUG) {
-            echo "<pre>";
-        }
-
         $initiators = [];
         $supporters = [];
         foreach ($motion->motionSupporters as $supp) {

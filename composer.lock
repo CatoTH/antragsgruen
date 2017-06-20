@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "de6a5ae9427cdcca6b4298b1662272c9",
+    "content-hash": "a4de817748e3829cb9b3135d790b21c0",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -160,16 +160,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.8",
+            "version": "0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866"
+                "reference": "d98b204214a9d4692a6f860844d13837dbac3a0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866",
-                "reference": "c054e97aa0bfcef010d3bb0f0fb9e7b0934b5866",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/d98b204214a9d4692a6f860844d13837dbac3a0e",
+                "reference": "d98b204214a9d4692a6f860844d13837dbac3a0e",
                 "shasum": ""
             },
             "require": {
@@ -201,7 +201,7 @@
                 "ods",
                 "odt"
             ],
-            "time": "2017-02-26T12:55:44+00:00"
+            "time": "2017-06-20T17:58:33+00:00"
         },
         {
             "name": "cebe/markdown",
@@ -3325,16 +3325,16 @@
         },
         {
             "name": "sebastian/environment",
-            "version": "3.0.3",
+            "version": "3.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/environment.git",
-                "reference": "02b6b2c7aefe2cdb1185b8dbf8718b0bcedf3ab3"
+                "reference": "74776f8dbc081cab9287c2a601c0c1d842568744"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/02b6b2c7aefe2cdb1185b8dbf8718b0bcedf3ab3",
-                "reference": "02b6b2c7aefe2cdb1185b8dbf8718b0bcedf3ab3",
+                "url": "https://api.github.com/repos/sebastianbergmann/environment/zipball/74776f8dbc081cab9287c2a601c0c1d842568744",
+                "reference": "74776f8dbc081cab9287c2a601c0c1d842568744",
                 "shasum": ""
             },
             "require": {
@@ -3371,7 +3371,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2017-05-18T10:10:00+00:00"
+            "time": "2017-06-20T16:25:05+00:00"
         },
         {
             "name": "sebastian/exporter",
