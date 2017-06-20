@@ -239,10 +239,24 @@ This release was mainly sponsored by the [German Green Party](https://www.gruene
 - In the motion/amendment-list for admins, amendments are shown right next to their motions
 - All ODTs of motions and amendments can be downloaded as a bundled ZIP-file
  
-This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
+This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/)
 
 ## Version 3.0 (2015-11-16)
 
-- Complete rewrite of Antragsgrün
+Complete rewrite of Antragsgrün. Some features included:
+- Introduction of motion types
+- Introduction of the agenda
+- Usage of HTML instead of BBCode for encoding motions / amendments
+- Basic structure for internationalization
+- Technical: Migrating from Yii1 to Yii2, Upgrading to Bootstrap 3, using a test-driven approach based on Codeception
 
-This rewrite was mainly sponsored by the [German Green Party](https://www.gruene.de/).
+This rewrite was mainly sponsored by the [German Green Party](https://www.gruene.de/)
+
+## Version 2.0 (2013)
+
+Version 2 of Antragsgrün introduced the concept of multiple sites for one installation and multiple consultations inside one site 
+
+The changelog vor version 2 can be found at [https://github.com/CatoTH/antragsgruen/blob/v2/History.md](https://github.com/CatoTH/antragsgruen/blob/v2/History.md)
+
+## Version 1.0 (2012)
+
