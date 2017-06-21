@@ -82,7 +82,7 @@ class AmendmentSectionFormatter
         do {
             $pre        = $paragraphs;
             $paragraphs = preg_replace_callback(
-                '/<(?<tag>p|div)>(<del>(?<del>.*)<\/del>)?(<ins>(?<ins>.*)<\/ins>)?<\/\1>/siu',
+                '/<(?<tag>p|div|blockquote)>(<del>(?<del>.*)<\/del>)?(<ins>(?<ins>.*)<\/ins>)?<\/\1>/siu',
                 function ($matches) use (&$blocks, $detectInsDel) {
                     $tag = $matches['tag'];
                     if (isset($matches['ins'])) {
@@ -102,7 +102,7 @@ class AmendmentSectionFormatter
                 $paragraphs
             );
             $paragraphs = preg_replace_callback(
-                '/<(?<tag>p|ul|ol|div) class=["\']?inserted["\']?>(.*)<\/\1>/siu',
+                '/<(?<tag>p|ul|ol|div|blockquote) class=["\']?inserted["\']?>(.*)<\/\1>/siu',
                 function ($matches) use (&$blocks) {
                     $blocks['ins'][] = $matches[0];
                     return '';
@@ -110,7 +110,7 @@ class AmendmentSectionFormatter
                 $paragraphs
             );
             $paragraphs = preg_replace_callback(
-                '/<(?<tag>p|ul|ol|div) class=["\']?deleted["\']?>(.*)<\/\1>/siu',
+                '/<(?<tag>p|ul|ol|div|blockquote) class=["\']?deleted["\']?>(.*)<\/\1>/siu',
                 function ($matches) use (&$blocks) {
                     $blocks['del'][] = $matches[0];
                     return '';
