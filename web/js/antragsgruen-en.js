@@ -19,10 +19,8 @@ ANTRAGSGRUEN_STRINGS = {
         "title_del_title": "Remove the headline \"Colliding Amendment: ...\"",
         "title_del_colliding": "Rmove the whole colliding paragraph",
         "title": "Headline",
-        "insert_accept": "Accept",
-        "insert_reject": "Reject",
-        "delete_accept": "Delete",
-        "delete_reject": "Keep it",
+        "change_accept": "Accept",
+        "change_reject": "Reject",
         "colliding_title": "Colliding amendm."
     },
     "admin": {
