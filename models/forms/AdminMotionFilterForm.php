@@ -57,7 +57,7 @@ class AdminMotionFilterForm extends Model
         $this->allMotions    = [];
         $this->allAmendments = [];
         foreach ($allMotions as $motion) {
-            if ($motion->status != Motion::STATUS_DELETED) {
+            if ($motion->isVisibleForAdmins()) {
                 $this->allMotions[] = $motion;
                 if ($amendments) {
                     foreach ($motion->amendments as $amend) {

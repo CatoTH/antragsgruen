@@ -161,12 +161,6 @@ trait MotionListAllTrait
             return '';
         }
 
-                    $fp = fopen("/tmp/log.log", "a");
-        fwrite($fp, print_r($_COOKIE, true) . "\n\n");
-fwrite($fp, print_r(\yii::$app->session->getAllFlashes(), true) . "\n\n");
-fclose($fp);
-
-
         $this->actionListallMotions();
         $this->actionListallAmendments();
 

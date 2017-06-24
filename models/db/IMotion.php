@@ -174,6 +174,18 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return bool
      */
+    public function isVisibleForAdmins()
+    {
+        return !in_array($this->status, [
+            static::STATUS_DELETED,
+            static::STATUS_MERGING_DRAFT_PUBLIC,
+            static::STATUS_MERGING_DRAFT_PRIVATE,
+        ]);
+    }
+
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return !in_array($this->status, $this->getMyConsultation()->getUnreadableStati());
