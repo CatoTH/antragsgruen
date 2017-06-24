@@ -1,9 +1,11 @@
 <?php
+
 namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\controllers\Base;
+use app\models\db\AmendmentSection;
 use app\models\db\IMotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
@@ -104,9 +106,12 @@ abstract class ISectionType
      */
     protected function getTextAmendmentFormField($fullHtml, $data, $fixedWidth)
     {
-        $type     = $this->section->getSettings();
-        $nameBase = 'sections[' . $type->id . ']';
-        $htmlId   = 'sections_' . $type->id;
+        /** @var AmendmentSection $section */
+        $section      = $this->section;
+        $type         = $section->getSettings();
+        $nameBase     = 'sections[' . $type->id . ']';
+        $htmlId       = 'sections_' . $type->id;
+        $originalHtml = ($section->getOriginalMotionSection() ? $section->getOriginalMotionSection()->data : '');
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
         $str .= ' data-max-len="' . $type->maxLen . '"';
@@ -122,9 +127,16 @@ abstract class ISectionType
             $str .= ' fixedWidthFont';
         }
         $str .= '" data-track-changed="1" data-enter-mode="br" data-no-strike="1" ' .
+            'data-original-html="' . Html::encode($originalHtml) . '" ' .
             'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
         $str .= HTMLTools::prepareHTMLForCkeditor($data);
         $str .= '</div>';
+
+        if (HTMLTools::cleanSimpleHtml($originalHtml) != HTMLTools::cleanSimpleHtml($data)) {
+            $str .= '<div class="modifiedActions"><button class="btn-link resetText" type="button">';
+            $str .= \Yii::t('amend', 'revert_changes');
+            $str .= '</button></div>';
+        }
 
         $str .= '</div>';
 

@@ -130,7 +130,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'initiated_by'                      => 'gestellt von',
     'confirm_bread'                     => 'Bestätigen',
     'affects_x_paragraphs'              => 'Bezieht sich auf insgesamt %num% Absätze',
-    'singlepara_revert'                 => 'Änderungen rückgängig machen',
+    'revert_changes'                    => 'Änderungen rückgängig machen',
     'err_create_permission'             => 'Keine Berechtigung zum Anlegen von Änderungsanträgen.',
     'err_create'                        => 'Ein Fehler beim Anlegen ist aufgetreten',
     'err_save'                          => 'Ein Fehler beim Speichern ist aufgetreten',

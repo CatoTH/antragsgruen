@@ -81,8 +81,8 @@ if (in_array($entry->status, $screenable)) {
 $name = Html::encode(\Yii::t('admin', 'list_template_amendment'));
 $link = Html::encode(UrlHelper::createUrl([
     'amendment/create',
-    'motionSlug'      => $entry->getMyMotion()->getMotionSlug(),
-    'adoptInitiators' => $entry->id
+    'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
+    'cloneFrom'  => $entry->id
 ]));
 echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 

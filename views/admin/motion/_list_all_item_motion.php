@@ -60,7 +60,7 @@ echo '</td>';
 
 echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    Aktion
+    ' . \Yii::t('admin', 'list_action') . '
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
@@ -79,7 +79,7 @@ if (in_array($entry->status, $screenable)) {
     $name = Html::encode(\Yii::t('admin', 'list_unscreen'));
     echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
 }
-$link = Html::encode(UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $entry->id]));
+$link = Html::encode(UrlHelper::createUrl(['motion/create', 'cloneFrom' => $entry->id]));
 $name = Html::encode(\Yii::t('admin', 'list_template_motion'));
 echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 

@@ -33,13 +33,12 @@ $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment
 $html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'amend_show') . '' . '</a></li>';
 
 $cloneUrl = Html::encode(UrlHelper::createUrl([
-        'amendment/create',
-        'motionSlug'      => $amendment->getMyMotion()->getMotionSlug(),
-        'adoptInitiators' => $amendment->id
-    ]
-));
-$html .= '<li><a href="' . $cloneUrl . '" class="clone">';
-$html .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
+    'amendment/create',
+    'motionSlug' => $amendment->getMyMotion()->getMotionSlug(),
+    'cloneFrom'  => $amendment->id
+]));
+$html     .= '<li><a href="' . $cloneUrl . '" class="clone">';
+$html     .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
     \Yii::t('admin', 'list_template_amendment') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
@@ -48,7 +47,7 @@ $html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-tr
     . \Yii::t('admin', 'amend_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 
-$html .= '</ul>';
+$html                .= '</ul>';
 $layout->menusHtml[] = $html;
 
 

@@ -35,7 +35,7 @@ $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
 $html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'motion_show') . '</a></li>';
 
-$cloneUrl = UrlHelper::createUrl(['motion/create', 'adoptInitiators' => $motion->id]);
+$cloneUrl = UrlHelper::createUrl(['motion/create', 'cloneFrom' => $motion->id]);
 $html .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
 $html .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
     \Yii::t('admin', 'motion_new_base_on_this') . '</a></li>';

@@ -83,7 +83,7 @@ return [
     'initiated_by'                      => 'Déposé par',
     'confirm_bread'                     => 'Confirmer',
     'affects_x_paragraphs'              => 'Affecte %num% paragraphes',
-    'singlepara_revert'                 => 'Revenir sur les changements',
+    'revert_changes'                    => 'Revenir sur les changements',
     'err_create_permission'             => 'Pas de permission pour créer des amendements.',
     'err_create'                        => 'Une erreur a eu lieu au moment de le créer',
     'err_save'                          => 'Une erreur a eu lieu au moment de le sauvegarder',

@@ -281,9 +281,11 @@ del.space, ins.space, del.formatting, ins.formatting {
       margin-right: 5px;
     }
   }
+  .modifiedActions {
+    text-align: right;
+  }
   .single-paragraph {
     .modifiedActions {
-      text-align: right;
       display: none;
     }
     &.modified {

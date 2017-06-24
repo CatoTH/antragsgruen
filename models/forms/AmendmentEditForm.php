@@ -131,6 +131,26 @@ class AmendmentEditForm extends Model
     }
 
     /**
+     * @param Amendment $amendment
+     */
+    public function cloneAmendmentText(Amendment $amendment)
+    {
+        $this->reason    = $amendment->changeExplanation;
+        $this->editorial = $amendment->changeEditorial;
+        /** @var AmendmentSection[] $byId */
+        $byId = [];
+        foreach ($amendment->getActiveSections() as $section) {
+            $byId[$section->sectionId] = $section;
+        }
+        foreach ($this->sections as $section) {
+            if (isset($byId[$section->sectionId])) {
+                $section->data    = $byId[$section->sectionId]->data;
+                $section->dataRaw = $byId[$section->sectionId]->dataRaw;
+            }
+        }
+    }
+
+    /**
      * @param array $data
      * @param bool $safeOnly
      */

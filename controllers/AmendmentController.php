@@ -547,11 +547,11 @@ class AmendmentController extends Base
 
     /**
      * @param string $motionSlug
-     * @param int $adoptInitiators
+     * @param int $cloneFrom
      * @return string
      * @throws NotFound
      */
-    public function actionCreate($motionSlug, $adoptInitiators = 0)
+    public function actionCreate($motionSlug, $cloneFrom = 0)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -576,8 +576,8 @@ class AmendmentController extends Base
                 $amendment = $form->createAmendment();
 
                 // Supporting members are not collected in the form, but need to be copied a well
-                if ($supportType->collectSupportersBeforePublication() && $adoptInitiators && $iAmAdmin) {
-                    $adoptAmend = $this->consultation->getAmendment($adoptInitiators);
+                if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
+                    $adoptAmend = $this->consultation->getAmendment($cloneFrom);
                     foreach ($adoptAmend->amendmentSupporters as $supp) {
                         if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
                             $suppNew = new AmendmentSupporter();
@@ -600,9 +600,10 @@ class AmendmentController extends Base
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
-        } elseif ($adoptInitiators > 0) {
-            $adoptAmend = $this->consultation->getAmendment($adoptInitiators);
+        } elseif ($cloneFrom > 0) {
+            $adoptAmend = $this->consultation->getAmendment($cloneFrom);
             $form->cloneSupporters($adoptAmend);
+            $form->cloneAmendmentText($adoptAmend);
         }
 
         if (count($form->supporters) == 0) {

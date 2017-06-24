@@ -3,7 +3,9 @@ $container-md: 1024px;
 $container-desktop: 1024px;
 $grid-float-breakpoint: 992px; // $screen-md-min;
 $zindex-popover: 11000;
-
+$link-color: $colorLinks;
+$link-hover-color: lighten(darken($colorLinks, 5%), 15%);
+$link-hover-decoration: $linkTextDecoration;
 $icon-font-path: "../fonts/";
 
 // Core variables and mixins

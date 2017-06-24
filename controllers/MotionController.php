@@ -426,11 +426,11 @@ class MotionController extends Base
     /**
      * @param int $motionTypeId
      * @param int $agendaItemId
-     * @param int $adoptInitiators
+     * @param int $cloneFrom
      * @return array
      * @throws Internal
      */
-    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $adoptInitiators = 0)
+    private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
         if ($agendaItemId > 0) {
             $where      = ['consultationId' => $this->consultation->id, 'id' => $agendaItemId];
@@ -446,8 +446,8 @@ class MotionController extends Base
         } elseif ($motionTypeId > 0) {
             $motionType = $this->consultation->getMotionType($motionTypeId);
             $agendaItem = null;
-        } elseif ($adoptInitiators > 0) {
-            $motion = $this->consultation->getMotion($adoptInitiators);
+        } elseif ($cloneFrom > 0) {
+            $motion = $this->consultation->getMotion($cloneFrom);
             if (!$motion) {
                 throw new Internal('Could not find referenced motion');
             }
@@ -464,13 +464,13 @@ class MotionController extends Base
     /**
      * @param int $motionTypeId
      * @param int $agendaItemId
-     * @param int $adoptInitiators
+     * @param int $cloneFrom
      * @return string
      */
-    public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $adoptInitiators = 0)
+    public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
         try {
-            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $adoptInitiators);
+            $ret = $this->getMotionTypeForCreate($motionTypeId, $agendaItemId, $cloneFrom);
             list($motionType, $agendaItem) = $ret;
         } catch (ExceptionBase $e) {
             \Yii::$app->session->setFlash('error', $e->getMessage());
@@ -501,8 +501,8 @@ class MotionController extends Base
                 $motion = $form->createMotion();
 
                 // Supporting members are not collected in the form, but need to be copied a well
-                if ($supportType->collectSupportersBeforePublication() && $adoptInitiators && $iAmAdmin) {
-                    $adoptMotion = $this->consultation->getMotion($adoptInitiators);
+                if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
+                    $adoptMotion = $this->consultation->getMotion($cloneFrom);
                     foreach ($adoptMotion->motionSupporters as $supp) {
                         if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
                             $suppNew = new MotionSupporter();
@@ -521,9 +521,10 @@ class MotionController extends Base
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
-        } elseif ($adoptInitiators > 0) {
-            $motion = $this->consultation->getMotion($adoptInitiators);
+        } elseif ($cloneFrom > 0) {
+            $motion = $this->consultation->getMotion($cloneFrom);
             $form->cloneSupporters($motion);
+            $form->cloneMotionText($motion);
         }
 
 

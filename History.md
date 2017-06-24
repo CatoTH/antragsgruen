@@ -12,6 +12,7 @@
 - Administrators can now be set per consultation, without granting them access to all consultations of this site
 - It's possible to change the motion type of a motion now after creating it. However, this works only between motion types that are structurally similar.
 - Amendments can now be marked as "global alternatives", replacing the whole content of a motion. Their contents will not be displayed using an inline diff, as this does not make sense in this case. When merging a global alternative into a motion, the motion will be replaced completely, and no amendments will be moved to the new version of the motion.
+- If a motion or amendment is created using another one as template by an admin, the text is cloned as well, not only the initiators.
 - Several improvements to the inline editing of the agenda
 - A more detailed manual about the functionality of Antragsgrün is provided
 - The timestamp of a motion or amendment now shows the time when it has been officially submitted, not when the first draft has been created. The latter is still shown before the submission.

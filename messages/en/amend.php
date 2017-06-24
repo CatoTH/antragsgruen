@@ -101,7 +101,7 @@ return [
     'initiated_by'                      => 'Submitted by',
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',
-    'singlepara_revert'                 => 'Revert changes',
+    'revert_changes'                    => 'Revert changes',
     'err_create_permission'             => 'No permission to create amendments.',
     'err_create'                        => 'An error occurred while creating it',
     'err_save'                          => 'An error occurred while saving it',

@@ -116,6 +116,24 @@ class MotionEditForm extends Model
     }
 
     /**
+     * @param Motion $motion
+     */
+    public function cloneMotionText(Motion $motion)
+    {
+        /** @var MotionSection[] $byId */
+        $byId = [];
+        foreach ($motion->getActiveSections() as $section) {
+            $byId[$section->sectionId] = $section;
+        }
+        foreach ($this->sections as $section) {
+            if (isset($byId[$section->sectionId])) {
+                $section->data    = $byId[$section->sectionId]->data;
+                $section->dataRaw = $byId[$section->sectionId]->dataRaw;
+            }
+        }
+    }
+
+    /**
      * @param array $data
      * @param bool $safeOnly
      */

@@ -85,7 +85,14 @@ export class AmendmentEdit {
             });
 
             // The editor doesn't trigger change-events when tracking changes is enabled, therefore this work-around
-            $("#" + $textarea.attr("id")).on('keypress', this.onContentChanged.bind(this));
+            $('#' + $textarea.attr('id')).on('keypress', this.onContentChanged.bind(this));
+        });
+
+        this.$form.find('.resetText').click((ev) => {
+            let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
+            window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
+
+            $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
         });
     }
 
