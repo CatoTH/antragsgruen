@@ -204,7 +204,7 @@ npm run watch # Listens for changes in JS/CSS-files and compiles them immediatel
 
 After updating the source code from git, do:
 ```bash
-./composer.phar update
+./composer.phar install
 ./yii migrate
 gulp
 ```
