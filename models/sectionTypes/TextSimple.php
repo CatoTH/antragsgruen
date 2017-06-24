@@ -94,7 +94,7 @@ class TextSimple extends ISectionType
             $str .= $amParas[$paraNo];
             $str .= '</div>';
 
-            $str .= '<div class="modifieActions"><a href="#" class="revert">';
+            $str .= '<div class="modifiedActions"><a href="#" class="revert">';
             $str .= \Yii::t('amend', 'revert_changes');
             $str .= '</a></div>';
 
