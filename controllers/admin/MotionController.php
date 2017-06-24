@@ -270,15 +270,6 @@ class MotionController extends AdminBase
     }
 
     /**
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $motions = $this->consultation->motions;
-        return $this->render('index', ['motions' => $motions]);
-    }
-
-    /**
      * @param Motion $motion
      */
     private function saveMotionSupporters(Motion $motion)

@@ -23,9 +23,9 @@ $userPaths  = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|r
 $userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
 $domPlainPaths = 'site-legal|site-privacy|help|password|createsite|savetextajax|siteconfig|antragsgrueninit';
 $domPlainPaths .= '|check-subdomain|antragsgrueninitdbtest|userlist';
-$adminMotionPaths    = 'index|type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
+$adminMotionPaths    = 'type|typecreate|listall|excellist|odslist|pdfziplist|odtziplist|odslistall|openslides';
 $adminMotionPaths    .= '|get-amendment-rewrite-collissions';
-$adminAmendmentPaths = 'index|excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
+$adminAmendmentPaths = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 $adminPaths .= '|todo';
 
