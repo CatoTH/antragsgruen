@@ -7,7 +7,7 @@ use app\models\db\Site;
  * @var \app\controllers\Base $controller
  */
 
-$this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
+$this->title = 'Antragsgrün - The Online Motion Administration';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/help';
@@ -323,12 +323,82 @@ $params = \Yii::$app->params;
         “Settings” → “This consultation” → “Amendments” → “Allow editorial change requests”.</p>
 
     <h3 id="signatures">Signatures / Motion codes</h3>
+    <p>Every published motion and amendment is assigned a unique code or signature, like “M1” for motion no. 1, “AM1”
+        for amendment no. 1, or “M1-007” for an amendment affecting motion “M1” at line 7. Antragsgrün supports
+        assigning those signatures manually by the administrator and automatically by different schemata.</p>
+    <p>For each motion type, a character can be set, which will be the base for the signatures for the motions of this
+        type - “M” in the example above. This way, different signatures can be created for different kinds of documents,
+        like “M” for motions and “A1” for applications. The signature is assigned once the motion is published; that is,
+        once the motion has been screened, of right after submitting it if the screening process is omitted. The
+        signature can be changed at any time afterwards – however, it needs to be unique at any time for the whole
+        consultation.</p>
+    <p>For amendments, there are three different predefined patterns. At “Settings” → “This consultation” → “Amendments”
+        → “Numbering” you can choose, which one of the following should be used:</p>
+    <ul>
+        <li>Consecutively numbering of all amendments (“AM1”, “AM2”, “AM3”, …)</li>
+        <li>Consecutively numbering of all amendments in respect to the affected motion (“AM1 for M1”, “AM2 for M1”,
+            “AM1 for M2”, …)
+        </li>
+        <li>Assigning the signatures according to the first affected line number of the motion (“M1-23” referring to an
+            amendment that affects line 23ff. of motion M1; if a second amendment starts at the same line, it will be
+            assigned “M1-23-2”.)
+        </li>
+    </ul>
+
 
     <h3 id="tags">Tags</h3>
+    <p>If you don’t want to show the motions on the home page according to the strict hierarchy of an agenda, it is
+        possible to use a more flexible tagging system instead. The main difference of tags is, compared to the agenda,
+        that multiple tags can be assigned to each motion, instead of only one agenda item. For example, one motion can
+        be assigned both the tags “Environment” and “Traffic”. The administrators of a consultation can specify the list
+        of available tags. Users can then choose fitting tags when submitting a motion.</p>
+    <p>The tagging system can be activated at “Settings” → “This consultation”, by choosing “Tags” at the “Homepage
+        style”. The list of available tags can then be set further below on the same page in the “Motion”-Section at
+        “Available tags”.</p>
 
     <h3 id="comments">Comments</h3>
+    <p>It is possible for users to comment on motions and amendments, unless the administrators of a consultation have
+        deactivated this function. It can be activated and deactivated for each motion type individually, so it is, for
+        example, possible to activate comments for regular motions and deactivate them for applications. Also, it is
+        configurable if users need a valid login to comment, or if commenting is available publicly. These settings can
+        be found at “Settings” → “Edit motion types” → “Permissions”. To deactivate commenting, simply choose “Nobody”
+        at “Comments”.</p>
+    <p>For motions, it is possible to <strong>comment single paragraphs</strong> individually. This is especially
+        helpful if there are long motions, covering several aspects that might be discussed controversially. However,
+        this needs to be explicitly activated by the administrator of a consultation: when editing a motion type, there
+        is a list of “Motion sections” at the bottom. There, you can choose “Paragraph-based” for “Comments” at the
+        “Motion text”.</p>
+    <p>Optionally, a <strong>screening process</strong> can be used for comments, so new comments will have to be
+        examined by an administrator before they will be published. This might be useful if no login is required before
+        writing a comment. This can be activated globally for the whole consultation at “Settings” → “This consultation”
+        → “Comments” → “Screening of comments”. Here, you can also choose if entering an e-mail-address is required to
+        write a comment.</p>
 
     <h3 id="liking">Liking / Disliking motions</h3>
+    <p>You can give users the chance to simply signal their approval or disapproval to a motion or amendment by putting
+        themselves on a “Like”- / “Dislike”-list. These lists can be activated for each motion type at “Settings” →
+        “Edit motion type” → “Permissions”. At “Supporting motions” and “Supporting amendments”, you can choose the
+        requirements to use this function (“Nobody” to deactivate it altogether), and you can also decide to only allow
+        Approvals / Likes, but not Disapprovals / Dislikes. (The “Official support”-option is not relevant for this use
+        case, but is used for the “Call for supporter”-phase described above)</p>
 
     <h3 id="translation">Translations / Changing the wording</h3>
+    <p>Antragsgrün supports three ways of change and internationalize the user interface and the wording:</p>
+    <ul>
+        <li>For each consultation, it is possible to change all strings of the user interface using the web interface.
+            This can be done at “Settings” → “Edit the language”. This can be used to change a few words, change the
+            e-mail-templates, etc.
+        </li>
+        <li>Translation Antragsgrün: It is possible to translate Antragsgrün into another language – currently, we
+            provide translations into english, german and french. However, this is not possible using the web interface
+            and needs some changes to the source code. If you are interested in translating Antragsgrün into a language
+            not yet supported, please contact as and we’d be glad to help (especially if you were willing to contribute
+            this translation into the main open-source-project).
+        </li>
+        <li>Somewhere in between the two ways described, there is also a way of creating language variants, like British
+            English vs. American English. This also requires some additions to the source code of the project. The main
+            difference of this method compared to using the web interface as described in point 1 is that translations
+            created like this can be used by other consultations as well.
+        </li>
+    </ul>
 </div>

@@ -164,7 +164,7 @@ return [
     'con_odt_has_lines'       => '<strong>ODT-Export</strong>: Line numbers and fixed line breaks',
     'con_initiators_may_edit' => 'Motion proposers may edit them after publication.',
     'con_show_screening'      => 'Show motions publicly during the screening process',
-    'con_topics'              => 'Topics',
+    'con_topics'              => 'Available tags',
     'con_topic_add'           => 'New topic',
     'con_multiple_topics'     => 'Allow multiple topics per motion',
     'con_title_amendments'    => 'Amendments',

@@ -476,7 +476,8 @@ $params = \Yii::$app->params;
         nicht deaktiviert wird. Generell lässt sich pro Antragstyp festlegen, ob Kommentare möglich sein sollen (z.B.
         kann dies bei Anträgen aktiviert und bei Bewerbungen deaktiviert werden) und ob für Kommentar ein Login
         notwendig sein soll oder nicht. Diese Einstellung findet sich unter „Einstellungen“ → „Antragstypen bearbeiten“
-        → „Berechtigungen“.</p>
+        → „Berechtigungen“. Um das Kommentieren zu deaktivieren,
+        stellt man bei „Kommentieren“ einfach „Niemand“ ein.</p>
     <p>Bei Anträgen ist es außerdem auch möglich, dass der Antragstext absatzweise kommentiert wird, nicht nur als
         Ganzes. Dadurch ist es gerade bei längeren Anträgen leichter zu erkennen, welche Abschnitte besonders stark
         diskutiert werden, bzw. auf welchen Teil des Antrags sich ein Kommentar bezieht. Diese Möglichkeit muss von der
@@ -496,7 +497,7 @@ $params = \Yii::$app->params;
         „Antragstyp bearbeiten“ → „Berechtigungen“ bei „Anträge unterstützen“ bzw. „Änderungsanträge unterstützen“ aus,
         wer diese Funktion alles nutzen können soll, und ob es nur Zustimmung, Ablehnung oder beides geben soll. (Das
         „Offiziell unterstützen“ spielt in diesem Zusammenhang keine Rolle, sondern wird für die „Unterstützung
-        sammeln“-Phase verwendet, die weiter beschrieben wurde)</p>
+        sammeln“-Phase verwendet, die weiter oben beschrieben wurde)</p>
 
     <h3 id="uebersetzen">Übersetzung der Seite / Anpassungen des Wordings</h3>
     <p>Antragsgrün unterstützt drei Stufen der sprachlichen Anpassung:</p>
@@ -507,7 +508,7 @@ $params = \Yii::$app->params;
             „Sie“ zu wechseln oder eine andere Form der geschlechtergerechten Sprache einzubauen.
         </li>
         <li>Komplette Übersetzungen: Antragsgrün ist darauf ausgelegt, in beliebige Sprachen übersetzt werden zu können
-            – aktuell gibt es eine englische und eine deutsche Sprachfassung. Dies ist allerdings nicht mehr über eine
+            – aktuell gibt es eine englische, deutsche und französische Sprachfassung. Dies ist allerdings nicht mehr über eine
             Web-Oberfläche möglich, sondern erfordert Eingriffe in den Programmcode. Falls Sie eine Übersetzung planen,
             kontaktieren Sie uns einfach, wir helfen hier gerne (und würden uns freuen, wenn die Übersetzung dann auch
             Teil des Open-Source-Projekts werden könnte).
