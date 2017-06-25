@@ -62,38 +62,6 @@ class CommentForm extends Model
             $comment->sendPublishNotifications();
         }
 
-        /** @TODO
-         * $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare?
-         * " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
-         * Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
-         *
-         * if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
-         * $kommentar_link = $kommentar->getLink(true);
-         * $mails          = explode(",", $this->veranstaltung->admin_email);
-         * $from_name      = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
-         * $mail_text      = "Es wurde ein neuer Kommentar zum Antrag \""
-         * . $antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
-         * "Link: " . $kommentar_link;
-         *
-         * foreach ($mails as $mail) {
-         * if (trim($mail) != "") {
-         * AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN,
-         * trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text, $from_name);
-         * }
-         * }
-         * }
-         *
-         * if ($kommentar->status == IKommentar::$STATUS_FREI) {
-         * $benachrichtigt = array();
-         * foreach ($antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
-         * if ($abo->kommentare && !in_array($abo->person_id, $benachrichtigt)) {
-         * $abo->person->benachrichtigenKommentar($kommentar);
-         * $benachrichtigt[] = $abo->person_id;
-         * }
-         * }
-         * }
-         * */
-
         return $comment;
     }
 
@@ -134,38 +102,6 @@ class CommentForm extends Model
         if (!$settings->screeningComments) {
             $comment->sendPublishNotifications();
         }
-
-        /** @TODO
-         * $add = ($this->veranstaltung->getEinstellungen()->freischaltung_kommentare?
-         * " Er wird nach einer kurzen Prüfung freigeschaltet und damit sichtbar." : "");
-         * Yii::app()->user->setFlash("success", "Der Kommentar wurde gespeichert." . $add);
-         *
-         * if ($this->veranstaltung->admin_email != "" && $kommentar->status == IKommentar::$STATUS_NICHT_FREI) {
-         * $kommentar_link = $kommentar->getLink(true);
-         * $mails          = explode(",", $this->veranstaltung->admin_email);
-         * $from_name      = veranstaltungsspezifisch_email_from_name($this->veranstaltung);
-         * $mail_text      = "Es wurde ein neuer Kommentar zum Antrag \""
-         * . $antrag->name . "\" verfasst (nur eingeloggt sichtbar):\n" .
-         * "Link: " . $kommentar_link;
-         *
-         * foreach ($mails as $mail) {
-         * if (trim($mail) != "") {
-         * AntraegeUtils::send_mail_log(EmailLog::$EMAIL_TYP_ANTRAG_BENACHRICHTIGUNG_ADMIN,
-         * trim($mail), null, "Neuer Kommentar - bitte freischalten.", $mail_text, $from_name);
-         * }
-         * }
-         * }
-         *
-         * if ($kommentar->status == IKommentar::$STATUS_FREI) {
-         * $benachrichtigt = array();
-         * foreach ($antrag->veranstaltung->veranstaltungsreihe->veranstaltungsreihenAbos as $abo) {
-         * if ($abo->kommentare && !in_array($abo->person_id, $benachrichtigt)) {
-         * $abo->person->benachrichtigenKommentar($kommentar);
-         * $benachrichtigt[] = $abo->person_id;
-         * }
-         * }
-         * }
-         * */
 
         return $comment;
     }

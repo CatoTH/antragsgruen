@@ -12,7 +12,7 @@ class PerMotionCompact extends IAmendmentNumbering
      */
     public static function getName()
     {
-        return 'Ä1 zu A1 (Zählung pro Antrag)';
+        return \Yii::t('structure', 'amend_number_permotion');
     }
 
     /**

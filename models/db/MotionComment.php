@@ -130,7 +130,7 @@ class MotionComment extends IComment
     {
         $feed->addEntry(
             UrlHelper::createMotionCommentUrl($this),
-            'Kommentar zu: ' . $this->getMotionTitle(),
+            \Yii::t('motion', 'comment_for') . ': ' . $this->getMotionTitle(),
             $this->name,
             $this->text,
             Tools::dateSql2timestamp($this->dateCreation)

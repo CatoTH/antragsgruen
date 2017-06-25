@@ -95,7 +95,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortDefault($motion1, $motion2)
     {
@@ -117,7 +117,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortStatus($motion1, $motion2)
     {
@@ -133,7 +133,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortTitle($motion1, $motion2)
     {
@@ -162,7 +162,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortTitlePrefix($motion1, $motion2)
     {
@@ -171,14 +171,16 @@ class AdminMotionFilterForm extends Model
             $rev1 = $motion1->titlePrefix;
         } else {
             /** @var Amendment $motion1 */
-            $rev1 = $motion1->titlePrefix . ' zu ' . $motion1->getMyMotion()->titlePrefix;
+            $rev1 = $motion1->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
+                ' ' . $motion1->getMyMotion()->titlePrefix;
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
             $rev2 = $motion2->titlePrefix;
         } else {
             /** @var Amendment $motion2 */
-            $rev2 = $motion2->titlePrefix . ' zu ' . $motion2->getMyMotion()->titlePrefix;
+            $rev2 = $motion2->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
+                ' ' . $motion2->getMyMotion()->titlePrefix;
         }
 
         return strnatcasecmp($rev1, $rev2);
@@ -187,7 +189,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortInitiator($motion1, $motion2)
     {
@@ -204,7 +206,7 @@ class AdminMotionFilterForm extends Model
     /**
      * @param IMotion $motion1
      * @param IMotion $motion2
-     * @return IMotion[]
+     * @return int
      */
     public function sortTag($motion1, $motion2)
     {
@@ -328,7 +330,7 @@ class AdminMotionFilterForm extends Model
             return true;
         }
         foreach ($motion->motionSupporters as $supp) {
-            if ($supp->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+            if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                 $name = $supp->organization;
             } else {
                 $name = $supp->name;
@@ -421,7 +423,7 @@ class AdminMotionFilterForm extends Model
             return true;
         }
         foreach ($amendment->amendmentSupporters as $supp) {
-            if ($supp->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+            if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                 $name = $supp->organization;
             } else {
                 $name = $supp->name;

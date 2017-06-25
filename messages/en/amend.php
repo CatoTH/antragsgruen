@@ -9,6 +9,7 @@ return [
     'supporter'              => 'Supporter',
     'supporters'             => 'Supporters',
     'supporters_title'       => 'Supporters',
+    'amend_for_motion'       => 'for',
     'supporter_you'          => 'You!',
     'supporter_none'         => 'None',
     'status'                 => 'Status',

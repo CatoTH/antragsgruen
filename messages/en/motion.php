@@ -156,4 +156,5 @@ return [
     'support_finish_err'                 => 'This is not (yet) possible.',
     'support_finish_done'                => 'The motion is now officially submitted',
     'prefix_new_code'                    => 'new',
+    'comment_for'                        => 'Comment for',
 ];

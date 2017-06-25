@@ -7,6 +7,10 @@ return [
     'section_tabular' => 'Tabular data',
     'section_pdf'     => 'PDF file',
 
+    'amend_number_permotion' => 'Ä1 for A1 (Numbering per motion)',
+    'amend_number_global'    => 'Ä1 for A1 (Global numbering)',
+    'amend_number_perline'   => 'A01-070 (Numbering per affected line)',
+
     'policy_deadline_over'    => 'The deadline is over',
     'policy_ww_title'         => 'Wurzelwerk-Users',
     'policy_ww_desc'          => 'Wurzelwerk-Users',

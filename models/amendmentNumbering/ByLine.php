@@ -12,7 +12,7 @@ class ByLine extends IAmendmentNumbering
      */
     public static function getName()
     {
-        return 'A01-070 (Zählung nach betroffener Zeile)';
+        return \Yii::t('structure', 'amend_number_perline');
     }
 
     /**

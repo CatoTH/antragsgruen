@@ -12,7 +12,7 @@ class GlobalCompact extends IAmendmentNumbering
      */
     public static function getName()
     {
-        return 'Ä1 zu A1 (Globale Zählung)';
+        return \Yii::t('structure', 'amend_number_global');
     }
 
     /**

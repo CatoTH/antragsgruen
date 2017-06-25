@@ -7,6 +7,10 @@ return [
     'section_tabular' => 'Tabellarische Angaben',
     'section_pdf'     => 'PDF-Datei',
 
+    'amend_number_permotion' => 'Ä1 zu A1 (Zählung pro Antrag)',
+    'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',
+    'amend_number_perline'   => 'A01-070 (Zählung nach betroffener Zeile)',
+
     'policy_deadline_over'    => 'Der Antragsschluss ist vorbei',
     'policy_ww_title'         => 'Wurzelwerk-Nutzer*innen',
     'policy_ww_desc'          => 'Wurzelwerk-Nutzer*innen',
