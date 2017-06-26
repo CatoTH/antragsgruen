@@ -46,7 +46,10 @@ class AmendmentDiffMergerTest extends TestBase
         $groupedParaData = $merger->getGroupedParagraphData(0);
         $this->assertEquals([
             ['amendment' => 0, 'text' => '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.'],
-            ['amendment' => 1, 'text' => '###DEL_START### Griasd eich midnand etza nix Gwiass woass ma ned owe.###DEL_END###</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###'],
+            ['amendment' => 1, 'text' => '###DEL_START### Griasd eich midnand etza nix Gwiass woass ma ned owe.###DEL_END###'],
+            ['amendment' => 0, 'text' => '</p>'],
+            ['amendment' => 1, 'text' => '###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###'],
+
         ], $groupedParaData);
     }
 
@@ -204,6 +207,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
     }
 
     /**
+     * Hint, Does not collide anymore, since 3.7
      */
     public function testMergeWithComplication2()
     {
@@ -240,6 +244,10 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
                 'text'      => 'test11 test13 test15 ',
             ],
             [
+                'amendment' => 1,
+                'text'      => '###INS_START###test16.1 ###INS_END###',
+            ],
+            [
                 'amendment' => 2,
                 'text'      => '###INS_START###test16.2 ###INS_END###',
             ],
@@ -266,11 +274,11 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
 
         $colliding = $merger->getCollidingParagraphGroups(0);
-        $this->assertTrue(isset($colliding[1]));
-        $this->assertEquals('###INS_START###test16.1 ###INS_END###', $colliding[1][1]['text']);
+        $this->assertEquals(0, count($colliding));
     }
 
     /**
+     * Is not colliding anymore
      */
     public function testMergeWithComplicationStripUnchangedLi()
     {
@@ -292,6 +300,10 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
                 'text'      => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li>',
             ],
             [
+                'amendment' => 2,
+                'text'      => '###INS_START###<li>Addition 2</li>###INS_END###',
+            ],
+            [
                 'amendment' => 1,
                 'text'      => '###INS_START###<li>Addition 1</li>###INS_END###',
             ],
@@ -302,21 +314,7 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
 
         $colliding = $merger->getCollidingParagraphGroups(0);
-        $this->assertTrue(isset($colliding[2]));
-        $this->assertEquals([
-            [
-                'amendment' => 0,
-                'text'      => '<ul>',
-            ],
-            [
-                'amendment' => 2,
-                'text'      => '###INS_START###<li>Addition 2</li>###INS_END###',
-            ],
-            [
-                'amendment' => 0,
-                'text'      => '</ul>',
-            ]
-        ], $colliding[2]);
+        $this->assertEquals(0, count($colliding));
     }
 
     /**

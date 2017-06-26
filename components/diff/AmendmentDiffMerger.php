@@ -200,6 +200,90 @@ class AmendmentDiffMerger
     }
 
     /**
+     * @param int $paraNo
+     * @param int $amendingNo
+     * @param int $wordNo
+     * @param string $insert
+     */
+    private function moveInsertIntoOwnWord($paraNo, $amendingNo, $wordNo, $insert)
+    {
+        $insertArr              = function ($arr, $pos, $insertedEl) {
+            return array_merge(array_slice($arr, 0, $pos + 1), [$insertedEl], array_slice($arr, $pos + 1));
+        };
+        $pendingDeleteAmendment = function ($paraNo, $locAmendNo, $wordNo) {
+            if ($wordNo == 0) {
+                return null;
+            }
+            $str = explode("###DEL_", $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['diff']);
+            if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
+                return $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['amendmentId'];
+            } else {
+                return null;
+            }
+        };
+
+        $this->paraData[$paraNo]['origTokenized'] = $insertArr($this->paraData[$paraNo]['origTokenized'], $wordNo, '');
+        $this->paraData[$paraNo]['words']         = $insertArr($this->paraData[$paraNo]['words'], $wordNo, [
+            'orig'         => '',
+            'modification' => null,
+            'modifiedBy'   => null,
+        ]);
+
+        foreach ($this->diffParagraphs[$paraNo] as $locAmendNo => $changeSet) {
+            if ($locAmendNo == $amendingNo) {
+                $amendmentId                        = $changeSet['diff'][$wordNo]['amendmentId'];
+                $changeSet['diff'][$wordNo]['diff'] = $changeSet['diff'][$wordNo]['word'];
+                unset($changeSet['diff'][$wordNo]['amendmentId']);
+                $changeSet['diff'] = $insertArr($changeSet['diff'], $wordNo, [
+                    'word'        => '',
+                    'diff'        => $insert,
+                    'amendmentId' => $amendmentId,
+                ]);
+            } else {
+                $insertArrEl = ['word' => '', 'diff' => ''];
+                $preAm       = $pendingDeleteAmendment($paraNo, $locAmendNo, $wordNo);
+                if ($preAm !== null) {
+                    $insertArrEl['amendmentId'] = $preAm;
+                }
+                $changeSet['diff'] = $insertArr($changeSet['diff'], $wordNo, $insertArrEl);
+            }
+            $this->diffParagraphs[$paraNo][$locAmendNo] = $changeSet;
+        }
+    }
+
+    /**
+     * Inserting new words / paragraphs is stored like "</p>###INS_START###...###INS_END###,
+     * being assigned to the "</p>" token. This makes multiple insertions after </p> colliding with each other.
+     * This workaround splits this up by inserting empty tokens in the original word array
+     * and moving the insertion to this newly created index.
+     * To maintain consistency, we need to insert the new token both in the original word array as well as in _all_
+     * amendments affecting this paragraph.
+     *
+     * This isn't exactly very elegant, as the data structure mutates as we're iterating over it,
+     * therefore we need to cancel out the side-effects
+     */
+    private function moveInsertsIntoTheirOwnWords()
+    {
+        foreach ($this->diffParagraphs as $paraNo => $para) {
+            $para = $this->diffParagraphs[$paraNo];
+            foreach ($para as $changeSetNo => $changeSet) {
+                $changeSet = $this->diffParagraphs[$paraNo][$changeSetNo];
+                $words     = count($changeSet['diff']);
+                for ($wordNo = 0; $wordNo < $words; $wordNo++) {
+                    $word  = $changeSet['diff'][$wordNo];
+                    $split = explode('###INS_START###', $word['diff']);
+                    if (count($split) === 2 && $split[0] == $word['word']) {
+                        $this->moveInsertIntoOwnWord($paraNo, $changeSetNo, $wordNo, '###INS_START###' . $split[1]);
+                        $changeSet = $this->diffParagraphs[$paraNo][$changeSetNo];
+                        $wordNo++;
+                        $words++;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collission.
      *
      * @param int $paraNo
@@ -285,6 +369,7 @@ class AmendmentDiffMerger
     public function mergeParagraphs()
     {
         $this->sortDiffParagraphs();
+        $this->moveInsertsIntoTheirOwnWords();
 
         foreach ($this->diffParagraphs as $paraNo => $para) {
             foreach ($para as $changeSet) {
