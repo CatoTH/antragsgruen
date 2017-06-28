@@ -22,17 +22,17 @@ class UrlHelper
     private static $currentConsultation = null;
 
     /**
-     * @param Site $site
+     * @param Site|null $site
      */
-    public static function setCurrentSite(Site $site)
+    public static function setCurrentSite($site)
     {
         static::$currentSite = $site;
     }
 
     /**
-     * @param Consultation $consultation
+     * @param Consultation|null $consultation
      */
-    public static function setCurrentConsultation(Consultation $consultation)
+    public static function setCurrentConsultation($consultation)
     {
         static::$currentConsultation = $consultation;
     }
@@ -134,7 +134,7 @@ class UrlHelper
         if (static::$currentConsultation) {
             if (static::$currentConsultation->getSettings()->forceMotion) {
                 $forceMotion = static::$currentConsultation->getSettings()->forceMotion;
-                $motion = static::$currentConsultation->getMotion($forceMotion);
+                $motion      = static::$currentConsultation->getMotion($forceMotion);
                 if ($motion) {
                     return static::createMotionUrl($motion);
                 } else {
@@ -159,23 +159,26 @@ class UrlHelper
         }
 
         $params = static::getParams();
-        if (mb_strpos($url, $params->resourceBase) === 0) {
-            $url = mb_substr($url, mb_strlen($params->resourceBase));
-        } elseif ($url[0] == '/') {
-            $url = mb_substr($url, 1);
-        }
 
         if (static::$currentSite) {
             if ($params->domainSubdomain) {
-                return str_replace(
-                    '<subdomain:[\w_-]+>',
-                    static::$currentSite->subdomain,
-                    $params->domainSubdomain
-                ) . $url;
+                if (mb_strpos($url, $params->resourceBase) === 0) {
+                    $url = mb_substr($url, mb_strlen($params->resourceBase));
+                } elseif ($url[0] == '/') {
+                    $url = mb_substr($url, 1);
+                }
+                $dom = str_replace('<subdomain:[\w_-]+>', static::$currentSite->subdomain, $params->domainSubdomain);
+                return $dom . $url;
             } else {
+                if ($url[0] == '/') {
+                    $url = mb_substr($url, 1);
+                }
                 return $params->domainPlain . $url;
             }
         } else {
+            if ($url[0] == '/') {
+                $url = mb_substr($url, 1);
+            }
             return $params->domainPlain . $url;
         }
     }
