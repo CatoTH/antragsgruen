@@ -298,7 +298,8 @@ $params = \Yii::$app->params;
         Basis des neuen Antragstextes der Änderungsantrag noch einmal so neu formuliert werden, wie es dem Sinn des
         ursprünglichen Änderungsantrags entspricht. Da dies nicht ganz simpel ist, empfiehlt es sich, diese Situation
         möglichst zu vermeiden – z.B. indem von vorn herein darauf geachtet wird, nur wenige sonst kollidierende
-        Änderungsanträge aufrecht zu erhalten, oder aber unstrittige Änderungsanträge so früh wie möglich zu übernehmen,
+        Änderungsanträge aufrecht zu erhalten, Änderungsanträge die große Teile des Antrags ändern als Globalalternative
+        markiert werden,, oder aber unstrittige Änderungsanträge so früh wie möglich zu übernehmen,
         bevor weitere Änderungsanträge eingereicht werden, die möglicherweise kollidieren.</p>
 
     <p>Die Möglichkeit, Änderungsanträge zu übernehmen, steht standardmäßig erst einmal nur der Veranstaltungsleitung /

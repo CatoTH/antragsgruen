@@ -67,6 +67,11 @@ $params = \Yii::$app->params;
                onClick="$('#merging').scrollintoview({top_offset: -30}); return false;">Merging amendments into a
                 motion</a>
             <ul>
+                <li><a href="#merging_single"
+                       onClick="$('#merging_single').scrollintoview({top_offset: -30}); return false;">Merging a single
+                        amendment</a></li>
+                <li><a href="#merging_all" onClick="$('#merging_all').scrollintoview({top_offset: -30}); return false;">Merging
+                        all amendments at once</a></li>
             </ul>
         </li>
         <li>
@@ -242,7 +247,53 @@ $params = \Yii::$app->params;
 
     <h2 id="merging">Merging amendments into a motion</h2>
 
-    <p>@TODO</p>
+    <p>Antragsgrün offers several ways of adopting changes requested by amendments into the corresponding motion. You
+        can merge the changes of a single amendment while upholding the other amendments. Of you can merge all
+        amendments at once, creating the final decided motion in one step.</p>
+    <p>For both ways, it’s important to bear in mind that if two different amendments try to alter the same text
+        passage, a conflict occurs that cannot be resolved by automatically. You will have to resolve it manually, which
+        sometimes isn’t trivial.</p>
+    <p>The basic principle for both methods is: by adopting the changes of one or many amendments, a new version of the
+        motion is created, making the original one obsolete. However, the original version and the adopted amendments
+        still do exist for the sake of transparency, unless explicitly deleted.</p>
+
+    <h3 id="merging_single">Merging a single amendment</h3>
+
+    <p>To merge the changes of only one amendment, you can use the function “Adopt changes into motion” in the sidebar
+        of the regular amendment page. It is done in three steps:</p>
+    <p>In the first step, you can specify the signature of the new motion version and whether other amendments are made
+        obsolete by this adoption. The latter is highly important, as amendments made obsolete will not lead to
+        conflicts later on.</p>
+    <p>In the second step, you can choose if the changes of the amendment are adopted as proposed, or in a slightly
+        modified version (a modified adoption). In the latter case, you are given the chance to edit the modified
+        paragraphs by hand.</p>
+    <p>The last step, which can be easiest or most difficult one, deals with conflicts, that is, if the changes that
+        have been specified before, are affecting text passages that are modified by other amendments that are being
+        upheld. For example, if an amendment inserting a word into a sentence is adopted, but another amendment
+        proposing to remove the whole sentence is being upheld, this leads to a conflict. You will be presented the
+        affected paragraph of the new motion and will have to re-create the amendment based on this new version,
+        maintaining the substantial intention of the original amendment. As this is a little bit tricky, it’s advisable
+        to avoid this situation as much as possible, for example by not upholding amendments, marking them as global
+        alternatives beforehand, or by adopting consensual amendments as early as possible, before new, potentially
+        conflicting amendments can be created.</p>
+    <p>By default, this function is availably only to administrators of the consultation. However, it is possible to
+        make it available to the initiators of the motions in two different ways:</p>
+    <ul>
+        <li>In the easier case, initiators of a motion can adopt amendments to their motion, as long as those amendments
+            are not in conflict with others. They can only adopt the amendments as they are, without modifying or
+            rejecting them.
+        </li>
+        <li>In the more difficult case, the complete merging functionality as provided to administrators of the
+            consultation is available to users as well. This gives users much more flexibility, but also responsibility,
+            as it allows them to edit amendments of other users in case of conflicts or reject them. It also requires
+            all users to understand the idea of handling merge conflicts. Therefore, this setting is only advisable in
+            small, cooperative settings.
+        </li>
+    </ul>
+    <p>If you want to activate this functionality, you can do so at “Settings” → “Edit motion types” → “Permissions” →
+        “May proposers of motions merge amendments themselves?”.</p>
+
+    <h3 id="merging_all">Merging all amendments at once</h3>
 
     <h2 id="export_functions">Exports</h2>
 
