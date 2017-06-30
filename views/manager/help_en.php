@@ -295,6 +295,43 @@ $params = \Yii::$app->params;
 
     <h3 id="merging_all">Merging all amendments at once</h3>
 
+    <p>If you want to merge all amendments at once and create the final decided version of the motion, you can go to the
+        default view of the motion and choose the “Merge amendments”-link in the sidebar, available for administrators
+        of the consultation.</p>
+    <p>This way of merging amendments will present you the original motion, annotated with all proposed changes inline,
+        giving you the chance to accept or reject each single change individually, as well as modifying the text
+        manually. Proposed insertions of new characters, words or sentences are marked green, deletions red. If you
+        accept a proposed deletion, the to be deleted text of the original motion will vanish for good, while if you
+        accept an insertion, the new text given by the amendment will become permanent part of the motion. Above all,
+        you can freely edit the text to include editorial changes or modified adoptions.</p>
+    <p>However, in this view, conflicts between amendments may occur as well, if they propose to change the same passage
+        of text in an incompatible way. Antragsgrün tries to display as many changes as possible inline, but if that’s
+        not possible anymore, a collision paragraph will be inserted below the current paragraph, holding all changes
+        that could not be merged into the main paragraph automatically. That way, no proposed change is getting lost,
+        however the change has to be incorporated and the collision paragraph hast to be deleted manually.</p>
+    <p>To reduce the number of such conflicts, you can choose before actually starting the merge which amendments to
+        include into this view. Amendments that are rejected as a whole, or are changing major parts of the motion
+        (global alternatives) can be excluded, greatly reducing the number of conflicts.</p>
+    <p>After creating the new motion text, it is important to set the new statuses of the amendments (accepted,
+        rejected, accepted modified etc.), as this cannot be determined automatically. While this does not have a
+        functional impact on Antragsgrün, this is helpful for users to get a quick overview over what amendments have
+        been adopted and which not.</p>
+
+    <h4>(Public) Drafts</h4>
+    <p>Merging all amendments at once can take a while, especially if there are a lot of different amendments. Therefore
+        it is important that a problem with a computer does not lead to total data loss. That’s why preliminary versions
+        of the merged motion are saved on a regular basis, about once a minute. If the “Merge amendments”-page is called
+        again, before a previous editing process has been completed, you will have the choice to resume the previous
+        version or start anew.<br>Attention: preliminary drafts can only be saved as long there is an internet
+        connection.</p>
+    <p>If merging the amendments is done publicly in the course of a live event, it is possible to grant all users
+        read-only-access to the current preliminary draft of the merging process. This way, everyone gets a clear idea
+        about the current state of discussion / editing. This is not enabled by default, but can be activated easily by
+        the editor, by activating the “Public”-checkbox in the “Draft”-box on the bottom of the page, while being on the
+        “Merge all amendments”-page. Once this checkbox is set, a link to a public read-only-version appears in this
+        panel and at the header of the regular motion page. This public draft page can be optionally set to
+        automatically update every couple of seconds to the most recent version.</p>
+
     <h2 id="export_functions">Exports</h2>
 
     <h3 id="pdf">PDF</h3>

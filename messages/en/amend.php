@@ -140,14 +140,14 @@ return [
         <li><strong>Finding supporters:</strong> You will find a link that you can send to interested persons. Everyone can access this page given this link. Everyone having the necessary privileges can support this amendment here.</li>
         <li><strong>Submit the motion:</strong> Once %MIN% people support the amendment, you will receive a notification by e-mail. Now you can officially submit it. Once submitted, the amendment can still receive support from people.</li>
         </ol>',
-    'merge_explanation'                 => '',
-    // 'The text, including all amendments within the text, is shown here. For each amendment, you can specify whether you <strong>accept or reject</strong> it - simply click the right mouse button on amendment and then chose either "Accept" or “Reject".<br><br>In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>Then you can select the new amendment status and click “Continue”. A <strong>new amendment "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “old”.'
-    'merge_explanation_colliding'       => '',
-    // '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> As there are multiple amendments to this motion which refer to the same text passage - <strong>colliding amendments</strong> - it is necessary to insert the amendments manually. Then, please delete the colliding amendment by first hitting the Delete/Del key and then accepting the amendment using the right mouse button.'
+    'merge_explanation'                 => 'The text, including all amendments within the text, is shown here. ' .
+        'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
+        'In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>' .
+        'Then you can select the new amendment status and click “Continue”. A <strong>new motion "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
+    'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> As there are multiple amendments to this motion which refer to the same text passage - <strong>colliding amendments</strong> - it is necessary to insert the changes of those conflicting amendments manually. After doing so, please delete the paragraphs of the conflicts.',
     'merge_amend_by'                    => '%TITLE%, by %INITIATOR%',
     'merge_amend_editorials'            => 'Editorial amendment',
     'support'                           => 'Support',
-    // 'Unterstützen'
     'support_question'                  => 'Do you really want to support this amendment?',
     'support_orga'                      => 'Organization',
     'support_name'                      => 'Name',

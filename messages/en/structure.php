@@ -119,6 +119,7 @@ return [
     'STATUS_DISMISSED'                    => 'Dismissed',
     'STATUS_COLLECTING_SUPPORTERS'        => 'Call for supporters',
     'STATUS_DRAFT_ADMIN'                  => 'Draft (Admin)',
+    'STATUS_PROCESSED'                    => 'Processed',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Submitted (screened, not yet published)',
 
     'section_comment_none'      => 'No comments',

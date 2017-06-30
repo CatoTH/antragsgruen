@@ -383,6 +383,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_perm_supp_mot'   => 'Supporting motions',
     'motion_type_perm_supp_amend' => 'Supporting amendments',
     'motion_type_email'           => 'E-mail',
+    'motion_type_contact_name'    => 'Alternative contact person',
     'motion_type_phone'           => 'Phone number',
     'motion_type_skip'            => 'Don\'t ask',
     'motion_type_optional'        => 'Optional',

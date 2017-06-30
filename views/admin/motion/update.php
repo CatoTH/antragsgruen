@@ -135,7 +135,7 @@ if (count($consultation->agendaItems) > 0) {
 <div class="form-group">
     <label class="col-md-3 control-label" for="motionTitle"><?=  \Yii::t('admin', 'motion_title') ?>:</label>
     <div class="col-md-9"><?php
-    $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_titile')];
+    $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_title')];
     echo Html::textInput('motion[title]', $motion->title, $options);
     ?></div>
 </div>
