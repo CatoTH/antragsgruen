@@ -112,6 +112,8 @@ return [
     'withdraw_confirm'          => 'Do you really want to withdraw this motion?',
     'withdraw_no'               => 'No',
     'withdraw_yes'              => 'Yes, withdraw',
+    'withdrawn_adminnoti_title' => 'A motion has meen withdrawn',
+    'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'submitted_adminnoti_title' => 'Motion withdrawn',
     'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
@@ -132,6 +134,7 @@ return [
     'support_name'           => 'Name',
 
     'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nSend the following link to gain support for your motion:",
+    'confirmed_support_phase_ww'         => '', // Not relevant
     'submitted_screening_email'          => "Hi,\n\nYou just submitted a motion. It will now be screened and then published. You will be notified separately, once this happens.\n\nYou can see the motion here: %LINK%",
     'submitted_screening_email_subject'  => 'Motion submitted',
     'submitted_supp_phase_email'         => "Hi,\n\nyou have created the motion.\nTo officially submit it, it needs at least %MIN% supporters.\n\nSend the following link to gain support for your motion: \n\n%LINK%\n",

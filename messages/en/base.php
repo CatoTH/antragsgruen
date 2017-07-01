@@ -13,6 +13,7 @@ return [
     'privacy_statement'     => 'Privacy',
     'imprint'               => 'Imprint',
     'err_email_not_sent'    => 'An e-mail could not be sent',
+    'err_no_email_given'    => 'No e-mail-address entered',
     'err_unknown'           => 'An uncommon error occurred.',
     'err_js_or_login'       => 'To use this, you need to be logged in or JavaScript needs to be enabled.',
     'err_no_data_given'     => 'No data entered (field: %FIELD%)',
