@@ -10,8 +10,8 @@ use app\models\db\Site;
 $this->title = 'Antragsgrün - The Online Motion Administration';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/help';
-$controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/help'];
+$controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
+$controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
