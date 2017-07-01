@@ -18,7 +18,7 @@ $I->see('annehmen oder ablehnen');
 $I->wait(1);
 
 // Reject "Neuer Punkt"
-$I->executeJS('$("[data-cid=2] .appendHint").trigger("mouseover"); $("button.reject").click();');
+$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.reject").click();');
 
 $I->seeElement('#draftSavingPanel');
 $I->dontSeeElement('#draftSavingPanel .publicLink');

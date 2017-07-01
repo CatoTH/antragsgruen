@@ -25,16 +25,16 @@ $cid0 = $I->executeJS('return $("[data-cid=0]").length;');
 $cid1 = $I->executeJS('return $("[data-cid=1]").length;');
 $cid2 = $I->executeJS('return $("[data-cid=2]").length;');
 $cid3 = $I->executeJS('return $("[data-cid=3]").length;');
-if ($cid0 != 2 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
+if ($cid0 != 1 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
     $I->fail('wrong number of cid\'s: ' . $cid0 . ' / ' . $cid1 . ' / ' . $cid2 . ' / ' . $cid3);
 }
 
 // Neuer Punkt einfügen
-$I->executeJS('$("[data-cid=2] .appendHint").trigger("mouseover"); $("button.reject").click();');
+$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.reject").click();');
 // Oamoi a Map einfügen
-$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("[data-cid=6] .appendHint").trigger("mouseover"); $("button.accept").click();');
 // Woibbadinga damischa raus, Schooe rein
-$I->executeJS('$("[data-cid=16].appendHint").first().trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("[data-cid=17].appendHint").first().trigger("mouseover"); $("button.accept").click();');
 $I->wait(1);
 
 $I->dontSee('Neuer Punkt', '.ice-ins');
@@ -51,7 +51,6 @@ $I->executeJS('$("#section_holder_2 .rejectAllChanges").click();');
 $I->dontSee('Something');
 
 // @TODO Set amendment status
-// @TODO cid=3 should not be colliding
 
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
