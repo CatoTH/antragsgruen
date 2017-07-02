@@ -111,8 +111,9 @@ class TextSimple extends ISectionType
      */
     public function setMotionData($data)
     {
+        $type = $this->section->getSettings();
         $this->section->dataRaw = $data;
-        $this->section->data    = HTMLTools::cleanSimpleHtml($data);
+        $this->section->data    = HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings());
     }
 
     /**

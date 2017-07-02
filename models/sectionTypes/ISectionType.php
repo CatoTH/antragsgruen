@@ -74,15 +74,18 @@ abstract class ISectionType
             $str .= '</div>';
         }
 
-        $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ' .
-            'title="' . Html::encode($type->title) . '">';
+        $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ';
+        $str .= 'title="' . Html::encode($type->title) . '">';
         $str .= Html::encode($this->section->data) . '</textarea>';
         $str .= '<div class="texteditor boxed';
         if ($fixedWidth) {
             $str .= ' fixedWidthFont';
         }
-        $str .= '" id="' . $htmlId . '_wysiwyg" ' .
-            'title="' . Html::encode($type->title) . '">';
+        $str .= '" id="' . $htmlId . '_wysiwyg" ';
+        if (in_array('strike', $type->getForbiddenMotionFormattings())) {
+            $str .= 'data-no-strike="1" ';
+        }
+        $str .= 'title="' . Html::encode($type->title) . '">';
         $str .= $this->section->data;
         $str .= '</div>';
 

@@ -130,4 +130,16 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         }
         return [static::COMMENTS_NONE];
     }
+
+    /**
+     * @return string[]
+     */
+    public function getForbiddenMotionFormattings()
+    {
+        $forbidden = [];
+        if ($this->hasAmendments) {
+            $forbidden[] = 'strike';
+        }
+        return $forbidden;
+    }
 }

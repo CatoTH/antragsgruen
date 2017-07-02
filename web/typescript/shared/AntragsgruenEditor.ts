@@ -104,7 +104,7 @@ export class AntragsgruenEditor {
 
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
-                'h2 h3 h4;' +
+                'h1 h2 h3 h4;' +
                 'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved){list-style-type};' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,paragraphHolder,hasCollissions,moved);' +

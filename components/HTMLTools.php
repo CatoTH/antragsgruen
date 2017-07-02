@@ -182,11 +182,12 @@ class HTMLTools
 
     /**
      * @param string $htmlIn
+     * @param string[] $forbiddenFormattings
      * @return string
      */
-    public static function cleanSimpleHtml($htmlIn)
+    public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings)
     {
-        $cacheKey = 'cleanSimpleHtml_' . md5($htmlIn);
+        $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
         if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
             return \Yii::$app->getCache()->get($cacheKey);
         }
@@ -200,18 +201,29 @@ class HTMLTools
         // Remove <a>...</a>
         $html = preg_replace('/<a>(.*)<\/a>/siuU', '$1', $html);
 
+        $allowedTags = [
+            'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',
+            'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
+        ];
+
+        $allowedClasses = ['underline', 'subscript', 'superscript'];
+        if (!in_array('strike', $forbiddenFormattings)) {
+            $allowedClasses[] = 'strike';
+        }
+
+        $allowedAttributes = ['style', 'href', 'class'];
+
         static::loadNetIdna2();
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
         $html = HtmlPurifier::process(
             $html,
-            function ($config) {
-                $allowedTags = 'p,strong,em,ul,ol,li,span,a,br,blockquote,sub,sup,pre,h1,h2,h3,h4';
+            function ($config) use ($allowedTags, $allowedClasses, $allowedAttributes) {
                 /** @var \HTMLPurifier_Config $config */
                 $conf = [
                     'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                    'HTML.AllowedElements'                    => $allowedTags,
-                    'HTML.AllowedAttributes'                  => 'style,href,class',
-                    'Attr.AllowedClasses'                     => 'underline,strike,subscript,superscript',
+                    'HTML.AllowedElements'                    => implode(',', $allowedTags),
+                    'HTML.AllowedAttributes'                  => implode(',', $allowedAttributes),
+                    'Attr.AllowedClasses'                     => implode(',', $allowedClasses),
                     'CSS.AllowedProperties'                   => '',
                     'AutoFormat.Linkify'                      => true,
                     'AutoFormat.AutoParagraph'                => false,
