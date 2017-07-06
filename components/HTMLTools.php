@@ -185,7 +185,7 @@ class HTMLTools
      * @param string[] $forbiddenFormattings
      * @return string
      */
-    public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings)
+    public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings = [])
     {
         $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
         if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
