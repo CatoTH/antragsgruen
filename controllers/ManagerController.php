@@ -33,7 +33,7 @@ class ManagerController extends Base
             return parent::beforeAction($action);
         }
 
-        if (!$this->getParams()->multisiteMode && $action->id != 'siteconfig') {
+        if (!$this->getParams()->multisiteMode && !in_array($action->id, ['siteconfig', 'userlist'])) {
             return false;
         }
 
