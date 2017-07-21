@@ -130,8 +130,8 @@ echo Html::beginForm('', 'post', [
         </div>
 
         <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlUsername"><?= \Yii::t('manager', 'config_db_username') ?>
-                :</label>
+            <label class="col-sm-4 control-label" for="sqlUsername"><?= \Yii::t('manager', 'config_db_username')
+                ?>:</label>
             <div class="col-sm-8">
                 <input type="text" name="sqlUsername"
                        value="<?= Html::encode($form->sqlUsername) ?>" class="form-control" id="sqlUsername">
@@ -139,8 +139,8 @@ echo Html::beginForm('', 'post', [
         </div>
 
         <div class="form-group sqlOption mysqlOption">
-            <label class="col-sm-4 control-label" for="sqlPassword"><?= \Yii::t('manager', 'config_db_password') ?>
-                :</label>
+            <label class="col-sm-4 control-label" for="sqlPassword"><?= \Yii::t('manager', 'config_db_password')
+                ?>:</label>
             <div class="col-sm-8">
                 <input type="password" name="sqlPassword" value="" class="form-control" id="sqlPassword"<?php
                 if ($form->sqlPassword != '') {
