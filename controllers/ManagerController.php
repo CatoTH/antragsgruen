@@ -354,12 +354,19 @@ class ManagerController extends Base
      */
     private function antragsgruenInitDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable)
     {
+        if (PHP_VERSION_ID < 50600) {
+            $phpVersionWarning = str_replace('%VERSION%', phpversion(), \Yii::t('manager', 'err_php_version'));
+        } else {
+            $phpVersionWarning = null;
+        }
+
         return $this->render('antragsgruen_init_db', [
             'form'                 => $dbForm,
             'installFileDeletable' => is_writable($configDir),
             'delInstallFileCmd'    => $delInstallFileCmd,
             'editable'             => $editable,
             'makeEditabeCommand'   => $makeEditabeCommand,
+            'phpVersionWarning'    => $phpVersionWarning,
         ]);
     }
 

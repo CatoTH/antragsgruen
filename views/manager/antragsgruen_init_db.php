@@ -11,6 +11,7 @@ use yii\helpers\Html;
  * @var bool $installFileDeletable
  * @var bool $editable
  * @var string $makeEditabeCommand
+ * @var string|null $phpVersionWarning
  */
 
 
@@ -37,6 +38,10 @@ if (!$editable) {
     echo Html::encode($makeEditabeCommand);
     echo '</pre>';
     echo '</div>';
+}
+
+if ($phpVersionWarning) {
+    echo '<div class="alert alert-danger" role="alert">' . $phpVersionWarning . '</div>';
 }
 
 

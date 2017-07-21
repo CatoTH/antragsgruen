@@ -4,6 +4,7 @@ return [
     'title_install'           => 'Antragsgrün einrichten',
     'err_settings_ro'         => 'Die Einstellungen können nicht bearbeitet werden, da die Datei config/config.json nicht bearbeitbar ist.
     <br>Das lässt sich mit folgendem Befehl (oder ähnlich, je nach Betriebssystem) auf der Kommandozeile beheben:',
+    'err_php_version'         => 'Antragsgrün benötigt PHP mindestens in der Version 5.6, besser 7.0 oder höher. Aktuell läuft die Version %VERSION%. Kontaktieren Sie den Systemadministrator, um auf eine aktuelle PHP-Version zu aktualisieren.',
     'language'                => 'Sprache',
     'default_dir'             => 'Standard-Verzeichnis',
     'tmp_dir'                 => 'Temporäres Verzeichis',

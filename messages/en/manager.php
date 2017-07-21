@@ -4,6 +4,7 @@ return [
     'title_install'           => 'Install Antragsgrün',
     'err_settings_ro'         => 'The settings cannot be changed as config/config.json is not writable.
     <br>You can fix that by the following (or a similar) command on the command line:',
+    'err_php_version'         => 'Antragsgrün needs a PHP version of at least 5.6, with 7.0 or greater being recommended. You can try to install with your current version (%VERSION%), however problems will probably occur rather sooner than later. Please contact your system administrator on how to upgrade to a current version of PHP.',
     'language'                => 'Language',
     'default_dir'             => 'Default directory',
     'tmp_dir'                 => 'Temporary directory',

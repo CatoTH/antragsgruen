@@ -17,6 +17,7 @@
 - A more detailed manual about the functionality of Antragsgrün is provided
 - The timestamp of a motion or amendment now shows the time when it has been officially submitted, not when the first draft has been created. The latter is still shown before the submission.
 - Strike-Through formatting is not allowed anymore in motion sections that are amendable, as this messed up the amendment function.
+- Improvements to the Installer
 - We don't pretend anymore you could use Antragsgrün with IE <=9
 - Updates to several core libraries
 - Redis, Excel and SAML Authentication is not part of the default installation anymore, reducing the size of the package. It can still be installed as an optional dependency, though.
