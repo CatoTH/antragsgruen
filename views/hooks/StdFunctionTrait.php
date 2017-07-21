@@ -148,33 +148,35 @@ trait StdFunctionTrait
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
-        if ($controller->consultation) {
-            $legalLink   = UrlHelper::createUrl('consultation/legal');
-            $privacyLink = UrlHelper::createUrl('consultation/privacy');
-        } else {
-            $legalLink   = UrlHelper::createUrl('manager/site-legal');
-            $privacyLink = UrlHelper::createUrl('manager/site-privacy');
+
+        $out = '<footer class="footer"><div class="container">';
+
+        if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
+            if ($controller->consultation) {
+                $legalLink   = UrlHelper::createUrl('consultation/legal');
+                $privacyLink = UrlHelper::createUrl('consultation/privacy');
+            } else {
+                $legalLink   = UrlHelper::createUrl('manager/site-legal');
+                $privacyLink = UrlHelper::createUrl('manager/site-privacy');
+            }
+
+            $out = '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+                \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+                \Yii::t('base', 'privacy_statement') . '</a>';
         }
 
-        $out = '<footer class="footer">
-        <div class="container">
-            <a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
-            \Yii::t('base', 'imprint') . '</a>
-            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
-            \Yii::t('base', 'privacy_statement') . '</a>
-
-            <span class="version">';
+        $out .= '<span class="version">';
         if (\Yii::$app->language == 'de') {
             $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
                 Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
         } else {
-            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
+            $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
                 Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
         }
+        $out .= '</span>';
 
-        $out .= '</span>
-        </div>
-    </footer>';
+        $out .= '</div></footer>';
 
         return $out;
     }
