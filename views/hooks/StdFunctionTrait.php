@@ -160,7 +160,7 @@ trait StdFunctionTrait
                 $privacyLink = UrlHelper::createUrl('manager/site-privacy');
             }
 
-            $out = '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+            $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
                 \Yii::t('base', 'imprint') . '</a>
             <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
                 \Yii::t('base', 'privacy_statement') . '</a>';
