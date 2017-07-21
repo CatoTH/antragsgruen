@@ -33,6 +33,7 @@ class MotionMergeAmendmentsDraftForm
             $this->draft->status         = Motion::STATUS_MERGING_DRAFT_PRIVATE;
             $this->draft->titlePrefix    = '';
             $this->draft->parentMotionId = $this->origMotion->id;
+            $this->draft->slug           = null;
         }
     }
 
