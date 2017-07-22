@@ -133,7 +133,8 @@ class InstallationController extends Base
             $editable = is_writable($configFile);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
-                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile;
+                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configFile . "\n";
+                $makeEditabeCommand .= 'sudo chmod u+rwx ' . $configFile . "\n";
             } else {
                 $makeEditabeCommand = 'not available';
             }
@@ -141,7 +142,8 @@ class InstallationController extends Base
             $editable = is_writable($configDir);
             if (function_exists('posix_getpwuid') && function_exists('posix_geteuid')) {
                 $myUsername         = posix_getpwuid(posix_geteuid());
-                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir;
+                $makeEditabeCommand = 'sudo chown ' . $myUsername['name'] . ' ' . $configDir . "\n";
+                $makeEditabeCommand .= 'sudo chmod u+rwx ' . $configDir . "\n";
             } else {
                 $makeEditabeCommand = 'not available';
             }
