@@ -63,6 +63,8 @@ export class InitDb {
                 $createTables.removeClass('alreadyCreated');
             }
             $pending.addClass('hidden');
+        }).fail(function(err) {
+            alert("An internal error occurred: " + err.status + " / " + err.responseText);
         });
     }
 }

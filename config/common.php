@@ -18,9 +18,9 @@ ini_set('default_charset', 'UTF-8');
 if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     $domp         = trim($params->domainPlain, '/');
     $urls         = [
-        $domp . '/<_a:(antragsgrueninit|antragsgrueninitdbtest)>' => 'manager/<_a>',
+        $domp . '/<_a:(index|db-test)>' => 'installation/<_a>',
     ];
-    $defaultRoute = 'manager/antragsgrueninit';
+    $defaultRoute = 'installation/index';
     define('INSTALLING_MODE', true);
 } else {
     $urls         = require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php');

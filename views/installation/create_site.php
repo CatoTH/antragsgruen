@@ -18,7 +18,7 @@ $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addCSS('css/formwizard.css');
 $layout->addCSS('css/manager.css');
-$layout->addAMDModule('manager/InitSite');
+$layout->addAMDModule('installation/InitSite');
 $layout->loadDatepicker();
 
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';

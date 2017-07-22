@@ -1,0 +1,1 @@
+{"version":3,"sources":["installation/InitSite.ts"],"names":["SiteCreateWizard","$"],"mappings":"sIAEA,IAAIA,iBAAiBC,EAAE","file":"InitSite.js","sourcesContent":["import \"../shared/SiteCreateWizard\";\n\nnew SiteCreateWizard($(\"form.siteCreate\"));\n"]}

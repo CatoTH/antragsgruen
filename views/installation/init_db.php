@@ -85,7 +85,7 @@ echo Html::endForm();
 
 echo Html::beginForm('', 'post', [
     'class'                    => 'antragsgruenInitForm form-horizontal fuelux',
-    'data-antragsgruen-widget' => 'manager/InitDb',
+    'data-antragsgruen-widget' => 'installation/InitDb',
 ]);
 
 ?>
@@ -164,7 +164,7 @@ echo Html::beginForm('', 'post', [
 
         <div class="testDB">
             <button type="button" name="testDB" class="btn btn-default testDBcaller"
-                    data-url="<?= Html::encode(UrlHelper::createUrl('manager/antragsgrueninitdbtest')) ?>">
+                    data-url="<?= Html::encode(UrlHelper::createUrl('installation/db-test')) ?>">
                 <?= \Yii::t('manager', 'config_db_test') ?></button>
             <div class="testDBRpending hidden"><?= \Yii::t('manager', 'config_db_testing') ?>...</div>
             <div class="testDBerror hidden">

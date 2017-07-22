@@ -52,66 +52,70 @@ class Base extends Controller
         \yii::$app->response->headers->add('X-Xss-Protection', '1');
         \yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
         \yii::$app->response->headers->add('X-Frame-Options', 'sameorigin');
-        if (parent::beforeAction($action)) {
-            $params = \Yii::$app->request->resolve();
-            /** @var AntragsgruenApp $appParams */
-            $appParams = \Yii::$app->params;
 
-            if ($appParams->siteSubdomain) {
-                if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
-                    HTMLTools::loadNetIdna2();
-                    $idna = new \Net_IDNA2();
-                    $subdomain = $idna->decode($appParams->siteSubdomain);
-                } else {
-                    $subdomain = $appParams->siteSubdomain;
-                }
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
 
-                $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
-                $this->loadConsultation($subdomain, $consultation);
-                if ($this->site) {
-                    $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
-                } else {
-                    $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
-                }
-            } elseif (isset($params[1]['subdomain'])) {
-                if (strpos($params[1]['subdomain'], 'xn--') === 0) {
-                    HTMLTools::loadNetIdna2();
-                    $idna = new \Net_IDNA2();
-                    $subdomain = $idna->decode($params[1]['subdomain']);
-                } else {
-                    $subdomain = $params[1]['subdomain'];
-                }
+        $params = \Yii::$app->request->resolve();
+        /** @var AntragsgruenApp $appParams */
+        $appParams = \Yii::$app->params;
 
-                $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
-                $this->loadConsultation($subdomain, $consultation);
-                if ($this->site) {
-                    $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
-                } else {
-                    $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
-                }
-            } elseif (get_class($this) != ManagerController::class && !$appParams->multisiteMode) {
-                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
-                $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
+        $inManager = (get_class($this) == ManagerController::class);
+        $inInstaller = (get_class($this) == InstallationController::class);
+
+        if ($appParams->siteSubdomain) {
+            if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
+                HTMLTools::loadNetIdna2();
+                $idna      = new \Net_IDNA2();
+                $subdomain = $idna->decode($appParams->siteSubdomain);
+            } else {
+                $subdomain = $appParams->siteSubdomain;
+            }
+
+            $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            $this->loadConsultation($subdomain, $consultation);
+            if ($this->site) {
+                $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
             } else {
                 $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
             }
+        } elseif (isset($params[1]['subdomain'])) {
+            if (strpos($params[1]['subdomain'], 'xn--') === 0) {
+                HTMLTools::loadNetIdna2();
+                $idna      = new \Net_IDNA2();
+                $subdomain = $idna->decode($params[1]['subdomain']);
+            } else {
+                $subdomain = $params[1]['subdomain'];
+            }
 
-            // Login and Mainainance mode is always allowed
-            if (get_class($this) == UserController::class) {
-                return true;
+            $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            $this->loadConsultation($subdomain, $consultation);
+            if ($this->site) {
+                $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
+            } else {
+                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
             }
-            $allowedActions = ['maintenance', 'help', 'legal', 'privacy'];
-            if (get_class($this) == ConsultationController::class && in_array($action->id, $allowedActions)) {
-                return true;
-            }
-
-            if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
-                return false;
-            }
-            return true;
+        } elseif (!($inInstaller || $inManager) && !$appParams->multisiteMode) {
+            $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+            $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
         } else {
+            $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+        }
+
+        // Login and Mainainance mode is always allowed
+        if (get_class($this) == UserController::class) {
+            return true;
+        }
+        $allowedActions = ['maintenance', 'help', 'legal', 'privacy'];
+        if (get_class($this) == ConsultationController::class && in_array($action->id, $allowedActions)) {
+            return true;
+        }
+
+        if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
             return false;
         }
+        return true;
     }
 
     /**
