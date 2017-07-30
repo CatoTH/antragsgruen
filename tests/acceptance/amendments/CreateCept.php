@@ -15,7 +15,7 @@ MotionPage::openBy(
     [
         'subdomain'        => 'stdparteitag',
         'consultationPath' => 'std-parteitag',
-        'motionSlug'       => '2',
+        'motionSlug'       => '321-o-zapft-is',
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');
@@ -127,7 +127,7 @@ MotionPage::openBy(
     [
         'subdomain'        => 'stdparteitag',
         'consultationPath' => 'std-parteitag',
-        'motionSlug'       => '2',
+        'motionSlug'       => '321-o-zapft-is',
     ]
 );
 $I->see('A2: O’ZAPFT IS!', 'h1');

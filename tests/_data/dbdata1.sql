@@ -1014,8 +1014,8 @@ INSERT INTO `###TABLE_PREFIX###consultationText` (`id`, `consultationId`, `categ
 
 INSERT INTO `###TABLE_PREFIX###motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `datePublication`, `dateResolution`, `status`, `statusString`, `nonAmendable`, `noteInternal`, `cache`, `textFixed`, `slug`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-03-30 13:27:20', NULL, NULL, 3, NULL, 0, NULL, '', 0, NULL),
-  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-23 01:03:00', NULL, NULL, 3, '', 0, '', '', 0, NULL),
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-03-30 13:27:20', NULL, NULL, 3, NULL, 0, NULL, '', 0, '321-o-zapft-is'),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-23 01:03:00', NULL, NULL, 3, '', 0, '', '', 0, '123-textformatierungen'),
   (4, 4, 7, NULL, NULL, 'Lorem ipsum dolor sit amet', 'A1', '2015-07-05 08:05:23', NULL, NULL, 3, NULL, 0, NULL, '', 0, NULL),
   (5, 5, 8, NULL, NULL, 'Vorschlag zur Tagesordnung', 'F-01', '2015-02-17 09:05:00', NULL, '2015-02-14 18:00:00', -2, NULL, 0, NULL, '', 0, NULL),
   (6, 5, 8, NULL, NULL, 'Änderungsantrag zur Geschäftsordnung des Länderrates (zuletzt geändert am 31.5.2014)', 'F-02', '2015-02-18 08:16:00', NULL, NULL, -2, NULL, 0, NULL, '', 0, NULL),

@@ -40,7 +40,7 @@ class ConsultationHomePage extends BasePage
      * @param bool $check
      * @return AmendmentCreatePage
      */
-    public function gotoAmendmentCreatePage($motionSlug = '2', $check = true)
+    public function gotoAmendmentCreatePage($motionSlug = '321-o-zapft-is', $check = true)
     {
         $page = AmendmentCreatePage::openBy(
             $this->actor,
