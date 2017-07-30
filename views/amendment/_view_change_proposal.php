@@ -5,6 +5,7 @@
  * @var \app\models\db\Amendment $amendment
  */
 
+use app\components\Tools;
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -40,7 +41,7 @@ $saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-propo
             ?>> - nicht festgelegt -
         </label>
         <?= Html::endForm() ?>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <?= Html::beginForm($saveUrl, 'POST', ['class' => 'proposalStatusDetails']) ?>
             <div class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
                 <h3>Modifiziert übernehmen</h3>
@@ -55,13 +56,27 @@ $saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-propo
             <?= Html::beginForm($saveUrl, 'POST', ['class' => 'notificationSettings']) ?>
             <?= Html::endForm() ?>
         </div>
-        <?= Html::beginForm($saveUrl, 'POST', ['class' => 'col-md-4 proposalCommentForm']) ?>
+        <?= Html::beginForm($saveUrl, 'POST', ['class' => 'col-md-5 proposalCommentForm']) ?>
         <h3>Interne Kommentare</h3>
-        <ul class="commentList">
+        <ol class="commentList">
+            <?php
+            foreach ($amendment->adminComments as $adminComment) {
+                $user = $adminComment->user;
+                ?>
+                <li>
+                    <div class="header">
+                        <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
+                        <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
+                    </div>
+                    <div class="comment"><?= Html::encode($adminComment->text) ?></div>
+                </li>
+                <?php
+            }
+            ?>
+        </ol>
 
-        </ul>
-        <textarea name="text" placeholder="Neuer Kommentar..." required class="form-control"></textarea>
-        <button class="btn btn-default btn-sm" type="submit">Schreiben</button>
+        <textarea name="text" placeholder="Neuer Kommentar..." required class="form-control" rows="1"></textarea>
+        <button class="btn btn-default btn-xs" type="submit">Schreiben</button>
         <?= Html::endForm() ?>
     </div>
 </section>

@@ -989,10 +989,43 @@ iframe.pdfViewer {
   }
   h3 {
     font-size: 14px;
-    margin: 3px 0;
+    margin: 3px 0 8px 0;
   }
   label {
     font-size: 12px;
     font-weight: normal;
+  }
+  .commentList {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: block;
+    max-height: 110px;
+    overflow-y: auto;
+
+    > li {
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+    .header {
+      background-color: #eee;
+      overflow: auto;
+      margin-top: 10px;
+    }
+    .date {
+      float: right;
+    }
+  }
+  .proposalCommentForm {
+    textarea {
+      border-bottom: none;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    button {
+      margin-top: -1px;
+      width: 100%;
+    }
   }
 }

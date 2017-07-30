@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\User;
@@ -467,6 +469,27 @@ class AmendmentController extends Base
             $amendment->proposalStatus = \Yii::$app->request->post('setStatus');
             $amendment->save();
             $response['success'] = true;
+        }
+
+        if (\Yii::$app->request->post('writeComment')) {
+            $adminComment               = new AmendmentAdminComment();
+            $adminComment->userId       = User::getCurrentUser()->id;
+            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->status       = AmendmentAdminComment::STATUS_VISIBLE;
+            $adminComment->dateCreation = date('Y-m-d H:i:s');
+            $adminComment->amendmentId  = $amendment->id;
+            if (!$adminComment->save()) {
+                \Yii::$app->response->statusCode = 500;
+                return 'Could not save - internal error';
+            }
+
+            $response['success'] = true;
+            $response['comment'] = [
+                'username'      => $adminComment->user->name,
+                'id'            => $adminComment->id,
+                'text'          => $adminComment->text,
+                'dateFormatted' => Tools::formatMysqlDateTime($adminComment->dateCreation),
+            ];
         }
 
         return json_encode($response);
