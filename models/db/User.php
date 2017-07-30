@@ -57,6 +57,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_MOTION_EDIT               = 4;
     const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
     const PRIVILAGE_SITE_ADMIN                = 6;
+    const PRIVILEGE_CHANGE_PROPOSALS          = 7;
 
     /**
      * @return string[]
@@ -214,6 +215,7 @@ class User extends ActiveRecord implements IdentityInterface
         $priv->adminContentEdit = 0;
         $priv->adminScreen      = 0;
         $priv->adminSuper       = 0;
+        $priv->adminProposals   = 0;
         return $priv;
     }
 

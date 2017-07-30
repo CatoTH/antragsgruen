@@ -205,6 +205,7 @@ class Consultation extends ActiveRecord
         $priv->adminContentEdit = 0;
         $priv->adminScreen      = 0;
         $priv->adminSuper       = 0;
+        $priv->adminProposals   = 0;
         return $priv;
     }
 

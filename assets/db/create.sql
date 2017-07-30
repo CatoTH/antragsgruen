@@ -22,7 +22,10 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `statusString`          VARCHAR(55) NOT NULL,
   `noteInternal`          TEXT,
   `textFixed`             TINYINT(4)           DEFAULT '0',
-  `globalAlternative`     TINYINT(4)           DEFAULT '0'
+  `globalAlternative`     TINYINT(4)           DEFAULT '0',
+  `proposalStatus`        TINYINT(4)           DEFAULT NULL,
+  `proposalReferenceId`   INT(11)              DEFAULT NULL,
+  `proposalComment`       TEXT
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -292,7 +295,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationUserPrivilege` (
   `privilegeCreate`  TINYINT(4) NOT NULL DEFAULT '0',
   `adminSuper`       TINYINT(4) NOT NULL DEFAULT '0',
   `adminContentEdit` TINYINT(4) NOT NULL DEFAULT '0',
-  `adminScreen`      TINYINT(4) NOT NULL DEFAULT '0'
+  `adminScreen`      TINYINT(4) NOT NULL DEFAULT '0',
+  `adminProposals`   TINYINT(4) NOT NULL DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -601,7 +605,8 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
 --
 ALTER TABLE `###TABLE_PREFIX###amendment`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_motionIdx` (`motionId`);
+  ADD KEY `fk_motionIdx` (`motionId`),
+  ADD KEY `amendment_reference_am` (`proposalReferenceId`);
 
 --
 -- Indexes for table `amendmentAdminComment`
@@ -964,6 +969,7 @@ ALTER TABLE `###TABLE_PREFIX###userNotification`
 -- Constraints for table `amendment`
 --
 ALTER TABLE `###TABLE_PREFIX###amendment`
+  ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `amendment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;

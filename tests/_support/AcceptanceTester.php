@@ -24,11 +24,11 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    const FIRST_FREE_MOTION_ID              = 118;
-    const FIRST_FREE_MOTION_TITLE_PREFIX    = 'A8';
+    const FIRST_FREE_MOTION_ID              = 119;
+    const FIRST_FREE_MOTION_TITLE_PREFIX    = 'A9';
     const FIRST_FREE_AMENDMENT_TITLE_PREFIX = 'Ä8';
     const FIRST_FREE_MOTION_SECTION         = 33;
-    const FIRST_FREE_AMENDMENT_ID           = 279;
+    const FIRST_FREE_AMENDMENT_ID           = 281;
     const FIRST_FREE_AGENDA_ITEM_ID         = 15;
     const FIRST_FREE_COMMENT_ID             = 1;
     const FIRST_FREE_MOTION_TYPE            = 11;
@@ -195,6 +195,14 @@ class AcceptanceTester extends \Codeception\Actor
     public function loginAsConsultationAdmin()
     {
         return $this->loginWithData('consultationadmin@example.org', 'consultationadmin');
+    }
+
+    /**
+     * @return $this
+     */
+    public function loginAsProposalAdmin()
+    {
+        return $this->loginWithData('proposaladmin@example.org', 'proposaladmin');
     }
 
     /**

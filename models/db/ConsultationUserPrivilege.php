@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $adminSuper
  * @property string $adminContentEdit
  * @property string $adminScreen
+ * @property string $adminProposals
  *
  * @property User $user
  * @property Consultation $consultation
@@ -59,7 +60,7 @@ class ConsultationUserPrivilege extends ActiveRecord
             [['consultationId', 'userId'], 'required'],
             [['consultationId', 'userId'], 'number'],
             [['privilegeView', 'privilegeCreate'], 'number'],
-            [['adminSuper', 'adminContentEdit', 'adminScreen'], 'number'],
+            [['adminSuper', 'adminContentEdit', 'adminScreen', 'adminProposals'], 'number'],
         ];
     }
 
@@ -114,6 +115,7 @@ class ConsultationUserPrivilege extends ActiveRecord
             $privilege->adminContentEdit = 0;
             $privilege->adminScreen      = 0;
             $privilege->adminSuper       = 0;
+            $privilege->adminProposals   = 0;
             $privilege->privilegeCreate  = 1;
             $privilege->privilegeView    = 1;
             $privilege->save();
@@ -154,6 +156,8 @@ class ConsultationUserPrivilege extends ActiveRecord
                 return ($this->adminContentEdit == 1);
             case User::PRIVILEGE_SCREENING:
                 return ($this->adminScreen == 1);
+            case User::PRIVILEGE_CHANGE_PROPOSALS:
+                return ($this->adminProposals == 1);
             case User::PRIVILEGE_MOTION_EDIT:
                 return ($this->adminSuper == 1);
             case User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
