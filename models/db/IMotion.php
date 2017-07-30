@@ -58,6 +58,9 @@ abstract class IMotion extends ActiveRecord
     const STATUS_MERGING_DRAFT_PUBLIC = 19;
     const STATUS_MERGING_DRAFT_PRIVATE = 20;
 
+    // The modified version of an amendment, as proposed by the admins
+    const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
+
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
     const STATUS_ADOPTED             = 8;

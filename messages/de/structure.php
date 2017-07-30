@@ -121,6 +121,7 @@ return [
     'STATUS_DRAFT_ADMIN'                  => 'Entwurf (Admin)',
     'STATUS_PROCESSED'                    => 'Behandelt',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Eingereicht (geprüft, unveröffentlicht)',
+    'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Vorgeschlagene Änderung',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

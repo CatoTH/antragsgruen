@@ -37,11 +37,16 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property int $textFixed
  * @property int $globalAlternative
+ * @property int $proposalStatus
+ * @property int $proposalReferenceId
+ * @property string $proposalComment
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
+ * @property Amendment $proposalReference
+ * @property Amendment $proposalReferencedBy
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -92,20 +97,36 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param null|int $filer_type
+     * @param null|int $filerType
      * @return AmendmentSection[]
      */
-    public function getActiveSections($filer_type = null)
+    public function getActiveSections($filerType = null)
     {
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                if ($filer_type === null || $section->getSettings()->type == $filer_type) {
+                if ($filerType === null || $section->getSettings()->type == $filerType) {
                     $sections[] = $section;
                 }
             }
         }
         return $sections;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProposalReference()
+    {
+        return $this->hasOne(Amendment::class, ['id' => 'proposalReferenceId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProposalReferencedBy()
+    {
+        return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
     }
 
     /**
@@ -129,7 +150,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return [
             [['motionId'], 'required'],
-            [['id', 'motionId', 'status', 'textFixed'], 'number'],
+            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId'], 'number'],
         ];
     }
 
