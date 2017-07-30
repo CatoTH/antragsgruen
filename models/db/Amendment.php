@@ -53,6 +53,20 @@ class Amendment extends IMotion implements IRSSItem
     use CacheTrait;
 
     /**
+     * @return string[]
+     */
+    public static function getProposedChangeStati()
+    {
+        return [
+            IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
+            IMotion::STATUS_REFERRED,
+            IMotion::STATUS_VOTE,
+            IMotion::STATUS_OBSOLETED_BY,
+        ];
+    }
+
+    /**
      * @return string
      */
     public static function tableName()
@@ -987,7 +1001,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $typeMapping = $this->getMyMotion()->motionType->getSectionCompatibilityMapping($motionType);
-        $mySections = $this->getSortedSections(false);
+        $mySections  = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
             if (!isset($typeMapping[$mySections[$i]->sectionId])) {
                 continue;

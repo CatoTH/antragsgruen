@@ -122,6 +122,7 @@ return [
     'STATUS_PROCESSED'                    => 'Behandelt',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Eingereicht (geprüft, unveröffentlicht)',
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Vorgeschlagene Änderung',
+    'STATUS_OBSOLETED_BY'                 => 'Erledigt durch anderen ÄA',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',

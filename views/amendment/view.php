@@ -143,6 +143,12 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
+
+if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+    echo $this->render('_view_change_proposal', ['amendment' => $amendment]);
+}
+
+
 if ($amendment->changeEditorial != '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
     echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';

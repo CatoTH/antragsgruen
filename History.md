@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.8.0 [Not released yet]
+
+- Administrators of a consultation can now manage the proposed procedure of an amendment [not finished yet]
+
 ## Version 3.7.0 [Not released yet]
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.

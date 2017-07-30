@@ -58,14 +58,22 @@ abstract class IMotion extends ActiveRecord
     const STATUS_MERGING_DRAFT_PUBLIC = 19;
     const STATUS_MERGING_DRAFT_PRIVATE = 20;
 
-    // The modified version of an amendment, as proposed by the admins
+    // The modified version of an amendment, as proposed by the admins.
+    // This amendment is being referenced by proposalReference of the modified amendment.
     const STATUS_PROPOSED_MODIFIED_AMENDMENT = 21;
+
+    // An amendment or motion has been referred to another institution.
+    // The institution is documented in statusString, or, in case of a change proposal, in proposalComment
+    const STATUS_REFERRED            = 10;
+
+    // An amendment becomes obsoleted by another amendment. That one is referred by an id
+    // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalReferenceId
+    const STATUS_OBSOLETED_BY = 22;
 
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
     const STATUS_ADOPTED             = 8;
     const STATUS_COMPLETED           = 9;
-    const STATUS_REFERRED            = 10;
     const STATUS_VOTE                = 11;
     const STATUS_PAUSED              = 12;
     const STATUS_MISSING_INFORMATION = 13;
@@ -101,6 +109,8 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_WITHDRAWN_INVISIBLE          => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
             static::STATUS_MERGING_DRAFT_PUBLIC         => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC'),
             static::STATUS_MERGING_DRAFT_PRIVATE        => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
+            static::STATUS_PROPOSED_MODIFIED_AMENDMENT  => \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
+            static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
         ];
     }
 
@@ -264,7 +274,7 @@ abstract class IMotion extends ActiveRecord
         $sectionsIn = [];
         $title      = $this->getTitleSection();
         foreach ($this->getActiveSections() as $section) {
-            if (!$withoutTitle || $section != $title) {
+            if (!$withoutTitle || $section !== $title) {
                 $sectionsIn[$section->sectionId] = $section;
             }
         }

@@ -974,3 +974,25 @@ iframe.pdfViewer {
     }
   }
 }
+
+#proposedChanges {
+  background-color: #f8f8f8;
+  padding: 10px;
+  border: solid 1px #eee;
+  border-radius: 4px;
+  margin: 0 20px 30px;
+  h2 {
+    font-size: 18px;
+    margin: -10px -10px 10px -10px;
+    padding: 5px 10px;
+    background-color: #eee;
+  }
+  h3 {
+    font-size: 14px;
+    margin: 3px 0;
+  }
+  label {
+    font-size: 12px;
+    font-weight: normal;
+  }
+}

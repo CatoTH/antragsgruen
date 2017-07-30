@@ -43,5 +43,10 @@
     },
     "directories": {
         "bin": "./bin/"
+    },
+    "dependencies": {
+        "clone-buffer": "^1.0.0",
+        "cloneable-readable": "^1.0.0",
+        "remove-trailing-separator": "^1.0.2"
     }
 }
