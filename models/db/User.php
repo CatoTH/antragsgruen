@@ -56,7 +56,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_SCREENING                 = 3;
     const PRIVILEGE_MOTION_EDIT               = 4;
     const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
-    const PRIVILAGE_SITE_ADMIN                = 6;
+    const PRIVILEGE_SITE_ADMIN                = 6;
 
     /**
      * @return string[]
@@ -595,7 +595,7 @@ class User extends ActiveRecord implements IdentityInterface
 
         // Only site adminitrators are allowed to administer users.
         // All other rights are granted to every consultation-level administrator
-        if ($privilege == User::PRIVILAGE_SITE_ADMIN) {
+        if ($privilege == User::PRIVILEGE_SITE_ADMIN) {
             return false;
         }
 
