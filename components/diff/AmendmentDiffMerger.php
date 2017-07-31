@@ -210,16 +210,26 @@ class AmendmentDiffMerger
         $insertArr              = function ($arr, $pos, $insertedEl) {
             return array_merge(array_slice($arr, 0, $pos + 1), [$insertedEl], array_slice($arr, $pos + 1));
         };
+
+        // Figures out if the blank element is to be inserted in the middle of a deletion block.
+        // If so, the "amendmentId"-Attribute needs to be set to trigger a collission
         $pendingDeleteAmendment = function ($paraNo, $locAmendNo, $wordNo) {
             if ($wordNo == 0) {
                 return null;
             }
-            $str = explode("###DEL_", $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['diff']);
-            if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
-                return $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['amendmentId'];
-            } else {
-                return null;
-            }
+
+            while ($wordNo >= 0) {
+                $str = explode("###DEL_", $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['diff']);
+                if (count($str) > 1 && strpos($str[count($str) - 1], 'START') === 0) {
+                    return $this->diffParagraphs[$paraNo][$locAmendNo]['diff'][$wordNo]['amendmentId'];
+                }
+                if (count($str) > 1 && strpos($str[count($str) - 1], 'END') === 0) {
+                    return null;
+                }
+                $wordNo--;
+            };
+
+            return null;
         };
 
         $this->paraData[$paraNo]['origTokenized'] = $insertArr($this->paraData[$paraNo]['origTokenized'], $wordNo, '');
