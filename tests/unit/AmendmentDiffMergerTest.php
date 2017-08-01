@@ -8,7 +8,28 @@ use Codeception\Specify;
 
 class AmendmentDiffMergerTest extends TestBase
 {
+    public function testInsertWithinDeletion()
+    {
+        $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>';
+        $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
+        $merger = new AmendmentDiffMerger();
+        $merger->initByMotionParagraphs($paragraphs);
+
+        $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore fnord et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>']);
+        $merger->addAmendingParagraphs(2, [0 => '<p></p>']);
+
+        $merger->mergeParagraphs();
+
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore '],
+            ['amendment' => 1, 'text' => '###INS_START###fnord ###INS_END###'],
+            ['amendment' => 0, 'text' => 'et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>'],
+        ], $merger->getGroupedParagraphData(0));
+
+        $collissions = $merger->getCollidingParagraphGroups(0);
+        $this->assertTrue(isset($collissions[2]));
+    }
 
     public function testBasic()
     {
