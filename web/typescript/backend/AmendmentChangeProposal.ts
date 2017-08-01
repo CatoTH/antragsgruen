@@ -1,50 +1,68 @@
+const STATUS_REFERRED = 10;
+
 export class AmendmentChangeProposal {
     private $statusDetails: JQuery;
+    private saveUrl: string;
+    private csrf: string;
 
     constructor(private $widget: JQuery) {
         this.$statusDetails = $widget.find('.proposalStatusDetails .statusDetails');
-        this.initStatusSetter($widget.find('.statusForm'));
-        this.initCommentForm($widget.find('.proposalCommentForm'));
+        this.initStatusSetter();
+        this.initCommentForm();
+        this.saveUrl = $widget.attr('action');
+        this.csrf = $widget.find('input[name=_csrf]').val();
+        $widget.submit(ev => ev.preventDefault());
     }
 
-    private initStatusSetter($form: JQuery) {
-        $form.find("input[type=radio]").change((ev, data: any) => {
+    private saveStatus() {
+        let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        let data = {
+            setStatus: newVal,
+            _csrf: this.csrf
+        };
+        if (newVal == STATUS_REFERRED) {
+            data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
+        }
+        $.post(this.saveUrl, data, (ev) => {
+            console.log(ev);
+            this.$widget.find('.saving').addClass('hidden');
+            this.$widget.find('.saved').removeClass('hidden');
+            window.setTimeout(() => this.$widget.find('.saved').addClass('hidden'), 2000);
+        }).fail(() => {
+            alert("Could not save");
+        });
+    }
+
+    private initStatusSetter() {
+        this.$widget.find(".statusForm input[type=radio]").change((ev) => {
             if (!$(ev.currentTarget).prop('checked')) {
                 return;
             }
-            let newVal = $(ev.currentTarget).val();
+            let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
             this.$statusDetails.addClass('hidden');
             this.$statusDetails.filter('.status_' + newVal).removeClass('hidden');
+            this.$widget.find('.saving').removeClass('hidden');
+        }).trigger('change');
 
-            if (data && data.nosave) {
-                return;
-            }
-            $.post($form.attr('action'), {
-                setStatus: newVal,
-                _csrf: $form.find('input[name=_csrf]').val()
-            }, (ev) => {
-                console.log(ev);
-            }).fail(() => {
-                alert("Could not save");
-            });
-        }).trigger('change', {nosave: 1});
+        this.$widget.find('.saving').addClass('hidden');
+        this.$widget.find('.saving button').click(this.saveStatus.bind(this));
     }
 
-    private initCommentForm($form: JQuery) {
-        let saving = false,
-            $commentList = $form.find('.commentList');
+    private initCommentForm() {
+        let $commentWidget = this.$widget.find('.proposalCommentForm'),
+            saving = false,
+            $commentList = $commentWidget.find('.commentList');
 
-        $form.submit((ev) => {
-            let text = $form.find("textarea").val();
-            ev.preventDefault();
+        $commentWidget.find('button').click(() => {
+            let text = $commentWidget.find('textarea').val();
             if (text == '' || saving) {
                 return;
             }
 
             saving = true;
-            $.post($form.attr('action'), {
+            $.post(this.saveUrl, {
                 writeComment: text,
-                _csrf: $form.find('input[name=_csrf]').val()
+                _csrf: this.csrf
             }, (ev) => {
                 if (ev.success) {
                     let $comment = $('<li><div class="header"><div class="date"></div><div class="name"></div></div><div class="comment"></div></li>');
@@ -52,7 +70,7 @@ export class AmendmentChangeProposal {
                     $comment.find('.name').text(ev.comment.username);
                     $comment.find('.comment').text(ev.comment.text);
                     $commentList.append($comment);
-                    $form.find("textarea").val('');
+                    $commentWidget.find('textarea').val('');
                     $commentList[0].scrollTop = $commentList[0].scrollHeight;
                 } else {
                     alert('Could not save: ' + JSON.stringify(ev));

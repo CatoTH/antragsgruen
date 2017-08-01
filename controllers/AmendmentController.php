@@ -466,7 +466,8 @@ class AmendmentController extends Base
         $response = [];
 
         if (\Yii::$app->request->post('setStatus')) {
-            $amendment->proposalStatus = \Yii::$app->request->post('setStatus');
+            $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
+            $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
             $amendment->save();
             $response['success'] = true;
         }
