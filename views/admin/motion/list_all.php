@@ -8,7 +8,7 @@ use app\models\forms\AdminMotionFilterForm;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var IMotion $entries
  * @var \app\models\forms\AdminMotionFilterForm $search
  */

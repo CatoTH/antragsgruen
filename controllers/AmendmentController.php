@@ -14,6 +14,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
+use app\models\forms\AmendmentProposedChangeForm;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -494,5 +495,25 @@ class AmendmentController extends Base
         }
 
         return json_encode($response);
+    }
+
+    public function actionEditProposedChange($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $form = new AmendmentProposedChangeForm($amendment);
+
+        return $this->render('edit_proposed_change', [
+            'amendment' => $amendment,
+            'form'      => $form,
+        ]);
     }
 }

@@ -6,6 +6,7 @@
  */
 
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -52,7 +53,7 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
             <section class="proposalStatusDetails">
                 <div class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
                     <h3>Modifiziert übernehmen</h3>
-                    <a href="">Bearbeiten</a>
+                    <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
                 </div>
                 <div class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
                     <label class="headingLabel">Erledigt durch...</label>
