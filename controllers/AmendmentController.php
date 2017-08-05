@@ -497,6 +497,11 @@ class AmendmentController extends Base
         return json_encode($response);
     }
 
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
