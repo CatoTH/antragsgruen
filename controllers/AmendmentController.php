@@ -516,9 +516,16 @@ class AmendmentController extends Base
 
         $form = new AmendmentProposedChangeForm($amendment);
 
+        $msgSuccess = null;
+        if (\Yii::$app->request->post('save', null) !== null) {
+            $form->save(\Yii::$app->request->post());
+            $msgSuccess = 'Gespeichert.';
+        }
+
         return $this->render('edit_proposed_change', [
-            'amendment' => $amendment,
-            'form'      => $form,
+            'msgSuccess' => $msgSuccess,
+            'amendment'  => $amendment,
+            'form'       => $form,
         ]);
     }
 }

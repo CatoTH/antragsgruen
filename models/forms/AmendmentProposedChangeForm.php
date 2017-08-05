@@ -40,6 +40,7 @@ class AmendmentProposedChangeForm
         foreach ($this->amendment->sections as $section) {
             $newSection = new AmendmentSection();
             $newSection->setAttributes($section->getAttributes(), false);
+            $newSection->setOriginalMotionSection($section->getOriginalMotionSection());
             $newSection->amendmentId  = null;
             $this->proposalSections[] = $newSection;
         }
@@ -51,5 +52,14 @@ class AmendmentProposedChangeForm
     public function getProposalSections()
     {
         return $this->proposalSections;
+    }
+
+    /**
+     * @param array $postParams
+     */
+    public function save($postParams)
+    {
+        var_dump($postParams);
+        die();
     }
 }

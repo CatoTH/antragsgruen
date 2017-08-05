@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
@@ -39,8 +40,15 @@ class TextSimple extends ISectionType
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
         if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
-            $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->data);
-            return $this->getTextAmendmentFormField(false, $pre, $fixedWidth);
+            /** @var AmendmentSection $section */
+            $section        = $this->section;
+            $diff           = new Diff();
+            $origParas      = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $amendParas     = HTMLTools::sectionSimpleHTML($section->data);
+            $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
+            $amendmentHtml  = implode("", $amDiffSections);
+
+            return $this->getTextAmendmentFormField(false, $amendmentHtml, $fixedWidth);
         } else {
             return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
         }
@@ -111,7 +119,7 @@ class TextSimple extends ISectionType
      */
     public function setMotionData($data)
     {
-        $type = $this->section->getSettings();
+        $type                   = $this->section->getSettings();
         $this->section->dataRaw = $data;
         $this->section->data    = HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings());
     }
@@ -352,7 +360,7 @@ class TextSimple extends ISectionType
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
                 $pdfLayout->printSectionHeading($this->section->getSettings()->title);
@@ -649,8 +657,8 @@ class TextSimple extends ISectionType
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                 }
 
-                $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-                $tex  .= Exporter::encodeHTMLString($section->data);
+                $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                $tex .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
                 $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
@@ -695,7 +703,7 @@ class TextSimple extends ISectionType
     public function getAmendmentODS()
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
         if ($section->getAmendment()->globalAlternative) {
             return $section->data;
@@ -769,7 +777,7 @@ class TextSimple extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
         if ($section->getAmendment()->globalAlternative) {
             $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);

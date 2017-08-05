@@ -5,12 +5,14 @@ use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
  * @var Amendment $amendment
  * @var \app\models\forms\AmendmentProposedChangeForm $form
+ * @var null|string $msgSuccess
  */
 
 /** @var \app\controllers\Base $controller */
@@ -20,7 +22,7 @@ $layout     = $controller->layoutParams;
 $this->title        = 'Verfahrensvorschlag';
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
-$layout->addAMDModule('backend/AmendmentEditProposedChange');
+$layout->loadCKEditor();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
 $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
@@ -33,45 +35,83 @@ $layout->addBreadcrumb('Verfahrensvorschlag');
 
 echo '<h1>' . 'Verfahrensvorschlag bearbeiten' . '</h1>';
 
+
+echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
+    'id'                       => 'editProposedChangeForm',
+    'data-antragsgruen-widget' => 'backend/AmendmentEditProposedChange',
+]);
+
+if ($msgSuccess) {
+    echo '<div class="content"><div class="alert alert-success">';
+    echo $msgSuccess;
+    echo '</div></div>';
+}
+
 ?>
     <div class="content">
-        Text
-    </div>
+        <div class="row">
+            <section class="col-md-6">
+                <h2>Verfahrensvorschlag</h2>
+            </section>
+            <section class="col-md-6">
+                <h2>Original-Änderungsantrag</h2>
+            </section>
+        </div>
+        <?php
 
-<?php
-foreach ($form->getProposalSections() as $section) {
-    $amendmentSection = null;
-    foreach ($amendment->getActiveSections() as $amSec) {
-        if ($amSec->sectionId == $section->sectionId) {
-            $amendmentSection = $amSec;
+        foreach ($form->getProposalSections() as $section) {
+            $amendSection = null;
+            foreach ($amendment->getActiveSections() as $amSec) {
+                if ($amSec->sectionId == $section->sectionId) {
+                    $amendSection = $amSec;
+                }
+            }
+
+            $type     = $section->getSettings();
+            $nameBase = 'sections[' . $type->id . ']';
+            $htmlId   = 'sections_' . $type->id;
+
+            ?>
+            <div class="row">
+                <section class="col-md-6 motionTextHolder proposedVersion">
+                    <?= $section->getSectionType()->getAmendmentFormField() ?>
+                </section>
+                <section class="col-md-6 motionTextHolder originalVersion">
+                    <div class="title"><?= Html::encode($amendSection->getSettings()->title) ?></div>
+                    <?php
+                    switch ($amendSection->getSettings()->type) {
+                        case ISectionType::TYPE_TITLE:
+                            echo '<div class="paragraph"><div class="text textOrig">';
+                            echo Html::encode($amendSection->data);
+                            echo '</div></div>';
+                            break;
+                        case ISectionType::TYPE_TEXT_HTML:
+                            echo '<div class="paragraph"><div class="text textOrig">';
+                            echo $amendSection->data;
+                            echo '</div></div>';
+                            break;
+                        case ISectionType::TYPE_TEXT_SIMPLE:
+                            $diff = new Diff();
+                            echo '<div class="paragraph"><div class="text textOrig fixedWidthFont">';
+                            echo implode("\n", $diff->compareHtmlParagraphs(
+                                HTMLTools::sectionSimpleHTML($amendSection->getOriginalMotionSection()->data),
+                                HTMLTools::sectionSimpleHTML($amendSection->data),
+                                DiffRenderer::FORMATTING_ICE
+                            ));
+                            echo '</div></div>';
+                            break;
+                    }
+                    ?>
+                </section>
+            </div>
+            <?php
         }
-    }
 
-    $diff          = new Diff();
-    $originalParas = HTMLTools::sectionSimpleHTML($amendmentSection->getOriginalMotionSection()->data);
-
-    $amendmentParas = HTMLTools::sectionSimpleHTML($amendmentSection->data);
-    $amDiffSections = $diff->compareHtmlParagraphs($originalParas, $amendmentParas, DiffRenderer::FORMATTING_ICE);
-
-    $proposalParas    = HTMLTools::sectionSimpleHTML($section->data);
-    $propDiffSections = $diff->compareHtmlParagraphs($originalParas, $proposalParas, DiffRenderer::FORMATTING_ICE);
-
-    ?>
-    <h2 class="green"><?= Html::encode($section->getSettings()->title) ?></h2>
-    <div class="row">
-        <div class="col-md-6 motionTextHolder">
-            <h3>Verfahrensvorschlag</h3>
-            <div class="paragraph">
-                <div class="text textOrig fixedWidthFont"><?php echo implode("\n", $propDiffSections); ?></div>
-            </div>
-        </div>
-        <div class="col-md-6 motionTextHolder">
-            <h3>Original-Änderungsantrag</h3>
-            <div class="paragraph">
-                <div class="text textOrig fixedWidthFont"><?php echo implode("\n", $amDiffSections); ?></div>
-            </div>
-        </div>
+        ?>
     </div>
-    <?php
-} ?>
+    <div class="save-row">
+        <button class="btn btn-primary" type="submit" name="save">Speichern</button>
+    </div>
 <?php
+
+echo Html::endForm();
