@@ -239,9 +239,10 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -262,8 +263,12 @@ class TextSimple extends ISectionType
             return '';
         }
 
+        if ($sectionTitlePrefix) {
+            $sectionTitlePrefix .= ': ';
+        }
+        $title     = $sectionTitlePrefix . $section->getSettings()->title;
         $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str       .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str       .= '<h3 class="green">' . Html::encode($title) . '</h3>';
         $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text';
         if ($section->getSettings()->fixedWidth) {

@@ -1029,4 +1029,12 @@ class Amendment extends IMotion implements IRSSItem
     {
         return $this->getMyMotion()->motionType->amendmentDeadlineIsOver();
     }
+
+    /**
+     * @return bool
+     */
+    public function isProposalPublic()
+    {
+        return true; // @TODO
+    }
 }

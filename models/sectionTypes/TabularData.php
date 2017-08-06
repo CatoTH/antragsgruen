@@ -71,7 +71,7 @@ class TabularData extends ISectionType
     }
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setAmendmentData($data)
@@ -106,9 +106,11 @@ class TabularData extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         return ''; // @TODO
     }

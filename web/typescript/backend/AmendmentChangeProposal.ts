@@ -44,6 +44,10 @@ export class AmendmentChangeProposal {
             this.$widget.find('.saving').removeClass('hidden');
         }).trigger('change');
 
+        this.$widget.find('input[name=referredTo]').on('keyup', () => {
+            this.$widget.find('.saving').removeClass('hidden');
+        });
+
         this.$widget.find('.saving').addClass('hidden');
         this.$widget.find('.saving button').click(this.saveStatus.bind(this));
     }

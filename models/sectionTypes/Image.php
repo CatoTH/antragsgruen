@@ -147,9 +147,11 @@ class Image extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         return ''; // @TODO
     }
@@ -305,7 +307,6 @@ class Image extends ISectionType
 
     /**
      * @param Text $odt
-     * @return void
      */
     public function printMotionToODT(Text $odt)
     {
@@ -315,7 +316,6 @@ class Image extends ISectionType
 
     /**
      * @param Text $odt
-     * @return void
      */
     public function printAmendmentToODT(Text $odt)
     {
