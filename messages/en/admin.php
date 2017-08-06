@@ -92,6 +92,7 @@ return [
     'list_tag'                    => 'Tag',
     'list_initiators'             => 'Proposers',
     'list_status'                 => 'Status',
+    'list_proposal'               => 'Proposed procedure',
     'list_title'                  => 'Title',
     'list_prefix'                 => 'Signature',
     'list_type'                   => 'Type',
@@ -179,32 +180,32 @@ return [
     'con_email_admins'        => 'Admins',
     'con_send_motion_email'   => 'Send a confirmation e-mail to the proposer of a motion when it is published',
 
-    'siteacc_bread'              => 'Access',
-    'siteacc_title'              => 'Access to this site',
-    'siteacc_policywarning'      => '<h3>Hint:</h3>
+    'siteacc_bread'           => 'Access',
+    'siteacc_title'           => 'Access to this site',
+    'siteacc_policywarning'   => '<h3>Hint:</h3>
 The user administration below is only fully functional when read rights or the right to generate motions, amendments, comments, etc. are set to “Registered users”. Currently, this is not the case.<br>
 <br>
 If this site should only be <em>visible</em> to users included below, select the settings immediately below the reference. If the site should be visible to all but only registered users can submit motions, then you can set this automatically here:',
-    'siteacc_policy_login'       => 'Restrict to users',
-    'siteacc_forcelogin'         => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
-    'siteacc_managedusers'       => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
-    'siteacc_logins'             => 'The following login variants are possible',
-    'siteacc_useraccounts'       => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
-    'siteacc_ww'                 => 'Wurzelwerk <small>(everyone with access to German Wurzelwerk)</small>',
-    'siteacc_otherlogins'        => 'Other methods <small>(OpenID, maybe Facebook / Twitter in the future)</small>',
-    'siteacc_admins_title'       => 'Administrators of this site',
-    'siteacc_admins_add'         => 'Add',
-    'siteacc_admins_user'        => 'User',
-    'siteacc_admins_del'         => 'Remove',
-    'siteacc_admins_all_cons'    => 'All consultations',
-    'siteacc_admins_one_con'     => 'This consultation',
-    'siteacc_add_ww'             => 'Wurzelwerk name',
-    'siteacc_add_email'          => 'E-mail address',
-    'siteacc_add_name_title'     => 'Wurzelwerk username / E-mail address',
-    'siteacc_add_name_place'     => 'Name',
-    'siteacc_add_btn'            => 'Add',
-    'siteacc_accounts_title'     => 'User accounts',
-    'siteacc_email_text_pre'     => 'Hi,
+    'siteacc_policy_login'    => 'Restrict to users',
+    'siteacc_forcelogin'      => 'Only logged in users are allowed to access (incl. <em>reading</em>)',
+    'siteacc_managedusers'    => 'Only allow selected users to log in <small class="showManagedUsers">(see below)</small>',
+    'siteacc_logins'          => 'The following login variants are possible',
+    'siteacc_useraccounts'    => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
+    'siteacc_ww'              => 'Wurzelwerk <small>(everyone with access to German Wurzelwerk)</small>',
+    'siteacc_otherlogins'     => 'Other methods <small>(OpenID, maybe Facebook / Twitter in the future)</small>',
+    'siteacc_admins_title'    => 'Administrators of this site',
+    'siteacc_admins_add'      => 'Add',
+    'siteacc_admins_user'     => 'User',
+    'siteacc_admins_del'      => 'Remove',
+    'siteacc_admins_all_cons' => 'All consultations',
+    'siteacc_admins_one_con'  => 'This consultation',
+    'siteacc_add_ww'          => 'Wurzelwerk name',
+    'siteacc_add_email'       => 'E-mail address',
+    'siteacc_add_name_title'  => 'Wurzelwerk username / E-mail address',
+    'siteacc_add_name_place'  => 'Name',
+    'siteacc_add_btn'         => 'Add',
+    'siteacc_accounts_title'  => 'User accounts',
+    'siteacc_email_text_pre'  => 'Hi,
 
 we have just created an Antragsgün account for you. Now you can join the discussion on the  motions / drafts.
 Here is your login data:
@@ -214,7 +215,7 @@ Here is your login data:
 
 Good-bye,
   Team Antragsgrün',
-    'siteacc_acc_expl_mail'      => '<h3>Explanation:</h3>
+    'siteacc_acc_expl_mail'   => '<h3>Explanation:</h3>
 If this whole site or some functionality on it should only be accessible for specific persons,
 you can specify these persons below.<br>
 <br>
@@ -223,7 +224,7 @@ By submitting the form ("Create"), an invitation e-mail will be sent to the give
 If the users entered do not have an account yet, one will be created automatically.
 The <strong>%ACCOUNT%</strong> in the e-mail text will be replaced by the user data.<br>
 <strong>%LINK%</strong> will be replaced by a link to this site.',
-    'siteacc_acc_expl_nomail'    => '<h3>Explanation:</h3>
+    'siteacc_acc_expl_nomail' => '<h3>Explanation:</h3>
 If this whole site or some functionality on it should only be accessible for specific persons,
 you can specify these persons below.<br>
 <br>

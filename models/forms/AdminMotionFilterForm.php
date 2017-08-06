@@ -22,6 +22,7 @@ class AdminMotionFilterForm extends Model
     const SORT_INITIATOR    = 4;
     const SORT_TAG          = 5;
     const SORT_PUBLICATION  = 6;
+    const SORT_PROPOSAL     = 7;
 
     /** @var int */
     public $status     = null;
@@ -45,23 +46,28 @@ class AdminMotionFilterForm extends Model
     /** @var int */
     public $sort = 3;
 
+    /** @var boolean */
+    private $showScreening;
+
     /**
      * @param Consultation $consultation
      * @param Motion[] $allMotions
      * @param bool $amendments
+     * @param boolean $showScreening
      */
-    public function __construct(Consultation $consultation, $allMotions, $amendments)
+    public function __construct(Consultation $consultation, $allMotions, $amendments, $showScreening)
     {
         parent::__construct();
+        $this->showScreening = $showScreening;
         $this->consultation  = $consultation;
         $this->allMotions    = [];
         $this->allAmendments = [];
         foreach ($allMotions as $motion) {
-            if ($motion->isVisibleForAdmins()) {
+            if ($this->isVisible($motion)) {
                 $this->allMotions[] = $motion;
                 if ($amendments) {
                     foreach ($motion->amendments as $amend) {
-                        if ($amend->status != Amendment::STATUS_DELETED) {
+                        if ($this->isVisible($amend)) {
                             $this->allAmendments[] = $amend;
                         }
                     }
@@ -70,6 +76,18 @@ class AdminMotionFilterForm extends Model
         }
     }
 
+    /**
+     * @param IMotion $entry
+     * @return bool
+     */
+    private function isVisible(IMotion $entry)
+    {
+        if ($this->showScreening) {
+            return $entry->isVisibleForAdmins();
+        } else {
+            return $entry->isVisibleForProposalAdmins();
+        }
+    }
 
     /**
      * @return array
@@ -513,17 +531,17 @@ class AdminMotionFilterForm extends Model
     {
         $str = '';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str    .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix);
-        $str .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
-        $str .= '</label>';
+        $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
+        $str    .= '</label>';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
+        $str   .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
-        $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
-        $str .= '</label>';
+        $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
+        $str   .= '</label>';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
+        $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
         $stati       = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
@@ -543,7 +561,7 @@ class AdminMotionFilterForm extends Model
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
             $name = \Yii::t('admin', 'filter_tag') . ':';
-            $str .= '<label>' . $name . '<br>';
+            $str  .= '<label>' . $name . '<br>';
             $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
@@ -554,8 +572,8 @@ class AdminMotionFilterForm extends Model
 
         $agendaItemList = $this->getAgendaItemList();
         if (count($agendaItemList) > 0) {
-            $name = \Yii::t('admin', 'filter_agenda_item') . ':';
-            $str .= '<label>' . $name . '<br>';
+            $name  = \Yii::t('admin', 'filter_agenda_item') . ':';
+            $str   .= '<label>' . $name . '<br>';
             $items = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;

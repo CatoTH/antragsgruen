@@ -90,6 +90,7 @@ return [
     'list_tag'                    => 'Thema',
     'list_initiators'             => 'Initiator*innen',
     'list_status'                 => 'Status',
+    'list_proposal'               => 'Verfahrensvorschlag',
     'list_title'                  => 'Titel',
     'list_prefix'                 => 'Antragsnr.',
     'list_type'                   => 'Typ',

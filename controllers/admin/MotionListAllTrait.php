@@ -9,18 +9,12 @@ use yii\web\Response;
 
 /**
  * @property Consultation $consultation
- * @method showErrorpage(int $code, string $message)
- * @method render(string $view, array $options)
- * @method renderPartial(string $view, array $options)
- * @method isPostSet(string $name)
- * @method isRequestSet(string $name)
- * @method getRequestValue(string $name)
  */
 trait MotionListAllTrait
 {
     /**
      */
-    protected function actionListallMotions()
+    protected function actionListallScreeningMotions()
     {
         if ($this->isRequestSet('motionScreen')) {
             $motion = $this->consultation->getMotion($this->getRequestValue('motionScreen'));
@@ -87,7 +81,7 @@ trait MotionListAllTrait
 
     /**
      */
-    protected function actionListallAmendments()
+    protected function actionListallScreeningAmendments()
     {
         if ($this->isRequestSet('amendmentScreen')) {
             $amendment = $this->consultation->getAmendment($this->getRequestValue('amendmentScreen'));
@@ -150,28 +144,45 @@ trait MotionListAllTrait
         }
     }
 
+    /**
+     */
+    protected function actionListallProposalAmendments()
+    {
+        // @TODO
+    }
+
 
     /**
      * @return string
      */
     public function actionListall()
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT)) {
+        $consultation       = $this->consultation;
+        $privilegeScreening = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
+        $privilegeProposals = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+        if (!($privilegeScreening || $privilegeProposals)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
             return '';
         }
 
-        $this->actionListallMotions();
-        $this->actionListallAmendments();
+        if ($privilegeScreening) {
+            $this->actionListallScreeningMotions();
+            $this->actionListallScreeningAmendments();
+        }
+        if ($privilegeProposals) {
+            $this->actionListallProposalAmendments();
+        }
 
-        $search = new AdminMotionFilterForm($this->consultation, $this->consultation->motions, true);
+        $search = new AdminMotionFilterForm($consultation, $consultation->motions, true, $privilegeScreening);
         if ($this->isRequestSet('Search')) {
             $search->setAttributes($this->getRequestValue('Search'));
         }
 
         return $this->render('list_all', [
-            'entries' => $search->getSorted(),
-            'search'  => $search,
+            'entries'            => $search->getSorted(),
+            'search'             => $search,
+            'privilegeScreening' => $privilegeScreening,
+            'privilegeProposals' => $privilegeProposals,
         ]);
     }
 
@@ -181,14 +192,14 @@ trait MotionListAllTrait
     public function actionOdslistall()
     {
         // @TODO: support filtering for motion types and withdrawn motions
-        
+
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
         \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
         \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
 
         return $this->renderPartial('ods_list_all', [
-            'items'      => $this->consultation->getAgendaWithMotions(),
+            'items' => $this->consultation->getAgendaWithMotions(),
         ]);
     }
 }

@@ -7,6 +7,8 @@ use yii\helpers\Html;
 /**
  * @var Amendment $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
+ * @var boolean $colProposals
+ * @var boolean $colAction
  */
 
 /** @var \app\controllers\Base $controller */
@@ -18,7 +20,9 @@ $editUrl        = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' 
 $viewUrl        = UrlHelper::createAmendmentUrl($entry);
 $route          = 'admin/motion/listall';
 echo '<tr class="amendment amendment' . $entry->id . '">';
-echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
+if ($colAction) {
+    echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
+}
 echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
@@ -38,6 +42,19 @@ if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
 }
 echo '</td>';
+
+if ($colProposals) {
+    echo '<td>';
+    $name = ($entry->proposalStatus ? $amendmentStati[$entry->proposalStatus] : '-');
+    echo Html::a($name, UrlHelper::createAmendmentUrl($entry));
+    if ($entry->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
+        $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
+        echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right"></span> ' .
+            Html::a('Bearbeiten', $url) . '</div>';
+    }
+    echo '</td>';
+}
+
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {
     if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
@@ -57,38 +74,40 @@ if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLa
 echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'odt']);
 echo '</td>';
 
-echo '<td class="actionCol"><div class="btn-group">
+if ($colAction) {
+    echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
     Aktion
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
-$screenable = [
-    Amendment::STATUS_DRAFT,
-    Amendment::STATUS_DRAFT_ADMIN,
-    Amendment::STATUS_SUBMITTED_UNSCREENED,
-    Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED,
-];
-if (in_array($entry->status, $screenable)) {
-    $name = Html::encode(\Yii::t('admin', 'list_screen'));
-    $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
-    echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
-} else {
-    $name = Html::encode(\Yii::t('admin', 'list_unscreen'));
-    $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
-    echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
-}
-$name = Html::encode(\Yii::t('admin', 'list_template_amendment'));
-$link = Html::encode(UrlHelper::createUrl([
-    'amendment/create',
-    'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
-    'cloneFrom'  => $entry->id
-]));
-echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
+    $screenable = [
+        Amendment::STATUS_DRAFT,
+        Amendment::STATUS_DRAFT_ADMIN,
+        Amendment::STATUS_SUBMITTED_UNSCREENED,
+        Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED,
+    ];
+    if (in_array($entry->status, $screenable)) {
+        $name = Html::encode(\Yii::t('admin', 'list_screen'));
+        $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
+        echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
+    } else {
+        $name = Html::encode(\Yii::t('admin', 'list_unscreen'));
+        $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
+        echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
+    }
+    $name = Html::encode(\Yii::t('admin', 'list_template_amendment'));
+    $link = Html::encode(UrlHelper::createUrl([
+        'amendment/create',
+        'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
+        'cloneFrom'  => $entry->id
+    ]));
+    echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
-$delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));
-echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
-    'onClick="return confirm(\'' . addslashes(\Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
-    \Yii::t('admin', 'list_delete') . '</a></li>';
-echo '</ul></div></td>';
+    $delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));
+    echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
+        'onClick="return confirm(\'' . addslashes(\Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
+        \Yii::t('admin', 'list_delete') . '</a></li>';
+    echo '</ul></div></td>';
+}
 echo '</tr>';

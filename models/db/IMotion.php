@@ -55,7 +55,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_DRAFT_ADMIN = 16;
 
     // Saved drafts while merging amendments into an motion
-    const STATUS_MERGING_DRAFT_PUBLIC = 19;
+    const STATUS_MERGING_DRAFT_PUBLIC  = 19;
     const STATUS_MERGING_DRAFT_PRIVATE = 20;
 
     // The modified version of an amendment, as proposed by the admins.
@@ -64,7 +64,7 @@ abstract class IMotion extends ActiveRecord
 
     // An amendment or motion has been referred to another institution.
     // The institution is documented in statusString, or, in case of a change proposal, in proposalComment
-    const STATUS_REFERRED            = 10;
+    const STATUS_REFERRED = 10;
 
     // An amendment becomes obsoleted by another amendment. That one is referred by an id
     // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalReferenceId
@@ -193,7 +193,22 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_DELETED,
             static::STATUS_MERGING_DRAFT_PUBLIC,
             static::STATUS_MERGING_DRAFT_PRIVATE,
+            static::STATUS_PROPOSED_MODIFIED_AMENDMENT,
         ]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisibleForProposalAdmins()
+    {
+        return (
+            $this->isVisibleForAdmins() &&
+            !in_array($this->status, [
+                static::STATUS_DRAFT,
+                static::STATUS_DRAFT_ADMIN,
+            ])
+        );
     }
 
     /**

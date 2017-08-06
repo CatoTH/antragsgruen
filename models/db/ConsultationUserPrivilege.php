@@ -149,7 +149,10 @@ class ConsultationUserPrivilege extends ActiveRecord
     {
         switch ($permission) {
             case User::PRIVILEGE_ANY:
-                return ($this->adminSuper == 1 || $this->adminContentEdit == 1 || $this->adminScreen);
+                return (
+                    $this->adminSuper == 1 || $this->adminContentEdit == 1 ||
+                    $this->adminScreen || $this->adminProposals
+                );
             case User::PRIVILEGE_CONSULTATION_SETTINGS:
                 return ($this->adminSuper == 1);
             case User::PRIVILEGE_CONTENT_EDIT:
