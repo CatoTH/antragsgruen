@@ -46,7 +46,7 @@ class TextSimple extends ISectionType
             $origParas      = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
             $amendParas     = HTMLTools::sectionSimpleHTML($section->data);
             $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
-            $amendmentHtml  = implode("", $amDiffSections);
+            $amendmentHtml  = implode('', $amDiffSections);
 
             return $this->getTextAmendmentFormField(false, $amendmentHtml, $fixedWidth);
         } else {

@@ -518,7 +518,7 @@ class AmendmentController extends Base
 
         $msgSuccess = null;
         if (\Yii::$app->request->post('save', null) !== null) {
-            $form->save(\Yii::$app->request->post());
+            $form->save(\Yii::$app->request->post(), $_FILES);
             $msgSuccess = 'Gespeichert.';
         }
 
