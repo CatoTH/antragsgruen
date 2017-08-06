@@ -631,6 +631,9 @@ class Diff
                 $pendingInsert = '';
             }
         }
+        if ($pendingInsert) {
+            $resolved[] = $pendingInsert;
+        }
 
         $resolved = MovingParagraphDetector::markupMovedParagraphs($resolved);
 

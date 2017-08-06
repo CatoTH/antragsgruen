@@ -900,4 +900,20 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
+
+    /**
+     * @throws \app\models\exceptions\Internal
+     */
+    public function testInsertingIntoEmptySection()
+    {
+        $str1   = '';
+        $str2   = '<p>New paragraph</p>';
+        $expect = ['<p class="inserted">New paragraph</p>'];
+
+        $diff           = new Diff();
+        $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
+        $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
+        $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals($expect, $diffParas);
+    }
 }
