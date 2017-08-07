@@ -38,6 +38,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $userNotifications
+ * @property VotingBlock[] $votingBlocks
  */
 class Consultation extends ActiveRecord
 {
@@ -215,6 +216,14 @@ class Consultation extends ActiveRecord
     public function getTags()
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlocks()
+    {
+        return $this->hasMany(VotingBlock::class, ['consultationId' => 'id']);
     }
 
     /**

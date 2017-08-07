@@ -39,7 +39,10 @@ use yii\helpers\Html;
  * @property int $globalAlternative
  * @property int $proposalStatus
  * @property int $proposalReferenceId
+ * @property string|null $proposalVisibleFrom
  * @property string $proposalComment
+ * @property string|null $votingBlockId
+ * @property int $votingStatus
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
@@ -47,6 +50,7 @@ use yii\helpers\Html;
  * @property AmendmentSection[] $sections
  * @property Amendment $proposalReference
  * @property Amendment $proposalReferencedBy
+ * @property VotingBlock $votingBlock
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -141,6 +145,14 @@ class Amendment extends IMotion implements IRSSItem
     public function getProposalReferencedBy()
     {
         return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlock()
+    {
+        return $this->hasOne(VotingBlock::class, ['id' => 'votiongBlockId']);
     }
 
     /**

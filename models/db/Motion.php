@@ -33,9 +33,11 @@ use yii\helpers\Html;
  * @property string $statusString
  * @property int $nonAmendable
  * @property string $noteInternal
+ * @property string|null $proposalVisibleFrom
  * @property string $cache
  * @property int $textFixed
  * @property string $slug
+ * @property string|null $votingBlockId
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -48,6 +50,7 @@ use yii\helpers\Html;
  * @property ConsultationAgendaItem $agendaItem
  * @property Motion $replacedMotion
  * @property Motion[] $replacedByMotions
+ * @property VotingBlock $votingBlock
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -168,6 +171,14 @@ class Motion extends IMotion implements IRSSItem
     public function getReplacedMotion()
     {
         return $this->hasOne(Motion::class, ['id' => 'parentMotionId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlock()
+    {
+        return $this->hasOne(VotingBlock::class, ['id' => 'votiongBlockId']);
     }
 
     /**

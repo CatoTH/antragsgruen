@@ -25,7 +25,10 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `globalAlternative`     TINYINT(4)           DEFAULT '0',
   `proposalStatus`        TINYINT(4)           DEFAULT NULL,
   `proposalReferenceId`   INT(11)              DEFAULT NULL,
-  `proposalComment`       TEXT
+  `proposalComment`       TEXT,
+  `proposalVisibleFrom`   TIMESTAMP   NULL     DEFAULT NULL,
+  `votingStatus`          TINYINT(4)           DEFAULT NULL,
+  `votingBlockId`         INT(11)              DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -372,7 +375,9 @@ CREATE TABLE `###TABLE_PREFIX###motion` (
   `noteInternal`    TEXT,
   `cache`           LONGTEXT    NOT NULL,
   `textFixed`       TINYINT(4)           DEFAULT '0',
-  `slug`            VARCHAR(100)         DEFAULT NULL
+  `slug`            VARCHAR(100)         DEFAULT NULL,
+  `votingStatus`    TINYINT(4)           DEFAULT NULL,
+  `votingBlockId`   INT(11)              DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -560,9 +565,9 @@ CREATE TABLE `###TABLE_PREFIX###texTemplate` (
 CREATE TABLE `###TABLE_PREFIX###user` (
   `id`             INT(11)     NOT NULL,
   `name`           TEXT        NOT NULL,
-  `nameGiven`      TEXT                 DEFAULT NULL,
-  `nameFamily`     TEXT                 DEFAULT NULL,
-  `organization`   TEXT                 DEFAULT NULL,
+  `nameGiven`      TEXT,
+  `nameFamily`     TEXT,
+  `organization`   TEXT,
   `fixedData`      TINYINT(4)           DEFAULT '0',
   `email`          VARCHAR(200)         DEFAULT NULL,
   `emailConfirmed` TINYINT(4)           DEFAULT '0',
@@ -596,6 +601,21 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `votingBlock`
+--
+
+CREATE TABLE `###TABLE_PREFIX###votingBlock` (
+  `id`             INT(11)      NOT NULL,
+  `consultationId` INT(11)      NOT NULL,
+  `title`          VARCHAR(150) NOT NULL,
+  `votingStatus`   TINYINT(4) DEFAULT NULL
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = latin1;
+
 --
 -- Indexes for dumped tables
 --
@@ -603,15 +623,16 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
 --
 -- Indexes for table `amendment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendment`
+ALTER TABLE `amendment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_motionIdx` (`motionId`),
-  ADD KEY `amendment_reference_am` (`proposalReferenceId`);
+  ADD KEY `amendment_reference_am` (`proposalReferenceId`),
+  ADD KEY `ix_amendment_voting_block` (`votingBlockId`);
 
 --
 -- Indexes for table `amendmentAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentAdminComment`
+ALTER TABLE `amendmentAdminComment`
   ADD UNIQUE KEY `id` (`id`),
   ADD KEY `amendmentId` (`amendmentId`),
   ADD KEY `userId` (`userId`);
@@ -619,7 +640,7 @@ ALTER TABLE `###TABLE_PREFIX###amendmentAdminComment`
 --
 -- Indexes for table `amendmentComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentComment`
+ALTER TABLE `amendmentComment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_amendment_comment_userIdx` (`userId`),
   ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
@@ -627,14 +648,14 @@ ALTER TABLE `###TABLE_PREFIX###amendmentComment`
 --
 -- Indexes for table `amendmentSection`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentSection`
+ALTER TABLE `amendmentSection`
   ADD PRIMARY KEY (`amendmentId`, `sectionId`),
   ADD KEY `sectionId` (`sectionId`);
 
 --
 -- Indexes for table `amendmentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
+ALTER TABLE `amendmentSupporter`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_amendmentIdx` (`amendmentId`),
   ADD KEY `fk_supporter_idx` (`userId`);
@@ -642,7 +663,7 @@ ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
 --
 -- Indexes for table `consultation`
 --
-ALTER TABLE `###TABLE_PREFIX###consultation`
+ALTER TABLE `consultation`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `yii_url_UNIQUE` (`urlPath`, `siteId`),
   ADD KEY `fk_consultation_siteIdx` (`siteId`);
@@ -650,7 +671,7 @@ ALTER TABLE `###TABLE_PREFIX###consultation`
 --
 -- Indexes for table `consultationAgendaItem`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
+ALTER TABLE `consultationAgendaItem`
   ADD PRIMARY KEY (`id`),
   ADD KEY `consultationId` (`consultationId`),
   ADD KEY `parentItemId` (`parentItemId`),
@@ -659,7 +680,7 @@ ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
 --
 -- Indexes for table `consultationLog`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationLog`
+ALTER TABLE `consultationLog`
   ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`userId`),
   ADD KEY `consultationId` (`consultationId`, `actionTime`) USING BTREE;
@@ -667,7 +688,7 @@ ALTER TABLE `###TABLE_PREFIX###consultationLog`
 --
 -- Indexes for table `consultationMotionType`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
+ALTER TABLE `consultationMotionType`
   ADD PRIMARY KEY (`id`),
   ADD KEY `consultationId` (`consultationId`, `position`) USING BTREE,
   ADD KEY `texLayout` (`texTemplateId`);
@@ -675,28 +696,28 @@ ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
 --
 -- Indexes for table `consultationOdtTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
+ALTER TABLE `consultationOdtTemplate`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_consultationIdx` (`consultationId`);
 
 --
 -- Indexes for table `consultationSettingsMotionSection`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
+ALTER TABLE `consultationSettingsMotionSection`
   ADD PRIMARY KEY (`id`),
   ADD KEY `motionType` (`motionTypeId`);
 
 --
 -- Indexes for table `consultationSettingsTag`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
+ALTER TABLE `consultationSettingsTag`
   ADD PRIMARY KEY (`id`),
   ADD KEY `consultationId` (`consultationId`);
 
 --
 -- Indexes for table `consultationText`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationText`
+ALTER TABLE `consultationText`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`),
   ADD KEY `fk_texts_consultationIdx` (`consultationId`);
@@ -704,20 +725,20 @@ ALTER TABLE `###TABLE_PREFIX###consultationText`
 --
 -- Indexes for table `consultationUserPrivilege`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
+ALTER TABLE `consultationUserPrivilege`
   ADD PRIMARY KEY (`userId`, `consultationId`),
   ADD KEY `consultationId` (`consultationId`);
 
 --
 -- Indexes for table `emailBlacklist`
 --
-ALTER TABLE `###TABLE_PREFIX###emailBlacklist`
+ALTER TABLE `emailBlacklist`
   ADD PRIMARY KEY (`emailHash`);
 
 --
 -- Indexes for table `emailLog`
 --
-ALTER TABLE `###TABLE_PREFIX###emailLog`
+ALTER TABLE `emailLog`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_mail_log_userIdx` (`toUserId`),
   ADD KEY `fromSiteId` (`fromSiteId`);
@@ -725,24 +746,25 @@ ALTER TABLE `###TABLE_PREFIX###emailLog`
 --
 -- Indexes for table `migration`
 --
-ALTER TABLE `###TABLE_PREFIX###migration`
+ALTER TABLE `migration`
   ADD PRIMARY KEY (`version`);
 
 --
 -- Indexes for table `motion`
 --
-ALTER TABLE `###TABLE_PREFIX###motion`
+ALTER TABLE `motion`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `motionSlug` (`consultationId`, `slug`),
   ADD KEY `consultation` (`consultationId`),
   ADD KEY `parent_motion` (`parentMotionId`),
   ADD KEY `type` (`motionTypeId`),
-  ADD KEY `agendaItemId` (`agendaItemId`);
+  ADD KEY `agendaItemId` (`agendaItemId`),
+  ADD KEY `ix_motion_voting_block` (`votingBlockId`);
 
 --
 -- Indexes for table `motionAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionAdminComment`
+ALTER TABLE `motionAdminComment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`userId`),
   ADD KEY `motionId` (`motionId`);
@@ -750,7 +772,7 @@ ALTER TABLE `###TABLE_PREFIX###motionAdminComment`
 --
 -- Indexes for table `motionComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionComment`
+ALTER TABLE `motionComment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_comment_userIdx` (`userId`),
   ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`);
@@ -758,7 +780,7 @@ ALTER TABLE `###TABLE_PREFIX###motionComment`
 --
 -- Indexes for table `motionCommentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionCommentSupporter`
+ALTER TABLE `motionCommentSupporter`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ip_hash_motion` (`ipHash`, `motionCommentId`),
   ADD UNIQUE KEY `cookie_motion` (`cookieId`, `motionCommentId`),
@@ -767,14 +789,14 @@ ALTER TABLE `###TABLE_PREFIX###motionCommentSupporter`
 --
 -- Indexes for table `motionSection`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSection`
+ALTER TABLE `motionSection`
   ADD PRIMARY KEY (`motionId`, `sectionId`),
   ADD KEY `motion_section_fk_sectionIdx` (`sectionId`);
 
 --
 -- Indexes for table `motionSubscription`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSubscription`
+ALTER TABLE `motionSubscription`
   ADD PRIMARY KEY (`motionId`, `userId`),
   ADD KEY `fk_motionId` (`motionId`),
   ADD KEY `fk_userId` (`userId`);
@@ -782,7 +804,7 @@ ALTER TABLE `###TABLE_PREFIX###motionSubscription`
 --
 -- Indexes for table `motionSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSupporter`
+ALTER TABLE `motionSupporter`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_supporter_idx` (`userId`),
   ADD KEY `fk_motionIdx` (`motionId`);
@@ -790,14 +812,14 @@ ALTER TABLE `###TABLE_PREFIX###motionSupporter`
 --
 -- Indexes for table `motionTag`
 --
-ALTER TABLE `###TABLE_PREFIX###motionTag`
+ALTER TABLE `motionTag`
   ADD PRIMARY KEY (`motionId`, `tagId`),
   ADD KEY `motion_tag_fk_tagIdx` (`tagId`);
 
 --
 -- Indexes for table `site`
 --
-ALTER TABLE `###TABLE_PREFIX###site`
+ALTER TABLE `site`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `subdomain_UNIQUE` (`subdomain`),
   ADD KEY `fk_veranstaltungsreihe_veranstaltung1_idx` (`currentConsultationId`);
@@ -805,7 +827,7 @@ ALTER TABLE `###TABLE_PREFIX###site`
 --
 -- Indexes for table `siteAdmin`
 --
-ALTER TABLE `###TABLE_PREFIX###siteAdmin`
+ALTER TABLE `siteAdmin`
   ADD PRIMARY KEY (`siteId`, `userId`),
   ADD KEY `site_admin_fk_userIdx` (`userId`),
   ADD KEY `site_admin_fk_siteIdx` (`siteId`);
@@ -813,24 +835,31 @@ ALTER TABLE `###TABLE_PREFIX###siteAdmin`
 --
 -- Indexes for table `texTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###texTemplate`
+ALTER TABLE `texTemplate`
   ADD PRIMARY KEY (`id`),
   ADD KEY `siteId` (`siteId`);
 
 --
 -- Indexes for table `user`
 --
-ALTER TABLE `###TABLE_PREFIX###user`
+ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `auth_UNIQUE` (`auth`);
 
 --
 -- Indexes for table `userNotification`
 --
-ALTER TABLE `###TABLE_PREFIX###userNotification`
+ALTER TABLE `userNotification`
   ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`userId`),
   ADD KEY `consultationId` (`consultationId`, `notificationType`, `notificationReferenceId`);
+
+--
+-- Indexes for table `votingBlock`
+--
+ALTER TABLE `votingBlock`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_voting_block_consultation` (`consultationId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -839,127 +868,133 @@ ALTER TABLE `###TABLE_PREFIX###userNotification`
 --
 -- AUTO_INCREMENT for table `amendment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendment`
+ALTER TABLE `amendment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 278;
+  AUTO_INCREMENT = 281;
 --
 -- AUTO_INCREMENT for table `amendmentAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentAdminComment`
+ALTER TABLE `amendmentAdminComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amendmentComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentComment`
+ALTER TABLE `amendmentComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `amendmentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
+ALTER TABLE `amendmentSupporter`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 493;
+  AUTO_INCREMENT = 497;
 --
 -- AUTO_INCREMENT for table `consultation`
 --
-ALTER TABLE `###TABLE_PREFIX###consultation`
+ALTER TABLE `consultation`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 8;
 --
 -- AUTO_INCREMENT for table `consultationAgendaItem`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
+ALTER TABLE `consultationAgendaItem`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 15;
 --
 -- AUTO_INCREMENT for table `consultationLog`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationLog`
+ALTER TABLE `consultationLog`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 11;
+  AUTO_INCREMENT = 16;
 --
 -- AUTO_INCREMENT for table `consultationMotionType`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
+ALTER TABLE `consultationMotionType`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 11;
 --
 -- AUTO_INCREMENT for table `consultationOdtTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
+ALTER TABLE `consultationOdtTemplate`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `consultationSettingsMotionSection`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
+ALTER TABLE `consultationSettingsMotionSection`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 33;
 --
 -- AUTO_INCREMENT for table `consultationSettingsTag`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
+ALTER TABLE `consultationSettingsTag`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 11;
 --
 -- AUTO_INCREMENT for table `consultationText`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationText`
+ALTER TABLE `consultationText`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 4;
 --
 -- AUTO_INCREMENT for table `emailLog`
 --
-ALTER TABLE `###TABLE_PREFIX###emailLog`
+ALTER TABLE `emailLog`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 9;
 --
 -- AUTO_INCREMENT for table `motion`
 --
-ALTER TABLE `###TABLE_PREFIX###motion`
+ALTER TABLE `motion`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 117;
+  AUTO_INCREMENT = 119;
 --
 -- AUTO_INCREMENT for table `motionAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionAdminComment`
+ALTER TABLE `motionAdminComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionComment`
+ALTER TABLE `motionComment`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionCommentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionCommentSupporter`
+ALTER TABLE `motionCommentSupporter`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `motionSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSupporter`
+ALTER TABLE `motionSupporter`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 152;
+  AUTO_INCREMENT = 154;
 --
 -- AUTO_INCREMENT for table `site`
 --
-ALTER TABLE `###TABLE_PREFIX###site`
+ALTER TABLE `site`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
   AUTO_INCREMENT = 8;
 --
 -- AUTO_INCREMENT for table `texTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###texTemplate`
+ALTER TABLE `texTemplate`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 2;
+  AUTO_INCREMENT = 3;
 --
 -- AUTO_INCREMENT for table `user`
 --
-ALTER TABLE `###TABLE_PREFIX###user`
+ALTER TABLE `user`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 5;
+  AUTO_INCREMENT = 9;
 --
 -- AUTO_INCREMENT for table `userNotification`
 --
-ALTER TABLE `###TABLE_PREFIX###userNotification`
+ALTER TABLE `userNotification`
+  MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 2;
+--
+-- AUTO_INCREMENT for table `votingBlock`
+--
+ALTER TABLE `votingBlock`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
@@ -968,245 +1003,259 @@ ALTER TABLE `###TABLE_PREFIX###userNotification`
 --
 -- Constraints for table `amendment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendment`
-  ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `amendment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+ALTER TABLE `amendment`
+  ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `amendment` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_amendment_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentAdminComment`
-  ADD CONSTRAINT `amendmentAdminComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
-  ADD CONSTRAINT `amendmentAdminComment_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`);
+ALTER TABLE `amendmentAdminComment`
+  ADD CONSTRAINT `amendmentAdminComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+  ADD CONSTRAINT `amendmentAdminComment_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`);
 
 --
 -- Constraints for table `amendmentComment`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentComment`
-  ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
-  ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+ALTER TABLE `amendmentComment`
+  ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+  ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentSection`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentSection`
-  ADD CONSTRAINT `amendmentSection_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`),
-  ADD CONSTRAINT `amendmentSection_ibfk_2` FOREIGN KEY (`sectionId`) REFERENCES `###TABLE_PREFIX###consultationSettingsMotionSection` (`id`);
+ALTER TABLE `amendmentSection`
+  ADD CONSTRAINT `amendmentSection_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+  ADD CONSTRAINT `amendmentSection_ibfk_2` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`);
 
 --
 -- Constraints for table `amendmentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###amendmentSupporter`
-  ADD CONSTRAINT `fk_support_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `###TABLE_PREFIX###amendment` (`id`)
+ALTER TABLE `amendmentSupporter`
+  ADD CONSTRAINT `fk_support_amendment` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+  ADD CONSTRAINT `fk_support_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultation`
 --
-ALTER TABLE `###TABLE_PREFIX###consultation`
-  ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
+ALTER TABLE `consultation`
+  ADD CONSTRAINT `fk_veranstaltung_veranstaltungsreihe1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationAgendaItem`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationAgendaItem`
-  ADD CONSTRAINT `consultationAgendaItem_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `consultationAgendaItem`
+  ADD CONSTRAINT `consultationAgendaItem_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `consultationAgendaItem_ibfk_2` FOREIGN KEY (`parentItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`)
+  ADD CONSTRAINT `consultationAgendaItem_ibfk_2` FOREIGN KEY (`parentItemId`) REFERENCES `consultationAgendaItem` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `###TABLE_PREFIX###consultationMotionType` (`id`)
+  ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationLog`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationLog`
-  ADD CONSTRAINT `consultationLog_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
-  ADD CONSTRAINT `consultationLog_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+ALTER TABLE `consultationLog`
+  ADD CONSTRAINT `consultationLog_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `consultationLog_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationMotionType`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationMotionType`
-  ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`),
-  ADD CONSTRAINT `consultationMotionType_ibfk_2` FOREIGN KEY (`texTemplateId`) REFERENCES `###TABLE_PREFIX###texTemplate` (`id`);
+ALTER TABLE `consultationMotionType`
+  ADD CONSTRAINT `consultationMotionType_ibfk_1` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`),
+  ADD CONSTRAINT `consultationMotionType_ibfk_2` FOREIGN KEY (`texTemplateId`) REFERENCES `texTemplate` (`id`);
 
 --
 -- Constraints for table `consultationOdtTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationOdtTemplate`
-  ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `consultationOdtTemplate`
+  ADD CONSTRAINT `fk_odt_templates` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSettingsMotionSection`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsMotionSection`
-  ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `###TABLE_PREFIX###consultationMotionType` (`id`)
+ALTER TABLE `consultationSettingsMotionSection`
+  ADD CONSTRAINT `consultationSettingsMotionSection_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationSettingsTag`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationSettingsTag`
-  ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `consultationSettingsTag`
+  ADD CONSTRAINT `consultation_tag_fk_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationText`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationText`
-  ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `consultationText`
+  ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `consultationUserPrivilege`
 --
-ALTER TABLE `###TABLE_PREFIX###consultationUserPrivilege`
-  ADD CONSTRAINT `consultationUserPrivilege_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
-  ADD CONSTRAINT `consultationUserPrivilege_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+ALTER TABLE `consultationUserPrivilege`
+  ADD CONSTRAINT `consultationUserPrivilege_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `consultationUserPrivilege_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `emailLog`
 --
-ALTER TABLE `###TABLE_PREFIX###emailLog`
-  ADD CONSTRAINT `emailLog_ibfk_1` FOREIGN KEY (`fromSiteId`) REFERENCES `###TABLE_PREFIX###site` (`id`),
-  ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+ALTER TABLE `emailLog`
+  ADD CONSTRAINT `emailLog_ibfk_1` FOREIGN KEY (`fromSiteId`) REFERENCES `site` (`id`),
+  ADD CONSTRAINT `fk_mail_log_user` FOREIGN KEY (`toUserId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motion`
 --
-ALTER TABLE `###TABLE_PREFIX###motion`
-  ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `motion`
+  ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+  ADD CONSTRAINT `fk_motion_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `###TABLE_PREFIX###consultationMotionType` (`id`),
-  ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`)
+  ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`),
+  ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionAdminComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionAdminComment`
-  ADD CONSTRAINT `motionAdminComment_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
-  ADD CONSTRAINT `motionAdminComment_ibfk_2` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`);
+ALTER TABLE `motionAdminComment`
+  ADD CONSTRAINT `motionAdminComment_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `motionAdminComment_ibfk_2` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`);
 
 --
 -- Constraints for table `motionComment`
 --
-ALTER TABLE `###TABLE_PREFIX###motionComment`
-  ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+ALTER TABLE `motionComment`
+  ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `motionComment_ibfk_1` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
-  ADD CONSTRAINT `motionComment_ibfk_2` FOREIGN KEY (`motionId`, `sectionId`) REFERENCES `###TABLE_PREFIX###motionSection` (`motionId`, `sectionId`);
+  ADD CONSTRAINT `motionComment_ibfk_1` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`),
+  ADD CONSTRAINT `motionComment_ibfk_2` FOREIGN KEY (`motionId`, `sectionId`) REFERENCES `motionSection` (`motionId`, `sectionId`);
 
 --
 -- Constraints for table `motionCommentSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionCommentSupporter`
-  ADD CONSTRAINT `fk_motion_comment_supporter_comment` FOREIGN KEY (`motionCommentId`) REFERENCES `###TABLE_PREFIX###motionComment` (`id`)
+ALTER TABLE `motionCommentSupporter`
+  ADD CONSTRAINT `fk_motion_comment_supporter_comment` FOREIGN KEY (`motionCommentId`) REFERENCES `motionComment` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSection`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSection`
-  ADD CONSTRAINT `motion_section_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+ALTER TABLE `motionSection`
+  ADD CONSTRAINT `motion_section_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `motion_section_fk_section` FOREIGN KEY (`sectionId`) REFERENCES `###TABLE_PREFIX###consultationSettingsMotionSection` (`id`)
+  ADD CONSTRAINT `motion_section_fk_section` FOREIGN KEY (`sectionId`) REFERENCES `consultationSettingsMotionSection` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSubscription`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSubscription`
-  ADD CONSTRAINT `fk_subscription_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+ALTER TABLE `motionSubscription`
+  ADD CONSTRAINT `fk_subscription_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_subscription_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+  ADD CONSTRAINT `fk_subscription_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionSupporter`
 --
-ALTER TABLE `###TABLE_PREFIX###motionSupporter`
-  ADD CONSTRAINT `fk_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+ALTER TABLE `motionSupporter`
+  ADD CONSTRAINT `fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_supporter` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+  ADD CONSTRAINT `fk_supporter` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionTag`
 --
-ALTER TABLE `###TABLE_PREFIX###motionTag`
-  ADD CONSTRAINT `motion_tag_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`)
+ALTER TABLE `motionTag`
+  ADD CONSTRAINT `motion_tag_fk_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `motion_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `###TABLE_PREFIX###consultationSettingsTag` (`id`)
+  ADD CONSTRAINT `motion_tag_fk_tag` FOREIGN KEY (`tagId`) REFERENCES `consultationSettingsTag` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `site`
 --
-ALTER TABLE `###TABLE_PREFIX###site`
-  ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`)
+ALTER TABLE `site`
+  ADD CONSTRAINT `fk_site_consultation` FOREIGN KEY (`currentConsultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `siteAdmin`
 --
-ALTER TABLE `###TABLE_PREFIX###siteAdmin`
-  ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`)
+ALTER TABLE `siteAdmin`
+  ADD CONSTRAINT `site_admin_fk_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
-  ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
+  ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `texTemplate`
 --
-ALTER TABLE `###TABLE_PREFIX###texTemplate`
-  ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `###TABLE_PREFIX###site` (`id`);
+ALTER TABLE `texTemplate`
+  ADD CONSTRAINT `texTemplate_ibfk_1` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`);
 
 --
 -- Constraints for table `userNotification`
 --
-ALTER TABLE `###TABLE_PREFIX###userNotification`
-  ADD CONSTRAINT `userNotification_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`),
-  ADD CONSTRAINT `userNotification_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+ALTER TABLE `userNotification`
+  ADD CONSTRAINT `userNotification_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `userNotification_ibfk_2` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
+
+--
+-- Constraints for table `votingBlock`
+--
+ALTER TABLE `votingBlock`
+  ADD CONSTRAINT `fk_voting_block_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 
 SET SQL_MODE = @OLD_SQL_MODE;
