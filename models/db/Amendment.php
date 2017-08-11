@@ -1047,6 +1047,18 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function isProposalPublic()
     {
-        return true; // @TODO
+        if (!$this->proposalVisibleFrom) {
+            return false;
+        }
+        $visibleFromTs = Tools::dateSql2timestamp($this->proposalVisibleFrom);
+        return ($visibleFromTs <= time());
+    }
+
+    /**
+     * return boolean
+     */
+    public function hasAlternativeProposaltext()
+    {
+        return ($this->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED);
     }
 }

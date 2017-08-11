@@ -115,6 +115,28 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return string[]
+     */
+    public static function getStatiAsVerbs()
+    {
+        $return = static::getStati();
+        foreach ([
+                     static::STATUS_DELETED           => \Yii::t('structure', 'STATUSV_DELETED'),
+                     static::STATUS_WITHDRAWN         => \Yii::t('structure', 'STATUSV_WITHDRAWN'),
+                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'STATUSV_ACCEPTED'),
+                     static::STATUS_REJECTED          => \Yii::t('structure', 'STATUSV_REJECTED'),
+                     static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'STATUSV_MODIFIED_ACCEPTED'),
+                     static::STATUS_MODIFIED          => \Yii::t('structure', 'STATUSV_MODIFIED'),
+                     static::STATUS_ADOPTED           => \Yii::t('structure', 'STATUSV_ADOPTED'),
+                     static::STATUS_REFERRED          => \Yii::t('structure', 'STATUSV_REFERRED'),
+                     static::STATUS_VOTE              => \Yii::t('structure', 'STATUSV_VOTE'),
+                 ] as $statusId => $statusName) {
+            $return[$statusId] = $statusName;
+        }
+        return $return;
+    }
+
+    /**
      * @return int[]
      */
     public static function getScreeningStati()

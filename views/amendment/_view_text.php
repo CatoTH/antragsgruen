@@ -7,18 +7,28 @@
 
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
+use app\models\db\User;
 
-$hasProposedChange = false;
-if ($amendment->isProposalPublic() && $amendment->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
+$consultation = $amendment->getMyConsultation();
+
+if ($amendment->hasAlternativeProposaltext() && (
+        $amendment->isProposalPublic() || User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)
+    )) {
     $hasProposedChange = true;
     $reference         = $amendment->proposalReference;
     if ($reference) {
         /** @var AmendmentSection[] $sections */
         $sections = $amendment->proposalReference->getSortedSections(false);
         foreach ($sections as $section) {
-            echo $section->getSectionType()->getAmendmentFormatted(\Yii::t('amend', 'proposed_procedure_title'));
+            $prefix = \Yii::t('amend', 'proposed_procedure_title');
+            if (!$amendment->isProposalPublic()) {
+                $prefix = '[ADMIN] ' . $prefix;
+            }
+            echo $section->getSectionType()->getAmendmentFormatted($prefix);
         }
     }
+} else {
+    $hasProposedChange = true;
 }
 
 
@@ -32,7 +42,7 @@ if ($amendment->changeEditorial != '') {
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);
-$prefix = ($hasProposedChange ? \Yii::t('amend', 'original_title') : '');
+$prefix   = ($hasProposedChange ? \Yii::t('amend', 'original_title') : '');
 foreach ($sections as $section) {
     echo $section->getSectionType()->getAmendmentFormatted($prefix);
 }

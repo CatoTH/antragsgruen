@@ -1009,7 +1009,7 @@ iframe.pdfViewer {
     display: flex;
     flex-direction: column;
   }
-  .proposalStatusDetails {
+  .notificationSettings {
     flex: 1;
   }
 
@@ -1058,6 +1058,10 @@ iframe.pdfViewer {
       margin-top: -1px;
       width: 100%;
     }
+  }
+  .statusDetails {
+    border-top: solid 1px #eee;
+    padding: 10px;
   }
 }
 

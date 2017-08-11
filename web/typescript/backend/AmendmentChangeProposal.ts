@@ -2,11 +2,13 @@ const STATUS_REFERRED = 10;
 
 export class AmendmentChangeProposal {
     private $statusDetails: JQuery;
+    private $visibilityInput: JQuery;
     private saveUrl: string;
     private csrf: string;
 
     constructor(private $widget: JQuery) {
-        this.$statusDetails = $widget.find('.proposalStatusDetails .statusDetails');
+        this.$statusDetails = $widget.find('.statusDetails');
+        this.$visibilityInput = $widget.find('input[name=proposalVisible]');
         this.initStatusSetter();
         this.initCommentForm();
         this.saveUrl = $widget.attr('action');
@@ -18,13 +20,13 @@ export class AmendmentChangeProposal {
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         let data = {
             setStatus: newVal,
+            visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
             _csrf: this.csrf
         };
         if (newVal == STATUS_REFERRED) {
             data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
         }
         $.post(this.saveUrl, data, (ev) => {
-            console.log(ev);
             this.$widget.find('.saving').addClass('hidden');
             this.$widget.find('.saved').removeClass('hidden');
             window.setTimeout(() => this.$widget.find('.saved').addClass('hidden'), 2000);
@@ -44,9 +46,15 @@ export class AmendmentChangeProposal {
             this.$widget.find('.saving').removeClass('hidden');
         }).trigger('change');
 
+        this.$visibilityInput.change(() => {
+            this.$widget.find('.saving').removeClass('hidden');
+        });
+
         this.$widget.find('input[name=referredTo]').on('keyup', () => {
             this.$widget.find('.saving').removeClass('hidden');
         });
+
+
 
         this.$widget.find('.saving').addClass('hidden');
         this.$widget.find('.saving button').click(this.saveStatus.bind(this));

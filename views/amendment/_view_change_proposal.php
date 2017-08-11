@@ -50,25 +50,16 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
             </label>
         </section>
         <div class="middleCol">
-            <section class="proposalStatusDetails">
-                <div class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
-                    <h3>Modifiziert übernehmen</h3>
-                    <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
-                </div>
-                <div class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
-                    <label class="headingLabel">Erledigt durch...</label>
+            <div class="visibilitySettings">
+                <h3>Sichtbarkeit</h3>
+                <label>
+                    <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
+                    Verfahrensvorschlag ist sichtbar
+                </label>
+            </div>
+            <div class="notificationSettings">
 
-                </div>
-                <div class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
-                    <label class="headingLabel" for="referredTo">Überweisen an...</label>
-                    <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
-                           class="form-control">
-                </div>
-            </section>
-
-            <section class="notificationSettings">
-
-            </section>
+            </div>
 
             <section class="saving">
                 <button class="btn btn-default btn-sm">Änderungen speichern</button>
@@ -100,4 +91,21 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
             <button class="btn btn-default btn-xs">Schreiben</button>
         </section>
     </div>
+    <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
+        <h3>Modifiziert übernehmen</h3>
+        <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
+    </section>
+    <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
+        <label class="headingLabel">Erledigt durch...</label>
+
+    </section>
+    <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
+        <label class="headingLabel" for="referredTo">Überweisen an...</label>
+        <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
+               class="form-control">
+    </section>
+    <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">
+        <h3>Abstimmungsstatus</h3>
+
+    </section>
 <?= Html::endForm() ?>

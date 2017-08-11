@@ -469,6 +469,13 @@ class AmendmentController extends Base
         if (\Yii::$app->request->post('setStatus')) {
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            if (\Yii::$app->request->post('visible', 0)) {
+                if (!$amendment->proposalVisibleFrom) {
+                    $amendment->proposalVisibleFrom = date('Y-m-d H:i:s');
+                }
+            } else {
+                $amendment->proposalVisibleFrom = null;
+            }
             $amendment->save();
             $response['success'] = true;
         }

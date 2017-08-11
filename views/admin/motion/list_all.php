@@ -89,7 +89,7 @@ if ($colProposals) {
         echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_proposal') . '</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
-        echo Html::a(\Yii::t('admin', 'amend_edit_text'), $url);
+        echo Html::a(\Yii::t('admin', 'list_proposal'), $url);
     }
     echo '</th>';
 }
