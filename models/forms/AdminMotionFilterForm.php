@@ -16,18 +16,20 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_STATUS       = 1;
-    const SORT_TITLE        = 2;
-    const SORT_TITLE_PREFIX = 3;
-    const SORT_INITIATOR    = 4;
-    const SORT_TAG          = 5;
-    const SORT_PUBLICATION  = 6;
-    const SORT_PROPOSAL     = 7;
+    const SORT_STATUS          = 1;
+    const SORT_TITLE           = 2;
+    const SORT_TITLE_PREFIX    = 3;
+    const SORT_INITIATOR       = 4;
+    const SORT_TAG             = 5;
+    const SORT_PUBLICATION     = 6;
+    const SORT_PROPOSAL        = 7;
+    const SORT_PROPOSAL_STATUS = 8;
 
     /** @var int */
-    public $status     = null;
-    public $tag        = null;
-    public $agendaItem = null;
+    public $status         = null;
+    public $tag            = null;
+    public $agendaItem     = null;
+    public $proposalStatus = null;
 
     /** @var string */
     public $initiator = null;
@@ -95,8 +97,8 @@ class AdminMotionFilterForm extends Model
     public function rules()
     {
         return [
-            [['status', 'tag', 'sort', 'agendaItem'], 'number'],
-            [['status', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
+            [['status', 'proposalStatus', 'tag', 'sort', 'agendaItem'], 'number'],
+            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
         ];
     }
 
@@ -107,7 +109,14 @@ class AdminMotionFilterForm extends Model
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
+
         $this->status = (isset($values['status']) && $values['status'] != '' ? IntVal($values['status']) : null);
+
+        if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
+            $this->proposalStatus = IntVal($values['proposalStatus']);
+        } else {
+            $this->proposalStatus = null;
+        }
     }
 
     /**
@@ -143,6 +152,24 @@ class AdminMotionFilterForm extends Model
             return -1;
         }
         if ($motion1->status > $motion2->status) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * @param IMotion $motion1
+     * @param IMotion $motion2
+     * @return int
+     */
+    public function sortProposalStatus($motion1, $motion2)
+    {
+        $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
+        $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
+        if ($status1 < $status2) {
+            return -1;
+        }
+        if ($status1 > $status2) {
             return 1;
         }
         return 0;
@@ -329,6 +356,9 @@ class AdminMotionFilterForm extends Model
             case static::SORT_TAG:
                 usort($merge, [static::class, 'sortTag']);
                 break;
+            case static::SORT_PROPOSAL_STATUS:
+                usort($merge, [static::class, 'sortProposalStatus']);
+                break;
             default:
                 usort($merge, [static::class, 'sortTitlePrefix']);
         }
@@ -399,6 +429,10 @@ class AdminMotionFilterForm extends Model
             $matches = true;
 
             if ($this->status !== null && $this->status !== '' && $motion->status != $this->status) {
+                $matches = false;
+            }
+
+            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
                 $matches = false;
             }
 
@@ -495,6 +529,11 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
+            if ($this->proposalStatus !== null && $this->proposalStatus !== '' &&
+                $amend->proposalStatus != $this->proposalStatus) {
+                $matches = false;
+            }
+
             if (!$this->amendmentMatchesTag($amend)) {
                 $matches = false;
             }
@@ -556,6 +595,22 @@ class AdminMotionFilterForm extends Model
 
         }
         $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status);
+        $str .= '</label>';
+
+        $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
+        $stati       = ['' => \Yii::t('admin', 'filter_na')];
+        $foundMyself = false;
+        foreach ($this->getProposalStatusList() as $statusId => $statusName) {
+            $stati[$statusId] = $statusName;
+            if ($this->status !== null && $this->status == $statusId) {
+                $foundMyself = true;
+            }
+        }
+        if (!$foundMyself && $this->status !== null) {
+            $stati                = Amendment::getStatiAsVerbs();
+            $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
+        }
+        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $stati, $this->proposalStatus);
         $str .= '</label>';
 
         $tagsList = $this->getTagList();
@@ -621,6 +676,27 @@ class AdminMotionFilterForm extends Model
             $num[$amend->status]++;
         }
         $stati = Motion::getStati();
+        foreach ($stati as $statusId => $statusName) {
+            if (isset($num[$statusId])) {
+                $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProposalStatusList()
+    {
+        $out = $num = [];
+        foreach ($this->allAmendments as $amend) {
+            if (!isset($num[$amend->proposalStatus])) {
+                $num[$amend->proposalStatus] = 0;
+            }
+            $num[$amend->proposalStatus]++;
+        }
+        $stati = Amendment::getStatiAsVerbs();
         foreach ($stati as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';

@@ -7,6 +7,7 @@ use yii\helpers\Html;
 /**
  * @var Amendment $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
+ * @var boolean $colMark
  * @var boolean $colProposals
  * @var boolean $colAction
  */
@@ -20,7 +21,7 @@ $editUrl        = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' 
 $viewUrl        = UrlHelper::createAmendmentUrl($entry);
 $route          = 'admin/motion/listall';
 echo '<tr class="amendment amendment' . $entry->id . '">';
-if ($colAction) {
+if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
 echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';

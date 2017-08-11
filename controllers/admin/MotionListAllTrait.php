@@ -148,7 +148,16 @@ trait MotionListAllTrait
      */
     protected function actionListallProposalAmendments()
     {
-        // @TODO
+        if ($this->isRequestSet('proposalVisible')) {
+            foreach ($this->getRequestValue('amendments') as $amendmentId) {
+                $amendment = $this->consultation->getAmendment($amendmentId);
+                if (!$amendment) {
+                    continue;
+                }
+                $amendment->setProposalPublished();
+            }
+            \yii::$app->session->setFlash('success', \Yii::t('admin', 'list_proposal_published_pl'));
+        }
     }
 
 

@@ -828,6 +828,20 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      */
+    public function setProposalPublished()
+    {
+        if ($this->proposalVisibleFrom) {
+            return;
+        }
+        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
+        $this->save();
+
+        $consultation = $this->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
+    }
+
+    /**
+     */
     public function setDeleted()
     {
         $this->status = Amendment::STATUS_DELETED;

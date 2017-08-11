@@ -32,6 +32,7 @@ $layout->addAMDModule('backend/MotionList');
 $route   = 'admin/motion/listall';
 $hasTags = (count($controller->consultation->tags) > 0);
 
+$colMark      = $privilegeProposals || $privilegeScreening;
 $colAction    = $privilegeScreening;
 $colProposals = $privilegeProposals;
 
@@ -40,6 +41,9 @@ echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 echo $this->render('_list_all_export');
 
 echo '<div class="content">';
+
+echo $controller->showErrors();
+
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
 
 echo $search->getFilterFormFields();
@@ -56,7 +60,7 @@ echo '<input type="hidden" name="save" value="1">';
 
 echo '<table class="adminMotionTable">';
 echo '<thead><tr>';
-if ($colAction) {
+if ($colMark) {
     echo '<th class="markCol"></th>';
 }
 echo '<th class="typeCol">';
@@ -128,6 +132,7 @@ foreach ($entries as $entry) {
         echo $this->render('_list_all_item_motion', [
             'entry'        => $entry,
             'search'       => $search,
+            'colMark'      => $colMark,
             'colAction'    => $colAction,
             'colProposals' => $colProposals,
         ]);
@@ -137,6 +142,7 @@ foreach ($entries as $entry) {
             'entry'        => $entry,
             'search'       => $search,
             'lastMotion'   => $lastMotion,
+            'colMark'      => $colMark,
             'colAction'    => $colAction,
             'colProposals' => $colProposals,
         ]);
@@ -145,8 +151,7 @@ foreach ($entries as $entry) {
 
 echo '</table>';
 
-if ($colAction) {
-    ?>
+?>
     <section style="overflow: auto;">
         <div style="float: left; line-height: 40px; vertical-align: middle;">
             <a href="#" class="markAll"><?= \Yii::t('admin', 'list_all') ?></a> &nbsp;
@@ -154,19 +159,29 @@ if ($colAction) {
         </div>
 
         <div style="float: right;"><?= \Yii::t('admin', 'list_marked') ?>: &nbsp;
-            <button type="submit" class="btn btn-danger" name="delete">
-                <?= \Yii::t('admin', 'list_delete') ?>
-            </button> &nbsp;
-            <button type="submit" class="btn btn-info" name="unscreen">
-                <?= \Yii::t('admin', 'list_unscreen') ?>
-            </button> &nbsp;
-            <button type="submit" class="btn btn-success" name="screen">
-                <?= \Yii::t('admin', 'list_screen') ?>
-            </button>
+            <?php
+            if ($privilegeScreening) { ?>
+                <button type="submit" class="btn btn-danger" name="delete">
+                    <?= \Yii::t('admin', 'list_delete') ?>
+                </button> &nbsp;
+                <button type="submit" class="btn btn-info" name="unscreen">
+                    <?= \Yii::t('admin', 'list_unscreen') ?>
+                </button> &nbsp;
+                <button type="submit" class="btn btn-success" name="screen">
+                    <?= \Yii::t('admin', 'list_screen') ?>
+                </button> &nbsp;
+                <?php
+            }
+            if ($privilegeProposals) { ?>
+                <button type="submit" class="btn btn-success" name="proposalVisible">
+                    <?= \Yii::t('admin', 'list_proposal_visible') ?>
+                </button>
+                <?php
+            }
+            ?>
         </div>
     </section>
-    <?php
-}
+<?php
 
 echo Html::endForm();
 
