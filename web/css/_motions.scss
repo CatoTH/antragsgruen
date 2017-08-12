@@ -976,7 +976,7 @@ iframe.pdfViewer {
 }
 
 #proposedChanges {
-  background-color: #f8f8f8;
+  background-color: #f8faf8;
   border: solid 1px #eee;
   border-radius: 4px;
   margin: 0 20px 30px;
@@ -985,7 +985,7 @@ iframe.pdfViewer {
     margin: 0;
     font-size: 18px;
     padding: 5px 10px;
-    background-color: #eee;
+    background-color: #ded;
   }
 
   .holder {
@@ -1009,8 +1009,8 @@ iframe.pdfViewer {
     display: flex;
     flex-direction: column;
   }
-  .notificationSettings {
-    flex: 1;
+  .notificationSettings, .visibilitySettings {
+    padding-bottom: 10px;
   }
 
   h3, .headingLabel {
@@ -1021,6 +1021,12 @@ iframe.pdfViewer {
   label {
     font-size: 12px;
     font-weight: normal;
+  }
+  .newBlock {
+    .control-label {
+      font-size: 14px;
+      font-weight: bold;
+    }
   }
   .commentList {
     flex: 1;
@@ -1062,6 +1068,13 @@ iframe.pdfViewer {
   .statusDetails {
     border-top: solid 1px #eee;
     padding: 10px;
+  }
+  .saving, .saved {
+    border-top: solid 1px #eee;
+    height: 40px;
+    text-align: center;
+    line-height: 38px;
+    vertical-align: middle;
   }
 }
 

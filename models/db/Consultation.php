@@ -227,6 +227,20 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param int $votingBlockId
+     * @return VotingBlock|null
+     */
+    public function getVotingBlock($votingBlockId)
+    {
+        foreach ($this->votingBlocks as $votingBlock) {
+            if ($votingBlock->id == $votingBlockId) {
+                return $votingBlock;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getLogEntries()

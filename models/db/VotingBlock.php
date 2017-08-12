@@ -25,7 +25,7 @@ class VotingBlock extends ActiveRecord
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
-        return $app->tablePrefix . 'userNotification';
+        return $app->tablePrefix . 'votingBlock';
     }
 
     /**

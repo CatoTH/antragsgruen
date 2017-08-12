@@ -5,6 +5,7 @@
  * @var \app\models\db\Amendment $amendment
  */
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -13,13 +14,21 @@ use yii\helpers\Html;
 $saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'data-antragsgruen-widget' => 'backend/AmendmentChangeProposal'
+    'data-antragsgruen-widget' => 'backend/AmendmentChangeProposal',
+    'class'                    => 'fuelux',
 ]);
 if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
     $preReferredTo = $amendment->proposalComment;
 } else {
     $preReferredTo = '';
 }
+if ($amendment->proposalStatus == Amendment::STATUS_OBSOLETED_BY) {
+    $preObsoletedBy = $amendment->proposalComment;
+} else {
+    $preObsoletedBy = '';
+}
+
+$votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
     <h2>Verfahrensvorschlag</h2>
     <div class="holder">
@@ -58,15 +67,25 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
                 </label>
             </div>
             <div class="notificationSettings">
-
+                <h3>Benachrichtigung</h3>
+                @TODO
             </div>
-
-            <section class="saving">
-                <button class="btn btn-default btn-sm">Änderungen speichern</button>
-            </section>
-            <section class="saved hidden">
-                Gespeichert.
-            </section>
+            <div class="votingBlockSettings">
+                <h3>Abstimmungsblock</h3>
+                <?php
+                $options = ['-'];
+                foreach ($votingBlocks as $votingBlock) {
+                    $options[$votingBlock->id] = $votingBlock->title;
+                }
+                $options['NEW'] = '- Neuen anlegen -';
+                $attrs = ['id' => 'votingBlockId', 'class' => 'form-control'];
+                echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
+                ?>
+                <div class="newBlock">
+                    <label for="newBlockTitle" class="control-label">Titel des neuen Blocks:</label>
+                    <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
+                </div>
+            </div>
         </div>
         <section class="proposalCommentForm">
             <h3>Interne Kommentare</h3>
@@ -97,7 +116,16 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
         <label class="headingLabel">Erledigt durch...</label>
-
+        <?php
+        $options = ['-'];
+        foreach ($amendment->getMyMotion()->getVisibleAmendmentsSorted() as $otherAmend) {
+            if ($otherAmend->id != $amendment->id) {
+                $options[$otherAmend->id] = $otherAmend->getTitle();
+            }
+        }
+        $attrs = ['id' => 'obsoletedByAmendment', 'class' => 'form-control'];
+        echo HTMLTools::fueluxSelectbox('obsoletedByAmendment', $options, $preObsoletedBy, $attrs);
+        ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
         <label class="headingLabel" for="referredTo">Überweisen an...</label>
@@ -105,7 +133,27 @@ if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">
-        <h3>Abstimmungsstatus</h3>
-
+        <div class="votingStatus">
+            <h3>Abstimmungsstatus</h3>
+            <?php
+            foreach (Amendment::getVotingStati() as $statusId => $statusName) {
+                ?>
+                <label>
+                    <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
+                    if ($amendment->votingStatus == $statusId) {
+                        echo 'checked';
+                    }
+                    ?>> <?= Html::encode($statusName) ?>
+                </label><br>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+    <section class="saving">
+        <button class="btn btn-default btn-sm">Änderungen speichern</button>
+    </section>
+    <section class="saved hidden">
+        Gespeichert.
     </section>
 <?= Html::endForm() ?>

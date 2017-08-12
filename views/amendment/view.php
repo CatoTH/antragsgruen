@@ -24,6 +24,9 @@ $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
 $consultation = $amendment->getMyConsultation();
 $motion       = $amendment->getMyMotion();
+if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+    $layout->loadFuelux();
+}
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));

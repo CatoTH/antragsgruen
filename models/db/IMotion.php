@@ -137,6 +137,18 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return string[]
+     */
+    public static function getVotingStati()
+    {
+        return [
+            static::STATUS_VOTE     => \Yii::t('structure', 'STATUS_VOTE'),
+            static::STATUS_ACCEPTED => \Yii::t('structure', 'STATUS_ACCEPTED'),
+            static::STATUS_REJECTED => \Yii::t('structure', 'STATUS_REJECTED'),
+        ];
+    }
+
+    /**
      * @return int[]
      */
     public static function getScreeningStati()

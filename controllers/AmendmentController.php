@@ -8,7 +8,9 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
+use app\models\db\IMotion;
 use app\models\db\User;
+use app\models\db\VotingBlock;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\exceptions\NotFound;
@@ -467,13 +469,36 @@ class AmendmentController extends Base
         $response = [];
 
         if (\Yii::$app->request->post('setStatus')) {
+            $response['needsReload']    = false;
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
             if (\Yii::$app->request->post('visible', 0)) {
                 $amendment->setProposalPublished();
             } else {
                 $amendment->proposalVisibleFrom = null;
             }
+            $votingBlockId            = \Yii::$app->request->post('votingBlockId', null);
+            $amendment->votingBlockId = null;
+            if ($votingBlockId === 'NEW') {
+                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
+                if ($title !== '') {
+                    $votingBlock                 = new VotingBlock();
+                    $votingBlock->consultationId = $this->consultation->id;
+                    $votingBlock->title          = $title;
+                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->save();
+                    
+                    $amendment->votingBlockId = $votingBlock->id;
+                    $response['needsReload']  = true;
+                }
+            } elseif ($votingBlockId > 0) {
+                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
+                if ($votingBlock) {
+                    $amendment->votingBlockId = $votingBlock->id;
+                }
+            }
+
             $amendment->save();
             $response['success'] = true;
         }
