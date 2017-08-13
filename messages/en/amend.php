@@ -16,6 +16,7 @@ return [
     'proposed_status'          => 'Proposed procedure',
     'referred_to'              => 'Referred to',
     'refer_to'                 => 'Refer to',
+    'obsoleted_by'             => 'Handled by',
     'resoluted_on'             => 'Decided on',
     'submitted_on'             => 'Submitted',
     'created_on'               => 'Created',

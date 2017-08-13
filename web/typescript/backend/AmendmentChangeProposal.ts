@@ -68,13 +68,10 @@ export class AmendmentChangeProposal {
             this.$widget.find('.saving').removeClass('hidden');
         }).trigger('change');
 
-        this.$widget.find("input[type=radio]").change(() => {
+        this.$widget.find("input").change(() => {
             this.$widget.find('.saving').removeClass('hidden');
         });
 
-        this.$widget.find('input[name=referredTo]').on('keyup', () => {
-            this.$widget.find('.saving').removeClass('hidden');
-        });
         this.$widget.find('#obsoletedByAmendment').on('changed.fu.selectlist', () => {
             this.$widget.find('.saving').removeClass('hidden');
         });

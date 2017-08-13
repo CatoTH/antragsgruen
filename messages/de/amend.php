@@ -16,6 +16,7 @@ return [
     'proposed_status'                   => 'Verfahrensvorschlag',
     'referred_to'                       => 'Weitergeleitet an',
     'refer_to'                          => 'Weiterleiten an',
+    'obsoleted_by'                      => 'Erledigt durch',
     'resoluted_on'                      => 'Entschieden am',
     'submitted_on'                      => 'Eingereicht',
     'created_on'                        => 'Angelegt',

@@ -56,13 +56,7 @@ echo '</td>
 
 if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
     echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td>';
-    switch ($amendment->proposalStatus) {
-        case Amendment::STATUS_REFERRED:
-            echo Html::encode(\Yii::t('amend', 'refer_to') . ': ' . $amendment->proposalComment);
-            break;
-        default:
-            echo Html::encode($statiNames[$amendment->proposalStatus]);
-    }
+    echo $amendment->getFormattedProposalStatus();
     echo '</td></tr>';
 }
 

@@ -1075,4 +1075,29 @@ class Amendment extends IMotion implements IRSSItem
     {
         return ($this->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED);
     }
+
+    /**
+     * @return string
+     */
+    public function getFormattedProposalStatus()
+    {
+        if ($this->proposalStatus === null) {
+            return '';
+        }
+        switch ($this->proposalStatus) {
+            case Amendment::STATUS_REFERRED:
+                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
+            case Amendment::STATUS_OBSOLETED_BY:
+                $refAmend = $this->proposalReference;
+                if ($refAmend) {
+                    $refAmendStr = Html::a($refAmend->getTitle(), UrlHelper::createAmendmentUrl($refAmend));
+                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
+                } else {
+                    return static::getStatiAsVerbs()[$this->proposalStatus];
+                }
+                break;
+            default:
+                return static::getStatiAsVerbs()[$this->proposalStatus];
+        }
+    }
 }

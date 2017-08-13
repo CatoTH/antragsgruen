@@ -39,7 +39,7 @@ class VotingBlock extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getAmendment()
+    public function getAmendments()
     {
         return $this->hasMany(Amendment::class, ['votingBlockId' => 'id']);
     }

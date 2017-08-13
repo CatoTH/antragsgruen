@@ -435,4 +435,52 @@ class ConsultationController extends Base
         $form->setPage($page);
         return $this->render('activity_log', ['form' => $form]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionProposedProcedure()
+    {
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        $proposalAdmin = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+        $proposalAdmin = false;
+
+        $consultation            = $this->consultation;
+        $votingBlocksByAmendment = [];
+        $votingBlocks            = $consultation->votingBlocks;
+        foreach ($votingBlocks as $votingBlock) {
+            foreach ($votingBlock->amendments as $amendment) {
+                $votingBlocksByAmendment[$amendment->id] = $votingBlock;
+            }
+        }
+
+        $data = [];
+        foreach ($consultation->getVisibleMotionsSorted(false) as $motion) {
+            $dataRow = [
+                'motion'       => $motion,
+                'votingBlocks' => [],
+                'amendments'   => [],
+            ];
+            foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
+                var_dump($amendment->isProposalPublic());
+                if ($proposalAdmin || $amendment->isProposalPublic()) {
+                    $dataRow['amendments'][] = $amendment;
+                }
+                if (isset($votingBlocksByAmendment[$amendment->id])) {
+                    $votingBlock = $votingBlocksByAmendment[$amendment->id];
+                    if (!isset($dataRow['votingBlocks'][$votingBlock->id])) {
+                        $dataRow['votingBlocks'][$votingBlock->id] = $votingBlock;
+                    }
+                }
+            }
+            $data[] = $dataRow;
+        }
+
+        return $this->render('proposed_procedure', [
+            'votingBlocks' => $votingBlocks,
+            'data'         => $data,
+        ]);
+    }
 }
