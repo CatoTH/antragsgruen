@@ -185,7 +185,7 @@ class Base extends Controller
     protected function renderContentPage($pageKey)
     {
         if ($this->consultation) {
-            $admin   = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin   = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
             $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
         } else {
             $user    = User::getCurrentUser();
@@ -229,7 +229,7 @@ class Base extends Controller
     }
 
     /**
-     * @param int $privilege
+     * @param int|int[] $privilege
      * @return bool
      * @throws Internal
      */
@@ -256,7 +256,7 @@ class Base extends Controller
         }
         /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
-        $admin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
+        $admin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
             $this->redirect(UrlHelper::createUrl('consultation/maintenance'));
             return true;
@@ -280,7 +280,7 @@ class Base extends Controller
             return true;
         }
         if ($this->site->getSettings()->managedUserAccounts) {
-            if ($this->consultation && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
+            if ($this->consultation && !User::havePrivilege($this->consultation, User::PRIVILEGE_ANY)) {
                 $privilege = User::getCurrentUser()->getConsultationPrivilege($this->consultation);
                 if (!$privilege || !$privilege->privilegeView) {
                     $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));

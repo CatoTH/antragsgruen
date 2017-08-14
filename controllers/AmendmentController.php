@@ -53,7 +53,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
@@ -118,7 +118,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
@@ -146,13 +146,13 @@ class AmendmentController extends Base
             return '';
         }
 
-        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
         } else {
             $adminEdit = null;
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
         }
@@ -354,7 +354,7 @@ class AmendmentController extends Base
 
         $form        = new AmendmentEditForm($motion, null);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $iAmAdmin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
@@ -461,7 +461,7 @@ class AmendmentController extends Base
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }
@@ -539,7 +539,7 @@ class AmendmentController extends Base
             \Yii::$app->response->statusCode = 404;
             return 'Amendment not found';
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;
             return 'Not permitted to change the status';
         }

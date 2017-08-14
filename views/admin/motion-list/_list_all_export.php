@@ -84,7 +84,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     <li role="separator" class="divider"></li>
                     <?php
                     $title = \Yii::t('admin', 'index_export_ods');
-                    echo $getExportLinkLi($title, 'admin/motion/odslist', $motionType->id, 'motionODS');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslist', $motionType->id, 'motionODS');
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_collection');
@@ -93,19 +93,23 @@ foreach ($consultation->motionTypes as $motionType) {
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_zip_list');
-                        echo $getExportLinkLi($title, 'admin/motion/pdfziplist', $motionType->id, 'motionZIP');
+                        echo $getExportLinkLi($title, 'admin/motion-list/motion-pdfziplist',
+                            $motionType->id, 'motionZIP');
                     }
 
                     $title = \Yii::t('admin', 'index_odt_zip_list');
-                    echo $getExportLinkLi($title, 'admin/motion/odtziplist', $motionType->id, 'motionOdtZIP');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odtziplist',
+                        $motionType->id, 'motionOdtZIP');
 
                     $title = \Yii::t('admin', 'index_export_ods_listall');
-                    echo $getExportLinkLi($title, 'admin/motion/odslistall', $motionType->id, 'motionODSlist');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslistall',
+                        $motionType->id, 'motionODSlist');
 
                     if (AntragsgruenApp::hasPhpExcel()) {
                         $title = \Yii::t('admin', 'index_export_excel') .
                             ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
-                        echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
+                        echo $getExportLinkLi($title, 'admin/motion-list/motion-excellist',
+                            $motionType->id, 'motionExcel');
                     }
                     ?>
                 </ul>
@@ -163,7 +167,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id]
+                        ['admin/motion-list/openslides', 'motionTypeId' => $motionType->id]
                     );
                     $title         = 'V1: ' . $motionType->titlePlural;
                     echo '<li>' .
@@ -185,7 +189,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
+                        ['admin/motion-list/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
                     );
                     $title         = 'V2: ' . $motionType->titlePlural;
                     echo '<li>' .

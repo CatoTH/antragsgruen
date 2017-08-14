@@ -18,7 +18,7 @@ $consultation = $motion->getMyConsultation();
 echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
 $form        = $commentForm;
-$screenAdmin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
+$screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
     $form              = new \app\models\forms\CommentForm();

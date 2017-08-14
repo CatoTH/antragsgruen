@@ -3,6 +3,7 @@
 namespace app\views\hooks;
 
 use app\components\UrlHelper;
+use app\controllers\admin\IndexController;
 use app\controllers\Base;
 use app\controllers\UserController;
 use app\models\AdminTodoItem;
@@ -31,9 +32,9 @@ trait StdFunctionTrait
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = $controller->consultation;
-            $privilegeScreening = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
-            $privilegeAny       = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY);
-            $privilegeProposal  = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+            $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+            $privilegeAny       = User::havePrivilege($consultation, User::PRIVILEGE_ANY);
+            $privilegeProposal  = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($controller->consultation) {
                 $homeUrl = UrlHelper::homeUrl();
@@ -76,18 +77,19 @@ trait StdFunctionTrait
                 $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
             }
             if ($privilegeScreening || $privilegeProposal) {
-                $adminUrl   = UrlHelper::createUrl('admin/motion/listall');
+                $adminUrl   = UrlHelper::createUrl('admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
             }
-            if ($privilegeAny) {
+            if ($privilegeScreening) {
                 $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
                 if (count($todo) > 0) {
                     $adminUrl   = UrlHelper::createUrl('admin/index/todo');
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
                     $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
                 }
-
+            }
+            if (User::havePrivilege($consultation, IndexController::$REQUIRED_PRIVILEGES)) {
                 $adminUrl   = UrlHelper::createUrl('admin/index');
                 $adminTitle = \Yii::t('base', 'menu_admin');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';

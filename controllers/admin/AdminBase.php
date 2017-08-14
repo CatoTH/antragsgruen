@@ -8,6 +8,10 @@ use app\models\db\User;
 
 class AdminBase extends Base
 {
+    public static $REQUIRED_PRIVILEGES = [
+        User::PRIVILEGE_ANY,
+    ];
+
     /**
      * @param \yii\base\Action $action
      * @return bool
@@ -29,7 +33,7 @@ class AdminBase extends Base
             return false;
         }
 
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_ANY)) {
+        if (!User::havePrivilege($this->consultation, static::$REQUIRED_PRIVILEGES)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }

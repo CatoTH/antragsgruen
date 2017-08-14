@@ -41,6 +41,7 @@ class Consultation
     public $initiatorsMayReject    = false;
     public $allowMultipleTags      = false;
     public $odtExportHasLineNumers = true;
+    public $proposalProcedurePage  = false;
 
     /** @var int */
     public $lineLength      = 80;

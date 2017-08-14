@@ -101,7 +101,7 @@ abstract class IPolicy
 
         if ($this->motionType->motionDeadlineIsOver()) {
             $consultation = $this->motionType->getConsultation();
-            if (!User::currentUserHasPrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
+            if (!User::havePrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }

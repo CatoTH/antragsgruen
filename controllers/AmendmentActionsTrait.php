@@ -41,7 +41,7 @@ trait AmendmentActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -122,7 +122,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -149,7 +149,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 

@@ -221,7 +221,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() != Nobody::getPolicyID()) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
-    $screeningAdmin = User::currentUserHasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
+    $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
     $screening = \Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {

@@ -1,7 +1,9 @@
 <?php
+
 use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -17,9 +19,13 @@ $controller = $this->context;
 
 $hasTags        = (count($controller->consultation->tags) > 0);
 $amendmentStati = Amendment::getStati();
-$editUrl        = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
-$viewUrl        = UrlHelper::createAmendmentUrl($entry);
-$route          = 'admin/motion/listall';
+if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+    $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
+} else {
+    $editUrl = null;
+}
+$viewUrl = UrlHelper::createAmendmentUrl($entry);
+$route   = 'admin/motion-list/index';
 echo '<tr class="amendment amendment' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
@@ -37,7 +43,12 @@ if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
 $title = (trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-');
-echo Html::a($title, $editUrl) . '</span></td>';
+if ($editUrl) {
+    echo Html::a($title, $editUrl);
+} else {
+    echo Html::encode($title);
+}
+echo '</span></td>';
 echo '<td>' . Html::encode($amendmentStati[$entry->status]);
 if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
@@ -47,7 +58,7 @@ echo '</td>';
 if ($colProposals) {
     echo '<td>';
     $amendmentStatiVerbs = Amendment::getStatiAsVerbs();
-    $name = ($entry->proposalStatus ? $amendmentStatiVerbs[$entry->proposalStatus] : '-');
+    $name                = ($entry->proposalStatus ? $amendmentStatiVerbs[$entry->proposalStatus] : '-');
     echo Html::a($name, UrlHelper::createAmendmentUrl($entry));
     if ($entry->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');

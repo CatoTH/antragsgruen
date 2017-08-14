@@ -19,6 +19,11 @@ class IndexController extends AdminBase
 {
     use SiteAccessTrait;
 
+    public static $REQUIRED_PRIVILEGES = [
+        User::PRIVILEGE_CONSULTATION_SETTINGS,
+        User::PRIVILEGE_SITE_ADMIN,
+    ];
+
     /**
      * @return string
      */
@@ -232,7 +237,7 @@ class IndexController extends AdminBase
     {
         $site = $this->site;
 
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
             return false;
         }
@@ -288,7 +293,7 @@ class IndexController extends AdminBase
                     \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
                     if ($this->consultation->id == $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
-                        
+
                         $url = UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]);
                         return $this->redirect($url);
                     }

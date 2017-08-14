@@ -16,7 +16,7 @@ use yii\helpers\Html;
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
-$screenAdmin    = User::currentUserHasPrivilege($section->getConsultation(), User::PRIVILEGE_SCREENING);
+$screenAdmin    = User::havePrivilege($section->getConsultation(), User::PRIVILEGE_SCREENING);
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';

@@ -371,7 +371,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $privilege
+     * @param int|int[] $privilege
      * @return bool
      *
      */

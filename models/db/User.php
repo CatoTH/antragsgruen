@@ -86,11 +86,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param Consultation|null $consultation
-     * @param int $privilege
+     * @param int|int[] $privilege
      * @return bool
      * @throws Internal
      */
-    public static function currentUserHasPrivilege($consultation, $privilege)
+    public static function havePrivilege($consultation, $privilege)
     {
         $user = static::getCurrentUser();
         if (!$user) {
@@ -572,8 +572,11 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Checks if this user has the given privilege or at least one of the given privileges (binary OR)
+     * for the given consultation
+     *
      * @param Consultation|null $consultation
-     * @param int $privilege [not used yet; forward-compatibility]
+     * @param int|int[] $privilege
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -601,9 +604,17 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
+        $privilege = (is_array($privilege) ? $privilege : [$privilege]);
+
         foreach ($consultation->userPrivileges as $userPrivilege) {
             if ($userPrivilege->userId == $this->id) {
-                return $userPrivilege->containsPrivilege($privilege);
+                $foundMatch = false;
+                foreach ($privilege as $priv) {
+                    if ($userPrivilege->containsPrivilege($priv)) {
+                        $foundMatch = true;
+                    }
+                }
+                return $foundMatch;
             }
         }
 

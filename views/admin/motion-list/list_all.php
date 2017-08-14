@@ -29,7 +29,7 @@ $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->addAMDModule('backend/MotionList');
 
-$route   = 'admin/motion/listall';
+$route   = 'admin/motion-list/index';
 $hasTags = (count($controller->consultation->tags) > 0);
 
 $colMark      = $privilegeProposals || $privilegeScreening;

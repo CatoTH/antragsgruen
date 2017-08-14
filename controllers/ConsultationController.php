@@ -237,7 +237,7 @@ class ConsultationController extends Base
      */
     public function actionSavetextajax($pageKey)
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
         if (MessageSource::savePageData($this->consultation, $pageKey, \Yii::$app->request->post('data'))) {
@@ -263,7 +263,7 @@ class ConsultationController extends Base
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if ($params->multisiteMode) {
-            $admin      = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin      = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
             $saveUrl    = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'legal']);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin, 'saveUrl' => $saveUrl];
             return $this->render('imprint_multisite', $viewParams);
@@ -350,7 +350,7 @@ class ConsultationController extends Base
      */
     private function saveAgenda()
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             \Yii::$app->session->setFlash('error', 'No permissions to edit this page');
             return;
         }
@@ -415,7 +415,7 @@ class ConsultationController extends Base
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
-                'admin'        => User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
+                'admin'        => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
                 'saveUrl'      => $saveUrl,
             ]
         );
@@ -444,8 +444,7 @@ class ConsultationController extends Base
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        $proposalAdmin = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
-        $proposalAdmin = false;
+        $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
         $consultation            = $this->consultation;
         $votingBlocksByAmendment = [];

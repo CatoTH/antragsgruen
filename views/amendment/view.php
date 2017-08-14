@@ -24,7 +24,7 @@ $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
 $consultation = $amendment->getMyConsultation();
 $motion       = $amendment->getMyMotion();
-if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     $layout->loadFuelux();
 }
 
@@ -99,7 +99,7 @@ echo '</div>';
 echo '</div>';
 
 
-if (User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     echo $this->render('_view_change_proposal', ['amendment' => $amendment]);
 }
 

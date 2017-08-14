@@ -1,6 +1,7 @@
 <?php
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -17,8 +18,12 @@ $controller = $this->context;
 $hasTags     = (count($controller->consultation->tags) > 0);
 $motionStati = Motion::getStati();
 $viewUrl     = UrlHelper::createMotionUrl($entry);
-$editUrl     = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
-$route       = 'admin/motion/listall';
+if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+    $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
+} else {
+    $editUrl = null;
+}
+$route       = 'admin/motion-list/index';
 echo '<tr class="motion motion' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
@@ -27,7 +32,11 @@ echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
 echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
-echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+if ($editUrl) {
+    echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+} else {
+    echo Html::encode(trim($entry->title) != '' ? $entry->title : '-');
+}
 echo '</span></td>';
 echo '<td>' . Html::encode($motionStati[$entry->status]);
 if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {

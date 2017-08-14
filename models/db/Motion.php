@@ -469,7 +469,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canMergeAmendments()
     {
-        if (User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+        if (User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
         return false;
@@ -501,7 +501,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
     {
-        $iAmAdmin = User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
+        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
             if ($this->nonAmendable) {

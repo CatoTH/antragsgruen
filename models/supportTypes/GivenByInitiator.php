@@ -113,6 +113,6 @@ class GivenByInitiator extends DefaultTypeBase
      */
     public function hasFullTextSupporterField()
     {
-        return User::currentUserHasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
+        return User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY);
     }
 }

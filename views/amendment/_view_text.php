@@ -12,7 +12,7 @@ use app\models\db\User;
 $consultation = $amendment->getMyConsultation();
 
 if ($amendment->hasAlternativeProposaltext() && (
-        $amendment->isProposalPublic() || User::currentUserHasPrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)
+        $amendment->isProposalPublic() || User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)
     )) {
     $hasProposedChange = true;
     $reference         = $amendment->proposalReference;
