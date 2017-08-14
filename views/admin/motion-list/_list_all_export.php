@@ -167,7 +167,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion-list/openslides', 'motionTypeId' => $motionType->id]
+                        ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id]
                     );
                     $title         = 'V1: ' . $motionType->titlePlural;
                     echo '<li>' .
