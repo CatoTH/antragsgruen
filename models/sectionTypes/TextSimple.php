@@ -43,7 +43,11 @@ class TextSimple extends ISectionType
             /** @var AmendmentSection $section */
             $section        = $this->section;
             $diff           = new Diff();
-            $origParas      = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            if ($section->getOriginalMotionSection()) {
+                $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            } else {
+                $origParas = [];
+            }
             $amendParas     = HTMLTools::sectionSimpleHTML($section->data);
             $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
             $amendmentHtml  = implode('', $amDiffSections);
