@@ -67,7 +67,7 @@ abstract class IMotion extends ActiveRecord
     const STATUS_REFERRED = 10;
 
     // An amendment becomes obsoleted by another amendment. That one is referred by an id
-    // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalReferenceId
+    // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalComment
     const STATUS_OBSOLETED_BY = 22;
 
     // Purely informational statuses

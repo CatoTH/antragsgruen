@@ -14,65 +14,61 @@ use yii\helpers\Html;
         <section class="content">
             <?php
             echo Html::beginForm('', 'post', ['id' => 'adminForm', 'class' => 'adminForm form-horizontal']);
-            ?>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th><?= \Yii::t('admin', 'siteacc_admins_user') ?></th>
-                    <th class="type type-con"><?= \Yii::t('admin', 'siteacc_admins_one_con') ?></th>
-                    <th class="type type-site"><?= \Yii::t('admin', 'siteacc_admins_all_cons') ?></th>
-                    <th class="del"><?= \Yii::t('admin', 'siteacc_admins_del') ?></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                $myself = User::getCurrentUser();
 
-                foreach ($admins as $admin) {
-                    $type = $admin['type'];
-                    /** @var User $user */
-                    $user = $admin['user'];
+            $myself = User::getCurrentUser();
 
-                    $isMe = ($user->id == User::getCurrentUser()->id);
-                    ?>
-                    <tr class="admin<?= $user->id ?>">
-                        <td>
-                            <?php
-                            echo Html::encode($user->getAuthName());
-                            if ($user->name != '') {
-                                echo ' (' . Html::encode($user->name) . ')';
-                            }
-                            ?>
-                        </td>
-                        <td class="type type-con">
-                            <input type="radio" name="adminType[<?= $user->id ?>]" value="consultation"
-                                <?= ($type == 'consultation' ? 'checked' : '') ?>
-                                <?= ($isMe ? 'disabled' : '') ?>
-                                   title="<?= Html::encode(\Yii::t('admin', 'siteacc_admins_one_con')) ?>">
-                        </td>
-                        <td class="type type-site">
-                            <input type="radio" name="adminType[<?= $user->id ?>]" value="site"
-                                <?= ($type == 'site' ? 'checked' : '') ?>
-                                <?= ($isMe ? 'disabled' : '') ?>
-                                   title="<?= Html::encode(\Yii::t('admin', 'siteacc_admins_all_cons')) ?>">
-                        </td>
-                        <td class="del">
-                            <?php
-                            if (!$isMe) { ?>
-                                <button class="link removeAdmin removeAdmin<?= $user->id ?>"
-                                        type="button" data-id="<?= $user->id ?>">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
-                                <?php
-                            } ?>
-                        </td>
-                    </tr>
-                    <?php
-                }
+            foreach ($admins as $admin) {
+                $types = $admin['types'];
+                /** @var User $user */
+                $user = $admin['user'];
+
+                $isMe = ($user->id == User::getCurrentUser()->id);
                 ?>
-                </tbody>
-            </table>
-            <div class="save-row">
+                <section class="adminCard admin<?= $user->id ?>">
+                    <header>
+                        <?php
+                        if (!$isMe) { ?>
+                            <button class="link removeAdmin removeAdmin<?= $user->id ?>"
+                                    type="button" data-id="<?= $user->id ?>"
+                                    title="<?= \Yii::t('admin', 'siteacc_admins_del') ?>">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                            <?php
+                        }
+
+                        echo '<span class="name">';
+                        echo Html::encode($user->getAuthName());
+                        if ($user->name != '') {
+                            echo ' (' . Html::encode($user->name) . ')';
+                        }
+                        echo '</span>';
+                        ?>
+                    </header>
+                    <main>
+                        <label class="type typeSite">
+                            <input type="checkbox" name="adminTypes[<?= $user->id ?>][]" value="site"
+                                <?= (in_array('site', $types) ? 'checked' : '') ?>
+                                <?= ($isMe ? 'disabled' : '') ?>>
+                            <?= \Yii::t('admin', 'siteacc_admins_all_cons') ?>
+                        </label>
+                        <label class="type typeCon">
+                            <input type="checkbox" name="adminTypes[<?= $user->id ?>][]" value="consultation"
+                                <?= (in_array('consultation', $types) ? 'checked' : '') ?>
+                                <?= ($isMe ? 'disabled' : '') ?>>
+                            <?= \Yii::t('admin', 'siteacc_admins_one_con') ?>
+                        </label>
+                        <label class="type typeProposal">
+                            <input type="checkbox" name="adminTypes[<?= $user->id ?>][]" value="proposal"
+                                <?= (in_array('proposal', $types) ? 'checked' : '') ?>
+                                <?= ($isMe ? 'disabled' : '') ?>>
+                            <?= \Yii::t('admin', 'siteacc_admins_proposals') ?>
+                        </label>
+                    </main>
+                </section>
+                <?php
+            }
+            ?>
+            <div class="saveRow">
                 <button type="submit" name="saveAdmin" class="btn btn-primary"><?= \Yii::t('base', 'save') ?></button>
             </div>
             <?php

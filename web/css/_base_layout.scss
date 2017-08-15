@@ -178,6 +178,12 @@ label {
   }
 }
 
+.table {
+  > thead > tr > th {
+    border-bottom: none;
+  }
+}
+
 .logo {
   margin-top: 14px;
   display: block;

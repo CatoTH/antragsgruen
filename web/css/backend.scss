@@ -12,13 +12,34 @@
   .content {
     overflow: visible;
   }
-  td.type, th.type {
-    text-align: center;
+  .adminCard {
+    border-radius: 5px;
+    border: solid 1px #aaa;
+    background-color: #fafafa;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    header {
+      background-color: #eee;
+      border-bottom: solid 1px #aaa;
+      padding: 5px;
+      font-weight: bold;
+
+      .removeAdmin {
+        float: right;
+      }
+    }
+    main {
+      padding: 5px;
+
+      label {
+        display: inline-block;
+        margin-right: 20px;
+      }
+    }
   }
-  td.del, th.del {
-    text-align: center;
-  }
-  .save-row {
+
+  .saveRow {
     text-align: center;
   }
 }

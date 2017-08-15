@@ -37,6 +37,7 @@ trait SiteAccessTrait
             $privilege->adminSuper       = 1;
             $privilege->adminScreen      = 1;
             $privilege->adminContentEdit = 1;
+            $privilege->adminProposals   = 1;
             $privilege->save();
 
             $str = \Yii::t('admin', 'siteacc_admin_add_done');
@@ -64,6 +65,7 @@ trait SiteAccessTrait
         $privilege->adminSuper       = 0;
         $privilege->adminScreen      = 0;
         $privilege->adminContentEdit = 0;
+        $privilege->adminProposals   = 0;
         $privilege->save();
     }
 
@@ -71,16 +73,16 @@ trait SiteAccessTrait
      */
     private function saveAdmins()
     {
-        $permissions = \Yii::$app->request->post('adminType');
-        foreach ($permissions as $userId => $type) {
+        $permissions = \Yii::$app->request->post('adminTypes');
+        foreach ($permissions as $userId => $types) {
             if ($userId == User::getCurrentUser()->id) {
                 continue;
             }
 
-            $user = User::findOne($userId);
+            $user      = User::findOne($userId);
             $privilege = $this->consultation->getUserPrivilege($user);
 
-            if ($type == 'site') {
+            if (in_array('site', $types)) {
                 try {
                     $this->site->link('admins', $user);
                 } catch (\Exception $e) {
@@ -89,14 +91,26 @@ trait SiteAccessTrait
                 $privilege->adminSuper       = 0;
                 $privilege->adminScreen      = 0;
                 $privilege->adminContentEdit = 0;
+                $privilege->adminProposals   = 0;
             } else {
                 $this->site->unlink('admins', $user, true);
 
-                $privilege->privilegeCreate  = 1;
-                $privilege->privilegeView    = 1;
-                $privilege->adminSuper       = 1;
-                $privilege->adminScreen      = 1;
-                $privilege->adminContentEdit = 1;
+                $privilege->privilegeCreate = 1;
+                $privilege->privilegeView   = 1;
+                if (in_array('consultation', $types)) {
+                    $privilege->adminSuper       = 1;
+                    $privilege->adminScreen      = 1;
+                    $privilege->adminContentEdit = 1;
+                } else {
+                    $privilege->adminSuper       = 0;
+                    $privilege->adminScreen      = 0;
+                    $privilege->adminContentEdit = 0;
+                }
+                if (in_array('proposal', $types)) {
+                    $privilege->adminProposals = 1;
+                } else {
+                    $privilege->adminProposals = 0;
+                }
             }
 
             $privilege->save();
@@ -376,12 +390,20 @@ trait SiteAccessTrait
 
         $admins = [];
         foreach ($site->admins as $admin) {
-            $admins[$admin->id] = ["user" => $admin, "type" => 'site'];
+            $admins[$admin->id] = ['user' => $admin, 'types' => ['site']];
         }
         foreach ($this->consultation->userPrivileges as $privilege) {
-            $isAdmin = ($privilege->adminSuper || $privilege->adminScreen || $privilege->adminContentEdit);
-            if (!isset($admins[$privilege->userId]) && $isAdmin) {
-                $admins[$privilege->userId] = ["user" => $privilege->user, "type" => 'consultation'];
+            if (!isset($admins[$privilege->userId])) {
+                $privileges = [];
+                if ($privilege->adminProposals) {
+                    $privileges[] = 'proposal';
+                }
+                if ($privilege->adminSuper || $privilege->adminScreen || $privilege->adminContentEdit) {
+                    $privileges[] = 'consultation';
+                }
+                if (count($privileges) > 0) {
+                    $admins[$privilege->userId] = ['user' => $privilege->user, 'types' => $privileges];
+                }
             }
         }
 

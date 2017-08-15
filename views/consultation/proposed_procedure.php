@@ -50,7 +50,7 @@ foreach ($data as $dataRow) {
             <?php
             foreach ($votingBlocks as $votingBlock) {
                 ?>
-                <table class="table table-bordered votingTable">
+                <table class="table votingTable">
                     <caption>Abstimmung: <?= Html::encode($votingBlock->title) ?></caption>
                     <thead>
                     <tr>
@@ -85,7 +85,7 @@ foreach ($data as $dataRow) {
             });
             if (count($uncoveredAmendments)) {
                 ?>
-                <table class="table table-bordered proposalTable">
+                <table class="table proposalTable">
                     <?php
                     if (count($votingBlocks) > 0) { ?>
                         <caption>Weitere Verfahrensvorschläge</caption>

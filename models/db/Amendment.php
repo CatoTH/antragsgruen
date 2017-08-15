@@ -1088,9 +1088,9 @@ class Amendment extends IMotion implements IRSSItem
             case Amendment::STATUS_REFERRED:
                 return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
             case Amendment::STATUS_OBSOLETED_BY:
-                $refAmend = $this->proposalReference;
+                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
                 if ($refAmend) {
-                    $refAmendStr = Html::a($refAmend->getTitle(), UrlHelper::createAmendmentUrl($refAmend));
+                    $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
                 } else {
                     return static::getStatiAsVerbs()[$this->proposalStatus];

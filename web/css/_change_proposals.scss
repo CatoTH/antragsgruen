@@ -135,9 +135,13 @@
 .proposedProcedureOverview {
   table {
     table-layout: fixed;
+    margin-top: 25px;
+    &:first-of-type {
+      margin-top: 0;
+    }
     caption {
       font-weight: bold;
-      background-color: #ddd;
+      background-color: #eee;
       color: black;
       text-align: center;
     }
