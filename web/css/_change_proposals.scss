@@ -1,0 +1,151 @@
+
+
+#proposedChanges {
+  background-color: #f8faf8;
+  border: solid 1px #eee;
+  border-radius: 4px;
+  margin: 0 20px 30px;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    padding: 5px 10px;
+    background-color: #ded;
+  }
+
+  .holder {
+    display: flex;
+    > * {
+      flex: 1;
+      padding: 10px;
+    }
+  }
+  .statusForm {
+    width: 40%;
+  }
+  .proposalCommentForm {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    border-left: solid 1px #eee;
+  }
+  .middleCol {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+  }
+  .notificationSettings, .visibilitySettings {
+    padding-bottom: 10px;
+  }
+
+  h3, .headingLabel {
+    font-size: 14px;
+    margin: 3px 0 8px 0;
+    font-weight: bold;
+  }
+  label {
+    font-size: 12px;
+    font-weight: normal;
+  }
+  .newBlock {
+    .control-label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+  .commentList {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: block;
+    max-height: 110px;
+    overflow-y: auto;
+
+    > li {
+      margin: 0;
+      padding: 0;
+      display: block;
+    }
+    .header {
+      background-color: #eee;
+      overflow: auto;
+      margin-top: 10px;
+    }
+    .date {
+      float: right;
+    }
+  }
+  .proposalCommentForm {
+    font-size: 12px;
+
+    textarea {
+      border-bottom: none;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      font-size: 12px;
+    }
+    button {
+      margin-top: -1px;
+      width: 100%;
+    }
+  }
+  .statusDetails {
+    border-top: solid 1px #eee;
+    padding: 10px;
+  }
+  .saving, .saved {
+    border-top: solid 1px #eee;
+    height: 40px;
+    text-align: center;
+    line-height: 38px;
+    vertical-align: middle;
+  }
+}
+
+#editProposedChangeForm {
+  h2 {
+    font-size: 24px;
+  }
+  .motionTextHolder {
+    margin-top: 20px;
+    .title {
+      font-weight: bold;
+    }
+    .paragraph .text {
+      padding: 5px 10px 10px 0;
+      > * {
+        padding-bottom: 5px;
+        padding-top: 5px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  .originalVersion {
+    ins.ice-del, del.ice-del {
+      display: inline;
+    }
+  }
+  .save-row {
+    text-align: center;
+    margin: 0 0 40px 0;
+  }
+}
+
+.proposedProcedureOverview {
+  table {
+    table-layout: fixed;
+    caption {
+      font-weight: bold;
+      background-color: #ddd;
+      color: black;
+      text-align: center;
+    }
+    .prefix {
+      width: 175px;
+    }
+    .initiator {
+      width: 200px;
+    }
+  }
+}

@@ -44,19 +44,19 @@ foreach ($data as $dataRow) {
     $proposalStati     = IMotion::getStatiAsVerbs();
 
     ?>
-    <section class="motionHolder motionHolder<?= $motion->id ?>">
+    <section class="motionHolder motionHolder<?= $motion->id ?> proposedProcedureOverview">
         <h2 class="green"><?= Html::encode($motion->getTitleWithPrefix()) ?></h2>
         <div class="content">
             <?php
             foreach ($votingBlocks as $votingBlock) {
                 ?>
-                <table class="votingTable">
-                    <caption>Abstimmung</caption>
+                <table class="table table-bordered votingTable">
+                    <caption>Abstimmung: <?= Html::encode($votingBlock->title) ?></caption>
                     <thead>
                     <tr>
-                        <th>Änderungsantrag</th>
-                        <th>Verfahrensvorschlag</th>
-                        <th>Antragsteller*in</th>
+                        <th class="prefix">Änderungsantrag</th>
+                        <th class="procedure">Verfahrensvorschlag</th>
+                        <th class="initiator">Antragsteller*in</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -85,13 +85,17 @@ foreach ($data as $dataRow) {
             });
             if (count($uncoveredAmendments)) {
                 ?>
-                <table class="proposalTable">
-                    <caption>Weitere Verfahrensvorschläge</caption>
+                <table class="table table-bordered proposalTable">
+                    <?php
+                    if (count($votingBlocks) > 0) { ?>
+                        <caption>Weitere Verfahrensvorschläge</caption>
+                        <?php
+                    } ?>
                     <thead>
                     <tr>
-                        <th>Änderungsantrag</th>
-                        <th>Verfahrensvorschlag</th>
-                        <th>Antragsteller*in</th>
+                        <th class="prefix">Änderungsantrag</th>
+                        <th class="procedure">Verfahrensvorschlag</th>
+                        <th class="initiator">Antragsteller*in</th>
                     </tr>
                     </thead>
                     <tbody>

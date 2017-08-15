@@ -14,6 +14,7 @@ return [
     'Other Motions'        => 'Other motions',
     'no motions'           => 'No motions',
     'news'                 => 'News',
+    'proposed_procedure'   => 'Proposed procedure',
     'email_notifications'  => 'E-mail notifications',
     'activity_log'         => 'Activity',
     'feed_motions'         => 'Motions',

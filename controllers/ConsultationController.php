@@ -463,7 +463,6 @@ class ConsultationController extends Base
                 'amendments'   => [],
             ];
             foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
-                var_dump($amendment->isProposalPublic());
                 if ($proposalAdmin || $amendment->isProposalPublic()) {
                     $dataRow['amendments'][] = $amendment;
                 }

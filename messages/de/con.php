@@ -14,6 +14,7 @@ return [
     'Other Motions'        => 'Sonstige Anträge',
     'no motions'           => 'Keine Anträge',
     'news'                 => 'Neuigkeiten',
+    'proposed_procedure'   => 'Verfahrensvorschlag',
     'email_notifications'  => 'E-Mail-Benachrichtigungen',
     'activity_log'         => 'Aktivitäten',
     'feed_motions'         => 'Anträge',

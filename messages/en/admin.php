@@ -176,6 +176,7 @@ return [
     'con_amend_screening'     => '<strong>Screening</strong> of amendments',
     'con_amend_editorial'     => 'Allow <strong>editorial change requests</strong> <small>(a separate text field)</small>',
     'con_amend_globalalt'     => 'Allow <strong>global alternatives</strong> <small>(amendments that completely replace the motion)</small>',
+    'con_proposal_procedure'  => 'Show the <strong>proposed procedure</strong> on a separate page',
     'con_title_comments'      => 'Comments',
     'con_comment_screening'   => '<strong>Screening</strong> of comments',
     'con_comment_email'       => 'Enforce entering the <strong>e-mail address</strong>',
