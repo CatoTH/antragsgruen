@@ -350,6 +350,32 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param int $includeVoted
+     * @param null|Amendment[] $exclude
+     * @return array
+     */
+    public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
+    {
+        $amendments = [];
+        foreach ($this->amendments as $amendment) {
+            if ($exclude && in_array($amendment, $exclude)) {
+                continue;
+            }
+            if ($amendment->isVisibleForProposalAdmins()) {
+                continue;
+            }
+            $toBeCheckedStati = [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_ACCEPTED];
+            if ($includeVoted) {
+                $toBeCheckedStati[] = Amendment::STATUS_VOTE;
+            }
+            if (in_array($amendment->proposalStatus, $toBeCheckedStati)) {
+                $amendments[] = $amendment;
+            }
+        }
+        return $amendments;
+    }
+
+    /**
      * @param bool $includeWithdrawn
      * @return Amendment[]
      */
