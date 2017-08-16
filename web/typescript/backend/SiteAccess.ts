@@ -1,7 +1,10 @@
 class SiteAccess {
+    private $adminForm: JQuery;
+
     constructor() {
         this.initSite();
         this.initUsers();
+        this.initAdmins();
     }
 
     private initSite() {
@@ -13,19 +16,6 @@ class SiteAccess {
                 $("#accountsForm").addClass("hidden");
             }
         }).trigger("change");
-
-
-        $(".removeAdmin").click(function () {
-            let $button = $(this),
-                $form = $(this).parents("form").first();
-            bootbox.confirm(__t("admin", "removeAdminConfirm"), function (result) {
-                if (result) {
-                    let id = $button.data("id");
-                    $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');
-                    $form.submit();
-                }
-            });
-        });
 
         $(".managedUserAccounts input").change(function () {
             if ($(this).prop("checked")) {
@@ -70,6 +60,34 @@ class SiteAccess {
                 $(this).parents('tr').first().find('.accessViewCol input[type=checkbox]').prop('checked', true);
             }
         });
+    }
+
+    private initAdmins() {
+        this.$adminForm = $("#adminForm");
+
+        this.$adminForm.on('click', '.removeAdmin', (ev)  => {
+            let $button = $(ev.target),
+                $form = $(ev.target).parents("form").first();
+
+            bootbox.confirm(__t("admin", "removeAdminConfirm"), function (result) {
+                if (result) {
+                    let id = $button.data("id");
+                    $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');
+                    $form.submit();
+                }
+            });
+        });
+
+        console.log(this.$adminForm.find('.adminCard .typeSite'));
+        this.$adminForm.on('change', '.adminCard .typeSite input', (ev) => {
+            let $card = $(ev.target).parents('.adminCard').first();
+            if ($(ev.target).prop('checked')) {
+                $card.find('.typeCon, .typeProposal').addClass('hidden');
+            } else {
+                $card.find('.typeCon, .typeProposal').removeClass('hidden');
+            }
+        });
+        this.$adminForm.find('.adminCard .typeSite input').trigger('change');
     }
 }
 

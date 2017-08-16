@@ -24,7 +24,12 @@ $I->fillField('#addUsername', 'testuser@example.org');
 $I->submitForm('#adminAddForm', [], 'addAdmin');
 $I->see('testuser@example.org');
 
-$I->checkOption('.admin2 .type-site input');
+$I->seeElement('.admin2 .typeCon');
+$I->seeElement('.admin2 .typeProposal');
+$I->checkOption('.admin2 .typeSite input');
+$I->dontSeeElement('.admin2 .typeCon');
+$I->dontSeeElement('.admin2 .typeProposal');
+
 $I->submitForm('#adminForm', [], 'saveAdmin');
 
 $I->wantTo('Login in as testuser');
@@ -46,7 +51,7 @@ $I->see('HoesslTo');
 
 $I->wantTo('Remove testadmin as admin');
 $I->see('testadmin@example.org');
-$I->click('.admin1 .removeAdmin');
+$I->executeJS('$(".admin1 .removeAdmin").trigger("click");');
 $I->seeBootboxDialog('Admin-Rechte entziehen');
 $I->acceptBootboxConfirm();
 $I->dontSee('testadmin@example.org');
