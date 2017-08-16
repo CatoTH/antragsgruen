@@ -331,7 +331,7 @@ class Motion extends IMotion implements IRSSItem
             if ($exclude && in_array($amendment, $exclude)) {
                 continue;
             }
-            if ($amendment->status != Amendment::STATUS_DELETED && $amendment->status != Amendment::STATUS_DRAFT) {
+            if ($amendment->isVisibleForAdmins() && $amendment->status != Amendment::STATUS_DRAFT) {
                 $amendments[] = $amendment;
             }
         }
