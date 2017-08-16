@@ -1100,4 +1100,36 @@ class Amendment extends IMotion implements IRSSItem
                 return static::getStatiAsVerbs()[$this->proposalStatus];
         }
     }
+
+    /**
+     * @param boolean $includeVoted
+     * @return Amendment[]
+     */
+    public function collidesWithOtherProposedAmendments($includeVoted)
+    {
+        $collidesWith = [];
+
+        if ($this->proposalReference) {
+            $sections = $this->proposalReference->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        } else {
+            $sections = $this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        }
+        $newSections = [];
+        foreach ($sections as $section) {
+            $newSections[$section->sectionId] = $section->data;
+        }
+
+        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this]) as $amendment) {
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                if (count($coll) > 0) {
+                    if (!in_array($amendment, $collidesWith)) {
+                        $collidesWith[] = $amendment;
+                    }
+                }
+            }
+        }
+
+        return $collidesWith;
+    }
 }

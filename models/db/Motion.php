@@ -352,7 +352,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @param int $includeVoted
      * @param null|Amendment[] $exclude
-     * @return array
+     * @return Amendment[]
      */
     public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
     {
@@ -361,7 +361,7 @@ class Motion extends IMotion implements IRSSItem
             if ($exclude && in_array($amendment, $exclude)) {
                 continue;
             }
-            if ($amendment->isVisibleForProposalAdmins()) {
+            if (!$amendment->isVisibleForProposalAdmins()) {
                 continue;
             }
             $toBeCheckedStati = [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_ACCEPTED];

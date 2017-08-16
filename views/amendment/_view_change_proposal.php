@@ -11,6 +11,8 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
+$collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
+
 $saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
@@ -78,7 +80,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                     $options[$votingBlock->id] = $votingBlock->title;
                 }
                 $options['NEW'] = '- Neuen anlegen -';
-                $attrs = ['id' => 'votingBlockId', 'class' => 'form-control'];
+                $attrs          = ['id' => 'votingBlockId', 'class' => 'form-control'];
                 echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
                 ?>
                 <div class="newBlock">
@@ -149,6 +151,22 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             }
             ?>
         </div>
+    </section>
+    <section class="collissions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+        <h3>Kollidiert mit Verfahrensvorschlag:</h3>
+        <ul>
+            <?php
+            foreach ($collidingAmendments as $collidingAmendment) {
+                $title = $collidingAmendment->getShortTitle();
+                $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
+                    echo ' (Abstimmung)';
+                }
+                echo '<li>' . Html::a($title, $url);
+                echo '</li>';
+            }
+            ?>
+        </ul>
     </section>
     <section class="saving">
         <button class="btn btn-default btn-sm">Änderungen speichern</button>

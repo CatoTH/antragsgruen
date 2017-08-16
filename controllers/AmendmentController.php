@@ -17,6 +17,7 @@ use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
+use app\views\amendment\LayoutHelper;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -128,7 +129,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        return \app\views\amendment\LayoutHelper::createOdt($amendment);
+        return LayoutHelper::createOdt($amendment);
     }
 
     /**
