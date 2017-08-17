@@ -15,6 +15,20 @@ class AmendmentRewriterCheckTest extends TestBase
         $newHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 4</li><li>List item 5</li></ul>';
 
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
+        $this->assertTrue($rewritable);
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
+        $this->assertTrue($rewritable);
+    }
+
+    /**
+     */
+    public function testListInsertedAndDelete2()
+    {
+        $oldHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item 3</li><li>List item 5</li></ul>';
+        $amendmentHtml = '<ul><li>List item 1</li><li>List item 2</li><li>List item 5</li></ul>';
+        $newHtml       = '<ul><li>List item 1</li><li>List item 2</li><li>List item ins 3</li><li>List item 5</li></ul>';
+
+        $rewritable = AmendmentRewriter::canRewrite($oldHtml, $newHtml, $amendmentHtml);
         $this->assertFalse($rewritable);
         $rewritable = AmendmentRewriter::canRewrite($oldHtml, $amendmentHtml, $newHtml);
         $this->assertFalse($rewritable);

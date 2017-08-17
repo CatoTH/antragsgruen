@@ -270,7 +270,9 @@ class AmendmentDiffMerger
      * amendments affecting this paragraph.
      *
      * This isn't exactly very elegant, as the data structure mutates as we're iterating over it,
-     * therefore we need to cancel out the side-effects
+     * therefore we need to cancel out the side-effects.
+     *
+     * AmendmentRewriter::moveInsertsIntoTheirOwnWords does about the same and should behave similarily
      */
     private function moveInsertsIntoTheirOwnWords()
     {
