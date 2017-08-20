@@ -245,7 +245,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voting_status'     => 'Abstimmungsstatus',
     'proposal_refer_to'          => 'Überweisen an',
     'proposal_obsoleted_by'      => 'Erledigt durch',
-    'proposal_modified_accpeted' => 'Modifiziert übernehmen',
+    'proposal_modified_accepted' => 'Modifiziert übernehmen',
     'proposal_comment_title'     => 'Interne Kommentare',
     'proposal_comment_placeh'    => 'Neuer Kommentar...',
     'proposal_comment_write'     => 'Schreiben',

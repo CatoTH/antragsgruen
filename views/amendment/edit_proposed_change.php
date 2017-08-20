@@ -23,6 +23,7 @@ $this->title        = \Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->loadCKEditor();
+$layout->loadFuelux();
 
 $motionUrl = UrlHelper::createMotionUrl($amendment->getMyMotion());
 $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionUrl);
@@ -35,13 +36,6 @@ $layout->addBreadcrumb(\Yii::t('amend', 'proposal_edit_bread'));
 
 echo '<h1>' . \Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
-
-echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
-    'id'                        => 'proposedChangeTextForm',
-    'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
-    'data-collission-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
-]);
-
 if ($msgSuccess) {
     echo '<div class="content"><div class="alert alert-success">';
     echo $msgSuccess;
@@ -52,10 +46,21 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
-        <a href="<?= UrlHelper::createAmendmentUrl($amendment) ?>">
+        <a href="<?= UrlHelper::createAmendmentUrl($amendment) ?>" class="goBackLink">
             <span class="glyphicon glyphicon-chevron-left"></span>
             <?= \Yii::t('amend', 'proposal_edit_back') ?>
         </a>
+
+        <?php
+        echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'edit']);
+
+        echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
+            'id'                        => 'proposedChangeTextForm',
+            'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
+            'data-collission-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
+        ]);
+        ?>
+
         <div class="row">
             <section class="col-md-6">
                 <h2><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
@@ -115,31 +120,31 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
         }
 
         ?>
-    </div>
-    <div class="save-row">
-        <button class="btn btn-primary" type="submit" name="save">
-            <?= \Yii::t('base', 'save') ?>
-        </button>
-    </div>
-    <aside id="collissionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
-        <h2><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
-        <ul class="collissionList">
-            <?php
-            foreach ($collidingAmendments as $collidingAmendment) {
-                // Keep in sync with AmendmentController::actionEditProposedChangeCheck
-                $title = $collidingAmendment->getShortTitle();
-                $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
-                if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
-                    $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
-                }
+        <div class="save-row">
+            <button class="btn btn-primary" type="submit" name="save">
+                <?= \Yii::t('base', 'save') ?>
+            </button>
+        </div>
+        <aside id="collissionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+            <h2><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
+            <ul class="collissionList">
+                <?php
+                foreach ($collidingAmendments as $collidingAmendment) {
+                    // Keep in sync with AmendmentController::actionEditProposedChangeCheck
+                    $title = $collidingAmendment->getShortTitle();
+                    $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                    if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
+                        $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
+                    }
 
-                echo '<li>' . Html::a($title, $url, ['target' => '_blank']);
-                echo HTMLTools::amendmentDiffTooltip($collidingAmendment, 'top', 'fixedBottom');
-                echo '</li>';
-            }
-            ?>
-        </ul>
-    </aside>
+                    echo '<li>' . Html::a($title, $url, ['target' => '_blank']);
+                    echo HTMLTools::amendmentDiffTooltip($collidingAmendment, 'top', 'fixedBottom');
+                    echo '</li>';
+                }
+                ?>
+            </ul>
+        </aside>
+    </div>
 <?php
 
 echo Html::endForm();

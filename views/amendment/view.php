@@ -100,7 +100,7 @@ echo '</div>';
 
 
 if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
-    echo $this->render('_view_change_proposal', ['amendment' => $amendment]);
+    echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'view']);
 }
 
 echo $this->render('_view_text', ['amendment' => $amendment]);

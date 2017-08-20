@@ -214,7 +214,7 @@ return [
     'proposal_voting_status'     => 'Voting status',
     'proposal_refer_to'          => 'Referred to',
     'proposal_obsoleted_by'      => 'Handled by',
-    'proposal_modified_accpeted' => 'Modification',
+    'proposal_modified_accepted' => 'Modification',
     'proposal_comment_title'     => 'Internal comment',
     'proposal_comment_placeh'    => 'New comment...',
     'proposal_comment_write'     => 'Write',

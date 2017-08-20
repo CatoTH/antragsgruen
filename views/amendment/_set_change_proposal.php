@@ -3,6 +3,7 @@
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Amendment $amendment
+ * @var string $context
  */
 
 use app\components\HTMLTools;
@@ -115,10 +116,16 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <button class="btn btn-default btn-xs"><?= \Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
+<?php
+if ($context !== 'edit') {
+    ?>
     <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
         <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
         <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
     </section>
+    <?php
+}
+?>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
         <label class="headingLabel"><?= \Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php
@@ -177,6 +184,6 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </button>
     </section>
     <section class="saved hidden">
-        <?= \Yii::t('amend', 'saved') ?>
+        <?= \Yii::t('base', 'saved') ?>
     </section>
 <?= Html::endForm() ?>
