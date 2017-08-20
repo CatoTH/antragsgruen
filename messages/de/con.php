@@ -61,4 +61,12 @@ return [
     'search_results_none'  => 'Keine Ergebnisse gefunden',
     'search_results_1'     => '1 Ergebnis',
     'search_results_x'     => '%NUM% Ergebnisse',
+
+    'proposal_title'           => 'Verfahrensvorschlag',
+    'proposal_bc'              => 'Verfahrensvorschlag',
+    'proposal_table_amend'     => 'Änderungsantrag',
+    'proposal_table_voting'    => 'Abstimmung',
+    'proposal_table_proposal'  => 'Verfahrensvorschlag',
+    'proposal_table_initiator' => 'Antragsteller*in',
+    'proposal_table_others'    => 'Weitere Verfahrensvorschläge',
 ];

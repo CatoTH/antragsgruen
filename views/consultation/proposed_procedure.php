@@ -17,8 +17,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = 'Verfahrensvorschlag';
-$layout->addBreadcrumb('Verfahrensvorschlag');
+$this->title = \Yii::t('con', 'proposal_title');
+$layout->addBreadcrumb(\Yii::t('con', 'proposal_bc'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -51,12 +51,15 @@ foreach ($data as $dataRow) {
             foreach ($votingBlocks as $votingBlock) {
                 ?>
                 <table class="table votingTable">
-                    <caption>Abstimmung: <?= Html::encode($votingBlock->title) ?></caption>
+                    <caption>
+                        <?=\Yii::t('con', 'proposal_table_voting')?>:
+                        <?= Html::encode($votingBlock->title) ?>
+                    </caption>
                     <thead>
                     <tr>
-                        <th class="prefix">Änderungsantrag</th>
-                        <th class="procedure">Verfahrensvorschlag</th>
-                        <th class="initiator">Antragsteller*in</th>
+                        <th class="prefix"><?=\Yii::t('con', 'proposal_table_amend')?></th>
+                        <th class="procedure"><?=\Yii::t('con', 'proposal_table_proposal')?></th>
+                        <th class="initiator"><?=\Yii::t('con', 'proposal_table_initiator')?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -88,14 +91,14 @@ foreach ($data as $dataRow) {
                 <table class="table proposalTable">
                     <?php
                     if (count($votingBlocks) > 0) { ?>
-                        <caption>Weitere Verfahrensvorschläge</caption>
+                        <caption><?=\Yii::t('con', 'proposal_table_others')?></caption>
                         <?php
                     } ?>
                     <thead>
                     <tr>
-                        <th class="prefix">Änderungsantrag</th>
-                        <th class="procedure">Verfahrensvorschlag</th>
-                        <th class="initiator">Antragsteller*in</th>
+                        <th class="prefix"><?=\Yii::t('con', 'proposal_table_amend')?></th>
+                        <th class="procedure"><?=\Yii::t('con', 'proposal_table_proposal')?></th>
+                        <th class="initiator"><?=\Yii::t('con', 'proposal_table_initiator')?></th>
                     </tr>
                     </thead>
                     <tbody>

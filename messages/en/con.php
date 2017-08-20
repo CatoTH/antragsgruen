@@ -61,4 +61,12 @@ return [
     'search_results_none'  => 'No results found',
     'search_results_1'     => '1 result',
     'search_results_x'     => '%NUM% results',
+
+    'proposal_title'           => 'Proposed procedure',
+    'proposal_bc'              => 'Proposed procedure',
+    'proposal_table_amend'     => 'Amendment',
+    'proposal_table_voting'    => 'Voting',
+    'proposal_table_proposal'  => 'Proposed procedure',
+    'proposal_table_initiator' => 'Proposer',
+    'proposal_table_others'    => 'Further proposals',
 ];

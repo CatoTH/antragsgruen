@@ -32,10 +32,10 @@ if ($amendment->proposalStatus == Amendment::STATUS_OBSOLETED_BY) {
 
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
-    <h2>Verfahrensvorschlag</h2>
+    <h2><?= \Yii::t('amend', 'proposal_amend_title') ?></h2>
     <div class="holder">
         <section class="statusForm">
-            <h3>Vorgeschlagener Status</h3>
+            <h3><?= \Yii::t('amend', 'proposal_status_title') ?></h3>
 
             <?php
             $foundStatus = false;
@@ -57,34 +57,36 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 if (!$foundStatus) {
                     echo 'checked';
                 }
-                ?>> - nicht festgelegt -
+                ?>> - <?= \Yii::t('amend', 'proposal_status_na') ?> -
             </label>
         </section>
         <div class="middleCol">
             <div class="visibilitySettings">
-                <h3>Sichtbarkeit</h3>
+                <h3><?= \Yii::t('amend', 'proposal_visibility') ?></h3>
                 <label>
                     <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
-                    Verfahrensvorschlag ist sichtbar
+                    <?= \Yii::t('amend', 'proposal_visible') ?>
                 </label>
             </div>
             <div class="notificationSettings">
-                <h3>Benachrichtigung</h3>
+                <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
                 @TODO
             </div>
             <div class="votingBlockSettings">
-                <h3>Abstimmungsblock</h3>
+                <h3><?= \Yii::t('amend', 'proposal_voteblock') ?></h3>
                 <?php
                 $options = ['-'];
                 foreach ($votingBlocks as $votingBlock) {
                     $options[$votingBlock->id] = $votingBlock->title;
                 }
-                $options['NEW'] = '- Neuen anlegen -';
+                $options['NEW'] = '- ' . \Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
                 $attrs          = ['id' => 'votingBlockId', 'class' => 'form-control'];
                 echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
                 ?>
                 <div class="newBlock">
-                    <label for="newBlockTitle" class="control-label">Titel des neuen Blocks:</label>
+                    <label for="newBlockTitle" class="control-label">
+                        <?= \Yii::t('amend', 'proposal_voteblock_new') ?>:
+                    </label>
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
             </div>
@@ -108,7 +110,8 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 ?>
             </ol>
 
-            <textarea name="text" placeholder="Neuer Kommentar..." class="form-control" rows="1"></textarea>
+            <textarea name="text" placeholder="<?= Html::encode(\Yii::t('amend', 'proposal_comment_placeh')) ?>"
+                      class="form-control" rows="1"></textarea>
             <button class="btn btn-default btn-xs"><?= \Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
