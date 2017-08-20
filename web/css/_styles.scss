@@ -812,6 +812,13 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   .popover-content {
     padding-right: 0;
   }
+  &.fixedBottom {
+    left: 25.7969px;
+    display: block;
+    bottom: 37px;
+    position: fixed;
+    top: initial !important;
+  }
 }
 
 .ajaxAmendment {

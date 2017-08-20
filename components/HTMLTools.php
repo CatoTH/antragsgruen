@@ -652,13 +652,15 @@ class HTMLTools
     /**
      * @param Amendment $amendment
      * @param string $direction [top, bottom, right, left]
+     * @param string $tooltipExtraClass
      * @return string
      */
-    public static function amendmentDiffTooltip(Amendment $amendment, $direction = '')
+    public static function amendmentDiffTooltip(Amendment $amendment, $direction = '', $tooltipExtraClass = '')
     {
         $url = UrlHelper::createAmendmentUrl($amendment, 'ajax-diff');
         return '<button tabindex="0" type="button" data-toggle="popover" ' .
             'class="amendmentAjaxTooltip link" data-initialized="0" ' .
+            'data-tooltip-extra-class="' . Html::encode($tooltipExtraClass) . '" ' .
             'data-url="' . Html::encode($url) . '" title="' . \Yii::t('amend', 'ajax_diff_title') . '" ' .
             'data-amendment-id="' . $amendment->id . '" data-placement="' . Html::encode($direction) . '">' .
             '<span class="glyphicon glyphicon-eye-open"></span></button>';

@@ -1,10 +1,13 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+import {MotionMergeChangeActions} from "../frontend/MotionMergeAmendments";
 
 export class AmendmentEditProposedChange {
     private hasChanged: boolean = false;
+    private $collissionIndicator: JQuery;
 
     public constructor(private $form: JQuery) {
         this.textEditCalled();
+        this.initCollissionDetection();
 
         $form.on("submit", () => {
             $(window).off("beforeunload", AmendmentEditProposedChange.onLeavePage);
@@ -37,6 +40,51 @@ export class AmendmentEditProposedChange {
 
             $(ev.currentTarget).parents('.modifiedActions').addClass('hidden');
         });
+    }
+
+    private initCollissionDetection() {
+        this.$collissionIndicator = this.$form.find('#collissionIndicator');
+
+        window.setInterval(() => {
+            let sectionData = this.getTextConsolidatedSections();
+            let url = this.$form.data('collission-check-url');
+            $.post(url, {
+                '_csrf': this.$form.find('> input[name=_csrf]').val(),
+                'sections': sectionData
+            }, (ret) => {
+                if (ret['collissions'].length == 0) {
+                    this.$collissionIndicator.addClass('hidden');
+                } else {
+                    this.$collissionIndicator.removeClass('hidden');
+                    let listHtml = '';
+                    ret['collissions'].forEach((el) => {
+                       listHtml += el['html'];
+                    });
+                    this.$collissionIndicator.find('.collissionList').html(listHtml);
+                }
+            });
+
+        }, 5000);
+    }
+
+    private getTextConsolidatedSections() {
+        let sections = {};
+        $('.proposedVersion .wysiwyg-textarea:not(#sectionHolderEditorial)').each((i, el) => {
+            let $holder = $(el),
+                $textarea = $holder.find('.texteditor'),
+                sectionId = $holder.parents('.proposedVersion').data('section-id');
+
+            let $cloned = $textarea.clone(false);
+            $cloned.find('.ice-ins').each((i, el) => {
+                MotionMergeChangeActions.insertAccept(el);
+            });
+            $cloned.find('.ice-del').each((i, el) => {
+                MotionMergeChangeActions.deleteAccept(el);
+            });
+
+            sections[sectionId] = $cloned.html();
+        });
+        return sections;
     }
 
     public static onLeavePage(): string {

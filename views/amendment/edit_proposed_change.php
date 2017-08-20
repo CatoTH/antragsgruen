@@ -37,8 +37,9 @@ echo '<h1>' . 'Verfahrensvorschlag bearbeiten' . '</h1>';
 
 
 echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
-    'id'                       => 'editProposedChangeForm',
-    'data-antragsgruen-widget' => 'backend/AmendmentEditProposedChange',
+    'id'                        => 'proposedChangeTextForm',
+    'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
+    'data-collission-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
 ]);
 
 if ($msgSuccess) {
@@ -46,6 +47,8 @@ if ($msgSuccess) {
     echo $msgSuccess;
     echo '</div></div>';
 }
+
+$collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
@@ -73,7 +76,7 @@ if ($msgSuccess) {
 
             ?>
             <div class="row">
-                <section class="col-md-6 motionTextHolder proposedVersion">
+                <section class="col-md-6 motionTextHolder proposedVersion" data-section-id="<?= $type->id ?>">
                     <?= $section->getSectionType()->getAmendmentFormField() ?>
                 </section>
                 <section class="col-md-6 motionTextHolder originalVersion">
@@ -112,6 +115,25 @@ if ($msgSuccess) {
     <div class="save-row">
         <button class="btn btn-primary" type="submit" name="save">Speichern</button>
     </div>
+    <aside id="collissionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+        <h2>Konflikte mit Verfahrensvorschlägen:</h2>
+        <ul class="collissionList">
+            <?php
+            foreach ($collidingAmendments as $collidingAmendment) {
+                // Keep in sync with AmendmentController::actionEditProposedChangeCheck
+                $title = $collidingAmendment->getShortTitle();
+                $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
+                    $title .= ' (Abstimmung)';
+                }
+
+                echo '<li>' . Html::a($title, $url, ['target' => '_blank']);
+                echo HTMLTools::amendmentDiffTooltip($collidingAmendment, 'top', 'fixedBottom');
+                echo '</li>';
+            }
+            ?>
+        </ul>
+    </aside>
 <?php
 
 echo Html::endForm();

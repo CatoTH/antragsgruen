@@ -49,20 +49,30 @@ class DiffRenderer
             $this->setInsCallback(function ($node, $params) {
                 /** @var \DOMElement $node */
                 $classes = explode(' ', $node->getAttribute('class'));
-                $classes = array_merge($classes, ['ice-ins', 'ice-cts']);
+                $classes = array_merge($classes, ['ice-cts', 'ice-ins']);
                 $classes = array_filter($classes, function ($el) {
                     return ($el !== '');
                 });
                 $node->setAttribute('class', implode(' ', $classes));
+                $node->setAttribute('data-userid', '');
+                $node->setAttribute('data-username', '');
+                $node->setAttribute('data-changedata', '');
+                $node->setAttribute('data-time', time());
+                $node->setAttribute('data-last-change-time', time());
             });
             $this->setDelCallback(function ($node, $params) {
                 /** @var \DOMElement $node */
                 $classes = explode(' ', $node->getAttribute('class'));
-                $classes = array_merge($classes, ['ice-del', 'ice-cts']);
+                $classes = array_merge($classes, ['ice-cts', 'ice-del']);
                 $classes = array_filter($classes, function ($el) {
                     return ($el !== '');
                 });
                 $node->setAttribute('class', implode(' ', $classes));
+                $node->setAttribute('data-userid', '');
+                $node->setAttribute('data-username', '');
+                $node->setAttribute('data-changedata', '');
+                $node->setAttribute('data-time', time());
+                $node->setAttribute('data-last-change-time', time());
             });
         }
     }

@@ -350,7 +350,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param int $includeVoted
+     * @param boolean $includeVoted
      * @param null|Amendment[] $exclude
      * @return Amendment[]
      */

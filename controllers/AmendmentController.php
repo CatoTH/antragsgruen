@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -17,7 +18,9 @@ use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
+use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
+use yii\helpers\Html;
 use yii\web\Response;
 
 class AmendmentController extends Base
@@ -489,7 +492,7 @@ class AmendmentController extends Base
                     $votingBlock->title          = $title;
                     $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
                     $votingBlock->save();
-                    
+
                     $amendment->votingBlockId = $votingBlock->id;
                     $response['needsReload']  = true;
                 }
@@ -557,6 +560,62 @@ class AmendmentController extends Base
             'msgSuccess' => $msgSuccess,
             'amendment'  => $amendment,
             'form'       => $form,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $newSections = \Yii::$app->request->post('sections', []);
+        foreach ($newSections as $sectionId => $section) {
+            $newSections[$sectionId] = HTMLTools::cleanSimpleHtml($section);
+        }
+
+        /** @var Amendment[] $collidesWith */
+        $collidesWith = [];
+        foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment]) as $compAmend) {
+            foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                if (count($coll) > 0 && !in_array($compAmend, $collidesWith)) {
+                    $collidesWith[] = $compAmend;
+                }
+            }
+        }
+
+        return json_encode([
+            'collissions' => array_map(function (Amendment $amend) {
+                // Keep in sync with edit_proposed_change.php
+                $title = $amend->getShortTitle();
+                if ($amend->proposalStatus == Amendment::STATUS_VOTE) {
+                    $title .= ' (Abstimmung)';
+                }
+                $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);
+                $html .= HTMLTools::amendmentDiffTooltip($amend, 'top', 'fixedBottom');
+                $html .= '</li>';
+
+                return [
+                    'id'    => $amend->id,
+                    'title' => $amend->getShortTitle(),
+                    'html'  => $html,
+                ];
+            }, $collidesWith),
         ]);
     }
 }

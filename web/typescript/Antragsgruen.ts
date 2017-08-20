@@ -28,11 +28,12 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         let $el = $(ev.currentTarget);
         if ($el.data('initialized') == '0') {
             $el.data('initialized', '1');
+            let classes = "popover popover-amendment-ajax " + $el.data('tooltip-extra-class');
             $el.popover({
                 html: true,
                 trigger: 'manual',
                 container: 'body',
-                template: '<div class="popover popover-amendment-ajax" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+                template: '<div class="' + classes + '" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
                 content: function () {
                     let id = 'pop_' + (new Date()).getTime(),
                         content = '<div id="' + id + '">Loading...</div>',

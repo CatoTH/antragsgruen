@@ -1,5 +1,4 @@
 
-
 #proposedChanges {
   background-color: #f8faf8;
   border: solid 1px #eee;
@@ -103,7 +102,7 @@
   }
 }
 
-#editProposedChangeForm {
+#proposedChangeTextForm {
   h2 {
     font-size: 24px;
   }
@@ -129,6 +128,39 @@
   .save-row {
     text-align: center;
     margin: 0 0 40px 0;
+  }
+  #collissionIndicator {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background: white;
+    border-top: 1px solid #ccc;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    padding: 5px;
+
+    h2 {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+      font-weight: bold;
+    }
+
+    .collissionList {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      > li {
+        display: inline-block;
+        margin: 0 20px;
+      }
+    }
   }
 }
 
