@@ -90,7 +90,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             </div>
         </div>
         <section class="proposalCommentForm">
-            <h3>Interne Kommentare</h3>
+            <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
                 foreach ($amendment->adminComments as $adminComment) {
@@ -109,15 +109,15 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             </ol>
 
             <textarea name="text" placeholder="Neuer Kommentar..." class="form-control" rows="1"></textarea>
-            <button class="btn btn-default btn-xs">Schreiben</button>
+            <button class="btn btn-default btn-xs"><?= \Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
     <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
-        <h3>Modifiziert übernehmen</h3>
+        <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
         <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
-        <label class="headingLabel">Erledigt durch...</label>
+        <label class="headingLabel"><?= \Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php
         $options = ['-'];
         foreach ($amendment->getMyMotion()->getVisibleAmendmentsSorted() as $otherAmend) {
@@ -130,13 +130,13 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
-        <label class="headingLabel" for="referredTo">Überweisen an...</label>
+        <label class="headingLabel" for="referredTo"><?= \Yii::t('amend', 'proposal_refer_to') ?>...</label>
         <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">
         <div class="votingStatus">
-            <h3>Abstimmungsstatus</h3>
+            <h3><?= \Yii::t('admin', 'proposal_voting_status') ?></h3>
             <?php
             foreach (Amendment::getVotingStati() as $statusId => $statusName) {
                 ?>
@@ -153,14 +153,14 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </div>
     </section>
     <section class="collissions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
-        <h3>Kollidiert mit Verfahrensvorschlag:</h3>
+        <h3><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
-                    echo ' (Abstimmung)';
+                    echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
                 echo '<li>' . Html::a($title, $url);
                 echo '</li>';
@@ -169,9 +169,11 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </ul>
     </section>
     <section class="saving">
-        <button class="btn btn-default btn-sm">Änderungen speichern</button>
+        <button class="btn btn-default btn-sm">
+            <?= \Yii::t('amend', 'proposal_save_changes') ?>
+        </button>
     </section>
     <section class="saved hidden">
-        Gespeichert.
+        <?= \Yii::t('amend', 'saved') ?>
     </section>
 <?= Html::endForm() ?>

@@ -19,7 +19,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title        = 'Verfahrensvorschlag';
+$this->title        = \Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->loadCKEditor();
@@ -31,9 +31,9 @@ if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix !=
 } else {
     $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb('Verfahrensvorschlag');
+$layout->addBreadcrumb(\Yii::t('amend', 'proposal_edit_bread'));
 
-echo '<h1>' . 'Verfahrensvorschlag bearbeiten' . '</h1>';
+echo '<h1>' . \Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
 
 echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
@@ -52,12 +52,16 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
+        <a href="<?= UrlHelper::createAmendmentUrl($amendment) ?>">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <?= \Yii::t('amend', 'proposal_edit_back') ?>
+        </a>
         <div class="row">
             <section class="col-md-6">
-                <h2>Verfahrensvorschlag</h2>
+                <h2><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
             </section>
             <section class="col-md-6">
-                <h2>Original-Änderungsantrag</h2>
+                <h2><?= \Yii::t('amend', 'proposal_edit_title_orig') ?></h2>
             </section>
         </div>
         <?php
@@ -113,10 +117,12 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
         ?>
     </div>
     <div class="save-row">
-        <button class="btn btn-primary" type="submit" name="save">Speichern</button>
+        <button class="btn btn-primary" type="submit" name="save">
+            <?= \Yii::t('base', 'save') ?>
+        </button>
     </div>
     <aside id="collissionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
-        <h2>Konflikte mit Verfahrensvorschlägen:</h2>
+        <h2><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
         <ul class="collissionList">
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
@@ -124,7 +130,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
-                    $title .= ' (Abstimmung)';
+                    $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
 
                 echo '<li>' . Html::a($title, $url, ['target' => '_blank']);

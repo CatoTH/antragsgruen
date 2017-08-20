@@ -604,7 +604,7 @@ class AmendmentController extends Base
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
                 if ($amend->proposalStatus == Amendment::STATUS_VOTE) {
-                    $title .= ' (Abstimmung)';
+                    $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
                 $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);
                 $html .= HTMLTools::amendmentDiffTooltip($amend, 'top', 'fixedBottom');
