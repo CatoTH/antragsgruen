@@ -79,7 +79,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
                 }
                 currNumber = currStr = parts.join('.');
             } else {
-                currStr = currNumber = code;
+                currStr = currNumber = code + ''; // currNumber needs to be a string, always.
             }
 
             $li.find('> div > h3 .code').text(currStr);
