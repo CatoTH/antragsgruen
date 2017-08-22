@@ -23,6 +23,15 @@ use CatoTH\HTML2OpenDocument\Text;
 
 class TextSimple extends ISectionType
 {
+    private $forceMultipleParagraphs = null;
+
+    /**
+     * @param bool $active
+     */
+    public function forceMultipleParagraphMode($active)
+    {
+        $this->forceMultipleParagraphs = $active;
+    }
 
     /**
      * @return string
@@ -39,10 +48,16 @@ class TextSimple extends ISectionType
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
-        if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
+
+        $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
+        if ($this->forceMultipleParagraphs !== null) {
+            $multipleParagraphs = $this->forceMultipleParagraphs;
+        }
+        
+        if ($multipleParagraphs) {
             /** @var AmendmentSection $section */
-            $section        = $this->section;
-            $diff           = new Diff();
+            $section = $this->section;
+            $diff    = new Diff();
             if ($section->getOriginalMotionSection()) {
                 $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
             } else {

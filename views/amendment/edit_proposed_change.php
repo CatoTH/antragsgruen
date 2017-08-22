@@ -86,7 +86,14 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
             ?>
             <div class="row">
                 <section class="col-md-6 motionTextHolder proposedVersion" data-section-id="<?= $type->id ?>">
-                    <?= $section->getSectionType()->getAmendmentFormField() ?>
+                    <?php
+                    $type = $section->getSectionType();
+                    if ($amendSection->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                        /** @var \app\models\sectionTypes\TextSimple $type */
+                        $type->forceMultipleParagraphMode(true);
+                    }
+                    echo $type->getAmendmentFormField();
+                    ?>
                 </section>
                 <section class="col-md-6 motionTextHolder originalVersion">
                     <div class="title"><?= Html::encode($amendSection->getSettings()->title) ?></div>

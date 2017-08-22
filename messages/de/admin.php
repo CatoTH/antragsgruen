@@ -207,7 +207,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_admins_add'       => 'Neu eintragen',
     'siteacc_admins_user'      => 'Benutzer*in',
     'siteacc_admins_del'       => 'Austragen',
-    'siteacc_admins_all_cons'  => 'Administrator',
+    'siteacc_admins_all_cons'  => 'Administrator*in',
     'siteacc_admins_one_con'   => 'Diese Veranstaltung verwalten',
     'siteacc_admins_proposals' => 'Verfahrensvorschlag bearbeiten',
     'siteacc_add_ww'           => 'Wurzelwerk-Name',
