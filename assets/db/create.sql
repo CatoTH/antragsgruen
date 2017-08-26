@@ -27,6 +27,8 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `proposalReferenceId`   INT(11)              DEFAULT NULL,
   `proposalComment`       TEXT,
   `proposalVisibleFrom`   TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalNotification`  TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalUserStatus`    TINYINT(4)  NULL     DEFAULT NULL,
   `votingStatus`          TINYINT(4)           DEFAULT NULL,
   `votingBlockId`         INT(11)              DEFAULT NULL
 )

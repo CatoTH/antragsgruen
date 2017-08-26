@@ -41,6 +41,8 @@ use yii\helpers\Html;
  * @property int $proposalReferenceId
  * @property string|null $proposalVisibleFrom
  * @property string $proposalComment
+ * @property string|null $proposalNotification
+ * @property int $proposalUserStatus
  * @property string|null $votingBlockId
  * @property int $votingStatus
  *
