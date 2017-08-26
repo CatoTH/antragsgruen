@@ -1,4 +1,5 @@
 <?php
+
 namespace app\commands;
 
 use app\components\SitePurger;
@@ -168,6 +169,56 @@ class AdminController extends Controller
             } catch (\Exception $e) {
                 $this->stderr($e->getMessage());
             }
+        }
+    }
+
+    /**
+     * Exports the language strings of a consultation into a language variant in the messages/-directory
+     *
+     * @param string $subdomain
+     * @param string $consultation
+     * @param string $languageKey
+     */
+    public function actionCreateLanguageFromConsultation($subdomain, $consultation, $languageKey)
+    {
+        if ($subdomain == '' || $consultation == '') {
+            $this->stdout('yii admin/flush-consultation-caches [subdomain] [consultationPath]' . "\n");
+            return;
+        }
+        /** @var Site $site */
+        $site = Site::findOne(['subdomain' => $subdomain]);
+        if (!$site) {
+            $this->stderr('Site not found' . "\n");
+            return;
+        }
+        $con = null;
+        foreach ($site->consultations as $cons) {
+            if ($cons->urlPath == $consultation) {
+                $con = $cons;
+            }
+        }
+        if (!$con) {
+            $this->stderr('Consultation not found' . "\n");
+            return;
+        }
+
+        $categories = [];
+        foreach ($con->texts as $text) {
+            if (!isset($categories[$text->category])) {
+                $categories[$text->category] = '<?php' . "\n\n" . 'return [' . "\n";
+            }
+            $categories[$text->category] .= "\t'" . addslashes($text->textId) . "' => '" .
+                addslashes(trim($text->text)) . "',\n";
+        }
+
+        $baseDir = __DIR__ . '/../messages/' . $languageKey;
+        if (!file_exists($baseDir)) {
+            mkdir($baseDir);
+        }
+        foreach ($categories as $catKey => $code) {
+            $code .= "];\n";
+            file_put_contents($baseDir . '/' . $catKey . '.php', $code);
+            $this->stdout('Written: ' . $catKey . ".php\n");
         }
     }
 }
