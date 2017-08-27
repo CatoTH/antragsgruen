@@ -252,15 +252,31 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_voteblock'         => 'Abstimmungsblock',
     'proposal_voteblock_new'     => 'Titel des neuen Blocks',
     'proposal_voteblock_newopt'  => 'Neuen anlegen',
-    'proposal_noti'              => 'Benachrichtigung',
+    'proposal_noti'              => 'Antragsteller*in benachrichtigen',
     'proposal_visible'           => 'Verfahrensvorschlag ist sichtbar',
     'proposal_visibility'        => 'Sichtbarkeit',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_status_na'         => 'nicht festgelegt',
-    'proposal_user_accepted'     => 'Der/die Antragsteller*in stimmt dem Verfahrensvorschlag zu',
-    'proposal_user_rejected'     => 'Der/die Antragsteller*in stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
-    'proposal_notify_w_feedback' => 'Die/den Antragsteller*in über den Verfahrensvorschlag informieren und Bestätigung einholen',
-    'proposal_notify_o_feedback' => 'Die/den Antragsteller*in über den Verfahrensvorschlag informieren',
+    'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',
+    'proposal_user_rejected'     => 'Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
+    'proposal_notify_w_feedback' => 'Über den Verfahrensvorschlag informieren und Bestätigung einholen',
+    'proposal_notify_o_feedback' => 'Über den Verfahrensvorschlag informieren',
     'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
     'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% über den Verfahrensvorschlag informiert.',
+    'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
+    'proposal_email_modified'    => "Hallo %NAME_GIVEN%,\n\n" .
+        "die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
+        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n".
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'proposal_email_accepted'    => "Hallo %NAME_GIVEN%,\n\n" .
+        "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Änderungsantrag zu übernehmen.\n\n" .
+        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'proposal_email_other'    => "Hallo %NAME_GIVEN%,\n\n" .
+        "die Programmkommission einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
+        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n".
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
 ];

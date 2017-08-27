@@ -60,68 +60,62 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             </label>
         </section>
         <div class="middleCol">
-            <?php
-            if ($amendment->proposalStatus !== null || $amendment->proposalUserStatus !== null) {
-                ?>
-                <div class="visibilitySettings">
-                    <h3><?= \Yii::t('amend', 'proposal_visibility') ?></h3>
-                    <label>
-                        <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
-                        <?= \Yii::t('amend', 'proposal_visible') ?>
-                    </label>
-                </div>
-                <div class="notificationSettings">
-                    <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
-                    <?php
-                    if ($amendment->proposalUserStatus !== null) {
-                        if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
-                            echo \Yii::t('amend', 'proposal_user_accepted');
-                        } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
-                            echo \Yii::t('amend', 'proposal_user_rejected');
-                        } else {
-                            echo 'Error: unknown response of the proposer';
-                        }
-                    } elseif ($amendment->proposalNotification !== null) {
-                        $msg = \Yii::t('amend', 'proposal_notified');
-                        echo str_replace('%DATE%', Tools::formatMysqlDate($amendment->proposalNotification), $msg);
-                        if ($amendment->proposalStatusNeedsUserFeedback()) {
-                            echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
-                        }
-                    } elseif ($amendment->proposalStatus !== null) {
-                        if ($amendment->proposalStatusNeedsUserFeedback()) {
-                            $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
-                        } else {
-                            $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
-                        }
-                        ?>
-                        <label>
-                            <input type="checkbox" name="notifyProposer"> <?= $msg ?>
-                        </label>
-                        <?php
-                    }
-                    ?>
-                </div>
-                <div class="votingBlockSettings">
-                    <h3><?= \Yii::t('amend', 'proposal_voteblock') ?></h3>
-                    <?php
-                    $options = ['-'];
-                    foreach ($votingBlocks as $votingBlock) {
-                        $options[$votingBlock->id] = $votingBlock->title;
-                    }
-                    $options['NEW'] = '- ' . \Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
-                    $attrs          = ['id' => 'votingBlockId', 'class' => 'form-control'];
-                    echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
-                    ?>
-                    <div class="newBlock">
-                        <label for="newBlockTitle" class="control-label">
-                            <?= \Yii::t('amend', 'proposal_voteblock_new') ?>:
-                        </label>
-                        <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
-                    </div>
-                </div>
+            <div class="visibilitySettings showIfStatusSet">
+                <h3><?= \Yii::t('amend', 'proposal_visibility') ?></h3>
+                <label>
+                    <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
+                    <?= \Yii::t('amend', 'proposal_visible') ?>
+                </label>
+            </div>
+            <div class="notificationSettings showIfStatusSet">
+                <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
                 <?php
-            }
-            ?>
+                if ($amendment->proposalUserStatus !== null) {
+                    if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                        echo \Yii::t('amend', 'proposal_user_accepted');
+                    } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
+                        echo \Yii::t('amend', 'proposal_user_rejected');
+                    } else {
+                        echo 'Error: unknown response of the proposer';
+                    }
+                } elseif ($amendment->proposalNotification !== null) {
+                    $msg = \Yii::t('amend', 'proposal_notified');
+                    echo str_replace('%DATE%', Tools::formatMysqlDate($amendment->proposalNotification), $msg);
+                    if ($amendment->proposalStatusNeedsUserFeedback()) {
+                        echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
+                    }
+                } elseif ($amendment->proposalStatus !== null) {
+                    if ($amendment->proposalStatusNeedsUserFeedback()) {
+                        $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
+                    } else {
+                        $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
+                    }
+                    ?>
+                    <label>
+                        <input type="checkbox" name="notifyProposer"> <?= $msg ?>
+                    </label>
+                    <?php
+                }
+                ?>
+            </div>
+            <div class="votingBlockSettings showIfStatusSet">
+                <h3><?= \Yii::t('amend', 'proposal_voteblock') ?></h3>
+                <?php
+                $options = ['-'];
+                foreach ($votingBlocks as $votingBlock) {
+                    $options[$votingBlock->id] = $votingBlock->title;
+                }
+                $options['NEW'] = '- ' . \Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
+                $attrs          = ['id' => 'votingBlockId', 'class' => 'form-control'];
+                echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
+                ?>
+                <div class="newBlock">
+                    <label for="newBlockTitle" class="control-label">
+                        <?= \Yii::t('amend', 'proposal_voteblock_new') ?>:
+                    </label>
+                    <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
+                </div>
+            </div>
         </div>
         <section class="proposalCommentForm">
             <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>

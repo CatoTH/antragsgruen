@@ -14,10 +14,12 @@ use app\models\db\User;
 use app\models\db\VotingBlock;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
+use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
+use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
@@ -505,10 +507,24 @@ class AmendmentController extends Base
                 }
             }
 
-            $amendment->save();
+            $response['success'] = false;
+            if ($amendment->save()) {
+                $response['success'] = true;
+            }
+
+            if (\Yii::$app->request->post('notifyProposer', false) == true) {
+                try {
+                    new AmendmentProposedProcedure($amendment);
+                    $amendment->proposalNotification = date('Y-m-d H:i:s');
+                    $amendment->save();
+                } catch (MailNotSent $e) {
+                    $response['success'] = false;
+                    $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
+                }
+            }
+
             $this->consultation->refresh();
-            $response['success'] = true;
-            $response['html']    = $this->renderPartial('_set_change_proposal', [
+            $response['html'] = $this->renderPartial('_set_change_proposal', [
                 'amendment' => $amendment,
                 'context'   => \Yii::$app->request->post('context', 'view'),
             ]);

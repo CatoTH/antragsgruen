@@ -58,6 +58,9 @@ export class AmendmentChangeProposal {
         if (data.votingBlockId == 'NEW') {
             data['votingBlockTitle'] = this.$widget.find('input[name=newBlockTitle]').val();
         }
+        if (this.$widget.find('input[name=notifyProposer]').prop('checked')) {
+            data['notifyProposer'] = true;
+        }
 
         $.post(this.saveUrl, data, (ret) => {
             this.$widget.addClass('showSaved').removeClass('showSaving');
@@ -67,6 +70,8 @@ export class AmendmentChangeProposal {
                 this.$widget.children().remove();
                 this.$widget.append($content.children());
                 this.reinitAfterReload();
+            } else if (ret['error']) {
+                alert(ret['error']);
             } else {
                 alert('An error ocurred');
             }
@@ -79,6 +84,11 @@ export class AmendmentChangeProposal {
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         this.$statusDetails.addClass('hidden');
         this.$statusDetails.filter('.status_' + newVal).removeClass('hidden');
+        if (newVal == 0) {
+            this.$widget.addClass('noStatus');
+        } else {
+            this.$widget.removeClass('noStatus');
+        }
     }
 
     private initStatusSetter() {
@@ -91,7 +101,8 @@ export class AmendmentChangeProposal {
                 return;
             }
             this.$widget.addClass('showSaving');
-        }).trigger('change', {'init': true});
+        });
+        this.$widget.find('.statusForm input[type=radio]').trigger('change', {'init': true});
 
         this.$widget.on('change', 'input', () => {
             this.$widget.addClass('showSaving');
@@ -125,9 +136,9 @@ export class AmendmentChangeProposal {
         this.$widget.on('click', '.proposalCommentForm button', () => {
             let $commentWidget = this.$widget.find('.proposalCommentForm'),
                 saving = false,
-                $commentList = $commentWidget.find('.commentList');
+                $commentList = $commentWidget.find('.commentList'),
+                text = $commentWidget.find('textarea').val();
 
-            let text = $commentWidget.find('textarea').val();
             if (text == '' || saving) {
                 return;
             }
@@ -150,7 +161,7 @@ export class AmendmentChangeProposal {
                 }
                 saving = false;
             }).fail(() => {
-                alert("Could not save");
+                alert('Could not save');
                 saving = false;
             });
         });

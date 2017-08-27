@@ -17,6 +17,9 @@ class AmendmentPublished
     /** @var Amendment */
     protected $amendment;
 
+    /** @var \app\models\db\Consultation */
+    protected $consultation;
+
     /** @var string[] */
     protected $alreadyNotified = [];
 

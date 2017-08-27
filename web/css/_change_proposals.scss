@@ -107,6 +107,9 @@
   &.showSaved .saved {
     display: block;
   }
+  &.noStatus .showIfStatusSet {
+    display: none;
+  }
 }
 
 #proposedChangeTextForm {

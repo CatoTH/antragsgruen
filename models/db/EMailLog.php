@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use yii\db\ActiveRecord;
@@ -24,17 +25,18 @@ use yii\db\ActiveRecord;
  */
 class EMailLog extends ActiveRecord
 {
-    const TYPE_OTHER                     = 0;
-    const TYPE_REGISTRATION              = 1;
-    const TYPE_MOTION_NOTIFICATION_USER  = 2;
-    const TYPE_MOTION_NOTIFICATION_ADMIN = 3;
-    const TYPE_ACCESS_GRANTED            = 4;
-    const TYPE_DEBUG                     = 5;
-    const TYPE_PASSWORD_RECOVERY         = 6;
-    const TYPE_SITE_ADMIN                = 7;
-    const TYPE_MOTION_SUBMIT_CONFIRM     = 8;
-    const TYPE_EMAIL_CHANGE              = 9;
-    const TYPE_MOTION_SUPPORTER_REACHED  = 10;
+    const TYPE_OTHER                        = 0;
+    const TYPE_REGISTRATION                 = 1;
+    const TYPE_MOTION_NOTIFICATION_USER     = 2;
+    const TYPE_MOTION_NOTIFICATION_ADMIN    = 3;
+    const TYPE_ACCESS_GRANTED               = 4;
+    const TYPE_DEBUG                        = 5;
+    const TYPE_PASSWORD_RECOVERY            = 6;
+    const TYPE_SITE_ADMIN                   = 7;
+    const TYPE_MOTION_SUBMIT_CONFIRM        = 8;
+    const TYPE_EMAIL_CHANGE                 = 9;
+    const TYPE_MOTION_SUPPORTER_REACHED     = 10;
+    const TYPE_AMENDMENT_PROPOSED_PROCEDURE = 11;
 
     const STATUS_SENT              = 0;
     const STATUS_SKIPPED_BLACKLIST = 1;
@@ -53,6 +55,7 @@ class EMailLog extends ActiveRecord
         8  => 'motion-submitted',
         9  => 'email-change',
         10 => 'motion-supporter-reached',
+        11 => 'amendment-proposed-procedure',
     ];
 
     /**
@@ -61,16 +64,17 @@ class EMailLog extends ActiveRecord
     public static function getTypes()
     {
         return [
-            static::TYPE_OTHER                     => 'Sonstiges',
-            static::TYPE_REGISTRATION              => 'Registrierung',
-            static::TYPE_MOTION_NOTIFICATION_USER  => 'Benachrichtigung User',
-            static::TYPE_MOTION_NOTIFICATION_ADMIN => 'Benachrichtigung Admin',
-            static::TYPE_ACCESS_GRANTED            => 'Veranstaltungs-Zugriff',
-            static::TYPE_DEBUG                     => 'Debug',
-            static::TYPE_PASSWORD_RECOVERY         => 'Password-Wiederherstellung',
-            static::TYPE_SITE_ADMIN                => 'Als Admin eingetragen',
-            static::TYPE_MOTION_SUBMIT_CONFIRM     => 'Bestätgung: Antrag eingereicht',
-            static::TYPE_EMAIL_CHANGE              => 'E-Mail-Änderung',
+            static::TYPE_OTHER                        => 'Sonstiges',
+            static::TYPE_REGISTRATION                 => 'Registrierung',
+            static::TYPE_MOTION_NOTIFICATION_USER     => 'Benachrichtigung User',
+            static::TYPE_MOTION_NOTIFICATION_ADMIN    => 'Benachrichtigung Admin',
+            static::TYPE_ACCESS_GRANTED               => 'Veranstaltungs-Zugriff',
+            static::TYPE_DEBUG                        => 'Debug',
+            static::TYPE_PASSWORD_RECOVERY            => 'Password-Wiederherstellung',
+            static::TYPE_SITE_ADMIN                   => 'Als Admin eingetragen',
+            static::TYPE_MOTION_SUBMIT_CONFIRM        => 'Bestätgung: Antrag eingereicht',
+            static::TYPE_EMAIL_CHANGE                 => 'E-Mail-Änderung',
+            static::TYPE_AMENDMENT_PROPOSED_PROCEDURE => 'Änderungsantrag: Verfahrensvorschlag',
         ];
     }
 
