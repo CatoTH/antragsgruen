@@ -257,12 +257,12 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_visibility'        => 'Sichtbarkeit',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_status_na'         => 'nicht festgelegt',
-    'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',
-    'proposal_user_rejected'     => 'Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
+    'proposal_user_accepted'     => '✅ Stimmt dem Verfahrensvorschlag zu',
+    'proposal_user_rejected'     => '❌ Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
     'proposal_notify_w_feedback' => 'Über den Verfahrensvorschlag informieren und Bestätigung einholen',
     'proposal_notify_o_feedback' => 'Über den Verfahrensvorschlag informieren',
     'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
-    'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% über den Verfahrensvorschlag informiert.',
+    'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% benachrichtigt.',
     'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified'    => "Hallo %NAME_GIVEN%,\n\n" .
         "die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .

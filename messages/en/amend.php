@@ -226,4 +226,26 @@ return [
     'proposal_visibility'        => 'Visibility',
     'proposal_status_title'      => 'Proposed status',
     'proposal_status_na'         => 'not set',
+    'proposal_user_accepted'     => '✅ Agrees to the proposed procedure',
+    'proposal_user_rejected'     => '❌ <strong>Disagrees</strong> with the proposed procedure',
+    'proposal_notify_w_feedback' => 'Notify about the proposed procedure and ask for confirmation',
+    'proposal_notify_o_feedback' => 'Notify about the proposed procedure',
+    'proposal_no_feedback'       => 'No confirmation yet',
+    'proposal_notified'          => 'The proposer has been notified at %DATE%.',
+    'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
+    'proposal_email_modified'    => "Hi %NAME_GIVEN%,\n\n" .
+        "the administrators have discussed about your amendment and propose to accept it in a modified version.\n\n" .
+        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n".
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
+    'proposal_email_accepted'    => "Hi %NAME_GIVEN%,\n\n" .
+        "for your information: the administrators will propose to accept your amendment.\n\n" .
+        "You can see the amendment at the following link: %LINK%\n\n" .
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
+    'proposal_email_other'    => "Hi %NAME_GIVEN%,\n\n" .
+        "the administrators have agreed on a proposed procedure regarding your amendment.\n\n" .
+        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n".
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
 ];

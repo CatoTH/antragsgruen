@@ -71,6 +71,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
                 <?php
                 if ($amendment->proposalUserStatus !== null) {
+                    echo '<div class="notificationStatus">';
                     if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
                         echo \Yii::t('amend', 'proposal_user_accepted');
                     } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
@@ -78,12 +79,16 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                     } else {
                         echo 'Error: unknown response of the proposer';
                     }
+                    echo '</div>';
                 } elseif ($amendment->proposalNotification !== null) {
-                    $msg = \Yii::t('amend', 'proposal_notified');
-                    echo str_replace('%DATE%', Tools::formatMysqlDate($amendment->proposalNotification), $msg);
+                    echo '<div class="notificationStatus">';
+                    $msg  = \Yii::t('amend', 'proposal_notified');
+                    $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
+                    echo str_replace('%DATE%', $date, $msg);
                     if ($amendment->proposalStatusNeedsUserFeedback()) {
                         echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
                     }
+                    echo '</div>';
                 } elseif ($amendment->proposalStatus !== null) {
                     if ($amendment->proposalStatusNeedsUserFeedback()) {
                         $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
