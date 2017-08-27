@@ -472,8 +472,11 @@ class AmendmentController extends Base
 
         $response = [];
 
-        if (\Yii::$app->request->post('setStatus')) {
-            $response['needsReload']    = false;
+        if (\Yii::$app->request->post('setStatus', null) !== null) {
+            if ($amendment->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+                $amendment->proposalNotification = null;
+                $amendment->proposalUserStatus   = null;
+            }
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
             $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
@@ -494,7 +497,6 @@ class AmendmentController extends Base
                     $votingBlock->save();
 
                     $amendment->votingBlockId = $votingBlock->id;
-                    $response['needsReload']  = true;
                 }
             } elseif ($votingBlockId > 0) {
                 $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
@@ -504,7 +506,12 @@ class AmendmentController extends Base
             }
 
             $amendment->save();
+            $this->consultation->refresh();
             $response['success'] = true;
+            $response['html']    = $this->renderPartial('_set_change_proposal', [
+                'amendment' => $amendment,
+                'context'   => \Yii::$app->request->post('context', 'view'),
+            ]);
         }
 
         if (\Yii::$app->request->post('writeComment')) {

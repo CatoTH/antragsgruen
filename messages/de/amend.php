@@ -257,4 +257,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_visibility'        => 'Sichtbarkeit',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_status_na'         => 'nicht festgelegt',
+    'proposal_user_accepted'     => 'Der/die Antragsteller*in stimmt dem Verfahrensvorschlag zu',
+    'proposal_user_rejected'     => 'Der/die Antragsteller*in stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
+    'proposal_notify_w_feedback' => 'Die/den Antragsteller*in über den Verfahrensvorschlag informieren und Bestätigung einholen',
+    'proposal_notify_o_feedback' => 'Die/den Antragsteller*in über den Verfahrensvorschlag informieren',
+    'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
+    'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% über den Verfahrensvorschlag informiert.',
 ];

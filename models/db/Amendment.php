@@ -1134,4 +1134,16 @@ class Amendment extends IMotion implements IRSSItem
 
         return $collidesWith;
     }
+
+    /**
+     * @return bool
+     */
+    public function proposalStatusNeedsUserFeedback()
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus == Amendment::STATUS_ACCEPTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

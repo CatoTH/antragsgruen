@@ -8,19 +8,33 @@ export class AmendmentChangeProposal {
     private $votingStatusInput: JQuery;
     private $votingBlockId: JQuery;
     private saveUrl: string;
+    private context: string;
     private csrf: string;
 
     constructor(private $widget: JQuery) {
-        this.$statusDetails = $widget.find('.statusDetails');
-        this.$visibilityInput = $widget.find('input[name=proposalVisible]');
-        this.$votingStatusInput = $widget.find('input[name=votingStatus]');
-        this.$votingBlockId = $widget.find('input[name=votingBlockId]');
+        this.initElements();
         this.initStatusSetter();
         this.initCommentForm();
         this.initVotingBlock();
-        this.saveUrl = $widget.attr('action');
-        this.csrf = $widget.find('input[name=_csrf]').val();
         $widget.submit(ev => ev.preventDefault());
+    }
+
+    private initElements() {
+        this.$statusDetails = this.$widget.find('.statusDetails');
+        this.$visibilityInput = this.$widget.find('input[name=proposalVisible]');
+        this.$votingStatusInput = this.$widget.find('input[name=votingStatus]');
+        this.$votingBlockId = this.$widget.find('input[name=votingBlockId]');
+        this.context = this.$widget.data('context');
+        this.saveUrl = this.$widget.attr('action');
+        this.csrf = this.$widget.find('input[name=_csrf]').val();
+    }
+
+    private reinitAfterReload() {
+        this.initElements();
+        this.statusChanged();
+        this.commentsScrollBottom();
+        this.$widget.find('.newBlock').addClass('hidden');
+        this.$widget.find('.selectlist').selectlist();
     }
 
     private saveStatus() {
@@ -46,43 +60,53 @@ export class AmendmentChangeProposal {
         }
 
         $.post(this.saveUrl, data, (ret) => {
-            this.$widget.find('.saving').addClass('hidden');
-            this.$widget.find('.saved').removeClass('hidden');
-            window.setTimeout(() => this.$widget.find('.saved').addClass('hidden'), 2000);
-            if (ret['needsReload']) {
-                window.location.reload();
+            this.$widget.addClass('showSaved').removeClass('showSaving');
+            window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
+            if (ret['success']) {
+                let $content = $(ret['html']);
+                this.$widget.children().remove();
+                this.$widget.append($content.children());
+                this.reinitAfterReload();
+            } else {
+                alert('An error ocurred');
             }
         }).fail(() => {
             alert("Could not save");
         });
     }
 
+    private statusChanged() {
+        let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
+        this.$statusDetails.addClass('hidden');
+        this.$statusDetails.filter('.status_' + newVal).removeClass('hidden');
+    }
+
     private initStatusSetter() {
-        this.$widget.find(".statusForm input[type=radio]").change((ev) => {
+        this.$widget.on('change', '.statusForm input[type=radio]', (ev, data) => {
             if (!$(ev.currentTarget).prop('checked')) {
                 return;
             }
-            let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
-            this.$statusDetails.addClass('hidden');
-            this.$statusDetails.filter('.status_' + newVal).removeClass('hidden');
-            this.$widget.find('.saving').removeClass('hidden');
-        }).trigger('change');
+            this.statusChanged();
+            if (data && data.init === true) {
+                return;
+            }
+            this.$widget.addClass('showSaving');
+        }).trigger('change', {'init': true});
 
-        this.$widget.find("input").change(() => {
-            this.$widget.find('.saving').removeClass('hidden');
+        this.$widget.on('change', 'input', () => {
+            this.$widget.addClass('showSaving');
         });
 
-        this.$widget.find('#obsoletedByAmendment').on('changed.fu.selectlist', () => {
-            this.$widget.find('.saving').removeClass('hidden');
+        this.$widget.on('changed.fu.selectlist', '#obsoletedByAmendment', () => {
+            this.$widget.addClass('showSaving');
         });
 
-        this.$widget.find('.saving').addClass('hidden');
-        this.$widget.find('.saving button').click(this.saveStatus.bind(this));
+        this.$widget.on('click', '.saving button', this.saveStatus.bind(this));
     }
 
     private initVotingBlock() {
-        this.$widget.find('#votingBlockId').on('changed.fu.selectlist', () => {
-            this.$widget.find('.saving').removeClass('hidden');
+        this.$widget.on('changed.fu.selectlist', '#votingBlockId', () => {
+            this.$widget.addClass('showSaving');
             if (this.$votingBlockId.val() == 'NEW') {
                 this.$widget.find(".newBlock").removeClass('hidden');
             } else {
@@ -92,12 +116,17 @@ export class AmendmentChangeProposal {
         this.$widget.find(".newBlock").addClass('hidden');
     }
 
-    private initCommentForm() {
-        let $commentWidget = this.$widget.find('.proposalCommentForm'),
-            saving = false,
-            $commentList = $commentWidget.find('.commentList');
+    private commentsScrollBottom() {
+        let $commentList = this.$widget.find('.proposalCommentForm .commentList');
+        $commentList[0].scrollTop = $commentList[0].scrollHeight;
+    }
 
-        $commentWidget.find('button').click(() => {
+    private initCommentForm() {
+        this.$widget.on('click', '.proposalCommentForm button', () => {
+            let $commentWidget = this.$widget.find('.proposalCommentForm'),
+                saving = false,
+                $commentList = $commentWidget.find('.commentList');
+
             let text = $commentWidget.find('textarea').val();
             if (text == '' || saving) {
                 return;
@@ -125,6 +154,6 @@ export class AmendmentChangeProposal {
                 saving = false;
             });
         });
-        $commentList[0].scrollTop = $commentList[0].scrollHeight;
+        this.commentsScrollBottom();
     }
 }

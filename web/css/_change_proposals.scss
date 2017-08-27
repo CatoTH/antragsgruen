@@ -99,6 +99,13 @@
     text-align: center;
     line-height: 38px;
     vertical-align: middle;
+    display: none;
+  }
+  &.showSaving .saving {
+    display: block;
+  }
+  &.showSaved .saved {
+    display: block;
   }
 }
 
