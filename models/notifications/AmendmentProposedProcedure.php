@@ -47,16 +47,7 @@ class AmendmentProposedProcedure
             $body
         );
 
-        $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
-
-        $sections = $amendment->getSortedSections(true);
-        foreach ($sections as $section) {
-            $amendmentHtml .= '<div>';
-            $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-            $amendmentHtml .= '</div>';
-        }
-
-        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+        $html  = nl2br(Html::encode($plain));
         $plain .= HTMLTools::toPlainText($html);
 
         MailTools::sendWithLog(

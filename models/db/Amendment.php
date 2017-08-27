@@ -154,7 +154,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getVotingBlock()
     {
-        return $this->hasOne(VotingBlock::class, ['id' => 'votiongBlockId']);
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
     }
 
     /**

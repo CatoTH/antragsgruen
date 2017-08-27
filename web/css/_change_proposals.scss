@@ -198,3 +198,44 @@
     }
   }
 }
+
+.agreeToProposal {
+  background-color: #f8faf8;
+  border: solid 1px #eee;
+  border-radius: 4px;
+  margin: 0 20px 30px;
+
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    padding: 5px 10px;
+    background-color: #ded;
+  }
+  .holder {
+    display: flex;
+    > * {
+      flex: 1;
+      padding: 10px;
+    }
+  }
+  .status {
+    .head {
+      font-weight: bold;
+    }
+    .description {
+      margin-bottom: 10px;
+    }
+  }
+  .agreement {
+    label {
+      display: block;
+      margin-bottom: 10px;
+      &.active {
+        font-weight: bold;
+      }
+      &.inactive {
+        font-weight: normal;
+      }
+    }
+  }
+}

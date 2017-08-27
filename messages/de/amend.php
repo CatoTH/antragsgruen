@@ -266,7 +266,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified'    => "Hallo %NAME_GIVEN%,\n\n" .
         "die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n".
+        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
     'proposal_email_accepted'    => "Hallo %NAME_GIVEN%,\n\n" .
@@ -274,9 +274,11 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
         "Du kannst ihn hier einsehen: %LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
-    'proposal_email_other'    => "Hallo %NAME_GIVEN%,\n\n" .
+    'proposal_email_other'       => "Hallo %NAME_GIVEN%,\n\n" .
         "die Programmkommission einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n".
+        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
+    'proposal_user_agree'        => 'Ich stimme dem Verfahrensvorschlag zu',
+    'proposal_user_disagree'     => 'Ich stimme dem Verfahrensvorschlag nicht zu',
 ];

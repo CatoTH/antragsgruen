@@ -304,6 +304,29 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
+     * @param array $post
+     */
+    private function setProposalUserStatus(Amendment $amendment, $post)
+    {
+        if (!$amendment->iAmInitiator() || !$amendment->proposalStatusNeedsUserFeedback()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
+            return;
+        }
+
+        if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '1') {
+            $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
+            $amendment->save();
+            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
+        }
+        if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '0') {
+            $amendment->proposalUserStatus = Amendment::STATUS_REJECTED;
+            $amendment->save();
+            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
+        }
+    }
+
+    /**
+     * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
      */
@@ -338,6 +361,9 @@ trait AmendmentActionsTrait
 
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
+
+        } elseif (isset($post['setProposalUserStatus'])) {
+            $this->setProposalUserStatus($amendment, $post);
         }
     }
 }

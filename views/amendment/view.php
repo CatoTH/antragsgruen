@@ -11,7 +11,6 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Amendment $amendment
- * @var bool $editLink
  * @var int[] $openedComments
  * @var string|null $adminEdit
  * @var null|string $supportStatus
@@ -47,13 +46,13 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
-$minHeight               = $sidebarRows * 40 - 100;
+$minHeight               = ($sidebarRows * 40 - 100) . 'px';
 $supportCollectingStatus = (
     $amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS &&
     !$amendment->isDeadlineOver()
 );
 
-echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;"><div class="content">';
+echo '<div class="motionData" style="min-height: ' . $minHeight . ';"><div class="content">';
 
 echo $this->render('_view_amendmentdata', [
     'amendment' => $amendment,
@@ -101,6 +100,9 @@ echo '</div>';
 
 if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'view']);
+}
+if ($amendment->proposalStatusNeedsUserFeedback() && $amendment->iAmInitiator()) {
+    echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);
 }
 
 echo $this->render('_view_text', ['amendment' => $amendment]);

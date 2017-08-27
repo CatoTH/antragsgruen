@@ -248,4 +248,6 @@ return [
         "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n".
         "Greetings,\n" .
         "  The Antragsgrün-Team",
+    'proposal_user_agree'        => 'I agree with the proposal',
+    'proposal_user_disagree'     => 'I disagree with the proposal',
 ];

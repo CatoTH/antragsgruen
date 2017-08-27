@@ -166,7 +166,6 @@ class AmendmentController extends Base
         $openedComments      = [];
         $amendmentViewParams = [
             'amendment'      => $amendment,
-            'editLink'       => $amendment->canEdit(),
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
             'commentForm'    => null,
