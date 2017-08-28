@@ -28,12 +28,10 @@ class AmendmentProposedChangeForm
      */
     protected function initProposal()
     {
-        if ($this->amendment->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
-            if ($this->amendment->proposalReference) {
-                if ($this->amendment->proposalReference->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                    $this->proposalSections = $this->amendment->proposalReference->getActiveSections();
-                    return;
-                }
+        if ($this->amendment->proposalReference) {
+            if ($this->amendment->proposalReference->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                $this->proposalSections = $this->amendment->proposalReference->getActiveSections();
+                return;
             }
         }
         $this->proposalSections = [];
@@ -97,7 +95,7 @@ class AmendmentProposedChangeForm
         $reference->changeText        = '';
         $reference->changeExplanation = '';
         $reference->cache             = '';
-        $reference->statusString = '';
+        $reference->statusString      = '';
         return $reference;
     }
 

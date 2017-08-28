@@ -226,8 +226,8 @@ return [
     'proposal_visibility'        => 'Visibility',
     'proposal_status_title'      => 'Proposed status',
     'proposal_status_na'         => 'not set',
-    'proposal_user_accepted'     => '✅ Agrees to the proposed procedure',
-    'proposal_user_rejected'     => '❌ <strong>Disagrees</strong> with the proposed procedure',
+    'proposal_user_accepted'     => 'Agrees to the proposed procedure',
+    'proposal_user_rejected'     => '<strong>Disagrees</strong> with the proposed procedure',
     'proposal_notify_w_feedback' => 'Notify about the proposed procedure and ask for confirmation',
     'proposal_notify_o_feedback' => 'Notify about the proposed procedure',
     'proposal_no_feedback'       => 'No confirmation yet',
@@ -251,4 +251,5 @@ return [
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_disagree'     => 'I disagree with the proposal',
     'proposal_user_saved'        => 'Your decision has been saved',
+    'proposal_user_change_reset' => 'As the proposed procedure has changed, the decision by the proposer has been reset.',
 ];

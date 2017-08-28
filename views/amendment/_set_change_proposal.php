@@ -32,6 +32,10 @@ if ($amendment->proposalStatus == Amendment::STATUS_OBSOLETED_BY) {
     $preObsoletedBy = '';
 }
 
+if (isset($msgAlert) && $msgAlert !== null) {
+    echo '<div class="alert alert-info">' . $msgAlert . '</div>';
+}
+
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
     <h2><?= \Yii::t('amend', 'proposal_amend_title') ?></h2>
@@ -73,8 +77,10 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 if ($amendment->proposalUserStatus !== null) {
                     echo '<div class="notificationStatus">';
                     if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                        echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
                         echo \Yii::t('amend', 'proposal_user_accepted');
                     } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
+                        echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
                         echo \Yii::t('amend', 'proposal_user_rejected');
                     } else {
                         echo 'Error: unknown response of the proposer';

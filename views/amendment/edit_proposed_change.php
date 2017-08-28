@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var Amendment $amendment
  * @var \app\models\forms\AmendmentProposedChangeForm $form
  * @var null|string $msgSuccess
+ * @var null|string $msgAlert
  */
 
 /** @var \app\controllers\Base $controller */
@@ -36,12 +37,6 @@ $layout->addBreadcrumb(\Yii::t('amend', 'proposal_edit_bread'));
 
 echo '<h1>' . \Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
-if ($msgSuccess) {
-    echo '<div class="content"><div class="alert alert-success">';
-    echo $msgSuccess;
-    echo '</div></div>';
-}
-
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
 ?>
@@ -50,8 +45,14 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
             <span class="glyphicon glyphicon-chevron-left"></span>
             <?= \Yii::t('amend', 'proposal_edit_back') ?>
         </a>
-
         <?php
+        if ($msgSuccess) {
+            echo '<div class="alert alert-success">' . $msgSuccess . '</div>';
+        }
+        if ($msgAlert) {
+            echo '<div class="alert alert-info">' . $msgAlert . '</div>';
+        }
+
         echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'edit']);
 
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [

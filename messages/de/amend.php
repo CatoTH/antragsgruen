@@ -257,8 +257,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_visibility'        => 'Sichtbarkeit',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_status_na'         => 'nicht festgelegt',
-    'proposal_user_accepted'     => '✅ Stimmt dem Verfahrensvorschlag zu',
-    'proposal_user_rejected'     => '❌ Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
+    'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',
+    'proposal_user_rejected'     => 'Stimmt dem Verfahrensvorschlag <strong>nicht</strong> zu',
     'proposal_notify_w_feedback' => 'Über den Verfahrensvorschlag informieren und Bestätigung einholen',
     'proposal_notify_o_feedback' => 'Über den Verfahrensvorschlag informieren',
     'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
@@ -282,4 +282,5 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_user_agree'        => 'Ich stimme dem Verfahrensvorschlag zu',
     'proposal_user_disagree'     => 'Ich stimme dem Verfahrensvorschlag nicht zu',
     'proposal_user_saved'        => 'Deine Entscheidung wurde gespeichert',
+    'proposal_user_change_reset' => 'Da sich der Verfahrensvorschlag geändert hat, wurde die Entscheidung der Antragsteller*in zurückgesetzt.',
 ];

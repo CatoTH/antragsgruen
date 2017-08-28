@@ -38,6 +38,14 @@
   }
   .notificationStatus {
     font-size: 12px;
+    .accepted {
+      color: green;
+      margin-right: 5px;
+    }
+    .rejected {
+      color: red;
+      margin-right: 5px;
+    }
   }
 
   h3, .headingLabel {

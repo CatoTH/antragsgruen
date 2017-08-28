@@ -472,9 +472,13 @@ class AmendmentController extends Base
         }
 
         $response = [];
+        $msgAlert = null;
 
         if (\Yii::$app->request->post('setStatus', null) !== null) {
             if ($amendment->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+                if ($amendment->proposalUserStatus !== null) {
+                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                }
                 $amendment->proposalNotification = null;
                 $amendment->proposalUserStatus   = null;
             }
@@ -525,6 +529,7 @@ class AmendmentController extends Base
             $this->consultation->refresh();
             $response['html'] = $this->renderPartial('_set_change_proposal', [
                 'amendment' => $amendment,
+                'msgAlert'  => $msgAlert,
                 'context'   => \Yii::$app->request->post('context', 'view'),
             ]);
         }
@@ -573,13 +578,23 @@ class AmendmentController extends Base
         $form = new AmendmentProposedChangeForm($amendment);
 
         $msgSuccess = null;
+        $msgAlert   = null;
+
         if (\Yii::$app->request->post('save', null) !== null) {
             $form->save(\Yii::$app->request->post(), $_FILES);
-            $msgSuccess = 'Gespeichert.';
+            $msgSuccess = \Yii::t('base', 'saved');
+
+            if ($amendment->proposalUserStatus !== null) {
+                $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+            }
+            $amendment->proposalNotification = null;
+            $amendment->proposalUserStatus   = null;
+            $amendment->save();
         }
 
         return $this->render('edit_proposed_change', [
             'msgSuccess' => $msgSuccess,
+            'msgAlert'   => $msgAlert,
             'amendment'  => $amendment,
             'form'       => $form,
         ]);
