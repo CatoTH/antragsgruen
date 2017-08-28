@@ -56,14 +56,36 @@ if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
 echo '</td>';
 
 if ($colProposals) {
-    echo '<td>';
+    echo '<td class="proposalCol">';
     $amendmentStatiVerbs = Amendment::getStatiAsVerbs();
-    $name                = ($entry->proposalStatus ? $amendmentStatiVerbs[$entry->proposalStatus] : '-');
+
+    if ($entry->proposalUserStatus !== null || isset($amendmentStatiVerbs[$entry->proposalStatus])) {
+        echo '<div class="statusIcons">';
+        if ($entry->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+            $title = \Yii::t('admin', 'list_prop_user_accepted');
+            echo '<span class="glyphicon glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
+        }
+        if ($entry->proposalUserStatus == Amendment::STATUS_REJECTED) {
+            $title = \Yii::t('admin', 'list_prop_user_rejected');
+            echo '<span class="glyphicon glyphicon glyphicon-remove rejected" title="' . $title . '"></span>';
+        }
+        if ($entry->isProposalPublic()) {
+            $title = \Yii::t('admin', 'list_prop_visible');
+            echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';
+        } else {
+            $title = \Yii::t('admin', 'list_prop_invisible');
+            echo '<span class="glyphicon glyphicon-eye-close notVisible" title="' . $title . '"></span>';
+        }
+        echo '</div>';
+    }
+
+    $name = ($entry->proposalStatus ? $amendmentStatiVerbs[$entry->proposalStatus] : '-');
     echo Html::a($name, UrlHelper::createAmendmentUrl($entry));
+
     if ($entry->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
         echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-            Html::a('Bearbeiten', $url) . '</div>';
+            Html::a(\Yii::t('admin', 'amend_edit_text'), $url) . '</div>';
     }
     echo '</td>';
 }

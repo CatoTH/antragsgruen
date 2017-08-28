@@ -281,4 +281,5 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
         "  Das Antragsgrün-Team",
     'proposal_user_agree'        => 'Ich stimme dem Verfahrensvorschlag zu',
     'proposal_user_disagree'     => 'Ich stimme dem Verfahrensvorschlag nicht zu',
+    'proposal_user_saved'        => 'Deine Entscheidung wurde gespeichert',
 ];

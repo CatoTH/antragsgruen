@@ -44,7 +44,7 @@ if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
 }
 echo '</td>';
 if ($colProposals) {
-    echo '<td></td>';
+    echo '<td class="proposalCol"></td>';
 }
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {

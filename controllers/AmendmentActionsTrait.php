@@ -316,12 +316,12 @@ trait AmendmentActionsTrait
         if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '1') {
             $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
             $amendment->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
+            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
         }
         if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '0') {
             $amendment->proposalUserStatus = Amendment::STATUS_REJECTED;
             $amendment->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
+            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
         }
     }
 

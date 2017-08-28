@@ -250,4 +250,5 @@ return [
         "  The Antragsgrün-Team",
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_disagree'     => 'I disagree with the proposal',
+    'proposal_user_saved'        => 'Your decision has been saved',
 ];

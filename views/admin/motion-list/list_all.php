@@ -88,7 +88,7 @@ if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
 }
 echo '</th>';
 if ($colProposals) {
-    echo '<th>';
+    echo '<th class="proposalCol">';
     if ($search->sort == AdminMotionFilterForm::SORT_PROPOSAL) {
         echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_proposal') . '</span>';
     } else {

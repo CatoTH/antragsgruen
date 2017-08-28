@@ -515,6 +515,33 @@ label.legend {
     width: 120px;
     overflow: visible;
   }
+  .proposalCol {
+    .editModified {
+      font-size: 0.8em;
+    }
+    .statusIcons {
+      float: right;
+      font-size: 0.8em;
+      margin-top: 2px;
+      margin-right: 8px;
+      .accepted {
+        color: green;
+        cursor: help;
+      }
+      .rejected {
+        color: red;
+        cursor: help;
+      }
+      .visible {
+        opacity: 0.8;
+        cursor: help;
+      }
+      .notVisible {
+        opacity: 0.5;
+        cursor: help;
+      }
+    }
+  }
   td.titleCol {
     text-indent: 0;
     > span {
