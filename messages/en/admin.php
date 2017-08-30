@@ -126,7 +126,6 @@ return [
     'list_prop_visible'           => 'The proposed procedure is visible',
     'list_prop_invisible'         => 'The proposed procedure is not yet visible',
     'list_prop_user_accepted'     => 'The proposer accepted this proposal',
-    'list_prop_user_rejected'     => 'The proposer does not accept this propsal',
     'list_new'                    => 'Create',
     'list_pdf_amend'              => 'PDF + Amends',
     'filter_na'                   => '- all -',

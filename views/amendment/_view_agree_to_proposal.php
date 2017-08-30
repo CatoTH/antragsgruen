@@ -8,13 +8,7 @@ use yii\helpers\Html;
  */
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
-if ($amendment->proposalUserStatus == \app\models\db\Amendment::STATUS_ACCEPTED) {
-    $agreed = true;
-} elseif ($amendment->proposalUserStatus == \app\models\db\Amendment::STATUS_REJECTED) {
-    $agreed = false;
-} else {
-    $agreed = null;
-}
+$agreed = ($amendment->proposalUserStatus == \app\models\db\Amendment::STATUS_ACCEPTED);
 ?>
     <h2><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
     <div class="holder">
@@ -33,17 +27,18 @@ if ($amendment->proposalUserStatus == \app\models\db\Amendment::STATUS_ACCEPTED)
             ?>
         </div>
         <div class="agreement">
-            <label class="<?= ($agreed === true ? 'active' : 'inactive') ?>">
-                <?= Html::radio('proposalAgreed', ($agreed === true), ['value' => 1, 'required' => 'required']) ?>
-                <?= \Yii::t('amend', 'proposal_user_agree') ?>
-            </label>
-            <label class="<?= ($agreed === false ? 'active' : 'inactive') ?>">
-                <?= Html::radio('proposalAgreed', ($agreed === false), ['value' => 0, 'required' => 'required']) ?>
-                <?= \Yii::t('amend', 'proposal_user_disagree') ?>
-            </label>
-            <button type="submit" name="setProposalUserStatus" class="btn btn-success">
-                <?= \Yii::t('base', 'save') ?>
-            </button>
+            <?php
+            if ($agreed) {
+                echo '<span class="agreed glyphicon glyphicon-ok"></span> ';
+                echo \Yii::t('amend', 'proposal_user_agree');
+            } else {
+                ?>
+                <button type="submit" name="setProposalAgree" class="btn btn-success">
+                    <?= \Yii::t('amend', 'proposal_user_agree') ?>
+                </button>
+                <?php
+            }
+            ?>
         </div>
     </div>
 

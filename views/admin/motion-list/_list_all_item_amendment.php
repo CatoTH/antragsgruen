@@ -65,10 +65,6 @@ if ($colProposals) {
             $title = \Yii::t('admin', 'list_prop_user_accepted');
             echo '<span class="glyphicon glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
         }
-        if ($entry->proposalUserStatus == Amendment::STATUS_REJECTED) {
-            $title = \Yii::t('admin', 'list_prop_user_rejected');
-            echo '<span class="glyphicon glyphicon glyphicon-remove rejected" title="' . $title . '"></span>';
-        }
         if ($entry->isProposalPublic()) {
             $title = \Yii::t('admin', 'list_prop_visible');
             echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';

@@ -304,25 +304,17 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
-     * @param array $post
      */
-    private function setProposalUserStatus(Amendment $amendment, $post)
+    private function setProposalAgree(Amendment $amendment)
     {
         if (!$amendment->iAmInitiator() || !$amendment->proposalStatusNeedsUserFeedback()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
             return;
         }
 
-        if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '1') {
-            $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
-            $amendment->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
-        }
-        if (isset($post['proposalAgreed']) && $post['proposalAgreed'] == '0') {
-            $amendment->proposalUserStatus = Amendment::STATUS_REJECTED;
-            $amendment->save();
-            \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
-        }
+        $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
+        $amendment->save();
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
     }
 
     /**
@@ -362,8 +354,8 @@ trait AmendmentActionsTrait
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
 
-        } elseif (isset($post['setProposalUserStatus'])) {
-            $this->setProposalUserStatus($amendment, $post);
+        } elseif (isset($post['setProposalAgree'])) {
+            $this->setProposalAgree($amendment);
         }
     }
 }

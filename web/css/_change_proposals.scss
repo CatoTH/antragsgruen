@@ -235,15 +235,8 @@
     }
   }
   .agreement {
-    label {
-      display: block;
-      margin-bottom: 10px;
-      &.active {
-        font-weight: bold;
-      }
-      &.inactive {
-        font-weight: normal;
-      }
+    .agreed {
+      color: green;
     }
   }
 }
