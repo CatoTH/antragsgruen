@@ -84,6 +84,32 @@ $I->seeElement('.consultationEditForm');
 
 
 
+$I->wantTo('be made to an proposed procedure admin');
+$I->gotoConsultationHome();
+$I->logout();
+
+$adminPage = $I->loginAndGotoStdAdminPage();
+$accessPage = $adminPage->gotoSiteAccessPage();
+$I->see('consultationadmin@example.org');
+$I->wait(1);
+$I->uncheckOption('.admin7 .typeSite input');
+$I->uncheckOption('.admin7 .typeCon input');
+$I->checkOption('.admin7 .typeProposal input');
+
+$I->submitForm('#adminForm', [], 'saveAdmin');
+
+$I->logout();
+
+$I->gotoConsultationHome();
+$I->loginAsConsultationAdmin();
+
+$I->seeElement('#motionListLink');
+$I->dontSeeElement('#adminLink');
+$I->gotoMotionList();
+$I->dontSeeElement('.actionCol');
+$I->seeElement('.proposalCol');
+
+
 
 $I->wantTo('be resigned from being an admin');
 $I->gotoConsultationHome();
