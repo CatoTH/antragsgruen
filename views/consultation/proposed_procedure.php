@@ -50,7 +50,7 @@ foreach ($data as $dataRow) {
             <?php
             foreach ($votingBlocks as $votingBlock) {
                 ?>
-                <table class="table votingTable">
+                <table class="table votingTable votingTable<?=$votingBlock->id?>">
                     <caption>
                         <?=\Yii::t('con', 'proposal_table_voting')?>:
                         <?= Html::encode($votingBlock->title) ?>
@@ -67,7 +67,7 @@ foreach ($data as $dataRow) {
                     foreach ($votingBlock->amendments as $amendment) {
                         $coveredAmendments[] = $amendment->id;
                         ?>
-                        <tr>
+                        <tr class="amendment<?=$amendment->id?>">
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>

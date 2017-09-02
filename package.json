@@ -35,11 +35,11 @@
         "intl": "^1.2.5",
         "jquery": "^3.2.0",
         "pa11y": "^4.12.1",
-        "pdfjs-dist": "^1.9.478",
+        "pdfjs-dist": "^1.9.516",
         "requirejs": "^2.3.5",
-        "sortablejs": "^1.4.2",
+        "sortablejs": "^1.6.1",
         "typeahead.js": "^0.11.1",
-        "typescript": "^2.5.1"
+        "typescript": "^2.5.2"
     },
     "directories": {
         "bin": "./bin/"

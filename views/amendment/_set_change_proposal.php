@@ -47,7 +47,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             $foundStatus = false;
             foreach (\app\models\db\Amendment::getProposedChangeStati() as $statusId) {
                 ?>
-                <label>
+                <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
                     if ($amendment->proposalStatus == $statusId) {
                         $foundStatus = true;
@@ -157,7 +157,13 @@ if ($context !== 'edit') {
     ?>
     <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
         <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
-        <?= Html::a('Bearbeiten', UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change')) ?>
+        <?php
+        echo Html::a(
+            \Yii::t('base', 'edit'),
+            UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'),
+            ['class' => 'editModification']
+        );
+        ?>
     </section>
     <?php
 }
@@ -208,7 +214,7 @@ if ($context !== 'edit') {
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
-                echo '<li>' . Html::a($title, $url);
+                echo '<li class="collission' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 echo '</li>';
             }
             ?>

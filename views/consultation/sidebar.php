@@ -116,7 +116,8 @@ if ($consultation->getSettings()->proposalProcedurePage) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'proposed_procedure') . '</li>';
     $name = '<span class="glyphicon glyphicon-file"></span>' . Yii::t('con', 'proposed_procedure');
-    $html .= '<li>' . Html::a($name, UrlHelper::createUrl('consultation/proposed-procedure')) . "</li>\n";
+    $url  = UrlHelper::createUrl('consultation/proposed-procedure');
+    $html .= '<li>' . Html::a($name, $url, ['id' => 'proposedProcedureLink']) . "</li>\n";
     $html .= "</ul></div>";
 
     $layout->menusHtml[] = $html;

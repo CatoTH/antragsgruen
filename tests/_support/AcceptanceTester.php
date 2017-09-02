@@ -33,6 +33,7 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_COMMENT_ID             = 1;
     const FIRST_FREE_MOTION_TYPE            = 11;
     const FIRST_FREE_CONSULTATION_ID        = 8;
+    const FIRST_FREE_VOTING_BLOCK_ID        = 2;
 
     public static $ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',

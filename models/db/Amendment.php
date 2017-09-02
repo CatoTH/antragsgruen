@@ -65,6 +65,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return [
             IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
