@@ -13,6 +13,7 @@ use app\models\notifications\AmendmentPublished as AmendmentPublishedNotificatio
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
@@ -299,6 +300,9 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getInlineChangeData($changeId)
     {
+        if ($this->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            return $this->proposalReferencedBy->getInlineChangeData($changeId);
+        }
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         return [
             'data-cid'              => $changeId,
@@ -1077,6 +1081,35 @@ class Amendment extends IMotion implements IRSSItem
     public function hasAlternativeProposaltext()
     {
         return ($this->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedStatus()
+    {
+        $statiNames = Amendment::getStati();
+        $status     = '';
+        switch ($this->status) {
+            case Amendment::STATUS_SUBMITTED_UNSCREENED:
+            case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
+                $status = '<span class="unscreened">' . Html::encode($statiNames[$this->status]) . '</span>';
+                break;
+            case Amendment::STATUS_SUBMITTED_SCREENED:
+                $status = '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
+                break;
+            case Amendment::STATUS_COLLECTING_SUPPORTERS:
+                $status = Html::encode($statiNames[$this->status]);
+                $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
+                $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportAmendments] . ')</small>';
+                break;
+            default:
+                $status .= Html::encode($statiNames[$this->status]);
+        }
+        if (trim($this->statusString) != '') {
+            $status .= " <small>(" . Html::encode($this->statusString) . ")</string>";
+        }
+        return $status;
     }
 
     /**
