@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.0 [Not released yet]
+## Version 3.7.0 (2017-09-03)
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
 - Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
