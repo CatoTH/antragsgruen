@@ -458,7 +458,15 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canMergeAmendments()
     {
-        if (count($this->replacedByMotions) > 0) {
+        $replacedByMotions = array_filter($this->replacedByMotions, function (Motion $motion) {
+            $draftStati = [
+                Motion::STATUS_DRAFT,
+                Motion::STATUS_MERGING_DRAFT_PUBLIC,
+                Motion::STATUS_MERGING_DRAFT_PRIVATE
+            ];
+            return !in_array($motion->status, $draftStati);
+        });
+        if (count($replacedByMotions) > 0) {
             return false;
         }
         if (User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
