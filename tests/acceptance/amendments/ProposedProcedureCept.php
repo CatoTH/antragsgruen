@@ -10,6 +10,7 @@ $I->dontSeeElement('#proposedProcedureLink');
 
 $I->wantTo('log in');
 $I->gotoConsultationHome();
+$I->seeElement('.motionRow118');
 $I->loginAsProposalAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 $I->seeElement('#proposedChanges');
@@ -111,3 +112,34 @@ $I->checkOption('.amendment280 .selectbox');
 $I->submitForm('.motionListForm', [], 'proposalVisible');
 $I->dontSeeElement('.amendment280 .notVisible');
 $I->seeElement('.amendment280 .visible');
+
+
+$I->wantTo('merge the amendment into the motion');
+$I->gotoMotion(true, 'Testing_proposed_changes-630');
+$I->see('Umwelt', '.motionDataTable');
+$I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->logout();
+$I->loginAsConsultationAdmin();
+$I->click('#sidebar .mergeamendments a');
+$I->seeCheckboxIsChecked('.amendment279 .textProposal input');
+$I->dontSeeElement('.amendment280 .textProposal');
+$I->uncheckOption('.amendment280 .colCheck input');
+$I->submitForm('.mergeAllRow', []);
+$I->wait(1);
+
+$I->see('A really small replacement', '#section_holder_2 ins');
+$I->executeJS('$(".none").remove();'); // for some reason necessary...
+$I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
+$I->submitForm('.motionMergeForm', [], 'save');
+$I->see('A really small replacement');
+$I->dontSee('A big replacement');
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+$I->submitForm('#motionConfirmedForm', []);
+$I->see('A really small replacement');
+
+$I->see('A8neu', 'h1');
+$I->see('Umwelt', '.motionDataTable');
+$I->gotoConsultationHome();
+$I->see('A8neu');
+$I->dontSeeElement('.motionRow118');

@@ -77,12 +77,8 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                         <th class="colProposal"><?= \Yii::t('amend', 'merge_amtable_proposal') ?></th>
                         <?php
                     }
-                    if ($hasProposalText) {
-                        ?>
-                        <th class="colText"><?= \Yii::t('amend', 'merge_amtable_text') ?></th>
-                        <?php
-                    }
                     ?>
+                    <th class="colText"><?= \Yii::t('amend', 'merge_amtable_text') ?></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -108,13 +104,13 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                     }
                     if ($amend->proposalReference) {
                         echo '<td class="colText hasAlternative">';
-                        echo '<label>';
+                        echo '<label class="textOriginal">';
                         echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="original"> ';
                         echo \Yii::t('amend', 'merge_amtable_text_orig');
                         echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
                         echo '</label>';
 
-                        echo '<label>';
+                        echo '<label class="textProposal">';
                         echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="proposal" checked> ';
                         echo \Yii::t('amend', 'merge_amtable_text_prop');
                         echo \app\components\HTMLTools::amendmentDiffTooltip($amend->proposalReference, 'bottom');

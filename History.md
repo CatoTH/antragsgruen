@@ -2,7 +2,12 @@
 
 ## Version 3.8.0 [Not released yet]
 
-- Administrators of a consultation can now manage the proposed procedure of an amendment [not finished yet]
+- Proposed procedures for amendments
+  - Administrators of a consultation can now manage the proposed procedure of an amendment. This includes setting a proposed status, a modified version of the amendment text.
+  - The proposer of the amendment can be notified about this proposal and optionally agree to this proposal.
+  - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
+  - The proposed procedure and the voting blocks are optionally published on a separate page.
+
 
 ## Version 3.7.0 (2017-09-03)
 

@@ -152,22 +152,6 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <button class="btn btn-default btn-xs"><?= \Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
-<?php
-if ($context !== 'edit') {
-    ?>
-    <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
-        <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
-        <?php
-        echo Html::a(
-            \Yii::t('base', 'edit'),
-            UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'),
-            ['class' => 'editModification']
-        );
-        ?>
-    </section>
-    <?php
-}
-?>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
         <label class="headingLabel"><?= \Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php
@@ -228,4 +212,20 @@ if ($context !== 'edit') {
     <section class="saved">
         <?= \Yii::t('base', 'saved') ?>
     </section>
+<?php
+if ($context !== 'edit') {
+    ?>
+    <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
+        <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
+        <?php
+        echo Html::a(
+            \Yii::t('base', 'edit'),
+            UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'),
+            ['class' => 'editModification']
+        );
+        ?>
+    </section>
+    <?php
+}
+?>
 <?= Html::endForm() ?>

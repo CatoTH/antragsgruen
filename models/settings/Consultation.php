@@ -31,6 +31,7 @@ class Consultation
     public $forceMotion            = null;
     public $editorialAmendments    = true;
     public $globalAlternatives     = true;
+    public $proposalProcedurePage  = false;
 
     // SETTINGS WITHOUT TEST CASES
 
@@ -41,7 +42,6 @@ class Consultation
     public $initiatorsMayReject    = false;
     public $allowMultipleTags      = false;
     public $odtExportHasLineNumers = true;
-    public $proposalProcedurePage  = false;
 
     /** @var int */
     public $lineLength      = 80;
