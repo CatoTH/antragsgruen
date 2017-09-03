@@ -15,6 +15,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
+ * @var \app\controllers\Base $controller
  */
 
 echo '<div class="content">';
@@ -35,14 +36,14 @@ if (count($replacedByMotions) > 0) {
         foreach ($replacedByMotions as $newMotion) {
             echo '<li>';
             $newLink = UrlHelper::createMotionUrl($newMotion);
-            echo Html::a($motion->getTitleWithPrefix(), $newLink);
+            echo Html::a($newMotion->getTitleWithPrefix(), $newLink);
             echo '</li>';
         }
         echo '</ul>';
     } else {
         echo '<br>';
         $newLink = UrlHelper::createMotionUrl($replacedByMotions[0]);
-        echo Html::a($motion->getTitleWithPrefix(), $newLink);
+        echo Html::a($replacedByMotions[0]->getTitleWithPrefix(), $newLink);
     }
     echo '</div>';
 }
