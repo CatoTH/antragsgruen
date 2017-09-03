@@ -84,6 +84,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_amend_stati'                 => 'Status der Änderungsanträge',
     'merge_bread'                       => 'Überarbeiten',
     'merge_title'                       => '%TITLE% überarbeiten',
+    'merge_merge'                       => 'Einpflegen',
     'merge_new_text'                    => 'Neuer Antragstext',
     'merge_confirm_title'               => 'Überarbeitung kontrollieren',
     'merge_submitted'                   => 'Überarbeitung eingereicht',
@@ -93,6 +94,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
+    'merge_init_explanation'            => '<p>Hier kannst Du eine neue Version des Antrags erstellen, in dem einige oder alle beantragten Änderungen aufgegriffen werden.</p>
+            <p>Man kann dabei entweder einen einzelnen Änderungsantrag einpflegen (unten), oder aber alle Änderungsanträge auf einmal (oben). Bei letzterem gibt es die Möglichkeit, einzelne Änderungsanträge auszunehmen, die abgelehnt wurden oder zu viele Konflikte mit anderen Änderungsanträgen verursachen.</p>
+            <p>Der ursprüngliche Antrag sowie die Änderungsanträge bleiben dabei erhalten, wird aber als überholt gekennzeichnet.</p>',
     'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
         'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - fahre dafür einfach mit der Maus über die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
         'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .

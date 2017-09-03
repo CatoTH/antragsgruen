@@ -32,7 +32,7 @@ Requirements:
 - A fully configured web server running PHP
 
 Installation:
-- Download the latest package of Antragsgrün: [antragsgruen-3.7.0-rc2.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.7.0-rc2.tar.bz2)
+- Download the latest package of Antragsgrün: [antragsgruen-3.7.0.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.7.0.tar.bz2)
 - Extract the contents into your web folder
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
@@ -226,7 +226,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 ### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.4.0.jar```
+java -jar selenium-server-standalone-3.5.3.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```

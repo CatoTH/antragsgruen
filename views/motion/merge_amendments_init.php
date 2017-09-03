@@ -26,7 +26,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 
     <div class="content">
         <div class="alert alert-info" role="alert">
-            To Do: Explanation
+            <?= \Yii::t('amend', 'merge_init_explanation') ?>
         </div>
     </div>
 
@@ -104,9 +104,10 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 <li>
                     <?= \app\components\HTMLTools::amendmentDiffTooltip($amendment, 'right') ?>
                     <a href="<?= Html::encode($mergeUrl) ?>">
-                        <span class="merge">Merge:</span>
+                        <span class="merge"><?= \Yii::t('amend', 'merge_merge') ?>:</span>
                         <span class="title"><?= Html::encode($amendment->getShortTitle()) ?></span>
-                        <span class="initiator">(By: <?= Html::encode($amendment->getInitiatorsStr()) ?>)</span>
+                        <span class="initiator">(<?= \Yii::t('amend', 'merge1_amend_by') ?>:
+                            <?= Html::encode($amendment->getInitiatorsStr()) ?>)</span>
                     </a>
                 </li>
                 <?php
