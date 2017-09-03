@@ -26,7 +26,9 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 
     <div class="content">
         <div class="alert alert-info" role="alert">
-            To Do: Explanation
+            <p>Hier kannst Du eine neue Version des Antrags erstellen, in dem einige oder alle beantragten Änderungen aufgegriffen werden.</p>
+            <p>Man kann dabei entweder einen einzelnen Änderungsantrag einpflegen (unten), oder aber alle Änderungsanträge auf einmal (oben). Bei letzterem gibt es die Möglichkeit, einzelne Änderungsanträge auszunehmen, die abgelehnt wurden oder zu viele Konflikte mit anderen Änderungsanträgen verursachen.</p>
+            <p>Der ursprüngliche Antrag sowie die Änderungsanträge bleiben dabei erhalten, wird aber als überholt gekennzeichnet.</p>
         </div>
     </div>
 
@@ -104,9 +106,10 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 <li>
                     <?= \app\components\HTMLTools::amendmentDiffTooltip($amendment, 'right') ?>
                     <a href="<?= Html::encode($mergeUrl) ?>">
-                        <span class="merge">Merge:</span>
+                        <span class="merge"><?= \Yii::t('amend', 'merge_merge') ?>:</span>
                         <span class="title"><?= Html::encode($amendment->getShortTitle()) ?></span>
-                        <span class="initiator">(By: <?= Html::encode($amendment->getInitiatorsStr()) ?>)</span>
+                        <span class="initiator">(<?= \Yii::t('amend', 'merge1_amend_by') ?>:
+                            <?= Html::encode($amendment->getInitiatorsStr()) ?>)</span>
                     </a>
                 </li>
                 <?php

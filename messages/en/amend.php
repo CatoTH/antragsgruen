@@ -55,6 +55,7 @@ return [
     'merge_amend_stati'         => 'Status of the amendments',
     'merge_bread'               => 'Revise',
     'merge_title'               => 'Revise %TITLE%',
+    'merge_merge'               => 'Merge',
     'merge_new_text'            => 'New motion text',
     'merge_confirm_title'       => 'Confirm new version',
     'merge_submitted'           => 'New version confirmed',
@@ -145,6 +146,9 @@ return [
         'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
         'In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>' .
         'Then you can select the new amendment status and click “Continue”. A <strong>new motion "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
+    'merge_init_explanation'            => '<p>You can create a new version of this motion that includes the proposed amendments.</p>
+            <p>You can either merge a single amendment, or all amendments at once. For the latter, you can also exclude some amendments that have been rejected or are causing too many conflicts with other amendments.</p>
+            <p>The original motion and the amendments will still be available, but marked as obsolete.</p>',
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> As there are multiple amendments to this motion which refer to the same text passage - <strong>colliding amendments</strong> - it is necessary to insert the changes of those conflicting amendments manually. After doing so, please delete the paragraphs of the conflicts.',
     'merge_amend_by'                    => '%TITLE%, by %INITIATOR%',
     'merge_amend_editorials'            => 'Editorial amendment',
