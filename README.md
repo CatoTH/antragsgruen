@@ -43,7 +43,8 @@ Updating a existing installation using the pre-bundled package
 - Download the latest package of Antragsgrün
 - Extract the files to your web folder, overwriting all existing files. The configuration (in config/config.json) will not be affected by this.
 - Remove the ``config/INSTALLING`` file
-- Execute ``./yii migrate`` on the command line to apply database changes
+- If you have shell access to your server: execute ``./yii migrate`` on the command line to apply database changes
+- If you don't have shell access to your server: please refer to [UPGRADING.md](docs/UPGRADING.md) on how to upgrade your database
 
 
 Installation

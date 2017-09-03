@@ -28,7 +28,7 @@
 
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/).
 
-### Version 3.6.10 [Not released yet]
+### Version 3.6.10 [Not released]
 
 - Bugfix: When downloading PDFs and ODTs of amendments with Firefox, umlauts were not encoded correctly in the file name
 
