@@ -579,21 +579,6 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param string[] $lines
-     * @return string
-     */
-    public static function getMotionLinesToTeX($lines)
-    {
-        $str = implode('###LINEBREAK###', $lines);
-        $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
-        $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
-        $str = Exporter::encodeHTMLString($str);
-        $str = str_replace('###LINENUMBER###', '', $str);
-        $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
-        return $str;
-    }
-
-    /**
      * @param bool $isRight
      * @param Content $content
      */
@@ -630,7 +615,7 @@ class TextSimple extends ISectionType
 
                 $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
                 foreach ($paragraphs as $paragraph) {
-                    $tex2 .= static::getMotionLinesToTeX($paragraph->lines) . "\n";
+                    $tex2 .= Exporter::getMotionLinesToTeX($paragraph->lines) . "\n";
                 }
 
                 if ($hasLineNumbers) {
@@ -643,7 +628,7 @@ class TextSimple extends ISectionType
                 $paras = $section->getTextParagraphLines();
                 foreach ($paras as $para) {
                     $html = str_replace('###LINENUMBER###', '', implode('', $para));
-                    $tex2 .= static::getMotionLinesToTeX([$html]) . "\n";
+                    $tex2 .= Exporter::getMotionLinesToTeX([$html]) . "\n";
                 }
             }
             HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);

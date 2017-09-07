@@ -36,7 +36,7 @@ class HTML2TexTest extends TestBase
         ];
         $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
-        $out    = TextSimple::getMotionLinesToTeX($orig);
+        $out    = Exporter::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
 
         $orig   = '<p>Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, halbseidener, ' .
@@ -49,7 +49,7 @@ class HTML2TexTest extends TestBase
             "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
-        $out   = TextSimple::getMotionLinesToTeX($lines);
+        $out   = Exporter::getMotionLinesToTeX($lines);
         $this->assertEquals($expect, $out);
     }
 
@@ -167,6 +167,33 @@ class HTML2TexTest extends TestBase
         $orig   = "<p class='deleted'>Neu Neu2</p>";
         $expect = "\\textcolor{Delete}{\\sout{Neu Neu2}}\n";
         $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testNestedLists()
+    {
+        // Yes, this looks pretty broken, and it kind of is. But for some reason, it seems possible to make things
+        // work anyway, therefore let's do so.
+        $orig = [
+            '<ol start="2"><li>###LINENUMBER###Test 2' . "\n",
+            '<ol><li>###LINENUMBER###Nummer 2.1 123456789 123456789 123456789 123456789 123456789 ',
+            '###LINENUMBER###123456789 123456789 123456789 123456789 123456789</li>',
+            '<li>###LINENUMBER###Nummer 2.2<br></li></ol></li></ol>',
+        ];
+        $expect = '\begin{enumerate}[label=\arabic*.]
+\setcounter{enumi}{1}
+\item Test 2
+
+\begin{enumerate}[label=\arabic*.]
+\item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak
+123456789 123456789 123456789 123456789 123456789
+\item Nummer 2.2
+\end{enumerate}
+\end{enumerate}
+';
+        $out    = Exporter::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
     }
 }

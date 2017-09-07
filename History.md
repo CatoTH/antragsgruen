@@ -8,6 +8,9 @@
   - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 
+## Version 3.7.1 [not released yet]
+
+- Bugfix: Nested enumerated lists were not rendered correctly when using the LaTeX-based PDF renderer
 
 ## Version 3.7.0 (2017-09-03)
 
