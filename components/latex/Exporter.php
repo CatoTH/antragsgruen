@@ -50,6 +50,27 @@ class Exporter
     }
 
     /**
+     * @param string[] $lines
+     * @return string
+     */
+    public static function getMotionLinesToTeX($lines)
+    {
+        $str = implode('###LINEBREAK###', $lines);
+        $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
+        $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
+        $str = static::encodeHTMLString($str);
+        $str = str_replace('###LINENUMBER###', '', $str);
+        $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
+
+        // Some edge cases that occur in nested enumerated lists
+        $str = str_replace('\linebreak' . "\n\n" . '\item', "\n" . '\item', $str);
+        $str = str_replace('\newline' . "\n" . '\end{enumerate}', "\n" . '\end{enumerate}', $str);
+        $str = str_replace('\linebreak' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
+
+        return $str;
+    }
+
+    /**
      * @param string $str
      * @return string
      */
@@ -234,7 +255,9 @@ class Exporter
                     if ($node->hasAttribute('start')) {
                         $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
                     }
-                    return '\begin{enumerate}' . "\n" . $firstLine . $content . '\end{enumerate}' . "\n";
+                    return '\begin{enumerate}[label=\arabic*.]' . "\n" .
+                        $firstLine . $content .
+                        '\end{enumerate}' . "\n";
                 case 'li':
                     $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return '\item ' . $content . "\n";

@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.7.1 [not released yet]
+
+- Bugfix: Nested enumerated lists were not rendered correctly when using the LaTeX-based PDF renderer
+
 ## Version 3.7.0 (2017-09-03)
 
 - Initiators of motions can now merge amendments into their motions, if this is allowed by the consultation settings. This function can be restricted to cases where no amendment rewriting is necessary.
