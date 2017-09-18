@@ -568,7 +568,7 @@ class TextSimple extends ISectionType
         if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
             $title = $section->getMotion()->title;
         }
-        $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+        $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
 
         $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
         $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
@@ -634,7 +634,7 @@ class TextSimple extends ISectionType
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                 }
 
-                $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
                 $tex  .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
@@ -650,7 +650,7 @@ class TextSimple extends ISectionType
                         $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                     }
 
-                    $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                    $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
                     $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
                     $tex  .= Exporter::encodeHTMLString($html);
                 }
