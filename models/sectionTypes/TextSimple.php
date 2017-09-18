@@ -111,7 +111,7 @@ class TextSimple extends ISectionType
      */
     public function setMotionData($data)
     {
-        $type = $this->section->getSettings();
+        $type                   = $this->section->getSettings();
         $this->section->dataRaw = $data;
         $this->section->data    = HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings());
     }
@@ -352,7 +352,7 @@ class TextSimple extends ISectionType
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
             if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
                 $pdfLayout->printSectionHeading($this->section->getSettings()->title);
@@ -599,6 +599,11 @@ class TextSimple extends ISectionType
                     $tex2 .= Exporter::getMotionLinesToTeX([$html]) . "\n";
                 }
             }
+
+            $tex2 = str_replace('\linebreak' . "\n\n", '\linebreak' . "\n", $tex2);
+            $tex2 = str_replace('\newline' . "\n\n", '\newline' . "\n", $tex2);
+            $tex2 = preg_replace('/\\\\newline\\n{2,}\\\\nolinenumbers/siu', "\n\n\\nolinenumbers", $tex2);
+
             HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);
         }
 
@@ -634,8 +639,8 @@ class TextSimple extends ISectionType
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                 }
 
-                $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
-                $tex  .= Exporter::encodeHTMLString($section->data);
+                $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
+                $tex .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
                 $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
@@ -680,7 +685,7 @@ class TextSimple extends ISectionType
     public function getAmendmentODS()
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
         if ($section->getAmendment()->globalAlternative) {
             return $section->data;
@@ -754,7 +759,7 @@ class TextSimple extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         /** @var AmendmentSection $section */
-        $section    = $this->section;
+        $section = $this->section;
 
         if ($section->getAmendment()->globalAlternative) {
             $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);

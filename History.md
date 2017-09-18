@@ -2,7 +2,9 @@
 
 ## Version 3.7.1 [not released yet]
 
-- Bugfix: Nested enumerated lists were not rendered correctly when using the LaTeX-based PDF renderer
+- Bugfix: Several Bugs in the LaTeX-based PDF-export have been fixed:
+  - Nested enumerated lists were not rendered correctly
+  - Headings (H1-H6) in combination with line numbers lead to extra line numbers after the heading
 
 ## Version 3.7.0 (2017-09-03)
 
