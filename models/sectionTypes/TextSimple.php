@@ -600,7 +600,7 @@ class TextSimple extends ISectionType
         if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
             $title = $section->getMotion()->title;
         }
-        $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+        $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
 
         $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
         $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
@@ -631,6 +631,11 @@ class TextSimple extends ISectionType
                     $tex2 .= Exporter::getMotionLinesToTeX([$html]) . "\n";
                 }
             }
+
+            $tex2 = str_replace('\linebreak' . "\n\n", '\linebreak' . "\n", $tex2);
+            $tex2 = str_replace('\newline' . "\n\n", '\newline' . "\n", $tex2);
+            $tex2 = preg_replace('/\\\\newline\\n{2,}\\\\nolinenumbers/siu', "\n\n\\nolinenumbers", $tex2);
+
             HashedStaticCache::setCache('printMotionTeX', $cacheDeps, $tex2);
         }
 
@@ -666,7 +671,7 @@ class TextSimple extends ISectionType
                     $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                 }
 
-                $tex .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
                 $tex .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
@@ -682,7 +687,7 @@ class TextSimple extends ISectionType
                         $title      = str_replace('%PREFIX%', $section->getMotion()->titlePrefix, $titPattern);
                     }
 
-                    $tex  .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+                    $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
                     $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
                     $tex  .= Exporter::encodeHTMLString($html);
                 }
