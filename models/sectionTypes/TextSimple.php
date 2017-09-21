@@ -153,7 +153,12 @@ class TextSimple extends ISectionType
         $section = $this->section;
         $post    = \Yii::$app->request->post();
 
-        if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
+        $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
+        if ($this->forceMultipleParagraphs !== null) {
+            $multipleParagraphs = $this->forceMultipleParagraphs;
+        }
+
+        if ($multipleParagraphs) {
             $section->data    = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($data['consolidated']));
             $section->dataRaw = $data['raw'];
         } else {

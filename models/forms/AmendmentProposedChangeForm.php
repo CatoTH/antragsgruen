@@ -4,6 +4,7 @@ namespace app\models\forms;
 
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
+use app\models\sectionTypes\ISectionType;
 
 class AmendmentProposedChangeForm
 {
@@ -60,7 +61,12 @@ class AmendmentProposedChangeForm
     {
         foreach ($this->proposalSections as $section) {
             if (isset($postParams['sections'][$section->getSettings()->id])) {
-                $section->getSectionType()->setAmendmentData($postParams['sections'][$section->getSettings()->id]);
+                $type = $section->getSectionType();
+                if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                    /** @var \app\models\sectionTypes\TextSimple $type */
+                    $type->forceMultipleParagraphMode(true);
+                }
+                $type->setAmendmentData($postParams['sections'][$section->getSettings()->id]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
