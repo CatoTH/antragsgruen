@@ -71,6 +71,7 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_REFERRED,
             IMotion::STATUS_VOTE,
             IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_CUSTOM_STRING,
         ];
     }
 
@@ -1131,6 +1132,9 @@ class Amendment extends IMotion implements IRSSItem
                 } else {
                     return static::getStatiAsVerbs()[$this->proposalStatus];
                 }
+                break;
+            case Amendment::STATUS_CUSTOM_STRING:
+                return Html::encode($this->proposalComment);
                 break;
             default:
                 return static::getStatiAsVerbs()[$this->proposalStatus];

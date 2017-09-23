@@ -223,6 +223,7 @@ return [
     'proposal_save_changes'      => 'Save changes',
     'proposal_voting_status'     => 'Voting status',
     'proposal_refer_to'          => 'Referred to',
+    'proposal_custom_str'        => 'Custom status',
     'proposal_obsoleted_by'      => 'Handled by',
     'proposal_modified_accepted' => 'Modification',
     'proposal_comment_title'     => 'Internal comment',

@@ -31,6 +31,11 @@ if ($amendment->proposalStatus == Amendment::STATUS_OBSOLETED_BY) {
 } else {
     $preObsoletedBy = '';
 }
+if ($amendment->proposalStatus == Amendment::STATUS_CUSTOM_STRING) {
+    $preCustomStr = $amendment->proposalComment;
+} else {
+    $preCustomStr = '';
+}
 
 if (isset($msgAlert) && $msgAlert !== null) {
     echo '<div class="alert alert-info">' . $msgAlert . '</div>';
@@ -161,6 +166,14 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
+        foreach ($amendment->getMyConsultation()->getVisibleMotionsSorted(false) as $otherMotion) {
+            if ($otherMotion->id == $amendment->motionId) {
+                continue;
+            }
+            foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {
+                $options[$otherAmend->id] = $otherAmend->getTitle();
+            }
+        }
         $attrs = ['id' => 'obsoletedByAmendment', 'class' => 'form-control'];
         echo HTMLTools::fueluxSelectbox('obsoletedByAmendment', $options, $preObsoletedBy, $attrs);
         ?>
@@ -168,6 +181,11 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
         <label class="headingLabel" for="referredTo"><?= \Yii::t('amend', 'proposal_refer_to') ?>...</label>
         <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
+               class="form-control">
+    </section>
+    <section class="statusDetails status_<?= Amendment::STATUS_CUSTOM_STRING ?>">
+        <label class="headingLabel" for="statusCustomStr"><?= \Yii::t('amend', 'proposal_custom_str') ?>:</label>
+        <input type="text" name="statusCustomStr" id="statusCustomStr" value="<?= Html::encode($preCustomStr) ?>"
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">

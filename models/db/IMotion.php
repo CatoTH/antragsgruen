@@ -70,6 +70,9 @@ abstract class IMotion extends ActiveRecord
     // in statusString (a bit unelegantely), or, in case of a change proposal, in proposalComment
     const STATUS_OBSOLETED_BY = 22;
 
+    // The exact status is specified in a free-text field; proposalComment if this status is used in proposalStatus
+    const STATUS_CUSTOM_STRING = 23;
+
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
     const STATUS_ADOPTED             = 8;
@@ -111,6 +114,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_MERGING_DRAFT_PRIVATE        => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
             static::STATUS_PROPOSED_MODIFIED_AMENDMENT  => \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
+            static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
         ];
     }
 

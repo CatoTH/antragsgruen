@@ -1,6 +1,7 @@
 const STATUS_REFERRED = 10;
 const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY = 22;
+const STATUS_CUSTOM_STRING = 23;
 
 export class AmendmentChangeProposal {
     private $statusDetails: JQuery;
@@ -51,6 +52,9 @@ export class AmendmentChangeProposal {
         }
         if (newVal == STATUS_OBSOLETED_BY) {
             data['proposalComment'] = this.$widget.find('input[name=obsoletedByAmendment]').val();
+        }
+        if (newVal == STATUS_CUSTOM_STRING) {
+            data['proposalComment'] = this.$widget.find('input[name=statusCustomStr]').val();
         }
         if (newVal == STATUS_VOTE) {
             data['votingStatus'] = this.$votingStatusInput.filter(':checked').val();
@@ -104,7 +108,7 @@ export class AmendmentChangeProposal {
         });
         this.$widget.find('.statusForm input[type=radio]').trigger('change', {'init': true});
 
-        this.$widget.on('change', 'input', () => {
+        this.$widget.on('change keypress', 'input', () => {
             this.$widget.addClass('showSaving');
         });
 

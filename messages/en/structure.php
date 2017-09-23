@@ -132,6 +132,7 @@ return [
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Submitted (screened, not yet published)',
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Proposed modification',
     'STATUS_OBSOLETED_BY'                 => 'Handled by another amendment',
+    'STATUS_CUSTOM_STRING'                => 'Custom status',
 
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',

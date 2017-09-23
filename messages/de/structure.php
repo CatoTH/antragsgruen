@@ -132,6 +132,7 @@ return [
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Eingereicht (geprüft, unveröffentlicht)',
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Vorgeschlagene Änderung',
     'STATUS_OBSOLETED_BY'                 => 'Erledigt durch anderen ÄA',
+    'STATUS_CUSTOM_STRING'                => 'Sonstiger Status',
 
     'section_comment_none'      => 'Keine Kommentare',
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',
