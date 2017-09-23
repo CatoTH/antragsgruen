@@ -33,8 +33,11 @@
     display: flex;
     flex-direction: column;
   }
-  .notificationSettings, .visibilitySettings {
+  .notificationSettings, .visibilitySettings, .votingBlockSettings {
     padding-bottom: 10px;
+  }
+  .publicExplanationSettings {
+    padding-top: 10px;
   }
   .notificationStatus {
     font-size: 12px;
@@ -100,7 +103,7 @@
       width: 100%;
     }
   }
-  .statusDetails, .collissions {
+  .statusDetails, .collissions, .publicExplanation {
     border-top: solid 1px #eee;
     padding: 10px;
   }
@@ -203,6 +206,11 @@
     }
     .initiator {
       width: 200px;
+    }
+    .explanation {
+      font-size: 0.8em;
+      margin-top: 5px;
+      color: #888;
     }
   }
 }

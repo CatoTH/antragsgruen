@@ -17,6 +17,7 @@ export class AmendmentChangeProposal {
         this.initStatusSetter();
         this.initCommentForm();
         this.initVotingBlock();
+        this.initExplanation();
         $widget.submit(ev => ev.preventDefault());
     }
 
@@ -34,6 +35,7 @@ export class AmendmentChangeProposal {
         this.initElements();
         this.statusChanged();
         this.commentsScrollBottom();
+        this.initExplanation();
         this.$widget.find('.newBlock').addClass('hidden');
         this.$widget.find('.selectlist').selectlist();
     }
@@ -64,6 +66,10 @@ export class AmendmentChangeProposal {
         }
         if (this.$widget.find('input[name=notifyProposer]').prop('checked')) {
             data['notifyProposer'] = true;
+        }
+
+        if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
+            data['proposalExplanation'] = this.$widget.find('textarea[name=proposalExplanation]').val();
         }
 
         $.post(this.saveUrl, data, (ret) => {
@@ -108,7 +114,7 @@ export class AmendmentChangeProposal {
         });
         this.$widget.find('.statusForm input[type=radio]').trigger('change', {'init': true});
 
-        this.$widget.on('change keypress', 'input', () => {
+        this.$widget.on('change keyup', 'input, textarea', () => {
             this.$widget.addClass('showSaving');
         });
 
@@ -128,7 +134,22 @@ export class AmendmentChangeProposal {
                 this.$widget.find(".newBlock").addClass('hidden');
             }
         });
-        this.$widget.find(".newBlock").addClass('hidden');
+        this.$widget.find('.newBlock').addClass('hidden');
+    }
+
+    private initExplanation() {
+        this.$widget.find('input[name=setPublicExplanation]').change((ev) => {
+           if ($(ev.target).prop('checked')) {
+               this.$widget.find('section.publicExplanation').removeClass('hidden');
+           } else {
+               this.$widget.find('section.publicExplanation').addClass('hidden');
+           }
+        });
+        if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
+            this.$widget.find('section.publicExplanation').removeClass('hidden');
+        } else {
+            this.$widget.find('section.publicExplanation').addClass('hidden');
+        }
     }
 
     private commentsScrollBottom() {

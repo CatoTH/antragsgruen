@@ -38,6 +38,11 @@ echo '</td>
 if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
     echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td>';
     echo $amendment->getFormattedProposalStatus();
+    if ($amendment->proposalExplanation) {
+        echo ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
+        echo Html::encode($amendment->proposalExplanation);
+        echo ')</span>';
+    }
     echo '</td></tr>';
 }
 

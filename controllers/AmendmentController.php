@@ -485,6 +485,15 @@ class AmendmentController extends Base
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
             $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
+                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+                    $amendment->proposalExplanation = null;
+                } else {
+                    $amendment->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                }
+            } else {
+                $amendment->proposalExplanation = null;
+            }
             if (\Yii::$app->request->post('visible', 0)) {
                 $amendment->setProposalPublished();
             } else {

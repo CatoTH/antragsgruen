@@ -50,16 +50,16 @@ foreach ($data as $dataRow) {
             <?php
             foreach ($votingBlocks as $votingBlock) {
                 ?>
-                <table class="table votingTable votingTable<?=$votingBlock->id?>">
+                <table class="table votingTable votingTable<?= $votingBlock->id ?>">
                     <caption>
-                        <?=\Yii::t('con', 'proposal_table_voting')?>:
+                        <?= \Yii::t('con', 'proposal_table_voting') ?>:
                         <?= Html::encode($votingBlock->title) ?>
                     </caption>
                     <thead>
                     <tr>
-                        <th class="prefix"><?=\Yii::t('con', 'proposal_table_amend')?></th>
-                        <th class="procedure"><?=\Yii::t('con', 'proposal_table_proposal')?></th>
-                        <th class="initiator"><?=\Yii::t('con', 'proposal_table_initiator')?></th>
+                        <th class="prefix"><?= \Yii::t('con', 'proposal_table_amend') ?></th>
+                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
+                        <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,11 +67,18 @@ foreach ($data as $dataRow) {
                     foreach ($votingBlock->amendments as $amendment) {
                         $coveredAmendments[] = $amendment->id;
                         ?>
-                        <tr class="amendment<?=$amendment->id?>">
+                        <tr class="amendment<?= $amendment->id ?>">
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
-                            <td><?= $amendment->getFormattedProposalStatus() ?></td>
+                            <td><?php
+                                echo $amendment->getFormattedProposalStatus();
+                                if ($amendment->proposalExplanation) {
+                                    echo '<div class="explanation">';
+                                    echo Html::encode($amendment->proposalExplanation);
+                                    echo '</div>';
+                                }
+                                ?></td>
                             <td><?= $amendment->getInitiatorsStr() ?></td>
                         </tr>
                         <?php
@@ -91,14 +98,14 @@ foreach ($data as $dataRow) {
                 <table class="table proposalTable">
                     <?php
                     if (count($votingBlocks) > 0) { ?>
-                        <caption><?=\Yii::t('con', 'proposal_table_others')?></caption>
+                        <caption><?= \Yii::t('con', 'proposal_table_others') ?></caption>
                         <?php
                     } ?>
                     <thead>
                     <tr>
-                        <th class="prefix"><?=\Yii::t('con', 'proposal_table_amend')?></th>
-                        <th class="procedure"><?=\Yii::t('con', 'proposal_table_proposal')?></th>
-                        <th class="initiator"><?=\Yii::t('con', 'proposal_table_initiator')?></th>
+                        <th class="prefix"><?= \Yii::t('con', 'proposal_table_amend') ?></th>
+                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
+                        <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -109,7 +116,15 @@ foreach ($data as $dataRow) {
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
-                            <td><?= $amendment->getFormattedProposalStatus() ?></td>
+                            <td><?php
+                                echo $amendment->getFormattedProposalStatus();
+                                if ($amendment->proposalExplanation) {
+                                    echo '<div class="explanation">';
+                                    echo \Yii::t('con', 'proposal_explanation') . ': ';
+                                    echo Html::encode($amendment->proposalExplanation);
+                                    echo '</div>';
+                                }
+                                ?></td>
                             <td><?= $amendment->getInitiatorsStr() ?></td>
                         </tr>
                         <?php

@@ -235,6 +235,8 @@ return [
     'proposal_noti'              => 'Notifications',
     'proposal_visible'           => 'Proposed procedure is public',
     'proposal_visibility'        => 'Visibility',
+    'proposal_public_expl_set'   => 'Enter a public explanation',
+    'proposal_public_expl_title' => 'Public explanation for the proposed procedure',
     'proposal_status_title'      => 'Proposed status',
     'proposal_status_na'         => 'not set',
     'proposal_user_accepted'     => 'Agrees to the proposed procedure',

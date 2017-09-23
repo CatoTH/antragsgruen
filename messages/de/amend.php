@@ -266,6 +266,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_noti'              => 'Antragsteller*in benachrichtigen',
     'proposal_visible'           => 'Verfahrensvorschlag ist sichtbar',
     'proposal_visibility'        => 'Sichtbarkeit',
+    'proposal_public_expl_set'   => 'Öffentliche Erklärung eingeben',
+    'proposal_public_expl_title' => 'Öffentliche Erklärung des Verfahrensvorschlags',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_status_na'         => 'nicht festgelegt',
     'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',

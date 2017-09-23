@@ -132,6 +132,12 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
             </div>
+            <div class="publicExplanationSettings">
+                <label>
+                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null)) ?>
+                    <?= \Yii::t('amend', 'proposal_public_expl_set') ?>
+                </label>
+            </div>
         </div>
         <section class="proposalCommentForm">
             <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
@@ -205,6 +211,19 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             }
             ?>
         </div>
+    </section>
+    <section class="publicExplanation">
+        <h3><?= \Yii::t('amend', 'proposal_public_expl_title') ?></h3>
+        <?php
+        echo Html::textarea(
+            'proposalExplanation',
+            $amendment->proposalExplanation,
+            [
+                'title' => \Yii::t('amend', 'proposal_public_expl_title'),
+                'class' => 'form-control',
+            ]
+        );
+        ?>
     </section>
     <section class="collissions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
         <h3><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
