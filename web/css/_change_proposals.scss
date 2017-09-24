@@ -33,11 +33,8 @@
     display: flex;
     flex-direction: column;
   }
-  .notificationSettings, .visibilitySettings, .votingBlockSettings {
+  .votingBlockSettings {
     padding-bottom: 10px;
-  }
-  .publicExplanationSettings {
-    padding-top: 10px;
   }
   .notificationStatus {
     font-size: 12px;
@@ -48,6 +45,15 @@
     .rejected {
       color: red;
       margin-right: 5px;
+    }
+    .notSavedHint {
+      font-style: italic;
+      color: #777;
+    }
+    .notifyProposer {
+      white-space: normal;
+      text-align: left;
+      font-weight: normal;
     }
   }
 
@@ -72,8 +78,10 @@
     padding: 0;
     list-style-type: none;
     display: block;
-    max-height: 110px;
+    max-height: 130px;
     overflow-y: auto;
+    background-color: #fbfdfb;
+    border: solid 1px #dfd;
 
     > li {
       margin: 0;
@@ -93,9 +101,10 @@
     font-size: 12px;
 
     textarea {
+      border-radius: 0;
+      border: solid 1px #eee;
       border-bottom: none;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      box-shadow: none;
       font-size: 12px;
     }
     button {
@@ -115,8 +124,14 @@
     vertical-align: middle;
     display: none;
   }
-  &.showSaving .saving {
+  .showIfChanged {
+    display: none;
+  }
+  &.isChanged .showIfChanged {
     display: block;
+  }
+  &.isChanged .hideIfChanged {
+    display: none;
   }
   &.showSaved .saved {
     display: block;

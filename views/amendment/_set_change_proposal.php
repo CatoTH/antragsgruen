@@ -70,49 +70,15 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </section>
         <div class="middleCol">
             <div class="visibilitySettings showIfStatusSet">
-                <h3><?= \Yii::t('amend', 'proposal_visibility') ?></h3>
+                <h3><?= \Yii::t('amend', 'proposal_publicity') ?></h3>
                 <label>
                     <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
                     <?= \Yii::t('amend', 'proposal_visible') ?>
                 </label>
-            </div>
-            <div class="notificationSettings showIfStatusSet">
-                <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
-                <?php
-                if ($amendment->proposalUserStatus !== null) {
-                    echo '<div class="notificationStatus">';
-                    if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
-                        echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
-                        echo \Yii::t('amend', 'proposal_user_accepted');
-                    } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
-                        echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
-                        echo \Yii::t('amend', 'proposal_user_rejected');
-                    } else {
-                        echo 'Error: unknown response of the proposer';
-                    }
-                    echo '</div>';
-                } elseif ($amendment->proposalNotification !== null) {
-                    echo '<div class="notificationStatus">';
-                    $msg  = \Yii::t('amend', 'proposal_notified');
-                    $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
-                    echo str_replace('%DATE%', $date, $msg);
-                    if ($amendment->proposalStatusNeedsUserFeedback()) {
-                        echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
-                    }
-                    echo '</div>';
-                } elseif ($amendment->proposalStatus !== null) {
-                    if ($amendment->proposalStatusNeedsUserFeedback()) {
-                        $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
-                    } else {
-                        $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
-                    }
-                    ?>
-                    <label>
-                        <input type="checkbox" name="notifyProposer"> <?= $msg ?>
-                    </label>
-                    <?php
-                }
-                ?>
+                <label>
+                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null)) ?>
+                    <?= \Yii::t('amend', 'proposal_public_expl_set') ?>
+                </label>
             </div>
             <div class="votingBlockSettings showIfStatusSet">
                 <h3><?= \Yii::t('amend', 'proposal_voteblock') ?></h3>
@@ -132,11 +98,44 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
             </div>
-            <div class="publicExplanationSettings">
-                <label>
-                    <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null)) ?>
-                    <?= \Yii::t('amend', 'proposal_public_expl_set') ?>
-                </label>
+            <div class="notificationSettings showIfStatusSet">
+                <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
+                <div class="notificationStatus">
+                    <?php
+                    if ($amendment->proposalUserStatus !== null) {
+                        if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                            echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
+                            echo \Yii::t('amend', 'proposal_user_accepted');
+                        } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
+                            echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
+                            echo \Yii::t('amend', 'proposal_user_rejected');
+                        } else {
+                            echo 'Error: unknown response of the proposer';
+                        }
+                    } elseif ($amendment->proposalNotification !== null) {
+                        $msg  = \Yii::t('amend', 'proposal_notified');
+                        $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
+                        echo str_replace('%DATE%', $date, $msg);
+                        if ($amendment->proposalStatusNeedsUserFeedback()) {
+                            echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
+                        }
+                    } elseif ($amendment->proposalStatus !== null) {
+                        if ($amendment->proposalStatusNeedsUserFeedback()) {
+                            $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
+                        } else {
+                            $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
+                        }
+                        ?>
+                        <button class="notifyProposer btn btn-xs btn-default" type="button">
+                            <?= $msg ?>
+                        </button>
+                        <div class="showIfChanged notSavedHint">
+                            <?= \Yii::t('amend', 'proposal_notify_notsaved') ?>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
             </div>
         </div>
         <section class="proposalCommentForm">
@@ -241,7 +240,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             ?>
         </ul>
     </section>
-    <section class="saving">
+    <section class="saving showIfChanged">
         <button class="btn btn-default btn-sm">
             <?= \Yii::t('amend', 'proposal_save_changes') ?>
         </button>

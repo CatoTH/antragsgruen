@@ -3,7 +3,6 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use app\models\policies\IPolicy;
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 

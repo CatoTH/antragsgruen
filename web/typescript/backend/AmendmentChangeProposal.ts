@@ -40,13 +40,39 @@ export class AmendmentChangeProposal {
         this.$widget.find('.selectlist').selectlist();
     }
 
+    private performCallWithReload(data: object) {
+        data['_csrf'] = this.csrf;
+
+        $.post(this.saveUrl, data, (ret) => {
+            this.$widget.addClass('showSaved').removeClass('isChanged');
+            window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
+            if (ret['success']) {
+                let $content = $(ret['html']);
+                this.$widget.children().remove();
+                this.$widget.append($content.children());
+                this.reinitAfterReload();
+            } else if (ret['error']) {
+                alert(ret['error']);
+            } else {
+                alert('An error ocurred');
+            }
+        }).fail(() => {
+            alert('Could not save');
+        });
+    }
+
+    private notifyProposer() {
+        this.performCallWithReload({
+            'notifyProposer': '1'
+        });
+    }
+
     private saveStatus() {
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         let data = {
             setStatus: newVal,
             visible: (this.$visibilityInput.prop('checked') ? 1 : 0),
             votingBlockId: this.$votingBlockId.val(),
-            _csrf: this.csrf
         };
 
         if (newVal == STATUS_REFERRED) {
@@ -64,30 +90,12 @@ export class AmendmentChangeProposal {
         if (data.votingBlockId == 'NEW') {
             data['votingBlockTitle'] = this.$widget.find('input[name=newBlockTitle]').val();
         }
-        if (this.$widget.find('input[name=notifyProposer]').prop('checked')) {
-            data['notifyProposer'] = true;
-        }
 
         if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
             data['proposalExplanation'] = this.$widget.find('textarea[name=proposalExplanation]').val();
         }
 
-        $.post(this.saveUrl, data, (ret) => {
-            this.$widget.addClass('showSaved').removeClass('showSaving');
-            window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
-            if (ret['success']) {
-                let $content = $(ret['html']);
-                this.$widget.children().remove();
-                this.$widget.append($content.children());
-                this.reinitAfterReload();
-            } else if (ret['error']) {
-                alert(ret['error']);
-            } else {
-                alert('An error ocurred');
-            }
-        }).fail(() => {
-            alert("Could not save");
-        });
+        this.performCallWithReload(data);
     }
 
     private statusChanged() {
@@ -110,24 +118,25 @@ export class AmendmentChangeProposal {
             if (data && data.init === true) {
                 return;
             }
-            this.$widget.addClass('showSaving');
+            this.$widget.addClass('isChanged');
         });
         this.$widget.find('.statusForm input[type=radio]').trigger('change', {'init': true});
 
         this.$widget.on('change keyup', 'input, textarea', () => {
-            this.$widget.addClass('showSaving');
+            this.$widget.addClass('isChanged');
         });
 
         this.$widget.on('changed.fu.selectlist', '#obsoletedByAmendment', () => {
-            this.$widget.addClass('showSaving');
+            this.$widget.addClass('isChanged');
         });
 
         this.$widget.on('click', '.saving button', this.saveStatus.bind(this));
+        this.$widget.on('click', '.notifyProposer', this.notifyProposer.bind(this));
     }
 
     private initVotingBlock() {
         this.$widget.on('changed.fu.selectlist', '#votingBlockId', () => {
-            this.$widget.addClass('showSaving');
+            this.$widget.addClass('isChanged');
             if (this.$votingBlockId.val() == 'NEW') {
                 this.$widget.find(".newBlock").removeClass('hidden');
             } else {

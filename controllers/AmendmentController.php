@@ -524,23 +524,29 @@ class AmendmentController extends Base
                 $response['success'] = true;
             }
 
-            if (\Yii::$app->request->post('notifyProposer', false) == true) {
-                try {
-                    new AmendmentProposedProcedure($amendment);
-                    $amendment->proposalNotification = date('Y-m-d H:i:s');
-                    $amendment->save();
-                } catch (MailNotSent $e) {
-                    $response['success'] = false;
-                    $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
-                }
-            }
-
             $this->consultation->refresh();
             $response['html'] = $this->renderPartial('_set_change_proposal', [
                 'amendment' => $amendment,
                 'msgAlert'  => $msgAlert,
                 'context'   => \Yii::$app->request->post('context', 'view'),
             ]);
+        }
+
+        if (\Yii::$app->request->post('notifyProposer')) {
+            try {
+                new AmendmentProposedProcedure($amendment);
+                $amendment->proposalNotification = date('Y-m-d H:i:s');
+                $amendment->save();
+                $response['success'] = true;
+                $response['html']    = $this->renderPartial('_set_change_proposal', [
+                    'amendment' => $amendment,
+                    'msgAlert'  => $msgAlert,
+                    'context'   => \Yii::$app->request->post('context', 'view'),
+                ]);
+            } catch (MailNotSent $e) {
+                $response['success'] = false;
+                $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
+            }
         }
 
         if (\Yii::$app->request->post('writeComment')) {
@@ -552,7 +558,8 @@ class AmendmentController extends Base
             $adminComment->amendmentId  = $amendment->id;
             if (!$adminComment->save()) {
                 \Yii::$app->response->statusCode = 500;
-                return 'Could not save - internal error';
+                $response['success']             = false;
+                return json_encode($response);
             }
 
             $response['success'] = true;

@@ -71,7 +71,8 @@ foreach ($data as $dataRow) {
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
-                            <td><?php
+                            <td>
+                                <?php
                                 echo $amendment->getFormattedProposalStatus();
                                 if ($amendment->proposalExplanation) {
                                     echo '<div class="explanation">';
@@ -116,7 +117,8 @@ foreach ($data as $dataRow) {
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
-                            <td><?php
+                            <td>
+                                <?php
                                 echo $amendment->getFormattedProposalStatus();
                                 if ($amendment->proposalExplanation) {
                                     echo '<div class="explanation">';
