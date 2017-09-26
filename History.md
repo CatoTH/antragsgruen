@@ -13,6 +13,8 @@
 - Bugfix: Several Bugs in the LaTeX-based PDF-export have been fixed:
   - Nested enumerated lists were not rendered correctly
   - Headings (H1-H6) in combination with line numbers lead to extra line numbers after the heading
+- Bugfix: ByLDK-PDF-Template did not respect the introduction text specified in the consultation settings
+- Bugfix: When using TCPDF-based PDF-rendering, BR-tags lead to double newlines
 
 ## Version 3.7.0 (2017-09-03)
 
