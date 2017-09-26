@@ -305,6 +305,7 @@ class TextSimple extends ISectionType
                 $linesArr = [];
                 foreach ($paragraph->lines as $line) {
                     $line       = str_replace('###LINENUMBER###', '', $line);
+                    $line       = preg_replace('/<br>\s*$/siu', '', $line);
                     $linesArr[] = $line . '';
                 }
 
