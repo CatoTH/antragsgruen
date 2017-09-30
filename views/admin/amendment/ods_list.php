@@ -1,6 +1,7 @@
 <?php
 
 use app\components\HTMLTools;
+use app\models\db\Amendment;
 use app\models\db\Motion;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
@@ -14,6 +15,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
+$statiNames = Amendment::getStati();
 
 $DEBUG = false;
 
@@ -40,6 +42,7 @@ if ($hasAgendaItems) {
 $COL_PREFIX     = $currCol++;
 $COL_INITIATOR  = $currCol++;
 $COL_FIRST_LINE = $currCol++;
+$COL_STATUS     = $currCol++;
 $COL_CHANGE     = $currCol++;
 $COL_REASON     = $currCol++;
 $COL_CONTACT    = $currCol++;
@@ -71,6 +74,9 @@ $doc->setColumnWidth($COL_INITIATOR, 6);
 
 $doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'line'));
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
+
+$doc->setCell(2, $COL_STATUS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'status'));
+$doc->setColumnWidth($COL_STATUS, 3);
 
 $doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_change'));
 $doc->setColumnWidth($COL_CHANGE, 10);
@@ -135,6 +141,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
         $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
+        $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_TEXT, $statiNames[$amendment->status]);
         $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
         $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $changeExplanation);
 
