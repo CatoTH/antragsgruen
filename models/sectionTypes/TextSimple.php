@@ -53,7 +53,7 @@ class TextSimple extends ISectionType
         if ($this->forceMultipleParagraphs !== null) {
             $multipleParagraphs = $this->forceMultipleParagraphs;
         }
-        
+
         if ($multipleParagraphs) {
             /** @var AmendmentSection $section */
             $section = $this->section;
@@ -729,22 +729,10 @@ class TextSimple extends ISectionType
             return $section->data;
         }
 
-        $firstLine  = $section->getFirstLineNumber();
-        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
-
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
-
-        $diff = static::formatDiffGroup($diffGroups);
-        $diff = str_replace('<h4', '<br><h4', $diff);
-        $diff = str_replace('</h4>', '</h4><br>', $diff);
-        if (mb_substr($diff, 0, 4) == '<br>') {
-            $diff = mb_substr($diff, 4);
-        }
-        return $diff;
+        $firstLine    = $section->getFirstLineNumber();
+        $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+        $originalData = $section->getOriginalMotionSection()->data;
+        return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
     }
 
     /**
@@ -931,5 +919,29 @@ class TextSimple extends ISectionType
         }
 
         return $out;
+    }
+
+    /**
+     * @param string $originalText
+     * @param string $newText
+     * @param int $firstLine
+     * @param int $lineLength
+     * @return string
+     */
+    public static function formatAmendmentForOds($originalText, $newText, $firstLine, $lineLength)
+    {
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($originalText);
+        $formatter->setTextNew($newText);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+        $diff = static::formatDiffGroup($diffGroups);
+        $diff = str_replace('<h4', '<br><h4', $diff);
+        $diff = str_replace('</h4>', '</h4><br>', $diff);
+        if (mb_substr($diff, 0, 4) == '<br>') {
+            $diff = mb_substr($diff, 4);
+        }
+        return $diff;
     }
 }

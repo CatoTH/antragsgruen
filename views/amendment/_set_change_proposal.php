@@ -126,7 +126,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                             $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
                         }
                         ?>
-                        <button class="notifyProposer btn btn-xs btn-default" type="button">
+                        <button class="notifyProposer hideIfChanged btn btn-xs btn-default" type="button">
                             <?= $msg ?>
                         </button>
                         <div class="showIfChanged notSavedHint">

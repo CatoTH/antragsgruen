@@ -1,7 +1,9 @@
 <?php
 
 use app\components\HTMLTools;
+use app\models\db\AmendmentSection;
 use app\models\db\Motion;
+use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
@@ -154,7 +156,20 @@ foreach ($motions as $motion) {
         $change = HTMLTools::correctHtmlErrors($change);
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
 
-        $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $amendment->getFormattedProposalStatus());
+        $proposal = $amendment->getFormattedProposalStatus();
+        if ($amendment->hasAlternativeProposaltext()) {
+            $reference = $amendment->proposalReference;
+            /** @var AmendmentSection[] $sections */
+            $sections = $amendment->proposalReference->getSortedSections(false);
+            foreach ($sections as $section) {
+                $firstLine    = $section->getFirstLineNumber();
+                $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+                $originalData = $section->getOriginalMotionSection()->data;
+                $newData      = $section->data;
+                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+            }
+        }
+        $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
     }
 
     $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);

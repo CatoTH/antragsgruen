@@ -36,6 +36,11 @@
   .votingBlockSettings {
     padding-bottom: 10px;
   }
+  .visibilitySettings {
+    label {
+      display: block;
+    }
+  }
   .notificationStatus {
     font-size: 12px;
     .accepted {
