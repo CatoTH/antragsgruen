@@ -130,6 +130,8 @@ return [
     'filter_title'                => 'Titel',
     'filter_status'               => 'Status',
     'filter_proposal_status'      => 'Verfahrensvorschlag',
+    'filter_proposal_accepted'    => 'Verfahrensvorschlag akzeptiert',
+    'filter_proposal_noresponse'  => 'Noch keine Antwort',
     'filter_tag'                  => 'Schlagwort',
     'filter_initiator'            => 'Antragsteller*in',
     'filter_initiator_name'       => 'Name',

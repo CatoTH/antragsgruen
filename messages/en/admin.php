@@ -132,6 +132,8 @@ return [
     'filter_title'                => 'Title',
     'filter_status'               => 'Status',
     'filter_proposal_status'      => 'Proposed procedure',
+    'filter_proposal_accepted'    => 'Accepted proposals',
+    'filter_proposal_noresponse'  => 'No response by the user yet',
     'filter_tag'                  => 'Tag',
     'filter_initiator'            => 'Proposer',
     'filter_initiator_name'       => 'Name',

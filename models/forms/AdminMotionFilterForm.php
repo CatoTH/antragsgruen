@@ -97,7 +97,7 @@ class AdminMotionFilterForm extends Model
     public function rules()
     {
         return [
-            [['status', 'proposalStatus', 'tag', 'sort', 'agendaItem'], 'number'],
+            [['status', 'tag', 'sort', 'agendaItem'], 'number'],
             [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
         ];
     }
@@ -113,7 +113,7 @@ class AdminMotionFilterForm extends Model
         $this->status = (isset($values['status']) && $values['status'] != '' ? IntVal($values['status']) : null);
 
         if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
-            $this->proposalStatus = IntVal($values['proposalStatus']);
+            $this->proposalStatus = $values['proposalStatus'];
         } else {
             $this->proposalStatus = null;
         }
@@ -529,9 +529,22 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->proposalStatus !== null && $this->proposalStatus !== '' &&
-                $amend->proposalStatus != $this->proposalStatus) {
-                $matches = false;
+            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
+                if ($this->proposalStatus == 'noresponse') {
+                    if ($amend->proposalNotification === null ||
+                        $amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                        $matches = false;
+                    }
+                } elseif ($this->proposalStatus == 'accepted') {
+                    if ($amend->proposalNotification === null ||
+                        $amend->proposalUserStatus != Amendment::STATUS_ACCEPTED) {
+                        $matches = false;
+                    }
+                } else {
+                    if ($this->proposalStatus != $amend->proposalStatus) {
+                        $matches = false;
+                    }
+                }
             }
 
             if (!$this->amendmentMatchesTag($amend)) {
@@ -689,18 +702,32 @@ class AdminMotionFilterForm extends Model
      */
     public function getProposalStatusList()
     {
-        $out = $num = [];
+        $out         = $num = [];
+        $numAccepted = $numNotResponded = 0;
         foreach ($this->allAmendments as $amend) {
             if (!isset($num[$amend->proposalStatus])) {
                 $num[$amend->proposalStatus] = 0;
             }
             $num[$amend->proposalStatus]++;
+            if ($amend->proposalNotification) {
+                if ($amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                    $numAccepted++;
+                } else {
+                    $numNotResponded++;
+                }
+            }
         }
         $stati = Amendment::getStatiAsVerbs();
         foreach ($stati as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }
+        }
+        if ($numAccepted > 0) {
+            $out['accepted'] = \Yii::t('admin', 'filter_proposal_accepted') . ' (' . $numAccepted . ')';
+        }
+        if ($numNotResponded > 0) {
+            $out['noresponse'] = \Yii::t('admin', 'filter_proposal_noresponse') . ' (' . $numNotResponded . ')';
         }
         return $out;
     }
