@@ -19,6 +19,7 @@ return [
     'motions'               => 'Anträge',
     'amendments'            => 'Änderungsanträge',
     'line'                  => 'Zeile',
+    'status'                => 'Status',
     'amend_change'          => 'Änderung',
     'amend_reason'          => 'Begründung',
     'motion_reason'         => 'Begründung',
