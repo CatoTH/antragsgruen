@@ -1109,7 +1109,7 @@ class Amendment extends IMotion implements IRSSItem
                 $status .= Html::encode($statiNames[$this->status]);
         }
         if (trim($this->statusString) != '') {
-            $status .= " <small>(" . Html::encode($this->statusString) . ")</string>";
+            $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
         }
         return $status;
     }

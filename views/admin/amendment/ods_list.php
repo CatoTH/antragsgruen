@@ -1,7 +1,6 @@
 <?php
 
 use app\components\HTMLTools;
-use app\models\db\Amendment;
 use app\models\db\Motion;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
@@ -15,7 +14,6 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller   = $this->context;
 $consultation = $controller->consultation;
-$statiNames = Amendment::getStati();
 
 $DEBUG = false;
 
@@ -141,7 +139,7 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
         $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
         $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
-        $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_TEXT, $statiNames[$amendment->status]);
+        $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());
         $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
         $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $changeExplanation);
 
@@ -155,6 +153,8 @@ foreach ($motions as $motion) {
         }
         $change = HTMLTools::correctHtmlErrors($change);
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
+
+        $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $amendment->getFormattedProposalStatus());
     }
 
     $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
