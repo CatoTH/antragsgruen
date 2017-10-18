@@ -1,9 +1,13 @@
 # Version history
 
+## Version 3.7.2 [not released yet]
+
+- Bugfix: Motions / applications with tabular data could not be saved from within the admin backend
+- Bugfix: An empty agenda item code lead to a crash in the home page of a consultation
+
 ## Version 3.7.1 (2017-09-30)
 
 - The ODS-Export of amendments now include a column with the status of the amendments
-- Bugfix: Motions / applications with tabular data could not be saved from within the admin backend
 - Bugfix: Several Bugs in the LaTeX-based PDF-export have been fixed:
   - Nested enumerated lists were not rendered correctly
   - Headings (H1-H6) in combination with line numbers lead to extra line numbers after the heading
