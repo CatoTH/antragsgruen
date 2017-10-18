@@ -386,6 +386,11 @@ class MotionController extends AdminBase
         if ($this->isPostSet('save')) {
             $modat = $post['motion'];
 
+            $sectionTypes = [];
+            foreach ($motion->getActiveSections() as $section) {
+                $sectionTypes[$section->sectionId] = $section->getSettings()->type;
+            }
+
             try {
                 $form->setAttributes([$post, $_FILES]);
                 $form->saveMotion($motion);
@@ -393,7 +398,10 @@ class MotionController extends AdminBase
                     $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);
                     $newHtmls  = [];
                     foreach ($post['sections'] as $sectionId => $html) {
-                        $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
+                        $htmlTypes = [ISectionType::TYPE_TEXT_SIMPLE, ISectionType::TYPE_TEXT_HTML];
+                        if (isset($sectionTypes[$sectionId]) && in_array($sectionTypes[$sectionId], $htmlTypes)) {
+                            $newHtmls[$sectionId] = HTMLTools::cleanSimpleHtml($html);
+                        }
                     }
                     $form->updateTextRewritingAmendments($motion, $newHtmls, $overrides);
                 }

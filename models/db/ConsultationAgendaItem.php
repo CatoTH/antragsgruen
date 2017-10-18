@@ -153,6 +153,9 @@ class ConsultationAgendaItem extends ActiveRecord
         $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode) {
             /** @var Consultation $consultation $items */
             /** @var ConsultationAgendaItem $item */
+            if ($fullCodePrefix == '') {
+                $fullCodePrefix = '0.';
+            }
             $items         = [];
             $currShownCode = '0.';
             $children      = static::sortItems(static::getItemsByParent($consultation, $item->id));
