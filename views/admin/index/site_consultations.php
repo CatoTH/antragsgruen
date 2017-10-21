@@ -116,7 +116,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 'text',
                 'newConsultation[urlPath]',
                 $createForm->urlPath,
-                array_merge($textOpts, ['id' => 'newPath'])
+                array_merge($textOpts, ['id' => 'newPath', 'pattern' => '[\w_-]+'])
             );
             $url   = Url::toRoute([
                 'consultation/index',

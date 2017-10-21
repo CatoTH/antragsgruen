@@ -148,6 +148,7 @@ return [
     'con_title_short'         => 'Kurzversion',
     'con_title'               => 'Titel der Veranstaltung',
     'con_url_path_hint'       => 'Hinweis: mit dieser Angabe ändern sich auch alle Links auf Anträge etc.',
+    'con_url_path_err'        => 'Für das URL-Verzeichnis sind nur Buchstaben, Zahlen, Binde- und Unterstriche erlaubt.',
     'con_url_change'          => 'ändern',
     'con_url_path'            => 'Verzeichnis',
     'con_pdf_intro'           => 'PDF-Einleitung',

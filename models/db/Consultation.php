@@ -83,8 +83,9 @@ class Consultation extends ActiveRecord
     {
         return [
             [['title', 'dateCreation'], 'required'],
-            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo', 'urlPath'], 'safe'],
+            [['title', 'titleShort', 'eventDateFrom', 'eventDateTo'], 'safe'],
             [['adminEmail', 'wordingBase', 'amendmentNumbering'], 'safe'],
+            ['!urlPath', 'match', 'pattern' => '/^[\w_-]+$/i'],
         ];
     }
 

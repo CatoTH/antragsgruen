@@ -70,6 +70,12 @@ class IndexController extends AdminBase
             $settings->saveForm($settingsInput, $post['settingsFields']);
             $model->setSettings($settings);
 
+            if (preg_match('/^[\w_-]+$/i', $data['urlPath'])) {
+                $model->urlPath = $data['urlPath'];
+            } else {
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'con_url_path_err'));
+            }
+
             if ($model->save()) {
                 $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
                 $siteSettings  = $model->site->getSettings();
@@ -95,7 +101,7 @@ class IndexController extends AdminBase
                 $model->flushCacheWithChildren();
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
-                \yii::$app->session->setFlash('error', print_r($model->getErrors(), true));
+                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
             }
         }
 
@@ -249,6 +255,9 @@ class IndexController extends AdminBase
         if ($this->isPostSet('createConsultation')) {
             $newcon = $post['newConsultation'];
             $form->setAttributes($newcon, true);
+            if (preg_match('/^[\w_-]+$/i', $newcon['urlPath'])) {
+                $form->urlPath = $newcon['urlPath'];
+            }
             $form->siteCreateWizard->setAttributes($post['SiteCreateForm']);
             if (isset($newcon['template'])) {
                 foreach ($this->site->consultations as $cons) {
