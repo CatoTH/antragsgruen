@@ -329,4 +329,19 @@ class Tools
         }
         return $filename;
     }
+
+    /**
+     * @param array $errors
+     * @return string
+     */
+    public static function formatModelValidationErrors($errors)
+    {
+        $errorStrs = [];
+        foreach ($errors as $field => $error) {
+            foreach ($error as $err) {
+                $errorStrs[] = $field . ': ' . $err;
+            }
+        }
+        return implode("\n", $errorStrs);
+    }
 }

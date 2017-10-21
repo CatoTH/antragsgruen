@@ -23,6 +23,7 @@ class InstallationController extends Base
         if (in_array($action->id, ['index', 'db-test'])) {
             // No cookieValidationKey is set in the beginning
             \Yii::$app->request->enableCookieValidation = false;
+            $this->enableCsrfValidation                 = false;
             return parent::beforeAction($action);
         }
 

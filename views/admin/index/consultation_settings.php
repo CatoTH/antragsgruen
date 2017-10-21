@@ -81,7 +81,7 @@ $handledSiteSettings = [];
                 <div class="holder hidden">
                     <input type="text" required name="consultation[urlPath]"
                            value="<?= Html::encode($consultation->urlPath) ?>" class="form-control"
-                           id="consultationPath">
+                           pattern="[\w_-]+" id="consultationPath">
                     <small><?= \Yii::t('admin', 'con_url_path_hint') ?></small>
                 </div>
             </div>

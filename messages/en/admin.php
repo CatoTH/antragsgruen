@@ -141,6 +141,7 @@ return [
     'con_title_short'         => 'Short title',
     'con_title'               => 'Consultation title',
     'con_url_path_hint'       => 'Please note: all URLs of motions, amendments etc. will change.',
+    'con_url_path_err'        => 'Only letters, numbers, _ and - are allowed for the url directory.',
     'con_url_change'          => 'Change',
     'con_url_path'            => 'Directory',
     'con_pdf_intro'           => 'PDF introduction',
