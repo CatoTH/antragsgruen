@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.2 [not released yet]
+## Version 3.7.2 (2017-10-21)
 
 - Bugfix: Motions / applications with tabular data could not be saved from within the admin backend
 - Bugfix: An empty agenda item code lead to a crash in the home page of a consultation
