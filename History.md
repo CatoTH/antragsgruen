@@ -8,6 +8,10 @@
   - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 
+## Version 3.7.3 [not released yet]
+
+- Bugfix: creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph.
+
 ## Version 3.7.2 (2017-10-21)
 
 - Bugfix: Motions / applications with tabular data could not be saved from within the admin backend

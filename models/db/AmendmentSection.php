@@ -197,13 +197,16 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
+     * Returns a hashmap of changed paragraphs.
+     * The paragraphs are returned as object including additional information about the line numbers etc.
+     *
      * @param string[] $origParagraphs
      * @param bool $splitListItems
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffToOrigParagraphs($origParagraphs, $splitListItems = true)
+    public function diffDataToOrigParagraphs($origParagraphs, $splitListItems = true)
     {
-        $cached = $this->getCacheItem('diffToOrigParagraphs');
+        $cached = $this->getCacheItem('diffDataToOrigParagraphs');
         if ($cached !== null && false) {
             return $cached;
         }
@@ -234,7 +237,29 @@ class AmendmentSection extends IMotionSection
             $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
         }
 
-        $this->setCacheItem('diffToOrigParagraphs', $amParagraphs);
+        $this->setCacheItem('diffDataToOrigParagraphs', $amParagraphs);
+        return $amParagraphs;
+    }
+
+    /**
+     * Returns a hashmap of changed paragraphs. Only the actual diff-string is returned.
+     *
+     * @param string[] $origParagraphs
+     * @param bool $splitListItems
+     * @return MotionSectionParagraphAmendment[]
+     */
+    public function diffStrToOrigParagraphs($origParagraphs, $splitListItems = true)
+    {
+        $amParagraphs = [];
+        $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
+        $diff         = new Diff();
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
+        foreach ($diffParas as $paraNo => $diffPara) {
+            $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
+            if ($firstDiffPos !== false) {
+                $amParagraphs[$paraNo] = $diffPara;
+            }
+        }
         return $amParagraphs;
     }
 
