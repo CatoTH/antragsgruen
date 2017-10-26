@@ -59,11 +59,9 @@ class TextSimple extends ISectionType
 
         $amParas          = $moParas;
         $changedParagraph = -1;
-        if (!$amSection->isNewRecord) {
-            foreach ($amSection->diffToOrigParagraphs($moParas, false) as $paraNo => $para) {
-                $amParas[$paraNo] = $para->strDiff;
-                $changedParagraph = $paraNo;
-            }
+        foreach ($amSection->diffStrToOrigParagraphs($moParas, false) as $paraNo => $para) {
+            $amParas[$paraNo] = $para;
+            $changedParagraph = $paraNo;
         }
 
         $type = $this->section->getSettings();

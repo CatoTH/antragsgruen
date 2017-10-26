@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.7.3 [not released yet]
+
+- Bugfix: creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph.
+
 ## Version 3.7.2 (2017-10-21)
 
 - Bugfix: Motions / applications with tabular data could not be saved from within the admin backend
