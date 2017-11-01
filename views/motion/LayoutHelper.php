@@ -259,7 +259,7 @@ class LayoutHelper
 
         foreach ($motion->getSortedSections(true) as $section) {
             $isRight = ($section->isLayoutRight() && $motion->motionType->layoutTwoCols);
-            $section->getSectionType()->printMotionTeX($isRight, $content);
+            $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
         }
 
         $supporters = $motion->getSupporters();

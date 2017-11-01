@@ -5,6 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\models\db\AmendmentSection;
+use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
@@ -138,8 +139,9 @@ class TextHTML extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      */
-    public function printMotionTeX($isRight, Content $content)
+    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         if ($isRight) {
             $content->textRight .= '[TEST HTML]'; // @TODO

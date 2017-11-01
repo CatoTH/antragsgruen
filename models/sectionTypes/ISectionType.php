@@ -6,6 +6,7 @@ use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\controllers\Base;
 use app\models\db\AmendmentSection;
+use app\models\db\Consultation;
 use app\models\db\IMotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
@@ -215,8 +216,9 @@ abstract class ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      */
-    abstract public function printMotionTeX($isRight, Content $content);
+    abstract public function printMotionTeX($isRight, Content $content, Consultation $consultation);
 
     /**
      * @param bool $isRight
