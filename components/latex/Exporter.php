@@ -58,6 +58,10 @@ class Exporter
         $str = implode('###LINEBREAK###', $lines);
         $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
         $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
+
+         // Enforce a workaround to enable empty lines by using <p><br></p>
+        $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
+
         $str = static::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
@@ -317,6 +321,7 @@ class Exporter
     public static function encodeHTMLString($str)
     {
         $str     = HTMLTools::correctHtmlErrors($str);
+        $str     = preg_replace('/(<p[^>]*>)(<\/p>)/siu', '$1 $2', $str);
         $src_doc = new \DOMDocument();
 
         $src_doc->loadHTML('<html><head>
