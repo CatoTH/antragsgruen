@@ -2,6 +2,7 @@
 namespace app\models\siteSpecificBehavior;
 
 use app\components\MotionSorter;
+use app\models\db\IMotionSection;
 
 class DefaultBehavior
 {
@@ -14,5 +15,14 @@ class DefaultBehavior
     public static function getSortedMotionsSort($prefix1, $prefix2)
     {
         return MotionSorter::getSortedMotionsSort($prefix1, $prefix2);
+    }
+
+    /**
+     * @param IMotionSection $section
+     * @return bool
+     */
+    public static function showSectionIntroductionInPdf($section)
+    {
+        return true;
     }
 }

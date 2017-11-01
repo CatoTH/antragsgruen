@@ -13,6 +13,7 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
+use app\models\db\Consultation;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
@@ -585,8 +586,9 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      */
-    public function printMotionTeX($isRight, Content $content)
+    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         if ($this->isEmpty()) {
             return;
@@ -600,11 +602,13 @@ class TextSimple extends ISectionType
         $fixedWidth     = $section->getSettings()->fixedWidth;
         $firstLine      = $section->getFirstLineNumber();
 
-        $title = Exporter::encodePlainString($section->getSettings()->title);
-        if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
-            $title = $section->getMotion()->title;
+        if ($consultation->site->getBehaviorClass()->showSectionIntroductionInPdf($section)) {
+            $title = Exporter::encodePlainString($section->getSettings()->title);
+            if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
+                $title = $section->getMotion()->title;
+            }
+            $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
         }
-        $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
 
         $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
         $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);

@@ -4,6 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
 use app\components\latex\Exporter;
+use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
@@ -267,8 +268,9 @@ class TabularData extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      */
-    public function printMotionTeX($isRight, Content $content)
+    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         $data = json_decode($this->section->data, true);
         $type = $this->section->getSettings();

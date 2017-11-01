@@ -54,11 +54,11 @@ Installation
 Required Software (Debian Linux):
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php7.1 php7.1-cli php7.1-fpm php7.1-intl php7.1-json php7.1-mcrypt \
+apt-get install php7.1 php7.1-cli php7.1-fpm php7.1-intl php7.1-json php7.1-mcrypt php7.1-gd \
                 php7.1-mysql php7.1-opcache php7.1-curl php7.1-xml php7.1-mbstring php7.1-zip
 
 # Using PHP5-packages from Debian:
-apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl
+apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl php5-gd
 ```
 
 Install the sources and dependencies from the repository:

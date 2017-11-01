@@ -51,7 +51,13 @@ class HTML2TexTest extends TestBase
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = Exporter::getMotionLinesToTeX($lines);
         $this->assertEquals($expect, $out);
-    }
+
+
+        $orig   = "<p><br></p>";
+        $expect = "{\\color{white}.}\n";
+        $out    = Exporter::getMotionLinesToTeX([$orig]);
+        $this->assertEquals($expect, $out);
+        }
 
     /**
      */

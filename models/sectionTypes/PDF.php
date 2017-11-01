@@ -5,9 +5,11 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content;
 use app\components\UrlHelper;
 use app\components\VarStream;
+use app\models\db\Consultation;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
+use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -292,9 +294,10 @@ class PDF extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function printMotionTeX($isRight, Content $content)
+    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         // @TODO
     }

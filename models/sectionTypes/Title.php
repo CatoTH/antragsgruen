@@ -5,6 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\models\db\AmendmentSection;
+use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
@@ -174,8 +175,9 @@ class Title extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @param Consultation $consultation
      */
-    public function printMotionTeX($isRight, Content $content)
+    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         if ($isRight) {
             $content->textRight .= Exporter::encodePlainString($this->section->data);
