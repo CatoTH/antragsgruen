@@ -1,4 +1,5 @@
 <?php
+
 namespace app\components;
 
 use app\models\amendmentNumbering\ByLine;
@@ -204,9 +205,9 @@ class MotionSorter
                 if (!isset($motionsSorted['agenda' . $agendaItem->id])) {
                     $motionsSorted['agenda' . $agendaItem->id] = [];
                 }
-                $key = $agendaMotion->titlePrefix;
+                $key                                             = $agendaMotion->titlePrefix;
                 $motionsSorted['agenda' . $agendaItem->id][$key] = $agendaMotion;
-                $foundMotionIds[]                 = $agendaMotion->id;
+                $foundMotionIds[]                                = $agendaMotion->id;
             }
         }
         foreach ($motions as $motion) {
@@ -267,11 +268,13 @@ class MotionSorter
      */
     public static function getSortedAmendments(Consultation $consultation, $amendments)
     {
-        if (!$consultation->getSettings()->lineNumberingGlobal) {
-            if ($consultation->amendmentNumbering == ByLine::getID()) {
-                $amendments = Amendment::sortVisibleByLineNumbers($consultation, $amendments);
-            }
+        if ($consultation->amendmentNumbering == ByLine::getID()) {
+            return Amendment::sortVisibleByLineNumbers($consultation, $amendments);
+        } else {
+            usort($amendments, function (Amendment $am1, Amendment $am2) {
+                return static::getSortedMotionsSort($am1->titlePrefix, $am2->titlePrefix);
+            });
+            return $amendments;
         }
-        return $amendments;
     }
 }

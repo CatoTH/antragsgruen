@@ -2,7 +2,8 @@
 
 ## Version 3.7.3 [not released yet]
 
-- Bugfix: creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph.
+- Bugfix: Creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph
+- Bugfix: Sorting of amendments on the consultation page is fixed
 
 ## Version 3.7.2 (2017-10-21)
 
