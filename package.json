@@ -13,10 +13,10 @@
         "build": "gulp"
     },
     "devDependencies": {
-        "@types/bootbox": "^4.4.34",
+        "@types/bootbox": "^4.4.35",
         "@types/bootstrap": "^3.3.36",
         "@types/ckeditor": "0.0.40",
-        "@types/clipboard": "^1.5.31",
+        "@types/clipboard": "^1.5.35",
         "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
         "@types/jquery": "^2.0.48",
         "@types/sortablejs": "^1.3.32",
@@ -25,21 +25,21 @@
         "bootstrap-toggle": "*",
         "clipboard": "^1.7.1",
         "eonasdan-bootstrap-datetimepicker": "^4.17.47",
-        "fuelux": "^3.16.1",
+        "fuelux": "^3.16.2",
         "gulp": "^3.9.1",
         "gulp-concat": "^2.6.1",
         "gulp-sass": "^3.1.0",
         "gulp-sourcemaps": "^2.6.1",
-        "gulp-typescript": "^3.2.2",
+        "gulp-typescript": "^3.2.3",
         "gulp-uglify": "^3.0.0",
         "intl": "^1.2.5",
         "jquery": "^3.2.0",
-        "pa11y": "^4.12.1",
-        "pdfjs-dist": "^1.9.516",
+        "pa11y": "^4.13.1",
+        "pdfjs-dist": "^1.10.97",
         "requirejs": "^2.3.5",
         "sortablejs": "^1.6.1",
         "typeahead.js": "^0.11.1",
-        "typescript": "^2.5.2"
+        "typescript": "^2.6.1"
     },
     "directories": {
         "bin": "./bin/"
