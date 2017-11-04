@@ -77,13 +77,6 @@ del.space, ins.space, del.formatting, ins.formatting {
     // Inserted by magic-line plugin of CKEditor
     padding: 0;
   }
-  .appendHint:after {
-    content: attr(data-append-hint);
-    display: inline-block;
-    font-size: 0.75em;
-    bottom: -3px;
-    position: relative;
-  }
 
   .collidingParagraph.hovered {
     background-color: #eee;
@@ -479,9 +472,9 @@ del.space, ins.space, del.formatting, ins.formatting {
       color: gray;
       width: 100%;
     }
-     + .hasCollissions {
-       margin-top: 45px;
-     }
+    + .hasCollissions {
+      margin-top: 45px;
+    }
   }
   .moved {
     margin-top: 15px;
@@ -499,6 +492,13 @@ del.space, ins.space, del.formatting, ins.formatting {
       font-size: 0.8em;
       color: gray;
     }
+  }
+  .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative;
   }
 }
 
