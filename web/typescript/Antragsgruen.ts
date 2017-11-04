@@ -50,6 +50,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             });
         }
         $('.amendmentAjaxTooltip').not($el).popover('hide');
+        $('.ajaxAmendment').parents('.popover').remove(); // Workardound for cases where the holder element vanishes while the popover is opened
         $el.popover('toggle');
     });
     $(document).on('click', function (ev) {
@@ -59,6 +60,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             $target.parents('.amendmentAjaxTooltip').length == 0 && $target.parents('.popover').length == 0
         ) {
             $('.amendmentAjaxTooltip').popover('hide');
+            $('.ajaxAmendment').parents('.popover').remove(); // Workardound for cases where the holder element vanishes while the popover is opened
         }
     });
 
