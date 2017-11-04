@@ -4,6 +4,8 @@
 
 - Bugfix: Creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph
 - Bugfix: Sorting of amendments on the consultation page is fixed
+- The appearance of amendments and withdrawn and modified motions/amendments was slightly improved on the consultation page
+- The name of the initiator of an amendment is added to the e-mail-notifications about its publication
 
 ## Version 3.7.2 (2017-10-21)
 

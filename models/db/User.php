@@ -543,12 +543,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function notifyMotion(Motion $motion)
     {
-        $subject = \Yii::t('user', 'noti_new_motion_title') . ' ' . $motion->getTitleWithPrefix();
-        $link    = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-        $link    = UrlHelper::absolutizeLink($link);
-        $text    = str_replace(
-            ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-            [$motion->getMyConsultation()->title, $motion->getTitleWithPrefix(), $link],
+        $subject   = \Yii::t('user', 'noti_new_motion_title') . ' ' . $motion->getTitleWithPrefix();
+        $link      = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
+        $link      = UrlHelper::absolutizeLink($link);
+        $initiator = $motion->getInitiatorsStr();
+        $text      = str_replace(
+            ['%CONSULTATION%', '%TITLE%', '%LINK%', '%INITIATOR%'],
+            [$motion->getMyConsultation()->title, $motion->getTitleWithPrefix(), $link, $initiator],
             \Yii::t('user', 'noti_new_motion_body')
         );
         $this->notificationEmail($motion->getMyConsultation(), $subject, $text);

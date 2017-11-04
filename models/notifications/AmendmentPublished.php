@@ -6,6 +6,7 @@ use app\components\mail\Tools as MailTools;
 use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\EMailLog;
 use app\models\db\UserNotification;
@@ -16,6 +17,9 @@ class AmendmentPublished
 {
     /** @var Amendment */
     protected $amendment;
+
+    /** @var Consultation */
+    protected $consultation;
 
     /** @var string[] */
     protected $alreadyNotified = [];
@@ -120,6 +124,7 @@ class AmendmentPublished
 
         $motionTitle = $this->amendment->getMyMotion()->getTitleWithPrefix();
         $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
+        $initiators  = $this->amendment->getInitiatorsStr();
 
         if ($mergingAllowed) {
             $mergeHint = \Yii::t('user', 'noti_amend_mymotion_merge');
@@ -127,8 +132,8 @@ class AmendmentPublished
             $mergeHint = '';
         }
         $text = str_replace(
-            ['%CONSULTATION%', '%TITLE%', '%LINK%', '%MERGE_HINT%'],
-            [$this->consultation->title, $motionTitle, $amendmentLink, $mergeHint],
+            ['%CONSULTATION%', '%TITLE%', '%LINK%', '%MERGE_HINT%', '%INITIATOR%'],
+            [$this->consultation->title, $motionTitle, $amendmentLink, $mergeHint, $initiators],
             \Yii::t('user', 'noti_amend_mymotion')
         );
 
@@ -152,8 +157,8 @@ class AmendmentPublished
             $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_amend_title'));
             $link        = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
             $text        = str_replace(
-                ['%CONSULTATION%', '%TITLE%', '%LINK%'],
-                [$this->consultation->title, $motionTitle, $link],
+                ['%CONSULTATION%', '%TITLE%', '%LINK%', '%INITIATOR%'],
+                [$this->consultation->title, $motionTitle, $link, $this->amendment->getInitiatorsStr()],
                 \Yii::t('user', 'noti_new_motion_body')
             );
             $noti->user->notificationEmail($this->consultation, $subject, $text);
