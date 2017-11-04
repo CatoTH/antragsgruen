@@ -72,6 +72,22 @@
       text-decoration: line-through;
     }
   }
+  .motion.modified, .motion.withdrawn {
+    > .title a {
+      opacity: 0.4;
+    }
+    .amendment > a {
+      opacity: 0.4;
+    }
+    h4.amendments {
+      opacity: 0.65;
+    }
+  }
+  .amendment.modified, .amendment.withdrawn {
+    > .title a {
+      opacity: 0.4;
+    }
+  }
 
   ul.amendments {
     list-style-type: none;
@@ -151,6 +167,7 @@
   }
 
   &.layout2 {
+    $titlePrefixWidth: 90px;
     .motion {
       padding: 12px 30px 17px 30px;
 
@@ -165,14 +182,14 @@
         .motionPrefix {
           word-break: break-all;
           word-wrap: break-word;
-          width: 90px;
+          width: $titlePrefixWidth;
           float: left;
           left: 30px;
           top: 13px;
         }
         .motionTitle {
           display: block;
-          margin-left: 95px;
+          margin-left: $titlePrefixWidth + 5px;
         }
         .pdfLink {
           display: none;
@@ -188,6 +205,9 @@
     }
     ul.amendments {
       margin-bottom: 10px;
+      @media screen and (min-width: 600px) {
+        margin-left: $titlePrefixWidth + 5px;
+      }
       > li {
         > a {
           float: left;
@@ -201,6 +221,9 @@
       }
     }
     h4.amendments {
+      @media screen and (min-width: 600px) {
+        margin-left: $titlePrefixWidth + 5px;
+      }
       margin-top: 10px;
       margin-bottom: 5px;
       font-family: $headingFont;
