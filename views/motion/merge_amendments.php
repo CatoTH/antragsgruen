@@ -45,7 +45,7 @@ if ($resumeDraft) {
 }
 
 
-echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+echo '<h1 class="stickyHeader">' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 
 echo '<div class="motionData">';
 

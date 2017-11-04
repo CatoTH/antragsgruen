@@ -24,7 +24,7 @@ $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 ?>
-    <h1><?= Html::encode($motion->getTitleWithPrefix()) ?></h1>
+    <h1 class="stickyHeader"><?= Html::encode($motion->getTitleWithPrefix()) ?></h1>
 
     <div class="motionData content">
         <table class="motionDataTable">
