@@ -259,6 +259,7 @@ class Amendment extends IMotion implements IRSSItem
             'data-last-change-time' => $time,
             'data-append-hint'      => '[' . $this->titlePrefix . ']',
             'data-link'             => UrlHelper::createAmendmentUrl($this),
+            'data-amendment-id'     => $this->id,
         ];
     }
 

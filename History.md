@@ -6,7 +6,7 @@
 - Bugfix: Sorting of amendments on the consultation page is fixed
 - The appearance of amendments and withdrawn and modified motions/amendments was slightly improved on the consultation page
 - The name of the initiator of an amendment is added to the e-mail-notifications about its publication
-- On the public version of the amendment merging draft, the code of an amendment is shown after the change
+- On the public version of the amendment merging draft, the code of an amendment is shown after the change. Furthermore, it is now possible to open the amendment-diff-popup and the normal amendment page by clicking on a single change  
 - The header of the amendment merging page (editing mode and public version) is now sticky 
 
 ## Version 3.7.2 (2017-10-21)

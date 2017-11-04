@@ -792,6 +792,10 @@ ul.searchResults {
   }
 }
 
+.amendmentAjaxTooltip {
+  cursor: pointer;
+}
+
 h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   float: right;
   color: gray;
@@ -826,5 +830,9 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   }
   ul {
     padding-left: 20px;
+  }
+  .amendmentLink {
+    float: right;
+    margin-right: 10px;
   }
 }

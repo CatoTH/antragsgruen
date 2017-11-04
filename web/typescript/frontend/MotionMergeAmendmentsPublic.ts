@@ -24,14 +24,28 @@ export class MotionMergeAmendmentsPublic {
         }, 2000);
     }
 
+    private setContentEvents() {
+        this.$draftContent.find(".appendHint").each((i, el) => {
+            let $el = $(el),
+                amendmentId = $el.data("amendment-id");
+            if (amendmentId) {
+                $el.addClass("amendmentAjaxTooltip");
+                $el.data("initialized", "0");
+                $el.data("url", $el.data("link") + "/ajax-diff");
+                $el.data("placement", "bottom");
+            }
+        });
+    }
+
     private reload(showMsg: boolean) {
         $.get(this.updateUrl, (data: ReloadResult) => {
             if (!data.success) {
                 alert(data.error);
                 return;
             }
-            this.$draftContent.html(data.html);
             this.$dateField.text(data.date);
+            this.$draftContent.html(data.html);
+            this.setContentEvents();
             if (showMsg) {
                 this.showUpdated();
             }
@@ -58,6 +72,7 @@ export class MotionMergeAmendmentsPublic {
         this.$draftContent = this.$widget.find('.draftContent');
         this.$dateField = this.$widget.find('.mergeDraftDate');
         this.updateUrl = this.$widget.data('reload-url');
+        this.setContentEvents();
 
         let $toggle = this.$updateWidget.find('#autoUpdateToggle');
         if (localStorage) {
