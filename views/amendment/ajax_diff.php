@@ -1,6 +1,7 @@
 <?php
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
+use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
@@ -8,6 +9,9 @@ use app\models\db\AmendmentSection;
  */
 
 echo '<article class="ajaxAmendment">';
+
+$link = Html::encode(\app\components\UrlHelper::createAmendmentUrl($amendment));
+echo '<a href="' . $link . '" class="amendmentLink"><span class="glyphicon glyphicon-share"></span></a>';
 
 if ($amendment->changeEditorial != '') {
     echo '<section id="section_editorial" class="motionTextHolder">';

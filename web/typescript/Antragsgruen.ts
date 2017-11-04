@@ -29,11 +29,16 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         if ($el.data('initialized') == '0') {
             $el.data('initialized', '1');
             let classes = "popover popover-amendment-ajax " + $el.data('tooltip-extra-class');
+            let placement = 'right';
+            if ($el.data('placement')) {
+                placement = $el.data('placement');
+            }
             $el.popover({
                 html: true,
                 trigger: 'manual',
                 container: 'body',
                 template: '<div class="' + classes + '" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>',
+                placement: placement,
                 content: function () {
                     let id = 'pop_' + (new Date()).getTime(),
                         content = '<div id="' + id + '">Loading...</div>',
@@ -46,6 +51,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             });
         }
         $('.amendmentAjaxTooltip').not($el).popover('hide');
+        $('.ajaxAmendment').parents('.popover').remove(); // Workardound for cases where the holder element vanishes while the popover is opened
         $el.popover('toggle');
     });
     $(document).on('click', function (ev) {
@@ -55,6 +61,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             $target.parents('.amendmentAjaxTooltip').length == 0 && $target.parents('.popover').length == 0
         ) {
             $('.amendmentAjaxTooltip').popover('hide');
+            $('.ajaxAmendment').parents('.popover').remove(); // Workardound for cases where the holder element vanishes while the popover is opened
         }
     });
 

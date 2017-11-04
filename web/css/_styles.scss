@@ -77,13 +77,6 @@ del.space, ins.space, del.formatting, ins.formatting {
     // Inserted by magic-line plugin of CKEditor
     padding: 0;
   }
-  .appendHint:after {
-    content: attr(data-append-hint);
-    display: inline-block;
-    font-size: 0.75em;
-    bottom: -3px;
-    position: relative;
-  }
 
   .collidingParagraph.hovered {
     background-color: #eee;
@@ -523,6 +516,13 @@ del.space, ins.space, del.formatting, ins.formatting {
       color: gray;
     }
   }
+  .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative;
+  }
 }
 
 .motionMergeForm {
@@ -815,6 +815,10 @@ ul.searchResults {
   }
 }
 
+.amendmentAjaxTooltip {
+  cursor: pointer;
+}
+
 h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   float: right;
   color: gray;
@@ -856,6 +860,10 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   }
   ul {
     padding-left: 20px;
+  }
+  .amendmentLink {
+    float: right;
+    margin-right: 10px;
   }
 }
 

@@ -79,6 +79,14 @@ a {
       color: white;
       font-size: 12px;
     }
+
+    &.stickyHeader {
+      position: sticky;
+      position: -webkit-sticky;
+      top: -5px;
+      background: rgba(64, 64, 64, 255);
+      z-index: 1;
+    }
   }
   h2.green, h3.green, .nav-header, legend.green {
     @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
