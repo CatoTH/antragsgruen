@@ -23,6 +23,7 @@ echo '<h1>' . \Yii::t('admin', 'amend_pdf_list') . '</h1>
 $motions = $consultation->getVisibleMotionsSorted($withdrawn);
 foreach ($motions as $motion) {
     $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+    echo "- " . $motion->titlePrefix . " -" . count($amendments) . "<br>";
     if (count($amendments) > 0) {
         echo '<h2>' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         echo '<ul>';

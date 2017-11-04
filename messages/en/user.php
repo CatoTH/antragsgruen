@@ -51,12 +51,12 @@ return [
         "If you do not want to receive any more e-mails, you can unsubscribe here:\n",
     'noti_new_motion_title'     => '[Antragsgrün] New motion:',
     'noti_new_motion_body'      => "A new motion was submitted:\nConsultation: %CONSULTATION%\n" .
-        "Name: %TITLE%\nLink: %LINK%",
+        "Name: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'noti_new_amend_title'      => '[Antragsgrün] New amendment for %TITLE%',
     'noti_new_amend_body'       => "A new amendment was submitted:\nConsultation: %CONSULTATION%\n" .
         "Motion: %TITLE%\nLink: %LINK%",
     'noti_amend_mymotion'       => "A new amendment has been published to your motion:\nConsultation: %CONSULTATION%\n" .
-        "Motion: %TITLE%\nLink: %LINK%\n%MERGE_HINT%",
+        "Motion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%\n%MERGE_HINT%",
     'noti_amend_mymotion_merge' => "\nIf you agree with this amendment, you can adopt the changes (\"Adopt changes into motion\" in the sidebar)",
     'noti_new_comment_title'    => '[Antragsgrün] New comment to %TITLE%',
     'noti_new_comment_body'     => "%TITLE% was commented:\n%LINK%",

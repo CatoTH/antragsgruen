@@ -188,7 +188,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_title'               => 'Änderungen übernehmen',
     'merge1_step1_title'         => 'Status festlegen',
     'merge1_step2_title'         => 'Änderungen angeben',
-    'merge1_step3_title'         => 'Kollissionen beheben',
+    'merge1_step3_title'         => 'Kollisionen beheben',
     'merge1_intro_user'          => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.',
@@ -198,32 +198,32 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
             Falls sich durch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
             Ansonsten lass sie einfach unverändert.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
-            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.
+            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollisionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
     'merge1_introduction_user'   => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
-            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollissionen.
+            Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollisionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
     'merge1_status_intro'        => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
             (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zu Gunsten dieses abgelehnt wurden)
             können sie hier entsprechend markiert werden.<br>
-            Dadurch können auch keine Kollissionen mit diesem Änderungsantrag entstehen.<br>
+            Dadurch können auch keine Kollisionen mit diesem Änderungsantrag entstehen.<br>
             Bitte beachte aber, dass hierdurch ausschließlich der Status dieser Änderungsanträge gesetzt wird;
             tatsächliche Änderungen am eigentlichen Antrag werden dadurch nicht vorgenommen.',
-    'merge1_collission_intro'    => '<strong>Es gibt Kollissionen mit bestehenden Änderungsanträgen</strong><br>
+    'merge1_collission_intro'    => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
             <br>
             Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
             Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
-            mit denen es Kollissionen gibt.<br>
+            mit denen es Kollisionen gibt.<br>
             Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten bleibt</strong>.',
     'merge1_changein_x'          => 'Änderung von Zeile %LINEFROM% bis %LINETO%',
     'merge1_changein_1'          => 'Änderung in Zeile %LINEFROM%',
     'merge1_use_unchanged'       => 'Unverändert übernehmen',
     'merge1_use_modified'        => 'Modifizierte Übernahme',
     'merge1_modify_title'        => 'Änderungsantrag anpassen',
-    'merge1_check_collissions'   => 'Weiter / Kollissionen überprüfen',
+    'merge1_check_collissions'   => 'Weiter / Kollisionen überprüfen',
     'merge1_other_status'        => 'Neue Stati der anderen Änderungsanträge',
     'merge1_status_unchanged'    => 'unverändert',
     'merge1_amend_by'            => 'von',

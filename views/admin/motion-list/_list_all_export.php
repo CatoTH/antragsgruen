@@ -79,7 +79,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <ul class="dropdown-menu" aria-labelledby="exportMotionBtn<?= $motionType->id ?>">
                     <li class="checkbox"><label>
                             <input type="checkbox" class="withdrawn" name="withdrawn">
-                            <?= \Yii::t('export', 'incl_withdrawn') ?>
+                            <?= \Yii::t('export', 'incl_inactive') ?>
                         </label></li>
                     <li role="separator" class="divider"></li>
                     <?php
@@ -126,7 +126,7 @@ foreach ($consultation->motionTypes as $motionType) {
             <ul class="dropdown-menu" aria-labelledby="exportAmendmentsBtn">
                 <li class="checkbox"><label>
                         <input type="checkbox" class="withdrawn" name="withdrawn">
-                        <?= \Yii::t('export', 'incl_withdrawn') ?>
+                        <?= \Yii::t('export', 'incl_inactive') ?>
                     </label></li>
                 <li role="separator" class="divider"></li>
                 <?php

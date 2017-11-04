@@ -35,7 +35,7 @@ return [
     'mail_body'             => "Hallo %NAME%,\n\nich schreibe wegen Deines %MOTION% , für den ich in der Antragskommission zuständig bin.",
     'filename_amendments'   => 'Aenderungsantraege',
     'filename_motions'      => 'Antraege',
-    'incl_withdrawn'        => 'Zurückgezogene',
+    'incl_inactive'         => 'Inaktive',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Änderungsanträge',
 ];

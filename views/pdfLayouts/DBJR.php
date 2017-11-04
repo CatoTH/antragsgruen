@@ -21,30 +21,30 @@ class DBJR extends IPDFLayout
     {
         $pdf = $this->pdf;
         /** @var AntragsgruenApp $site */
-        $site = \yii::$app->params;
-        $left = 23.5;
-        $abs = 5;
-        $fontsize = 35;
+        $site     = \yii::$app->params;
+        $left     = 23.5;
+        $abs      = 5;
+        $fontsize = 30;
 
         $dim = $pdf->getPageDimensions();
 
         if ($site->getAbsolutePdfLogo()) {
             if (empty($this->headerlogo)) {
-                $this->headerlogo['dim'] = getimagesize($site->getAbsolutePdfLogo());
-                $this->headerlogo['w'] = 50;
+                $this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
+                $this->headerlogo['w']     = 50;
                 $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
-                $this->headerlogo['h'] = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
-                $this->headerlogo['x'] = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
+                $this->headerlogo['h']     = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
                 if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
                     $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
-                }
-                else {
+                } else {
                     $this->headerlogo['y'] = $dim['tm'];
                 }
             }
-            $position = 'L';
+
+            $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), $this->headerlogo['x'], $this->headerlogo['y'], $this->headerlogo['w'], $this->headerlogo['h']);
+            $pdf->Image($site->getAbsolutePdfLogo(), $logo['x'], $logo['y'], $logo['w'], $logo['h']);
             $pdf->setY($this->headerlogo['y'] + $this->headerlogo['h'] + $abs);
         }
 
@@ -54,7 +54,7 @@ class DBJR extends IPDFLayout
         $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
-        $wraptop = $pdf->getY()+$abs;
+        $wraptop = $pdf->getY() + $abs;
         $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);
@@ -87,39 +87,38 @@ class DBJR extends IPDFLayout
     {
         $pdf = $this->pdf;
         /** @var AntragsgruenApp $site */
-        $site = \yii::$app->params;
-        $left = 23.5;
-        $abs = 5;
-        $fontsize = 35;
+        $site     = \yii::$app->params;
+        $left     = 23.5;
+        $abs      = 5;
+        $fontsize = 30;
 
         $dim = $pdf->getPageDimensions();
 
         if ($site->getAbsolutePdfLogo()) {
             if (empty($this->headerlogo)) {
-                $this->headerlogo['dim'] = getimagesize($site->getAbsolutePdfLogo());
-                $this->headerlogo['w'] = 50;
+                $this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
+                $this->headerlogo['w']     = 50;
                 $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
-                $this->headerlogo['h'] = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
-                $this->headerlogo['x'] = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
+                $this->headerlogo['h']     = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
                 if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
                     $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
-                }
-                else {
+                } else {
                     $this->headerlogo['y'] = $dim['tm'];
                 }
             }
-            $position = 'L';
+            $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), $this->headerlogo['x'], $this->headerlogo['y'], $this->headerlogo['w'], $this->headerlogo['h']);
-            $pdf->setY($this->headerlogo['y'] + $this->headerlogo['h'] + $abs);
+            $pdf->Image($site->getAbsolutePdfLogo(), $logo['x'], $logo['y'], $logo['w'], $logo['h']);
+            $pdf->setY($logo['y'] + $logo['h'] + $abs);
         }
 
-        $pdf->SetFont('helvetica', 'B', '35');
+        $pdf->SetFont('helvetica', 'B', $fontsize);
         $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->Write(0, mb_strtoupper('Änderungsantrag ' . $amendment->titlePrefix, 'UTF-8') . "\n");
+        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
 
         $pdf->SetTextColor(100, 100, 100, 100);
-        $wraptop = $pdf->getY()+$abs;
+        $wraptop = $pdf->getY() + $abs;
         $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);

@@ -32,6 +32,9 @@ class LayoutHelper
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
+        if ($motion->status == Motion::STATUS_MODIFIED) {
+            $classes[] = 'modified';
+        }
         echo '<li class="' . implode(' ', $classes) . '">';
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
         echo '<p class="title">' . "\n";

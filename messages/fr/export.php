@@ -34,7 +34,7 @@ return [
     'mail_body'             => "Salut %NAME%,\n\nJe te contacte au sujet de ta motion %MOTION%, pour laquelle je suis responsable.",
     'filename_amendments'   => 'Amendement',
     'filename_motions'      => 'Motion',
-    'incl_withdrawn'        => 'Dont retiré',
+    'incl_inactive'         => 'Dont retiré',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Amendements',
 ];
