@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.3 [not released yet]
+## Version 3.7.3 (2017-11-04)
 
 - Bugfix: Creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph
 - Bugfix: Sorting of amendments on the consultation page is fixed
