@@ -113,7 +113,7 @@ $params = \Yii::$app->params;
 
     <p style="margin-bottom: 40px;">
         <strong>Angebot für Grüne Organisationen</strong><br>
-        Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antransgruen.de</strong>
+        Grünen bzw. Grünen-nahen Organisationen bieten wir an, sich eine <strong>Unterseite auf antragsgruen.de</strong>
         einzurichten und dort ihre Parteitage / Programmdiskussionen zu organisieren.
         Dazu kannst du das Formular unter
         "<a href="#opensource" onClick="$('#asGreenMember').scrollintoview({top_offset: -50}); return false;">Als
