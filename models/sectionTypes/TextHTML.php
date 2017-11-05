@@ -60,6 +60,7 @@ class TextHTML extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
@@ -67,9 +68,11 @@ class TextHTML extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         return ''; // @TODO
     }
@@ -181,7 +184,6 @@ class TextHTML extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printMotionToODT(Text $odt)
     {
@@ -191,7 +193,6 @@ class TextHTML extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printAmendmentToODT(Text $odt)
     {

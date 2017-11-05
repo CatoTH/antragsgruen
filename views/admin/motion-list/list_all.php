@@ -8,9 +8,11 @@ use app\models\forms\AdminMotionFilterForm;
 use yii\helpers\Html;
 
 /**
- * @var $this yii\web\View
+ * @var yii\web\View $this
  * @var IMotion $entries
  * @var \app\models\forms\AdminMotionFilterForm $search
+ * @var boolean $privilegeScreening
+ * @var boolean $privilegeProposals
  */
 
 /** @var \app\controllers\Base $controller */
@@ -27,14 +29,21 @@ $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->addAMDModule('backend/MotionList');
 
-$route   = 'admin/motion/listall';
+$route   = 'admin/motion-list/index';
 $hasTags = (count($controller->consultation->tags) > 0);
+
+$colMark      = $privilegeProposals || $privilegeScreening;
+$colAction    = $privilegeScreening;
+$colProposals = $privilegeProposals;
 
 echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 
 echo $this->render('_list_all_export');
 
 echo '<div class="content">';
+
+echo $controller->showErrors();
+
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
 
 echo $search->getFilterFormFields();
@@ -50,9 +59,11 @@ echo Html::beginForm($url, 'post', ['class' => 'motionListForm']);
 echo '<input type="hidden" name="save" value="1">';
 
 echo '<table class="adminMotionTable">';
-echo '<thead><tr>
-    <th class="markCol"></th>
-    <th class="typeCol">';
+echo '<thead><tr>';
+if ($colMark) {
+    echo '<th class="markCol"></th>';
+}
+echo '<th class="typeCol">';
 echo '<span>' . \Yii::t('admin', 'list_type') . '</span>';
 echo '</th><th class="prefixCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TITLE_PREFIX) {
@@ -75,7 +86,18 @@ if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
     echo Html::a(\Yii::t('admin', 'list_status'), $url);
 }
-echo '</th><th>';
+echo '</th>';
+if ($colProposals) {
+    echo '<th class="proposalCol">';
+    if ($search->sort == AdminMotionFilterForm::SORT_PROPOSAL) {
+        echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_proposal') . '</span>';
+    } else {
+        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
+        echo Html::a(\Yii::t('admin', 'list_proposal'), $url);
+    }
+    echo '</th>';
+}
+echo '<th>';
 if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
     echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_initiators') . '</span>';
 } else {
@@ -92,9 +114,12 @@ if ($hasTags) {
     }
 }
 echo '</th>
-    <th>' . \Yii::t('admin', 'list_export') . '</th>
-    <th class="actionCol">' . \Yii::t('admin', 'list_action') . '</th>
-</tr></thead>';
+    <th>' . \Yii::t('admin', 'list_export') . '</th>';
+if ($colAction) {
+    echo '<th class="actionCol">' . \Yii::t('admin', 'list_action') . '</th>';
+}
+echo '</tr></thead>';
+
 
 $motionStati    = Motion::getStati();
 $amendmentStati = Amendment::getStati();
@@ -105,36 +130,58 @@ foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         $lastMotion = $entry;
         echo $this->render('_list_all_item_motion', [
-            'entry'  => $entry,
-            'search' => $search,
+            'entry'        => $entry,
+            'search'       => $search,
+            'colMark'      => $colMark,
+            'colAction'    => $colAction,
+            'colProposals' => $colProposals,
         ]);
     }
     if (is_a($entry, Amendment::class)) {
         echo $this->render('_list_all_item_amendment', [
-            'entry'      => $entry,
-            'search'     => $search,
-            'lastMotion' => $lastMotion,
+            'entry'        => $entry,
+            'search'       => $search,
+            'lastMotion'   => $lastMotion,
+            'colMark'      => $colMark,
+            'colAction'    => $colAction,
+            'colProposals' => $colProposals,
         ]);
     }
 }
 
 echo '</table>';
 
+?>
+    <section style="overflow: auto;">
+        <div style="float: left; line-height: 40px; vertical-align: middle;">
+            <a href="#" class="markAll"><?= \Yii::t('admin', 'list_all') ?></a> &nbsp;
+            <a href="#" class="markNone"><?= \Yii::t('admin', 'list_none') ?></a> &nbsp;
+        </div>
 
-echo '<section style="overflow: auto;">';
-
-echo '<div style="float: left; line-height: 40px; vertical-align: middle;">';
-echo '<a href="#" class="markAll">' . \Yii::t('admin', 'list_all') . '</a> &nbsp; ';
-echo '<a href="#" class="markNone">' . \Yii::t('admin', 'list_none') . '</a> &nbsp; ';
-echo '</div>';
-
-echo '<div style="float: right;">' . \Yii::t('admin', 'list_marked') . ': &nbsp; ';
-echo '<button type="submit" class="btn btn-danger" name="delete">' . \Yii::t('admin', 'list_delete') . '</button> &nbsp; ';
-echo '<button type="submit" class="btn btn-info" name="unscreen">' . \Yii::t('admin', 'list_unscreen') . '</button> &nbsp; ';
-echo '<button type="submit" class="btn btn-success" name="screen">' . \Yii::t('admin', 'list_screen') . '</button>';
-echo '</div>';
-echo '</section>';
-
+        <div style="float: right;"><?= \Yii::t('admin', 'list_marked') ?>: &nbsp;
+            <?php
+            if ($privilegeScreening) { ?>
+                <button type="submit" class="btn btn-danger" name="delete">
+                    <?= \Yii::t('admin', 'list_delete') ?>
+                </button> &nbsp;
+                <button type="submit" class="btn btn-info" name="unscreen">
+                    <?= \Yii::t('admin', 'list_unscreen') ?>
+                </button> &nbsp;
+                <button type="submit" class="btn btn-success" name="screen">
+                    <?= \Yii::t('admin', 'list_screen') ?>
+                </button> &nbsp;
+                <?php
+            }
+            if ($privilegeProposals) { ?>
+                <button type="submit" class="btn btn-success" name="proposalVisible">
+                    <?= \Yii::t('admin', 'list_proposal_visible') ?>
+                </button>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+<?php
 
 echo Html::endForm();
 

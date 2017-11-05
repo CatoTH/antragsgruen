@@ -103,9 +103,11 @@ class PDF extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         return ''; // @TODO
     }
@@ -113,6 +115,7 @@ class PDF extends ISectionType
     /**
      * @param bool $isRight
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getSimple($isRight)
     {
@@ -139,6 +142,7 @@ class PDF extends ISectionType
     /**
      * @param IPDFLayout $pdfLayout
      * @param \FPDI $pdf
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
@@ -291,6 +295,7 @@ class PDF extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -300,6 +305,7 @@ class PDF extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printAmendmentTeX($isRight, Content $content)
     {

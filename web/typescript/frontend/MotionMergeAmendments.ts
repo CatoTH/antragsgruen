@@ -1,7 +1,7 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 
-class MotionMergeChangeActions {
+export class MotionMergeChangeActions {
     public static removeEmptyParagraphs() {
         $('.paragraphHolder').each((i, el) => {
             if (el.childNodes.length == 0) {

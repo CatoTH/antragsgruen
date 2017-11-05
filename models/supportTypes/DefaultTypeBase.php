@@ -256,7 +256,7 @@ abstract class DefaultTypeBase extends ISupportType
             $initiator       = new MotionSupporter();
             $initiator->role = MotionSupporter::ROLE_INITIATOR;
         }
-        $othersPrivilege = User::currentUserHasPrivilege(
+        $othersPrivilege = User::havePrivilege(
             $motionType->getConsultation(),
             User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
         );
@@ -308,7 +308,7 @@ abstract class DefaultTypeBase extends ISupportType
                 $supporters[] = $supporter;
             }
         }
-        $screeningPrivilege = User::currentUserHasPrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($motionType->getConsultation(), User::PRIVILEGE_SCREENING);
         $isForOther         = false;
         if ($screeningPrivilege) {
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
@@ -343,7 +343,7 @@ abstract class DefaultTypeBase extends ISupportType
         $return = [];
 
         $post            = \Yii::$app->request->post();
-        $othersPrivilege = User::currentUserHasPrivilege(
+        $othersPrivilege = User::havePrivilege(
             $this->motionType->getConsultation(),
             User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
         );
@@ -445,7 +445,7 @@ abstract class DefaultTypeBase extends ISupportType
         $return = [];
         $post   = \Yii::$app->request->post();
 
-        $othersPrivilege = User::currentUserHasPrivilege(
+        $othersPrivilege = User::havePrivilege(
             $this->motionType->getConsultation(),
             User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS
         );

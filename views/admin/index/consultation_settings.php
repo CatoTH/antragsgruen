@@ -360,6 +360,17 @@ $handledSiteSettings = [];
                 ?>
             </label></div>
 
+        <div><label>
+                <?php
+                $handledSettings[] = 'proposalProcedurePage';
+                echo Html::checkbox(
+                    'settings[proposalProcedurePage]',
+                    $settings->proposalProcedurePage,
+                    ['id' => 'proposalProcedurePage']
+                ) . ' ';
+                echo \Yii::t('admin', 'con_proposal_procedure');
+                ?>
+            </label></div>
     </div>
 
     <h2 class="green"><?= \Yii::t('admin', 'con_title_comments') ?></h2>
@@ -421,7 +432,8 @@ $handledSiteSettings = [];
         echo '<div class="form-group">
     <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
     <div class="col-sm-9">
-    <input type="email" name="siteSettings[emailReplyTo]" placeholder="' . \Yii::t('admin', 'con_email_replyto_place') . '" ' .
+    <input type="email" name="siteSettings[emailReplyTo]" ' .
+            'placeholder="' . \Yii::t('admin', 'con_email_replyto_place') . '" ' .
             'value="' . Html::encode($siteSettings->emailReplyTo) . '" class="form-control" id="emailReplyTo">
 </div></div>';
         ?>

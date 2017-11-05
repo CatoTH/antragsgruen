@@ -56,7 +56,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -117,7 +117,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -141,7 +141,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -216,7 +216,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -237,7 +237,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -254,7 +254,7 @@ class MotionController extends Base
         $this->layout = 'column2';
 
         $motion = $this->getMotionWithCheck($motionSlug);
-        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $motion->id]);
         } else {
             $adminEdit = null;
@@ -494,7 +494,7 @@ class MotionController extends Base
 
         $form        = new MotionEditForm($motionType, $agendaItem, null);
         $supportType = $motionType->getMotionSupportTypeClass();
-        $iAmAdmin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
@@ -531,7 +531,7 @@ class MotionController extends Base
         if (count($form->supporters) == 0) {
             $supporter       = new MotionSupporter();
             $supporter->role = MotionSupporter::ROLE_INITIATOR;
-            $iAmAdmin        = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+            $iAmAdmin        = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
@@ -682,7 +682,7 @@ class MotionController extends Base
             }
 
             $screening         = $this->consultation->getSettings()->screeningMotions;
-            $iAmAdmin          = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+            $iAmAdmin          = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             $newMotion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
             if (!$screening || $iAmAdmin) {
                 $newMotion->status = Motion::STATUS_SUBMITTED_SCREENED;
@@ -773,9 +773,14 @@ class MotionController extends Base
 
         $toMergeAmendmentIds = [];
         $postAmendIds        = \Yii::$app->request->post('amendments', null);
+        $textVersions        = \Yii::$app->request->post('textVersion', []);
         foreach ($motion->getVisibleAmendments() as $amendment) {
             if ($postAmendIds === null || isset($postAmendIds[$amendment->id])) {
-                $toMergeAmendmentIds[] = $amendment->id;
+                if (isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] == 'proposal') {
+                    $toMergeAmendmentIds[] = $amendment->proposalReference->id;
+                } else {
+                    $toMergeAmendmentIds[] = $amendment->id;
+                }
             }
         }
 

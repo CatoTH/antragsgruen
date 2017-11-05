@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $userId
  * @property int $amendmentId
+ * @property int $status
  * @property string $dateCreation
  * @property string $text
  *

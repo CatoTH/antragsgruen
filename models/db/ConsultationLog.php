@@ -48,6 +48,7 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_UNLIKE           = 22;
     const AMENDMENT_DISLIKE          = 23;
     const AMENDMENT_CHANGE           = 25;
+    const AMENDMENT_PUBLISH_PROPOSAL = 29;
 
     public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27];
     public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28];

@@ -57,6 +57,7 @@ class User extends ActiveRecord implements IdentityInterface
     const PRIVILEGE_MOTION_EDIT               = 4;
     const PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS = 5;
     const PRIVILEGE_SITE_ADMIN                = 6;
+    const PRIVILEGE_CHANGE_PROPOSALS          = 7;
 
     /**
      * @return string[]
@@ -85,11 +86,11 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param Consultation|null $consultation
-     * @param int $privilege
+     * @param int|int[] $privilege
      * @return bool
      * @throws Internal
      */
-    public static function currentUserHasPrivilege($consultation, $privilege)
+    public static function havePrivilege($consultation, $privilege)
     {
         $user = static::getCurrentUser();
         if (!$user) {
@@ -214,6 +215,7 @@ class User extends ActiveRecord implements IdentityInterface
         $priv->adminContentEdit = 0;
         $priv->adminScreen      = 0;
         $priv->adminSuper       = 0;
+        $priv->adminProposals   = 0;
         return $priv;
     }
 
@@ -571,8 +573,11 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Checks if this user has the given privilege or at least one of the given privileges (binary OR)
+     * for the given consultation
+     *
      * @param Consultation|null $consultation
-     * @param int $privilege [not used yet; forward-compatibility]
+     * @param int|int[] $privilege
      * @return bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -600,9 +605,17 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
 
+        $privilege = (is_array($privilege) ? $privilege : [$privilege]);
+
         foreach ($consultation->userPrivileges as $userPrivilege) {
             if ($userPrivilege->userId == $this->id) {
-                return $userPrivilege->containsPrivilege($privilege);
+                $foundMatch = false;
+                foreach ($privilege as $priv) {
+                    if ($userPrivilege->containsPrivilege($priv)) {
+                        $foundMatch = true;
+                    }
+                }
+                return $foundMatch;
             }
         }
 

@@ -38,6 +38,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $userNotifications
+ * @property VotingBlock[] $votingBlocks
  */
 class Consultation extends ActiveRecord
 {
@@ -206,6 +207,7 @@ class Consultation extends ActiveRecord
         $priv->adminContentEdit = 0;
         $priv->adminScreen      = 0;
         $priv->adminSuper       = 0;
+        $priv->adminProposals   = 0;
         return $priv;
     }
 
@@ -215,6 +217,28 @@ class Consultation extends ActiveRecord
     public function getTags()
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlocks()
+    {
+        return $this->hasMany(VotingBlock::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @param int $votingBlockId
+     * @return VotingBlock|null
+     */
+    public function getVotingBlock($votingBlockId)
+    {
+        foreach ($this->votingBlocks as $votingBlock) {
+            if ($votingBlock->id == $votingBlockId) {
+                return $votingBlock;
+            }
+        }
+        return null;
     }
 
     /**
@@ -348,7 +372,7 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param int $privilege
+     * @param int|int[] $privilege
      * @return bool
      *
      */
@@ -400,6 +424,7 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_WITHDRAWN_INVISIBLE,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
+            IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;

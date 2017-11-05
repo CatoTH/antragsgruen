@@ -237,7 +237,7 @@ class ConsultationController extends Base
      */
     public function actionSavetextajax($pageKey)
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
         if (MessageSource::savePageData($this->consultation, $pageKey, \Yii::$app->request->post('data'))) {
@@ -263,7 +263,7 @@ class ConsultationController extends Base
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if ($params->multisiteMode) {
-            $admin      = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin      = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
             $saveUrl    = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'legal']);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin, 'saveUrl' => $saveUrl];
             return $this->render('imprint_multisite', $viewParams);
@@ -350,7 +350,7 @@ class ConsultationController extends Base
      */
     private function saveAgenda()
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             \Yii::$app->session->setFlash('error', 'No permissions to edit this page');
             return;
         }
@@ -415,7 +415,7 @@ class ConsultationController extends Base
                 'myself'       => $myself,
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
-                'admin'        => User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
+                'admin'        => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
                 'saveUrl'      => $saveUrl,
             ]
         );
@@ -434,5 +434,51 @@ class ConsultationController extends Base
         $form = new ConsultationActivityFilterForm($this->consultation);
         $form->setPage($page);
         return $this->render('activity_log', ['form' => $form]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionProposedProcedure()
+    {
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+
+        $consultation            = $this->consultation;
+        $votingBlocksByAmendment = [];
+        $votingBlocks            = $consultation->votingBlocks;
+        foreach ($votingBlocks as $votingBlock) {
+            foreach ($votingBlock->amendments as $amendment) {
+                $votingBlocksByAmendment[$amendment->id] = $votingBlock;
+            }
+        }
+
+        $data = [];
+        foreach ($consultation->getVisibleMotionsSorted(false) as $motion) {
+            $dataRow = [
+                'motion'       => $motion,
+                'votingBlocks' => [],
+                'amendments'   => [],
+            ];
+            foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
+                if ($proposalAdmin || $amendment->isProposalPublic()) {
+                    $dataRow['amendments'][] = $amendment;
+                }
+                if (isset($votingBlocksByAmendment[$amendment->id])) {
+                    $votingBlock = $votingBlocksByAmendment[$amendment->id];
+                    if (!isset($dataRow['votingBlocks'][$votingBlock->id])) {
+                        $dataRow['votingBlocks'][$votingBlock->id] = $votingBlock;
+                    }
+                }
+            }
+            $data[] = $dataRow;
+        }
+
+        return $this->render('proposed_procedure', [
+            'votingBlocks' => $votingBlocks,
+            'data'         => $data,
+        ]);
     }
 }

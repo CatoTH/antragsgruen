@@ -3,6 +3,7 @@
 namespace app\views\hooks;
 
 use app\components\UrlHelper;
+use app\controllers\admin\IndexController;
 use app\controllers\Base;
 use app\controllers\UserController;
 use app\models\AdminTodoItem;
@@ -30,21 +31,26 @@ trait StdFunctionTrait
         $out = '<ul class="nav navbar-nav">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
+            $consultation       = $controller->consultation;
+            $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+            $privilegeAny       = User::havePrivilege($consultation, User::PRIVILEGE_ANY);
+            $privilegeProposal  = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+
             if ($controller->consultation) {
                 $homeUrl = UrlHelper::homeUrl();
-                $out .= '<li class="active">' .
+                $out     .= '<li class="active">' .
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
                     '</li>';
                 if ($controller->consultation->hasHelpPage()) {
                     $helpLink = UrlHelper::createUrl('consultation/help');
-                    $out .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+                    $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
                 }
             } else {
                 $startLink = UrlHelper::createUrl('manager/index');
-                $out .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
+                $out       .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
 
                 $helpLink = UrlHelper::createUrl('manager/help');
-                $out .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+                $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
             }
 
             if (!User::getCurrentUser() && !$minimalistic) {
@@ -55,7 +61,8 @@ trait StdFunctionTrait
                 }
                 $loginUrl   = UrlHelper::createUrl(['user/login', 'backUrl' => $backUrl]);
                 $loginTitle = \Yii::t('base', 'menu_login');
-                $out .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) . '</li>';
+                $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) .
+                    '</li>';
             }
             if (User::getCurrentUser()) {
                 $link = Html::a(
@@ -63,28 +70,29 @@ trait StdFunctionTrait
                     UrlHelper::createUrl('user/myaccount'),
                     ['id' => 'myAccountLink']
                 );
-                $out .= '<li>' . $link . '</li>';
+                $out  .= '<li>' . $link . '</li>';
 
                 $logoutUrl   = UrlHelper::createUrl(['user/logout', 'backUrl' => \yii::$app->request->url]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');
-                $out .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
+                $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
             }
-            if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING)) {
-                $adminUrl   = UrlHelper::createUrl('admin/motion/listall');
+            if ($privilegeScreening || $privilegeProposal) {
+                $adminUrl   = UrlHelper::createUrl('admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
-                $out .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
             }
-            if (User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_ANY)) {
+            if ($privilegeScreening) {
                 $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
                 if (count($todo) > 0) {
                     $adminUrl   = UrlHelper::createUrl('admin/index/todo');
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
-                    $out .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
+                    $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
                 }
-
+            }
+            if (User::havePrivilege($consultation, IndexController::$REQUIRED_PRIVILEGES)) {
                 $adminUrl   = UrlHelper::createUrl('admin/index');
                 $adminTitle = \Yii::t('base', 'menu_admin');
-                $out .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
             }
         }
         $out .= '</ul>';

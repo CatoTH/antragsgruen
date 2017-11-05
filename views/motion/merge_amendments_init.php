@@ -53,27 +53,79 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
         <?php
         $formUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments');
         echo Html::beginForm($formUrl, 'post', ['class' => 'mergeAllRow']);
+
+        $hasProposals = $hasProposalText = false;
+        foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
+            if ($amend->proposalStatus !== null) {
+                $hasProposals = true;
+            }
+            if ($amend->proposalReference) {
+                $hasProposalText = true;
+            }
+        }
         ?>
         <div class="toMergeAmendments">
-            <h3><?= \Yii::t('amend', 'merge_init_all_amendments') ?></h3>
-            <ul>
+            <table class="mergeTable">
+                <thead>
+                <tr>
+                    <th class="colCheck"><?= \Yii::t('amend', 'merge_amtable_merge') ?></th>
+                    <th class="colTitle"><?= \Yii::t('amend', 'merge_amtable_title') ?></th>
+                    <th class="colStatus"><?= \Yii::t('amend', 'merge_amtable_status') ?></th>
+                    <?php
+                    if ($hasProposals) {
+                        ?>
+                        <th class="colProposal"><?= \Yii::t('amend', 'merge_amtable_proposal') ?></th>
+                        <?php
+                    }
+                    ?>
+                    <th class="colText"><?= \Yii::t('amend', 'merge_amtable_text') ?></th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
                 foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
-                    echo '<li><label>';
+                    $id = 'markAmendment' . $amend->id;
+                    echo '<tr class="amendment' . $amend->id . '"><td class="colCheck">';
                     echo Html::checkbox(
                         'amendments[' . $amend->id . ']',
                         ($amend->globalAlternative == 0),
-                        ['class' => 'amendment' . $amend->id]
+                        ['class' => 'amendment' . $amend->id, 'id' => $id]
                     );
-                    echo ' ' . Html::encode($amend->getTitle());
+                    echo '</td><td class="colTitle">';
+                    echo '<label for="' . $id . '">' . Html::encode($amend->titlePrefix) . '</label>';
                     if ($amend->globalAlternative) {
                         echo ' <small>(' . \Yii::t('amend', 'global_alternative') . ')</small>';
                     }
-                    echo \app\components\HTMLTools::amendmentDiffTooltip($amend);
-                    echo '</label></li>';
+                    echo '</td><td class="colStatus">';
+                    echo $amend->getFormattedStatus();
+                    echo '</td>';
+                    if ($hasProposals) {
+                        echo '<td class="colProposal">' . $amend->getFormattedProposalStatus() . '</td>';
+                    }
+                    if ($amend->proposalReference) {
+                        echo '<td class="colText hasAlternative">';
+                        echo '<label class="textOriginal">';
+                        echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="original"> ';
+                        echo \Yii::t('amend', 'merge_amtable_text_orig');
+                        echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
+                        echo '</label>';
+
+                        echo '<label class="textProposal">';
+                        echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="proposal" checked> ';
+                        echo \Yii::t('amend', 'merge_amtable_text_prop');
+                        echo \app\components\HTMLTools::amendmentDiffTooltip($amend->proposalReference, 'bottom');
+                        echo '</label>';
+                        echo '</td>';
+                    } else {
+                        echo '<td class="colText hasAlternative">';
+                        echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
+                        echo '</td>';
+                    }
+                    echo '</tr>' . "\n";
                 }
                 ?>
-            </ul>
+                </tbody>
+            </table>
         </div>
         <?php
         if ($draft) {

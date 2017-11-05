@@ -31,6 +31,7 @@ class Consultation
     public $forceMotion            = null;
     public $editorialAmendments    = true;
     public $globalAlternatives     = true;
+    public $proposalProcedurePage  = false;
 
     // SETTINGS WITHOUT TEST CASES
 

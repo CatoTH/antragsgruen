@@ -1,6 +1,7 @@
 <?php
 
 /** @var \app\controllers\Base $controller */
+
 use app\components\UrlHelper;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
@@ -31,7 +32,9 @@ foreach ($consultation->motionTypes as $motionType) {
 
 ?>
 <div class="motionListExportRow">
-    <?php if (count($creatableMotions) > 0) { ?>
+    <?php
+    if (count($creatableMotions) > 0) {
+        ?>
         <div class="new">
             <div class="dropdown dropdown-menu-left exportAmendmentDd">
                 <button class="btn btn-success dropdown-toggle" type="button" id="newMotionBtn"
@@ -51,12 +54,22 @@ foreach ($consultation->motionTypes as $motionType) {
                 </ul>
             </div>
         </div>
-    <?php } ?>
+        <div class="proposedProcedure"><?php
+            echo Html::a(
+                'Verfahrensvorschläge',
+                UrlHelper::createUrl('consultation/proposed-procedure'),
+                ['class' => 'btn btn-default']
+            ); ?>
+        </div>
+        <?php
+    }
+    ?>
 
     <div class="export">
         <span class="title">Export:</span>
 
-        <?php foreach ($consultation->motionTypes as $motionType) { ?>
+        <?php
+        foreach ($consultation->motionTypes as $motionType) { ?>
             <div class="dropdown dropdown-menu-left exportMotionDd">
                 <button class="btn btn-default dropdown-toggle" type="button" id="exportMotionBtn<?= $motionType->id ?>"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -71,7 +84,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     <li role="separator" class="divider"></li>
                     <?php
                     $title = \Yii::t('admin', 'index_export_ods');
-                    echo $getExportLinkLi($title, 'admin/motion/odslist', $motionType->id, 'motionODS');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslist', $motionType->id, 'motionODS');
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_collection');
@@ -80,24 +93,29 @@ foreach ($consultation->motionTypes as $motionType) {
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_zip_list');
-                        echo $getExportLinkLi($title, 'admin/motion/pdfziplist', $motionType->id, 'motionZIP');
+                        echo $getExportLinkLi($title, 'admin/motion-list/motion-pdfziplist',
+                            $motionType->id, 'motionZIP');
                     }
 
                     $title = \Yii::t('admin', 'index_odt_zip_list');
-                    echo $getExportLinkLi($title, 'admin/motion/odtziplist', $motionType->id, 'motionOdtZIP');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odtziplist',
+                        $motionType->id, 'motionOdtZIP');
 
                     $title = \Yii::t('admin', 'index_export_ods_listall');
-                    echo $getExportLinkLi($title, 'admin/motion/odslistall', $motionType->id, 'motionODSlist');
+                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslistall',
+                        $motionType->id, 'motionODSlist');
 
                     if (AntragsgruenApp::hasPhpExcel()) {
                         $title = \Yii::t('admin', 'index_export_excel') .
                             ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
-                        echo $getExportLinkLi($title, 'admin/motion/excellist', $motionType->id, 'motionExcel');
+                        echo $getExportLinkLi($title, 'admin/motion-list/motion-excellist',
+                            $motionType->id, 'motionExcel');
                     }
                     ?>
                 </ul>
             </div>
-        <?php } ?>
+            <?php
+        } ?>
 
         <div class="dropdown dropdown-menu-left exportAmendmentDd">
             <button class="btn btn-default dropdown-toggle" type="button" id="exportAmendmentsBtn"
@@ -149,7 +167,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id]
+                        ['admin/motion-list/motion-openslides', 'motionTypeId' => $motionType->id]
                     );
                     $title         = 'V1: ' . $motionType->titlePlural;
                     echo '<li>' .
@@ -171,7 +189,7 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
-                        ['admin/motion/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
+                        ['admin/motion-list/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
                     );
                     $title         = 'V2: ' . $motionType->titlePlural;
                     echo '<li>' .
@@ -179,7 +197,7 @@ foreach ($consultation->motionTypes as $motionType) {
                         '</li>';
                 } ?>
                 <li><?php
-                    $title = 'V2: ' . \Yii::t('admin', 'index_export_oslides_amend');
+                    $title     = 'V2: ' . \Yii::t('admin', 'index_export_oslides_amend');
                     $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '2']);
                     echo Html::a($title, $amendLink, ['class' => 'amendments']);
                     ?></li>

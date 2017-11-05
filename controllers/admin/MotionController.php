@@ -10,21 +10,21 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\TexTemplate;
+use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\components\motionTypeTemplates\Application as ApplicationTemplate;
 use app\components\motionTypeTemplates\Motion as MotionTemplate;
-use app\views\motion\LayoutHelper;
-use yii\web\Response;
 
 class MotionController extends AdminBase
 {
-    use MotionListAllTrait;
+    public static $REQUIRED_PRIVILEGES = [
+        User::PRIVILEGE_CONTENT_EDIT,
+    ];
 
     /**
      * @param ConsultationMotionType $motionType
@@ -352,7 +352,7 @@ class MotionController extends AdminBase
         /** @var Motion $motion */
         $motion = $this->consultation->getMotion($motionId);
         if (!$motion) {
-            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($motion);
 
@@ -379,7 +379,7 @@ class MotionController extends AdminBase
             $motion->save();
             $motion->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
-            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
             return '';
         }
 
@@ -459,190 +459,5 @@ class MotionController extends AdminBase
         }
 
         return $this->render('update', ['motion' => $motion, 'form' => $form]);
-    }
-
-    /**
-     * @param int $motionTypeId
-     * @param bool $textCombined
-     * @param int $withdrawn
-     * @return string
-     */
-    public function actionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
-    {
-        $withdrawn = ($withdrawn == 1);
-
-        try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
-        }
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
-                $motions[] = $motion;
-            }
-        }
-
-        return $this->renderPartial('ods_list', [
-            'motions'      => $motions,
-            'textCombined' => $textCombined,
-            'motionType'   => $motionType,
-        ]);
-    }
-
-    /**
-     * @param int $motionTypeId
-     * @param bool $textCombined
-     * @param int $withdrawn
-     * @return string
-     */
-    public function actionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
-    {
-        if (!AntragsgruenApp::hasPhpExcel()) {
-            return $this->showErrorpage(500, 'The Excel package has not been installed. ' .
-                'To install it, execute "./composer.phar require phpoffice/phpexcel".');
-        }
-
-        $withdrawn = ($withdrawn == 1);
-
-        try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
-        }
-
-        $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', $excelMime);
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions.xlsx');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        error_reporting(E_ALL & ~E_DEPRECATED); // PHPExcel ./. PHP 7
-
-        $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted($withdrawn) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
-                $motions[] = $motion;
-            }
-        }
-
-        return $this->renderPartial('excel_list', [
-            'motions'      => $motions,
-            'textCombined' => $textCombined,
-            'motionType'   => $motionType,
-        ]);
-    }
-
-    /**
-     * @param int $motionTypeId
-     * @param int $version
-     * @return string
-     */
-    public function actionOpenslides($motionTypeId, $version = 1)
-    {
-        try {
-            $motionType = $this->consultation->getMotionType($motionTypeId);
-        } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
-        }
-
-        $filename                    = rawurlencode($motionType->titlePlural);
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'text/csv');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . $filename . '.csv');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        $motions = [];
-        foreach ($this->consultation->getVisibleMotionsSorted(false) as $motion) {
-            if ($motion->motionTypeId == $motionTypeId) {
-                $motions[] = $motion;
-            }
-        }
-
-        if ($version == 1) {
-            return $this->renderPartial('openslides1_list', [
-                'motions' => $motions,
-            ]);
-        } else {
-            return $this->renderPartial('openslides2_list', [
-                'motions' => $motions,
-            ]);
-        }
-    }
-
-    /**
-     * @param int $motionTypeId
-     * @param int $withdrawn
-     * @return string
-     */
-    public function actionPdfziplist($motionTypeId = 0, $withdrawn = 0)
-    {
-        $withdrawn = ($withdrawn == 1);
-
-        try {
-            if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
-            } else {
-                $motions = $this->consultation->getVisibleMotions($withdrawn);
-            }
-            if (count($motions) == 0) {
-                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
-            }
-        } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
-        }
-
-        $zip = new \app\components\ZipWriter();
-        foreach ($motions as $motion) {
-            $zip->addFile($motion->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($motion));
-        }
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_pdf.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
-    }
-
-    /**
-     * @param int $motionTypeId
-     * @param int $withdrawn
-     * @return string
-     */
-    public function actionOdtziplist($motionTypeId = 0, $withdrawn = 0)
-    {
-        $withdrawn = ($withdrawn == 1);
-
-        try {
-            if ($motionTypeId > 0) {
-                $motions = $this->consultation->getMotionType($motionTypeId)->getVisibleMotions($withdrawn);
-            } else {
-                $motions = $this->consultation->getVisibleMotions($withdrawn);
-            }
-            if (count($motions) == 0) {
-                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
-            }
-        } catch (ExceptionBase $e) {
-            return $this->showErrorpage(404, $e->getMessage());
-        }
-
-        $zip = new \app\components\ZipWriter();
-        foreach ($motions as $motion) {
-            $zip->addFile($motion->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($motion));
-        }
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/zip');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=motions_odt.zip');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        return $zip->getContentAndFlush();
     }
 }

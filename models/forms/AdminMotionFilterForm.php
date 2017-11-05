@@ -16,17 +16,20 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_STATUS       = 1;
-    const SORT_TITLE        = 2;
-    const SORT_TITLE_PREFIX = 3;
-    const SORT_INITIATOR    = 4;
-    const SORT_TAG          = 5;
-    const SORT_PUBLICATION  = 6;
+    const SORT_STATUS          = 1;
+    const SORT_TITLE           = 2;
+    const SORT_TITLE_PREFIX    = 3;
+    const SORT_INITIATOR       = 4;
+    const SORT_TAG             = 5;
+    const SORT_PUBLICATION     = 6;
+    const SORT_PROPOSAL        = 7;
+    const SORT_PROPOSAL_STATUS = 8;
 
     /** @var int */
-    public $status     = null;
-    public $tag        = null;
-    public $agendaItem = null;
+    public $status         = null;
+    public $tag            = null;
+    public $agendaItem     = null;
+    public $proposalStatus = null;
 
     /** @var string */
     public $initiator = null;
@@ -45,23 +48,28 @@ class AdminMotionFilterForm extends Model
     /** @var int */
     public $sort = 3;
 
+    /** @var boolean */
+    private $showScreening;
+
     /**
      * @param Consultation $consultation
      * @param Motion[] $allMotions
      * @param bool $amendments
+     * @param boolean $showScreening
      */
-    public function __construct(Consultation $consultation, $allMotions, $amendments)
+    public function __construct(Consultation $consultation, $allMotions, $amendments, $showScreening)
     {
         parent::__construct();
+        $this->showScreening = $showScreening;
         $this->consultation  = $consultation;
         $this->allMotions    = [];
         $this->allAmendments = [];
         foreach ($allMotions as $motion) {
-            if ($motion->isVisibleForAdmins()) {
+            if ($this->isVisible($motion)) {
                 $this->allMotions[] = $motion;
                 if ($amendments) {
                     foreach ($motion->amendments as $amend) {
-                        if ($amend->status != Amendment::STATUS_DELETED) {
+                        if ($this->isVisible($amend)) {
                             $this->allAmendments[] = $amend;
                         }
                     }
@@ -70,6 +78,18 @@ class AdminMotionFilterForm extends Model
         }
     }
 
+    /**
+     * @param IMotion $entry
+     * @return bool
+     */
+    private function isVisible(IMotion $entry)
+    {
+        if ($this->showScreening) {
+            return $entry->isVisibleForAdmins();
+        } else {
+            return $entry->isVisibleForProposalAdmins();
+        }
+    }
 
     /**
      * @return array
@@ -78,7 +98,7 @@ class AdminMotionFilterForm extends Model
     {
         return [
             [['status', 'tag', 'sort', 'agendaItem'], 'number'],
-            [['status', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
+            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
         ];
     }
 
@@ -89,7 +109,14 @@ class AdminMotionFilterForm extends Model
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
+
         $this->status = (isset($values['status']) && $values['status'] != '' ? IntVal($values['status']) : null);
+
+        if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
+            $this->proposalStatus = $values['proposalStatus'];
+        } else {
+            $this->proposalStatus = null;
+        }
     }
 
     /**
@@ -125,6 +152,24 @@ class AdminMotionFilterForm extends Model
             return -1;
         }
         if ($motion1->status > $motion2->status) {
+            return 1;
+        }
+        return 0;
+    }
+
+    /**
+     * @param IMotion $motion1
+     * @param IMotion $motion2
+     * @return int
+     */
+    public function sortProposalStatus($motion1, $motion2)
+    {
+        $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
+        $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
+        if ($status1 < $status2) {
+            return -1;
+        }
+        if ($status1 > $status2) {
             return 1;
         }
         return 0;
@@ -311,6 +356,9 @@ class AdminMotionFilterForm extends Model
             case static::SORT_TAG:
                 usort($merge, [static::class, 'sortTag']);
                 break;
+            case static::SORT_PROPOSAL_STATUS:
+                usort($merge, [static::class, 'sortProposalStatus']);
+                break;
             default:
                 usort($merge, [static::class, 'sortTitlePrefix']);
         }
@@ -381,6 +429,10 @@ class AdminMotionFilterForm extends Model
             $matches = true;
 
             if ($this->status !== null && $this->status !== '' && $motion->status != $this->status) {
+                $matches = false;
+            }
+
+            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
                 $matches = false;
             }
 
@@ -477,6 +529,24 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
+            if ($this->proposalStatus !== null && $this->proposalStatus !== '') {
+                if ($this->proposalStatus == 'noresponse') {
+                    if ($amend->proposalNotification === null ||
+                        $amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                        $matches = false;
+                    }
+                } elseif ($this->proposalStatus == 'accepted') {
+                    if ($amend->proposalNotification === null ||
+                        $amend->proposalUserStatus != Amendment::STATUS_ACCEPTED) {
+                        $matches = false;
+                    }
+                } else {
+                    if ($this->proposalStatus != $amend->proposalStatus) {
+                        $matches = false;
+                    }
+                }
+            }
+
             if (!$this->amendmentMatchesTag($amend)) {
                 $matches = false;
             }
@@ -513,17 +583,17 @@ class AdminMotionFilterForm extends Model
     {
         $str = '';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
+        $str    .= '<label>' . \Yii::t('admin', 'filter_prefix') . ':<br>';
         $prefix = Html::encode($this->prefix);
-        $str .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
-        $str .= '</label>';
+        $str    .= '<input type="text" name="Search[prefix]" value="' . $prefix . '" class="form-control inputPrefix">';
+        $str    .= '</label>';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
+        $str   .= '<label>' . \Yii::t('admin', 'filter_title') . ':<br>';
         $title = Html::encode($this->title);
-        $str .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
-        $str .= '</label>';
+        $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
+        $str   .= '</label>';
 
-        $str .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
+        $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
         $stati       = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
@@ -540,10 +610,26 @@ class AdminMotionFilterForm extends Model
         $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status);
         $str .= '</label>';
 
+        $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
+        $stati       = ['' => \Yii::t('admin', 'filter_na')];
+        $foundMyself = false;
+        foreach ($this->getProposalStatusList() as $statusId => $statusName) {
+            $stati[$statusId] = $statusName;
+            if ($this->status !== null && $this->status == $statusId) {
+                $foundMyself = true;
+            }
+        }
+        if (!$foundMyself && $this->status !== null) {
+            $stati                = Amendment::getStatiAsVerbs();
+            $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
+        }
+        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $stati, $this->proposalStatus);
+        $str .= '</label>';
+
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
             $name = \Yii::t('admin', 'filter_tag') . ':';
-            $str .= '<label>' . $name . '<br>';
+            $str  .= '<label>' . $name . '<br>';
             $tags = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
@@ -554,8 +640,8 @@ class AdminMotionFilterForm extends Model
 
         $agendaItemList = $this->getAgendaItemList();
         if (count($agendaItemList) > 0) {
-            $name = \Yii::t('admin', 'filter_agenda_item') . ':';
-            $str .= '<label>' . $name . '<br>';
+            $name  = \Yii::t('admin', 'filter_agenda_item') . ':';
+            $str   .= '<label>' . $name . '<br>';
             $items = ['' => \Yii::t('admin', 'filter_na')];
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
@@ -607,6 +693,41 @@ class AdminMotionFilterForm extends Model
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }
+        }
+        return $out;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProposalStatusList()
+    {
+        $out         = $num = [];
+        $numAccepted = $numNotResponded = 0;
+        foreach ($this->allAmendments as $amend) {
+            if (!isset($num[$amend->proposalStatus])) {
+                $num[$amend->proposalStatus] = 0;
+            }
+            $num[$amend->proposalStatus]++;
+            if ($amend->proposalNotification) {
+                if ($amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                    $numAccepted++;
+                } else {
+                    $numNotResponded++;
+                }
+            }
+        }
+        $stati = Amendment::getStatiAsVerbs();
+        foreach ($stati as $statusId => $statusName) {
+            if (isset($num[$statusId])) {
+                $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
+            }
+        }
+        if ($numAccepted > 0) {
+            $out['accepted'] = \Yii::t('admin', 'filter_proposal_accepted') . ' (' . $numAccepted . ')';
+        }
+        if ($numNotResponded > 0) {
+            $out['noresponse'] = \Yii::t('admin', 'filter_proposal_noresponse') . ' (' . $numNotResponded . ')';
         }
         return $out;
     }

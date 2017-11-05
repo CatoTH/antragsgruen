@@ -169,7 +169,7 @@ abstract class ISectionType
     abstract public function setMotionData($data);
 
     /**
-     * @param $data
+     * @param array $data
      * @throws FormError
      */
     abstract public function setAmendmentData($data);
@@ -197,9 +197,10 @@ abstract class ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
      */
-    abstract public function getAmendmentFormatted();
+    abstract public function getAmendmentFormatted($sectionTitlePrefix = '');
 
     /**
      * @param IPDFLayout $pdfLayout
@@ -245,13 +246,11 @@ abstract class ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     abstract public function printMotionToODT(Text $odt);
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     abstract public function printAmendmentToODT(Text $odt);
 

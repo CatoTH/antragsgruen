@@ -33,9 +33,11 @@ use yii\helpers\Html;
  * @property string $statusString
  * @property int $nonAmendable
  * @property string $noteInternal
+ * @property string|null $proposalVisibleFrom
  * @property string $cache
  * @property int $textFixed
  * @property string $slug
+ * @property string|null $votingBlockId
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -48,6 +50,7 @@ use yii\helpers\Html;
  * @property ConsultationAgendaItem $agendaItem
  * @property Motion $replacedMotion
  * @property Motion[] $replacedByMotions
+ * @property VotingBlock $votingBlock
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -168,6 +171,14 @@ class Motion extends IMotion implements IRSSItem
     public function getReplacedMotion()
     {
         return $this->hasOne(Motion::class, ['id' => 'parentMotionId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlock()
+    {
+        return $this->hasOne(VotingBlock::class, ['id' => 'votiongBlockId']);
     }
 
     /**
@@ -339,6 +350,32 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param boolean $includeVoted
+     * @param null|Amendment[] $exclude
+     * @return Amendment[]
+     */
+    public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
+    {
+        $amendments = [];
+        foreach ($this->amendments as $amendment) {
+            if ($exclude && in_array($amendment, $exclude)) {
+                continue;
+            }
+            if (!$amendment->isVisibleForProposalAdmins()) {
+                continue;
+            }
+            $toBeCheckedStati = [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_ACCEPTED];
+            if ($includeVoted) {
+                $toBeCheckedStati[] = Amendment::STATUS_VOTE;
+            }
+            if (in_array($amendment->proposalStatus, $toBeCheckedStati)) {
+                $amendments[] = $amendment;
+            }
+        }
+        return $amendments;
+    }
+
+    /**
      * @param bool $includeWithdrawn
      * @return Amendment[]
      */
@@ -469,7 +506,7 @@ class Motion extends IMotion implements IRSSItem
         if (count($replacedByMotions) > 0) {
             return false;
         }
-        if (User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+        if (User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
         return false;
@@ -501,7 +538,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
     {
-        $iAmAdmin = User::currentUserHasPrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
+        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
 
         if (!($allowAdmins && $iAmAdmin)) {
             if ($this->nonAmendable) {

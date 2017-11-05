@@ -40,7 +40,7 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -136,7 +136,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId != $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -166,7 +166,7 @@ trait MotionActionsTrait
         if (!$comment || $comment->motionId != $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -322,7 +322,7 @@ trait MotionActionsTrait
      */
     private function motionAddTag(Motion $motion)
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->tags as $tag) {
@@ -338,7 +338,7 @@ trait MotionActionsTrait
      */
     private function motionDelTag(Motion $motion)
     {
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->tags as $tag) {

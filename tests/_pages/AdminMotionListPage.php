@@ -9,7 +9,7 @@ use Helper\BasePage;
  */
 class AdminMotionListPage extends BasePage
 {
-    public $route = 'admin/motion/listall';
+    public $route = 'admin/motion-list/index';
 
     /**
      * @param int $motionId

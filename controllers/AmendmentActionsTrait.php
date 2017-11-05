@@ -41,7 +41,7 @@ trait AmendmentActionsTrait
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if ($needsScreeningRights) {
-            if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
                 throw new Internal(\Yii::t('comment', 'err_no_screening'));
             }
         }
@@ -122,7 +122,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -149,7 +149,7 @@ trait AmendmentActionsTrait
         if (!$comment || $comment->amendmentId != $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
-        if (!User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
 
@@ -304,6 +304,21 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
+     */
+    private function setProposalAgree(Amendment $amendment)
+    {
+        if (!$amendment->iAmInitiator() || !$amendment->proposalStatusNeedsUserFeedback()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
+            return;
+        }
+
+        $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
+        $amendment->save();
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
+    }
+
+    /**
+     * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
      */
@@ -338,6 +353,9 @@ trait AmendmentActionsTrait
 
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
+
+        } elseif (isset($post['setProposalAgree'])) {
+            $this->setProposalAgree($amendment);
         }
     }
 }

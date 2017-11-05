@@ -2,28 +2,33 @@
 
 namespace app\controllers;
 
-use app\components\diff\AmendmentRewriter;
-use app\components\diff\DiffRenderer;
 use app\components\HTMLTools;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
-use app\models\db\ConsultationMotionType;
+use app\models\db\IMotion;
 use app\models\db\User;
+use app\models\db\VotingBlock;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
+use app\models\forms\AmendmentProposedChangeForm;
+use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
-use app\models\forms\MergeSingleAmendmentForm;
+use app\views\amendment\LayoutHelper;
+use yii\helpers\Html;
 use yii\web\Response;
 
 class AmendmentController extends Base
 {
     use AmendmentActionsTrait;
+    use AmendmentMergingTrait;
 
     /**
      * @param string $motionSlug
@@ -54,7 +59,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
@@ -119,7 +124,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
@@ -129,7 +134,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        return \app\views\amendment\LayoutHelper::createOdt($amendment);
+        return LayoutHelper::createOdt($amendment);
     }
 
     /**
@@ -147,13 +152,13 @@ class AmendmentController extends Base
             return '';
         }
 
-        if (User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             $adminEdit = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $amendmentId]);
         } else {
             $adminEdit = null;
         }
 
-        $screeningPrivilege = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
         if (!$amendment->isReadable() && !$screeningPrivilege) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
         }
@@ -161,7 +166,6 @@ class AmendmentController extends Base
         $openedComments      = [];
         $amendmentViewParams = [
             'amendment'      => $amendment,
-            'editLink'       => $amendment->canEdit(),
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
             'commentForm'    => null,
@@ -272,220 +276,6 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
-     * @throws Access
-     * @throws NotFound
-     */
-    public function actionGetMergeCollissions($motionSlug, $amendmentId)
-    {
-        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            throw new NotFound('Amendment not found');
-        }
-        if (!$amendment->canMergeIntoMotion()) {
-            \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
-        }
-
-        $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]);
-
-        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
-            $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
-        } else {
-            $otherAmendmentsStatus = [];
-            foreach ($otherAmendments as $newAmendment) {
-                $otherAmendmentsStatus[$newAmendment->id] = $newAmendment->status;
-            }
-        }
-
-        $newSectionParas = \Yii::$app->request->post('newSections', []);
-        $newSections     = [];
-        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
-                $section->getOriginalMotionSection()->data,
-                $section->data,
-                (isset($newSectionParas[$section->sectionId]) ? $newSectionParas[$section->sectionId] : [])
-            );
-        }
-
-        $collissions = $amendments = [];
-        foreach ($otherAmendments as $amend) {
-            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
-                continue;
-            }
-            foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $debug = false;
-                $coll  = $section->getRewriteCollissions($newSections[$section->sectionId], false, $debug);
-
-                if (count($coll) > 0) {
-                    if (!in_array($amend, $amendments)) {
-                        $amendments[$amend->id]  = $amend;
-                        $collissions[$amend->id] = [];
-                    }
-                    $collissions[$amend->id][$section->sectionId] = $coll;
-                }
-            }
-        }
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
-            'amendments'  => $amendments,
-            'collissions' => $collissions,
-        ]);
-    }
-
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @param int $newMotionId
-     * @return string
-     * @throws NotFound
-     */
-    public function actionMergeDone($motionSlug, $amendmentId, $newMotionId)
-    {
-        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            throw new NotFound('Amendment not found');
-        }
-        $motion = $this->consultation->getMotion($newMotionId);
-        if (!$motion) {
-            throw new NotFound('Motion not found');
-        }
-        return $this->render('merge_done', ['amendment' => $amendment, 'newMotion' => $motion]);
-    }
-
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return string
-     * @throws Access
-     * @throws Internal
-     * @throws NotFound
-     */
-    public function actionMerge($motionSlug, $amendmentId)
-    {
-        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
-        if (!$amendment) {
-            throw new NotFound('Amendment not found');
-        }
-        if (!$amendment->canMergeIntoMotion()) {
-            if ($amendment->canMergeIntoMotion(true)) {
-                return $this->render('merge_err_collission', [
-                    'amendment'           => $amendment,
-                    'collidingAmendments' => $amendment->getCollidingAmendments()
-                ]);
-            } else {
-                \Yii::$app->session->setFlash('error', 'Not allowed to use this function');
-                return $this->redirect(UrlHelper::createUrl('consultation/index'));
-            }
-        }
-
-        $motion        = $amendment->getMyMotion();
-        $mergingPolicy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
-
-        if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
-            $collisionHandling   = true;
-            $allowStatusChanging = true;
-        } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
-            $collisionHandling   = true;
-            $allowStatusChanging = false;
-        } else {
-            $collisionHandling   = false;
-            $allowStatusChanging = false;
-        }
-
-        if ($this->isPostSet('save')) {
-            if ($allowStatusChanging) {
-                $newAmendmentStati = \Yii::$app->request->post('otherAmendmentsStatus', []);
-            } else {
-                $newAmendmentStati = [];
-                foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
-                    $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
-                }
-            }
-
-            if ($collisionHandling) {
-                $form = new MergeSingleAmendmentForm(
-                    $amendment,
-                    \Yii::$app->request->post('motionTitlePrefix'),
-                    \Yii::$app->request->post('amendmentStatus'),
-                    \Yii::$app->request->post('newParas', []),
-                    \Yii::$app->request->post('amendmentOverride', []),
-                    $newAmendmentStati
-                );
-            } else {
-                $newParas = [];
-                foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                    $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-                    $amendParas      = HTMLTools::sectionSimpleHTML($section->data);
-                    $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendParas, false);
-
-                    $newParas[$section->sectionId] = $paragraphsPlain;
-                }
-                $form = new MergeSingleAmendmentForm(
-                    $amendment,
-                    \Yii::$app->request->post('motionTitlePrefix'),
-                    Amendment::STATUS_ACCEPTED,
-                    $newParas,
-                    [],
-                    $newAmendmentStati
-                );
-            }
-            if ($form->checkConsistency()) {
-                $newMotion = $form->performRewrite();
-
-                return $this->redirect(UrlHelper::createAmendmentUrl(
-                    $amendment,
-                    'merge-done',
-                    ['newMotionId' => $newMotion->id]
-                ));
-            } else {
-                return $this->showErrorpage(500, 'An internal consistance error occurred. ' .
-                    'This should never happen and smells like an error in the system.');
-            }
-        }
-
-        $paragraphSections = [];
-        $diffRenderer      = new DiffRenderer();
-        $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
-
-        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
-            $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
-            $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);
-
-            $paraLineNumbers = $section->getParagraphLineNumberHelper();
-            $paragraphs      = [];
-            foreach (array_keys($paragraphsDiff) as $paraNo) {
-                $paragraphs[$paraNo] = [
-                    'lineFrom' => $paraLineNumbers[$paraNo],
-                    'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
-                    'plain'    => $paragraphsPlain[$paraNo],
-                    'diff'     => $diffRenderer->renderHtmlWithPlaceholders($paragraphsDiff[$paraNo]),
-                ];
-            }
-
-            $paragraphSections[$section->sectionId] = $paragraphs;
-        }
-
-        if ($collisionHandling) {
-            return $this->render('merge_with_collissions', [
-                'motion'              => $motion,
-                'amendment'           => $amendment,
-                'paragraphSections'   => $paragraphSections,
-                'allowStatusChanging' => $allowStatusChanging
-            ]);
-        } else {
-            return $this->render('merge_without_collissions', [
-                'motion'            => $motion,
-                'amendment'         => $amendment,
-                'paragraphSections' => $paragraphSections,
-            ]);
-        }
-    }
-
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
-     * @return string
      */
     public function actionEdit($motionSlug, $amendmentId)
     {
@@ -569,7 +359,7 @@ class AmendmentController extends Base
 
         $form        = new AmendmentEditForm($motion, null);
         $supportType = $motion->getMyMotionType()->getAmendmentSupportTypeClass();
-        $iAmAdmin    = User::currentUserHasPrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
 
         if ($this->isPostSet('save')) {
             try {
@@ -657,5 +447,228 @@ class AmendmentController extends Base
         }
 
         return $this->render('withdraw', ['amendment' => $amendment]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws Access
+     * @throws NotFound
+     */
+    public function actionSaveProposalStatus($motionSlug, $amendmentId)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $response = [];
+        $msgAlert = null;
+
+        if (\Yii::$app->request->post('setStatus', null) !== null) {
+            if ($amendment->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+                if ($amendment->proposalUserStatus !== null) {
+                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                }
+                $amendment->proposalNotification = null;
+                $amendment->proposalUserStatus   = null;
+            }
+            $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
+            $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
+                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+                    $amendment->proposalExplanation = null;
+                } else {
+                    $amendment->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                }
+            } else {
+                $amendment->proposalExplanation = null;
+            }
+            if (\Yii::$app->request->post('visible', 0)) {
+                $amendment->setProposalPublished();
+            } else {
+                $amendment->proposalVisibleFrom = null;
+            }
+            $votingBlockId            = \Yii::$app->request->post('votingBlockId', null);
+            $amendment->votingBlockId = null;
+            if ($votingBlockId === 'NEW') {
+                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
+                if ($title !== '') {
+                    $votingBlock                 = new VotingBlock();
+                    $votingBlock->consultationId = $this->consultation->id;
+                    $votingBlock->title          = $title;
+                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->save();
+
+                    $amendment->votingBlockId = $votingBlock->id;
+                }
+            } elseif ($votingBlockId > 0) {
+                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
+                if ($votingBlock) {
+                    $amendment->votingBlockId = $votingBlock->id;
+                }
+            }
+
+            $response['success'] = false;
+            if ($amendment->save()) {
+                $response['success'] = true;
+            }
+
+            $this->consultation->refresh();
+            $response['html'] = $this->renderPartial('_set_change_proposal', [
+                'amendment' => $amendment,
+                'msgAlert'  => $msgAlert,
+                'context'   => \Yii::$app->request->post('context', 'view'),
+            ]);
+        }
+
+        if (\Yii::$app->request->post('notifyProposer')) {
+            try {
+                new AmendmentProposedProcedure($amendment);
+                $amendment->proposalNotification = date('Y-m-d H:i:s');
+                $amendment->save();
+                $response['success'] = true;
+                $response['html']    = $this->renderPartial('_set_change_proposal', [
+                    'amendment' => $amendment,
+                    'msgAlert'  => $msgAlert,
+                    'context'   => \Yii::$app->request->post('context', 'view'),
+                ]);
+            } catch (MailNotSent $e) {
+                $response['success'] = false;
+                $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
+            }
+        }
+
+        if (\Yii::$app->request->post('writeComment')) {
+            $adminComment               = new AmendmentAdminComment();
+            $adminComment->userId       = User::getCurrentUser()->id;
+            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->status       = AmendmentAdminComment::STATUS_VISIBLE;
+            $adminComment->dateCreation = date('Y-m-d H:i:s');
+            $adminComment->amendmentId  = $amendment->id;
+            if (!$adminComment->save()) {
+                \Yii::$app->response->statusCode = 500;
+                $response['success']             = false;
+                return json_encode($response);
+            }
+
+            $response['success'] = true;
+            $response['comment'] = [
+                'username'      => $adminComment->user->name,
+                'id'            => $adminComment->id,
+                'text'          => $adminComment->text,
+                'dateFormatted' => Tools::formatMysqlDateTime($adminComment->dateCreation),
+            ];
+        }
+
+        return json_encode($response);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionEditProposedChange($motionSlug, $amendmentId)
+    {
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $form = new AmendmentProposedChangeForm($amendment);
+
+        $msgSuccess = null;
+        $msgAlert   = null;
+
+        if (\Yii::$app->request->post('save', null) !== null) {
+            $form->save(\Yii::$app->request->post(), $_FILES);
+            $msgSuccess = \Yii::t('base', 'saved');
+
+            if ($amendment->proposalUserStatus !== null) {
+                $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+            }
+            $amendment->proposalNotification = null;
+            $amendment->proposalUserStatus   = null;
+            $amendment->save();
+        }
+
+        return $this->render('edit_proposed_change', [
+            'msgSuccess' => $msgSuccess,
+            'msgAlert'   => $msgAlert,
+            'amendment'  => $amendment,
+            'form'       => $form,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     */
+    public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $newSections = \Yii::$app->request->post('sections', []);
+        foreach ($newSections as $sectionId => $section) {
+            $newSections[$sectionId] = HTMLTools::cleanSimpleHtml($section);
+        }
+
+        /** @var Amendment[] $collidesWith */
+        $collidesWith = [];
+        foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment]) as $compAmend) {
+            foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                if (count($coll) > 0 && !in_array($compAmend, $collidesWith)) {
+                    $collidesWith[] = $compAmend;
+                }
+            }
+        }
+
+        return json_encode([
+            'collissions' => array_map(function (Amendment $amend) {
+                // Keep in sync with edit_proposed_change.php
+                $title = $amend->getShortTitle();
+                if ($amend->proposalStatus == Amendment::STATUS_VOTE) {
+                    $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
+                }
+                $html = '<li>' . Html::a($title, UrlHelper::createAmendmentUrl($amend), ['target' => '_blank']);
+                $html .= HTMLTools::amendmentDiffTooltip($amend, 'top', 'fixedBottom');
+                $html .= '</li>';
+
+                return [
+                    'id'    => $amend->id,
+                    'title' => $amend->getShortTitle(),
+                    'html'  => $html,
+                ];
+            }, $collidesWith),
+        ]);
     }
 }

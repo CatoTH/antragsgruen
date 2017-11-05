@@ -55,8 +55,8 @@ $I->logout();
 
 $adminPage = $I->loginAndGotoStdAdminPage();
 $accessPage = $adminPage->gotoSiteAccessPage();
-$I->seeCheckboxIsChecked('.admin7 .type-con input');
-$I->checkOption('.admin7 .type-site input');
+$I->seeCheckboxIsChecked('.admin7 .typeCon input');
+$I->checkOption('.admin7 .typeSite input');
 $I->submitForm('#adminForm', [], 'saveAdmin');
 
 $I->logout();
@@ -67,7 +67,7 @@ $I->gotoStdAdminPage();
 
 
 
-$I->wantTo('see therest of the admin pages as well');
+$I->wantTo('see the rest of the admin pages as well');
 $I->seeElement('#consultationLink');
 $I->seeElement('#translationLink');
 $I->seeElement('#helpCreateLink');
@@ -84,6 +84,32 @@ $I->seeElement('.consultationEditForm');
 
 
 
+$I->wantTo('be made to an proposed procedure admin');
+$I->gotoConsultationHome();
+$I->logout();
+
+$adminPage = $I->loginAndGotoStdAdminPage();
+$accessPage = $adminPage->gotoSiteAccessPage();
+$I->see('consultationadmin@example.org');
+$I->wait(1);
+$I->uncheckOption('.admin7 .typeSite input');
+$I->uncheckOption('.admin7 .typeCon input');
+$I->checkOption('.admin7 .typeProposal input');
+
+$I->submitForm('#adminForm', [], 'saveAdmin');
+
+$I->logout();
+
+$I->gotoConsultationHome();
+$I->loginAsConsultationAdmin();
+
+$I->seeElement('#motionListLink');
+$I->dontSeeElement('#adminLink');
+$I->gotoMotionList();
+$I->dontSeeElement('.actionCol');
+$I->seeElement('.proposalCol');
+
+
 
 $I->wantTo('be resigned from being an admin');
 $I->gotoConsultationHome();
@@ -94,7 +120,7 @@ $adminPage = $I->loginAndGotoStdAdminPage();
 $accessPage = $adminPage->gotoSiteAccessPage();
 $I->see('consultationadmin@example.org');
 $I->wait(1);
-$I->click('.removeAdmin7');
+$I->executeJS('$(".removeAdmin7").click();');
 $I->wait(1);
 $I->seeBootboxDialog('Admin-Rechte entziehen');
 $I->acceptBootboxConfirm();

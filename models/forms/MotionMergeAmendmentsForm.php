@@ -2,6 +2,7 @@
 
 namespace app\models\forms;
 
+use app\models\db\ConsultationSettingsTag;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\exceptions\Internal;
@@ -62,6 +63,10 @@ class MotionMergeAmendmentsForm extends Model
         if (!$this->newMotion->save()) {
             var_dump($this->newMotion->getErrors());
             throw new Internal();
+        }
+
+        foreach ($this->origMotion->tags as $tag) {
+            $this->newMotion->link('tags', $tag);
         }
 
         foreach ($this->origMotion->motionType->motionSections as $sectionType) {

@@ -10,6 +10,7 @@ class DiffRenderer
     const FORMATTING_NONE    = -1;
     const FORMATTING_CLASSES = 0;
     const FORMATTING_INLINE  = 1;
+    const FORMATTING_ICE     = 2; // For CKEditor LITE Change-Tracking
 
     const INS_START = '###INS_START###';
     const INS_END   = '###INS_END###';
@@ -43,6 +44,37 @@ class DiffRenderer
     public function setFormatting($formatting)
     {
         $this->formatting = $formatting;
+
+        if ($this->formatting == static::FORMATTING_ICE) {
+            $this->setInsCallback(function ($node, $params) {
+                /** @var \DOMElement $node */
+                $classes = explode(' ', $node->getAttribute('class'));
+                $classes = array_merge($classes, ['ice-cts', 'ice-ins']);
+                $classes = array_filter($classes, function ($el) {
+                    return ($el !== '');
+                });
+                $node->setAttribute('class', implode(' ', $classes));
+                $node->setAttribute('data-userid', '');
+                $node->setAttribute('data-username', '');
+                $node->setAttribute('data-changedata', '');
+                $node->setAttribute('data-time', time());
+                $node->setAttribute('data-last-change-time', time());
+            });
+            $this->setDelCallback(function ($node, $params) {
+                /** @var \DOMElement $node */
+                $classes = explode(' ', $node->getAttribute('class'));
+                $classes = array_merge($classes, ['ice-cts', 'ice-del']);
+                $classes = array_filter($classes, function ($el) {
+                    return ($el !== '');
+                });
+                $node->setAttribute('class', implode(' ', $classes));
+                $node->setAttribute('data-userid', '');
+                $node->setAttribute('data-username', '');
+                $node->setAttribute('data-changedata', '');
+                $node->setAttribute('data-time', time());
+                $node->setAttribute('data-last-change-time', time());
+            });
+        }
     }
 
     /**
@@ -429,8 +461,8 @@ class DiffRenderer
 
         $newDom = $this->nodeCreator->createElement($dom->nodeName);
         foreach ($dom->attributes as $key => $val) {
-                $val = $dom->getAttribute($key);
-                $newDom->setAttribute($key, $val);
+            $val = $dom->getAttribute($key);
+            $newDom->setAttribute($key, $val);
         }
         foreach ($newChildren as $newChild) {
             $newDom->appendChild($newChild);

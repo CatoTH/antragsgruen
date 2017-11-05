@@ -37,7 +37,7 @@ class LayoutHelper
                 $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
                 $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
             }
-            $admin = User::currentUserHasPrivilege($consultation, User::PRIVILEGE_SCREENING);
+            $admin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
                 $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
                 $name .= \Yii::t('initiator', 'contact_show') . '</a>';

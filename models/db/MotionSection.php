@@ -99,14 +99,21 @@ class MotionSection extends IMotionSection
     }
 
     /**
+     * @param bool $includeProposals
      * @return AmendmentSection[]|null
      */
-    public function getAmendingSections()
+    public function getAmendingSections($includeProposals = false)
     {
-        $sections = [];
-        $motion   = $this->getConsultation()->getMotion($this->motionId);
+        $sections      = [];
+        $motion        = $this->getConsultation()->getMotion($this->motionId);
+        $excludedStati = $this->getConsultation()->getInvisibleAmendmentStati(true);
+        if ($includeProposals) {
+            $excludedStati = array_filter($excludedStati, function ($status) {
+                return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+            });
+        }
         foreach ($motion->amendments as $amend) {
-            if (in_array($amend->status, $this->getConsultation()->getInvisibleAmendmentStati(true))) {
+            if (in_array($amend->status, $excludedStati)) {
                 continue;
             }
             foreach ($amend->sections as $section) {
@@ -309,7 +316,7 @@ class MotionSection extends IMotionSection
     {
         if (is_null($this->amendmentDiffMerger)) {
             $sections = [];
-            foreach ($this->amendingSections as $section) {
+            foreach ($this->getAmendingSections(true) as $section) {
                 if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }

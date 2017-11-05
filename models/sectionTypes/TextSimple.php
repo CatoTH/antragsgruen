@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\AmendmentSectionFormatter;
+use app\components\diff\Diff;
 use app\components\diff\DiffRenderer;
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
@@ -23,6 +24,15 @@ use CatoTH\HTML2OpenDocument\Text;
 
 class TextSimple extends ISectionType
 {
+    private $forceMultipleParagraphs = null;
+
+    /**
+     * @param bool $active
+     */
+    public function forceMultipleParagraphMode($active)
+    {
+        $this->forceMultipleParagraphs = $active;
+    }
 
     /**
      * @return string
@@ -39,9 +49,26 @@ class TextSimple extends ISectionType
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
-        if ($this->section->getSettings()->motionType->amendmentMultipleParagraphs) {
-            $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->data);
-            return $this->getTextAmendmentFormField(false, $pre, $fixedWidth);
+
+        $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
+        if ($this->forceMultipleParagraphs !== null) {
+            $multipleParagraphs = $this->forceMultipleParagraphs;
+        }
+
+        if ($multipleParagraphs) {
+            /** @var AmendmentSection $section */
+            $section = $this->section;
+            $diff    = new Diff();
+            if ($section->getOriginalMotionSection()) {
+                $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            } else {
+                $origParas = [];
+            }
+            $amendParas     = HTMLTools::sectionSimpleHTML($section->data);
+            $amDiffSections = $diff->compareHtmlParagraphs($origParas, $amendParas, DiffRenderer::FORMATTING_ICE);
+            $amendmentHtml  = implode('', $amDiffSections);
+
+            return $this->getTextAmendmentFormField(false, $amendmentHtml, $fixedWidth);
         } else {
             return $this->getTextAmendmentFormFieldSingleParagraph($fixedWidth);
         }
@@ -125,7 +152,12 @@ class TextSimple extends ISectionType
         $section = $this->section;
         $post    = \Yii::$app->request->post();
 
-        if ($section->getSettings()->motionType->amendmentMultipleParagraphs) {
+        $multipleParagraphs = $this->section->getSettings()->motionType->amendmentMultipleParagraphs;
+        if ($this->forceMultipleParagraphs !== null) {
+            $multipleParagraphs = $this->forceMultipleParagraphs;
+        }
+
+        if ($multipleParagraphs) {
             $section->data    = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($data['consolidated']));
             $section->dataRaw = $data['raw'];
         } else {
@@ -230,9 +262,10 @@ class TextSimple extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -253,8 +286,12 @@ class TextSimple extends ISectionType
             return '';
         }
 
+        if ($sectionTitlePrefix) {
+            $sectionTitlePrefix .= ': ';
+        }
+        $title     = $sectionTitlePrefix . $section->getSettings()->title;
         $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
-        $str       .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str       .= '<h3 class="green">' . Html::encode($title) . '</h3>';
         $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
         $wrapStart = '<section class="paragraph"><div class="text';
         if ($section->getSettings()->fixedWidth) {
@@ -694,22 +731,10 @@ class TextSimple extends ISectionType
             return $section->data;
         }
 
-        $firstLine  = $section->getFirstLineNumber();
-        $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
-
-        $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-        $formatter->setTextNew($section->data);
-        $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
-
-        $diff = static::formatDiffGroup($diffGroups);
-        $diff = str_replace('<h4', '<br><h4', $diff);
-        $diff = str_replace('</h4>', '</h4><br>', $diff);
-        if (mb_substr($diff, 0, 4) == '<br>') {
-            $diff = mb_substr($diff, 4);
-        }
-        return $diff;
+        $firstLine    = $section->getFirstLineNumber();
+        $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+        $originalData = $section->getOriginalMotionSection()->data;
+        return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
     }
 
     /**
@@ -821,7 +846,7 @@ class TextSimple extends ISectionType
 
         /** @var Amendment[] $amendmentsById */
         $amendmentsById = [];
-        foreach ($section->amendingSections as $sect) {
+        foreach ($section->getAmendingSections(true) as $sect) {
             $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 
@@ -896,5 +921,29 @@ class TextSimple extends ISectionType
         }
 
         return $out;
+    }
+
+    /**
+     * @param string $originalText
+     * @param string $newText
+     * @param int $firstLine
+     * @param int $lineLength
+     * @return string
+     */
+    public static function formatAmendmentForOds($originalText, $newText, $firstLine, $lineLength)
+    {
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($originalText);
+        $formatter->setTextNew($newText);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+        $diff = static::formatDiffGroup($diffGroups);
+        $diff = str_replace('<h4', '<br><h4', $diff);
+        $diff = str_replace('</h4>', '</h4><br>', $diff);
+        if (mb_substr($diff, 0, 4) == '<br>') {
+            $diff = mb_substr($diff, 4);
+        }
+        return $diff;
     }
 }

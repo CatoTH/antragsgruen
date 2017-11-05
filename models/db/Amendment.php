@@ -13,6 +13,7 @@ use app\models\notifications\AmendmentPublished as AmendmentPublishedNotificatio
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
@@ -37,15 +38,43 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property int $textFixed
  * @property int $globalAlternative
+ * @property int $proposalStatus
+ * @property int $proposalReferenceId
+ * @property string|null $proposalVisibleFrom
+ * @property string $proposalComment
+ * @property string|null $proposalNotification
+ * @property int $proposalUserStatus
+ * @property string $proposalExplanation
+ * @property string|null $votingBlockId
+ * @property int $votingStatus
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
+ * @property Amendment $proposalReference
+ * @property Amendment $proposalReferencedBy
+ * @property VotingBlock $votingBlock
  */
 class Amendment extends IMotion implements IRSSItem
 {
     use CacheTrait;
+
+    /**
+     * @return string[]
+     */
+    public static function getProposedChangeStati()
+    {
+        return [
+            IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_REJECTED,
+            IMotion::STATUS_MODIFIED_ACCEPTED,
+            IMotion::STATUS_REFERRED,
+            IMotion::STATUS_VOTE,
+            IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_CUSTOM_STRING,
+        ];
+    }
 
     /**
      * @return string
@@ -92,20 +121,44 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param null|int $filer_type
+     * @param null|int $filerType
      * @return AmendmentSection[]
      */
-    public function getActiveSections($filer_type = null)
+    public function getActiveSections($filerType = null)
     {
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                if ($filer_type === null || $section->getSettings()->type == $filer_type) {
+                if ($filerType === null || $section->getSettings()->type == $filerType) {
                     $sections[] = $section;
                 }
             }
         }
         return $sections;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProposalReference()
+    {
+        return $this->hasOne(Amendment::class, ['id' => 'proposalReferenceId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProposalReferencedBy()
+    {
+        return $this->hasOne(Amendment::class, ['proposalReferenceId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getVotingBlock()
+    {
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
     }
 
     /**
@@ -129,7 +182,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         return [
             [['motionId'], 'required'],
-            [['id', 'motionId', 'status', 'textFixed'], 'number'],
+            [['id', 'motionId', 'status', 'textFixed', 'proposalStatus', 'proposalReferenceId'], 'number'],
         ];
     }
 
@@ -249,6 +302,9 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getInlineChangeData($changeId)
     {
+        if ($this->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            return $this->proposalReferencedBy->getInlineChangeData($changeId);
+        }
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
         return [
             'data-cid'              => $changeId,
@@ -782,6 +838,20 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      */
+    public function setProposalPublished()
+    {
+        if ($this->proposalVisibleFrom) {
+            return;
+        }
+        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
+        $this->save();
+
+        $consultation = $this->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
+    }
+
+    /**
+     */
     public function setDeleted()
     {
         $this->status = Amendment::STATUS_DELETED;
@@ -967,7 +1037,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $typeMapping = $this->getMyMotion()->motionType->getSectionCompatibilityMapping($motionType);
-        $mySections = $this->getSortedSections(false);
+        $mySections  = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
             if (!isset($typeMapping[$mySections[$i]->sectionId])) {
                 continue;
@@ -994,5 +1064,126 @@ class Amendment extends IMotion implements IRSSItem
     public function isDeadlineOver()
     {
         return $this->getMyMotion()->motionType->amendmentDeadlineIsOver();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isProposalPublic()
+    {
+        if (!$this->proposalVisibleFrom) {
+            return false;
+        }
+        $visibleFromTs = Tools::dateSql2timestamp($this->proposalVisibleFrom);
+        return ($visibleFromTs <= time());
+    }
+
+    /**
+     * return boolean
+     */
+    public function hasAlternativeProposaltext()
+    {
+        return ($this->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedStatus()
+    {
+        $statiNames = Amendment::getStati();
+        $status     = '';
+        switch ($this->status) {
+            case Amendment::STATUS_SUBMITTED_UNSCREENED:
+            case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
+                $status = '<span class="unscreened">' . Html::encode($statiNames[$this->status]) . '</span>';
+                break;
+            case Amendment::STATUS_SUBMITTED_SCREENED:
+                $status = '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
+                break;
+            case Amendment::STATUS_COLLECTING_SUPPORTERS:
+                $status = Html::encode($statiNames[$this->status]);
+                $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
+                $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportAmendments] . ')</small>';
+                break;
+            default:
+                $status .= Html::encode($statiNames[$this->status]);
+        }
+        if (trim($this->statusString) != '') {
+            $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
+        }
+        return $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedProposalStatus()
+    {
+        if ($this->proposalStatus === null) {
+            return '';
+        }
+        switch ($this->proposalStatus) {
+            case Amendment::STATUS_REFERRED:
+                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
+            case Amendment::STATUS_OBSOLETED_BY:
+                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
+                if ($refAmend) {
+                    $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
+                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
+                } else {
+                    return static::getStatiAsVerbs()[$this->proposalStatus];
+                }
+                break;
+            case Amendment::STATUS_CUSTOM_STRING:
+                return Html::encode($this->proposalComment);
+                break;
+            default:
+                return static::getStatiAsVerbs()[$this->proposalStatus];
+        }
+    }
+
+    /**
+     * @param boolean $includeVoted
+     * @return Amendment[]
+     */
+    public function collidesWithOtherProposedAmendments($includeVoted)
+    {
+        $collidesWith = [];
+
+        if ($this->proposalReference) {
+            $sections = $this->proposalReference->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        } else {
+            $sections = $this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        }
+        $newSections = [];
+        foreach ($sections as $section) {
+            $newSections[$section->sectionId] = $section->data;
+        }
+
+        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this]) as $amendment) {
+            foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                if (count($coll) > 0) {
+                    if (!in_array($amendment, $collidesWith)) {
+                        $collidesWith[] = $amendment;
+                    }
+                }
+            }
+        }
+
+        return $collidesWith;
+    }
+
+    /**
+     * @return bool
+     */
+    public function proposalStatusNeedsUserFeedback()
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus == Amendment::STATUS_ACCEPTED) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

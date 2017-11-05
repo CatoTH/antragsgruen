@@ -86,9 +86,10 @@ class Title extends ISectionType
     }
 
     /**
+     * @param string $sectionTitlePrefix
      * @return string
      */
-    public function getAmendmentFormatted()
+    public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -99,8 +100,11 @@ class Title extends ISectionType
         if ($section->data == $section->getOriginalMotionSection()->data) {
             return '';
         }
+        if ($sectionTitlePrefix) {
+            $sectionTitlePrefix .= ': ';
+        }
         $str = '<section id="section_title" class="motionTextHolder">';
-        $str .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        $str .= '<h3 class="green">' . Html::encode($sectionTitlePrefix . $section->getSettings()->title) . '</h3>';
         $str .= '<div id="section_title_0" class="paragraph"><div class="text">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';

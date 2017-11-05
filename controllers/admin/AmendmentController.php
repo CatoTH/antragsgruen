@@ -4,8 +4,10 @@ namespace app\controllers\admin;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\components\ZipWriter;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
+use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
@@ -51,7 +53,7 @@ class AmendmentController extends AdminBase
     public function actionPdfziplist($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $zip       = new \app\components\ZipWriter();
+        $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($amendment));
@@ -73,7 +75,7 @@ class AmendmentController extends AdminBase
     public function actionOdtziplist($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);
-        $zip       = new \app\components\ZipWriter();
+        $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
                 $zip->addFile($amendment->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($amendment));
@@ -139,9 +141,14 @@ class AmendmentController extends AdminBase
      */
     public function actionUpdate($amendmentId)
     {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+            return false;
+        }
+
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
         }
         $this->checkConsistency($amendment->getMyMotion(), $amendment);
 
@@ -168,7 +175,7 @@ class AmendmentController extends AdminBase
             $amendment->save();
             $amendment->getMyMotion()->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
-            $this->redirect(UrlHelper::createUrl('admin/motion/listall'));
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
             return '';
         }
 

@@ -21,7 +21,7 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion/listall'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_motion'));
 
 $layout->addCSS('css/backend.css');

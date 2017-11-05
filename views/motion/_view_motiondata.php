@@ -110,7 +110,7 @@ echo '<tr><th>' . \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : '
        <td>' . Tools::formatMysqlDateTime($motion->dateCreation, null, false) . '</td>
                 </tr>';
 
-$admin = User::currentUserHasPrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
+$admin = User::havePrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
 if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     echo '<tr><th>' . \Yii::t('motion', 'tag_tags') . ':</th><td class="tags">';
 
