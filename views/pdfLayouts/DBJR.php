@@ -87,10 +87,11 @@ class DBJR extends IPDFLayout
     {
         $pdf = $this->pdf;
         /** @var AntragsgruenApp $site */
-        $site     = \yii::$app->params;
-        $left     = 23.5;
-        $abs      = 5;
-        $fontsize = 30;
+        $site           = \yii::$app->params;
+        $left           = 23.5;
+        $abs            = 5;
+        $title1Fontsize = 15;
+        $title2Fontsize = 25;
 
         $dim = $pdf->getPageDimensions();
 
@@ -113,25 +114,27 @@ class DBJR extends IPDFLayout
             $pdf->setY($logo['y'] + $logo['h'] + $abs);
         }
 
-        $pdf->SetFont('helvetica', 'B', $fontsize);
-        $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
-
         $pdf->SetTextColor(100, 100, 100, 100);
-        $wraptop = $pdf->getY() + $abs;
-        $pdf->SetXY($left, $wraptop);
-
         $pdf->SetFont('helvetica', 'I', 11);
+        $pdf->SetXY($left, $pdf->getY());
+        $pdf->Ln(3);
         $intro = $amendment->getMyConsultation()->getSettings()->pdfIntroduction;
         if ($intro) {
-            $pdf->MultiCell(160, 0, $intro, 0, 'L');
+            $pdf->MultiCell(0, 0, trim($intro), 0, 'L');
             $pdf->Ln(3);
         }
 
+        $pdf->SetTextColor(40, 40, 40, 40);
+        $pdf->SetFont('helvetica', 'B', $title1Fontsize);
+        $pdf->MultiCell(0, 0, trim($amendment->getMyMotion()->getTitleWithPrefix()), 0, 'L');
+        $pdf->Ln(3);
+        $pdf->SetFont('helvetica', 'B', $title2Fontsize);
+        $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
+        $pdf->Ln(3);
+
         $pdf->SetX($left);
-        $pdf->MultiCell(42, 0, 'Antrag:', 0, 'L', false, 0);
-        $pdf->MultiCell(120, 0, $amendment->getMyMotion()->getTitleWithPrefix(), 0, 'L');
-        $pdf->Ln(5);
+        $pdf->SetTextColor(100, 100, 100, 100);
+        $pdf->SetFont('helvetica', 'I', 11);
         $data = $amendment->getDataTable();
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
@@ -139,8 +142,6 @@ class DBJR extends IPDFLayout
             $pdf->MultiCell(120, 0, $val, 0, 'L');
             $pdf->Ln(5);
         }
-
-        $pdf->Ln(9);
 
         $pdf->SetFont('helvetica', '', 12);
         $pdf->ln(7);
@@ -159,7 +160,7 @@ class DBJR extends IPDFLayout
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(true);
 
-        $pdf->SetMargins(25, 40, 25);
+        $pdf->SetMargins(23, 40, 23);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
 
         //set image scale factor

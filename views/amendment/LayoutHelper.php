@@ -112,7 +112,8 @@ class LayoutHelper
 
         if ($amendment->changeExplanation != '') {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'reason'));
-            $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
+            $pdf->Ln(0);
+            $pdf->writeHTMLCell(0, '', '', '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
 

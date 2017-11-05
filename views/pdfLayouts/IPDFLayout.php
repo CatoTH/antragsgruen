@@ -75,7 +75,7 @@ abstract class IPDFLayout
     {
         $this->pdf->SetFont('helvetica', '', 12);
         $this->pdf->ln(2);
-        $this->pdf->writeHTML('<h4>' . $text . '</h4>');
+        $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
     }
 
     /**

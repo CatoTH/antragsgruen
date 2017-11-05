@@ -46,7 +46,7 @@ class TextHTML extends ISectionType
 
 
     /**
-     * @param string $data
+     * @param array $data
      * @throws FormError
      */
     public function setAmendmentData($data)
