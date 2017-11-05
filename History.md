@@ -1,5 +1,6 @@
 # Version history
 
+
 ## Version 3.8.0 [Not released yet]
 
 - Proposed procedures for amendments
@@ -7,6 +8,11 @@
   - The proposer of the amendment can be notified about this proposal and optionally agree to this proposal.
   - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
+
+## Version 3.7.4 [not released yet]
+
+- Bugfix: It was not possible to set the parent motion in the admin backend
+- The DBJR-PDF-Layout was slightly improved
 
 ## Version 3.7.3 (2017-11-04)
 
