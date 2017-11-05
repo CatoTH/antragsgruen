@@ -433,6 +433,12 @@ class MotionController extends AdminBase
             if ($modat['dateResolution'] != '') {
                 $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateResolution']);
             }
+            if ($modat['parentMotionId'] && $modat['parentMotionId'] != $motion->id &&
+                $this->consultation->getMotion($modat['parentMotionId'])) {
+                $motion->parentMotionId = IntVal($modat['parentMotionId']);
+            } else {
+                $motion->parentMotionId = null;
+            }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
                 \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));

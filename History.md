@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.7.4 [not released yet]
+
+- Bugfix: It was not possible to set the parent motion in the admin backend
+- The DBJR-PDF-Layout was slightly improved
+
 ## Version 3.7.3 (2017-11-04)
 
 - Bugfix: Creating a new amendment based on an existing one did not work when amendments are restricted to only one paragraph
