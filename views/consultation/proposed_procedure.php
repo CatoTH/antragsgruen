@@ -41,7 +41,7 @@ foreach ($data as $dataRow) {
     }
 
     $coveredAmendments = [];
-    $proposalStati     = IMotion::getStatiAsVerbs();
+    $proposalStati     = Amendment::getProposedStatiNames();
 
     ?>
     <section class="motionHolder motionHolder<?= $motion->id ?> proposedProcedureOverview">

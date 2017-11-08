@@ -81,6 +81,40 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return string[]
+     */
+    public static function getProposedStatiNames()
+    {
+        return [
+            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED'),
+            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
+            static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
+            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
+            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
+            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY'),
+            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getProposalStatiAsVerbs()
+    {
+        $return = static::getProposedStatiNames();
+        foreach ([
+                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED'),
+                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
+                     static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_MODIFIED_ACCEPTED'),
+                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
+                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
+                 ] as $statusId => $statusName) {
+            $return[$statusId] = $statusName;
+        }
+        return $return;
+    }
+
+    /**
      * @return string
      */
     public static function tableName()
@@ -1136,14 +1170,14 @@ class Amendment extends IMotion implements IRSSItem
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
                 } else {
-                    return static::getStatiAsVerbs()[$this->proposalStatus];
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
                 }
                 break;
             case Amendment::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment);
                 break;
             default:
-                return static::getStatiAsVerbs()[$this->proposalStatus];
+                return static::getProposalStatiAsVerbs()[$this->proposalStatus];
         }
     }
 

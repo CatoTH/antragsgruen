@@ -58,7 +58,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= \app\models\db\IMotion::getStati()[$statusId] ?>
+                    ?>> <?= \app\models\db\Amendment::getProposedStatiNames()[$statusId] ?>
                 </label><br>
                 <?php
             }

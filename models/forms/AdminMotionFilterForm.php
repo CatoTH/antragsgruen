@@ -717,7 +717,7 @@ class AdminMotionFilterForm extends Model
                 }
             }
         }
-        $stati = Amendment::getStatiAsVerbs();
+        $stati = Amendment::getProposalStatiAsVerbs();
         foreach ($stati as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
