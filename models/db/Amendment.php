@@ -65,7 +65,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function getProposedChangeStati()
     {
-        return [
+        $stati = [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
@@ -74,6 +74,10 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_OBSOLETED_BY,
             IMotion::STATUS_CUSTOM_STRING,
         ];
+        if (Consultation::getCurrent()) {
+            $stati = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStati($stati);
+        }
+        return $stati;
     }
 
     /**

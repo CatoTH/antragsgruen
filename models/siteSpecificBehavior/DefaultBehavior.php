@@ -20,9 +20,19 @@ class DefaultBehavior
     /**
      * @param IMotionSection $section
      * @return bool
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function showSectionIntroductionInPdf($section)
     {
         return true;
+    }
+
+    /**
+     * @param int[] $stati
+     * @return int[]
+     */
+    public static function getProposedChangeStati($stati)
+    {
+        return $stati;
     }
 }
