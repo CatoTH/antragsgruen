@@ -231,10 +231,10 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             foreach ($collidingAmendments as $collidingAmendment) {
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
+                echo '<li class="collission' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }
-                echo '<li class="collission' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 echo '</li>';
             }
             ?>

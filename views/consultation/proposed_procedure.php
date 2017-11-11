@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\Amendment;
-use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\VotingBlock;
 use yii\helpers\Html;
