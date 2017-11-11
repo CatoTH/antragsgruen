@@ -4,12 +4,14 @@ namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
 use app\components\latex\Exporter;
+use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
-use app\models\exceptions\FormError;
+use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text;
+use yii\web\View;
 
 class Title extends ISectionType
 {
@@ -59,7 +61,6 @@ class Title extends ISectionType
 
     /**
      * @param $data
-     * @throws FormError
      */
     public function setMotionData($data)
     {
@@ -68,7 +69,6 @@ class Title extends ISectionType
 
     /**
      * @param string $data
-     * @throws FormError
      */
     public function setAmendmentData($data)
     {
@@ -105,7 +105,7 @@ class Title extends ISectionType
         }
         $str = '<section id="section_title" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($sectionTitlePrefix . $section->getSettings()->title) . '</h3>';
-        $str .= '<div id="section_title_0" class="paragraph"><div class="text">';
+        $str .= '<div id="section_title_0" class="paragraph"><div class="text fixedWidthFont">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
         $str .= '</div></div></section>';
@@ -157,6 +157,25 @@ class Title extends ISectionType
     }
 
     /**
+     * @param Base $controller
+     * @param CommentForm $commentForm
+     * @param int[] $openedComments
+     * @return string
+     */
+    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    {
+        return (new View())->render(
+            '@app/views/motion/showTitleSection',
+            [
+                'section'        => $this->section,
+                'openedComments' => $openedComments,
+                'commentForm'    => $commentForm,
+            ],
+            $controller
+        );
+    }
+
+    /**
      * @return string
      */
     public function getMotionPlainText()
@@ -176,6 +195,7 @@ class Title extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -234,7 +254,6 @@ class Title extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printMotionToODT(Text $odt)
     {
@@ -243,7 +262,6 @@ class Title extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printAmendmentToODT(Text $odt)
     {
@@ -259,7 +277,6 @@ class Title extends ISectionType
     /**
      * @param $text
      * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function matchesFulltextSearch($text)
     {

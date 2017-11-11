@@ -8,6 +8,7 @@
   - The proposer of the amendment can be notified about this proposal and optionally agree to this proposal.
   - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
+- Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
 
 ## Version 3.7.4 [not released yet]
 

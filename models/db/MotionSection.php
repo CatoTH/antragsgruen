@@ -100,9 +100,10 @@ class MotionSection extends IMotionSection
 
     /**
      * @param bool $includeProposals
+     * @param bool $onlyWithChanges
      * @return AmendmentSection[]|null
      */
-    public function getAmendingSections($includeProposals = false)
+    public function getAmendingSections($includeProposals = false, $onlyWithChanges = false)
     {
         $sections      = [];
         $motion        = $this->getConsultation()->getMotion($this->motionId);
@@ -118,7 +119,9 @@ class MotionSection extends IMotionSection
             }
             foreach ($amend->sections as $section) {
                 if ($section->sectionId == $this->sectionId) {
-                    $sections[] = $section;
+                    if (!$onlyWithChanges || $section->data != $this->data) {
+                        $sections[] = $section;
+                    }
                 }
             }
         }

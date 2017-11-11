@@ -6,6 +6,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
+use app\models\sectionTypes\ISectionType;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\policies\Nobody;
@@ -94,8 +95,13 @@ if ($motion->canFinishSupportCollection()) {
 echo '</div>';
 
 $main = $right = '';
-foreach ($motion->getSortedSections(true) as $i => $section) {
+foreach ($motion->getSortedSections(false) as $i => $section) {
+    /** @var \app\models\db\MotionSection $section $sectionType */
+    $sectionType = $section->getSettings()->type;
     if ($section->getSectionType()->isEmpty()) {
+        continue;
+    }
+    if ($sectionType === ISectionType::TYPE_TITLE && count($section->getAmendingSections(false, true)) === 0) {
         continue;
     }
     if ($section->isLayoutRight() && $motion->motionType->layoutTwoCols) {
@@ -108,9 +114,7 @@ foreach ($motion->getSortedSections(true) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF &&
-            $section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_IMAGE
-        ) {
+        if ($sectionType != ISectionType::TYPE_PDF && $sectionType != ISectionType::TYPE_IMAGE) {
             $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         }
 

@@ -504,7 +504,7 @@
     }
 
     .text {
-      padding: 15px 20px 15px;
+      padding: 15px 10px 15px $fixedWidthTextStdPadding;
 
       @include motionParagraphStd;
 
@@ -564,9 +564,6 @@
           font-size: 12px;
         }
       }
-    }
-    &.lineNumbers .text {
-      padding: 15px 10px 15px $fixedWidthTextStdPadding;
     }
 
     .text.collidingAmendment {
@@ -827,6 +824,11 @@
     margin-bottom: 15px;
     margin-top: 15px;
   }
+}
+
+.sectionType0 + .motionTextHolder {
+  // Don't let amendment markers be hidden behind the next section
+  clear: both;
 }
 
 .sectionType3 { // Images
