@@ -81,3 +81,5 @@ $I->see('A2:', '.replacesMotion');
 
 $I->click('.replacesMotion a');
 $I->see('Achtung: dies ist eine alte Fassung', '.motionReplayedBy.alert-danger');
+$I->seeElement('.bookmarks .amendment276');
+$I->seeElement('.bookmarks .amendment3');

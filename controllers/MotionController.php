@@ -9,6 +9,7 @@ use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
@@ -695,6 +696,12 @@ class MotionController extends Base
             if ($newMotion->replacedMotion->status == Motion::STATUS_SUBMITTED_SCREENED) {
                 $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
                 $newMotion->replacedMotion->save();
+            }
+
+            $mergingDraft = $oldMotion->getMergingDraft(false);
+            if ($mergingDraft) {
+                $mergingDraft->status = IMotion::STATUS_DELETED;
+                $mergingDraft->save();
             }
 
             new MotionEditedNotification($newMotion);

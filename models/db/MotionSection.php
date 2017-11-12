@@ -216,7 +216,11 @@ class MotionSection extends IMotionSection
         }
         if ($includeAmendment) {
             $motion = $this->getConsultation()->getMotion($this->motionId);
-            foreach ($motion->getVisibleAmendments(false) as $amendment) {
+
+            // If this motion is already replaced by a new one, we're in the "history mode"
+            // So we also show the obsoleted amendments
+            $includeObsoleted = (count($motion->replacedByMotions) > 0);
+            foreach ($motion->getVisibleAmendments($includeObsoleted) as $amendment) {
                 if ($amendment->globalAlternative) {
                     continue;
                 }

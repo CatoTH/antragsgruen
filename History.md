@@ -1,6 +1,5 @@
 # Version history
 
-
 ## Version 3.8.0 [Not released yet]
 
 - Proposed procedures for amendments
@@ -10,9 +9,11 @@
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
 
-## Version 3.7.4 [not released yet]
+## Version 3.7.4 (2017-11-12)
 
 - Bugfix: It was not possible to set the parent motion in the admin backend
+- Bugfix: After finishing the merging of the amendments, the public draft is now deleted
+- After a motion has been overhauled by merging the amendments, the amendments are now still shown as bookmarks in the view of the original motion
 - The DBJR-PDF-Layout was slightly improved
 
 ## Version 3.7.3 (2017-11-04)
