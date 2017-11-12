@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.4 [not released yet]
+## Version 3.7.4 (2017-11-12)
 
 - Bugfix: It was not possible to set the parent motion in the admin backend
 - Bugfix: After finishing the merging of the amendments, the public draft is now deleted
