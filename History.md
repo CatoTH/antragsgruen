@@ -4,6 +4,7 @@
 
 - Bugfix: It was not possible to set the parent motion in the admin backend
 - Bugfix: After finishing the merging of the amendments, the public draft is now deleted
+- After a motion has been overhauled by merging the amendments, the amendments are now still shown as bookmarks in the view of the original motion
 - The DBJR-PDF-Layout was slightly improved
 
 ## Version 3.7.3 (2017-11-04)
