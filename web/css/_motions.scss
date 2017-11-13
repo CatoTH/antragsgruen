@@ -73,7 +73,7 @@
     }
   }
   .motion.modified, .motion.withdrawn {
-    > .title a {
+    > .title a * {
       opacity: 0.4;
     }
     .amendment > a {
