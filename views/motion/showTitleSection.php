@@ -15,10 +15,10 @@ use yii\helpers\Html;
 
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers; // @TODO
+$lineNo         = $section->getFirstLineNumber();
 $classes        = ['paragraph'];
 if ($hasLineNumbers) {
     $classes[] = 'lineNumbers';
-    $lineNo    = $section->getFirstLineNumber();
 }
 
 $id = 'section_' . $section->sectionId . '_0';
