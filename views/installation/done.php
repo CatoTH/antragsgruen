@@ -27,7 +27,7 @@ echo Html::beginForm($settingsUrl, 'get', ['class' => 'antragsgruenInitForm form
 echo '<div class="content">';
 echo $controller->showErrors();
 
-$link = '<br>' . Html::a($consultationUrl, $consultationUrl) . '<br><br>';
+$link = '<br>' . Html::a(Html::encode($consultationUrl), $consultationUrl) . '<br><br>';
 
 if (!$installFileDeletable) {
     echo '<div class="alert alert-info" role="alert">';

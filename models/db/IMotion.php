@@ -263,6 +263,8 @@ abstract class IMotion extends ActiveRecord
     abstract public function getInitiators();
 
     /**
+     * Hint: the returned string is NOT yet HTML-encoded
+     *
      * @return string
      */
     public function getInitiatorsStr()

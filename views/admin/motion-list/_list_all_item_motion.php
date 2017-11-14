@@ -33,7 +33,7 @@ echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
 echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($editUrl) {
-    echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+    echo Html::a(Html::encode(trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
 } else {
     echo Html::encode(trim($entry->title) != '' ? $entry->title : '-');
 }

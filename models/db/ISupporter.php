@@ -99,15 +99,15 @@ abstract class ISupporter extends ActiveRecord
     public function getNameWithResolutionDate($html = true)
     {
         if ($html) {
-            $name = $this->name;
-            $orga = trim($this->organization, " \t\n\r\0\x0B()");
+            $name = Html::encode($this->name);
+            $orga = Html::encode(trim($this->organization, " \t\n\r\0\x0B()"));
             if ($name == '' && $this->user) {
-                $name = $this->user->name;
+                $name = Html::encode($this->user->name);
             }
             if ($this->personType == static::PERSON_NATURAL) {
                 if ($orga != '') {
                     $name .= ' <small style="font-weight: normal;">';
-                    $name .= '(' . Html::encode($orga) . ')';
+                    $name .= '(' . $orga . ')';
                     $name .= '</small>';
                 }
                 return $name;
@@ -128,7 +128,7 @@ abstract class ISupporter extends ActiveRecord
             }
             if ($this->personType == static::PERSON_NATURAL) {
                 if ($orga != '') {
-                    $name .= ' (' . Html::encode($orga) . ')';
+                    $name .= ' (' . $orga . ')';
                 }
                 return $name;
             } else {

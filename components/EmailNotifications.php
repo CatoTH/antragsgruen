@@ -50,7 +50,7 @@ class EmailNotifications
             $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
             $plain = str_replace('%LINK%', $motionLink, $plain);
-            $html  = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
+            $html  = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
 
             $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
             $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
@@ -134,7 +134,7 @@ class EmailNotifications
 
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
             $plain      = str_replace('%LINK%', $motionLink, $plain);
-            $html       = str_replace('%LINK%', Html::a($motionLink, $motionLink), $html);
+            $html       = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
             
             try {
                 MailTools::sendWithLog(
@@ -187,7 +187,7 @@ class EmailNotifications
             $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
 
             $plain = str_replace('%LINK%', $amendmentLink, $plain);
-            $html  = str_replace('%LINK%', Html::a($amendmentLink, $amendmentLink), $html);
+            $html  = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
 
             try {
                 MailTools::sendWithLog(
@@ -221,7 +221,7 @@ class EmailNotifications
 
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
             $plain      = str_replace('%LINK%', $amendmentLink, $plain);
-            $html       = str_replace('%LINK%', Html::a($amendmentLink, $amendmentLink), $html);
+            $html       = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
 
             try {
                 MailTools::sendWithLog(

@@ -36,14 +36,14 @@ if (count($replacedByMotions) > 0) {
         foreach ($replacedByMotions as $newMotion) {
             echo '<li>';
             $newLink = UrlHelper::createMotionUrl($newMotion);
-            echo Html::a($newMotion->getTitleWithPrefix(), $newLink);
+            echo Html::a(Html::encode($newMotion->getTitleWithPrefix()), $newLink);
             echo '</li>';
         }
         echo '</ul>';
     } else {
         echo '<br>';
         $newLink = UrlHelper::createMotionUrl($replacedByMotions[0]);
-        echo Html::a($replacedByMotions[0]->getTitleWithPrefix(), $newLink);
+        echo Html::a(Html::encode($replacedByMotions[0]->getTitleWithPrefix()), $newLink);
     }
     echo '</div>';
 }
@@ -52,7 +52,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('motion', 'consultation') . ':</th>
                     <td>' .
-    Html::a($motion->getMyConsultation()->title, UrlHelper::createUrl('consultation/index')) . '</td>
+    Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')) . '</td>
                 </tr>';
 
 if ($motion->agendaItem) {
@@ -96,7 +96,7 @@ echo '</td>
 if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
     echo '<tr class="replacesMotion"><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
-    echo Html::a($motion->replacedMotion->getTitleWithPrefix(), $oldLink);
+    echo Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
     echo '</td></tr>';
 }
 

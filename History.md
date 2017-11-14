@@ -9,6 +9,12 @@
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
 
+## Version 3.7.5 (2017-11-15)
+
+- Security advisory X41-2017-011: Several XSS attacks have been fixed.
+
+Thanks to Eric Sesterhenn of [X41 D-SEC GmbH](https://www.x41-dsec.de/) for reporting this issue.
+
 ## Version 3.7.4 (2017-11-12)
 
 - Bugfix: It was not possible to set the parent motion in the admin backend

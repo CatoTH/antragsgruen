@@ -140,7 +140,7 @@ trait StdFunctionTrait
                 if ($link == '' || is_null($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
                 } else {
-                    $out .= '<li>' . Html::a($name, $link) . '</li>';
+                    $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
                 }
             }
             $out .= '</ol>';

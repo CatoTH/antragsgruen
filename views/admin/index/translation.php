@@ -59,7 +59,7 @@ foreach (MessageSource::getTranslatableCategories() as $catId => $catName) {
         echo '[<strong>' . Html::encode($catName) . '</strong>] ';
     } else {
         $link = UrlHelper::createUrl(['admin/index/translation', 'category' => $catId]);
-        echo '[' . Html::a($catName, $link) . '] ';
+        echo '[' . Html::a(Html::encode($catName), $link) . '] ';
     }
 }
 

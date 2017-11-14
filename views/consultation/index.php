@@ -87,7 +87,7 @@ if ($myself) {
                 echo "<span style='text-decoration: line-through;'>";
             }
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
-            echo Html::a($motion->getTitleWithPrefix(), $motionLink, ['class' => 'motion' . $motion->id]);
+            echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
             if ($motionSupport->role == MotionSupporter::ROLE_INITIATOR) {
                 echo ' (' . Yii::t('motion', 'Initiator') . ')';
             }

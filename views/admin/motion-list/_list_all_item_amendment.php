@@ -44,7 +44,7 @@ if ($lastMotion && $entry->motionId == $lastMotion->id) {
 }
 $title = (trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-');
 if ($editUrl) {
-    echo Html::a($title, $editUrl);
+    echo Html::a(Html::encode($title), $editUrl);
 } else {
     echo Html::encode($title);
 }
