@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.7.5
+## Version 3.7.5 (2017-11-15)
 
 - Security advisory X41-2017-011: Several XSS attacks have been fixed.
 

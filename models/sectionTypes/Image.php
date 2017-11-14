@@ -90,7 +90,7 @@ class Image extends ISectionType
         }
 
         $tmpfile = $app->tmpDir . uniqid('image-conv-') . "." . $targetType;
-        exec($app->imageMagickPath . " -strip \"" . addslashes($filename) . "\" \"" . addslashes($tmpfile) . "\"");
+        exec($app->imageMagickPath . " -strip " . escapeshellarg($filename) . " " . escapeshellarg($tmpfile));
         $converted = (file_exists($tmpfile) ? file_get_contents($tmpfile) : '');
         unlink($tmpfile);
         return $converted;

@@ -441,11 +441,11 @@ class Exporter
 
         $cmd = $this->app->xelatexPath;
         $cmd .= ' -interaction=batchmode';
-        $cmd .= ' -output-directory="' . $this->app->tmpDir . '"';
+        $cmd .= ' -output-directory=' . escapeshellarg($this->app->tmpDir);
         if ($this->app->xdvipdfmx) {
-            $cmd .= ' -output-driver="' . $this->app->xdvipdfmx . '"';
+            $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
         }
-        $cmd .= ' "' . $filenameBase . '.tex"';
+        $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
 
         $cacheDepend = $str;
         foreach ($imageHashes as $file => $hash) {
