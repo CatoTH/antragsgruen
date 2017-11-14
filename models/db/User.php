@@ -292,7 +292,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey == $authKey;
+        return hash_equals($this->authKey, $authKey);
     }
 
     /**
@@ -346,13 +346,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function checkEmailConfirmationCode($code)
     {
-        if ($code == $this->createEmailConfirmationCode()) {
+        if (hash_equals($code, $this->createEmailConfirmationCode())) {
             return true;
         }
-        if ($code == $this->createEmailConfirmationCode(date('Ymd', time() - 24 * 3600))) {
+        if (hash_equals($code, $this->createEmailConfirmationCode(date('Ymd', time() - 24 * 3600)))) {
             return true;
         }
-        if ($code == $this->createEmailConfirmationCode(date('Ymd', time() - 2 * 24 * 3600))) {
+        if (hash_equals($code, $this->createEmailConfirmationCode(date('Ymd', time() - 2 * 24 * 3600)))) {
             return true;
         }
         return false;
@@ -507,7 +507,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (!$user) {
             return null;
         }
-        if ($user->getNotificationUnsubscribeCode() == $code) {
+        if (hash_equals($user->getNotificationUnsubscribeCode(), $code)) {
             return $user;
         } else {
             return null;
