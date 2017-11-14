@@ -24,7 +24,7 @@ if (count($todo) > 0) {
     foreach ($todo as $do) {
         echo '<li class="' . Html::encode($do->todoId) . '">';
         echo '<div class="action">' . Html::encode($do->action) . '</div>';
-        echo Html::a($do->title, $do->link);
+        echo Html::a(Html::encode($do->title), $do->link);
         if ($do->description) {
             echo '<div class="description">' . Html::encode($do->description) . '</div>';
         }

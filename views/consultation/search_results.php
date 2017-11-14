@@ -39,7 +39,7 @@ if (count($results) == 0) {
         echo '<li class="' . Html::encode($result->id) . '">';
         echo '<span class="type">' . Html::encode($result->typeTitle) . '</span>';
         $title = (trim($result->title) != '' ? $result->title : '-');
-        echo Html::a($title, $result->link, ['class' => 'title']);
+        echo Html::a(Html::encode($title), $result->link, ['class' => 'title']);
         echo '</li>';
     }
     echo '</ul>

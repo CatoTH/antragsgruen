@@ -58,7 +58,7 @@ echo '<li>' . \Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
     $sectionsUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
-    echo Html::a($motionType->titlePlural, $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
+    echo Html::a(Html::encode($motionType->titlePlural), $sectionsUrl, ['class' => 'motionType' . $motionType->id]);
     echo '</li>';
 }
 echo '<li class="secondary motionTypeCreate">';

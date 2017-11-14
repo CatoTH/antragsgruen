@@ -38,7 +38,7 @@ foreach ($collissions as $amendmentId => $sections) {
         '</h2>';
     echo '<div class="content">';
     echo '<div class="amendmentBy">' .
-        '(' . \Yii::t('amend', 'merge1_submitted_by') . ': ' . $amendment->getInitiatorsStr() . ', ' .
+        '(' . \Yii::t('amend', 'merge1_submitted_by') . ': ' . Html::encode($amendment->getInitiatorsStr()) . ', ' .
         \Yii::t('amend', 'merge1_submitted_on') . ': ' . Tools::formatMysqlDate($amendment->getDate()) . ')</div>';
     foreach ($sections as $sectionId => $paragraphs) {
         foreach ($paragraphs as $paragraphNo => $para) {

@@ -93,7 +93,7 @@ foreach ($tagIds as $tagId) {
         }
         echo '<td class="titleCol">';
         echo '<div class="titleLink">';
-        echo Html::a($motion->title, UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
+        echo Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
             echo Html::a(
@@ -128,7 +128,7 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';
-            $title = \Yii::t('amend', 'amendment_for') . ' ' . $motion->titlePrefix;
+            $title = \Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($amend->status == Amendment::STATUS_WITHDRAWN) {
                 echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';

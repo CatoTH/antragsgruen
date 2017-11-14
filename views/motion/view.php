@@ -205,7 +205,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
             }
             $amendLink  = UrlHelper::createAmendmentUrl($amend);
             $amendStati = Amendment::getStati();
-            echo Html::a($aename, $amendLink, ['class' => 'amendment' . $amend->id]);
+            echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
             echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStati[$amend->status]) . ')';
             echo '</li>';
         }

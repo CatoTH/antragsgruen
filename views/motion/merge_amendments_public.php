@@ -30,11 +30,11 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
         <table class="motionDataTable">
             <tr>
                 <th><?= Yii::t('motion', 'consultation') ?>:</th>
-                <td><?= Html::a($motion->getMyConsultation()->title, UrlHelper::createUrl('consultation/index')) ?></td>
+                <td><?= Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')) ?></td>
             </tr>
             <tr>
                 <th><?= Html::encode($motion->motionType->titleSingular) ?>:</th>
-                <td><?= Html::a($motion->getTitleWithPrefix(), UrlHelper::createMotionUrl($motion)) ?></td>
+                <td><?= Html::a(Html::encode($motion->getTitleWithPrefix()), UrlHelper::createMotionUrl($motion)) ?></td>
             </tr>
             <tr>
                 <th><?= \Yii::t('amend', 'merge_draft_date') ?></th>

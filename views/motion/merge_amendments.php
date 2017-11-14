@@ -192,7 +192,7 @@ foreach ($motion->getVisibleAmendments(false) as $amendment) {
         $str          = '<div class="amendment content"><h3>';
         $str          .= str_replace(
             ['%TITLE%', '%INITIATOR%'],
-            [$amendment->titlePrefix, $amendment->getInitiatorsStr()],
+            [Html::encode($amendment->titlePrefix), Html::encode($amendment->getInitiatorsStr())],
             \Yii::t('amend', 'merge_amend_by')
         );
         $str          .= '</h3>';

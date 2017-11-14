@@ -18,7 +18,7 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
         $cssClass .= $motionTypeId;
     }
     $attrs = ['class' => $cssClass, 'data-href-tpl' => $linkTpl];
-    return '<li class="exportLink">' . Html::a($title, $link, $attrs) . '</li>';
+    return '<li class="exportLink">' . Html::a(Html::encode($title), $link, $attrs) . '</li>';
 };
 
 $creatableMotions = [];
@@ -45,7 +45,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     foreach ($creatableMotions as $motionType) {
                         $createUrl = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
                         $cssClass  = 'createMotion' . $motionType->id;
-                        echo '<li>' . Html::a($motionType->titleSingular, $createUrl, ['class' => $cssClass]) . '</li>';
+                        echo '<li>' . Html::a(Html::encode($motionType->titleSingular), $createUrl, ['class' => $cssClass]) . '</li>';
                     }
                     ?>
                 </ul>
@@ -151,7 +151,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
                         ['admin/motion/openslides', 'motionTypeId' => $motionType->id]
                     );
-                    $title         = 'V1: ' . $motionType->titlePlural;
+                    $title         = 'V1: ' . Html::encode($motionType->titlePlural);
                     echo '<li>' .
                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
                         '</li>';
@@ -173,7 +173,7 @@ foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
                         ['admin/motion/openslides', 'motionTypeId' => $motionType->id, 'version' => '2']
                     );
-                    $title         = 'V2: ' . $motionType->titlePlural;
+                    $title         = 'V2: ' . Html::encode($motionType->titlePlural);
                     echo '<li>' .
                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
                         '</li>';

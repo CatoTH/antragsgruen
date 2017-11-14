@@ -22,7 +22,7 @@ echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
 echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
-echo Html::a((trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
+echo Html::a(Html::encode(trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
 echo '</span></td>';
 echo '<td>' . Html::encode($motionStati[$entry->status]);
 if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {

@@ -32,7 +32,7 @@ if ($lastMotion && $entry->motionId == $lastMotion->id) {
     echo "&#8627;";
 }
 $title = (trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-');
-echo Html::a($title, $editUrl) . '</span></td>';
+echo Html::a(Html::encode($title), $editUrl) . '</span></td>';
 echo '<td>' . Html::encode($amendmentStati[$entry->status]);
 if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
