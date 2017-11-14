@@ -52,7 +52,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('motion', 'consultation') . ':</th>
                     <td>' .
-    Html::a($motion->getMyConsultation()->title, UrlHelper::createUrl('consultation/index')) . '</td>
+    Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')) . '</td>
                 </tr>';
 
 if ($motion->agendaItem) {

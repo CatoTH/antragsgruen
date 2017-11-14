@@ -59,7 +59,7 @@ echo '<table class="motionDataTable">
                 <tr>
                     <th>' . Yii::t('amend', 'motion') . ':</th>
                     <td>' .
-    Html::a($motion->title, UrlHelper::createMotionUrl($motion)) . '</td>
+    Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)) . '</td>
                 </tr>
                 <tr>
                     <th>' . Yii::t('amend', 'initiator'), ':</th>
