@@ -131,7 +131,7 @@ if ($hasMotions) {
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
-            $name       = '<span class="' . $motion->getIconCSSClass() . '"></span>' .
+            $name       = '<span class="' . Html::encode($motion->getIconCSSClass()) . '"></span>' .
                 HTMLTools::encodeAddShy($motion->title);
             $html       .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }

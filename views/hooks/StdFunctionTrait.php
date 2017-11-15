@@ -177,10 +177,10 @@ trait StdFunctionTrait
         $out .= '<span class="version">';
         if (\Yii::$app->language == 'de') {
             $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
-                Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         } else {
             $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
-                Html::a(ANTRAGSGRUEN_VERSION, ANTRAGSGRUEN_HISTORY_URL);
+                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         }
         $out .= '</span>';
 
@@ -200,10 +200,10 @@ trait StdFunctionTrait
         $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($link) . '"
                     title="' . Html::encode($description) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
             '</a></div></div>';
         $this->layout->menusSmallAttachment =
             '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
     }
 }

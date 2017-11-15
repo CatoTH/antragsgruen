@@ -236,4 +236,10 @@ run run test:unit```
 npm run test:acceptance MotionCreateCept```
 
 
+Reporting security issues
+-------------------------
+
+If you found a security problem with Antragsgrün, please report it to: tobias@hoessl.eu. If you want to encrypt the mail, you can use this [PGP-Key](https://www.hoessl.eu/PGP-Key-tobias-hoessl-eu-99C2D2A2.txt).
+
+
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)

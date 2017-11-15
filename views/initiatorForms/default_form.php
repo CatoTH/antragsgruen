@@ -29,14 +29,14 @@ $layout->loadDatepicker();
 $locale = Tools::getCurrentDateLocale();
 
 if ($initiator->personType == ISupporter::PERSON_NATURAL) {
-    $prePrimaryName = Html::encode($initiator->name);
+    $prePrimaryName = $initiator->name;
 } else {
-    $prePrimaryName = Html::encode($initiator->organization);
+    $prePrimaryName = $initiator->organization;
 }
-$preOrga        = Html::encode($initiator->organization);
-$preContactName = Html::encode($initiator->contactName);
-$preEmail       = Html::encode($initiator->contactEmail);
-$prePhone       = Html::encode($initiator->contactPhone);
+$preOrga        = $initiator->organization;
+$preContactName = $initiator->contactName;
+$preEmail       = $initiator->contactEmail;
+$prePhone       = $initiator->contactPhone;
 $preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 
 $currentUser = \app\models\db\User::getCurrentUser();
@@ -114,7 +114,7 @@ echo '<span class="only-organization">' . Yii::t('initiator', 'nameOrga') . '</s
 echo '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
-        value="' . $prePrimaryName . '" autocomplete="name" required>
+        value="' . Html::encode($prePrimaryName) . '" autocomplete="name" required>
   </div>
 </div>';
 
@@ -122,7 +122,7 @@ if ($hasOrganizations) {
     echo '<div class="form-group organizationRow">
   <label class="col-sm-3 control-label" for="initiatorOrga">' . Yii::t('initiator', 'orgaName') . '</label>
   <div class="col-sm-4">
-    <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . $preOrga . '">
+    <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]" value="' . Html::encode($preOrga) . '">
   </div>
 </div>';
 }
@@ -146,7 +146,7 @@ echo '<div class="form-group contactNameRow">
     '</label>
   <div class="col-sm-4">
     <input type="text" class="form-control" id="initiatorContactName" name="Initiator[contactName]"
-    value="' . $preContactName . '" autocomplete="name">
+    value="' . Html::encode($preContactName) . '" autocomplete="name">
   </div>
 </div>';
 
