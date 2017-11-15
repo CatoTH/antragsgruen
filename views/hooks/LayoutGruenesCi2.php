@@ -102,9 +102,9 @@ class LayoutGruenesCi2 extends LayoutHooks
         $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($link) . '"
                     title="' . Html::encode($description) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description .
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
             '</a></div></div>';
         $this->layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . $description . '</a>';
+            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
     }
 }
