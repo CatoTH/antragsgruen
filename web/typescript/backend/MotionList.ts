@@ -33,9 +33,10 @@ class MotionList {
                     if (substrRegex.test(str)) {
                         // the typeahead jQuery plugin expects suggestions to a
                         // JavaScript object, refer to typeahead docs for more info
-                        matches.push({value: str});
+                        matches.push(str);
                     }
                 });
+
                 cb(matches);
             };
 
