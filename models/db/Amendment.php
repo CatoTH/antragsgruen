@@ -1158,7 +1158,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFormattedProposalStatus()
     {
-        if ($this->proposalStatus === null) {
+        if ($this->proposalStatus === null || $this->proposalStatus == 0) {
             return '';
         }
         switch ($this->proposalStatus) {

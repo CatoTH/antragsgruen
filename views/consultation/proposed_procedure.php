@@ -23,7 +23,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 ?>
     <div class="content">
-        ...
+
     </div>
 <?php
 
