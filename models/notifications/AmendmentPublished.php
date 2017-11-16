@@ -71,7 +71,7 @@ class AmendmentPublished
         }
 
         $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-        $plain .= HTMLTools::toPlainText($html);
+        $plain = HTMLTools::toPlainText($html);
 
         try {
             MailTools::sendWithLog(

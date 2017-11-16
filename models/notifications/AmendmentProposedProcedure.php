@@ -47,17 +47,13 @@ class AmendmentProposedProcedure
             $body
         );
 
-        $html  = nl2br(Html::encode($plain));
-        $plain .= HTMLTools::toPlainText($html);
-
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
             $amendment->getMyConsultation()->site,
             trim($initiator[0]->contactEmail),
             null,
             str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
-            $plain,
-            $html
+            $plain
         );
     }
 }
