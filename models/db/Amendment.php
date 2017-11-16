@@ -1177,7 +1177,11 @@ class Amendment extends IMotion implements IRSSItem
                 return Html::encode($this->proposalComment);
                 break;
             default:
-                return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                if (isset(static::getProposalStatiAsVerbs()[$this->proposalStatus])) {
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                } else {
+                    return $this->proposalStatus . '?';
+                }
         }
     }
 
