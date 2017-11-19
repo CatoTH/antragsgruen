@@ -16,6 +16,7 @@ return [
     'index_motions'               => 'Anträge / Dokumente',
     'index_all_motions'           => 'Alle Anträge und Änderungsanträge',
     'index_export_ods'            => 'Spreadsheet',
+    'index_export_procedure'      => 'Verfahrensvorschlag',
     'index_export_ods_listall'    => 'Spreadsheet: Anträge, Kontakte',
     'index_motion_create'         => 'Neu anlegen',
     'index_export_excel'          => 'Excel',

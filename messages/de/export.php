@@ -38,4 +38,8 @@ return [
     'incl_inactive'         => 'Inaktive',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Änderungsanträge',
+    'motion_by'             => 'von',
+    'pp_title'              => 'Verfahrensvorschlag',
+    'pp_changes'            => 'Vorgeschlagener Text',
+    'pp_explanation'        => 'Erklärung',
 ];

@@ -39,19 +39,17 @@ foreach ($motions as $motion) {
 if ($hasAgendaItems) {
     $COL_AGENDA_ITEM = $currCol++;
 }
-$COL_PREFIX     = $currCol++;
-$COL_INITIATOR  = $currCol++;
-$COL_FIRST_LINE = $currCol++;
-$COL_STATUS     = $currCol++;
-$COL_CHANGE     = $currCol++;
-$COL_REASON     = $currCol++;
-$COL_CONTACT    = $currCol++;
-$COL_PROCEDURE  = $currCol++;
+$COL_PREFIX      = $currCol++;
+$COL_INITIATOR   = $currCol++;
+$COL_FIRST_LINE  = $currCol++;
+$COL_PROCEDURE   = $currCol++;
+$COL_CHANGES     = $currCol++;
+$COL_EXPLANATION = $currCol++;
 
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amendments'));
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_title'));
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -75,22 +73,16 @@ $doc->setColumnWidth($COL_INITIATOR, 6);
 $doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'line'));
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
 
-$doc->setCell(2, $COL_STATUS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'status'));
-$doc->setColumnWidth($COL_STATUS, 3);
-
-$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_change'));
-$doc->setColumnWidth($COL_CHANGE, 10);
-
-$doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_reason'));
-$doc->setColumnWidth($COL_REASON, 10);
-
-$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'contact'));
-$doc->setColumnWidth($COL_CONTACT, 6);
-
 $doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
 
-$doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
+$doc->setCell(2, $COL_CHANGES, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_changes'));
+$doc->setColumnWidth($COL_CHANGES, 6);
+
+$doc->setCell(2, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_explanation'));
+$doc->setColumnWidth($COL_EXPLANATION, 6);
+
+$doc->drawBorder(1, $firstCol, 2, $COL_EXPLANATION, 1.5);
 
 
 // Amendments
@@ -139,40 +131,30 @@ foreach ($motions as $motion) {
         }
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
-        $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
-        $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
-        $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());
-        $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
-        $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $changeExplanation);
 
-        $change = '';
-        if ($amendment->changeEditorial != '') {
-            $change .= '<h4>' . \Yii::t('amend', 'editorial_hint') . '</h4><br>';
-            $change .= $amendment->changeEditorial;
-        }
-        foreach ($amendment->getSortedSections(false) as $section) {
-            $change .= $section->getSectionType()->getAmendmentODS();
-        }
-        $change = HTMLTools::correctHtmlErrors($change);
-        $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
+        $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
 
         $proposal = $amendment->getFormattedProposalStatus();
+        $changes  = '';
         if ($amendment->hasAlternativeProposaltext()) {
             $reference = $amendment->proposalReference;
             /** @var AmendmentSection[] $sections */
-            $sections = $amendment->proposalReference->getSortedSections(false);
+            $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
                 $originalData = $section->getOriginalMotionSection()->data;
                 $newData      = $section->data;
-                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                $changes     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
             }
         }
         $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+        $doc->setCell($row, $COL_CHANGES, Spreadsheet::TYPE_HTML, $changes);
+
+        $doc->setCell($row, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, $amendment->proposalExplanation);
     }
 
-    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
+    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_EXPLANATION, 1.5);
     $row++;
 }
 

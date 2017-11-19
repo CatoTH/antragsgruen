@@ -134,6 +134,9 @@ foreach ($consultation->motionTypes as $motionType) {
                 $title = Yii::t('admin', 'index_export_ods');
                 echo $getExportLinkLi($title, 'admin/amendment/odslist', null, 'amendmentOds');
 
+                $title = Yii::t('admin', 'index_export_procedure');
+                echo $getExportLinkLi($title, 'admin/amendment/ods-proposed-procedure', null, 'proposedProcedure');
+
                 $title = \Yii::t('admin', 'index_pdf_collection');
                 echo $getExportLinkLi($title, 'amendment/pdfcollection', null, 'amendmentPDF');
 

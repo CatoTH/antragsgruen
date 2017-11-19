@@ -38,4 +38,8 @@ return [
     'incl_inactive'         => 'Incl. inactive',
     'btn_openslides'        => 'Openslides',
     'btn_amendments'        => 'Amendments',
+    'motion_by'             => 'by',
+    'pp_title'              => 'Proposed procedure',
+    'pp_changes'            => 'Proposed version',
+    'pp_explanation'        => 'Explanation',
 ];
