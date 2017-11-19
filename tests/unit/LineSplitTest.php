@@ -9,6 +9,29 @@ class LineSplitTest extends TestBase
 {
     use Specify;
 
+    /**
+     */
+    public function testWorkAfterManualLineBreaks()
+    {
+        $orig1 = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore';
+        $expect1 = [
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun ",
+            "tutlabore",
+        ];
+
+        $orig2 = '<p><strong>Eine Zeile zuvor</strong><br>' . "\n" . $orig1;
+        $expect2 = [
+            '<p><strong>Eine Zeile zuvor</strong><br>' . "\n",
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun ",
+            "tutlabore",
+        ];
+
+        $out = LineSplitter::splitHtmlToLines($orig1, 95, '');
+        $this->assertEquals($expect1, $out);
+
+        $out = LineSplitter::splitHtmlToLines($orig2, 95, '');
+        $this->assertEquals($expect2, $out);
+    }
 
     /**
      */
