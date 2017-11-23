@@ -36,12 +36,8 @@ foreach ($motions as $motion) {
     }
 }
 
-if ($hasAgendaItems) {
-    $COL_AGENDA_ITEM = $currCol++;
-}
 $COL_PREFIX      = $currCol++;
 $COL_INITIATOR   = $currCol++;
-$COL_FIRST_LINE  = $currCol++;
 $COL_PROCEDURE   = $currCol++;
 $COL_CHANGES     = $currCol++;
 $COL_EXPLANATION = $currCol++;
@@ -59,19 +55,11 @@ $doc->setMinRowHeight(1, 1.5);
 
 // Heading
 
-if ($hasAgendaItems) {
-    $doc->setCell(2, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'agenda_item'));
-    $doc->setCellStyle(2, $COL_AGENDA_ITEM, [], ['fo:font-weight' => 'bold']);
-}
-
 $doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
 $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
-
-$doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'line'));
-$doc->setColumnWidth($COL_FIRST_LINE, 3);
 
 $doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
@@ -85,11 +73,110 @@ $doc->setColumnWidth($COL_EXPLANATION, 6);
 $doc->drawBorder(1, $firstCol, 2, $COL_EXPLANATION, 1.5);
 
 
+$printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
+use ($COL_PREFIX, $COL_INITIATOR, $COL_CHANGES, $COL_PROCEDURE, $COL_EXPLANATION) {
+    $initiatorNames   = [];
+    $initiatorContacs = [];
+    foreach ($amendment->getInitiators() as $supp) {
+        $initiatorNames[] = $supp->getNameWithResolutionDate(false);
+        if ($supp->contactEmail != '') {
+            $initiatorContacs[] = $supp->contactEmail;
+        }
+        if ($supp->contactPhone != '') {
+            $initiatorContacs[] = $supp->contactPhone;
+        }
+    }
+
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
+    $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
+
+    $proposal = $amendment->getFormattedProposalStatus();
+    $changes  = '';
+    if ($amendment->hasAlternativeProposaltext()) {
+        $reference = $amendment->proposalReference;
+        /** @var AmendmentSection[] $sections */
+        $sections = $reference->getSortedSections(false);
+        foreach ($sections as $section) {
+            $firstLine    = $section->getFirstLineNumber();
+            $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+            $originalData = $section->getOriginalMotionSection()->data;
+            $newData      = $section->data;
+            $changes      .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+        }
+    }
+    $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+    $doc->setCell($row, $COL_CHANGES, Spreadsheet::TYPE_HTML, $changes);
+
+    $doc->setCell($row, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, $amendment->proposalExplanation);
+};
+
 // Amendments
 
 $row = 3;
 
+$handledMotions = [];
+
+
+$agendaItems = \app\models\db\ConsultationAgendaItem::getSortedFromConsultation($consultation);
+foreach ($agendaItems as $agendaItem) {
+    $hasAmendments = false;
+    foreach ($agendaItem->getVisibleMotions($withdrawn) as $motion) {
+        if (count($motion->getVisibleAmendments($withdrawn)) > 0) {
+            $hasAmendments = true;
+        }
+        $handledMotions[] = $motion->id;
+    }
+    if (!$hasAmendments) {
+        continue;
+    }
+
+    $doc->setMinRowHeight($row, 2);
+
+    $row++;
+    $maxRows        = 1;
+    $firstAgendaRow = $row;
+
+    $styles = ['fo:wrap-option' => 'no-wrap', 'fo:font-size' => '12pt', 'fo:font-weight' => 'bold'];
+    $title = $agendaItem->getShownCode(true) . ' ' . $agendaItem->title;
+    $doc->setCellStyle($row, $COL_PREFIX, null, $styles);
+    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $title, null, $styles);
+    $doc->setMinRowHeight($row, 1.4);
+
+    foreach ($agendaItem->getVisibleMotions($withdrawn) as $motion) {
+        $amendments = $motion->getVisibleAmendments($withdrawn);
+        if (count($amendments) === 0) {
+            continue;
+        }
+
+        $initiatorNames = [];
+        foreach ($motion->getInitiators() as $supp) {
+            $initiatorNames[] = $supp->getNameWithResolutionDate(false);
+        }
+
+        $row++;
+        $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
+        $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
+        $title = HTMLTools::correctHtmlErrors($title);
+        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
+        foreach ($amendments as $amendment) {
+            $row++;
+            $printAmendment($doc, $amendment, $row);
+        }
+    }
+
+    $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_EXPLANATION, 1.5);
+    $row++;
+}
+
+
+// Output the motions that are not assigned to an agenda item
+
 foreach ($motions as $motion) {
+    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
+    if (in_array($motion->id, $handledMotions) || count($amendments) === 0) {
+        continue;
+    }
+
     $doc->setMinRowHeight($row, 2);
 
     $row++;
@@ -103,55 +190,12 @@ foreach ($motions as $motion) {
 
     $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
     $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
-    if ($hasAgendaItems && $motion->agendaItem) {
-        $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
-    }
     $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
     foreach ($amendments as $amendment) {
         $row++;
-
-        $initiatorNames   = [];
-        $initiatorContacs = [];
-        foreach ($amendment->getInitiators() as $supp) {
-            $initiatorNames[] = $supp->getNameWithResolutionDate(false);
-            if ($supp->contactEmail != '') {
-                $initiatorContacs[] = $supp->contactEmail;
-            }
-            if ($supp->contactPhone != '') {
-                $initiatorContacs[] = $supp->contactPhone;
-            }
-        }
-        $firstLine = $amendment->getFirstDiffLine();
-
-        if ($hasAgendaItems && $motion->agendaItem) {
-            $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
-        }
-        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
-        $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
-
-        $doc->setCell($row, $COL_FIRST_LINE, Spreadsheet::TYPE_NUMBER, $firstLine);
-
-        $proposal = $amendment->getFormattedProposalStatus();
-        $changes  = '';
-        if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->proposalReference;
-            /** @var AmendmentSection[] $sections */
-            $sections = $reference->getSortedSections(false);
-            foreach ($sections as $section) {
-                $firstLine    = $section->getFirstLineNumber();
-                $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                $originalData = $section->getOriginalMotionSection()->data;
-                $newData      = $section->data;
-                $changes     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
-            }
-        }
-        $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
-        $doc->setCell($row, $COL_CHANGES, Spreadsheet::TYPE_HTML, $changes);
-
-        $doc->setCell($row, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, $amendment->proposalExplanation);
+        $printAmendment($doc, $amendment, $row);
     }
 
     $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_EXPLANATION, 1.5);
