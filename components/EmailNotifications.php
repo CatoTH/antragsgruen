@@ -13,7 +13,7 @@ class EmailNotifications
 {
     /**
      * @param Motion $motion
-     * @throws \app\models\exceptions\MailNotSent
+     * @throws \app\models\exceptions\Internal
      */
     public static function sendMotionSubmissionConfirm(Motion $motion)
     {
@@ -72,7 +72,7 @@ class EmailNotifications
 
     /**
      * @param Motion $motion
-     * @throws \app\models\exceptions\MailNotSent
+     * @throws \app\models\exceptions\Internal
      */
     public static function sendMotionOnPublish(Motion $motion)
     {
@@ -153,6 +153,7 @@ class EmailNotifications
 
     /**
      * @param Amendment $amendment
+     * @throws \app\models\exceptions\Internal
      */
     public static function sendAmendmentSubmissionConfirm(Amendment $amendment)
     {
@@ -188,6 +189,9 @@ class EmailNotifications
 
             $plain = str_replace('%LINK%', $amendmentLink, $plain);
             $html  = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
+
+            $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
+            $html  = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
 
             try {
                 MailTools::sendWithLog(
