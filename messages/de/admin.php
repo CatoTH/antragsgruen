@@ -156,7 +156,7 @@ return [
     'con_pdf_intro_place'     => '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,' . "\n" .
         '01.-03. Dezember 2006. Kölnmesse, Köln-Deutz',
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
-<small style="margin-left: 20px; display: block;">(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.)
+<small class="conPrefixHide">(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.)
 müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt.
 Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>',
     'con_fb_img'              => 'Facebook-Bild',
@@ -169,7 +169,7 @@ Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge 
     'con_feeds_sidebar'       => 'Feeds in der Sidebar anzeigen',
     'con_minimalistic'        => '<strong>Minimalistische Ansicht</strong><br>
 <small style="margin-left: 20px;">Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>',
-    'con_single_motion_mode'  => 'Es wird nur <string>ein einziger Antrag</string> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',
+    'con_single_motion_mode'  => 'Es wird nur <strong>ein einziger Antrag</strong> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',
     'con_force_motion'        => 'Dieser Antrag ist',
     'con_line_number_global'  => '<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung',
     'con_motion_screening'    => '<strong>Freischaltung</strong> von Anträgen',

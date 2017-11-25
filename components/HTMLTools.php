@@ -122,6 +122,28 @@ class HTMLTools
     }
 
     /**
+     * Used for cleaning up the HTML entered in the translation tool.
+     * Fixes HTML problems, removes JavaScript, but allows some placeholders in the HREF of links.
+     *
+     * @param string $html
+     * @returns string
+     */
+    public static function cleanHtmlTranslationString($html)
+    {
+        $html = static::correctHtmlErrors($html);
+
+        $html = preg_replace_callback('/href\s*=([\'"]).*\\1/siuU', function ($matches) {
+            $part = $matches[0];
+            $part = str_replace('%25URL%25', '%URL%', $part);
+            $part = str_replace('%25HOME%25', '%HOME%', $part);
+            $part = str_replace('%25SITE_URL%25', '%SITE_URL%', $part);
+            return $part;
+        }, $html);
+
+        return $html;
+    }
+
+    /**
      * @param string $html
      * @return string
      */

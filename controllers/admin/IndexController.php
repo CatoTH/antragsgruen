@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -213,7 +214,7 @@ class IndexController extends AdminBase
                         if ($val == '') {
                             $text->delete();
                         } else {
-                            $text->text = $val;
+                            $text->text = HTMLTools::cleanHtmlTranslationString($val);
                             $text->save();
                         }
                         $found = true;
@@ -224,7 +225,7 @@ class IndexController extends AdminBase
                     $text->consultationId = $consultation->id;
                     $text->category       = $category;
                     $text->textId         = $key;
-                    $text->text           = $val;
+                    $text->text           = HTMLTools::cleanHtmlTranslationString($val);
                     $text->editDate       = date('Y-m-d H:i:s');
                     $text->save();
                 }

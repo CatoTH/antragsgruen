@@ -3,12 +3,9 @@
 namespace unit;
 
 use app\models\amendmentNumbering\GlobalCompact;
-use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\db\Amendment;
-use Codeception\Util\Autoload;
 use app\models\db\Consultation;
 use app\models\db\Motion;
-use Yii;
 use Codeception\Specify;
 
 class ConsultationFindMotionTest extends DBTestBase

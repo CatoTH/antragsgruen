@@ -167,8 +167,8 @@ return [
     'con_title_motions'       => 'Motions',
     'con_feeds_sidebar'       => 'Show feeds in the sidebar',
     'con_minimalistic'        => '<strong>Minimalistic UI</strong><br>
-<small style="margin-left: 20px;">The login button and the menu will be hidden.</small>',
-    'con_single_motion_mode'  => 'Only a <string>single motion</string> is being discussed, no motion overview page will be shown.',
+<small class="conPrefixHide">The login button and the menu will be hidden.</small>',
+    'con_single_motion_mode'  => 'Only a <strong>single motion</strong> is being discussed, no motion overview page will be shown.',
     'con_force_motion'        => 'The following motion',
     'con_line_number_global'  => '<strong>Global line numbering</strong> throughout the whole consultation',
     'con_motion_screening'    => '<strong>Screening</strong> of motions',
