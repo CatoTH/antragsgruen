@@ -13,29 +13,12 @@
     overflow: visible;
   }
   .adminCard {
-    border-radius: 5px;
-    border: solid 1px #aaa;
-    background-color: #fafafa;
-    margin-bottom: 20px;
-    overflow: hidden;
-
-    header {
-      background-color: #eee;
-      border-bottom: solid 1px #aaa;
-      padding: 5px;
-      font-weight: bold;
-
-      .removeAdmin {
-        float: right;
-      }
+    .removeAdmin {
+      float: right;
     }
-    main {
-      padding: 5px;
-
-      label {
-        display: inline-block;
-        margin-right: 20px;
-      }
+    label {
+      display: inline-block;
+      margin-right: 20px;
     }
   }
 
@@ -83,7 +66,7 @@ label.legend {
   h3 {
     font-size: 18px;
   }
-  > ul > li {
+  .adminMenuList > li {
     font-weight: bold;
     margin-top: 20px;
     &.secondary {
@@ -98,36 +81,42 @@ label.legend {
     font-weight: normal;
     font-style: italic;
   }
-  .exportList {
-    display: inline;
-    padding: 0;
-    list-style-type: none;
-    > li {
-      font-weight: normal;
-      display: inline-block;
-      margin-right: 10px;
-      &:after {
-        content: "\002a";
-        @extend .glyphicon;
-        margin-left: 10px;
-        font-size: 0.5em;
-        color: #444;
-        line-height: 17px;
-        vertical-align: middle;
-        display: inline-block;
-        padding-bottom: 3px;
-      }
-      &:last-child:after {
-        content: "";
-      }
-    }
-  }
 
-  .del-site-caller {
+  .delSiteCaller {
     text-align: right;
     button {
       color: red;
     }
+  }
+  .adminIndexSecondary {
+    padding-bottom: 10px;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .adminIndexHolder {
+    display: flex;
+    flex-direction: row;
+    > *:first-child {
+      flex: 0.7;
+    }
+    > *:last-child {
+      flex: 0.3;
+    }
+    .adminIndexSecondary {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 799px) {
+  .adminIndexSecondary {
+    margin-top: 50px;
   }
 }
 
@@ -716,5 +705,34 @@ label.legend {
   #fullTextHolder {
     @include clearfix();
     padding-left: 25px;
+  }
+}
+
+.adminCard {
+  border-radius: $btn-border-radius-base;
+  border: solid 1px #aaa;
+  background-color: #fafafa;
+  margin-bottom: 20px;
+  overflow: hidden;
+
+  header {
+    background-color: #eee;
+    border-bottom: solid 1px #aaa;
+    padding: 5px;
+    font-weight: bold;
+
+    h1, h2, h3 {
+      margin: 0;
+      padding: 0;
+      font-size: inherit;
+    }
+  }
+  main {
+    padding: 5px;
+  }
+}
+.adminCardSupport {
+  main {
+    font-size: 0.9em;
   }
 }

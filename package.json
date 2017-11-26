@@ -37,7 +37,7 @@
         "pa11y": "^4.13.1",
         "pdfjs-dist": "^1.10.97",
         "requirejs": "^2.3.5",
-        "sortablejs": "^1.6.1",
+        "sortablejs": "^1.7.0",
         "typeahead.js": "^0.11.1",
         "typescript": "^2.6.1"
     },

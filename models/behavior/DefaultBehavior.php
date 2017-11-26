@@ -1,6 +1,8 @@
 <?php
 namespace app\models\behavior;
 
+use app\models\db\Consultation;
+
 class DefaultBehavior
 {
     /**
@@ -19,5 +21,26 @@ class DefaultBehavior
     public static function getManagerOldSidebarSites($sites)
     {
         return $sites;
+    }
+
+    /**
+     * Is shown at the right side of the main settings page
+     *
+     * @param Consultation $consultation
+     * @return string
+     */
+    public static function getAdminIndexHint(Consultation $consultation)
+    {
+        return '';
+    }
+
+    /**
+     * Is shown at the top of the manager page, mainly to promote current consultations
+     *
+     * @return string
+     */
+    public static function getManagerCurrentHint()
+    {
+        return '';
     }
 }

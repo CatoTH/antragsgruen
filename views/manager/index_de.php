@@ -35,6 +35,10 @@ $params = \Yii::$app->params;
     </p>
 </div>
 
+<?php
+echo $this->context->getParams()->getBehaviorClass()->getManagerCurrentHint();
+?>
+
 <h2 id="funktionen" class="green">Welche Funktionen bietet Antragsgrün?</h2>
 
 <div class="content infoSite">
@@ -122,11 +126,11 @@ $params = \Yii::$app->params;
         Benötigt wird nur ein Zugang beim Grünen Netz bzw. beim Wurzelwerk.
     </p>
 
-    <p>
+    <p id="support">
         <strong>Fehlt eine Funktion? Professioneller Support und Anpassungen gewünscht?</strong><br>
-        Sind speziellere programmiertechnische Anpassungen nötig, oder sollen wir Antragsgrün auf einer
-        <strong>eigenen Domain</strong> hosten, können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen
-        sind wir immer
+        Sind speziellere programmiertechnische Anpassungen nötig, garantierte Verfügbarkeit während einem bestimmten
+        Zeitraum, oder sollen wir Antragsgrün auf einer <strong>eigenen Domain</strong> hosten,
+        können wir diese auf Stundensatzbasis umsetzen. Bei Fragen und Wünschen sind wir immer
         <a href="#wer" onClick="$('#wer').scrollintoview({top_offset: -50}); return false;">erreichbar</a>.
     </p>
 </div>
