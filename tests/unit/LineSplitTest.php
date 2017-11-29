@@ -13,17 +13,18 @@ class LineSplitTest extends TestBase
      */
     public function testWorkAfterManualLineBreaks()
     {
-        $orig1 = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore';
+        $orig1 = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore</p>';
         $expect1 = [
-            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun ",
-            "tutlabore",
+            "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun ",
+            "tutlabore</p>",
         ];
 
-        $orig2 = '<p><strong>Eine Zeile zuvor</strong><br>' . "\n" . $orig1;
+        $orig2 = '<p><strong>Eine Zeile zuvor</strong><br>' . "\n" .
+            "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore</p>";
         $expect2 = [
             '<p><strong>Eine Zeile zuvor</strong><br>' . "\n",
             "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun ",
-            "tutlabore",
+            "tutlabore</p>",
         ];
 
         $out = LineSplitter::splitHtmlToLines($orig1, 95, '');

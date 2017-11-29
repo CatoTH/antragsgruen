@@ -57,7 +57,7 @@ class LineSplitter
                         $lines[count($lines) - 1] .= "\n";
                     }
                     $currLine      = '';
-                    $currLineCount = 1;
+                    $currLineCount = 0;
                     continue;
                 }
                 if ($currChar == '<') {

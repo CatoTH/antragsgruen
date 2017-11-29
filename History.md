@@ -8,6 +8,7 @@
   - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
+- A bug in the line numbering after manual line breaks wa fixed
 
 ## Version 3.7.5 (2017-11-15)
 
