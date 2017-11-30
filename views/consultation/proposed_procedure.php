@@ -57,8 +57,8 @@ foreach ($data as $dataRow) {
                     <thead>
                     <tr>
                         <th class="prefix"><?= \Yii::t('con', 'proposal_table_amend') ?></th>
-                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
                         <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,6 +70,7 @@ foreach ($data as $dataRow) {
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
+                            <td><?= $amendment->getInitiatorsStr() ?></td>
                             <td>
                                 <?php
                                 echo $amendment->getFormattedProposalStatus();
@@ -79,7 +80,6 @@ foreach ($data as $dataRow) {
                                     echo '</div>';
                                 }
                                 ?></td>
-                            <td><?= $amendment->getInitiatorsStr() ?></td>
                         </tr>
                         <?php
                     }
@@ -104,8 +104,8 @@ foreach ($data as $dataRow) {
                     <thead>
                     <tr>
                         <th class="prefix"><?= \Yii::t('con', 'proposal_table_amend') ?></th>
-                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
                         <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -116,6 +116,7 @@ foreach ($data as $dataRow) {
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
+                            <td><?= $amendment->getInitiatorsStr() ?></td>
                             <td>
                                 <?php
                                 echo $amendment->getFormattedProposalStatus();
@@ -126,7 +127,6 @@ foreach ($data as $dataRow) {
                                     echo '</div>';
                                 }
                                 ?></td>
-                            <td><?= $amendment->getInitiatorsStr() ?></td>
                         </tr>
                         <?php
                     }
