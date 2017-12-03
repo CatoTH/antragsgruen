@@ -43,7 +43,12 @@ if (isset($msgAlert) && $msgAlert !== null) {
 
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
-    <h2><?= \Yii::t('amend', 'proposal_amend_title') ?></h2>
+    <h2>
+        <?= \Yii::t('amend', 'proposal_amend_title') ?>
+        <button class="pull-right btn-link closeBtn" title="<?= \Yii::t('amend', 'proposal_close') ?>">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+        </button>
+    </h2>
     <div class="holder">
         <section class="statusForm">
             <h3><?= \Yii::t('amend', 'proposal_status_title') ?></h3>

@@ -13,6 +13,9 @@ $I->gotoConsultationHome();
 $I->seeElement('.motionRow118');
 $I->loginAsProposalAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
+
+$I->dontSeeElement('#proposedChanges');
+$I->executeJS('$(".proposedChangesOpener button").click();');
 $I->seeElement('#proposedChanges');
 
 
@@ -44,7 +47,7 @@ $I->see('A small replacement', '#section_holder_2 ins');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace(/A small/, "A really small"))');
 $I->submitForm('#proposedChangeTextForm', [], 'save');
 $I->seeElement('.alert-success');
-
+$I->wait(1);
 
 $I->wantTo('make the proposal visible and notify the proposer of the amendment');
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
@@ -53,7 +56,8 @@ $I->executeJS('$("#votingBlockId").selectlist("selectByValue", "NEW").trigger("c
 $I->fillField('#newBlockTitle', 'Voting 1');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);
-$I->see('Noch keine Bestätigung erfolgt', '#proposedChanges .notificationStatus');
+
+$I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId").selectlist("selectedItem").text'));
 
 

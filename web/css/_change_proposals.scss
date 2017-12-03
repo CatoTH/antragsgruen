@@ -1,3 +1,8 @@
+.proposedChangesOpener {
+  padding-left: calc(30% + 8px);
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
 
 #proposedChanges {
   background-color: #f8faf8;
@@ -10,6 +15,11 @@
     font-size: 18px;
     padding: 5px 10px;
     background-color: #ded;
+  }
+
+  .closeBtn {
+    margin-right: -10px;
+    margin-top: -2px;
   }
 
   .holder {

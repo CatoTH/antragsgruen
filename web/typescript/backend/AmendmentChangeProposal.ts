@@ -4,6 +4,7 @@ const STATUS_OBSOLETED_BY = 22;
 const STATUS_CUSTOM_STRING = 23;
 
 export class AmendmentChangeProposal {
+    private $openerBtn: JQuery;
     private $statusDetails: JQuery;
     private $visibilityInput: JQuery;
     private $votingStatusInput: JQuery;
@@ -14,6 +15,7 @@ export class AmendmentChangeProposal {
 
     constructor(private $widget: JQuery) {
         this.initElements();
+        this.initOpener();
         this.initStatusSetter();
         this.initCommentForm();
         this.initVotingBlock();
@@ -26,9 +28,30 @@ export class AmendmentChangeProposal {
         this.$visibilityInput = this.$widget.find('input[name=proposalVisible]');
         this.$votingStatusInput = this.$widget.find('input[name=votingStatus]');
         this.$votingBlockId = this.$widget.find('input[name=votingBlockId]');
+        this.$openerBtn = $('.proposedChangesOpener button');
         this.context = this.$widget.data('context');
         this.saveUrl = this.$widget.attr('action');
         this.csrf = this.$widget.find('input[name=_csrf]').val();
+    }
+
+    private initOpener() {
+        this.$openerBtn.click(() => {
+            this.$widget.removeClass('hidden');
+            this.$openerBtn.addClass('hidden');
+            localStorage.setItem('proposed_procedure_enabled', '1');
+        });
+        this.$widget.on('click', '.closeBtn', () => {
+            this.$widget.addClass('hidden');
+            this.$openerBtn.removeClass('hidden');
+            localStorage.setItem('proposed_procedure_enabled', '0');
+        });
+
+        if (localStorage.getItem('proposed_procedure_enabled') === '1') {
+            this.$widget.removeClass('hidden');
+            this.$openerBtn.addClass('hidden');
+        } else {
+            this.$widget.addClass('hidden');
+        }
     }
 
     private reinitAfterReload() {
@@ -44,13 +67,13 @@ export class AmendmentChangeProposal {
         data['_csrf'] = this.csrf;
 
         $.post(this.saveUrl, data, (ret) => {
-            this.$widget.addClass('showSaved').removeClass('isChanged');
-            window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
             if (ret['success']) {
                 let $content = $(ret['html']);
                 this.$widget.children().remove();
                 this.$widget.append($content.children());
                 this.reinitAfterReload();
+                this.$widget.addClass('showSaved').removeClass('isChanged');
+                window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
             } else if (ret['error']) {
                 alert(ret['error']);
             } else {
@@ -151,11 +174,11 @@ export class AmendmentChangeProposal {
 
     private initExplanation() {
         this.$widget.find('input[name=setPublicExplanation]').change((ev) => {
-           if ($(ev.target).prop('checked')) {
-               this.$widget.find('section.publicExplanation').removeClass('hidden');
-           } else {
-               this.$widget.find('section.publicExplanation').addClass('hidden');
-           }
+            if ($(ev.target).prop('checked')) {
+                this.$widget.find('section.publicExplanation').removeClass('hidden');
+            } else {
+                this.$widget.find('section.publicExplanation').addClass('hidden');
+            }
         });
         if (this.$widget.find('input[name=setPublicExplanation]').prop('checked')) {
             this.$widget.find('section.publicExplanation').removeClass('hidden');

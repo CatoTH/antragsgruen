@@ -99,6 +99,15 @@ echo '</div>';
 
 
 if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+    ?>
+    <div class="proposedChangesOpener">
+        <button class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <?= \Yii::t('amend', 'proposal_open') ?>
+        </button>
+    </div>
+    <?php
+
     echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'view']);
 }
 if ($amendment->proposalStatusNeedsUserFeedback() && $amendment->iAmInitiator()) {
