@@ -29,7 +29,6 @@ $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 $layout->loadFuelux();
-$layout->addAMDModule('backend/MotionEdit');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
@@ -74,7 +73,11 @@ if ($motion->isInScreeningProcess()) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'motionUpdateForm', 'enctype' => 'multipart/form-data']);
+echo Html::beginForm('', 'post', [
+    'id'                       => 'motionUpdateForm',
+    'enctype'                  => 'multipart/form-data',
+    'data-antragsgruen-widget' => 'backend/MotionEdit',
+]);
 
 echo '<div class="content form-horizontal fuelux">';
 
@@ -127,7 +130,7 @@ if (count($consultation->agendaItems) > 0) {
         $selections[$item->id] = $item->title;
     }
 
-    echo Html::dropDownList('motion[agendaItemId]', $motion->agendaItemId, $selections, $options);
+    echo HTMLTools::fueluxSelectbox('motion[agendaItemId]', $selections, $motion->agendaItemId, $options);
     echo '</div></div>';
 }
 ?>

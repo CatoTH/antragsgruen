@@ -1,0 +1,14 @@
+.hideIfEmpty:empty {
+  display: none;
+}
+
+html.no-touchevents .hoverHolder {
+  .hoverElement {
+    display: none;
+  }
+  &:hover {
+    .hoverElement {
+      display: inherit;
+    }
+  }
+}

@@ -1,0 +1,69 @@
+html {
+  height: 100%;
+}
+
+body {
+  font-family: $bodyFont;
+  height: 100%;
+
+  &.fullscreen {
+    .container {
+      width: auto;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+}
+
+blockquote {
+  margin: 3px 3px 3px 15px;
+  border-left: dotted 2px gray;
+  padding: 5px;
+}
+
+p, ul {
+  margin-bottom: 10px;
+}
+
+a {
+  text-decoration: $linkTextDecoration;
+  color: $colorLinksLight;
+  &:hover {
+    text-decoration: $linkTextDecoration;
+    color: lighten($colorLinksLight, 15%);
+  }
+  &.btn {
+    text-decoration: none;
+  }
+}
+
+del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
+  color: #880000;
+  text-decoration: line-through;
+}
+
+ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted {
+  color: #008800;
+  text-decoration: underline;
+}
+
+del.space, ins.space, del.formatting, ins.formatting {
+  font-style: italic;
+  font-size: 0.8em;
+  display: inline-block;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+label {
+  input, textarea {
+    font-weight: normal;
+  }
+}
+
+
+button.link {
+  background: transparent;
+  border: none;
+}
+

@@ -1,0 +1,196 @@
+.alert-info {
+  a {
+    color: darken($colorLinks, 5%);
+    &:hover {
+      color: lighten(darken($colorLinks, 5%), 15%);
+    }
+    &.btn.btn-primary {
+      color: white;
+      &:hover {
+        color: white;
+      }
+    }
+  }
+}
+
+.well {
+  padding: 0;
+  position: relative;
+
+  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  background-color: #fff;
+
+  @include border-radius(10px);
+  > :first-child {
+    @include border-radius-top();
+    .nav-header {
+      @include border-radius-top();
+    }
+  }
+  > :last-child {
+    @include border-radius-bottom();
+  }
+  h1 {
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
+    margin: -1px;
+    small {
+      color: white;
+      font-size: 12px;
+    }
+
+    &.stickyHeader {
+      position: sticky;
+      position: -webkit-sticky;
+      top: -5px;
+      background: rgba(64, 64, 64, 255);
+      z-index: 1;
+    }
+  }
+  h2.green, h3.green, .nav-header, legend.green {
+    @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
+    margin: -1px;
+  }
+  h2.lightgreen, h3.lightgreen {
+    margin: -1px;
+    @include linear-gradient(90deg, lighten($headingSecondaryBackground, 50%), lighten(lighten($headingSecondaryBackground, 2.3%), 50%));
+    padding: 5px 20px 5px;
+    font-family: $headingFont;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 18px;
+    text-transform: uppercase;
+  }
+
+  .content {
+    padding: 15px 20px 30px;
+    overflow: visible; // Wg. Datetimepicker, der über den Rand hinausgeht
+  }
+
+  > .alert {
+    margin: 20px;
+  }
+}
+
+.navbar {
+  margin-bottom: 0;
+
+  .navbar-inner {
+    background: none 0 0 transparent;
+    filter: none;
+    border: none;
+    box-shadow: none;
+    min-height: 0;
+    padding: 0;
+    text-align: right;
+    margin-top: 10px;
+    @include border-radius(0);
+  }
+
+  .nav {
+    margin: 0;
+    float: right;
+
+    li a {
+      display: inline;
+      padding: 0;
+      margin-left: 40px;
+      color: $menuLink;
+      font-family: $menuFont;
+      font-style: normal;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-size: 18px;
+      text-shadow: none;
+    }
+
+    li.active a,
+    li a:hover,
+    li a:focus,
+    li.active a:hover,
+    li.active a:focus {
+      background: none;
+      filter: none;
+      box-shadow: none;
+      color: $menuActive !important;
+      text-decoration: none;
+    }
+  }
+}
+
+.btn {
+  .span9 & {
+    margin: 10px 0 0 200px;
+  }
+  font-family: $buttonFont;
+  font-weight: bold;
+}
+
+.btn-primary {
+  text-transform: uppercase;
+  color: #fff;
+  @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
+}
+
+.table {
+  > thead > tr > th {
+    border-bottom: none;
+  }
+}
+
+.breadcrumb {
+  background: none;
+  filter: none;
+  @include border-radius(0);
+  margin: 30px 0 0;
+  padding: 0;
+
+  &, .active {
+    font-family: $menuFont;
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 15px;
+    color: $menuActive;
+  }
+
+  li {
+    text-shadow: none;
+  }
+
+  a {
+    color: $menuLink;
+  }
+}
+
+.label {
+  @extend label;
+}
+
+.toggle {
+  .toggle-group {
+    .btn {
+      border: none;
+    }
+  }
+}
+
+
+.fuelux {
+  .pillbox > .pill-group {
+    list-style-type: none;
+  }
+  .selectlist {
+    position: relative;
+    .btn.dropdown-toggle {
+      position: relative;
+    }
+  }
+
+}
+
+.fueluxSelectHolder {
+  position: relative; // fuelux
+}

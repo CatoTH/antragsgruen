@@ -107,5 +107,3 @@ class MotionEdit {
         });
     }
 }
-
-new MotionEdit();

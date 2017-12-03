@@ -1,47 +1,5 @@
 @charset "UTF-8";
 
-button.link {
-  background: transparent;
-  border: none;
-}
-
-.hideIfEmpty:empty {
-  display: none;
-}
-
-.fueluxSelectHolder {
-  position: relative; // fuelux
-}
-
-del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted, div.deleted, p.deleted {
-  color: #880000;
-  text-decoration: line-through;
-}
-
-ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted, div.inserted, p.inserted {
-  color: #008800;
-  text-decoration: underline;
-}
-
-del.space, ins.space, del.formatting, ins.formatting {
-  font-style: italic;
-  font-size: 0.8em;
-  display: inline-block;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-.label {
-  @extend label;
-}
-
-.toggle {
-  .toggle-group {
-    .btn {
-      border: none;
-    }
-  }
-}
 
 .texteditorBox {
   min-height: 100px;
@@ -795,25 +753,7 @@ ul.searchResults {
   }
 }
 
-@font-face {
-  font-family: FontAwesome;
-  src: url(../fonts/fontawesome-webfont.eot);
-  src: url(../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0) format('embedded-opentype'), url(../fonts/fontawesome-webfont.woff2) format('woff2'), url(../fonts/fontawesome-webfont.woff) format('woff'), url(../fonts/fontawesome-webfont.ttf) format('truetype'), url(../fonts/fontawesome-webfont.svg#fontawesomeregular) format('svg');
-  font-weight: 400;
-  font-style: normal
-}
 
-.fuelux {
-  .pillbox > .pill-group {
-    list-style-type: none;
-  }
-  .selectlist {
-    position: relative;
-    .btn.dropdown-toggle {
-      position: relative;
-    }
-  }
-}
 
 .amendmentAjaxTooltip {
   cursor: pointer;
@@ -865,9 +805,4 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
     float: right;
     margin-right: 10px;
   }
-}
-
-.goBackLink {
-  display: inline-block;
-  margin-bottom: 20px;
 }
