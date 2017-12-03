@@ -642,11 +642,16 @@ class HTMLTools
      * @param array $options
      * @param string $selected
      * @param array $attributes
+     * @param bool $fullSize
      * @return string
      */
-    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [])
+    public static function fueluxSelectbox($formName, $options, $selected = '', $attributes = [], $fullSize = false)
     {
-        $str = '<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist"';
+        $classes = 'btn-group selectlist';
+        if ($fullSize) {
+            $classes .= ' full-size';
+        }
+        $str = '<div class="' . $classes . '" data-resize="auto" data-initialize="selectlist"';
         foreach ($attributes as $attrName => $attrVal) {
             $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
         }

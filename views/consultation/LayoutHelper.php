@@ -60,7 +60,7 @@ class LayoutHelper
         echo '<p class="info">';
         echo Html::encode($motion->getInitiatorsStr());
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
-            echo ' <span class="status">(' . Html::encode($motion->getStati()[$motion->status]) . ')</span>';
+            echo ' <span class="status">(' . Html::encode($motion->getStatusNames()[$motion->status]) . ')</span>';
         }
         echo '</p>';
         echo "<span class='clearfix'></span>\n";
@@ -84,7 +84,7 @@ class LayoutHelper
                 echo '<span class="info">';
                 echo Html::encode($amend->getInitiatorsStr());
                 if ($amend->status == Motion::STATUS_WITHDRAWN) {
-                    echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';
+                    echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
                 }
                 echo '</span>' . "\n";
                 echo "<span class='clearfix'></span>\n";

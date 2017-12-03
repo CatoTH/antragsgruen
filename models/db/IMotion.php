@@ -85,7 +85,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getStati()
+    public static function getStatusNames()
     {
         return [
             static::STATUS_DELETED                      => \Yii::t('structure', 'STATUS_DELETED'),
@@ -123,7 +123,7 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatiAsVerbs()
     {
-        $return = static::getStati();
+        $return = static::getStatusNames();
         foreach ([
                      static::STATUS_DELETED           => \Yii::t('structure', 'STATUSV_DELETED'),
                      static::STATUS_WITHDRAWN         => \Yii::t('structure', 'STATUSV_WITHDRAWN'),
@@ -201,6 +201,34 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return int[]
+     */
+    public static function getStatiInvisibleForAdmins()
+    {
+        return [
+            static::STATUS_DELETED,
+            static::STATUS_MERGING_DRAFT_PUBLIC,
+            static::STATUS_MERGING_DRAFT_PRIVATE,
+            static::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getStatusNamesVisibleForadmins()
+    {
+        $names     = [];
+        $invisible = static::getStatiInvisibleForAdmins();
+        foreach (static::getStatusNames() as $id => $name) {
+            if (!in_array($id, $invisible)) {
+                $names[$id] = $name;
+            }
+        }
+        return $names;
+    }
+
+    /**
      * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
      * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
      * @throws InvalidConfigException if there is no primary key defined
@@ -227,12 +255,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function isVisibleForAdmins()
     {
-        return !in_array($this->status, [
-            static::STATUS_DELETED,
-            static::STATUS_MERGING_DRAFT_PUBLIC,
-            static::STATUS_MERGING_DRAFT_PRIVATE,
-            static::STATUS_PROPOSED_MODIFIED_AMENDMENT,
-        ]);
+        return !in_array($this->status, static::getStatiInvisibleForAdmins());
     }
 
     /**

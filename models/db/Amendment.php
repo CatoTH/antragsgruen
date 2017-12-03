@@ -1050,7 +1050,7 @@ class Amendment extends IMotion implements IRSSItem
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
         if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
-            $return[\Yii::t('motion', 'status')] = IMotion::getStati()[$this->status];
+            $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
         }
 
         return $return;
@@ -1129,7 +1129,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFormattedStatus()
     {
-        $statiNames = Amendment::getStati();
+        $statiNames = Amendment::getStatusNames();
         $status     = '';
         switch ($this->status) {
             case Amendment::STATUS_SUBMITTED_UNSCREENED:

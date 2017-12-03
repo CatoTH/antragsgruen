@@ -16,7 +16,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $hasTags     = (count($controller->consultation->tags) > 0);
-$motionStati = Motion::getStati();
+$motionStati = Motion::getStatusNames();
 $viewUrl     = UrlHelper::createMotionUrl($entry);
 if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);

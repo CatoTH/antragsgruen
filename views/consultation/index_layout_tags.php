@@ -113,7 +113,7 @@ foreach ($tagIds as $tagId) {
         }
         echo Html::encode(implode(', ', $initiators));
         if ($motion->status != Motion::STATUS_SUBMITTED_SCREENED) {
-            echo ', ' . Html::encode(Motion::getStati()[$motion->status]);
+            echo ', ' . Html::encode(Motion::getStatusNames()[$motion->status]);
         }
         echo '</td></tr>';
 
@@ -131,7 +131,7 @@ foreach ($tagIds as $tagId) {
             $title = \Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($amend->status == Amendment::STATUS_WITHDRAWN) {
-                echo ' <span class="status">(' . Html::encode($amend->getStati()[$amend->status]) . ')</span>';
+                echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
             }
             echo '</div></td>';
             echo '<td class="initiatorRow">';
@@ -145,7 +145,7 @@ foreach ($tagIds as $tagId) {
             }
             echo Html::encode(implode(', ', $initiators));
             if ($amend->status != Amendment::STATUS_SUBMITTED_SCREENED) {
-                echo ', ' . Html::encode(Amendment::getStati()[$amend->status]);
+                echo ', ' . Html::encode(Amendment::getStatusNames()[$amend->status]);
             }
             echo '</td></tr>';
         }

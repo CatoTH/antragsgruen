@@ -490,7 +490,7 @@ class LayoutHelper
             echo Html::encode($amendment->getInitiatorsStr());
             echo '</span></label>
     <div class="col-md-9">';
-            $statiAll                  = $amendment->getStati();
+            $statiAll                  = $amendment->getStatusNames();
             $stati                     = [
                 Amendment::STATUS_PROCESSED         => $statiAll[Amendment::STATUS_PROCESSED],
                 Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],

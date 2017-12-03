@@ -68,5 +68,3 @@ class AmendmentEdit {
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }
 }
-
-new AmendmentEdit();

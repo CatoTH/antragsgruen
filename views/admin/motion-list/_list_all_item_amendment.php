@@ -18,7 +18,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $hasTags        = (count($controller->consultation->tags) > 0);
-$amendmentStati = Amendment::getStati();
+$amendmentStati = Amendment::getStatusNames();
 if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {

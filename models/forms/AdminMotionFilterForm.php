@@ -603,7 +603,7 @@ class AdminMotionFilterForm extends Model
             }
         }
         if (!$foundMyself && $this->status !== null) {
-            $stati                = Motion::getStati();
+            $stati                = Motion::getStatusNames();
             $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
 
         }
@@ -688,7 +688,7 @@ class AdminMotionFilterForm extends Model
             }
             $num[$amend->status]++;
         }
-        $stati = Motion::getStati();
+        $stati = Motion::getStatusNames();
         foreach ($stati as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';

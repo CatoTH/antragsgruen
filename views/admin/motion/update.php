@@ -103,7 +103,7 @@ echo '<div class="content form-horizontal fuelux">';
         $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
     }
     $attrs = ['id' => 'parentMotion', 'class' => 'form-control'];
-    echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs);
+    echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
     ?></div>
 </div>
 
@@ -111,7 +111,8 @@ echo '<div class="content form-horizontal fuelux">';
     <label class="col-md-3 control-label" for="motionStatus"><?= \Yii::t('admin', 'motion_status') ?>:</label>
     <div class="col-md-5"><?php
     $options = ['class' => 'form-control', 'id' => 'motionStatus'];
-    echo HTMLTools::fueluxSelectbox('motion[status]', Motion::getStati(), $motion->status, $options);
+    $stati   = Motion::getStatusNamesVisibleForadmins();
+    echo HTMLTools::fueluxSelectbox('motion[status]', $stati, $motion->status, $options, true);
     echo '</div><div class="col-md-4">';
     $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
     echo Html::textInput('motion[statusString]', $motion->statusString, $options);
@@ -130,7 +131,7 @@ if (count($consultation->agendaItems) > 0) {
         $selections[$item->id] = $item->title;
     }
 
-    echo HTMLTools::fueluxSelectbox('motion[agendaItemId]', $selections, $motion->agendaItemId, $options);
+    echo HTMLTools::fueluxSelectbox('motion[agendaItemId]', $selections, $motion->agendaItemId, $options, true);
     echo '</div></div>';
 }
 ?>

@@ -75,7 +75,7 @@ if (count($initiators) > 0) {
 echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th><td>';
 
 $screeningMotionsShown = $motion->getMyConsultation()->getSettings()->screeningMotionsShown;
-$statiNames            = Motion::getStati();
+$statiNames            = Motion::getStatusNames();
 if ($motion->isInScreeningProcess()) {
     echo '<span class="unscreened">' . Html::encode($statiNames[$motion->status]) . '</span>';
 } elseif ($motion->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {

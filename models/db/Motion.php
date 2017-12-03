@@ -1056,7 +1056,7 @@ class Motion extends IMotion implements IRSSItem
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
         if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
-            $return[\Yii::t('motion', 'status')] = IMotion::getStati()[$this->status];
+            $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
         }
 
         return $return;

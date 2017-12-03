@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -26,7 +27,7 @@ $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
-$layout->addAMDModule('backend/AmendmentEdit');
+$layout->loadFuelux();
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
@@ -76,16 +77,21 @@ if ($amendment->isInScreeningProcess()) {
 }
 
 
-echo Html::beginForm('', 'post', ['id' => 'amendmentUpdateForm', 'class' => 'motionEditForm']);
+echo Html::beginForm('', 'post', [
+    'id'                       => 'amendmentUpdateForm',
+    'class'                    => 'motionEditForm',
+    'data-antragsgruen-widget' => 'backend/AmendmentEdit',
+]);
 
-echo '<div class="content form-horizontal">';
+echo '<div class="content form-horizontal fuelux">';
 
 echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="amendmentStatus">';
 echo \Yii::t('admin', 'motion_status');
 echo ':</label><div class="col-md-4">';
 $options = ['class' => 'form-control', 'id' => 'amendmentStatus'];
-echo Html::dropDownList('amendment[status]', $amendment->status, Amendment::getStati(), $options);
+$stati   = Amendment::getStatusNamesVisibleForadmins();
+echo HTMLTools::fueluxSelectbox('amendment[status]', $stati, $amendment->status, $options, true);
 echo '</div><div class="col-md-5">';
 $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
 echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);

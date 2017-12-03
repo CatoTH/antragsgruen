@@ -121,8 +121,8 @@ if ($colAction) {
 echo '</tr></thead>';
 
 
-$motionStati    = Motion::getStati();
-$amendmentStati = Amendment::getStati();
+$motionStati    = Motion::getStatusNames();
+$amendmentStati = Amendment::getStatusNames();
 /** @var null|Motion $lastMotion */
 $lastMotion = null;
 
