@@ -122,7 +122,10 @@ export class AmendmentChangeProposal {
         });
         this.$widget.find('.statusForm input[type=radio]').trigger('change', {'init': true});
 
-        this.$widget.on('change keyup', 'input, textarea', () => {
+        this.$widget.on('change keyup', 'input, textarea', (ev) => {
+            if ($(ev.currentTarget).parents('.proposalCommentForm').length > 0) { // The comment textfield
+                return;
+            }
             this.$widget.addClass('isChanged');
         });
 

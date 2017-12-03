@@ -34,7 +34,7 @@ foreach ($layoutTypes as $typeId => $typeName) {
     $I->click('#adminTodo');
     $I->see($title);
     $I->gotoStdAdminPage('bdk', 'bdk')->gotoConsultation();
-    $I->selectOption('#startLayoutType', $typeName);
+    $I->selectFueluxOption('#startLayoutType', $typeId);
     $I->submitForm('#consultationSettingsForm', [], 'save');
 
     $I->gotoConsultationHome(true, 'bdk', 'bdk');

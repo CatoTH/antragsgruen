@@ -20,7 +20,7 @@ $I->submitForm('#motionConfirmedForm', [], null);
 $I->see(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, 'ul.amendments');
 $I->dontSee(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, '.bookmarks');
 
-$I->click('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
+$I->click('.amendments .amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->see('This is my new motion');
 $I->see('Part 2');
 $I->dontSee('Woibbadinga');
@@ -55,7 +55,7 @@ $I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $I->gotoMotion();
 $I->click('#sidebar .mergeamendments a');
-$I->seeCheckboxIsChecked('.amendment276');
+$I->seeCheckboxIsChecked('#markAmendment276');
 $I->dontSeeCheckboxIsChecked('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 $I->gotoAmendment(true, '2', AcceptanceTester::FIRST_FREE_AMENDMENT_ID);

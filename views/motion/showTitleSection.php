@@ -30,6 +30,9 @@ echo '<ul class="bookmarks">';
 
 foreach ($amendingSections as $amendmentSection) {
     $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
+    if ($amendment->globalAlternative) {
+        continue;
+    }
     $amLink    = UrlHelper::createAmendmentUrl($amendment);
     echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $lineNo . '">';
     echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';

@@ -10,7 +10,7 @@ $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
 
 $I->see('Einpflegen beginnen');
-$I->uncheckOption('.toMergeAmendments .amendment3');
+$I->uncheckOption('.toMergeAmendments #markAmendment3');
 
 $I->click('.mergeAllRow .btn-primary');
 $I->see('annehmen oder ablehnen');
@@ -28,7 +28,7 @@ $I->executeJS(' $(window).unbind("beforeunload");');
 
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.sidebarActions .mergeamendments a');
-$I->uncheckOption('.toMergeAmendments .amendment270');
+$I->uncheckOption('.toMergeAmendments #markAmendment270');
 $I->click('.mergeAllRow .btn-primary');
 
 $I->see('annehmen oder ablehnen');
