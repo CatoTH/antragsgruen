@@ -16,7 +16,7 @@ $I->seeElementInDOM('#sections_2');
 $I->seeElement('.saveholder .checkAmendmentCollissions');
 $I->dontSeeElement('.saveholder .save');
 
-$I->executeJS('$("#motionStatus").selectlist("selectByValue", "9");');
+$I->selectFueluxOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
 $I->see('Erledigt', '#motionStatus .selected-label');
 
 $I->fillField('#motionTitle', 'Neuer Titel');

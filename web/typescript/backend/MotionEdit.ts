@@ -3,7 +3,7 @@
 import {MotionSupporterEdit} from "./MotionSupporterEdit";
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 
-class MotionEdit {
+export class MotionEdit {
     constructor() {
         let lang = $("html").attr("lang");
         $("#motionDateCreationHolder").datetimepicker({

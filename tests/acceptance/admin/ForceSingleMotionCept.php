@@ -11,7 +11,7 @@ $I->dontSeeCheckboxIsChecked('#singleMotionMode');
 $I->wantTo('enable single-motion-mode');
 $I->checkOption('#singleMotionMode');
 $I->seeElement('#forceMotionRow');
-$I->selectOption('#forceMotion', 3);
+$I->selectFueluxOption('#forceMotion', 3);
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->seeElement('#forceMotionRow');

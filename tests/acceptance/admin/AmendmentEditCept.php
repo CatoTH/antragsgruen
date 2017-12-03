@@ -13,7 +13,7 @@ $I->dontSeeElement('#sections_2');
 $I->click('#amendmentTextEditCaller button');
 $I->seeElementInDOM('#sections_2');
 
-$I->selectOption('#amendmentStatus', 'Erledigt');
+$I->selectFueluxOption('#amendmentStatus', \app\models\db\IMotion::STATUS_COMPLETED);
 $I->fillField('#amendmentTitlePrefix', 'Ä1neu');
 $I->fillField('#amendmentDateCreation', '01.01.2015 01:02');
 $I->fillField('#amendmentDateResolution', '02.03.2015 04:05');

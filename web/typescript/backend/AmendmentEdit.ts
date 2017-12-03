@@ -4,7 +4,7 @@ import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 import {AmendmentEditSinglePara} from "../shared/AmendmentEditSinglePara";
 
-class AmendmentEdit {
+export class AmendmentEdit {
     private lang: string;
 
     private $editTextCaller: JQuery;

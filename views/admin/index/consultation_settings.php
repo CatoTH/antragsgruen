@@ -5,6 +5,8 @@
  * @var Consultation $consultation
  * @var string $locale
  */
+
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\Motion;
@@ -139,11 +141,12 @@ $handledSiteSettings = [];
                 <?= \Yii::t('admin', 'con_home_page_style') ?>:
             </label>
             <div class="col-sm-9"><?php
-                echo Html::dropDownList(
+                echo HTMLTools::fueluxSelectbox(
                     'settings[startLayoutType]',
-                    $consultation->getSettings()->startLayoutType,
                     $consultation->getSettings()->getStartLayouts(),
-                    ['id' => 'startLayoutType', 'class' => 'form-control']
+                    $consultation->getSettings()->startLayoutType,
+                    ['id' => 'startLayoutType', 'class' => 'form-control'],
+                    true
                 );
                 ?></div>
         </div>
@@ -153,11 +156,12 @@ $handledSiteSettings = [];
             <div class="col-sm-9"><?php
                 $layout                = $consultation->site->getSettings()->siteLayout;
                 $handledSiteSettings[] = 'siteLayout';
-                echo Html::dropDownList(
+                echo HTMLTools::fueluxSelectbox(
                     'siteSettings[siteLayout]',
-                    $layout,
                     \app\models\settings\Layout::getCssLayouts(),
-                    ['id' => 'siteLayout', 'class' => 'form-control']
+                    $layout,
+                    ['id' => 'siteLayout', 'class' => 'form-control'],
+                    true
                 ); ?>
             </div>
         </fieldset>
@@ -219,11 +223,12 @@ $handledSiteSettings = [];
             <label class="col-sm-3 control-label" for="startLayoutType"><?= \Yii::t('admin', 'con_force_motion') ?>
                 :</label>
             <div class="col-sm-9"><?php
-                echo Html::dropDownList(
+                echo HTMLTools::fueluxSelectbox(
                     'settings[forceMotion]',
-                    $settings->forceMotion,
                     $motions,
-                    ['id' => 'forceMotion', 'class' => 'form-control']
+                    $settings->forceMotion,
+                    ['id' => 'forceMotion', 'class' => 'form-control'],
+                    true
                 );
                 ?></div>
         </div>
@@ -314,11 +319,12 @@ $handledSiteSettings = [];
                 <?= \Yii::t('admin', 'con_amend_number') ?>:
             </label>
             <div class="col-sm-9"><?php
-                echo Html::dropDownList(
+                echo HTMLTools::fueluxSelectbox(
                     'consultation[amendmentNumbering]',
-                    $consultation->amendmentNumbering,
                     \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
-                    ['id' => 'amendmentNumbering', 'class' => 'form-control']
+                    $consultation->amendmentNumbering,
+                    ['id' => 'amendmentNumbering', 'class' => 'form-control'],
+                    true
                 );
                 ?></div>
         </div>

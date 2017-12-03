@@ -7,10 +7,9 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $consultation = $I->loginAndGotoStdAdminPage()->gotoConsultation();
-$consultation->selectAmendmentNumbering(ByLine::getName());
+$consultation->selectAmendmentNumbering(ByLine::getID());
 $consultation->saveForm();
 
-$I->seeOptionIsSelected('#amendmentNumbering', ByLine::getName());
 $I->gotoConsultationHome();
 $I->gotoMotion(true, 2);
 $I->click('.sidebarActions .amendmentCreate a');

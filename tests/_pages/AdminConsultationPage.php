@@ -15,7 +15,7 @@ class AdminConsultationPage extends BasePage
 
     public function selectAmendmentNumbering($numbering)
     {
-        $this->actor->selectOption('#amendmentNumbering', $numbering);
+        $this->actor->selectFueluxOption('#amendmentNumbering', $numbering);
     }
 
     /**

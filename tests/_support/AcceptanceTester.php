@@ -260,4 +260,13 @@ class AcceptanceTester extends \Codeception\Actor
         $this->see('LOGOUT', '#logoutLink');
         $this->click('#logoutLink');
     }
+
+    /**
+     * @param string $selector
+     * @param string $value
+     */
+    public function selectFueluxOption($selector, $value)
+    {
+        $this->executeJS('$("' . addslashes($selector) . '").selectlist("selectByValue", "' . addslashes($value) . '");');
+    }
 }
