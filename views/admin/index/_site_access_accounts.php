@@ -50,6 +50,9 @@ if (count($consultation->userPrivileges) > 0) {
 <tbody>
 ';
     foreach ($consultation->userPrivileges as $privilege) {
+        if (!$privilege->user) {
+            continue;
+        }
         $checkView   = ($privilege->privilegeView == 1 ? 'checked' : '');
         $checkCreate = ($privilege->privilegeCreate == 1 ? 'checked' : '');
         echo '<tr class="user' . $privilege->userId . '">
