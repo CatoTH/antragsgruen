@@ -111,6 +111,9 @@ class AmendmentController extends AdminBase
 
     /**
      * @param Amendment $amendment
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     private function saveAmendmentSupporters(Amendment $amendment)
     {
@@ -157,6 +160,11 @@ class AmendmentController extends AdminBase
     /**
      * @param int $amendmentId
      * @return string
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
+     * @throws \yii\db\StaleObjectException
      */
     public function actionUpdate($amendmentId)
     {

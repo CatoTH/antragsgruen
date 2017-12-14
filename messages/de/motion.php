@@ -49,6 +49,7 @@ return [
     'Prefix'                             => 'Antragsnummer',
     'Title'                              => 'Titel',
     'replaces_motion'                    => 'Ersetzt',
+    'replaces_motion_diff'               => 'Änderungen anzeigen',
     'consultation'                       => 'Veranstaltung',
     'comments'                           => 'Kommentare',
     'comment_screen_queue_1'             => '1 Kommentar wartet auf Freischaltung',
@@ -169,4 +170,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
     'prefix_new_code'                    => 'neu',
     'comment_for'                        => 'Kommentar zu',
+
+    'diff_bc'    => 'Änderungen',
+    'diff_title' => 'Änderungen von %FROM% zu %TO%',
 ];

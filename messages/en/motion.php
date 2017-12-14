@@ -50,6 +50,7 @@ return [
     'Prefix'                        => 'Signature',
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
+    'replaces_motion_diff'          => 'Show changes',
     'consultation'                  => 'Consultation',
     'comments'                      => 'Comments',
     'comment_screen_queue_1'        => '1 comment waiting for screening',
@@ -160,4 +161,7 @@ return [
     'support_finish_done'                => 'The motion is now officially submitted',
     'prefix_new_code'                    => 'new',
     'comment_for'                        => 'Comment for',
+
+    'diff_bc'    => 'Changes',
+    'diff_title' => 'Changes from %FROM% to %TO%',
 ];

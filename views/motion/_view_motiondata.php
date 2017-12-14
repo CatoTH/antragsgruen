@@ -97,6 +97,12 @@ if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
     echo '<tr class="replacesMotion"><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
     echo Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
+
+    $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
+    echo '<div class="changesLink">';
+    echo '<span class="glyphicon glyphicon-chevron-right"></span> ';
+    echo Html::a(\Yii::t('motion', 'replaces_motion_diff'), $changesLink);
+    echo '</div>';
     echo '</td></tr>';
 }
 

@@ -334,6 +334,30 @@ class MotionController extends Base
 
     /**
      * @param string $motionSlug
+     * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
+     */
+    public function actionViewChanges($motionSlug)
+    {
+        $this->layout = 'column2';
+
+        $motion = $this->getMotionWithCheck($motionSlug);
+        $parentMotion = $motion->replacedMotion;
+
+        if (!$motion->isReadable()) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+        if (!$parentMotion || !$parentMotion->isReadable()) {
+            \Yii::$app->session->setFlash('error', 'The diff-view is not available');
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
+        }
+
+        return $this->render('view_changes', ['newMotion' => $motion, 'oldMotion' => $parentMotion]);
+    }
+
+    /**
+     * @param string $motionSlug
      * @param string $fromMode
      * @return string
      */
