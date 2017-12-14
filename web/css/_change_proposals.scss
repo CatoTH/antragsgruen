@@ -243,6 +243,13 @@
       color: #888;
     }
   }
+  tr.withdrawn {
+    text-decoration: line-through;
+  }
+  h2 .withdrawn {
+    font-size: 0.8em;
+    color: #eee;
+  }
 }
 
 .agreeToProposal {

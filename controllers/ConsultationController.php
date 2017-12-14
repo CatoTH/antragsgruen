@@ -20,6 +20,7 @@ use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\settings\AntragsgruenApp;
+use yii\web\Response;
 
 class ConsultationController extends Base
 {
@@ -27,6 +28,7 @@ class ConsultationController extends Base
      * @param \yii\base\Action $action
      * @return bool
      * @throws \yii\web\BadRequestHttpException
+     * @throws \yii\base\ExitException
      */
     public function beforeAction($action)
     {
@@ -40,6 +42,8 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionSearch()
     {
@@ -85,7 +89,7 @@ class ConsultationController extends Base
             $motion->addToFeed($feed);
         }
 
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
         return $feed->getFeed();
     }
@@ -111,7 +115,7 @@ class ConsultationController extends Base
             $amend->addToFeed($feed);
         }
 
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
         return $feed->getFeed();
     }
@@ -137,7 +141,7 @@ class ConsultationController extends Base
             $comm->addToFeed($feed);
         }
 
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
         return $feed->getFeed();
     }
@@ -185,7 +189,7 @@ class ConsultationController extends Base
             $item->addToFeed($feed);
         }
 
-        \yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+        \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
         return $feed->getFeed();
     }
@@ -234,6 +238,7 @@ class ConsultationController extends Base
      * @param string $pageKey
      * @return string
      * @throws Access
+     * @throws \app\models\exceptions\Internal
      */
     public function actionSavetextajax($pageKey)
     {
@@ -257,6 +262,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionLegal()
     {
@@ -346,7 +352,6 @@ class ConsultationController extends Base
     }
 
     /**
-     * @throws FormError
      */
     private function saveAgenda()
     {
@@ -382,6 +387,8 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionIndex()
     {
@@ -438,6 +445,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionProposedProcedure()
     {
@@ -456,13 +464,13 @@ class ConsultationController extends Base
         }
 
         $data = [];
-        foreach ($consultation->getVisibleMotionsSorted(false) as $motion) {
+        foreach ($consultation->getVisibleMotionsSorted(true) as $motion) {
             $dataRow = [
                 'motion'       => $motion,
                 'votingBlocks' => [],
                 'amendments'   => [],
             ];
-            foreach ($motion->getVisibleAmendmentsSorted() as $amendment) {
+            foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
                 if ($proposalAdmin || $amendment->isProposalPublic()) {
                     $dataRow['amendments'][] = $amendment;
                 }

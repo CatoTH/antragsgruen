@@ -44,7 +44,13 @@ foreach ($data as $dataRow) {
 
     ?>
     <section class="motionHolder motionHolder<?= $motion->id ?> proposedProcedureOverview">
-        <h2 class="green"><?= Html::encode($motion->getTitleWithPrefix()) ?></h2>
+        <h2 class="green">
+            <?php
+            echo Html::encode($motion->getTitleWithPrefix());
+            if ($motion->status == Motion::STATUS_WITHDRAWN) {
+                echo ' <span class="withdrawn">(' . \Yii::t('structure', 'STATUS_WITHDRAWN') . ')</span>';
+            }
+            ?></h2>
         <div class="content">
             <?php
             foreach ($votingBlocks as $votingBlock) {
@@ -65,8 +71,12 @@ foreach ($data as $dataRow) {
                     <?php
                     foreach ($votingBlock->amendments as $amendment) {
                         $coveredAmendments[] = $amendment->id;
+                        $classes = ['amendment' . $amendment->id];
+                        if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
+                            $classes[] = 'withdrawn';
+                        }
                         ?>
-                        <tr class="amendment<?= $amendment->id ?>">
+                        <tr class="<?= implode(' ', $classes) ?>">
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
@@ -111,8 +121,12 @@ foreach ($data as $dataRow) {
                     <tbody>
                     <?php
                     foreach ($uncoveredAmendments as $amendment) {
+                        $classes = ['amendment' . $amendment->id];
+                        if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
+                            $classes[] = 'withdrawn';
+                        }
                         ?>
-                        <tr>
+                        <tr class="<?= implode(' ', $classes) ?>">
                             <td>
                                 <?= Html::a($amendment->getShortTitle(), UrlHelper::createAmendmentUrl($amendment)) ?>
                             </td>
