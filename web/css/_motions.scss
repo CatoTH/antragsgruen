@@ -999,3 +999,12 @@ iframe.pdfViewer {
     }
   }
 }
+
+.motionChangeView {
+  .notDisplayable {
+    color: red;
+  }
+  .noChanges {
+    color: gray;
+  }
+}

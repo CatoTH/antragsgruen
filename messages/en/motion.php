@@ -162,6 +162,8 @@ return [
     'prefix_new_code'                    => 'new',
     'comment_for'                        => 'Comment for',
 
-    'diff_bc'    => 'Changes',
-    'diff_title' => 'Changes from %FROM% to %TO%',
+    'diff_bc'          => 'Changes',
+    'diff_title'       => 'Changes from %FROM% to %TO%',
+    'diff_no_change'   => 'No changes',
+    'diff_err_display' => 'The changes cannot be displayed.',
 ];

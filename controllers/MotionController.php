@@ -22,6 +22,7 @@ use app\models\forms\MotionMergeAmendmentsDraftForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\sectionTypes\ISectionType;
+use app\models\MotionSectionChanges;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -342,7 +343,7 @@ class MotionController extends Base
     {
         $this->layout = 'column2';
 
-        $motion = $this->getMotionWithCheck($motionSlug);
+        $motion       = $this->getMotionWithCheck($motionSlug);
         $parentMotion = $motion->replacedMotion;
 
         if (!$motion->isReadable()) {
@@ -353,7 +354,11 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
-        return $this->render('view_changes', ['newMotion' => $motion, 'oldMotion' => $parentMotion]);
+        return $this->render('view_changes', [
+            'newMotion' => $motion,
+            'oldMotion' => $parentMotion,
+            'changes'   => MotionSectionChanges::motionToSectionChanges($parentMotion, $motion),
+        ]);
     }
 
     /**

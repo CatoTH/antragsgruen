@@ -171,6 +171,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'prefix_new_code'                    => 'neu',
     'comment_for'                        => 'Kommentar zu',
 
-    'diff_bc'    => 'Änderungen',
-    'diff_title' => 'Änderungen von %FROM% zu %TO%',
+    'diff_bc'          => 'Änderungen',
+    'diff_title'       => 'Änderungen von %FROM% zu %TO%',
+    'diff_no_change'   => 'Keine Änderungen',
+    'diff_err_display' => 'Änderungen können nicht dargestellt werden.',
 ];
