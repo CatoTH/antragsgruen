@@ -39,8 +39,6 @@ foreach ($motions as $motion) {
 $COL_PREFIX      = $currCol++;
 $COL_INITIATOR   = $currCol++;
 $COL_PROCEDURE   = $currCol++;
-$COL_CHANGES     = $currCol++;
-$COL_EXPLANATION = $currCol++;
 
 
 // Title
@@ -62,19 +60,13 @@ $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'init
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
 $doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
-$doc->setColumnWidth($COL_PROCEDURE, 6);
+$doc->setColumnWidth($COL_PROCEDURE, 12);
 
-$doc->setCell(2, $COL_CHANGES, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_changes'));
-$doc->setColumnWidth($COL_CHANGES, 6);
-
-$doc->setCell(2, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_explanation'));
-$doc->setColumnWidth($COL_EXPLANATION, 6);
-
-$doc->drawBorder(1, $firstCol, 2, $COL_EXPLANATION, 1.5);
+$doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
 
 
 $printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
-use ($COL_PREFIX, $COL_INITIATOR, $COL_CHANGES, $COL_PROCEDURE, $COL_EXPLANATION) {
+use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
     $initiatorNames   = [];
     $initiatorContacs = [];
     foreach ($amendment->getInitiators() as $supp) {
@@ -90,8 +82,9 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_CHANGES, $COL_PROCEDURE, $COL_EXPLANATION
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
 
-    $proposal = $amendment->getFormattedProposalStatus();
-    $changes  = '';
+    $minHeight = 1;
+    $proposal = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
+
     if ($amendment->hasAlternativeProposaltext()) {
         $reference = $amendment->proposalReference;
         /** @var AmendmentSection[] $sections */
@@ -101,13 +94,17 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_CHANGES, $COL_PROCEDURE, $COL_EXPLANATION
             $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
             $originalData = $section->getOriginalMotionSection()->data;
             $newData      = $section->data;
-            $changes      .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+            $proposal      .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+            $minHeight += 1;
         }
     }
-    $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
-    $doc->setCell($row, $COL_CHANGES, Spreadsheet::TYPE_HTML, $changes);
+    if ($amendment->proposalExplanation) {
+        $minHeight += 1;
+        $proposal .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
+    }
 
-    $doc->setCell($row, $COL_EXPLANATION, Spreadsheet::TYPE_TEXT, $amendment->proposalExplanation);
+    $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+    $doc->setMinRowHeight($row, $minHeight);
 };
 
 // Amendments
@@ -154,7 +151,7 @@ foreach ($agendaItems as $agendaItem) {
         }
 
         $row++;
-        $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
+        $title = '<strong>' . Html::encode($motion->getTitleWithPrefix()) . '</strong>';
         $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
         $title = HTMLTools::correctHtmlErrors($title);
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
@@ -164,7 +161,7 @@ foreach ($agendaItems as $agendaItem) {
         }
     }
 
-    $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_EXPLANATION, 1.5);
+    $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
     $row++;
 }
 
@@ -198,7 +195,7 @@ foreach ($motions as $motion) {
         $printAmendment($doc, $amendment, $row);
     }
 
-    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_EXPLANATION, 1.5);
+    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
     $row++;
 }
 
