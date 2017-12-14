@@ -32,6 +32,7 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $sectionId
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionViewimage($motionSlug, $sectionId)
     {
@@ -52,6 +53,8 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $sectionId
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionViewpdf($motionSlug, $sectionId)
     {
@@ -82,6 +85,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return Motion|null
+     * @throws \yii\base\ExitException
      */
     private function getMotionWithCheck($motionSlug)
     {
@@ -113,6 +117,8 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionPdf($motionSlug)
     {
@@ -137,6 +143,8 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionPdfamendcollection($motionSlug)
     {
@@ -168,6 +176,7 @@ class MotionController extends Base
      * @param string $motionTypeId
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionPdfcollection($motionTypeId = '', $withdrawn = 0)
     {
@@ -212,6 +221,8 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionOdt($motionSlug)
     {
@@ -233,6 +244,8 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionPlainhtml($motionSlug)
     {
@@ -249,6 +262,8 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $commentId
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionView($motionSlug, $commentId = 0)
     {
@@ -332,6 +347,7 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param string $fromMode
      * @return string
+     * @throws Internal
      */
     public function actionCreateconfirm($motionSlug, $fromMode)
     {
@@ -430,6 +446,7 @@ class MotionController extends Base
      * @param int $cloneFrom
      * @return array
      * @throws Internal
+     * @throws \app\models\exceptions\NotFound
      */
     private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
@@ -467,6 +484,8 @@ class MotionController extends Base
      * @param int $agendaItemId
      * @param int $cloneFrom
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
@@ -587,6 +606,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMergeAmendmentsPublic($motionSlug)
     {
@@ -607,6 +627,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
      */
     public function actionMergeAmendmentsPublicAjax($motionSlug)
     {
@@ -653,6 +674,7 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param string $amendmentStati
      * @return string
+     * @throws Internal
      */
     public function actionMergeAmendmentsConfirm($motionSlug, $amendmentStati = '')
     {

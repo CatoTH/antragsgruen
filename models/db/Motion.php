@@ -492,6 +492,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @return bool
+     * @throws Internal
      */
     public function canMergeAmendments()
     {
@@ -535,6 +536,7 @@ class Motion extends IMotion implements IRSSItem
      * @param bool $throwExceptions
      * @return bool
      * @throws NotAmendable
+     * @throws Internal
      */
     public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
     {
@@ -954,6 +956,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @return string
+     * @throws \yii\base\Exception
      */
     public function createSlug()
     {
@@ -991,6 +994,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param RSSExporter $feed
+     * @throws Internal
      */
     public function addToFeed(RSSExporter $feed)
     {
@@ -1020,6 +1024,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @param bool $skipAgenda
      * @return array
+     * @throws Internal
      */
     public function getDataTable($skipAgenda = false)
     {

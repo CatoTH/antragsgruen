@@ -48,6 +48,7 @@ class MotionMergeAmendmentsForm extends Model
     /**
      * @return Motion
      * @throws Internal
+     * @throws \app\models\exceptions\FormError
      */
     public function createNewMotion()
     {
