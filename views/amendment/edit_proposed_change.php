@@ -112,7 +112,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                             break;
                         case ISectionType::TYPE_TEXT_SIMPLE:
                             $diff = new Diff();
-                            echo '<div class="paragraph"><div class="text textOrig fixedWidthFont">';
+                            echo '<div class="paragraph"><div class="text motionTextFormattings textOrig fixedWidthFont">';
                             echo implode("\n", $diff->compareHtmlParagraphs(
                                 HTMLTools::sectionSimpleHTML($amendSection->getOriginalMotionSection()->data),
                                 HTMLTools::sectionSimpleHTML($amendSection->data),

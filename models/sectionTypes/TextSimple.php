@@ -111,7 +111,7 @@ class TextSimple extends ISectionType
                 'title="' . Html::encode($type->title) . '"></textarea>';
             $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
                 'title="' . Html::encode($type->title) . '"></textarea>';
-            $str .= '<div class="texteditor';
+            $str .= '<div class="texteditor motionTextFormattings';
             if ($fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
@@ -184,7 +184,7 @@ class TextSimple extends ISectionType
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';
         foreach ($sections as $section) {
-            $str .= '<div class="paragraph"><div class="text';
+            $str .= '<div class="paragraph"><div class="text motionTextFormattings';
             if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
@@ -248,7 +248,7 @@ class TextSimple extends ISectionType
 
         $htmlSections = HTMLTools::sectionSimpleHTML($section->data);
         foreach ($htmlSections as $htmlSection) {
-            $str .= '<div class="paragraph"><div class="text';
+            $str .= '<div class="paragraph"><div class="text motionTextFormattings';
             if ($this->section->getSettings()->fixedWidth) {
                 $str .= ' fixedWidthFont';
             }
@@ -264,6 +264,7 @@ class TextSimple extends ISectionType
     /**
      * @param string $sectionTitlePrefix
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentFormatted($sectionTitlePrefix = '')
     {
@@ -293,7 +294,7 @@ class TextSimple extends ISectionType
         $str       = '<div id="section_' . $section->sectionId . '" class="motionTextHolder">';
         $str       .= '<h3 class="green">' . Html::encode($title) . '</h3>';
         $str       .= '<div id="section_' . $section->sectionId . '_0" class="paragraph lineNumbers">';
-        $wrapStart = '<section class="paragraph"><div class="text';
+        $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
         if ($section->getSettings()->fixedWidth) {
             $wrapStart .= ' fixedWidthFont';
         }

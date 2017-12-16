@@ -7,7 +7,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
- * @var string[][] $paragraphSections
+ * @var array[][] $paragraphSections
  */
 
 /** @var \app\controllers\Base $controller */
@@ -78,7 +78,7 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
                         <div class="content">
                             <div class="unmodifiedVersion motionTextHolder">
                                 <div class="paragraph">
-                                    <div class="text <?= $fixedClass ?>"><?= $parDat['diff'] ?></div>
+                                    <div class="text motionTextFormattings <?= $fixedClass ?>"><?= $parDat['diff'] ?></div>
                                 </div>
                             </div>
                         </div>

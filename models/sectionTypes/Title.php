@@ -105,7 +105,7 @@ class Title extends ISectionType
         }
         $str = '<section id="section_title" class="motionTextHolder">';
         $str .= '<h3 class="green">' . Html::encode($sectionTitlePrefix . $section->getSettings()->title) . '</h3>';
-        $str .= '<div id="section_title_0" class="paragraph"><div class="text fixedWidthFont">';
+        $str .= '<div id="section_title_0" class="paragraph"><div class="text fixedWidthFont motionTextFormattings">';
         $str .= '<h4 class="lineSummary">' . \Yii::t('amend', 'title_amend_to') . ':</h4>';
         $str .= '<p>' . Html::encode($section->data) . '</p>';
         $str .= '</div></div></section>';

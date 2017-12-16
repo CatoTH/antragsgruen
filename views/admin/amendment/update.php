@@ -163,7 +163,7 @@ foreach ($sections as $section) {
 if ($amendment->changeEditorial != '') {
     echo '<section id="amendmentEditorialHint" class="motionTextHolder">';
     echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
-    echo '<div class="paragraph"><div class="text">';
+    echo '<div class="paragraph"><div class="text motionTextFormattings">';
     echo $amendment->changeEditorial;
     echo '</div></div>';
     echo '</section>';
@@ -172,7 +172,7 @@ if ($amendment->changeEditorial != '') {
 if ($amendment->changeExplanation != '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
     echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
-    echo '<div class="paragraph"><div class="text">';
+    echo '<div class="paragraph"><div class="text motionTextFormattings">';
     echo $amendment->changeExplanation;
     echo '</div></div>';
     echo '</section>';
@@ -197,7 +197,7 @@ if (!$amendment->textFixed) {
         <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
         Html::encode($form->editorial) . '</textarea>
-        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg">';
+        <div class="texteditor motionTextFormattings boxed" id="amendmentEditorial_wysiwyg">';
     echo $form->editorial;
     echo '</div></section>';
 
@@ -212,7 +212,7 @@ if (!$amendment->textFixed) {
 
     echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
     echo Html::encode($form->reason) . '</textarea>';
-    echo '<div class="texteditor boxed" id="amendmentReason_wysiwyg">';
+    echo '<div class="texteditor motionTextFormattings boxed" id="amendmentReason_wysiwyg">';
     echo $form->reason;
     echo '</div>';
     echo '</div>';

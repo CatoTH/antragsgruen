@@ -78,7 +78,7 @@ abstract class ISectionType
         $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ';
         $str .= 'title="' . Html::encode($type->title) . '">';
         $str .= Html::encode($this->section->data) . '</textarea>';
-        $str .= '<div class="texteditor boxed';
+        $str .= '<div class="texteditor motionTextFormattings boxed';
         if ($fixedWidth) {
             $str .= ' fixedWidthFont';
         }
@@ -126,7 +126,7 @@ abstract class ISectionType
             'title="' . Html::encode($type->title) . '"></textarea>';
         $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
             'title="' . Html::encode($type->title) . '"></textarea>';
-        $str .= '<div class="motionTextFormatted texteditor boxed';
+        $str .= '<div class="motionTextFormatted motionTextFormattings texteditor boxed';
         if ($fixedWidth) {
             $str .= ' fixedWidthFont';
         }

@@ -115,7 +115,7 @@ if ($consultation->getSettings()->editorialAmendments) { ?>
         <label for="amendmentEditorial"><?= \Yii::t('amend', 'editorial_hint') ?></label>
         <textarea name="amendmentEditorial" id="amendmentEditorial"
                   class="raw"><?= Html::encode($form->editorial) ?></textarea>
-        <div class="texteditor boxed" id="amendmentEditorial_wysiwyg"><?= $form->editorial ?></div>
+        <div class="texteditor motionTextFormattings boxed" id="amendmentEditorial_wysiwyg"><?= $form->editorial ?></div>
     </div>
     <?php
 }
@@ -137,7 +137,7 @@ echo '<label for="amendmentReason">' . Yii::t('amend', 'reason') . '</label>';
 
 echo '<textarea name="amendmentReason"  id="amendmentReason" class="raw">';
 echo Html::encode($form->reason) . '</textarea>';
-echo '<div class="texteditor boxed" id="amendmentReason_wysiwyg">';
+echo '<div class="texteditor motionTextFormattings boxed" id="amendmentReason_wysiwyg">';
 echo $form->reason;
 echo '</div>';
 echo '</div>';

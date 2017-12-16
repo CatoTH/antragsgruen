@@ -68,7 +68,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     echo '</ul>';
 
-    echo '<div class="text textOrig';
+    echo '<div class="text motionTextFormattings textOrig';
     if ($section->getSettings()->fixedWidth) {
         echo ' fixedWidthFont';
     }
@@ -94,7 +94,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
         $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
-        echo '<div class="text textAmendment hidden amendment' . $amendment->id;
+        echo '<div class="text motionTextFormattings textAmendment hidden amendment' . $amendment->id;
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }

@@ -18,7 +18,6 @@
   &.boxed {
     @extend .texteditorBox;
   }
-  @include motionParagraphStd();
   &.fixedWidthFont {
     font-family: $motionFixedFont;
     //letter-spacing: -0.5px;

@@ -26,7 +26,7 @@ foreach ($motion->getSortedSections(false) as $section) {
         $htmlId = 'sections_' . $type->id;
         echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
         echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-        echo '<div class="text textOrig ICE-Tracking';
+        echo '<div class="text motionTextFormattings textOrig ICE-Tracking';
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }
@@ -42,7 +42,7 @@ foreach ($motion->getSortedSections(false) as $section) {
         echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
         echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
 
-        echo '<div class="text textOrig ICE-Tracking';
+        echo '<div class="text motionTextFormattings textOrig ICE-Tracking';
         if ($section->getSettings()->fixedWidth) {
             echo ' fixedWidthFont';
         }

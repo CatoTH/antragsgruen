@@ -53,13 +53,13 @@ foreach ($amendment->getActiveSections() as $section) {
                         </div>
                         <div class="unmodifiedVersion motionTextHolder">
                             <div class="paragraph">
-                                <div class="text <?= $fixedClass ?>"><?= $parDat['diff'] ?></div>
+                                <div class="text motionTextFormattings <?= $fixedClass ?>"><?= $parDat['diff'] ?></div>
                             </div>
                         </div>
                         <div class="affectedBlock">
                             <textarea name="<?= $nameBase ?>" class="modifiedText" title=""></textarea>
                             <div id="new_paragraphs_<?= $sectionId ?>_<?= $paragraphNo ?>"
-                                 class="<?= $fixedClass ?> texteditor texteditorBox"
+                                 class="<?= $fixedClass ?> texteditor motionTextFormattings texteditorBox"
                                  title="<?= \Yii::t('amend', 'merge1_modify_title') ?>" data-track-changed="1">
                                 <?= $parDat['plain'] ?>
                             </div>

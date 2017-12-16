@@ -148,7 +148,7 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
                         'title="' . Html::encode($type->title) . '"></textarea>';
                     echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
                         'title="' . Html::encode($type->title) . '"></textarea>';
-                    echo '<div class="texteditor boxed ICE-Tracking';
+                    echo '<div class="texteditor motionTextFormattings boxed ICE-Tracking';
                     if ($section->getSettings()->fixedWidth) {
                         echo ' fixedWidthFont';
                     }

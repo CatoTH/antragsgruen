@@ -50,7 +50,7 @@ foreach ($collissions as $amendmentId => $sections) {
             }
             echo '<h3>' . str_replace(['%LINEFROM%', '%LINETO%'], [$para['lineFrom'], $para['lineTo']], $tpl) . '</h3>';
 
-            $classes = 'text ' . (in_array($sectionId, $fixedWidthSections) ? ' fixedWidthFont' : '');
+            $classes = 'text motionTextFormattings ' . (in_array($sectionId, $fixedWidthSections) ? ' fixedWidthFont' : '');
 
             echo '<label>' . \Yii::t('amend', 'merge1_manual_changes') . '</label>';
             echo '<div class="motionTextHolder"><div class="paragraph"><div class="' . $classes . '">' .
@@ -69,7 +69,7 @@ foreach ($collissions as $amendmentId => $sections) {
             if (in_array($sectionId, $fixedWidthSections)) {
                 echo 'fixedWidthFont ';
             }
-            echo 'texteditor texteditorBox" title="' . \Yii::t('amend', 'merge1_modify_title') . '">';
+            echo 'motionTextFormattings texteditor texteditorBox" title="' . \Yii::t('amend', 'merge1_modify_title') . '">';
             echo $para['text'];
             echo '</div></section>';
         }

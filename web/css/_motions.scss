@@ -490,6 +490,120 @@
   }
 }
 
+.motionTextFormattings {
+  position: relative;
+  margin-left: 0;
+  text-rendering: optimizeLegibility;
+  font-size: $motionStdFontSize;
+
+  span.underline {
+    border-bottom: solid 1px black;
+  }
+  span.strike {
+    text-decoration: line-through;
+  }
+  span.subscript {
+    // @TODO
+  }
+  span.superscript {
+    // @TODO
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.6em;
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.4em;
+  }
+  h4 {
+    margin: 0;
+    font-size: 1.2em;
+  }
+
+  .amendmentRef {
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+
+  &.fixedWidthFont {
+    font-family: $motionFixedFont;
+    //letter-spacing: -0.5px;
+    color: $motionFixedFontColor;
+  }
+
+  .lineNumber {
+    position: relative;
+    left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
+    width: 0;
+    display: inline-block;
+    float: left; // otherwise problems appear at li > p constucts
+  }
+  .lineNumber:after {
+    content: attr(data-line-number);
+    color: #C3C3C3;
+    font-size: $motionStdFontSize;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: none;
+  }
+  > ul, > ol {
+    padding-left: $fixedWidthTextListPadding;
+
+    .lineNumber {
+      left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+    }
+    ul, ol {
+      .lineNumber {
+        left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+      }
+      ul, ol {
+        .lineNumber {
+          left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+        }
+        ul, ol {
+          .lineNumber {
+            left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+          }
+        }
+      }
+    }
+  }
+  .fourdigitsLineNumbers & {
+    .lineNumber {
+      left: $lineNumberOffset4 + -1 * $fixedWidthTextStdPadding;
+    }
+    > ul, > ol {
+      .lineNumber {
+        left: $lineNumberOffset4 + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+      }
+    }
+    > blockquote {
+      .lineNumber {
+        left: $lineNumberOffset4 + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
+            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
+      }
+    }
+  }
+
+  > blockquote {
+    @include motionParagraphBlockquote();
+    margin-left: $fixedWidthTextQuoteMargin;
+
+    .lineNumber {
+      left: $lineNumberOffset + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
+            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
+    }
+  }
+
+  &.smallFont {
+    font-size: 12px;
+    > blockquote {
+      font-size: 12px;
+    }
+  }
+}
+
 .motionTextHolder {
   .well & > h3.green {
     margin-bottom: 22px;
@@ -505,72 +619,12 @@
 
     .text {
       padding: 15px 10px 15px $fixedWidthTextStdPadding;
-
-      @include motionParagraphStd;
-
-      .lineNumber {
-        position: relative;
-        left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
-        width: 0;
-        display: inline-block;
-        float: left; // otherwise problems appear at li > p constucts
-      }
-      .lineNumber:after {
-        content: attr(data-line-number);
-        color: #C3C3C3;
-        font-size: $motionStdFontSize;
-        font-style: normal;
-        font-weight: normal;
-        text-decoration: none;
-      }
-
-      > ul, > ol {
-        padding-left: $fixedWidthTextListPadding;
-
-        .lineNumber {
-          left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+      &.collidingAmendment {
+        margin-top: -20px;
+        > h3 {
+          font-size: 1.2em;
+          margin-top: 0;
         }
-        ul, ol {
-          .lineNumber {
-            left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
-          }
-          ul, ol {
-            .lineNumber {
-              left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
-            }
-            ul, ol {
-              .lineNumber {
-                left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
-              }
-            }
-          }
-        }
-
-      }
-
-      > blockquote {
-        @include motionParagraphBlockquote();
-        margin-left: $fixedWidthTextQuoteMargin;
-
-        .lineNumber {
-          left: $lineNumberOffset + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
-            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
-        }
-      }
-
-      &.smallFont {
-        font-size: 12px;
-        > blockquote {
-          font-size: 12px;
-        }
-      }
-    }
-
-    .text.collidingAmendment {
-      margin-top: -20px;
-      > h3 {
-        font-size: 1.2em;
-        margin-top: 0;
       }
     }
 
@@ -579,75 +633,58 @@
       font-weight: bold;
       margin: 0;
     }
-
-    .textAmendment {
-      width: $motionFixedWidth;
-      position: relative;
-      del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
-        color: #ff0000;
-        text-decoration: line-through;
-      }
-      ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
-        text-decoration: underline;
-      }
-      .preamble {
+  }
+  .textAmendment {
+    width: $motionFixedWidth;
+    position: relative;
+    del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
+      color: #ff0000;
+      text-decoration: line-through;
+    }
+    ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
+      text-decoration: underline;
+    }
+    .preamble {
+      position: absolute;
+      top: -($inlineAmendmentPreambleHeight - 10);
+      height: $inlineAmendmentPreambleHeight;
+      color: $inlineAmendmentPreambleColor;
+      width: 100%;
+      > div {
         position: absolute;
-        top: -($inlineAmendmentPreambleHeight - 10);
-        height: $inlineAmendmentPreambleHeight;
-        color: $inlineAmendmentPreambleColor;
+        bottom: 0;
+        left: 0;
+        max-height: $inlineAmendmentPreambleHeight;
+        padding-right: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         width: 100%;
-        > div {
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          max-height: $inlineAmendmentPreambleHeight;
-          padding-right: 50px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          width: 100%;
-          h3 {
-            font-size: 14px;
-            display: inline-block;
-            margin: 0;
-            font-weight: bold;
-          }
-          .moreAffected {
-            font-style: italic;
-            font-size: 0.8em;
-            margin-top: -3px;
-            color: #bbccbb;
-          }
+        h3 {
+          font-size: 14px;
+          display: inline-block;
+          margin: 0;
+          font-weight: bold;
+        }
+        .moreAffected {
+          font-style: italic;
+          font-size: 0.8em;
+          margin-top: -3px;
+          color: #bbccbb;
         }
       }
-      .movedParagraphHint {
-        font-style: italic;
-        font-size: 0.8em;
-        margin-top: 3px;
-        color: #bbccbb;
-      }
+    }
+    .movedParagraphHint {
+      font-style: italic;
+      font-size: 0.8em;
+      margin-top: 3px;
+      color: #bbccbb;
     }
   }
   .tabularData {
     > tbody > tr:first-child {
       > td, > th {
         border-top: none;
-      }
-    }
-  }
-  &.fourdigitsLineNumbers .paragraph .text {
-    .lineNumber {
-      left: $lineNumberOffset4 + -1 * $fixedWidthTextStdPadding;
-    }
-    > ul, > ol {
-      .lineNumber {
-        left: $lineNumberOffset4 + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
-      }
-    }
-    > blockquote {
-      .lineNumber {
-        left: $lineNumberOffset4 + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
-            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
       }
     }
   }

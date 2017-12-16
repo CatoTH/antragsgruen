@@ -52,7 +52,7 @@ foreach ($changes as $change) {
             $diffGroups = $change->getSimpleTextDiffGroups();
             echo '<div class="motionTextHolder"><div class="paragraph lineNumbers">';
 
-            $wrapStart = '<section class="paragraph"><div class="text';
+            $wrapStart = '<section class="paragraph"><div class="text motionTextFormattings';
             if ($change->isFixedWithFont()) {
                 $wrapStart .= ' fixedWidthFont';
             }

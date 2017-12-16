@@ -41,7 +41,7 @@ foreach ($amendingSections as $amendmentSection) {
 
 echo '</ul>';
 
-echo '<div class="text textOrig fixedWidthFont">';
+echo '<div class="text textOrig motionTextFormattings fixedWidthFont">';
 if ($hasLineNumbers) {
     /** @var int $lineNo */
     $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
@@ -51,7 +51,7 @@ echo '</div>';
 
 foreach ($amendingSections as $amendmentSection) {
     $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
-    echo '<div class="text textAmendment hidden fixedWidthFont amendment' . $amendment->id . '">';
+    echo '<div class="text textAmendment hidden motionTextFormattings fixedWidthFont amendment' . $amendment->id . '">';
     echo '<div class="preamble"><div>';
     echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
     echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
