@@ -25,6 +25,10 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
+?>
+    <h1><?= \Yii::t('amend', 'merge_confirm_title') ?></h1>
+<?php
+
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionConfirmForm',
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
@@ -33,7 +37,6 @@ echo Html::beginForm('', 'post', [
 $odtText = '<span class="glyphicon glyphicon-download"></span> ' . \Yii::t('amend', 'merge_confirm_odt');
 $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 ?>
-    <h1><?= \Yii::t('amend', 'merge_confirm_title') ?></h1>
     <section class="toolbarBelowTitle mergeConfirmToolbar">
         <div class="styleSwitcher">
             <div class="btn-group" data-toggle="buttons">

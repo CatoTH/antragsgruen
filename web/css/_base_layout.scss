@@ -41,8 +41,6 @@
   }
 }
 
-
-
 /* keep the footer at the bottom of the page */
 $footer_height: 1.6em;
 $footer_line_height: 1.5em;
@@ -82,7 +80,6 @@ body > footer {
   font-size: 0.8em;
 }
 
-
 .antragsgruen-content {
   // Amendment-Markers at the side of a motion should be above the sidebar in case of a collission
   > main {
@@ -103,7 +100,9 @@ body > footer {
   border-bottom: solid 1px #aaa;
   background: #f7f7f7;
   display: table;
-  width: 100%;
+  margin-left: -1px;
+  margin-right: -1px;
+  width: calc(100% + 2px);
   > * {
     display: table-cell;
   }
