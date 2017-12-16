@@ -163,6 +163,8 @@ class MotionListController extends AdminBase
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionIndex()
     {
@@ -212,11 +214,12 @@ class MotionListController extends AdminBase
         ]);
     }
 
-        /**
+    /**
      * @param int $motionTypeId
      * @param bool $textCombined
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMotionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
@@ -252,6 +255,7 @@ class MotionListController extends AdminBase
      * @param bool $textCombined
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMotionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
@@ -294,6 +298,7 @@ class MotionListController extends AdminBase
      * @param int $motionTypeId
      * @param int $version
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMotionOpenslides($motionTypeId, $version = 1)
     {
@@ -331,6 +336,7 @@ class MotionListController extends AdminBase
      * @param int $motionTypeId
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMotionPdfziplist($motionTypeId = 0, $withdrawn = 0)
     {
@@ -366,6 +372,7 @@ class MotionListController extends AdminBase
      * @param int $motionTypeId
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionMotionOdtziplist($motionTypeId = 0, $withdrawn = 0)
     {
@@ -386,7 +393,8 @@ class MotionListController extends AdminBase
 
         $zip = new ZipWriter();
         foreach ($motions as $motion) {
-            $zip->addFile($motion->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($motion));
+            $content = $this->renderPartial('@app/views/motion/view_odt', ['motion' => $motion]);
+            $zip->addFile($motion->getFilenameBase(false) . '.odt', $content);
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;

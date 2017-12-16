@@ -23,6 +23,7 @@ use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
+use app\views\motion\LayoutHelper;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -238,7 +239,7 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        return \app\views\motion\LayoutHelper::createOdt($motion);
+        return $this->renderPartial('view_odt', ['motion' => $motion]);
     }
 
 
@@ -336,7 +337,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionViewChanges($motionSlug)
@@ -355,6 +355,36 @@ class MotionController extends Base
         }
 
         return $this->render('view_changes', [
+            'newMotion' => $motion,
+            'oldMotion' => $parentMotion,
+            'changes'   => MotionSectionChanges::motionToSectionChanges($parentMotion, $motion),
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     * @throws \yii\base\ExitException
+     */
+    public function actionViewChangesOdt($motionSlug)
+    {
+        $motion       = $this->getMotionWithCheck($motionSlug);
+        $parentMotion = $motion->replacedMotion;
+
+        if (!$motion->isReadable()) {
+            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+        if (!$parentMotion || !$parentMotion->isReadable()) {
+            \Yii::$app->session->setFlash('error', 'The diff-view is not available');
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
+        }
+
+        $filename                    = $motion->getFilenameBase(false) . '-changes.odt';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+
+        return $this->renderPartial('view_changes_odt', [
             'newMotion' => $motion,
             'oldMotion' => $parentMotion,
             'changes'   => MotionSectionChanges::motionToSectionChanges($parentMotion, $motion),
@@ -682,6 +712,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws Internal
      */
     public function actionMergeAmendmentsInit($motionSlug)
     {
@@ -773,6 +804,7 @@ class MotionController extends Base
      * @param int $newMotionId
      * @param string $amendmentStati
      * @return string
+     * @throws Internal
      */
     public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
     {
@@ -854,6 +886,7 @@ class MotionController extends Base
     /**
      * @param $motionSlug
      * @return string
+     * @throws Internal
      */
     public function actionSaveMergingDraft($motionSlug)
     {

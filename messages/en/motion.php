@@ -166,4 +166,6 @@ return [
     'diff_title'       => 'Changes from %FROM% to %TO%',
     'diff_no_change'   => 'No changes',
     'diff_err_display' => 'The changes cannot be displayed.',
+    'diff_old_version' => 'Original version',
+    'diff_new_version' => 'New version',
 ];

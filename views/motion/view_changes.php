@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\sectionTypes\ISectionType;
@@ -28,11 +29,41 @@ $this->title = str_replace(
 );
 ?>
     <h1><?= Html::encode($this->title) ?></h1>
-    <div class="content">
+    <div class="motionChangeView content">
         <?php
         echo $controller->showErrors();
-
+        $oldLink = UrlHelper::createMotionUrl($oldMotion);
+        $newLink = UrlHelper::createMotionUrl($newMotion);
         ?>
+        <table class="motionDataTable">
+            <tr>
+                <th><?= \Yii::t('motion', 'diff_old_version') ?>:</th>
+                <td><?= Html::a(Html::encode($oldMotion->titlePrefix), $oldLink) ?></td>
+            </tr>
+            <tr>
+                <th><?= \Yii::t('motion', 'status') ?>:</th>
+                <td><?= $oldMotion->getFormattedStatus() ?></td>
+            </tr>
+            <tr>
+                <th><?= \Yii::t('motion', ($oldMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
+                <td><?= Tools::formatMysqlDateTime($oldMotion->dateCreation, null, false) ?></td>
+            </tr>
+        </table>
+
+        <table class="motionDataTable">
+            <tr>
+                <th><?= \Yii::t('motion', 'diff_new_version') ?>:</th>
+                <td><?= Html::a(Html::encode($newMotion->titlePrefix), $newLink) ?></td>
+            </tr>
+            <tr>
+                <th><?= \Yii::t('motion', 'status') ?>:</th>
+                <td><?= $newMotion->getFormattedStatus() ?></td>
+            </tr>
+            <tr>
+                <th><?= \Yii::t('motion', ($newMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
+                <td><?= Tools::formatMysqlDateTime($newMotion->dateCreation, null, false) ?></td>
+            </tr>
+        </table>
     </div>
 <?php
 

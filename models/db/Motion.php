@@ -1118,6 +1118,32 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return string
+     */
+    public function getFormattedStatus()
+    {
+        $status     = '';
+
+        $screeningMotionsShown = $this->getMyConsultation()->getSettings()->screeningMotionsShown;
+        $statiNames            = Motion::getStatusNames();
+        if ($this->isInScreeningProcess()) {
+            $status .= '<span class="unscreened">' . Html::encode($statiNames[$this->status]) . '</span>';
+        } elseif ($this->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
+            $status .= '<span class="screened">' . \Yii::t('motion', 'screened_hint') . '</span>';
+        } elseif ($this->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+            $status .= Html::encode($statiNames[$this->status]);
+            $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
+            $status .= IPolicy::getPolicyNames()[$this->motionType->policySupportMotions] . ')</small>';
+        } else {
+            $status .= Html::encode($statiNames[$this->status]);
+        }
+        if (trim($this->statusString) != '') {
+            $status .= ' <small>(' . Html::encode($this->statusString) . ')</string>';
+        }
+        return $status;
+    }
+
+    /**
      * @return int
      */
     public function getLikeDislikeSettings()

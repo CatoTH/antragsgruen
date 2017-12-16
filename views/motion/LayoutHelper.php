@@ -2,6 +2,7 @@
 
 namespace app\views\motion;
 
+use app\components\AntiSpam;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
@@ -27,6 +28,7 @@ class LayoutHelper
      * @param ISupporter[] $initiators
      * @param Consultation $consultation
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public static function formatInitiators($initiators, Consultation $consultation)
     {
@@ -75,6 +77,7 @@ class LayoutHelper
      * @param bool $imadmin
      * @param string $baseLink
      * @param string $commLink
+     * @throws \app\models\exceptions\Internal
      */
     public static function showComment(IComment $comment, $imadmin, $baseLink, $commLink)
     {
@@ -175,7 +178,7 @@ class LayoutHelper
         echo '<legend>' . \Yii::t('comment', 'comment_write_title') . '</legend>';
 
         if (\Yii::$app->user->isGuest) {
-            echo \app\components\AntiSpam::getJsProtectionHint($consultation->id);
+            echo AntiSpam::getJsProtectionHint($consultation->id);
         }
         $user = User::getCurrentUser();
 
@@ -226,6 +229,7 @@ class LayoutHelper
     /**
      * @param Motion $motion
      * @return Content
+     * @throws \app\models\exceptions\Internal
      */
     public static function renderTeX(Motion $motion)
     {
@@ -480,7 +484,8 @@ class LayoutHelper
     <div class="content form-horizontal">';
 
         foreach ($amendments as $amendment) {
-            $changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
+            //$changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
+            $changeset = [];
             $data      = 'data-old-status="' . $amendment->status . '"';
             $data .= ' data-amendment-id="' . $amendment->id . '"';
             $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
@@ -516,6 +521,7 @@ class LayoutHelper
     /**
      * @param Motion $motion
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public static function createPdf(Motion $motion)
     {
@@ -540,49 +546,6 @@ class LayoutHelper
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
         return $pdf;
-    }
-
-    /**
-     * @param Motion $motion
-     * @return string
-     */
-    public static function createOdt(Motion $motion)
-    {
-        /** @var \app\models\settings\AntragsgruenApp $config */
-        $config = \yii::$app->params;
-
-        $template = $motion->motionType->getOdtTemplateFile();
-        $doc      = new \CatoTH\HTML2OpenDocument\Text([
-            'templateFile' => $template,
-            'tmpPath'      => $config->tmpDir,
-            'trustHtml'    => true,
-        ]);
-
-        $initiators = [];
-        $supporters = [];
-        foreach ($motion->motionSupporters as $supp) {
-            if ($supp->role == ISupporter::ROLE_INITIATOR) {
-                $initiators[] = $supp->getNameWithOrga();
-            }
-            if ($supp->role == ISupporter::ROLE_SUPPORTER) {
-                $supporters[] = $supp->getNameWithOrga();
-            }
-        }
-        if (count($initiators) == 1) {
-            $initiatorStr = \Yii::t('export', 'InitiatorSingle');
-        } else {
-            $initiatorStr = \Yii::t('export', 'InitiatorMulti');
-        }
-        $initiatorStr .= ': ' . implode(', ', $initiators);
-        $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $motion->agendaItem ? $motion->agendaItem->title : '');
-        $doc->addReplace('/\{\{ANTRAGSGRUEN:TITLE\}\}/siu', $motion->getTitleWithPrefix());
-        $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
-
-        foreach ($motion->getSortedSections() as $section) {
-            $section->getSectionType()->printMotionToODT($doc);
-        }
-
-        return $doc->finishAndGetDocument();
     }
 
     /**

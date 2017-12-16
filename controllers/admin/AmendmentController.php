@@ -97,7 +97,8 @@ class AmendmentController extends AdminBase
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
-                $zip->addFile($amendment->getFilenameBase(false) . '.odt', LayoutHelper::createOdt($amendment));
+                $content = $this->renderPartial('@app/views/amendment/view_odt', ['amendment' => $amendment]);
+                $zip->addFile($amendment->getFilenameBase(false) . '.odt', $content);
             }
         }
 

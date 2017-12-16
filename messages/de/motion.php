@@ -175,4 +175,6 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'diff_title'       => 'Änderungen von %FROM% zu %TO%',
     'diff_no_change'   => 'Keine Änderungen',
     'diff_err_display' => 'Änderungen können nicht dargestellt werden.',
+    'diff_old_version' => 'Ursprüngliche Version',
+    'diff_new_version' => 'Neue Version',
 ];

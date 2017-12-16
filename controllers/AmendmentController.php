@@ -12,7 +12,6 @@ use app\models\db\ConsultationLog;
 use app\models\db\IMotion;
 use app\models\db\User;
 use app\models\db\VotingBlock;
-use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
@@ -51,6 +50,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionPdf($motionSlug, $amendmentId)
     {
@@ -79,6 +79,7 @@ class AmendmentController extends Base
     /**
      * @param int $withdrawn
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionPdfcollection($withdrawn = 0)
     {
@@ -116,6 +117,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionOdt($motionSlug, $amendmentId)
     {
@@ -134,7 +136,7 @@ class AmendmentController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
-        return LayoutHelper::createOdt($amendment);
+        return $this->renderPartial('view_odt', ['amendment' => $amendment]);
     }
 
     /**
@@ -142,6 +144,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @param int $commentId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
@@ -230,6 +233,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @param string $fromMode
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionCreateconfirm($motionSlug, $amendmentId, $fromMode)
     {
@@ -340,6 +344,9 @@ class AmendmentController extends Base
      * @param int $cloneFrom
      * @return string
      * @throws NotFound
+     * @throws \app\models\exceptions\Internal
+     * @throws \app\models\exceptions\NotAmendable
+     * @throws \yii\base\ExitException
      */
     public function actionCreate($motionSlug, $cloneFrom = 0)
     {
@@ -453,8 +460,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
-     * @throws Access
-     * @throws NotFound
+     * @throws \app\models\exceptions\Internal
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
@@ -578,6 +584,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
@@ -620,6 +627,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
     {

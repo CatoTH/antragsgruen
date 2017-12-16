@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 .texteditorBox {
   min-height: 100px;
   border: 1px solid #ccc;
@@ -99,17 +98,18 @@
   margin-bottom: 15px;
 }
 
-.motionData {
-  .motionDataTable {
-    width: 100%;
-    > tbody > tr > th {
-      width: 30%;
-    }
-
-    .mergingDraft > * {
-      padding-top: 15px;
-    }
+.motionDataTable {
+  width: 100%;
+  > tbody > tr > th {
+    width: 30%;
   }
+
+  .mergingDraft > * {
+    padding-top: 15px;
+  }
+}
+
+.motionData {
   .tagAdderHolder:link, .tagAdderHolder:visited {
     color: green;
   }
@@ -756,8 +756,6 @@ ul.searchResults {
     font-style: italic;
   }
 }
-
-
 
 .amendmentAjaxTooltip {
   cursor: pointer;

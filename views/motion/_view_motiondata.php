@@ -72,26 +72,9 @@ if (count($initiators) > 0) {
 
     echo '</td></tr>';
 }
-echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th><td>';
-
-$screeningMotionsShown = $motion->getMyConsultation()->getSettings()->screeningMotionsShown;
-$statiNames            = Motion::getStatusNames();
-if ($motion->isInScreeningProcess()) {
-    echo '<span class="unscreened">' . Html::encode($statiNames[$motion->status]) . '</span>';
-} elseif ($motion->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
-    echo '<span class="screened">' . \Yii::t('motion', 'screened_hint') . '</span>';
-} elseif ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
-    echo Html::encode($statiNames[$motion->status]);
-    echo ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
-    echo IPolicy::getPolicyNames()[$motion->motionType->policySupportMotions] . ')</small>';
-} else {
-    echo Html::encode($statiNames[$motion->status]);
-}
-if (trim($motion->statusString) != '') {
-    echo ' <small>(' . Html::encode($motion->statusString) . ')</string>';
-}
-echo '</td>
-                </tr>';
+echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th>';
+echo '<td>' . $motion->getFormattedStatus() . '<td>';
+echo '</tr>';
 
 if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);

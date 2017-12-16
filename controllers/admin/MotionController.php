@@ -84,6 +84,8 @@ class MotionController extends AdminBase
      * @param int $motionTypeId
      * @return string
      * @throws FormError
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionType($motionTypeId)
     {
@@ -197,6 +199,7 @@ class MotionController extends AdminBase
 
     /**
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionTypecreate()
     {
@@ -271,6 +274,9 @@ class MotionController extends AdminBase
 
     /**
      * @param Motion $motion
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     private function saveMotionSupporters(Motion $motion)
     {
@@ -317,6 +323,7 @@ class MotionController extends AdminBase
     /**
      * @param int $motionId
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionGetAmendmentRewriteCollissions($motionId)
     {
@@ -346,6 +353,8 @@ class MotionController extends AdminBase
     /**
      * @param int $motionId
      * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionUpdate($motionId)
     {
