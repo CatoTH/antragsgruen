@@ -32,6 +32,7 @@ trait AmendmentMergingTrait
      * @return string
      * @throws Access
      * @throws NotFound
+     * @throws Internal
      */
     public function actionGetMergeCollissions($motionSlug, $amendmentId)
     {
@@ -116,6 +117,7 @@ trait AmendmentMergingTrait
      * @throws Access
      * @throws Internal
      * @throws NotFound
+     * @throws \yii\base\ExitException
      */
     public function actionMerge($motionSlug, $amendmentId)
     {

@@ -10,6 +10,7 @@ use yii\helpers\Html;
  * @var Motion $newMotion
  * @var string $deleteDraftId
  * @var array $amendmentStati
+ * @var \app\models\MotionSectionChanges[] $changes
  */
 
 /** @var \app\controllers\Base $controller */
@@ -24,8 +25,33 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
-echo '<h1>' . \Yii::t('amend', 'merge_confirm_title') . '</h1>';
+echo Html::beginForm('', 'post', [
+    'id'                       => 'motionConfirmForm',
+    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
+]);
 
+$odtText = '<span class="glyphicon glyphicon-download"></span> ' . \Yii::t('amend', 'merge_confirm_odt');
+$odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
+?>
+    <h1><?= \Yii::t('amend', 'merge_confirm_title') ?></h1>
+    <section class="toolbarBelowTitle mergeConfirmToolbar">
+        <div class="styleSwitcher">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <input type="radio" name="diffStyle" value="full" autocomplete="off" checked>
+                    <?= \Yii::t('amend', 'merge_confirm_full') ?>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="diffStyle" value="diff" autocomplete="off">
+                    <?= \Yii::t('amend', 'merge_confirm_diff') ?>
+                </label>
+            </div>
+        </div>
+        <div class="export">
+            <?= Html::a($odtText, $odtLink, ['class' => 'btn btn-default']) ?>
+        </div>
+    </section>
+<?php
 
 foreach ($newMotion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
@@ -33,11 +59,19 @@ foreach ($newMotion->getSortedSections(true) as $section) {
     }
     echo '<section class="motionTextHolder">';
     echo '<h2 class="green">' . Html::encode($section->getSettings()->title) . '</h2>';
-    echo '<div class="consolidated">';
 
+    echo '<div class="fullText">';
     echo $section->getSectionType()->getSimple(false);
-
     echo '</div>';
+
+    foreach ($changes as $change) {
+        echo '<div class="diffText">';
+        if ($change->getSectionId() == $section->sectionId) {
+            echo $this->render('_view_change_section', ['change' => $change]);
+        }
+        echo '</div>';
+    }
+
     echo '</section>';
 }
 
@@ -45,8 +79,6 @@ echo '<section class="newAmendments">';
 LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStati);
 echo '</section>';
 
-
-echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
 
 echo '<div class="content">
         <div style="float: right;">

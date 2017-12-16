@@ -434,17 +434,7 @@ label.legend {
 }
 
 .motionListExportRow {
-  padding: 10px 19px;
-  border-bottom: solid 1px #aaa;
-  background: #f7f7f7;
-  display: table;
-  width: 100%;
-
-  > .new, .proposedProcedure {
-    display: table-cell;
-  }
   > .export {
-    display: table-cell;
     text-align: right;
     > * {
       display: inline-block;

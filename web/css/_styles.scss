@@ -343,6 +343,17 @@
   margin-bottom: 20px;
 }
 
+.mergeConfirmToolbar {
+  margin-bottom: 30px;
+
+  > .export {
+    text-align: right;
+    > * {
+      display: inline-block;
+    }
+  }
+}
+
 .motionMergeInit {
   h2.green {
     margin-bottom: 10px;

@@ -98,3 +98,13 @@ body > footer {
   margin-bottom: 20px;
 }
 
+.toolbarBelowTitle {
+  padding: 10px 19px;
+  border-bottom: solid 1px #aaa;
+  background: #f7f7f7;
+  display: table;
+  width: 100%;
+  > * {
+    display: table-cell;
+  }
+}

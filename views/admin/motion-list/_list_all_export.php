@@ -31,7 +31,7 @@ foreach ($consultation->motionTypes as $motionType) {
 }
 
 ?>
-<div class="motionListExportRow">
+<section class="motionListExportRow toolbarBelowTitle">
     <?php
     if (count($creatableMotions) > 0) {
         ?>
@@ -207,5 +207,5 @@ foreach ($consultation->motionTypes as $motionType) {
             </ul>
         </div>
     </div>
-</div>
+</section>
 

@@ -70,6 +70,9 @@ return [
     'merge_merge'               => 'Merge',
     'merge_new_text'            => 'New motion text',
     'merge_confirm_title'       => 'Confirm new version',
+    'merge_confirm_odt'         => 'Export as ODT',
+    'merge_confirm_full'        => 'Full text',
+    'merge_confirm_diff'        => 'Only changes',
     'merge_submitted'           => 'New version confirmed',
     'merge_submitted_title'     => '%TITLE% revised',
     'merge_submitted_str'       => 'The new version of this motion has been saved',
@@ -251,7 +254,7 @@ return [
     'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
     'proposal_email_modified'    => "Hi %NAME_GIVEN%,\n\n" .
         "the administrators have discussed about your amendment and propose to accept it in a modified version.\n\n" .
-        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n".
+        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
     'proposal_email_accepted'    => "Hi %NAME_GIVEN%,\n\n" .
@@ -259,9 +262,9 @@ return [
         "You can see the amendment at the following link: %LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
-    'proposal_email_other'    => "Hi %NAME_GIVEN%,\n\n" .
+    'proposal_email_other'       => "Hi %NAME_GIVEN%,\n\n" .
         "the administrators have agreed on a proposed procedure regarding your amendment.\n\n" .
-        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n".
+        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
     'proposal_user_agree'        => 'I agree with the proposal',
