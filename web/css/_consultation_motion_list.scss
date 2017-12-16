@@ -1,0 +1,496 @@
+@charset "UTF-8";
+
+@import "variables";
+
+.motionList {
+  .motion {
+    position: relative;
+    &:last-child {
+      padding-bottom: 0;
+    }
+
+    > .date {
+      color: #757676;
+      margin-left: 20px;
+      position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
+      top: 12px;
+      right: 12px;
+      @media screen and (max-width: $screen-sm-max) {
+        position: relative;
+        top: 0;
+        right: 0;
+        float: right;
+      }
+    }
+
+    > .title {
+      margin-bottom: 3px;
+
+      .motionIcon {
+        width: 27px;
+        margin-left: -30px;
+        color: $colorLinksLight;
+      }
+
+      a {
+        color: $colorLinks;
+        font-weight: bold;
+        text-indent: 0;
+        font-size: 16px;
+        line-height: 18px;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
+
+        &:hover, &:focus {
+          color: darken($colorLinks, 20%);
+        }
+      }
+
+      .pdfLink {
+        font-size: 13px;
+        color: $colorLinksLight;
+        margin-left: 10px;
+        display: inline-block;
+        font-weight: normal;
+        a:hover {
+          text-decoration: none;
+          color: darken($colorLinksLight, 20%);
+        }
+      }
+    }
+  }
+
+  .motion.withdrawn {
+    .motionTitle, .motionPrefix {
+      text-decoration: line-through;
+    }
+  }
+  .amendment.withdrawn {
+    .amendmentTitle {
+      text-decoration: line-through;
+    }
+  }
+  .motion.modified, .motion.withdrawn {
+    > .title a * {
+      opacity: 0.4;
+    }
+    .amendment > a {
+      opacity: 0.4;
+    }
+    h4.amendments {
+      opacity: 0.65;
+    }
+  }
+  .amendment.modified, .amendment.withdrawn {
+    > .title a {
+      opacity: 0.4;
+    }
+  }
+
+  ul.amendments {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+      margin-bottom: 3px;
+      position: relative;
+      > a {
+        font-weight: bold;
+        margin-right: 5px;
+      }
+      > .date {
+        color: #757676;
+        display: block;
+        margin-left: 20px;
+        position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
+        top: 0;
+        right: -8px;
+        @media screen and (max-width: $screen-sm-max) {
+          position: relative;
+          top: 0;
+          right: 0;
+          float: right;
+        }
+      }
+    }
+  }
+  .status {
+    font-style: italic;
+    color: $text-color;
+  }
+}
+
+.motionListStd {
+  list-style-type: none;
+  margin: 0 0 40px;
+  padding: 0;
+}
+
+.motionListWithoutAgenda {
+  .motion {
+    padding: 12px 20px 17px 50px;
+
+    > .date {
+      display: block;
+    }
+    > .title {
+      padding-right: 65px;
+      .motionPrefix {
+        display: inline-block;
+        &:after {
+          content: ':';
+        }
+      }
+    }
+    .info {
+      font-style: italic;
+      color: rgb(115, 115, 115);
+    }
+    .clearfix {
+      display: none;
+    }
+  }
+  h4.amendments {
+    display: none;
+  }
+  ul.amendments {
+    > li {
+      > .date {
+        display: block;
+      }
+    }
+  }
+}
+
+.motionListBelowAgenda {
+  $titlePrefixWidth: 90px;
+  .motion {
+    padding: 12px 30px 17px 30px;
+
+    > .date {
+      display: none;
+    }
+    > .title {
+      font-family: $headingFont;
+      .motionIcon {
+        display: none;
+      }
+      .motionPrefix {
+        word-break: break-all;
+        word-wrap: break-word;
+        width: $titlePrefixWidth;
+        float: left;
+        left: 30px;
+        top: 13px;
+      }
+      .motionTitle {
+        display: block;
+        margin-left: $titlePrefixWidth + 5px;
+      }
+      .pdfLink {
+        display: none;
+      }
+    }
+    .info {
+      display: block;
+      margin-left: 95px;
+    }
+    .clearfix {
+      clear: both;
+    }
+  }
+  ul.amendments {
+    margin-bottom: 10px;
+    @media screen and (min-width: 600px) {
+      margin-left: $titlePrefixWidth + 5px;
+    }
+    > li {
+      > a {
+        float: left;
+        width: 90px;
+        left: 0;
+        top: 0;
+      }
+      > .date {
+        display: none;
+      }
+    }
+  }
+  h4.amendments {
+    @media screen and (min-width: 600px) {
+      margin-left: $titlePrefixWidth + 5px;
+    }
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-family: $headingFont;
+    font-size: 14px;
+    font-weight: bold;
+    color: $colorGreenLight;
+  }
+}
+
+.noMotionsYet {
+  font-style: italic;
+}
+
+.motionListWithinAgenda {
+  list-style-type: none;
+  margin: 15px 0 0;
+  padding: 0;
+  position: relative;
+
+  .motion {
+    > .title {
+      a {
+        font-size: 14px;
+        line-height: 16px;
+      }
+    }
+  }
+
+  ol {
+    list-style-type: none;
+    margin: 0 0 0 30px;
+    padding: 0;
+  }
+  ul.motions {
+    list-style-type: none;
+    margin: 0 0 0 50px;
+    padding: 0;
+  }
+  ul.amendments {
+    > li > .date {
+      right: 3px;
+    }
+  }
+
+  .agendaItemAdder {
+    padding-left: 35px;
+    margin-bottom: 0;
+    margin-top: -4px;
+  }
+  html.no-touchevents & .agendaItemAdder {
+    visibility: hidden;
+  }
+  html.no-touchevents &:hover > .agendaItemAdder, html.no-touchevents & ol.agenda:hover > .agendaItemAdder {
+    visibility: visible;
+  }
+
+  li.agendaItem {
+    border: solid 1px transparent; // Otherwise: strange behavior when moving items
+    padding-left: 20px;
+    position: relative;
+
+    .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
+      color: $colorDelLink;
+      position: absolute;
+      top: 5px;
+      right: 10px;
+    }
+
+    > div {
+      margin-bottom: 5px;
+      padding: 5px 10px 10px;
+
+      > h3 {
+        overflow: auto;
+        padding: 2px;
+        html.no-touchevents & .delAgendaItem {
+          visibility: hidden;
+        }
+        html.no-touchevents &:hover .delAgendaItem {
+          visibility: visible;
+        }
+
+        .editAgendaItem {
+          font-size: 0.7em;
+          margin-left: 10px;
+        }
+        html.no-touchevents & .editAgendaItem {
+          visibility: hidden;
+        }
+        html.no-touchevents &:hover .editAgendaItem {
+          visibility: visible;
+        }
+      }
+
+      .agendaItemEditForm {
+        display: none;
+
+        input.code {
+          width: 80px;
+          margin-right: 10px;
+        }
+        input.title {
+          width: 250px;
+          margin-right: 10px;
+        }
+        .agendaMotionsRow {
+          padding-top: 5px;
+          font-size: 0.8em;
+          color: gray;
+        }
+      }
+
+      .motionCreateLink {
+        float: right;
+        text-align: left;
+        margin-bottom: 7px;
+        text-indent: -7px;
+        padding-left: 18px;
+        display: block;
+      }
+    }
+
+    &.editing {
+      > div > h3 {
+        display: none;
+      }
+      > div > .agendaItemEditForm {
+        display: block;
+      }
+      > ol > .agendaItemAdder {
+        visibility: hidden !important;
+      }
+    }
+
+    .motion {
+      > .date {
+        top: 0;
+        right: 3px;
+      }
+      > .title {
+        margin-right: 75px;
+      }
+      h4.amendments {
+        font-size: 16px;
+      }
+    }
+  }
+
+  &.agendaListEditing {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    li.agendaItem {
+      > div {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        padding-top: 0;
+      }
+    }
+  }
+  h2, h3 {
+    margin: 0 0 5px;
+    font-size: 18px;
+  }
+  .moveHandle {
+    float: left;
+    font-size: 1.5em;
+    color: lightgrey;
+    margin-left: -27px;
+    cursor: move;
+  }
+  html.no-touchevents & li.agendaItem > div > .moveHandle {
+    display: none;
+  }
+  html.no-touchevents & li.agendaItem:hover > div > .moveHandle {
+    display: block;
+  }
+
+  .movePlaceholder {
+    border: dotted 1px gray;
+  }
+}
+
+.motionListTags {
+  #tagList {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    text-align: center;
+
+    > li {
+      display: inline-block;
+      padding: 10px;
+      background-color: #e2007a;
+      border-radius: 3px;
+      font-size: 16px;
+      margin: 10px;
+
+      > a:link, #tag_list > li > a:visited {
+        color: white;
+      }
+    }
+  }
+
+  .motionTable {
+    width: 100%;
+
+    th {
+      border-bottom: solid 1px $colorGreenLight;
+      font-size: 0.80em;
+      line-height: 2.5em;
+      font-weight: 600;
+    }
+    td {
+      vertical-align: top;
+      padding: 0.75em 0em 0.75em 0em;
+    }
+    tr.motion {
+      border-top: solid 1px $colorGreenLight;
+      &:first-child {
+        border-top: none;
+      }
+    }
+    tr.amendment {
+      .titleCol {
+        .pdfLink {
+          font-weight: 400;
+        }
+        .titleLink {
+          font-weight: 400;
+        }
+      }
+    }
+    .prefixCol {
+      width: 15%;
+    }
+    .titleCol {
+      width: 45%;
+
+      .pdfLink {
+        font-weight: 600;
+        font-size: 0.8em;
+        float: right;
+        margin-right: 20px;
+      }
+      .titleLink {
+        font-weight: 600;
+        a:link, a:visited {
+          color: black;
+        }
+      }
+    }
+    .initiatorCol {
+      width: 35%;
+    }
+    .unscreened {
+      .titleCol {
+        .pdfLink {
+          display: none;
+        }
+        .titleLink {
+          a:link, a:visited {
+            font-weight: 400;
+            color: gray;
+          }
+        }
+      }
+    }
+  }
+}

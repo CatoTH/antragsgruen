@@ -8,7 +8,7 @@ class AgendaEdit {
 
     constructor() {
         this.$agendaform = $('#agendaEditSavingHolder');
-        let $agenda = $('.motionListAgenda');
+        let $agenda = $('.motionListWithinAgenda');
 
         $agenda.addClass('agendaListEditing');
         $agenda.nestedSortable({
@@ -22,7 +22,7 @@ class AgendaEdit {
             axis: 'y',
             update: () => {
                 this.showSaver();
-                $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
+                $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
             }
         });
         $agenda.find('.agendaItem').each((i, el) => {
@@ -67,11 +67,11 @@ class AgendaEdit {
         $li.data('code', newCode);
         $li.find('> div > h3 .code').text(newCode);
         $li.find('> div > h3 .title').text(newTitle);
-        $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
+        $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
     }
 
     submitCompleteForm() {
-        let data = this.buildAgendaStruct($('.motionListAgenda'));
+        let data = this.buildAgendaStruct($('.motionListWithinAgenda'));
         this.$agendaform.find('input[name=data]').val(JSON.stringify(data));
         $(window).off("beforeunload", AgendaEdit.onLeavePage);
     }
@@ -83,7 +83,7 @@ class AgendaEdit {
             if (result) {
                 this.showSaver();
                 $this.parents('li.agendaItem').first().remove();
-                $('ol.motionListAgenda').trigger("antragsgruen:agenda-change");
+                $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
             }
         });
     }

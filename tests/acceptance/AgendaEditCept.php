@@ -18,10 +18,10 @@ $page = ConsultationHomePage::openBy(
 
 $I->see('Parteitag', 'h1');
 $I->dontSeeElementInDOM('.moveHandle');
-$I->see('0. Tagesordnung', '.motionListAgenda');
-$I->see('1. Wahl: 1. Vorsitzende', '.motionListAgenda');
-$I->see('3. Sonstiges', '.motionListAgenda');
-$I->dontSee('1. Sonstiges', '.motionListAgenda');
+$I->see('0. Tagesordnung', '.motionListWithinAgenda');
+$I->see('1. Wahl: 1. Vorsitzende', '.motionListWithinAgenda');
+$I->see('3. Sonstiges', '.motionListWithinAgenda');
+$I->dontSee('1. Sonstiges', '.motionListWithinAgenda');
 $I->see('Bewerben', '#agendaitem_3 > div > h3');
 $I->see('Antrag stellen', '#agendaitem_6 > div > h3');
 
@@ -30,13 +30,13 @@ $I->wantTo('edit the agenda a bit');
 $I->loginAsStdAdmin();
 $I->see('Parteitag', 'h1');
 $I->seeElementInDOM('.moveHandle');
-$I->see('Tagesordnung', '.motionListAgenda');
+$I->see('Tagesordnung', '.motionListWithinAgenda');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
 
 $I->executeJS('$(".agendaListEditing").find("> li.agendaItem").last().prependTo(".agendaListEditing");');
-$I->executeJS('$("ol.motionListAgenda").trigger("antragsgruen:agenda-change");');
-$I->see('1. Sonstiges', '.motionListAgenda');
+$I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-change");');
+$I->see('1. Sonstiges', '.motionListWithinAgenda');
 
 $I->executeJS('$(".agendaListEditing").find("> li").eq(2).find("> ol").children().last().find("a").click();');
 $I->seeElement('.agendaItemEditForm');
@@ -57,19 +57,19 @@ $I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_I
 
 $I->wantTo('further change the agenda a bit');
 $I->see('Bewerben', '#agendaitem_5 > div > h3');
-$I->executeJS('$(".motionListAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListAgenda").children().eq(0));');
-$I->executeJS('$("ol.motionListAgenda").trigger("antragsgruen:agenda-change");');
-$I->see('2. Wahl: Schatzmeister', '.motionListAgenda');
-$I->see('3. More Motions', '.motionListAgenda');
-$I->see('2. Anträge', '.motionListAgenda');
+$I->executeJS('$(".motionListWithinAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListWithinAgenda").children().eq(0));');
+$I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-change");');
+$I->see('2. Wahl: Schatzmeister', '.motionListWithinAgenda');
+$I->see('3. More Motions', '.motionListWithinAgenda');
+$I->see('2. Anträge', '.motionListWithinAgenda');
 
-$I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click();');
+$I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click();');
 $I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
 $I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', '0');
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 $I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
-$I->executeJS('$(".motionListAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
+$I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
 $I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'Keine Anträge');
 $I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');

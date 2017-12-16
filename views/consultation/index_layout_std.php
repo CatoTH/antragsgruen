@@ -12,7 +12,7 @@ echo '<h2 class="green">' . \Yii::t('con', 'All Motions') . '</h2>';
 
 $motions = MotionSorter::getSortedMotions($consultation, $consultation->motions);
 foreach ($motions as $name => $motns) {
-    echo '<ul class="motionListStd layout1">';
+    echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {
         LayoutHelper::showMotion($motion, $consultation);
     }

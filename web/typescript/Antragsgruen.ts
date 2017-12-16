@@ -95,7 +95,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             }
         });
     };
-    $('ol.motionListAgenda').on("antragsgruen:agenda-change", function () {
+    $('ol.motionListWithinAgenda').on("antragsgruen:agenda-change", function () {
         recalcAgendaNode($(this));
     }).trigger("antragsgruen:agenda-change");
 

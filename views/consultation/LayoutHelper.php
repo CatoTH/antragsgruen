@@ -173,7 +173,7 @@ class LayoutHelper
     public static function showAgendaList($items, $consultation, $admin, $isRoot = false, $showMotions = true)
     {
         $items = ConsultationAgendaItem::sortItems($items);
-        echo '<ol class="agenda ' . ($isRoot ? 'motionListAgenda' : 'agendaSub') . '">';
+        echo '<ol class="agenda ' . ($isRoot ? 'motionList motionListWithinAgenda' : 'agendaSub') . '">';
         $shownMotions = [];
         foreach ($items as $item) {
             $newShown     = static::showAgendaItem($item, $consultation, $admin, $showMotions);

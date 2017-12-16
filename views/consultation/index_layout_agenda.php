@@ -50,7 +50,7 @@ if ($longVersion) {
     foreach ($items as $agendaItem) {
         if (count($agendaItem->getVisibleMotions()) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
-            echo '<ul class="motionListStd layout2">';
+            echo '<ul class="motionList motionListStd motionListBelowAgenda">';
             $motions = MotionSorter::getSortedMotionsFlat($consultation, $agendaItem->getVisibleMotions());
             foreach ($motions as $motion) {
                 LayoutHelper::showMotion($motion, $consultation);
@@ -73,7 +73,7 @@ foreach ($consultation->getVisibleMotions() as $motion) {
 }
 if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . \Yii::t('con', 'Other Motions') . '</h2>';
-    echo '<ul class="motionListStd layout2">';
+    echo '<ul class="motionList motionListStd motionListBelowAgenda">';
     foreach ($otherMotions as $motion) {
         LayoutHelper::showMotion($motion, $consultation);
     }
