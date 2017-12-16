@@ -531,6 +531,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Motion|null
+     */
+    public function getMergingUnconfirmed()
+    {
+        return Motion::findOne([
+            'parentMotionId' => $this->id,
+            'status'         => Motion::STATUS_DRAFT,
+        ]);
+    }
+
+    /**
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @param bool $throwExceptions

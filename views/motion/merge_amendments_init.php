@@ -10,9 +10,10 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
-$draft      = $motion->getMergingDraft(false);
+$controller  = $this->context;
+$layout      = $controller->layoutParams;
+$draft       = $motion->getMergingDraft(false);
+$unconfirmed = $motion->getMergingUnconfirmed();
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), \Yii::t('amend', 'merge_init_title'));
 $layout->robotsNoindex = true;
@@ -33,6 +34,20 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
     <h2 class="green"><?= \Yii::t('amend', 'merge_init_all') ?></h2>
     <div class="content">
         <?php
+        if ($unconfirmed) { ?>
+            <div class="alert alert-info unconfirmedExistsAlert" role="alert">
+                <?php
+                echo \Yii::t('amend', 'merge_init_unconf_hint');
+                $confirmUrl = UrlHelper::createMotionUrl($unconfirmed, 'merge-amendments-confirm');
+                ?>
+                <div class="pull-right">
+                    <a href="<?= Html::encode($confirmUrl) ?>" class="btn btn-primary">
+                        <?= \Yii::t('amend', 'merge_init_unconf_btn') ?>
+                    </a>
+                </div>
+            </div>
+            <?php
+        }
         if ($draft) { ?>
             <div class="alert alert-info draftExistsAlert" role="alert">
                 <?php
@@ -43,7 +58,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 ?>
                 <div class="pull-right">
                     <a href="<?= Html::encode($mergeContUrl) ?>" class="btn btn-primary">
-                        <?= \Yii::t('amend', 'merge_init_all_continue') ?>
+                        <?= \Yii::t('amend', 'merge_init_draft_btn') ?>
                     </a>
                 </div>
             </div>
