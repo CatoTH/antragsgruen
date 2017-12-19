@@ -10,7 +10,7 @@ $I->dontSeeElement('.motionDataTable .mergingDraft');
 $I->wantTo('merge the amendments');
 $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
-$I->dontSee('Weiter mit dem Zwischenstand');
+$I->dontSeeElement('.draftExistsAlert .btn');
 $I->see('Einpflegen beginnen');
 $I->click('.mergeAllRow .btn-primary');
 $I->see('annehmen oder ablehnen');
@@ -51,7 +51,7 @@ $I->gotoConsultationHome()->gotoMotionView(2);
 $I->wantTo('merge the amendments');
 $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
-$I->see('Weiter mit dem Zwischenstand');
+$I->seeElement('.draftExistsAlert .btn');
 
 $I->seeElement('.draftExistsAlert');
 $I->click('.draftExistsAlert .btn-primary');
@@ -74,7 +74,7 @@ $I->executeJS(' $(window).unbind("beforeunload");');
 $I->wantTo('restore the second draft');
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.sidebarActions .mergeamendments a');
-$I->see('Weiter mit dem Zwischenstand');
+$I->seeElement('.draftExistsAlert .btn');
 
 $I->seeElement('.draftExistsAlert');
 $I->click('.draftExistsAlert .btn-primary');
@@ -92,7 +92,7 @@ $I->wantTo('begin anew');
 $I->executeJS(' $(window).unbind("beforeunload");');
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.sidebarActions .mergeamendments a');
-$I->see('Weiter mit dem Zwischenstand');
+$I->seeElement('.draftExistsAlert .btn');
 
 $I->click('button.discard');
 $I->wait(1);
