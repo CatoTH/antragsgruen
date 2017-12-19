@@ -134,8 +134,8 @@ return [
     'STATUS_OBSOLETED_BY'                 => 'Handled by another amendment',
     'STATUS_CUSTOM_STRING'                => 'Custom status',
 
-    'PROPOSED_ACCEPTED'           => 'Accepted',
-    'PROPOSEDV_ACCEPTED'          => 'Accept',
+    'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
+    'PROPOSEDV_ACCEPTED_MOTION'   => 'Accept',
     'PROPOSED_ACCEPTED_AMEND'     => 'Accepted',
     'PROPOSEDV_ACCEPTED_AMEND'    => 'Accept',
     'PROPOSED_REJECTED'           => 'Rejected',
@@ -148,7 +148,7 @@ return [
     'PROPOSEDV_VOTE'              => 'Vote',
     'PROPOSED_OBSOLETED_BY'       => 'Handled by another amendment',
     'PROPOSED_CUSTOM_STRING'      => 'Custom status',
-    
+
     'section_comment_none'      => 'No comments',
     'section_comment_motion'    => 'Comment the whole motion as one',
     'section_comment_paragraph' => 'Comment single paragraphs',

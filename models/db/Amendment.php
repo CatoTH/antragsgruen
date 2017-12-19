@@ -1188,6 +1188,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @param boolean $includeVoted
      * @return Amendment[]
+     * @throws \app\models\exceptions\Internal
      */
     public function collidesWithOtherProposedAmendments($includeVoted)
     {

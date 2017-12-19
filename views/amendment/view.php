@@ -108,7 +108,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     </div>
     <?php
 
-    echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'view']);
+    echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'view']);
 }
 if ($amendment->proposalStatusNeedsUserFeedback() && $amendment->iAmInitiator()) {
     echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);

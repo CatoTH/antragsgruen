@@ -33,11 +33,18 @@ use yii\helpers\Html;
  * @property string $statusString
  * @property int $nonAmendable
  * @property string $noteInternal
- * @property string|null $proposalVisibleFrom
  * @property string $cache
  * @property int $textFixed
  * @property string $slug
+ * @property int $proposalStatus
+ * @property int $proposalReferenceId
+ * @property string|null $proposalVisibleFrom
+ * @property string $proposalComment
+ * @property string|null $proposalNotification
+ * @property int $proposalUserStatus
+ * @property string $proposalExplanation
  * @property string|null $votingBlockId
+ * @property int $votingStatus
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -55,6 +62,57 @@ use yii\helpers\Html;
 class Motion extends IMotion implements IRSSItem
 {
     use CacheTrait;
+
+    /**
+     * @return string[]
+     */
+    public static function getProposedChangeStati()
+    {
+        $stati = [
+            IMotion::STATUS_ACCEPTED,
+            IMotion::STATUS_REJECTED,
+            IMotion::STATUS_REFERRED,
+            IMotion::STATUS_VOTE,
+            IMotion::STATUS_OBSOLETED_BY,
+            IMotion::STATUS_CUSTOM_STRING,
+        ];
+        if (Consultation::getCurrent()) {
+            $stati = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStati($stati);
+        }
+        return $stati;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getProposedStatiNames()
+    {
+        return [
+            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_MOTION'),
+            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
+            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
+            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
+            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY'),
+            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getProposalStatiAsVerbs()
+    {
+        $return = static::getProposedStatiNames();
+        foreach ([
+                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_MOTION'),
+                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
+                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
+                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
+                 ] as $statusId => $statusName) {
+            $return[$statusId] = $statusName;
+        }
+        return $return;
+    }
 
     /**
      * @return string
@@ -1182,5 +1240,17 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver()
     {
         return $this->motionType->motionDeadlineIsOver();
+    }
+
+    /**
+     * @return bool
+     */
+    public function proposalStatusNeedsUserFeedback()
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus == Amendment::STATUS_ACCEPTED) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

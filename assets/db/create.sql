@@ -362,25 +362,32 @@ CREATE TABLE `###TABLE_PREFIX###migration` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###motion` (
-  `id`              INT(11)     NOT NULL,
-  `consultationId`  INT(11)     NOT NULL,
-  `motionTypeId`    INT(11)     NOT NULL,
-  `parentMotionId`  INT(11)              DEFAULT NULL,
-  `agendaItemId`    INT(11)              DEFAULT NULL,
-  `title`           TEXT        NOT NULL,
-  `titlePrefix`     VARCHAR(50) NOT NULL,
-  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `datePublication` TIMESTAMP   NULL     DEFAULT NULL,
-  `dateResolution`  TIMESTAMP   NULL     DEFAULT NULL,
-  `status`          TINYINT(4)  NOT NULL,
-  `statusString`    VARCHAR(55)          DEFAULT NULL,
-  `nonAmendable`    TINYINT(4)  NOT NULL DEFAULT '0',
-  `noteInternal`    TEXT,
-  `cache`           LONGTEXT    NOT NULL,
-  `textFixed`       TINYINT(4)           DEFAULT '0',
-  `slug`            VARCHAR(100)         DEFAULT NULL,
-  `votingStatus`    TINYINT(4)           DEFAULT NULL,
-  `votingBlockId`   INT(11)              DEFAULT NULL
+  `id`                   INT(11)     NOT NULL,
+  `consultationId`       INT(11)     NOT NULL,
+  `motionTypeId`         INT(11)     NOT NULL,
+  `parentMotionId`       INT(11)              DEFAULT NULL,
+  `agendaItemId`         INT(11)              DEFAULT NULL,
+  `title`                TEXT        NOT NULL,
+  `titlePrefix`          VARCHAR(50) NOT NULL,
+  `dateCreation`         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `datePublication`      TIMESTAMP   NULL     DEFAULT NULL,
+  `dateResolution`       TIMESTAMP   NULL     DEFAULT NULL,
+  `status`               TINYINT(4)  NOT NULL,
+  `statusString`         VARCHAR(55)          DEFAULT NULL,
+  `nonAmendable`         TINYINT(4)  NOT NULL DEFAULT '0',
+  `noteInternal`         TEXT,
+  `cache`                LONGTEXT    NOT NULL,
+  `textFixed`            TINYINT(4)           DEFAULT '0',
+  `slug`                 VARCHAR(100)         DEFAULT NULL,
+  `proposalStatus`       TINYINT(4)           DEFAULT NULL,
+  `proposalReferenceId`  INT(11)              DEFAULT NULL,
+  `proposalComment`      TEXT,
+  `proposalVisibleFrom`  TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalNotification` TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalUserStatus`   TINYINT(4)  NULL     DEFAULT NULL,
+  `proposalExplanation`  TEXT,
+  `votingStatus`         TINYINT(4)           DEFAULT NULL,
+  `votingBlockId`        INT(11)              DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -761,6 +768,7 @@ ALTER TABLE `motion`
   ADD KEY `consultation` (`consultationId`),
   ADD KEY `parent_motion` (`parentMotionId`),
   ADD KEY `type` (`motionTypeId`),
+  ADD KEY `motion_reference_am` (`proposalReferenceId`),
   ADD KEY `agendaItemId` (`agendaItemId`),
   ADD KEY `ix_motion_voting_block` (`votingBlockId`);
 
@@ -1142,6 +1150,9 @@ ALTER TABLE `motion`
   ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_motion_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `motion` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_motion_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
