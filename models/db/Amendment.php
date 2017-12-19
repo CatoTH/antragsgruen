@@ -86,7 +86,7 @@ class Amendment extends IMotion implements IRSSItem
     public static function getProposedStatiNames()
     {
         return [
-            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED'),
+            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
             static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
             static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
             static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
@@ -103,7 +103,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = static::getProposedStatiNames();
         foreach ([
-                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED'),
+                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_AMEND'),
                      static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
                      static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_MODIFIED_ACCEPTED'),
                      static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),

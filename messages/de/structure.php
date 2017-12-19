@@ -136,6 +136,8 @@ return [
 
     'PROPOSED_ACCEPTED'           => 'Angenommen',
     'PROPOSEDV_ACCEPTED'          => 'Annehmen',
+    'PROPOSED_ACCEPTED_AMEND'     => 'Übernommen',
+    'PROPOSEDV_ACCEPTED_AMEND'    => 'Übernehmen',
     'PROPOSED_REJECTED'           => 'Abgelehnt',
     'PROPOSEDV_REJECTED'          => 'Ablehnen',
     'PROPOSED_MODIFIED_ACCEPTED'  => 'Modifiziert übernommen',
