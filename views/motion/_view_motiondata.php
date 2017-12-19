@@ -20,14 +20,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 echo '<div class="content">';
 
-/** @var Motion[] $replacedByMotions */
-$replacedByMotions = [];
-foreach ($motion->replacedByMotions as $replMotion) {
-    if (!in_array($replMotion->status, $motion->getMyConsultation()->getInvisibleMotionStati())) {
-        $replacedByMotions[] = $replMotion;
-    }
-}
-
+$replacedByMotions = $motion->getVisibleReplacedByMotions();
 if (count($replacedByMotions) > 0) {
     echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
     echo \Yii::t('motion', 'replaced_by_hint');

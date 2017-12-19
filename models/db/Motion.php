@@ -514,6 +514,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return Motion[]
+     */
+    public function getVisibleReplacedByMotions()
+    {
+        $replacedByMotions = [];
+        foreach ($this->replacedByMotions as $replMotion) {
+            if (!in_array($replMotion->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
+                $replacedByMotions[] = $replMotion;
+            }
+        }
+        return $replacedByMotions;
+    }
+
+    /**
      * @param boolean $onlyPublic
      * @return Motion|null
      */
@@ -1133,7 +1147,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getFormattedStatus()
     {
-        $status     = '';
+        $status = '';
 
         $screeningMotionsShown = $this->getMyConsultation()->getSettings()->screeningMotionsShown;
         $statiNames            = Motion::getStatusNames();

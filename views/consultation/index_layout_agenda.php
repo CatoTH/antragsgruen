@@ -64,12 +64,10 @@ if ($longVersion) {
 /** @var Motion[] $otherMotions */
 $otherMotions = [];
 foreach ($consultation->getVisibleMotions() as $motion) {
-    if (!in_array($motion->id, $shownMotions)) {
-        if (count($motion->replacedByMotions) > 0) {
-            continue;
-        }
+    if (!in_array($motion->id, $shownMotions) && count($motion->getVisibleReplacedByMotions()) === 0) {
         $otherMotions[] = $motion;
     }
+    $otherMotions = MotionSorter::getSortedMotionsFlat($consultation, $otherMotions);
 }
 if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . \Yii::t('con', 'Other Motions') . '</h2>';
