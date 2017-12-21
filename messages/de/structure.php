@@ -146,7 +146,8 @@ return [
     'PROPOSEDV_REFERRED'          => 'Überweisen',
     'PROPOSED_VOTE'               => 'Abstimmung',
     'PROPOSEDV_VOTE'              => 'Abstimmen',
-    'PROPOSED_OBSOLETED_BY'       => 'Erledigt durch anderen ÄA',
+    'PROPOSED_OBSOLETED_BY_AMEND' => 'Erledigt durch anderen ÄA',
+    'PROPOSED_OBSOLETED_BY_MOT'   => 'Erledigt durch anderen Antrag',
     'PROPOSED_CUSTOM_STRING'      => 'Sonstiger Status',
 
     'section_comment_none'      => 'Keine Kommentare',

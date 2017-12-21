@@ -40,7 +40,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
 ?>
     <h2>
         <?= \Yii::t('amend', 'proposal_amend_title') ?>
-        <button class="pull-right btn-link closeBtn" title="<?= \Yii::t('amend', 'proposal_close') ?>">
+        <button class="pull-right btn-link closeBtn" title="<?= Html::encode(\Yii::t('amend', 'proposal_close')) ?>">
             <span class="glyphicon glyphicon-chevron-up"></span>
         </button>
     </h2>
@@ -167,7 +167,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
         <?php
         $options = ['-'];
         foreach ($motion->getMyConsultation()->getVisibleMotionsSorted(false) as $otherMotion) {
-            if ($otherMotion->id == $motion->motionId) {
+            if ($otherMotion->id == $motion->id) {
                 continue;
             }
             foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {

@@ -168,4 +168,21 @@ return [
     'diff_err_display' => 'The changes cannot be displayed.',
     'diff_old_version' => 'Original version',
     'diff_new_version' => 'New version',
+
+    'proposal_email_title'    => 'Motion %PREFIX%: Proposed procedure',
+    'proposal_email_modified' => "Hi %NAME_GIVEN%,\n\n" .
+        "the administrators have discussed about your motion and propose to accept it in a modified version.\n\n" .
+        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
+    'proposal_email_accepted' => "Hi %NAME_GIVEN%,\n\n" .
+        "for your information: the administrators will propose to accept your motion.\n\n" .
+        "You can see the motion at the following link: %LINK%\n\n" .
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
+    'proposal_email_other'    => "Hi %NAME_GIVEN%,\n\n" .
+        "the administrators have agreed on a proposed procedure regarding your motion.\n\n" .
+        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
+        "Greetings,\n" .
+        "  The Antragsgrün-Team",
 ];

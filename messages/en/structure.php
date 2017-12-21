@@ -146,7 +146,8 @@ return [
     'PROPOSEDV_REFERRED'          => 'Refer',
     'PROPOSED_VOTE'               => 'Vote',
     'PROPOSEDV_VOTE'              => 'Vote',
-    'PROPOSED_OBSOLETED_BY'       => 'Handled by another amendment',
+    'PROPOSED_OBSOLETED_BY_AMEND' => 'Handled by another amendment',
+    'PROPOSED_OBSOLETED_BY_MOT'   => 'Handled by another motion',
     'PROPOSED_CUSTOM_STRING'      => 'Custom status',
 
     'section_comment_none'      => 'No comments',

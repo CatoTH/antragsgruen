@@ -37,6 +37,7 @@ class EMailLog extends ActiveRecord
     const TYPE_EMAIL_CHANGE                 = 9;
     const TYPE_MOTION_SUPPORTER_REACHED     = 10;
     const TYPE_AMENDMENT_PROPOSED_PROCEDURE = 11;
+    const TYPE_MOTION_PROPOSED_PROCEDURE    = 12;
 
     const STATUS_SENT              = 0;
     const STATUS_SKIPPED_BLACKLIST = 1;
@@ -56,6 +57,7 @@ class EMailLog extends ActiveRecord
         9  => 'email-change',
         10 => 'motion-supporter-reached',
         11 => 'amendment-proposed-procedure',
+        12 => 'motion-proposed-procedure',
     ];
 
     /**
@@ -75,6 +77,7 @@ class EMailLog extends ActiveRecord
             static::TYPE_MOTION_SUBMIT_CONFIRM        => 'Bestätgung: Antrag eingereicht',
             static::TYPE_EMAIL_CHANGE                 => 'E-Mail-Änderung',
             static::TYPE_AMENDMENT_PROPOSED_PROCEDURE => 'Änderungsantrag: Verfahrensvorschlag',
+            static::TYPE_MOTION_PROPOSED_PROCEDURE    => 'Antrag: Verfahrensvorschlag',
         ];
     }
 

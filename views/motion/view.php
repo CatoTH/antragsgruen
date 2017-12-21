@@ -27,6 +27,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/MotionShow');
+if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+    $layout->loadFuelux();
+}
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
@@ -93,6 +96,25 @@ if ($motion->canFinishSupportCollection()) {
 
 
 echo '</div>';
+
+
+if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+    ?>
+    <div class="proposedChangesOpener">
+        <button class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <?= \Yii::t('amend', 'proposal_open') ?>
+        </button>
+    </div>
+    <?php
+
+    echo $this->render('_set_proposed_procedure', ['motion' => $motion]);
+}
+/*
+if ($motion->proposalStatusNeedsUserFeedback() && $motion->iAmInitiator()) {
+    echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
+}
+*/
 
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {

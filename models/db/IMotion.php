@@ -2,9 +2,12 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use yii\base\InvalidConfigException;
+use yii\bootstrap\Html;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 
@@ -16,6 +19,15 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property IMotionSection[] $sections
  * @property int $status
+ * @property int $proposalStatus
+ * @property int $proposalReferenceId
+ * @property string|null $proposalVisibleFrom
+ * @property string $proposalComment
+ * @property string|null $proposalNotification
+ * @property int $proposalUserStatus
+ * @property string $proposalExplanation
+ * @property string|null $votingBlockId
+ * @property int $votingStatus
  */
 abstract class IMotion extends ActiveRecord
 {
@@ -275,6 +287,18 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return bool
      */
+    public function isProposalPublic()
+    {
+        if (!$this->proposalVisibleFrom) {
+            return false;
+        }
+        $visibleFromTs = Tools::dateSql2timestamp($this->proposalVisibleFrom);
+        return ($visibleFromTs <= time());
+    }
+
+    /**
+     * @return bool
+     */
     public function isReadable()
     {
         return !in_array($this->status, $this->getMyConsultation()->getUnreadableStati());
@@ -329,6 +353,14 @@ abstract class IMotion extends ActiveRecord
      * @return IMotionSection[]
      */
     abstract public function getActiveSections();
+
+    /**
+     * @return string[]
+     */
+    public static function getProposalStatiAsVerbs()
+    {
+        return []; // @Overridden by implementations
+    }
 
     /**
      * @return IMotionSection|null
@@ -397,5 +429,49 @@ abstract class IMotion extends ActiveRecord
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function proposalStatusNeedsUserFeedback()
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus == IMotion::STATUS_ACCEPTED) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormattedProposalStatus()
+    {
+        if ($this->proposalStatus === null || $this->proposalStatus == 0) {
+            return '';
+        }
+        switch ($this->proposalStatus) {
+            case static::STATUS_REFERRED:
+                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
+            case static::STATUS_OBSOLETED_BY:
+                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
+                if ($refAmend) {
+                    $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
+                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
+                } else {
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                }
+                break;
+            case static::STATUS_CUSTOM_STRING:
+                return Html::encode($this->proposalComment);
+                break;
+            default:
+                if (isset(static::getProposalStatiAsVerbs()[$this->proposalStatus])) {
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                } else {
+                    return $this->proposalStatus . '?';
+                }
+        }
     }
 }

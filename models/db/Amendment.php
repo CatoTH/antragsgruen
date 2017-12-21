@@ -38,15 +38,6 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property int $textFixed
  * @property int $globalAlternative
- * @property int $proposalStatus
- * @property int $proposalReferenceId
- * @property string|null $proposalVisibleFrom
- * @property string $proposalComment
- * @property string|null $proposalNotification
- * @property int $proposalUserStatus
- * @property string $proposalExplanation
- * @property string|null $votingBlockId
- * @property int $votingStatus
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentAdminComment[] $adminComments
@@ -91,7 +82,7 @@ class Amendment extends IMotion implements IRSSItem
             static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
             static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
             static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY'),
+            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
             static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
         ];
     }
@@ -363,6 +354,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param string[] $original
      * @param string[] $new
      * @return int
+     * @throws \app\models\exceptions\Internal
      */
     public static function calcFirstDiffLineCached($firstLine, $lineLength, $original, $new)
     {
@@ -397,6 +389,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @return int
+     * @throws \app\models\exceptions\Internal
      */
     public function getFirstDiffLine()
     {
@@ -426,6 +419,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param Amendment $ae1
      * @param Amendment $ae2
      * @return int
+     * @throws \app\models\exceptions\Internal
      */
     public static function sortVisibleByLineNumbersSort($ae1, $ae2)
     {
@@ -459,6 +453,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param Consultation $consultation
      * @param Amendment[] $amendments
      * @return Amendment[]
+     * @throws \app\models\exceptions\Internal
      */
     public static function sortVisibleByLineNumbers(Consultation $consultation, $amendments)
     {
@@ -685,6 +680,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @param bool $ignoreCollissionProblems
      * @return bool
+     * @throws \app\models\exceptions\Internal
      */
     public function canMergeIntoMotion($ignoreCollissionProblems = false)
     {
@@ -727,6 +723,7 @@ class Amendment extends IMotion implements IRSSItem
      * @param MotionSection[] $motionSections
      * @param bool $lineNumbers
      * @return MotionSectionParagraphAmendment[]
+     * @throws \app\models\exceptions\Internal
      */
     public function getChangedParagraphs($motionSections, $lineNumbers)
     {
@@ -755,6 +752,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @return Amendment[]
+     * @throws \app\models\exceptions\Internal
      */
     public function getCollidingAmendments()
     {
@@ -973,6 +971,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @param RSSExporter $feed
+     * @throws \app\models\exceptions\Internal
      */
     public function addToFeed(RSSExporter $feed)
     {
@@ -1028,6 +1027,7 @@ class Amendment extends IMotion implements IRSSItem
 
     /**
      * @return array
+     * @throws \app\models\exceptions\Internal
      */
     public function getDataTable()
     {
@@ -1035,12 +1035,14 @@ class Amendment extends IMotion implements IRSSItem
 
         $inits = $this->getInitiators();
         if (count($inits) == 1) {
-            $first = $inits[0];
+            $first         = $inits[0];
+            $keyResolution = \Yii::t('export', 'ResolutionDate');
+            $keySingle     = \Yii::t('export', 'InitiatorSingle');
             if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
-                $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;
-                $return[\Yii::t('export', 'ResolutionDate')]  = Tools::formatMysqlDate($first->resolutionDate, null, false);
+                $return[$keySingle]     = $first->organization;
+                $return[$keyResolution] = Tools::formatMysqlDate($first->resolutionDate, null, false);
             } else {
-                $return[\Yii::t('export', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
+                $return[$keySingle] = $first->getNameWithResolutionDate(false);
             }
         } else {
             $initiators = [];
@@ -1105,18 +1107,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return bool
-     */
-    public function isProposalPublic()
-    {
-        if (!$this->proposalVisibleFrom) {
-            return false;
-        }
-        $visibleFromTs = Tools::dateSql2timestamp($this->proposalVisibleFrom);
-        return ($visibleFromTs <= time());
-    }
-
-    /**
      * return boolean
      */
     public function hasAlternativeProposaltext()
@@ -1154,38 +1144,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string
-     */
-    public function getFormattedProposalStatus()
-    {
-        if ($this->proposalStatus === null || $this->proposalStatus == 0) {
-            return '';
-        }
-        switch ($this->proposalStatus) {
-            case Amendment::STATUS_REFERRED:
-                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
-            case Amendment::STATUS_OBSOLETED_BY:
-                $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
-                if ($refAmend) {
-                    $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
-                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
-                } else {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
-                }
-                break;
-            case Amendment::STATUS_CUSTOM_STRING:
-                return Html::encode($this->proposalComment);
-                break;
-            default:
-                if (isset(static::getProposalStatiAsVerbs()[$this->proposalStatus])) {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
-                } else {
-                    return $this->proposalStatus . '?';
-                }
-        }
-    }
-
-    /**
      * @param boolean $includeVoted
      * @return Amendment[]
      * @throws \app\models\exceptions\Internal
@@ -1216,17 +1174,5 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $collidesWith;
-    }
-
-    /**
-     * @return bool
-     */
-    public function proposalStatusNeedsUserFeedback()
-    {
-        if ($this->proposalStatus === null || $this->proposalStatus == Amendment::STATUS_ACCEPTED) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }

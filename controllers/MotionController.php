@@ -2,22 +2,28 @@
 
 namespace app\controllers;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\MotionAdminComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\UserNotification;
+use app\models\db\VotingBlock;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
+use models\notifications\MotionProposedProcedure;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -366,7 +372,7 @@ class MotionController extends Base
     {
         $motion       = $this->getMotionWithCheck($motionSlug);
         $parentMotion = $motion->replacedMotion;
-        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+        $iAmAdmin     = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
 
         if (!$motion->isReadable() && !($motion->status == Motion::STATUS_DRAFT && $iAmAdmin)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
@@ -657,5 +663,127 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     */
+    public function actionSaveProposalStatus($motionSlug)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Amendment not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $response = [];
+        $msgAlert = null;
+
+        if (\Yii::$app->request->post('setStatus', null) !== null) {
+            if ($motion->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+                if ($motion->proposalUserStatus !== null) {
+                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                }
+                $motion->proposalNotification = null;
+                $motion->proposalUserStatus   = null;
+            }
+            $motion->proposalStatus  = \Yii::$app->request->post('setStatus');
+            $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $motion->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
+                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+                    $motion->proposalExplanation = null;
+                } else {
+                    $motion->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                }
+            } else {
+                $motion->proposalExplanation = null;
+            }
+            if (\Yii::$app->request->post('visible', 0)) {
+                $motion->setProposalPublished();
+            } else {
+                $motion->proposalVisibleFrom = null;
+            }
+            $votingBlockId         = \Yii::$app->request->post('votingBlockId', null);
+            $motion->votingBlockId = null;
+            if ($votingBlockId === 'NEW') {
+                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
+                if ($title !== '') {
+                    $votingBlock                 = new VotingBlock();
+                    $votingBlock->consultationId = $this->consultation->id;
+                    $votingBlock->title          = $title;
+                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->save();
+
+                    $motion->votingBlockId = $votingBlock->id;
+                }
+            } elseif ($votingBlockId > 0) {
+                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
+                if ($votingBlock) {
+                    $motion->votingBlockId = $votingBlock->id;
+                }
+            }
+
+            $response['success'] = false;
+            if ($motion->save()) {
+                $response['success'] = true;
+            }
+
+            $this->consultation->refresh();
+            $response['html'] = $this->renderPartial('_set_proposed_procedure', [
+                'motion'   => $motion,
+                'msgAlert' => $msgAlert,
+            ]);
+        }
+
+        if (\Yii::$app->request->post('notifyProposer')) {
+            try {
+                new MotionProposedProcedure($motion);
+                $motion->proposalNotification = date('Y-m-d H:i:s');
+                $motion->save();
+                $response['success'] = true;
+                $response['html']    = $this->renderPartial('_set_proposed_procedure', [
+                    'amendment' => $motion,
+                    'msgAlert'  => $msgAlert,
+                    'context'   => \Yii::$app->request->post('context', 'view'),
+                ]);
+            } catch (MailNotSent $e) {
+                $response['success'] = false;
+                $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
+            }
+        }
+
+        if (\Yii::$app->request->post('writeComment')) {
+            $adminComment               = new MotionAdminComment();
+            $adminComment->userId       = User::getCurrentUser()->id;
+            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->status       = MotionAdminComment::STATUS_VISIBLE;
+            $adminComment->dateCreation = date('Y-m-d H:i:s');
+            $adminComment->motionId     = $motion->id;
+            if (!$adminComment->save()) {
+                \Yii::$app->response->statusCode = 500;
+                $response['success']             = false;
+                return json_encode($response);
+            }
+
+            $response['success'] = true;
+            $response['comment'] = [
+                'username'      => $adminComment->user->name,
+                'id'            => $adminComment->id,
+                'text'          => $adminComment->text,
+                'dateFormatted' => Tools::formatMysqlDateTime($adminComment->dateCreation),
+            ];
+        }
+
+        return json_encode($response);
     }
 }

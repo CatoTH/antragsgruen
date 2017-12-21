@@ -36,15 +36,6 @@ use yii\helpers\Html;
  * @property string $cache
  * @property int $textFixed
  * @property string $slug
- * @property int $proposalStatus
- * @property int $proposalReferenceId
- * @property string|null $proposalVisibleFrom
- * @property string $proposalComment
- * @property string|null $proposalNotification
- * @property int $proposalUserStatus
- * @property string $proposalExplanation
- * @property string|null $votingBlockId
- * @property int $votingStatus
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -92,7 +83,7 @@ class Motion extends IMotion implements IRSSItem
             static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
             static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
             static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY'),
+            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT'),
             static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
         ];
     }
@@ -738,7 +729,6 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @return int
-     * @throws Internal
      */
     public function getFirstLineNumber()
     {
@@ -935,6 +925,20 @@ class Motion extends IMotion implements IRSSItem
         $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
+    }
+
+    /**
+     */
+    public function setProposalPublished()
+    {
+        if ($this->proposalVisibleFrom) {
+            return;
+        }
+        $this->proposalVisibleFrom = date('Y-m-d H:i:s');
+        $this->save();
+
+        $consultation = $this->getMyConsultation();
+        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
     }
 
     /**
@@ -1240,17 +1244,5 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver()
     {
         return $this->motionType->motionDeadlineIsOver();
-    }
-
-    /**
-     * @return bool
-     */
-    public function proposalStatusNeedsUserFeedback()
-    {
-        if ($this->proposalStatus === null || $this->proposalStatus == Amendment::STATUS_ACCEPTED) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }

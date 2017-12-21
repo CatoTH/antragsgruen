@@ -177,4 +177,21 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'diff_err_display' => 'Änderungen können nicht dargestellt werden.',
     'diff_old_version' => 'Ursprüngliche Version',
     'diff_new_version' => 'Neue Version',
+
+    'proposal_email_title'    => 'Antrag %PREFIX%: Verfahrensvorschlag',
+    'proposal_email_modified' => "Hallo %NAME_GIVEN%,\n\n" .
+        "die Programmkommission hat über deinen Antrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
+        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'proposal_email_accepted' => "Hallo %NAME_GIVEN%,\n\n" .
+        "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Antrag zu übernehmen.\n\n" .
+        "Du kannst ihn hier einsehen: %LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
+    'proposal_email_other'    => "Hallo %NAME_GIVEN%,\n\n" .
+        "die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.\n\n" .
+        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
+        "Mit freundlichen Grüßen,\n" .
+        "  Das Antragsgrün-Team",
 ];

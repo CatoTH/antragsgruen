@@ -82,6 +82,17 @@ if ($motion->replacedMotion) {
     echo '</td></tr>';
 }
 
+if ($motion->isProposalPublic() && $motion->proposalStatus) {
+    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td>';
+    echo $motion->getFormattedProposalStatus();
+    if ($motion->proposalExplanation) {
+        echo ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
+        echo Html::encode($motion->proposalExplanation);
+        echo ')</span>';
+    }
+    echo '</td></tr>';
+}
+
 if ($motion->dateResolution != '') {
     echo '<tr><th>' . \Yii::t('motion', 'resoluted_on') . ':</th>
        <td>' . Tools::formatMysqlDate($motion->dateResolution, null, false) . '</td>

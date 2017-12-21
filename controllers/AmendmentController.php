@@ -531,7 +531,7 @@ class AmendmentController extends Base
             }
 
             $this->consultation->refresh();
-            $response['html'] = $this->renderPartial('_set_change_proposal', [
+            $response['html'] = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'msgAlert'  => $msgAlert,
                 'context'   => \Yii::$app->request->post('context', 'view'),
@@ -544,7 +544,7 @@ class AmendmentController extends Base
                 $amendment->proposalNotification = date('Y-m-d H:i:s');
                 $amendment->save();
                 $response['success'] = true;
-                $response['html']    = $this->renderPartial('_set_change_proposal', [
+                $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'amendment' => $amendment,
                     'msgAlert'  => $msgAlert,
                     'context'   => \Yii::$app->request->post('context', 'view'),

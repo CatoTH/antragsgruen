@@ -3,20 +3,15 @@
 namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
-use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\EMailLog;
 use app\models\exceptions\MailNotSent;
-use yii\helpers\Html;
 
 class AmendmentProposedProcedure
 {
     /**
-     * MotionInitiallySubmitted constructor.
-     *
-     * This notification is sent to the contact e-mail-address entered when creating the amendment,
-     * regardless if this amendment was created by a registered user or not
+     * AmendmentProposedProcedure constructor.
      *
      * @param Amendment $amendment
      * @throws MailNotSent

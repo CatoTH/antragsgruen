@@ -35,6 +35,7 @@ class ConsultationLog extends ActiveRecord
     const MOTION_CHANGE              = 12;
     const MOTION_SUPPORT             = 24;
     const MOTION_SUPPORT_FINISH      = 26;
+    const MOTION_PUBLISH_PROPOSAL    = 30;
     const AMENDMENT_PUBLISH          = 13;
     const AMENDMENT_WITHDRAW         = 14;
     const AMENDMENT_DELETE           = 15;
@@ -50,8 +51,8 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_CHANGE           = 25;
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
 
-    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27];
-    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28];
+    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27, 30];
+    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28, 29];
 
     public static $USER_INVISIBLE_EVENTS = [15, 2, 24, 26, 21, 22, 23, 8, 9, 10];
 
@@ -143,6 +144,7 @@ class ConsultationLog extends ActiveRecord
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getTimeAgoFormatted()
     {
