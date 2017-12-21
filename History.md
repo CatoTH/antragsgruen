@@ -2,14 +2,14 @@
 
 ## Version 3.8.0 [Not released yet]
 
-- Proposed procedures for amendments
-  - Administrators of a consultation can now manage the proposed procedure of an amendment. This includes setting a proposed status, a modified version of the amendment text.
-  - The proposer of the amendment can be notified about this proposal and optionally agree to this proposal.
-  - Amendments can be grouped into voting blocks to indicate which amendments are mutually exclusive in case of a voting.
+- Proposed procedures for motions and amendments
+  - Administrators of a consultation can now manage the proposed procedure of a motion / amendment. This includes setting a proposed status, a modified version of the amendment text.
+  - The proposer of the motion / amendment can be notified about this proposal and optionally agree to this proposal.
+  - Motions and amendments can be grouped into voting blocks to indicate which ones are mutually exclusive in case of a voting.
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 - After replacing a motion by a new version, e.g. by merging amendments, there is now a view comparing both versions of the motions. That way, it is much easier to see what has actually changed.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
-- A bug in the line numbering after manual line breaks wa fixed
+- A bug in the line numbering after manual line breaks was fixed
 
 ## Version 3.7.5 (2017-11-15)
 
