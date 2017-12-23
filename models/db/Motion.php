@@ -227,7 +227,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVotingBlock()
     {
-        return $this->hasOne(VotingBlock::class, ['id' => 'votiongBlockId']);
+        return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
     }
 
     /**
@@ -1244,5 +1244,13 @@ class Motion extends IMotion implements IRSSItem
     public function isDeadlineOver()
     {
         return $this->motionType->motionDeadlineIsOver();
+    }
+
+    /**
+     * @return string
+     */
+    public function getViewUrl()
+    {
+        return UrlHelper::createMotionUrl($this);
     }
 }

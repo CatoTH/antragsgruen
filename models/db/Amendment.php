@@ -1175,4 +1175,12 @@ class Amendment extends IMotion implements IRSSItem
 
         return $collidesWith;
     }
+
+    /**
+     * @return string
+     */
+    public function getViewUrl()
+    {
+        return UrlHelper::createAmendmentUrl($this);
+    }
 }

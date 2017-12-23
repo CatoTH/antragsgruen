@@ -64,7 +64,7 @@ return [
 
     'proposal_title'           => 'Verfahrensvorschlag',
     'proposal_bc'              => 'Verfahrensvorschlag',
-    'proposal_table_amend'     => 'Änderungsantrag',
+    'proposal_table_motion'    => 'Antrag',
     'proposal_table_voting'    => 'Abstimmung',
     'proposal_table_proposal'  => 'Verfahrensvorschlag',
     'proposal_table_initiator' => 'Antragsteller*in',

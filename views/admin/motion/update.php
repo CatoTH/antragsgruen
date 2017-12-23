@@ -91,7 +91,7 @@ echo '<div class="content form-horizontal fuelux">';
         $options[$motionType->id] = $motionType->titleSingular;
     }
     $attrs = ['id' => 'motionType', 'class' => 'form-control'];
-    echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs);
+    echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
     ?></div>
 </div>
 

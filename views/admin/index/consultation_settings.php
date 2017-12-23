@@ -190,6 +190,9 @@ $handledSiteSettings = [];
 
         $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
 
+        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings,
+            \Yii::t('admin', 'con_proposal_procedure'));
+
         $boolSettingRow($settings, 'minimalisticUI', $handledSettings, \Yii::t('admin', 'con_minimalistic'));
 
         ?>
@@ -363,18 +366,6 @@ $handledSiteSettings = [];
                     ['id' => 'globalAlternatives']
                 ) . ' ';
                 echo \Yii::t('admin', 'con_amend_globalalt');
-                ?>
-            </label></div>
-
-        <div><label>
-                <?php
-                $handledSettings[] = 'proposalProcedurePage';
-                echo Html::checkbox(
-                    'settings[proposalProcedurePage]',
-                    $settings->proposalProcedurePage,
-                    ['id' => 'proposalProcedurePage']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_proposal_procedure');
                 ?>
             </label></div>
     </div>

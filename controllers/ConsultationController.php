@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\MessageSource;
+use app\components\ProposedProcedureAgenda;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -70,6 +71,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionFeedmotions()
     {
@@ -96,6 +98,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionFeedamendments()
     {
@@ -445,48 +448,16 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
      */
     public function actionProposedProcedure()
     {
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
-
-        $consultation            = $this->consultation;
-        $votingBlocksByAmendment = [];
-        $votingBlocks            = $consultation->votingBlocks;
-        foreach ($votingBlocks as $votingBlock) {
-            foreach ($votingBlock->amendments as $amendment) {
-                $votingBlocksByAmendment[$amendment->id] = $votingBlock;
-            }
-        }
-
-        $data = [];
-        foreach ($consultation->getVisibleMotionsSorted(true) as $motion) {
-            $dataRow = [
-                'motion'       => $motion,
-                'votingBlocks' => [],
-                'amendments'   => [],
-            ];
-            foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
-                if ($proposalAdmin || $amendment->isProposalPublic()) {
-                    $dataRow['amendments'][] = $amendment;
-                }
-                if (isset($votingBlocksByAmendment[$amendment->id])) {
-                    $votingBlock = $votingBlocksByAmendment[$amendment->id];
-                    if (!isset($dataRow['votingBlocks'][$votingBlock->id])) {
-                        $dataRow['votingBlocks'][$votingBlock->id] = $votingBlock;
-                    }
-                }
-            }
-            $data[] = $dataRow;
-        }
+        $proposedAgenda = ProposedProcedureAgenda::createProposedProcedureAgenda($this->consultation);
 
         return $this->render('proposed_procedure', [
-            'votingBlocks' => $votingBlocks,
-            'data'         => $data,
+            'proposedAgenda' => $proposedAgenda,
         ]);
     }
 }

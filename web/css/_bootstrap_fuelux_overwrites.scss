@@ -177,7 +177,6 @@
   }
 }
 
-
 .fuelux {
   .pillbox > .pill-group {
     list-style-type: none;
@@ -187,8 +186,11 @@
     .btn.dropdown-toggle {
       position: relative;
     }
-    &.full-size button {
-      width: 100% !important;
+    &.full-size {
+      width: 100%;
+      button {
+        width: 100% !important;
+      }
     }
   }
 

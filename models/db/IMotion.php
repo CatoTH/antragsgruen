@@ -413,6 +413,11 @@ abstract class IMotion extends ActiveRecord
     abstract public function isDeadlineOver();
 
     /**
+     * @return string
+     */
+    abstract public function getViewUrl();
+
+    /**
      * @return bool
      */
     public function isSupportingPossibleAtThisStatus()
@@ -455,7 +460,7 @@ abstract class IMotion extends ActiveRecord
             $explStr .= Html::encode($this->proposalExplanation);
             $explStr .= ')</span>';
         }
-        if (!$this->isProposalPublic()) {
+        if ($includeExplanation && !$this->isProposalPublic()) {
             $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
         }
         if ($this->proposalStatus === null || $this->proposalStatus == 0) {

@@ -64,7 +64,7 @@ return [
 
     'proposal_title'           => 'Proposed procedure',
     'proposal_bc'              => 'Proposed procedure',
-    'proposal_table_amend'     => 'Amendment',
+    'proposal_table_motion'    => 'Motion',
     'proposal_table_voting'    => 'Voting',
     'proposal_table_proposal'  => 'Proposed procedure',
     'proposal_table_initiator' => 'Proposer',
