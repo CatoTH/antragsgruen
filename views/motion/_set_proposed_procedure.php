@@ -13,7 +13,7 @@ use yii\helpers\Html;
 $saveUrl = \app\components\UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'data-antragsgruen-widget' => 'backend/AmendmentChangeProposal',
+    'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'class'                    => 'fuelux',
 ]);
 if ($motion->proposalStatus == Motion::STATUS_REFERRED) {

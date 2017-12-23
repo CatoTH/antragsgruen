@@ -743,6 +743,7 @@ class MotionController extends Base
                 'motion'   => $motion,
                 'msgAlert' => $msgAlert,
             ]);
+            $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
         }
 
         if (\Yii::$app->request->post('notifyProposer')) {

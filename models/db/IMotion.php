@@ -444,33 +444,43 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @param bool $includeExplanation
      * @return string
      */
-    public function getFormattedProposalStatus()
+    public function getFormattedProposalStatus($includeExplanation = false)
     {
+        $explStr = '';
+        if ($includeExplanation && $this->proposalExplanation) {
+            $explStr .= ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
+            $explStr .= Html::encode($this->proposalExplanation);
+            $explStr .= ')</span>';
+        }
+        if (!$this->isProposalPublic()) {
+            $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
+        }
         if ($this->proposalStatus === null || $this->proposalStatus == 0) {
-            return '';
+            return $explStr;
         }
         switch ($this->proposalStatus) {
             case static::STATUS_REFERRED:
-                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment);
+                return \Yii::t('amend', 'refer_to') . ': ' . Html::encode($this->proposalComment) . $explStr;
             case static::STATUS_OBSOLETED_BY:
                 $refAmend = $this->getMyConsultation()->getAmendment($this->proposalComment);
                 if ($refAmend) {
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
-                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr;
+                    return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
                 } else {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus] . $explStr;
                 }
                 break;
             case static::STATUS_CUSTOM_STRING:
-                return Html::encode($this->proposalComment);
+                return Html::encode($this->proposalComment) . $explStr;
                 break;
             default:
                 if (isset(static::getProposalStatiAsVerbs()[$this->proposalStatus])) {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus];
+                    return static::getProposalStatiAsVerbs()[$this->proposalStatus] . $explStr;
                 } else {
-                    return $this->proposalStatus . '?';
+                    return $this->proposalStatus . '?' . $explStr;
                 }
         }
     }

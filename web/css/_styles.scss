@@ -144,6 +144,11 @@
     font-size: 0.8em;
     color: #888;
   }
+  .notVisible {
+    font-size: 0.8em;
+    color: $adminHintColor;
+    font-style: italic;
+  }
 }
 
 .wysiwyg-textarea {

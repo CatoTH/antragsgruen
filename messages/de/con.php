@@ -70,4 +70,5 @@ return [
     'proposal_table_initiator' => 'Antragsteller*in',
     'proposal_table_others'    => 'Weitere Verfahrensvorschläge',
     'proposal_explanation'     => 'Erklärung',
+    'proposal_invisible'       => 'nicht sichtbar',
 ];

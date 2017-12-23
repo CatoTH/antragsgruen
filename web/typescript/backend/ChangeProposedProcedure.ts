@@ -3,7 +3,7 @@ const STATUS_VOTE = 11;
 const STATUS_OBSOLETED_BY = 22;
 const STATUS_CUSTOM_STRING = 23;
 
-export class AmendmentChangeProposal {
+export class ChangeProposedProcedure {
     private $openerBtn: JQuery;
     private $statusDetails: JQuery;
     private $visibilityInput: JQuery;
@@ -63,6 +63,10 @@ export class AmendmentChangeProposal {
         this.$widget.find('.selectlist').selectlist();
     }
 
+    private setGlobalProposedStr(html: string) {
+        $(".motionData .proposedStatusRow .str").html(html);
+    }
+
     private performCallWithReload(data: object) {
         data['_csrf'] = this.csrf;
 
@@ -73,6 +77,9 @@ export class AmendmentChangeProposal {
                 this.$widget.append($content.children());
                 this.reinitAfterReload();
                 this.$widget.addClass('showSaved').removeClass('isChanged');
+                if (ret['proposalStr']) {
+                    this.setGlobalProposedStr(ret['proposalStr']);
+                }
                 window.setTimeout(() => this.$widget.removeClass('showSaved'), 2000);
             } else if (ret['error']) {
                 alert(ret['error']);

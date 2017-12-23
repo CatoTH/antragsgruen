@@ -17,7 +17,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 $saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
-    'data-antragsgruen-widget' => 'backend/AmendmentChangeProposal',
+    'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'data-context'             => $context,
     'class'                    => 'fuelux',
 ]);

@@ -4,7 +4,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\User;
-use app\models\policies\IPolicy;
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -82,14 +81,10 @@ if ($motion->replacedMotion) {
     echo '</td></tr>';
 }
 
-if ($motion->isProposalPublic() && $motion->proposalStatus) {
-    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td>';
-    echo $motion->getFormattedProposalStatus();
-    if ($motion->proposalExplanation) {
-        echo ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
-        echo Html::encode($motion->proposalExplanation);
-        echo ')</span>';
-    }
+$proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
+    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td class="str">';
+    echo $motion->getFormattedProposalStatus(true);
     echo '</td></tr>';
 }
 

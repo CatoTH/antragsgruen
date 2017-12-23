@@ -3,6 +3,7 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\User;
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
@@ -34,14 +35,10 @@ echo $amendment->getFormattedStatus();
 echo '</td>
                 </tr>';
 
-if ($amendment->isProposalPublic() && $amendment->proposalStatus) {
-    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td>';
-    echo $amendment->getFormattedProposalStatus();
-    if ($amendment->proposalExplanation) {
-        echo ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
-        echo Html::encode($amendment->proposalExplanation);
-        echo ')</span>';
-    }
+$proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+if (($amendment->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {
+    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td class="str">';
+    echo $amendment->getFormattedProposalStatus(true);
     echo '</td></tr>';
 }
 

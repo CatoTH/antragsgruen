@@ -536,6 +536,7 @@ class AmendmentController extends Base
                 'msgAlert'  => $msgAlert,
                 'context'   => \Yii::$app->request->post('context', 'view'),
             ]);
+            $response['proposalStr'] = $amendment->getFormattedProposalStatus(true);
         }
 
         if (\Yii::$app->request->post('notifyProposer')) {
