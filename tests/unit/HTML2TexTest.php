@@ -45,8 +45,8 @@ class HTML2TexTest extends TestBase
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
             "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
-            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, \\linebreak\n" .
-            "Oaschgsicht, greißlicha Uhu, oida Daddara!\n";
+            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, \\linebreak\n" .
+            "greißlicha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = Exporter::getMotionLinesToTeX($lines);

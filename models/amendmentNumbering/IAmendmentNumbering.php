@@ -88,9 +88,7 @@ abstract class IAmendmentNumbering
         $prefixNorm = trim(mb_strtoupper($prefix));
         foreach ($motion->amendments as $amend) {
             $amendPrefixNorm = trim(mb_strtoupper($amend->titlePrefix));
-            if ($amendPrefixNorm != '' && $amendPrefixNorm === $prefixNorm
-                && $amend->status != Amendment::STATUS_DELETED
-            ) {
+            if ($amendPrefixNorm != '' && $amendPrefixNorm === $prefixNorm) {
                 if ($ignore === null || $ignore->id != $amend->id) {
                     return $amend;
                 }

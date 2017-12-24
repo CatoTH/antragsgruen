@@ -212,7 +212,7 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
     public function testRemoveSplitFragments2()
     {
         $orig   = "<p>Test</p>\n<ul>\n <li>Item 1</li></ul> \n <ul><li>Item 2</li></ul>\n<ul><li>Item 3</li></ul><p>Test 2</p><ul><li>Item 1</li></ul>";
-        $expect = '<p>Test</p><ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul><p>Test 2</p><ul><li>Item 1</li></ul>';
+        $expect = '<p>Test</p><ul>' . "\n" . ' <li>Item 1</li><li>Item 2</li><li>Item 3</li></ul><p>Test 2</p><ul><li>Item 1</li></ul>';
         $out    = HTMLTools::removeSectioningFragments($orig);
         $this->assertEquals($expect, $out);
     }

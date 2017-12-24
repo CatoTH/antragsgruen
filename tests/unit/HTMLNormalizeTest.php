@@ -41,7 +41,7 @@ class HTMLNormalizeTest extends TestBase
 ';
         $htmlOut = HTMLTools::stripEmptyBlockParagraphs(HTMLTools::cleanSimpleHtml($htmlIn));
         $expect = "<ul>\n<li>\n<p>Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen</p>\n</li>\n" .
-            "<li>\n<ul>\n<li>\n <p>ein geradezu unorthographisches Leben.</p>\n</li>\n</ul>\n</li>\n" .
+            "<li>\n<ul>\n <li>\n <p>ein geradezu unorthographisches Leben.</p>\n</li>\n</ul>\n</li>\n" .
             "</ul>\n<p>Test remains</p>";
 
         $this->assertEquals($expect, $htmlOut);

@@ -28,8 +28,8 @@ class ConsultationFindMotionTest extends DBTestBase
         /** @var Amendment $amendA2 */
         $amendA2 = Amendment::findOne(3);
 
-        /** @var Amendment $amendA1OtherMotion */
-        $amendA1OtherMotion = Amendment::findOne(2);
+        /** @var Amendment $amendA2OtherMotion */
+        $amendA2OtherMotion = Amendment::findOne(280);
 
         $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('Ä1'));
         $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('ä1'));
@@ -44,10 +44,10 @@ class ConsultationFindMotionTest extends DBTestBase
         $consultation->save();
         $motion->refresh();
 
-        $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('Ä1'));
-        $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('ä1'));
-        $this->assertEquals($amendA1OtherMotion, $motion->findAmendmentWithPrefix('Ä1', $amendA1));
-        $this->assertEquals($amendA1, $motion->findAmendmentWithPrefix('Ä1', $amendA2));
+        $this->assertEquals($amendA2, $motion->findAmendmentWithPrefix('Ä2'));
+        $this->assertEquals($amendA2, $motion->findAmendmentWithPrefix('ä2'));
+        $this->assertEquals($amendA2OtherMotion, $motion->findAmendmentWithPrefix('Ä2', $amendA2));
+        $this->assertEquals($amendA2, $motion->findAmendmentWithPrefix('Ä2', $amendA1));
 
 
 
@@ -57,8 +57,8 @@ class ConsultationFindMotionTest extends DBTestBase
         $consultation->refresh();
 
         $this->assertEquals(null, $motion->findAmendmentWithPrefix('6.10'));
-
     }
+
     /**
      *
      */
@@ -84,6 +84,4 @@ class ConsultationFindMotionTest extends DBTestBase
 
         $this->assertEquals(null, $consultation->findMotionWithPrefix('6.10'));
     }
-
-
 }
