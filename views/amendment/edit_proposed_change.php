@@ -53,7 +53,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
             echo '<div class="alert alert-info">' . $msgAlert . '</div>';
         }
 
-        echo $this->render('_set_change_proposal', ['amendment' => $amendment, 'context' => 'edit']);
+        echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'edit']);
 
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',

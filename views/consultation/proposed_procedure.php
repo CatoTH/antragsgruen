@@ -36,7 +36,7 @@ foreach ($proposedAgenda as $proposedItem) {
             <?php
             foreach ($proposedItem->votingBlocks as $votingBlock) {
                 ?>
-                <table class="table votingTable votingTable">
+                <table class="table votingTable votingTable<?= $votingBlock->getId() ?>">
                     <?php
                     if (count($proposedItem->votingBlocks) > 1 || $votingBlock->voting) {
                         ?>

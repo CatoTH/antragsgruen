@@ -31,6 +31,18 @@ class ProposedProcedureAgendaVoting
     }
 
     /**
+     * @return string
+     */
+    public function getId()
+    {
+        if ($this->voting) {
+            return $this->voting->id;
+        } else {
+            return 'new';
+        }
+    }
+
+    /**
      * @return array
      */
     public function getHandledMotionIds()
