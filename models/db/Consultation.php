@@ -318,8 +318,9 @@ class Consultation extends ActiveRecord
      */
     public function getSettings()
     {
+        $settingsClass = $this->site->getBehaviorClass()->getConsultationSettingsClass();
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\Consultation($this->settings);
+            $this->settingsObject = new $settingsClass($this->settings);
         }
         return $this->settingsObject;
     }

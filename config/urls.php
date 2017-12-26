@@ -71,7 +71,7 @@ $urlRules = [
 ];
 
 if ($params->domainPlain != $params->domainSubdomain) {
-    $urlRules[$dom] = 'consultation/index';
+    $urlRules[$dom] = 'consultation/home';
 }
 
 if ($params->multisiteMode) {
@@ -91,7 +91,7 @@ if ($params->multisiteMode) {
         }
     }
 } else {
-    $urlRules[$dom] = 'consultation/index';
+    $urlRules[$dom] = 'consultation/home';
 }
 
 return $urlRules;

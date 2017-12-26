@@ -1,7 +1,9 @@
 <?php
+
 namespace app\models\siteSpecificBehavior;
 
 use app\components\MotionSorter;
+use app\models\db\Consultation;
 use app\models\db\IMotionSection;
 
 class DefaultBehavior
@@ -34,5 +36,39 @@ class DefaultBehavior
     public static function getProposedChangeStati($stati)
     {
         return $stati;
+    }
+
+    /**
+     * @return null|string
+     */
+    public static function getConsultationHomePage()
+    {
+        return null;
+    }
+
+    /**
+     * @return string|\app\models\settings\Consultation
+     */
+    public static function getConsultationSettingsClass()
+    {
+        return \app\models\settings\Consultation::class;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getConsultationSettingsForm(Consultation $consultation)
+    {
+        return '';
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function saveConsultationSettings(Consultation $consultation)
+    {
     }
 }

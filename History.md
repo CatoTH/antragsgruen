@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.9.0 [Not released yet]
+
+Member petitions
+
 ## Version 3.8.0 [Not released yet]
 
 - Proposed procedures for motions and amendments

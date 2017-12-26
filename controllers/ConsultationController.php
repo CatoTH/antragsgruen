@@ -393,6 +393,21 @@ class ConsultationController extends Base
      * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
      */
+    public function actionHome()
+    {
+        $behavior = $this->site->getBehaviorClass()->getConsultationHomePage();
+        if ($behavior) {
+            return $behavior;
+        } else {
+            return $this->actionIndex();
+        }
+    }
+
+    /**
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
+     */
     public function actionIndex()
     {
         if ($this->consultation->getForcedMotion()) {
