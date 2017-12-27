@@ -72,11 +72,6 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($route[0] == 'consultation/index' && !is_null($site) &&
-            strtolower($route['consultationPath']) === strtolower($site->currentConsultation->urlPath)
-        ) {
-            unset($route['consultationPath']);
-        }
         $parts = explode('/', $route[0]);
         if ($parts[0] == 'user') {
             unset($route['consultationPath']);

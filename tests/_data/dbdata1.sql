@@ -1510,7 +1510,7 @@ VALUES
       '{\n    \"siteLayout\": \"layout-classic\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": \"2\",\n    \"willingToPayLastAskedTs\": 1456680331,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": null,\n    \"emailFromName\": null\n}',
       7, 1, 'Antragsgrün', 'Antragsgrün', 0),
   (8, 'mitgliederbegehren', 'Mitgliederbegehren', 'Mitgliederbegehren', '2017-12-25 16:47:48', NULL,
-      '{\n    \"siteLayout\": \"layout-classic\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": 0,\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
+      '{\n    \"siteLayout\": \"layout-classic\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": true,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": 0,\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
       8, 1, 'Bündnis 90 / Die GRÜNEN', 'Bündnis 90 / Die Grünen', 0);
 
 --
