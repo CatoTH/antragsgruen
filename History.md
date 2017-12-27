@@ -10,6 +10,7 @@
 - After replacing a motion by a new version, e.g. by merging amendments, there is now a view comparing both versions of the motions. That way, it is much easier to see what has actually changed.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
 - A bug in the line numbering after manual line breaks was fixed
+- Support for OpenSlides 1 is removed, only 2.1+ is supported
 
 ## Version 3.7.5 (2017-11-15)
 
