@@ -45,7 +45,8 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
     <h2>
         <?= \Yii::t('amend', 'proposal_amend_title') ?>
-        <button class="pull-right btn-link closeBtn" title="<?= Html::encode(\Yii::t('amend', 'proposal_close')) ?>">
+        <button class="pull-right btn-link closeBtn" type="button"
+                title="<?= Html::encode(\Yii::t('amend', 'proposal_close')) ?>">
             <span class="glyphicon glyphicon-chevron-up"></span>
         </button>
     </h2>

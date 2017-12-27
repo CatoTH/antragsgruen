@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use app\models\db\User;
 use app\models\db\VotingBlock;
 use yii\helpers\Html;
 
@@ -17,6 +18,8 @@ $layout     = $controller->layoutParams;
 
 $this->title = \Yii::t('con', 'proposal_title');
 $layout->addBreadcrumb(\Yii::t('con', 'proposal_bc'));
+
+$iAmAdmin = User::havePrivilege($controller->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -56,26 +59,40 @@ foreach ($proposedAgenda as $proposedItem) {
                     </thead>
                     <tbody>
                     <?php
+                    $currentMotion = null;
                     foreach ($votingBlock->items as $item) {
+                        $titlePre = '';
                         if (is_a($item, Amendment::class)) {
                             $classes = ['amendment' . $item->id];
+                            if ($item->motionId == $currentMotion) {
+                                $titlePre = '↳';
+                            }
                         } else {
-                            $classes = ['motion' . $item->id];
+                            $classes       = ['motion' . $item->id];
+                            $currentMotion = $item->id;
                         }
                         if ($item->status == \app\models\db\IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
                         ?>
                         <tr class="<?= implode(' ', $classes) ?>">
-                            <td><?= Html::a(Html::encode($item->titlePrefix), $item->getViewUrl()) ?></td>
-                            <td><?= $item->getInitiatorsStr() ?></td>
-                            <td>
+                            <td class="prefix"><?php
+                                echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getViewUrl())
+                                ?></td>
+                            <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
+                            <td class="procedure">
                                 <?php
-                                echo $item->getFormattedProposalStatus();
-                                if ($item->proposalExplanation) {
-                                    echo '<div class="explanation">';
-                                    echo Html::encode($item->proposalExplanation);
-                                    echo '</div>';
+                                if ($item->isProposalPublic() || $iAmAdmin) {
+                                    echo $item->getFormattedProposalStatus();
+                                    if ($item->proposalExplanation) {
+                                        echo '<div class="explanation">';
+                                        echo Html::encode($item->proposalExplanation);
+                                        echo '</div>';
+                                    }
+                                    if (!$item->isProposalPublic() && $item->getFormattedProposalStatus() !== '') {
+                                        echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
+                                            '</span>';
+                                    }
                                 }
                                 ?></td>
                         </tr>

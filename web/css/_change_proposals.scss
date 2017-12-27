@@ -231,16 +231,47 @@
       color: black;
       text-align: center;
     }
-    .prefix {
-      width: 175px;
+    @media screen and (min-width: 700px) {
+      .prefix {
+        width: 175px;
+      }
+      .initiator {
+        width: 230px;
+      }
     }
-    .initiator {
-      width: 200px;
+    @media screen and (max-width: 500px) {
+      display: block;
+      tr, td, th, tbody, thead, caption {
+        display: block;
+      }
+      .prefix {
+        display: inline-block;
+        border-top: none;
+      }
+      .initiator {
+        display: inline-block;
+        border-top: none;
+        &:before {
+          content: '(';
+        }
+        &:after {
+          content: ')';
+        }
+      }
+      .procedure {
+        border-top: none;
+        border-bottom: solid 1px #ddd;
+      }
     }
     .explanation {
       font-size: 0.8em;
       margin-top: 5px;
       color: #888;
+    }
+    .notVisible {
+      font-size: 0.8em;
+      color: $adminHintColor;
+      font-style: italic;
     }
   }
   tr.withdrawn {
