@@ -27,9 +27,9 @@ $domPlainPaths .= '|check-subdomain|antragsgrueninitdbtest|userlist';
 $adminMotionPaths  = 'type|typecreate|get-amendment-rewrite-collissions';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
-$adminAmendmentPaths = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides|ods-proposed-procedure';
+$adminAmendmentPaths = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
-$adminPaths .= '|todo';
+$adminPaths .= '|todo|ods-proposed-procedure';
 
 $urlRules = [
     $domadmin . ''                                              => 'admin/index',

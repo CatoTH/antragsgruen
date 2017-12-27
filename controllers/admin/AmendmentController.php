@@ -40,25 +40,6 @@ class AmendmentController extends AdminBase
      * @param int $withdrawn
      * @return string
      */
-    public function actionOdsProposedProcedure($withdrawn = 0)
-    {
-        $withdrawn = ($withdrawn == 1);
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=proposed-procedure.ods');
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods_proposed_procedure', [
-            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
-            'withdrawn'    => $withdrawn,
-        ]);
-    }
-
-    /**
-     * @param int $withdrawn
-     * @return string
-     */
     public function actionPdflist($withdrawn = 0)
     {
         $withdrawn = ($withdrawn == 1);

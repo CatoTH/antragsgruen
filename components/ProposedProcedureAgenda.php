@@ -2,6 +2,7 @@
 
 namespace app\components;
 
+use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
@@ -37,9 +38,9 @@ class ProposedProcedureAgenda
      * @param ProposedProcedureAgenda $item
      * @param VotingBlock $votingBlock
      * @param array $handledMotions
-     * @param array $handledAmendments
+     * @param array $handledAmends
      */
-    protected static function addVotingBlock($item, $votingBlock, &$handledMotions, &$handledAmendments)
+    protected static function addVotingBlock($item, $votingBlock, &$handledMotions, &$handledAmends)
     {
         $block = new ProposedProcedureAgendaVoting($votingBlock->title, $votingBlock);
         foreach ($votingBlock->motions as $motion) {
@@ -47,34 +48,38 @@ class ProposedProcedureAgenda
             $handledMotions[] = $motion->id;
 
             foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
-                if (in_array($amendment->id, $handledAmendments)) {
+                if (in_array($amendment->id, $handledAmends)) {
                     continue;
                 }
                 $block->items[]      = $amendment;
-                $handledAmendments[] = $amendment->id;
+                $handledAmends[] = $amendment->id;
             }
         }
         foreach ($votingBlock->amendments as $vAmendment) {
             $block->items[]      = $vAmendment;
-            $handledAmendments[] = $vAmendment->id;
+            $handledAmends[] = $vAmendment->id;
         }
         $item->votingBlocks[] = $block;
     }
 
     /**
      * @param Consultation $consultation
+     * @param ConsultationAgendaItem $onlyAgendaItem
      * @return ProposedProcedureAgenda[]
      */
-    protected static function createFromAgenda(Consultation $consultation)
+    protected static function createFromAgenda(Consultation $consultation, $onlyAgendaItem = null)
     {
         $items   = [];
         $idCount = 1;
 
         $handledMotions    = [];
-        $handledAmendments = [];
+        $handledAmends = [];
         $handledVotings    = [];
 
         foreach ($consultation->agendaItems as $agendaItem) {
+            if ($onlyAgendaItem && $agendaItem !== $onlyAgendaItem) {
+                continue;
+            }
             $item           = new ProposedProcedureAgenda($idCount++, $agendaItem->title, $agendaItem);
             $unhandledItems = [];
             foreach ($agendaItem->getVisibleMotions(true) as $motion) {
@@ -86,14 +91,14 @@ class ProposedProcedureAgenda
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
                     }
-                    static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmendments);
+                    static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
                     $handledVotings[] = $votingBlock->id;
                 } else {
                     $unhandledItems[] = $motion;
                 }
 
                 foreach ($motion->getVisibleAmendments(true) as $amendment) {
-                    if (in_array($amendment->id, $handledAmendments)) {
+                    if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
                     if ($amendment->votingBlock) {
@@ -101,29 +106,40 @@ class ProposedProcedureAgenda
                         if (in_array($votingBlock->id, $handledVotings)) {
                             continue;
                         }
-                        static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmendments);
-                        $handledAmendments[] = $votingBlock->id;
+                        static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
+                        $handledAmends[] = $votingBlock->id;
                     } else {
                         $unhandledItems[] = $amendment;
                     }
                 }
             }
             if (count($unhandledItems) > 0) {
-                $block                = new ProposedProcedureAgendaVoting('Weitere Verfahrensvorschläge', null);
+                $block                = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
                 $block->items         = $unhandledItems;
+                foreach ($unhandledItems as $unhandledItem) {
+                    if (is_a($unhandledItem, Amendment::class)) {
+                        $handledAmends[] = $unhandledItem->id;
+                    } else {
+                        $handledMotions[] = $unhandledItem->id;
+                    }
+                }
                 $item->votingBlocks[] = $block;
             }
 
             $items[] = $item;
         }
+        
+        if ($onlyAgendaItem === null) {
+            // Attach motions that haven't been found in the agenda at the end of the document (if no filter is set)
 
-        $unhandledMotions = [];
-        foreach ($consultation->getVisibleMotions(true) as $motion) {
-            if (!in_array($motion->id, $handledMotions)) {
-                $unhandledMotions[] = $motion;
+            $unhandledMotions = [];
+            foreach ($consultation->getVisibleMotions(true) as $motion) {
+                if (!in_array($motion->id, $handledMotions)) {
+                    $unhandledMotions[] = $motion;
+                }
             }
+            $items = array_merge($items, static::createFromMotions($unhandledMotions, $handledVotings, $handledAmends));
         }
-        $items = array_merge($items, static::createFromMotions($unhandledMotions, $handledVotings, $handledAmendments));
 
         return $items;
     }
@@ -131,10 +147,10 @@ class ProposedProcedureAgenda
     /**
      * @param Motion[] $motions
      * @param array $handledVotings
-     * @param array $handledAmendments
+     * @param array $handledAmends
      * @return ProposedProcedureAgenda[]
      */
-    protected static function createFromMotions($motions, $handledVotings = [], $handledAmendments = [])
+    protected static function createFromMotions($motions, $handledVotings = [], $handledAmends = [])
     {
         $items   = [];
         $idCount = 1;
@@ -154,14 +170,14 @@ class ProposedProcedureAgenda
                 if (in_array($votingBlock->id, $handledVotings)) {
                     continue;
                 }
-                static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmendments);
-                $handledAmendments[] = $votingBlock->id;
+                static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
+                $handledAmends[] = $votingBlock->id;
             } else {
                 $unhandledItems[] = $motion;
             }
 
             foreach ($motion->getVisibleAmendments(true) as $amendment) {
-                if (in_array($amendment->id, $handledAmendments)) {
+                if (in_array($amendment->id, $handledAmends)) {
                     continue;
                 }
                 if ($amendment->votingBlock) {
@@ -169,16 +185,23 @@ class ProposedProcedureAgenda
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
                     }
-                    static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmendments);
-                    $handledAmendments[] = $votingBlock->id;
+                    static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
+                    $handledAmends[] = $votingBlock->id;
                 } else {
                     $unhandledItems[] = $amendment;
                 }
             }
 
             if (count($unhandledItems) > 0) {
-                $block                = new ProposedProcedureAgendaVoting('Weitere Verfahrensvorschläge', null);
+                $block                = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
                 $block->items         = $unhandledItems;
+                foreach ($unhandledItems as $unhandledItem) {
+                    if (is_a($unhandledItem, Amendment::class)) {
+                        $handledAmends[] = $unhandledItem->id;
+                    } else {
+                        $handledMotions[] = $unhandledItem->id;
+                    }
+                }
                 $item->votingBlocks[] = $block;
             }
 
@@ -190,14 +213,15 @@ class ProposedProcedureAgenda
 
     /**
      * @param Consultation $consultation
+     * @param ConsultationAgendaItem $agendaItem
      * @return ProposedProcedureAgenda[]
      */
-    public static function createProposedProcedureAgenda(Consultation $consultation)
+    public static function createProposedProcedureAgenda(Consultation $consultation, $agendaItem = null)
     {
         switch ($consultation->getSettings()->startLayoutType) {
             case ConsultationSettings::START_LAYOUT_AGENDA:
             case ConsultationSettings::START_LAYOUT_AGENDA_LONG:
-                return static::createFromAgenda($consultation);
+                return static::createFromAgenda($consultation, $agendaItem);
                 break;
 
             case ConsultationSettings::START_LAYOUT_STD:

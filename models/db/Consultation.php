@@ -157,6 +157,20 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @param $agendaItemId
+     * @return ConsultationAgendaItem|null
+     */
+    public function getAgendaItem($agendaItemId)
+    {
+        foreach ($this->agendaItems as $agendaItem) {
+            if ($agendaItem->id == $agendaItemId) {
+                return $agendaItem;
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getTexts()
