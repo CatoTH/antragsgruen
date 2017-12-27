@@ -11,7 +11,15 @@ class SiteSpecificBehavior extends DefaultBehavior
     /**
      * @return string
      */
-    public static function getConsultationHomePage()
+    public static function hasSiteHomePage()
+    {
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getSiteHomePage()
     {
         $controller = \Yii::$app->controller;
         return $controller->render('@app/memberPetitions/views/index');
@@ -36,15 +44,5 @@ class SiteSpecificBehavior extends DefaultBehavior
             '@app/memberPetitions/views/admin/consultation_settings',
             ['consultation' => $consultation]
         );
-    }
-
-    /**
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function saveConsultationSettings(Consultation $consultation)
-    {
-        var_dump($_POST);
-        die();
     }
 }

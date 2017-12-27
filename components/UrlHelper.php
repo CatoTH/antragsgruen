@@ -84,6 +84,7 @@ class UrlHelper
         if (in_array(
             $route[0],
             [
+                'consultation/home',
                 'consultation/legal',
                 'consultation/privacy',
                 'admin/index/admins',
@@ -132,16 +133,24 @@ class UrlHelper
     public static function homeUrl()
     {
         if (static::$currentConsultation) {
+            $consultation = static::$currentConsultation;
+            $homeOverride = $consultation->site->getBehaviorClass()->hasSiteHomePage();
+            if ($consultation->site->currentConsultationId == $consultation->id || $homeOverride) {
+                $homeUrl = static::createUrl('consultation/home');
+            } else {
+                $homeUrl = static::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
+            }
+
             if (static::$currentConsultation->getSettings()->forceMotion) {
                 $forceMotion = static::$currentConsultation->getSettings()->forceMotion;
                 $motion      = static::$currentConsultation->getMotion($forceMotion);
                 if ($motion) {
                     return static::createMotionUrl($motion);
                 } else {
-                    return static::createUrl('consultation/index');
+                    return $homeUrl;
                 }
             } else {
-                return static::createUrl('consultation/index');
+                return $homeUrl;
             }
         } else {
             return static::createUrl('manager/index');

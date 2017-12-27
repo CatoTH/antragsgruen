@@ -906,28 +906,35 @@ VALUES
 
 INSERT INTO `###TABLE_PREFIX###consultation` (`id`, `siteId`, `urlPath`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `dateCreation`, `dateDeletion`, `settings`)
 VALUES
-  (1, 1, 'std-parteitag', 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', '2015-11-17 02:35:58',
-   NULL, NULL),
+  (1, 1, 'std-parteitag', 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', '2015-11-17 01:35:58',
+   NULL,
+   '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": false,\n    \"screeningAmendments\": false,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": true,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}'),
   (2, 2, 'vorstandswahlen', 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0,
-      'testadmin@example.org', '2015-11-17 02:35:58', NULL,
+      'testadmin@example.org', '2015-11-17 01:35:58', NULL,
    '{\"maintenanceMode\":false,\"motionNeedsEmail\":false,\"motionNeedsPhone\":false,\"motionHasPhone\":false,\"commentNeedsEmail\":false,\"iniatorsMayEdit\":false,\"adminsMayEdit\":true,\"initiatorConfirmEmails\":false,\"lineNumberingGlobal\":false,\"hideTitlePrefix\":false,\"minimalisticUI\":false,\"showFeeds\":true,\"commentsSupportable\":false,\"screeningMotions\":false,\"screeningMotionsShown\":false,\"screeningAmendments\":false,\"screeningComments\":false,\"initiatorsMayReject\":false,\"hasPDF\":true,\"commentWholeMotions\":false,\"allowMultipleTags\":false,\"lineLength\":80,\"startLayoutType\":0,\"logoUrl\":null,\"logoUrlFB\":null,\"motionIntro\":null}'),
   (3, 3, 'parteitag', 'de-parteitag', 'Parteitag', 'Parteitag', NULL, NULL, 0, 'testadmin@example.org',
-      '2015-11-17 02:35:58', NULL,
+      '2015-11-17 01:35:58', NULL,
    '{\"maintenanceMode\":false,\"screeningMotions\":true,\"lineNumberingGlobal\":false,\"motionNeedsEmail\":false,\"motionNeedsPhone\":false,\"motionHasPhone\":false,\"commentNeedsEmail\":false,\"iniatorsMayEdit\":false,\"adminsMayEdit\":true,\"initiatorConfirmEmails\":false,\"hideTitlePrefix\":false,\"minimalisticUI\":false,\"showFeeds\":true,\"commentsSupportable\":false,\"screeningMotionsShown\":false,\"screeningAmendments\":true,\"screeningComments\":false,\"initiatorsMayReject\":false,\"hasPDF\":true,\"commentWholeMotions\":false,\"allowMultipleTags\":false,\"lineLength\":80,\"startLayoutType\":3,\"logoUrl\":null,\"logoUrlFB\":null,\"motionIntro\":null}'),
-  (4, 4, 'bdk', 'de-parteitag', 'BDK', 'BDK', NULL, NULL, 2, 'testadmin@example.org', '2015-11-17 02:35:58', NULL,
+  (4, 4, 'bdk', 'de-parteitag', 'BDK', 'BDK', NULL, NULL, 2, 'testadmin@example.org', '2015-11-17 01:35:58', NULL,
    '{\"maintenanceMode\":false,\"screeningMotions\":true,\"lineNumberingGlobal\":false,\"commentNeedsEmail\":false,\"iniatorsMayEdit\":false,\"adminsMayEdit\":true,\"initiatorConfirmEmails\":false,\"hideTitlePrefix\":false,\"minimalisticUI\":false,\"showFeeds\":true,\"commentsSupportable\":false,\"screeningMotionsShown\":false,\"screeningAmendments\":true,\"screeningComments\":false,\"initiatorsMayReject\":false,\"commentWholeMotions\":false,\"allowMultipleTags\":false,\"lineLength\":92,\"startLayoutType\":0,\"logoUrl\":\"\",\"logoUrlFB\":\"\",\"motionIntro\":null,\"pdfIntroduction\":\"\"}'),
   (5, 5, '1laenderrat2015', 'de-parteitag', 'Länderrat', 'Länderrat', NULL, NULL, 2, 'testadmin@example.org',
-      '2015-11-17 02:35:58', NULL,
+      '2015-11-17 01:35:58', NULL,
    '{\"maintenanceMode\":false,\"screeningMotions\":true,\"lineNumberingGlobal\":false,\"commentNeedsEmail\":false,\"iniatorsMayEdit\":false,\"adminsMayEdit\":true,\"initiatorConfirmEmails\":false,\"hideTitlePrefix\":false,\"minimalisticUI\":false,\"showFeeds\":true,\"commentsSupportable\":false,\"screeningMotionsShown\":false,\"screeningAmendments\":true,\"screeningComments\":false,\"initiatorsMayReject\":false,\"commentWholeMotions\":false,\"allowMultipleTags\":false,\"lineLength\":92,\"startLayoutType\":2,\"logoUrl\":null,\"logoUrlFB\":null,\"motionIntro\":null,\"pdfIntroduction\":\"\"}'),
   (6, 6, 'laenderrat-to', 'de-parteitag', 'Länderrat TO', 'Länderrat TO', NULL, NULL, 2, 'testadmin@example.org',
-      '2015-11-17 02:35:58', NULL,
-   '{\"maintenanceMode\":false,\"screeningMotions\":true,\"lineNumberingGlobal\":false,\"iniatorsMayEdit\":false,\"commentNeedsEmail\":false,\"adminsMayEdit\":true,\"initiatorConfirmEmails\":false,\"hideTitlePrefix\":false,\"minimalisticUI\":false,\"showFeeds\":true,\"commentsSupportable\":false,\"screeningMotionsShown\":false,\"screeningAmendments\":true,\"screeningComments\":false,\"initiatorsMayReject\":false,\"commentWholeMotions\":false,\"allowMultipleTags\":false,\"lineLength\":92,\"startLayoutType\":4,\"logoUrl\":null,\"logoUrlFB\":null,\"motionIntro\":null,\"pdfIntroduction\":\"\"}'),
+      '2015-11-17 01:35:58', NULL,
+   '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": true,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 92,\n    \"startLayoutType\": 4,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}'),
   (7, 7, 'supporter', 'de-parteitag', 'Unterstützungs-Sammel-Event', 'Unterstützungs-Sammel-Event', NULL, NULL, 0,
-      'testadmin@example.org', '2016-02-28 10:25:31', NULL,
+      'testadmin@example.org', '2016-02-28 09:25:31', NULL,
    '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": null,\n    \"logoUrlFB\": null,\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}'),
-  (8, 8, 'federal', 'en', 'Member Petitions', 'Petitions', NULL, NULL, 0, 'testadmin@example.org',
-      '2017-12-25 16:47:48', NULL,
-   '{\n    \"organizationId\": \"federal-id\",\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}');
+  (8, 8, 'federal', 'en', 'Federal Organization', 'Petitions', NULL, NULL, 0, 'testadmin@example.org',
+      '2017-12-25 15:47:48', NULL,
+   '{\n    \"organizationId\": \"federal-id\",\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}'),
+  (9, 8, 'bavaria', 'en', 'Bavarian Organization', 'Bavaria', NULL, NULL, 0, 'testadmin@example.org',
+      '2017-12-27 19:27:36', NULL,
+   '{\n    \"organizationId\": \"bavarian-id\",\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}'),
+  (10, 8, 'berlin', 'en', 'Berlin Organization', 'Berlin', NULL, NULL, 0, 'testadmin@example.org',
+       '2017-12-27 19:27:50', NULL,
+   '{\n    \"organizationId\": \"berlin-id\",\n    \"maintenanceMode\": false,\n    \"screeningMotions\": true,\n    \"screeningAmendments\": true,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"logoUrlFB\": \"\",\n    \"motionIntro\": null,\n    \"pdfIntroduction\": \"\"\n}');
 
 --
 -- Dumping data for table `consultationAgendaItem`
@@ -985,24 +992,18 @@ INSERT INTO `###TABLE_PREFIX###consultationMotionType` (`id`, `consultationId`, 
 VALUES
   (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0,
    '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 1),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', '', 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   '{\"hasOrganizations\":true}', 1, 0, 1),
-  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1,
-   '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 0, 0, 0, 0, 0, 2, 1, 1,
-   '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1,
-   '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 2, 2, 0, 2, 0, 0, 4, 4, 0, 2, 1, 2,
-   '{\"minSupporters\":1,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (11, 8, 'Motion', 'Motions', 'Start a motion', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   NULL, 1, 0, 0);
+  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 1),
+  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', '', 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true}', 1, 0, 1),
+  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 2, 2, 0, 2, 0, 0, 4, 4, 0, 2, 1, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (11, 8, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, 2, 0, 4, 4, 0, 0, 4, 0, 0, 2, 1, 0, '{\"hasOrganizations\":false}', 1, 0, 0),
+  (12, 9, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, 2, 0, 4, 4, 0, 0, 4, 0, 0, 2, 1, 0, '{\"hasOrganizations\":false}', 1, 0, 0),
+  (13, 10, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, 2, 0, 4, 4, 0, 0, 4, 0, 0, 2, 1, 0,
+   '{\"hasOrganizations\":false}', 1, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
@@ -1041,7 +1042,16 @@ VALUES
   (29, 6, 3, 4, 0, 'Unterschrift', NULL, 0, 0, 0, 0, 0, 0, 0),
   (30, 10, 0, 0, 0, 'Titel', NULL, 0, 1, 0, 0, 0, 1, 0),
   (31, 10, 1, 1, 0, 'Antragstext', NULL, 1, 1, 0, 1, 1, 1, 0),
-  (32, 10, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0, 0);
+  (32, 10, 1, 2, 0, 'Begründung', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (33, 11, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (34, 11, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (35, 11, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (36, 12, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (37, 12, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (38, 12, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (39, 13, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (40, 13, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (41, 13, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsTag`

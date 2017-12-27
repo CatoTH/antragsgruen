@@ -39,9 +39,17 @@ class DefaultBehavior
     }
 
     /**
+     * @return bool
+     */
+    public static function hasSiteHomePage()
+    {
+        return false;
+    }
+
+    /**
      * @return null|string
      */
-    public static function getConsultationHomePage()
+    public static function getSiteHomePage()
     {
         return null;
     }

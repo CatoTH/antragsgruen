@@ -395,9 +395,8 @@ class ConsultationController extends Base
      */
     public function actionHome()
     {
-        $behavior = $this->site->getBehaviorClass()->getConsultationHomePage();
-        if ($behavior) {
-            return $behavior;
+        if ($this->site->getBehaviorClass()->hasSiteHomePage()) {
+            return $this->site->getBehaviorClass()->getSiteHomePage();
         } else {
             return $this->actionIndex();
         }
