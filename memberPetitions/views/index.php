@@ -12,25 +12,58 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $user       = \app\models\db\User::getCurrentUser();
+$layout->addCSS('css/memberpetitions.css');
+$layout->bodyCssClasses[] = 'memberPetitionHome';
 
 $this->title = 'Grüne Mitgliederbegehren';
 
 $organizations = Tools::getUserOrganizations($user);
 
 ?>
-<h1>Grüne Mitgliederbegehren</h1>
-<div class="content">
+    <h1>Grüne Mitgliederbegehren</h1>
+    <div class="content">
 
-    Meine Organisationen:
-    <ul>
+        <section class="createPetition" data-antragsgruen-widget="memberpetitions/HomeCreatePetitions">
+            <button type="button" class="btn btn-primary pull-right showWidget">
+                <span class="glyphicon glyphicon-plus"></span>
+                Petition anlegen
+            </button>
+            <div class="alert alert-success hidden addWidget">
+                Hiermit kannst du eine neue Petition anlegen.
+                Wähle zunächst aus, an welchen Verband sich die Petition richtet:
+                <?php
+                foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
+                    echo '<div class="createRow">';
+                    if (count($consultation->motionTypes) === 0) {
+                        continue;
+                    }
+                    $createUrl = UrlHelper::createUrl([
+                        'motion/create',
+                        'consultationPath' => $consultation->urlPath,
+                        'motionTypeId'     => $consultation->motionTypes[0]->id,
+                    ]);
+                    echo Html::a(Html::encode($consultation->title), $createUrl, ['class' => 'btn btn-primary']);
+                    echo '</div>';
+                }
+                ?>
+            </div>
+        </section>
+
+        Du bist Mitglied in folgenden Verbänden, die dieses Angebot nutzen:
+    </div>
+<?php
+foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
+    $url       = UrlHelper::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
+    $gotoTitle = '<span class="glyphicon glyphicon-chevron-right"></span> Zur Verbands-Seite';
+    ?>
+    <h2 class="green">
+        <?= Html::encode($consultation->title) ?>
+        <?= Html::a($gotoTitle, $url, ['class' => 'pull-right orgaLink']) ?>
+    </h2>
+    <div class="content">
         <?php
-        foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
-            echo '<li>';
-            $url = UrlHelper::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
-            echo Html::a(Html::encode($consultation->title), $url);
-            echo '</li>';
-        }
-        ?>
-    </ul>
 
-</div>
+        ?>
+    </div>
+    <?php
+}

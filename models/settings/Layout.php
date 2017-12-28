@@ -25,6 +25,7 @@ class Layout
     public $robotsNoindex        = false;
     public $extraCss             = [];
     public $extraJs              = [];
+    public $bodyCssClasses       = [];
     public $onloadJs             = [];
     public $fullWidth            = false;
     public $fullScreen           = false;

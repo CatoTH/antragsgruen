@@ -15,7 +15,7 @@ if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
     $resourceBase .= 'web/';
 }
 
-$bodyClasses = [];
+$bodyClasses = $layout->bodyCssClasses;
 if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }

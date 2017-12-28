@@ -7,4 +7,5 @@ use app\models\settings\Consultation;
 class ConsultationSettings extends Consultation
 {
     public $organizationId = '';
+    public $replyDeadline = 14;
 }
