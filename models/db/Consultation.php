@@ -432,7 +432,6 @@ class Consultation extends ActiveRecord
     {
         $invisible = [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
@@ -461,7 +460,6 @@ class Consultation extends ActiveRecord
     {
         $invisible = [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,

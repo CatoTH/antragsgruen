@@ -38,9 +38,6 @@ abstract class IMotion extends ActiveRecord
     const STATUS_WITHDRAWN           = -1;
     const STATUS_WITHDRAWN_INVISIBLE = -3;
 
-    // @TODO Is this status actually used?
-    const STATUS_UNCONFIRMED = 0;
-
     // The user has written the motion, but not yet confirmed to submit it.
     const STATUS_DRAFT = 1;
 
@@ -54,6 +51,7 @@ abstract class IMotion extends ActiveRecord
     // This are stati motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
+    // For member petitions, "Accepted" means the petition has been replied.
     const STATUS_ACCEPTED          = 4;
     const STATUS_REJECTED          = 5;
     const STATUS_MODIFIED_ACCEPTED = 6;
@@ -102,7 +100,6 @@ abstract class IMotion extends ActiveRecord
         return [
             static::STATUS_DELETED                      => \Yii::t('structure', 'STATUS_DELETED'),
             static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
-            static::STATUS_UNCONFIRMED                  => \Yii::t('structure', 'STATUS_UNCONFIRMED'),
             static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
             static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
             static::STATUS_SUBMITTED_UNSCREENED_CHECKED => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
@@ -190,7 +187,6 @@ abstract class IMotion extends ActiveRecord
     {
         return !in_array($this->status, [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
