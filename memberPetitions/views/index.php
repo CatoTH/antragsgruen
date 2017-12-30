@@ -6,6 +6,7 @@
 
 use app\components\UrlHelper;
 use app\memberPetitions\Tools;
+use app\models\db\Motion;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -18,6 +19,18 @@ $layout->bodyCssClasses[] = 'memberPetitionHome';
 $this->title = 'Grüne Mitgliederbegehren';
 
 $organizations = Tools::getUserOrganizations($user);
+
+/**
+ * @param Motion[] $motions
+ */
+$showMotionList = function ($motions) {
+    echo '<ul class="motionList">';
+    foreach ($motions as $motion) {
+        $url = UrlHelper::createMotionUrl($motion);
+        echo '<li>' . Html::a(Html::encode($motion->getTitleWithPrefix()), $url) . '</li>';
+    }
+    echo '</ul>';
+};
 
 ?>
     <h1>Grüne Mitgliederbegehren</h1>
@@ -61,8 +74,42 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
         <?= Html::a($gotoTitle, $url, ['class' => 'pull-right orgaLink']) ?>
     </h2>
     <div class="content">
+        <h3>Beantwortet</h3>
         <?php
+        $showMotionList(Tools::getMotionsAnswered($consultation));
+        ?>
+        <h3>Noch nicht beantwortet</h3>
+        <?php
+        $showMotionList(Tools::getMotionsUnanswered($consultation));
+        ?>
+        <h3>Unterstützung sammelnd</h3>
+        <?php
+        $showMotionList(Tools::getMotionsCollecting($consultation));
+        ?>
+    </div>
+    <?php
+}
 
+$myMotions  = Tools::getMyMotions($controller->site);
+$mySupports = Tools::getSupportedMotions($controller->site);
+
+if (count($myMotions) > 0) {
+    ?>
+    <h2 class="green">Meine Mitgliederbegehren</h2>
+    <div class="content">
+        <?php
+        $showMotionList($myMotions);
+        ?>
+    </div>
+    <?php
+}
+
+if (count($mySupports) > 0) {
+    ?>
+    <h2 class="green">Meine unterstützten Mitgliederbegehren</h2>
+    <div class="content">
+        <?php
+        $showMotionList($mySupports);
         ?>
     </div>
     <?php
