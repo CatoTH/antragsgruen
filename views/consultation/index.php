@@ -148,4 +148,8 @@ if ($myself) {
     }
 }
 
-require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');
+echo $this->render($consultation->getSettings()->getStartLayoutView(), [
+    'consultation' => $consultation,
+    'layout'       => $layout,
+    'admin'        => $admin,
+]);

@@ -151,10 +151,10 @@ if ($hasAmendments) {
             if (count($title) > 1) {
                 $title[0] = '<strong>' . Html::encode($title[0]) . '</strong>';
             }
-            $title         = implode(' ', $title);
-            $amendmentLink = UrlHelper::createAmendmentUrl($amendment);
-            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>' . $title;
-            $html          .= '<li>' . Html::a($linkTitle, $amendmentLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
+            $title     = implode(' ', $title);
+            $amendLink = UrlHelper::createAmendmentUrl($amendment);
+            $linkTitle = '<span class="glyphicon glyphicon-flash"></span>' . $title;
+            $html      .= '<li>' . Html::a($linkTitle, $amendLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
     }
     $html                .= "</ul></div>";
@@ -280,11 +280,11 @@ if ($hasPDF) {
     }
 
     if ($hasAmendments) {
-        $amendmentPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
-        $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
-        $linkTitle        .= Yii::t('con', 'pdf_amendments');
-        $html             .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
-        $link             = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendmentPdfLink, ['class' => 'amendmentPdfs']);
+        $amendPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
+        $linkTitle    = '<span class="glyphicon glyphicon-download-alt"></span>';
+        $linkTitle    .= Yii::t('con', 'pdf_amendments');
+        $html         .= '<li>' . Html::a($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+        $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
 
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
     }

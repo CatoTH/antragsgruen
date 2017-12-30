@@ -82,7 +82,7 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
         <?php
         $showMotionList(Tools::getMotionsUnanswered($consultation));
         ?>
-        <h3>Unterstützung sammelnd</h3>
+        <h3>Sammelnd</h3>
         <?php
         $showMotionList(Tools::getMotionsCollecting($consultation));
         ?>

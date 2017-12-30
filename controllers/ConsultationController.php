@@ -307,7 +307,7 @@ class ConsultationController extends Base
         $newestComments   = IComment::getNewestByConsultation($consultation, 3);
 
         $this->renderPartial(
-            'sidebar',
+            $consultation->getSettings()->getConsultationSidebar(),
             [
                 'newestMotions'    => $newestMotions,
                 'newestAmendments' => $newestAmendments,
