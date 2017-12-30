@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
@@ -247,6 +248,16 @@ abstract class IMotion extends ActiveRecord
         $query = parent::findByCondition($condition);
         $query->andWhere('status != ' . static::STATUS_DELETED);
         return $query;
+    }
+
+    /**
+     * @return Permissions
+     */
+    public function getPermissionsObject()
+    {
+        $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
+        $className = $behavior->getPermissionsClass();
+        return new $className;
     }
 
 

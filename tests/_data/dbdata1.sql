@@ -1071,6 +1071,7 @@ VALUES
 
 INSERT INTO `###TABLE_PREFIX###consultationUserPrivilege` (`userId`, `consultationId`, `privilegeView`, `privilegeCreate`, `adminSuper`, `adminContentEdit`, `adminScreen`, `adminProposals`)
 VALUES
+  (6, 9, 1, 1, 1, 1, 1, 1),
   (7, 1, 0, 0, 1, 1, 1, 0),
   (7, 11, 0, 0, 1, 1, 1, 0),
   (8, 1, 1, 1, 0, 0, 0, 1),

@@ -9,6 +9,14 @@ use app\models\db\IMotionSection;
 class DefaultBehavior
 {
     /**
+     * @return string|Permissions
+     */
+    public static function getPermissionsClass()
+    {
+        return Permissions::class;
+    }
+
+    /**
      * @param string $prefix1
      * @param string $prefix2
      * @return int

@@ -34,6 +34,8 @@ class Tools
                 return ['bavarian-id', 'federal-id'];
             case 'email:fixeddata@example.org':
                 return ['bavarian-id', 'federal-id'];
+            case 'email:fixedadmin@example.org':
+                return ['bavarian-id', 'federal-id'];
             default:
                 return [];
         }

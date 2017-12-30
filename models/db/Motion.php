@@ -12,7 +12,6 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
-use app\models\policies\All;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -79,12 +78,12 @@ class Motion extends IMotion implements IRSSItem
     public static function getProposedStatiNames()
     {
         return [
-            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_MOTION'),
-            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
-            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
-            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT'),
-            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
+            static::STATUS_ACCEPTED      => \Yii::t('structure', 'PROPOSED_ACCEPTED_MOTION'),
+            static::STATUS_REJECTED      => \Yii::t('structure', 'PROPOSED_REJECTED'),
+            static::STATUS_REFERRED      => \Yii::t('structure', 'PROPOSED_REFERRED'),
+            static::STATUS_VOTE          => \Yii::t('structure', 'PROPOSED_VOTE'),
+            static::STATUS_OBSOLETED_BY  => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_MOT'),
+            static::STATUS_CUSTOM_STRING => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
         ];
     }
 
@@ -95,10 +94,10 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = static::getProposedStatiNames();
         foreach ([
-                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_MOTION'),
-                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
-                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
-                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
+                     static::STATUS_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_MOTION'),
+                     static::STATUS_REJECTED => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
+                     static::STATUS_REFERRED => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
+                     static::STATUS_VOTE     => \Yii::t('structure', 'PROPOSEDV_VOTE'),
                  ] as $statusId => $statusName) {
             $return[$statusId] = $statusName;
         }
@@ -477,50 +476,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canEdit()
     {
-        if ($this->status == static::STATUS_DRAFT) {
-            $hadLoggedInUser = false;
-            foreach ($this->motionSupporters as $supp) {
-                $currUser = User::getCurrentUser();
-                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
-                    $hadLoggedInUser = true;
-                    if ($currUser && $currUser->id == $supp->userId) {
-                        return true;
-                    }
-                }
-                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
-                    if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
-                        return true;
-                    }
-                }
-            }
-            if ($hadLoggedInUser) {
-                return false;
-            } else {
-                if ($this->motionType->getMotionPolicy()->getPolicyID() == All::getPolicyID()) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-
-        if ($this->textFixed) {
-            return false;
-        }
-
-        if ($this->getMyConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            if ($this->motionType->motionDeadlineIsOver()) {
-                return false;
-            } else {
-                if (count($this->getVisibleAmendments()) > 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->getPermissionsObject()->motionCanEdit($this);
     }
 
     /**
@@ -528,15 +484,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canWithdraw()
     {
-        if (!in_array($this->status, [
-            Motion::STATUS_SUBMITTED_SCREENED,
-            Motion::STATUS_SUBMITTED_UNSCREENED,
-            Motion::STATUS_COLLECTING_SUPPORTERS
-        ])
-        ) {
-            return false;
-        }
-        return $this->iAmInitiator();
+        return $this->getPermissionsObject()->motionCanWithdraw($this);
     }
 
     /**
@@ -545,21 +493,29 @@ class Motion extends IMotion implements IRSSItem
      */
     public function canMergeAmendments()
     {
-        $replacedByMotions = array_filter($this->replacedByMotions, function (Motion $motion) {
-            $draftStati = [
-                Motion::STATUS_DRAFT,
-                Motion::STATUS_MERGING_DRAFT_PUBLIC,
-                Motion::STATUS_MERGING_DRAFT_PRIVATE
-            ];
-            return !in_array($motion->status, $draftStati);
-        });
-        if (count($replacedByMotions) > 0) {
-            return false;
-        }
-        if (User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
-            return true;
-        }
-        return false;
+        return $this->getPermissionsObject()->motionCanMergeAmendments($this);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canFinishSupportCollection()
+    {
+        return $this->getPermissionsObject()->motionCanFinishSupportCollection($this);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @param bool $throwExceptions
+     * @return bool
+     * @throws NotAmendable
+     * @throws Internal
+     */
+    public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
+    {
+        $permissions = $this->getPermissionsObject();
+        return $permissions->isCurrentlyAmendable($this, $allowAdmins, $assumeLoggedIn, $throwExceptions);
     }
 
     /**
@@ -602,84 +558,6 @@ class Motion extends IMotion implements IRSSItem
             'parentMotionId' => $this->id,
             'status'         => Motion::STATUS_DRAFT,
         ]);
-    }
-
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @param bool $throwExceptions
-     * @return bool
-     * @throws NotAmendable
-     * @throws Internal
-     */
-    public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
-    {
-        $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_ANY);
-
-        if (!($allowAdmins && $iAmAdmin)) {
-            if ($this->nonAmendable) {
-                if ($throwExceptions) {
-                    throw new NotAmendable('Not amendable in the current state', false);
-                } else {
-                    return false;
-                }
-            }
-            $notAmendableStati = [
-                static::STATUS_DELETED,
-                static::STATUS_DRAFT,
-                static::STATUS_COLLECTING_SUPPORTERS,
-                static::STATUS_SUBMITTED_UNSCREENED,
-                static::STATUS_SUBMITTED_UNSCREENED_CHECKED,
-                static::STATUS_DRAFT_ADMIN,
-                static::STATUS_MODIFIED,
-            ];
-            if (in_array($this->status, $notAmendableStati)) {
-                if ($throwExceptions) {
-                    throw new NotAmendable('Not amendable in the current state', false);
-                } else {
-                    return false;
-                }
-            }
-            if ($this->motionType->amendmentDeadlineIsOver()) {
-                if ($throwExceptions) {
-                    throw new NotAmendable(\Yii::t('structure', 'policy_deadline_over'), true);
-                } else {
-                    return false;
-                }
-            }
-        }
-        $policy  = $this->motionType->getAmendmentPolicy();
-        $allowed = $policy->checkCurrUser($allowAdmins, $assumeLoggedIn);
-
-        if (!$allowed) {
-            if ($throwExceptions) {
-                $msg    = $policy->getPermissionDeniedAmendmentMsg();
-                $public = ($msg != '' && $policy->getPolicyID() != IPolicy::POLICY_NOBODY);
-                throw new NotAmendable($msg, $public);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function canFinishSupportCollection()
-    {
-        if (!$this->iAmInitiator()) {
-            return false;
-        }
-        if ($this->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
-            return false;
-        }
-        if ($this->isDeadlineOver()) {
-            return false;
-        }
-        $supporters    = count($this->getSupporters());
-        $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
-        return ($supporters >= $minSupporters);
     }
 
     /**
