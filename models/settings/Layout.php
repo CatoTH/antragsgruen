@@ -38,7 +38,7 @@ class Layout
     public $hooks = null;
 
     /** @var \app\models\db\Consultation|null */
-    private $consultation;
+    protected $consultation;
 
     /**
      * @return string[]
