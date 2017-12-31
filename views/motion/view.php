@@ -38,7 +38,7 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ', Antragsgrün)';
+$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 

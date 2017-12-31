@@ -19,8 +19,7 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->motionType->titleSingular);
 }
 
-$this->title = \Yii::t('motion', 'err_not_visible_yet_title') .
-    ' (' . $motion->getMyConsultation()->title . ', Antragsgrün)';
+$this->title = \Yii::t('motion', 'err_not_visible_yet_title') . ' (' . $motion->getMyConsultation()->title . ')';
 
 include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 

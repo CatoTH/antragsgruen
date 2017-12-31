@@ -22,7 +22,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = $consultation->title . ' (Antragsgrün)';
+$this->title = $consultation->title;
 
 
 if ($admin) {

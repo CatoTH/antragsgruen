@@ -20,10 +20,7 @@ if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }
 
-$title = (isset($this->title) ? $this->title : '');
-if (mb_strpos($title, 'Antragsgrün') === false) {
-    $title .= ' (Antragsgrün)';
-}
+$title = $layout->formatTitle(isset($this->title) ? $this->title : '');
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 

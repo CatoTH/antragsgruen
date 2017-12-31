@@ -271,7 +271,7 @@ class Layout
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#sidebarSmallContent" aria-expanded="false">
-                <span class="sr-only">Menü</span>
+                <span class="sr-only">' . \Yii::t('base', 'menu_main') . '</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -338,5 +338,21 @@ class Layout
             $out .= '<span data-antragsgruen-load-class="' . Html::encode($module) . '"></span>' . "\n";
         }
         return $out;
+    }
+
+    /**
+     * @param string $title
+     * @return string
+     */
+    public function formatTitle($title)
+    {
+        if (stripos($title, 'Antragsgrün') === false) {
+            if ($title[strlen($title) - 1] === ')') {
+                $title = substr($title, 0, strlen($title) - 1) . ', Antragsgrün)';
+            } else {
+                $title .= ' (Antragsgrün)';
+            }
+        }
+        return $title;
     }
 }

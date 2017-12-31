@@ -24,4 +24,12 @@ class ConsultationSettings extends Consultation
     {
         return '@app/memberPetitions/views/consultation-sidebar';
     }
+
+    /**
+     * @return null|string|Layout
+     */
+    public function getSpecializedLayoutClass()
+    {
+        return Layout::class;
+    }
 }

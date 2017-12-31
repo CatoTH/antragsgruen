@@ -93,4 +93,12 @@ class Consultation
     {
         return '@app/views/consultation/sidebar';
     }
+
+    /**
+     * @return null|string|Layout
+     */
+    public function getSpecializedLayoutClass()
+    {
+        return null;
+    }
 }

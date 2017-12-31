@@ -39,12 +39,17 @@ class Base extends Controller
     public function __construct($cid, $module, $config = [])
     {
         parent::__construct($cid, $module, $config);
+
+        // Hint: can be overwritten in loadConsultation
         $this->layoutParams = new Layout();
     }
 
     /**
      * @param \yii\base\Action $action
      * @return bool
+     * @throws Internal
+     * @throws \Exception
+     * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
@@ -61,7 +66,7 @@ class Base extends Controller
         /** @var AntragsgruenApp $appParams */
         $appParams = \Yii::$app->params;
 
-        $inManager = (get_class($this) == ManagerController::class);
+        $inManager   = (get_class($this) == ManagerController::class);
         $inInstaller = (get_class($this) == InstallationController::class);
 
         if ($appParams->siteSubdomain) {
@@ -181,6 +186,7 @@ class Base extends Controller
     /**
      * @param string $pageKey
      * @return string
+     * @throws Internal
      */
     protected function renderContentPage($pageKey)
     {
@@ -248,6 +254,8 @@ class Base extends Controller
 
     /**
      * @return bool
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function testMaintenanceMode()
     {
@@ -266,6 +274,8 @@ class Base extends Controller
 
     /**
      * @return bool
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function testSiteForcedLogin()
     {
@@ -390,6 +400,7 @@ class Base extends Controller
     /**
      * @param null|Motion $checkMotion
      * @param null|Amendment $checkAmendment
+     * @throws \yii\base\ExitException
      */
     protected function checkConsistency($checkMotion = null, $checkAmendment = null)
     {
@@ -418,6 +429,8 @@ class Base extends Controller
      * @param null|Motion $checkMotion
      * @param null|Amendment $checkAmendment
      * @return null|Consultation
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function loadConsultation($subdomain, $consultationId = '', $checkMotion = null, $checkAmendment = null)
     {
@@ -434,6 +447,10 @@ class Base extends Controller
 
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
+            if ($this->consultation->getSettings()->getSpecializedLayoutClass()) {
+                $layoutClass        = $this->consultation->getSettings()->getSpecializedLayoutClass();
+                $this->layoutParams = new $layoutClass();
+            }
         }
         if (is_null($this->consultation) || $this->consultation->dateDeletion !== null) {
             $this->consultationNotFound();
