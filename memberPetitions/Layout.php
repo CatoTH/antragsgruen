@@ -25,7 +25,10 @@ class Layout extends \app\models\settings\Layout
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {
             $this->breadcrumbs[UrlHelper::homeUrl()]                      = 'Mitgliederbegehren';
-            $this->breadcrumbs[UrlHelper::createUrl('consultation/index')] = $consultation->titleShort;
+            $url = \Yii::$app->request->url;
+            if (strpos($url, $consultation->urlPath) !== false) {
+                $this->breadcrumbs[UrlHelper::createUrl('consultation/index')] = $consultation->titleShort;
+            }
         }
         if ($consultation) {
             $language = substr($consultation->wordingBase, 0, 2);
