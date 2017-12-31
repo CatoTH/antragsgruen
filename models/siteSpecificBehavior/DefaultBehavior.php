@@ -5,6 +5,7 @@ namespace app\models\siteSpecificBehavior;
 use app\components\MotionSorter;
 use app\models\db\Consultation;
 use app\models\db\IMotionSection;
+use app\models\policies\IPolicy;
 
 class DefaultBehavior
 {
@@ -14,6 +15,14 @@ class DefaultBehavior
     public static function getPermissionsClass()
     {
         return Permissions::class;
+    }
+
+    /**
+     * @return string[]|IPolicy[]
+     */
+    public static function getCustomPolicies()
+    {
+        return [];
     }
 
     /**

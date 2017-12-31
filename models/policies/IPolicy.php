@@ -2,6 +2,7 @@
 
 namespace app\models\policies;
 
+use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 use app\models\exceptions\Internal;
@@ -27,11 +28,20 @@ abstract class IPolicy
             static::POLICY_LOGGED_IN => LoggedIn::class,
             static::POLICY_NOBODY    => Nobody::class,
         ];
+
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
         if ($params->hasWurzelwerk || $params->isSamlActive()) {
             $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
         }
+
+        $site = UrlHelper::getCurrentSite();
+        if ($site) {
+            foreach ($site->getBehaviorClass()->getCustomPolicies() as $policy) {
+                $policies[$policy::getPolicyID()] = $policy;
+            }
+        }
+
         return $policies;
     }
 

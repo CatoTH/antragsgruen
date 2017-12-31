@@ -3,11 +3,21 @@
 namespace app\memberPetitions;
 
 use app\models\db\Consultation;
-use app\memberPetitions\ConsultationSettings;
+use app\models\policies\IPolicy;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 
 class SiteSpecificBehavior extends DefaultBehavior
 {
+    /**
+     * @return string[]|IPolicy[]
+     */
+    public static function getCustomPolicies()
+    {
+        return [
+            MotionPolicy::class,
+        ];
+    }
+
     /**
      * @return string
      */

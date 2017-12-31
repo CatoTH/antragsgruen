@@ -30,6 +30,14 @@ class UrlHelper
     }
 
     /**
+     * @return Site|null
+     */
+    public static function getCurrentSite()
+    {
+        return static::$currentSite;
+    }
+
+    /**
      * @param Consultation|null $consultation
      */
     public static function setCurrentConsultation($consultation)
