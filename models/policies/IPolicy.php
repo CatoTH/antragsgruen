@@ -9,11 +9,12 @@ use app\models\settings\AntragsgruenApp;
 
 abstract class IPolicy
 {
-    const POLICY_NOBODY     = 0;
-    const POLICY_ALL        = 1;
-    const POLICY_LOGGED_IN  = 2;
-    const POLICY_ADMINS     = 3;
-    const POLICY_WURZELWERK = 4;
+    const POLICY_NOBODY       = 0;
+    const POLICY_ALL          = 1;
+    const POLICY_LOGGED_IN    = 2;
+    const POLICY_ADMINS       = 3;
+    const POLICY_WURZELWERK   = 4;
+    const POLICY_ORGANIZATION = 5;
 
     /**
      * @return IPolicy[]
@@ -95,6 +96,7 @@ abstract class IPolicy
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @return bool
+     * @throws Internal
      */
     public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
     {

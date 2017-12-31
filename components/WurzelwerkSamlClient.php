@@ -62,19 +62,20 @@ class WurzelwerkSamlClient implements ClientInterface
             $user = new User();
         }
 
-        $user->name           = $givenname . ' ' . $familyname;
-        $user->nameGiven      = $givenname;
-        $user->nameFamily     = $familyname;
-        $user->email          = $email;
-        $user->emailConfirmed = 1;
-        $user->fixedData      = 1;
-        $user->auth           = $auth;
-        $user->status         = User::STATUS_CONFIRMED;
+        $user->name            = $givenname . ' ' . $familyname;
+        $user->nameGiven       = $givenname;
+        $user->nameFamily      = $familyname;
+        $user->email           = $email;
+        $user->emailConfirmed  = 1;
+        $user->fixedData       = 1;
+        $user->auth            = $auth;
+        $user->status          = User::STATUS_CONFIRMED;
+        $user->organizationIds = json_encode($organizations);
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if ($params->samlOrgaFile && file_exists($params->samlOrgaFile)) {
-            $orgas = json_decode(file_get_contents($params->samlOrgaFile), true);
+            $orgas              = json_decode(file_get_contents($params->samlOrgaFile), true);
             $user->organization = '';
             foreach ($organizations as $organization) {
                 $orgaKv = substr($organization, 0, 6);

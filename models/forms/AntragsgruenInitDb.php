@@ -285,13 +285,14 @@ class AntragsgruenInitDb extends Model
      */
     public function createAdminAccount()
     {
-        $user                 = new User();
-        $user->auth           = 'email:' . $this->adminUsername;
-        $user->status         = User::STATUS_CONFIRMED;
-        $user->email          = $this->adminUsername;
-        $user->emailConfirmed = 1;
-        $user->pwdEnc         = password_hash($this->adminPassword, PASSWORD_DEFAULT);
-        $user->name           = '';
+        $user                  = new User();
+        $user->auth            = 'email:' . $this->adminUsername;
+        $user->status          = User::STATUS_CONFIRMED;
+        $user->email           = $this->adminUsername;
+        $user->emailConfirmed  = 1;
+        $user->pwdEnc          = password_hash($this->adminPassword, PASSWORD_DEFAULT);
+        $user->name            = '';
+        $user->organizationIds = '';
         if (!$user->save()) {
             var_dump($user->getErrors());
             die();
@@ -302,6 +303,7 @@ class AntragsgruenInitDb extends Model
 
     /**
      * @param AntragsgruenApp $config
+     * @throws Internal
      */
     protected function setConfigValues(AntragsgruenApp $config)
     {

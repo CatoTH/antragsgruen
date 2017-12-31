@@ -173,6 +173,7 @@ class WurzelwerkAuthClient extends OpenId
         }
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
+        $user->organizationIds = '';
         
         if (!$user->save()) {
             throw new \Exception('Could not create user: ' . $user->getErrors());

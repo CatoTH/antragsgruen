@@ -21,6 +21,7 @@ use yii\web\IdentityInterface;
  * @property string $nameGiven
  * @property string $nameFamily
  * @property string $organization
+ * @property string $organizationIds
  * @property string $email
  * @property int $fixedData
  * @property int $emailConfirmed
@@ -268,6 +269,21 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Returns the IDs of the organizations the user is enlisted in.
+     * This has to be provided by and updated by the authentication mechanism (only SAML supports this at this point).
+     *
+     * @return string[]
+     */
+    public function getOrganizationIds()
+    {
+        if ($this->organizationIds) {
+            return json_decode($this->organizationIds, true);
+        } else {
+            return [];
+        }
+    }
+
+    /**
      * Returns a key that can be used to check the validity of a given identity ID.
      *
      * The key should be unique for each individual user, and should be persistent
@@ -300,6 +316,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param bool $insert
      * @return bool
+     * @throws \yii\base\Exception
      */
     public function beforeSave($insert)
     {
@@ -316,6 +333,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @return string
+     * @throws \yii\base\Exception
      */
     public static function createPassword()
     {
@@ -456,7 +474,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy("motion.dateCreation DESC");
+        $query->orderBy('motion.dateCreation DESC');
 
         return $query->all();
     }
@@ -479,7 +497,7 @@ class User extends ActiveRecord implements IdentityInterface
         $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy("amendment.dateCreation DESC");
+        $query->orderBy('amendment.dateCreation DESC');
 
         return $query->all();
     }
@@ -662,6 +680,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @throws MailNotSent
+     * @throws FormError
      */
     public function sendRecoveryMail()
     {

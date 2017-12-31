@@ -18,8 +18,6 @@ $layout->bodyCssClasses[] = 'memberPetitionHome';
 
 $this->title = 'Grüne Mitgliederbegehren';
 
-$organizations = Tools::getUserOrganizations($user);
-
 /**
  * @param Motion[] $motions
  */

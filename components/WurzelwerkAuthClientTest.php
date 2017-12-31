@@ -73,7 +73,7 @@ class WurzelwerkAuthClientTest extends WurzelwerkAuthClient
         $user->emailConfirmed  = 1;
         $user->auth            = $auth;
         $user->status          = User::STATUS_CONFIRMED;
-        // @TODO E-Mail
+        $user->organizationIds = '';
         if (!$user->save()) {
             throw new \Exception('Could not create user: ' . $user->getErrors());
         }

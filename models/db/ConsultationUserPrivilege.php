@@ -86,13 +86,14 @@ class ConsultationUserPrivilege extends ActiveRecord
                 $password = User::createPassword();
             }
 
-            $user                 = new User();
-            $user->auth           = 'email:' . $email;
-            $user->name           = $name;
-            $user->emailConfirmed = 0;
-            $user->pwdEnc         = password_hash($password, PASSWORD_DEFAULT);
-            $user->status         = User::STATUS_CONFIRMED;
-            $user->emailConfirmed = 1;
+            $user                  = new User();
+            $user->auth            = 'email:' . $email;
+            $user->name            = $name;
+            $user->emailConfirmed  = 0;
+            $user->pwdEnc          = password_hash($password, PASSWORD_DEFAULT);
+            $user->status          = User::STATUS_CONFIRMED;
+            $user->emailConfirmed  = 1;
+            $user->organizationIds = '';
             $user->save();
 
             $accountText = str_replace(
