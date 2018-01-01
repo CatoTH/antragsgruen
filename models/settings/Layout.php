@@ -67,6 +67,15 @@ class Layout
     }
 
     /**
+     */
+    public function setFallbackLayoutIfNotInitializedYet()
+    {
+        if ($this->mainCssFile === null) {
+            $this->setLayout(Layout::DEFAULT_LAYOUT);
+        }
+    }
+
+    /**
      * @param Consultation $consultation
      */
     public function setConsultation(Consultation $consultation)

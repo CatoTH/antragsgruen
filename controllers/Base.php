@@ -365,12 +365,13 @@ class Base extends Controller
      */
     protected function showErrorpage($status, $message)
     {
+        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->statusCode    = $status;
         Yii::$app->response->content       = $this->render(
             '@app/views/errors/error',
             [
-                "message" => $message
+                'message' => $message
             ]
         );
         Yii::$app->end();
@@ -444,7 +445,7 @@ class Base extends Controller
 
         if (is_null($this->consultation)) {
             $this->consultation = Consultation::findOne(['urlPath' => $consultationId, 'siteId' => $this->site->id]);
-            if ($this->consultation->getSettings()->getSpecializedLayoutClass()) {
+            if ($this->consultation && $this->consultation->getSettings()->getSpecializedLayoutClass()) {
                 $layoutClass        = $this->consultation->getSettings()->getSpecializedLayoutClass();
                 $this->layoutParams = new $layoutClass();
             }
