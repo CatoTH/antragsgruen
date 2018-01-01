@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\Motion;
 
 interface Hooks
 {
@@ -90,4 +91,18 @@ interface Hooks
      * @return string
      */
     public function footerLine($before);
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function beforeMotionView($before, Motion $motion);
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function afterMotionView($before, Motion $motion);
 }

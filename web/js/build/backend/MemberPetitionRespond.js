@@ -1,0 +1,2 @@
+define(["require","exports","../shared/AntragsgruenEditor"],function(t,e,i){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var n=function(){function t(t){this.$widget=t,this.initMotionTextEdit()}return t.prototype.initMotionTextEdit=function(){$(".wysiwyg-textarea").each(function(){var t=$(this).find(".texteditor"),e=new i.AntragsgruenEditor(t.attr("id")).getEditor();t.parents("form").submit(function(){t.parent().find("textarea").val(e.getData())})})},t}();e.MemberPetitionRespond=n});
+//# sourceMappingURL=MemberPetitionRespond.js.map

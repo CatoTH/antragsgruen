@@ -69,7 +69,7 @@ class Tools
     public static function getMyMotions(Site $site)
     {
         $motions = [];
-        $user = User::getCurrentUser();
+        $user    = User::getCurrentUser();
         if (!$user) {
             return $motions;
         }
@@ -92,7 +92,7 @@ class Tools
     public static function getSupportedMotions(Site $site)
     {
         $motions = [];
-        $user = User::getCurrentUser();
+        $user    = User::getCurrentUser();
         if (!$user) {
             return $motions;
         }
@@ -108,5 +108,19 @@ class Tools
         }
 
         return array_unique($motions);
+    }
+
+    /**
+     * @param Motion $motion
+     * @return bool
+     */
+    public static function canRespondToMotion(Motion $motion)
+    {
+        if (!$motion->isVisible() || $motion->status == IMotion::STATUS_PROCESSED) {
+            return false;
+        }
+
+        $user = User::getCurrentUser();
+        return ($user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
     }
 }

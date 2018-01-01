@@ -139,6 +139,7 @@ class ConsultationCreateForm extends Model
 
     /**
      * @throws FormError
+     * @throws \Exception
      */
     private function createConsultationFromWizard()
     {
@@ -161,6 +162,7 @@ class ConsultationCreateForm extends Model
 
     /**
      * @throws FormError
+     * @throws \Exception
      */
     public function createConsultation()
     {

@@ -5,8 +5,9 @@ namespace app\memberPetitions;
 use app\components\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\settings\Layout;
 
-class Layout extends \app\models\settings\Layout
+class LayoutSettings extends Layout
 {
     /**
      * @param string $title
@@ -36,5 +37,14 @@ class Layout extends \app\models\settings\Layout
                 \Yii::$app->language = $language;
             }
         }
+    }
+
+    /**
+     * @param string $layout
+     */
+    public function setLayout($layout)
+    {
+        parent::setLayout($layout);
+        \app\models\layoutHooks\Layout::addHook(new LayoutHooks($this, $this->consultation));
     }
 }

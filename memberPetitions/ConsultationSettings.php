@@ -26,10 +26,10 @@ class ConsultationSettings extends Consultation
     }
 
     /**
-     * @return null|string|Layout
+     * @return null|string|LayoutSettings
      */
     public function getSpecializedLayoutClass()
     {
-        return Layout::class;
+        return LayoutSettings::class;
     }
 }

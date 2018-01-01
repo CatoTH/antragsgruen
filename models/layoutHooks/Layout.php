@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\Motion;
 
 class Layout
 {
@@ -143,5 +144,23 @@ class Layout
     public static function breadcrumbs()
     {
         return static::callHook('breadcrumbs');
+    }
+
+    /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function beforeMotionView(Motion $motion)
+    {
+        return static::callHook('beforeMotionView', [$motion]);
+    }
+
+    /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function afterMotionView(Motion $motion)
+    {
+        return static::callHook('afterMotionView', [$motion]);
     }
 }

@@ -116,6 +116,8 @@ if ($motion->proposalStatusNeedsUserFeedback() && $motion->iAmInitiator()) {
 }
 */
 
+echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
+
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
     /** @var \app\models\db\MotionSection $section $sectionType */
@@ -191,6 +193,8 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
 }
 
 LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+
+echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {

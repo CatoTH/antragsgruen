@@ -19,6 +19,9 @@ class TextHTML extends ISectionType
      */
     public function getMotionFormField()
     {
+        return HTMLTools::getMotionFormField(
+
+        );
         return $this->getTextMotionFormField(true, $this->section->getSettings()->fixedWidth);
     }
 

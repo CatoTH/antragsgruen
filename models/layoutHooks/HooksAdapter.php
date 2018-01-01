@@ -4,6 +4,7 @@ namespace app\models\layoutHooks;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
+use app\models\db\Motion;
 
 class HooksAdapter implements Hooks
 {
@@ -148,6 +149,28 @@ class HooksAdapter implements Hooks
      * @return string
      */
     public function footerLine($before)
+    {
+        return $before;
+    }
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function beforeMotionView($before, Motion $motion)
+    {
+        return $before;
+    }
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function afterMotionView($before, Motion $motion)
     {
         return $before;
     }

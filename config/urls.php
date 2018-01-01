@@ -59,6 +59,7 @@ $urlRules = [
     $domv . 'amendment/pdfcollection'              => 'amendment/pdfcollection',
     $dommotion                                     => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
+    $dommotion . '/write-petition-response'        => 'memberpetitions/write-response',
     $domamend                                      => 'amendment/view',
     $domamend . '/<_a:(' . $amendPaths . ')>'      => 'amendment/<_a>',
     $dommotion . '/amendment/create'               => 'amendment/create',

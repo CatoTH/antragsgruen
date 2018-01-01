@@ -44,6 +44,7 @@ class TextSimple extends ISectionType
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentFormField()
     {
@@ -77,6 +78,7 @@ class TextSimple extends ISectionType
     /**
      * @param bool $fixedWidth
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getTextAmendmentFormFieldSingleParagraph($fixedWidth)
     {
@@ -145,6 +147,7 @@ class TextSimple extends ISectionType
     /**
      * @param array $data
      * @throws FormError
+     * @throws \app\models\exceptions\Internal
      */
     public function setAmendmentData($data)
     {
@@ -178,6 +181,7 @@ class TextSimple extends ISectionType
      * @param bool $isRight
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws \app\models\exceptions\Internal
      */
     public function getSimple($isRight)
     {
@@ -206,6 +210,7 @@ class TextSimple extends ISectionType
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentPlainHtml()
     {
@@ -236,6 +241,7 @@ class TextSimple extends ISectionType
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentFormattedGlobalAlternative()
     {
@@ -386,6 +392,7 @@ class TextSimple extends ISectionType
     /**
      * @param IPDFLayout $pdfLayout
      * @param \FPDI $pdf
+     * @throws \app\models\exceptions\Internal
      */
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
@@ -587,6 +594,7 @@ class TextSimple extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @throws \app\models\exceptions\Internal
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -657,6 +665,7 @@ class TextSimple extends ISectionType
     /**
      * @param bool $isRight
      * @param Content $content
+     * @throws \app\models\exceptions\Internal
      */
     public function printAmendmentTeX($isRight, Content $content)
     {
@@ -721,6 +730,7 @@ class TextSimple extends ISectionType
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentODS()
     {
@@ -740,6 +750,7 @@ class TextSimple extends ISectionType
     /**
      * @param Text $odt
      * @return void
+     * @throws \app\models\exceptions\Internal
      */
     public function printMotionToODT(Text $odt)
     {
@@ -783,6 +794,7 @@ class TextSimple extends ISectionType
     /**
      * @param Text $odt
      * @return void
+     * @throws \app\models\exceptions\Internal
      */
     public function printAmendmentToODT(Text $odt)
     {
@@ -836,6 +848,7 @@ class TextSimple extends ISectionType
      * @param int[] $toMergeAmendmentIds
      * @param array $changeset
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionTextWithInlineAmendments($toMergeAmendmentIds, &$changeset)
     {
@@ -886,13 +899,15 @@ class TextSimple extends ISectionType
             $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             foreach ($paragraphCollissions[$paragraphNo] as $amendmentId => $paraData) {
-                $amendment     = $amendmentsById[$amendmentId];
-                $out           .= '<div class="collidingParagraph"';
-                $out           .= ' data-link="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '"';
-                $out           .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
-                $out           .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding');
-                $out           .= ': ' . Html::a(Html::encode($amendment->titlePrefix), UrlHelper::createAmendmentUrl($amendment));
-                $out           .= '</strong></p>';
+                $amendment    = $amendmentsById[$amendmentId];
+                $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
+                $out          .= '<div class="collidingParagraph"';
+                $out          .= ' data-link="' . Html::encode($amendmentUrl) . '"';
+                $out          .= ' data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">';
+                $out          .= '<p class="collidingParagraphHead"><strong>' . \Yii::t('amend', 'merge_colliding');
+                $out          .= ': ' . Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl);
+                $out          .= '</strong></p>';
+
                 $paragraphText = '';
 
                 foreach ($paraData as $part) {
@@ -929,6 +944,7 @@ class TextSimple extends ISectionType
      * @param int $firstLine
      * @param int $lineLength
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public static function formatAmendmentForOds($originalText, $newText, $firstLine, $lineLength)
     {
