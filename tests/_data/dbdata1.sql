@@ -1065,9 +1065,7 @@ INSERT INTO `###TABLE_PREFIX###consultationUserPrivilege` (`userId`, `consultati
 VALUES
   (6, 9, 1, 1, 1, 1, 1, 1),
   (7, 1, 0, 0, 1, 1, 1, 0),
-  (7, 11, 0, 0, 1, 1, 1, 0),
-  (8, 1, 1, 1, 0, 0, 0, 1),
-  (8, 11, 1, 1, 0, 0, 0, 1);
+  (8, 1, 1, 1, 0, 0, 0, 1);
 
 --
 -- Dumping data for table `motion`

@@ -15,7 +15,7 @@ $I->logout();
 
 $I->wantTo('Login in as an admin');
 $I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
-$I->see(mb_strtoupper('Administrator*innen der Reihe'), 'h2');
+$I->see(mb_strtoupper('Administrator*innen'), 'h2');
 
 
 $I->wantTo('Add testuser as admin');
