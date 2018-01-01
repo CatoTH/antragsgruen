@@ -94,13 +94,13 @@ $this->beginBody();
 
 echo '<div class="over_footer_wrapper">';
 
-echo $layout->hooks->beforePage();
+echo \app\models\layoutHooks\Layout::beforePage();
 echo '<div class="container" id="page">';
-echo $layout->hooks->beginPage();
+echo \app\models\layoutHooks\Layout::beginPage();
 
-echo $layout->hooks->logoRow();
+echo \app\models\layoutHooks\Layout::logoRow();
 echo $controller->showErrors();
-echo $layout->hooks->beforeContent();
+echo \app\models\layoutHooks\Layout::beforeContent();
 
 /** @var string $content */
 echo $content;
@@ -110,7 +110,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
 
-echo $layout->hooks->endPage();
+echo \app\models\layoutHooks\Layout::endPage();
 
 
 foreach ($layout->getJSFiles() as $jsFile) {

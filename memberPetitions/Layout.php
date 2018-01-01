@@ -24,8 +24,8 @@ class Layout extends \app\models\settings\Layout
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {
-            $this->breadcrumbs[UrlHelper::homeUrl()]                      = 'Mitgliederbegehren';
-            $url = \Yii::$app->request->url;
+            $this->breadcrumbs[UrlHelper::homeUrl()] = \Yii::t('memberpetitions', 'bc');
+            $url                                     = \Yii::$app->request->url;
             if (strpos($url, $consultation->urlPath) !== false) {
                 $this->breadcrumbs[UrlHelper::createUrl('consultation/index')] = $consultation->titleShort;
             }

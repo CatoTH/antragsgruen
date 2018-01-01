@@ -27,7 +27,7 @@ echo $content;
 
 echo '</main><aside class="col-md-3 visible-md-block visible-lg-block" id="sidebar">';
 
-echo $params->hooks->renderSidebar();
+echo \app\models\layoutHooks\Layout::renderSidebar();
 
 echo '</aside></div>';
 

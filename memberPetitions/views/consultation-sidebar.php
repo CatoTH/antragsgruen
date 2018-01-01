@@ -29,7 +29,7 @@ foreach ($motionTypes as $motionType) {
 
 if (count($working) > 0) {
     if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-        $layout->hooks->setSidebarCreateMotionButton($working[0]);
+        \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working[0]);
     }
 }
 

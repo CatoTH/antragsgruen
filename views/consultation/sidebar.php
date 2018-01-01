@@ -43,7 +43,7 @@ foreach ($consultation->motionTypes as $type) {
 }
 
 
-$layout->menusHtml[] = $layout->hooks->getSearchForm();
+$layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 
 $showCreate = true;
 if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda') {
@@ -66,7 +66,7 @@ if ($showCreate) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
             if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                $layout->hooks->setSidebarCreateMotionButton($working[0]);
+                \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working[0]);
             }
         } else {
             $html      = '<div class="sidebar-box"><ul class="nav nav-list motions">';
@@ -294,5 +294,5 @@ if ($hasPDF) {
 }
 
 if ($consultation->site->getSettings()->showAntragsgruenAd) {
-    $layout->postSidebarHtml = $layout->hooks->getAntragsgruenAd();
+    $layout->postSidebarHtml = \app\models\layoutHooks\Layout::getAntragsgruenAd();
 }

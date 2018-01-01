@@ -3,11 +3,11 @@
 namespace app\models\settings;
 
 use app\components\MessageSource;
+use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
-use app\views\hooks\LayoutHooks;
-use app\views\hooks\LayoutStd;
-use app\views\hooks\LayoutGruenesCi2;
+use app\models\layoutHooks\StdHooks;
+use app\models\layoutHooks\GruenesCi2Hooks;
 use yii\helpers\Html;
 
 class Layout
@@ -34,9 +34,6 @@ class Layout
     public $canonicalUrl         = null;
     public $alternateLanuages    = [];
 
-    /** @var LayoutHooks */
-    public $hooks = null;
-
     /** @var \app\models\db\Consultation|null */
     protected $consultation;
 
@@ -61,12 +58,11 @@ class Layout
     public function setLayout($layout)
     {
         $this->mainCssFile = $layout;
+        \app\models\layoutHooks\Layout::addHook(new StdHooks($this, $this->consultation));
         switch ($layout) {
             case 'layout-gruenes-ci2':
-                $this->hooks = new LayoutGruenesCi2($this, $this->consultation);
+                \app\models\layoutHooks\Layout::addHook(new GruenesCi2Hooks($this, $this->consultation));
                 break;
-            default:
-                $this->hooks = new LayoutStd($this, $this->consultation);
         }
     }
 
@@ -354,5 +350,33 @@ class Layout
             }
         }
         return $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogoStr()
+    {
+        /** @var Base $controller */
+        $controller   = \Yii::$app->controller;
+        $resourceBase = $controller->getParams()->resourceBase;
+
+        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
+            $path     = parse_url($controller->consultation->getSettings()->logoUrl);
+            $filename = basename($path['path']);
+            $filename = substr($filename, 0, strrpos($filename, '.'));
+            $filename = str_replace(
+                ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
+                [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
+                $filename
+            );
+            $logoUrl  = $controller->consultation->getSettings()->logoUrl;
+            if (!isset($path['host']) && $logoUrl[0] != '/') {
+                $logoUrl = $resourceBase . $logoUrl;
+            }
+            return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
+        } else {
+            return '<span class="logoImg"></span>';
+        }
     }
 }
