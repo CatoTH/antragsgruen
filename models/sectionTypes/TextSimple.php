@@ -442,12 +442,11 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param Base $controller
-     * @param CommentForm $commentForm
+     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
      * @return string
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    public function showMotionView($commentForm, $openedComments)
     {
         return (new View())->render(
             '@app/views/motion/showSimpleTextSection',
@@ -456,7 +455,7 @@ class TextSimple extends ISectionType
                 'openedComments' => $openedComments,
                 'commentForm'    => $commentForm,
             ],
-            $controller
+            \Yii::$app->controller
         );
     }
 

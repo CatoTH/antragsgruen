@@ -4,7 +4,6 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\IMotionSection;
@@ -232,13 +231,12 @@ abstract class ISectionType
     abstract public function getAmendmentPlainText();
 
     /**
-     * @param Base $controller
-     * @param CommentForm $commentForm
+     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    public function showMotionView($commentForm, $openedComments)
     {
         return $this->getSimple(false);
     }

@@ -38,6 +38,14 @@ class LayoutHooks extends HooksAdapter
             ]);
         }
 
+        $response = Tools::getMotionResponse($motion);
+        if ($response) {
+            $before .= \Yii::$app->controller->renderPartial('@app/memberPetitions/views/_response', [
+                'motion'   => $motion,
+                'response' => $response,
+            ]);
+        }
+
         return $before;
     }
 }

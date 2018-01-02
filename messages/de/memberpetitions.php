@@ -14,6 +14,14 @@ return [
     'policy_supp_denied'   => 'Nur Mitglieder des aktuellen Verbands können Petitionen unterstützen.',
     'policy_comm_denied'   => 'Nur Mitglieder des aktuellen Verbands können kommentieren.',
 
-    'answer_hint' => 'Diese Petition muss noch beantwortet werden. Die Funktion dafür befindet sich unten auf dieser Seite.',
-    'respond_btn' => 'Beantworten',
+    'answer_hint'   => 'Dieses Mitgliederbegehren muss noch beantwortet werden. Die Funktion dafür befindet sich unten auf dieser Seite.',
+    'respond_title' => 'Das Mitgliederbegehren beantworten',
+    'respond_from'  => 'Antwort von',
+    'respond_btn'   => 'Beantworten',
+    'respond_saved' => 'Die Antwort wurde veröffentlicht.',
+
+    'response_title' => 'Antwort',
+    'response_from'  => 'Antwort von',
+    'response_date'  => 'Datum',
+    'response_text'  => 'Text',
 ];

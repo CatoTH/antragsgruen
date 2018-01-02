@@ -123,4 +123,19 @@ class Tools
         $user = User::getCurrentUser();
         return ($user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
     }
+
+    /**
+     * @param Motion $motion
+     * @return null|Motion
+     */
+    public static function getMotionResponse(Motion $motion)
+    {
+        if ($motion->status !== IMotion::STATUS_PROCESSED) {
+            return null;
+        }
+        return Motion::findOne([
+            'parentMotionId' => $motion->id,
+            'status'         => Motion::STATUS_INLINE_REPLY,
+        ]);
+    }
 }

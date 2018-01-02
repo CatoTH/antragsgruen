@@ -14,10 +14,18 @@ echo Html::beginForm($saveUrl, 'post', [
     'class'                    => 'petitionRespondForm',
     'data-antragsgruen-widget' => 'backend/MemberPetitionRespond',
 ]);
+
+$user     = \app\models\db\User::getCurrentUser();
+$username = ($user ? $user->name : '');
 ?>
 
-    <h2 class="green">Auf die Mitgliederpetition antworten</h2>
+    <h2 class="green"><?= \Yii::t('memberpetitions', 'respond_title') ?></h2>
     <div class="content">
+        <div class="form-group">
+            <label for="responseFrom"><?= \Yii::t('memberpetitions', 'respond_from') ?></label>
+            <input type="text" class="form-control" id="responseFrom" autocomplete="off"
+                   value="<?= Html::encode($username) ?>">
+        </div>
         <?php
         foreach ($motion->getSortedSections(true) as $section) {
             $answerSection            = new MotionSection();

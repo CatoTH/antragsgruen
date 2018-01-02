@@ -143,7 +143,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main   .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
+        $main   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
 
         $main .= '</section>';
     }

@@ -133,6 +133,7 @@ return [
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Proposed modification',
     'STATUS_OBSOLETED_BY'                 => 'Handled by another amendment',
     'STATUS_CUSTOM_STRING'                => 'Custom status',
+    'STATUS_INLINE_REPLY'                 => 'Response',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
     'PROPOSEDV_ACCEPTED_MOTION'   => 'Accept',

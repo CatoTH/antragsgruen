@@ -439,6 +439,7 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+            IMotion::STATUS_INLINE_REPLY,
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;

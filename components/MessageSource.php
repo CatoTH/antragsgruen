@@ -85,10 +85,11 @@ class MessageSource extends \yii\i18n\MessageSource
         $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
         if ($language == 'de') {
             return array_merge([
-                'de-parteitag' => 'Konferenz / Parteitag',
-                'de-bewerbung' => 'Bewerbungsverfahren',
-                'de-programm'  => 'Programmdiskussion',
-                'de-bdk'       => 'BDK',
+                'de-parteitag'       => 'Konferenz / Parteitag',
+                'de-bewerbung'       => 'Bewerbungsverfahren',
+                'de-programm'        => 'Programmdiskussion',
+                'de-bdk'             => 'BDK',
+                'de-memberpetitions' => 'Mitgliederbegehren',
             ], $localMessages);
         };
         if ($language == 'en') {

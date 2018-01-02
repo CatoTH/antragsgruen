@@ -52,11 +52,14 @@ abstract class IMotion extends ActiveRecord
     // This are stati motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
-    // For member petitions, "Accepted" means the petition has been replied.
+    // For member petitions, "Processed" means the petition has been replied.
     const STATUS_ACCEPTED          = 4;
     const STATUS_REJECTED          = 5;
     const STATUS_MODIFIED_ACCEPTED = 6;
     const STATUS_PROCESSED         = 17;
+
+    // This is the reply to a motion / member petition and is to be shown within the parent motion view.
+    const STATUS_INLINE_REPLY = 24;
 
     // The initiator is still collecting supporters to actually submit this motion.
     // It's visible only to those who know the link to it.

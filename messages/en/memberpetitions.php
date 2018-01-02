@@ -14,6 +14,14 @@ return [
     'policy_supp_denied'   => 'Only members of this organization can support.',
     'policy_comm_denied'   => 'Only members of this organization can comment.',
 
-    'answer_hint' => 'This petitions needs a reply. Please do so at the bottom of this page.',
-    'respond_btn' => 'Respond',
+    'answer_hint'   => 'This petitions needs a reply. Please do so at the bottom of this page.',
+    'respond_title' => 'Respond to the motion',
+    'respond_from'  => 'Response from',
+    'respond_btn'   => 'Respond',
+    'respond_saved' => 'The resonse has been published.',
+
+    'response_title' => 'Response',
+    'response_from'  => 'Response from',
+    'response_date'  => 'Date',
+    'response_text'  => 'Text',
 ];
