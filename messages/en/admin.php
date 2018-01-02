@@ -205,7 +205,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_useraccounts'     => 'Standard Antragsgrün accounts <small>(everyone with a valid e-mail address)</small>',
     'siteacc_ww'               => 'Wurzelwerk <small>(everyone with access to German Wurzelwerk)</small>',
     'siteacc_otherlogins'      => 'Other methods <small>(OpenID, maybe Facebook / Twitter in the future)</small>',
-    'siteacc_admins_title'     => 'Administrators of this site',
+    'siteacc_admins_title'     => 'Administrators',
     'siteacc_admins_add'       => 'Add',
     'siteacc_admins_user'      => 'User',
     'siteacc_admins_del'       => 'Remove',

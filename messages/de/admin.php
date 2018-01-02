@@ -210,7 +210,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_useraccounts'     => 'Standard-Antragsgrün-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
     'siteacc_ww'               => 'Wurzelwerk <small>(alle mit Wurzelwerk-Zugang)</small>',
     'siteacc_otherlogins'      => 'Sonstige Methoden <small>(OpenID, evtl. zufünftig auch Login per Facebook / Twitter)</small>',
-    'siteacc_admins_title'     => 'Administrator*innen der Reihe',
+    'siteacc_admins_title'     => 'Administrator*innene',
     'siteacc_admins_add'       => 'Neu eintragen',
     'siteacc_admins_user'      => 'Benutzer*in',
     'siteacc_admins_del'       => 'Austragen',

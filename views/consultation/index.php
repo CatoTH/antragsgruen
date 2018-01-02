@@ -22,7 +22,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = $consultation->title . ' (Antragsgrün)';
+$this->title = $consultation->title;
 
 
 if ($admin) {
@@ -148,4 +148,8 @@ if ($myself) {
     }
 }
 
-require(__DIR__ . DIRECTORY_SEPARATOR . $consultation->getSettings()->getStartLayoutView() . '.php');
+echo $this->render($consultation->getSettings()->getStartLayoutView(), [
+    'consultation' => $consultation,
+    'layout'       => $layout,
+    'admin'        => $admin,
+]);

@@ -30,6 +30,14 @@ class UrlHelper
     }
 
     /**
+     * @return Site|null
+     */
+    public static function getCurrentSite()
+    {
+        return static::$currentSite;
+    }
+
+    /**
      * @param Consultation|null $consultation
      */
     public static function setCurrentConsultation($consultation)
@@ -72,11 +80,6 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($route[0] == 'consultation/index' && !is_null($site) &&
-            strtolower($route['consultationPath']) === strtolower($site->currentConsultation->urlPath)
-        ) {
-            unset($route['consultationPath']);
-        }
         $parts = explode('/', $route[0]);
         if ($parts[0] == 'user') {
             unset($route['consultationPath']);
@@ -84,6 +87,7 @@ class UrlHelper
         if (in_array(
             $route[0],
             [
+                'consultation/home',
                 'consultation/legal',
                 'consultation/privacy',
                 'admin/index/admins',
@@ -132,16 +136,24 @@ class UrlHelper
     public static function homeUrl()
     {
         if (static::$currentConsultation) {
+            $consultation = static::$currentConsultation;
+            $homeOverride = $consultation->site->getBehaviorClass()->hasSiteHomePage();
+            if ($consultation->site->currentConsultationId == $consultation->id || $homeOverride) {
+                $homeUrl = static::createUrl('consultation/home');
+            } else {
+                $homeUrl = static::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
+            }
+
             if (static::$currentConsultation->getSettings()->forceMotion) {
                 $forceMotion = static::$currentConsultation->getSettings()->forceMotion;
                 $motion      = static::$currentConsultation->getMotion($forceMotion);
                 if ($motion) {
                     return static::createMotionUrl($motion);
                 } else {
-                    return static::createUrl('consultation/index');
+                    return $homeUrl;
                 }
             } else {
-                return static::createUrl('consultation/index');
+                return $homeUrl;
             }
         } else {
             return static::createUrl('manager/index');
@@ -216,6 +228,9 @@ class UrlHelper
     public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
     {
         $params = array_merge(['motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
+        if ($motion->getMyConsultation() !== static::$currentConsultation) {
+            $params['consultationPath'] = $motion->getMyConsultation()->urlPath;
+        }
         return static::createUrl($params);
     }
 

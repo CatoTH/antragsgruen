@@ -2,6 +2,7 @@
 
 namespace app\models\policies;
 
+use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 use app\models\exceptions\Internal;
@@ -9,11 +10,12 @@ use app\models\settings\AntragsgruenApp;
 
 abstract class IPolicy
 {
-    const POLICY_NOBODY     = 0;
-    const POLICY_ALL        = 1;
-    const POLICY_LOGGED_IN  = 2;
-    const POLICY_ADMINS     = 3;
-    const POLICY_WURZELWERK = 4;
+    const POLICY_NOBODY       = 0;
+    const POLICY_ALL          = 1;
+    const POLICY_LOGGED_IN    = 2;
+    const POLICY_ADMINS       = 3;
+    const POLICY_WURZELWERK   = 4;
+    const POLICY_ORGANIZATION = 5;
 
     /**
      * @return IPolicy[]
@@ -26,11 +28,20 @@ abstract class IPolicy
             static::POLICY_LOGGED_IN => LoggedIn::class,
             static::POLICY_NOBODY    => Nobody::class,
         ];
+
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
         if ($params->hasWurzelwerk || $params->isSamlActive()) {
             $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
         }
+
+        $site = UrlHelper::getCurrentSite();
+        if ($site) {
+            foreach ($site->getBehaviorClass()->getCustomPolicies() as $policy) {
+                $policies[$policy::getPolicyID()] = $policy;
+            }
+        }
+
         return $policies;
     }
 
@@ -95,6 +106,7 @@ abstract class IPolicy
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @return bool
+     * @throws Internal
      */
     public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
     {

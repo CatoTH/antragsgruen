@@ -573,23 +573,24 @@ CREATE TABLE `###TABLE_PREFIX###texTemplate` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###user` (
-  `id`             INT(11)     NOT NULL,
-  `name`           TEXT        NOT NULL,
-  `nameGiven`      TEXT,
-  `nameFamily`     TEXT,
-  `organization`   TEXT,
-  `fixedData`      TINYINT(4)           DEFAULT '0',
-  `email`          VARCHAR(200)         DEFAULT NULL,
-  `emailConfirmed` TINYINT(4)           DEFAULT '0',
-  `auth`           VARCHAR(190)         DEFAULT NULL,
-  `dateCreation`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status`         TINYINT(4)  NOT NULL,
-  `pwdEnc`         VARCHAR(100)         DEFAULT NULL,
-  `authKey`        BINARY(100) NOT NULL,
-  `recoveryToken`  VARCHAR(100)         DEFAULT NULL,
-  `recoveryAt`     TIMESTAMP   NULL     DEFAULT NULL,
-  `emailChange`    VARCHAR(255)         DEFAULT NULL,
-  `emailChangeAt`  TIMESTAMP   NULL     DEFAULT NULL
+  `id`              INT(11)     NOT NULL,
+  `name`            TEXT        NOT NULL,
+  `nameGiven`       TEXT,
+  `nameFamily`      TEXT,
+  `organization`    TEXT,
+  `organizationIds` TEXT,
+  `fixedData`       TINYINT(4)           DEFAULT '0',
+  `email`           VARCHAR(200)         DEFAULT NULL,
+  `emailConfirmed`  TINYINT(4)           DEFAULT '0',
+  `auth`            VARCHAR(190)         DEFAULT NULL,
+  `dateCreation`    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `status`          TINYINT(4)  NOT NULL,
+  `pwdEnc`          VARCHAR(100)         DEFAULT NULL,
+  `authKey`         BINARY(100) NOT NULL,
+  `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
+  `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL,
+  `emailChange`     VARCHAR(255)         DEFAULT NULL,
+  `emailChangeAt`   TIMESTAMP   NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

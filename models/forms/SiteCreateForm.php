@@ -88,6 +88,7 @@ class SiteCreateForm extends Model
     /**
      * @param array $values
      * @param bool $safeOnly
+     * @throws \app\models\exceptions\Internal
      */
     public function setAttributes($values, $safeOnly = true)
     {
@@ -241,6 +242,7 @@ class SiteCreateForm extends Model
      * @param bool $setDefault
      * @return Consultation
      * @throws FormError
+     * @throws \Exception
      */
     public function createWithoutSite(User $currentUser, $site, $con, $setDefault = true)
     {
@@ -264,6 +266,7 @@ class SiteCreateForm extends Model
      * @param User $currentUser
      * @return Consultation
      * @throws FormError
+     * @throws \Exception
      */
     public function create(User $currentUser)
     {
@@ -665,15 +668,16 @@ class SiteCreateForm extends Model
             \Yii::$app->user->logout();
         }
 
-        $email                = $this->subdomain . '@example.org';
-        $user                 = new User();
-        $user->auth           = 'email:' . $email;
-        $user->email          = $email;
-        $user->name           = 'Admin';
-        $user->status         = User::STATUS_CONFIRMED;
-        $user->emailConfirmed = true;
-        $user->dateCreation   = date('Y-m-d H:i:s');
-        $user->pwdEnc         = password_hash('admin', PASSWORD_DEFAULT);
+        $email                 = $this->subdomain . '@example.org';
+        $user                  = new User();
+        $user->auth            = 'email:' . $email;
+        $user->email           = $email;
+        $user->name            = 'Admin';
+        $user->status          = User::STATUS_CONFIRMED;
+        $user->emailConfirmed  = true;
+        $user->dateCreation    = date('Y-m-d H:i:s');
+        $user->pwdEnc          = password_hash('admin', PASSWORD_DEFAULT);
+        $user->organizationIds = '';
         $user->save();
         if (!$user) {
             var_dump($user->getErrors());

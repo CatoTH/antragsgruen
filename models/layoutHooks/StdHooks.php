@@ -1,28 +1,147 @@
 <?php
 
-namespace app\views\hooks;
+namespace app\models\layoutHooks;
 
 use app\components\UrlHelper;
 use app\controllers\admin\IndexController;
 use app\controllers\Base;
 use app\controllers\UserController;
 use app\models\AdminTodoItem;
+use app\models\db\ConsultationMotionType;
 use app\models\db\User;
-use app\models\settings\Layout;
 use yii\helpers\Html;
 
-/**
- * Class StdFunctionTrait
- * @package views\hooks
- *
- * @property Layout $layout
- */
-trait StdFunctionTrait
+class StdHooks extends HooksAdapter
 {
     /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function beginPage($before)
+    {
+        $out = '<header id="mainmenu">';
+        $out .= '<div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">';
+        $out .= Layout::getStdNavbarHeader();
+        $out .= '</div>
+        </div>
+    </div>';
+
+        $out .= '</header>';
+
+        return $out;
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function logoRow($before)
+    {
+        $out = '<div class="row logo">
+<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
+        $out .= $this->layout->getLogoStr();
+        $out .= '</a></div>';
+
+        return $out;
+    }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function beforeContent($before)
+    {
+        return Layout::breadcrumbs();
+    }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function breadcrumbs($before)
+    {
+        $out = '';
+        if (is_array($this->layout->breadcrumbs)) {
+            $out .= '<ol class="breadcrumb">';
+            foreach ($this->layout->breadcrumbs as $link => $name) {
+                if ($link == '' || is_null($link)) {
+                    $out .= '<li>' . Html::encode($name) . '</li>';
+                } else {
+                    $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
+                }
+            }
+            $out .= '</ol>';
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param $before
      * @return string
      */
-    protected function getStdNavbarHeader()
+    public function endPage($before)
+    {
+        return $before . Layout::footerLine();
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getSearchForm($before)
+    {
+        $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
+        $html .= '<div class="nav-list"><div class="nav-header">' . \Yii::t('con', 'sb_search') . '</div>
+    <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
+    <div class="input-group">
+      <input type="text" class="form-control query" name="query"
+        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
+        title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">
+            <span class="glyphicon glyphicon-search"></span> ' . \Yii::t('con', 'sb_search_do') . '
+        </button>
+      </span>
+    </div>
+    </div>
+</div>';
+        $html .= Html::endForm();
+
+        return $html;
+    }
+
+    /**
+     * @param $before
+     * @return string
+     */
+    public function renderSidebar($before)
+    {
+        $str = $before . $this->layout->preSidebarHtml;
+        if (count($this->layout->menusHtml) > 0) {
+            $str .= '<div class="well hidden-xs">';
+            $str .= implode('', $this->layout->menusHtml);
+            $str .= '</div>';
+        }
+        $str .= $this->layout->postSidebarHtml;
+
+        return $str;
+    }
+
+    /**
+     * @param string $before
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getStdNavbarHeader($before)
     {
         /** @var Base $controller */
         $controller   = \Yii::$app->controller;
@@ -33,8 +152,8 @@ trait StdFunctionTrait
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $consultation       = $controller->consultation;
             $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
-            $privilegeAny       = User::havePrivilege($consultation, User::PRIVILEGE_ANY);
-            $privilegeProposal  = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+            //$privilegeAny       = User::havePrivilege($consultation, User::PRIVILEGE_ANY);
+            $privilegeProposal = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($controller->consultation) {
                 $homeUrl = UrlHelper::homeUrl();
@@ -101,58 +220,45 @@ trait StdFunctionTrait
     }
 
     /**
+     * @param $before
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function getLogoStr()
+    public function getAntragsgruenAd($before)
     {
-        /** @var Base $controller */
-        $controller   = \Yii::$app->controller;
-        $resourceBase = $controller->getParams()->resourceBase;
-
-        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
-            $path     = parse_url($controller->consultation->getSettings()->logoUrl);
-            $filename = basename($path['path']);
-            $filename = substr($filename, 0, strrpos($filename, '.'));
-            $filename = str_replace(
-                ['_', 'ue', 'ae', 'oe', 'Ue', 'Oe', 'Ae'],
-                [' ', 'ü', 'ä', 'ö', 'Ü' . 'Ö', 'Ä'],
-                $filename
-            );
-            $logoUrl  = $controller->consultation->getSettings()->logoUrl;
-            if (!isset($path['host']) && $logoUrl[0] != '/') {
-                $logoUrl = $resourceBase . $logoUrl;
-            }
-            return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
+        if (\Yii::$app->language == 'de') {
+            return '<div class="antragsgruenAd well">
+        <div class="nav-header">Dein Antragsgrün</div>
+        <div class="content">
+            Du willst Antragsgrün selbst für deine(n) KV / LV / GJ / BAG / LAG einsetzen?
+            <div>
+                <a href="https://antragsgruen.de/" title="Das Antragstool selbst einsetzen" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Infos
+                </a>
+            </div>
+        </div>
+    </div>';
         } else {
-            return '<span class="logoImg"></span>';
+            return '<div class="antragsgruenAd well">
+        <div class="nav-header">Using Antragsgrün</div>
+        <div class="content">
+            Du you want to use Antragsgrün / motion.tools for your own assemly?
+            <div>
+                <a href="https://motion.tools/" title="Information about using Antragsgrün" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Information
+                </a>
+            </div>
+        </div>
+    </div>';
         }
     }
 
     /**
+     * @param string $before
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function breadcrumbs()
-    {
-        $out = '';
-        if (is_array($this->layout->breadcrumbs)) {
-            $out .= '<ol class="breadcrumb">';
-            foreach ($this->layout->breadcrumbs as $link => $name) {
-                if ($link == '' || is_null($link)) {
-                    $out .= '<li>' . Html::encode($name) . '</li>';
-                } else {
-                    $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
-                }
-            }
-            $out .= '</ol>';
-        }
-
-        return $out;
-    }
-
-    /**
-     * @return string
-     */
-    public function footerLine()
+    public function footerLine($before)
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
@@ -190,12 +296,15 @@ trait StdFunctionTrait
     }
 
     /**
-     * @param \app\models\db\ConsultationMotionType $motionType
+     * @param string $before
+     * @param ConsultationMotionType $motionType
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSidebarCreateMotionButton($motionType)
+    public function setSidebarCreateMotionButton($before, $motionType)
     {
-        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType[0]->id]);
-        $description = $motionType[0]->createTitle;
+        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+        $description = $motionType->createTitle;
 
         $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
             '<a class="createMotion" href="' . Html::encode($link) . '"
@@ -205,5 +314,7 @@ trait StdFunctionTrait
         $this->layout->menusSmallAttachment =
             '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
             '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
+
+        return '';
     }
 }

@@ -1,23 +1,51 @@
 <?php
 
-namespace app\views\hooks;
+namespace app\models\layoutHooks;
 
 use app\components\UrlHelper;
 use yii\helpers\Html;
 
-class LayoutGruenesCi2 extends LayoutHooks
+class GruenesCi2Hooks extends HooksAdapter
 {
-    use StdFunctionTrait;
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function beginPage($before)
+    {
+        return '';
+    }
 
     /**
+     * @param $before
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function logoRow()
+    public function renderSidebar($before)
+    {
+        $str = $this->layout->preSidebarHtml;
+        if (count($this->layout->menusHtml) > 0) {
+            $str .= '<div class="hidden-xs">';
+            $str .= implode('', $this->layout->menusHtml);
+            $str .= '</div>';
+        }
+        $str .= $this->layout->postSidebarHtml;
+
+        return $str;
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function logoRow($before)
     {
         $out = '<header class="row logo" role="banner">' .
             '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" title="' .
             Html::encode(\Yii::t('base', 'home_back')) . '">' .
-            $this->getLogoStr() .
+            $this->layout->getLogoStr() .
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
@@ -33,49 +61,29 @@ class LayoutGruenesCi2 extends LayoutHooks
     }
 
     /**
+     * @param $before
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function beforeContent()
+    public function beforeContent($before)
     {
         $out = '<section class="navwrap">' .
             '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">' .
             \Yii::t('base', 'menu_main') . ':</h6>' .
             '<div class="navigation nav-fallback clearfix">';
-        $out .= $this->getStdNavbarHeader();
+        $out .= Layout::getStdNavbarHeader();
         $out .= '</div></nav>';
-        $out .= $this->breadcrumbs();
+        $out .= Layout::breadcrumbs();
         $out .= '</section>';
         return $out;
     }
 
     /**
+     * @param $before
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function endPage()
-    {
-        return $this->footerLine();
-    }
-
-    /**
-     * @return string
-     */
-    public function renderSidebar()
-    {
-        $str = $this->layout->preSidebarHtml;
-        if (count($this->layout->menusHtml) > 0) {
-            $str .= '<div class="hidden-xs">';
-            $str .= implode('', $this->layout->menusHtml);
-            $str .= '</div>';
-        }
-        $str .= $this->layout->postSidebarHtml;
-
-        return $str;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSearchForm()
+    public function getSearchForm($before)
     {
         $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
         $html .= '<h6 class="invisible">' . \Yii::t('con', 'sb_search_form') . '</h6>';
@@ -89,22 +97,5 @@ class LayoutGruenesCi2 extends LayoutHooks
             </button>';
         $html .= Html::endForm();
         return $html;
-    }
-
-    /**
-     * @param \app\models\db\ConsultationMotionType $motionType
-     */
-    public function setSidebarCreateMotionButton($motionType)
-    {
-        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-        $description = $motionType->createTitle;
-
-        $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-            '<a class="createMotion" href="' . Html::encode($link) . '"
-                    title="' . Html::encode($description) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
-            '</a></div></div>';
-        $this->layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
     }
 }

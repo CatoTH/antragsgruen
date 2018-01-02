@@ -12,24 +12,24 @@ $domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
 $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
-$consultationPaths .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments|proposed-procedure';
-$motionPaths = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
-$motionPaths .= '|withdraw|view-changes|view-changes-odt|save-proposal-status';
-$motionPaths .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm';
-$motionPaths .= '|merge-amendments-public|merge-amendments-public-ajax';
-$amendPaths = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collissions|ajax-diff';
-$amendPaths .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check';
-$userPaths  = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
-$userPaths .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
-$domPlainPaths = 'site-legal|site-privacy|help|password|createsite|savetextajax|siteconfig|antragsgrueninit';
-$domPlainPaths .= '|check-subdomain|antragsgrueninitdbtest|userlist';
-$adminMotionPaths  = 'type|typecreate|get-amendment-rewrite-collissions';
+$consultationPaths    = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
+$consultationPaths    .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments|proposed-procedure';
+$motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
+$motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status';
+$motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm';
+$motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax';
+$amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collissions|ajax-diff';
+$amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check';
+$userPaths            = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
+$userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
+$domPlainPaths        = 'site-legal|site-privacy|help|password|createsite|savetextajax|siteconfig|antragsgrueninit';
+$domPlainPaths        .= '|check-subdomain|antragsgrueninitdbtest|userlist';
+$adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collissions';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
-$adminAmendmentPaths = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
-$adminPaths          = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
-$adminPaths .= '|todo|ods-proposed-procedure';
+$adminAmendmentPaths  = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
+$adminPaths           = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
+$adminPaths           .= '|todo|ods-proposed-procedure';
 
 $urlRules = [
     $domadmin . ''                                              => 'admin/index',
@@ -59,6 +59,7 @@ $urlRules = [
     $domv . 'amendment/pdfcollection'              => 'amendment/pdfcollection',
     $dommotion                                     => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
+    $dommotion . '/write-petition-response'        => 'memberpetitions/write-response',
     $domamend                                      => 'amendment/view',
     $domamend . '/<_a:(' . $amendPaths . ')>'      => 'amendment/<_a>',
     $dommotion . '/amendment/create'               => 'amendment/create',
@@ -68,11 +69,8 @@ $urlRules = [
     $domamendOld . '/<_a:(' . $amendPaths . ')>'   => 'amendment/<_a>',
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
+    $dom                                           => 'consultation/home',
 ];
-
-if ($params->domainPlain != $params->domainSubdomain) {
-    $urlRules[$dom] = 'consultation/index';
-}
 
 if ($params->multisiteMode) {
     $domp     = trim($params->domainPlain, '/');
@@ -90,8 +88,6 @@ if ($params->multisiteMode) {
             $urlRules[str_replace('https://', 'https://www.', $key)] = $val;
         }
     }
-} else {
-    $urlRules[$dom] = 'consultation/index';
 }
 
 return $urlRules;

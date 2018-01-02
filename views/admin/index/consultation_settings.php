@@ -53,6 +53,8 @@ $siteSettings        = $consultation->site->getSettings();
 $handledSettings     = [];
 $handledSiteSettings = [];
 
+echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consultation);
+
 ?>
     <h2 class="green"><?= \Yii::t('admin', 'con_title_general') ?></h2>
     <div class="content">

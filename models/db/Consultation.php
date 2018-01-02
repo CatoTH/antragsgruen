@@ -318,8 +318,9 @@ class Consultation extends ActiveRecord
      */
     public function getSettings()
     {
+        $settingsClass = $this->site->getBehaviorClass()->getConsultationSettingsClass();
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\Consultation($this->settings);
+            $this->settingsObject = new $settingsClass($this->settings);
         }
         return $this->settingsObject;
     }
@@ -431,7 +432,6 @@ class Consultation extends ActiveRecord
     {
         $invisible = [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
@@ -439,6 +439,7 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+            IMotion::STATUS_INLINE_REPLY,
         ];
         if (!$this->getSettings()->screeningMotionsShown) {
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
@@ -460,7 +461,6 @@ class Consultation extends ActiveRecord
     {
         $invisible = [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,

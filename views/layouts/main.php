@@ -15,15 +15,12 @@ if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
     $resourceBase .= 'web/';
 }
 
-$bodyClasses = [];
+$bodyClasses = $layout->bodyCssClasses;
 if ($layout->fullScreen) {
     $bodyClasses[] = 'fullscreen';
 }
 
-$title = (isset($this->title) ? $this->title : '');
-if (mb_strpos($title, 'Antragsgrün') === false) {
-    $title .= ' (Antragsgrün)';
-}
+$title = $layout->formatTitle(isset($this->title) ? $this->title : '');
 
 $minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
@@ -97,13 +94,13 @@ $this->beginBody();
 
 echo '<div class="over_footer_wrapper">';
 
-echo $layout->hooks->beforePage();
+echo \app\models\layoutHooks\Layout::beforePage();
 echo '<div class="container" id="page">';
-echo $layout->hooks->beginPage();
+echo \app\models\layoutHooks\Layout::beginPage();
 
-echo $layout->hooks->logoRow();
+echo \app\models\layoutHooks\Layout::logoRow();
 echo $controller->showErrors();
-echo $layout->hooks->beforeContent();
+echo \app\models\layoutHooks\Layout::beforeContent();
 
 /** @var string $content */
 echo $content;
@@ -113,7 +110,7 @@ echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
 
-echo $layout->hooks->endPage();
+echo \app\models\layoutHooks\Layout::endPage();
 
 
 foreach ($layout->getJSFiles() as $jsFile) {

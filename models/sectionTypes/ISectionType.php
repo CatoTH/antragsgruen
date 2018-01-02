@@ -4,7 +4,6 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\IMotionSection;
@@ -56,49 +55,16 @@ abstract class ISectionType
      */
     protected function getTextMotionFormField($fullHtml, $fixedWidth)
     {
-        $type   = $this->section->getSettings();
-        $htmlId = 'sections_' . $type->id;
-
-        $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
-        $str .= ' data-max-len="' . $type->maxLen . '"';
-        $str .= ' data-full-html="' . ($fullHtml ? '1' : '0') . '"';
-        $str .= '><label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
-
-        if ($type->maxLen != 0) {
-            $len = abs($type->maxLen);
-            $str .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
-            $str .= str_replace(
-                ['%LEN%', '%COUNT%'],
-                [$len, '<span class="counter"></span>'],
-                \Yii::t('motion', 'max_len_hint')
-            );
-            $str .= '</div>';
-        }
-
-        $str .= '<textarea name="sections[' . $type->id . ']"  id="sections_' . $type->id . '" ';
-        $str .= 'title="' . Html::encode($type->title) . '">';
-        $str .= Html::encode($this->section->data) . '</textarea>';
-        $str .= '<div class="texteditor motionTextFormattings boxed';
-        if ($fixedWidth) {
-            $str .= ' fixedWidthFont';
-        }
-        $str .= '" id="' . $htmlId . '_wysiwyg" ';
-        if (in_array('strike', $type->getForbiddenMotionFormattings())) {
-            $str .= 'data-no-strike="1" ';
-        }
-        $str .= 'title="' . Html::encode($type->title) . '">';
-        $str .= $this->section->data;
-        $str .= '</div>';
-
-        if ($type->maxLen != 0) {
-            $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
-            $str .= '<span class="glyphicon glyphicon-alert"></span> ' . \Yii::t('motion', 'max_len_alert');
-            $str .= '</div>';
-        }
-
-        $str .= '</div>';
-
-        return $str;
+        $type = $this->section->getSettings();
+        return HTMLTools::getMotionFormField(
+            $type->id,
+            $this->section->data,
+            $type->title,
+            $type->maxLen,
+            $fullHtml,
+            $fixedWidth,
+            $type->getForbiddenMotionFormattings()
+        );
     }
 
     /**
@@ -265,13 +231,12 @@ abstract class ISectionType
     abstract public function getAmendmentPlainText();
 
     /**
-     * @param Base $controller
-     * @param CommentForm $commentForm
+     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    public function showMotionView($commentForm, $openedComments)
     {
         return $this->getSimple(false);
     }

@@ -38,7 +38,7 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ', Antragsgrün)';
+$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
@@ -116,6 +116,8 @@ if ($motion->proposalStatusNeedsUserFeedback() && $motion->iAmInitiator()) {
 }
 */
 
+echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
+
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
     /** @var \app\models\db\MotionSection $section $sectionType */
@@ -141,7 +143,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main   .= $section->getSectionType()->showMotionView($controller, $commentForm, $commOp);
+        $main   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
 
         $main .= '</section>';
     }
@@ -191,6 +193,8 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
 }
 
 LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+
+echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments = $motion->getVisibleAmendments();
 if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {

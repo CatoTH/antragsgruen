@@ -43,7 +43,7 @@ foreach ($consultation->motionTypes as $type) {
 }
 
 
-$layout->menusHtml[] = $layout->hooks->getSearchForm();
+$layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 
 $showCreate = true;
 if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda') {
@@ -66,7 +66,7 @@ if ($showCreate) {
         /** @var ConsultationMotionType[] $working */
         if (count($working) == 1) {
             if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                $layout->hooks->setSidebarCreateMotionButton($working[0]);
+                \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working[0]);
             }
         } else {
             $html      = '<div class="sidebar-box"><ul class="nav nav-list motions">';
@@ -151,10 +151,10 @@ if ($hasAmendments) {
             if (count($title) > 1) {
                 $title[0] = '<strong>' . Html::encode($title[0]) . '</strong>';
             }
-            $title         = implode(' ', $title);
-            $amendmentLink = UrlHelper::createAmendmentUrl($amendment);
-            $linkTitle     = '<span class="glyphicon glyphicon-flash"></span>' . $title;
-            $html          .= '<li>' . Html::a($linkTitle, $amendmentLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
+            $title     = implode(' ', $title);
+            $amendLink = UrlHelper::createAmendmentUrl($amendment);
+            $linkTitle = '<span class="glyphicon glyphicon-flash"></span>' . $title;
+            $html      .= '<li>' . Html::a($linkTitle, $amendLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
     }
     $html                .= "</ul></div>";
@@ -280,11 +280,11 @@ if ($hasPDF) {
     }
 
     if ($hasAmendments) {
-        $amendmentPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
-        $linkTitle        = '<span class="glyphicon glyphicon-download-alt"></span>';
-        $linkTitle        .= Yii::t('con', 'pdf_amendments');
-        $html             .= '<li>' . Html::a($linkTitle, $amendmentPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
-        $link             = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendmentPdfLink, ['class' => 'amendmentPdfs']);
+        $amendPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
+        $linkTitle    = '<span class="glyphicon glyphicon-download-alt"></span>';
+        $linkTitle    .= Yii::t('con', 'pdf_amendments');
+        $html         .= '<li>' . Html::a($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
+        $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
 
         $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
     }
@@ -294,5 +294,5 @@ if ($hasPDF) {
 }
 
 if ($consultation->site->getSettings()->showAntragsgruenAd) {
-    $layout->postSidebarHtml = $layout->hooks->getAntragsgruenAd();
+    $layout->postSidebarHtml = \app\models\layoutHooks\Layout::getAntragsgruenAd();
 }

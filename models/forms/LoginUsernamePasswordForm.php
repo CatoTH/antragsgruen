@@ -116,11 +116,12 @@ class LoginUsernamePasswordForm extends Model
     {
         $this->doCreateAccountValidate($site);
 
-        $user         = new User();
-        $user->auth   = 'email:' . $this->username;
-        $user->name   = $this->name;
-        $user->email  = $this->username;
-        $user->pwdEnc = password_hash($this->password, PASSWORD_DEFAULT);
+        $user                  = new User();
+        $user->auth            = 'email:' . $this->username;
+        $user->name            = $this->name;
+        $user->email           = $this->username;
+        $user->pwdEnc          = password_hash($this->password, PASSWORD_DEFAULT);
+        $user->organizationIds = '';
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;

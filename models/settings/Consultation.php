@@ -85,4 +85,20 @@ class Consultation
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);
         }
     }
+
+    /**
+     * @return null|string
+     */
+    public function getConsultationSidebar()
+    {
+        return '@app/views/consultation/sidebar';
+    }
+
+    /**
+     * @return null|string|Layout
+     */
+    public function getSpecializedLayoutClass()
+    {
+        return null;
+    }
 }

@@ -307,7 +307,7 @@ class ConsultationController extends Base
         $newestComments   = IComment::getNewestByConsultation($consultation, 3);
 
         $this->renderPartial(
-            'sidebar',
+            $consultation->getSettings()->getConsultationSidebar(),
             [
                 'newestMotions'    => $newestMotions,
                 'newestAmendments' => $newestAmendments,
@@ -386,6 +386,20 @@ class ConsultationController extends Base
         $this->consultation->refresh();
 
         \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+    }
+
+    /**
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
+     */
+    public function actionHome()
+    {
+        if ($this->site->getBehaviorClass()->hasSiteHomePage()) {
+            return $this->site->getBehaviorClass()->getSiteHomePage();
+        } else {
+            return $this->actionIndex();
+        }
     }
 
     /**

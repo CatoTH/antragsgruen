@@ -133,6 +133,7 @@ return [
     'STATUS_PROPOSED_MODIFIED_AMENDMENT'  => 'Vorgeschlagene Änderung',
     'STATUS_OBSOLETED_BY'                 => 'Erledigt durch anderen ÄA',
     'STATUS_CUSTOM_STRING'                => 'Sonstiger Status',
+    'STATUS_INLINE_REPLY'                 => 'Antwort',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSEDV_ACCEPTED_MOTION'   => 'Annehmen',

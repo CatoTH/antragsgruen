@@ -27,7 +27,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     }
 }
 
-$this->title = \Yii::t('amend', 'err_not_visible_yet_title') . ' (' . $amendment->getMyConsultation()->title . ', Antragsgrün)';
+$this->title = \Yii::t('amend', 'err_not_visible_yet_title') . ' (' . $amendment->getMyConsultation()->title . ')';
 
 include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 

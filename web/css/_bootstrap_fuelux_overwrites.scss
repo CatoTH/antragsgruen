@@ -62,6 +62,10 @@
     line-height: 18px;
     text-transform: uppercase;
   }
+  h2.darkgreen, h3.darkgreen {
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
+    margin: -1px;
+  }
 
   .content {
     padding: 15px 20px 30px;

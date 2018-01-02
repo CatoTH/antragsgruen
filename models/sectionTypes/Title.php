@@ -157,12 +157,11 @@ class Title extends ISectionType
     }
 
     /**
-     * @param Base $controller
-     * @param CommentForm $commentForm
+     * @param CommentForm|null $commentForm
      * @param int[] $openedComments
      * @return string
      */
-    public function showMotionView(Base $controller, $commentForm, $openedComments)
+    public function showMotionView($commentForm, $openedComments)
     {
         return (new View())->render(
             '@app/views/motion/showTitleSection',
@@ -171,7 +170,7 @@ class Title extends ISectionType
                 'openedComments' => $openedComments,
                 'commentForm'    => $commentForm,
             ],
-            $controller
+            \Yii::$app->controller
         );
     }
 

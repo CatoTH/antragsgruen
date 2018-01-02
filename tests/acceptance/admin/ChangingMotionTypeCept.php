@@ -13,12 +13,12 @@ $I->click('.motionTypeCreate a');
 
 $I->fillField('#typeTitleSingular', 'Compatible motion');
 $I->fillField('#typeTitlePlural', 'Compatible motions');
-$I->fillField('#typeCreateTitle', 'Crete');
+$I->fillField('#typeCreateTitle', 'Create');
 $I->checkOption('.preset1');
 $I->submitForm('.motionTypeCreateForm', [], 'create');
 
-$I->fillField('.section33 .sectionTitle input', 'New title');
-$I->fillField('.section34 .sectionTitle input', 'New motion text');
+$I->fillField('.section' . AcceptanceTester::FIRST_FREE_MOTION_SECTION . ' .sectionTitle input', 'New title');
+$I->fillField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1 ) . ' .sectionTitle input', 'New motion text');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->click('#adminLink');
@@ -26,7 +26,7 @@ $I->click('.motionTypeCreate a');
 
 $I->fillField('#typeTitleSingular', 'Incompatible motion');
 $I->fillField('#typeTitlePlural', 'Incompatible motions');
-$I->fillField('#typeCreateTitle', 'Crete');
+$I->fillField('#typeCreateTitle', 'Create');
 $I->checkOption('.presetApplication');
 $I->submitForm('.motionTypeCreateForm', [], 'create');
 

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
@@ -38,9 +39,6 @@ abstract class IMotion extends ActiveRecord
     const STATUS_WITHDRAWN           = -1;
     const STATUS_WITHDRAWN_INVISIBLE = -3;
 
-    // @TODO Is this status actually used?
-    const STATUS_UNCONFIRMED = 0;
-
     // The user has written the motion, but not yet confirmed to submit it.
     const STATUS_DRAFT = 1;
 
@@ -54,10 +52,14 @@ abstract class IMotion extends ActiveRecord
     // This are stati motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
+    // For member petitions, "Processed" means the petition has been replied.
     const STATUS_ACCEPTED          = 4;
     const STATUS_REJECTED          = 5;
     const STATUS_MODIFIED_ACCEPTED = 6;
     const STATUS_PROCESSED         = 17;
+
+    // This is the reply to a motion / member petition and is to be shown within the parent motion view.
+    const STATUS_INLINE_REPLY = 24;
 
     // The initiator is still collecting supporters to actually submit this motion.
     // It's visible only to those who know the link to it.
@@ -102,7 +104,6 @@ abstract class IMotion extends ActiveRecord
         return [
             static::STATUS_DELETED                      => \Yii::t('structure', 'STATUS_DELETED'),
             static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
-            static::STATUS_UNCONFIRMED                  => \Yii::t('structure', 'STATUS_UNCONFIRMED'),
             static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
             static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
             static::STATUS_SUBMITTED_UNSCREENED_CHECKED => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED_CHECKED'),
@@ -127,6 +128,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_PROPOSED_MODIFIED_AMENDMENT  => \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
             static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
+            static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
         ];
     }
 
@@ -190,7 +192,6 @@ abstract class IMotion extends ActiveRecord
     {
         return !in_array($this->status, [
             IMotion::STATUS_DELETED,
-            IMotion::STATUS_UNCONFIRMED,
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_COLLECTING_SUPPORTERS,
             IMotion::STATUS_DRAFT_ADMIN,
@@ -251,6 +252,16 @@ abstract class IMotion extends ActiveRecord
         $query = parent::findByCondition($condition);
         $query->andWhere('status != ' . static::STATUS_DELETED);
         return $query;
+    }
+
+    /**
+     * @return Permissions
+     */
+    public function getPermissionsObject()
+    {
+        $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
+        $className = $behavior->getPermissionsClass();
+        return new $className;
     }
 
 

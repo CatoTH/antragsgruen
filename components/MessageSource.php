@@ -39,35 +39,37 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         if (\Yii::$app->language == 'de') {
             return [
-                'base'      => 'Basis-Layout',
-                'structure' => 'Interne Bezeichnungen',
-                'con'       => 'Veranstaltung',
-                'motion'    => 'Anträge',
-                'amend'     => 'Änderungsanträge',
-                'diff'      => 'Diff',
-                'export'    => 'Exports',
-                'initiator' => 'InitiatorInnen',
-                'manager'   => 'Seiten-Konfiguration',
-                'comment'   => 'Kommentare',
-                'admin'     => 'Administration',
-                'user'      => 'Account-Einstellungen',
-                'wizard'    => 'Wizard',
+                'base'            => 'Basis-Layout',
+                'structure'       => 'Interne Bezeichnungen',
+                'con'             => 'Veranstaltung',
+                'motion'          => 'Anträge',
+                'amend'           => 'Änderungsanträge',
+                'diff'            => 'Diff',
+                'export'          => 'Exports',
+                'initiator'       => 'InitiatorInnen',
+                'manager'         => 'Seiten-Konfiguration',
+                'comment'         => 'Kommentare',
+                'admin'           => 'Administration',
+                'user'            => 'Account-Einstellungen',
+                'wizard'          => 'Wizard',
+                'memberpetitions' => 'Mitgliederbegehren',
             ];
         } else {
             return [
-                'base'      => 'Basic layout',
-                'structure' => 'Internal labels',
-                'con'       => 'Consultation',
-                'motion'    => 'Motion',
-                'amend'     => 'Amendment',
-                'diff'      => 'Diff',
-                'export'    => 'Exports',
-                'initiator' => 'Proposers',
-                'manager'   => 'Site creation',
-                'comment'   => 'Comments',
-                'admin'     => 'Administration',
-                'user'      => 'User accounts',
-                'wizard'    => 'Wizard',
+                'base'            => 'Basic layout',
+                'structure'       => 'Internal labels',
+                'con'             => 'Consultation',
+                'motion'          => 'Motion',
+                'amend'           => 'Amendment',
+                'diff'            => 'Diff',
+                'export'          => 'Exports',
+                'initiator'       => 'Proposers',
+                'manager'         => 'Site creation',
+                'comment'         => 'Comments',
+                'admin'           => 'Administration',
+                'user'            => 'User accounts',
+                'wizard'          => 'Wizard',
+                'memberpetitions' => 'Member petitions',
             ];
         }
     }
@@ -83,10 +85,11 @@ class MessageSource extends \yii\i18n\MessageSource
         $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
         if ($language == 'de') {
             return array_merge([
-                'de-parteitag' => 'Konferenz / Parteitag',
-                'de-bewerbung' => 'Bewerbungsverfahren',
-                'de-programm'  => 'Programmdiskussion',
-                'de-bdk'       => 'BDK',
+                'de-parteitag'       => 'Konferenz / Parteitag',
+                'de-bewerbung'       => 'Bewerbungsverfahren',
+                'de-programm'        => 'Programmdiskussion',
+                'de-bdk'             => 'BDK',
+                'de-memberpetitions' => 'Mitgliederbegehren',
             ], $localMessages);
         };
         if ($language == 'en') {
@@ -159,6 +162,7 @@ class MessageSource extends \yii\i18n\MessageSource
      * @param string $category
      * @param string $language
      * @return array
+     * @throws Internal
      */
     public function getBaseMessages($category, $language)
     {
@@ -187,7 +191,7 @@ class MessageSource extends \yii\i18n\MessageSource
         };
         $languages = explode(',', $consultation->wordingBase);
 
-        $baseFile = $this->getMessageFilePath($category, 'en');
+        $baseFile     = $this->getMessageFilePath($category, 'en');
         $origMessages = $this->loadMessagesFromFile($baseFile);
 
         $baseMessages = $extMessages = [];

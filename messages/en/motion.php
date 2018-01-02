@@ -36,7 +36,7 @@ return [
     'dislike'                       => 'Dislikes',
     'dislikes'                      => 'Dislikes',
     'dislikes_you'                  => 'You!',
-    'like_withdraw'                 => 'Withdraw like',
+    'like_withdraw'                 => 'Withdraw',
     'button_submit_create'          => 'Create',
     'button_submit_submit'          => 'Submit',
     'button_submit_publish'         => 'Publish',

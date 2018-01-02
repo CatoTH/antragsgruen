@@ -52,7 +52,10 @@ class IndexController extends AdminBase
 
     /**
      * @return string
-     * @throws \app\models\exceptions\FormError
+     * @throws FormError
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionConsultation()
     {
@@ -122,6 +125,9 @@ class IndexController extends AdminBase
 
     /**
      * @param Consultation $consultation
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     private function saveTags(Consultation $consultation)
     {
@@ -195,6 +201,9 @@ class IndexController extends AdminBase
     /**
      * @param string $category
      * @return string
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionTranslation($category = 'base')
     {
@@ -240,6 +249,8 @@ class IndexController extends AdminBase
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionSiteconsultations()
     {

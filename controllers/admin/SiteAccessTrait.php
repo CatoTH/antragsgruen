@@ -124,11 +124,12 @@ trait SiteAccessTrait
     {
         $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($username)]);
         if (!$newUser) {
-            $newUser         = new User();
-            $newUser->auth   = User::wurzelwerkId2Auth($username);
-            $newUser->status = User::STATUS_CONFIRMED;
-            $newUser->name   = '';
-            $newUser->email  = '';
+            $newUser                  = new User();
+            $newUser->auth            = User::wurzelwerkId2Auth($username);
+            $newUser->status          = User::STATUS_CONFIRMED;
+            $newUser->name            = '';
+            $newUser->email           = '';
+            $newUser->organizationIds = '';
             $newUser->save();
         }
         /** @var User $newUser */
@@ -139,14 +140,15 @@ trait SiteAccessTrait
     {
         $newUser = User::findOne(['auth' => 'email:' . $email]);
         if (!$newUser) {
-            $newPassword             = User::createPassword();
-            $newUser                 = new User();
-            $newUser->auth           = 'email:' . $email;
-            $newUser->status         = User::STATUS_CONFIRMED;
-            $newUser->email          = $email;
-            $newUser->emailConfirmed = 1;
-            $newUser->pwdEnc         = password_hash($newPassword, PASSWORD_DEFAULT);
-            $newUser->name           = '';
+            $newPassword              = User::createPassword();
+            $newUser                  = new User();
+            $newUser->auth            = 'email:' . $email;
+            $newUser->status          = User::STATUS_CONFIRMED;
+            $newUser->email           = $email;
+            $newUser->emailConfirmed  = 1;
+            $newUser->pwdEnc          = password_hash($newPassword, PASSWORD_DEFAULT);
+            $newUser->name            = '';
+            $newUser->organizationIds = '';
             $newUser->save();
 
             $authText = \Yii::t('admin', 'siteacc_mail_yourdata');

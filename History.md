@@ -11,6 +11,8 @@
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
 - A bug in the line numbering after manual line breaks was fixed
 - Support for OpenSlides 1 is removed, only 2.1+ is supported
+- Member petitions (a very use-case-specific module probably not really relevant for most of the people)
+- Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 
 ## Version 3.7.5 (2017-11-15)
 
