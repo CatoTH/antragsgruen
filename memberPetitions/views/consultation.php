@@ -8,51 +8,34 @@ use app\models\settings\Layout;
 use yii\helpers\Html;
 
 /**
+ * @var \yii\web\View $this
  * @var Consultation $consultation
  * @var Layout $layout
  * @var bool $admin
  */
 
-/**
- * @param Motion[] $motions
- */
-$showMotionList = function ($motions) {
-    echo '<ul class="motionList">';
-    foreach ($motions as $motion) {
-        $url = UrlHelper::createMotionUrl($motion);
-        echo '<li>' . Html::a(Html::encode($motion->getTitleWithPrefix()), $url) . '</li>';
-    }
-    echo '</ul>';
-};
-
 ?>
 
 <h2 class="green">
-    Beantwortete Mitgliederbegehren
+    <?=\Yii::t('memberpetitions', 'status_answered') ?>
 </h2>
 <div class="content">
-    <?php
-    $showMotionList(Tools::getMotionsAnswered($consultation));
-    ?>
+    <?= $this->render('_motion_list', ['motions' => Tools::getMotionsAnswered($consultation)]) ?>
 </div>
 
 
 <h2 class="green">
-    Noch nicht beantwortet
+    <?=\Yii::t('memberpetitions', 'status_unanswered') ?>
 </h2>
 <div class="content">
-    <?php
-    $showMotionList(Tools::getMotionsUnanswered($consultation));
-    ?>
+    <?= $this->render('_motion_list', ['motions' => Tools::getMotionsUnanswered($consultation)]) ?>
 </div>
 
 
 <h2 class="green">
-    Sammelnde Mitgliederbegehren
+    <?=\Yii::t('memberpetitions', 'status_collecting') ?>
 </h2>
 <div class="content">
-    <?php
-    $showMotionList(Tools::getMotionsCollecting($consultation));
-    ?>
+    <?= $this->render('_motion_list', ['motions' => Tools::getMotionsCollecting($consultation)]) ?>
 </div>
 

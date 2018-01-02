@@ -7,6 +7,12 @@ return [
     'sett_replydeadline' => 'Reply deadline (days)',
     'sett_title'         => 'Member petitions',
 
+    'status_collecting' => 'Collecting supporters',
+    'status_unanswered' => 'Not answered yet',
+    'status_answered'   => 'Answered',
+    'my_petitions'      => 'My petitions',
+    'none'              => 'None',
+
     'policy_title'         => 'Organization members',
     'policy_desc'          => 'Members of the organization of the current consultation',
     'policy_motion_denied' => 'Only members of this organization can create motions.',

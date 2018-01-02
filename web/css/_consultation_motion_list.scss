@@ -123,7 +123,7 @@
   }
 }
 
-.motionListStd {
+.motionListStd, .motionListPetitions {
   list-style-type: none;
   margin: 0 0 40px;
   padding: 0;
@@ -229,6 +229,13 @@
     font-size: 14px;
     font-weight: bold;
     color: $colorGreenLight;
+  }
+}
+
+.motionListPetitions {
+  .status {
+    font-weight: bold;
+    font-style: normal;
   }
 }
 

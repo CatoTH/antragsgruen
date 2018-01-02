@@ -76,7 +76,8 @@ class Tools
 
         foreach ($site->consultations as $consultation) {
             foreach ($consultation->motions as $motion) {
-                if ($motion->iAmInitiator()) {
+                if ($motion->iAmInitiator() && $motion->isVisibleForAdmins() &&
+                    $motion->status != Motion::STATUS_INLINE_REPLY) {
                     $motions[] = $motion;
                 }
             }

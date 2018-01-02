@@ -7,6 +7,12 @@ return [
     'sett_replydeadline' => 'Antwort-Frist (Tage)',
     'sett_title'         => 'Mitgliederbegehren',
 
+    'status_collecting' => 'Unterstützer*innen sammeln',
+    'status_unanswered' => 'Noch nicht beantwortet',
+    'status_answered'   => 'Beantwortet',
+    'my_petitions'      => 'Meine Mitgliederbegehren',
+    'none'              => 'Keine',
+
     'policy_title'         => 'Organisations-Mitglieder',
     'policy_desc'          => 'Mitglieder der Organisation dieser Veranstaltung',
     'policy_motion_denied' => 'Nur Mitglieder des aktuellen Verbands können Petitionen anlegen.',

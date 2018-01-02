@@ -128,6 +128,7 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_PROPOSED_MODIFIED_AMENDMENT  => \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
             static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
+            static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
         ];
     }
 

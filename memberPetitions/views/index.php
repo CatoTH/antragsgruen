@@ -18,18 +18,6 @@ $layout->bodyCssClasses[] = 'memberPetitionHome';
 
 $this->title = 'Grüne Mitgliederbegehren';
 
-/**
- * @param Motion[] $motions
- */
-$showMotionList = function ($motions) {
-    echo '<ul class="motionList">';
-    foreach ($motions as $motion) {
-        $url = UrlHelper::createMotionUrl($motion);
-        echo '<li>' . Html::a(Html::encode($motion->getTitleWithPrefix()), $url) . '</li>';
-    }
-    echo '</ul>';
-};
-
 ?>
     <h1>Grüne Mitgliederbegehren</h1>
     <div class="content">
@@ -72,17 +60,12 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
         <?= Html::a($gotoTitle, $url, ['class' => 'pull-right orgaLink']) ?>
     </h2>
     <div class="content">
-        <h3>Beantwortet</h3>
         <?php
-        $showMotionList(Tools::getMotionsAnswered($consultation));
-        ?>
-        <h3>Noch nicht beantwortet</h3>
-        <?php
-        $showMotionList(Tools::getMotionsUnanswered($consultation));
-        ?>
-        <h3>Sammelnd</h3>
-        <?php
-        $showMotionList(Tools::getMotionsCollecting($consultation));
+        echo $this->render('_motion_list', ['motions' => array_merge(
+            Tools::getMotionsAnswered($consultation),
+            Tools::getMotionsUnanswered($consultation),
+            Tools::getMotionsCollecting($consultation)
+        )]);
         ?>
     </div>
     <?php
