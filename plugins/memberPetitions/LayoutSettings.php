@@ -1,6 +1,6 @@
 <?php
 
-namespace app\memberPetitions;
+namespace app\plugins\memberPetitions;
 
 use app\components\MessageSource;
 use app\components\UrlHelper;

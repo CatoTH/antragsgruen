@@ -1,6 +1,6 @@
 <?php
 
-namespace app\memberPetitions;
+namespace app\plugins\memberPetitions;
 
 use app\models\db\Consultation;
 use app\models\db\IMotion;

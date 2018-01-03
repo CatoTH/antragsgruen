@@ -1,6 +1,6 @@
 <?php
 
-namespace app\memberPetitions;
+namespace app\plugins\memberPetitions;
 
 use app\models\db\Consultation;
 use app\models\policies\IPolicy;
@@ -32,7 +32,7 @@ class SiteSpecificBehavior extends DefaultBehavior
     public static function getSiteHomePage()
     {
         $controller = \Yii::$app->controller;
-        return $controller->render('@app/memberPetitions/views/index');
+        return $controller->render('@app/plugins/memberPetitions/views/index');
     }
 
     /**
@@ -51,7 +51,7 @@ class SiteSpecificBehavior extends DefaultBehavior
     public static function getConsultationSettingsForm(Consultation $consultation)
     {
         return \Yii::$app->controller->renderPartial(
-            '@app/memberPetitions/views/admin/consultation_settings',
+            '@app/plugins/memberPetitions/views/admin/consultation_settings',
             ['consultation' => $consultation]
         );
     }

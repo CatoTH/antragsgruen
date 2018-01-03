@@ -1,6 +1,6 @@
 <?php
 
-use app\memberPetitions\ConsultationSettings;
+use app\plugins\memberPetitions\ConsultationSettings;
 use \app\models\db\Consultation;
 use yii\helpers\Html;
 

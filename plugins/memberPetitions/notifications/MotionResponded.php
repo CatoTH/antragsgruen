@@ -1,6 +1,6 @@
 <?php
 
-namespace app\memberPetitions\notifications;
+namespace app\plugins\memberPetitions\notifications;
 
 use app\components\UrlHelper;
 use app\models\db\EMailLog;

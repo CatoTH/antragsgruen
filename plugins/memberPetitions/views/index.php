@@ -5,8 +5,7 @@
  */
 
 use app\components\UrlHelper;
-use app\memberPetitions\Tools;
-use app\models\db\Motion;
+use app\plugins\memberPetitions\Tools;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */

@@ -1,11 +1,8 @@
 <?php
 
-use app\components\UrlHelper;
-use app\memberPetitions\Tools;
+use app\plugins\memberPetitions\Tools;
 use app\models\db\Consultation;
-use app\models\db\Motion;
 use app\models\settings\Layout;
-use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this

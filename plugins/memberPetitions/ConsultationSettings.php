@@ -1,6 +1,6 @@
 <?php
 
-namespace app\memberPetitions;
+namespace app\plugins\memberPetitions;
 
 use app\models\settings\Consultation;
 
@@ -14,7 +14,7 @@ class ConsultationSettings extends Consultation
      */
     public function getStartLayoutView()
     {
-        return '@app/memberPetitions/views/consultation';
+        return '@app/plugins/memberPetitions/views/consultation';
     }
 
     /**
@@ -22,7 +22,7 @@ class ConsultationSettings extends Consultation
      */
     public function getConsultationSidebar()
     {
-        return '@app/memberPetitions/views/consultation-sidebar';
+        return '@app/plugins/memberPetitions/views/consultation-sidebar';
     }
 
     /**
