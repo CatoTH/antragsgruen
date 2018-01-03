@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
-use app\memberPetitions\notifications\MotionResponded;
-use app\memberPetitions\Tools;
+use app\plugins\memberPetitions\notifications\MotionResponded;
+use app\plugins\memberPetitions\Tools;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;

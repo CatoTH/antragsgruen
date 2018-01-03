@@ -20,7 +20,7 @@ foreach ($motions as $motion) {
         case Motion::STATUS_COLLECTING_SUPPORTERS:
             $status = \Yii::t('memberpetitions', 'status_collecting');
             break;
-        case Motion::STATUS_ACCEPTED:
+        case Motion::STATUS_SUBMITTED_SCREENED:
             $status = \Yii::t('memberpetitions', 'status_unanswered');
             break;
         case Motion::STATUS_PROCESSED:

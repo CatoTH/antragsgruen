@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'bc' => 'Petitions',
+    'title' => 'Petitions',
+    'bc'    => 'Petitions',
 
     'sett_orgaid'        => 'Organization ID',
     'sett_replydeadline' => 'Reply deadline (days)',
@@ -12,6 +13,8 @@ return [
     'status_answered'   => 'Answered',
     'my_petitions'      => 'My petitions',
     'none'              => 'None',
+    'response_deadline' => 'Response deadline',
+    'response_overdue'  => 'overdue',
 
     'policy_title'         => 'Organization members',
     'policy_desc'          => 'Members of the organization of the current consultation',

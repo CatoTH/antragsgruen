@@ -105,4 +105,11 @@ interface Hooks
      * @return string
      */
     public function afterMotionView($before, Motion $motion);
+
+    /**
+     * @param array $motionData
+     * @param Motion $motion
+     * @return array
+     */
+    public function getMotionViewData($motionData, Motion $motion);
 }

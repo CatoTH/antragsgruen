@@ -174,4 +174,15 @@ class HooksAdapter implements Hooks
     {
         return $before;
     }
+
+    /**
+     * @param array $motionData
+     * @param Motion $motion
+     * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getMotionViewData($motionData, Motion $motion)
+    {
+        return $motionData;
+    }
 }

@@ -30,9 +30,6 @@ use yii\helpers\Html;
  * @property string $changeExplanation
  * @property int $changeExplanationHtml
  * @property string $cache
- * @property string $dateCreation
- * @property string $datePublication
- * @property string $dateResolution
  * @property int $status
  * @property string $statusString
  * @property string $noteInternal
@@ -1015,14 +1012,6 @@ class Amendment extends IMotion implements IRSSItem
             $content,
             Tools::dateSql2timestamp($this->dateCreation)
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->dateCreation;
     }
 
     /**

@@ -112,10 +112,10 @@ class Tools
     }
 
     /**
-     * @param Motion $motion
+     * @param IMotion $motion
      * @return bool
      */
-    public static function canRespondToMotion(Motion $motion)
+    public static function canRespondToMotion(IMotion $motion)
     {
         if (!$motion->isVisible() || $motion->status == IMotion::STATUS_PROCESSED) {
             return false;
@@ -138,5 +138,38 @@ class Tools
             'parentMotionId' => $motion->id,
             'status'         => Motion::STATUS_INLINE_REPLY,
         ]);
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return \DateTime|null
+     */
+    public static function getMotionResponseDeadline(IMotion $motion)
+    {
+        if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
+            return null;
+        }
+        if (!$motion->dateCreation) {
+            return null;
+        }
+        $date = new \DateTime($motion->dateCreation);
+        /** @var ConsultationSettings $settings */
+        $settings = $motion->getMyConsultation()->getSettings();
+        $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
+
+        return $date;
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return bool
+     */
+    public static function isMotionDeadlineOver(IMotion $motion)
+    {
+        $deadline = static::getMotionResponseDeadline($motion);
+        if (!$deadline) {
+            return false;
+        }
+        return $deadline->getTimestamp() < time();
     }
 }

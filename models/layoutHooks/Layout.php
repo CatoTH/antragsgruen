@@ -21,11 +21,12 @@ class Layout
     /**
      * @param string $name
      * @param mixed[] $args
-     * @return string
+     * @param mixed $initValue
+     * @return mixed
      */
-    private static function callHook($name, $args = [])
+    private static function callHook($name, $args = [], $initValue = '')
     {
-        $out = '';
+        $out = $initValue;
         foreach (static::$hooks as $hook) {
             $callArgs = array_merge([$out], $args);
             $out      = call_user_func_array([$hook, $name], $callArgs);
@@ -162,5 +163,15 @@ class Layout
     public static function afterMotionView(Motion $motion)
     {
         return static::callHook('afterMotionView', [$motion]);
+    }
+
+    /**
+     * @param array $motionData
+     * @param Motion $motion
+     * @return array
+     */
+    public static function getMotionViewData($motionData, Motion $motion)
+    {
+        return static::callHook('getMotionViewData', [$motion], $motionData);
     }
 }

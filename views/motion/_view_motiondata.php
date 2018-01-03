@@ -40,68 +40,76 @@ if (count($replacedByMotions) > 0) {
     echo '</div>';
 }
 
-echo '<table class="motionDataTable">
-                <tr>
-                    <th>' . Yii::t('motion', 'consultation') . ':</th>
-                    <td>' .
-    Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')) . '</td>
-                </tr>';
+$motionData   = [];
+$motionData[] = [
+    'title'   => Yii::t('motion', 'consultation'),
+    'content' => Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')),
+];
 
 if ($motion->agendaItem) {
-    echo '<tr><th>' . \Yii::t('motion', 'agenda_item') . ':</th><td>';
-    echo Html::encode($motion->agendaItem->getShownCode(true) . ' ' . $motion->agendaItem->title);
-    echo '</td></tr>';
+    $motionData[] = [
+        'title'   => \Yii::t('motion', 'agenda_item'),
+        'content' => Html::encode($motion->agendaItem->getShownCode(true) . ' ' . $motion->agendaItem->title),
+    ];
 }
 
 $initiators = $motion->getInitiators();
 if (count($initiators) > 0) {
-    if (count($initiators) == 1) {
-        echo '<tr><th>' . Yii::t('motion', 'initiators_1') . ':</th><td>';
-    } else {
-        echo '<tr><th>' . Yii::t('motion', 'initiators_x') . ':</th><td>';
-    }
-    echo MotionLayoutHelper::formatInitiators($initiators, $controller->consultation);
-
-    echo '</td></tr>';
+    $title        = (count($initiators) === 1 ? Yii::t('motion', 'initiators_1') : Yii::t('motion', 'initiators_x'));
+    $motionData[] = [
+        'title'   => $title,
+        'content' => MotionLayoutHelper::formatInitiators($initiators, $controller->consultation),
+    ];
 }
-echo '<tr class="statusRow"><th>' . \Yii::t('motion', 'status') . ':</th>';
-echo '<td>' . $motion->getFormattedStatus() . '<td>';
-echo '</tr>';
+
+$motionData[] = [
+    'rowClass' => 'statusRow',
+    'title'    => \Yii::t('motion', 'status'),
+    'content'  => $motion->getFormattedStatus(),
+];
+
 
 if ($motion->replacedMotion) {
     $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
-    echo '<tr class="replacesMotion"><th>' . Yii::t('motion', 'replaces_motion') . ':</th><td>';
-    echo Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
+    $content = Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
 
     $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
-    echo '<div class="changesLink">';
-    echo '<span class="glyphicon glyphicon-chevron-right"></span> ';
-    echo Html::a(\Yii::t('motion', 'replaces_motion_diff'), $changesLink);
-    echo '</div>';
-    echo '</td></tr>';
+    $content     .= '<div class="changesLink">';
+    $content     .= '<span class="glyphicon glyphicon-chevron-right"></span> ';
+    $content     .= Html::a(\Yii::t('motion', 'replaces_motion_diff'), $changesLink);
+    $content     .= '</div>';
+
+    $motionData[] = [
+        'rowClass' => 'replacesMotion',
+        'title'    => Yii::t('motion', 'replaces_motion'),
+        'content'  => $content,
+    ];
 }
 
 $proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
-    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td class="str">';
-    echo $motion->getFormattedProposalStatus(true);
-    echo '</td></tr>';
+    $motionData[] = [
+        'rowClass' => 'proposedStatusRow',
+        'title'    => \Yii::t('amend', 'proposed_status'),
+        'tdClass'  => 'str',
+        'content'  => $motion->getFormattedProposalStatus(true),
+    ];
 }
 
 if ($motion->dateResolution != '') {
-    echo '<tr><th>' . \Yii::t('motion', 'resoluted_on') . ':</th>
-       <td>' . Tools::formatMysqlDate($motion->dateResolution, null, false) . '</td>
-     </tr>';
+    $motionData[] = [
+        'title'   => \Yii::t('motion', 'resoluted_on'),
+        'content' => Tools::formatMysqlDate($motion->dateResolution, null, false),
+    ];
 }
+$motionData[] = [
+    'title'   => \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
+    'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),
+];
 
-echo '<tr><th>' . \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')) . ':</th>
-       <td>' . Tools::formatMysqlDateTime($motion->dateCreation, null, false) . '</td>
-                </tr>';
 
 $admin = User::havePrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
 if ($admin && count($motion->getMyConsultation()->tags) > 0) {
-    echo '<tr><th>' . \Yii::t('motion', 'tag_tags') . ':</th><td class="tags">';
-
     $tags         = [];
     $used_tag_ids = [];
     foreach ($motion->tags as $tag) {
@@ -113,46 +121,63 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
         $str            .= Html::endForm();
         $tags[]         = $str;
     }
-    echo implode(', ', $tags);
+    $content = implode(', ', $tags);
 
-    echo '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . \Yii::t('motion', 'tag_new') . '</a>';
-    echo Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
-    echo '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
+    $content .= '&nbsp; &nbsp; <a href="#" class="tagAdderHolder">' . \Yii::t('motion', 'tag_new') . '</a>';
+    $content .= Html::beginForm('', 'post', ['id' => 'tagAdderForm', 'class' => 'form-inline hidden']);
+    $content .= '<select name="tagId" title="' . \Yii::t('motion', 'tag_select') . '" class="form-control">
         <option>-</option>';
 
     foreach ($motion->getMyConsultation()->tags as $tag) {
         if (!in_array($tag->id, $used_tag_ids)) {
-            echo '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
+            $content .= '<option value="' . IntVal($tag->id) . '">' . Html::encode($tag->title) . '</option>';
         }
     }
-    echo '</select>
+    $content .= '</select>
             <button class="btn btn-primary" type="submit" name="motionAddTag">' .
         \Yii::t('motion', 'tag_add') .
         '</button>';
-    echo Html::endForm();
-    echo '</td> </tr>';
+    $content .= Html::endForm();
+    $content .= '</td> </tr>';
+
+    $motionData[] = [
+        'title'   => \Yii::t('motion', 'tag_tags'),
+        'tdClass' => 'tags',
+        'content' => $content,
+    ];
 
 } elseif (count($motion->tags) > 0) {
-    echo '<tr>
-       <th>' . (count($motion->tags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')) . '</th>
-       <td>';
-
-    $tags = [];
-    foreach ($motion->tags as $tag) {
-        $tags[] = $tag->title;
-    }
-    echo Html::encode(implode(', ', $tags));
-
-    echo '</td></tr>';
+    $motionData[] = [
+        'title'   => (count($motion->tags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')),
+        'content' => Html::encode(implode(', ', $tags)),
+    ];
 }
 
 if ((!isset($skip_drafts) || !$skip_drafts) && $motion->getMergingDraft(true)) {
-    echo '<tr class="mergingDraft"><th>';
-    echo \Yii::t('motion', 'merging_draft_th');
-    echo '</th><td>';
-    $url = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
-    echo str_replace('%URL%', Html::encode($url), \Yii::t('motion', 'merging_draft_td'));
-    echo '</td></tr>' . "\n";
+    $url          = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
+    $motionData[] = [
+        'rowClass' => 'mergingDraft',
+        'title'    => \Yii::t('motion', 'merging_draft_th'),
+        'content'  => str_replace('%URL%', Html::encode($url), \Yii::t('motion', 'merging_draft_td')),
+    ];
 }
 
+$motionData = \app\models\layoutHooks\Layout::getMotionViewData($motionData, $motion);
+
+
+echo '<table class="motionDataTable">';
+foreach ($motionData as $row) {
+    if (isset($row['rowClass'])) {
+        echo '<tr class="' . $row['rowClass'] . '">';
+    } else {
+        echo '<tr>';
+    }
+    echo '<th>' . $row['title'] . ':</th>';
+    if (isset($row['tdClass'])) {
+        echo '<td class="' . $row['tdClass'] . '">' . $row['content'] . '</td>';
+    } else {
+        echo '<td>' . $row['content'] . '</td>';
+    }
+    echo '</tr>' . "\n";
+}
 echo '</table></div>';

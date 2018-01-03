@@ -1,7 +1,8 @@
 <?php
 
 return [
-    'bc' => 'Mitgliederbegehren',
+    'title' => 'Mitgliederbegehren',
+    'bc'    => 'Mitgliederbegehren',
 
     'sett_orgaid'        => 'Organisations-ID',
     'sett_replydeadline' => 'Antwort-Frist (Tage)',
@@ -12,6 +13,8 @@ return [
     'status_answered'   => 'Beantwortet',
     'my_petitions'      => 'Meine Mitgliederbegehren',
     'none'              => 'Keine',
+    'response_deadline' => 'Beantwortungsfrist',
+    'response_overdue'  => 'abgelaufen',
 
     'policy_title'         => 'Organisations-Mitglieder',
     'policy_desc'          => 'Mitglieder der Organisation dieser Veranstaltung',

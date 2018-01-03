@@ -23,7 +23,8 @@ class LayoutHooks extends HooksAdapter
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
-            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Mitgliederbegehren</a>' .
+            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">' .
+            \Yii::t('memberpetitions', 'title') . '</a>' .
             '</span></div>';
         if ($this->consultation) {
             $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';
@@ -74,5 +75,27 @@ class LayoutHooks extends HooksAdapter
         }
 
         return $before;
+    }
+
+    /**
+     * @param array $motionData
+     * @param Motion $motion
+     * @return array
+     * @throws \app\models\exceptions\Internal
+     */
+    public function getMotionViewData($motionData, Motion $motion)
+    {
+        $deadline = Tools::getMotionResponseDeadline($motion);
+        if ($deadline) {
+            $deadlineStr = \app\components\Tools::formatMysqlDate($deadline->format('Y-m-d'));
+            if (Tools::isMotionDeadlineOver($motion)) {
+                $deadlineStr .= ' (' . \Yii::t('memberpetitions', 'response_overdue') . ')';
+            }
+            $motionData[] = [
+                'title'   => \Yii::t('memberpetitions', 'response_deadline'),
+                'content' => $deadlineStr,
+            ];
+        }
+        return $motionData;
     }
 }

@@ -25,9 +25,6 @@ use yii\helpers\Html;
  * @property int $agendaItemId
  * @property string $title
  * @property string $titlePrefix
- * @property string $dateCreation
- * @property string $datePublication
- * @property string $dateResolution
  * @property int $status
  * @property string $statusString
  * @property int $nonAmendable
@@ -976,14 +973,6 @@ class Motion extends IMotion implements IRSSItem
             $content,
             Tools::dateSql2timestamp($this->dateCreation)
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function getDate()
-    {
-        return $this->dateCreation;
     }
 
     /**

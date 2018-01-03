@@ -19,6 +19,9 @@ use yii\db\ActiveRecord;
  * @property string $titlePrefix
  * @property int $id
  * @property IMotionSection[] $sections
+ * @property string $dateCreation
+ * @property string $datePublication
+ * @property string $dateResolution
  * @property int $status
  * @property int $proposalStatus
  * @property int $proposalReferenceId
@@ -427,6 +430,14 @@ abstract class IMotion extends ActiveRecord
      * @return string
      */
     abstract public function getViewUrl();
+
+    /**
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->dateCreation;
+    }
 
     /**
      * @return bool
