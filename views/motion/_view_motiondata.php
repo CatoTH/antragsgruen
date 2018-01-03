@@ -147,6 +147,10 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     ];
 
 } elseif (count($motion->tags) > 0) {
+    $tags = [];
+    foreach ($motion->tags as $tag) {
+        $tags[] = $tag->title;
+    }
     $motionData[] = [
         'title'   => (count($motion->tags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')),
         'content' => Html::encode(implode(', ', $tags)),
