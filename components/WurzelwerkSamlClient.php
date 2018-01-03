@@ -173,4 +173,41 @@ class WurzelwerkSamlClient implements ClientInterface
     {
         throw new Internal('Not implemented yet: SAML / getViewOptions');
     }
+
+    /**
+     * @param string $organizationId
+     * @return string[]
+     */
+    public static function resolveOrganizationId($organizationId)
+    {
+        if (!is_numeric($organizationId)) {
+            return [$organizationId];
+        }
+        $ids = [$organizationId];
+        if (strlen($organizationId) > 6) {
+            $organizationId = substr($organizationId, 0, 6);
+            $ids[]          = $organizationId;
+        }
+        if (strlen($organizationId) === 6 && substr($organizationId, 3, 3) !== '000') {
+            $lvOrga = substr($organizationId, 0, 3) . '000';
+            $ids[]  = $lvOrga;
+        }
+        $ids[] = '0'; // Alias für Bundesverband
+
+        return $ids;
+    }
+
+    /**
+     * @param $organizationIds
+     * @return string[]
+     */
+    public static function resolveOrganizationIds($organizationIds)
+    {
+        $newIds = [];
+        foreach ($organizationIds as $organizationId) {
+            $newIds = array_merge($newIds, static::resolveOrganizationId($organizationId));
+        }
+
+        return array_unique($newIds);
+    }
 }

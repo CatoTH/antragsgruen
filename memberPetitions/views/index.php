@@ -79,7 +79,7 @@ if (count($myMotions) > 0) {
     <h2 class="green">Meine Mitgliederbegehren</h2>
     <div class="content">
         <?php
-        $showMotionList($myMotions);
+        echo $this->render('_motion_list', ['motions' => $myMotions]);
         ?>
     </div>
     <?php
@@ -90,7 +90,7 @@ if (count($mySupports) > 0) {
     <h2 class="green">Meine unterstützten Mitgliederbegehren</h2>
     <div class="content">
         <?php
-        $showMotionList($mySupports);
+        echo $this->render('_motion_list', ['motions' => $mySupports]);
         ?>
     </div>
     <?php

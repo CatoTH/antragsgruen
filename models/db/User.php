@@ -4,8 +4,8 @@ namespace app\models\db;
 
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\components\WurzelwerkSamlClient;
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
 use \app\components\mail\Tools as MailTools;
@@ -89,7 +89,6 @@ class User extends ActiveRecord implements IdentityInterface
      * @param Consultation|null $consultation
      * @param int|int[] $privilege
      * @return bool
-     * @throws Internal
      */
     public static function havePrivilege($consultation, $privilege)
     {
@@ -277,7 +276,12 @@ class User extends ActiveRecord implements IdentityInterface
     public function getOrganizationIds()
     {
         if ($this->organizationIds) {
-            return json_decode($this->organizationIds, true);
+            $organizationIds = json_decode($this->organizationIds, true);
+            if ($this->isWurzelwerkUser()) {
+                $organizationIds = WurzelwerkSamlClient::resolveOrganizationIds($organizationIds);
+                var_dump($organizationIds);
+            }
+            return $organizationIds;
         } else {
             return [];
         }
@@ -821,19 +825,20 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function deleteAccount()
     {
-        $this->name           = '';
-        $this->nameGiven      = '';
-        $this->nameFamily     = '';
-        $this->organization   = '';
-        $this->fixedData      = 0;
-        $this->email          = '';
-        $this->emailConfirmed = 0;
-        $this->auth           = null;
-        $this->status         = static::STATUS_DELETED;
-        $this->pwdEnc         = null;
-        $this->authKey        = '';
-        $this->recoveryToken  = null;
-        $this->recoveryAt     = null;
+        $this->name            = '';
+        $this->nameGiven       = '';
+        $this->nameFamily      = '';
+        $this->organization    = '';
+        $this->organizationIds = '';
+        $this->fixedData       = 0;
+        $this->email           = '';
+        $this->emailConfirmed  = 0;
+        $this->auth            = null;
+        $this->status          = static::STATUS_DELETED;
+        $this->pwdEnc          = null;
+        $this->authKey         = '';
+        $this->recoveryToken   = null;
+        $this->recoveryAt      = null;
         $this->save(false);
     }
 }
