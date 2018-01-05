@@ -28,8 +28,10 @@ class ConsultationController extends Base
     /**
      * @param \yii\base\Action $action
      * @return bool
-     * @throws \yii\web\BadRequestHttpException
+     * @throws \Exception
+     * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
+     * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -241,7 +243,6 @@ class ConsultationController extends Base
      * @param string $pageKey
      * @return string
      * @throws Access
-     * @throws \app\models\exceptions\Internal
      */
     public function actionSavetextajax($pageKey)
     {
@@ -257,6 +258,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionMaintenance()
     {
@@ -283,6 +285,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionPrivacy()
     {
@@ -291,6 +294,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionHelp()
     {
@@ -320,7 +324,7 @@ class ConsultationController extends Base
     /**
      * @param array $arr
      * @param int|null $parentId
-     * @return \int[]
+     * @return int[]
      * @throws FormError
      */
     private function saveAgendaArr($arr, $parentId)
@@ -390,7 +394,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
      */
     public function actionHome()
@@ -404,7 +407,6 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
      */
     public function actionIndex()

@@ -76,7 +76,9 @@ class ProposedProcedureAgenda
         $handledAmends = [];
         $handledVotings    = [];
 
-        foreach ($consultation->agendaItems as $agendaItem) {
+        $agendaItems = ConsultationAgendaItem::getSortedFromConsultation($consultation);
+
+        foreach ($agendaItems as $agendaItem) {
             if ($onlyAgendaItem && $agendaItem !== $onlyAgendaItem) {
                 continue;
             }
