@@ -467,7 +467,7 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
-        $this->layout = 'column2';
+        $this->layout = 'column1';
         $this->consultationSidebar($this->consultation);
 
         $proposedAgenda = ProposedProcedureAgenda::createProposedProcedureAgenda($this->consultation);

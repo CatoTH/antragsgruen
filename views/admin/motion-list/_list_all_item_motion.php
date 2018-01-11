@@ -44,7 +44,10 @@ if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
 }
 echo '</td>';
 if ($colProposals) {
-    echo '<td class="proposalCol"></td>';
+    echo '<td class="proposalCol">';
+    $name = $entry->getFormattedProposalStatus();
+    echo Html::a(($name ? $name : '-'), UrlHelper::createMotionUrl($entry));
+    echo '</td>';
 }
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {

@@ -13,8 +13,9 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
+$controller        = $this->context;
+$layout            = $controller->layoutParams;
+$layout->fullWidth = true;
 
 $this->title = \Yii::t('con', 'proposal_title');
 $layout->addBreadcrumb(\Yii::t('con', 'proposal_bc'));
@@ -44,7 +45,6 @@ foreach ($proposedAgenda as $proposedItem) {
                     if (count($proposedItem->votingBlocks) > 1 || $votingBlock->voting) {
                         ?>
                         <caption>
-                            <?= \Yii::t('con', 'proposal_table_voting') ?>:
                             <?= Html::encode($votingBlock->title) ?>
                         </caption>
                         <?php

@@ -44,5 +44,5 @@ return [
     'pp_explanation'        => 'Erklärung',
     'pp_public_site'        => 'Übersichtsseite',
     'pp_ods_all'            => 'ODS-Export: Alles',
-    'pp_unhandled'          => 'Weiteres Verfahren',
+    'pp_unhandled'          => 'Verfahrensvorschläge der Antragskommission',
 ];

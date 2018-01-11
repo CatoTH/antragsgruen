@@ -75,8 +75,8 @@ if ($colProposals) {
         echo '</div>';
     }
 
-    $name = ($entry->proposalStatus ? $amendmentStatiVerbs[$entry->proposalStatus] : '-');
-    echo Html::a($name, UrlHelper::createAmendmentUrl($entry));
+    $name = $entry->getFormattedProposalStatus();
+    echo Html::a(($name ? $name : '-'), UrlHelper::createAmendmentUrl($entry));
 
     if ($entry->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
