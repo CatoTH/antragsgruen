@@ -83,9 +83,8 @@ class ProposedProcedureAgenda
             if ($onlyAgendaItem && $agendaItem !== $onlyAgendaItem) {
                 continue;
             }
-            $title          = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
-            $item           = new ProposedProcedureAgenda($idCount++, $title, $agendaItem);
-            $unhandledItems = [];
+            $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
+            $item  = new ProposedProcedureAgenda($idCount++, $title, $agendaItem);
             foreach ($agendaItem->getVisibleMotions(true) as $motion) {
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
@@ -97,11 +96,9 @@ class ProposedProcedureAgenda
                     }
                     static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
                     $handledVotings[] = $votingBlock->id;
-                } else {
-                    $unhandledItems[] = $motion;
                 }
 
-                foreach ($motion->getVisibleAmendments(true) as $amendment) {
+                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
@@ -111,22 +108,21 @@ class ProposedProcedureAgenda
                             continue;
                         }
                         static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
-                        $handledAmends[] = $votingBlock->id;
-                    } else {
-                        $unhandledItems[] = $amendment;
                     }
                 }
             }
-            if (count($unhandledItems) > 0) {
-                $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
-                $block->items = $unhandledItems;
-                foreach ($unhandledItems as $unhandledItem) {
-                    if (is_a($unhandledItem, Amendment::class)) {
-                        $handledAmends[] = $unhandledItem->id;
-                    } else {
-                        $handledMotions[] = $unhandledItem->id;
-                    }
+
+            $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
+            $block->items = [];
+            foreach ($agendaItem->getVisibleMotions(true) as $motion) {
+                $block->items[]   = $motion;
+                $handledMotions[] = $motion->id;
+                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+                    $block->items[]  = $amendment;
+                    $handledAmends[] = $amendment->id;
                 }
+            }
+            if (count($block->items) > 0) {
                 $item->votingBlocks[] = $block;
             }
 
@@ -169,7 +165,6 @@ class ProposedProcedureAgenda
                 continue;
             }
 
-            $unhandledItems = [];
             if ($motion->votingBlock) {
                 $votingBlock = $motion->votingBlock;
                 if (in_array($votingBlock->id, $handledVotings)) {
@@ -177,8 +172,6 @@ class ProposedProcedureAgenda
                 }
                 static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
                 $handledAmends[] = $votingBlock->id;
-            } else {
-                $unhandledItems[] = $motion;
             }
 
             foreach ($motion->getVisibleAmendments(true) as $amendment) {
@@ -192,21 +185,16 @@ class ProposedProcedureAgenda
                     }
                     static::addVotingBlock($item, $votingBlock, $handledMotions, $handledAmends);
                     $handledAmends[] = $votingBlock->id;
-                } else {
-                    $unhandledItems[] = $amendment;
                 }
             }
 
-            if (count($unhandledItems) > 0) {
-                $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
-                $block->items = $unhandledItems;
-                foreach ($unhandledItems as $unhandledItem) {
-                    if (is_a($unhandledItem, Amendment::class)) {
-                        $handledAmends[] = $unhandledItem->id;
-                    } else {
-                        $handledMotions[] = $unhandledItem->id;
-                    }
-                }
+            $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
+            $block->items = [];
+            foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+                $handledAmends[] = $amendment->id;
+                $block->items[] = $amendment;
+            }
+            if (count($block->items) > 0) {
                 $item->votingBlocks[] = $block;
             }
 
