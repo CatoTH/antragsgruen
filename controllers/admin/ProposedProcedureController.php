@@ -8,7 +8,6 @@ use app\components\Tools;
 use app\models\db\AmendmentAdminComment;
 use app\models\db\MotionAdminComment;
 use app\models\db\User;
-use yii\helpers\Html;
 use yii\web\Response;
 
 class ProposedProcedureController extends AdminBase

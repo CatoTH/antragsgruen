@@ -13,7 +13,8 @@ $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths    = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
-$consultationPaths    .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments|proposed-procedure';
+$consultationPaths    .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
+$consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
 $motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status';
 $motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm';

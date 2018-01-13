@@ -477,4 +477,25 @@ class ConsultationController extends Base
             'proposedAgenda' => $proposalFactory->create(),
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionProposedProcedureAjax()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $proposalFactory = new ProposedProcedureFactory($this->consultation);
+
+        $html = $this->renderPartial('_proposed_procedure_content', [
+            'proposedAgenda' => $proposalFactory->create(),
+        ]);
+
+        return json_encode([
+            'success' => true,
+            'html'    => $html,
+            'date'    => date('H:i:s'),
+        ]);
+    }
 }

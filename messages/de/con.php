@@ -72,4 +72,6 @@ return [
     'proposal_table_comment'   => 'Interner Kommentar',
     'proposal_explanation'     => 'Erklärung',
     'proposal_invisible'       => 'nicht sichtbar',
+    'proposal_autoupdate'      => 'Auto-Update',
+    'proposal_updated'         => 'Stand',
 ];

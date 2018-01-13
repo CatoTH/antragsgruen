@@ -72,4 +72,6 @@ return [
     'proposal_table_comment'   => 'Comment',
     'proposal_explanation'     => 'Explanation',
     'proposal_invisible'       => 'not public',
+    'proposal_autoupdate'      => 'Auto-Update',
+    'proposal_updated'         => 'Updated',
 ];
