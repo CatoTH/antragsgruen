@@ -107,3 +107,20 @@ body > footer {
     display: table-cell;
   }
 }
+
+*:fullscreen {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+*:-webkit-full-screen {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+*:-moz-full-screen {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+*:-ms-fullscreen {
+  overflow-x: hidden;
+  overflow-y: auto;
+}

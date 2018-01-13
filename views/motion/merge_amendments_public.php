@@ -48,11 +48,16 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
         <h2 class="green"><?= \Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
             <div class="row">
-                <div class="col-md-9">
+                <div class="col-md-8">
                     <div class="alert alert-info" role="alert"><?= \Yii::t('motion', 'merging_draft_warning') ?></div>
                 </div>
-                <div class="col-md-3 motionUpdateWidget">
+                <div class="col-md-4 motionUpdateWidget">
                     <div>
+                        <button class="btn btn-sm btn-default" type="button"
+                                data-antragsgruen-widget="frontend/FullscreenToggle">
+                            <span class="glyphicon glyphicon-fullscreen"></span>
+                        </button>
+
                         <button id="updateBtn" class="btn btn-sm btn-default">
                             <span class="glyphicon glyphicon-refresh"></span>
                         </button>

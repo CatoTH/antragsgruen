@@ -76,7 +76,7 @@ return [
     'tags_head'                          => 'Themen',
     'merging_draft_th'                   => 'Überarbeitung',
     'merging_draft_td'                   => 'Der Antrag wird gerade überarbeitet.<br><a href="%URL%"><span class="glyphicon glyphicon-chevron-right"></span> Zwischenstand anzeigen</a>',
-    'merging_draft_warning'              => 'Dies ist kein beschlossener Antrag, sondern ein Bearbeitungs-Zwischenstand!',
+    'merging_draft_warning'              => 'Dies ist kein beschlossener Antrag, sondern ein Zwischenstand!',
     'amends_none'                        => 'keine',
     'replaced_by_hint'                   => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
     'confirmed_visible'                  => 'Du hast den Antrag veröffentlicht. Er ist jetzt sofort sichtbar.',

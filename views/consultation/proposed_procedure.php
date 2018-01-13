@@ -48,6 +48,11 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
                        data-on="<?= Html::encode(\Yii::t('con', 'proposal_autoupdate')) ?>"
                        data-off="<?= Html::encode(\Yii::t('con', 'proposal_autoupdate')) ?>">
             </div>
+            <div class="fullscreenToggle">
+                <button class="btn btn-default" type="button" data-antragsgruen-widget="frontend/FullscreenToggle">
+                    <span class="glyphicon glyphicon-fullscreen"></span>
+                </button>
+            </div>
         </div>
     </section>
     <div class="reloadContent">
