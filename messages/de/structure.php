@@ -134,6 +134,8 @@ return [
     'STATUS_OBSOLETED_BY'                 => 'Erledigt durch anderen ÄA',
     'STATUS_CUSTOM_STRING'                => 'Sonstiger Status',
     'STATUS_INLINE_REPLY'                 => 'Antwort',
+    'STATUS_MERGING_DRAFT_PUBLIC'         => 'Einpflegen: Zwischenstand (öffentlich)',
+    'STATUS_MERGING_DRAFT_PRIVATE'        => 'Einpflegen: Zwischenstand (unsichtbar)',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSEDV_ACCEPTED_MOTION'   => 'Annehmen',

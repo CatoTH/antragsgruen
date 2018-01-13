@@ -40,7 +40,7 @@ echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 
 echo $this->render('_list_all_export');
 
-echo '<div class="content">';
+echo '<div class="content fuelux">';
 
 echo $controller->showErrors();
 

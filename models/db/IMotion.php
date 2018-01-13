@@ -100,12 +100,12 @@ abstract class IMotion extends ActiveRecord
     const STATUS_DISMISSED           = 14;
 
     /**
+     * @param bool $includeAdminInvisibles
      * @return string[]
      */
-    public static function getStatusNames()
+    public static function getStatusNames($includeAdminInvisibles = false)
     {
-        return [
-            static::STATUS_DELETED                      => \Yii::t('structure', 'STATUS_DELETED'),
+        $stati = [
             static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
             static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
             static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
@@ -126,13 +126,20 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_DRAFT_ADMIN                  => \Yii::t('structure', 'STATUS_DRAFT_ADMIN'),
             static::STATUS_PROCESSED                    => \Yii::t('structure', 'STATUS_PROCESSED'),
             static::STATUS_WITHDRAWN_INVISIBLE          => \Yii::t('structure', 'STATUS_WITHDRAWN_INVISIBLE'),
-            static::STATUS_MERGING_DRAFT_PUBLIC         => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC'),
-            static::STATUS_MERGING_DRAFT_PRIVATE        => \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE'),
-            static::STATUS_PROPOSED_MODIFIED_AMENDMENT  => \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT'),
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
             static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
             static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
         ];
+        if ($includeAdminInvisibles) {
+            $propName = \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT');
+
+            // Keep in Sync with static::getStatiInvisibleForAdmins
+            $stati[static::STATUS_DELETED]                     = \Yii::t('structure', 'STATUS_DELETED');
+            $stati[static::STATUS_MERGING_DRAFT_PUBLIC]        = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC');
+            $stati[static::STATUS_MERGING_DRAFT_PRIVATE]       = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE');
+            $stati[static::STATUS_PROPOSED_MODIFIED_AMENDMENT] = $propName;
+        }
+        return $stati;
     }
 
     /**
@@ -221,6 +228,7 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatiInvisibleForAdmins()
     {
+        // Keep in sync with getStatusNames::$includeAdminInvisibles
         return [
             static::STATUS_DELETED,
             static::STATUS_MERGING_DRAFT_PUBLIC,
@@ -371,9 +379,35 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
+    public static function getProposedStatiNames()
+    {
+        return [
+            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
+            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
+            static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
+            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
+            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
+            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
+            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
     public static function getProposalStatiAsVerbs()
     {
-        return []; // @Overridden by implementations
+        $return = static::getProposedStatiNames();
+        foreach ([
+                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_AMEND'),
+                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
+                     static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_MODIFIED_ACCEPTED'),
+                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
+                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
+                 ] as $statusId => $statusName) {
+            $return[$statusId] = $statusName;
+        }
+        return $return;
     }
 
     /**

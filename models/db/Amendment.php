@@ -69,40 +69,6 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string[]
-     */
-    public static function getProposedStatiNames()
-    {
-        return [
-            static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
-            static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSED_REJECTED'),
-            static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED'),
-            static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSED_REFERRED'),
-            static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSED_VOTE'),
-            static::STATUS_OBSOLETED_BY      => \Yii::t('structure', 'PROPOSED_OBSOLETED_BY_AMEND'),
-            static::STATUS_CUSTOM_STRING     => \Yii::t('structure', 'PROPOSED_CUSTOM_STRING'),
-        ];
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function getProposalStatiAsVerbs()
-    {
-        $return = static::getProposedStatiNames();
-        foreach ([
-                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_AMEND'),
-                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
-                     static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_MODIFIED_ACCEPTED'),
-                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
-                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
-                 ] as $statusId => $statusName) {
-            $return[$statusId] = $statusName;
-        }
-        return $return;
-    }
-
-    /**
      * @return string
      */
     public static function tableName()

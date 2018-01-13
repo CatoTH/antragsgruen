@@ -134,6 +134,8 @@ return [
     'STATUS_OBSOLETED_BY'                 => 'Handled by another amendment',
     'STATUS_CUSTOM_STRING'                => 'Custom status',
     'STATUS_INLINE_REPLY'                 => 'Response',
+    'STATUS_MERGING_DRAFT_PUBLIC'         => 'Merging Draft (public)',
+    'STATUS_MERGING_DRAFT_PRIVATE'        => 'Merging Draft (invisible)',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
     'PROPOSEDV_ACCEPTED_MOTION'   => 'Accept',

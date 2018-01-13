@@ -593,6 +593,9 @@ class AdminMotionFilterForm extends Model
         $str   .= '<input type="text" name="Search[title]" value="' . $title . '" class="form-control">';
         $str   .= '</label>';
 
+
+        // Motion status
+
         $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
         $stati       = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
@@ -603,28 +606,34 @@ class AdminMotionFilterForm extends Model
             }
         }
         if (!$foundMyself && $this->status !== null) {
-            $stati                = Motion::getStatusNames();
-            $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
+            $statusNames          = Motion::getStatusNames();
+            $stati[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
 
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status);
+        $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status, [], true);
         $str .= '</label>';
+
+
+        // Proposal status
 
         $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
         $stati       = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getProposalStatusList() as $statusId => $statusName) {
             $stati[$statusId] = $statusName;
-            if ($this->status !== null && $this->status == $statusId) {
+            if ($this->proposalStatus !== null && $this->proposalStatus == $statusId) {
                 $foundMyself = true;
             }
         }
-        if (!$foundMyself && $this->status !== null) {
-            $stati                = Amendment::getStatiAsVerbs();
-            $stati[$this->status] = Html::encode($stati[$this->status] . ' (0)');
+        if (!$foundMyself && $this->proposalStatus !== null) {
+            $statusNames          = Motion::getProposalStatiAsVerbs();
+            $stati[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $stati, $this->proposalStatus);
+        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $stati, $this->proposalStatus, [], true);
         $str .= '</label>';
+
+
+        // Tag List
 
         $tagsList = $this->getTagList();
         if (count($tagsList) > 0) {
@@ -634,9 +643,12 @@ class AdminMotionFilterForm extends Model
             foreach ($tagsList as $tagId => $tagName) {
                 $tags[$tagId] = $tagName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag);
+            $str .= HTMLTools::fueluxSelectbox('Search[tag]', $tags, $this->tag, [], true);
             $str .= '</label>';
         }
+
+
+        // Agenda items
 
         $agendaItemList = $this->getAgendaItemList();
         if (count($agendaItemList) > 0) {
@@ -646,9 +658,12 @@ class AdminMotionFilterForm extends Model
             foreach ($agendaItemList as $itemId => $itemName) {
                 $items[$itemId] = $itemName;
             }
-            $str .= HTMLTools::fueluxSelectbox('Search[agendaItem]', $items, $this->agendaItem);
+            $str .= HTMLTools::fueluxSelectbox('Search[agendaItem]', $items, $this->agendaItem, [], true);
             $str .= '</label>';
         }
+
+
+        // Initiators
 
         $str .= '<div>';
         $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">' .
