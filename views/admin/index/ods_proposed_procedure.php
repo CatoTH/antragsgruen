@@ -61,7 +61,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $amendment->getInitiatorsStr());
 
     $minHeight = 1;
-    $proposal  = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
+    $proposal  = '<p>' . trim($amendment->getFormattedProposalStatus()) . '</p>';
 
     if ($amendment->hasAlternativeProposaltext()) {
         $reference = $amendment->proposalReference;
@@ -78,7 +78,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
     }
     if ($amendment->proposalExplanation) {
         $minHeight += 1;
-        $proposal  .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
+        $proposal  .= '<p>' . trim(Html::encode($amendment->proposalExplanation)) . '</p>';
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);

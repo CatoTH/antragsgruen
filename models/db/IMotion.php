@@ -519,6 +519,9 @@ abstract class IMotion extends ActiveRecord
         if ($includeExplanation && !$this->isProposalPublic()) {
             $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
         }
+        if ($this->status === static::STATUS_WITHDRAWN) {
+            $explStr .= ' <span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
+        }
         if ($this->proposalStatus === null || $this->proposalStatus == 0) {
             return $explStr;
         }

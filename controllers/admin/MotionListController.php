@@ -163,7 +163,6 @@ class MotionListController extends AdminBase
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
      */
     public function actionIndex()
@@ -337,6 +336,7 @@ class MotionListController extends AdminBase
      * @param int $withdrawn
      * @return string
      * @throws \yii\base\ExitException
+     * @throws \app\models\exceptions\Internal
      */
     public function actionMotionPdfziplist($motionTypeId = 0, $withdrawn = 0)
     {
