@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\MotionSorter;
 use yii\db\ActiveRecord;
 
 /**
@@ -161,7 +162,7 @@ class ConsultationAgendaItem extends ActiveRecord
             $children      = static::sortItems(static::getItemsByParent($consultation, $item->id));
             foreach ($children as $child) {
                 $currShownCode = $calcNewShownCode($currShownCode, $child->code);
-                $prevCode = $fullCodePrefix . ($fullCodePrefix[strlen($fullCodePrefix) - 1] == '.' ? '' : '.');
+                $prevCode      = $fullCodePrefix . ($fullCodePrefix[strlen($fullCodePrefix) - 1] == '.' ? '' : '.');
                 $child->setShownCode($currShownCode, $prevCode . $currShownCode);
                 $items = array_merge(
                     $items,
@@ -261,5 +262,15 @@ class ConsultationAgendaItem extends ActiveRecord
         }
 
         return $return;
+    }
+
+    /**
+     * @param bool $includeWithdrawn
+     * @return Motion[]
+     */
+    public function getVisibleMotionsSorted($includeWithdrawn = true)
+    {
+        $motions = $this->getVisibleMotions($includeWithdrawn);
+        return MotionSorter::getSortedMotionsFlat($this->consultation, $motions);
     }
 }

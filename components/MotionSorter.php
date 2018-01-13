@@ -197,7 +197,7 @@ class MotionSorter
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {
-            $agendaMotions = $agendaItem->getVisibleMotions();
+            $agendaMotions = $agendaItem->getVisibleMotionsSorted();
             foreach ($agendaMotions as $agendaMotion) {
                 if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
                     continue;
