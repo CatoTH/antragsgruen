@@ -3,7 +3,6 @@
 namespace app\controllers\admin;
 
 use app\components\HTMLTools;
-use app\components\ProposedProcedureAgenda;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
@@ -17,6 +16,10 @@ use app\models\exceptions\FormError;
 use app\models\forms\ConsultationCreateForm;
 use yii\web\Response;
 
+/**
+ * Class IndexController
+ * @package app\controllers\admin
+ */
 class IndexController extends AdminBase
 {
     use SiteAccessTrait;
@@ -251,6 +254,7 @@ class IndexController extends AdminBase
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
+     * @throws \Exception
      */
     public function actionSiteconsultations()
     {
@@ -363,30 +367,5 @@ class IndexController extends AdminBase
                 'users' => $users,
             ]);
         }
-    }
-
-    /**
-     * @param int $agendaItemId
-     * @return string
-     */
-    public function actionOdsProposedProcedure($agendaItemId = 0)
-    {
-        $filename = 'proposed-procedure';
-        if ($agendaItemId) {
-            $agendaItem = $this->consultation->getAgendaItem($agendaItemId);
-            $filename .= '-' . trim($agendaItem->getShownCode(true), "\t\n\r\0\x0b.");
-            $proposedAgenda = ProposedProcedureAgenda::createProposedProcedureAgenda($this->consultation, $agendaItem);
-        } else {
-            $proposedAgenda = ProposedProcedureAgenda::createProposedProcedureAgenda($this->consultation);
-        }
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
-        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=' . rawurlencode($filename));
-        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
-
-        return $this->renderPartial('ods_proposed_procedure', [
-            'proposedAgenda'      => $proposedAgenda,
-        ]);
     }
 }

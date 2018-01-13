@@ -2,7 +2,6 @@
 
 use app\components\ProposedProcedureAgenda;
 use app\models\db\Amendment;
-use app\models\db\User;
 use yii\helpers\Html;
 
 /**
@@ -13,23 +12,19 @@ use yii\helpers\Html;
 /** @var \app\controllers\ConsultationController $controller */
 $controller        = $this->context;
 $layout            = $controller->layoutParams;
-$layout->fullWidth = true;
+$layout->fullWidth  = true;
+$layout->fullScreen = true;
 
 $this->title = \Yii::t('con', 'proposal_title');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), \app\components\UrlHelper::createUrl('admin/motion-list'));
 $layout->addBreadcrumb(\Yii::t('con', 'proposal_bc'));
-
-$iAmAdmin = User::havePrivilege($controller->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 ?>
     <section class="proposedProcedureToolbar toolbarBelowTitle fuelux">
         <div class="right">
-            <?php
-            if ($iAmAdmin) {
-                echo $this->render('../admin/proposed-procedure/_switch_dropdown');
-            }
-            ?>
+            <?= $this->render('_switch_dropdown') ?>
         </div>
     </section>
 <?php
@@ -86,14 +81,12 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
                             <td class="procedure">
                                 <?php
-                                if ($item->isProposalPublic()) {
-                                    if (!$item->isProposalPublic() && $item->proposalStatus) {
-                                        echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
-                                            '</span>';
-                                    }
-                                    $format = ProposedProcedureAgenda::FORMAT_HTML;
-                                    echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
+                                if (!$item->isProposalPublic() && $item->proposalStatus) {
+                                    echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
+                                        '</span>';
                                 }
+                                $format = ProposedProcedureAgenda::FORMAT_HTML;
+                                echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
                                 ?></td>
                         </tr>
                         <?php

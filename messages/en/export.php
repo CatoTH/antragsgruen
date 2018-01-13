@@ -42,7 +42,8 @@ return [
     'pp_title'              => 'Proposed procedure',
     'pp_changes'            => 'Proposed version',
     'pp_explanation'        => 'Explanation',
-    'pp_public_site'        => 'Overview',
+    'pp_admin_site'         => 'Overview (internal)',
+    'pp_public_site'        => 'Overview (public)',
     'pp_ods_all'            => 'ODS-Export: Everything',
     'pp_unhandled'          => 'Remaining procedure',
 ];

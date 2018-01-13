@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\MessageSource;
 use app\components\ProposedProcedureAgenda;
+use app\components\ProposedProcedureFactory;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -470,10 +471,10 @@ class ConsultationController extends Base
         $this->layout = 'column1';
         $this->consultationSidebar($this->consultation);
 
-        $proposedAgenda = ProposedProcedureAgenda::createProposedProcedureAgenda($this->consultation);
+        $proposalFactory = new ProposedProcedureFactory($this->consultation);
 
         return $this->render('proposed_procedure', [
-            'proposedAgenda' => $proposedAgenda,
+            'proposedAgenda' => $proposalFactory->create(),
         ]);
     }
 }

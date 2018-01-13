@@ -42,7 +42,8 @@ return [
     'pp_title'              => 'Verfahrensvorschlag',
     'pp_changes'            => 'Vorgeschlagener Text',
     'pp_explanation'        => 'Erklärung',
-    'pp_public_site'        => 'Übersichtsseite',
+    'pp_admin_site'         => 'Übersicht (intern)',
+    'pp_public_site'        => 'Übersicht (öfftl.)',
     'pp_ods_all'            => 'ODS-Export: Alles',
     'pp_unhandled'          => 'Verfahrensvorschläge der Antragskommission',
 ];
