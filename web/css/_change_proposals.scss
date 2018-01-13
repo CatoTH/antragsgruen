@@ -231,6 +231,25 @@
       color: black;
       text-align: center;
     }
+    .procedure {
+      h3 {
+        // Motion text
+        margin: 7px 0 0 0;
+        font-size: 0;
+        line-height: 0;
+        color: transparent;
+        border-top: solid 1px lightgrey;
+      }
+      p {
+        margin: 0;
+        font-size: inherit;
+      }
+      h4 {
+        margin: 10px 0 5px 0;
+        font-size: inherit;
+        font-weight: bold;
+      }
+    }
     @media screen and (min-width: 700px) {
       .prefix {
         width: 175px;

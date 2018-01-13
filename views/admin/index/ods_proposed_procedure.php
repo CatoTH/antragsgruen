@@ -1,5 +1,7 @@
 <?php
 
+use app\components\ProposedProcedureAgenda;
+use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
@@ -124,13 +126,25 @@ foreach ($proposedAgenda as $proposedItem) {
 
         foreach ($votingBlock->items as $item) {
             $row++;
-            if (is_a($item, \app\models\db\Amendment::class)) {
-                /** @var \app\models\db\Amendment $item */
-                $printAmendment($doc, $item, $row);
-            } else {
-                /** @var \app\models\db\Motion $item */
-                $printMotion($doc, $item, $row);
+            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $item->titlePrefix);
+            $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $item->getInitiatorsStr());
+
+            $minHeight = 1;
+            $proposal  = '<p>' . $item->getFormattedProposalStatus() . '</p>';
+            if ($item->proposalExplanation) {
+                $minHeight += 1;
+                $proposal  .= '<p>' . Html::encode($item->proposalExplanation) . '</p>';
             }
+            if (is_a($item, Amendment::class)) {
+                /** @var Amendment $item */
+                $format    = ProposedProcedureAgenda::FORMAT_ODS;
+                $add       = ProposedProcedureAgenda::formatProposedAmendmentProcedure($item, $format);
+                $minHeight += Ceil(strlen($add) / 60); // Rough estimate
+                $proposal  .= $add;
+            }
+
+            $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+            $doc->setMinRowHeight($row, $minHeight);
         }
 
         $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 1.5);

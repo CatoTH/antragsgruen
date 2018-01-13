@@ -1,15 +1,13 @@
 <?php
 
-use app\components\UrlHelper;
+use app\components\ProposedProcedureAgenda;
 use app\models\db\Amendment;
-use app\models\db\Motion;
 use app\models\db\User;
-use app\models\db\VotingBlock;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var \app\components\ProposedProcedureAgenda[] $proposedAgenda
+ * @var ProposedProcedureAgenda[] $proposedAgenda
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -83,16 +81,12 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="procedure">
                                 <?php
                                 if ($item->isProposalPublic() || $iAmAdmin) {
-                                    echo $item->getFormattedProposalStatus();
-                                    if ($item->proposalExplanation) {
-                                        echo '<div class="explanation">';
-                                        echo Html::encode($item->proposalExplanation);
-                                        echo '</div>';
-                                    }
                                     if (!$item->isProposalPublic() && $item->proposalStatus) {
                                         echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
                                             '</span>';
                                     }
+                                    $format = ProposedProcedureAgenda::FORMAT_HTML;
+                                    echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
                                 }
                                 ?></td>
                         </tr>

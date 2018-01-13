@@ -2,14 +2,23 @@
 
 namespace app\components;
 
+use app\models\db\Amendment;
+use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
+use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\VotingBlock;
+use app\models\exceptions\Internal;
+use app\models\sectionTypes\TextSimple;
 use app\models\settings\Consultation as ConsultationSettings;
+use yii\helpers\Html;
 
 class ProposedProcedureAgenda
 {
+    const FORMAT_HTML = 0;
+    const FORMAT_ODS  = 1;
+
     /** @var string */
     public $title;
     public $blockId;
@@ -191,7 +200,7 @@ class ProposedProcedureAgenda
             $block->items = [];
             foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
                 $handledAmends[] = $amendment->id;
-                $block->items[] = $amendment;
+                $block->items[]  = $amendment;
             }
             if (count($block->items) > 0) {
                 $item->votingBlocks[] = $block;
@@ -223,5 +232,62 @@ class ProposedProcedureAgenda
                 return static::createFromMotions($motions);
                 break;
         }
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param int $format
+     * @return string
+     */
+    public static function formatProposedAmendmentProcedure(Amendment $amendment, $format)
+    {
+        if (!$amendment->hasAlternativeProposaltext()) {
+            return '';
+        }
+
+        $proposal  = '';
+        $reference = $amendment->proposalReference;
+        /** @var AmendmentSection[] $sections */
+        $sections = $reference->getSortedSections(false);
+        foreach ($sections as $section) {
+            try {
+                $firstLine    = $section->getFirstLineNumber();
+                $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+                $originalData = $section->getOriginalMotionSection()->data;
+                $newData      = $section->data;
+                if ($originalData == $newData) {
+                    continue;
+                }
+                if ($format === static::FORMAT_ODS) {
+                    $proposal .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                } else {
+                    $proposal .= $section->getSectionType()->getAmendmentPlainHtml();
+                }
+            } catch (Internal $e) {
+                $proposal .= '<p>@INTERNAL ERROR@</p>';
+            }
+        }
+
+        return $proposal;
+    }
+
+    /**
+     * @param IMotion $item
+     * @param int $format
+     * @return string
+     */
+    public static function formatProposedProcedure(IMotion $item, $format)
+    {
+        $proposal = '<p>' . trim($item->getFormattedProposalStatus()) . '</p>';
+        if ($item->proposalExplanation) {
+            $proposal .= '<p class="explanation">' . Html::encode($item->proposalExplanation) . '</p>';
+        }
+
+        if (is_a($item, Amendment::class)) {
+            /** @var Amendment $item */
+            $proposal .= static::formatProposedAmendmentProcedure($item, $format);
+        }
+
+        return $proposal;
     }
 }
