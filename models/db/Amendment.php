@@ -1117,7 +1117,7 @@ class Amendment extends IMotion implements IRSSItem
             $newSections[$section->sectionId] = $section->data;
         }
 
-        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this]) as $amendment) {
+        foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this->id]) as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {

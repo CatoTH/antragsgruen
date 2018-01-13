@@ -364,14 +364,14 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param boolean $includeVoted
-     * @param null|Amendment[] $exclude
+     * @param null|int[] $exclude
      * @return Amendment[]
      */
     public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
     {
         $amendments = [];
         foreach ($this->amendments as $amendment) {
-            if ($exclude && in_array($amendment, $exclude)) {
+            if ($exclude && in_array($amendment->id, $exclude)) {
                 continue;
             }
             if (!$amendment->isVisibleForProposalAdmins()) {
