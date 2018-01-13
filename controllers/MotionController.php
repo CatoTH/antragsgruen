@@ -767,7 +767,7 @@ class MotionController extends Base
             $adminComment               = new MotionAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
             $adminComment->text         = \Yii::$app->request->post('writeComment');
-            $adminComment->status       = MotionAdminComment::STATUS_VISIBLE;
+            $adminComment->status       = MotionAdminComment::PROCEDURE_DETAILS;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->motionId     = $motion->id;
             if (!$adminComment->save()) {

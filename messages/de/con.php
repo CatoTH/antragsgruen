@@ -69,6 +69,7 @@ return [
     'proposal_table_proposal'  => 'Verfahrensvorschlag',
     'proposal_table_initiator' => 'Antragsteller*in',
     'proposal_table_others'    => 'Weitere Verfahrensvorschläge',
+    'proposal_table_comment'   => 'Interner Kommentar',
     'proposal_explanation'     => 'Erklärung',
     'proposal_invisible'       => 'nicht sichtbar',
 ];

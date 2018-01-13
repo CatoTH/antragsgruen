@@ -2,6 +2,7 @@
 
 use app\components\ProposedProcedureAgenda;
 use app\models\db\Amendment;
+use app\models\db\IMotion;
 use yii\helpers\Html;
 
 /**
@@ -10,8 +11,8 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\ConsultationController $controller */
-$controller        = $this->context;
-$layout            = $controller->layoutParams;
+$controller         = $this->context;
+$layout             = $controller->layoutParams;
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 
@@ -54,6 +55,7 @@ foreach ($proposedAgenda as $proposedItem) {
                         <th class="prefix"><?= \Yii::t('con', 'proposal_table_motion') ?></th>
                         <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
                         <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
+                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_comment') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -70,7 +72,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             $classes       = ['motion' . $item->id];
                             $currentMotion = $item->id;
                         }
-                        if ($item->status == \app\models\db\IMotion::STATUS_WITHDRAWN) {
+                        if ($item->status == IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
                         ?>
@@ -88,6 +90,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                 $format = ProposedProcedureAgenda::FORMAT_HTML;
                                 echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
                                 ?></td>
+                            <?= $this->render('_index_comment', ['item' => $item]) ?>
                         </tr>
                         <?php
                     }

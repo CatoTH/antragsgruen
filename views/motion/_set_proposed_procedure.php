@@ -7,6 +7,7 @@
 
 use app\components\HTMLTools;
 use app\components\Tools;
+use app\models\db\IAdminComment;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -143,7 +144,8 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
-                foreach ($motion->adminComments as $adminComment) {
+                $commentTypes = [IAdminComment::PROCEDURE_OVERVIEW, IAdminComment::PROCEDURE_DETAILS];
+                foreach ($motion->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->user;
                     ?>
                     <li>
@@ -151,7 +153,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
-                        <div class="comment"><?= Html::encode($adminComment->text) ?></div>
+                        <div class="comment"><?= HTMLTools::textToHtmlWithLink($adminComment->text) ?></div>
                     </li>
                     <?php
                 }

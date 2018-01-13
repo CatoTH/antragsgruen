@@ -20,10 +20,13 @@ use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
-use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 use yii\web\Response;
 
+/**
+ * Class AmendmentController
+ * @package app\controllers
+ */
 class AmendmentController extends Base
 {
     use AmendmentActionsTrait;
@@ -33,6 +36,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return Amendment|null
+     * @throws \yii\base\ExitException
      */
     private function getAmendmentWithCheck($motionSlug, $amendmentId)
     {
@@ -51,6 +55,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionPdf($motionSlug, $amendmentId)
     {
@@ -118,6 +123,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionOdt($motionSlug, $amendmentId)
     {
@@ -145,6 +151,7 @@ class AmendmentController extends Base
      * @param int $commentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
@@ -198,6 +205,7 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionAjaxDiff($motionSlug, $amendmentId)
     {
@@ -461,6 +469,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionSaveProposalStatus($motionSlug, $amendmentId)
     {
@@ -560,7 +569,7 @@ class AmendmentController extends Base
             $adminComment               = new AmendmentAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
             $adminComment->text         = \Yii::$app->request->post('writeComment');
-            $adminComment->status       = AmendmentAdminComment::STATUS_VISIBLE;
+            $adminComment->status       = AmendmentAdminComment::PROCEDURE_DETAILS;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->amendmentId  = $amendment->id;
             if (!$adminComment->save()) {
@@ -586,6 +595,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionEditProposedChange($motionSlug, $amendmentId)
     {
@@ -629,6 +639,7 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \yii\base\ExitException
      */
     public function actionEditProposedChangeCheck($motionSlug, $amendmentId)
     {

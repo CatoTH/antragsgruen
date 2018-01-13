@@ -37,7 +37,6 @@ use yii\helpers\Html;
  * @property int $globalAlternative
  *
  * @property AmendmentComment[] $comments
- * @property AmendmentAdminComment[] $adminComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
  * @property Amendment $proposalReference
@@ -88,12 +87,17 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @param int[] $types
+     * @param string $sort
+     * @param int|null $limit
+     * @return MotionAdminComment[]
      */
-    public function getAdminComments()
+    public function getAdminComments($types, $sort = 'desc', $limit = null)
     {
-        return $this->hasMany(AmendmentAdminComment::class, ['amendmentId' => 'id'])
-            ->andWhere(AmendmentAdminComment::tableName() . '.status != ' . AmendmentAdminComment::STATUS_DELETED);
+        return AmendmentAdminComment::find()
+            ->where(['amendmentId' => $this->id, 'status' => $types])
+            ->orderBy(['dateCreation' => $sort])
+            ->limit($limit)->all();
     }
 
     /**

@@ -69,6 +69,7 @@ return [
     'proposal_table_proposal'  => 'Proposed procedure',
     'proposal_table_initiator' => 'Proposer',
     'proposal_table_others'    => 'Further proposals',
+    'proposal_table_comment'   => 'Comment',
     'proposal_explanation'     => 'Explanation',
     'proposal_invisible'       => 'not public',
 ];

@@ -300,11 +300,36 @@
     }
   }
   tr.withdrawn {
-    text-decoration: line-through;
+    .prefix, .initiator {
+      text-decoration: line-through;
+    }
   }
   h2 .withdrawn {
     font-size: 0.8em;
     color: #eee;
+  }
+  .comment {
+    .writing {
+      display: none;
+    }
+    &.writing {
+      .writing {
+        display: block;
+      }
+      .notWriting {
+        display: none;
+      }
+    }
+    .currentComment {
+      overflow: hidden; // Spacing for button
+
+      &.empty {
+        display: none;
+      }
+      .name {
+        font-weight: bold;
+      }
+    }
   }
 }
 

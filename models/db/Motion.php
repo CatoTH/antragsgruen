@@ -37,7 +37,6 @@ use yii\helpers\Html;
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
- * @property MotionAdminComment[] $adminComments
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
@@ -89,12 +88,17 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @param int[] $types
+     * @param string $sort
+     * @param int|null $limit
+     * @return MotionAdminComment[]
      */
-    public function getAdminComments()
+    public function getAdminComments($types, $sort = 'desc', $limit = null)
     {
-        return $this->hasMany(MotionAdminComment::class, ['motionId' => 'id'])
-            ->andWhere(MotionAdminComment::tableName() . '.status != ' . MotionAdminComment::STATUS_DELETED);
+        return MotionAdminComment::find()
+            ->where(['motionId' => $this->id, 'status' => $types])
+            ->orderBy(['dateCreation' => $sort])
+            ->limit($limit)->all();
     }
 
     /**

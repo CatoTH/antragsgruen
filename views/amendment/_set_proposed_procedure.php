@@ -10,6 +10,7 @@ use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\IAdminComment;
 use yii\helpers\Html;
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
@@ -56,7 +57,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 
             <?php
             $foundStatus = false;
-            foreach (\app\models\db\Amendment::getProposedChangeStati() as $statusId) {
+            foreach (Amendment::getProposedChangeStati() as $statusId) {
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
@@ -64,7 +65,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= \app\models\db\Amendment::getProposedStatiNames()[$statusId] ?>
+                    ?>> <?= Amendment::getProposedStatiNames()[$statusId] ?>
                 </label><br>
                 <?php
             }
@@ -148,7 +149,8 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
-                foreach ($amendment->adminComments as $adminComment) {
+                $commentTypes = [IAdminComment::PROCEDURE_OVERVIEW];
+                foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->user;
                     ?>
                     <li>
@@ -156,7 +158,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
-                        <div class="comment"><?= Html::encode($adminComment->text) ?></div>
+                        <div class="comment"><?= HTMLTools::textToHtmlWithLink($adminComment->text) ?></div>
                     </li>
                     <?php
                 }

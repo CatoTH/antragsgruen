@@ -548,4 +548,12 @@ abstract class IMotion extends ActiveRecord
                 }
         }
     }
+
+    /**
+     * @param int[] $types
+     * @param string $sort
+     * @param int|null $limit
+     * @return IAdminComment[]
+     */
+    abstract public function getAdminComments($types, $sort = 'desc', $limit = null);
 }
