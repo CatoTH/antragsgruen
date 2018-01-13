@@ -197,7 +197,7 @@ class MotionSorter
 
         $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
         foreach ($items as $agendaItem) {
-            $agendaMotions = $agendaItem->getVisibleMotionsSorted();
+            $agendaMotions = $agendaItem->getVisibleMotions();
             foreach ($agendaMotions as $agendaMotion) {
                 if (!in_array($agendaMotion->id, $motionIdsToBeSorted)) {
                     continue;
@@ -265,6 +265,7 @@ class MotionSorter
      * @param Consultation $consultation
      * @param Amendment[] $amendments
      * @return Amendment[]
+     * @throws \app\models\exceptions\Internal
      */
     public static function getSortedAmendments(Consultation $consultation, $amendments)
     {

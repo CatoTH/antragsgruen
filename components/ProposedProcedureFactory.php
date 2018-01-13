@@ -50,7 +50,7 @@ class ProposedProcedureFactory
             }
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
             $item  = new ProposedProcedureAgenda($idCount++, $title, $agendaItem);
-            foreach ($agendaItem->getVisibleMotions(true) as $motion) {
+            foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
                 }
@@ -79,7 +79,7 @@ class ProposedProcedureFactory
 
             $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
-            foreach ($agendaItem->getVisibleMotions(true) as $motion) {
+            foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
                 foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
@@ -98,7 +98,7 @@ class ProposedProcedureFactory
             // Attach motions that haven't been found in the agenda at the end of the document (if no filter is set)
 
             $unhandledMotions = [];
-            foreach ($this->consultation->getVisibleMotions(true) as $motion) {
+            foreach ($this->consultation->getVisibleMotionsSorted(true) as $motion) {
                 if (!in_array($motion->id, $handledMotions)) {
                     $unhandledMotions[] = $motion;
                 }
@@ -183,7 +183,7 @@ class ProposedProcedureFactory
             case ConsultationSettings::START_LAYOUT_STD:
             case ConsultationSettings::START_LAYOUT_TAGS:
             default:
-                $motions = $this->consultation->getVisibleMotions(true);
+                $motions = $this->consultation->getVisibleMotionsSorted(true);
                 return $this->createFromMotions($motions);
                 break;
         }
