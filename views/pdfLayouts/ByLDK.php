@@ -5,7 +5,6 @@ namespace app\views\pdfLayouts;
 use app\models\db\Amendment;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
-use TCPDF;
 
 class ByLDK extends IPDFLayout
 {

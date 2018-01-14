@@ -12,10 +12,16 @@ use yii\helpers\Html;
  * @var IMotion $item
  */
 
+if (is_a($item, Amendment::class)) {
+    $postUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-comment');
+} else {
+    $postUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-comment');
+}
+
 ?>
-<td class="comment" data-antragsgruen-widget="backend/ProcedureComment">
+<td class="comment" data-post-url="<?= Html::encode($postUrl) ?>">
     <?php
-    $types          = [IAdminComment::PROCEDURE_OVERVIEW, IAdminComment::PROCEDURE_DETAILS];
+    $types          = [IAdminComment::PROCEDURE_OVERVIEW];
     $currentComment = $item->getAdminComments($types, IAdminComment::SORT_DESC, 1);
     ?>
     <div class="notWriting">
@@ -44,19 +50,12 @@ use yii\helpers\Html;
         }
         ?>
     </div>
-    <?php
-    if (is_a($item, Amendment::class)) {
-        $postUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-comment');
-    } else {
-        $postUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-comment');
-    }
-    echo Html::beginForm($postUrl, 'post', ['data-id' => $item->id, 'class' => 'writing']);
-    ?>
-    <textarea class="form-control" name="comment" required
-              placeholder="<?= Html::encode(\Yii::t('amend', 'proposal_comment_placeh')) ?>"
-    ></textarea>
-    <button class="btn btn-default" type="submit">
-        <?= \Yii::t('amend', 'proposal_comment_write') ?>
-    </button>
-    <?= Html::endForm() ?>
+    <section class="writing">
+        <textarea class="form-control" name="comment" required
+                  placeholder="<?= Html::encode(\Yii::t('amend', 'proposal_comment_placeh')) ?>"
+        ></textarea>
+        <button class="btn btn-default submitComment">
+            <?= \Yii::t('amend', 'proposal_comment_write') ?>
+        </button>
+    </section>
 </td>

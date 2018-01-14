@@ -263,6 +263,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_obsoleted_by'      => 'Erledigt durch',
     'proposal_modified_accepted' => 'Modifiziert übernehmen',
     'proposal_comment_title'     => 'Interne Kommentare',
+    'proposal_comment_overview'  => 'Übersichtsseite',
     'proposal_comment_placeh'    => 'Neuer Kommentar...',
     'proposal_comment_write'     => 'Schreiben',
     'proposal_voteblock'         => 'Abstimmungsblock',

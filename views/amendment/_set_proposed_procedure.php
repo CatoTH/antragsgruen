@@ -149,7 +149,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
-                $commentTypes = [IAdminComment::PROCEDURE_OVERVIEW];
+                $commentTypes = [IAdminComment::PROCEDURE_OVERVIEW, IAdminComment::PROCEDURE_DETAILS];
                 foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->user;
                     ?>
@@ -158,7 +158,14 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
-                        <div class="comment"><?= HTMLTools::textToHtmlWithLink($adminComment->text) ?></div>
+                        <div class="comment">
+                            <?php
+                            if ($adminComment->status == IAdminComment::PROCEDURE_OVERVIEW) {
+                                echo '<div class="overv">' . \Yii::t('amend', 'proposal_comment_overview') . '</div>';
+                            }
+                            ?>
+                            <?= HTMLTools::textToHtmlWithLink($adminComment->text) ?>
+                        </div>
                     </li>
                     <?php
                 }

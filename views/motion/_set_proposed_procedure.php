@@ -153,7 +153,14 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
-                        <div class="comment"><?= HTMLTools::textToHtmlWithLink($adminComment->text) ?></div>
+                        <div class="comment">
+                            <?php
+                            if ($adminComment->status == IAdminComment::PROCEDURE_OVERVIEW) {
+                                echo '<div class="overv">' . \Yii::t('amend', 'proposal_comment_overview') . '</div>';
+                            }
+                            ?>
+                            <?= HTMLTools::textToHtmlWithLink($adminComment->text) ?>
+                        </div>
                     </li>
                     <?php
                 }

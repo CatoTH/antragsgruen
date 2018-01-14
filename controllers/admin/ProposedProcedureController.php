@@ -140,4 +140,64 @@ class ProposedProcedureController extends AdminBase
             'user_str' => $user ? $user->name : '-',
         ]);
     }
+
+    /**
+     * @return string
+     */
+    public function actionSaveMotionVisible()
+    {
+        $motionId = \Yii::$app->request->post('id');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion) {
+            return json_encode([
+                'success' => false,
+                'error'   => 'Could not open motion',
+            ]);
+        }
+
+        if (\Yii::$app->request->post('visible', 0)) {
+            $motion->setProposalPublished();
+        } else {
+            $motion->proposalVisibleFrom = null;
+            $motion->save();
+        }
+
+        return json_encode([
+            'success' => true
+        ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionSaveAmendmentVisible()
+    {
+        $amendmentId = \Yii::$app->request->post('id');
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment) {
+            return json_encode([
+                'success' => false,
+                'error'   => 'Could not open amendment',
+            ]);
+        }
+
+        if (\Yii::$app->request->post('visible', 0)) {
+            $amendment->setProposalPublished();
+        } else {
+            $amendment->proposalVisibleFrom = null;
+            $amendment->save();
+        }
+
+        return json_encode([
+            'success' => true
+        ]);
+    }
 }

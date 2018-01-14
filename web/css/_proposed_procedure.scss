@@ -111,6 +111,10 @@
     .date {
       float: right;
     }
+    .overv {
+      text-align: right;
+      font-style: italic;
+    }
   }
   .proposalCommentForm {
     font-size: 12px;
@@ -266,6 +270,10 @@
         font-size: inherit;
         font-weight: bold;
       }
+    }
+    .visible {
+      width: 5%;
+      text-align: center;
     }
     @media screen and (min-width: 700px) {
       .prefix {

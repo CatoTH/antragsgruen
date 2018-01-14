@@ -31,7 +31,7 @@ $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides
 $adminAmendmentPaths  = 'excellist|odslist|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths           = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 $adminPaths           .= '|todo|proposed-procedure|ods-proposed-procedure';
-$adminPpPaths         = 'ods|save-motion-comment|save-amendment-comment';
+$adminPpPaths         = 'ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible';
 
 $urlRules = [
     $domadmin . ''                                                => 'admin/index',

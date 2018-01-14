@@ -232,6 +232,7 @@ return [
     'proposal_obsoleted_by'      => 'Handled by',
     'proposal_modified_accepted' => 'Modification',
     'proposal_comment_title'     => 'Internal comment',
+    'proposal_comment_overview'  => 'Overview',
     'proposal_comment_placeh'    => 'New comment...',
     'proposal_comment_write'     => 'Write',
     'proposal_voteblock'         => 'Voting block',

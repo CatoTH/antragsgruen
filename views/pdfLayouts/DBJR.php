@@ -6,16 +6,16 @@ use app\models\db\Amendment;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\settings\AntragsgruenApp;
-use TCPDF;
 use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
 {
 
-    private $headerlogo = array();
+    private $headerlogo = [];
 
     /**
      * @param Motion $motion
+     * @throws \app\models\exceptions\Internal
      */
     public function printMotionHeader(Motion $motion)
     {
@@ -82,6 +82,7 @@ class DBJR extends IPDFLayout
 
     /**
      * @param Amendment $amendment
+     * @throws \app\models\exceptions\Internal
      */
     public function printAmendmentHeader(Amendment $amendment)
     {
