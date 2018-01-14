@@ -63,6 +63,7 @@ return [
     'search_results_x'     => '%NUM% Ergebnisse',
 
     'proposal_title'           => 'Verfahrensvorschlag',
+    'proposal_title_internal'  => 'Verfahrensvorschlag (Intern)',
     'proposal_bc'              => 'Verfahrensvorschlag',
     'proposal_table_motion'    => 'Antrag',
     'proposal_table_voting'    => 'Abstimmung',

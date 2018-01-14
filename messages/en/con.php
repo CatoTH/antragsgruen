@@ -63,6 +63,7 @@ return [
     'search_results_x'     => '%NUM% results',
 
     'proposal_title'           => 'Proposed procedure',
+    'proposal_title_internal'  => 'Proposed procedure (internal)',
     'proposal_bc'              => 'Proposed procedure',
     'proposal_table_motion'    => 'Motion',
     'proposal_table_voting'    => 'Voting',

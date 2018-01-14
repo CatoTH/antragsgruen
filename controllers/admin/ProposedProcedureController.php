@@ -38,6 +38,33 @@ class ProposedProcedureController extends AdminBase
      * @param int $agendaItemId
      * @return string
      */
+    public function actionIndexAjax($agendaItemId = 0)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        if ($agendaItemId) {
+            $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, $agendaItem);
+        } else {
+            $proposalFactory = new ProposedProcedureFactory($this->consultation);
+        }
+
+        $html = $this->renderPartial('_index_content', [
+            'proposedAgenda' => $proposalFactory->create(),
+        ]);
+
+        return json_encode([
+            'success' => true,
+            'html'    => $html,
+            'date'    => date('H:i:s'),
+        ]);
+    }
+
+    /**
+     * @param int $agendaItemId
+     * @return string
+     */
     public function actionOds($agendaItemId = 0)
     {
         $filename = 'proposed-procedure';
