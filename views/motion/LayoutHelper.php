@@ -17,6 +17,7 @@ use app\models\db\Motion;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
+use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\views\pdfLayouts\IPDFLayout;
@@ -294,7 +295,16 @@ class LayoutHelper
 
         $pdfLayout->printMotionHeader($motion);
 
+        // PDFs should be attached at the end, to prevent collission with other parts of the motion text; see #242
+        $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
+            if ($section->getSettings()->type == ISectionType::TYPE_PDF) {
+                $pdfAttachments[] = $section;
+            } else {
+                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+            }
+        }
+        foreach ($pdfAttachments as $section) {
             $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
         }
     }
