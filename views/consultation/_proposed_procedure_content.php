@@ -62,10 +62,6 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="procedure">
                                 <?php
                                 if ($item->isProposalPublic()) {
-                                    if (!$item->isProposalPublic() && $item->proposalStatus) {
-                                        echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
-                                            '</span>';
-                                    }
                                     $format = ProposedProcedureAgenda::FORMAT_HTML;
                                     echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
                                 }

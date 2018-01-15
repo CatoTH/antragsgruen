@@ -393,24 +393,6 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
-     * @return string[]
-     */
-    public static function getProposalStatiAsVerbs()
-    {
-        $return = static::getProposedStatiNames();
-        foreach ([
-                     static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSEDV_ACCEPTED_AMEND'),
-                     static::STATUS_REJECTED          => \Yii::t('structure', 'PROPOSEDV_REJECTED'),
-                     static::STATUS_MODIFIED_ACCEPTED => \Yii::t('structure', 'PROPOSEDV_MODIFIED_ACCEPTED'),
-                     static::STATUS_REFERRED          => \Yii::t('structure', 'PROPOSEDV_REFERRED'),
-                     static::STATUS_VOTE              => \Yii::t('structure', 'PROPOSEDV_VOTE'),
-                 ] as $statusId => $statusName) {
-            $return[$statusId] = $statusName;
-        }
-        return $return;
-    }
-
-    /**
      * @return IMotionSection|null
      */
     public function getTitleSection()
@@ -510,6 +492,9 @@ abstract class IMotion extends ActiveRecord
      */
     public function getFormattedProposalStatus($includeExplanation = false)
     {
+        if ($this->status === static::STATUS_WITHDRAWN) {
+            return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
+        }
         $explStr = '';
         if ($includeExplanation && $this->proposalExplanation) {
             $explStr .= ' <span class="explanation">(' . \Yii::t('con', 'proposal_explanation') . ': ';
@@ -518,9 +503,6 @@ abstract class IMotion extends ActiveRecord
         }
         if ($includeExplanation && !$this->isProposalPublic()) {
             $explStr .= ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') . '</span>';
-        }
-        if ($this->status === static::STATUS_WITHDRAWN) {
-            $explStr .= ' <span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
         }
         if ($this->proposalStatus === null || $this->proposalStatus == 0) {
             return $explStr;
@@ -534,15 +516,15 @@ abstract class IMotion extends ActiveRecord
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
                 } else {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus] . $explStr;
+                    return static::getProposedStatiNames()[$this->proposalStatus] . $explStr;
                 }
                 break;
             case static::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
                 break;
             default:
-                if (isset(static::getProposalStatiAsVerbs()[$this->proposalStatus])) {
-                    return static::getProposalStatiAsVerbs()[$this->proposalStatus] . $explStr;
+                if (isset(static::getProposedStatiNames()[$this->proposalStatus])) {
+                    return static::getProposedStatiNames()[$this->proposalStatus] . $explStr;
                 } else {
                     return $this->proposalStatus . '?' . $explStr;
                 }
