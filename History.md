@@ -9,10 +9,11 @@
   - The proposed procedure and the voting blocks are optionally published on a separate page.
 - After replacing a motion by a new version, e.g. by merging amendments, there is now a view comparing both versions of the motions. That way, it is much easier to see what has actually changed.
 - Amendments to the title of a motion are now shown like changes to the text, using bookmarks at the right side of the motion.
-- A bug in the line numbering after manual line breaks was fixed
-- Support for OpenSlides 1 is removed, only 2.1+ is supported
-- This public draft of a in-progress amendment merging progress can now be displayed in full-screen mode
-- Bugfix: A multi-page PDF that was uploaded as part of a application and then exported as PDF again, collided with the tabular data of the application. 
+- A bug in the line numbering after manual line breaks was fixed.
+- Support for OpenSlides 1 is removed, only 2.1+ is supported.
+- This public draft of a in-progress amendment merging progress can now be displayed in full-screen mode.
+- Bugfix: A multi-page PDF that was uploaded as part of a application and then exported as PDF again, collided with the tabular data of the application.
+- Bugfix: When it's allowed to select multiple tags when creating a motion, the tag selection required to select all tags at once. 
 - Member petitions (a very use-case-specific module probably not really relevant for most of the people)
 - Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 

@@ -19,9 +19,33 @@ export class MotionEditForm {
 
         new DraftSavingEngine($form, $draftHint, "motion_" + draftMotionType + "_" + draftMotionId);
 
-        $form.on("submit", () => {
-            $(window).off("beforeunload", MotionEditForm.onLeavePage);
+        $form.on("submit", (ev) => {
+            let error: boolean = false;
+            if (this.checkMultipleTagsError()) {
+                error = true;
+            }
+
+            if (error) {
+                ev.preventDefault();
+            } else {
+                $(window).off("beforeunload", MotionEditForm.onLeavePage);
+            }
         });
+    }
+
+    private checkMultipleTagsError(): boolean {
+        let $group: JQuery = this.$form.find('.multipleTagsGroup');
+        if ($group.length === 0) {
+            return false;
+        }
+        if ($group.find('input:checked').length > 0) {
+            $group.removeClass('has-error');
+            return false;
+        } else {
+            $group.addClass('has-error');
+            $group.scrollintoview({top_offset: -50});
+            return true;
+        }
     }
 
     public static onLeavePage(): string {

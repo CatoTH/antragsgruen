@@ -98,16 +98,17 @@ if (count($tags) == 1) {
     $keys = array_keys($tags);
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {
-    echo '<div class="form-group">';
     if ($consultation->getSettings()->allowMultipleTags) {
+        echo '<div class="form-group multipleTagsGroup">';
         echo '<label class="legend">' . \Yii::t('motion', 'tag_tags') . '</label>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
                 echo ' checked';
             }
-            echo ' required title="Tags"> ' . Html::encode($tag->title) . '</label>';
+            echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
         }
+        echo '</div>';
     } else {
         $layout->loadFuelux();
         $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);
@@ -115,11 +116,12 @@ if (count($tags) == 1) {
         foreach ($tags as $tag) {
             $tagOptions[$tag->id] = $tag->title;
         }
+        echo '<div class="form-group">';
         echo '<label>' . \Yii::t('motion', 'tag_tags') . ':</label><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
+        echo '</div>';
     }
-    echo '</div>';
 }
 
 foreach ($form->sections as $section) {
