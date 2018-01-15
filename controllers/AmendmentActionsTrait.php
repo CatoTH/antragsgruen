@@ -321,6 +321,10 @@ trait AmendmentActionsTrait
      * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
+     * @throws Access
+     * @throws DB
+     * @throws FormError
+     * @throws Internal
      */
     private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)
     {

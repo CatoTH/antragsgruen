@@ -371,12 +371,14 @@
       padding: 10px;
     }
   }
+  .hint {
+    border-top: solid 1px #eee;
+    padding: 5px 10px;
+    font-style: italic;
+  }
   .status {
     .head {
       font-weight: bold;
-    }
-    .description {
-      margin-bottom: 10px;
     }
   }
   .agreement {

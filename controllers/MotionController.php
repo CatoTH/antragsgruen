@@ -23,7 +23,7 @@ use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
-use models\notifications\MotionProposedProcedure;
+use app\models\notifications\MotionProposedProcedure;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -739,7 +739,7 @@ class MotionController extends Base
             }
 
             $this->consultation->refresh();
-            $response['html'] = $this->renderPartial('_set_proposed_procedure', [
+            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
                 'msgAlert' => $msgAlert,
             ]);
@@ -753,9 +753,9 @@ class MotionController extends Base
                 $motion->save();
                 $response['success'] = true;
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
-                    'amendment' => $motion,
-                    'msgAlert'  => $msgAlert,
-                    'context'   => \Yii::$app->request->post('context', 'view'),
+                    'motion'   => $motion,
+                    'msgAlert' => $msgAlert,
+                    'context'  => \Yii::$app->request->post('context', 'view'),
                 ]);
             } catch (MailNotSent $e) {
                 $response['success'] = false;

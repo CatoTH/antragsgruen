@@ -350,8 +350,27 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     */
+    private function setProposalAgree(Motion $motion)
+    {
+        if (!$motion->iAmInitiator() || !$motion->proposalStatusNeedsUserFeedback()) {
+            \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
+            return;
+        }
+
+        $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
+        $motion->save();
+        \Yii::$app->session->setFlash('success', \Yii::t('amend', 'proposal_user_saved'));
+    }
+
+    /**
+     * @param Motion $motion
      * @param int $commentId
      * @param array $viewParameters
+     * @throws Access
+     * @throws DB
+     * @throws FormError
+     * @throws Internal
      */
     private function performShowActions(Motion $motion, $commentId, &$viewParameters)
     {
@@ -391,6 +410,9 @@ trait MotionActionsTrait
 
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);
+
+        } elseif (isset($post['setProposalAgree'])) {
+            $this->setProposalAgree($motion);
         }
     }
 }

@@ -4,24 +4,24 @@ use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var \app\models\db\Amendment $amendment
+ * @var \app\models\db\Motion $motion
  */
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
-$agreed = ($amendment->proposalUserStatus == \app\models\db\Amendment::STATUS_ACCEPTED);
+$agreed = ($motion->proposalUserStatus == \app\models\db\Motion::STATUS_ACCEPTED);
 ?>
     <h2><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
     <div class="holder">
         <div class="status">
             <div class="head"><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></div>
             <div class="description">
-                <?= $amendment->getFormattedProposalStatus() ?>
+                <?= $motion->getFormattedProposalStatus() ?>
             </div>
             <?php
-            if ($amendment->votingBlock) {
+            if ($motion->votingBlock) {
                 ?>
                 <div class="head"><?= \Yii::t('amend', 'proposal_voteblock') ?></div>
-                <div class="description"><?= Html::encode($amendment->votingBlock->title) ?></div>
+                <div class="description"><?= Html::encode($motion->votingBlock->title) ?></div>
                 <?php
             }
             ?>

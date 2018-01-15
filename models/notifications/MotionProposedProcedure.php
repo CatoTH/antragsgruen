@@ -1,6 +1,6 @@
 <?php
 
-namespace models\notifications;
+namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
