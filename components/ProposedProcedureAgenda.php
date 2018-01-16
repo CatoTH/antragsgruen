@@ -49,22 +49,30 @@ class ProposedProcedureAgenda
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new ProposedProcedureAgendaVoting($title, $votingBlock);
         foreach ($votingBlock->motions as $motion) {
-            $block->items[]   = $motion;
-            $handledMotions[] = $motion->id;
+            if ($motion->isProposalPublic()) {
+                $block->items[]   = $motion;
+                $handledMotions[] = $motion->id;
 
-            foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
-                if (in_array($amendment->id, $handledAmends)) {
-                    continue;
+                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+                    if (in_array($amendment->id, $handledAmends)) {
+                        continue;
+                    }
+                    if ($amendment->isProposalPublic()) {
+                        $block->items[]  = $amendment;
+                        $handledAmends[] = $amendment->id;
+                    }
                 }
-                $block->items[]  = $amendment;
-                $handledAmends[] = $amendment->id;
             }
         }
         foreach ($votingBlock->amendments as $vAmendment) {
-            $block->items[]  = $vAmendment;
-            $handledAmends[] = $vAmendment->id;
+            if (!in_array($vAmendment->id, $handledAmends) && $vAmendment->isProposalPublic()) {
+                $block->items[]  = $vAmendment;
+                $handledAmends[] = $vAmendment->id;
+            }
         }
-        $this->votingBlocks[] = $block;
+        if (count($block->items) > 0) {
+            $this->votingBlocks[] = $block;
+        }
     }
 
     /**
