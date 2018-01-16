@@ -265,8 +265,11 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
     </section>
 <?php
 if ($context !== 'edit') {
+    $classes = ['statusDetails'];
+    $classes[] = 'status_' . Amendment::STATUS_MODIFIED_ACCEPTED;
+    $classes[] = 'status_' . Amendment::STATUS_VOTE;
     ?>
-    <section class="statusDetails status_<?= Amendment::STATUS_MODIFIED_ACCEPTED ?>">
+    <section class="<?= implode(' ', $classes) ?>">
         <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
         <?php
         echo Html::a(

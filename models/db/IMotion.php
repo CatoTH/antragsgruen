@@ -522,6 +522,17 @@ abstract class IMotion extends ActiveRecord
             case static::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
                 break;
+            case static::STATUS_VOTE:
+                $str = static::getProposedStatiNames()[$this->proposalStatus];
+                if ($this->votingStatus === static::STATUS_ACCEPTED) {
+                    $str .= ' (' . \Yii::t('structure', 'STATUS_ACCEPTED') . ')';
+                }
+                if ($this->votingStatus === static::STATUS_REJECTED) {
+                    $str .= ' (' . \Yii::t('structure', 'STATUS_REJECTED') . ')';
+                }
+                $str .= $explStr;
+                return $str;
+                break;
             default:
                 if (isset(static::getProposedStatiNames()[$this->proposalStatus])) {
                     return static::getProposedStatiNames()[$this->proposalStatus] . $explStr;

@@ -98,16 +98,12 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 </thead>
                 <tbody>
                 <?php
-                $inactiveStati = [
-                    Motion::STATUS_OBSOLETED_BY,
-                    Motion::STATUS_COMPLETED,
-                ];
                 foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
                     $id = 'markAmendment' . $amend->id;
                     echo '<tr class="amendment' . $amend->id . '"><td class="colCheck">';
                     echo Html::checkbox(
                         'amendments[' . $amend->id . ']',
-                        ($amend->globalAlternative == 0 && !in_array($amend->status, $inactiveStati)),
+                        $amend->markForMergingByDefault(),
                         ['class' => 'amendment' . $amend->id, 'id' => $id]
                     );
                     echo '</td><td class="colTitle">';

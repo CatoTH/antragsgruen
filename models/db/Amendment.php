@@ -1074,6 +1074,29 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
+     */
+    public function markForMergingByDefault()
+    {
+        if ($this->globalAlternative) {
+            return false;
+        }
+        if ($this->status === static::STATUS_ACCEPTED || $this->proposalStatus === static::STATUS_ACCEPTED) {
+            return true;
+        }
+        if ($this->status === static::STATUS_PROPOSED_MODIFIED_AMENDMENT ||
+            $this->proposalStatus === static::STATUS_MODIFIED_ACCEPTED) {
+            return true;
+        }
+        if ($this->status === static::STATUS_VOTE || $this->proposalStatus === static::STATUS_VOTE) {
+            if ($this->votingStatus === static::STATUS_ACCEPTED) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return string
      */
     public function getFormattedStatus()
