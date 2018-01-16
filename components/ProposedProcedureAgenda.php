@@ -116,7 +116,7 @@ class ProposedProcedureAgenda
             $proposal .= '<p class="explanation">' . Html::encode($item->proposalExplanation) . '</p>';
         }
 
-        if (is_a($item, Amendment::class)) {
+        if (is_a($item, Amendment::class) && $item->status !== IMotion::STATUS_WITHDRAWN) {
             /** @var Amendment $item */
             $proposal .= static::formatProposedAmendmentProcedure($item, $format);
         }

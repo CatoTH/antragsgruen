@@ -3,6 +3,7 @@
 use app\components\ProposedProcedureAgenda;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
+use app\models\db\IMotion;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
@@ -135,7 +136,7 @@ foreach ($proposedAgenda as $proposedItem) {
                 $minHeight += 1;
                 $proposal  .= '<p>' . Html::encode($item->proposalExplanation) . '</p>';
             }
-            if (is_a($item, Amendment::class)) {
+            if (is_a($item, Amendment::class) && $item->status !== IMotion::STATUS_WITHDRAWN) {
                 /** @var Amendment $item */
                 $format    = ProposedProcedureAgenda::FORMAT_ODS;
                 $add       = ProposedProcedureAgenda::formatProposedAmendmentProcedure($item, $format);
