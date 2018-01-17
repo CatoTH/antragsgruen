@@ -471,7 +471,7 @@ class ConsultationController extends Base
         $this->layout = 'column1';
         $this->consultationSidebar($this->consultation);
 
-        $proposalFactory = new ProposedProcedureFactory($this->consultation);
+        $proposalFactory = new ProposedProcedureFactory($this->consultation, false);
 
         return $this->render('proposed_procedure', [
             'proposedAgenda' => $proposalFactory->create(),
@@ -486,7 +486,7 @@ class ConsultationController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $proposalFactory = new ProposedProcedureFactory($this->consultation);
+        $proposalFactory = new ProposedProcedureFactory($this->consultation, false);
 
         $html = $this->renderPartial('_proposed_procedure_content', [
             'proposedAgenda' => $proposalFactory->create(),

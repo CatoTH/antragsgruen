@@ -19,15 +19,20 @@ class ProposedProcedureFactory
     /** @var ConsultationAgendaItem|null */
     public $agendaItem;
 
+    /** @var bool */
+    public $includeInvisible = false;
+
     /**
      * ProposedProcedureFactory constructor.
      * @param Consultation $consultation
+     * @param bool $includeInvisible
      * @param null|ConsultationAgendaItem $agendaItem
      */
-    public function __construct(Consultation $consultation, $agendaItem = null)
+    public function __construct(Consultation $consultation, $includeInvisible, $agendaItem = null)
     {
-        $this->consultation = $consultation;
-        $this->agendaItem   = $agendaItem;
+        $this->consultation     = $consultation;
+        $this->agendaItem       = $agendaItem;
+        $this->includeInvisible = $includeInvisible;
     }
 
     /**
@@ -59,7 +64,7 @@ class ProposedProcedureFactory
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
                     }
-                    $item->addVotingBlock($votingBlock, $handledMotions, $handledAmends);
+                    $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
                     $handledVotings[] = $votingBlock->id;
                 }
 
@@ -72,7 +77,7 @@ class ProposedProcedureFactory
                         if (in_array($votingBlock->id, $handledVotings)) {
                             continue;
                         }
-                        $item->addVotingBlock($votingBlock, $handledMotions, $handledAmends);
+                        $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
                     }
                 }
             }
@@ -135,7 +140,7 @@ class ProposedProcedureFactory
                 if (in_array($votingBlock->id, $handledVotings)) {
                     continue;
                 }
-                $item->addVotingBlock($votingBlock, $handledMotions, $handledAmends);
+                $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
                 $handledAmends[] = $votingBlock->id;
             }
 
@@ -148,22 +153,30 @@ class ProposedProcedureFactory
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
                     }
-                    $item->addVotingBlock($votingBlock, $handledMotions, $handledAmends);
+                    $item->addVotingBlock($votingBlock, $this->includeInvisible, $handledMotions, $handledAmends);
                     $handledAmends[] = $votingBlock->id;
                 }
             }
 
             $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
+            if ($motion->isProposalPublic() || $this->includeInvisible) {
+                $handledMotions[] = $motion->id;
+                $block->items[] = $motion;
+            }
             foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
-                $handledAmends[] = $amendment->id;
-                $block->items[]  = $amendment;
+                if ($amendment->isProposalPublic() || $this->includeInvisible) {
+                    $handledAmends[] = $amendment->id;
+                    $block->items[]  = $amendment;
+                }
             }
             if (count($block->items) > 0) {
                 $item->votingBlocks[] = $block;
             }
 
-            $items[] = $item;
+            if (count($item->votingBlocks) > 0) {
+                $items[] = $item;
+            }
         }
 
         return $items;

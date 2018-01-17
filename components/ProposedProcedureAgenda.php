@@ -41,15 +41,16 @@ class ProposedProcedureAgenda
 
     /**
      * @param VotingBlock $votingBlock
+     * @param bool $includeInvisible
      * @param array $handledMotions
      * @param array $handledAmends
      */
-    public function addVotingBlock($votingBlock, &$handledMotions, &$handledAmends)
+    public function addVotingBlock($votingBlock, $includeInvisible, &$handledMotions, &$handledAmends)
     {
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new ProposedProcedureAgendaVoting($title, $votingBlock);
         foreach ($votingBlock->motions as $motion) {
-            if ($motion->isProposalPublic()) {
+            if ($motion->isProposalPublic() || $includeInvisible) {
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
 
@@ -57,7 +58,7 @@ class ProposedProcedureAgenda
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
-                    if ($amendment->isProposalPublic()) {
+                    if ($amendment->isProposalPublic() || $includeInvisible) {
                         $block->items[]  = $amendment;
                         $handledAmends[] = $amendment->id;
                     }
@@ -65,7 +66,7 @@ class ProposedProcedureAgenda
             }
         }
         foreach ($votingBlock->amendments as $vAmendment) {
-            if (!in_array($vAmendment->id, $handledAmends) && $vAmendment->isProposalPublic()) {
+            if (!in_array($vAmendment->id, $handledAmends) && ($vAmendment->isProposalPublic() || $includeInvisible)) {
                 $block->items[]  = $vAmendment;
                 $handledAmends[] = $vAmendment->id;
             }

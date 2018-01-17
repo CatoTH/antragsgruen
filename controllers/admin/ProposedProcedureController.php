@@ -24,9 +24,9 @@ class ProposedProcedureController extends AdminBase
     {
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, $agendaItem);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
         }
 
         return $this->render('index', [
@@ -45,9 +45,9 @@ class ProposedProcedureController extends AdminBase
 
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, $agendaItem);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
         }
 
         $html = $this->renderPartial('_index_content', [
@@ -71,9 +71,9 @@ class ProposedProcedureController extends AdminBase
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
             $filename        .= '-' . trim($agendaItem->getShownCode(true), "\t\n\r\0\x0b.");
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, $agendaItem);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation);
+            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
