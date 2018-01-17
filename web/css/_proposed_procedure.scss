@@ -111,6 +111,11 @@
     .date {
       float: right;
     }
+    .delComment {
+      float: right;
+      color: $colorDelLink;
+      width: auto;
+    }
     .overv {
       text-align: right;
       font-style: italic;

@@ -583,6 +583,7 @@ class AmendmentController extends Base
                 'username'      => $adminComment->user->name,
                 'id'            => $adminComment->id,
                 'text'          => $adminComment->text,
+                'delLink'       => UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment'),
                 'dateFormatted' => Tools::formatMysqlDateTime($adminComment->dateCreation),
             ];
         }

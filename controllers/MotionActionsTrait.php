@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Motion;
+use app\models\db\MotionAdminComment;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
@@ -18,6 +19,7 @@ use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
 use app\components\EmailNotifications;
+use yii\web\Response;
 
 /**
  * @property Consultation $consultation
@@ -413,6 +415,34 @@ trait MotionActionsTrait
 
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($motion);
+        }
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\base\ExitException
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelProposalComment($motionSlug)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->getMotionWithCheck($motionSlug);
+        if (!$motion) {
+            return json_encode(['success' => false, 'error' => 'Motion not found']);
+        }
+
+        $commentId = \Yii::$app->request->post('id');
+        $comment = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
+        if ($comment && User::isCurrentUser($comment->user)) {
+            $comment->delete();
+            return json_encode(['success' => true]);
+        } else {
+            return json_encode(['success' => false, 'error' => 'No permission to delete this comment']);
         }
     }
 }

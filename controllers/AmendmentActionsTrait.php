@@ -6,6 +6,7 @@ use app\components\AntiSpam;
 use app\components\EmailNotifications;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
+use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
@@ -18,6 +19,7 @@ use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
+use yii\web\Response;
 
 /**
  * @property Consultation $consultation
@@ -360,6 +362,35 @@ trait AmendmentActionsTrait
 
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($amendment);
+        }
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\base\ExitException
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDelProposalComment($motionSlug, $amendmentId)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        if (!$amendment) {
+            return json_encode(['success' => false, 'error' => 'Amendment not found']);
+        }
+
+        $commentId = \Yii::$app->request->post('id');
+        $comment = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);
+        if ($comment && User::isCurrentUser($comment->user)) {
+            $comment->delete();
+            return json_encode(['success' => true]);
+        } else {
+            return json_encode(['success' => false, 'error' => 'No permission to delete this comment']);
         }
     }
 }

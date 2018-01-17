@@ -7,11 +7,12 @@
 
 use app\components\HTMLTools;
 use app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\IAdminComment;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
-$saveUrl = \app\components\UrlHelper::createMotionUrl($motion, 'save-proposal-status');
+$saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
@@ -148,9 +149,17 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                 foreach ($motion->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->user;
                     ?>
-                    <li>
+                    <li class="comment" data-id="<?= $adminComment->id ?>">
                         <div class="header">
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
+                            <?php
+                            if (\app\models\db\User::isCurrentUser($adminComment->user)) {
+                                $url = UrlHelper::createMotionUrl($motion, 'del-proposal-comment');
+                                echo '<button type="button" data-url="' . Html::encode($url) . '" ';
+                                echo 'class="btn-link delComment">';
+                                echo '<span class="glyphicon glyphicon-trash"></span></button>';
+                            }
+                            ?>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
                         <div class="comment">

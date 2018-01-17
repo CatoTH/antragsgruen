@@ -153,9 +153,17 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
                     $user = $adminComment->user;
                     ?>
-                    <li>
+                    <li class="comment" data-id="<?= $adminComment->id ?>">
                         <div class="header">
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
+                            <?php
+                            if (\app\models\db\User::isCurrentUser($adminComment->user)) {
+                                $url = UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment');
+                                echo '<button type="button" data-url="' . Html::encode($url) . '" ';
+                                echo 'class="btn-link delComment">';
+                                echo '<span class="glyphicon glyphicon-trash"></span></button>';
+                            }
+                            ?>
                             <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>
                         </div>
                         <div class="comment">

@@ -86,6 +86,19 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @param User|null $user
+     * @return bool
+     */
+    public static function isCurrentUser($user)
+    {
+        $currentUser = static::getCurrentUser();
+        if (!$user || !$currentUser) {
+            return false;
+        }
+        return $user->id == $currentUser->id;
+    }
+
+    /**
      * @param Consultation|null $consultation
      * @param int|int[] $privilege
      * @return bool

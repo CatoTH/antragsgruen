@@ -12,6 +12,7 @@ export class ChangeProposedProcedure {
     private saveUrl: string;
     private context: string;
     private csrf: string;
+    private savingComment: boolean = false;
 
     constructor(private $widget: JQuery) {
         this.initElements();
@@ -199,39 +200,73 @@ export class ChangeProposedProcedure {
         $commentList[0].scrollTop = $commentList[0].scrollHeight;
     }
 
+    private doSaveComment() {
+        let $commentWidget = this.$widget.find('.proposalCommentForm'),
+            $commentList = $commentWidget.find('.commentList'),
+            text = $commentWidget.find('textarea').val();
+
+        if (text == '' || this.savingComment) {
+            return;
+        }
+
+        this.savingComment = true;
+        $.post(this.saveUrl, {
+            writeComment: text,
+            _csrf: this.csrf
+        }, (ev) => {
+            if (ev.success) {
+                let delHtml = '';
+                if (ev.comment.delLink) {
+                    delHtml = '<button type="button" data-url="' + ev.comment.delLink + '" class="btn-link delComment">';
+                    delHtml += '<span class="glyphicon glyphicon-trash"></span></button>';
+                }
+                let $comment = $('<li class="comment"><div class="header"><div class="date"></div>' + delHtml + '<div class="name"></div></div><div class="comment"></div></li>');
+                $comment.find('.date').text(ev.comment.dateFormatted);
+                $comment.find('.name').text(ev.comment.username);
+                $comment.find('.comment').text(ev.comment.text);
+                $comment.data('id', ev.comment.id);
+                $commentList.append($comment);
+                $commentWidget.find('textarea').val('');
+                $commentList[0].scrollTop = $commentList[0].scrollHeight;
+            } else {
+                alert('Could not save: ' + JSON.stringify(ev));
+            }
+            this.savingComment = false;
+        }).fail(() => {
+            alert('Could not save');
+            this.savingComment = false;
+        });
+    }
+
+    private delComment($comment: JQuery) {
+        $.post($comment.find(".delComment").data("url"), {
+            "_csrf": this.csrf,
+            "id": $comment.data("id"),
+        }, (ret) => {
+            if (ret['success']) {
+                $comment.remove();
+            } else {
+                alert("Error: " + ret['error']);
+            }
+        }).catch(() => {
+            alert("An error occurred");
+        });
+    }
+
     private initCommentForm() {
         this.$widget.on('click', '.proposalCommentForm button', () => {
-            let $commentWidget = this.$widget.find('.proposalCommentForm'),
-                saving = false,
-                $commentList = $commentWidget.find('.commentList'),
-                text = $commentWidget.find('textarea').val();
-
-            if (text == '' || saving) {
-                return;
-            }
-
-            saving = true;
-            $.post(this.saveUrl, {
-                writeComment: text,
-                _csrf: this.csrf
-            }, (ev) => {
-                if (ev.success) {
-                    let $comment = $('<li><div class="header"><div class="date"></div><div class="name"></div></div><div class="comment"></div></li>');
-                    $comment.find('.date').text(ev.comment.dateFormatted);
-                    $comment.find('.name').text(ev.comment.username);
-                    $comment.find('.comment').text(ev.comment.text);
-                    $commentList.append($comment);
-                    $commentWidget.find('textarea').val('');
-                    $commentList[0].scrollTop = $commentList[0].scrollHeight;
-                } else {
-                    alert('Could not save: ' + JSON.stringify(ev));
-                }
-                saving = false;
-            }).fail(() => {
-                alert('Could not save');
-                saving = false;
-            });
+            this.doSaveComment();
         });
         this.commentsScrollBottom();
+
+        this.$widget.on('keypress', '.proposalCommentForm textarea', (ev) => {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+                this.doSaveComment();
+            }
+        });
+
+        this.$widget.on('click', '.delComment', (ev) => {
+            this.delComment($(ev.currentTarget).parents(".comment").first());
+        });
     }
 }
