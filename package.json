@@ -13,7 +13,7 @@
         "build": "gulp"
     },
     "devDependencies": {
-        "@types/bootbox": "^4.4.35",
+        "@types/bootbox": "^4.4.36",
         "@types/bootstrap": "^3.3.36",
         "@types/ckeditor": "0.0.40",
         "@types/clipboard": "^1.5.35",
@@ -29,7 +29,7 @@
         "gulp": "^3.9.1",
         "gulp-concat": "^2.6.1",
         "gulp-sass": "^3.1.0",
-        "gulp-sourcemaps": "^2.6.2",
+        "gulp-sourcemaps": "^2.6.3",
         "gulp-typescript": "^3.2.3",
         "gulp-uglify": "^3.0.0",
         "intl": "^1.2.5",
