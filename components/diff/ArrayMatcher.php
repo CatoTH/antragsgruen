@@ -53,7 +53,7 @@ class ArrayMatcher
             // @TODO Find a better solution for this
             // As the number of variants grows exponentially with the number of elements to fill, we need
             // a fallback for this kind of situation. Better a suboptimal solution than a broken site.
-            // Thus usually happens when a lot of paragraphs are deleted or inserted.
+            // This usually happens when a lot of paragraphs are deleted or inserted.
             for ($i = 0; $i < $spaceToFill; $i++) {
                 $toMatchArr[] = '###EMPTYINSERTED###';
             }
@@ -92,7 +92,7 @@ class ArrayMatcher
     public function calcSimilarity($arr1, $arr2)
     {
         if (count($arr1) != count($arr2)) {
-            throw new \Exception('calcSimilarity: The number of elements does not match');
+            throw new Internal('calcSimilarity: The number of elements does not match');
         }
         $cacheKey = md5(serialize($arr1) . serialize($arr2));
         if (isset(static::$calcSimilarityCache[$cacheKey])) {
@@ -123,6 +123,7 @@ class ArrayMatcher
      * @param string[] $reference
      * @param string[][] $variants
      * @return string[]
+     * @throws Internal
      */
     public function getBestFit($reference, $variants)
     {
@@ -145,6 +146,7 @@ class ArrayMatcher
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return string[]
+     * @throws Internal
      */
     public function matchArrayWithPlaceholder($referenceArr, $toMatchArr)
     {
@@ -164,6 +166,7 @@ class ArrayMatcher
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return string[]
+     * @throws Internal
      */
     public function matchArrayResolved($referenceArr, $toMatchArr)
     {
@@ -206,6 +209,7 @@ class ArrayMatcher
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return array
+     * @throws Internal
      */
     public function matchArrayUnresolved($referenceArr, $toMatchArr)
     {
@@ -249,6 +253,7 @@ class ArrayMatcher
      * @param string[] $referenceArr
      * @param string[] $toMatchArr
      * @return array
+     * @throws Internal
      */
     public function matchForDiff($referenceArr, $toMatchArr)
     {

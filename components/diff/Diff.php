@@ -430,6 +430,7 @@ class Diff
      * @param array $arr
      * @param int $idx
      * @return array|null
+     * @throws Internal
      */
     public static function computeSubsequentInsertsDeletes($arr, $idx)
     {
@@ -824,6 +825,7 @@ class Diff
      * @param array $newParas
      * @param int $diffFormatting
      * @return array[]
+     * @throws Internal
      */
     public static function computeAffectedParagraphs($referenceParas, $newParas, $diffFormatting)
     {

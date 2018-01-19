@@ -5,7 +5,6 @@ namespace app\components\diff;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\exceptions\Internal;
-use yii\helpers\Html;
 
 class AmendmentSectionFormatter
 {
@@ -21,6 +20,7 @@ class AmendmentSectionFormatter
 
     /**
      * @param string $text
+     * @throws Internal
      */
     public function setTextOriginal($text)
     {
@@ -29,6 +29,7 @@ class AmendmentSectionFormatter
 
     /**
      * @param string $text
+     * @throws Internal
      */
     public function setTextNew($text)
     {
@@ -164,7 +165,6 @@ class AmendmentSectionFormatter
      * @param int $lineLength
      * @param int $diffFormatting
      * @return array[]
-     * @throws Internal
      */
     public function getDiffGroupsWithNumbers($lineLength, $diffFormatting)
     {

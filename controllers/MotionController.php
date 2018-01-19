@@ -56,7 +56,6 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $sectionId
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionViewpdf($motionSlug, $sectionId)
@@ -120,7 +119,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionPdf($motionSlug)
@@ -146,7 +144,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionPdfamendcollection($motionSlug)
@@ -224,7 +221,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionOdt($motionSlug)
@@ -247,7 +243,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionPlainhtml($motionSlug)
@@ -366,7 +361,6 @@ class MotionController extends Base
      * @param string $motionSlug
      * @return string
      * @throws \yii\base\ExitException
-     * @throws Internal
      */
     public function actionViewChangesOdt($motionSlug)
     {
