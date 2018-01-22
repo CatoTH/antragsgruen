@@ -561,7 +561,11 @@ class MotionController extends Base
         $policy = $motionType->getMotionPolicy();
         if (!$policy->checkCurrUserMotion()) {
             if ($policy->checkCurrUserMotion(true, true)) {
-                $loginUrl = UrlHelper::createLoginUrl(['motion/create', 'motionTypeId' => $motionTypeId]);
+                $loginUrl = UrlHelper::createLoginUrl([
+                    'motion/create',
+                    'motionTypeId' => $motionTypeId,
+                    'agendaItemId' => $agendaItemId
+                ]);
                 return $this->redirect($loginUrl);
             } else {
                 return $this->showErrorpage(403, \Yii::t('motion', 'err_create_permission'));
