@@ -1070,7 +1070,10 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function hasAlternativeProposaltext()
     {
-        return ($this->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED && $this->proposalReference);
+        return (
+            in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
+            $this->proposalReference
+        );
     }
 
     /**
