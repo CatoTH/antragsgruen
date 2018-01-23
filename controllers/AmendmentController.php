@@ -568,7 +568,7 @@ class AmendmentController extends Base
             $adminComment               = new AmendmentAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
             $adminComment->text         = \Yii::$app->request->post('writeComment');
-            $adminComment->status       = AmendmentAdminComment::PROCEDURE_DETAILS;
+            $adminComment->status       = AmendmentAdminComment::PROPOSED_PROCEDURE;
             $adminComment->dateCreation = date('Y-m-d H:i:s');
             $adminComment->amendmentId  = $amendment->id;
             if (!$adminComment->save()) {

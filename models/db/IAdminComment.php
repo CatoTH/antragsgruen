@@ -17,7 +17,7 @@ use yii\db\ActiveRecord;
  */
 abstract class IAdminComment extends ActiveRecord
 {
-    const PROCEDURE_DETAILS   = 1;
+    const PROPOSED_PROCEDURE   = 1;
     const PROCEDURE_OVERVIEW   = 2;
 
     const SORT_DESC = 'desc';
