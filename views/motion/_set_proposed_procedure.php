@@ -119,9 +119,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         $msg  = \Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDate($motion->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
-                        if ($motion->proposalUserStatus !== Motion::STATUS_ACCEPTED) {
-                            echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
-                        }
+                        echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
                     } elseif ($motion->proposalStatus !== null) {
                         if ($motion->proposalAllowsUserFeedback()) {
                             $msg = \Yii::t('amend', 'proposal_notify_w_feedback');

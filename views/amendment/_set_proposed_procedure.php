@@ -123,9 +123,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $msg  = \Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
-                        if ($amendment->proposalUserStatus === Amendment::STATUS_ACCEPTED) {
-                            echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
-                        }
+                        echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
                     } elseif ($amendment->proposalStatus !== null) {
                         if ($amendment->proposalAllowsUserFeedback()) {
                             $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
@@ -273,7 +271,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
     </section>
 <?php
 if ($context !== 'edit') {
-    $classes = ['statusDetails'];
+    $classes   = ['statusDetails'];
     $classes[] = 'status_' . Amendment::STATUS_MODIFIED_ACCEPTED;
     $classes[] = 'status_' . Amendment::STATUS_VOTE;
     ?>

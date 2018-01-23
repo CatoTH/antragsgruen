@@ -479,7 +479,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function proposalAllowsUserFeedback()
     {
-        if ($this->proposalStatus === null || $this->proposalStatus === IMotion::STATUS_ACCEPTED) {
+        if ($this->proposalStatus === null) {
             return false;
         } else {
             return true;
