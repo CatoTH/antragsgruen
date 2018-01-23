@@ -36,7 +36,7 @@ $COL_PROCEDURE = $currCol++;
 
 // Title
 
-$titleStyles = ['fo:font-family' => 'Arvo Gruen', 'fo:font-size' => '18pt', 'fo:font-weight' => 'normal'];
+$titleStyles = ['fo:font-family' => 'Arvo Gruen', 'fo:font-size' => '17pt', 'fo:font-weight' => 'normal'];
 $doc->setCell(0, 0, Spreadsheet::TYPE_TEXT, $consultation->site->organization);
 $doc->setMinRowHeight(0, 1.8);
 $doc->setCellStyle(0, 0, [], $titleStyles);
