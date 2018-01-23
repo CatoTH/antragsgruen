@@ -1,16 +1,16 @@
 <?php
 
 use app\components\ProposedProcedureAgenda;
-use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
-use app\models\db\IMotion;
+use app\models\db\Consultation;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var \app\components\ProposedProcedureAgenda[] $proposedAgenda
+ * @var ProposedProcedureAgenda[] $proposedAgenda
+ * @var Consultation $consultation
  */
 
 /** @var \app\controllers\Base $controller */
@@ -27,7 +27,7 @@ $doc = new Spreadsheet([
     'trustHtml' => true,
 ]);
 
-$currCol = $firstCol = 1;
+$currCol = $firstCol = 0;
 
 $COL_PREFIX    = $currCol++;
 $COL_INITIATOR = $currCol++;
@@ -36,35 +36,62 @@ $COL_PROCEDURE = $currCol++;
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_title'));
-$doc->setCellStyle(1, $firstCol, [], [
-    'fo:font-size'   => '16pt',
-    'fo:font-weight' => 'bold',
+$titleStyles = ['fo:font-family' => 'Arvo Gruen', 'fo:font-size' => '18pt', 'fo:font-weight' => 'normal'];
+$doc->setCell(0, 0, Spreadsheet::TYPE_TEXT, $consultation->site->organization);
+$doc->setMinRowHeight(0, 1.8);
+$doc->setCellStyle(0, 0, [], $titleStyles);
+
+$row       = 0;
+$titleRows = explode("\n", $consultation->getSettings()->pdfIntroduction);
+foreach ($titleRows as $titleRow) {
+    if (trim($titleRow) !== '' && $row < 7) {
+        $row++;
+        $doc->setCell($row, 0, Spreadsheet::TYPE_TEXT, $titleRow);
+        $doc->setMinRowHeight($row, 1.8);
+        $doc->setCellStyle($row, 0, [], $titleStyles);
+    }
+}
+
+$doc->setCell(7, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_title'));
+$doc->setMinRowHeight(7, 1.8);
+$doc->setCellStyle(7, $firstCol, [], [
+    'fo:font-family' => 'Arvo Gruen',
+    'fo:font-size'   => '18pt',
+    'fo:font-weight' => 'normal',
 ]);
-$doc->setMinRowHeight(1, 1.5);
 
 
 // Heading
 
-$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
-$doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
+$headerStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '11pt', 'fo:font-weight' => 'bold'];
+$doc->setCell(9, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCellStyle(9, $COL_PREFIX, [], $headerStyle);
+$doc->setColumnWidth($COL_INITIATOR, 2);
 
-$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
-$doc->setColumnWidth($COL_INITIATOR, 6);
+$doc->setCell(9, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
+$doc->setCellStyle(9, $COL_INITIATOR, [], $headerStyle);
+$doc->setColumnWidth($COL_INITIATOR, 4.9);
 
-$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
-$doc->setColumnWidth($COL_PROCEDURE, 12);
+$doc->setCell(9, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
+$doc->setCellStyle(9, $COL_PROCEDURE, [], $headerStyle);
+$doc->setColumnWidth($COL_PROCEDURE, 19);
 
-$doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
+$doc->setMinRowHeight(9, 1.1);
+
+$doc->drawBorder(9, $firstCol, 9, $COL_PROCEDURE, 0.5);
 
 
 $printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
 use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
+    $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $amendment->getInitiatorsStr());
+    $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_PROCEDURE, [], $cellStyle);
 
     $minHeight = 1;
-    $proposal  = '<p>' . trim($amendment->getFormattedProposalStatus()) . '</p>';
+    $proposal  = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
 
     if ($amendment->hasAlternativeProposaltext()) {
         $reference = $amendment->proposalReference;
@@ -81,7 +108,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
     }
     if ($amendment->proposalExplanation) {
         $minHeight += 1;
-        $proposal  .= '<p>' . trim(Html::encode($amendment->proposalExplanation)) . '</p>';
+        $proposal  .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
@@ -91,8 +118,12 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
 
 $printMotion = function (Spreadsheet $doc, \app\models\db\Motion $motion, $row)
 use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
+    $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $motion->getInitiatorsStr());
+    $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_PROCEDURE, [], $cellStyle);
 
     $minHeight = 1;
     $proposal  = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
@@ -108,141 +139,43 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
 
 // Procedure
 
-$row = 3;
+$row = 10;
 
 
 foreach ($proposedAgenda as $proposedItem) {
     foreach ($proposedItem->votingBlocks as $votingBlock) {
-        $doc->setMinRowHeight($row, 2);
+        $doc->setMinRowHeight($row, 1);
 
         $row++;
         $maxRows        = 1;
         $firstAgendaRow = $row;
 
-        $styles = ['fo:wrap-option' => 'no-wrap', 'fo:font-size' => '12pt', 'fo:font-weight' => 'bold'];
+        $styles = [
+            'fo:wrap-option' => 'no-wrap',
+            'fo:font-family' => 'PT Sans',
+            'fo:font-size'   => '10pt',
+            'fo:font-weight' => '900'
+        ];
         $title  = $proposedItem->title . ': ' . $votingBlock->title;
         $doc->setCellStyle($row, $COL_PREFIX, null, $styles);
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $title, null, $styles);
-        $doc->setMinRowHeight($row, 1.4);
+        $doc->setMinRowHeight($row, 1.2);
 
         foreach ($votingBlock->items as $item) {
             $row++;
-            $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $item->titlePrefix);
-            $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $item->getInitiatorsStr());
-
-            $minHeight = 1;
-            $proposal  = '<p>' . $item->getFormattedProposalStatus() . '</p>';
-            if ($item->proposalExplanation) {
-                $minHeight += 1;
-                $proposal  .= '<p>' . Html::encode($item->proposalExplanation) . '</p>';
+            if (is_a($item, \app\models\db\Amendment::class)) {
+                /** @var \app\models\db\Amendment $item */
+                $printAmendment($doc, $item, $row);
+            } else {
+                /** @var \app\models\db\Motion $item */
+                $printMotion($doc, $item, $row);
             }
-            if (is_a($item, Amendment::class) && $item->status !== IMotion::STATUS_WITHDRAWN) {
-                /** @var Amendment $item */
-                $format    = ProposedProcedureAgenda::FORMAT_ODS;
-                $add       = ProposedProcedureAgenda::formatProposedAmendmentProcedure($item, $format);
-                $minHeight += Ceil(strlen($add) / 60); // Rough estimate
-                $proposal  .= $add;
-            }
-
-            $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
-            $doc->setMinRowHeight($row, $minHeight);
         }
 
-        $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
+        $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 0.5);
         $row++;
     }
 }
-
-/*
-$handledMotions = [];
-
-
-$agendaItems = \app\models\db\ConsultationAgendaItem::getSortedFromConsultation($consultation);
-foreach ($agendaItems as $agendaItem) {
-    $hasAmendments = false;
-    foreach ($agendaItem->getVisibleMotions($withdrawn) as $motion) {
-        if (count($motion->getVisibleAmendments($withdrawn)) > 0) {
-            $hasAmendments = true;
-        }
-        $handledMotions[] = $motion->id;
-    }
-    if (!$hasAmendments) {
-        continue;
-    }
-
-    $doc->setMinRowHeight($row, 2);
-
-    $row++;
-    $maxRows        = 1;
-    $firstAgendaRow = $row;
-
-    $styles = ['fo:wrap-option' => 'no-wrap', 'fo:font-size' => '12pt', 'fo:font-weight' => 'bold'];
-    $title  = $agendaItem->getShownCode(true) . ' ' . $agendaItem->title;
-    $doc->setCellStyle($row, $COL_PREFIX, null, $styles);
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $title, null, $styles);
-    $doc->setMinRowHeight($row, 1.4);
-
-    foreach ($agendaItem->getVisibleMotions($withdrawn) as $motion) {
-        $amendments = $motion->getVisibleAmendments($withdrawn);
-        if (count($amendments) === 0) {
-            continue;
-        }
-
-        $initiatorNames = [];
-        foreach ($motion->getInitiators() as $supp) {
-            $initiatorNames[] = $supp->getNameWithResolutionDate(false);
-        }
-
-        $row++;
-        $title = '<strong>' . Html::encode($motion->getTitleWithPrefix()) . '</strong>';
-        $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
-        $title = HTMLTools::correctHtmlErrors($title);
-        $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
-        foreach ($amendments as $amendment) {
-            $row++;
-            $printAmendment($doc, $amendment, $row);
-        }
-    }
-
-    $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
-    $row++;
-}
-
-
-// Output the motions that are not assigned to an agenda item
-
-foreach ($motions as $motion) {
-    $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
-    if (in_array($motion->id, $handledMotions) || count($amendments) === 0) {
-        continue;
-    }
-
-    $doc->setMinRowHeight($row, 2);
-
-    $row++;
-    $maxRows        = 1;
-    $firstMotionRow = $row;
-
-    $initiatorNames = [];
-    foreach ($motion->getInitiators() as $supp) {
-        $initiatorNames[] = $supp->getNameWithResolutionDate(false);
-    }
-
-    $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
-    $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
-    $title = HTMLTools::correctHtmlErrors($title);
-    $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
-
-    foreach ($amendments as $amendment) {
-        $row++;
-        $printAmendment($doc, $amendment, $row);
-    }
-
-    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
-    $row++;
-}
-*/
-
 
 try {
     echo $doc->finishAndGetDocument();
