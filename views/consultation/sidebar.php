@@ -265,7 +265,7 @@ if ($hasPDF) {
             $pdfLink = UrlHelper::createUrl([
                 'motion/pdfcollection',
                 'motionTypeId' => $motionType->id,
-                'filename'     => $motionType->titlePlural,
+                'filename'     => $motionType->titlePlural . '.pdf',
             ]);
             $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all_short');
             $name    .= ': ' . Html::encode($motionType->titlePlural);
