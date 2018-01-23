@@ -14,7 +14,8 @@
 - Bugfix: A bug in the line numbering after manual line breaks was fixed.
 - Bugfix: A multi-page PDF that was uploaded as part of a application and then exported as PDF again, collided with the tabular data of the application.
 - Bugfix: When it's allowed to select multiple tags when creating a motion, the tag selection required to select all tags at once.
-- Bugfix: the "Create a motion"-Button in the agenda did not work if the user was not logged in and creating a motion required being logged in. 
+- Bugfix: The "Create a motion"-Button in the agenda did not work if the user was not logged in and creating a motion required being logged in.
+- Bugfix: When downloading the PDF-collection of motions / amendments, the file extension was sometimes lost.
 - Member petitions (a very use-case-specific module probably not really relevant for most of the people)
 - Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 

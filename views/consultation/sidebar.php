@@ -262,7 +262,11 @@ if ($hasPDF) {
             if (count($motionType->getVisibleMotions(false)) == 0) {
                 continue;
             }
-            $pdfLink = UrlHelper::createUrl(['motion/pdfcollection', 'motionTypeId' => $motionType->id]);
+            $pdfLink = UrlHelper::createUrl([
+                'motion/pdfcollection',
+                'motionTypeId' => $motionType->id,
+                'filename'     => $motionType->titlePlural,
+            ]);
             $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all_short');
             $name    .= ': ' . Html::encode($motionType->titlePlural);
             $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
@@ -271,7 +275,11 @@ if ($hasPDF) {
             $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
         }
     } else {
-        $pdfLink = UrlHelper::createUrl('motion/pdfcollection');
+        $pdfLink = UrlHelper::createUrl([
+            'motion/pdfcollection',
+            'motionTypeId' => $consultation->motionTypes[0]->id,
+            'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
+        ]);
         $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
         $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
@@ -280,7 +288,10 @@ if ($hasPDF) {
     }
 
     if ($hasAmendments) {
-        $amendPdfLink = UrlHelper::createUrl('amendment/pdfcollection');
+        $amendPdfLink = UrlHelper::createUrl([
+            'amendment/pdfcollection',
+            'filename' => \Yii::t('con', 'feed_amendments') . '.pdf',
+        ]);
         $linkTitle    = '<span class="glyphicon glyphicon-download-alt"></span>';
         $linkTitle    .= Yii::t('con', 'pdf_amendments');
         $html         .= '<li>' . Html::a($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';

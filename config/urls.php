@@ -57,10 +57,11 @@ $urlRules = [
     $dom . 'checkemail'                => 'user/ajaxIsEmailRegistered',
     $dom . '<_a:(legal|privacy)>'      => 'consultation/<_a>',
 
+    $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
+    $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',
+
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
-    $domv . 'motion/pdfcollection'                 => 'motion/pdfcollection',
     $domv . 'motion/create'                        => 'motion/create',
-    $domv . 'amendment/pdfcollection'              => 'amendment/pdfcollection',
     $dommotion                                     => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
     $dommotion . '/write-petition-response'        => 'memberpetitions/write-response',
