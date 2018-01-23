@@ -29,7 +29,6 @@ class LayoutHelper
      * @param ISupporter[] $initiators
      * @param Consultation $consultation
      * @return string
-     * @throws \app\models\exceptions\Internal
      */
     public static function formatInitiators($initiators, Consultation $consultation)
     {
@@ -40,7 +39,7 @@ class LayoutHelper
                 $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
                 $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
             }
-            $admin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+            $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
                 $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
                 $name .= \Yii::t('initiator', 'contact_show') . '</a>';

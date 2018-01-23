@@ -2,16 +2,13 @@
 
 namespace app\views\amendment;
 
-use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
 use app\models\db\Amendment;
-use app\models\db\ISupporter;
 use app\models\db\TexTemplate;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
-use CatoTH\HTML2OpenDocument\Text;
 use yii\helpers\Html;
 
 class LayoutHelper
