@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+
+use app\models\db\IMotion;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -27,15 +30,15 @@ $I->see('Internal comment!', '#proposedChanges .proposalCommentForm .commentList
 
 
 $I->wantTo('change the status to modified accepted');
-$I->dontSeeCheckboxIsChecked('#proposedChanges .proposalStatus6 input');
-$I->dontSeeElement('#proposedChanges .status_6');
+$I->dontSeeCheckboxIsChecked('#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input');
+$I->dontSeeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->dontSeeElement('#proposedChanges .saving');
-$I->executeJS('$("#proposedChanges .proposalStatus6 input").prop("checked", true).change();');
-$I->seeElement('#proposedChanges .status_6');
+$I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input").prop("checked", true).change();');
+$I->seeElement('#proposedChanges .status_' . IMotion::STATUS_MODIFIED_ACCEPTED);
 $I->seeElement('#proposedChanges .saving');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
-$I->seeCheckboxIsChecked('#proposedChanges .proposalStatus6 input');
+$I->seeCheckboxIsChecked('#proposedChanges .proposalStatus' . IMotion::STATUS_MODIFIED_ACCEPTED . ' input');
 $I->dontSeeElement('#proposedChanges .saving');
 
 
@@ -51,24 +54,29 @@ $I->wait(1);
 
 $I->wantTo('make the proposal visible and notify the proposer of the amendment');
 $I->executeJS('$("#proposedChanges input[name=proposalVisible]").prop("checked", true).change();');
-$I->executeJS('$("#proposedChanges input[name=notifyProposer]").prop("checked", true).change();');
 $I->executeJS('$("#votingBlockId").selectlist("selectByValue", "NEW").trigger("changed.fu.selectlist")');
 $I->fillField('#newBlockTitle', 'Voting 1');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);
-
 $I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
+$I->executeJS('$("#proposedChanges button.notifyProposer").click();');
+$I->wait(1);
+
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId").selectlist("selectedItem").text'));
 
 
 $I->wantTo('propose to reject the second amendment');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
 $I->seeElement('#proposedChanges .collission279');
-$I->executeJS('$("#proposedChanges .proposalStatus5 input").prop("checked", true).change();');
-$I->executeJS('$("#proposedChanges input[name=notifyProposer]").prop("checked", true).change();');
-// Not making it visible yet
-$I->seeElement('#proposedChanges .saving');
+$I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_REJECTED . ' input").prop("checked", true).change();');
 $I->executeJS('$("#proposedChanges .saving button").click();');
+$I->wait(1);
+
+$I->dontSee('Der/die Antragsteller*in wurde am');
+$I->executeJS('$("#proposedChanges button.notifyProposer").click();');
+// Not making it visible yet
+$I->wait(1);
+$I->see('Der/die Antragsteller*in wurde am');
 
 
 $I->wantTo('make the proposal page visible');

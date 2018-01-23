@@ -227,7 +227,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 ### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.5.3.jar```
+java -jar selenium-server-standalone-3.8.1.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```

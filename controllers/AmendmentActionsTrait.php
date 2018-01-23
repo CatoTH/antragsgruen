@@ -283,6 +283,7 @@ trait AmendmentActionsTrait
 
     /**
      * @param Amendment $amendment
+     * @throws Internal
      */
     private function amendmentSupportFinish(Amendment $amendment)
     {
@@ -309,7 +310,7 @@ trait AmendmentActionsTrait
      */
     private function setProposalAgree(Amendment $amendment)
     {
-        if (!$amendment->iAmInitiator() || !$amendment->proposalStatusNeedsUserFeedback()) {
+        if (!$amendment->iAmInitiator() || !$amendment->proposalFeedbackHasBeenRequested()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
             return;
         }

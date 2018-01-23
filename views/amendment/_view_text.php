@@ -13,7 +13,7 @@ $consultation = $amendment->getMyConsultation();
 
 if ($amendment->hasAlternativeProposaltext() && (
         $amendment->isProposalPublic() || User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS) ||
-        ($amendment->proposalStatusNeedsUserFeedback() && $amendment->iAmInitiator())
+        ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator())
     )) {
     $hasProposedChange = true;
     $reference         = $amendment->proposalReference;
@@ -29,7 +29,7 @@ if ($amendment->hasAlternativeProposaltext() && (
         }
     }
 } else {
-    $hasProposedChange = true;
+    $hasProposedChange = false;
 }
 
 

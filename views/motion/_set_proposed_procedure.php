@@ -115,15 +115,15 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         } else {
                             echo 'Error: unknown response of the proposer';
                         }
-                    } elseif ($motion->proposalNotification !== null) {
+                    } elseif ($motion->proposalFeedbackHasBeenRequested()) {
                         $msg  = \Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDate($motion->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
-                        if ($motion->proposalStatusNeedsUserFeedback()) {
+                        if ($motion->proposalUserStatus !== Motion::STATUS_ACCEPTED) {
                             echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
                         }
                     } elseif ($motion->proposalStatus !== null) {
-                        if ($motion->proposalStatusNeedsUserFeedback()) {
+                        if ($motion->proposalAllowsUserFeedback()) {
                             $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
                         } else {
                             $msg = \Yii::t('amend', 'proposal_notify_o_feedback');

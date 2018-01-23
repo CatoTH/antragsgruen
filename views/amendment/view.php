@@ -110,7 +110,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
 
     echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'view']);
 }
-if ($amendment->proposalStatusNeedsUserFeedback() && $amendment->iAmInitiator()) {
+if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator()) {
     echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);
 }
 

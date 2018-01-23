@@ -110,7 +110,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
 
     echo $this->render('_set_proposed_procedure', ['motion' => $motion]);
 }
-if ($motion->proposalStatusNeedsUserFeedback() && $motion->iAmInitiator()) {
+if ($motion->proposalFeedbackHasBeenRequested() && $motion->iAmInitiator()) {
     echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
 }
 

@@ -355,7 +355,7 @@ trait MotionActionsTrait
      */
     private function setProposalAgree(Motion $motion)
     {
-        if (!$motion->iAmInitiator() || !$motion->proposalStatusNeedsUserFeedback()) {
+        if (!$motion->iAmInitiator() || !$motion->proposalFeedbackHasBeenRequested()()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
             return;
         }

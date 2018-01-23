@@ -691,7 +691,6 @@ class MotionController extends Base
                 if ($motion->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
-                $motion->proposalNotification = null;
                 $motion->proposalUserStatus   = null;
             }
             $motion->proposalStatus  = \Yii::$app->request->post('setStatus');

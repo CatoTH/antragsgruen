@@ -119,15 +119,15 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         } else {
                             echo 'Error: unknown response of the proposer';
                         }
-                    } elseif ($amendment->proposalNotification !== null) {
+                    } elseif ($amendment->proposalFeedbackHasBeenRequested()) {
                         $msg  = \Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
-                        if ($amendment->proposalStatusNeedsUserFeedback()) {
+                        if ($amendment->proposalUserStatus === Amendment::STATUS_ACCEPTED) {
                             echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
                         }
                     } elseif ($amendment->proposalStatus !== null) {
-                        if ($amendment->proposalStatusNeedsUserFeedback()) {
+                        if ($amendment->proposalAllowsUserFeedback()) {
                             $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
                         } else {
                             $msg = \Yii::t('amend', 'proposal_notify_o_feedback');

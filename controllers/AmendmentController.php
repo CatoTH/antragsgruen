@@ -494,7 +494,6 @@ class AmendmentController extends Base
                 if ($amendment->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
-                $amendment->proposalNotification = null;
                 $amendment->proposalUserStatus   = null;
             }
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
@@ -622,7 +621,6 @@ class AmendmentController extends Base
             if ($amendment->proposalUserStatus !== null) {
                 $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
             }
-            $amendment->proposalNotification = null;
             $amendment->proposalUserStatus   = null;
             $amendment->save();
         }
