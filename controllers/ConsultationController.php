@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\components\MessageSource;
-use app\components\ProposedProcedureAgenda;
 use app\components\ProposedProcedureFactory;
 use app\components\RSSExporter;
 use app\components\Tools;

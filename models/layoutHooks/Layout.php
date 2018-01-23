@@ -15,7 +15,9 @@ class Layout
      */
     public static function addHook(Hooks $hook)
     {
-        static::$hooks[] = $hook;
+        if (!in_array($hook, static::$hooks)) {
+            static::$hooks[] = $hook;
+        }
     }
 
     /**
