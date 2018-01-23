@@ -39,7 +39,11 @@ class LayoutHelper
             $name = $supp->getNameWithResolutionDate(true);
             if ($supp->user && $supp->user->isWurzelwerkUser()) {
                 $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
-                $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
+                if ($adminMode) {
+                    $name .= ' (<a href="' . Html::encode($url) . '">WW</a>)';
+                } else {
+                    $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
+                }
             }
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
