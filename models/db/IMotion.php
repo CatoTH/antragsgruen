@@ -532,6 +532,12 @@ abstract class IMotion extends ActiveRecord
                 break;
             case static::STATUS_VOTE:
                 $str = static::getProposedStatiNames()[$this->proposalStatus];
+                if (is_a($this, Amendment::class)) {
+                    /** @var Amendment $this */
+                    if ($this->proposalReference) {
+                        $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
+                    }
+                }
                 if ($this->votingStatus === static::STATUS_ACCEPTED) {
                     $str .= ' (' . \Yii::t('structure', 'STATUS_ACCEPTED') . ')';
                 }
