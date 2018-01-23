@@ -19,36 +19,36 @@ if (is_a($item, Amendment::class)) {
 }
 
 ?>
-<td class="comment" data-post-url="<?= Html::encode($postUrl) ?>">
+<td class="comments" data-post-url="<?= Html::encode($postUrl) ?>">
     <?php
-    $types          = [IAdminComment::PROCEDURE_OVERVIEW];
-    $currentComment = $item->getAdminComments($types, IAdminComment::SORT_DESC, 1);
+    $types           = [IAdminComment::PROCEDURE_OVERVIEW];
+    $currentComments = $item->getAdminComments($types, IAdminComment::SORT_ASC);
     ?>
     <div class="notWriting">
         <button class="btn btn-sm btn-link pull-left writingOpener" type="button">
             <span class="glyphicon glyphicon-edit"></span>
         </button>
-        <?php
-        if (count($currentComment) > 0) {
-            $currentComment = $currentComment[0];
-            $user           = $currentComment->user;
-            ?>
-            <article class="currentComment">
-                <span class="name"><?= Html::encode($user ? $user->name : '-') ?></span>
-                (<span class="date"><?= Tools::formatMysqlDateTime($currentComment->dateCreation) ?></span>):
-                <span class="comment"><?= HTMLTools::textToHtmlWithLink($currentComment->text) ?></span>
-            </article>
+        <div class="commentList <?= (count($currentComments) > 0 ? 'hasContent' : '') ?>">
             <?php
-        } else {
+            if (count($currentComments) > 0) {
+                foreach ($currentComments as $currentComment) {
+                    $user = $currentComment->user;
+                    ?>
+                    <article class="comment">
+                        <span class="name"><?= Html::encode($user ? $user->name : '-') ?></span>
+                        (<span class="date"><?= Tools::formatMysqlDateTime($currentComment->dateCreation) ?></span>):
+                        <span class="comment"><?= HTMLTools::textToHtmlWithLink($currentComment->text) ?></span>
+                    </article>
+                    <?php
+                }
+            }
             ?>
-            <article class="currentComment empty">
+            <article class="comment template">
                 <span class="name"></span>
                 (<span class="date"></span>):
                 <span class="comment"></span>
             </article>
-            <?php
-        }
-        ?>
+        </div>
     </div>
     <section class="writing">
         <textarea class="form-control" name="comment" required
@@ -56,6 +56,9 @@ if (is_a($item, Amendment::class)) {
         ></textarea>
         <button class="btn btn-default submitComment">
             <?= \Yii::t('amend', 'proposal_comment_write') ?>
+        </button>
+        <button class="pull-right btn btn-white cancelWriting">
+            <span class="glyphicon glyphicon-remove"></span>
         </button>
     </section>
 </td>

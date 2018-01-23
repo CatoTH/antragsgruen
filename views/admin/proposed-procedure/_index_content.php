@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\ProposedProcedureAgenda;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -39,7 +40,7 @@ foreach ($proposedAgenda as $proposedItem) {
                         <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
                         <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
                         <th class="visible"><?= \Yii::t('con', 'proposal_table_visible') ?></th>
-                        <th class="comment"><?= \Yii::t('con', 'proposal_table_comment') ?></th>
+                        <th class="comments"><?= \Yii::t('con', 'proposal_table_comment') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -67,9 +68,15 @@ foreach ($proposedAgenda as $proposedItem) {
                         }
                         ?>
                         <tr class="item <?= implode(' ', $classes) ?>" data-id="<?= $item->id ?>">
-                            <td class="prefix"><?php
+                            <td class="prefix">
+                                <?php
+                                if (is_a($item, Amendment::class)) {
+                                    /** @var Amendment $item */
+                                    echo HTMLTools::amendmentDiffTooltip($item, 'bottom');
+                                }
                                 echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getViewUrl())
-                                ?></td>
+                                ?>
+                            </td>
                             <td class="initiator">
                                 <?php
                                 $consultation = $item->getMyConsultation();

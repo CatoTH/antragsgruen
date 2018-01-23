@@ -251,77 +251,88 @@
     &:first-of-type {
       margin-top: 0;
     }
-    caption {
+  }
+  caption {
+    font-weight: bold;
+    background-color: #eee;
+    color: black;
+    text-align: center;
+  }
+  .procedure {
+    h3 {
+      // Motion text
+      margin: 7px 0 0 0;
+      font-size: 0;
+      line-height: 0;
+      color: transparent;
+      border-top: solid 1px lightgrey;
+    }
+    p {
+      margin: 0;
+      font-size: inherit;
+    }
+    h4 {
+      margin: 10px 0 5px 0;
+      font-size: inherit;
       font-weight: bold;
-      background-color: #eee;
-      color: black;
-      text-align: center;
+    }
+  }
+  .visible {
+    width: 5%;
+    text-align: center;
+  }
+  .prefix {
+    .amendmentAjaxTooltip {
+      float: right;
+      opacity: 0.5;
+    }
+  }
+  @media screen and (min-width: 700px) {
+    .prefix {
+      width: 125px;
+    }
+    .initiator {
+      width: 270px;
+    }
+  }
+  @media screen and (min-width: 1400px) {
+    .comment {
+      max-width: 350px;
+    }
+  }
+  @media screen and (max-width: 500px) {
+    display: block;
+    tr, td, th, tbody, thead, caption {
+      display: block;
+    }
+    .prefix {
+      display: inline-block;
+      border-top: none;
+    }
+    .initiator {
+      display: inline-block;
+      border-top: none;
+      &:before {
+        content: '(';
+      }
+      &:after {
+        content: ')';
+      }
     }
     .procedure {
-      h3 {
-        // Motion text
-        margin: 7px 0 0 0;
-        font-size: 0;
-        line-height: 0;
-        color: transparent;
-        border-top: solid 1px lightgrey;
-      }
-      p {
-        margin: 0;
-        font-size: inherit;
-      }
-      h4 {
-        margin: 10px 0 5px 0;
-        font-size: inherit;
-        font-weight: bold;
-      }
+      border-top: none;
+      border-bottom: solid 1px #ddd;
     }
-    .visible {
-      width: 5%;
-      text-align: center;
-    }
-    @media screen and (min-width: 700px) {
-      .prefix {
-        width: 175px;
-      }
-      .initiator {
-        width: 230px;
-      }
-    }
-    @media screen and (max-width: 500px) {
-      display: block;
-      tr, td, th, tbody, thead, caption {
-        display: block;
-      }
-      .prefix {
-        display: inline-block;
-        border-top: none;
-      }
-      .initiator {
-        display: inline-block;
-        border-top: none;
-        &:before {
-          content: '(';
-        }
-        &:after {
-          content: ')';
-        }
-      }
-      .procedure {
-        border-top: none;
-        border-bottom: solid 1px #ddd;
-      }
-    }
-    .explanation {
-      font-size: 0.8em;
-      margin-top: 5px;
-      color: #888;
-    }
-    .notVisible {
-      font-size: 0.8em;
-      color: $adminHintColor;
-      font-style: italic;
-    }
+  }
+  .explanation {
+    font-size: 0.8em;
+    margin-top: 5px;
+    color: #888;
+  }
+  .notVisible {
+    font-size: 0.8em;
+    color: $adminHintColor;
+    font-style: italic;
   }
   tr.withdrawn {
     .prefix, .initiator {
@@ -342,7 +353,7 @@
       cursor: help;
     }
   }
-  .comment {
+  .comments {
     .writing {
       display: none;
     }
@@ -354,10 +365,17 @@
         display: none;
       }
     }
-    .currentComment {
+    .cancelWriting {
+      color: gray;
+    }
+    .commentList.hasContent {
+      height: 60px;
+      overflow: auto;
+    }
+    .comment {
       overflow: hidden; // Spacing for button
 
-      &.empty {
+      &.template {
         display: none;
       }
       .name {

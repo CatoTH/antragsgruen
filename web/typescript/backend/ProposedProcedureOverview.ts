@@ -18,10 +18,17 @@ export class ProposedProcedureOverview {
         this.$widget.on('change', 'input[name=visible]', this.onVisibleChanged.bind(this));
         this.initComments();
         this.initUpdateWidget();
+        this.onContentUpdated();
 
         this.$widget.on('click', '.contactShow', (ev) => {
             ev.preventDefault();
             $(ev.currentTarget).next('.contactDetails').removeClass('hidden');
+        });
+    }
+
+    private onContentUpdated() {
+        this.$widget.find(".commentList").each((i, el) => {
+            el.scrollTop = el.scrollHeight;
         });
     }
 
@@ -48,6 +55,11 @@ export class ProposedProcedureOverview {
             ev.preventDefault();
             let $btn = $(ev.currentTarget);
             this.submitComment($btn.parents('td').first());
+        });
+
+        this.$widget.on('click', '.cancelWriting', (ev) => {
+            ev.preventDefault();
+            $(ev.currentTarget).parents('td').first().removeClass('writing');
         });
 
         this.$widget.on('keypress', 'textarea', (ev) => {
@@ -78,11 +90,15 @@ export class ProposedProcedureOverview {
                 alert(ret['error']);
                 return;
             }
-            let $comment = $commentTd.find('.currentComment');
+            let $comment = $commentTd.find('.template').clone();
             $comment.find('.date').text(ret['date_str']);
             $comment.find('.name').text(ret['user_str']);
             $comment.find('.comment').html(ret['text']);
-            $comment.removeClass('empty');
+            $comment.removeClass('template');
+            $comment.insertBefore($commentTd.find('.template'));
+            window.setTimeout(() => {
+                $commentTd.find(".commentList")[0].scrollTop = $commentTd.find(".commentList")[0].scrollHeight;
+            }, 1);
 
             $commentTd.find('textarea').val('');
             $commentTd.removeClass('writing');
@@ -100,7 +116,7 @@ export class ProposedProcedureOverview {
 
     private reload() {
         if (this.skipReload()) {
-            console.log('No reload, as comment writing is active')
+            console.log('No reload, as comment writing is active');
             return;
         }
         $.get(this.updateUrl, (data: ReloadResult) => {
@@ -110,6 +126,7 @@ export class ProposedProcedureOverview {
             }
             this.$dateField.text(data.date);
             this.$proposalList.html(data.html);
+            this.onContentUpdated();
         });
     }
 
