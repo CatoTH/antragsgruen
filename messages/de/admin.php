@@ -125,6 +125,8 @@ return [
     'list_prop_visible'           => 'Der Verfahrensvorschlag ist sichtbar',
     'list_prop_invisible'         => 'Der Verfahrensvorschlag ist noch nicht sichtbar',
     'list_prop_user_accepted'     => 'Die Antragsteller*in hat dem Verfahrensvorschlag zugestimmt',
+    'list_prop_user_asked'        => 'Die Antragsteller*in wurde kontaktiert, hat aber noch nicht zugestimmt',
+    'list_prop_user_not_asked'    => 'Die Antragsteller*in wurde noch nicht kontaktiert',
     'list_new'                    => 'Neu',
     'list_pdf_amend'              => 'PDF + ÄAs',
     'filter_na'                   => '- egal -',

@@ -497,28 +497,6 @@ label.legend {
     .editModified {
       font-size: 0.8em;
     }
-    .statusIcons {
-      float: right;
-      font-size: 0.8em;
-      margin-top: 2px;
-      margin-right: 8px;
-      .accepted {
-        color: green;
-        cursor: help;
-      }
-      .rejected {
-        color: red;
-        cursor: help;
-      }
-      .visible {
-        opacity: 0.8;
-        cursor: help;
-      }
-      .notVisible {
-        opacity: 0.5;
-        cursor: help;
-      }
-    }
   }
   td.titleCol {
     text-indent: 0;
@@ -553,6 +531,10 @@ label.legend {
     text-indent: 5px;
     border: solid 1px gray;
     position: relative;
+  }
+  th {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -715,8 +697,32 @@ label.legend {
     padding: 5px;
   }
 }
+
 .adminCardSupport {
   main {
     font-size: 0.9em;
+  }
+}
+
+.proposalStatusIcons {
+  float: right;
+  font-size: 0.8em;
+  margin-top: 2px;
+  margin-right: 8px;
+  *[title] {
+    cursor: help;
+  }
+  .accepted {
+    color: green;
+    cursor: help;
+  }
+  .rejected {
+    color: red;
+  }
+  .visible {
+    opacity: 0.8;
+  }
+  .notVisible {
+    opacity: 0.5;
   }
 }

@@ -28,9 +28,11 @@ class LayoutHelper
     /**
      * @param ISupporter[] $initiators
      * @param Consultation $consultation
+     * @param bool $expanded
+     * @param bool $adminMode
      * @return string
      */
-    public static function formatInitiators($initiators, Consultation $consultation)
+    public static function formatInitiators($initiators, $consultation, $expanded = false, $adminMode = false)
     {
         $inits = [];
         foreach ($initiators as $supp) {
@@ -41,9 +43,15 @@ class LayoutHelper
             }
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
-                $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
-                $name .= \Yii::t('initiator', 'contact_show') . '</a>';
-                $name .= '<div class="contactDetails hidden">' . \Yii::t('initiator', 'visibilityAdmins') . ': ';
+                if (!$expanded) {
+                    $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
+                    $name .= \Yii::t('initiator', 'contact_show') . '</a>';
+                }
+
+                $name .= '<div class="contactDetails' . ($expanded ? '' : ' hidden') . '">';
+                if (!$adminMode) {
+                    $name .= \Yii::t('initiator', 'visibilityAdmins') . ': ';
+                }
                 if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
                     if ($supp->name != '') {
                         $name .= Html::encode($supp->name) . ', ';

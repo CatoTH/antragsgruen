@@ -18,6 +18,11 @@ export class ProposedProcedureOverview {
         this.$widget.on('change', 'input[name=visible]', this.onVisibleChanged.bind(this));
         this.initComments();
         this.initUpdateWidget();
+
+        this.$widget.on('click', '.contactShow', (ev) => {
+            ev.preventDefault();
+            $(ev.currentTarget).next('.contactDetails').removeClass('hidden');
+        });
     }
 
     private onVisibleChanged(ev) {

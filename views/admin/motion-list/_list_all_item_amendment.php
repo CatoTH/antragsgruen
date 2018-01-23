@@ -7,6 +7,7 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 /**
+ * @var \yii\web\View $this
  * @var Amendment $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
@@ -57,23 +58,8 @@ echo '</td>';
 
 if ($colProposals) {
     echo '<td class="proposalCol">';
-    $amendmentStatiVerbs = Amendment::getStatiAsVerbs();
 
-    if ($entry->proposalUserStatus !== null || isset($amendmentStatiVerbs[$entry->proposalStatus])) {
-        echo '<div class="statusIcons">';
-        if ($entry->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
-            $title = \Yii::t('admin', 'list_prop_user_accepted');
-            echo '<span class="glyphicon glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
-        }
-        if ($entry->isProposalPublic()) {
-            $title = \Yii::t('admin', 'list_prop_visible');
-            echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';
-        } else {
-            $title = \Yii::t('admin', 'list_prop_invisible');
-            echo '<span class="glyphicon glyphicon-eye-close notVisible" title="' . $title . '"></span>';
-        }
-        echo '</div>';
-    }
+    echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry]);
 
     $name = $entry->getFormattedProposalStatus();
     echo Html::a(($name ? $name : '-'), UrlHelper::createAmendmentUrl($entry));

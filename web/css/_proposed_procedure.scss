@@ -332,6 +332,16 @@
     font-size: 0.8em;
     color: #eee;
   }
+  .contactShow {
+    display: block;
+    font-size: 0.7em;
+  }
+  .contactDetails {
+    font-size: 0.8em;
+    *[title] {
+      cursor: help;
+    }
+  }
   .comment {
     .writing {
       display: none;

@@ -4,6 +4,8 @@ use app\components\ProposedProcedureAgenda;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\IMotion;
+use app\models\db\User;
+use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -68,13 +70,16 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="prefix"><?php
                                 echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getViewUrl())
                                 ?></td>
-                            <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
+                            <td class="initiator">
+                                <?php
+                                $consultation = $item->getMyConsultation();
+                                echo LayoutHelper::formatInitiators($item->getInitiators(), $consultation, true, true);
+                                ?>
+                            </td>
                             <td class="procedure">
                                 <?php
-                                if (!$item->isProposalPublic() && $item->proposalStatus) {
-                                    echo ' <span class="notVisible">' . \Yii::t('con', 'proposal_invisible') .
-                                        '</span>';
-                                }
+                                echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);
+
                                 $format = ProposedProcedureAgenda::FORMAT_HTML;
                                 echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
                                 ?></td>
