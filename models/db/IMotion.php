@@ -557,6 +557,25 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @param $titlePrefix
+     * @return string
+     */
+    public static function getNewTitlePrefixInternal($titlePrefix)
+    {
+        $new = \Yii::t('motion', 'prefix_new_code');
+        $newMatch = preg_quote($new, '/');
+        if (preg_match('/' . $newMatch . '/i', $titlePrefix)) {
+            $parts = preg_split('/(' . $newMatch . '\s*)/i', $titlePrefix, -1, PREG_SPLIT_DELIM_CAPTURE);
+            $last = array_pop($parts);
+            $last = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
+            array_push($parts, $last);
+            return implode("", $parts);
+        } else {
+            return $titlePrefix . $new;
+        }
+    }
+
+    /**
      * @param int[] $types
      * @param string $sort
      * @param int|null $limit

@@ -168,7 +168,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_finish_btn'                 => 'Antrag offiziell einreichen',
     'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
-    'prefix_new_code'                    => 'neu',
+    'prefix_new_code'                    => 'NEU',
     'comment_for'                        => 'Kommentar zu',
 
     'diff_bc'          => 'Änderungen',
