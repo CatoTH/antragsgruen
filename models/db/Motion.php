@@ -319,9 +319,9 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getNewTitlePrefix()
     {
-        $new = \Yii::t('motion', 'prefix_new_code');
-        if (stripos($this->titlePrefix, $new) !== false) {
-            $parts = explode($new, $this->titlePrefix);
+        $new   = \Yii::t('motion', 'prefix_new_code');
+        $parts = explode(mb_strtolower($new), mb_strtolower($this->titlePrefix));
+        if (count($parts) > 1) {
             if ($parts[1] > 0) {
                 $parts[1]++;
             } else {
