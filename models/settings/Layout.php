@@ -15,7 +15,7 @@ class Layout
     const DEFAULT_LAYOUT = 'layout-classic';
 
     public $menu                 = [];
-    public $breadcrumbs          = null;
+    public $breadcrumbs          = [];
     public $multimenu            = [];
     public $preSidebarHtml       = '';
     public $postSidebarHtml      = '';

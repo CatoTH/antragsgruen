@@ -16,7 +16,7 @@ $I->executeJS('$("#otherAmendmentsStatus1").selectlist("selectByValue", "5");');
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
 $I->click('.checkAmendmentCollissions');
-$I->wait(1);
+$I->wait(1.5);
 
 $I->wantTo('see the collissions');
 $I->seeElement('.amendmentCollissionsHolder .alert-danger');

@@ -12,13 +12,16 @@ $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
 $I->dontSeeElement('.draftExistsAlert .btn');
 $I->see('Einpflegen beginnen');
+$I->checkOption('#markAmendment3');
+$I->checkOption('#markAmendment1');
+$I->checkOption('#markAmendment270');
 $I->click('.mergeAllRow .btn-primary');
 $I->see('annehmen oder ablehnen');
 
 $I->wait(1);
 
 // Reject "Neuer Punkt"
-$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.reject").click();');
+$I->executeJS('$("[data-cid=2] .appendHint").trigger("mouseover"); $("button.reject").click();');
 
 $I->seeElement('#draftSavingPanel');
 $I->dontSeeElement('#draftSavingPanel .publicLink');
@@ -59,7 +62,7 @@ $I->click('.draftExistsAlert .btn-primary');
 $I->wait(1);
 $I->see('Neue Zeile', '.ice-ins');
 $I->dontSee('Neuer Punkt', '.ice-ins');
-$I->executeJS('$("[data-cid=3] .appendHint").trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("[data-cid=1] .appendHint").trigger("mouseover"); $("button.accept").click();');
 $I->see('Neue Zeile');
 $I->dontSee('Neue Zeile', '.ice-ins');
 
@@ -93,6 +96,10 @@ $I->executeJS(' $(window).unbind("beforeunload");');
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.sidebarActions .mergeamendments a');
 $I->seeElement('.draftExistsAlert .btn');
+
+$I->checkOption('#markAmendment3');
+$I->checkOption('#markAmendment1');
+$I->checkOption('#markAmendment270');
 
 $I->click('button.discard');
 $I->wait(1);

@@ -55,7 +55,7 @@ $I->submitForm('#amendmentUpdateForm', [], 'save');
 
 $I->gotoMotion();
 $I->click('#sidebar .mergeamendments a');
-$I->seeCheckboxIsChecked('#markAmendment276');
+$I->seeCheckboxIsChecked('#markAmendment1');
 $I->dontSeeCheckboxIsChecked('.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 $I->gotoAmendment(true, '2', AcceptanceTester::FIRST_FREE_AMENDMENT_ID);

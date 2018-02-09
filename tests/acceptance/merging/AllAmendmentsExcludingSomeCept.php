@@ -10,7 +10,13 @@ $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
 
 $I->see('Einpflegen beginnen');
+$I->checkOption('.toMergeAmendments #markAmendment1');
 $I->uncheckOption('.toMergeAmendments #markAmendment3');
+$I->checkOption('.toMergeAmendments #markAmendment270');
+$I->checkOption('.toMergeAmendments #markAmendment272');
+$I->checkOption('.toMergeAmendments #markAmendment273');
+$I->checkOption('.toMergeAmendments #markAmendment274');
+$I->checkOption('.toMergeAmendments #markAmendment276');
 
 $I->click('.mergeAllRow .btn-primary');
 $I->see('annehmen oder ablehnen');
@@ -28,7 +34,13 @@ $I->executeJS(' $(window).unbind("beforeunload");');
 
 $I->gotoConsultationHome()->gotoMotionView(2);
 $I->click('.sidebarActions .mergeamendments a');
+$I->checkOption('.toMergeAmendments #markAmendment1');
+$I->checkOption('.toMergeAmendments #markAmendment3');
 $I->uncheckOption('.toMergeAmendments #markAmendment270');
+$I->checkOption('.toMergeAmendments #markAmendment272');
+$I->checkOption('.toMergeAmendments #markAmendment273');
+$I->checkOption('.toMergeAmendments #markAmendment274');
+$I->checkOption('.toMergeAmendments #markAmendment276');
 $I->click('.mergeAllRow .btn-primary');
 
 $I->see('annehmen oder ablehnen');
