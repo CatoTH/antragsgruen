@@ -18,6 +18,7 @@
 - Bugfix: The "Create a motion"-Button in the agenda did not work if the user was not logged in and creating a motion required being logged in.
 - Bugfix: When downloading the PDF-collection of motions / amendments, the file extension was sometimes lost.
 - Bugfix: When merging amendments into a motion that already had "NEU" / "NEW" in the prefix, the program could crash due to inconsistent handling of upper-/lowercase
+- Bugfix: The Open Document generation is now a bit more tolerant towards unsupported HTML tags
 - Member petitions (a very use-case-specific module probably not really relevant for most of the people)
 - Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 
