@@ -136,6 +136,10 @@ trait SiteAccessTrait
         $this->linkConsultationAdmin($newUser, $username);
     }
 
+    /**
+     * @param string $email
+     * @throws \yii\base\Exception
+     */
     private function addAdminEmail($email)
     {
         $newUser = User::findOne(['auth' => 'email:' . $email]);

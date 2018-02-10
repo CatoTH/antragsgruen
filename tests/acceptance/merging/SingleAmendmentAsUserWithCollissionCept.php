@@ -41,7 +41,7 @@ $I->executeJS('$("#amendmentStatus").selectlist("selectByValue", "6");');
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
 $I->click('.checkAmendmentCollissions');
-$I->wait(1);
+$I->wait(2);
 $I->see('Wui helfgod Wiesn', 'del');
 $I->see('Woibbadinga damischa owe gwihss Sauwedda', 'ins');
 $I->executeJS('CKEDITOR.instances.amendmentOverride_3_2_7.setData(CKEDITOR.instances.amendmentOverride_3_2_7.getData() + \'<p>Alternative ending</p>\');');

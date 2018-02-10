@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
 use app\models\exceptions\MailNotSent;
@@ -71,6 +72,7 @@ class ConsultationUserPrivilege extends ActiveRecord
      * @param string $emailText
      * @param string|null $setPassword
      * @throws AlreadyExists
+     * @throws \yii\base\Exception
      */
     public static function createWithUser(Consultation $consultation, $email, $name, $emailText, $setPassword = null)
     {
@@ -88,6 +90,7 @@ class ConsultationUserPrivilege extends ActiveRecord
 
             $user                  = new User();
             $user->auth            = 'email:' . $email;
+            $user->email           = $email;
             $user->name            = $name;
             $user->emailConfirmed  = 0;
             $user->pwdEnc          = password_hash($password, PASSWORD_DEFAULT);
@@ -127,7 +130,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         $emailText = str_replace('%LINK%', $consUrl, $emailText);
 
         try {
-            \app\components\mail\Tools::sendWithLog(
+            MailTools::sendWithLog(
                 EMailLog::TYPE_ACCESS_GRANTED,
                 $consultation->site,
                 $email,
