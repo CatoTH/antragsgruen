@@ -37,6 +37,13 @@ Installation:
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
 
+Installation using docker
+-------------------------
+
+A Dockerfile to compile and run the latest development version of Antragsgrün is provided by [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) at this repository:
+
+[https://github.com/jugendpresse/docker-antragsgruen](https://github.com/jugendpresse/docker-antragsgruen)
+
 Updating a existing installation using the pre-bundled package
 --------------------------------------------------------------
 
