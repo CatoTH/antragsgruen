@@ -301,6 +301,8 @@ class LayoutHelper
      */
     public static function printToPDF(\FPDI $pdf, IPDFLayout $pdfLayout, Motion $motion)
     {
+        error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
+
         $pdf->startPageGroup();
         $pdf->AddPage();
 
