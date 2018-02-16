@@ -12,7 +12,7 @@ abstract class Base
 {
     /**
      * @param null|array $params
-     * @return Mandrill|\app\components\mail\Sendmail|null
+     * @return Base|null
      * @throws ServerConfiguration
      */
     public static function createMailer($params)
@@ -31,13 +31,16 @@ abstract class Base
                 return new Mandrill($params);
                 break;
             case 'sendmail':
-                return new \app\components\mail\Sendmail($params);
+                return new Sendmail();
+                break;
+            case 'mailjet':
+                return new Mailjet($params);
                 break;
             case 'smtp':
                 return new SMTP($params);
                 break;
             case 'none':
-                return new None($params);
+                return new None();
                 break;
             default:
                 throw new ServerConfiguration('Invalid E-Mail-Transport: ' . $params['transport']);
@@ -48,12 +51,12 @@ abstract class Base
      * @param int $type
      * @return \Zend\Mail\Message
      */
-    abstract public function getMessageClass($type);
+    abstract protected function getMessageClass($type);
 
     /**
      * @return \Zend\Mail\Transport\TransportInterface|null
      */
-    abstract public function getTransport();
+    abstract protected function getTransport();
 
     /**
      * @param int $type
@@ -64,7 +67,7 @@ abstract class Base
      * @param string $fromEmail
      * @param string $replyTo
      * @param string $messageId
-     * @return \Zend\Mail\Message
+     * @return \Zend\Mail\Message|array
      */
     public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId)
     {
@@ -120,7 +123,7 @@ abstract class Base
     }
 
     /**
-     * @param \Zend\Mail\Message $message
+     * @param \Zend\Mail\Message|array $message
      * @param string $toEmail
      * @return string
      */

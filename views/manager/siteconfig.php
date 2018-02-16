@@ -110,6 +110,7 @@ echo HTMLTools::fueluxSelectbox(
     [
         'sendmail' => \yii::t('manager', 'email_sendmail'),
         'smtp'     => \yii::t('manager', 'email_smtp'),
+        'mailjet'  => \yii::t('manager', 'email_mailjet'),
         'mailgun'  => \yii::t('manager', 'email_mailgun'),
         'mandrill' => \yii::t('manager', 'email_mandrill'),
         'none'     => \yii::t('manager', 'email_none'),
@@ -120,98 +121,112 @@ echo HTMLTools::fueluxSelectbox(
 echo '</div>
 </div>';
 
-$currApiKey = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
-echo '<div class="form-group emailOption mandrillApiKey">
-  <label class="col-sm-4 control-label" for="mandrillApiKey">' . \yii::t('manager', 'mandrill_api') . ':</label>
-  <div class="col-sm-8">
-    <input type="text" name="mailService[mandrillApiKey]" placeholder=""
-      value="' . Html::encode($currApiKey) . '" class="form-control" id="mandrillApiKey">
-  </div>
-</div>';
+$currApiKey        = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
+$currMailjetSecret = (isset($config->mailService['mailjetApiSecret']) ? $config->mailService['mailjetApiSecret'] : '');
+$currDomain        = (isset($config->mailService['domain']) ? $config->mailService['domain'] : '');
 
-
-$currApiKey = (isset($config->mailService['apiKey']) ? $config->mailService['apiKey'] : '');
-echo '<div class="form-group emailOption mailgunApiKey">
-  <label class="col-sm-4 control-label" for="mailgunApiKey">' . \yii::t('manager', 'mailgun_api') . ':</label>
-  <div class="col-sm-8">
-    <input type="text" name="mailService[mailgunApiKey]" placeholder=""
-      value="' . Html::encode($currApiKey) . '" class="form-control" id="mailgunApiKey">
-  </div>
-</div>';
-
-
-$currDomain = (isset($config->mailService['domain']) ? $config->mailService['domain'] : '');
-echo '<div class="form-group emailOption mailgunDomain">
-  <label class="col-sm-4 control-label" for="mailgunDomain">' . \yii::t('manager', 'mailgun_domain') . ':</label>
-  <div class="col-sm-8">
-    <input type="text" name="mailService[mailgunDomain]" placeholder=""
-      value="' . Html::encode($currDomain) . '" class="form-control" id="mailgunDomain">
-  </div>
-</div>';
-
-
-$currHost = (isset($config->mailService['host']) ? $config->mailService['host'] : '');
-echo '<div class="form-group emailOption smtpHost">
-    <label class="col-sm-4 control-label" for="smtpHost">' . \yii::t('manager', 'smtp_server') . ':</label>
-    <div class="col-sm-8">
-        <input type="text" name="mailService[smtpHost]" placeholder="smtp.yourserver.de"
-        value="' . Html::encode($currHost) . '" class="form-control" id="smtpHost">
-    </div>
-</div>';
-
-$currPort = (isset($config->mailService['port']) ? $config->mailService['port'] : 25);
-echo '<div class="form-group emailOption smtpPort">
-    <label class="col-sm-4 control-label" for="smtpPort">' . \yii::t('manager', 'smtp_port') . ':</label>
-    <div class="col-sm-3">
-        <input type="number" name="mailService[smtpPort]" placeholder="25"
-        value="' . Html::encode($currPort) . '" class="form-control" id="smtpPort">
-    </div>
-</div>';
-
+$currHost     = (isset($config->mailService['host']) ? $config->mailService['host'] : '');
+$currPort     = (isset($config->mailService['port']) ? $config->mailService['port'] : 25);
 $currAuthType = (isset($config->mailService['authType']) ? $config->mailService['authType'] : '');
-echo '<div class="form-group emailOption smtpAuthType">
-    <label class="col-sm-4 control-label" for="smtpAuthType">' . \yii::t('manager', 'smtp_login') . ':</label>
-    <div class="col-sm-8">';
-echo HTMLTools::fueluxSelectbox(
-    'mailService[smtpAuthType]',
-    [
-        'none'      => \yii::t('manager', 'smtp_login_none'),
-        'plain'     => 'Plain',
-        'login'     => 'LOGIN',
-        'crammd5'   => 'Cram-MD5',
-        'plain_tls' => 'PLAIN / TLS',
-    ],
-    $currAuthType,
-    ['id' => 'smtpAuthType']
-);
-echo '</div>
-</div>';
-
 $currUsername = (isset($config->mailService['username']) ? $config->mailService['username'] : '');
-echo '<div class="form-group emailOption smtpUsername">
-  <label class="col-sm-4 control-label" for="smtpUsername">' .
-    \yii::t('manager', 'smtp_username') . ':</label>
-  <div class="col-sm-8">
-    <input type="text" name="mailService[smtpUsername]" placeholder=""
-      value="' . Html::encode($currUsername) . '" class="form-control" id="smtpUsername">
-  </div>
-</div>';
-
 $currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
-echo '<div class="form-group emailOption smtpPassword">
-  <label class="col-sm-4 control-label" for="smtpPassword">' . \yii::t('manager', 'smtp_password') . ':</label>
-  <div class="col-sm-8">
-    <input type="password" name="mailService[smtpPassword]" placeholder=""
-      value="' . Html::encode($currPassword) . '" class="form-control" id="smtpPassword">
-  </div>
-</div>';
+
+?>
+    <!-- Mandrill -->
+    <div class="form-group emailOption mandrillApiKey">
+        <label class="col-sm-4 control-label" for="mandrillApiKey"><?= \yii::t('manager', 'mandrill_api') ?>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[mandrillApiKey]" placeholder=""
+                   value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mandrillApiKey">
+        </div>
+    </div>
+
+    <!-- Mailjet -->
+    <div class="form-group emailOption mailjetApiKey">
+        <label class="col-sm-4 control-label" for="mailjetApiKey"><?= \yii::t('manager', 'mailjet_api_key') ?></label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[mailjetApiKey]" placeholder=""
+                   value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mailjetApiKey">
+        </div>
+    </div>
+    <div class="form-group emailOption mailjetApiSecret">
+        <label class="col-sm-4 control-label" for="mailjetApiSecret"><?= \yii::t('manager', 'mailjet_secret') ?>
+            :</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[mailjetApiSecret]" placeholder=""
+                   value="<?= Html::encode($currMailjetSecret) ?>" class="form-control" id="mailjetApiSecret">
+        </div>
+    </div>
+
+    <!-- Mailgun -->
+    <div class="form-group emailOption mailgunApiKey">
+        <label class="col-sm-4 control-label" for="mailgunApiKey"><?= \yii::t('manager', 'mailgun_api') ?>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[mailgunApiKey]" placeholder=""
+                   value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mailgunApiKey">
+        </div>
+    </div>
+    <div class="form-group emailOption mailgunDomain">
+        <label class="col-sm-4 control-label" for="mailgunDomain"><?= \yii::t('manager', 'mailgun_domain') ?>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[mailgunDomain]" placeholder=""
+                   value="<?= Html::encode($currDomain) ?>" class="form-control" id="mailgunDomain">
+        </div>
+    </div>
+
+    <!-- SMTP -->
+    <div class="form-group emailOption smtpHost">
+        <label class="col-sm-4 control-label" for="smtpHost"><?= \yii::t('manager', 'smtp_server') ?>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[smtpHost]" placeholder="smtp.yourserver.de"
+                   value="<?= Html::encode($currHost) ?>" class="form-control" id="smtpHost">
+        </div>
+    </div>
+    <div class="form-group emailOption smtpPort">
+        <label class="col-sm-4 control-label" for="smtpPort"><?= \yii::t('manager', 'smtp_port') ?>:</label>
+        <div class="col-sm-3">
+            <input type="number" name="mailService[smtpPort]" placeholder="25"
+                   value="<?= Html::encode($currPort) ?>" class="form-control" id="smtpPort">
+        </div>
+    </div>
+    <div class="form-group emailOption smtpAuthType">
+        <label class="col-sm-4 control-label" for="smtpAuthType"><?= \yii::t('manager', 'smtp_login') ?>:</label>
+        <div class="col-sm-8"><?php
+            echo HTMLTools::fueluxSelectbox(
+                'mailService[smtpAuthType]',
+                [
+                    'none'      => \yii::t('manager', 'smtp_login_none'),
+                    'plain'     => 'Plain',
+                    'login'     => 'LOGIN',
+                    'crammd5'   => 'Cram-MD5',
+                    'plain_tls' => 'PLAIN / TLS',
+                ],
+                $currAuthType,
+                ['id' => 'smtpAuthType']
+            );
+            ?>
+        </div>
+    </div>
+    <div class="form-group emailOption smtpUsername">
+        <label class="col-sm-4 control-label" for="smtpUsername"><?= \yii::t('manager', 'smtp_username') ?>:</label>
+        <div class="col-sm-8">
+            <input type="text" name="mailService[smtpUsername]" placeholder=""
+                   value="<?= Html::encode($currUsername) ?>" class="form-control" id="smtpUsername">
+        </div>
+    </div>
+
+    <div class="form-group emailOption smtpPassword">
+        <label class="col-sm-4 control-label" for="smtpPassword"><?= \yii::t('manager', 'smtp_password') ?>:</label>
+        <div class="col-sm-8">
+            <input type="password" name="mailService[smtpPassword]" placeholder=""
+                   value="<?= Html::encode($currPassword) ?>" class="form-control" id="smtpPassword">
+        </div>
+    </div>
+
+<?php
 
 echo '<div class="form-group"><label>';
-echo Html::checkbox(
-    'confirmEmailAddresses',
-    $config->confirmEmailAddresses,
-    ['id' => 'confirmEmailAddresses']
-) . ' ';
+echo Html::checkbox('confirmEmailAddresses', $config->confirmEmailAddresses, ['id' => 'confirmEmailAddresses']) . ' ';
 echo \Yii::t('manager', 'confirm_email_addresses') . '</label></div>';
 
 

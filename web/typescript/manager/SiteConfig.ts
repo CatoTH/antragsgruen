@@ -16,6 +16,9 @@ export class SiteConfig {
         } else if (transport == 'mailgun') {
             $('.emailOption.mailgunApiKey').show();
             $('.emailOption.mailgunDomain').show();
+        } else if (transport == 'mailjet') {
+            $('.emailOption.mailjetApiKey').show();
+            $('.emailOption.mailjetApiSecret').show();
         } else if (transport == 'smtp') {
             $('.emailOption.smtpHost').show();
             $('.emailOption.smtpPort').show();

@@ -157,6 +157,7 @@ class BugfixController extends Controller
     /**
      * Find translation strings that exist in german, but not in the given language (english by default)
      * @param string $language
+     * @throws \app\models\exceptions\Internal
      */
     public function actionFindMissingTranslations($language = 'en')
     {
@@ -188,7 +189,7 @@ class BugfixController extends Controller
                 null,
                 'Test-E-Mail',
                 'This is a test e-mail sent from the command line',
-                '',
+                '<strong>This is a test e-mail</strong> sent from the command line',
                 null
             );
             $this->stdout("The e-mail want sent.\n");

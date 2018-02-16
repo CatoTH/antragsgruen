@@ -223,6 +223,7 @@ class ManagerController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionSiteLegal()
     {
@@ -231,6 +232,7 @@ class ManagerController extends Base
 
     /**
      * @return string
+     * @throws \app\models\exceptions\Internal
      */
     public function actionSitePrivacy()
     {
@@ -256,6 +258,7 @@ class ManagerController extends Base
 
     /**
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionSiteconfig()
     {
@@ -301,6 +304,13 @@ class ManagerController extends Base
                         'domain'    => $post['mailService']['mailgunDomain'],
                     ];
                     break;
+                case 'mailjet':
+                    $config->mailService = [
+                        'transport'        => 'mailjet',
+                        'apiKey'           => $post['mailService']['mailjetApiKey'],
+                        'mailjetApiSecret' => $post['mailService']['mailjetApiSecret'],
+                    ];
+                    break;
                 case 'smtp':
                     $config->mailService = [
                         'transport' => 'smtp',
@@ -340,6 +350,7 @@ class ManagerController extends Base
 
     /**
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionUserlist()
     {

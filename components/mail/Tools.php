@@ -19,6 +19,7 @@ class Tools
      * @param string $textHtml
      * @param null|array $noLogReplaces
      * @throws MailNotSent
+     * @throws ServerConfiguration
      */
     public static function sendWithLog(
         $mailType,
@@ -29,8 +30,7 @@ class Tools
         $textPlain,
         $textHtml = '',
         $noLogReplaces = null
-    )
-    {
+    ) {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
         $mailer = Base::createMailer($params->mailService);

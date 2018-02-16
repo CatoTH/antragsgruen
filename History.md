@@ -12,6 +12,7 @@
 - Support for OpenSlides 1 is removed, only 2.1+ is supported.
 - This public draft of a in-progress amendment merging progress can now be displayed in full-screen mode.
 - Antragsgrün is now compatible with PHP 7.2
+- Mailjet is now supported as E-Mail Service
 - Bugfix: A bug in the line numbering after manual line breaks was fixed.
 - Bugfix: A multi-page PDF that was uploaded as part of a application and then exported as PDF again, collided with the tabular data of the application.
 - Bugfix: When it's allowed to select multiple tags when creating a motion, the tag selection required to select all tags at once.
@@ -20,7 +21,6 @@
 - Bugfix: When merging amendments into a motion that already had "NEU" / "NEW" in the prefix, the program could crash due to inconsistent handling of upper-/lowercase
 - Bugfix: The Open Document generation is now a bit more tolerant towards unsupported HTML tags
 - Bugfix: When an admin created an user account in the backend, sending e-mails to that user did not work.
-- Member petitions (a very use-case-specific module probably not really relevant for most of the people)
 - Internal: Refactoring of the layout hooks, allowing more site-specific custom codes.
 
 ## Version 3.7.5 (2017-11-15)

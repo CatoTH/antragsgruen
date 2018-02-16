@@ -11,7 +11,7 @@ class None extends Base
      * @return \Zend\Mail\Message
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getMessageClass($type)
+    protected function getMessageClass($type)
     {
         return new \Zend\Mail\Message();
     }
@@ -19,7 +19,7 @@ class None extends Base
     /**
      * @return null
      */
-    public function getTransport()
+    protected function getTransport()
     {
         return null;
     }

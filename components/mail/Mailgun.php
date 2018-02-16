@@ -28,7 +28,7 @@ class Mailgun extends Base
      * @param int $type
      * @return \Zend\Mail\Message
      */
-    public function getMessageClass($type)
+    protected function getMessageClass($type)
     {
         $message = new \SlmMail\Mail\Message\Mailgun();
         $message->addTag(EMailLog::$MANDRILL_TAGS[$type]);
@@ -43,7 +43,7 @@ class Mailgun extends Base
     /**
      * @return \Zend\Mail\Transport\TransportInterface
      */
-    public function getTransport()
+    protected function getTransport()
     {
         $client = new \Zend\Http\Client();
         $client->setAdapter(new \Zend\Http\Client\Adapter\Curl());

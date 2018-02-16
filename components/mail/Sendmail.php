@@ -9,7 +9,7 @@ class Sendmail extends Base
      * @return \Zend\Mail\Message
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getMessageClass($type)
+    protected function getMessageClass($type)
     {
         return new \Zend\Mail\Message();
     }
@@ -17,7 +17,7 @@ class Sendmail extends Base
     /**
      * @return \Zend\Mail\Transport\TransportInterface
      */
-    public function getTransport()
+    protected function getTransport()
     {
         return new \Zend\Mail\Transport\Sendmail();
     }

@@ -9,7 +9,6 @@ use app\models\db\ConsultationSettingsTag;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
-use app\models\db\User;
 use yii\console\Controller;
 use yii\db\Connection;
 
@@ -77,6 +76,7 @@ class ImportController extends Controller
      * @param Connection $dbOld
      * @param int $veranstaltungAlt
      * @param int $consultationNew
+     * @throws \yii\db\Exception
      */
     private function migrateConsultation(Connection $dbOld, $veranstaltungAlt, $consultationNew)
     {
@@ -109,6 +109,7 @@ class ImportController extends Controller
      * @param Connection $dbOld
      * @param int $veranstaltungAlt
      * @param int $consultationNew
+     * @throws \yii\db\Exception
      */
     private function migrateConsultationTO(Connection $dbOld, $veranstaltungAlt, $consultationNew)
     {
@@ -145,6 +146,7 @@ class ImportController extends Controller
      * @param array $antrag
      * @param Consultation $consultation
      * @param ConsultationSettingsTag[]|ConsultationAgendaItem[] $tagMap
+     * @throws \yii\db\Exception
      */
     private function migrateMotion(Connection $dbOld, $antrag, Consultation $consultation, $tagMap)
     {
@@ -215,6 +217,7 @@ class ImportController extends Controller
      * @param Connection $dbOld
      * @param array $aenderungsantrag
      * @param Motion $motion
+     * @throws \yii\db\Exception
      */
     private function migrateAmendment(Connection $dbOld, $aenderungsantrag, Motion $motion)
     {
