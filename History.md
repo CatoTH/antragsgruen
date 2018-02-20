@@ -13,6 +13,7 @@
 - This public draft of a in-progress amendment merging progress can now be displayed in full-screen mode.
 - Antragsgrün is now compatible with PHP 7.2
 - Mailjet is now supported as E-Mail Service
+- Updates to several core libraries
 - Bugfix: A bug in the line numbering after manual line breaks was fixed.
 - Bugfix: A multi-page PDF that was uploaded as part of a application and then exported as PDF again, collided with the tabular data of the application.
 - Bugfix: When it's allowed to select multiple tags when creating a motion, the tag selection required to select all tags at once.
