@@ -96,7 +96,7 @@ class MotionSectionChanges
      */
     public function getSectionTypeId()
     {
-        return $this->getAnySection()->getSettings()->motionTypeId;
+        return $this->getAnySection()->getSettings()->type;
     }
 
     /**
