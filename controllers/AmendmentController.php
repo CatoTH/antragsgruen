@@ -21,6 +21,7 @@ use app\models\forms\AmendmentProposedChangeForm;
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
@@ -689,5 +690,32 @@ class AmendmentController extends Base
                 ];
             }, $collidesWith),
         ]);
+    }
+
+    /**
+     * URL: /[consultationPrefix]/[motionPrefix]/[amendmentPrefix]
+     *
+     * @param string $prefix1
+     * @param string $prefix2
+     * @return \yii\console\Response|Response
+     * @throws NotFoundHttpException
+     */
+    public function actionGotoPrefix($prefix1, $prefix2)
+    {
+        try {
+            /** @var Amendment|null $amendment */
+            $amendment = Amendment::find()->joinWith('motionJoin')->where([
+                'motion.consultationId' => $this->consultation->id,
+                'motion.titlePrefix'    => $prefix1,
+                'amendment.titlePrefix' => $prefix2,
+            ])->one();
+
+            if ($amendment && $amendment->isReadable()) {
+                return \Yii::$app->response->redirect($amendment->getViewUrl());
+            }
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException();
+        }
+        throw new NotFoundHttpException();
     }
 }

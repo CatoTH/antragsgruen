@@ -35,6 +35,8 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_CONSULTATION_ID        = 11;
     const FIRST_FREE_VOTING_BLOCK_ID        = 3;
 
+    const ABSOLUTE_URL_TEMPLATE = 'http://antragsgruen-test.local/index-test.php/index-test.php/{CONSULTATION}/{PATH}?subdomain={SUBDOMAIN}';
+
     public static $ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',
         'CKEDITOR',

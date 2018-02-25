@@ -75,6 +75,8 @@ $urlRules = [
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
+    $domv . '<prefix:[^\/]+>'                      => 'motion/goto-prefix',
+    $domv . '<prefix1:[^\/]+>/<prefix2:[^\/]+>'    => 'amendment/goto-prefix',
 ];
 
 if ($params->multisiteMode) {

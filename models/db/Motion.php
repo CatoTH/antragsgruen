@@ -384,6 +384,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @param bool $includeWithdrawn
      * @return Amendment[]
+     * @throws Internal
      */
     public function getVisibleAmendmentsSorted($includeWithdrawn = true)
     {

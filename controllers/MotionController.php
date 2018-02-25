@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
+use app\models\db\Amendment;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
@@ -24,6 +25,7 @@ use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
 use app\models\notifications\MotionProposedProcedure;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class MotionController extends Base
@@ -105,8 +107,13 @@ class MotionController extends Base
         }
         /** @var Motion $motion */
         if (!$motion) {
-            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            $redirect = $this->guessRedirectByPrefix($motionSlug);
+            if ($redirect) {
+                $this->redirect($redirect);
+            } else {
+                \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+                $this->redirect(UrlHelper::createUrl('consultation/index'));
+            }
             \Yii::$app->end();
             return null;
         }
@@ -691,7 +698,7 @@ class MotionController extends Base
                 if ($motion->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
-                $motion->proposalUserStatus   = null;
+                $motion->proposalUserStatus = null;
             }
             $motion->proposalStatus  = \Yii::$app->request->post('setStatus');
             $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
@@ -784,5 +791,48 @@ class MotionController extends Base
         }
 
         return json_encode($response);
+    }
+
+    /**
+     * @param string $prefix
+     * @return null|string
+     */
+    protected function guessRedirectByPrefix($prefix)
+    {
+        $motion = Motion::findOne([
+            'consultationId' => $this->consultation->id,
+            'titlePrefix'    => $prefix
+        ]);
+        if ($motion && $motion->isReadable()) {
+            return $motion->getViewUrl();
+        }
+
+        /** @var Amendment|null $amendment */
+        $amendment = Amendment::find()->joinWith('motionJoin')->where([
+            'motion.consultationId' => $this->consultation->id,
+            'amendment.titlePrefix' => $prefix,
+        ])->one();
+
+        if ($amendment && $amendment->isReadable()) {
+            return $amendment->getViewUrl();
+        }
+
+        return null;
+    }
+
+    /**
+     * URL: /[consultationPrefix]/[motionPrefix]
+     *
+     * @param string $prefix
+     * @return \yii\console\Response|Response
+     * @throws NotFoundHttpException
+     */
+    public function actionGotoPrefix($prefix)
+    {
+        $redirect = $this->guessRedirectByPrefix($prefix);
+        if ($redirect) {
+            return \Yii::$app->response->redirect($redirect);
+        }
+        throw new NotFoundHttpException();
     }
 }
