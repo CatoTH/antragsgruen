@@ -85,7 +85,7 @@ class ConsultationController extends Base
         } else {
             $feed->setImage('/img/logo.png');
         }
-        $feed->setTitle($this->consultation->title . ': ' . 'Anträge');
+        $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_motions'));
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedmotions')));
@@ -112,7 +112,7 @@ class ConsultationController extends Base
         } else {
             $feed->setImage('/img/logo.png');
         }
-        $feed->setTitle($this->consultation->title . ': ' . 'Änderungsanträge');
+        $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_amendments'));
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedamendments')));
@@ -138,7 +138,7 @@ class ConsultationController extends Base
         } else {
             $feed->setImage('/img/logo.png');
         }
-        $feed->setTitle($this->consultation->title . ': ' . 'Kommentare');
+        $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_comments'));
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedcomments')));
@@ -184,7 +184,7 @@ class ConsultationController extends Base
         } else {
             $feed->setImage('/img/logo.png');
         }
-        $feed->setTitle($this->consultation->title . ': ' . 'Neues');
+        $feed->setTitle($this->consultation->title . ': ' . \Yii::t('con', 'feed_all'));
         $feed->setLanguage(\yii::$app->language);
         $feed->setBaseLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/index')));
         $feed->setFeedLink(UrlHelper::absolutizeLink(UrlHelper::createUrl('consultation/feedall')));
