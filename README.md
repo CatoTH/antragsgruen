@@ -32,7 +32,7 @@ Requirements:
 - A fully configured web server running PHP
 
 Installation:
-- Download the latest package of Antragsgrün: [antragsgruen-3.8.0-beta.2.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.8.0-beta.2.tar.bz2)
+- Download the latest package of Antragsgrün: [antragsgruen-3.8.0-rc.1.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.8.0-rc.1.tar.bz2)
 - Extract the contents into your web folder
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
