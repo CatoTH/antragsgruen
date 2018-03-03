@@ -123,7 +123,7 @@ if ($params->isSamlActive()) {
     echo '<h2 class="green">&quot;Grünes Netz&quot;-Login (Wurzelwerk)</h2>
     <div class="content row">';
 
-    $action = $params->domainPlain . 'user/loginsaml';
+    $action = $params->domainPlain . 'loginsaml';
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'samlLoginForm']);
 
     $absoluteBack = UrlHelper::absolutizeLink($backUrl);
