@@ -7,7 +7,6 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\Motion;
-use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionMergeAmendmentsDraftForm;
@@ -125,14 +124,11 @@ trait MotionMergingTrait
                 }
             }
 
-            $screening         = $this->consultation->getSettings()->screeningMotions;
-            $iAmAdmin          = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-            $newMotion->status = Motion::STATUS_SUBMITTED_UNSCREENED;
-            if (!$screening || $iAmAdmin) {
-                $newMotion->status = Motion::STATUS_SUBMITTED_SCREENED;
+            if ($newMotion->replacedMotion->slug) {
+                $newMotion->slug = $newMotion->replacedMotion->slug;
+                $newMotion->replacedMotion->slug = null;
+                $newMotion->replacedMotion->save();
             }
-            $newMotion->save();
-
             $newMotion->status = $newMotion->replacedMotion->status;
             $newMotion->save();
 
