@@ -85,6 +85,7 @@ if ($params->multisiteMode) {
         [
             $domp                                    => 'manager/index',
             $domp . '/<_a:(' . $domPlainPaths . ')>' => 'manager/<_a>',
+            $domp . '/loginsaml'                     => 'user/loginsaml',
         ],
         $urlRules
     );
