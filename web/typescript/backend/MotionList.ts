@@ -15,6 +15,7 @@ class MotionList {
             $(".adminMotionTable").find("input.selectbox").prop("checked", false);
             ev.preventDefault();
         });
+        $(".deleteMarkedBtn").click(this.onDeleteClicked.bind(this));
 
         let $select = $("#initiatorSelect"),
             initiatorValues = $select.data("values"),
@@ -77,6 +78,17 @@ class MotionList {
             $dd.find("input[type=checkbox]").change(recalcLinks).trigger("change");
         });
     }
-}
 
-new MotionList();
+    private onDeleteClicked(ev) {
+        ev.preventDefault();
+        let $button = $(ev.target),
+            $form = $button.parents("form");
+        bootbox.confirm(__t("std", "del_confirm"), function (result) {
+            if (result) {
+                let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
+                $form.append($input);
+                $form.submit();
+            }
+        });
+    }
+}

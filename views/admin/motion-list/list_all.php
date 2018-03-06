@@ -27,7 +27,6 @@ $layout->addJS('js/colResizable-1.6.min.js');
 $layout->addCSS('css/backend.css');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
-$layout->addAMDModule('backend/MotionList');
 
 $route   = 'admin/motion-list/index';
 $hasTags = (count($controller->consultation->tags) > 0);
@@ -40,7 +39,7 @@ echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 
 echo $this->render('_list_all_export');
 
-echo '<div class="content fuelux">';
+echo '<div class="content fuelux" data-antragsgruen-load-class="backend/MotionList">';
 
 echo $controller->showErrors();
 
@@ -161,13 +160,13 @@ echo '</table>';
         <div style="float: right;"><?= \Yii::t('admin', 'list_marked') ?>: &nbsp;
             <?php
             if ($privilegeScreening) { ?>
-                <button type="submit" class="btn btn-danger" name="delete">
+                <button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">
                     <?= \Yii::t('admin', 'list_delete') ?>
                 </button> &nbsp;
-                <button type="submit" class="btn btn-info" name="unscreen">
+                <button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">
                     <?= \Yii::t('admin', 'list_unscreen') ?>
                 </button> &nbsp;
-                <button type="submit" class="btn btn-success" name="screen">
+                <button type="submit" class="btn btn-success screenMarkedBtn" name="screen">
                     <?= \Yii::t('admin', 'list_screen') ?>
                 </button> &nbsp;
                 <?php

@@ -12,8 +12,7 @@ export class ConsultationCreate {
             let $button = $(this);
             bootbox.confirm(__t('admin', 'consDeleteConfirm'), function (result) {
                 if (result) {
-                    let id = $button.data("id"),
-                        $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
+                    let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                     $consultationEditForm.append($input);
                     $consultationEditForm.submit();
                 }
