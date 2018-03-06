@@ -9,7 +9,6 @@ use app\models\db\Consultation;
 use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
-use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -122,9 +121,14 @@ class PDF extends ISectionType
         if ($this->isEmpty()) {
             return '';
         }
+        if (!is_a($this->section, MotionSection::class)) {
+            return ''; // PDF-Amendments are not supported
+        }
 
+        /** @var MotionSection $section */
+        $section = $this->section;
         $pdfUrl    = $this->getPdfUrl();
-        $iframeUrl = UrlHelper::createUrl(['motion/embeddedpdf', 'file' => $pdfUrl]);
+        $iframeUrl = UrlHelper::createMotionUrl($section->getMotion(), 'embeddedpdf', ['file' => $pdfUrl]);
 
         $str = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
 
@@ -143,6 +147,7 @@ class PDF extends ISectionType
      * @param IPDFLayout $pdfLayout
      * @param \FPDI $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @throws \Exception
      */
     public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
@@ -269,6 +274,7 @@ class PDF extends ISectionType
     /**
      * @param IPDFLayout $pdfLayout
      * @param \FPDI $pdf
+     * @throws \Exception
      */
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
     {
