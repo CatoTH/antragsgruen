@@ -39,10 +39,15 @@ $I->wantTo('test deleting motions and amendments');
 $I->see('O’zapft is!');
 $I->checkOption('.motion2 input.selectbox');
 $I->submitForm('.motionListForm', [], 'delete');
-$I->dontSee('O’zapft is!');
+$I->seeBootboxDialog('Wirklich löschen', '.bootbox');
+$I->acceptBootboxConfirm();
 
+$I->dontSee('O’zapft is!');
 $I->see('Textformatierungen');
 $I->checkOption('.amendment2 input.selectbox');
 $I->submitForm('.motionListForm', [], 'delete');
+$I->seeBootboxDialog('Wirklich löschen', '.bootbox');
+$I->acceptBootboxConfirm();
+
 $I->dontSeeElement('.amendment2');
 $I->see('Textformatierungen');

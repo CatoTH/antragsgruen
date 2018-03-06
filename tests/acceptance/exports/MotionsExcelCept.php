@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
+$scenario->skip('Dependency (probably) not installed');
+
 $I->populateDBData1();
 
 $I->wantTo('test the excel-export of motions from the admin interface');

@@ -15,7 +15,7 @@ $I->logout();
 
 $I->wantTo('write a comment, but forget my name');
 $I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
-$I->wait(1);
+$I->wait(0.5);
 
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
@@ -59,6 +59,7 @@ $I->wantTo('delete the comment');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 $I->gotoConsultationHome(true, 'bdk', 'bdk')->gotoMotionView(4);
+$I->wait(0.5);
 
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
