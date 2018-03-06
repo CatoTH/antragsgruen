@@ -22,7 +22,7 @@ $layout->robotsNoindex = true;
 
 echo '<h1>' . \Yii::t('manager', 'done_title') . '</h1>';
 $settingsUrl = UrlHelper::createUrl('manager/siteconfig');
-echo Html::beginForm($settingsUrl, 'get', ['class' => 'antragsgruenInitForm form-horizontal']);
+echo Html::beginForm($consultationUrl, 'get', ['class' => 'antragsgruenInitForm form-horizontal']);
 
 echo '<div class="content">';
 echo $controller->showErrors();
@@ -41,8 +41,8 @@ if (!$installFileDeletable) {
             </div>';
 
     echo '<div class="saveholder">';
-    echo '<button class="btn btn-success" name="finishInit">';
-    echo \Yii::t('manager', 'done_details');
+    echo '<button class="btn btn-success">';
+    echo \Yii::t('manager', 'done_goto_site');
     echo '</button></div>';
 }
 

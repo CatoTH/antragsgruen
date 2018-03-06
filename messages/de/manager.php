@@ -80,5 +80,5 @@ return [
                 Rufe danach diese Seite hier neu auf.',
     'done_nextstep' => 'Alles klar! Du kannst nun im Folgenden noch ein paar Detaileinstellungen vornehmen.
                 Die Antragsgrün-Version ist nun unter folgender Adresse erreichbar: %LINK%',
-    'done_details' => 'Detaileinstellungen',
+    'done_goto_site' => 'Zur Seite',
 ];

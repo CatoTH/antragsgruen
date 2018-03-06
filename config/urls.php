@@ -51,11 +51,11 @@ $urlRules = [
     $domadmin . 'ae_pdf_list'                                     => 'admin/index/aePDFList',
     $domadmin . 'admins'                                          => 'admin/index/admins',
     $domadmin . 'consultations'                                   => 'admin/index/consultations',
-    $domadmin . 'siteconfig'                                      => 'manager/siteconfig',
 
-    $dom . '<_a:(' . $userPaths . ')>' => 'user/<_a>',
-    $dom . 'checkemail'                => 'user/ajaxIsEmailRegistered',
-    $dom . '<_a:(legal|privacy)>'      => 'consultation/<_a>',
+    $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
+    $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
+    $dom . '<_a:(legal|privacy)>'             => 'consultation/<_a>',
+    $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',

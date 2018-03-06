@@ -554,6 +554,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param Consultation $consultation
      * @param string $subject
      * @param string $text
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function notificationEmail(Consultation $consultation, $subject, $text)
     {
@@ -576,6 +577,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param Motion $motion
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function notifyMotion(Motion $motion)
     {
@@ -593,6 +595,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param IComment $comment
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function notifyComment(IComment $comment)
     {
@@ -697,6 +700,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @throws MailNotSent
      * @throws FormError
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function sendRecoveryMail()
     {
@@ -779,6 +783,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param string $newEmail
      * @throws MailNotSent
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function sendEmailChangeMail($newEmail)
     {

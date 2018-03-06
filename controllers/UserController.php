@@ -47,6 +47,7 @@ class UserController extends Base
     /**
      * @param string $backUrl
      * @return int|string
+     * @throws \yii\base\ExitException
      */
     public function actionLoginsaml($backUrl = '')
     {
@@ -80,6 +81,7 @@ class UserController extends Base
     /**
      * @param string $backUrl
      * @return int|string
+     * @throws \yii\base\ExitException
      */
     public function actionLoginwurzelwerk($backUrl = '')
     {
@@ -142,6 +144,7 @@ class UserController extends Base
     /**
      * @param string $backUrl
      * @return string
+     * @throws \yii\base\ExitException
      */
     public function actionLogin($backUrl = '')
     {
@@ -235,6 +238,7 @@ class UserController extends Base
     /**
      * @param string $backUrl
      * @return int|string
+     * @throws \yii\base\ExitException
      */
     private function logoutSaml($backUrl = '')
     {
@@ -274,6 +278,7 @@ class UserController extends Base
     /**
      * @param string $backUrl
      * @return int|string
+     * @throws \yii\base\ExitException
      */
     public function actionLogout($backUrl)
     {
@@ -297,6 +302,7 @@ class UserController extends Base
      * @param string $email
      * @param string $code
      * @return string
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function actionRecovery($email = '', $code = '')
     {
@@ -352,6 +358,7 @@ class UserController extends Base
      * @param string $email
      * @param string $code
      * @return \yii\web\Response
+     * @throws \yii\base\ExitException
      */
     public function actionEmailchange($email, $code)
     {
@@ -368,6 +375,8 @@ class UserController extends Base
 
     /**
      * @return string
+     * @throws FormError
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function actionMyaccount()
     {
@@ -396,8 +405,6 @@ class UserController extends Base
         if ($this->isPostSet('save')) {
             $post = \Yii::$app->request->post();
             if (trim($post['name']) != '') {
-                if ($user->name != $post['name']) {
-                }
                 $user->name = $post['name'];
             }
 
@@ -433,8 +440,6 @@ class UserController extends Base
                         try {
                             $user->sendEmailChangeMail($post['email']);
                             \yii::$app->session->setFlash('success', \Yii::t('user', 'emailchange_sent'));
-                        } catch (FormError $e) {
-                            \yii::$app->session->setFlash('error', $e->getMessage());
                         } catch (MailNotSent $e) {
                             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
                             \yii::$app->session->setFlash('error', $errMsg);
@@ -474,6 +479,7 @@ class UserController extends Base
      * @param string $code
      * @return string
      * @throws \Exception
+     * @throws \Throwable
      */
     public function actionEmailblacklist($code)
     {

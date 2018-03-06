@@ -80,5 +80,5 @@ return [
                 After doing so, reload this page.',
     'done_nextstep' => 'Great! Now you can set up some more details.
                 Antragsgrün is now available at the following address: %LINK%',
-    'done_details' => 'Detailed settings',
+    'done_goto_site' => 'Go to the site',
 ];

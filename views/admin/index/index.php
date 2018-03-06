@@ -88,7 +88,7 @@ if (User::currentUserIsSuperuser()) {
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_user_list'),
-        UrlHelper::createUrl('manager/userlist'),
+        UrlHelper::createUrl('admin/userlist'),
         ['class' => 'siteUserList']
     );
     echo '</li>';
@@ -96,7 +96,7 @@ if (User::currentUserIsSuperuser()) {
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_config'),
-        UrlHelper::createUrl('manager/siteconfig'),
+        UrlHelper::createUrl('admin/siteconfig'),
         ['class' => 'siteConfigLink']
     );
     echo '</li>';
@@ -105,7 +105,7 @@ if (User::currentUserIsSuperuser()) {
 echo '</ul>';
 echo '</div><aside class="adminIndexSecondary">';
 
-echo $this->context->getParams()->getBehaviorClass()->getAdminIndexHint($consultation);
+echo $controller->getParams()->getBehaviorClass()->getAdminIndexHint($consultation);
 
 if (User::currentUserIsSuperuser()) {
     echo Html::beginForm('', 'post', ['class' => 'sysadminForm']);

@@ -76,5 +76,4 @@ return [
                 Après l\'avoir fait, recharge cette page.',
     'done_nextstep' => 'Super ! Tu peux maintenant régler plus de détails.
                 Antragsgrün est maintenant disponible à l\'adresse suivante : %LINK%',
-    'done_details' => 'Paramètres détaillés',
 ];
