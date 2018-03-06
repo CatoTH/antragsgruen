@@ -17,7 +17,7 @@ class Tools
      */
     public static function getUserConsultations($site, $user)
     {
-        $organizations = $user->getOrganizationIds();
+        $organizations = $user->getMyOrganizationIds();
         $consultations = [];
         foreach ($site->consultations as $consultation) {
             /** @var ConsultationSettings $settings */

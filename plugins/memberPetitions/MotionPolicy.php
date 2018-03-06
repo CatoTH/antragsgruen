@@ -100,6 +100,6 @@ class MotionPolicy extends IPolicy
         /** @var ConsultationSettings $consultationSettings */
         $consultationSettings = $this->motionType->getMyConsultation()->getSettings();
 
-        return in_array($consultationSettings->organizationId, $user->getOrganizationIds());
+        return in_array($consultationSettings->organizationId, $user->getMyOrganizationIds());
     }
 }

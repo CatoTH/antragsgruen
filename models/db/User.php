@@ -286,7 +286,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return string[]
      */
-    public function getOrganizationIds()
+    public function getMyOrganizationIds()
     {
         if ($this->organizationIds) {
             $organizationIds = json_decode($this->organizationIds, true);
