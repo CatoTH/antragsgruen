@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.8.0 [Not released yet]
+## Version 3.8.0 (2018-03-10)
 
 - Proposed procedures for motions and amendments
   - Administrators of a consultation can now manage the proposed procedure of a motion / amendment. This includes setting a proposed status, a modified version of the amendment text.

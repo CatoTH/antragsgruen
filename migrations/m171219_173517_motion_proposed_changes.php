@@ -13,8 +13,8 @@ class m171219_173517_motion_proposed_changes extends Migration
     public function safeUp()
     {
         $this->addColumn('motion', 'proposalStatus', 'TINYINT DEFAULT NULL');
-        $this->addColumn('motion', 'proposalReferenceId', 'INTEGER');
-        $this->addColumn('motion', 'proposalComment', 'TEXT');
+        $this->addColumn('motion', 'proposalReferenceId', 'INTEGER DEFAULT NULL');
+        $this->addColumn('motion', 'proposalComment', 'TEXT NULL DEFAULT NULL');
         $this->addColumn('motion', 'proposalVisibleFrom', 'TIMESTAMP NULL DEFAULT NULL');
         $this->addColumn('motion', 'proposalNotification', 'TIMESTAMP NULL DEFAULT NULL');
         $this->addColumn('motion', 'proposalUserStatus', 'TINYINT NULL DEFAULT NULL');

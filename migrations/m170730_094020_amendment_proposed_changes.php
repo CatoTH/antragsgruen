@@ -7,8 +7,8 @@ class m170730_094020_amendment_proposed_changes extends Migration
     public function safeUp()
     {
         $this->addColumn('amendment', 'proposalStatus', 'TINYINT DEFAULT NULL');
-        $this->addColumn('amendment', 'proposalReferenceId', 'INTEGER');
-        $this->addColumn('amendment', 'proposalComment', 'TEXT');
+        $this->addColumn('amendment', 'proposalReferenceId', 'INTEGER DEFAULT NULL');
+        $this->addColumn('amendment', 'proposalComment', 'TEXT NULL DEFAULT NULL');
 
         $this->createIndex('amendment_reference_am', 'amendment', 'proposalReferenceId', false);
         $this->addForeignKey('fk_amendment_reference_am', 'amendment', 'proposalReferenceId', 'amendment', 'id', 'CASCADE', 'CASCADE');
