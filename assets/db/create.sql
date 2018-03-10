@@ -1022,7 +1022,7 @@ ALTER TABLE `amendment`
   ADD CONSTRAINT `fk_amendment_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_ammendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
+  ADD CONSTRAINT `fk_amendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
 
