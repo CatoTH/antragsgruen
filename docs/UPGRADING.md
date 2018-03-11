@@ -44,13 +44,6 @@ ALTER TABLE `motion` ADD `votingStatus` TINYINT NULL DEFAULT NULL AFTER `slug`,
 ALTER TABLE `consultationUserPrivilege` ADD `adminProposals` TINYINT NOT NULL DEFAULT '0' AFTER `adminScreen`;
 
 CREATE TABLE `votingBlock` (
-  `id` INT NOT NULL,
-  `consultationId` INT NOT NULL,
-  `title` VARCHAR(150) NOT NULL,
-  `votingStatus` TINYINT DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE `votingBlock` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
   `title` varchar(150) NOT NULL,
@@ -58,7 +51,6 @@ CREATE TABLE `votingBlock` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ALTER TABLE `votingBlock` ADD PRIMARY KEY (`id`);
 ALTER TABLE `votingBlock` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
 
 ALTER TABLE `user` ADD `organizationIds` TEXT NOT NULL;
 
