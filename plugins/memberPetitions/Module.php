@@ -17,7 +17,7 @@ class Module extends ModuleBase
     {
         parent::init();
 
-        Event::on(Motion::class, Motion::EVENT_SUBMITTED, [Tools::class, 'onMotionSubmitted']);
+        Event::on(Motion::class, Motion::EVENT_MERGED, [Tools::class, 'onMerged']);
     }
 
 
@@ -26,7 +26,7 @@ class Module extends ModuleBase
     protected static function getMotionUrlRoutes()
     {
         return [
-            'write-petition-response' => 'memberPetitions/frontend/write-response',
+            'write-petition-response' => 'memberPetitions/backend/write-response',
         ];
     }
 

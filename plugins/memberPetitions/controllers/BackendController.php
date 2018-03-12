@@ -13,13 +13,14 @@ use app\models\db\User;
 use app\models\exceptions\DB;
 use app\plugins\memberPetitions\Tools;
 
-class FrontendController extends Base
+class BackendController extends Base
 {
     /**
      * @param string $motionSlug
      * @return string
      * @throws \yii\base\ExitException
      * @throws \app\models\exceptions\MailNotSent
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function actionWriteResponse($motionSlug)
     {

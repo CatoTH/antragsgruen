@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\events\MotionEvent;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionMergeAmendmentsDraftForm;
@@ -140,7 +141,7 @@ trait MotionMergingTrait
                 $mergingDraft->save();
             }
 
-            $newMotion->onMerged();
+            $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
 
             return $this->render('merge_amendments_done', [
                 'newMotion' => $newMotion,

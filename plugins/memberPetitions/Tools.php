@@ -110,7 +110,7 @@ class Tools
      */
     public static function getMotionsCollecting(Consultation $consultation)
     {
-        $motions = Tools::getDiscussionType($consultation)->getVisibleMotions(false);
+        $motions = Tools::getPetitionType($consultation)->motions; // Collecting phase is not visible by default
         return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_COLLECTING_SUPPORTERS);
         });
@@ -278,9 +278,19 @@ class Tools
 
     /**
      * @param MotionEvent $event
+     * @throws \app\models\exceptions\FormError
      */
-    public static function onMotionSubmitted(MotionEvent $event)
+    public static function onMerged(MotionEvent $event)
     {
+        $motion = $event->motion;
+        if ($motion->motionTypeId !== static::getDiscussionType($motion->getMyConsultation())->id) {
+            return;
+        }
 
+        $motion->setMotionType(static::getPetitionType($motion->getMyConsultation()));
+
+        $motion->status          = Motion::STATUS_COLLECTING_SUPPORTERS;
+        $motion->datePublication = null;
+        $motion->save();
     }
 }

@@ -55,6 +55,7 @@ class Motion extends IMotion implements IRSSItem
     const EVENT_SUBMITTED       = 'submitted';
     const EVENT_PUBLISHED       = 'published';
     const EVENT_PUBLISHED_FIRST = 'published_first';
+    const EVENT_MERGED          = 'merged'; // Called on the newly created motion
 
     public function init()
     {
@@ -63,6 +64,7 @@ class Motion extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+        $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
     }
 
     /**
@@ -755,8 +757,6 @@ class Motion extends IMotion implements IRSSItem
         $this->save();
 
         new MotionSubmittedNotification($this);
-
-        $fp = fopen("/tmp/motion.log", "a"); fwrite($fp, "setInitialSubmitted\n"); fclose($fp);
     }
 
     /**
