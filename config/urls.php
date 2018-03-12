@@ -64,7 +64,6 @@ $urlRules = [
     $domv . 'motion/create'                        => 'motion/create',
     $dommotion                                     => 'motion/view',
     $dommotion . '/<_a:(' . $motionPaths . ')>'    => 'motion/<_a>',
-    $dommotion . '/write-petition-response'        => 'memberpetitions/write-response',
     $domamend                                      => 'amendment/view',
     $domamend . '/<_a:(' . $amendPaths . ')>'      => 'amendment/<_a>',
     $dommotion . '/amendment/create'               => 'amendment/create',
@@ -75,9 +74,17 @@ $urlRules = [
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
+];
+
+foreach ($params->plugins as $pluginClass) {
+    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dommotion, $dommotionOld));
+}
+
+// Catch-All-Routes, should be loaded last
+$urlRules = array_merge($urlRules, [
     $domv . '<prefix:[^\/]+>'                      => 'motion/goto-prefix',
     $domv . '<prefix1:[^\/]+>/<prefix2:[^\/]+>'    => 'amendment/goto-prefix',
-];
+]);
 
 if ($params->multisiteMode) {
     $domp     = trim($params->domainPlain, '/');

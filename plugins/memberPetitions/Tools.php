@@ -122,7 +122,7 @@ class Tools
         }
 
         $user = User::getCurrentUser();
-        return ($user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
+        return ($user && $user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
     }
 
     /**
@@ -143,6 +143,7 @@ class Tools
     /**
      * @param IMotion $motion
      * @return \DateTime|null
+     * @throws \Exception
      */
     public static function getMotionResponseDeadline(IMotion $motion)
     {
@@ -163,6 +164,7 @@ class Tools
     /**
      * @param IMotion $motion
      * @return bool
+     * @throws \Exception
      */
     public static function isMotionDeadlineOver(IMotion $motion)
     {

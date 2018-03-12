@@ -46,6 +46,7 @@ class AntragsgruenApp
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
     public $mode                  = 'production'; // [production | sandbox]
+    public $plugins               = [];
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

@@ -1,30 +1,32 @@
 <?php
 
-namespace app\controllers;
+namespace app\plugins\memberPetitions\controllers;
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
+use app\controllers\Base;
 use app\plugins\memberPetitions\notifications\MotionResponded;
-use app\plugins\memberPetitions\Tools;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\DB;
+use app\plugins\memberPetitions\Tools;
 
-class MemberpetitionsController extends Base
+class FrontendController extends Base
 {
     /**
      * @param string $motionSlug
      * @return string
      * @throws \yii\base\ExitException
+     * @throws \app\models\exceptions\MailNotSent
      */
     public function actionWriteResponse($motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
         if (!Tools::canRespondToMotion($motion)) {
