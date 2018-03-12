@@ -4,9 +4,10 @@ return [
     'title' => 'Mitgliederbegehren',
     'bc'    => 'Mitgliederbegehren',
 
-    'sett_orgaid'        => 'Organisations-ID',
-    'sett_replydeadline' => 'Antwort-Frist (Tage)',
-    'sett_title'         => 'Mitgliederbegehren',
+    'sett_orgaid'            => 'Organisations-ID',
+    'sett_replydeadline'     => 'Antwort-Frist (Tage)',
+    'sett_title'             => 'Mitgliederbegehren',
+    'sett_minDiscussionTime' => 'Min. Diskussionszeit (Tage)',
 
     'status_collecting' => 'Unterstützer*innen sammeln',
     'status_unanswered' => 'Noch nicht beantwortet',

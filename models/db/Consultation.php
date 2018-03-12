@@ -318,8 +318,17 @@ class Consultation extends ActiveRecord
      */
     public function getSettings()
     {
-        $settingsClass = $this->site->getBehaviorClass()->getConsultationSettingsClass();
         if (!is_object($this->settingsObject)) {
+            $settingsClass = \app\models\settings\Consultation::class;
+
+            /** @var \app\models\settings\AntragsgruenApp $app */
+            $app = \Yii::$app->params;
+            foreach ($app->plugins as $pluginClass) {
+                if ($pluginClass::getConsultationSettingsClass($this)) {
+                    $settingsClass = $pluginClass::getConsultationSettingsClass($this);
+                }
+            }
+
             $this->settingsObject = new $settingsClass($this->settings);
         }
         return $this->settingsObject;

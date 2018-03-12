@@ -4,9 +4,10 @@ return [
     'title' => 'Petitions',
     'bc'    => 'Petitions',
 
-    'sett_orgaid'        => 'Organization ID',
-    'sett_replydeadline' => 'Reply deadline (days)',
-    'sett_title'         => 'Member petitions',
+    'sett_orgaid'            => 'Organization ID',
+    'sett_replydeadline'     => 'Reply deadline (days)',
+    'sett_title'             => 'Member petitions',
+    'sett_minDiscussionTime' => 'Min. discussion days',
 
     'status_collecting' => 'Collecting supporters',
     'status_unanswered' => 'Not answered yet',

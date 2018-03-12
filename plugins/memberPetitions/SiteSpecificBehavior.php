@@ -36,14 +36,6 @@ class SiteSpecificBehavior extends DefaultBehavior
     }
 
     /**
-     * @return string|ConsultationSettings
-     */
-    public static function getConsultationSettingsClass()
-    {
-        return ConsultationSettings::class;
-    }
-
-    /**
      * @param Consultation $consultation
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
