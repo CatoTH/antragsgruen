@@ -71,7 +71,6 @@ trait MotionMergingTrait
     /**
      * @param string $motionSlug
      * @return string
-     * @throws Internal
      */
     public function actionMergeAmendmentsInit($motionSlug)
     {

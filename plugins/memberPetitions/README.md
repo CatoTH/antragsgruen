@@ -16,6 +16,7 @@ Es müssen zwei (und nur zwei!) Motion Types angelegt werden:
 **Diskussion:**
 
 - ``STATUS_SUBMITTED_SCREENED``:  Laufende Diskussion
+- ``STATUS_MODIFIED``: Die Diskussion wurde in eine Petition umgewandelt
 
 **Petition:**
 
