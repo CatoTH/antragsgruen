@@ -12,6 +12,7 @@ return [
     'status_collecting' => 'Unterstützer*innen sammeln',
     'status_unanswered' => 'Noch nicht beantwortet',
     'status_answered'   => 'Beantwortet',
+    'status_discussing' => 'Offene Diskussion',
     'my_petitions'      => 'Meine Mitgliederbegehren',
     'none'              => 'Keine',
     'response_deadline' => 'Beantwortungsfrist',

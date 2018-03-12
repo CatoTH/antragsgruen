@@ -2,6 +2,7 @@
 
 namespace app\models\layoutHooks;
 
+use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 
@@ -112,4 +113,18 @@ interface Hooks
      * @return array
      */
     public function getMotionViewData($motionData, Motion $motion);
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function getFormattedMotionStatus($before, Motion $motion);
+
+    /**
+     * @param string $before
+     * @param Amendment $amendment
+     * @return string
+     */
+    public function getFormattedAmendmentStatus($before, Amendment $amendment);
 }

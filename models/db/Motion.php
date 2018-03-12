@@ -10,6 +10,7 @@ use app\components\EmailNotifications;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
+use app\models\layoutHooks\Layout;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
@@ -1093,7 +1094,8 @@ class Motion extends IMotion implements IRSSItem
         if (trim($this->statusString) != '') {
             $status .= ' <small>(' . Html::encode($this->statusString) . ')</string>';
         }
-        return $status;
+
+        return Layout::getFormattedMotionStatus($status, $this);
     }
 
     /**

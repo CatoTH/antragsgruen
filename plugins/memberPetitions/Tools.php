@@ -61,11 +61,33 @@ class Tools
 
     /**
      * @param Consultation $consultation
+     * @return bool
+     */
+    public static function isConsultationFullyConfigured(Consultation $consultation)
+    {
+        return (static::getPetitionType($consultation) !== null && static::getDiscussionType($consultation) !== null);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return Motion[]
+     */
+    public static function getMotionsInDiscussion(Consultation $consultation)
+    {
+        $motions = Tools::getDiscussionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
+            return ($motion->status == IMotion::STATUS_SUBMITTED_SCREENED);
+        });
+    }
+
+    /**
+     * @param Consultation $consultation
      * @return Motion[]
      */
     public static function getMotionsAnswered(Consultation $consultation)
     {
-        return array_filter($consultation->motions, function (Motion $motion) {
+        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_PROCESSED);
         });
     }
@@ -76,7 +98,8 @@ class Tools
      */
     public static function getMotionsUnanswered(Consultation $consultation)
     {
-        return array_filter($consultation->getVisibleMotions(), function (Motion $motion) {
+        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status != IMotion::STATUS_PROCESSED);
         });
     }
@@ -87,7 +110,8 @@ class Tools
      */
     public static function getMotionsCollecting(Consultation $consultation)
     {
-        return array_filter($consultation->motions, function (Motion $motion) {
+        $motions = Tools::getDiscussionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_COLLECTING_SUPPORTERS);
         });
     }
@@ -145,9 +169,13 @@ class Tools
      * @param IMotion $motion
      * @return bool
      */
-    public static function canRespondToMotion(IMotion $motion)
+    public static function canRespondToPetition(IMotion $motion)
     {
-        if (!$motion->isVisible() || $motion->status == IMotion::STATUS_PROCESSED) {
+        $typePetition = Tools::getPetitionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typePetition->id) {
+            return false;
+        }
+        if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return false;
         }
 
@@ -208,7 +236,8 @@ class Tools
     /**
      * @param MotionEvent $event
      */
-    public static function onMotionSubmitted(MotionEvent $event) {
+    public static function onMotionSubmitted(MotionEvent $event)
+    {
 
     }
 }

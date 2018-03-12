@@ -60,11 +60,16 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
     </h2>
     <div class="content">
         <?php
-        echo $this->render('_motion_list', ['motions' => array_merge(
-            Tools::getMotionsAnswered($consultation),
-            Tools::getMotionsUnanswered($consultation),
-            Tools::getMotionsCollecting($consultation)
-        )]);
+        if (Tools::isConsultationFullyConfigured($consultation)) {
+            echo $this->render('_motion_list', ['motions' => array_merge(
+                Tools::getMotionsInDiscussion($consultation),
+                Tools::getMotionsAnswered($consultation),
+                Tools::getMotionsUnanswered($consultation),
+                Tools::getMotionsCollecting($consultation)
+            )]);
+        } else {
+            echo '<div class="alert">Nicht vollständig eingerichtet.</div>';
+        }
         ?>
     </div>
     <?php

@@ -11,14 +11,28 @@ use app\models\settings\Layout;
  * @var bool $admin
  */
 
+$missing = false;
 if (!Tools::getDiscussionType($consultation)) {
     echo '<div class="alert alert-danger">No discussion motion type is configured yet.</div>';
+    $missing = true;
 }
 if (!Tools::getPetitionType($consultation)) {
     echo '<div class="alert alert-danger">No petition motion type is configured yet.</div>';
+    $missing = true;
+}
+if ($missing) {
+    return;
 }
 
 ?>
+
+<h2 class="green">
+    <?=\Yii::t('memberpetitions', 'status_discussing') ?>
+</h2>
+<div class="content">
+    <?= $this->render('_motion_list', ['motions' => Tools::getMotionsInDiscussion($consultation)]) ?>
+</div>
+
 
 <h2 class="green">
     <?=\Yii::t('memberpetitions', 'status_answered') ?>

@@ -42,7 +42,7 @@ class LayoutHooks extends HooksAdapter
      */
     public function beforeMotionView($before, Motion $motion)
     {
-        if (!Tools::canRespondToMotion($motion)) {
+        if (!Tools::canRespondToPetition($motion)) {
             return $before;
         }
 
@@ -59,7 +59,7 @@ class LayoutHooks extends HooksAdapter
      */
     public function afterMotionView($before, Motion $motion)
     {
-        if (Tools::canRespondToMotion($motion)) {
+        if (Tools::canRespondToPetition($motion)) {
             $this->layout->loadCKEditor();
             $before .= \Yii::$app->controller->renderPartial('@app/plugins/memberPetitions/views/_respond', [
                 'motion' => $motion,
@@ -82,6 +82,7 @@ class LayoutHooks extends HooksAdapter
      * @param Motion $motion
      * @return array
      * @throws \app\models\exceptions\Internal
+     * @throws \Exception
      */
     public function getMotionViewData($motionData, Motion $motion)
     {
@@ -97,5 +98,31 @@ class LayoutHooks extends HooksAdapter
             ];
         }
         return $motionData;
+    }
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function getFormattedMotionStatus($before, Motion $motion)
+    {
+        if ($motion->motionTypeId === Tools::getDiscussionType($motion->getMyConsultation())->id) {
+            switch ($motion->status) {
+                case Motion::STATUS_SUBMITTED_SCREENED:
+                    return \Yii::t('memberpetitions', 'status_discussing');
+            }
+        }
+        if ($motion->motionTypeId === Tools::getPetitionType($motion->getMyConsultation())->id) {
+            switch ($motion->status) {
+                case Motion::STATUS_COLLECTING_SUPPORTERS:
+                    return \Yii::t('memberpetitions', 'status_collecting');
+                case Motion::STATUS_SUBMITTED_SCREENED:
+                    return \Yii::t('memberpetitions', 'status_unanswered');
+                case Motion::STATUS_PROCESSED:
+                    return '✔ ' . \Yii::t('memberpetitions', 'status_answered');
+            }
+        }
+        return $before;
     }
 }

@@ -11,6 +11,7 @@ use app\components\UrlHelper;
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
+use app\models\layoutHooks\Layout;
 use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
@@ -1147,7 +1148,8 @@ class Amendment extends IMotion implements IRSSItem
         if (trim($this->statusString) != '') {
             $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
         }
-        return $status;
+
+        return Layout::getFormattedAmendmentStatus($status, $this);
     }
 
     /**

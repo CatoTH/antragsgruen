@@ -29,7 +29,7 @@ class FrontendController extends Base
             return $this->redirect(UrlHelper::createUrl('/consultation/index'));
         }
 
-        if (!Tools::canRespondToMotion($motion)) {
+        if (!Tools::canRespondToPetition($motion)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
