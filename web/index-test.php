@@ -17,7 +17,8 @@ try {
 
     (new yii\web\Application($config))->run();
 } catch (\yii\base\InvalidConfigException $e) {
-    echo 'Leider ist die Antragsgrün-Konfigurationsdatei (config/config.json) fehlerhaft.
+    $file = (isset($_SERVER['ANTRAGSGRUEN_CONFIG']) ? $_SERVER['ANTRAGSGRUEN_CONFIG'] : 'config/config.json');
+    echo 'Leider ist die Antragsgrün-Konfigurationsdatei (' . $file . ') fehlerhaft.
     Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>
     <li>Die Datei von Hand bearbeiten und den Fehler ausfindig machen und korrigieren.</li>
     <li>Den Installationsmodus aktivieren (die Datei config/INSTALLING anlegen) und eine beliebige Seite aufrufen, um in den Installationsmodus zu gelangen.</li>

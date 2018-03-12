@@ -26,7 +26,8 @@ try {
     (new \app\components\yii\Application($config))->run();
 } catch (\yii\base\InvalidConfigException $e) {
     $error = htmlentities($e->getMessage(), ENT_COMPAT, 'UTF-8');
-    echo str_replace('%ERROR%', $error, 'Leider ist die Antragsgrün-Konfigurationsdatei (config/config.json) fehlerhaft.
+    $file  = (isset($_SERVER['ANTRAGSGRUEN_CONFIG']) ? $_SERVER['ANTRAGSGRUEN_CONFIG'] : 'config/config.json');
+    echo str_replace('%ERROR%', $error, 'Leider ist die Antragsgrün-Konfigurationsdatei (' . $file . ') fehlerhaft.
     Die Fehlermeldung lautet: %ERROR%<br><br>
     Du kannst auf folgende Weisen versuchen, sie zu korrigieren:<ul>
     <li>Die Datei von Hand bearbeiten und den Fehler ausfindig machen und korrigieren.</li>
