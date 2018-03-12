@@ -13,7 +13,6 @@ use app\models\forms\MotionMergeAmendmentsDraftForm;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\MotionSectionChanges;
 use yii\web\Response;
-use app\models\notifications\MotionEdited as MotionEditedNotification;
 
 /**
  * Trait MotionMergingTrait
@@ -94,7 +93,6 @@ trait MotionMergingTrait
      * @param string $motionSlug
      * @param string $amendmentStati
      * @return string
-     * @throws Internal
      */
     public function actionMergeAmendmentsConfirm($motionSlug, $amendmentStati = '')
     {
@@ -143,7 +141,7 @@ trait MotionMergingTrait
                 $mergingDraft->save();
             }
 
-            new MotionEditedNotification($newMotion);
+            $newMotion->onMerged();
 
             return $this->render('merge_amendments_done', [
                 'newMotion' => $newMotion,

@@ -1,5 +1,10 @@
 # Version history
 
+## Version 3.7.1 [not released yet]
+
+- "Accept/Reject all changes" is only shown when merging amendments, if there are actually amendments to merge.
+- Bugfix: The publication date and slug was not set when a motion was created by merging amendments.
+
 ## Version 3.8.0 (2018-03-10)
 
 - Proposed procedures for motions and amendments

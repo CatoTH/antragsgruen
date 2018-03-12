@@ -30,7 +30,6 @@ trait AmendmentMergingTrait
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
-     * @throws Access
      * @throws NotFound
      * @throws Internal
      */
@@ -114,7 +113,6 @@ trait AmendmentMergingTrait
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
-     * @throws Access
      * @throws Internal
      * @throws NotFound
      * @throws \yii\base\ExitException

@@ -163,12 +163,14 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
 
                     echo '</div>';
 
-                    echo '<div class="mergeActionHolder" style="margin-top: 5px; margin-bottom: 5px;">';
-                    echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
-                        \Yii::t('amend', 'merge_accept_all') . '</button> ';
-                    echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
-                        \Yii::t('amend', 'merge_reject_all') . '</button>';
-                    echo '</div>';
+                    if (count($toMergeAmendmentIds) > 0) {
+                        echo '<div class="mergeActionHolder" style="margin-top: 5px; margin-bottom: 5px;">';
+                        echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
+                            \Yii::t('amend', 'merge_accept_all') . '</button> ';
+                        echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
+                            \Yii::t('amend', 'merge_reject_all') . '</button>';
+                        echo '</div>';
+                    }
 
                     echo '</div>';
                 } else {

@@ -77,6 +77,7 @@ class MergeSingleAmendmentForm extends Model
 
     /**
      * @return bool
+     * @throws \app\models\exceptions\Internal
      */
     public function checkConsistency()
     {
@@ -106,8 +107,10 @@ class MergeSingleAmendmentForm extends Model
     }
 
     /**
+     * @param string $previousSlug
+     * @throws DB
      */
-    private function createNewMotion()
+    private function createNewMotion($previousSlug)
     {
         $this->newMotion                  = new Motion();
         $this->newMotion->consultationId  = $this->oldMotion->consultationId;
@@ -123,7 +126,7 @@ class MergeSingleAmendmentForm extends Model
         $this->newMotion->status          = $this->oldMotion->status;
         $this->newMotion->noteInternal    = $this->oldMotion->noteInternal;
         $this->newMotion->textFixed       = $this->oldMotion->textFixed;
-        $this->newMotion->slug            = $this->oldMotion->slug;
+        $this->newMotion->slug            = $previousSlug;
         $this->newMotion->cache           = '';
         if (!$this->newMotion->save()) {
             throw new DB($this->newMotion->getErrors());
@@ -221,13 +224,15 @@ class MergeSingleAmendmentForm extends Model
 
     /**
      * @return Motion
+     * @throws DB
      */
     public function performRewrite()
     {
+        $previousSlug = $this->oldMotion->slug;
         $this->oldMotion->slug = null;
         $this->oldMotion->save();
         
-        $this->createNewMotion();
+        $this->createNewMotion($previousSlug);
         $this->createNewMotionSections();
         $this->rewriteOtherAmendments();
         $this->setDoneAmendmentsStatuses();
@@ -237,6 +242,8 @@ class MergeSingleAmendmentForm extends Model
 
         $this->oldMotion->status = Motion::STATUS_MODIFIED;
         $this->oldMotion->save();
+
+        $this->newMotion->onMerged();
 
         return $this->newMotion;
     }

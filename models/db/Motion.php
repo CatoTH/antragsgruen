@@ -12,6 +12,7 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
+use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 
@@ -785,6 +786,18 @@ class Motion extends IMotion implements IRSSItem
         $this->status = Motion::STATUS_DELETED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_DELETE, $this->id);
+    }
+
+    /**
+     */
+    public function onMerged()
+    {
+        if ($this->datePublication === null && $this->status === Motion::STATUS_SUBMITTED_SCREENED) {
+            $this->datePublication = date('Y-m-d H:i:s');
+            $this->save();
+
+            new MotionEditedNotification($this);
+        }
     }
 
     /**
