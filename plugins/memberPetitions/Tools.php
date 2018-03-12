@@ -203,15 +203,19 @@ class Tools
      * @return \DateTime|null
      * @throws \Exception
      */
-    public static function getMotionResponseDeadline(IMotion $motion)
+    public static function getPetitionResponseDeadline(IMotion $motion)
     {
+        $typePetition = Tools::getPetitionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typePetition->id) {
+            return null;
+        }
         if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return null;
         }
-        if (!$motion->dateCreation) {
+        if (!$motion->datePublication) {
             return null;
         }
-        $date = new \DateTime($motion->dateCreation);
+        $date = new \DateTime($motion->datePublication);
         /** @var ConsultationSettings $settings */
         $settings = $motion->getMyConsultation()->getSettings();
         $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
@@ -226,7 +230,46 @@ class Tools
      */
     public static function isMotionDeadlineOver(IMotion $motion)
     {
-        $deadline = static::getMotionResponseDeadline($motion);
+        $deadline = static::getPetitionResponseDeadline($motion);
+        if (!$deadline) {
+            return false;
+        }
+        return $deadline->getTimestamp() < time();
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return \DateTime|null
+     * @throws \Exception
+     */
+    public static function getDiscussionUntil(IMotion $motion)
+    {
+        $typeDiscussion = Tools::getDiscussionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typeDiscussion->id) {
+            return null;
+        }
+        if (!$motion->isVisible() || $motion->status !== IMotion::STATUS_SUBMITTED_SCREENED) {
+            return null;
+        }
+        if (!$motion->datePublication) {
+            return null;
+        }
+        $date = new \DateTime($motion->datePublication);
+        /** @var ConsultationSettings $settings */
+        $settings = $motion->getMyConsultation()->getSettings();
+        $date->add(new \DateInterval('P' . $settings->minDiscussionTime . "D"));
+
+        return $date;
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return bool
+     * @throws \Exception
+     */
+    public static function isDiscussionUntilOver(IMotion $motion)
+    {
+        $deadline = static::getDiscussionUntil($motion);
         if (!$deadline) {
             return false;
         }

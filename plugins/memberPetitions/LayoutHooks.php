@@ -42,13 +42,23 @@ class LayoutHooks extends HooksAdapter
      */
     public function beforeMotionView($before, Motion $motion)
     {
-        if (!Tools::canRespondToPetition($motion)) {
-            return $before;
+        if (Tools::canRespondToPetition($motion)) {
+            $before .= '<div class="content"><div class="alert alert-info">';
+            $before .= \Yii::t('memberpetitions', 'answer_hint');
+            $before .= '</div></div>';
         }
 
-        $before .= '<div class="content"><div class="alert alert-info">';
-        $before .= \Yii::t('memberpetitions', 'answer_hint');
-        $before .= '</div></div>';
+        if ($motion->canMergeAmendments()) {
+            $before .= '<div class="content"><div class="alert alert-info">';
+            $before .= \Yii::t('memberpetitions', 'discussion_over');
+            $before .= '<div style="text-align: center; margin-top: 15px;">' . Html::a(
+                \Yii::t('memberpetitions', 'discussion_over_btn'),
+                UrlHelper::createMotionUrl($motion, 'merge-amendments-init'),
+                ['class' => 'btn btn-primary']
+            ) . '</div>';
+            $before .= '</div></div>';
+        }
+
         return $before;
     }
 
@@ -86,7 +96,7 @@ class LayoutHooks extends HooksAdapter
      */
     public function getMotionViewData($motionData, Motion $motion)
     {
-        $deadline = Tools::getMotionResponseDeadline($motion);
+        $deadline = Tools::getPetitionResponseDeadline($motion);
         if ($deadline) {
             $deadlineStr = \app\components\Tools::formatMysqlDate($deadline->format('Y-m-d'));
             if (Tools::isMotionDeadlineOver($motion)) {
@@ -95,6 +105,14 @@ class LayoutHooks extends HooksAdapter
             $motionData[] = [
                 'title'   => \Yii::t('memberpetitions', 'response_deadline'),
                 'content' => $deadlineStr,
+            ];
+        }
+
+        $discussionUntil = Tools::getDiscussionUntil($motion);
+        if ($discussionUntil) {
+            $motionData[] = [
+                'title'   => \Yii::t('memberpetitions', 'discussion_until'),
+                'content' => \app\components\Tools::formatMysqlDate($discussionUntil->format('Y-m-d')),
             ];
         }
         return $motionData;

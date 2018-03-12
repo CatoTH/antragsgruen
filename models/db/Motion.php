@@ -464,7 +464,6 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @return bool
-     * @throws Internal
      */
     public function canMergeAmendments()
     {
