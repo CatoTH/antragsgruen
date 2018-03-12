@@ -89,16 +89,18 @@ if ($params->redis) {
     $components['session'] = ['class' => 'yii\redis\Session'];
 }
 
+$bootstrap = ['log'];
 $modules = [];
 foreach ($params->plugins as $pluginId => $pluginClass) {
     $modules[$pluginId] = [
         'class' => $pluginClass,
     ];
+    $bootstrap[] = $pluginId;
 }
 
 return [
     'name'         => 'Antragsgrün',
-    'bootstrap'    => ['log'],
+    'bootstrap'    => $bootstrap,
     'basePath'     => dirname(__DIR__),
     'components'   => $components,
     'defaultRoute' => $defaultRoute,

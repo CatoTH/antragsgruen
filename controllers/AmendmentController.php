@@ -12,6 +12,7 @@ use app\models\db\ConsultationLog;
 use app\models\db\IMotion;
 use app\models\db\User;
 use app\models\db\VotingBlock;
+use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\NotFound;
@@ -266,10 +267,10 @@ class AmendmentController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $amendment->setInitialSubmitted();
+            $amendment->trigger(Amendment::EVENT_SUBMITTED, new AmendmentEvent($amendment));
 
             if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
-                $amendment->onPublish();
+                $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
             } else {
                 EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
             }

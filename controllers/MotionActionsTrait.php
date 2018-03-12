@@ -19,6 +19,7 @@ use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\models\supportTypes\ISupportType;
 use app\components\EmailNotifications;
+use app\models\events\MotionEvent;
 use yii\web\Response;
 
 /**
@@ -298,6 +299,7 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     * @throws Internal
      */
     private function motionSupportFinish(Motion $motion)
     {
@@ -306,10 +308,10 @@ trait MotionActionsTrait
             return;
         }
 
-        $motion->setInitialSubmitted();
+        $motion->trigger(Motion::EVENT_SUBMITTED, new MotionEvent($motion));
 
         if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
-            $motion->onPublish();
+            $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
         } else {
             EmailNotifications::sendMotionSubmissionConfirm($motion);
         }

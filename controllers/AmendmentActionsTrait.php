@@ -13,6 +13,7 @@ use app\models\db\ConsultationLog;
 use app\models\db\IComment;
 use app\models\db\Consultation;
 use app\models\db\User;
+use app\models\events\AmendmentEvent;
 use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
@@ -292,10 +293,10 @@ trait AmendmentActionsTrait
             return;
         }
 
-        $amendment->setInitialSubmitted();
+        $amendment->trigger(Amendment::EVENT_SUBMITTED, new AmendmentEvent($amendment));
 
         if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
-            $amendment->onPublish();
+            $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
         } else {
             EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
         }

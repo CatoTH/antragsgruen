@@ -979,9 +979,14 @@ VALUES
   (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
   (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
   (10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 2, 2, 0, 2, 0, 0, 4, 4, 0, 2, 1, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (11, 8, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":2,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
-  (12, 9, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
-  (13, 10, 'Motion', 'Motions', 'Start a motion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2,
+  (11, 8, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (12, 9, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+  (13, 10, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, 0, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0,
+   0),
+  (14, 8, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":2,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
+  (15, 9, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
+  (16, 10, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2,
    '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0,
    0);
 
@@ -1031,7 +1036,16 @@ VALUES
   (38, 12, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
   (39, 13, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
   (40, 13, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
-  (41, 13, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0);
+  (41, 13, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (42, 14, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (43, 14, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (44, 14, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (45, 15, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (46, 15, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (47, 15, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (48, 16, 0, 0, 0, 'Title', NULL, 0, 0, 0, 0, 0, 0, 0),
+  (49, 16, 1, 1, 0, 'Motion Text', NULL, 1, 1, 0, 1, 0, 0, 0),
+  (50, 16, 1, 2, 0, 'Reason', NULL, 0, 0, 0, 0, 0, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsTag`

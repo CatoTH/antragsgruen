@@ -11,6 +11,13 @@ use app\models\settings\Layout;
  * @var bool $admin
  */
 
+if (!Tools::getDiscussionType($consultation)) {
+    echo '<div class="alert alert-danger">No discussion motion type is configured yet.</div>';
+}
+if (!Tools::getPetitionType($consultation)) {
+    echo '<div class="alert alert-danger">No petition motion type is configured yet.</div>';
+}
+
 ?>
 
 <h2 class="green">

@@ -14,6 +14,7 @@ use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
+use app\models\events\MotionEvent;
 use yii\helpers\Html;
 
 /**
@@ -49,6 +50,19 @@ use yii\helpers\Html;
 class Motion extends IMotion implements IRSSItem
 {
     use CacheTrait;
+
+    const EVENT_SUBMITTED       = 'submitted';
+    const EVENT_PUBLISHED       = 'published';
+    const EVENT_PUBLISHED_FIRST = 'published_first';
+
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
+        $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
+        $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+    }
 
     /**
      * @return string[]
@@ -741,6 +755,8 @@ class Motion extends IMotion implements IRSSItem
         $this->save();
 
         new MotionSubmittedNotification($this);
+
+        $fp = fopen("/tmp/motion.log", "a"); fwrite($fp, "setInitialSubmitted\n"); fclose($fp);
     }
 
     /**
@@ -752,7 +768,7 @@ class Motion extends IMotion implements IRSSItem
             $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
         }
         $this->save(true);
-        $this->onPublish();
+        $this->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($this));
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_SCREEN, $this->id);
     }
 
@@ -813,21 +829,29 @@ class Motion extends IMotion implements IRSSItem
         ConsultationLog::log($this->getMyConsultation(), $initId, ConsultationLog::MOTION_PUBLISH, $this->id);
 
         if ($this->datePublication === null) {
-            $motionType = UserNotification::NOTIFICATION_NEW_MOTION;
-            $notified   = [];
-            foreach ($this->getMyConsultation()->userNotifications as $noti) {
-                if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
-                    $noti->user->notifyMotion($this);
-                    $notified[]             = $noti->userId;
-                    $noti->lastNotification = date('Y-m-d H:i:s');
-                    $noti->save();
-                }
-            }
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
-
-            EmailNotifications::sendMotionOnPublish($this);
+            $this->trigger(static::EVENT_PUBLISHED_FIRST, new MotionEvent($this));
         }
+    }
+
+    /**
+     * @throws Internal
+     * @throws \app\models\exceptions\ServerConfiguration
+     */
+    public function onPublishFirst()
+    {
+        $motionType = UserNotification::NOTIFICATION_NEW_MOTION;
+        $notified   = [];
+        foreach ($this->getMyConsultation()->userNotifications as $noti) {
+            if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
+                $noti->user->notifyMotion($this);
+                $notified[]             = $noti->userId;
+                $noti->lastNotification = date('Y-m-d H:i:s');
+                $noti->save();
+            }
+        }
+        EmailNotifications::sendMotionOnPublish($this);
     }
 
     /**

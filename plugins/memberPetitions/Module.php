@@ -3,12 +3,24 @@
 namespace app\plugins\memberPetitions;
 
 use app\models\db\Consultation;
+use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
+use yii\base\Event;
 
 class Module extends ModuleBase
 {
+    /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        Event::on(Motion::class, Motion::EVENT_SUBMITTED, [Tools::class, 'onMotionSubmitted']);
+    }
+
+
     /**
      */
     protected static function getMotionUrlRoutes()

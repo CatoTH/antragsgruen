@@ -7,6 +7,8 @@ use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\events\MotionEvent;
+use app\models\supportTypes\ISupportType;
 
 class Tools
 {
@@ -27,6 +29,34 @@ class Tools
             }
         }
         return $consultations;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return \app\models\db\ConsultationMotionType|null
+     */
+    public static function getDiscussionType(Consultation $consultation)
+    {
+        foreach ($consultation->motionTypes as $motionType) {
+            if ($motionType->supportType !== ISupportType::COLLECTING_SUPPORTERS) {
+                return $motionType;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return \app\models\db\ConsultationMotionType|null
+     */
+    public static function getPetitionType(Consultation $consultation)
+    {
+        foreach ($consultation->motionTypes as $motionType) {
+            if ($motionType->supportType === ISupportType::COLLECTING_SUPPORTERS) {
+                return $motionType;
+            }
+        }
+        return null;
     }
 
     /**
@@ -173,5 +203,12 @@ class Tools
             return false;
         }
         return $deadline->getTimestamp() < time();
+    }
+
+    /**
+     * @param MotionEvent $event
+     */
+    public static function onMotionSubmitted(MotionEvent $event) {
+
     }
 }
