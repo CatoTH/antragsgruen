@@ -33,7 +33,7 @@ foreach ($motions as $motion) {
     echo "</p>\n";
     echo '<p class="info">';
     if ($bold === 'organization') {
-        echo '<span class="status">' . Html::encode($motion->consultation->title) . '</span>, ';
+        echo '<span class="status">' . Html::encode($motion->getMyConsultation()->title) . '</span>, ';
     }
     echo Html::encode($motion->getInitiatorsStr());
     echo '</p>';
