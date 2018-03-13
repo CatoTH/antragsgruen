@@ -7,6 +7,7 @@ use yii\helpers\Html;
 
 /**
  * @var Motion[] $motions
+ * @var string $bold
  */
 
 if (count($motions) === 0) {
@@ -31,7 +32,9 @@ foreach ($motions as $motion) {
     echo '</a>';
     echo "</p>\n";
     echo '<p class="info">';
-    echo '<span class="status">' . Html::encode($status) . '</span>, ';
+    if ($bold === 'organization') {
+        echo '<span class="status">' . Html::encode($motion->consultation->title) . '</span>, ';
+    }
     echo Html::encode($motion->getInitiatorsStr());
     echo '</p>';
     echo '</li>';

@@ -12,11 +12,13 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $user       = \app\models\db\User::getCurrentUser();
+$site       = $controller->site;
 $layout->addCSS('css/memberpetitions.css');
 $layout->bodyCssClasses[] = 'memberPetitionHome';
 
-$this->title = 'Grüne Mitgliederbegehren';
+$myConsultations = Tools::getUserConsultations($site, $user);
 
+$this->title = 'Grüne Mitgliederbegehren';
 ?>
     <h1>Grüne Mitgliederbegehren</h1>
     <div class="content">
@@ -30,13 +32,13 @@ $this->title = 'Grüne Mitgliederbegehren';
                 Hiermit kannst du eine neue Petition anlegen.
                 Wähle zunächst aus, an welchen Verband sich die Petition richtet:
                 <?php
-                foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
+                foreach ($myConsultations as $consultation) {
                     echo '<div class="createRow">';
                     if (count($consultation->motionTypes) === 0) {
                         continue;
                     }
                     $createUrl = UrlHelper::createUrl([
-                        'motion/create',
+                        '/motion/create',
                         'consultationPath' => $consultation->urlPath,
                         'motionTypeId'     => $consultation->motionTypes[0]->id,
                     ]);
@@ -47,11 +49,26 @@ $this->title = 'Grüne Mitgliederbegehren';
             </div>
         </section>
 
-        Du bist Mitglied in folgenden Verbänden, die dieses Angebot nutzen:
+        <?php
+        if (count($myConsultations) > 1) {
+            ?>
+            Du bist Mitglied in folgenden Verbänden, die dieses Angebot nutzen:
+            <ul>
+                <?php
+                foreach ($myConsultations as $consultation) {
+                    $url = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+                    echo '<li>' . Html::a($consultation->title, $url) . '</li>';
+                }
+                ?>
+            </ul>
+            <?php
+        }
+        ?>
     </div>
 <?php
+/*
 foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
-    $url       = UrlHelper::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
+    $url       = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
     $gotoTitle = '<span class="glyphicon glyphicon-chevron-right"></span> Zur Verbands-Seite';
     ?>
     <h2 class="green">
@@ -66,7 +83,7 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
                 Tools::getMotionsAnswered($consultation),
                 Tools::getMotionsUnanswered($consultation),
                 Tools::getMotionsCollecting($consultation)
-            )]);
+            ), 'bold' => 'organization']);
         } else {
             echo '<div class="alert">Nicht vollständig eingerichtet.</div>';
         }
@@ -74,6 +91,50 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
     </div>
     <?php
 }
+*/
+
+?>
+
+    <h2 class="green">
+        <?= \Yii::t('memberpetitions', 'status_discussing') ?>
+    </h2>
+    <div class="content">
+        <?= $this->render('_motion_list', [
+            'motions' => Tools::getAllMotionsInDiscussion($myConsultations),
+            'bold'    => 'organization'
+        ]) ?>
+    </div>
+
+    <h2 class="green">
+        <?= \Yii::t('memberpetitions', 'status_collecting') ?>
+    </h2>
+    <div class="content">
+        <?= $this->render('_motion_list', [
+            'motions' => Tools::getAllMotionsCollection($myConsultations),
+            'bold'    => 'organization'
+        ]) ?>
+    </div>
+
+    <h2 class="green">
+        <?= \Yii::t('memberpetitions', 'status_unanswered') ?>
+    </h2>
+    <div class="content">
+        <?= $this->render('_motion_list', [
+            'motions' => Tools::getAllMotionsUnanswered($myConsultations),
+            'bold'    => 'organization'
+        ]) ?>
+    </div>
+
+    <h2 class="green">
+        <?= \Yii::t('memberpetitions', 'status_answered') ?>
+    </h2>
+    <div class="content">
+        <?= $this->render('_motion_list', [
+            'motions' => Tools::getAllMotionsAnswered($myConsultations),
+            'bold'    => 'organization'
+        ]) ?>
+    </div>
+<?php
 
 $myMotions  = Tools::getMyMotions($controller->site);
 $mySupports = Tools::getSupportedMotions($controller->site);
@@ -83,7 +144,7 @@ if (count($myMotions) > 0) {
     <h2 class="green">Meine Mitgliederbegehren</h2>
     <div class="content">
         <?php
-        echo $this->render('_motion_list', ['motions' => $myMotions]);
+        echo $this->render('_motion_list', ['motions' => $myMotions, 'bold' => 'organization']);
         ?>
     </div>
     <?php
@@ -94,7 +155,7 @@ if (count($mySupports) > 0) {
     <h2 class="green">Meine unterstützten Mitgliederbegehren</h2>
     <div class="content">
         <?php
-        echo $this->render('_motion_list', ['motions' => $mySupports]);
+        echo $this->render('_motion_list', ['motions' => $mySupports, 'bold' => 'organization']);
         ?>
     </div>
     <?php

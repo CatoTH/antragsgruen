@@ -81,6 +81,22 @@ class Tools
     }
 
     /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsInDiscussion($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsInDiscussion($consultation));
+        }
+        return $all;
+    }
+
+    /**
      * @param Consultation $consultation
      * @return Motion[]
      */
@@ -90,6 +106,22 @@ class Tools
         return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_PROCESSED);
         });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsAnswered($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsAnswered($consultation));
+        }
+        return $all;
     }
 
     /**
@@ -105,6 +137,22 @@ class Tools
     }
 
     /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsUnanswered($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsUnanswered($consultation));
+        }
+        return $all;
+    }
+
+    /**
      * @param Consultation $consultation
      * @return Motion[]
      */
@@ -114,6 +162,22 @@ class Tools
         return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_COLLECTING_SUPPORTERS);
         });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsCollection($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsCollecting($consultation));
+        }
+        return $all;
     }
 
     /**
