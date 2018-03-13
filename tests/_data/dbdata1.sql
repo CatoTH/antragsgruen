@@ -1080,11 +1080,11 @@ VALUES
 
 INSERT INTO `###TABLE_PREFIX###motion` (`id`, `consultationId`, `motionTypeId`, `parentMotionId`, `agendaItemId`, `title`, `titlePrefix`, `dateCreation`, `datePublication`, `dateResolution`, `status`, `statusString`, `nonAmendable`, `noteInternal`, `cache`, `textFixed`, `slug`, `proposalStatus`, `proposalReferenceId`, `proposalComment`, `proposalVisibleFrom`, `proposalNotification`, `proposalUserStatus`, `proposalExplanation`, `votingStatus`, `votingBlockId`)
 VALUES
-  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-03-30 03:27:20', NULL, NULL, 3, NULL, 0, NULL, '', 0,
+  (2, 1, 1, NULL, NULL, 'O’zapft is!', 'A2', '2015-03-30 03:27:20', '2015-03-30 03:27:20', NULL, 3, NULL, 0, NULL, '', 0,
                                                                                    '321-o-zapft-is', NULL, NULL, NULL,
                                                                                    NULL, NULL, NULL, NULL, NULL, NULL),
-  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-22 15:03:00', NULL, NULL, 3, '', 0, '', '', 0, '123-textformatierungen', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-  (4, 4, 7, NULL, NULL, 'Lorem ipsum dolor sit amet', 'A1', '2015-07-04 22:05:23', NULL, NULL, 3, NULL, 0, NULL, '', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  (3, 1, 1, NULL, NULL, 'Textformatierungen', 'A3', '2015-06-22 15:03:00', '2015-06-22 15:03:00', NULL, 3, '', 0, '', '', 0, '123-textformatierungen', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+  (4, 4, 7, NULL, NULL, 'Lorem ipsum dolor sit amet', 'A1', '2015-07-04 22:05:23', '2015-07-04 22:05:23', NULL, 3, NULL, 0, NULL, '', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
   (5, 5, 8, NULL, NULL, 'Vorschlag zur Tagesordnung', 'F-01', '2015-02-17 04:05:00', NULL, '2015-02-14 13:00:00', -2, NULL, 0, NULL, '', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
   (6, 5, 8, NULL, NULL, 'Änderungsantrag zur Geschäftsordnung des Länderrates (zuletzt geändert am 31.5.2014)', 'F-02', '2015-02-18 03:16:00', NULL, NULL, -2, NULL, 0, NULL, '', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
   (7, 5, 8, NULL, NULL, 'Änderungsantrag zur Geschäftsordnung des Länderrates (zuletzt geändert am 31.5.2014)', 'F-02', '2015-02-18 03:20:00', NULL, NULL, -2, NULL, 0, NULL, '', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),

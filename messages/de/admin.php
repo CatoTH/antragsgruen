@@ -69,6 +69,7 @@ return [
     'motion_supp_auth_ww_name'    => 'Wurzelwerk-Name',
     'motion_date_resolution'      => 'Beschlossen am',
     'motion_date_created'         => 'Angelegt am',
+    'motion_date_publication'     => 'Veröffentlicht am',
     'motion_prefix'               => 'Antragskürzel',
     'motion_prefix_hint'          => 'z.B. "A1", "A1neu", "S1"',
     'motion_prefix_unique'        => 'Muss eindeutig sein.',

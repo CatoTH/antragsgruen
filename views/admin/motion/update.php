@@ -160,26 +160,53 @@ if (count($consultation->agendaItems) > 0) {
 <?php
 $locale = Tools::getCurrentDateLocale();
 $date = Tools::dateSql2bootstraptime($motion->dateCreation);
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="motionDateCreation">';
-echo \Yii::t('admin', 'motion_date_created');
-echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateCreationHolder">';
-echo '<input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
-                value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
-echo '</div></div></div>';
+?>
+<div class="form-group">
+    <label class="col-md-3 control-label" for="motionDateCreation">
+        <?= \Yii::t('admin', 'motion_date_created') ?>:
+    </label>
+    <div class="col-md-4">
+        <div class="input-group date" id="motionDateCreationHolder">
+            <input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
+                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+</div>
 
+<?php
+$date = Tools::dateSql2bootstraptime($motion->datePublication);
+?>
+<div class="form-group">
+    <label class="col-md-3 control-label" for="motionDatePublication">
+        <?= \Yii::t('admin', 'motion_date_publication') ?>:
+    </label>
+    <div class="col-md-4">
+        <div class="input-group date" id="motionDatePublicationHolder">
+            <input type="text" class="form-control" name="motion[datePublication]" id="motionDatePublication"
+                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+</div>
+
+<?php
 $date = Tools::dateSql2bootstraptime($motion->dateResolution);
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="motionDateResolution">';
-echo \Yii::t('admin', 'motion_date_resolution');
-echo ':</label><div class="col-md-4"><div class="input-group date" id="motionDateResolutionHolder">';
-echo '<input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
-                value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
-echo '</div></div></div>';
+?>
+<div class="form-group">
+    <label class="col-md-3 control-label" for="motionDateResolution">
+        <?= \Yii::t('admin', 'motion_date_resolution') ?>:
+    </label>
+    <div class="col-md-4">
+        <div class="input-group date" id="motionDateResolutionHolder">
+            <input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
+                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+</div>
 
-
+<?php
 if (count($consultation->tags) > 0) {
     echo '<div class="form-group">';
     echo '<label class="col-md-3 control-label">';

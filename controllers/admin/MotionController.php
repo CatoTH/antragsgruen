@@ -60,7 +60,6 @@ class MotionController extends AdminBase
 
     /**
      * @param ConsultationMotionType $motionType
-     * @throws FormError
      */
     private function sectionsDelete(ConsultationMotionType $motionType)
     {
@@ -353,8 +352,11 @@ class MotionController extends AdminBase
     /**
      * @param int $motionId
      * @return string
+     * @throws \Exception
+     * @throws \Throwable
      * @throws \app\models\exceptions\Internal
      * @throws \yii\base\ExitException
+     * @throws \yii\db\StaleObjectException
      */
     public function actionUpdate($motionId)
     {
@@ -431,17 +433,36 @@ class MotionController extends AdminBase
                 }
             }
 
-            $motion->title          = $modat['title'];
-            $motion->statusString   = $modat['statusString'];
-            $motion->dateCreation   = Tools::dateBootstraptime2sql($modat['dateCreation']);
-            $motion->noteInternal   = $modat['noteInternal'];
-            $motion->status         = $modat['status'];
-            $motion->agendaItemId   = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
-            $motion->nonAmendable   = (isset($modat['nonAmendable']) ? 1 : 0);
-            $motion->dateResolution = '';
-            if ($modat['dateResolution'] != '') {
-                $motion->dateResolution = Tools::dateBootstraptime2sql($modat['dateResolution']);
+            $motion->title        = $modat['title'];
+            $motion->statusString = $modat['statusString'];
+            $motion->noteInternal = $modat['noteInternal'];
+            $motion->status       = $modat['status'];
+            $motion->agendaItemId = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
+            $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
+
+            $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']);
+            if (substr($roundedDate, 0, 16) !== substr($motion->dateCreation, 0, 16)) {
+                $motion->dateCreation = $roundedDate;
             }
+
+            if ($modat['dateResolution'] !== '') {
+                $roundedDate = Tools::dateBootstraptime2sql($modat['dateResolution']);
+                if (substr($roundedDate, 0, 16) !== substr($motion->dateResolution, 0, 16)) {
+                    $motion->dateResolution = $roundedDate;
+                }
+            } else {
+                $motion->dateResolution = null;
+            }
+
+            if ($modat['datePublication'] !== '') {
+                $roundedDate = Tools::dateBootstraptime2sql($modat['datePublication']);
+                if (substr($roundedDate, 0, 16) !== substr($motion->datePublication, 0, 16)) {
+                    $motion->datePublication = $roundedDate;
+                }
+            } else {
+                $motion->datePublication = null;
+            }
+
             if ($modat['parentMotionId'] && $modat['parentMotionId'] != $motion->id &&
                 $this->consultation->getMotion($modat['parentMotionId'])) {
                 $motion->parentMotionId = IntVal($modat['parentMotionId']);

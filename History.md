@@ -2,8 +2,10 @@
 
 ## Version 3.7.1 [not released yet]
 
+- The publication date of a motion can now be edited in the administration.
 - "Accept/Reject all changes" is only shown when merging amendments, if there are actually amendments to merge.
 - Bugfix: The publication date and slug was not set when a motion was created by merging amendments.
+- Bugfix: When editing a motion in the backend without changing the submission/resulution date, the seconds in the timestamp were unnecessarily reset to zero.
 
 ## Version 3.8.0 (2018-03-10)
 

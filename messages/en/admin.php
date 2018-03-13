@@ -72,6 +72,7 @@ return [
     'motion_supp_auth_ww_name'    => 'Wurzelwerk-Name',
     'motion_date_resolution'      => 'Decided',
     'motion_date_created'         => 'Submitted',
+    'motion_date_publication'     => 'Published',
     'motion_prefix'               => 'Signature',
     'motion_prefix_hint'          => 'like "A1", "A1new", "S1"',
     'motion_prefix_unique'        => 'Has to be unique.',
