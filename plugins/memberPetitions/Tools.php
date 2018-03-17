@@ -173,6 +173,7 @@ class Tools
         $all = [];
         foreach ($consultations as $consultation) {
             if (!Tools::isConsultationFullyConfigured($consultation)) {
+                die("!");
                 continue;
             }
             $all = array_merge($all, static::getMotionsCollecting($consultation));

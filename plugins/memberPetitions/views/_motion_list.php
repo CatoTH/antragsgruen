@@ -20,7 +20,16 @@ foreach ($motions as $motion) {
     $status = $motion->getFormattedStatus();
 
     echo '<li class="motion motionRow' . $motion->id . '">';
-    echo '<p class="date">' . \app\components\Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+    echo '<p class="stats">';
+    $commentCount = count($motion->getVisibleComments(false));
+    $amendmentCount = count($motion->getVisibleAmendments(false));
+    if ($amendmentCount > 0) {
+        echo '<span class="amendments"><span class="glyphicon glyphicon-flash"></span> ' . $amendmentCount . '</span>';
+    }
+    if ($commentCount > 0) {
+        echo '<span class="comments"><span class="glyphicon glyphicon-comment"></span> ' . $commentCount . '</span>';
+    }
+    echo '</p>' . "\n";
     echo '<p class="title">' . "\n";
 
     $motionUrl = UrlHelper::createMotionUrl($motion);
@@ -35,7 +44,8 @@ foreach ($motions as $motion) {
     if ($bold === 'organization') {
         echo '<span class="status">' . Html::encode($motion->getMyConsultation()->title) . '</span>, ';
     }
-    echo Html::encode($motion->getInitiatorsStr());
+    echo Html::encode($motion->getInitiatorsStr()) . ', ';
+    echo \app\components\Tools::formatMysqlDate($motion->dateCreation);
     echo '</p>';
     echo '</li>';
 }

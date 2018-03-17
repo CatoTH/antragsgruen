@@ -1,3 +1,7 @@
+@charset "UTF-8";
+
+@import "variables";
+
 .memberPetitionHome {
   .orgaLink {
     color: white;
@@ -8,5 +12,22 @@
   }
   .createRow {
     margin-top: 15px;
+  }
+  .stats {
+    float: right;
+
+    .comments {
+      background-color: rgb(226, 0, 122);
+    }
+    .amendments {
+      background-color: rgb(175, 203, 8);
+    }
+    .comments, .amendments {
+      display: inline-block;
+      padding: 3px 6px;
+      margin-left: 10px;
+      color: white;
+      border-radius: 3px;
+    }
   }
 }
