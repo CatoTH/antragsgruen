@@ -229,14 +229,16 @@
     border-bottom: solid 1px #ccc;
     padding: 0 20px;
     font-size: 13px;
+    display: flex;
+    flex-direction: row;
 
     label {
-      display: inline-block;
-      width: 50%;
+      flex: 1;
       padding: 5px 0;
       margin: 0;
       font-weight: normal;
       color: #777;
+
       &:last-child {
         text-align: right;
       }
