@@ -66,8 +66,8 @@ class SiteAccess {
         this.$adminForm = $("#adminForm");
 
         this.$adminForm.on('click', '.removeAdmin', (ev)  => {
-            let $button = $(ev.target),
-                $form = $(ev.target).parents("form").first();
+            let $button = $(ev.currentTarget),
+                $form = $(ev.currentTarget).parents("form").first();
 
             bootbox.confirm(__t("admin", "removeAdminConfirm"), function (result) {
                 if (result) {
@@ -78,10 +78,9 @@ class SiteAccess {
             });
         });
 
-        console.log(this.$adminForm.find('.adminCard .typeSite'));
         this.$adminForm.on('change', '.adminCard .typeSite input', (ev) => {
-            let $card = $(ev.target).parents('.adminCard').first();
-            if ($(ev.target).prop('checked')) {
+            let $card = $(ev.currentTarget).parents('.adminCard').first();
+            if ($(ev.currentTarget).prop('checked')) {
                 $card.find('.typeCon, .typeProposal').addClass('hidden');
             } else {
                 $card.find('.typeCon, .typeProposal').removeClass('hidden');
