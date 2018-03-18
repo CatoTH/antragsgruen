@@ -1,8 +1,10 @@
-var gulp = require('gulp'),
+const gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     concat = require('gulp-concat'),
     sass = require('gulp-sass'),
     ts = require('gulp-typescript'),
+    postcss = require('gulp-postcss'),
+    autoprefixer = require('autoprefixer'),
     tsProject = ts.createProject('tsconfig.json'),
     sourcemaps = require('gulp-sourcemaps'),
 
@@ -89,6 +91,7 @@ gulp.task('build-css', function () {
     gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(postcss([ autoprefixer({browsers: [">1%", "last 10 versions", "IE 9", "Firefox 3"]}) ]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
 });

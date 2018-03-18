@@ -93,9 +93,10 @@ echo Html::beginForm('', 'post', [
 
 echo '<h2 class="green">' . \Yii::t('amend', 'merge_new_text') . '</h2>';
 
-if ($consultation->getSettings()->editorialAmendments || $consultation->getSettings()->globalAlternatives) {
+$globalAlternatives = ($consultation->getSettings()->globalAlternatives && $multipleParagraphs);
+if ($consultation->getSettings()->editorialAmendments || $globalAlternatives) {
     echo '<section class="editorialGlobalBar">';
-    if ($consultation->getSettings()->globalAlternatives) {
+    if ($globalAlternatives) {
         echo '<label>' . Html::checkbox('globalAlternative', $form->globalAlternative) .
             \Yii::t('amend', 'global_alternative') . '</label>';
     }

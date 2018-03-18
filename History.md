@@ -1,11 +1,14 @@
 # Version history
 
-## Version 3.7.1 [not released yet]
+## Version 3.8.1 (2018-03-18)
 
 - The publication date of a motion can now be edited in the administration.
 - "Accept/Reject all changes" is only shown when merging amendments, if there are actually amendments to merge.
+- When creating an amendment, "Global alternative" is not shown anymore, if amendments are restricted to one paragraph, as it didn't work anyway.
 - Bugfix: The publication date and slug was not set when a motion was created by merging amendments.
 - Bugfix: When editing a motion in the backend without changing the submission/resulution date, the seconds in the timestamp were unnecessarily reset to zero.
+- Bugfix: Removing other admins from a consultation was not possible with some browsers.
+- Internal: Vendor prefixes are now added by default, slightly increasing the size of the CSS, but therefore adding some extra browser compatibility.
 
 ## Version 3.8.0 (2018-03-10)
 
