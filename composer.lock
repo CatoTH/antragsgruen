@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ffeccd0595f891e123a24d89a2ef460",
+    "content-hash": "638fd4c284dd2348821287e0d1806b64",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -1214,16 +1214,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.14.2",
+            "version": "2.0.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881"
+                "reference": "e8e5bc894e19cf1e37084106a122da7062d7b179"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ef74f3783e964cea477f06e6d6ce209df1f37881",
-                "reference": "ef74f3783e964cea477f06e6d6ce209df1f37881",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/e8e5bc894e19cf1e37084106a122da7062d7b179",
+                "reference": "e8e5bc894e19cf1e37084106a122da7062d7b179",
                 "shasum": ""
             },
             "require": {
@@ -1310,7 +1310,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2018-03-13T14:15:01+00:00"
+            "time": "2018-03-20T12:41:23+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -2149,16 +2149,16 @@
         },
         {
             "name": "codeception/phpunit-wrapper",
-            "version": "7.0.4",
+            "version": "7.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/phpunit-wrapper.git",
-                "reference": "635b5b94fe1ec153dcae74f3aa6b24b02891d1c4"
+                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/635b5b94fe1ec153dcae74f3aa6b24b02891d1c4",
-                "reference": "635b5b94fe1ec153dcae74f3aa6b24b02891d1c4",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
+                "reference": "42c8fdbf301ee36f6b58cb154972f9148fdcb7d4",
                 "shasum": ""
             },
             "require": {
@@ -2188,7 +2188,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-            "time": "2018-03-13T02:44:28+00:00"
+            "time": "2018-03-16T10:18:33+00:00"
         },
         {
             "name": "codeception/specify",
