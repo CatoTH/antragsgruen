@@ -46,6 +46,18 @@ foreach ($motions as $motion) {
     }
     echo Html::encode($motion->getInitiatorsStr()) . ', ';
     echo \app\components\Tools::formatMysqlDate($motion->dateCreation);
+
+    $deadline = Tools::getPetitionResponseDeadline($motion);
+    if ($deadline) {
+        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo \app\components\Tools::formatRemainingTime($deadline);
+    }
+
+    $deadline = Tools::getDiscussionUntil($motion);
+    if ($deadline) {
+        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo \app\components\Tools::formatRemainingTime($deadline);
+    }
     echo '</p>';
     echo '</li>';
 }

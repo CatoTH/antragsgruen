@@ -1241,7 +1241,7 @@ VALUES
                                                                                                                    NULL,
                                                                                                                    NULL,
    NULL, NULL, NULL, NULL, NULL),
-  (119, 8, 11, NULL, NULL, 'Datteln für alle!', '', '2017-12-30 08:35:00', NULL, NULL, 3, '', 0, '', '', 0,
+  (119, 8, 11, NULL, NULL, 'Datteln für alle!', '', '2017-12-30 08:35:00', '2017-12-30 08:35:00', NULL, 3, '', 0, '', '', 0,
                                                                                            'Datteln_fuer_alle-57894',
                                                                                            NULL, NULL, NULL, NULL, NULL,
    NULL, NULL, NULL, NULL),

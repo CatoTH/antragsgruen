@@ -176,4 +176,13 @@ return [
     'activity_AMENDMENT_WITHDRAW'         => 'Der <strong> Änderungsantrag ###AMENDMENT###</strong> wurde <strong>zurückgezogen</strong>.',
     'activity_AMENDMENT_COMMENT'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### kommentiert</strong>',
     'activity_AMENDMENT_SCREEN'           => 'Der <strong>Änderungsantrag ###AMENDMENT###</strong> wurde <strong>veröffentlicht</strong>',
+
+    'remaining_days'    => 'Tage',
+    'remaining_day'     => 'Tag',
+    'remaining_hours'   => 'Stunden',
+    'remaining_hour'    => 'Stunde',
+    'remaining_minutes' => 'Minuten',
+    'remaining_minute'  => 'Minute',
+    'remaining_seconds' => 'Sekunden',
+    'remaining_second'  => 'Sekunde',
 ];

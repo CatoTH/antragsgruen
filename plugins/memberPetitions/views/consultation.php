@@ -11,6 +11,9 @@ use app\models\settings\Layout;
  * @var bool $admin
  */
 
+$layout->addCSS('css/memberpetitions.css');
+$layout->bodyCssClasses[] = 'memberPetitionList memberPetitionConsultation';
+
 $missing = false;
 if (!Tools::getDiscussionType($consultation)) {
     echo '<div class="alert alert-danger">No discussion motion type is configured yet.</div>';

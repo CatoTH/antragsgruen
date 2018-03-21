@@ -1,12 +1,19 @@
 <?php
 
 return [
-    'title' => 'Mitgliederbegehren',
-    'bc'    => 'Mitgliederbegehren',
+    'title' => 'Beteiligungsgrün',
+    'bc'    => 'Beteiligungsgrün',
+
+    'index_create'       => 'Begehren anlegen',
+    'index_create_hint'  => 'Hiermit kannst du eine neue Petition anlegen. Wähle zunächst aus, an welchen Verband sich die Petition richtet:',
+    'index_orga_hint'    => 'Du bist Mitglied in folgenden Verbänden, die dieses Angebot nutzen:',
+    'index_my_petitions' => 'Meine Mitgliederbegehren',
+    'index_my_supports'  => 'Meine unterstützten Mitgliederbegehren',
+    'index_remaining'    => 'Verbleibend',
 
     'sett_orgaid'            => 'Organisations-ID',
     'sett_replydeadline'     => 'Antwort-Frist (Tage)',
-    'sett_title'             => 'Mitgliederbegehren',
+    'sett_title'             => 'Beteiligungsgrün',
     'sett_minDiscussionTime' => 'Min. Diskussionszeit (Tage)',
 
     'status_collecting'   => 'Unterstützer*innen sammeln',

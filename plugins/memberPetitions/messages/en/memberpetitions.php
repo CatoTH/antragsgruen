@@ -4,6 +4,13 @@ return [
     'title' => 'Petitions',
     'bc'    => 'Petitions',
 
+    'index_create'       => 'Create petition',
+    'index_create_hint'  => 'To create a petition, choose the targeted organization first:',
+    'index_orga_hint'    => 'You are member of the following organizations using this system:',
+    'index_my_petitions' => 'My petitions',
+    'index_my_supports'  => 'My supported petitions',
+    'index_remaining'    => 'Remaining',
+
     'sett_orgaid'            => 'Organization ID',
     'sett_replydeadline'     => 'Reply deadline (days)',
     'sett_title'             => 'Member petitions',

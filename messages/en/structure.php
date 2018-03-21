@@ -176,4 +176,13 @@ return [
     'activity_AMENDMENT_WITHDRAW'         => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>withdrawn</strong>.',
     'activity_AMENDMENT_COMMENT'          => '###USER### <strong>commented on the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_SCREEN'           => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>published</strong>',
+
+    'remaining_days'    => 'days',
+    'remaining_day'     => 'day',
+    'remaining_hours'   => 'hours',
+    'remaining_hour'    => 'hour',
+    'remaining_minutes' => 'minutes',
+    'remaining_minute'  => 'minute',
+    'remaining_seconds' => 'seconds',
+    'remaining_second'  => 'second',
 ];
