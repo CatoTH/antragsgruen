@@ -61,11 +61,8 @@ Installation
 Required Software (Debian Linux):
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php7.1 php7.1-cli php7.1-fpm php7.1-intl php7.1-json php7.1-mcrypt php7.1-gd \
-                php7.1-mysql php7.1-opcache php7.1-curl php7.1-xml php7.1-mbstring php7.1-zip
-
-# Using PHP5-packages from Debian:
-apt-get install php5-cli php5-fpm php5-mysqlnd php5-mcrypt php5-intl php5-curl php5-gd
+apt-get install php7.2 php7.2-cli php7.2-fpm php7.2-intl php7.2-json php7.2-gd \
+                php7.2-mysql php7.2-opcache php7.2-curl php7.2-xml php7.2-mbstring php7.2-zip
 ```
 
 Install the sources and dependencies from the repository:
@@ -234,7 +231,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 ### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.9.1.jar```
+java -jar selenium-server-standalone-3.11.0.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```
