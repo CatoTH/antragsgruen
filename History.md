@@ -1,5 +1,11 @@
 # Version history
 
+## Version 3.8.2 (2018-03-27)
+
+- Displaying the proposed status didn't work when the production package of Antragsgrün was used.
+- Compatibility with PHP versions <= 7.1 was broken.
+- Title changes in amendments are now shown when merging the amendments into the motion.
+
 ## Version 3.8.1 (2018-03-18)
 
 - The publication date of a motion can now be edited in the administration.

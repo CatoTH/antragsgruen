@@ -164,7 +164,7 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
                     echo '</div>';
 
                     if (count($toMergeAmendmentIds) > 0) {
-                        echo '<div class="mergeActionHolder" style="margin-top: 5px; margin-bottom: 5px;">';
+                        echo '<div class="mergeActionHolder">';
                         echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
                             \Yii::t('amend', 'merge_accept_all') . '</button> ';
                         echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
@@ -178,6 +178,26 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
                         echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
                     } else {
                         echo $section->getSectionType()->getMotionFormField();
+                    }
+
+                    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+                        $changes = $section->getAmendingSections(false, true);
+                        $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
+                            return in_array($section->amendmentId, $toMergeAmendmentIds);
+                        });
+                        /** @var \app\models\db\AmendmentSection[] $changes */
+                        if (count($changes) > 0) {
+                            echo '<div class="titleChanges">';
+                            echo '<div class="title">' . \Yii::t('amend', 'merge_title_changes') . '</div>';
+                            foreach ($changes as $amendingSection) {
+                                $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
+                                echo '<div class="change">';
+                                echo '<div class="prefix">' . Html::encode($titlePrefix) . '</div>';
+                                echo '<div class="text">' . Html::encode($amendingSection->data) . '</div>';
+                                echo '</div>';
+                            }
+                            echo '</div>';
+                        }
                     }
                 }
             }

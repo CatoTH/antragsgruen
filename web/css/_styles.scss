@@ -520,6 +520,33 @@
     }
   }
 
+  .mergeActionHolder {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .titleChanges {
+    .title {
+      font-weight: bold;
+    }
+    .change {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: 11px;
+      &:last-child {
+        margin-bottom: 25px;
+      }
+    }
+    .prefix {
+      font-weight: bold;
+    }
+    .text {
+      font-family: $motionFixedFont;
+      //letter-spacing: -0.5px;
+      color: $motionFixedFontColor;
+    }
+  }
+
   .editorialAmendments {
     h3 {
       font-size: 1em;
