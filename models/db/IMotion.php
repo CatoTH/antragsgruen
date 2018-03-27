@@ -8,9 +8,9 @@ use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use yii\base\InvalidConfigException;
-use yii\bootstrap\Html;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
+use yii\helpers\Html;
 
 /**
  * Class IMotion
