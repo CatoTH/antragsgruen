@@ -115,6 +115,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du den Abschnitt zuerst markierst und mit der Del/Backspace-Taste anschließend löschst.',
     'merge_amend_by'                    => '%TITLE%, von %INITIATOR%',
     'merge_amend_editorials'            => 'Redaktionelle Änderungsanträge',
+    'merge_title_changes'               => 'Titel-Änderungen',
     'unsaved_drafts'                    => 'Es gibt noch ungespeicherte Entwürfe, die wiederhergestellt werden können:',
     'confirm_amendment'                 => 'Änderungsantrag bestätigen',
     'amendment_submitted'               => 'Änderungsantrag eingereicht',

@@ -41,9 +41,13 @@
   "suggest": {
     "yiisoft/yii2-redis": "Allows using redis for caching",
     "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
-    "phpoffice/phpexcel": "Allows exporting amendments into Excel format. Does not work well, therefore not really suggested."
+    "phpoffice/phpexcel": "Allows exporting amendments into Excel format. Does not work well, therefore not really suggested.",
+    "predis/predis": "If simplesaml should store its data to redis"
   },
   "config": {
+    "platform": {
+      "php": "5.6.34"
+    },
     "fxp-asset": {
       "installer-paths": {
         "npm-asset-library": "vendor/npm",
