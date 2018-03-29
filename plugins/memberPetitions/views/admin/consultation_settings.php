@@ -27,6 +27,16 @@ $settings = $consultation->getSettings();
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
+               for="minDiscussionTimeId"><?= \Yii::t('memberpetitions', 'sett_minDiscussionTime') ?>:</label>
+        <div class="col-sm-9">
+            <input type="number" required name="settings[minDiscussionTime]"
+                   value="<?= Html::encode($settings->minDiscussionTime) ?>"
+                   class="form-control" id="minDiscussionTimeId">
+            <input type="hidden" name="settingsFields[]" value="minDiscussionTime">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"
                for="replyDeadlineId"><?= \Yii::t('memberpetitions', 'sett_replydeadline') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[replyDeadline]"

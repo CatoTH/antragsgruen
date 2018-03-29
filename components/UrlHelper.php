@@ -85,7 +85,7 @@ class UrlHelper
             unset($route['consultationPath']);
         }
         if (in_array(
-            $route[0],
+            trim($route[0], '/'),
             [
                 'consultation/home',
                 'consultation/legal',
@@ -124,7 +124,7 @@ class UrlHelper
     {
         $target_url = static::createUrl($route);
         if (Yii::$app->user->isGuest) {
-            return static::createUrl(['user/login', 'backUrl' => $target_url]);
+            return static::createUrl(['/user/login', 'backUrl' => $target_url]);
         } else {
             return $target_url;
         }
@@ -139,9 +139,9 @@ class UrlHelper
             $consultation = static::$currentConsultation;
             $homeOverride = $consultation->site->getBehaviorClass()->hasSiteHomePage();
             if ($consultation->site->currentConsultationId == $consultation->id || $homeOverride) {
-                $homeUrl = static::createUrl('consultation/home');
+                $homeUrl = static::createUrl('/consultation/home');
             } else {
-                $homeUrl = static::createUrl(['consultation/index', 'consultationPath' => $consultation->urlPath]);
+                $homeUrl = static::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
             }
 
             if (static::$currentConsultation->getSettings()->forceMotion) {
@@ -156,7 +156,7 @@ class UrlHelper
                 return $homeUrl;
             }
         } else {
-            return static::createUrl('manager/index');
+            return static::createUrl('/manager/index');
         }
     }
 
@@ -208,9 +208,9 @@ class UrlHelper
 
         if (Yii::$app->user->isGuest) {
             if ($params->isSamlActive()) {
-                return Url::toRoute(['user/loginsaml', 'backUrl' => $target_url]);
+                return Url::toRoute(['/user/loginsaml', 'backUrl' => $target_url]);
             } elseif ($params->hasWurzelwerk) {
-                return Url::toRoute(['user/loginwurzelwerk', 'backUrl' => $target_url]);
+                return Url::toRoute(['/user/loginwurzelwerk', 'backUrl' => $target_url]);
             } else {
                 return '';
             }
@@ -227,7 +227,7 @@ class UrlHelper
      */
     public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
     {
-        $params = array_merge(['motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
+        $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
         if ($motion->getMyConsultation() !== static::$currentConsultation) {
             $params['consultationPath'] = $motion->getMyConsultation()->urlPath;
         }
@@ -242,7 +242,7 @@ class UrlHelper
     {
         return static::createUrl(
             [
-                'motion/view',
+                '/motion/view',
                 'motionSlug' => $motionComment->motion->getMotionSlug(),
                 'commentId'  => $motionComment->id,
                 '#'          => 'comm' . $motionComment->id
@@ -259,7 +259,7 @@ class UrlHelper
     public static function createAmendmentUrl(Amendment $amendment, $mode = 'view', $addParams = [])
     {
         $params = array_merge([
-            'amendment/' . $mode,
+            '/amendment/' . $mode,
             'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ], $addParams);
@@ -274,7 +274,7 @@ class UrlHelper
     {
         return static::createUrl(
             [
-                'amendment/view',
+                '/amendment/view',
                 'motionSlug'  => $amendmentComment->amendment->getMyMotion()->getMotionSlug(),
                 'amendmentId' => $amendmentComment->amendmentId,
                 'commentId'   => $amendmentComment->id,

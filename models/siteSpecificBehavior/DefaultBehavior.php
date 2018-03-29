@@ -72,14 +72,6 @@ class DefaultBehavior
     }
 
     /**
-     * @return string|\app\models\settings\Consultation
-     */
-    public static function getConsultationSettingsClass()
-    {
-        return \app\models\settings\Consultation::class;
-    }
-
-    /**
      * @param Consultation $consultation
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)

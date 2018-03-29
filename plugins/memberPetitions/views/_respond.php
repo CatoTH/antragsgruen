@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var \app\models\db\Motion $motion
  */
 
-$saveUrl = UrlHelper::createUrl(['memberpetitions/write-response', 'motionSlug' => $motion->getMotionSlug()]);
+$saveUrl = UrlHelper::createUrl(['/memberPetitions/backend/write-response', 'motionSlug' => $motion->getMotionSlug()]);
 echo Html::beginForm($saveUrl, 'post', [
     'class'                    => 'petitionRespondForm',
     'data-antragsgruen-widget' => 'backend/MemberPetitionRespond',

@@ -23,6 +23,18 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     $defaultRoute = 'installation/index';
     define('INSTALLING_MODE', true);
 } else {
+    // Kind of a poor man's auto-loading, as Yii's auto-loading-mechanism is not active yet.
+    // Hopefully, this can be avoided in Yii 2.1
+    foreach ($params->plugins as $pluginId => $pluginClass) {
+        require_once(__DIR__ . '/../plugins/ModuleBase.php');
+        $filename = __DIR__ . '/../' . str_replace('\\', '/', str_replace('app\\', '', $pluginClass)) . '.php';
+        if (file_exists($filename)) {
+            require_once($filename);
+        } else {
+            die("plugin file of " . $pluginClass . " does not exist");
+        }
+    }
+
     $urls         = require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php');
     $defaultRoute = ($params->multisiteMode ? 'manager/index' : 'consultation/index');
 }
@@ -77,12 +89,22 @@ if ($params->redis) {
     $components['session'] = ['class' => 'yii\redis\Session'];
 }
 
+$bootstrap = ['log'];
+$modules = [];
+foreach ($params->plugins as $pluginId => $pluginClass) {
+    $modules[$pluginId] = [
+        'class' => $pluginClass,
+    ];
+    $bootstrap[] = $pluginId;
+}
+
 return [
     'name'         => 'Antragsgrün',
-    'bootstrap'    => ['log'],
+    'bootstrap'    => $bootstrap,
     'basePath'     => dirname(__DIR__),
     'components'   => $components,
     'defaultRoute' => $defaultRoute,
     'params'       => $params,
     'language'     => $params->baseLanguage,
+    'modules'      => $modules,
 ];

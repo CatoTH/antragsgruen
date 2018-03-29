@@ -8,6 +8,7 @@ use app\components\ZipWriter;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\User;
+use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;
 use app\views\amendment\LayoutHelper;
@@ -174,7 +175,7 @@ class AmendmentController extends AdminBase
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $post['titlePrefix'];
                 $amendment->save();
-                $amendment->onPublish();
+                $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
                 \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_screened'));
             }
         }

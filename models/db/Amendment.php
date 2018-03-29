@@ -8,7 +8,10 @@ use app\components\HashedStaticCache;
 use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
+use app\models\layoutHooks\Layout;
 use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
@@ -46,6 +49,19 @@ use yii\helpers\Html;
 class Amendment extends IMotion implements IRSSItem
 {
     use CacheTrait;
+
+    const EVENT_SUBMITTED       = 'submitted';
+    const EVENT_PUBLISHED       = 'published';
+    const EVENT_PUBLISHED_FIRST = 'published_first';
+
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
+        $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
+        $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+    }
 
     /**
      * @return string[]
@@ -826,7 +842,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
         }
         $this->save(true);
-        $this->onPublish();
+        $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_SCREEN, $this->id);
     }
 
@@ -877,8 +893,15 @@ class Amendment extends IMotion implements IRSSItem
             $this->datePublication = date('Y-m-d H:i:s');
             $this->save();
 
-            new AmendmentPublishedNotification($this);
+            $this->trigger(static::EVENT_PUBLISHED_FIRST, new AmendmentEvent($this));
         }
+    }
+
+    /**
+     */
+    public function onPublishFirst()
+    {
+        new AmendmentPublishedNotification($this);
     }
 
     /**
@@ -1125,7 +1148,8 @@ class Amendment extends IMotion implements IRSSItem
         if (trim($this->statusString) != '') {
             $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
         }
-        return $status;
+
+        return Layout::getFormattedAmendmentStatus($status, $this);
     }
 
     /**

@@ -86,7 +86,6 @@ class Permissions
     /**
      * @param Motion $motion
      * @return bool
-     * @throws Internal
      */
     public function motionCanMergeAmendments($motion)
     {

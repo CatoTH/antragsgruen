@@ -2,6 +2,7 @@
 
 namespace app\models\layoutHooks;
 
+use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 
@@ -175,5 +176,25 @@ class Layout
     public static function getMotionViewData($motionData, Motion $motion)
     {
         return static::callHook('getMotionViewData', [$motion], $motionData);
+    }
+
+    /**
+     * @param string $origStatus
+     * @param Motion $motion
+     * @return string
+     */
+    public static function getFormattedMotionStatus($origStatus, Motion $motion)
+    {
+        return static::callHook('getFormattedMotionStatus', [$motion], $origStatus);
+    }
+
+    /**
+     * @param string $origStatus
+     * @param Amendment $amendment
+     * @return string
+     */
+    public static function getFormattedAmendmentStatus($origStatus, Amendment $amendment)
+    {
+        return static::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
     }
 }

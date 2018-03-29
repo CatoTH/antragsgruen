@@ -15,6 +15,7 @@ class MotionResponded
      *
      * @param Motion $motion
      * @throws MailNotSent
+     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function __construct(Motion $motion)
     {

@@ -3,6 +3,7 @@
 namespace app\models\settings;
 
 use app\models\behavior\DefaultBehavior;
+use app\plugins\ModuleBase;
 
 class AntragsgruenApp
 {
@@ -46,6 +47,9 @@ class AntragsgruenApp
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
     public $mode                  = 'production'; // [production | sandbox]
+
+    /** @var ModuleBase[] */
+    public $plugins               = [];
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];

@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
+use app\models\events\MotionEvent;
 use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
@@ -243,7 +244,7 @@ class MergeSingleAmendmentForm extends Model
         $this->oldMotion->status = Motion::STATUS_MODIFIED;
         $this->oldMotion->save();
 
-        $this->newMotion->onMerged();
+        $this->newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($this->newMotion));
 
         return $this->newMotion;
     }

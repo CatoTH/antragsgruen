@@ -7,6 +7,8 @@ use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\db\User;
+use app\models\events\MotionEvent;
+use app\models\supportTypes\ISupportType;
 
 class Tools
 {
@@ -31,13 +33,95 @@ class Tools
 
     /**
      * @param Consultation $consultation
+     * @return \app\models\db\ConsultationMotionType|null
+     */
+    public static function getDiscussionType(Consultation $consultation)
+    {
+        foreach ($consultation->motionTypes as $motionType) {
+            if ($motionType->supportType !== ISupportType::COLLECTING_SUPPORTERS) {
+                return $motionType;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return \app\models\db\ConsultationMotionType|null
+     */
+    public static function getPetitionType(Consultation $consultation)
+    {
+        foreach ($consultation->motionTypes as $motionType) {
+            if ($motionType->supportType === ISupportType::COLLECTING_SUPPORTERS) {
+                return $motionType;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return bool
+     */
+    public static function isConsultationFullyConfigured(Consultation $consultation)
+    {
+        return (static::getPetitionType($consultation) !== null && static::getDiscussionType($consultation) !== null);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return Motion[]
+     */
+    public static function getMotionsInDiscussion(Consultation $consultation)
+    {
+        $motions = Tools::getDiscussionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
+            return ($motion->status == IMotion::STATUS_SUBMITTED_SCREENED);
+        });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsInDiscussion($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsInDiscussion($consultation));
+        }
+        return $all;
+    }
+
+    /**
+     * @param Consultation $consultation
      * @return Motion[]
      */
     public static function getMotionsAnswered(Consultation $consultation)
     {
-        return array_filter($consultation->motions, function (Motion $motion) {
+        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_PROCESSED);
         });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsAnswered($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsAnswered($consultation));
+        }
+        return $all;
     }
 
     /**
@@ -46,9 +130,26 @@ class Tools
      */
     public static function getMotionsUnanswered(Consultation $consultation)
     {
-        return array_filter($consultation->getVisibleMotions(), function (Motion $motion) {
+        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status != IMotion::STATUS_PROCESSED);
         });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsUnanswered($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsUnanswered($consultation));
+        }
+        return $all;
     }
 
     /**
@@ -57,9 +158,26 @@ class Tools
      */
     public static function getMotionsCollecting(Consultation $consultation)
     {
-        return array_filter($consultation->motions, function (Motion $motion) {
+        $motions = Tools::getPetitionType($consultation)->motions; // Collecting phase is not visible by default
+        return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_COLLECTING_SUPPORTERS);
         });
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotionsCollection($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getMotionsCollecting($consultation));
+        }
+        return $all;
     }
 
     /**
@@ -115,14 +233,18 @@ class Tools
      * @param IMotion $motion
      * @return bool
      */
-    public static function canRespondToMotion(IMotion $motion)
+    public static function canRespondToPetition(IMotion $motion)
     {
-        if (!$motion->isVisible() || $motion->status == IMotion::STATUS_PROCESSED) {
+        $typePetition = Tools::getPetitionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typePetition->id) {
+            return false;
+        }
+        if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return false;
         }
 
         $user = User::getCurrentUser();
-        return ($user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
+        return ($user && $user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
     }
 
     /**
@@ -143,16 +265,21 @@ class Tools
     /**
      * @param IMotion $motion
      * @return \DateTime|null
+     * @throws \Exception
      */
-    public static function getMotionResponseDeadline(IMotion $motion)
+    public static function getPetitionResponseDeadline(IMotion $motion)
     {
+        $typePetition = Tools::getPetitionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typePetition->id) {
+            return null;
+        }
         if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return null;
         }
-        if (!$motion->dateCreation) {
+        if (!$motion->datePublication) {
             return null;
         }
-        $date = new \DateTime($motion->dateCreation);
+        $date = new \DateTime($motion->datePublication);
         /** @var ConsultationSettings $settings */
         $settings = $motion->getMyConsultation()->getSettings();
         $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
@@ -163,13 +290,71 @@ class Tools
     /**
      * @param IMotion $motion
      * @return bool
+     * @throws \Exception
      */
     public static function isMotionDeadlineOver(IMotion $motion)
     {
-        $deadline = static::getMotionResponseDeadline($motion);
+        $deadline = static::getPetitionResponseDeadline($motion);
         if (!$deadline) {
             return false;
         }
         return $deadline->getTimestamp() < time();
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return \DateTime|null
+     * @throws \Exception
+     */
+    public static function getDiscussionUntil(IMotion $motion)
+    {
+        $typeDiscussion = Tools::getDiscussionType($motion->getMyConsultation());
+        if ($motion->getMyMotionType()->id !== $typeDiscussion->id) {
+            return null;
+        }
+        if (!$motion->isVisible() || $motion->status !== IMotion::STATUS_SUBMITTED_SCREENED) {
+            return null;
+        }
+        if (!$motion->datePublication) {
+            return null;
+        }
+        $date = new \DateTime($motion->datePublication);
+        /** @var ConsultationSettings $settings */
+        $settings = $motion->getMyConsultation()->getSettings();
+        $date->add(new \DateInterval('P' . $settings->minDiscussionTime . "D"));
+
+        return $date;
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return bool
+     * @throws \Exception
+     */
+    public static function isDiscussionUntilOver(IMotion $motion)
+    {
+        $deadline = static::getDiscussionUntil($motion);
+        if (!$deadline) {
+            return false;
+        }
+        return $deadline->getTimestamp() < time();
+    }
+
+    /**
+     * @param MotionEvent $event
+     * @throws \app\models\exceptions\FormError
+     */
+    public static function onMerged(MotionEvent $event)
+    {
+        $motion = $event->motion;
+        if ($motion->motionTypeId !== static::getDiscussionType($motion->getMyConsultation())->id) {
+            return;
+        }
+
+        $motion->setMotionType(static::getPetitionType($motion->getMyConsultation()));
+
+        $motion->status          = Motion::STATUS_COLLECTING_SUPPORTERS;
+        $motion->datePublication = null;
+        $motion->save();
     }
 }

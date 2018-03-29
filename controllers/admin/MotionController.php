@@ -19,6 +19,7 @@ use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\components\motionTypeTemplates\Application as ApplicationTemplate;
 use app\components\motionTypeTemplates\Motion as MotionTemplate;
+use app\models\events\MotionEvent;
 
 class MotionController extends AdminBase
 {
@@ -380,7 +381,7 @@ class MotionController extends AdminBase
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
                 $motion->save();
-                $motion->onPublish();
+                $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
                 \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_screened'));
             }
         }

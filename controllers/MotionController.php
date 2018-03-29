@@ -25,6 +25,7 @@ use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
 use app\models\notifications\MotionProposedProcedure;
+use app\models\events\MotionEvent;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -425,10 +426,10 @@ class MotionController extends Base
         }
 
         if ($this->isPostSet('confirm')) {
-            $motion->setInitialSubmitted();
+            $motion->trigger(Motion::EVENT_SUBMITTED, new MotionEvent($motion));
 
             if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
-                $motion->onPublish();
+                $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
             } else {
                 EmailNotifications::sendMotionSubmissionConfirm($motion);
             }

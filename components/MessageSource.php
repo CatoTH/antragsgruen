@@ -128,6 +128,15 @@ class MessageSource extends \yii\i18n\MessageSource
     protected function getMessageFilePath($category, $language)
     {
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        foreach ($params->plugins as $pluginClass) {
+            if ($pluginClass::getMessagePath($category)) {
+                $messageFile = Yii::getAlias($pluginClass::getMessagePath($category)) . "/$language/";
+            }
+        }
+
         if (isset($this->fileMap[$category])) {
             $messageFile .= $this->fileMap[$category];
         } else {

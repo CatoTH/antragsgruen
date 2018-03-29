@@ -2,10 +2,12 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\plugins\memberPetitions\Tools;
 use yii\helpers\Html;
 
 /**
  * @var Motion[] $motions
+ * @var string $bold
  */
 
 if (count($motions) === 0) {
@@ -15,20 +17,19 @@ if (count($motions) === 0) {
 
 echo '<ul class="motionList motionListPetitions">';
 foreach ($motions as $motion) {
-    $status = '';
-    switch ($motion->status) {
-        case Motion::STATUS_COLLECTING_SUPPORTERS:
-            $status = \Yii::t('memberpetitions', 'status_collecting');
-            break;
-        case Motion::STATUS_SUBMITTED_SCREENED:
-            $status = \Yii::t('memberpetitions', 'status_unanswered');
-            break;
-        case Motion::STATUS_PROCESSED:
-            $status = '✔ ' . \Yii::t('memberpetitions', 'status_answered');
-            break;
-    }
+    $status = $motion->getFormattedStatus();
+
     echo '<li class="motion motionRow' . $motion->id . '">';
-    echo '<p class="date">' . \app\components\Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+    echo '<p class="stats">';
+    $commentCount = count($motion->getVisibleComments(false));
+    $amendmentCount = count($motion->getVisibleAmendments(false));
+    if ($amendmentCount > 0) {
+        echo '<span class="amendments"><span class="glyphicon glyphicon-flash"></span> ' . $amendmentCount . '</span>';
+    }
+    if ($commentCount > 0) {
+        echo '<span class="comments"><span class="glyphicon glyphicon-comment"></span> ' . $commentCount . '</span>';
+    }
+    echo '</p>' . "\n";
     echo '<p class="title">' . "\n";
 
     $motionUrl = UrlHelper::createMotionUrl($motion);
@@ -40,8 +41,23 @@ foreach ($motions as $motion) {
     echo '</a>';
     echo "</p>\n";
     echo '<p class="info">';
-    echo '<span class="status">' . Html::encode($status) . '</span>, ';
-    echo Html::encode($motion->getInitiatorsStr());
+    if ($bold === 'organization') {
+        echo '<span class="status">' . Html::encode($motion->getMyConsultation()->title) . '</span>, ';
+    }
+    echo Html::encode($motion->getInitiatorsStr()) . ', ';
+    echo \app\components\Tools::formatMysqlDate($motion->dateCreation);
+
+    $deadline = Tools::getPetitionResponseDeadline($motion);
+    if ($deadline) {
+        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo \app\components\Tools::formatRemainingTime($deadline);
+    }
+
+    $deadline = Tools::getDiscussionUntil($motion);
+    if ($deadline) {
+        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo \app\components\Tools::formatRemainingTime($deadline);
+    }
     echo '</p>';
     echo '</li>';
 }

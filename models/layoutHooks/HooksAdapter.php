@@ -2,6 +2,7 @@
 
 namespace app\models\layoutHooks;
 
+use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
@@ -184,5 +185,27 @@ class HooksAdapter implements Hooks
     public function getMotionViewData($motionData, Motion $motion)
     {
         return $motionData;
+    }
+
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getFormattedMotionStatus($before, Motion $motion)
+    {
+        return $before;
+    }
+
+    /**
+     * @param string $before
+     * @param Amendment $amendment
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getFormattedAmendmentStatus($before, Amendment $amendment)
+    {
+        return $before;
     }
 }
