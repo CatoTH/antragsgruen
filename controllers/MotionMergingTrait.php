@@ -25,7 +25,6 @@ trait MotionMergingTrait
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionMergeAmendmentsPublic($motionSlug)
     {
@@ -163,7 +162,6 @@ trait MotionMergingTrait
      * @param int $newMotionId
      * @param string $amendmentStati
      * @return string
-     * @throws Internal
      */
     public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
     {
@@ -245,7 +243,6 @@ trait MotionMergingTrait
     /**
      * @param $motionSlug
      * @return string
-     * @throws Internal
      */
     public function actionSaveMergingDraft($motionSlug)
     {

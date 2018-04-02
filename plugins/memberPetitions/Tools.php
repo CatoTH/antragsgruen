@@ -5,6 +5,7 @@ namespace app\plugins\memberPetitions;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\events\MotionEvent;
@@ -19,6 +20,10 @@ class Tools
      */
     public static function getUserConsultations($site, $user)
     {
+        if (!$user) {
+            return [];
+        }
+
         $organizations = $user->getMyOrganizationIds();
         $consultations = [];
         foreach ($site->consultations as $consultation) {
@@ -356,5 +361,15 @@ class Tools
         $motion->status          = Motion::STATUS_COLLECTING_SUPPORTERS;
         $motion->datePublication = null;
         $motion->save();
+
+        if (count($motion->getInitiators()) === 0 && $motion->replacedMotion) {
+            foreach ($motion->replacedMotion->getInitiators() as $initiator) {
+                $newInitiator = new MotionSupporter();
+                $newInitiator->setAttributes($initiator->getAttributes(), false);
+                $newInitiator->id = null;
+                $newInitiator->motionId = $motion->id;
+                $newInitiator->save();
+            }
+        }
     }
 }
