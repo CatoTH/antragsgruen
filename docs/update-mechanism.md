@@ -77,13 +77,13 @@ The update.json looks like this:
 
 ```json
 {
-    "file_updated": {
+    "files_updated": {
         "views/anotherfile.php": "hashofanotherfiletxt",
     },
-    "file_added": {
+    "files_added": {
         "web/somefile.txt": "hashofsomefiletxt",
     },
-    "file_deleted": [
+    "files_deleted": [
         "controller/filetobedeleted.php"
     ]
 }
