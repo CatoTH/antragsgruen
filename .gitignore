@@ -8,6 +8,7 @@ simplesaml
 config/config.json
 config/config_tests.json
 config/DEBUG
+config/update-private.key
 web/js/bower
 assets/local/
 tests/_output/*
