@@ -368,4 +368,19 @@ class IndexController extends AdminBase
             ]);
         }
     }
+
+    /**
+     * @return mixed
+     * @throws \yii\base\ExitException
+     */
+    public function actionGotoUpdate()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+
+        // @TODO Set the variables
+
+        return $this->redirect($this->getParams()->domainPlain . 'update.php');
+    }
 }

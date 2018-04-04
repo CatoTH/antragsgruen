@@ -5,8 +5,8 @@ if (count($argv) !== 4) {
     die("Call: ./create-update.php [directory old] [directory-new] [update-file.zip]\n");
 }
 
-$dirOld = $argv[1];
-$dirNew = $argv[2];
+$dirOld     = $argv[1];
+$dirNew     = $argv[2];
 $updateFile = $argv[3];
 if ($dirOld[strlen($dirOld) - 1] !== '/') {
     $dirOld .= '/';
@@ -45,7 +45,7 @@ function getDirContent($dirBase, $dirRelative)
         if ($entry === '.' || $entry === '..') {
             continue;
         }
-        $fullname = $dirBase . '/' . $dirRelative . $entry;
+        $fullname     = $dirBase . '/' . $dirRelative . $entry;
         $relativeName = $dirRelative . $entry;
         if (is_dir($fullname)) {
             $dirs[] = $relativeName;
@@ -77,7 +77,7 @@ function filesAreEqual($file1, $file2)
  */
 function getFileHash($file)
 {
-    $content = file_get_contents($file);
+    $content    = file_get_contents($file);
     $binaryHash = sodium_crypto_generichash($content);
     return base64_encode($binaryHash);
 }
@@ -143,3 +143,16 @@ $signature = base64_encode(sodium_crypto_sign_detached($updateJson, $secretKey))
 $zipfile->addFromString('update.json.signature', $signature);
 
 $zipfile->close();
+
+$zipContent = file_get_contents($updateFile);
+echo "Template for the update definition:\n" .
+    json_encode([
+        [
+            "type"      => "patch",
+            "version"   => "",
+            "changelog" => "",
+            "url"       => "",
+            "filesize"  => strlen($zipContent),
+            "signature" => base64_encode(sodium_crypto_generichash($zipContent)),
+        ]
+    ], JSON_PRETTY_PRINT);
