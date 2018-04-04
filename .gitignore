@@ -14,3 +14,4 @@ assets/local/
 tests/_output/*
 node_modules/
 npm-debug.log
+/web/updates/
