@@ -13,6 +13,7 @@ use app\models\AdminTodoItem;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\forms\AntragsgruenUpdateModeForm;
 use app\models\forms\ConsultationCreateForm;
 use yii\web\Response;
 
@@ -372,6 +373,7 @@ class IndexController extends AdminBase
     /**
      * @return mixed
      * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
      */
     public function actionGotoUpdate()
     {
@@ -379,8 +381,9 @@ class IndexController extends AdminBase
             return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
 
-        // @TODO Set the variables
+        $form = new AntragsgruenUpdateModeForm();
+        $update_key = $form->activateUpdate();
 
-        return $this->redirect($this->getParams()->domainPlain . 'update.php');
+        return $this->redirect($this->getParams()->domainPlain . 'update.php?set_key=' . $update_key);
     }
 }
