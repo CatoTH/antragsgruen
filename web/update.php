@@ -33,12 +33,34 @@ if (!isset($_COOKIE['update_key']) || $_COOKIE['update_key'] !== $updateKey) {
 
 // Starting here, the user is authenticated
 
+$errors = [];
+
 if (isset($_POST['cancel_update'])) {
     $config = json_decode(file_get_contents($configFile), true);
     unset($config['updateKey']);
     file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
     Header("Location: " . $config["domainPlain"]);
     die();
+}
+
+if (isset($_POST['download_update'])) {
+    try {
+        foreach (\app\components\updater\UpdateChecker::getAvailableUpdates() as $update) {
+            if ($update->version === $_POST['version']) {
+                $update->download();
+            }
+        }
+    } catch (\Exception $e) {
+        $errors[] = $e->getMessage();
+    }
+}
+
+if (isset($_POST['perform_update'])) {
+    try {
+        // @TODO
+    } catch (\Exception $e) {
+        $errors[] = $e->getMessage();
+    }
 }
 
 require(__DIR__ . '/../components/updater/available-updates.php');
