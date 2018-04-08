@@ -66,6 +66,10 @@ class Base extends Controller
         /** @var AntragsgruenApp $appParams */
         $appParams = \Yii::$app->params;
 
+        if ($appParams->update_key) {
+            $this->showErrorpage(503, \Yii::t('base', 'err_update_mode'));
+        }
+
         $inManager   = (get_class($this) == ManagerController::class);
         $inInstaller = (get_class($this) == InstallationController::class);
 

@@ -422,8 +422,9 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'users_registered' => 'Registered',
     'pdf_templ_none'   => 'No PDF',
 
-    'updates_title' => 'Available Updates',
-    'updates_none'  => 'No updates available',
-    'updates_start' => 'Start update',
-    'updates_error' => 'Updates could not be loaded',
+    'updates_title'   => 'Available Updates',
+    'updates_loading' => 'Loading',
+    'updates_none'    => 'No updates available',
+    'updates_start'   => 'Start update',
+    'updates_error'   => 'Updates could not be loaded',
 ];
