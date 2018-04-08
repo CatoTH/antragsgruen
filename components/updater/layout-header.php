@@ -10,6 +10,7 @@
     <title>Antragsgrün Update</title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="stylesheet" href="<?= $config['resourceBase'] ?>css/layout-classic.css">
+    <link rel="stylesheet" href="<?= $config['resourceBase'] ?>css/update.css">
     <script src="<?= $config['resourceBase'] ?>npm/jquery.min.js"></script>
 </head>
 <body>
@@ -22,7 +23,7 @@
                 <div class="navbar-inner">
                     <div class="container">
                         <ul class="nav navbar-nav">
-                            <li class="active">Update</li>
+                            <li class="active"><a href="#" disabled>Update</a></li>
                         </ul>
                     </div>
                 </div>
