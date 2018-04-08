@@ -8,7 +8,7 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
 {
     use AntragsgruenInitConfigwriteTrait;
 
-    public $update_key = null;
+    public $updateKey = null;
 
     /**
      */
@@ -17,7 +17,7 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
         parent::__construct();
         $this->configFile = \Yii::$app->basePath . '/config/config.json';
         $config           = $this->readConfigFromFile($this->configFile);
-        $this->update_key = (isset($config->update_key) && $config->update_key ? $config->update_key : null);
+        $this->updateKey = (isset($config->updateKey) && $config->updateKey ? $config->updateKey : null);
     }
 
     /**
@@ -26,9 +26,9 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
      */
     public function activateUpdate()
     {
-        $this->update_key = \Yii::$app->getSecurity()->generateRandomString(10);
+        $this->updateKey = \Yii::$app->getSecurity()->generateRandomString(10);
         $this->saveConfig();
-        return $this->update_key;
+        return $this->updateKey;
     }
 
     /**
@@ -36,6 +36,6 @@ class AntragsgruenUpdateModeForm extends SiteCreateForm
      */
     protected function setConfigValues(AntragsgruenApp $config)
     {
-        $config->update_key = $this->update_key;
+        $config->updateKey = $this->updateKey;
     }
 }
