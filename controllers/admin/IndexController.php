@@ -371,7 +371,19 @@ class IndexController extends AdminBase
     }
 
     /**
-     * @return mixed
+     * @throws \yii\base\ExitException
+     * @return string
+     */
+    public function actionCheckUpdates()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+        return $this->renderPartial('index_updates');
+    }
+
+    /**
+     * @return string
      * @throws \yii\base\ExitException
      * @throws \yii\base\Exception
      */
