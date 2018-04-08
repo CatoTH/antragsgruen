@@ -6,10 +6,14 @@ if (!file_exists(__DIR__ . '/../config/config.json')) {
 }
 
 $config = json_decode(file_get_contents(__DIR__ . '/../config/config.json'), true);
-if (!isset($config['update_key']) || strlen($config['update_key']) < 10) {
-    die("Update mode is not active");
+if (!isset($config['updateKey']) || strlen($config['updateKey']) < 10) {
+    $title = "Not active";
+    require(__DIR__ . '/../components/updater/layout-header.php');
+    echo "Update mode is not active";
+    require(__DIR__ . '/../components/updater/layout-footer.php');
+    die();
 }
-$update_key = $config['update_key'];
+$updateKey = $config['updateKey'];
 
 if (isset($_REQUEST['set_key'])) {
     setcookie('update_key', $_REQUEST['set_key'], 0, '/');
@@ -18,9 +22,13 @@ if (isset($_REQUEST['set_key'])) {
     die();
 }
 
-if (!isset($_COOKIE['update_key']) || $_COOKIE['update_key'] !== $update_key) {
+if (!isset($_COOKIE['update_key']) || $_COOKIE['update_key'] !== $updateKey) {
     require(__DIR__ . '/../components/updater/view_enter_key.php');
     die();
 }
 
+$title = "Start update";
+require(__DIR__ . '/../components/updater/layout-header.php');
+$title = "Update";
 echo "Update stub";
+require(__DIR__ . '/../components/updater/layout-footer.php');

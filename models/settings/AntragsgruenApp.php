@@ -47,7 +47,7 @@ class AntragsgruenApp
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
     public $mode                  = 'production'; // [production | sandbox]
-    public $update_key            = null;
+    public $updateKey             = null;
 
     /** @var ModuleBase[] */
     public $plugins               = [];

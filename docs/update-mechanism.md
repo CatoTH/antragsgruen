@@ -23,7 +23,7 @@ The update script (``web/update.php``) is disabled by default. It is activated f
 ```json
 {
     // "dbConnection": "...",
-    "update_key": "somerandomkey",
+    "updateKey": "somerandomkey",
     // "...",
 }
 ```

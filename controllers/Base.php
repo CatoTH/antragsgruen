@@ -66,7 +66,7 @@ class Base extends Controller
         /** @var AntragsgruenApp $appParams */
         $appParams = \Yii::$app->params;
 
-        if ($appParams->update_key) {
+        if ($appParams->updateKey) {
             $this->showErrorpage(503, \Yii::t('base', 'err_update_mode'));
         }
 
