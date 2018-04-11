@@ -3,6 +3,7 @@ require(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../config/defines.php');
 require_once(__DIR__ . '/../components/updater/UpdateChecker.php');
 require_once(__DIR__ . '/../components/updater/UpdateInformation.php');
+require_once(__DIR__ . '/../components/updater/UpdatedFiles.php');
 
 $configFile = __DIR__ . '/../config/config.json';
 if (!file_exists($configFile)) {

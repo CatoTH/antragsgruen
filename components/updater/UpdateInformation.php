@@ -2,8 +2,6 @@
 
 namespace app\components\updater;
 
-use app\models\exceptions\Internal;
-
 class UpdateInformation
 {
     const TYPE_PATCH = 'patch';
@@ -19,7 +17,7 @@ class UpdateInformation
      * UpdateInformation constructor.
      *
      * @param array $json
-     * @throws Internal
+     * @throws \Exception
      */
     public function __construct($json)
     {
@@ -31,7 +29,7 @@ class UpdateInformation
         $this->signature = $json['signature'];
 
         if ($this->type !== static::TYPE_PATCH) {
-            throw new Internal("Only patch releases are supported");
+            throw new \Exception("Only patch releases are supported");
         }
     }
 
@@ -84,5 +82,30 @@ class UpdateInformation
         }
 
         file_put_contents($this->getAbsolutePath(), $resp);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function readUpdateJson()
+    {
+        if (!$this->isDownloaded()) {
+            throw new \Exception("File is not yet downloaded");
+        }
+
+        $zipfile = new \ZipArchive();
+        if ($zipfile->open($this->getAbsolutePath()) !== true) {
+            throw new \Exception("Could not open the ZIP file");
+        }
+
+        $updateJson      = $zipfile->getFromName('update.json');
+        $updateSignature = base64_decode($zipfile->getFromName('update.json.signature'));
+        $publicKey       = base64_decode(file_get_contents(__DIR__ . '/../../config/update-public.key'));
+        if (!sodium_crypto_sign_verify_detached($updateSignature, $updateJson, $publicKey)) {
+            throw new \Exception("The signature of the update file is invalid");
+        }
+
+        return new UpdatedFiles($updateJson);
     }
 }
