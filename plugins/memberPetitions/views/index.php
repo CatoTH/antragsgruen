@@ -22,7 +22,7 @@ $this->title = \Yii::t('memberpetitions', 'title');
 ?>
     <h1><?= \Yii::t('memberpetitions', 'title') ?></h1>
     <div class="content">
-
+        <!--
         <section class="createPetition" data-antragsgruen-widget="memberpetitions/HomeCreatePetitions">
             <button type="button" class="btn btn-primary pull-right showWidget">
                 <span class="glyphicon glyphicon-plus"></span>
@@ -47,6 +47,7 @@ $this->title = \Yii::t('memberpetitions', 'title');
                 ?>
             </div>
         </section>
+        -->
 
         <?php
         if (count($myConsultations) > 0) {

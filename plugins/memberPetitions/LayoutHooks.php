@@ -27,7 +27,8 @@ class LayoutHooks extends HooksAdapter
             \Yii::t('memberpetitions', 'title') . '</a>' .
             '</span></div>';
         if ($this->consultation) {
-            $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';
+            $out .= '<div id="site-description" class="siteDescriptionPetition">' .
+                Html::encode($this->consultation->title) . '</div>';
         }
         $out .= '</div>' .
             '</header>';
