@@ -45,4 +45,11 @@ return [
     'response_from'  => 'Response from',
     'response_date'  => 'Date',
     'response_text'  => 'Text',
+
+    'noti_response_title'  => 'Responded', //@TODO
+    'noti_response_text'   => 'Responded', //@TODO
+    'submit_discuss_title' => 'Submitted discussion', //@TODO
+    'submit_discuss_text'  => 'Submitted discussion', //@TODO
+    'submit_petition_title' => 'Submitted petition', //@TODO
+    'submit_petition_text'  => 'Submitted petition', //@TODO
 ];

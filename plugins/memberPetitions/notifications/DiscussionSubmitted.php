@@ -8,10 +8,10 @@ use app\models\db\Motion;
 use app\models\exceptions\MailNotSent;
 use app\components\mail\Tools as MailTools;
 
-class MotionResponded
+class DiscussionSubmitted
 {
     /**
-     * MotionResponded constructor.
+     * DiscussionSubmitted constructor.
      *
      * @param Motion $motion
      * @throws MailNotSent
@@ -28,7 +28,7 @@ class MotionResponded
         $plain      = str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
             [$motionLink, $motion->getTitleWithPrefix(), $initiator[0]->getGivenNameOrFull()],
-            \Yii::t('memberpetitions', 'noti_response_text')
+            \Yii::t('memberpetitions', 'submit_discuss_text')
         );
 
         MailTools::sendWithLog(
@@ -36,7 +36,7 @@ class MotionResponded
             $motion->getMyConsultation()->site,
             trim($initiator[0]->contactEmail),
             $initiator[0]->userId,
-            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('memberpetitions', 'noti_response_title')),
+            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('memberpetitions', 'submit_discuss_title')),
             $plain
         );
     }

@@ -45,4 +45,11 @@ return [
     'response_from'  => 'Antwort von',
     'response_date'  => 'Datum',
     'response_text'  => 'Text',
+
+    'noti_response_title' => 'Dein Begehren wurden beantwortet',
+    'noti_response_text'  => "Hallo,\n\nherzlichen Dank für deine Geduld! Dein Begehren wurde soeben auf Beteiligungsgrün beantwortet. Du kannst diese Antwort hier einsehen:\n%LINK%\n\nMit freundlichen Grüßen,\n\nThomas Künstler",
+    'submit_discuss_title' => 'Diskussion gestartet',
+    'submit_discuss_text'  => "Hallo,\n\nherzlichen Dank für dein Engagement!\n\nDein Begehren wurde soeben auf Beteiligungsgrün veröffentlicht. Du kannst dieses hier einsehen: %LINK%\n\nDas Begehren steht nun zur Diskussion.\n\nMit freundlichen Grüßen,\n\nThomas Künstler",
+    'submit_petition_title' => 'Begehren eingereicht',
+    'submit_petition_text'  => "Hallo,\n\nherzlichen Dank für dein Engagement! Du hast dein Begehren soeben auf Beteiligungsgrün offiziell eingereicht. Du kannst dieses hier einsehen:\n%LINK%\n\nSobald der Vorstand eine Stellungnahme zu deinem Begehren abgegeben hat, informieren wir dich mit einer E-Mail.\n\nMit freundlichen Grüßen,\n\nThomas Künstler",
 ];

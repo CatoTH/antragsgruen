@@ -10,6 +10,8 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\events\MotionEvent;
 use app\models\supportTypes\ISupportType;
+use app\plugins\memberPetitions\notifications\DiscussionSubmitted;
+use app\plugins\memberPetitions\notifications\PetitionSubmitted;
 
 class Tools
 {
@@ -366,10 +368,26 @@ class Tools
             foreach ($motion->replacedMotion->getInitiators() as $initiator) {
                 $newInitiator = new MotionSupporter();
                 $newInitiator->setAttributes($initiator->getAttributes(), false);
-                $newInitiator->id = null;
+                $newInitiator->id       = null;
                 $newInitiator->motionId = $motion->id;
                 $newInitiator->save();
             }
+        }
+    }
+
+    /**
+     * @param MotionEvent $event
+     * @throws \app\models\exceptions\MailNotSent
+     * @throws \app\models\exceptions\ServerConfiguration
+     */
+    public static function onPublishedFirst(MotionEvent $event)
+    {
+        $motion = $event->motion;
+        if ($motion->motionTypeId === static::getDiscussionType($motion->getMyConsultation())->id) {
+            new DiscussionSubmitted($motion);
+        }
+        if ($motion->motionTypeId === static::getPetitionType($motion->getMyConsultation())->id) {
+            new PetitionSubmitted($motion);
         }
     }
 }

@@ -18,6 +18,7 @@ class Module extends ModuleBase
         parent::init();
 
         Event::on(Motion::class, Motion::EVENT_MERGED, [Tools::class, 'onMerged']);
+        Event::on(Motion::class, Motion::EVENT_PUBLISHED_FIRST, [Tools::class, 'onPublishedFirst']);
     }
 
 
