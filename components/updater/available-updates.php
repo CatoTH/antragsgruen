@@ -65,6 +65,9 @@ if (count($updates) === 0) {
                             <button type="submit" class="btn btn-primary" name="perform_update">
                                 Perform update
                             </button>
+                            <?php
+                            var_dump($update->readUpdateJson());
+                            ?>
                         </form>
                     </td>
                     <?php
