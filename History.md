@@ -1,5 +1,9 @@
 # Version history
 
+## Version 3.8.3 [not released yet[
+
+- Bugfix: At ByLDK PDF Layout, the default introduction was shown all the times at amendments.
+
 ## Version 3.8.2 (2018-03-27)
 
 - Displaying the proposed status didn't work when the production package of Antragsgrün was used.

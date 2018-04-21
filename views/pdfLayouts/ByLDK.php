@@ -176,7 +176,11 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        $intro = \Yii::t('export', 'introduction');
+        if ($this->motionType->getMyConsultation()->getSettings()->pdfIntroduction != '') {
+            $intro = $this->motionType->getMyConsultation()->getSettings()->pdfIntroduction;
+        } else {
+            $intro = \Yii::t('export', 'introduction');
+        }
         if ($intro) {
             $pdf->SetX(24);
             $pdf->SetFont('helvetica', 'B', 12);
