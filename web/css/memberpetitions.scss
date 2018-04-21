@@ -17,6 +17,11 @@
   .createRow {
     margin-top: 15px;
   }
+  .content {
+    img {
+      max-width: 100%;
+    }
+  }
 }
 
 .memberPetitionList {
@@ -38,3 +43,4 @@
     }
   }
 }
+
