@@ -66,6 +66,7 @@ foreach ($layout->extraCss as $file) {
 echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
+    <script src="' . $layout->resourceUrl('npm/thruway.js') . '"></script>
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="114x114" href="' . $resourceBase . 'apple-touch-icon-114x114.png">
     <link rel="apple-touch-icon" sizes="72x72" href="' . $resourceBase . 'apple-touch-icon-72x72.png">

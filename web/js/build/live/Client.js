@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var t=function(){function e(){this.wamp=new thruway.Client("ws://localhost:9090","realm1"),this.wamp.topic("example.topic").subscribe(function(e){return console.log(e)})}return e.getInstance=function(){return null==e.singletonObject&&(e.singletonObject=new e),e.singletonObject},e.singletonObject=null,e}();n.Client=t});
+//# sourceMappingURL=Client.js.map

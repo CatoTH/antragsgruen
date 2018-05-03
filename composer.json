@@ -26,7 +26,9 @@
     "catoth/html2opendocument": "0.11",
     "zendframework/zend-servicemanager": "^3.3.0",
     "setasign/fpdi-tcpdf": "^1.6",
-    "paragonie/sodium_compat": "^1.6"
+    "paragonie/sodium_compat": "^1.6",
+    "voryx/thruway": "^0.5.2",
+    "thruway/pawl-transport": "^0.5.0"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.0.12",

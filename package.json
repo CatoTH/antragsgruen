@@ -50,6 +50,9 @@
         "cloneable-readable": "^1.1.2",
         "eonasdan-bootstrap-datetimepicker": "^4.17.47",
         "moment": "^2.22.1",
-        "remove-trailing-separator": "^1.1.0"
+        "remove-trailing-separator": "^1.1.0",
+        "rxjs": "^6.1.0",
+        "rxjs-compat": "^6.1.0",
+        "thruway.js": "^1.3.0-beta7"
     }
 }
