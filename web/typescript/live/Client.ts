@@ -13,7 +13,12 @@ export class Client {
     protected wamp: any;
 
     constructor() {
-        this.wamp = new thruway.Client('ws://localhost:9090', 'realm1');
-        this.wamp.topic('example.topic').subscribe((v)=>console.log(v));
+        this.wamp = new thruway.Client('ws://localhost:9090', 'antragsgruen');
+        this.wamp.topic('example.topic').subscribe((v) => console.log(v));
+    }
+
+    public getMotion(id) {
+        return this.wamp.call('antragsgruen.rpc.getMotion', [id])
+            .map((r: any) => JSON.parse(r['args'][0]));
     }
 }

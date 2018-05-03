@@ -114,6 +114,6 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         return ANTRAGSGRUEN_STRINGS[category][str];
     };
 
-    Client.getInstance();
+    window['liveclient'] = Client.getInstance();
 
 }(jQuery));
