@@ -114,7 +114,7 @@ You can develop a custom theme using SASS/SCSS for Antragsgrün using the follow
 * Create a file ```web/css/layout-my-layout.scss``` using layout-classic.scss as a template
 * Adapt the SCSS variables and add custom styles
 * Run ```gulp``` to compile the SCSS into CSS
-* Add a line ```'layout-my-layout' => 'My cool new layout'``` to the "localLayouts"-object in config/config.json
+* Add a line ```"layout-my-layout": "My cool new layout"``` to the "localLayouts"-object in config/config.json
 * Now, you can choose your new theme in the consultation settings
 
 A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
@@ -212,7 +212,7 @@ You can enable debug mode by creating an empty file config/DEBUG.
 
 To compile the JavaScript- and CSS-Files, you need to install Gulp:
 ```bash
-npm install # Installs all required packages 
+npm install # Installs all required packages
 
 npm run build # Compiles the regular JS/CSS-files
 npm run watch # Listens for changes in JS/CSS-files and compiles them immediatelly
@@ -237,7 +237,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * Download the [Selenium Standalone Server](http://www.seleniumhq.org/download/)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed. (is done by ``npm install``)
-* The host name ``antragsgruen-test.local`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured 
+* The host name ``antragsgruen-test.local`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured
 
 ### Running
 
