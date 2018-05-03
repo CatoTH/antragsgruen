@@ -1,3 +1,5 @@
+import {Client} from "./live/Client.js";
+
 declare let requirejs: any;
 declare let ANTRAGSGRUEN_STRINGS: string[][];
 
@@ -111,4 +113,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         }
         return ANTRAGSGRUEN_STRINGS[category][str];
     };
+
+    Client.getInstance();
+
 }(jQuery));

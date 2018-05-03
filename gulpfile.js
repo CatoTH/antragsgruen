@@ -27,6 +27,7 @@ gulp.task('copy-files', function() {
     gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/thruway.js/dist/thruway.js").pipe(gulp.dest('./web/npm/'));
 });
 
 gulp.task('pdfjs', function () {
