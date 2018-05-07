@@ -1,4 +1,3 @@
-                    </div>
                 </main>
             </div>
         <div style="clear: both; padding-top: 15px;"></div>

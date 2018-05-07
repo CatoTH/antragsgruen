@@ -424,6 +424,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
 
     'updates_title'   => 'Available Updates',
     'updates_loading' => 'Loading',
+    'updates_migrate' => 'Database-upgrade necessary',
     'updates_none'    => 'No updates available',
     'updates_start'   => 'Start update',
     'updates_error'   => 'Updates could not be loaded',

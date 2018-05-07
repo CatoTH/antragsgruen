@@ -3,6 +3,7 @@
 /**
  * @var string[] $errors
  */
+
 $title = "Available Updates";
 require(__DIR__ . '/layout-header.php');
 
@@ -24,7 +25,6 @@ foreach ($errors as $error) {
             if (count($updates) === 0) {
                 echo "No updates are available";
             } else {
-
                 ?>
                 <table class="availableUpdateList">
                     <thead>
@@ -83,9 +83,12 @@ foreach ($errors as $error) {
 
     <section class="updateDatabase">
         <h2 class="green">2. Update database</h2>
-        <div class="content">
-
-        </div>
+        <div class="content migrationContent"></div>
+            <script>
+                $.get('update.php?check_updates=1', function(ret) {
+                   $(".migrationContent").html(ret);
+                });
+            </script>
     </section>
 
     <br><br>

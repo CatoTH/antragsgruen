@@ -5,7 +5,8 @@ use yii\helpers\Html;
 
 try {
     $updates = \app\components\updater\UpdateChecker::getAvailableUpdates();
-    if (count($updates) === 0) {
+    $migrations = \app\components\updater\MigrateHelper::getAvailableMigrations();
+    if (count($updates) === 0 && count($migrations) === 0) {
         echo \Yii::t('admin', 'updates_none');
     } else {
         echo '<ul>';
@@ -14,6 +15,9 @@ try {
         }
         echo '</ul>';
 
+        if (count($migrations) > 0) {
+            echo '<div>' . \Yii::t('admin', 'updates_migrate') . '</div>';
+        }
 
         echo Html::beginForm(UrlHelper::createUrl('admin/index/goto-update'), 'post', ['class' => 'updateForm']);
         echo '<button type="submit" name="flushCaches" class="btn btn-small btn-success">' .
