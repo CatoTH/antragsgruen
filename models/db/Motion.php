@@ -7,6 +7,7 @@ use app\components\RSSExporter;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\EmailNotifications;
+use app\components\LiveSendEvents;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
@@ -65,6 +66,10 @@ class Motion extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
         $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
+
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onChangedLive'], null, false);
+        $this->on(static::EVENT_AFTER_DELETE, [$this, 'onChangedLive'], null, false);
+        $this->on(static::EVENT_AFTER_INSERT, [$this, 'onChangedLive'], null, false);
     }
 
     /**
@@ -1119,5 +1124,24 @@ class Motion extends IMotion implements IRSSItem
     public function getViewUrl()
     {
         return UrlHelper::createMotionUrl($this);
+    }
+
+    /**
+     * @return array
+     */
+    public function getJsonObject()
+    {
+        return [
+            "id"          => $this->id,
+            "titlePrefix" => $this->titlePrefix,
+            "title"       => $this->title,
+            "slug"        => $this->getMotionSlug(),
+            "status"      => $this->status,
+        ];
+    }
+
+    public function onChangedLive()
+    {
+        LiveSendEvents::motionChanged($this);
     }
 }

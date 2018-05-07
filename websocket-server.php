@@ -13,9 +13,13 @@ require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 
 $yiiConfig = require(__DIR__ . '/config/console.php');
-$yii = new yii\console\Application($yiiConfig);
+$yii       = new yii\console\Application($yiiConfig);
+/** @var \app\models\settings\AntragsgruenApp $yiiParams */
 
 $router = new Router();
+
+$router->registerModule(new \Thruway\Authentication\AuthenticationManager());
+$router->addInternalClient(new \app\components\JwtAuthenticationProvider(['antragsgruen']));
 
 $router->addInternalClient(new app\components\LiveClient());
 

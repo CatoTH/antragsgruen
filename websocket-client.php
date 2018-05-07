@@ -11,7 +11,7 @@ $onClose    = function ($msg) {
 };
 $connection = new Connection(
     [
-        "realm"   => 'realm1',
+        "realm"   => 'antragsgruen',
         "onClose" => $onClose,
         "url"     => 'ws://127.0.0.1:9090',
     ]
