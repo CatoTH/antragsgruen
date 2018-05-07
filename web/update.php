@@ -2,7 +2,7 @@
 require(__DIR__ . '/../vendor/autoload.php');
 require_once(__DIR__ . '/../config/defines.php');
 require_once(__DIR__ . '/../components/updater/UpdateChecker.php');
-require_once(__DIR__ . '/../components/updater/UpdateInformation.php');
+require_once(__DIR__ . '/../components/updater/Update.php');
 require_once(__DIR__ . '/../components/updater/UpdatedFiles.php');
 
 $configFile = __DIR__ . '/../config/config.json';
@@ -58,7 +58,22 @@ if (isset($_POST['download_update'])) {
 
 if (isset($_POST['perform_update'])) {
     try {
-        // @TODO
+        $update = null;
+        foreach (\app\components\updater\UpdateChecker::getAvailableUpdates() as $upd) {
+            if ($upd->version === $_POST['version']) {
+                $update = $upd;
+            }
+        }
+        if (!$update) {
+            throw new \Exception('Update not found');
+        }
+        if (!$update->isDownloaded()) {
+            throw new \Exception('Update has not been downloaded');
+        }
+        $update->verifyFileIntegrity();
+        $update->checkFilePermissions();
+        $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
+        $update->performUpdate();
     } catch (\Exception $e) {
         $errors[] = $e->getMessage();
     }

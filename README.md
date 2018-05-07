@@ -141,17 +141,6 @@ In multi-site-instances, there might be a need to share language variante betwee
 }
 ```
 
-
-Plugins
--------
-
-**The plugin system is still under heavy development.**
-
-Each plugins has a directory unter [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
-
-Custom URLs can be defined in the Modules.php, custom commands need to be in a ``commands``-directory.
-
-
 LaTeX/XeTeX-based PDF-rendering:
 --------------------------------
 

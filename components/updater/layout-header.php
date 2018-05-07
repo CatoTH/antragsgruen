@@ -35,4 +35,3 @@
         <div class="row antragsgruen-content">
             <main class="col-md-9 well">
                 <h1>Antragsgrün-Update: <?= htmlentities($title, ENT_COMPAT, 'UTF-8') ?></h1>
-                <div class="content">

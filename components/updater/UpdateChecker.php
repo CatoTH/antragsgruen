@@ -10,7 +10,7 @@ class UpdateChecker
 
     /**
      * @param null|string $version
-     * @return UpdateInformation[]
+     * @return Update[]
      * @throws Network
      * @throws Internal
      */
@@ -42,7 +42,7 @@ class UpdateChecker
             }
             $updates = [];
             foreach ($json as $update) {
-                $updates[] = new UpdateInformation($update);
+                $updates[] = new Update($update);
             }
             return $updates;
         } catch (\Exception $e) {

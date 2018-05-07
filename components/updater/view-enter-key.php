@@ -2,7 +2,7 @@
 $title = "Enter update key";
 require(__DIR__ . '/layout-header.php');
 ?>
-    <form method="POST">
+    <form method="POST" class="content">
         <label>
             Update Key:
             <input type="text" name="set_key" autocomplete="off">
