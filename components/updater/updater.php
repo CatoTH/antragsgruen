@@ -14,7 +14,7 @@ $config = json_decode(file_get_contents($configFile), true);
 if (!isset($config['updateKey']) || strlen($config['updateKey']) < 10) {
     $title = "Not active";
     require(__DIR__ . '/layout-header.php');
-    echo "Update mode is not active";
+    echo "<div class='content'>Update mode is not active</div>";
     require(__DIR__ . '/layout-footer.php');
     die();
 }
