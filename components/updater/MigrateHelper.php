@@ -34,4 +34,19 @@ class MigrateHelper extends MigrateController
         $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
         return $controller->getNewMigrations();
     }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \Exception
+     */
+    public static function performMigrations()
+    {
+        $controller = \Yii::createObject(static::class, ['migration', \Yii::$app]);
+        $migrations = $controller->getNewMigrations();
+        foreach ($migrations as $migration) {
+            if (!$controller->migrateUp($migration)) {
+                throw new \Exception('Migration failes: ' . $migration);
+            }
+        }
+    }
 }

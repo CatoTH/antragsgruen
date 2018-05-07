@@ -34,7 +34,8 @@ if (!isset($_COOKIE['update_key']) || $_COOKIE['update_key'] !== $updateKey) {
 
 // Starting here, the user is authenticated
 
-$errors = [];
+$errors  = [];
+$success = [];
 
 if (isset($_POST['cancel_update'])) {
     $config = json_decode(file_get_contents($configFile), true);
@@ -56,12 +57,23 @@ if (isset($_POST['download_update'])) {
     }
 }
 
-if (isset($_REQUEST['check_updates'])) {
+if (isset($_REQUEST['check_migrations'])) {
     require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
-    $config      = require(__DIR__ . '/../../config/console.php');
-    $application = new yii\console\Application($config);
+    $yiiConfig = require(__DIR__ . '/../../config/console.php');
+    new yii\console\Application($yiiConfig);
     require(__DIR__ . '/available-migrations.php');
     die();
+}
+
+if (isset($_POST['perform_migrations'])) {
+    require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
+    $yiiConfig = require(__DIR__ . '/../../config/console.php');
+    $config = json_decode(file_get_contents($configFile), true);
+    new yii\console\Application($yiiConfig);
+    ob_start();
+    \app\components\updater\MigrateHelper::performMigrations();
+    $output = ob_get_clean();
+    $success[] = 'The database has been updated.';
 }
 
 if (isset($_POST['perform_update'])) {
@@ -82,6 +94,8 @@ if (isset($_POST['perform_update'])) {
         $update->checkFilePermissions();
         $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
         $update->performUpdate();
+
+        $success[] = 'Antragsgrün has been updated.';
     } catch (\Exception $e) {
         $errors[] = $e->getMessage();
     }

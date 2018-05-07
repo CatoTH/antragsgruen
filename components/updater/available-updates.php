@@ -10,6 +10,9 @@ require(__DIR__ . '/layout-header.php');
 foreach ($errors as $error) {
     echo '<div class="alert alert-danger">' . htmlentities($error, ENT_COMPAT, 'UTF-8') . '</div>';
 }
+foreach ($success as $msg) {
+    echo '<div class="alert alert-success">' . htmlentities($msg, ENT_COMPAT, 'UTF-8') . '</div>';
+}
 
 ?>
     <div class="currentVersion content">
@@ -85,7 +88,7 @@ foreach ($errors as $error) {
         <h2 class="green">2. Update database</h2>
         <div class="content migrationContent"></div>
             <script>
-                $.get('update.php?check_updates=1', function(ret) {
+                $.get('update.php?check_migrations=1', function(ret) {
                    $(".migrationContent").html(ret);
                 });
             </script>
