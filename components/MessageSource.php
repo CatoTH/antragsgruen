@@ -193,27 +193,32 @@ class MessageSource extends \yii\i18n\MessageSource
             throw new Internal('Unknown language category: ' . $category);
         }
 
+        $categoryFilename = $category;
+        if ($category === 'con') {
+            $categoryFilename = 'consultation'; // 'con' is a restricted filename at Windows, see #254
+        }
+
         $consultation = UrlHelper::getCurrentConsultation();
         if (!$consultation) {
-            $baseFile = $this->getMessageFilePath($category, $language);
+            $baseFile = $this->getMessageFilePath($categoryFilename, $language);
             return $this->loadMessagesFromFile($baseFile);
         };
         $languages = explode(',', $consultation->wordingBase);
 
-        $baseFile     = $this->getMessageFilePath($category, 'en');
+        $baseFile     = $this->getMessageFilePath($categoryFilename, 'en');
         $origMessages = $this->loadMessagesFromFile($baseFile);
 
         $baseMessages = $extMessages = [];
         foreach ($languages as $lang) {
             $parts = explode('-', $lang);
 
-            $baseFile = $this->getMessageFilePath($category, $parts[0]);
+            $baseFile = $this->getMessageFilePath($categoryFilename, $parts[0]);
             $messages = $this->loadMessagesFromFile($baseFile);
             if ($messages) {
                 $baseMessages = array_merge($baseMessages, $messages);
             }
 
-            $extFile  = $this->getMessageFilePath($category, $lang);
+            $extFile  = $this->getMessageFilePath($categoryFilename, $lang);
             $messages = $this->loadMessagesFromFile($extFile);
             if ($messages) {
                 $extMessages = array_merge($extMessages, $messages);
