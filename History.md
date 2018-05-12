@@ -3,6 +3,7 @@
 ## Version 3.8.3 [not released yet[
 
 - Bugfix: At ByLDK PDF Layout, the default introduction was shown all the times at amendments.
+- Bugfix: The ZIP-file of Antragsgrün could not be extracted using Windows.
 
 ## Version 3.8.2 (2018-03-27)
 
