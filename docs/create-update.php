@@ -2,17 +2,20 @@
 <?php
 
 if (count($argv) !== 4) {
-    die("Call: ./create-update.php [directory old] [directory-new] [update-file.zip]\n");
+    die("Call: ./create-update.php [directory old] [directory new] [update director]\n");
 }
 
-$dirOld     = $argv[1];
-$dirNew     = $argv[2];
-$updateFile = $argv[3];
+$dirOld    = $argv[1];
+$dirNew    = $argv[2];
+$dirUpdate = $argv[3];
 if ($dirOld[strlen($dirOld) - 1] !== '/') {
     $dirOld .= '/';
 }
 if ($dirNew[strlen($dirNew) - 1] !== '/') {
     $dirNew .= '/';
+}
+if ($dirUpdate[strlen($dirUpdate) - 1] !== '/') {
+    $dirUpdate .= '/';
 }
 
 if (!file_exists($dirOld) || !is_dir($dirOld)) {
@@ -21,7 +24,9 @@ if (!file_exists($dirOld) || !is_dir($dirOld)) {
 if (!file_exists($dirNew) || !is_dir($dirNew)) {
     die("$dirNew is not a directory");
 }
-
+if (!file_exists($dirUpdate) || !is_dir($dirUpdate)) {
+    die("$dirUpdate is not a directory");
+}
 
 $GLOBALS["FILES_ADDED"]   = [];
 $GLOBALS["FILES_UPDATED"] = [];
@@ -118,10 +123,67 @@ function compareDirectories($dirOldBase, $dirNewBase, $dirRelative)
     }
 }
 
+/**
+ * @param string $dir
+ * @return string
+ * @throws Exception
+ */
+function readVersionFromDirectory($dir)
+{
+    $defines = file_get_contents($dir . 'config/defines.php');
+    $parts   = explode('ANTRAGSGRUEN_VERSION', $defines);
+    $parts   = explode('\'', $parts[1]);
+    $version = $parts[2];
+    if (strlen($version) < 4 || strlen($version) > 20 || $version < 3) {
+        throw new \Exception('Could not read version from defines.php: ' . $defines);
+    }
+    return $version;
+}
+
+/**
+ * @param string $dirNew
+ * @param string $versionOld
+ * @param string $versionNew
+ * @return string
+ * @throws Exception
+ */
+function readChangelog($dirNew, $versionOld, $versionNew)
+{
+    $defines  = explode("\n", file_get_contents($dirNew . 'History.md'));
+    $lines    = [];
+    $foundNew = false;
+    $foundOld = false;
+    for ($i = 0; $i < count($defines) && !$foundOld; $i++) {
+        $line = $defines[$i];
+        if (strpos($line, '## Version ' . $versionNew) !== false) {
+            $foundNew = true;
+            continue;
+        }
+        if (strpos($line, '## Version ' . $versionOld) !== false) {
+            $foundOld = true;
+            continue;
+        }
+        if ($foundNew && !$foundOld && trim($line) !== '') {
+            $lines[] = $line;
+        }
+    }
+    if ($foundNew && $foundOld) {
+        return implode("\n", $lines);
+    } else {
+        throw new \Exception("Could not read the changelog");
+    }
+}
+
 compareDirectories($dirOld, $dirNew, '');
+$versionOld = readVersionFromDirectory($dirOld);
+$versionNew = readVersionFromDirectory($dirNew);
+$changelog  = readChangelog($dirNew, $versionOld, $versionNew);
+
+$updateFilename = $versionOld . "-" . $versionNew . ".zip";
+
 
 $zipfile = new ZipArchive();
-if ($zipfile->open($updateFile, ZipArchive::CREATE) !== true) {
+if ($zipfile->open($dirUpdate . $updateFilename, ZipArchive::CREATE) !== true) {
     die("Could not open the ZIP file");
 }
 foreach (array_keys($GLOBALS["FILES_ADDED"]) as $file) {
@@ -132,6 +194,9 @@ foreach (array_keys($GLOBALS["FILES_UPDATED"]) as $file) {
 }
 
 $updateJson = "
+\"from_version\": " . json_encode($versionOld) . ",
+\"to_version\": " . json_encode($versionNew) . ",
+\"changelog\": " . json_encode($changelog) . ",
 \"files_updated\": " . json_encode($GLOBALS['FILES_UPDATED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_added\": " . json_encode($GLOBALS['FILES_ADDED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_deleted\": " . json_encode($GLOBALS['FILES_DELETED']);
@@ -144,14 +209,14 @@ $zipfile->addFromString('update.json.signature', $signature);
 
 $zipfile->close();
 
-$zipContent = file_get_contents($updateFile);
+$zipContent = file_get_contents($dirUpdate . $updateFilename);
 echo "Template for the update definition:\n" .
     json_encode([
         [
             "type"      => "patch",
-            "version"   => "",
-            "changelog" => "",
-            "url"       => "",
+            "version"   => $versionNew,
+            "changelog" => $changelog,
+            "url"       => "https://antragsgruen.de/updates/" . $updateFilename,
             "filesize"  => strlen($zipContent),
             "signature" => base64_encode(sodium_crypto_generichash($zipContent)),
         ]

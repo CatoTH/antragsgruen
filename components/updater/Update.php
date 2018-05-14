@@ -13,6 +13,7 @@ class Update
     public $filesize;
     public $signature;
 
+    /** @var null|UpdatedFiles */
     private $updatedFiles = null;
 
     /**
@@ -31,7 +32,7 @@ class Update
         $this->signature = $json['signature'];
 
         if ($this->type !== static::TYPE_PATCH) {
-            throw new \Exception("Only patch releases are supported");
+            throw new \Exception('Only patch releases are supported');
         }
     }
 
@@ -52,7 +53,7 @@ class Update
         if (!file_exists($dir)) {
             mkdir($dir, 0755);
         }
-        $base = explode("/", $this->url);
+        $base = explode('/', $this->url);
         return $dir . $base[count($base) - 1];
     }
 
@@ -117,19 +118,19 @@ class Update
     {
         if (!$this->updatedFiles) {
             if (!$this->isDownloaded()) {
-                throw new \Exception("File is not yet downloaded");
+                throw new \Exception('File is not yet downloaded');
             }
 
             $zipfile = new \ZipArchive();
             if ($zipfile->open($this->getAbsolutePath()) !== true) {
-                throw new \Exception("Could not open the ZIP file");
+                throw new \Exception('Could not open the ZIP file');
             }
 
             $updateJson      = $zipfile->getFromName('update.json');
             $updateSignature = base64_decode($zipfile->getFromName('update.json.signature'));
             $publicKey       = base64_decode(file_get_contents(__DIR__ . '/../../config/update-public.key'));
             if (!sodium_crypto_sign_verify_detached($updateSignature, $updateJson, $publicKey)) {
-                throw new \Exception("The signature of the update file is invalid");
+                throw new \Exception('The signature of the update file is invalid');
             }
 
             $zipfile->close();
@@ -152,73 +153,88 @@ class Update
         foreach ($files as $file) {
             $fulldir = $basepath . (dirname($file) === '.' ? '' : dirname($file));
             if (!file_exists($fulldir) && !mkdir($fulldir, 0755, true)) {
-                throw new \Exception('Could not create backup sub-directory: ' . $fulldir);
+                throw new \Exception('Could not create backup sub-directory: ' .
+                    htmlentities($fulldir, ENT_COMPAT, 'UTF-8'));
             }
             if (!file_exists($this->getBasePath() . $file)) {
-                throw new \Exception('An expected file of the current version was not found: ' . $file);
+                throw new \Exception('An expected file of the current version was not found: ' .
+                    htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
             if (!copy($this->getBasePath() . $file, $fulldir . DIRECTORY_SEPARATOR . basename($file))) {
-                throw new \Exception('Could not back up file: ' . $file);
+                throw new \Exception('Could not back up file: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
         }
     }
 
     /**
+     * @param null|string $version
      * @throws \Exception
      */
-    public function verifyFileIntegrity()
+    public function verifyFileIntegrityAndPermissions($version = null)
     {
-        $files = $this->readUpdateJson();
+        $filesObj = $this->readUpdateJson();
+        $basepath = $this->getBasePath();
 
         $zipfile = new \ZipArchive();
         if ($zipfile->open($this->getAbsolutePath()) !== true) {
             throw new \Exception('Could not open the ZIP file');
         }
 
-        $fileList = array_merge($files->files_added, $files->files_updated);
-        foreach ($fileList as $file => $correctHash) {
+        if ($version !== null && $filesObj->from_version !== $version) {
+            throw new \Exception('The loaded update files does not match the current version (' .
+                $filesObj->from_version . ' vs. ' . $version . ')');
+        }
+
+        $fileList  = array_merge($filesObj->files_added, $filesObj->files_updated);
+        $corrupted = array_filter($fileList, function ($file, $correctHash) use ($zipfile) {
             $content = $zipfile->getFromName($file);
             $zipHash = base64_encode(sodium_crypto_generichash($content));
             if ($zipHash !== $correctHash) {
-                throw new \Exception('The files in the backup file seem to be corrupted: ' . $file);
+                $corrupted[] = $file;
             }
-        }
+        }, ARRAY_FILTER_USE_BOTH);
 
-        $fileList = array_merge($files->files_deleted, array_keys($files->files_updated));
-        foreach ($fileList as $file) {
-            if (!file_exists($this->getBasePath() . $file)) {
-                throw new \Exception('File to be updated was not found: ' . $file);
-            }
-        }
+        $fileList = array_merge($filesObj->files_deleted, array_keys($filesObj->files_updated));
+        $notFound = array_filter($fileList, function ($file) {
+            return !file_exists($this->getBasePath() . $file);
+        });
 
+        $notWritable = array_merge(
+            array_filter($filesObj->files_deleted, function ($file) use ($basepath) {
+                return !is_writable($basepath . $file);
+            }),
+            array_filter($filesObj->files_updated, function ($file) use ($basepath) {
+                return !is_writable($basepath . $file);
+            }),
+            array_filter($filesObj->files_added, function ($file) use ($basepath) {
+                $file = dirname($file);
+                return !is_writable($basepath . $file);
+            })
+        );
         $zipfile->close();
-    }
 
-    /**
-     * @returns \Exception
-     */
-    public function checkFilePermissions()
-    {
-        $fileObj = $this->readUpdateJson();
-        $basepath = $this->getBasePath();
-
-        foreach ($fileObj->files_deleted as $file) {
-            if (!is_writable($basepath . $file)) {
-                throw new \Exception('Cannot write file: ' . $file);
+        if (count($corrupted) > 0 || count($notFound) > 0 || count($notWritable) > 0) {
+            $errors = '';
+            if (count($corrupted) > 0) {
+                $files  = implode("\n", array_map(function ($file) {
+                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
+                }, $corrupted));
+                $errors .= '<p>The files in the backup file seem to be corrupted:</p><ul>' . $files . '</ul>' . "\n";
             }
-        }
-
-        foreach (array_keys($fileObj->files_updated) as $file) {
-            if (!is_writable($basepath . $file)) {
-                throw new \Exception('Cannot write file: ' . $file);
+            if (count($notFound) > 0) {
+                $files  = implode("\n", array_map(function ($file) {
+                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
+                }, $notFound));
+                $errors .= '<p>The files in the backup file seem to be corrupted:</p><ul>' . $files . '</ul>' . "\n";
             }
-        }
-
-        foreach (array_keys($fileObj->files_added) as $file) {
-            $file = dirname($file);
-            if (!is_writable($basepath . $file)) {
-                throw new \Exception('Cannot write to directory: ' . $file);
+            if (count($notWritable) > 0) {
+                $files  = implode("\n", array_map(function ($file) {
+                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
+                }, $notFound));
+                $errors .= '<p>The following files / directories do not have writing permissions:</p>' .
+                    '<ul>' . $files . '</ul>' . "\n";
             }
+            throw new \Exception($errors);
         }
     }
 
@@ -238,13 +254,13 @@ class Update
         foreach (array_keys($fileList) as $file) {
             $content = $zipfile->getFromName($file);
             if (file_put_contents($this->getBasePath() . $file, $content) === false) {
-                throw new \Exception('The file could not be updated: ' . $file);
+                throw new \Exception('The file could not be updated: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
         }
 
         foreach ($filesObj->files_deleted as $file) {
             if (!unlink($this->getBasePath() . $file)) {
-                throw new \Exception('The file could not be deleted: ' . $file);
+                throw new \Exception('The file could not be deleted: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
         }
 

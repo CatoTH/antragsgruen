@@ -8,10 +8,10 @@ $title = "Available Updates";
 require(__DIR__ . '/layout-header.php');
 
 foreach ($errors as $error) {
-    echo '<div class="alert alert-danger">' . htmlentities($error, ENT_COMPAT, 'UTF-8') . '</div>';
+    echo '<div class="alert alert-danger">' . $error . '</div>';
 }
 foreach ($success as $msg) {
-    echo '<div class="alert alert-success">' . htmlentities($msg, ENT_COMPAT, 'UTF-8') . '</div>';
+    echo '<div class="alert alert-success">' . $msg . '</div>';
 }
 
 ?>

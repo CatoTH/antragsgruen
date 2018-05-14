@@ -77,6 +77,8 @@ The update.json looks like this:
 
 ```json
 {
+    "from_version": "1.2.3",
+    "to_version": "1.2.4",
     "files_updated": {
         "views/anotherfile.php": "hashofanotherfiletxt",
     },
@@ -93,9 +95,9 @@ The update.json looks like this:
 
 ## Performing the file-update
 
-First, a check is run if every file to be updated or deleted exists, and none of the files to be added already exists. Checks are performed if all files are writable and enough space is available on the device. If any check fails, the update is aborted and a list of problematic files is displayed.
+First, a check is run if every file to be updated or deleted exists, and none of the files to be added already exists. Checks are performed if all files are writable and enough space is available on the device. Additionally, the version given in ``from_file``is checked against the current version. If any check fails, the update is aborted and a list of problems is displayed.
 
-Then, a directory ``backups/1.2.3`` (with 1.2.3 being the old / current version) is created. Every file listed in the update.json (file_updated and file_deleted) is backupped into this folder (sub-folders are recursively created).
+Then, a directory ``runtime/backups/1.2.3`` (with 1.2.3 being the old / current version) is created. Every file listed in the update.json (file_updated and file_deleted) is backupped into this folder (sub-folders are recursively created).
 
 Finally, the actual operations are performed.
 

@@ -90,8 +90,7 @@ if (isset($_POST['perform_update'])) {
         if (!$update->isDownloaded()) {
             throw new \Exception('Update has not been downloaded');
         }
-        $update->verifyFileIntegrity();
-        $update->checkFilePermissions();
+        $update->verifyFileIntegrityAndPermissions(ANTRAGSGRUEN_VERSION);
         $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
         $update->performUpdate();
 
