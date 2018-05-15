@@ -20,7 +20,7 @@ foreach ($success as $msg) {
         <?= ANTRAGSGRUEN_VERSION ?>
     </div>
     <section class="updateFiles">
-        <h2 class="green">1. Update files</h2>
+        <h2 class="green">Update files</h2>
         <div class="content">
             <?php
 
@@ -84,14 +84,12 @@ foreach ($success as $msg) {
         </div>
     </section>
 
-    <section class="updateDatabase">
-        <h2 class="green">2. Update database</h2>
-        <div class="content migrationContent"></div>
-            <script>
-                $.get('update.php?check_migrations=1', function(ret) {
-                   $(".migrationContent").html(ret);
-                });
-            </script>
+    <section class="updateDatabase migrationContent">
+        <script>
+            $.get('update.php?check_migrations=1', function (ret) {
+                $(".migrationContent").html(ret);
+            });
+        </script>
     </section>
 
     <br><br>

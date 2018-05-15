@@ -21,12 +21,31 @@ class AdminIndex {
         });
     }
 
+    private onSubmitGotoUpdateForm(ev, data) {
+        if (data && typeof(data.confirmed) && data.confirmed === true) {
+            return;
+        }
+        ev.preventDefault();
+        bootbox.confirm({
+            message: __t('admin', 'gotoUpdateModeConfirm'),
+            callback: (result) => {
+                if (result) {
+                    $('.adminCardUpdates .updateForm').trigger('submit', {'confirmed': true});
+                }
+            }
+        });
+    }
+
     private initUpdates() {
-        let $updateWidget = $(".adminCardUpdates main");
-        $.get($updateWidget.data("src"), function(data) {
+        let $updateWidget = $('.adminCardUpdates main');
+        $.get($updateWidget.data('src'), function(data) {
             console.log(data);
             $updateWidget.html(data);
         });
+        $updateWidget.on('click', '.showChanges', (ev) => {
+            $(ev.currentTarget).parents('li').first().find('.changes').toggleClass('hidden');
+        });
+        $updateWidget.on('submit', '.updateForm', this.onSubmitGotoUpdateForm);
     }
 }
 

@@ -11,7 +11,10 @@ try {
     } else {
         echo '<ul>';
         foreach ($updates as $update) {
-            echo '<li>' . Html::encode($update->version) . '</li>';
+            echo '<li>' . Html::encode($update->version);
+            echo ' <button class="showChanges btn-link">' . \Yii::t('admin', 'updates_show_changes') . '</button>';
+            echo '<div class="changes hidden">' . nl2br(Html::encode($update->changelog)) . '</div>';
+            echo '</li>';
         }
         echo '</ul>';
 

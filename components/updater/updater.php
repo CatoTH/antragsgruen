@@ -41,7 +41,7 @@ if (isset($_POST['cancel_update'])) {
     $config = json_decode(file_get_contents($configFile), true);
     unset($config['updateKey']);
     file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
-    Header("Location: " . $config["domainPlain"]);
+    Header('Location: ' . $config['domainPlain']);
     die();
 }
 
@@ -55,25 +55,6 @@ if (isset($_POST['download_update'])) {
     } catch (\Exception $e) {
         $errors[] = $e->getMessage();
     }
-}
-
-if (isset($_REQUEST['check_migrations'])) {
-    require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
-    $yiiConfig = require(__DIR__ . '/../../config/console.php');
-    new yii\console\Application($yiiConfig);
-    require(__DIR__ . '/available-migrations.php');
-    die();
-}
-
-if (isset($_POST['perform_migrations'])) {
-    require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
-    $yiiConfig = require(__DIR__ . '/../../config/console.php');
-    $config = json_decode(file_get_contents($configFile), true);
-    new yii\console\Application($yiiConfig);
-    ob_start();
-    \app\components\updater\MigrateHelper::performMigrations();
-    $output = ob_get_clean();
-    $success[] = 'The database has been updated.';
 }
 
 if (isset($_POST['perform_update'])) {
@@ -94,10 +75,36 @@ if (isset($_POST['perform_update'])) {
         $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
         $update->performUpdate();
 
-        $success[] = 'Antragsgrün has been updated.';
+        $url = explode('?', $_SERVER['REQUEST_URI']);
+        $newUrl = $url[0] . '?msg_updated=1';
+        Header('Location: ' . $newUrl, true, 302);
     } catch (\Exception $e) {
         $errors[] = $e->getMessage();
     }
+}
+
+if (isset($_REQUEST['msg_updated'])) {
+    $success[] = 'Antragsgrün has been updated. Please check below if a database upgrade is necessary. ' .
+        'If so, please perform this upgrade before disabling the update mode again.';
+}
+
+if (isset($_REQUEST['check_migrations'])) {
+    require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
+    $yiiConfig = require(__DIR__ . '/../../config/console.php');
+    new yii\console\Application($yiiConfig);
+    require(__DIR__ . '/available-migrations.php');
+    die();
+}
+
+if (isset($_POST['perform_migrations'])) {
+    require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
+    $yiiConfig = require(__DIR__ . '/../../config/console.php');
+    $config = json_decode(file_get_contents($configFile), true);
+    new yii\console\Application($yiiConfig);
+    ob_start();
+    \app\components\updater\MigrateHelper::performMigrations();
+    $output = ob_get_clean();
+    $success[] = 'The database has been updated.';
 }
 
 require(__DIR__ . '/available-updates.php');

@@ -173,7 +173,6 @@ class Update
     public function verifyFileIntegrityAndPermissions($version = null)
     {
         $filesObj = $this->readUpdateJson();
-        $basepath = $this->getBasePath();
 
         $zipfile = new \ZipArchive();
         if ($zipfile->open($this->getAbsolutePath()) !== true) {
@@ -181,8 +180,8 @@ class Update
         }
 
         if ($version !== null && $filesObj->from_version !== $version) {
-            throw new \Exception('The loaded update files does not match the current version (' .
-                $filesObj->from_version . ' vs. ' . $version . ')');
+            throw new \Exception('The loaded update file does not match the current version (' .
+                $filesObj->from_version . ' vs. ' . $version . ').');
         }
 
         $fileList  = array_merge($filesObj->files_added, $filesObj->files_updated);
@@ -199,40 +198,52 @@ class Update
             return !file_exists($this->getBasePath() . $file);
         });
 
+        $alreadyFound = array_filter(array_keys($filesObj->files_added), function ($file) {
+            return file_exists($this->getBasePath() . $file);
+        });
+
         $notWritable = array_merge(
-            array_filter($filesObj->files_deleted, function ($file) use ($basepath) {
-                return !is_writable($basepath . $file);
+            array_filter($filesObj->files_deleted, function ($file) {
+                return !is_writable($this->getBasePath() . $file);
             }),
-            array_filter($filesObj->files_updated, function ($file) use ($basepath) {
-                return !is_writable($basepath . $file);
+            array_filter(array_keys($filesObj->files_updated), function ($file) {
+                return !is_writable($this->getBasePath() . $file);
             }),
-            array_filter($filesObj->files_added, function ($file) use ($basepath) {
-                $file = dirname($file);
-                return !is_writable($basepath . $file);
+            array_filter(array_map(function ($file) {
+                return dirname($file);
+            }, array_keys($filesObj->files_added)), function ($file) {
+                return !is_writable($this->getBasePath() . $file);
             })
         );
+
+        $notWritable = array_filter($notWritable, function ($file) use ($notFound) {
+            return !in_array($file, $notFound);
+        });
         $zipfile->close();
 
-        if (count($corrupted) > 0 || count($notFound) > 0 || count($notWritable) > 0) {
+        $filesListToUl = function ($files) {
+            return '<ul>' . implode("\n", array_map(function ($file) {
+                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
+            }, $files)) . '</ul>';
+        };
+
+        if (count($corrupted) > 0 || count($notFound) > 0 || count($alreadyFound) > 0 || count($notWritable) > 0) {
             $errors = '';
             if (count($corrupted) > 0) {
-                $files  = implode("\n", array_map(function ($file) {
-                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
-                }, $corrupted));
-                $errors .= '<p>The files in the backup file seem to be corrupted:</p><ul>' . $files . '</ul>' . "\n";
+                $errors .= '<p>The files in the backup file seem to be corrupted:</p>' .
+                    $filesListToUl($corrupted) . "\n";
             }
             if (count($notFound) > 0) {
-                $files  = implode("\n", array_map(function ($file) {
-                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
-                }, $notFound));
-                $errors .= '<p>The files in the backup file seem to be corrupted:</p><ul>' . $files . '</ul>' . "\n";
+                $errors .= '<p>The following files were not found in the current installation:</p>' .
+                    $filesListToUl($notFound) . "\n";
+            }
+            if (count($alreadyFound) > 0) {
+                $errors .= '<p>The following files to be created already exist:</p>' .
+                    $filesListToUl($alreadyFound) . "\n";
             }
             if (count($notWritable) > 0) {
-                $files  = implode("\n", array_map(function ($file) {
-                    return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
-                }, $notFound));
                 $errors .= '<p>The following files / directories do not have writing permissions:</p>' .
-                    '<ul>' . $files . '</ul>' . "\n";
+                    $filesListToUl($notWritable) . "\n";
             }
             throw new \Exception($errors);
         }
