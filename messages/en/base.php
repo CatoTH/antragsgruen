@@ -23,6 +23,7 @@ return [
     'err_cons_not_site'     => 'Invalid URL: this consultation is not part of the given site.',
     'err_site_404'          => 'The given site does not exist. If you think this is an error, please contact us (info@antragsgruen.de).',
     'err_cons_404'          => 'The given consultation was not found. This is probably a typo in the URL entered in your browser.',
+    'err_update_mode'       => 'The site is in maintenance mode due to an update.<br><br>If you are the admin and this is not intentional, you can find further information in the <a href="https://motion.tools/help">documentation</a>.',
     'content_privacy_title' => 'Privacy statement',
     'content_privacy_bread' => 'Privacy',
     'content_welcome'       => 'Welcome',

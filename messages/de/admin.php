@@ -431,4 +431,12 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'users_auth'       => 'Anmeldedaten',
     'users_registered' => 'Registriert',
     'pdf_templ_none'   => 'Kein PDF',
+
+    'updates_title'        => 'Verfügbare Updates',
+    'updates_loading'      => 'Prüfe...',
+    'updates_migrate'      => 'Datenbank-Update erforderlich',
+    'updates_none'         => 'Keine Updates verfügbar',
+    'updates_start'        => 'Update starten',
+    'updates_error'        => 'Die Updates konnten nicht abgefragt werden',
+    'updates_show_changes' => 'Änderungen anzeigen',
 ];

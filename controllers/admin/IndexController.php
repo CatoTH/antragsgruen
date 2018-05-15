@@ -13,6 +13,7 @@ use app\models\AdminTodoItem;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\forms\AntragsgruenUpdateModeForm;
 use app\models\forms\ConsultationCreateForm;
 use yii\web\Response;
 
@@ -367,5 +368,34 @@ class IndexController extends AdminBase
                 'users' => $users,
             ]);
         }
+    }
+
+    /**
+     * @throws \yii\base\ExitException
+     * @return string
+     */
+    public function actionCheckUpdates()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+        return $this->renderPartial('index_updates');
+    }
+
+    /**
+     * @return string
+     * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
+     */
+    public function actionGotoUpdate()
+    {
+        if (!User::currentUserIsSuperuser()) {
+            return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
+        }
+
+        $form = new AntragsgruenUpdateModeForm();
+        $updateKey = $form->activateUpdate();
+
+        return $this->redirect($this->getParams()->domainPlain . 'update.php?set_key=' . $updateKey);
     }
 }

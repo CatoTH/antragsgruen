@@ -1,0 +1,1 @@
+{"version":3,"sources":["update.scss"],"names":[],"mappings":"AAAA,qBACE,SACA,UACA,UAAW,CAHb,gDAMI,WAAY,CACb,gBAID,YACA,kBAAmB,CACpB","file":"update.css","sourcesContent":[".availableUpdateList {\n  margin: 0;\n  padding: 0;\n  width: 100%;\n\n  td, th {\n    padding: 5px;\n  }\n}\n\n.currentVersion {\n  padding: 5px;\n  margin-bottom: 20px;\n}\n"]}

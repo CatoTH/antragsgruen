@@ -704,6 +704,19 @@ label.legend {
   }
 }
 
+.adminCardUpdates {
+  ul {
+    padding-left: 20px;
+  }
+  .showChanges {
+    font-size: 12px;
+  }
+  .changes {
+    font-size: 12px;
+    font-family: $motionFixedFont;
+  }
+}
+
 .proposalStatusIcons {
   float: right;
   font-size: 0.8em;

@@ -108,6 +108,13 @@ echo '</div><aside class="adminIndexSecondary">';
 echo $controller->getParams()->getBehaviorClass()->getAdminIndexHint($consultation);
 
 if (User::currentUserIsSuperuser()) {
+    $url = UrlHelper::createUrl('admin/index/check-updates');
+    echo '<article class="adminCard adminCardUpdates">';
+    echo '<header><h2>' . \Yii::t('admin', 'updates_title') . '</h2></header>';
+    echo '<main data-src="' . Html::encode($url) . '">';
+    echo \Yii::t('admin', 'updates_loading');
+    echo '</main></article>';
+
     echo Html::beginForm('', 'post', ['class' => 'sysadminForm']);
     echo '<button type="submit" name="flushCaches" class="btn btn-small btn-default">' .
         \Yii::t('admin', 'index_flush_caches') . '</button>';
