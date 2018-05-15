@@ -55,6 +55,10 @@ if ($layout->canonicalUrl) {
 foreach ($layout->alternateLanuages as $lang => $url) {
     echo '<link rel="alternate" hreflang="' . Html::encode($lang) . '" href="' . Html::encode($url) . '">' . "\n";
 }
+foreach ($layout->feeds as $title => $url) {
+    echo '<link rel="alternate" type="application/rss+xml" href="' . Html::encode($url) . '" ' .
+        'title="' . Html::encode($title) . '">' . "\n";
+}
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }

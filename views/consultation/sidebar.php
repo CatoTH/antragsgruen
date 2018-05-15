@@ -207,6 +207,8 @@ if ($consultation->getSettings()->showFeeds) {
         $feedsHtml      .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
+
+        $layout->feeds[Yii::t('con', 'feed_motions')] = $feedUrl;
     }
 
     if ($hasAmendments) {
@@ -219,6 +221,8 @@ if ($consultation->getSettings()->showFeeds) {
         $feedsHtml      .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
+
+        $layout->feeds[Yii::t('con', 'feed_amendments')] = $feedUrl;
     }
 
     if ($hasComments) {
@@ -231,6 +235,8 @@ if ($consultation->getSettings()->showFeeds) {
         $feedsHtml      .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
         $feeds++;
+
+        $layout->feeds[Yii::t('con', 'feed_comments')] = $feedUrl;
     }
 
     if ($feeds > 1) {
@@ -242,6 +248,8 @@ if ($consultation->getSettings()->showFeeds) {
         );
         $feedsHtml      .= '<li>' . $link . '</li>';
         $feedsHtmlSmall .= '<li>' . $link . '</li>';
+
+        $layout->feeds[Yii::t('con', 'feed_all')] = $feedUrl;
     }
 
     $feeds_str      = ($feeds == 1 ? Yii::t('con', 'feed') : Yii::t('con', 'feeds'));

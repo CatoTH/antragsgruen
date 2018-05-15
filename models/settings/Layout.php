@@ -33,6 +33,7 @@ class Layout
     public $mainAMDModules       = [];
     public $canonicalUrl         = null;
     public $alternateLanuages    = [];
+    public $feeds                = [];
 
     /** @var \app\models\db\Consultation|null */
     protected $consultation;
