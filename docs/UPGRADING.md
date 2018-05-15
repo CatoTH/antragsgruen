@@ -1,3 +1,17 @@
+## Update using the web-based updater
+
+Site administrators of an installation will see a Update-Box at the right side of the administration page of a consultation. The box indicates if an update is available. If so, you can switch the whole installation into Update mode. While the update mode is active, the whole site will not be available to other users.
+
+Once the update mode is active, the ``/update.php`` script will be available to the site administrator. Here, the update can be performed in two to three steps:
+
+- Download the update file
+- Install the new files
+- Apply database updates (this is usually only necessary when upgrading to a new minor version, e.g. from 3.9 to 3.10.)
+
+Before using the updater, it is generally a good idea to back up all files and especially the database.
+
+If you encounter any problem using the web-based updater, please consult the [Update Troubleshooting FAQ](update-troubleshooting.md).
+
 ## Updating a existing installation using the pre-bundled package
 
 - Download the latest package of Antragsgrün

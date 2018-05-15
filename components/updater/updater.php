@@ -23,7 +23,7 @@ $updateKey = $config['updateKey'];
 if (isset($_REQUEST['set_key'])) {
     setcookie('update_key', $_REQUEST['set_key'], 0, '/');
     $uri = explode('?', $_SERVER['REQUEST_URI']);
-    header("Location: " . $uri[0]);
+    header("Location: " . $uri[0], true, 302);
     die();
 }
 

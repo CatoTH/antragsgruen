@@ -24,48 +24,37 @@ Using the hosted version / testing it
 - English: [https://motion.tools](https://motion.tools/)
 - French (test version only): [http://motion.tools](http://sandbox.motion.tools/createsite?language=fr)
 
-Installation using the pre-bundled package
+Installation
 ------------------------------------------
 
-Requirements:
+### Using the pre-bundled package
+
+#### Requirements:
+
 - A MySQL-database
-- A fully configured web server running PHP
+- PHP >= 5.6. Recommended: 7.2. Required packages for Debian Linux:
 
-Installation:
-- Download the latest package of Antragsgrün: [antragsgruen-3.8.3.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.8.3.tar.bz2)
-- Extract the contents into your web folder
-- Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
-- Use the web-based installer to configure the database and further settings
-
-Installation using docker
--------------------------
-
-A Dockerfile to compile and run the latest development version of Antragsgrün is provided by [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) at this repository:
-
-[https://github.com/jugendpresse/docker-antragsgruen](https://github.com/jugendpresse/docker-antragsgruen)
-
-Updating a existing installation using the pre-bundled package
---------------------------------------------------------------
-
-- Download the latest package of Antragsgrün
-- Extract the files to your web folder, overwriting all existing files. The configuration (in config/config.json) will not be affected by this.
-- Remove the ``config/INSTALLING`` file
-- If you have shell access to your server: execute ``./yii migrate`` on the command line to apply database changes
-- If you don't have shell access to your server: please refer to [UPGRADING.md](docs/UPGRADING.md) on how to upgrade your database
-
-
-Installation
-------------
-
-
-Required Software (Debian Linux):
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
 apt-get install php7.2 php7.2-cli php7.2-fpm php7.2-intl php7.2-json php7.2-gd \
                 php7.2-mysql php7.2-opcache php7.2-curl php7.2-xml php7.2-mbstring php7.2-zip
 ```
 
+- Apache or nginx. Example files are provided here:
+  - Example configuration for [nginx](docs/nginx.sample_single_site.conf)
+  - Example configuration for [apache](docs/apache.sample.conf)
+
+#### Installation:
+
+- Download the latest package of Antragsgrün: [antragsgruen-3.8.3.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-3.8.3.tar.bz2)
+- Extract the contents into your web folder
+- Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
+- Use the web-based installer to configure the database and further settings
+
+### From the sources
+
 Install the sources and dependencies from the repository:
+
 ```bash
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
@@ -77,17 +66,20 @@ npm run build
 ```
 
 If you want to use the web-based installer (recommended):
+
 ```bash
 touch config/INSTALLING
 ```
 
 If you don't want to use the web-based installer:
+
 ```bash
 cp config/config.template.json config/config.json
 vi config/config.json # you're on your own now :-)
 ```
 
 Set the permissions (example for Debian Linux):
+
 ```bash
 sudo chown -R www-data:www-data web/assets
 sudo chown -R www-data:www-data runtime
@@ -95,65 +87,46 @@ sudo chown -R www-data:www-data config #Can be skipped if you don't use the Inst
 ```
 
 Set the permissions (example for Mac OS X):
+
 ```bash
 sudo chown -R _www:_www web/assets
 sudo chown -R _www:_www runtime
 sudo chown -R _www:_www config #Can be skipped if you don't use the Installer
 ```
 
-Set up the virtual host of your web server. Example files are provided here:
-* Example configuration for [nginx](docs/nginx.sample_single_site.conf)
-* Example configuration for [apache](docs/apache.sample.conf)
+### Using Docker
 
+A Dockerfile to compile and run the latest development version of Antragsgrün is provided by [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) at this repository:
 
+[https://github.com/jugendpresse/docker-antragsgruen](https://github.com/jugendpresse/docker-antragsgruen)
 
-Developing custom themes
-------------------------
+## Updating
 
-You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
-* Create a file ```web/css/layout-my-layout.scss``` using layout-classic.scss as a template
-* Adapt the SCSS variables and add custom styles
-* Run ```gulp``` to compile the SCSS into CSS
-* Add a line ```"layout-my-layout": "My cool new layout"``` to the "localLayouts"-object in config/config.json
-* Now, you can choose your new theme in the consultation settings
+### Using the web-based updater
 
-A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
-Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
+Site administrators of an installation will see a Update-Box at the right side of the administration page of a consultation. The box indicates if an update is available. If so, you can switch the whole installation into Update mode. While the update mode is active, the whole site will not be available to other users.
 
+Once the update mode is active, the ``/update.php`` script will be available to the site administrator. Here, the update can be performed in two to three steps:
 
-Creating custom language variants
----------------------------------
+- Download the update file
+- Install the new files
+- Apply database updates (this is usually only necessary when upgrading to a new minor version, e.g. from 3.9 to 3.10.)
 
-Every single message in the user interface can be modified using the web-based translation tool. Just log in as admin and go to Settings / Einstellungen -> Edit the language / Sprache anpassen.
+Before using the updater, it is generally a good idea to back up all files and especially the database.
 
-In multi-site-instances, there might be a need to share language variante between different sites. In that case, file-based modifications are necessary:
-* Create a directory ```messages/en-variant```
-* Copy the contents of the base language (messages/en, in this case) to this directory and edit the translated strings. If a string is missing, the messages of the directory named by the first part before the dash will be used as fallback ("en", in this case).
-* Add a ```localMessages```-configuration to your config/config.json as shown below.
-* Now this language variant is selectable in the "Edit the language"-settings-page.
-```json
-{
-    "localMessages": {
-        "en": {
-            "en-variant": "My new language variant"
-        }
-    }
-}
-```
+If you encounter any problem using the web-based updater, please consult the [Update Troubleshooting FAQ](docs/update-troubleshooting.md).
 
+### Using the pre-bundled package
 
-Plugins
--------
+- Download the latest package of Antragsgrün (see "Installation")
+- Extract the files to your web folder, overwriting all existing files. The configuration (in config/config.json) will not be affected by this.
+- Remove the ``config/INSTALLING`` file
+- If you have shell access to your server: execute ``./yii migrate`` on the command line to apply database changes
+- If you don't have shell access to your server: please refer to [UPGRADING.md](docs/UPGRADING.md) on how to upgrade your database
 
-**The plugin system is still under heavy development.**
+## Deployment techniques
 
-Each plugins has a directory unter [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
-
-Custom URLs can be defined in the Modules.php, custom commands need to be in a ``commands``-directory.
-
-
-LaTeX/XeTeX-based PDF-rendering:
---------------------------------
+### LaTeX/XeTeX-based PDF-rendering:
 
 Necessary packets on Linux (Debian):
 ```bash
@@ -176,8 +149,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
-Using Redis
------------
+### Using Redis
 
 Install the Yii2-Redis-package:
 ```bash
@@ -196,8 +168,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 ```
 
 
-Command Line Commands
----------------------
+### Command Line Commands
 
 Force a new password for an user:
 ```bash
@@ -225,10 +196,51 @@ After updating the source code from git, do:
 gulp
 ```
 
-Testing
--------
+### Custom themes
 
-### Installation
+You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
+
+- Create a file ```web/css/layout-my-layout.scss``` using layout-classic.scss as a template
+- Adapt the SCSS variables and add custom styles
+- Run ```gulp``` to compile the SCSS into CSS
+- Add a line ```"layout-my-layout": "My cool new layout"``` to the "localLayouts"-object in config/config.json
+- Now, you can choose your new theme in the consultation settings
+
+A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
+Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
+
+### Creating custom language variants
+
+Every single message in the user interface can be modified using the web-based translation tool. Just log in as admin and go to Settings / Einstellungen -> Edit the language / Sprache anpassen.
+
+In multi-site-instances, there might be a need to share language variante between different sites. In that case, file-based modifications are necessary:
+
+- Create a directory ```messages/en-variant```
+- Copy the contents of the base language (messages/en, in this case) to this directory and edit the translated strings. If a string is missing, the messages of the directory named by the first part before the dash will be used as fallback ("en", in this case).
+- Add a ```localMessages```-configuration to your config/config.json as shown below.
+- Now this language variant is selectable in the "Edit the language"-settings-page.
+
+```json
+{
+    "localMessages": {
+        "en": {
+            "en-variant": "My new language variant"
+        }
+    }
+}
+```
+
+### Plugins
+
+**The plugin system is still under heavy development.**
+
+Each plugins has a directory unter [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
+
+Custom URLs can be defined in the Modules.php, custom commands need to be in a ``commands``-directory.
+
+### Testing
+
+#### Installation
 
 * Create a separate (MySQL-)database for testing
 * Set up the configuration file: ```
@@ -239,10 +251,10 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed. (is done by ``npm install``)
 * The host name ``antragsgruen-test.local`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured
 
-### Running
+#### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.11.0.jar```
+java -jar selenium-server-standalone-3.12.0.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```

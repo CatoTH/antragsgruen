@@ -2,6 +2,7 @@
 
 ## Version 3.9.0 [not released yet]
 
+- Antragsgrün now includes an update mechanism to install a new version from the web interface.
 - The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable
 
 ### Version 3.8.3 (2018-05-12)
