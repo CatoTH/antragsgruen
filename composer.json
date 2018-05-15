@@ -16,7 +16,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=5.6.0",
-    "fxp/composer-asset-plugin": "~1.3.1",
+    "fxp/composer-asset-plugin": "~1.4.1",
     "yiisoft/yii2": "~2.0.15",
     "yiisoft/yii2-authclient": "^2.1.4",
     "tecnickcom/tcpdf": "^6.2",
@@ -25,8 +25,7 @@
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
     "catoth/html2opendocument": "0.11",
     "zendframework/zend-servicemanager": "^3.3.0",
-    "setasign/fpdi-tcpdf": "^1.6",
-    "phpseclib/mcrypt_compat": "*"
+    "setasign/fpdi-tcpdf": "^1.6"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.0.12",
@@ -46,8 +45,9 @@
   },
   "config": {
     "platform": {
-      "php": "5.6.34"
+      "php": "5.6.36"
     },
+    "optimize-autoloader": true,
     "fxp-asset": {
       "installer-paths": {
         "npm-asset-library": "vendor/npm",
