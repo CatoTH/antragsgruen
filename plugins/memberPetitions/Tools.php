@@ -226,14 +226,14 @@ class Tools
         foreach ($site->consultations as $consultation) {
             foreach ($consultation->motions as $motion) {
                 foreach ($motion->getSupporters() as $supporter) {
-                    if ($supporter->userId == $user->id) {
+                    if ($supporter->userId == $user->id && !in_array($motion, $motions)) {
                         $motions[] = $motion;
                     }
                 }
             }
         }
 
-        return array_unique($motions);
+        return $motions;
     }
 
     /**
