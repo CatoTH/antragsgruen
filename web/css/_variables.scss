@@ -36,10 +36,12 @@ $sidebarBackground: white !default;
 $sidebarBackgroundGradient: true !default;
 $sidebarTextColor: white !default;
 $sidebarActionFont: 'sans-serif' !default;
+$sidebarUppercase: true !default;
 $createMotionBtnColor: white !default;
 $createMotionTextColor: white !default;
 
-$bookmarkAmendmentColor: black !default;
+$bookmarkAmendmentBackground: black !default;
+$bookmarkAmendmentText: white !default;
 $bookmarkCommentColor: black !default;
 
 $screen-lg-min: 10000px; // deaktivieren
