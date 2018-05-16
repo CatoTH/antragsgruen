@@ -226,7 +226,7 @@ class Tools
         foreach ($site->consultations as $consultation) {
             foreach ($consultation->motions as $motion) {
                 foreach ($motion->getSupporters() as $supporter) {
-                    if ($supporter->userId == $user->id && !in_array($motion, $motions)) {
+                    if ($supporter->userId == $user->id && !in_array($motion, $motions, true)) {
                         $motions[] = $motion;
                     }
                 }
