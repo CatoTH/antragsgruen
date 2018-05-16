@@ -4,18 +4,11 @@ $arvoFontPath: './' !default;
   font-family: 'Arvo';
   font-style: normal;
   font-weight: normal;
-  src: url($arvoFontPath + 'arvo_regular.eot');
-  src: url($arvoFontPath + 'arvo_regular.eot?#iefix') format('embedded-opentype'),
-  url($arvoFontPath + 'arvo_regular.woff') format('woff'),
-  url($arvoFontPath + 'arvo_regular.ttf') format('truetype'),
-  url($arvoFontPath + 'arvo_regular.svg#OpenSansLight') format('svg');
+  src: url($arvoFontPath + 'arvo_regular.woff') format('woff');
 }
 @font-face {
   font-family: 'Arvo Gruen';
   font-style: normal;
   font-weight: normal;
-  src: url($arvoFontPath + 'arvo_gruen.eot');
-  src: url($arvoFontPath + 'arvo_gruen.eot?#iefix') format('embedded-opentype'),
-  url($arvoFontPath + 'arvo_gruen.woff') format('woff'),
-  url($arvoFontPath + 'arvo_gruen.ttf') format('truetype');
+  src: url($arvoFontPath + 'arvo_gruen.woff') format('woff');
 }

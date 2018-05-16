@@ -4,19 +4,11 @@ $ptSansFontPath: './' !default;
   font-family: 'PT Sans';
   font-style: normal;
   font-weight: normal;
-  src: url($ptSansFontPath + 'ptsans_regular.eot');
-  src: url($ptSansFontPath + 'ptsans_regular.eot?#iefix') format('embedded-opentype'),
-  url($ptSansFontPath + 'ptsans_regular.woff') format('woff'),
-  url($ptSansFontPath + 'ptsans_regular.ttf') format('truetype'),
-  url($ptSansFontPath + 'ptsans_regular.svg#OpenSansLight') format('svg');
+  src: url($ptSansFontPath + 'ptsans_regular.woff') format('woff');
 }
 @font-face {
   font-family: 'PT Sans Bold';
   font-style: normal;
   font-weight: normal;
-  src: url($ptSansFontPath + 'ptsans_bold.eot');
-  src: url($ptSansFontPath + 'ptsans_bold.eot?#iefix') format('embedded-opentype'),
-  url($ptSansFontPath + 'ptsans_bold.woff') format('woff'),
-  url($ptSansFontPath + 'ptsans_bold.ttf') format('truetype'),
-  url($ptSansFontPath + 'ptsans_bold.svg#OpenSansLight') format('svg');
+  src: url($ptSansFontPath + 'ptsans_bold.woff') format('woff');
 }

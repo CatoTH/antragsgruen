@@ -16,7 +16,6 @@ const gulp = require('gulp'),
 gulp.task('copy-files', function() {
     gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/html5shiv/dist/html5shiv*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/typeahead.js/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
