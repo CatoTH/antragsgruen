@@ -35,6 +35,8 @@ $headingSecondaryBackground: $colorLightGrey;
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(200, 200, 200);
 
+$headingFontBold: false !default;
+
 $menuFont: "FiraSans", sans-serif;
 $menuLink: rgb(141, 141, 141);
 $menuActive: rgb(51, 51, 51);
@@ -69,10 +71,6 @@ $createMotionBtnColor: $colorRed;
 @import "styles";
 @import "sidebar";
 
-.well h1 {
-  font-family: "FiraSans", sans-serif;
-  font-weight: normal;
-}
 .motionListStd .motion .title a  {
   font-family: "FiraSans", sans-serif;
 }

@@ -13,7 +13,6 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 $user       = \app\models\db\User::getCurrentUser();
 $site       = $controller->site;
-$layout->addCSS('css/memberpetitions.css');
 $layout->bodyCssClasses[] = 'memberPetitionList memberPetitionHome';
 
 $myConsultations = Tools::getUserConsultations($site, $user);

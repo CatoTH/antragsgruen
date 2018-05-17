@@ -23,14 +23,21 @@ $headingSecondaryBackground: white !default;
 $headingTertiaryText: black !default;
 $headingTertiaryBackground: white !default;
 
+$headingFontUppercase: true !default;
+$headingFontBold: true !default;
+$headingTextShadow: true !default;
+
 $menuFont: 'sans-serif' !default;
 $menuLink: blue !default;
 $menuActive: black !default;
 $adminHintColor: red !default;
 
 $sidebarBackground: white !default;
+$sidebarBackgroundGradient: true !default;
+$sidebarTextColor: white !default;
 $sidebarActionFont: 'sans-serif' !default;
 $createMotionBtnColor: white !default;
+$createMotionTextColor: white !default;
 
 $bookmarkAmendmentColor: black !default;
 $bookmarkCommentColor: black !default;
@@ -40,4 +47,6 @@ $container-md: 1024px;
 $container-desktop: 1024px;
 $grid-float-breakpoint: 992px; // $screen-md-min;
 
-$icon-font-path: "../fonts/";
+$icon-font-path: "../../fonts/" !default;
+$contentBorderRadius: 10px !default;
+$use-box-shadow: true !default;

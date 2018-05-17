@@ -1,7 +1,7 @@
 @font-face {
   font-family: 'fontello';
-  src: url('../fonts/fontello.woff2?41249976') format('woff2'),
-       url('../fonts/fontello.woff?41249976') format('woff');
+  src: url($icon-font-path + 'fontello.woff2') format('woff2'),
+       url($icon-font-path + 'fontello.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }

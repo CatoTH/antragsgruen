@@ -41,11 +41,17 @@
   @include linear-gradient(90deg, $gradientFrom, lighten($gradientFrom, 2.3%));
   padding: 5px 20px 5px;
   font-family: $headingFont;
-  font-weight: bold;
   font-size: 15px;
   line-height: 18px;
-  text-transform: uppercase;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  @if $headingTextShadow {
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+  }
+  @if $headingFontBold {
+    font-weight: bold;
+  }
+  @if $headingFontUppercase {
+    text-transform: uppercase;
+  }
 }
 
 @mixin motionParagraphBlockquote() {

@@ -22,15 +22,17 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
   background-color: #fff;
 
-  @include border-radius(10px);
-  > :first-child {
-    @include border-radius-top();
-    .nav-header {
+  @if $contentBorderRadius > 0 {
+    @include border-radius($contentBorderRadius);
+    > :first-child {
       @include border-radius-top();
+      .nav-header {
+        @include border-radius-top();
+      }
     }
-  }
-  > :last-child {
-    @include border-radius-bottom();
+    > :last-child {
+      @include border-radius-bottom();
+    }
   }
   h1 {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
@@ -57,10 +59,15 @@
     @include linear-gradient(90deg, lighten($headingSecondaryBackground, 50%), lighten(lighten($headingSecondaryBackground, 2.3%), 50%));
     padding: 5px 20px 5px;
     font-family: $headingFont;
-    font-weight: bold;
     font-size: 15px;
     line-height: 18px;
-    text-transform: uppercase;
+
+    @if $headingFontBold {
+      font-weight: bold;
+    }
+    @if $headingFontUppercase {
+      text-transform: uppercase;
+    }
   }
   h2.darkgreen, h3.darkgreen {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground);

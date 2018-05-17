@@ -21,6 +21,15 @@ class Module extends ModuleBase
         Event::on(Motion::class, Motion::EVENT_PUBLISHED_FIRST, [Tools::class, 'onPublishedFirst']);
     }
 
+    /**
+     * @return \yii\web\AssetBundle[]
+     */
+    public static function getActiveAssetBundles()
+    {
+        return [
+            Assets::class
+        ];
+    }
 
     /**
      */

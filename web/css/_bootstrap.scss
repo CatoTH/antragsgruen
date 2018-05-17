@@ -6,7 +6,7 @@ $zindex-popover: 11000;
 $link-color: $colorLinks;
 $link-hover-color: lighten(darken($colorLinks, 5%), 15%);
 $link-hover-decoration: $linkTextDecoration;
-$icon-font-path: "../fonts/";
+$icon-font-path: "../fonts/" !default;
 
 // Core variables and mixins
 @import "bootstrap-3.3.7-sass/bootstrap/variables";

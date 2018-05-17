@@ -11,7 +11,6 @@ use app\models\settings\Layout;
  * @var bool $admin
  */
 
-$layout->addCSS('css/memberpetitions.css');
 $layout->bodyCssClasses[] = 'memberPetitionList memberPetitionConsultation';
 
 $missing = false;

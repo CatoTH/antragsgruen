@@ -91,7 +91,7 @@
     background: -ms-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* IE10+ */
     background: linear-gradient(to bottom, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* W3C */
     padding: 10px 30px;
-    color: white;
+    color: $createMotionTextColor;
     text-decoration: none;
     font-family: $headingFont;
     font-weight: bold;
@@ -123,15 +123,23 @@
 }
 
 ul.sidebarActions {
-  @include linear-gradient(90deg, lighten($sidebarBackground, 2.3%), $sidebarBackground);
+  @if $sidebarBackgroundGradient {
+    @include linear-gradient(90deg, lighten($sidebarBackground, 2.3%), $sidebarBackground);
+  } @else {
+    background: $sidebarBackground;
+  }
   padding: 7px 0 1px 21px;
   list-style-type: none;
   margin: -1px; // prevents white border
   position: relative;
-  @include border-radius(10px);
-  -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  @if $contentBorderRadius > 0 {
+    @include border-radius($contentBorderRadius);
+  }
+  @if $use-box-shadow {
+    -webkit-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  }
 
   font-family: $sidebarActionFont;
   font-style: normal;
@@ -142,25 +150,25 @@ ul.sidebarActions {
     text-transform: uppercase;
     font-size: 14px;
     line-height: 18px;
-    color: #fff;
+    color: $sidebarTextColor;
     padding-bottom: 10px;
     text-indent: -12px;
     margin: 7px 0 7px 15px;
   }
 
   li a:hover {
-    color: rgb(246, 224, 235);
+    color: darken($sidebarTextColor, 10%);
   }
 
   .icon {
-    color: #fff;
+    color: $sidebarTextColor;
     margin-right: 10px;
   }
   button {
     text-transform: uppercase;
     font-size: 14px;
     line-height: 18px;
-    color: #fff;
+    color: $sidebarTextColor;
     text-indent: -9px;
     text-align: left;
   }

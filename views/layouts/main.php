@@ -1,4 +1,5 @@
 <?php
+
 use yii\helpers\Html;
 
 /**
@@ -9,6 +10,18 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$layout->registerPluginAssets($this);
+if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
+    try {
+        $mainCssFile = null;
+        $layout->setPluginLayout($this);
+    } catch (\app\models\exceptions\Internal $e) {
+        var_dump($e);
+        $mainCssFile = 'css/layout-classic.css';
+    }
+} else {
+    $mainCssFile = 'css/' . $layout->mainCssFile . '.css';
+}
 
 $resourceBase = $controller->getParams()->resourceBase;
 if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
@@ -22,7 +35,7 @@ if ($layout->fullScreen) {
 
 $title = $layout->formatTitle(isset($this->title) ? $this->title : '');
 
-$minimalistic   = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
+$minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
 $this->beginPage();
 
@@ -63,7 +76,9 @@ foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
 
-echo '<link rel="stylesheet" href="' . $layout->resourceUrl('css/' . $layout->mainCssFile . '.css') . '">' . "\n";
+if ($mainCssFile) {
+    echo '<link rel="stylesheet" href="' . $layout->resourceUrl($mainCssFile) . '">' . "\n";
+}
 
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
     <link rel="apple-touch-icon" sizes="57x57" href="' . $resourceBase . 'apple-touch-icon-57x57.png">
@@ -82,6 +97,8 @@ echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>
     <meta name="msapplication-TileColor" content="#e6e6e6">
     <meta name="msapplication-TileImage" content="' . $resourceBase . 'mstile-144x144.png">
 ';
+
+echo $this->head();
 
 echo '</head>';
 
