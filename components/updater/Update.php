@@ -184,13 +184,24 @@ class Update
                 $filesObj->from_version . ' vs. ' . $version . ').');
         }
 
-        $fileList  = array_merge($filesObj->files_added, $filesObj->files_updated);
-        $corrupted = [];
-        foreach ($fileList as $file => $correctHash) {
-            $content = $zipfile->getFromName($file);
-            $zipHash = base64_encode(sodium_crypto_generichash($content));
-            if ($zipHash !== $correctHash) {
-                $corrupted[] = $file;
+        if (extension_loaded('sodium')) {
+            $fileList  = array_merge($filesObj->files_added, $filesObj->files_updated);
+            $corrupted = [];
+            foreach ($fileList as $file => $correctHash) {
+                $content = $zipfile->getFromName($file);
+                $zipHash = base64_encode(sodium_crypto_generichash($content));
+                if ($zipHash !== $correctHash) {
+                    $corrupted[] = $file;
+                }
+            }
+        } else {
+            $fileList  = array_merge($filesObj->files_added_md5, $filesObj->files_updated_md5);
+            $corrupted = [];
+            foreach ($fileList as $file => $correctHash) {
+                $zipHash = md5($zipfile->getFromName($file));
+                if ($zipHash !== $correctHash) {
+                    $corrupted[] = $file;
+                }
             }
         }
 

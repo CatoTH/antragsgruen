@@ -85,13 +85,19 @@ The update.json looks like this:
     "files_added": {
         "web/somefile.txt": "hashofsomefiletxt",
     },
+    "files_updated_md5": {
+        "views/anotherfile.php": "md5hashofanotherfiletxt",
+    },
+    "files_added_md5": {
+        "web/somefile.txt": "md5hashofsomefiletxt",
+    },
     "files_deleted": [
         "controller/filetobedeleted.php"
     ]
 }
 ```
 
-
+The hashes of the updated and added files are used to check the integrity of the new versions of the given files included in the ZIP file. Normally, the hashes and ``files_added`` and ``files_updated`` are used to check the integrity (using ``base64_encode(sodium_crypto_generichash($fileContent))``). However, for installations that lack native support of libsodium (PHP <= 7.2), the md5 hashes are used instead, as the polyfill is too computation intensive and tends to lead into timeouts.
 
 ## Performing the file-update
 

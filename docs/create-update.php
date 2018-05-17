@@ -32,9 +32,11 @@ if (!file_exists($dirUpdate) || !is_dir($dirUpdate)) {
     die("$dirUpdate is not a directory");
 }
 
-$GLOBALS["FILES_ADDED"]   = [];
-$GLOBALS["FILES_UPDATED"] = [];
-$GLOBALS["FILES_DELETED"] = [];
+$GLOBALS["FILES_ADDED"]       = [];
+$GLOBALS["FILES_ADDED_MD5"]   = [];
+$GLOBALS["FILES_UPDATED"]     = [];
+$GLOBALS["FILES_UPDATED_MD5"] = [];
+$GLOBALS["FILES_DELETED"]     = [];
 
 /**
  * @param string $dirBase
@@ -47,7 +49,7 @@ function getDirContent($dirBase, $dirRelative)
     if (!file_exists($dirBase . '/' . $dirRelative)) {
         return [[], []];
     }
-    $dirh = opendir($dirBase . '/' . $dirRelative);
+    $dirh  = opendir($dirBase . '/' . $dirRelative);
     $dirs  = [];
     $files = [];
     while (($entry = readdir($dirh)) !== false) {
@@ -108,11 +110,13 @@ function compareDirectories($dirOldBase, $dirNewBase, $dirRelative)
             $GLOBALS['FILES_DELETED'][] = $filename;
         } elseif (!filesAreEqual($dirOldBase . $filename, $dirNewBase . $filename)) {
             $GLOBALS['FILES_UPDATED'][$filename] = getFileHash($dirNewBase . $filename);
+            $GLOBALS['FILES_UPDATED_MD5'][$filename] = md5(file_get_contents($dirNewBase . $filename));
         }
     }
     foreach ($newFiles as $filename) {
         if (!in_array($filename, $oldFiles)) {
             $GLOBALS['FILES_ADDED'][$filename] = getFileHash($dirNewBase . $filename);
+            $GLOBALS['FILES_ADDED_MD5'][$filename] = md5(file_get_contents($dirNewBase . $filename));
         }
     }
 
@@ -206,7 +210,9 @@ $updateJson = "
 \"to_version\": " . json_encode($versionNew) . ",
 \"changelog\": " . json_encode($changelog) . ",
 \"files_updated\": " . json_encode($GLOBALS['FILES_UPDATED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
+\"files_updated_md5\": " . json_encode($GLOBALS['FILES_UPDATED_MD5'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_added\": " . json_encode($GLOBALS['FILES_ADDED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
+\"files_added_md5\": " . json_encode($GLOBALS['FILES_ADDED_MD5'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_deleted\": " . json_encode($GLOBALS['FILES_DELETED'], JSON_PRETTY_PRINT);
 $updateJson = "{" . str_replace("\n", "\n    ", $updateJson) . "\n}";
 $zipfile->addFromString('update.json', $updateJson);
