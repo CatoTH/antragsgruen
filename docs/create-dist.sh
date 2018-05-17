@@ -29,7 +29,7 @@ fi
 npm install
 gulp
 
-rsync -av --exclude='local' --exclude='./dist' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
+rsync -av --exclude='local' --exclude='./dist' --exclude='./updates' --exclude='./plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 

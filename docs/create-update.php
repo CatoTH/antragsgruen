@@ -1,13 +1,17 @@
 #!/usr/bin/env php
 <?php
 
-if (count($argv) !== 4) {
-    die("Call: ./create-update.php [directory old] [directory new] [update director]\n");
+# Call:
+#  docs/create-update.php dist/antragsgruen-3.9.0a1 dist/antragsgruen-3.9.0a2 updates/ --skip-changelog
+
+if (count($argv) < 4) {
+    die("Call: ./create-update.php [directory old] [directory new] [update directory] [--skip-changelog]\n");
 }
 
-$dirOld    = $argv[1];
-$dirNew    = $argv[2];
-$dirUpdate = $argv[3];
+$dirOld        = $argv[1];
+$dirNew        = $argv[2];
+$dirUpdate     = $argv[3];
+$skipChangelog = in_array('--skip-changelog', $argv);
 if ($dirOld[strlen($dirOld) - 1] !== '/') {
     $dirOld .= '/';
 }
@@ -40,10 +44,10 @@ $GLOBALS["FILES_DELETED"] = [];
  */
 function getDirContent($dirBase, $dirRelative)
 {
-    $dirh = opendir($dirBase . '/' . $dirRelative);
-    if (!$dirh) {
+    if (!file_exists($dirBase . '/' . $dirRelative)) {
         return [[], []];
     }
+    $dirh = opendir($dirBase . '/' . $dirRelative);
     $dirs  = [];
     $files = [];
     while (($entry = readdir($dirh)) !== false) {
@@ -177,7 +181,11 @@ function readChangelog($dirNew, $versionOld, $versionNew)
 compareDirectories($dirOld, $dirNew, '');
 $versionOld = readVersionFromDirectory($dirOld);
 $versionNew = readVersionFromDirectory($dirNew);
-$changelog  = readChangelog($dirNew, $versionOld, $versionNew);
+if ($skipChangelog) {
+    $changelog = '';
+} else {
+    $changelog = readChangelog($dirNew, $versionOld, $versionNew);
+}
 
 $updateFilename = $versionOld . "-" . $versionNew . ".zip";
 
@@ -199,7 +207,7 @@ $updateJson = "
 \"changelog\": " . json_encode($changelog) . ",
 \"files_updated\": " . json_encode($GLOBALS['FILES_UPDATED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_added\": " . json_encode($GLOBALS['FILES_ADDED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
-\"files_deleted\": " . json_encode($GLOBALS['FILES_DELETED']);
+\"files_deleted\": " . json_encode($GLOBALS['FILES_DELETED'], JSON_PRETTY_PRINT);
 $updateJson = "{" . str_replace("\n", "\n    ", $updateJson) . "\n}";
 $zipfile->addFromString('update.json', $updateJson);
 
