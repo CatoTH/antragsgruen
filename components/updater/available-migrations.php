@@ -6,7 +6,7 @@ $migrations = $helper->getAvailableMigrations();
 if (count($migrations) > 0) {
     ?>
     <h2 class="green">2. Update database</h2>
-    <div class="content">
+    <div class="content updateAvailable">
         <div style="margin-bottom: 10px;">
             <strong>Database upgrades are necessary.</strong><br>
             <br>
@@ -21,7 +21,7 @@ if (count($migrations) > 0) {
         </div>
 
 
-        <form method="POST">
+        <form method="POST" action="update.php">
             <button type="submit" class="btn btn-primary" name="perform_migrations">
                 Perform updates
             </button>

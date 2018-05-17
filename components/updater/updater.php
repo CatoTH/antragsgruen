@@ -75,9 +75,17 @@ if (isset($_POST['perform_update'])) {
         $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
         $update->performUpdate();
 
+        // Give Opcache & co some time to notice updated files
+        $sleepTime = IntVal(ini_get('opcache.revalidate_freq'));
+        if ($sleepTime > 10 || $sleepTime < 1) {
+            $sleepTime = 1;
+        }
+        sleep($sleepTime);
+
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $newUrl = $url[0] . '?msg_updated=1';
         Header('Location: ' . $newUrl, true, 302);
+        die();
     } catch (\Exception $e) {
         $errors[] = $e->getMessage();
     }
@@ -85,7 +93,8 @@ if (isset($_POST['perform_update'])) {
 
 if (isset($_REQUEST['msg_updated'])) {
     $success[] = 'Antragsgrün has been updated. Please check below if a database upgrade is necessary. ' .
-        'If so, please perform this upgrade before disabling the update mode again.';
+        'If so, please perform this upgrade before disabling the update mode again.<br><br>' .
+        'Once everything is done, you can leave the update mode again.';
 }
 
 if (isset($_REQUEST['check_migrations'])) {

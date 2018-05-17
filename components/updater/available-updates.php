@@ -41,7 +41,7 @@ foreach ($success as $msg) {
                     <?php
                     foreach ($updates as $update) {
                         ?>
-                        <tr>
+                        <tr class="updateAvailable">
                             <th><?= htmlentities($update->version, ENT_COMPAT, 'UTF-8') ?></th>
                             <td><?= nl2br(htmlentities($update->changelog, ENT_COMPAT, 'UTF-8')) ?></td>
                             <?php
@@ -84,20 +84,27 @@ foreach ($success as $msg) {
         </div>
     </section>
 
-    <section class="updateDatabase migrationContent">
-        <script>
-            $.get('update.php?check_migrations=1', function (ret) {
-                $(".migrationContent").html(ret);
-            });
-        </script>
-    </section>
+    <section class="updateDatabase migrationContent"></section>
 
     <br><br>
-    <form method="POST" style="text-align: center;" class="content">
-        <button name="cancel_update" class="btn btn-default">
+    <form method="POST" style="text-align: center;" class="content leaveUpdateButtons">
+        <button name="cancel_update" class="btn btn-primary exitUpdate" style="display: none;">
+            Leave update mode
+        </button>
+        <button name="cancel_update" class="btn btn-default abortUpdate">
             Abort Update
         </button>
     </form>
+
+    <script>
+        $.get('update.php?check_migrations=1', function (ret) {
+            $(".migrationContent").html(ret);
+            if ($(".updateAvailable").length === 0) {
+                $(".leaveUpdateButtons .exitUpdate").css("display", "inline");
+                $(".leaveUpdateButtons .abortUpdate").css("display", "none");
+            }
+        });
+    </script>
 <?php
 require(__DIR__ . '/layout-footer.php');
 ?>

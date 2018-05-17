@@ -209,9 +209,14 @@ class Update
             array_filter(array_keys($filesObj->files_updated), function ($file) {
                 return !is_writable($this->getBasePath() . $file);
             }),
+            // For added files, we check if the directory is writable.
+            // If the directory does not exist yet, we check the parent directory, recursively
             array_filter(array_map(function ($file) {
                 return dirname($file);
             }, array_keys($filesObj->files_added)), function ($file) {
+                while (!file_exists($this->getBasePath() . $file) && $file !== '.') {
+                    $file = dirname($file);
+                }
                 return !is_writable($this->getBasePath() . $file);
             })
         );
@@ -224,7 +229,7 @@ class Update
         $filesListToUl = function ($files) {
             return '<ul>' . implode("\n", array_map(function ($file) {
                     return '<li>' . htmlentities($file, ENT_COMPAT, 'UTF-8') . '</li>';
-            }, $files)) . '</ul>';
+                }, $files)) . '</ul>';
         };
 
         if (count($corrupted) > 0 || count($notFound) > 0 || count($alreadyFound) > 0 || count($notWritable) > 0) {
@@ -250,6 +255,18 @@ class Update
     }
 
     /**
+     * @param string $dir
+     */
+    protected function createDirectoriesRecursively($dir)
+    {
+        if ($dir === '.' || file_exists($this->getBasePath() . $dir)) {
+            return;
+        }
+        $this->createDirectoriesRecursively(dirname($dir));
+        mkdir($this->getBasePath() . $dir, 0755);
+    }
+
+    /**
      * @throws \Exception
      */
     public function performUpdate()
@@ -264,6 +281,7 @@ class Update
         $fileList = array_merge($filesObj->files_added, $filesObj->files_updated);
         foreach (array_keys($fileList) as $file) {
             $content = $zipfile->getFromName($file);
+            $this->createDirectoriesRecursively(dirname($file));
             if (file_put_contents($this->getBasePath() . $file, $content) === false) {
                 throw new \Exception('The file could not be updated: ' . htmlentities($file, ENT_COMPAT, 'UTF-8'));
             }
