@@ -131,7 +131,7 @@ class MessageSource extends \yii\i18n\MessageSource
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
-        foreach ($params->plugins as $pluginClass) {
+        foreach ($params->getPluginClasses() as $pluginClass) {
             if ($pluginClass::getMessagePath($category)) {
                 $messageFile = Yii::getAlias($pluginClass::getMessagePath($category)) . "/$language/";
             }

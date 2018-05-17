@@ -208,7 +208,7 @@ class Site extends ActiveRecord
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        foreach ($params->plugins as $pluginClass) {
+        foreach ($params->getPluginClasses() as $pluginClass) {
             $behavior = $pluginClass::getSiteSpecificBehavior($this);
             if ($behavior) {
                 return new $behavior;

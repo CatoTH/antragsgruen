@@ -76,7 +76,7 @@ $urlRules = [
     $dom                                           => 'consultation/home',
 ];
 
-foreach ($params->plugins as $pluginClass) {
+foreach ($params->getPluginClasses() as $pluginClass) {
     $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dommotion, $dommotionOld));
 }
 

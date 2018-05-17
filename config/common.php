@@ -29,13 +29,13 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
 } else {
     // Kind of a poor man's auto-loading, as Yii's auto-loading-mechanism is not active yet.
     // Hopefully, this can be avoided in Yii 2.1
-    foreach ($params->plugins as $pluginId => $pluginClass) {
+    foreach ($params->plugins as $pluginName) {
         require_once(__DIR__ . '/../plugins/ModuleBase.php');
-        $filename = __DIR__ . '/../' . str_replace('\\', '/', str_replace('app\\', '', $pluginClass)) . '.php';
+        $filename = __DIR__ . '/../plugins/' . $pluginName . '/Module.php';
         if (file_exists($filename)) {
             require_once($filename);
         } else {
-            die("plugin file of " . $pluginClass . " does not exist");
+            die("plugin file of " . $pluginName . " does not exist");
         }
     }
 
@@ -95,11 +95,11 @@ if ($params->redis) {
 
 $bootstrap = ['log'];
 $modules = [];
-foreach ($params->plugins as $pluginId => $pluginClass) {
-    $modules[$pluginId] = [
-        'class' => $pluginClass,
+foreach ($params->plugins as $pluginName) {
+    $modules[$pluginName] = [
+        'class' => '\\app\\plugins\\' . $pluginName . '\\Module',
     ];
-    $bootstrap[] = $pluginId;
+    $bootstrap[] = $pluginName;
 }
 
 return [

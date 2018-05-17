@@ -95,11 +95,21 @@ gulp.task('build-css', function () {
         .pipe(gulp.dest('web/css/'));
 });
 
+gulp.task('build-plugin-css', function () {
+    gulp.src("plugins/**/*.scss")
+        .pipe(sourcemaps.init())
+        .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+        .pipe(postcss([ autoprefixer({browsers: [">1%", "last 10 versions", "IE 9", "Firefox 3"]}) ]))
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('plugins/'));
+});
+
 
 gulp.task('watch', function () {
     gulp.watch(main_js_files, ['build-js']);
     gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], ['build-js']);
     gulp.watch(["web/css/*.scss"], ['build-css']);
+    gulp.watch(["plugins/**/*.scss"], ['build-plugin-css']);
     gulp.watch(['./web/typescript/**/*.ts'], ['build-typescript']);
 });
 

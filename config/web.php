@@ -50,6 +50,9 @@ $config = yii\helpers\ArrayHelper::merge(
             'request'              => [
                 'cookieValidationKey' => $params->randomSeed,
             ],
+            'assetManager'         => [
+                'appendTimestamp' => false,
+            ],
         ],
     ]
 );

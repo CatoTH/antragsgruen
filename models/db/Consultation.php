@@ -323,7 +323,7 @@ class Consultation extends ActiveRecord
 
             /** @var \app\models\settings\AntragsgruenApp $app */
             $app = \Yii::$app->params;
-            foreach ($app->plugins as $pluginClass) {
+            foreach ($app->getPluginClasses() as $pluginClass) {
                 if ($pluginClass::getConsultationSettingsClass($this)) {
                     $settingsClass = $pluginClass::getConsultationSettingsClass($this);
                 }

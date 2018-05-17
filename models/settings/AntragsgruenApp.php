@@ -49,7 +49,7 @@ class AntragsgruenApp
     public $mode                  = 'production'; // [production | sandbox]
     public $updateKey             = null;
 
-    /** @var ModuleBase[] */
+    /** @var string[] */
     public $plugins               = [];
 
     /** @var null|array */
@@ -145,5 +145,17 @@ class AntragsgruenApp
     public function isSamlActive()
     {
         return (class_exists('\SimpleSAML_Auth_Simple') && $this->hasSaml);
+    }
+
+    /**
+     * @return ModuleBase[]
+     */
+    public function getPluginClasses()
+    {
+        $plugins = [];
+        foreach ($this->plugins as $name) {
+            $plugins[$name] = 'app\\plugins\\' . $name . '\\Module';
+        }
+        return $plugins;
     }
 }

@@ -7,6 +7,7 @@ use app\models\db\Site;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\memberPetitions\ConsultationSettings;
 use yii\base\Module;
+use yii\web\AssetBundle;
 
 class ModuleBase extends Module
 {
@@ -20,6 +21,14 @@ class ModuleBase extends Module
             $ref                       = new \ReflectionClass($this);
             $this->controllerNamespace = $ref->getNamespaceName() . '\\commands';
         }
+    }
+
+    /**
+     * @return AssetBundle[]
+     */
+    public static function getActiveAssetBundles()
+    {
+        return [];
     }
 
     /**
@@ -72,5 +81,13 @@ class ModuleBase extends Module
     public static function getMessagePath($category)
     {
         return null;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getProvidedLayouts()
+    {
+        return [];
     }
 }

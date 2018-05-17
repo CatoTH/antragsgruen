@@ -6,9 +6,12 @@ use app\components\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
+use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
 use app\models\layoutHooks\GruenesCi2Hooks;
 use yii\helpers\Html;
+use yii\web\AssetBundle;
+use yii\web\View;
 
 class Layout
 {
@@ -45,12 +48,20 @@ class Layout
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
+
+        $pluginLayouts = [];
+        foreach ($params->getPluginClasses() as $pluginId => $pluginClass) {
+            foreach ($pluginClass::getProvidedLayouts() as $layoutId => $layout) {
+                $pluginLayouts['layout-plugin-' . $pluginId . '-' . $layoutId] = $layout['title'];
+            }
+        }
+
         return array_merge([
             'layout-classic'     => 'Antragsgrün-Standard',
             'layout-gruenes-ci'  => 'Grünes CI',
             'layout-gruenes-ci2' => 'Grünes CI v2',
             'layout-dbjr'        => 'DBJR',
-        ], $params->localLayouts);
+        ], $params->localLayouts, $pluginLayouts);
     }
 
     /**
@@ -74,6 +85,33 @@ class Layout
         if ($this->mainCssFile === null) {
             $this->setLayout(Layout::DEFAULT_LAYOUT);
         }
+    }
+
+    /**
+     * @param View $view
+     * @throws Internal
+     */
+    public function setPluginLayout($view)
+    {
+        $parts = explode('-', $this->mainCssFile);
+        if (count($parts) !== 4) {
+            throw new Internal('Invalid layout string: ' . $this->mainCssFile);
+        }
+
+        /** @var AntragsgruenApp $params */
+        $params  = \Yii::$app->params;
+        $plugins = $params->getPluginClasses();
+        if (!isset($plugins[$parts[2]])) {
+            throw new Internal('Plugin not found');
+        }
+        $layouts = $plugins[$parts[2]]::getProvidedLayouts();
+        if (!isset($layouts[$parts[3]])) {
+            throw new Internal('Plugin layout not found');
+        }
+
+        /** @var AssetBundle $bundle */
+        $bundle = $layouts[$parts[3]]['bundle'];
+        $bundle::register($view);
     }
 
     /**
@@ -263,6 +301,20 @@ class Layout
     }
 
     /**
+     * @param View $view
+     */
+    public function registerPluginAssets($view)
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        foreach ($params->getPluginClasses() as $pluginClass) {
+            foreach ($pluginClass::getActiveAssetBundles() as $assetBundle) {
+                $assetBundle::register($view);
+            }
+        }
+    }
+
+    /**
      * @param string $htmlId
      * @return string
      */
@@ -293,7 +345,6 @@ class Layout
     </div>
 </nav>';
         return $out;
-
     }
 
     /**
