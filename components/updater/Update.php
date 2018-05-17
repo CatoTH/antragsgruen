@@ -185,13 +185,14 @@ class Update
         }
 
         $fileList  = array_merge($filesObj->files_added, $filesObj->files_updated);
-        $corrupted = array_filter($fileList, function ($file, $correctHash) use ($zipfile) {
+        $corrupted = [];
+        foreach ($fileList as $file => $correctHash) {
             $content = $zipfile->getFromName($file);
             $zipHash = base64_encode(sodium_crypto_generichash($content));
             if ($zipHash !== $correctHash) {
                 $corrupted[] = $file;
             }
-        }, ARRAY_FILTER_USE_BOTH);
+        }
 
         $fileList = array_merge($filesObj->files_deleted, array_keys($filesObj->files_updated));
         $notFound = array_filter($fileList, function ($file) {
