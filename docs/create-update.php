@@ -217,7 +217,7 @@ $updateJson = "
 $updateJson = "{" . str_replace("\n", "\n    ", $updateJson) . "\n}";
 $zipfile->addFromString('update.json', $updateJson);
 
-$secretKey = base64_decode(file_get_contents(__DIR__ . '/../config/update-private.key'));
+$secretKey = base64_decode(file_get_contents($_SERVER['HOME'] . '/.local/antragsgruen-update-private.key'));
 $signature = base64_encode(sodium_crypto_sign_detached($updateJson, $secretKey));
 $zipfile->addFromString('update.json.signature', $signature);
 
