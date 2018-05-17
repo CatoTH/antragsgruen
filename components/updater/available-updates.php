@@ -18,6 +18,26 @@ foreach ($success as $msg) {
     <div class="currentVersion content">
         <strong>Current version: </strong>
         <?= ANTRAGSGRUEN_VERSION ?>
+
+        <?php
+        $maxtime = ini_get('max_execution_time');
+        if ($maxtime < 30) {
+            echo '<br><br><div class="alert alert-danger">' .
+                'The maximum execution time of scripts is only ' . $maxtime . ' seconds. ' .
+                'If you upgrade with such a low timeout, there is a serious risk of the script aborting during the ' .
+                'upgrade process, which could lead to unpredictable results. It is highly advised to increase ' .
+                'the value of the PHP environment variable <strong>max_execution_time</strong>.' .
+                '</div>';
+        } elseif ($maxtime < 60) {
+            echo '<br><br><div class="alert alert-info">' .
+                'The maximum execution time of scripts is only ' . $maxtime . ' seconds. ' .
+                'This should be enough, but when upgrading there still is a risk of the script aborting during the ' .
+                'upgrade process, which could lead to unpredictable results. It is advised to increase ' .
+                'the value of the PHP environment variable <strong>max_execution_time</strong>.' .
+                '</div>';
+        }
+
+        ?>
     </div>
     <section class="updateFiles">
         <h2 class="green">Update files</h2>
