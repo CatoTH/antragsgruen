@@ -12,6 +12,8 @@ class Assets extends AssetBundle
         'memberpetitions.css',
     ];
     public $js = [
+//        'isotope.pkgd.min.js',
+        'memberpetitions.js',
     ];
     public $depends = [
     ];

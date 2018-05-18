@@ -3,6 +3,7 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\plugins\memberPetitions\Tools;
+use app\components\Tools as DateTools;
 use yii\helpers\Html;
 
 /**
@@ -19,10 +20,22 @@ echo '<ul class="motionList motionListPetitions">';
 foreach ($motions as $motion) {
     $status = $motion->getFormattedStatus();
 
-    echo '<li class="motion motionRow' . $motion->id . '">';
-    echo '<p class="stats">';
-    $commentCount = count($motion->getVisibleComments(false));
+    $cssClasses   = ['motion'];
+    $cssClasses[] = 'motionRow' . $motion->id;
+    foreach ($motion->tags as $tag) {
+        $cssClasses[] = 'tag' . $tag->id;
+    }
+
+    $commentCount   = count($motion->getVisibleComments(false));
     $amendmentCount = count($motion->getVisibleAmendments(false));
+    $publication    = $motion->datePublication;
+
+    echo '<li class="' . implode(' ', $cssClasses) . '" ' .
+        'data-created="' . ($publication ? DateTools::dateSql2timestamp($publication) : '0') . '" ' .
+        'data-num-comments="' . $commentCount . '" ' .
+        'data-num-amendments="' . $amendmentCount . '">';
+    echo '<p class="stats">';
+
     if ($amendmentCount > 0) {
         echo '<span class="amendments"><span class="glyphicon glyphicon-flash"></span> ' . $amendmentCount . '</span>';
     }

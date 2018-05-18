@@ -76,6 +76,23 @@ class Tools
     }
 
     /**
+     * @param Consultation[] $consultations
+     * @return Motion[]
+     */
+    public static function getAllMotions($consultations)
+    {
+        $all = [];
+        foreach ($consultations as $consultation) {
+            if (!Tools::isConsultationFullyConfigured($consultation)) {
+                continue;
+            }
+            $all = array_merge($all, static::getPetitionType($consultation)->getVisibleMotions(false));
+            $all = array_merge($all, static::getDiscussionType($consultation)->getVisibleMotions(false));
+        }
+        return $all;
+    }
+
+    /**
      * @param Consultation $consultation
      * @return Motion[]
      */
@@ -389,5 +406,37 @@ class Tools
         if ($motion->motionTypeId === static::getPetitionType($motion->getMyConsultation())->id) {
             new PetitionSubmitted($motion);
         }
+    }
+
+    /**
+     * @param Motion[] $motions
+     * @return array
+     */
+    public static function getMostPopularTags($motions)
+    {
+        $tags = [];
+        foreach ($motions as $motion) {
+            foreach ($motion->tags as $tag) {
+                if (!isset($tags[$tag->id])) {
+                    $tags[$tag->id] = [
+                        'id'    => $tag->id,
+                        'title' => $tag->title,
+                        'num'   => 0,
+                    ];
+                }
+                $tags[$tag->id]['num']++;
+            }
+        }
+        $tags = array_values($tags);
+        usort($tags, function ($tag1, $tag2) {
+            if ($tag1['num'] > $tag2['num']) {
+                return -1;
+            }
+            if ($tag1['num'] < $tag2['num']) {
+                return 1;
+            }
+            return 0;
+        });
+        return $tags;
     }
 }

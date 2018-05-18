@@ -9,10 +9,10 @@ use app\plugins\memberPetitions\Tools;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
-$user       = \app\models\db\User::getCurrentUser();
-$site       = $controller->site;
+$controller               = $this->context;
+$layout                   = $controller->layoutParams;
+$user                     = \app\models\db\User::getCurrentUser();
+$site                     = $controller->site;
 $layout->bodyCssClasses[] = 'memberPetitionList memberPetitionHome';
 
 $myConsultations = Tools::getUserConsultations($site, $user);
@@ -30,20 +30,20 @@ $this->title = \Yii::t('memberpetitions', 'title');
             <div class="alert alert-success hidden addWidget">
                 <?= \Yii::t('memberpetitions', 'index_create_hint') ?>
                 <?php
-                foreach ($myConsultations as $consultation) {
-                    echo '<div class="createRow">';
-                    if (count($consultation->motionTypes) === 0) {
-                        continue;
-                    }
-                    $createUrl = UrlHelper::createUrl([
-                        '/motion/create',
-                        'consultationPath' => $consultation->urlPath,
-                        'motionTypeId'     => $consultation->motionTypes[0]->id,
-                    ]);
-                    echo Html::a(Html::encode($consultation->title), $createUrl, ['class' => 'btn btn-primary']);
-                    echo '</div>';
-                }
-                ?>
+        foreach ($myConsultations as $consultation) {
+            echo '<div class="createRow">';
+            if (count($consultation->motionTypes) === 0) {
+                continue;
+            }
+            $createUrl = UrlHelper::createUrl([
+                '/motion/create',
+                'consultationPath' => $consultation->urlPath,
+                'motionTypeId'     => $consultation->motionTypes[0]->id,
+            ]);
+            echo Html::a(Html::encode($consultation->title), $createUrl, ['class' => 'btn btn-primary']);
+            echo '</div>';
+        }
+        ?>
             </div>
         </section>
         -->
@@ -93,45 +93,97 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
 */
 
 ?>
-
-    <h2 class="green">
-        <?= \Yii::t('memberpetitions', 'status_discussing') ?>
-    </h2>
-    <div class="content">
-        <?= $this->render('_motion_list', [
-            'motions' => Tools::getAllMotionsInDiscussion($myConsultations),
-            'bold'    => 'organization'
-        ]) ?>
+    <div class="content motionListFilter">
+        <?php
+        $motions  = Tools::getAllMotions($myConsultations);
+        $tags     = Tools::getMostPopularTags($motions);
+        $tagsTop3 = array_splice($tags, 0, 3);
+        ?>
+        <div class="searchBar clearfix">
+            <div class="btn-group btn-group-sm pull-left motionFilters" role="group" aria-label="Filter motions">
+                <button type="button" class="btn btn-default active" data-filter="*">Alle</button>
+                <?php
+                foreach ($tagsTop3 as $tag) {
+                    echo '<button type="button" class="btn btn-default" data-filter=".tag' . $tag['id'] . '"';
+                    echo '>' . Html::encode($tag['title']) . ' (' . $tag['num'] . ')</button>';
+                }
+                ?>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        ...
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <?php
+                        foreach ($tags as $tag) {
+                            echo '<li><a href="#" data-filter=".tag' . $tag['id'] . '">';
+                            echo Html::encode($tag['title']) . ' (' . $tag['num'] . ')</a></li>';
+                        }
+                        ?>
+                    </ul>
+                </div>
+            </div>
+            <div class="btn-group btn-group-sm pull-right motionSort" role="group" aria-label="Sort motions by...">
+                <button type="button" class="btn btn-default" data-sort="created" data-order="desc">
+                    Neueste
+                </button>
+                <button type="button" class="btn btn-default active" data-sort="created" data-order="asc">
+                    Älteste
+                </button>
+                <button type="button" class="btn btn-default" data-sort="comments" data-order="desc">
+                    Kommentare
+                </button>
+            </div>
+        </div>
+        <div class="motionListFiltered hidden">
+            <?= $this->render('_motion_list', [
+                'motions' => $motions,
+                'bold'    => 'organization'
+            ]) ?>
+        </div>
     </div>
 
-    <h2 class="green">
-        <?= \Yii::t('memberpetitions', 'status_collecting') ?>
-    </h2>
-    <div class="content">
-        <?= $this->render('_motion_list', [
-            'motions' => Tools::getAllMotionsCollection($myConsultations),
-            'bold'    => 'organization'
-        ]) ?>
-    </div>
+    <div class="motionListUnfiltered">
+        <h2 class="green">
+            <?= \Yii::t('memberpetitions', 'status_discussing') ?>
+        </h2>
+        <div class="content">
+            <?= $this->render('_motion_list', [
+                'motions' => Tools::getAllMotionsInDiscussion($myConsultations),
+                'bold'    => 'organization'
+            ]) ?>
+        </div>
 
-    <h2 class="green">
-        <?= \Yii::t('memberpetitions', 'status_unanswered') ?>
-    </h2>
-    <div class="content">
-        <?= $this->render('_motion_list', [
-            'motions' => Tools::getAllMotionsUnanswered($myConsultations),
-            'bold'    => 'organization'
-        ]) ?>
-    </div>
+        <h2 class="green">
+            <?= \Yii::t('memberpetitions', 'status_collecting') ?>
+        </h2>
+        <div class="content">
+            <?= $this->render('_motion_list', [
+                'motions' => Tools::getAllMotionsCollection($myConsultations),
+                'bold'    => 'organization'
+            ]) ?>
+        </div>
 
-    <h2 class="green">
-        <?= \Yii::t('memberpetitions', 'status_answered') ?>
-    </h2>
-    <div class="content">
-        <?= $this->render('_motion_list', [
-            'motions' => Tools::getAllMotionsAnswered($myConsultations),
-            'bold'    => 'organization'
-        ]) ?>
+        <h2 class="green">
+            <?= \Yii::t('memberpetitions', 'status_unanswered') ?>
+        </h2>
+        <div class="content">
+            <?= $this->render('_motion_list', [
+                'motions' => Tools::getAllMotionsUnanswered($myConsultations),
+                'bold'    => 'organization'
+            ]) ?>
+        </div>
+
+        <h2 class="green">
+            <?= \Yii::t('memberpetitions', 'status_answered') ?>
+        </h2>
+        <div class="content">
+            <?= $this->render('_motion_list', [
+                'motions' => Tools::getAllMotionsAnswered($myConsultations),
+                'bold'    => 'organization'
+            ]) ?>
+        </div>
     </div>
 <?php
 

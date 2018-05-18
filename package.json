@@ -49,6 +49,7 @@
         "clone-buffer": "^1.0.0",
         "cloneable-readable": "^1.1.2",
         "eonasdan-bootstrap-datetimepicker": "^4.17.47",
+        "isotope-layout": "^3.0.6",
         "moment": "^2.22.1",
         "remove-trailing-separator": "^1.1.0"
     }
