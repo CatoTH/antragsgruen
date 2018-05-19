@@ -28,6 +28,8 @@ return [
     'content_privacy_bread' => 'Privacy',
     'content_welcome'       => 'Welcome',
     'content_welcome_text'  => '<p>Welcome to Antragsgrün</p>',
+    'content_login'         => 'Login',
+    'content_loginn_text'   => '',
     'content_imprint_title' => 'Imprint',
     'content_imprint_bread' => 'Imprint',
     'content_help_title'    => 'Help',

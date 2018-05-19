@@ -263,10 +263,24 @@ class MessageSource extends \yii\i18n\MessageSource
     }
 
     /**
+     * @return string[]
+     */
+    public static function getDefaultPages()
+    {
+        return [
+            'maintenance' => \Yii::t('base', 'content_maint_title'),
+            'help'        => \Yii::t('base', 'content_help_title'),
+            'legal'       => \Yii::t('base', 'content_imprint_title'),
+            'privacy'     => \Yii::t('base', 'content_privacy_title'),
+            'welcome'     => \Yii::t('base', 'content_welcome'),
+            'login'       => \Yii::t('base', 'content_login'),
+        ];
+    }
+
+    /**
      * @param Consultation|null $consultation
      * @param string $pageKey
      * @return PageData
-     * @throws Internal
      */
     public static function getPageData($consultation, $pageKey)
     {
@@ -301,8 +315,18 @@ class MessageSource extends \yii\i18n\MessageSource
                 $data->breadcrumbTitle = \Yii::t('base', 'content_welcome');
                 $data->text            = \Yii::t('base', 'content_welcome_text');
                 break;
+            case 'login':
+                $data                  = new PageData();
+                $data->pageTitle       = \Yii::t('base', 'content_login');
+                $data->breadcrumbTitle = \Yii::t('base', 'content_login');
+                $data->text            = \Yii::t('base', 'content_login_text');
+                break;
             default:
-                throw new Internal('Unknown page Key: ' . $pageKey);
+                $data                  = new PageData();
+                $data->pageTitle       = '';
+                $data->breadcrumbTitle = '';
+                $data->text            = '';
+                break;
         }
         if ($consultation) {
             foreach ($consultation->texts as $text) {

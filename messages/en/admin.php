@@ -43,6 +43,7 @@ return [
     'index_flushed_cached'        => 'All caches have been flushed',
     'index_todo'                  => 'To Do',
     'index_site_del'              => 'Delete site',
+    'index_pages'                 => 'Content pages',
     'amend_deleted'               => 'The amendment has been deleted.',
     'amend_screened'              => 'The amendment has been screened.',
     'amend_prefix_collission'     => 'The submitted signature is already being used by another amendment.',
@@ -413,7 +414,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',
-    'help_page_create'            => 'Create a help page',
 
     'users_head'       => 'Registered users',
     'users_bc'         => 'Users',

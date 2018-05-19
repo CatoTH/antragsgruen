@@ -404,7 +404,9 @@ class Layout
     public function formatTitle($title)
     {
         if (stripos($title, 'Antragsgrün') === false) {
-            if ($title[strlen($title) - 1] === ')') {
+            if ($title === '') {
+                $title = 'Antragsgrün';
+            } elseif ($title[strlen($title) - 1] === ')') {
                 $title = substr($title, 0, strlen($title) - 1) . ', Antragsgrün)';
             } else {
                 $title .= ' (Antragsgrün)';

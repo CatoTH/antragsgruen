@@ -363,7 +363,6 @@ Au revoir,
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Soutien officel',
-    'help_page_create'            => 'Créer une page d\'aide',
 
     'users_head'       => 'Utilisateurs enregistrés',
     'users_bc'         => 'Utilisateurs',

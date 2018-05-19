@@ -43,15 +43,13 @@ echo Html::a(
 );
 echo '</li>';
 
-if (!$consultation->hasHelpPage()) {
-    echo '<li class="secondary">';
-    echo Html::a(
-        Yii::t('admin', 'help_page_create'),
-        UrlHelper::createUrl('consultation/help'),
-        ['id' => 'helpCreateLink']
-    );
-    echo '</li>';
-}
+echo '<li class="secondary">';
+echo Html::a(
+    Yii::t('admin', 'index_pages'),
+    UrlHelper::createUrl('pages/list-pages'),
+    ['id' => 'helpCreateLink']
+);
+echo '</li>';
 
 echo '<li>' . \Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {

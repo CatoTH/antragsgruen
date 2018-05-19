@@ -76,20 +76,18 @@ class UrlHelper
         if ($consultation !== null && !isset($route['consultationPath'])) {
             $route['consultationPath'] = $consultation->urlPath;
         }
-        if (static::getParams()->multisiteMode && $site != null) {
+        if (static::getParams()->multisiteMode && $site !== null) {
             $route['subdomain'] = $site->subdomain;
         }
 
         $parts = explode('/', $route[0]);
-        if ($parts[0] == 'user') {
+        if ($parts[0] === 'user' || $parts[0] === 'pages') {
             unset($route['consultationPath']);
         }
         if (in_array(
             trim($route[0], '/'),
             [
                 'consultation/home',
-                'consultation/legal',
-                'consultation/privacy',
                 'admin/index/admins',
                 'admin/index/consultations',
             ]
@@ -109,7 +107,7 @@ class UrlHelper
             $route = [$route];
         }
         $route_parts = explode('/', $route[0]);
-        if ($route_parts[0] != 'manager') {
+        if ($route_parts[0] !== 'manager') {
             return static::createSiteUrl($route);
         } else {
             return Url::toRoute($route);

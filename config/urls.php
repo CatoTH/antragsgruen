@@ -12,7 +12,7 @@ $domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
 $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths    = 'help|search|savetextajax|maintenance|notifications|activitylog|shariffbackend';
+$consultationPaths    = 'search|savetextajax|maintenance|notifications|activitylog';
 $consultationPaths    .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
@@ -45,8 +45,6 @@ $urlRules = [
     $domadmin . 'list/<_a:(' . $adminMotionListPaths . ')>'       => 'admin/motion-list/<_a>',
     $domadmin . 'proposed_procedure'                              => 'admin/proposed-procedure/index',
     $domadmin . 'proposed_procedure/<_a:(' . $adminPpPaths . ')>' => 'admin/proposed-procedure/<_a>',
-    $domadmin . 'texts'                                           => 'admin/texts',
-    $domadmin . 'texts/<_a:(index|update|delete)>'                => 'admin/texts/<_a>',
     $domadmin . 'namespacedAccounts'                              => 'admin/index/namespacedAccounts',
     $domadmin . 'ae_pdf_list'                                     => 'admin/index/aePDFList',
     $domadmin . 'admins'                                          => 'admin/index/admins',
@@ -54,7 +52,9 @@ $urlRules = [
 
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
-    $dom . '<_a:(legal|privacy)>'             => 'consultation/<_a>',
+    $dom . 'page'                             => 'pages/list-pages',
+    $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
+    $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
@@ -82,8 +82,8 @@ foreach ($params->getPluginClasses() as $pluginClass) {
 
 // Catch-All-Routes, should be loaded last
 $urlRules = array_merge($urlRules, [
-    $domv . '<prefix:[^\/]+>'                      => 'motion/goto-prefix',
-    $domv . '<prefix1:[^\/]+>/<prefix2:[^\/]+>'    => 'amendment/goto-prefix',
+    $domv . '<prefix:[^\/]+>'                   => 'motion/goto-prefix',
+    $domv . '<prefix1:[^\/]+>/<prefix2:[^\/]+>' => 'amendment/goto-prefix',
 ]);
 
 if ($params->multisiteMode) {

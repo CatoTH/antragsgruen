@@ -239,67 +239,7 @@ class ConsultationController extends Base
         return $this->render('user_notifications', ['user' => $user, 'notifications' => $notifications]);
     }
 
-    /**
-     * @param string $pageKey
-     * @return string
-     * @throws Access
-     */
-    public function actionSavetextajax($pageKey)
-    {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-            throw new Access('No permissions to edit this page');
-        }
-        if (MessageSource::savePageData($this->consultation, $pageKey, \Yii::$app->request->post('data'))) {
-            return '1';
-        } else {
-            return '0';
-        }
-    }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionMaintenance()
-    {
-        return $this->renderContentPage('maintenance');
-    }
-
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionLegal()
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if ($params->multisiteMode) {
-            $admin      = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
-            $saveUrl    = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'legal']);
-            $viewParams = ['pageKey' => 'legal', 'admin' => $admin, 'saveUrl' => $saveUrl];
-            return $this->render('imprint_multisite', $viewParams);
-        } else {
-            return $this->renderContentPage('legal');
-        }
-    }
-
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionPrivacy()
-    {
-        return $this->renderContentPage('privacy');
-    }
-
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionHelp()
-    {
-        return $this->renderContentPage('help');
-    }
 
     /**
      * @param Consultation $consultation

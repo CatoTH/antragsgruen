@@ -190,7 +190,6 @@ class Base extends Controller
     /**
      * @param string $pageKey
      * @return string
-     * @throws Internal
      */
     protected function renderContentPage($pageKey)
     {
@@ -203,7 +202,7 @@ class Base extends Controller
             $saveUrl = UrlHelper::createUrl(['manager/savetextajax', 'pageKey' => $pageKey]);
         }
         return $this->render(
-            '@app/views/consultation/contentpage',
+            '@app/views/pages/contentpage',
             [
                 'pageKey' => $pageKey,
                 'admin'   => $admin,
@@ -258,7 +257,6 @@ class Base extends Controller
 
     /**
      * @return bool
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function testMaintenanceMode()
@@ -278,7 +276,6 @@ class Base extends Controller
 
     /**
      * @return bool
-     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function testSiteForcedLogin()

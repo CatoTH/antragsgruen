@@ -161,7 +161,7 @@ class StdHooks extends HooksAdapter
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
                     '</li>';
                 if ($controller->consultation->hasHelpPage()) {
-                    $helpLink = UrlHelper::createUrl('consultation/help');
+                    $helpLink = UrlHelper::createUrl('page/help');
                     $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
                 }
             } else {
@@ -267,8 +267,8 @@ class StdHooks extends HooksAdapter
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             if ($controller->consultation) {
-                $legalLink   = UrlHelper::createUrl('consultation/legal');
-                $privacyLink = UrlHelper::createUrl('consultation/privacy');
+                $legalLink   = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'legal']);
+                $privacyLink = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'privacy']);
             } else {
                 $legalLink   = UrlHelper::createUrl('manager/site-legal');
                 $privacyLink = UrlHelper::createUrl('manager/site-privacy');
