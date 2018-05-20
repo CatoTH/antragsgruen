@@ -6,24 +6,15 @@
  * @var bool $admin
  */
 
-use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
-$pageData     = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, $pageKey);
+$site         = ($consultation ? $consultation->site : null);
+$pageData     = \app\models\db\ConsultationText::getPageData($site, $consultation, $pageKey);
 $this->title  = ($pageData->title ? $pageData->title : '');
-
-$saveParams = ['pages/save-page', 'pageSlug' => $pageKey];
-if ($consultation) {
-    $saveParams['consultationPath'] = $consultation->urlPath;
-}
-if ($pageData->id) {
-    $saveParams['pageId'] = $pageData->id;
-}
-$saveUrl = UrlHelper::createUrl($saveParams);
 
 $layout = $controller->layoutParams;
 $layout->addBreadcrumb($pageData->breadcrumb ? $pageData->breadcrumb : '');
@@ -37,7 +28,7 @@ echo '<div class="content contentPage">';
 
 if ($admin) {
     echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
-    echo Html::beginForm($saveUrl, 'post', ['class' => 'contentEditForm']);
+    echo Html::beginForm($pageData->getSaveUrl(), 'post', ['class' => 'contentEditForm']);
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

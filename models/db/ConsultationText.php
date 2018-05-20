@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\UrlHelper;
 use yii\db\ActiveRecord;
 
 /**
@@ -60,6 +61,21 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
+     * @return string
+     */
+    public function getSaveUrl()
+    {
+        $saveParams = ['pages/save-page', 'pageSlug' => $this->textId];
+        if ($this->consultation) {
+            $saveParams['consultationPath'] = $this->consultation->urlPath;
+        }
+        if ($this->id) {
+            $saveParams['pageId'] = $this->id;
+        }
+        return UrlHelper::createUrl($saveParams);
+    }
+
+    /**
      * @return string[]
      */
     public static function getDefaultPages()
@@ -98,7 +114,9 @@ class ConsultationText extends ActiveRecord
      */
     public static function getDefaultPage($pageKey)
     {
-        $data = new ConsultationText();
+        $data           = new ConsultationText();
+        $data->textId   = $pageKey;
+        $data->category = 'pagedata';
         switch ($pageKey) {
             case 'maintenance':
                 $data->title      = \Yii::t('pages', 'content_maint_title');
@@ -151,8 +169,9 @@ class ConsultationText extends ActiveRecord
             }
         }
         if (!$foundText) {
+            $siteId    = ($site ? $site->id : null);
             $foundText = ConsultationText::findOne([
-                'siteId'         => $site->id,
+                'siteId'         => $siteId,
                 'consultationId' => null,
                 'category'       => 'pagedata',
                 'textId'         => $pageKey,
@@ -199,7 +218,7 @@ class ConsultationText extends ActiveRecord
      * @param Consultation|null $consultation
      * @return ConsultationText[]
      */
-    public function getAllPages($site, $consultation)
+    public static function getAllPages($site, $consultation)
     {
         /** @var ConsultationText[] $text */
         $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null]);

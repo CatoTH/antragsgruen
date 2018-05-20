@@ -46,7 +46,7 @@ class PagesController extends Base
         }
 
         if ($page->id) {
-            if ($page->siteId !== $this->site->id) {
+            if ($page->siteId && $page->siteId !== $this->site->id) {
                 throw new Access('Some inconsistency ocurred (site): ' . $page->siteId . " / " . $this->site->id);
             }
             if ($page->consultationId && $page->consultationId !== $this->consultation->id) {
@@ -54,8 +54,14 @@ class PagesController extends Base
             }
         }
 
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-            throw new Access('No permissions to edit this page');
+        if ($page->siteId) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+                throw new Access('No permissions to edit this page');
+            }
+        } else {
+            if (!User::currentUserIsSuperuser()) {
+                throw new Access('No permissions to edit this page');
+            }
         }
 
         $page->text     = HTMLTools::correctHtmlErrors(\Yii::$app->request->post('data'));

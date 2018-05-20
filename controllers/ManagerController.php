@@ -232,28 +232,10 @@ class ManagerController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
      */
     public function actionSitePrivacy()
     {
         return $this->renderContentPage('privacy');
-    }
-
-    /**
-     * @param string $pageKey
-     * @return string
-     * @throws Access
-     */
-    public function actionSavetextajax($pageKey)
-    {
-        if (!User::currentUserIsSuperuser()) {
-            throw new Access('No permissions to edit this page');
-        }
-        if (MessageSource::savePageData(null, $pageKey, \Yii::$app->request->post('data'))) {
-            return '1';
-        } else {
-            return '0';
-        }
     }
 
     /**

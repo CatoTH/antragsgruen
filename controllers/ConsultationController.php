@@ -372,8 +372,6 @@ class ConsultationController extends Base
             $myAmendments = null;
         }
 
-        $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'welcome']);
-
         return $this->render(
             'index',
             [
@@ -382,7 +380,6 @@ class ConsultationController extends Base
                 'myMotions'    => $myMotions,
                 'myAmendments' => $myAmendments,
                 'admin'        => User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT),
-                'saveUrl'      => $saveUrl,
             ]
         );
     }

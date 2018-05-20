@@ -12,7 +12,7 @@ $domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
 $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths    = 'search|savetextajax|maintenance|notifications|activitylog';
+$consultationPaths    = 'search|maintenance|notifications|activitylog';
 $consultationPaths    .= '|amendmentpdfs|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
@@ -23,7 +23,7 @@ $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|me
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check';
 $userPaths            = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
 $userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange';
-$domPlainPaths        = 'site-legal|site-privacy|help|password|createsite|savetextajax|siteconfig|antragsgrueninit';
+$domPlainPaths        = 'site-legal|site-privacy|help|password|createsite|siteconfig|antragsgrueninit';
 $domPlainPaths        .= '|check-subdomain|antragsgrueninitdbtest|userlist';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collissions';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';

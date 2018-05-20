@@ -1,6 +1,7 @@
 <?php
 
 use \app\components\Tools;
+use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\Motion;
@@ -11,7 +12,6 @@ use yii\helpers\Html;
  * @var yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  * @var Motion[] $motions
- * @var string $saveUrl
  * @var \app\models\db\User|null $myself
  * @var \app\models\db\MotionSupporter[] $myMotions
  * @var \app\models\db\AmendmentSupporter[] $myAmendments
@@ -52,12 +52,13 @@ if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->dea
     echo Tools::formatMysqlDateTime($consultation->motionTypes[0]->deadlineMotions) . "</p>\n";
 }
 
+$pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
+$saveUrl  = $pageData->getSaveUrl();
 if ($admin) {
     echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
     echo Html::beginForm($saveUrl, 'post');
 }
 
-$pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';
