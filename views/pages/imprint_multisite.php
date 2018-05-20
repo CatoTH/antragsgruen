@@ -14,8 +14,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
-$pageData     = \app\components\MessageSource::getPageData($consultation, $pageKey);
-$this->title  = $pageData->pageTitle;
+$pageData     = \app\models\db\ConsultationText::getPageData(null, null, $pageKey);
+$this->title  = $pageData->title;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params   = \Yii::$app->params;
@@ -23,13 +23,13 @@ $url      = parse_url(str_replace('<subdomain:[\w_-]+>', $consultation->site->su
 $currHost = $url['host'];
 
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumbTitle);
+$layout->addBreadcrumb($pageData->breadcrumb);
 
 if ($admin) {
     $layout->loadCKEditor();
 }
 
-echo '<h1>' . Html::encode($pageData->pageTitle) . '</h1>';
+echo '<h1>' . Html::encode($pageData->title) . '</h1>';
 echo '<div class="content">' . \Yii::t('base', 'legal_multisite_hint') . '</div>';
 
 
@@ -38,7 +38,7 @@ echo '<div class="content contentPage">';
 
 if ($admin) {
     echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
-    echo Html::beginForm($saveUrl, 'post');
+    echo Html::beginForm($saveUrl, 'post', ['data-page-id' => $pageData->id, 'data-page-key' => $pageData->textId]);
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

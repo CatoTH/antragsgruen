@@ -13,6 +13,8 @@ class m180519_180908_siteTexts extends Migration
     public function safeUp()
     {
         $this->addColumn('consultationText', 'siteId', 'INT DEFAULT NULL AFTER consultationId');
+        $this->addColumn('consultationText', 'title', 'TEXT DEFAULT NULL AFTER textId');
+        $this->addColumn('consultationText', 'breadcrumb', 'TEXT DEFAULT NULL AFTER title');
         $this->createIndex('consultation_text_site', 'consultationText', 'siteId', false);
         $this->addForeignKey('fk_consultation_text_site', 'consultationText', 'siteId', 'site', 'id', 'CASCADE', 'CASCADE');
 
@@ -32,5 +34,7 @@ class m180519_180908_siteTexts extends Migration
     {
         $this->dropForeignKey('fk_consultation_text_site', 'consultationText');
         $this->dropColumn('consultationText', 'siteId');
+        $this->dropColumn('consultationText', 'title');
+        $this->dropColumn('consultationText', 'breadcrumb');
     }
 }

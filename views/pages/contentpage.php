@@ -3,28 +3,36 @@
 /**
  * @var $this yii\web\View
  * @var string $pageKey
- * @var string $saveUrl
  * @var bool $admin
  */
 
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
-$pageData     = \app\components\MessageSource::getPageData($consultation, $pageKey);
-$this->title  = $pageData->pageTitle;
+$pageData     = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, $pageKey);
+$this->title  = ($pageData->title ? $pageData->title : '');
 
+$saveParams = ['pages/save-page', 'pageSlug' => $pageKey];
+if ($consultation) {
+    $saveParams['consultationPath'] = $consultation->urlPath;
+}
+if ($pageData->id) {
+    $saveParams['pageId'] = $pageData->id;
+}
+$saveUrl = UrlHelper::createUrl($saveParams);
 
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumbTitle);
+$layout->addBreadcrumb($pageData->breadcrumb ? $pageData->breadcrumb : '');
 
 if ($admin) {
     $layout->loadCKEditor();
 }
 
-echo '<h1>' . Html::encode($pageData->pageTitle) . '</h1>';
+echo '<h1>' . Html::encode($pageData->title ? $pageData->title : '') . '</h1>';
 echo '<div class="content contentPage">';
 
 if ($admin) {

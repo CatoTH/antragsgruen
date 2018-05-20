@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 use yii\db\ActiveRecord;
@@ -11,6 +12,8 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property string $category
  * @property string $textId
+ * @property string $title
+ * @property string $breadcrumb
  * @property string $text
  * @property string $editDate
  *
@@ -52,7 +55,163 @@ class ConsultationText extends ActiveRecord
     {
         return [
             [['category', 'textId'], 'required'],
-            [['category', 'textId', 'text'], 'safe'],
+            [['category', 'textId', 'text', 'breadcrumb', 'title'], 'safe'],
         ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getDefaultPages()
+    {
+        return [
+            'maintenance' => \Yii::t('pages', 'content_maint_title'),
+            'help'        => \Yii::t('pages', 'content_help_title'),
+            'legal'       => \Yii::t('pages', 'content_imprint_title'),
+            'privacy'     => \Yii::t('pages', 'content_privacy_title'),
+            'welcome'     => \Yii::t('pages', 'content_welcome'),
+            'login'       => \Yii::t('pages', 'content_login'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getSitewidePages()
+    {
+        return ['legal', 'privacy', 'login'];
+    }
+
+    /**
+     * Pages that have a fallback for the whole system. Only relevant in multi-site-setups.
+     *
+     * @return string[]
+     */
+    public static function getSystemwidePages()
+    {
+        return ['legal', 'privacy'];
+    }
+
+    /**
+     * @param $pageKey
+     * @return ConsultationText
+     */
+    public static function getDefaultPage($pageKey)
+    {
+        $data = new ConsultationText();
+        switch ($pageKey) {
+            case 'maintenance':
+                $data->title      = \Yii::t('pages', 'content_maint_title');
+                $data->breadcrumb = \Yii::t('pages', 'content_maint_bread');
+                $data->text       = \Yii::t('pages', 'content_maint_text');
+                break;
+            case 'help':
+                $data->title      = \Yii::t('pages', 'content_help_title');
+                $data->breadcrumb = \Yii::t('pages', 'content_help_bread');
+                $data->text       = \Yii::t('pages', 'content_help_place');
+                break;
+            case 'legal':
+                $data->title      = \Yii::t('pages', 'content_imprint_title');
+                $data->breadcrumb = \Yii::t('pages', 'content_imprint_bread');
+                $data->text       = '<p>' . \Yii::t('pages', 'content_imprint_title') . '</p>';
+                break;
+            case 'privacy':
+                $data->title      = \Yii::t('pages', 'content_privacy_title');
+                $data->breadcrumb = \Yii::t('pages', 'content_privacy_bread');
+                $data->text       = '';
+                break;
+            case 'welcome':
+                $data->title      = \Yii::t('pages', 'content_welcome');
+                $data->breadcrumb = \Yii::t('pages', 'content_welcome');
+                $data->text       = \Yii::t('pages', 'content_welcome_text');
+                break;
+            case 'login':
+                $data->title      = \Yii::t('pages', 'content_login');
+                $data->breadcrumb = \Yii::t('pages', 'content_login');
+                $data->text       = \Yii::t('pages', 'content_login_text');
+                break;
+        }
+        return $data;
+    }
+
+    /**
+     * @param Site|null $site
+     * @param Consultation|null $consultation
+     * @param string $pageKey
+     * @return ConsultationText
+     */
+    public static function getPageData($site, $consultation, $pageKey)
+    {
+        $foundText = null;
+        if (!in_array($pageKey, static::getSitewidePages())) {
+            foreach ($consultation->texts as $text) {
+                if ($text->category == 'pagedata' && $text->textId == $pageKey) {
+                    $foundText = $text;
+                }
+            }
+        }
+        if (!$foundText) {
+            $foundText = ConsultationText::findOne([
+                'siteId'         => $site->id,
+                'consultationId' => null,
+                'category'       => 'pagedata',
+                'textId'         => $pageKey,
+            ]);
+        }
+        if (!$foundText && in_array($pageKey, static::getSystemwidePages())) {
+            $template              = ConsultationText::findOne([
+                'siteId'   => null,
+                'category' => 'pagedata',
+                'textId'   => $pageKey,
+            ]);
+            $foundText             = new ConsultationText();
+            $foundText->category   = 'pagedata';
+            $foundText->textId     = $pageKey;
+            $foundText->text       = $template->text;
+            $foundText->breadcrumb = $template->text;
+            $foundText->title      = $template->title;
+            if ($site) {
+                $foundText->siteId = $site->id;
+            }
+        }
+        $defaultPage = static::getDefaultPage($pageKey);
+        if (!$foundText) {
+            $foundText = $defaultPage;
+            if (!in_array($pageKey, static::getSystemwidePages())) {
+                $foundText->siteId = $site->id;
+            }
+            if (!in_array($pageKey, static::getSitewidePages())) {
+                $foundText->consultationId = $consultation->id;
+            }
+        } else {
+            if (!$foundText->breadcrumb && $defaultPage) {
+                $foundText->breadcrumb = $defaultPage->breadcrumb;
+            }
+            if (!$foundText->title && $defaultPage) {
+                $foundText->title = $defaultPage->title;
+            }
+        }
+        return $foundText;
+    }
+
+    /**
+     * @param Site $site
+     * @param Consultation|null $consultation
+     * @return ConsultationText[]
+     */
+    public function getAllPages($site, $consultation)
+    {
+        /** @var ConsultationText[] $text */
+        $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null]);
+        if ($consultation) {
+            $pages = array_merge(
+                $pages,
+                ConsultationText::findAll(['consultationId' => $consultation->id])
+            );
+        }
+        usort($pages, function ($page1, $page2) {
+            return strnatcasecmp($page1->title, $page2->title);
+        });
+        return $pages;
     }
 }

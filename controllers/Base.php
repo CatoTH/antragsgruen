@@ -195,18 +195,15 @@ class Base extends Controller
     {
         if ($this->consultation) {
             $admin   = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
-            $saveUrl = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => $pageKey]);
         } else {
             $user    = User::getCurrentUser();
             $admin   = ($user && in_array($user->id, $this->getParams()->adminUserIds));
-            $saveUrl = UrlHelper::createUrl(['manager/savetextajax', 'pageKey' => $pageKey]);
         }
         return $this->render(
             '@app/views/pages/contentpage',
             [
                 'pageKey' => $pageKey,
                 'admin'   => $admin,
-                'saveUrl' => $saveUrl
             ]
         );
     }

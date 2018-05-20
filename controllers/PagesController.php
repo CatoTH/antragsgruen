@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\HTMLTools;
 use app\components\MessageSource;
-use app\components\UrlHelper;
+use app\models\db\ConsultationText;
 use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\settings\AntragsgruenApp;
@@ -38,14 +39,30 @@ class PagesController extends Base
      */
     public function actionSavePage($pageSlug)
     {
+        if (\Yii::$app->request->get('pageId')) {
+            $page = ConsultationText::findOne(\Yii::$app->request->get('pageId'));
+        } else {
+            $page = ConsultationText::getPageData($this->site, $this->consultation, $pageSlug);
+        }
+
+        if ($page->id) {
+            if ($page->siteId !== $this->site->id) {
+                throw new Access('Some inconsistency ocurred (site): ' . $page->siteId . " / " . $this->site->id);
+            }
+            if ($page->consultationId && $page->consultationId !== $this->consultation->id) {
+                throw new Access('Some inconsistency ocurred (consultation)');
+            }
+        }
+
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
-        if (MessageSource::savePageData($this->consultation, $pageSlug, \Yii::$app->request->post('data'))) {
-            return '1';
-        } else {
-            return '0';
-        }
+
+        $page->text     = HTMLTools::correctHtmlErrors(\Yii::$app->request->post('data'));
+        $page->editDate = date('Y-m-d H:i:s');
+        $page->save();
+
+        return '1';
     }
 
     /**
@@ -65,8 +82,7 @@ class PagesController extends Base
         $params = \Yii::$app->params;
         if ($params->multisiteMode) {
             $admin      = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
-            $saveUrl    = UrlHelper::createUrl(['consultation/savetextajax', 'pageKey' => 'legal']);
-            $viewParams = ['pageKey' => 'legal', 'admin' => $admin, 'saveUrl' => $saveUrl];
+            $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
             return $this->render('imprint_multisite', $viewParams);
         } else {
             return $this->renderContentPage('legal');

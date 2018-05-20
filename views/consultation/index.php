@@ -57,7 +57,7 @@ if ($admin) {
     echo Html::beginForm($saveUrl, 'post');
 }
 
-$pageData = \app\components\MessageSource::getPageData($consultation, 'welcome');
+$pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 echo '<article class="textHolder" id="stdTextHolder">';
 echo $pageData->text;
 echo '</article>';

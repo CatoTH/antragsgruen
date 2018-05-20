@@ -283,6 +283,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationText` (
   `siteId`         int(11)           DEFAULT NULL,
   `category`       varchar(20)  NOT NULL,
   `textId`         varchar(100) NOT NULL,
+  `title`          text              DEFAULT NULL,
+  `breadcrumb`     text              DEFAULT NULL,
   `text`           longtext,
   `editDate`       timestamp    NULL DEFAULT CURRENT_TIMESTAMP
 )

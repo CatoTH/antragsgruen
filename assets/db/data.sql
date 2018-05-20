@@ -39,7 +39,7 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m170923_151852_proposal_explanation', '1506180317'),
   ('m171219_173517_motion_proposed_changes', '1513705579'),
   ('m171231_093702_user_organization_ids', '1514713083'),
-  ('m180519_180908_siteTexts', 'm180519_180908_siteTexts')
+  ('m180519_180908_siteTexts', '1526808262')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;
