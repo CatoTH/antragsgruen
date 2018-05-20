@@ -73,15 +73,19 @@ class UrlHelper
     {
         $site         = static::$currentSite;
         $consultation = static::$currentConsultation;
+        $routeParts   = explode('/', $route[0]);
+
         if ($consultation !== null && !isset($route['consultationPath'])) {
-            $route['consultationPath'] = $consultation->urlPath;
+            // for pages/show-page, consultationPath is optional
+            if ($routeParts[0] !== 'pages' || !in_array($routeParts[1], ['show-page', 'save-page'])) {
+                $route['consultationPath'] = $consultation->urlPath;
+            }
         }
         if (static::getParams()->multisiteMode && $site !== null) {
             $route['subdomain'] = $site->subdomain;
         }
 
-        $parts = explode('/', $route[0]);
-        if ($parts[0] === 'user' || $parts[0] === 'pages') {
+        if ($routeParts[0] === 'user') {
             unset($route['consultationPath']);
         }
         if (in_array(

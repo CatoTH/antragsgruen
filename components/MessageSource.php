@@ -42,6 +42,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'base'            => 'Basis-Layout',
                 'structure'       => 'Interne Bezeichnungen',
                 'con'             => 'Veranstaltung',
+                'pages'           => 'Redaktionelle Seiten',
                 'motion'          => 'Anträge',
                 'amend'           => 'Änderungsanträge',
                 'diff'            => 'Diff',
@@ -59,6 +60,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'base'            => 'Basic layout',
                 'structure'       => 'Internal labels',
                 'con'             => 'Consultation',
+                'pages'           => 'Content pages',
                 'motion'          => 'Motion',
                 'amend'           => 'Amendment',
                 'diff'            => 'Diff',
@@ -268,13 +270,31 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getDefaultPages()
     {
         return [
-            'maintenance' => \Yii::t('base', 'content_maint_title'),
-            'help'        => \Yii::t('base', 'content_help_title'),
-            'legal'       => \Yii::t('base', 'content_imprint_title'),
-            'privacy'     => \Yii::t('base', 'content_privacy_title'),
-            'welcome'     => \Yii::t('base', 'content_welcome'),
-            'login'       => \Yii::t('base', 'content_login'),
+            'maintenance' => \Yii::t('pages', 'content_maint_title'),
+            'help'        => \Yii::t('pages', 'content_help_title'),
+            'legal'       => \Yii::t('pages', 'content_imprint_title'),
+            'privacy'     => \Yii::t('pages', 'content_privacy_title'),
+            'welcome'     => \Yii::t('pages', 'content_welcome'),
+            'login'       => \Yii::t('pages', 'content_login'),
         ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getSitewidePages()
+    {
+        return ['legal', 'privacy', 'login'];
+    }
+
+    /**
+     * Pages that have a fallback for the whole system. Only relevant in multi-site-setups.
+     *
+     * @return string[]
+     */
+    public static function getSystemwidePages()
+    {
+        return ['legal', 'privacy'];
     }
 
     /**
@@ -287,39 +307,39 @@ class MessageSource extends \yii\i18n\MessageSource
         switch ($pageKey) {
             case 'maintenance':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_maint_title');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_maint_bread');
-                $data->text            = \Yii::t('base', 'content_maint_text');
+                $data->pageTitle       = \Yii::t('pages', 'content_maint_title');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_maint_bread');
+                $data->text            = \Yii::t('pages', 'content_maint_text');
                 break;
             case 'help':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_help_title');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_help_bread');
-                $data->text            = \Yii::t('base', 'content_help_place');
+                $data->pageTitle       = \Yii::t('pages', 'content_help_title');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_help_bread');
+                $data->text            = \Yii::t('pages', 'content_help_place');
                 break;
             case 'legal':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_imprint_title');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_imprint_bread');
-                $data->text            = '<p>Impressum</p>';
+                $data->pageTitle       = \Yii::t('pages', 'content_imprint_title');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_imprint_bread');
+                $data->text            = '<p>' . \Yii::t('pages', 'content_imprint_title') . '</p>';
                 break;
             case 'privacy':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_privacy_title');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_privacy_bread');
+                $data->pageTitle       = \Yii::t('pages', 'content_privacy_title');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_privacy_bread');
                 $data->text            = '';
                 break;
             case 'welcome':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_welcome');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_welcome');
-                $data->text            = \Yii::t('base', 'content_welcome_text');
+                $data->pageTitle       = \Yii::t('pages', 'content_welcome');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_welcome');
+                $data->text            = \Yii::t('pages', 'content_welcome_text');
                 break;
             case 'login':
                 $data                  = new PageData();
-                $data->pageTitle       = \Yii::t('base', 'content_login');
-                $data->breadcrumbTitle = \Yii::t('base', 'content_login');
-                $data->text            = \Yii::t('base', 'content_login_text');
+                $data->pageTitle       = \Yii::t('pages', 'content_login');
+                $data->breadcrumbTitle = \Yii::t('pages', 'content_login');
+                $data->text            = \Yii::t('pages', 'content_login_text');
                 break;
             default:
                 $data                  = new PageData();
@@ -328,26 +348,50 @@ class MessageSource extends \yii\i18n\MessageSource
                 $data->text            = '';
                 break;
         }
-        if ($consultation) {
+        $found = false;
+        if (!in_array($pageKey, static::getSitewidePages())) {
             foreach ($consultation->texts as $text) {
                 if ($text->category == 'pagedata' && $text->textId == $pageKey) {
                     $data->text = $text->text;
+                    $data->id   = $text->id;
+                    $found      = true;
                 }
             }
-            if ($pageKey == 'privacy' && $data->text == '') {
-                /** @var ConsultationText $text */
-                $text = ConsultationText::findOne(['consultationId' => null, 'textId' => $pageKey]);
-                if ($text) {
-                    $data->text = $text->text;
-                }
-            }
-        } else {
-            /** @var ConsultationText $text */
-            $text = ConsultationText::findOne(['consultationId' => null, 'textId' => $pageKey]);
+        }
+        if (!$found) {
+            $site = $consultation->site;
+            $text = ConsultationText::findOne([
+                'siteId'         => $site->id,
+                'consultationId' => null,
+                'category'       => 'pagedata',
+                'textId'         => $pageKey,
+            ]);
             if ($text) {
                 $data->text = $text->text;
+                $data->id   = $text->id;
+                $found      = true;
+            }
+        }
+        if (!$found && in_array($pageKey, static::getSystemwidePages())) {
+            $text = ConsultationText::findOne([
+                'siteId'   => null,
+                'category' => 'pagedata',
+                'textId'   => $pageKey,
+            ]);
+            if ($text) {
+                $data->text = $text->text;
+                $data->id   = $text->id;
             }
         }
         return $data;
+    }
+
+    /**
+     * @param Consultation|null $consultation
+     */
+    public function getAllPages($consultation)
+    {
+        /** @var ConsultationText[] $text */
+        $pages = ConsultationText::findAll(['consultationId' => null]);
     }
 }

@@ -52,7 +52,8 @@ $urlRules = [
 
     $dom . '<_a:(' . $userPaths . ')>'        => 'user/<_a>',
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
-    $dom . 'page'                             => 'pages/list-pages',
+    $domv . 'page'                            => 'pages/list-pages',
+    $domv . 'page/<pageSlug:[^\/]+>'          => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',

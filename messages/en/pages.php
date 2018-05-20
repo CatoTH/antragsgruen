@@ -1,0 +1,22 @@
+<?php
+
+return [
+    'list_title' => 'Content pages',
+    'list_add'   => 'Create new',
+    'list_edit'  => 'Edit pages',
+
+    'content_privacy_title' => 'Privacy statement',
+    'content_privacy_bread' => 'Privacy',
+    'content_welcome'       => 'Welcome',
+    'content_welcome_text'  => '<p>Welcome to Antragsgrün</p>',
+    'content_login'         => 'Login',
+    'content_loginn_text'   => '',
+    'content_imprint_title' => 'Imprint',
+    'content_imprint_bread' => 'Imprint',
+    'content_help_title'    => 'Help',
+    'content_help_bread'    => 'Help',
+    'content_help_place'    => '<p>Help...</p>',
+    'content_maint_bread'   => 'Maintenance',
+    'content_maint_title'   => 'Maintenance mode',
+    'content_maint_text'    => '<p>This consultation has not, yet, been made public.</p>',
+];

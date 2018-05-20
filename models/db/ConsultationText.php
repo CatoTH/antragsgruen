@@ -8,12 +8,14 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $consultationId
+ * @property int $siteId
  * @property string $category
  * @property string $textId
  * @property string $text
  * @property string $editDate
  *
  * @property Consultation $consultation
+ * @property Site $site
  */
 class ConsultationText extends ActiveRecord
 {
@@ -33,6 +35,14 @@ class ConsultationText extends ActiveRecord
     public function getConsultation()
     {
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSite()
+    {
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
     /**

@@ -278,12 +278,13 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsTag` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###consultationText` (
-  `id`             INT(11)      NOT NULL,
-  `consultationId` INT(11)           DEFAULT NULL,
-  `category`       VARCHAR(20)  NOT NULL,
-  `textId`         VARCHAR(100) NOT NULL,
-  `text`           LONGTEXT,
-  `editDate`       TIMESTAMP    NULL DEFAULT CURRENT_TIMESTAMP
+  `id`             int(11)      NOT NULL,
+  `consultationId` int(11)           DEFAULT NULL,
+  `siteId`         int(11)           DEFAULT NULL,
+  `category`       varchar(20)  NOT NULL,
+  `textId`         varchar(100) NOT NULL,
+  `text`           longtext,
+  `editDate`       timestamp    NULL DEFAULT CURRENT_TIMESTAMP
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -731,7 +732,8 @@ ALTER TABLE `consultationSettingsTag`
 ALTER TABLE `consultationText`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `consultation_text_unique` (`category`, `textId`, `consultationId`),
-  ADD KEY `fk_texts_consultationIdx` (`consultationId`);
+  ADD KEY `fk_texts_consultationIdx` (`consultationId`),
+  ADD KEY `consultation_text_site` (`siteId`);
 
 --
 -- Indexes for table `consultationUserPrivilege`
@@ -1108,6 +1110,9 @@ ALTER TABLE `consultationSettingsTag`
 -- Constraints for table `consultationText`
 --
 ALTER TABLE `consultationText`
+  ADD CONSTRAINT `fk_consultation_text_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_texts_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;

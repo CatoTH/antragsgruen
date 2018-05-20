@@ -12,11 +12,12 @@ use yii\helpers\Html;
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
-$this->title = 'Seiten';
+$this->title = \Yii::t('pages', 'list_title');
 
 ?>
-<h1>Seiten</h1>
+<h1><?= $this->title = \Yii::t('pages', 'list_title'); ?></h1>
 
 <div class="content">
-    Test
+    <strong><?= \Yii::t('pages', 'list_edit') ?></strong>
+
 </div>

@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
  *
  * @property Consultation $currentConsultation
  * @property Consultation[] $consultations
+ * @property ConsultationText[] $texts
  * @property User[] $admins
  * @property TexTemplate
  */
@@ -75,6 +76,14 @@ class Site extends ActiveRecord
     {
         return $this->hasMany(User::class, ['id' => 'userId'])->viaTable('siteAdmin', ['siteId' => 'id'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTexts()
+    {
+        return $this->hasMany(ConsultationText::class, ['siteId' => 'id']);
     }
 
     /**
