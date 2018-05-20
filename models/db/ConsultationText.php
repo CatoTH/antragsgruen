@@ -63,6 +63,18 @@ class ConsultationText extends ActiveRecord
     /**
      * @return string
      */
+    public function getUrl()
+    {
+        $params = ['pages/show-page', 'pageSlug' => $this->textId];
+        if ($this->consultationId) {
+            $params['consultationPath'] = $this->consultation->urlPath;
+        }
+        return UrlHelper::createUrl($params);
+    }
+
+    /**
+     * @return string
+     */
     public function getSaveUrl()
     {
         $saveParams = ['pages/save-page', 'pageSlug' => $this->textId];
@@ -146,7 +158,7 @@ class ConsultationText extends ActiveRecord
             case 'login':
                 $data->title      = \Yii::t('pages', 'content_login');
                 $data->breadcrumb = \Yii::t('pages', 'content_login');
-                $data->text       = \Yii::t('pages', 'content_login_text');
+                $data->text       = '';
                 break;
         }
         return $data;
@@ -187,7 +199,7 @@ class ConsultationText extends ActiveRecord
             $foundText->category   = 'pagedata';
             $foundText->textId     = $pageKey;
             $foundText->text       = $template->text;
-            $foundText->breadcrumb = $template->text;
+            $foundText->breadcrumb = $template->breadcrumb;
             $foundText->title      = $template->title;
             if ($site) {
                 $foundText->siteId = $site->id;

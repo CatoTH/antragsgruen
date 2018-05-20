@@ -30,6 +30,12 @@ $params = \Yii::$app->params;
 
 echo '<h1>' . \Yii::t('user', 'login_title') . '</h1>';
 
+$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login');
+if ($loginText) {
+    echo '<div class="content">';
+    echo $loginText->text;
+    echo '</div>';
+}
 
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $pwMinLen = \app\models\forms\LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
@@ -51,57 +57,52 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
 
-    if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
-        $pre_checked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
-        echo '<div class="checkbox"><label>
-            <input type="checkbox" name="createAccount" id="createAccount" ' . $pre_checked . '>
-            ' . \Yii::t('user', 'login_create_account') . '
-            </label></div>';
-    } else {
-        echo '<div class="alert alert-info">!';
-        // @TODO
-        //echo veranstaltungsspezifisch_hinweis_namespaced_accounts($this->veranstaltung,
-        //'<strong>Hinweis:</strong> wenn du berechtigt bist, (Änderungs-)Anträge einzustellen,
-        //solltest du die Zugangsdaten per E-Mail erhalten haben.<br>
-        //Falls du keine bekommen haben solltest, melde dich bitte bei den
-        //Organisatoren dieses Parteitags / dieser Programmdiskussion.');
-        echo "</div>";
-    }
+    $preChecked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
+    ?>
+    <div class="checkbox">
+        <label>
+            <input type="checkbox" name="createAccount" id="createAccount" <?= $preChecked ?>>
+            <?= \Yii::t('user', 'login_create_account') ?>
+        </label>
+    </div>
 
-    echo '<div class="form-group">
-        <label for="username">' . \Yii::t('user', 'login_username') . ':</label>
-            <input class="form-control" name="username" id="username" type="text" autofocus required
-            placeholder="' . Html::encode(\Yii::t('user', 'login_email_placeholder')) .
-        '" value="' . Html::encode($preUsername) . '">
-        </div>
+    <div class="form-group">
+        <label for="username"><?= \Yii::t('user', 'login_username') ?>:</label>
+        <input class="form-control" name="username" id="username" type="text" autofocus required
+               placeholder="<?= Html::encode(\Yii::t('user', 'login_email_placeholder')) ?>"
+               value="<?= Html::encode($preUsername) ?>">
+    </div>
 
-        <div class="form-group">
-            <label for="passwordInput">' . \Yii::t('user', 'login_password') . ':</label>
-            <input type="password" name="password" id="passwordInput" required class="form-control"
-            data-min-len="' . $pwMinLen . '">
-        </div>
+    <div class="form-group">
+        <label for="passwordInput"><?= \Yii::t('user', 'login_password') ?>:</label>
+        <input type="password" name="password" id="passwordInput" required class="form-control"
+               data-min-len="<?= $pwMinLen ?>">
+    </div>
 
-        <div class="form-group hidden"  id="pwdConfirm">
-            <label for="passwordConfirm">' . \Yii::t('user', 'login_password_rep') . ':</label>
-            <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
-        </div>
+    <div class="form-group hidden" id="pwdConfirm">
+        <label for="passwordConfirm"><?= \Yii::t('user', 'login_password_rep') ?>:</label>
+        <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
+    </div>
 
-        <div class="form-group hidden" id="regName">
-            <label for="name">' . \Yii::t('user', 'login_create_name') . ':</label>
-            <input type="text" value="' . Html::encode($preName) . '" name="name" id="name" class="form-control">
-        </div>
+    <div class="form-group hidden" id="regName">
+        <label for="name"><?= \Yii::t('user', 'login_create_name') ?>:</label>
+        <input type="text" value="<?= Html::encode($preName) ?>" name="name" id="name" class="form-control">
+    </div>
 
     <div class="row">
         <div class="col-md-6">
             <button type="submit" class="btn btn-primary" name="loginusernamepassword">
-                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span> ' . \Yii::t('user', 'login_btn_login') . '</span>
-                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span> ' . \Yii::t('user', 'login_btn_create') . '</span>
+                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span>
+                    <?= \Yii::t('user', 'login_btn_login') ?></span>
+                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span>
+                    <?= \Yii::t('user', 'login_btn_create') ?></span>
             </button>
         </div>
         <div class="col-md-6 passwordRecovery">
-            ' . Html::a(\Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) . '
+            <?= Html::a(\Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) ?>
         </div>
-    </div>';
+    </div>
+    <?php
     echo Html::endForm();
 
     echo '</div>

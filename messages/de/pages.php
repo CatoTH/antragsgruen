@@ -1,9 +1,11 @@
 <?php
 
 return [
-    'list_title' => 'Redaktionelle Texte',
-    'list_add'   => 'Neu anlegen',
-    'list_edit'  => 'Texte bearbeiten',
+    'list_title'    => 'Redaktionelle Texte',
+    'list_add'      => 'Neu anlegen',
+    'list_edit'     => 'Texte bearbeiten',
+    'list_all_cons' => 'Alle Veranstaltungen',
+    'list_this_con' => 'Nur diese Veranstaltung',
 
     'content_privacy_title' => 'Datenschutzerklärung',
     'content_privacy_bread' => 'Datenschutz',

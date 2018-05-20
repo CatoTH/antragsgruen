@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\MessageSource;
 use app\components\ProposedProcedureFactory;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -17,10 +16,8 @@ use app\models\db\Consultation;
 use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\db\UserNotification;
-use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\forms\ConsultationActivityFilterForm;
-use app\models\settings\AntragsgruenApp;
 use yii\web\Response;
 
 class ConsultationController extends Base

@@ -1,9 +1,11 @@
 <?php
 
 return [
-    'list_title' => 'Content pages',
-    'list_add'   => 'Create new',
-    'list_edit'  => 'Edit pages',
+    'list_title'    => 'Content pages',
+    'list_add'      => 'Create new',
+    'list_edit'     => 'Edit pages',
+    'list_all_cons' => 'All consultations',
+    'list_this_con' => 'Only this consultation',
 
     'content_privacy_title' => 'Privacy statement',
     'content_privacy_bread' => 'Privacy',
