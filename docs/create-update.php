@@ -109,13 +109,13 @@ function compareDirectories($dirOldBase, $dirNewBase, $dirRelative)
         if (!in_array($filename, $newFiles)) {
             $GLOBALS['FILES_DELETED'][] = $filename;
         } elseif (!filesAreEqual($dirOldBase . $filename, $dirNewBase . $filename)) {
-            $GLOBALS['FILES_UPDATED'][$filename] = getFileHash($dirNewBase . $filename);
+            $GLOBALS['FILES_UPDATED'][$filename]     = getFileHash($dirNewBase . $filename);
             $GLOBALS['FILES_UPDATED_MD5'][$filename] = md5(file_get_contents($dirNewBase . $filename));
         }
     }
     foreach ($newFiles as $filename) {
         if (!in_array($filename, $oldFiles)) {
-            $GLOBALS['FILES_ADDED'][$filename] = getFileHash($dirNewBase . $filename);
+            $GLOBALS['FILES_ADDED'][$filename]     = getFileHash($dirNewBase . $filename);
             $GLOBALS['FILES_ADDED_MD5'][$filename] = md5(file_get_contents($dirNewBase . $filename));
         }
     }
@@ -182,6 +182,21 @@ function readChangelog($dirNew, $versionOld, $versionNew)
     }
 }
 
+/**
+ * @param string $dirNew
+ * @return string
+ * @throws Exception
+ */
+function readRequiredPhpVersion($dirNew)
+{
+    $composer = file_get_contents($dirNew . 'composer.json');
+    $data     = json_decode($composer, true);
+    if (!isset($data['require']) || !isset($data['require']['php'])) {
+        throw new \Exception('Could not parse composer.json');
+    }
+    return $data['require']['php'];
+}
+
 compareDirectories($dirOld, $dirNew, '');
 $versionOld = readVersionFromDirectory($dirOld);
 $versionNew = readVersionFromDirectory($dirNew);
@@ -190,6 +205,11 @@ if ($skipChangelog) {
 } else {
     $changelog = readChangelog($dirNew, $versionOld, $versionNew);
 }
+
+$phpRequirement = readRequiredPhpVersion($dirNew);
+$requirements   = [
+    "php" => $phpRequirement,
+];
 
 $updateFilename = $versionOld . "-" . $versionNew . ".zip";
 
@@ -208,6 +228,7 @@ foreach (array_keys($GLOBALS["FILES_UPDATED"]) as $file) {
 $updateJson = "
 \"from_version\": " . json_encode($versionOld) . ",
 \"to_version\": " . json_encode($versionNew) . ",
+\"requirements\": " . json_encode($requirements, JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"changelog\": " . json_encode($changelog) . ",
 \"files_updated\": " . json_encode($GLOBALS['FILES_UPDATED'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",
 \"files_updated_md5\": " . json_encode($GLOBALS['FILES_UPDATED_MD5'], JSON_PRETTY_PRINT | JSON_FORCE_OBJECT) . ",

@@ -79,6 +79,9 @@ The update.json looks like this:
 {
     "from_version": "1.2.3",
     "to_version": "1.2.4",
+    "requirements": {
+        "php": ">=5.6.0"
+    },
     "files_updated": {
         "views/anotherfile.php": "hashofanotherfiletxt",
     },
