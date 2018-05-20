@@ -20,6 +20,27 @@ foreach ($success as $msg) {
         <?= ANTRAGSGRUEN_VERSION ?>
 
         <?php
+
+        if (version_compare(PHP_VERSION, '7.1.0', '<')) {
+            echo '<br><br><div class="alert alert-danger">' .
+                'You are using PHP version ' . PHP_VERSION . '. Please upgrade to PHP 7.2 soon, ' .
+                'as PHP 7.0 and below <a href="https://secure.php.net/supported-versions.php">will not be supported after december 2018</a> anymore. ' .
+                'Also, Antragsgrün runs seriously faster with newer versions.' .
+                '</div>';
+        } elseif (version_compare(PHP_VERSION, '7.2.0', '<')) {
+            echo '<br><br><div class="alert alert-info">' .
+                'You are using PHP version ' . PHP_VERSION . '. This is not a problem in itself, ' .
+                'however the update mechanism might be seriously slow with versions below 7.2.0. ' .
+                'Please consider upgrading.' .
+                '</div>';
+        } elseif (!extension_loaded('sodium')) {
+            echo '<br><br><div class="alert alert-info">' .
+                'It seems the <strong>libsodium</strong> extension is missing in this PHP environment. ' .
+                'The updater works without it, but much slower and less secure. ' .
+                'Therefore, we strongly advice to install this extension at your web hoster.' .
+                '</div>';
+        }
+
         $maxtime = ini_get('max_execution_time');
         if ($maxtime < 30) {
             echo '<br><br><div class="alert alert-danger">' .

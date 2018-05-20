@@ -11,6 +11,7 @@ class UpdatedFiles
     public $files_deleted;
     public $from_version;
     public $to_version;
+    public $requirements;
     public $changelog;
 
     /**
@@ -28,5 +29,6 @@ class UpdatedFiles
         $this->from_version      = $data['from_version'];
         $this->to_version        = $data['to_version'];
         $this->changelog         = $data['changelog'];
+        $this->requirements      = (isset($data['requirements']) ? $data['requirements'] : []);
     }
 }

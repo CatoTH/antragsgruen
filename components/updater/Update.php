@@ -74,6 +74,22 @@ class Update
     }
 
     /**
+     * @param string $content
+     * @return boolean
+     */
+    public function checkDownloadIntegrity($content)
+    {
+        if (extension_loaded('sodium')) {
+            return (base64_encode(sodium_crypto_generichash($content)) === $this->signature);
+        } else {
+            // The polyfill uses more than a hundred MB even for a update file less than a MB, thus crashing the system.
+            // So we skip the integrity check here, as this check is not necessary for the overall security:
+            // the actual integrity check is not based on the hash, but on signing the contained update.json.
+            return true;
+        }
+    }
+
+    /**
      * return bool
      */
     public function isDownloaded()
@@ -82,7 +98,7 @@ class Update
             return false;
         }
         $content = file_get_contents($this->getAbsolutePath());
-        return (base64_encode(sodium_crypto_generichash($content)) === $this->signature);
+        return $this->checkDownloadIntegrity($content);
     }
 
     /**
@@ -103,7 +119,7 @@ class Update
             throw new \Exception('The update could not be loaded');
         }
 
-        if (base64_encode(sodium_crypto_generichash($resp)) !== $this->signature) {
+        if (!$this->checkDownloadIntegrity($resp)) {
             throw new \Exception('The update file has the wrong checksum');
         }
 
@@ -167,12 +183,29 @@ class Update
     }
 
     /**
+     * @param array $requirements
+     * @throws \Exception
+     */
+    protected function checkRequirements($requirements)
+    {
+        if (isset($requirements['php']) && substr($requirements['php'], 0, 2) === '>=') {
+            $minVersion = substr($requirements['php'], 2);
+            if (!version_compare(PHP_VERSION, $minVersion, '>=')) {
+                throw new \Exception('This version needs a PHP version of at least: ' . $minVersion .
+                    ' (' . PHP_VERSION . ' is installed)');
+            }
+        }
+    }
+
+    /**
      * @param null|string $version
      * @throws \Exception
      */
     public function verifyFileIntegrityAndPermissions($version = null)
     {
         $filesObj = $this->readUpdateJson();
+
+        $this->checkRequirements($filesObj->requirements);
 
         $zipfile = new \ZipArchive();
         if ($zipfile->open($this->getAbsolutePath()) !== true) {

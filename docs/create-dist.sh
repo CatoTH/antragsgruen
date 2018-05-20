@@ -29,7 +29,7 @@ fi
 npm install
 gulp
 
-rsync -av --exclude='local' --exclude='./dist' --exclude='./updates' --exclude='./plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
+rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/plugins' --exclude='node_modules' --exclude='bower' --exclude='runtime' --exclude='vendor' --exclude='.git' . ./local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
@@ -37,9 +37,9 @@ curl -sS https://getcomposer.org/installer | php
 ./composer.phar global require "fxp/composer-asset-plugin:1.4.1"
 ./composer.phar install --no-dev
 
-rm -R local dist docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
+rm -R local dist updates docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
 rm config/DEBUG config/config.template.json
-rm composer.phar composer.json composer.lock codeception.yml phpci.yml .gitignore .travis.yml
+rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml
 rm web/index-test.php
 mv web/index-production.php web/index.php
 
