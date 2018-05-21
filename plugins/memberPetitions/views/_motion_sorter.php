@@ -46,11 +46,11 @@ use yii\helpers\Html;
             <button type="button" class="btn btn-default" data-sort="created" data-order="asc">
                 Älteste
             </button>
-            <button type="button" class="btn btn-default" data-sort="comments" data-order="desc">
-                <span class="glyphicon glyphicon-comment"></span>
-            </button>
             <button type="button" class="btn btn-default" data-sort="amendments" data-order="desc">
                 <span class="glyphicon glyphicon-flash"></span>
+            </button>
+            <button type="button" class="btn btn-default" data-sort="comments" data-order="desc">
+                <span class="glyphicon glyphicon-comment"></span>
             </button>
         </div>
     </div>
