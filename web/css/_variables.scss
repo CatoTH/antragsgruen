@@ -1,3 +1,6 @@
+$colorGreenDark: rgb(40, 95, 25) !default;
+$colorGreenLight: rgb(175, 203, 8) !default;
+
 $fixedWidthTextStdPadding: 50px !default;
 $fixedWidthTextListPadding: 40px !default;
 $fixedWidthTextQuotePadding: 15px !default;
@@ -14,6 +17,8 @@ $buttonFont: 'sans-serif' !default;
 $motionFixedFont: Courier, sans-serif !default;
 $motionStdFontSize: 14px !default;
 $blockquote-font-size: 14px !default;
+
+$motionListAmendmentColor: $colorGreenLight !default;
 
 $headingFont: 'sans-serif' !default;
 $headingPrimaryText: black !default;

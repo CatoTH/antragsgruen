@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
-$colorGreenDark: rgb(40, 95, 25);
-$colorGreenLight: rgb(175, 203, 8);
+$colorGreenDark: rgb(40, 95, 25) !default;
+$colorGreenLight: rgb(175, 203, 8) !default;
 $colorLinksLight: #6d7e00;
 $colorLinks: #6d7e00;
 $linkTextDecoration: none;

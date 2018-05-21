@@ -30,6 +30,12 @@ $brand-success: $colorMagenta;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: $colorMagenta;
 $breadcrumb-color: #555;
+$alert-success-bg: $colorYellow;
+$alert-success-border: darken($colorYellow, 10%);
+$alert-success-text: black;
+
+$motionListAmendmentColor: #555;
+
 
 $headingFont: "Montserrat", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
@@ -76,6 +82,7 @@ $createMotionTextColor: $menuLink;
 @import "../../web/css/elements";
 @import "../../web/css/bootstrap_fuelux_overwrites";
 @import "../../web/css/base_layout";
+@import "../../web/css/contentpage";
 @import "../../web/css/consultation_motion_list";
 @import "../../web/css/motions";
 @import "../../web/css/proposed_procedure";
