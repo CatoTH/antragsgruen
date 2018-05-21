@@ -212,10 +212,10 @@ class ConsultationText extends ActiveRecord
         if (!$foundText) {
             $foundText = $defaultPage;
             if (!in_array($pageKey, static::getSystemwidePages())) {
-                $foundText->siteId = $site->id;
+                $foundText->siteId = ($site ? $site->id : null);
             }
             if (!in_array($pageKey, static::getSitewidePages())) {
-                $foundText->consultationId = $consultation->id;
+                $foundText->consultationId = ($consultation ? $consultation->id : null);
             }
         } else {
             if (!$foundText->breadcrumb && $defaultPage) {

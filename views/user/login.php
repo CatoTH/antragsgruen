@@ -31,7 +31,7 @@ $params = \Yii::$app->params;
 echo '<h1>' . \Yii::t('user', 'login_title') . '</h1>';
 
 $loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login');
-if ($loginText) {
+if ($loginText && trim($loginText->text) !== '') {
     echo '<div class="content">';
     echo $loginText->text;
     echo '</div>';
