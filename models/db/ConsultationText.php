@@ -195,6 +195,9 @@ class ConsultationText extends ActiveRecord
                 'category' => 'pagedata',
                 'textId'   => $pageKey,
             ]);
+            if (!$template) {
+                $template = static::getDefaultPage($pageKey);
+            }
             $foundText             = new ConsultationText();
             $foundText->category   = 'pagedata';
             $foundText->textId     = $pageKey;
@@ -233,11 +236,11 @@ class ConsultationText extends ActiveRecord
     public static function getAllPages($site, $consultation)
     {
         /** @var ConsultationText[] $text */
-        $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null]);
+        $pages = ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null, 'category' => 'pagedata']);
         if ($consultation) {
             $pages = array_merge(
                 $pages,
-                ConsultationText::findAll(['consultationId' => $consultation->id])
+                ConsultationText::findAll(['consultationId' => $consultation->id, 'category' => 'pagedata'])
             );
         }
         usort($pages, function ($page1, $page2) {
