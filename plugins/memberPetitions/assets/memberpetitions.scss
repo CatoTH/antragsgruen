@@ -1,9 +1,32 @@
 @charset "UTF-8";
 
+$headingFont: "Arvo", sans-serif;
+$headingPrimaryText: rgb(255, 255, 255);
+$headingPrimaryBackground: #0a321e;
+$headingSecondaryText: rgb(255, 255, 255);
+$headingSecondaryBackground: rgb(175, 203, 8);
+$headingTertiaryText: black;
+$headingTertiaryBackground: rgb(27, 74, 251);
+
 @import "../../../web/css/variables";
+@import "../../../web/css/mixins";
 
 .siteDescriptionPetition {
   text-transform: uppercase;
+}
+
+.motionList {
+  li.green {
+    @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
+    margin-left: -21px;
+    margin-right: -21px;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    width: calc(100% + 42px);
+    &:first-child {
+      margin-top: 20px;
+    }
+  }
 }
 
 .memberPetitionHome {

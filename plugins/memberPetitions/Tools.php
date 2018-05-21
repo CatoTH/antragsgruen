@@ -12,6 +12,7 @@ use app\models\events\MotionEvent;
 use app\models\supportTypes\ISupportType;
 use app\plugins\memberPetitions\notifications\DiscussionSubmitted;
 use app\plugins\memberPetitions\notifications\PetitionSubmitted;
+use app\components\Tools as DateTools;
 
 class Tools
 {
@@ -87,6 +88,7 @@ class Tools
                 continue;
             }
             $all = array_merge($all, static::getPetitionType($consultation)->getVisibleMotions(false));
+            $all = array_merge($all, static::getMotionsCollecting($consultation));
             $all = array_merge($all, static::getDiscussionType($consultation)->getVisibleMotions(false));
         }
         return $all;
@@ -352,6 +354,27 @@ class Tools
 
     /**
      * @param IMotion $motion
+     * @return int
+     */
+    public static function getMotionPhaseNumber(IMotion $motion)
+    {
+        if ($motion->getMyMotionType()->id === Tools::getDiscussionType($motion->getMyConsultation())->id) {
+            return 1; // In Discussion
+        } elseif ($motion->getMyMotionType()->id === Tools::getPetitionType($motion->getMyConsultation())->id) {
+            if ($motion->status === IMotion::STATUS_COLLECTING_SUPPORTERS) {
+                return 2; // Collecting
+            } elseif ($motion->status === IMotion::STATUS_PROCESSED) {
+                return 4; // Answered
+            } else {
+                return 3; // Waiting for answer
+            }
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * @param IMotion $motion
      * @return bool
      * @throws \Exception
      */
@@ -438,5 +461,20 @@ class Tools
             return 0;
         });
         return $tags;
+    }
+
+    /**
+     * @param IMotion $motion
+     * @return int
+     */
+    public static function getMotionTimestamp(IMotion $motion)
+    {
+        if ($motion->datePublication) {
+            return DateTools::dateSql2timestamp($motion->datePublication);
+        } elseif ($motion->dateCreation) {
+            return DateTools::dateSql2timestamp($motion->dateCreation);
+        } else {
+            return 0;
+        }
     }
 }
