@@ -290,7 +290,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->organizationIds) {
             $organizationIds = json_decode($this->organizationIds, true);
-            if ($this->isWurzelwerkUser() || true) {
+            if ($this->isWurzelwerkUser()) {
                 $organizationIds = WurzelwerkSamlClient::resolveOrganizationIds($organizationIds);
             }
             return $organizationIds;

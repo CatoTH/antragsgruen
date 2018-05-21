@@ -53,14 +53,20 @@ var onInitIsotope = function (Isotope) {
             sort = $(this).data("sort"),
             asc = ($this.data("order") !== 'desc');
         var opts = {sortBy: sort, sortAscending: asc};
-        if (sort !== 'phase') {
+        if (sort === 'phase') {
+            if (currFilter === '*') {
+                opts['filter'] = '*';
+            } else {
+                opts['filter'] = currFilter;
+            }
+        } else {
             if (currFilter === '*') {
                 opts['filter'] = '.motion';
             } else {
                 opts['filter'] = currFilter;
             }
         }
-        
+
         grid.arrange(opts);
         $(".motionListFilter .motionSort button").removeClass("active");
         $(this).addClass("active");
