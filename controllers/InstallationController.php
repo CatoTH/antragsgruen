@@ -115,6 +115,8 @@ class InstallationController extends Base
     /**
      * @param string $language
      * @return string
+     * @throws Internal
+     * @throws \yii\base\ExitException
      */
     public function actionIndex($language = '')
     {

@@ -104,6 +104,9 @@ echo Html::beginForm('', 'post', [
         </div>
     </div>
 
+<?php
+if (!$form->databaseParamsComeFromEnv()) {
+    ?>
     <h2 class="green"><?= \Yii::t('manager', 'config_db') ?></h2>
     <div class="content">
 
@@ -185,6 +188,10 @@ echo Html::beginForm('', 'post', [
             <div class="alreadyCreatedHint"><?= \Yii::t('manager', 'config_db_create_hint') ?></div>
         </div>
     </div>
+
+    <?php
+}
+?>
 
     <h2 class="green"><?= \Yii::t('manager', 'config_admin') ?></h2>
     <div class="content">

@@ -41,7 +41,11 @@ class AntragsgruenInitDb extends Model
     {
         parent::__construct();
         $config = $this->readConfigFromFile($configFile);
-        $this->setDatabaseFromParams($config->dbConnection);
+        if ($this->databaseParamsComeFromEnv()) {
+            $this->setMysqlFromEnv();
+        } else {
+            $this->setDatabaseFromParams($config->dbConnection);
+        }
         $this->adminIds = ($config->adminUserIds ? $config->adminUserIds : []);
         $this->language = $config->baseLanguage;
     }
@@ -75,6 +79,26 @@ class AntragsgruenInitDb extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function databaseParamsComeFromEnv()
+    {
+        return isset($_ENV['ANTRAGSGRUEN_MYSQL_USER']) && isset($_ENV['ANTRAGSGRUEN_MYSQL_PASSWORD']) &&
+            isset($_ENV['ANTRAGSGRUEN_MYSQL_HOST']) && isset($_ENV['ANTRAGSGRUEN_MYSQL_DB']);
+    }
+
+    /**
+     */
+    private function setMysqlFromEnv()
+    {
+        $this->sqlUsername = $_ENV['ANTRAGSGRUEN_MYSQL_USER'];
+        $this->sqlPassword = $_ENV['ANTRAGSGRUEN_MYSQL_PASSWORD'];
+        $this->sqlDB       = $_ENV['ANTRAGSGRUEN_MYSQL_DB'];
+        $this->sqlHost     = $_ENV['ANTRAGSGRUEN_MYSQL_HOST'];
+        $this->sqlType     = 'mysql';
+    }
+
+    /**
      * @param array $params
      */
     private function setDatabaseFromParams($params)
@@ -90,18 +114,18 @@ class AntragsgruenInitDb extends Model
         }
 
         $parts = explode(':', $params['dsn']);
-        if (count($parts) != 2) {
+        if (count($parts) !== 2) {
             return;
         }
         $this->sqlType = $parts[0];
         $params        = explode(';', $parts[1]);
         for ($i = 0; $i < count($params); $i++) {
             $parts = explode('=', $params[$i]);
-            if (count($parts) == 2) {
-                if ($parts[0] == 'dbname') {
+            if (count($parts) === 2) {
+                if ($parts[0] === 'dbname') {
                     $this->sqlDB = $parts[1];
                 }
-                if ($parts[0] == 'host') {
+                if ($parts[0] === 'host') {
                     $this->sqlHost = $parts[1];
                 }
             }
