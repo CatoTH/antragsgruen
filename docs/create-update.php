@@ -189,12 +189,8 @@ function readChangelog($dirNew, $versionOld, $versionNew)
  */
 function readRequiredPhpVersion($dirNew)
 {
-    $composer = file_get_contents($dirNew . 'composer.json');
-    $data     = json_decode($composer, true);
-    if (!isset($data['require']) || !isset($data['require']['php'])) {
-        throw new \Exception('Could not parse composer.json');
-    }
-    return $data['require']['php'];
+    require_once($dirNew . 'config/defines.php');
+    return '>=' . ANTRAGSGRUEN_MIN_PHP_VERSION;
 }
 
 compareDirectories($dirOld, $dirNew, '');

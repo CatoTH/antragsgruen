@@ -47,7 +47,7 @@ class InstallationController extends Base
      */
     private function initDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable)
     {
-        if (PHP_VERSION_ID < 50600) {
+        if (!version_compare(PHP_VERSION, ANTRAGSGRUEN_MIN_PHP_VERSION, '>=')) {
             $phpVersionWarning = str_replace('%VERSION%', phpversion(), \Yii::t('manager', 'err_php_version'));
         } else {
             $phpVersionWarning = null;
