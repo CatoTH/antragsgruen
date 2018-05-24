@@ -9,8 +9,6 @@ $ptSansFontPath: "../fonts/gruenes-ci/";
 
 $contentBorderRadius: 0;
 
-$colorGreenDark: rgb(40, 95, 25);
-$colorGreenLight: rgb(175, 203, 8);
 $colorLinksLight: #6d7e00;
 $colorLinks: #6d7e00;
 $linkTextDecoration: none;
@@ -35,7 +33,7 @@ $menuActive: rgb(115, 115, 115);
 $sidebarBackground: $colorMagenta;
 $sidebarActionFont: "Arvo", sans-serif;
 
-$bookmarkAmendmentColor: $colorGreenLight;
+$bookmarkAmendmentBackground: $colorGreenLight;
 $bookmarkCommentColor: $colorMagenta;
 
 $bodyFont: "PT Sans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -56,6 +54,7 @@ $createMotionBtnColor: $colorMagenta;
 @import "elements";
 @import "bootstrap_fuelux_overwrites";
 @import "base_layout";
+@import "contentpage";
 @import "consultation_motion_list";
 @import "motions";
 @import "proposed_procedure";

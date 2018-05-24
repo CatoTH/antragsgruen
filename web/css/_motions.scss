@@ -222,7 +222,7 @@
       padding: 10px;
       top: 0;
       left: 2px;
-      color: #fff;
+      color: $bookmarkAmendmentText;
       min-width: 40px;
       -moz-border-radius-topright: 10px;
       -webkit-border-top-right-radius: 10px;
@@ -243,7 +243,7 @@
       }
     }
     &.amendment > a {
-      @include linear-gradient(90deg, $bookmarkAmendmentColor, lighten($bookmarkAmendmentColor, 3.5%));
+      @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
     }
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));

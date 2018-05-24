@@ -13,8 +13,6 @@ $colorDarkGrey: rgb(64, 64, 64);
 $colorMediumGrey: rgb(120, 120, 120);
 $colorLightGrey: rgb(166, 166, 166);
 $colorBlue: rgb(27, 74, 251);
-$colorGreenDark: rgb(40, 95, 25);
-$colorGreenLight: rgb(175, 203, 8);
 $colorRed: rgb(221,11,24);
 $colorGreen: green;
 $colorLinksLight: $colorRed;
@@ -44,7 +42,7 @@ $menuActive: rgb(51, 51, 51);
 $sidebarBackground: $colorRed;
 $sidebarActionFont: "FiraSans", sans-serif;
 
-$bookmarkAmendmentColor: $colorRed;
+$bookmarkAmendmentBackground: $colorRed;
 $bookmarkCommentColor: $colorGreen;
 
 $bodyFont: "FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -65,6 +63,7 @@ $createMotionBtnColor: $colorRed;
 @import "elements";
 @import "bootstrap_fuelux_overwrites";
 @import "base_layout";
+@import "contentpage";
 @import "consultation_motion_list";
 @import "motions";
 @import "proposed_procedure";

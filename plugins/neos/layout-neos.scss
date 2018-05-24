@@ -1,0 +1,123 @@
+@charset "UTF-8";
+
+$icon-font-path: "../../fonts/";
+@import "../../web/css/variables";
+
+$montserratFontPath: "./montserrat/";
+@import "montserrat";
+$OpenSansPath: "../../fonts/OpenSans/fonts";
+@import "../../web/fonts/OpenSans/open-sans.scss";
+
+$contentBorderRadius: 0;
+$use-box-shadow: false;
+
+$colorDarkGrey: #343434;
+$colorMediumGrey: rgb(120, 120, 120);
+$colorLightGrey: rgb(166, 166, 166);
+$colorBlue: rgb(27, 74, 251);
+$colorGreenDark: rgb(40, 95, 25);
+$colorGreenLight: rgb(175, 203, 8);
+$colorRed: rgb(221,11,24);
+$colorMagenta: rgb(232, 65, 136);
+$colorGreen: green;
+$colorYellow: #ffed00;
+$colorLinksLight: $colorMagenta;
+$colorLinks: $colorMagenta;
+$linkTextDecoration: none;
+$colorDelLink: $colorRed;
+$brand-primary: $colorMagenta;
+$brand-success: $colorMagenta;
+$text-color: rgb(72, 70, 73);
+$btn-success-bg: $colorMagenta;
+$breadcrumb-color: #555;
+$alert-success-bg: $colorYellow;
+$alert-success-border: darken($colorYellow, 10%);
+$alert-success-text: black;
+
+$motionListAmendmentColor: #555;
+
+
+$headingFont: "Montserrat", sans-serif;
+$headingPrimaryText: rgb(255, 255, 255);
+$headingPrimaryBackground: $colorDarkGrey;
+$headingSecondaryText: rgb(255, 255, 255);
+$headingSecondaryBackground: $colorLightGrey;
+$headingTertiaryText: black;
+$headingTertiaryBackground: rgb(200, 200, 200);
+
+$headingFontUppercase: false;
+$headingFontBold: false;
+$headingTextShadow: false;
+
+$menuFont: "Montserrat", sans-serif;
+$menuLink: #343434;
+$menuActive: #000;
+
+$sidebarBackground: white;
+$sidebarActionFont: "Montserrat", sans-serif;
+$sidebarBackgroundGradient: false;
+$sidebarTextColor: #666;
+$sidebarUppercase: false;
+
+$bookmarkAmendmentBackground: $colorYellow;
+$bookmarkAmendmentText: black;
+$bookmarkCommentColor: $colorGreen;
+
+$bodyFont: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$deadlineCircleFont: "Montserrat", sans-serif;
+$buttonFont: "Montserrat", sans-serif;
+
+$motionFixedFont: 'Open Sans', Consolas, Courier, sans-serif;
+$motionFixedFontColor: #222;
+$motionFixedWidth: 740px;
+$motionStdFontSize: 14px;
+$inlineAmendmentPreambleHeight: 35px;
+$inlineAmendmentPreambleColor: $colorRed;
+$createMotionBtnColor: $colorYellow;
+$createMotionTextColor: $menuLink;
+
+@import "../../web/css/bootstrap";
+@import "../../web/css/fontello";
+@import "../../web/css/helpers";
+@import "../../web/css/elements";
+@import "../../web/css/bootstrap_fuelux_overwrites";
+@import "../../web/css/base_layout";
+@import "../../web/css/contentpage";
+@import "../../web/css/consultation_motion_list";
+@import "../../web/css/motions";
+@import "../../web/css/proposed_procedure";
+@import "../../web/css/styles";
+@import "../../web/css/sidebar";
+
+.motionListStd .motion .title a  {
+  font-family: "Montserrat", sans-serif;
+}
+
+html {
+  background: $colorMagenta;
+}
+body {
+  background: $colorMagenta;
+  -webkit-font-smoothing: antialiased;
+}
+
+.well {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.footer {
+  color: #fff;
+  a, a:link, a:visited {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
+.adminMotionTable {
+  tr.motion {
+    .prefixCol, .titleCol {
+      font-weight: bold;
+    }
+  }
+}

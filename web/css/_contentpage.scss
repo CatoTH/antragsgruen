@@ -1,0 +1,11 @@
+.contentPage {
+  margin-left: -1px;
+  margin-right: -1px;
+
+  .textHolder {
+    > h1, > h2.green, h2.darkgreen {
+      margin-left: -20px;
+      margin-right: -20px;
+    }
+  }
+}
