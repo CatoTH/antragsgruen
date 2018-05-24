@@ -39,7 +39,7 @@ echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 
 echo $this->render('_list_all_export');
 
-echo '<div class="content fuelux" data-antragsgruen-load-class="backend/MotionList">';
+echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">';
 
 echo $controller->showErrors();
 

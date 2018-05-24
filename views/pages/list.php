@@ -30,7 +30,8 @@ $foundPageIds = [];
             <?php
             foreach ($pages as $page) {
                 $title = $page->title . ' (' . $page->textId . ')';
-                echo '<li>' . Html::a(Html::encode($title), $page->getUrl()) . '</li>';
+                $options = ['class' => 'editPage ' . $page->textId];
+                echo '<li>' . Html::a(Html::encode($title), $page->getUrl(), $options) . '</li>';
                 $foundPageIds[] = $page->textId;
             }
             ?>
@@ -53,8 +54,9 @@ $foundPageIds = [];
                 if (!in_array($textId, ConsultationText::getSitewidePages())) {
                     $params['consultationPath'] = $controller->consultation->urlPath;
                 }
+                $options = ['class' => 'createPage ' . $textId];
                 $url = \app\components\UrlHelper::createUrl($params);
-                echo '<li>' . Html::a(Html::encode($title . ' (' . $textId . ')'), $url) . '</li>';
+                echo '<li>' . Html::a(Html::encode($title . ' (' . $textId . ')'), $url, $options) . '</li>';
             }
             ?>
         </ul>

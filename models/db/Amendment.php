@@ -842,7 +842,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
         }
         $this->save(true);
-        $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
+        $this->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($this));
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_SCREEN, $this->id);
     }
 

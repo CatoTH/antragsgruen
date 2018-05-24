@@ -647,15 +647,6 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @return bool
-     */
-    public function hasHelpPage()
-    {
-        $text = ConsultationText::findOne(['consultationId' => $this->id, 'textId' => 'help']);
-        return ($text !== null);
-    }
-
-    /**
      */
     public function setDeleted()
     {

@@ -8,6 +8,7 @@ use app\controllers\Base;
 use app\controllers\UserController;
 use app\models\AdminTodoItem;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ConsultationText;
 use app\models\db\User;
 use yii\helpers\Html;
 
@@ -160,9 +161,10 @@ class StdHooks extends HooksAdapter
                 $out     .= '<li class="active">' .
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
                     '</li>';
-                if ($controller->consultation->hasHelpPage()) {
-                    $helpLink = UrlHelper::createUrl('page/help');
-                    $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+                $helpPage = ConsultationText::getPageData($controller->site, $controller->consultation, 'help');
+                if ($helpPage && $helpPage->text !== \Yii::t('pages', 'content_help_place')) {
+                    $title = \Yii::t('base', 'Help');
+                    $out      .= '<li>' . Html::a($title, $helpPage->getUrl(), ['id' => 'helpLink']) . '</li>';
                 }
             } else {
                 $startLink = UrlHelper::createUrl('manager/index');

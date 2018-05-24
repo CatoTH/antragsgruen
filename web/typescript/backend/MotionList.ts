@@ -1,6 +1,6 @@
 /// <reference path="../typings/colresizable/index.d.ts" />
 
-class MotionList {
+export class MotionList {
     constructor() {
         this.initList();
         this.initExportRow();

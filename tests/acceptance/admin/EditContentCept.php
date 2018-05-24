@@ -13,7 +13,9 @@ $I->dontSeeElement('#helpLink');
 $I->wantTo('create the help page');
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage();
-$I->click('#helpCreateLink');
+$I->click('#contentPages');
+$I->dontSee('.editPage.help');
+$I->click('.createPage.help');
 $I->click('.editCaller');
 $I->wait(1);
 $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<p>New text</p>");');
@@ -31,6 +33,7 @@ $I->executeJS('$(".contentPageWelcome").find(".editCaller").click();');
 $I->wait(2);
 $I->executeJS('CKEDITOR.instances.stdTextHolder.setData("<b>Bold test</b>");');
 $I->executeJS('$(".contentPageWelcome").find(".textSaver button").click();');
+$I->wait(1);
 $I->see('Bold test');
 
 $I->gotoConsultationHome();

@@ -47,7 +47,7 @@ echo '<li class="secondary">';
 echo Html::a(
     Yii::t('admin', 'index_pages'),
     UrlHelper::createUrl('pages/list-pages'),
-    ['id' => 'helpCreateLink']
+    ['id' => 'contentPages']
 );
 echo '</li>';
 
