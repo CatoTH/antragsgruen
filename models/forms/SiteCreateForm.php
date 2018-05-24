@@ -621,7 +621,8 @@ class SiteCreateForm extends Model
     {
         $contactHtml               = nl2br(Html::encode($site->contact));
         $legalText                 = new ConsultationText();
-        $legalText->consultationId = $consultation->id;
+        $legalText->consultationId = null;
+        $legalText->siteId         = $site->id;
         $legalText->category       = 'pagedata';
         $legalText->textId         = 'legal';
         $legalText->text           = str_replace('%CONTACT%', $contactHtml, \Yii::t('base', 'legal_template'));
@@ -630,7 +631,7 @@ class SiteCreateForm extends Model
         }
 
         $params = AntragsgruenApp::getInstance();
-        if ($params->mode == 'sandbox') {
+        if ($params->mode === 'sandbox') {
             $siteurl                   = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
             $welcomeHtml               = str_replace(
                 ['%ADMIN_USERNAME%', '%ADMIN_PASSWORD%', '%SITE_URL%'],
@@ -638,6 +639,7 @@ class SiteCreateForm extends Model
                 \Yii::t('wizard', 'sandbox_dummy_welcome')
             );
             $legalText                 = new ConsultationText();
+            $legalText->siteId         = $site->id;
             $legalText->consultationId = $consultation->id;
             $legalText->category       = 'pagedata';
             $legalText->textId         = 'welcome';
