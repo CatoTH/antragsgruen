@@ -106,12 +106,10 @@ abstract class IPolicy
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @return bool
-     * @throws Internal
      */
     public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
     {
-
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             $consultation = $this->motionType->getConsultation();
             if (!User::havePrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;

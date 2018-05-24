@@ -2,6 +2,7 @@
 
 namespace app\plugins\memberPetitions;
 
+use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 use app\models\policies\IPolicy;
 
@@ -38,7 +39,7 @@ class MotionPolicy extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('memberpetitions', 'policy_motion_denied');
@@ -49,7 +50,7 @@ class MotionPolicy extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('memberpetitions', 'policy_amend_denied');

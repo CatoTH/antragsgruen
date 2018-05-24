@@ -2,6 +2,8 @@
 
 namespace app\models\policies;
 
+use app\models\db\ConsultationMotionType;
+
 class All extends IPolicy
 {
     /**
@@ -35,7 +37,7 @@ class All extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';
@@ -46,7 +48,7 @@ class All extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return '';

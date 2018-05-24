@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
@@ -23,6 +24,7 @@ use yii\db\ActiveRecord;
  * @property int $texTemplateId
  * @property string $deadlineMotions
  * @property string $deadlineAmendments
+ * @property string $deadlines
  * @property int $policyMotions
  * @property int $policyAmendments
  * @property int $policyComments
@@ -58,6 +60,13 @@ class ConsultationMotionType extends ActiveRecord
     const INITIATORS_MERGE_NEVER           = 0;
     const INITIATORS_MERGE_NO_COLLISSION   = 1;
     const INITIATORS_MERGE_WITH_COLLISSION = 2;
+
+    const DEADLINE_MOTIONS    = 'motions';
+    const DEADLINE_AMENDMENTS = 'amendments';
+    const DEADLINE_COMMENTS   = 'comments';
+    const DEADLINE_MERGING    = 'merging';
+
+    protected $deadlinesObject = null;
 
     /**
      * @return string
@@ -120,6 +129,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionPolicy()
     {
@@ -128,6 +138,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentPolicy()
     {
@@ -136,6 +147,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getCommentPolicy()
     {
@@ -144,6 +156,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionSupportPolicy()
     {
@@ -152,6 +165,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentSupportPolicy()
     {
@@ -160,6 +174,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return ISupportType
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionSupportTypeClass()
     {
@@ -168,6 +183,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return ISupportType
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentSupportTypeClass()
     {
@@ -189,6 +205,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPDFLayout|null
+     * @throws \app\models\exceptions\Internal
      */
     public function getPDFLayoutClass()
     {
@@ -234,31 +251,69 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-
     /**
-     * @return bool
+     * @param string $type
+     * @return array
      */
-    public function motionDeadlineIsOver()
+    public function getDeadlines($type)
     {
-        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineMotions);
-        if ($this->deadlineMotions != '' && date('YmdHis') > $normalized) {
-            return true;
-        } else {
-            return false;
+        if ($this->deadlinesObject === null) {
+            $this->deadlinesObject = json_decode($this->deadlines, true);
         }
+        return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
     }
 
     /**
+     * @param array $deadline
+     * @param null|int $timestamp
      * @return bool
      */
-    public function amendmentDeadlineIsOver()
+    public function isInDeadlineRange($deadline, $timestamp = null)
     {
-        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineAmendments);
-        if ($this->deadlineAmendments != '' && date('YmdHis') > $normalized) {
-            return true;
-        } else {
-            return false;
+        if ($timestamp === null) {
+            $timestamp = time();
         }
+        if ($deadline['start']) {
+            $startTs = Tools::dateSql2timestamp($deadline['start']);
+            if ($startTs > $timestamp) {
+                return false;
+            }
+        }
+        if ($deadline['end']) {
+            $endTs = Tools::dateSql2timestamp($deadline['end']);
+            if ($endTs < $timestamp) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param string $type
+     * @return \DateTime|null
+     */
+    public function getUpcomingDeadline($type)
+    {
+        foreach ($this->getDeadlines($type) as $deadline) {
+            if ($this->isInDeadlineRange($deadline) && $deadline['end']) {
+                return $deadline['end'];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    public function isInDeadline($type)
+    {
+        foreach ($this->getDeadlines($type) as $deadline) {
+            if ($this->isInDeadlineRange($deadline)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

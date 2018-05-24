@@ -2,6 +2,7 @@
 
 namespace app\models\siteSpecificBehavior;
 
+use app\models\db\ConsultationMotionType;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\Internal;
@@ -15,6 +16,7 @@ class Permissions
     /**
      * @param Motion $motion
      * @return bool
+     * @throws Internal
      */
     public function motionCanEdit($motion)
     {
@@ -52,14 +54,14 @@ class Permissions
         }
 
         if ($consultation->getSettings()->iniatorsMayEdit && $motion->iAmInitiator()) {
-            if ($motion->motionType->motionDeadlineIsOver()) {
-                return false;
-            } else {
+            if ($motion->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
                 if (count($motion->getVisibleAmendments()) > 0) {
                     return false;
                 } else {
                     return true;
                 }
+            } else {
+                return false;
             }
         }
 
@@ -143,7 +145,7 @@ class Permissions
                     return false;
                 }
             }
-            if ($motion->motionType->amendmentDeadlineIsOver()) {
+            if (!$motion->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
                 if ($exceptions) {
                     throw new NotAmendable(\Yii::t('structure', 'policy_deadline_over'), true);
                 } else {
@@ -169,6 +171,7 @@ class Permissions
     /**
      * @param Motion $motion
      * @return bool
+     * @throws Internal
      */
     public function motionCanFinishSupportCollection($motion)
     {
