@@ -43,7 +43,7 @@ $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimalisticUI;
-$minHeight               = $sidebarRows * 40 - 100;
+$minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';

@@ -113,12 +113,15 @@ class Base extends Controller
         }
 
         // Login and Mainainance mode is always allowed
-        if (get_class($this) == UserController::class) {
+        if (get_class($this) === UserController::class) {
             return true;
         }
-        $allowedActions = ['maintenance', 'help', 'legal', 'privacy'];
-        if (get_class($this) == ConsultationController::class && in_array($action->id, $allowedActions)) {
-            return true;
+
+        if (get_class($this) === PagesController::class && $action->id === 'show-page') {
+            $allowedPages = ['maintenance', 'help', 'legal', 'privacy'];
+            if (in_array(\Yii::$app->request->get('pageSlug'), $allowedPages)) {
+                return true;
+            }
         }
 
         if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
@@ -265,7 +268,7 @@ class Base extends Controller
         $settings = $this->consultation->getSettings();
         $admin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
-            $this->redirect(UrlHelper::createUrl('consultation/maintenance'));
+            $this->redirect(UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'maintenance']));
             return true;
         }
         return false;

@@ -27,11 +27,11 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_MOTION_ID              = 121;
     const FIRST_FREE_MOTION_TITLE_PREFIX    = 'A9';
     const FIRST_FREE_AMENDMENT_TITLE_PREFIX = 'Ä8';
-    const FIRST_FREE_MOTION_SECTION         = 42;
+    const FIRST_FREE_MOTION_SECTION         = 51;
     const FIRST_FREE_AMENDMENT_ID           = 283;
     const FIRST_FREE_AGENDA_ITEM_ID         = 15;
     const FIRST_FREE_COMMENT_ID             = 1;
-    const FIRST_FREE_MOTION_TYPE            = 14;
+    const FIRST_FREE_MOTION_TYPE            = 17;
     const FIRST_FREE_CONSULTATION_ID        = 11;
     const FIRST_FREE_VOTING_BLOCK_ID        = 3;
 
