@@ -13,7 +13,7 @@ const gulp = require('gulp'),
         "node_modules/intl/dist/Intl.min.js"
     ];
 
-gulp.task('copy-files', function() {
+const taskCopyFiles = gulp.series((done) => {
     gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
@@ -27,9 +27,10 @@ gulp.task('copy-files', function() {
     gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
+    done();
 });
 
-gulp.task('pdfjs', function () {
+const taskBuildPdfjs = gulp.series((done) => {
     gulp.src([
             "web/js/pdfjs-viewer/compatibility.js", "web/js/pdfjs-viewer/l10n.js",
             "node_modules/pdfjs-dist/build/pdf.combined.js",
@@ -44,10 +45,11 @@ gulp.task('pdfjs', function () {
         .pipe(concat('pdfjs-viewer.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('./web/js/build/'));
+    done();
 });
 
-gulp.task('build-typescript', function() {
-    var tsResult = gulp.src('web/typescript/**/*.ts')
+const taskBuildTypescript = gulp.series((done) => {
+    let tsResult = gulp.src('web/typescript/**/*.ts')
         .pipe(sourcemaps.init())
         .pipe(tsProject());
 
@@ -55,9 +57,11 @@ gulp.task('build-typescript', function() {
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/js/build/'));
+    done();
 });
+taskBuildTypescript.displayName = 'Building Typescript';
 
-gulp.task('build-js', function () {
+const taskBuildJs = gulp.series((done) => {
     gulp.src(main_js_files)
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen.min.js'))
@@ -85,33 +89,44 @@ gulp.task('build-js', function () {
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
+    done();
 });
 
-gulp.task('build-css', function () {
+const taskBuildCss = gulp.series((done) => {
     gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(postcss([ autoprefixer({browsers: [">1%", "last 10 versions", "IE 9", "Firefox 3"]}) ]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
+    done();
 });
 
-gulp.task('build-plugin-css', function () {
+const taskBuildPluginCss = gulp.series((done) => {
     gulp.src("plugins/**/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(postcss([ autoprefixer({browsers: [">1%", "last 10 versions", "IE 9", "Firefox 3"]}) ]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('plugins/'));
+    done();
 });
 
-
-gulp.task('watch', function () {
-    gulp.watch(main_js_files, ['build-js']);
-    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], ['build-js']);
-    gulp.watch(["web/css/*.scss"], ['build-css']);
-    gulp.watch(["plugins/**/*.scss"], ['build-plugin-css']);
-    gulp.watch(['./web/typescript/**/*.ts'], ['build-typescript']);
+const taskWatch = gulp.parallel((done) => {
+    gulp.watch(main_js_files, taskBuildJs);
+    gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], taskBuildJs);
+    gulp.watch(["web/css/*.scss"], taskBuildCss);
+    gulp.watch(["plugins/**/*.scss"], taskBuildPluginCss);
+    gulp.watch(['./web/typescript/**/*.ts'], taskBuildTypescript);
+    done();
 });
 
-gulp.task('default', ['build-js', 'build-typescript', 'build-css', 'pdfjs', 'copy-files']);
+gulp.task('build-js', taskBuildJs);
+gulp.task('build-typescript', taskBuildTypescript);
+gulp.task('pdfjs', taskBuildPdfjs);
+gulp.task('build-css', taskBuildCss);
+gulp.task('build-plugin-css', taskBuildPluginCss);
+gulp.task('copy-files', taskCopyFiles);
+gulp.task('watch', taskWatch);
+
+gulp.task('default', gulp.parallel(taskBuildJs, taskBuildTypescript, taskBuildCss, taskBuildPdfjs, taskCopyFiles));
