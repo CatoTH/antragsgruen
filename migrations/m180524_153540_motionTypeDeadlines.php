@@ -24,12 +24,14 @@ class m180524_153540_motionTypeDeadlines extends Migration
                 $amendments[] = [
                     'start' => null,
                     'end'   => $type->deadlineAmendments,
+                    'title' => null,
                 ];
             }
             if ($type->deadlineMotions) {
                 $motions[] = [
                     'start' => null,
                     'end'   => $type->deadlineMotions,
+                    'title' => null,
                 ];
             }
             $type->setAttribute("deadlines", json_encode([

@@ -967,28 +967,22 @@ VALUES
 -- Dumping data for table `consultationMotionType`
 --
 
-INSERT INTO `###TABLE_PREFIX###consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlineMotions`, `deadlineAmendments`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupportMotions`, `policySupportAmendments`, `initiatorsCanMergeAmendments`, `motionLikesDislikes`, `amendmentLikesDislikes`, `contactName`, `contactEmail`, `contactPhone`, `supportType`, `supportTypeSettings`, `amendmentMultipleParagraphs`, `status`, `layoutTwoCols`)
-VALUES
-  (1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0,
-   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 1),
-  (5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', '', 0, NULL, 0, 1, NULL, NULL, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true}', 1, 0, 1),
-  (7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, NULL, NULL, 4, 4, 4, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, NULL, NULL, 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, NULL, NULL, 2, 2, 0, 2, 0, 0, 4, 4, 0, 2, 1, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (11, 8, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (12, 9, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
-  (13, 10, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, NULL, NULL, -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-   '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0,
-   0),
-  (14, 8, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":2,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
-  (15, 9, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
-  (16, 10, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, NULL, NULL, 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2,
-   '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0,
-   0);
+INSERT INTO `###TABLE_PREFIX###consultationMotionType` (`id`, `consultationId`, `titleSingular`, `titlePlural`, `createTitle`, `motionPrefix`, `position`, `cssIcon`, `pdfLayout`, `texTemplateId`, `deadlines`, `policyMotions`, `policyAmendments`, `policyComments`, `policySupportMotions`, `policySupportAmendments`, `initiatorsCanMergeAmendments`, `motionLikesDislikes`, `amendmentLikesDislikes`, `contactName`, `contactEmail`, `contactPhone`, `supportType`, `supportTypeSettings`, `amendmentMultipleParagraphs`, `status`, `layoutTwoCols`) VALUES
+(1, 1, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(3, 2, 'Antrag', 'Anträge', 'Antrag stellen', 'A', 2, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(4, 2, 'Bewerbung', 'Bewerbungen', 'Bewerben', 'B', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 1),
+(5, 3, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(6, 3, 'Bewerbung', 'Bewerbungen', 'Bewerben', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, '{\"hasOrganizations\":true}', 1, 0, 1),
+(7, 4, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(8, 5, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 1, 1, '{\"amendments\":[],\"motions\":[]}', 4, 4, 4, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(9, 6, 'Antrag', 'Anträge', 'Antrag stellen', NULL, 0, NULL, 1, 1, '{\"amendments\":[],\"motions\":[]}', 2, 2, 2, 0, 0, 0, 0, 0, 0, 2, 1, 1, '{\"minSupporters\":19,\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(10, 7, 'Antrag', 'Anträge', 'Antrag stellen', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 2, 2, 0, 2, 0, 0, 4, 4, 0, 2, 1, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true}', 1, 0, 0),
+(11, 8, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(12, 9, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(13, 10, 'Discussion', 'Discussions', 'Start a discussion', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', -1, -1, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0, '{\"hasOrganizations\":true,\"allowMoreSupporters\":true}', 1, 0, 0),
+(14, 8, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":2,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
+(15, 9, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0),
+(16, 10, 'Petition', 'Petitions', 'Start a petition', '', 0, NULL, 0, 1, '{\"amendments\":[],\"motions\":[]}', 0, 0, 2, -1, 2, 0, 4, 4, 0, 2, 2, 2, '{\"minSupporters\":1,\"allowMoreSupporters\":true,\"skipForOrganizations\":true,\"hasOrganizations\":false}', 1, 0, 0);
 
 --
 -- Dumping data for table `consultationSettingsMotionSection`
