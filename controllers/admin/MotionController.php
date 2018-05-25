@@ -13,6 +13,7 @@ use app\models\db\TexTemplate;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
+use app\models\forms\DeadlineForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
@@ -106,9 +107,10 @@ class MotionController extends AdminBase
         if ($this->isPostSet('save')) {
             $input = \Yii::$app->request->post('type');
             $motionType->setAttributes($input);
-            $motionType->deadlineMotions             = Tools::dateBootstraptime2sql($input['deadlineMotions']);
-            $motionType->deadlineAmendments          = Tools::dateBootstraptime2sql($input['deadlineAmendments']);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
+
+            $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
+            $motionType->setDeadlines($deadlineForm->generateDeadlineArray());
 
             $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
             if (strpos($pdfTemplate, 'php') === 0) {

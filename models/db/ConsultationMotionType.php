@@ -22,8 +22,6 @@ use yii\db\ActiveRecord;
  * @property int $cssIcon
  * @property int $pdfLayout
  * @property int $texTemplateId
- * @property string $deadlineMotions
- * @property string $deadlineAmendments
  * @property string $deadlines
  * @property int $policyMotions
  * @property int $policyAmendments
@@ -261,6 +259,15 @@ class ConsultationMotionType extends ActiveRecord
             $this->deadlinesObject = json_decode($this->deadlines, true);
         }
         return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
+    }
+
+    /**
+     * @param array $deadlines
+     */
+    public function setDeadlines($deadlines)
+    {
+        $this->deadlines = json_encode($deadlines);
+        $this->deadlinesObject = null;
     }
 
     /**
