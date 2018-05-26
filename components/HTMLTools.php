@@ -639,6 +639,30 @@ class HTMLTools
 
     /**
      * @param string $formName
+     * @param string $htmlLabel
+     * @param bool $checked
+     * @param array $attributes
+     * @return string
+     */
+    public static function fueluxCheckbox($formName, $htmlLabel, $checked, $attributes = [])
+    {
+        $str = '<label class="checkbox-custom" data-initialize="checkbox"';
+        foreach ($attributes as $attrName => $attrVal) {
+            $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
+        }
+        $str .= '>';
+        $str .= '<input type="checkbox" name="' . $formName . '" ';
+        if ($checked) {
+            $str .= ' checked';
+        }
+        $str .= ' class="sr-only">';
+        $str .= '<span class="checkbox-label">' . $htmlLabel . '</span>';
+        $str .= '</label>';
+        return $str;
+    }
+
+    /**
+     * @param string $formName
      * @param array $options
      * @param string $selected
      * @param array $attributes
@@ -663,11 +687,24 @@ class HTMLTools
   </button>
   <ul class="dropdown-menu" role="menu">';
         foreach ($options as $value => $name) {
-            $str .= '<li data-value="' . Html::encode($value) . '" ';
-            if ($value == $selected) {
-                $str .= ' data-selected="true"';
+            if (is_array($name)) {
+                $str .= '<li data-value="' . Html::encode($value) . '" ';
+                if ($value == $selected) {
+                    $str .= ' data-selected="true"';
+                }
+                if (isset($name['attributes'])) {
+                    foreach ($name['attributes'] as $attrName => $attrVal) {
+                        $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
+                    }
+                }
+                $str .= '><a href="#">' . Html::encode($name['title']) . '</a></li>';
+            } else {
+                $str .= '<li data-value="' . Html::encode($value) . '" ';
+                if ($value == $selected) {
+                    $str .= ' data-selected="true"';
+                }
+                $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
             }
-            $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
         }
         $str .= '</ul>
   <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" ' .

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
 use app\models\supportTypes\ISupportType;
@@ -26,12 +27,14 @@ foreach (IPolicy::getPolicies() as $policy) {
     </label>
     <div class="col-md-8">
         <?php
-        echo Html::dropDownList(
+        echo HTMLTools::fueluxSelectbox(
             'type[policyMotions]',
-            $motionType->policyMotions,
             $policies,
-            ['id' => 'typePolicyMotions', 'class' => 'form-control']
-        ) ?>
+            $motionType->policyMotions,
+            ['id' => 'typePolicyMotions'],
+            true
+        );
+        ?>
     </div>
 </div>
 
@@ -44,12 +47,14 @@ foreach (IPolicy::getPolicies() as $policy) {
     </label>
     <div class="col-md-8">
         <?php
-        echo Html::dropDownList(
+        echo HTMLTools::fueluxSelectbox(
             'type[policySupportMotions]',
-            $motionType->policySupportMotions,
             $policies,
-            ['id' => 'typePolicySupportMotions', 'class' => 'form-control']
-        ) ?>
+            $motionType->policySupportMotions,
+            ['id' => 'typePolicySupportMotions'],
+            true
+        );
+        ?>
     </div>
 </div>
 
@@ -88,11 +93,12 @@ foreach (IPolicy::getPolicies() as $policy) {
     </label>
     <div class="col-md-8">
         <?php
-        echo Html::dropDownList(
+        echo HTMLTools::fueluxSelectbox(
             'type[policyAmendments]',
-            $motionType->policyAmendments,
             $policies,
-            ['id' => 'typePolicyAmendments', 'class' => 'form-control']
+            $motionType->policyAmendments,
+            ['id' => 'typePolicyAmendments'],
+            true
         ) ?>
     </div>
 </div>
@@ -111,12 +117,14 @@ foreach (IPolicy::getPolicies() as $policy) {
     </label>
     <div class="col-md-8">
         <?php
-        echo Html::dropDownList(
+        echo HTMLTools::fueluxSelectbox(
             'type[policySupportAmendments]',
-            $motionType->policySupportAmendments,
             $policies,
-            ['id' => 'typePolicySupportAmendments', 'class' => 'form-control']
-        ) ?>
+            $motionType->policySupportAmendments,
+            ['id' => 'typePolicySupportAmendments'],
+            true
+        );
+        ?>
     </div>
 </div>
 
@@ -155,11 +163,12 @@ foreach (IPolicy::getPolicies() as $policy) {
     </label>
     <div class="col-md-8">
         <?php
-        echo Html::dropDownList(
+        echo HTMLTools::fueluxSelectbox(
             'type[policyComments]',
-            $motionType->policyComments,
             $policies,
-            ['id' => 'typePolicyComments', 'class' => 'form-control']
+            $motionType->policyComments,
+            ['id' => 'typePolicyComments'],
+            true
         ); ?>
     </div>
 </div>

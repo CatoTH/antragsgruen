@@ -7,6 +7,7 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\supportTypes\CollectBeforePublish;
 use app\models\supportTypes\DefaultTypeBase;
+use app\models\supportTypes\ISupportType;
 use yii\helpers\Html;
 
 /**
@@ -143,17 +144,15 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
         </label>
         <div class="col-md-8">
             <?php
-            echo '<select name="type[supportType]" class="form-control" id="typeSupportType">';
-            foreach (\app\models\supportTypes\ISupportType::getImplementations() as $formId => $formClass) {
+            $options = [];
+            foreach (ISupportType::getImplementations() as $formId => $formClass) {
                 $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass == CollectBeforePublish::class);
-                echo '<option value="' . Html::encode($formId) . '" ';
-                echo 'data-has-supporters="' . ($supporters ? 1 : 0) . '"';
-                if ($motionType->supportType == $formId) {
-                    echo ' selected';
-                }
-                echo '>' . Html::encode($formClass::getTitle()) . '</option>';
+                $options[]  = [
+                    'title' => $formClass::getTitle(),
+                    'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
+                ];
             }
-            echo '</select>';
+            echo HTMLTools::fueluxSelectbox('type[supportType]', $options, $formId, ['id' => 'typeSupportType'], true);
             ?>
         </div>
     </div>
@@ -233,24 +232,27 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
         </div>
     </div>
 
-    <div class="form-group checkbox" id="typeAllowMoreSupporters">
+    <div class="form-group" id="typeAllowMoreSupporters">
         <div class="checkbox col-md-8 col-md-offset-4">
-            <label>
-                <?= Html::checkbox('initiator[allowMoreSupporters]', $curForm->allowMoreSupporters()) ?>
-                <?= \Yii::t('admin', 'motion_type_allow_more_supp') ?>
-            </label>
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'initiator[allowMoreSupporters]',
+                \Yii::t('admin', 'motion_type_allow_more_supp'),
+                $curForm->allowMoreSupporters()
+            );
+            ?>
         </div>
     </div>
 
-<?php
-$checked = (is_subclass_of($curForm, DefaultTypeBase::class) && $curForm->hasOrganizations());
-?>
-    <div class="form-group checkbox" id="typeHasOrgaRow">
+    <div class="form-group" id="typeHasOrgaRow">
         <div class="checkbox col-md-8 col-md-offset-4">
-            <label>
-                <?= Html::checkbox('initiator[hasOrganizations]', $checked) ?>
-                <?= \Yii::t('admin', 'motion_type_ask_orga') ?>
-            </label>
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'initiator[hasOrganizations]',
+                \Yii::t('admin', 'motion_type_ask_orga'),
+                (is_subclass_of($curForm, DefaultTypeBase::class) && $curForm->hasOrganizations())
+            );
+            ?>
         </div>
     </div>
 

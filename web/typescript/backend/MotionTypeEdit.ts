@@ -6,8 +6,11 @@ class MotionTypeEdit {
         $('#typeDeadlineAmendmentsHolder').datetimepicker({
             locale: $('#typeDeadlineAmendments').data('locale')
         });
-        $('#typeSupportType').on('change', function () {
-            let hasSupporters = $(this).find("option:selected").data("has-supporters");
+        let $supportType = $('#typeSupportType');
+        $supportType.on('changed.fu.selectlist', () => {
+            let selected = $supportType.find('input').val();
+            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");
                 $('#typeAllowMoreSupporters').removeClass("hidden");
@@ -15,9 +18,9 @@ class MotionTypeEdit {
                 $('#typeMinSupportersRow').addClass("hidden");
                 $('#typeAllowMoreSupporters').addClass("hidden");
             }
-        }).change();
+        }).trigger('changed.fu.selectlist');
 
-        $('.deleteTypeOpener a').on('click', function (ev) {
+        $('.deleteTypeOpener a').on('click', (ev) => {
             ev.preventDefault();
             $('.deleteTypeForm').removeClass('hidden');
             $('.deleteTypeOpener').addClass('hidden');
