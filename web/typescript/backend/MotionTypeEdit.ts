@@ -1,11 +1,5 @@
 class MotionTypeEdit {
     constructor() {
-        $('#typeDeadlineMotionsHolder').datetimepicker({
-            locale: $('#typeDeadlineMotions').data('locale')
-        });
-        $('#typeDeadlineAmendmentsHolder').datetimepicker({
-            locale: $('#typeDeadlineAmendments').data('locale')
-        });
         let $supportType = $('#typeSupportType');
         $supportType.on('changed.fu.selectlist', () => {
             let selected = $supportType.find('input').val();
@@ -29,6 +23,44 @@ class MotionTypeEdit {
         $('[data-toggle="tooltip"]').tooltip();
 
         this.initSectionList();
+        this.initDeadlines();
+    }
+
+    private initDeadlines() {
+        $('#deadlineFormTypeComplex input').change((ev) => {
+            if ($(ev.currentTarget).prop('checked')) {
+                $('.deadlineTypeSimple').addClass('hidden');
+                $('.deadlineTypeComplex').removeClass('hidden');
+            } else {
+                $('.deadlineTypeSimple').removeClass('hidden');
+                $('.deadlineTypeComplex').addClass('hidden');
+            }
+        }).trigger('change');
+
+        $('.datetimepicker').each((i, el) => {
+            $(el).datetimepicker({
+                locale: $(el).find("input").data('locale')
+            });
+        });
+
+        $('.deadlineHolder').each((i, el) => {
+            const $deadlineHolder = $(el);
+            $deadlineHolder.find('.deadlineAdder').click(() => {
+                let html = $('.deadlineRowTemplate').html();
+                html = html.replace(/TEMPLATE/, 'motions');
+                let $newRow = $(html);
+                $deadlineHolder.find('.deadlineList').append($newRow);
+
+                $newRow.find('.datetimepicker').each((i, el) => {
+                    $(el).datetimepicker({
+                        locale: $(el).find("input").data('locale')
+                    });
+                });
+            });
+            $deadlineHolder.on('click', '.delRow', (ev) => {
+                $(ev.currentTarget).parents('.deadlineEntry').remove();
+            });
+        });
     }
 
     private initSectionList() {

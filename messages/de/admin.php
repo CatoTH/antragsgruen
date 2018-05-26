@@ -318,6 +318,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_names'           => 'Bezeichnung',
     'motion_type_initiator'       => 'Antragsteller*in / Unterstützer*innen',
     'motion_type_deadline'        => 'Antragsschluss',
+    'motion_type_deadline_head'   => 'Antragsschluss / Zeiträume',
     'motion_type_perm'            => 'Berechtigungen',
     'motion_type_perm_motion'     => 'Anträge stellen',
     'motion_type_perm_amend'      => 'Änderungsanträge stellen',

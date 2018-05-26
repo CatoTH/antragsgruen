@@ -307,6 +307,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_names'          => 'Names',
     'motion_type_initiator'      => 'Initiators / supporters',
     'motion_type_deadline'       => 'Deadline',
+    'motion_type_deadline_head'  => 'Deadline / Phases',
     'motion_type_perm'           => 'Permissions',
     'motion_type_perm_motion'    => 'Motions',
     'motion_type_perm_amend'     => 'Amendments',
