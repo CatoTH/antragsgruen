@@ -17,13 +17,13 @@ $simpleDeadlineMotions    = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpleAmendmentsDeadline());
 
 ?>
-<h3><?= \Yii::t('admin', 'motion_type_deadline_head') ?></h3>
+<h3><?= \Yii::t('admin', 'motion_deadlines_head') ?></h3>
 
 <div class="checkbox">
     <?php
     echo HTMLTools::fueluxCheckbox(
         'deadlines[formtype]',
-        'Komplexe Zeitsteuerung',
+        \Yii::t('admin', 'motion_deadline_complex'),
         !$deadlineForm->isSimpleConfiguration(),
         ['id' => 'deadlineFormTypeComplex']
     );
@@ -32,7 +32,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 
 <div class="form-group deadlineTypeSimple">
     <label class="col-md-4 control-label" for="typeSimpleDeadlineMotions">
-        <?= \Yii::t('admin', 'motion_type_deadline_mot') ?>
+        <?= \Yii::t('admin', 'motion_sdeadline_mot') ?>
     </label>
     <div class="col-md-8">
         <div class="input-group date datetimepicker" id="typeDeadlineMotionsHolder">
@@ -46,7 +46,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 
 <div class="form-group deadlineTypeSimple">
     <label class="col-md-4 control-label" for="typeSimpleDeadlineAmendments">
-        <?= \Yii::t('admin', 'motion_type_amend_deadline'); ?>
+        <?= \Yii::t('admin', 'motion_sdeadline_amend'); ?>
     </label>
     <div class="col-md-8">
         <div class="input-group date datetimepicker" id="typeDeadlineAmendmentsHolder">
@@ -69,7 +69,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 $type = ConsultationMotionType::DEADLINE_MOTIONS;
 ?>
 <section class="deadlineTypeComplex deadlineHolder motionDeadlines" data-type="<?= $type ?>">
-    <h4>Zeiträume für Anträge:</h4>
+    <h4><?= \Yii::t('admin', 'motion_cdeadline_mot') ?>:</h4>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlines($type) as $deadline) {
@@ -79,7 +79,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
         <span class="glyphicon glyphicon-plus-sign"></span>
-        Zeitraum hinzufügen
+        <?= \Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </section>
 
@@ -87,7 +87,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
 $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
 ?>
 <div class="deadlineTypeComplex deadlineHolder amendmentDeadlines" data-type="<?= $type ?>">
-    <h4>Zeiträme für Änderungsanträge</h4>
+    <h4><?= \Yii::t('admin', 'motion_cdeadline_amend') ?>:</h4>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlines($type) as $deadline) {
@@ -97,7 +97,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
         <span class="glyphicon glyphicon-plus-sign"></span>
-        Zeitraum hinzufügen
+        <?= \Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>
 
@@ -105,7 +105,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
 $type = ConsultationMotionType::DEADLINE_MERGING;
 ?>
 <div class="deadlineTypeComplex deadlineHolder mergingDeadlines" data-type="<?= $type ?>">
-    <h4>Zeiträme zum Einpflegen von Änderungsanträgen</h4>
+    <h4><?= \Yii::t('admin', 'motion_cdeadline_merge') ?>:</h4>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlines($type) as $deadline) {
@@ -115,7 +115,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
         <span class="glyphicon glyphicon-plus-sign"></span>
-        Zeitraum hinzufügen
+        <?= \Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>
 
@@ -123,7 +123,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
 $type = ConsultationMotionType::DEADLINE_COMMENTS;
 ?>
 <div class="deadlineTypeComplex deadlineHolder commentDeadlines" data-type="<?= $type ?>">
-    <h4>Zeiträme zum Kommentieren</h4>
+    <h4><?= \Yii::t('admin', 'motion_cdeadline_com') ?>:</h4>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlines($type) as $deadline) {
@@ -133,6 +133,6 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
         <span class="glyphicon glyphicon-plus-sign"></span>
-        Zeitraum hinzufügen
+        <?= \Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>

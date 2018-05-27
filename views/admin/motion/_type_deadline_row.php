@@ -17,12 +17,12 @@ $end = Tools::dateSql2bootstraptime($data['end']);
     <div class="col-md-4 col">
         <div class="input-group date datetimepicker">
             <span class="input-group-addon">
-                ab
+                <?= \Yii::t('admin', 'motion_deadline_from') ?>
             </span>
             <input type="text" class="form-control"
                    name="deadlines[<?= $type ?>][start][]"
                    value="<?= Html::encode($start) ?>"
-                   placeholder="sofort"
+                   placeholder="<?= \Yii::t('admin', 'motion_deadline_from_p') ?>"
                    data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
@@ -30,22 +30,23 @@ $end = Tools::dateSql2bootstraptime($data['end']);
     <div class="col-md-4 col">
         <div class="input-group date datetimepicker">
             <span class="input-group-addon">
-                bis
+                <?= \Yii::t('admin', 'motion_deadline_to') ?>
             </span>
             <input type="text" class="form-control"
                    name="deadlines[<?= $type ?>][end][]"
                    value="<?= Html::encode($end) ?>"
-                   placeholder="unbegrenzt"
+                   placeholder="<?= \Yii::t('admin', 'motion_deadline_to_p') ?>"
                    data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
     </div>
     <div class="col-md-3 col">
-        <input type="text" class="form-control" placeholder="Phasen-Name" name="deadlines[<?= $type ?>][title][]"
+        <input type="text" class="form-control" placeholder="<?= \Yii::t('admin', 'motion_deadline_name') ?>"
+               name="deadlines[<?= $type ?>][title][]"
                value="<?= Html::encode($data['title'] ? $data['title'] : '') ?>">
     </div>
     <div class="col-md-1">
-        <button class="btn btn-link delRow">
+        <button class="btn btn-link btn-danger delRow">
             <span class="glyphicon glyphicon-remove-circle"></span>
         </button>
     </div>

@@ -43,22 +43,26 @@ class MotionTypeEdit {
         });
 
         $('.deadlineHolder').each((i, el) => {
-            const $deadlineHolder = $(el);
-            $deadlineHolder.find('.deadlineAdder').click(() => {
-                let html = $('.deadlineRowTemplate').html();
-                html = html.replace(/TEMPLATE/, 'motions');
-                let $newRow = $(html);
-                $deadlineHolder.find('.deadlineList').append($newRow);
+            const $deadlineHolder = $(el),
+                addDeadlineRow = () => {
+                    let html = $('.deadlineRowTemplate').html();
+                    html = html.replace(/TEMPLATE/, 'motions');
+                    let $newRow = $(html);
+                    $deadlineHolder.find('.deadlineList').append($newRow);
 
-                $newRow.find('.datetimepicker').each((i, el) => {
-                    $(el).datetimepicker({
-                        locale: $(el).find("input").data('locale')
+                    $newRow.find('.datetimepicker').each((i, el) => {
+                        $(el).datetimepicker({
+                            locale: $(el).find("input").data('locale')
+                        });
                     });
-                });
-            });
+                };
+            $deadlineHolder.find('.deadlineAdder').click(addDeadlineRow);
             $deadlineHolder.on('click', '.delRow', (ev) => {
                 $(ev.currentTarget).parents('.deadlineEntry').remove();
             });
+            if ($deadlineHolder.find('.deadlineList').children().length === 0) {
+                addDeadlineRow();
+            }
         });
     }
 
