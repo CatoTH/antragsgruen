@@ -11,7 +11,7 @@ $I->gotoConsultationHome();
 
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#pdfLayout', "php-1");
+$I->selectFueluxOption('#pdfLayout', "php-1");
 $motionTypePage->saveForm();
 
 $I->gotoConsultationHome();
@@ -24,7 +24,7 @@ $I->dontSee('PDF');
 
 $I->wantTo('activate PDFs again');
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#pdfLayout', "php0");
+$I->selectFueluxOption('#pdfLayout', "php0");
 $motionTypePage->saveForm();
 
 $I->gotoConsultationHome();

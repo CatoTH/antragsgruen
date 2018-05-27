@@ -360,16 +360,10 @@ class SiteCreateForm extends Model
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 0;
-        if ($this->motionDeadline) {
-            $type->deadlineMotions = $this->motionDeadline->format('Y-m-d H:i:s');
-        } else {
-            $type->deadlineMotions = null;
-        }
-        if ($this->amendmentDeadline) {
-            $type->deadlineAmendments = $this->amendmentDeadline->format('Y-m-d H:i:s');
-        } else {
-            $type->deadlineAmendments = null;
-        }
+
+        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
 
         if (!$type->save()) {
             throw new FormError($type->getErrors());
@@ -477,16 +471,10 @@ class SiteCreateForm extends Model
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols               = 0;
-        if ($this->motionDeadline) {
-            $type->deadlineMotions = $this->motionDeadline->format('Y-m-d H:i:s');
-        } else {
-            $type->deadlineMotions = null;
-        }
-        if ($this->amendmentDeadline) {
-            $type->deadlineAmendments = $this->amendmentDeadline->format('Y-m-d H:i:s');
-        } else {
-            $type->deadlineAmendments = null;
-        }
+
+        $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
+        $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
+        $type->setSimpleDeadlines($deadlineMotions, $deadlineAmendments);
 
         if (!$type->save()) {
             throw new FormError($type->getErrors());

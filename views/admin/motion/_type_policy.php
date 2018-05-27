@@ -103,9 +103,15 @@ foreach (IPolicy::getPolicies() as $policy) {
     </div>
 </div>
 <div class="form-group checkbox" id="typeAmendSinglePara">
-    <div class="checkbox col-md-8 col-md-offset-4"><label>
-            <?=Html::checkbox('type[amendSinglePara]', !$motionType->amendmentMultipleParagraphs)?>
-            <?= \Yii::t('admin', 'motion_type_amend_singlep') ?></label></div>
+    <div class="checkbox col-md-8 col-md-offset-4">
+        <?php
+        echo HTMLTools::fueluxCheckbox(
+            'type[amendSinglePara]',
+            \Yii::t('admin', 'motion_type_amend_singlep'),
+            !$motionType->amendmentMultipleParagraphs
+        );
+        ?>
+    </div>
 </div>
 
 

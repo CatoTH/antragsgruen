@@ -436,6 +436,15 @@ label.legend {
   .deadlineEntry {
     margin-bottom: 10px;
   }
+  &.form-horizontal .checkbox {
+    padding-top: 0;
+  }
+  #typeAmendSinglePara {
+    padding-top: 0;
+    .checkbox {
+      padding-bottom: 15px;
+    }
+  }
 }
 
 .motionListExportRow {

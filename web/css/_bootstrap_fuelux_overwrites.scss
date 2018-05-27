@@ -188,6 +188,16 @@
   }
 }
 
+.btn-link.btn-danger {
+  color: $btn-danger-bg;
+  font-weight: normal;
+  &:hover {
+    background: transparent;
+    color: darken($btn-danger-bg, 20%);
+    border: none;
+  }
+}
+
 .fuelux {
   .pillbox > .pill-group {
     list-style-type: none;

@@ -14,8 +14,7 @@ class MotionTypeEdit {
             }
         }).trigger('changed.fu.selectlist');
 
-        $('.deleteTypeOpener a').on('click', (ev) => {
-            ev.preventDefault();
+        $('.deleteTypeOpener button').on('click', () => {
             $('.deleteTypeForm').removeClass('hidden');
             $('.deleteTypeOpener').addClass('hidden');
         });

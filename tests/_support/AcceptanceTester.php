@@ -269,6 +269,24 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function selectFueluxOption($selector, $value)
     {
-        $this->executeJS('$("' . addslashes($selector) . '").selectlist("selectByValue", "' . addslashes($value) . '");');
+        $this->executeJS('$("' . addslashes($selector) . '")' .
+            '.selectlist("selectByValue", "' . addslashes($value) . '")' .
+            '.trigger("changed.fu.selectlist");');
+    }
+
+    /**
+     * @param string $selector
+     */
+    public function checkFueluxCheckbox($selector)
+    {
+        $this->executeJS('$("' . addslashes($selector) . '").checkbox("check");');
+    }
+
+    /**
+     * @param string $selector
+     */
+    public function uncheckFueluxCheckbox($selector)
+    {
+        $this->executeJS('$("' . addslashes($selector) . '").checkbox("uncheck");');
     }
 }

@@ -146,13 +146,19 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
             <?php
             $options = [];
             foreach (ISupportType::getImplementations() as $formId => $formClass) {
-                $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass == CollectBeforePublish::class);
+                $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
                 $options[]  = [
                     'title' => $formClass::getTitle(),
                     'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
                 ];
             }
-            echo HTMLTools::fueluxSelectbox('type[supportType]', $options, $formId, ['id' => 'typeSupportType'], true);
+            echo HTMLTools::fueluxSelectbox(
+                'type[supportType]',
+                $options,
+                $motionType->supportType,
+                ['id' => 'typeSupportType'],
+                true
+            );
             ?>
         </div>
     </div>
@@ -286,19 +292,27 @@ echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-pr
 echo '</div>';
 echo Html::endForm();
 
-echo '<ul style="display: none;" id="sectionTemplate">';
-echo $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]);
-echo '</ul>';
+?>
+<ul style="display: none;" id="sectionTemplate">
+    <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>
+</ul>
 
+<br><br>
+<div class="deleteTypeOpener content">
+<button class="btn btn-danger btn-link" type="button">
+    <span class="glyphicon glyphicon-trash"></span>
+    <?= \Yii::t('admin', 'motion_type_del_caller') ?>
+</button>
+</div>
 
-echo '<br><br><div class="deleteTypeOpener content">';
-echo '<a href="#">' . \Yii::t('admin', 'motion_type_del_caller') . '</a>';
-echo '</div>';
+<?php
+
 echo Html::beginForm($myUrl, 'post', ['class' => 'deleteTypeForm hidden content']);
 
 if ($motionType->isDeletable()) {
-    echo '<div class="submitRow"><button type="submit" name="delete" class="btn btn-danger">' .
-        \Yii::t('admin', 'motion_type_del_btn') . '</button></div>';
+    echo '<div class="submitRow"><button type="submit" name="delete" class="btn btn-danger">';
+    echo '<span class="glyphicon glyphicon-trash"></span>';
+    echo \Yii::t('admin', 'motion_type_del_btn') . '</button></div>';
 } else {
     echo '<p class="notDeletable">' . \Yii::t('admin', 'motion_type_not_deletable') . '</p>';
 }

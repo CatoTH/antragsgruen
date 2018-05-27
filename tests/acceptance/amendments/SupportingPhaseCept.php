@@ -22,7 +22,7 @@ $I->dontSeeElement("#sidebar .amendmentCreate a");
 $I->loginAsStdAdmin();
 $I->seeElement("#sidebar .amendmentCreate a");
 $I->click('#sidebar .adminEdit a');
-$I->executeJS('$("#motionStatus").selectlist("selectByValue", "' . \app\models\db\Motion::STATUS_SUBMITTED_SCREENED . '");');
+$I->selectFueluxOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
 $I->submitForm('#motionUpdateForm', [], 'save');
 $I->logout();
 
@@ -77,9 +77,9 @@ $I->logout();
 $I->wantTo('check the admin settings');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
-$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::ONLY_INITIATOR);
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::COLLECTING_SUPPORTERS);
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 
 $I->submitForm('#policyFixForm', [], 'supportCollPolicyFix');
@@ -107,7 +107,7 @@ $I->dontSeeCheckboxIsChecked('.amendmentDislike');
 $I->dontSeeCheckboxIsChecked('.amendmentLike');
 $I->checkOption('.amendmentLike');
 $I->checkOption('.amendmentDislike');
-$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->checkFueluxCheckbox('#typeHasOrgaRow label');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 

@@ -266,8 +266,20 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function setDeadlines($deadlines)
     {
-        $this->deadlines = json_encode($deadlines);
+        $this->deadlines       = json_encode($deadlines);
         $this->deadlinesObject = null;
+    }
+
+    /**
+     * @param string|null $deadlineMotions
+     * @param string|null $deadlineAmendments
+     */
+    public function setSimpleDeadlines($deadlineMotions, $deadlineAmendments)
+    {
+        $this->setDeadlines([
+            static::DEADLINE_MOTIONS    => [['start' => null, 'end' => $deadlineMotions, 'title' => null]],
+            static::DEADLINE_AMENDMENTS => [['start' => null, 'end' => $deadlineAmendments, 'title' => null]],
+        ]);
     }
 
     /**
@@ -301,7 +313,8 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getUpcomingDeadline($type)
     {
-        foreach ($this->getDeadlines($type) as $deadline) {
+        $deadlines = $this->getDeadlines($type);
+        foreach ($deadlines as $deadline) {
             if ($this->isInDeadlineRange($deadline) && $deadline['end']) {
                 return $deadline['end'];
             }
@@ -315,7 +328,11 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function isInDeadline($type)
     {
-        foreach ($this->getDeadlines($type) as $deadline) {
+        $deadlines = $this->getDeadlines($type);
+        if (count($deadlines) === 0) {
+            return true;
+        }
+        foreach ($deadlines as $deadline) {
             if ($this->isInDeadlineRange($deadline)) {
                 return true;
             }

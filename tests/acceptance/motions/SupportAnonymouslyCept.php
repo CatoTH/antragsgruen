@@ -10,7 +10,7 @@ $I->dontSee('Unterstützer*innen');
 
 $I->wantTo('enably supporting without login');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicySupportMotions', \app\models\policies\All::getPolicyID());
+$I->selectFueluxOption('#typePolicySupportMotions', \app\models\policies\All::getPolicyID());
 $I->checkOption('.motionSupportPolicy .motionSupport');
 $I->submitForm('.adminTypeForm', [], 'save');
 

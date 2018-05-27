@@ -60,7 +60,7 @@ $I->seeElement('.motionType' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 $I->wantTo('delete the first motion type again');
 $I->click('.motionType' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
 $I->dontSeeElement('.deleteTypeForm');
-$I->click('.deleteTypeOpener a');
+$I->click('.deleteTypeOpener button');
 $I->dontSeeElement('.deleteTypeOpener');
 $I->seeElement('.deleteTypeForm');
 $I->submitForm('.deleteTypeForm', [], 'delete');
@@ -76,7 +76,7 @@ $I->wantTo('delete the original motion type - should not work');
 $I->click('#adminLink');
 $I->click('.motionType1');
 $I->dontSeeElement('.deleteTypeForm');
-$I->click('.deleteTypeOpener a');
+$I->click('.deleteTypeOpener button');
 $I->dontSeeElement('.deleteTypeOpener');
 $I->see('Dieser Antragstyp kann (noch) nicht gelöscht werden');
 

@@ -8,7 +8,7 @@ $I->wantTo('allow comments for everyone');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage('bdk', 'bdk')->gotoMotionTypes(7);
-$I->selectOption('#typePolicyComments', \app\models\policies\All::getPolicyName());
+$I->selectFueluxOption('#typePolicyComments', \app\models\policies\All::getPolicyID());
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->logout();
 
