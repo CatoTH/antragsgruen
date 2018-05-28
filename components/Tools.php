@@ -259,11 +259,13 @@ class Tools
      */
     public static function formatMysqlDate($mysqldate, $locale = null, $allowRelativeDates = true)
     {
+        $currentTs = DateTools::getCurrentTimestamp();
+
         if (strlen($mysqldate) == 0) {
             return '-';
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d") && $allowRelativeDates) {
+        } elseif (substr($mysqldate, 0, 10) == date('Y-m-d', $currentTs) && $allowRelativeDates) {
             return \yii::t('base', 'Today');
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d", time() - 3600 * 24) && $allowRelativeDates) {
+        } elseif (substr($mysqldate, 0, 10) == date('Y-m-d', $currentTs - 3600 * 24) && $allowRelativeDates) {
             return \yii::t('base', 'Yesterday');
         }
 
@@ -318,7 +320,7 @@ class Tools
         if (!$deadline) {
             return '?';
         }
-        $seconds = $deadline->getTimestamp() - time();
+        $seconds = $deadline->getTimestamp() - DateTools::getCurrentTimestamp();
         if ($seconds < 0) {
             return \Yii::t('structure', 'remaining_over');
         }

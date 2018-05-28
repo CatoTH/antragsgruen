@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\DateTools;
 use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
@@ -290,7 +291,7 @@ class ConsultationMotionType extends ActiveRecord
     public function isInDeadlineRange($deadline, $timestamp = null)
     {
         if ($timestamp === null) {
-            $timestamp = time();
+            $timestamp = DateTools::getCurrentTimestamp();
         }
         if ($deadline['start']) {
             $startTs = Tools::dateSql2timestamp($deadline['start']);

@@ -62,4 +62,24 @@ class DateTools
         $time = \Yii::$app->session->get('deadline_simulate_time');
         return ($time ? $time : null);
     }
+
+    /**
+     * @return int
+     */
+    public static function getCurrentTimestamp()
+    {
+        $consultation = UrlHelper::getCurrentConsultation();
+        if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
+            return time();
+        }
+        if (\Yii::$app->session->get('deadline_debug_mode', null) !== '1') {
+            return time();
+        }
+        $time = \Yii::$app->session->get('deadline_simulate_time');
+        if ($time) {
+            return Tools::dateSql2timestamp($time);
+        } else {
+            return time();
+        }
+    }
 }
