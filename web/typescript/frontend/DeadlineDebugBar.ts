@@ -10,7 +10,7 @@ export class DeadlineDebugBar {
                 'action': 'close'
             }, (ret) => {
                 if (ret['success']) {
-                    window.location.assign(window.location.href);
+                    window.location.assign(window.location.href.split('#')[0]);
                 } else {
                     alert(ret['error']);
                 }
@@ -30,7 +30,7 @@ export class DeadlineDebugBar {
                 'time': time
             }, (ret) => {
                 if (ret['success']) {
-                    window.location.assign(window.location.href)
+                    window.location.assign(window.location.href.split('#')[0])
                 } else {
                     alert(ret['error']);
                 }

@@ -51,6 +51,42 @@ class DateTools
     }
 
     /**
+     * @param array $deadline
+     * @param bool $allowRelativeDates
+     * @return string
+     */
+    public static function formatDeadlineRange($deadline, $allowRelativeDates = true)
+    {
+        if ($deadline['start'] && $deadline['end']) {
+            $start = Tools::formatMysqlDateTime($deadline['start'], null, $allowRelativeDates);
+            $end   = Tools::formatMysqlDateTime($deadline['end'], null, $allowRelativeDates);
+            return str_replace(['%from%', '%to%'], [$start, $end], \Yii::t('structure', 'policy_deadline_from_to'));
+        } elseif ($deadline['start']) {
+            $start = Tools::formatMysqlDateTime($deadline['start'], null, $allowRelativeDates);
+            return str_replace('%from%', $start, \Yii::t('structure', 'policy_deadline_from'));
+        } elseif ($deadline['end']) {
+            $end   = Tools::formatMysqlDateTime($deadline['end'], null, $allowRelativeDates);
+            return str_replace('%to%', $end, \Yii::t('structure', 'policy_deadline_to'));
+        } else {
+            return \Yii::t('structure', 'policy_deadline_na');
+        }
+    }
+
+    /**
+     * @param array $deadlines
+     * @param bool $allowRelativeDates
+     * @return string
+     */
+    public static function formatDeadlineRanges($deadlines, $allowRelativeDates = true)
+    {
+        $formatted = [];
+        foreach ($deadlines as $deadline) {
+            $formatted[] = static::formatDeadlineRange($deadline, $allowRelativeDates);
+        }
+        return implode(', ', $formatted);
+    }
+
+    /**
      * @param Consultation|null $consultation
      * @return string|null
      */

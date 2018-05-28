@@ -103,19 +103,53 @@ abstract class IPolicy
     abstract public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false);
 
     /**
+     * @param int $deadlineType
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @return bool
      */
-    public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
+    protected function checkCurrUserWithDeadline($deadlineType, $allowAdmins = true, $assumeLoggedIn = false)
     {
-        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
+        if (!$this->motionType->isInDeadline($deadlineType)) {
             $consultation = $this->motionType->getConsultation();
             if (!User::havePrivilege($consultation, User::PRIVILEGE_ANY) || !$allowAdmins) {
                 return false;
             }
         }
         return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @return bool
+     */
+    public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
+    {
+        $deadlineType = ConsultationMotionType::DEADLINE_MOTIONS;
+        return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @return bool
+     */
+    public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
+    {
+        $deadlineType = ConsultationMotionType::DEADLINE_AMENDMENTS;
+        return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @return bool
+     */
+    public function checkCurrUserComment($allowAdmins = true, $assumeLoggedIn = false)
+    {
+        $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
+        return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
     }
 
     /**
@@ -147,7 +181,6 @@ abstract class IPolicy
      * @static
      * @param string $policyId
      * @param ConsultationMotionType $motionType
-     * @throws Internal
      * @return IPolicy
      */
     public static function getInstanceByID($policyId, ConsultationMotionType $motionType)

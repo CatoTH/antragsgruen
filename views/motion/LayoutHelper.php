@@ -2,7 +2,6 @@
 
 namespace app\views\motion;
 
-use app\components\AntiSpam;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
@@ -15,7 +14,6 @@ use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\User;
-use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;

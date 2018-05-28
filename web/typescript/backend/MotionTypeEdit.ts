@@ -82,7 +82,7 @@ class MotionTypeEdit {
             const $deadlineHolder = $(el),
                 addDeadlineRow = () => {
                     let html = $('.deadlineRowTemplate').html();
-                    html = html.replace(/TEMPLATE/g, 'motions');
+                    html = html.replace(/TEMPLATE/g, $deadlineHolder.data('type'));
                     let $newRow = $(html);
                     $deadlineHolder.find('.deadlineList').append($newRow);
                     initLinkedDeadlinePickers($newRow);

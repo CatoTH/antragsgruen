@@ -2,6 +2,7 @@
 
 namespace app\models\policies;
 
+use app\components\DateTools;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 
@@ -68,6 +69,11 @@ class Admins extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
+        $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
+        if (!$this->motionType->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlines($deadlineType));
+            return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
+        }
         return \Yii::t('structure', 'policy_admin_comm_denied');
     }
 

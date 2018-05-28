@@ -2,6 +2,8 @@
 
 namespace app\models\policies;
 
+use app\components\DateTools;
+use app\components\Tools;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 
@@ -95,6 +97,14 @@ class LoggedIn extends IPolicy
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_comm_denied');
+        }
+        $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
+        if (!$this->motionType->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlines($deadlineType));
+            return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
+        }
+        if ($this->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+            return \Yii::t('amend', 'comments_please_log_in');
         }
         return \Yii::t('structure', 'policy_logged_comm_denied');
     }
