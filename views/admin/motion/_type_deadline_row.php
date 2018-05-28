@@ -46,7 +46,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
                value="<?= Html::encode($data['title'] ? $data['title'] : '') ?>">
     </div>
     <div class="col-md-1">
-        <button class="btn btn-link btn-danger delRow">
+        <button type="button" class="btn btn-link btn-danger delRow">
             <span class="glyphicon glyphicon-remove-circle"></span>
         </button>
     </div>

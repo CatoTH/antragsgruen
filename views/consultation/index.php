@@ -1,7 +1,6 @@
 <?php
 
-use \app\components\Tools;
-use app\components\UrlHelper;
+use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationMotionType;
@@ -40,7 +39,6 @@ if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-
     } else {
         echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
     }
-
 }
 echo '</h1>';
 
@@ -74,6 +72,14 @@ if ($admin) {
 
     echo Html::endForm();
     $layout->addAMDModule('frontend/ContentPageEdit');
+}
+
+foreach ($consultation->motionTypes as $motionType) {
+    foreach ($motionType->getAllCurrentDeadlines(true) as $deadline) {
+        echo '<div class="alert alert-info">';
+        echo \Yii::t('con', 'current_phase') . ': ' . Html::encode($deadline['title']);
+        echo '</div>';
+    }
 }
 
 echo '</div>';

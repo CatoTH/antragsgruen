@@ -102,6 +102,9 @@ class Permissions
         if (count($replacedByMotions) > 0) {
             return false;
         }
+        if (!$motion->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_MERGING)) {
+            return false;
+        }
         if (User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }

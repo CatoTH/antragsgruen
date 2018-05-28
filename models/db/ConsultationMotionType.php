@@ -64,6 +64,7 @@ class ConsultationMotionType extends ActiveRecord
     const DEADLINE_AMENDMENTS = 'amendments';
     const DEADLINE_COMMENTS   = 'comments';
     const DEADLINE_MERGING    = 'merging';
+    public static $DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging'];
 
     protected $deadlinesObject = null;
 
@@ -288,7 +289,7 @@ class ConsultationMotionType extends ActiveRecord
      * @param null|int $timestamp
      * @return bool
      */
-    public function isInDeadlineRange($deadline, $timestamp = null)
+    public static function isInDeadlineRange($deadline, $timestamp = null)
     {
         if ($timestamp === null) {
             $timestamp = DateTools::getCurrentTimestamp();
@@ -316,7 +317,7 @@ class ConsultationMotionType extends ActiveRecord
     {
         $deadlines = $this->getDeadlines($type);
         foreach ($deadlines as $deadline) {
-            if ($this->isInDeadlineRange($deadline) && $deadline['end']) {
+            if (static::isInDeadlineRange($deadline) && $deadline['end']) {
                 return $deadline['end'];
             }
         }
@@ -334,11 +335,32 @@ class ConsultationMotionType extends ActiveRecord
             return true;
         }
         foreach ($deadlines as $deadline) {
-            if ($this->isInDeadlineRange($deadline)) {
+            if (static::isInDeadlineRange($deadline)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * @param bool $onlyNamed
+     * @return array
+     */
+    public function getAllCurrentDeadlines($onlyNamed = false)
+    {
+        $found = [];
+        foreach (static::$DEADLINE_TYPES as $type) {
+            foreach ($this->getDeadlines($type) as $deadline) {
+                if ($onlyNamed && !$deadline['title']) {
+                    continue;
+                }
+                if (static::isInDeadlineRange($deadline)) {
+                    $deadline['type'] = $type;
+                    $found[] = $deadline;
+                }
+            }
+        }
+        return $found;
     }
 
     /**

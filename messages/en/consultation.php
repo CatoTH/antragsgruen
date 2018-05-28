@@ -6,6 +6,7 @@ return [
     'new_comments'         => 'New comments',
     'create_new'           => 'Create...',
     'deadline_circle'      => 'Deadline',
+    'current_phase'        => 'Current phase',
     'My Motions'           => 'My motions',
     'All Motions'          => 'Motions',
     'no_motions_yet'       => 'No motions yet',
