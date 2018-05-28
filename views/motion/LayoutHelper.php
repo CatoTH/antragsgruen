@@ -99,7 +99,7 @@ class LayoutHelper
         <h3 class="green">' . Html::encode($comment->name) . ':';
 
         if ($screening) {
-            echo ' <span class="screeningHint">(' . \Yii::t('comment', 'not_screened_yet') . '</span>';
+            echo ' <span class="screeningHint">(' . \Yii::t('comment', 'not_screened_yet') . ')</span>';
         }
 
         if ($comment->status == IComment::STATUS_VISIBLE && $comment->canDelete(User::getCurrentUser())) {

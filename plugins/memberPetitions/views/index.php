@@ -103,7 +103,11 @@ if (count($myMotions) > 0) {
     <h2 class="green"><?= \Yii::t('memberpetitions', 'index_my_petitions') ?></h2>
     <div class="content">
         <?php
-        echo $this->render('_motion_list', ['motions' => $myMotions, 'bold' => 'organization']);
+        echo $this->render('_motion_list', [
+            'motions'          => $myMotions,
+            'bold'             => 'organization',
+            'statusClustering' => false
+        ]);
         ?>
     </div>
     <?php
@@ -114,7 +118,11 @@ if (count($mySupports) > 0) {
     <h2 class="green"><?= \Yii::t('memberpetitions', 'index_my_supports') ?></h2>
     <div class="content">
         <?php
-        echo $this->render('_motion_list', ['motions' => $mySupports, 'bold' => 'organization']);
+        echo $this->render('_motion_list', [
+            'motions'          => $mySupports,
+            'bold'             => 'organization',
+            'statusClustering' => false,
+        ]);
         ?>
     </div>
     <?php

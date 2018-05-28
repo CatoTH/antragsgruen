@@ -56,8 +56,9 @@ use yii\helpers\Html;
     </div>
     <div class="motionListFiltered">
         <?= $this->render('_motion_list', [
-            'motions' => $motions,
-            'bold'    => 'organization'
+            'motions'          => $motions,
+            'bold'             => 'organization',
+            'statusClustering' => true,
         ]) ?>
     </div>
 </div>
