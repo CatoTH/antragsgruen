@@ -22,7 +22,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 <div class="checkbox">
     <?php
     echo HTMLTools::fueluxCheckbox(
-        'deadlines[formtype]',
+        'deadlines[formtypeComplex]',
         \Yii::t('admin', 'motion_deadline_complex'),
         !$deadlineForm->isSimpleConfiguration(),
         ['id' => 'deadlineFormTypeComplex']
@@ -37,7 +37,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     <div class="col-md-8">
         <div class="input-group date datetimepicker" id="typeDeadlineMotionsHolder">
             <input id="typeSimpleDeadlineMotions" type="text" class="form-control"
-                   name="deadlines[simpleDeadlineMotions]"
+                   name="deadlines[motionsSimple]"
                    value="<?= Html::encode($simpleDeadlineMotions) ?>" data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>
@@ -51,7 +51,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
     <div class="col-md-8">
         <div class="input-group date datetimepicker" id="typeDeadlineAmendmentsHolder">
             <input id="typeSimpleDeadlineAmendments" type="text" class="form-control"
-                   name="deadlines[simpleDeadlineAmendments]"
+                   name="deadlines[amendmentsSimple]"
                    value="<?= Html::encode($simpleDeadlineAmendments) ?>" data-locale="<?= Html::encode($locale) ?>">
             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
         </div>

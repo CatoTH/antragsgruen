@@ -2,7 +2,9 @@
 
 namespace app\models\forms;
 
+use app\components\Tools;
 use app\models\db\ConsultationMotionType;
+use app\models\exceptions\Internal;
 
 class DeadlineForm
 {
@@ -32,8 +34,82 @@ class DeadlineForm
     public static function createFromInput($input)
     {
         $form = new DeadlineForm();
-        // @TODO
+
+        if (isset($input['formtypeComplex'])) {
+            $form->createFromInputComplex($input);
+        } else {
+            $form->createFromInputSimple($input);
+        }
         return $form;
+    }
+
+    /**
+     * @param array $input
+     */
+    public function createFromInputSimple($input)
+    {
+        try {
+            $motionsEnd    = Tools::dateBootstraptime2sql($input['motionsSimple']);
+            $amendmentsEnd = Tools::dateBootstraptime2sql($input['amendmentsSimple']);
+        } catch (Internal $e) {
+            $motionsEnd    = null;
+            $amendmentsEnd = null;
+        }
+
+        $this->deadlinesComments   = [];
+        $this->deadlinesMerging    = [];
+        $this->deadlinesMotions    = [['start' => null, 'end' => $motionsEnd, 'title' => null]];
+        $this->deadlinesAmendments = [['start' => null, 'end' => $amendmentsEnd, 'title' => null]];
+    }
+
+    /**
+     * @param array $rows
+     * @return array
+     */
+    private function parseComplexRows($rows)
+    {
+        $deadlines = [];
+        for ($i = 0; $i < count($rows['start']); $i++) {
+            try {
+                $start = Tools::dateBootstraptime2sql($rows['start'][$i]);
+                $end   = Tools::dateBootstraptime2sql($rows['end'][$i]);
+            } catch (Internal $e) {
+                $start = null;
+                $end   = null;
+            }
+            if (!$start && !$end) {
+                continue;
+            }
+            if ($start && $end && Tools::dateSql2timestamp($start) > Tools::dateSql2timestamp($end)) {
+                continue;
+            }
+            $deadlines[] = ['start' => $start, 'end' => $end, 'title' => $rows['title'][$i]];
+        }
+        return $deadlines;
+    }
+
+    /**
+     * @param array $input
+     */
+    public function createFromInputComplex($input)
+    {
+        $this->deadlinesMotions    = [];
+        $this->deadlinesAmendments = [];
+        $this->deadlinesMerging    = [];
+        $this->deadlinesComments   = [];
+
+        if (isset($input[ConsultationMotionType::DEADLINE_MOTIONS])) {
+            $this->deadlinesMotions = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_MOTIONS]);
+        }
+        if (isset($input[ConsultationMotionType::DEADLINE_AMENDMENTS])) {
+            $this->deadlinesAmendments = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_AMENDMENTS]);
+        }
+        if (isset($input[ConsultationMotionType::DEADLINE_MERGING])) {
+            $this->deadlinesMerging = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_MERGING]);
+        }
+        if (isset($input[ConsultationMotionType::DEADLINE_COMMENTS])) {
+            $this->deadlinesComments = $this->parseComplexRows($input[ConsultationMotionType::DEADLINE_COMMENTS]);
+        }
     }
 
     /**
@@ -46,11 +122,13 @@ class DeadlineForm
         }
         $simpleMotion    = (
             count($this->deadlinesMotions) === 0 ||
-            (count($this->deadlinesMotions) === 1 && !$this->deadlinesMotions[0]['start'])
+            (count($this->deadlinesMotions) === 1 && !$this->deadlinesMotions[0]['start'] &&
+                !$this->deadlinesMotions[0]['title'])
         );
         $simpleAmendment = (
             count($this->deadlinesAmendments) === 0 ||
-            (count($this->deadlinesAmendments) === 1 && !$this->deadlinesAmendments[0]['start'])
+            (count($this->deadlinesAmendments) === 1 && !$this->deadlinesAmendments[0]['start'] &&
+                !$this->deadlinesAmendments[0]['title'])
         );
         return ($simpleMotion && $simpleAmendment);
     }

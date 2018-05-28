@@ -42,19 +42,50 @@ class MotionTypeEdit {
             });
         });
 
+        const initLinkedDeadlinePickers = ($row) => {
+            let $from = $row.find(".datetimepickerFrom"),
+                $to = $row.find(".datetimepickerTo");
+            $from.datetimepicker({
+                locale: $from.find("input").data('locale')
+            });
+            $to.datetimepicker({
+                locale: $to.find("input").data('locale'),
+                useCurrent: false
+            });
+
+            const hasError = () => {
+                const fromDate = $from.data("DateTimePicker").date(),
+                    toDate = $to.data("DateTimePicker").date();
+                
+                return (fromDate && toDate && toDate.isBefore(fromDate));
+            };
+
+            const setErrorState = () => {
+                if (hasError()) {
+                    $from.addClass("has-error");
+                    $to.addClass("has-error");
+                } else {
+                    $from.removeClass("has-error");
+                    $to.removeClass("has-error");
+                }
+            };
+
+            $from.on("dp.change", setErrorState);
+            $to.on("dp.change", setErrorState);
+        };
+
+        $('.deadlineEntry').each((i, el) => {
+            initLinkedDeadlinePickers($(el));
+        });
+
         $('.deadlineHolder').each((i, el) => {
             const $deadlineHolder = $(el),
                 addDeadlineRow = () => {
                     let html = $('.deadlineRowTemplate').html();
-                    html = html.replace(/TEMPLATE/, 'motions');
+                    html = html.replace(/TEMPLATE/g, 'motions');
                     let $newRow = $(html);
                     $deadlineHolder.find('.deadlineList').append($newRow);
-
-                    $newRow.find('.datetimepicker').each((i, el) => {
-                        $(el).datetimepicker({
-                            locale: $(el).find("input").data('locale')
-                        });
-                    });
+                    initLinkedDeadlinePickers($newRow);
                 };
             $deadlineHolder.find('.deadlineAdder').click(addDeadlineRow);
             $deadlineHolder.on('click', '.delRow', (ev) => {

@@ -15,7 +15,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
 ?>
 <div class="row deadlineEntry">
     <div class="col-md-4 col">
-        <div class="input-group date datetimepicker">
+        <div class="input-group date datetimepickerFrom">
             <span class="input-group-addon">
                 <?= \Yii::t('admin', 'motion_deadline_from') ?>
             </span>
@@ -28,7 +28,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
         </div>
     </div>
     <div class="col-md-4 col">
-        <div class="input-group date datetimepicker">
+        <div class="input-group date datetimepickerTo">
             <span class="input-group-addon">
                 <?= \Yii::t('admin', 'motion_deadline_to') ?>
             </span>
