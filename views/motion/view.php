@@ -260,7 +260,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
             </div>';
     }
 
-    if ($form === null || $form->paragraphNo != -1 || $form->sectionId !== null) {
+    if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
         $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
         $form->setDefaultData(-1, -1, User::getCurrentUser());
     }

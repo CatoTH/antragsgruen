@@ -7,10 +7,9 @@ $I->populateDBData1();
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupporters', 0);
 $motionTypePage->saveForm();
-$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 
 
 $I->gotoConsultationHome();

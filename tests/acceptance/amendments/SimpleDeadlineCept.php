@@ -9,7 +9,7 @@ $I->seeElement('.amendmentCreate');
 
 $I->wantTo('set the deadline to the past');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->fillField('#typeDeadlineAmendments', date('d.m.Y 00:00:00', time() - 10));
+$I->fillField('#typeSimpleDeadlineAmendments', date('d.m.Y 00:00:00', time() - 10));
 $I->submitForm('.adminTypeForm', [], 'save');
 
 
@@ -30,7 +30,7 @@ $I->see('Der Antragsschluss ist vorbei', '.amendmentCreate');
 
 $I->wantTo('set the deadline to the future');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->fillField('#typeDeadlineAmendments', date('d.m.Y 00:00:00', time() + 3600 * 24));
+$I->fillField('#typeSimpleDeadlineAmendments', date('d.m.Y 00:00:00', time() + 3600 * 24));
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome()->gotoMotionView(3);

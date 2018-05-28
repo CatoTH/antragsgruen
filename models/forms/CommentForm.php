@@ -73,6 +73,9 @@ class CommentForm extends Model
                 }
             }
         }
+        if (isset($values['sectionId']) && $values['sectionId'] == -1) {
+            $this->sectionId = -1;
+        }
 
         if (User::getCurrentUser()) {
             $this->userId = User::getCurrentUser()->id;
@@ -101,7 +104,7 @@ class CommentForm extends Model
     private function checkWritePermissions()
     {
         if (\Yii::$app->user->isGuest) {
-            $jsToken = AntiSpam::createToken($this->motionType->getMyConsultation());
+            $jsToken = AntiSpam::createToken($this->motionType->consultationId);
             if ($jsToken !== \Yii::$app->request->post('jsprotection')) {
                 throw new Access(\Yii::t('base', 'err_js_or_login'));
             }
@@ -133,7 +136,7 @@ class CommentForm extends Model
 
         $comment               = new MotionComment();
         $comment->motionId     = $motion->id;
-        $comment->sectionId    = $this->sectionId;
+        $comment->sectionId    = ($this->sectionId > 0 ? $this->sectionId : null);
         $comment->paragraph    = $this->paragraphNo;
         $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
         $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);

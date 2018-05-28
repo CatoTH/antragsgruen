@@ -138,7 +138,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 }
             }
 
-            if ($form === null || $form->paragraphNo !== $paragraphNo || $form->sectionId !== $section->sectionId) {
+            if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
                 $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
                 $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
