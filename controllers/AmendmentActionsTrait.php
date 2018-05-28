@@ -55,6 +55,7 @@ trait AmendmentActionsTrait
      * @param Amendment $amendment
      * @param array $viewParameters
      * @throws Access
+     * @throws Internal
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
@@ -68,7 +69,7 @@ trait AmendmentActionsTrait
                 throw new Access(\Yii::t('base', 'err_js_or_login'));
             }
         }
-        $commentForm = new CommentForm();
+        $commentForm = new CommentForm($amendment->getMyMotionType());
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         if (User::getCurrentUser()) {

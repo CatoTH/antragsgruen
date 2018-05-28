@@ -246,7 +246,7 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 }
 
 
-if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() != Nobody::getPolicyID()) {
+if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID()) {
     echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
@@ -261,14 +261,8 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     }
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId !== null) {
-        $form              = new \app\models\forms\CommentForm();
-        $form->paragraphNo = -1;
-        $form->sectionId   = -1;
-        $user              = User::getCurrentUser();
-        if ($user) {
-            $form->name  = $user->name;
-            $form->email = $user->email;
-        }
+        $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+        $form->setDefaultData(-1, -1, User::getCurrentUser());
     }
 
     $screeningQueue = 0;
@@ -295,13 +289,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
         }
     }
 
-    if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
-        LayoutHelper::showCommentForm($form, $motion->getMyConsultation(), -1, -1);
-    } elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
-        echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
-            \Yii::t('motion', 'comment_login_hint') .
-            '</div>';
-    }
+    echo $form->renderFormOrErrorMessage();
+
     echo '</section>';
 }

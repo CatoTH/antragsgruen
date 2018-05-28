@@ -1,8 +1,10 @@
 <?php
+
 namespace app\models\forms;
 
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\User;
@@ -12,6 +14,9 @@ use yii\base\Model;
 
 class CommentForm extends Model
 {
+    /** @var ConsultationMotionType */
+    public $motionType;
+
     /** @var string */
     public $email;
     public $name;
@@ -25,6 +30,32 @@ class CommentForm extends Model
     public $userId;
 
     /**
+     * CommentForm constructor.
+     * @param ConsultationMotionType $motionType
+     * @param array $config
+     */
+    public function __construct($motionType, $config = [])
+    {
+        $this->motionType = $motionType;
+        parent::__construct($config);
+    }
+
+    /**
+     * @param int $paragraphNo
+     * @param int $sectionId
+     * @param User|null $user
+     */
+    public function setDefaultData($paragraphNo, $sectionId, $user)
+    {
+        $this->paragraphNo = $paragraphNo;
+        $this->sectionId   = $sectionId;
+        if ($user) {
+            $this->name  = $user->name;
+            $this->email = $user->email;
+        }
+    }
+
+    /**
      * @param Motion $motion
      * @return MotionComment
      * @throws DB
@@ -33,7 +64,7 @@ class CommentForm extends Model
     public function saveMotionComment(Motion $motion)
     {
         $settings = $motion->getMyConsultation()->getSettings();
-        if ($settings->commentNeedsEmail && trim($this->email) == '') {
+        if ($settings->commentNeedsEmail && trim($this->email) === '') {
             throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
 
@@ -75,7 +106,7 @@ class CommentForm extends Model
     public function saveAmendmentComment(Amendment $amendment)
     {
         $settings = $amendment->getMyConsultation()->getSettings();
-        if ($settings->commentNeedsEmail && trim($this->email) == '') {
+        if ($settings->commentNeedsEmail && trim($this->email) === '') {
             throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
 
@@ -116,5 +147,27 @@ class CommentForm extends Model
             [['paragraphNo', 'sectionId'], 'number'],
             [['text', 'name', 'email', 'paragraphNo'], 'safe'],
         ];
+    }
+
+    /**
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     */
+    public function renderFormOrErrorMessage()
+    {
+        if ($this->motionType->getCommentPolicy()->checkCurrUser()) {
+            return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
+                'form'         => $this,
+                'consultation' => $this->motionType->getMyConsultation(),
+                'paragraphNo'  => $this->paragraphNo,
+                'sectionId'    => $this->sectionId,
+            ]);
+        } elseif ($this->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+            return '<div class="alert alert-info" style="margin: 19px;" role="alert">
+        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
+                \Yii::t('amend', 'comments_please_log_in') . '</div>';
+        } else {
+            return '';
+        }
     }
 }

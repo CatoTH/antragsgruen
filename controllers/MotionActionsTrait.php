@@ -54,6 +54,7 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param array $viewParameters
      * @throws Access
+     * @throws Internal
      */
     private function writeComment(Motion $motion, &$viewParameters)
     {
@@ -66,7 +67,7 @@ trait MotionActionsTrait
             }
         }
         $postComment = \Yii::$app->request->post('comment');
-        $commentForm = new CommentForm();
+        $commentForm = new CommentForm($motion->getMyMotionType());
         $commentForm->setAttributes($postComment);
         $commentForm->sectionId = null;
         if ($postComment['sectionId'] > 0) {

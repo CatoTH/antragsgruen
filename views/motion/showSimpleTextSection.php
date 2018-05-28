@@ -138,15 +138,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 }
             }
 
-            if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-                $form              = new \app\models\forms\CommentForm();
-                $form->paragraphNo = $paragraphNo;
-                $form->sectionId   = $section->sectionId;
-                $user              = User::getCurrentUser();
-                if ($user) {
-                    $form->name  = $user->name;
-                    $form->email = $user->email;
-                }
+            if ($form === null || $form->paragraphNo !== $paragraphNo || $form->sectionId !== $section->sectionId) {
+                $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+                $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
 
             $screeningQueue = 0;
@@ -170,12 +164,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 LayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
             }
 
-            if ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
-                LayoutHelper::showCommentForm($form, $motion->getMyConsultation(), $section->sectionId, $paragraphNo);
-            } elseif ($section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
-                echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>' . \Yii::t('amend', 'comments_please_log_in') . '</div>';
-            }
+            echo $form->renderFormOrErrorMessage();
+
             echo '</section>';
         }
     }

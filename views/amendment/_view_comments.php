@@ -21,14 +21,8 @@ $form        = $commentForm;
 $screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-    $form              = new \app\models\forms\CommentForm();
-    $form->paragraphNo = -1;
-    $form->sectionId   = -1;
-    $user              = User::getCurrentUser();
-    if ($user) {
-        $form->name  = $user->name;
-        $form->email = $user->email;
-    }
+    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType());
+    $form->setDefaultData(-1, -1, User::getCurrentUser());
 }
 
 $baseLink     = UrlHelper::createAmendmentUrl($amendment);
@@ -58,11 +52,6 @@ foreach ($amendment->comments as $comment) {
     }
 }
 
-if ($motion->motionType->getCommentPolicy()->checkCurrUser()) {
-    MotionLayoutHelper::showCommentForm($form, $consultation, -1, -1);
-} elseif ($motion->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
-    echo '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
-        \Yii::t('amend', 'comments_please_log_in') . '</div>';
-}
+echo $form->renderFormOrErrorMessage();
+
 echo '</section>';
