@@ -10,6 +10,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+
 $layout->registerPluginAssets($this);
 if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
     try {
@@ -21,6 +22,10 @@ if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
     }
 } else {
     $mainCssFile = 'css/' . $layout->mainCssFile . '.css';
+}
+
+if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
+    $layout->loadDatepicker();
 }
 
 $resourceBase = $controller->getParams()->resourceBase;
@@ -126,13 +131,15 @@ echo \app\models\layoutHooks\Layout::beforeContent();
 /** @var string $content */
 echo $content;
 
+if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
+    echo $this->render('@app/views/consultation/_debug_time_bar', ['consultation' => $controller->consultation]);
+}
 
 echo '<div style="clear: both; padding-top: 15px;"></div>
 <div class="footer_spacer"></div>
 </div></div>';
 
 echo \app\models\layoutHooks\Layout::endPage();
-
 
 foreach ($layout->getJSFiles() as $jsFile) {
     echo '<script src="' . $jsFile . '"></script>' . "\n";

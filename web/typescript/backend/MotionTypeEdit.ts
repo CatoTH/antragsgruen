@@ -56,7 +56,7 @@ class MotionTypeEdit {
             const hasError = () => {
                 const fromDate = $from.data("DateTimePicker").date(),
                     toDate = $to.data("DateTimePicker").date();
-                
+
                 return (fromDate && toDate && toDate.isBefore(fromDate));
             };
 

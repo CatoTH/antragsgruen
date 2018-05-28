@@ -386,6 +386,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_cdeadline_com'    => 'Zeiträume für Kommentare',
     'motion_cdeadline_merge'  => 'Zeiträume zum Einpflegen von Änderungsanträgen',
     'motion_cdeadline_add'    => 'Zeitraum hinzufügen',
+    'motion_deadline_debug'   => 'Debug-Modus für Admins aktivieren<br><small>(um zukünftige/vergangene Zeitpunkte zu simulieren)</small>',
 
     'motion_section_title'        => 'Antrags-Abschnitte',
     'motion_section_del'          => 'Abschnitt löschen',

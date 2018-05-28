@@ -1,5 +1,6 @@
 <?php
 
+use app\components\DateTools;
 use app\components\Tools;
 use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
@@ -135,4 +136,15 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
         <span class="glyphicon glyphicon-plus-sign"></span>
         <?= \Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
+</div>
+
+<div class="deadlineTypeComplex checkbox">
+    <?php
+    echo HTMLTools::fueluxCheckbox(
+        'activateDeadlineDebugMode',
+        \Yii::t('admin', 'motion_deadline_debug'),
+        DateTools::isDeadlineDebugModeActive($motionType->getMyConsultation()),
+        ['id' => 'deadlineDebugMode']
+    );
+    ?>
 </div>

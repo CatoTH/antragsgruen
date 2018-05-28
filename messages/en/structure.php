@@ -177,6 +177,7 @@ return [
     'activity_AMENDMENT_COMMENT'          => '###USER### <strong>commented on the amendment ###AMENDMENT###</strong>',
     'activity_AMENDMENT_SCREEN'           => 'The <strong>amendment ###AMENDMENT###</strong> was <strong>published</strong>',
 
+    'remaining_over'    => 'over',
     'remaining_days'    => 'days',
     'remaining_day'     => 'day',
     'remaining_hours'   => 'hours',

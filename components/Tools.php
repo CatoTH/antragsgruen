@@ -320,19 +320,19 @@ class Tools
         }
         $seconds = $deadline->getTimestamp() - time();
         if ($seconds < 0) {
-            return 'Vorbei';
+            return \Yii::t('structure', 'remaining_over');
         }
         if ($seconds >= 3600 * 24) {
             $days = (int)floor($seconds / (3600 * 24));
-            return $days . " " . \Yii::t('structure', $days === 1 ? 'remaining_day' : 'remaining_days');
+            return $days . ' ' . \Yii::t('structure', $days === 1 ? 'remaining_day' : 'remaining_days');
         } elseif ($seconds >= 3600) {
             $hours = (int)floor($seconds / 3600);
-            return $hours . " " . \Yii::t('structure', $hours === 1 ? 'remaining_hour' : 'remaining_hours');
+            return $hours . ' ' . \Yii::t('structure', $hours === 1 ? 'remaining_hour' : 'remaining_hours');
         } elseif ($seconds >= 60) {
             $minutes = (int)floor($seconds / 60);
-            return $minutes . " " . \Yii::t('structure', $minutes === 1 ? 'remaining_minute' : 'remaining_minutes');
+            return $minutes . ' ' . \Yii::t('structure', $minutes === 1 ? 'remaining_minute' : 'remaining_minutes');
         } else {
-            return $seconds . " " . \Yii::t('structure', $seconds === 1 ? 'remaining_second' : 'remaining_seconds');
+            return $seconds . ' ' . \Yii::t('structure', $seconds === 1 ? 'remaining_second' : 'remaining_seconds');
         }
     }
 

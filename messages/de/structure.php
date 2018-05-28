@@ -177,6 +177,7 @@ return [
     'activity_AMENDMENT_COMMENT'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### kommentiert</strong>',
     'activity_AMENDMENT_SCREEN'           => 'Der <strong>Änderungsantrag ###AMENDMENT###</strong> wurde <strong>veröffentlicht</strong>',
 
+    'remaining_over'    => 'vorbei',
     'remaining_days'    => 'Tage',
     'remaining_day'     => 'Tag',
     'remaining_hours'   => 'Stunden',

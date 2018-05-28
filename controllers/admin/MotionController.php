@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\DateTools;
 use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -140,6 +141,8 @@ class MotionController extends AdminBase
 
             $this->sectionsSave($motionType);
             $this->sectionsDelete($motionType);
+
+            DateTools::setDeadlineDebugMode($this->consultation, $this->isPostSet('activateDeadlineDebugMode'));
 
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
