@@ -279,7 +279,7 @@ class AcceptanceTester extends \Codeception\Actor
      */
     public function checkFueluxCheckbox($selector)
     {
-        $this->executeJS('$("' . addslashes($selector) . '").checkbox("check");');
+        $this->executeJS('$("' . addslashes($selector) . '").checkbox("check").find("input").trigger("change");');
     }
 
     /**

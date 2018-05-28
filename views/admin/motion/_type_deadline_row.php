@@ -41,7 +41,7 @@ $end = Tools::dateSql2bootstraptime($data['end']);
         </div>
     </div>
     <div class="col-md-3 col">
-        <input type="text" class="form-control" placeholder="<?= \Yii::t('admin', 'motion_deadline_name') ?>"
+        <input type="text" class="form-control phaseTitle" placeholder="<?= \Yii::t('admin', 'motion_deadline_name') ?>"
                name="deadlines[<?= $type ?>][title][]"
                value="<?= Html::encode($data['title'] ? $data['title'] : '') ?>">
     </div>
