@@ -2,8 +2,8 @@
 
 namespace app\plugins\neos;
 
+use app\models\db\Consultation;
 use app\plugins\ModuleBase;
-use yii\web\AssetBundle;
 
 class Module extends ModuleBase
 {
@@ -25,5 +25,15 @@ class Module extends ModuleBase
                 'bundle' => Assets::class,
             ]
         ];
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return string|ConsultationSettings
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getConsultationSettingsClass($consultation)
+    {
+        return ConsultationSettings::class;
     }
 }
