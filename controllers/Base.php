@@ -197,10 +197,10 @@ class Base extends Controller
     protected function renderContentPage($pageKey)
     {
         if ($this->consultation) {
-            $admin   = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
+            $admin = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
         } else {
-            $user    = User::getCurrentUser();
-            $admin   = ($user && in_array($user->id, $this->getParams()->adminUserIds));
+            $user  = User::getCurrentUser();
+            $admin = ($user && in_array($user->id, $this->getParams()->adminUserIds));
         }
         return $this->render(
             '@app/views/pages/contentpage',
@@ -318,9 +318,13 @@ class Base extends Controller
      */
     public function showErrors()
     {
-        $str = '';
+        $session = \Yii::$app->session;
+        if (!$session->isActive) {
+            return '';
+        }
+        $str     = '';
 
-        $error = \Yii::$app->session->getFlash('error', null, true);
+        $error = $session->getFlash('error', null, true);
         if ($error) {
             $str = '<div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -329,7 +333,7 @@ class Base extends Controller
             </div>';
         }
 
-        $success = \Yii::$app->session->getFlash('success', null, true);
+        $success = $session->getFlash('success', null, true);
         if ($success) {
             $str .= '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
@@ -338,7 +342,7 @@ class Base extends Controller
             </div>';
         }
 
-        $info = \Yii::$app->session->getFlash('info', null, true);
+        $info = $session->getFlash('info', null, true);
         if ($info) {
             $str .= '<div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
@@ -347,7 +351,7 @@ class Base extends Controller
             </div>';
         }
 
-        $email = \Yii::$app->session->getFlash('email', null, true);
+        $email = $session->getFlash('email', null, true);
         if ($email && YII_ENV == 'test') {
             $str .= '<div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>

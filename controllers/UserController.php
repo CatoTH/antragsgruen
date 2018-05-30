@@ -82,6 +82,7 @@ class UserController extends Base
      * @param string $backUrl
      * @return int|string
      * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
      */
     public function actionLoginwurzelwerk($backUrl = '')
     {
@@ -184,7 +185,7 @@ class UserController extends Base
             }
         }
 
-        if (\Yii::$app->session->getFlash('error')) {
+        if (\Yii::$app->session->isActive && \Yii::$app->session->getFlash('error')) {
             $usernamePasswordForm->error = \Yii::$app->session->getFlash('error');
             \Yii::$app->session->removeFlash('error');
         }
