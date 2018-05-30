@@ -51,3 +51,54 @@ $I->gotoMotion();
 $I->seeElement('.commentForm');
 $I->seeElement('.amendmentCreate .onlyAdmins');
 $I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->gotoConsultationHome();
+$I->fillField('#simulateAdminTimeInput', '17.04.2017 01:00');
+$I->click('.stickyAdminDebugFooter .setTime');
+$I->wait(1);
+$I->dontSeeElement('#sidebar .createMotion');
+$I->gotoMotion();
+$I->seeElement('.commentForm');
+$I->seeElement('.amendmentCreate .onlyAdmins');
+$I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->gotoConsultationHome();
+$I->fillField('#simulateAdminTimeInput', '01.05.2017 01:00');
+$I->click('.stickyAdminDebugFooter .setTime');
+$I->wait(1);
+$I->seeElement('#sidebar .createMotion');
+$I->gotoMotion();
+$I->seeElement('.commentForm');
+$I->seeElement('.amendmentCreate .onlyAdmins');
+$I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->gotoConsultationHome();
+$I->fillField('#simulateAdminTimeInput', '01.06.2017 01:00');
+$I->click('.stickyAdminDebugFooter .setTime');
+$I->wait(1);
+$I->dontSeeElement('#sidebar .createMotion');
+$I->gotoMotion();
+$I->seeElement('.commentForm');
+$I->seeElement('.amendmentCreate .onlyAdmins');
+$I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->gotoConsultationHome();
+$I->fillField('#simulateAdminTimeInput', '01.07.2017 01:00');
+$I->click('.stickyAdminDebugFooter .setTime');
+$I->wait(1);
+$I->seeElement('#sidebar .createMotion');
+$I->gotoMotion();
+$I->seeElement('.commentForm');
+$I->dontSeeElement('.amendmentCreate .onlyAdmins');
+$I->seeElement('.amendmentCreate');
+$I->dontSeeElement('#sidebar .mergeamendments');
+
+$I->gotoConsultationHome();
+$I->fillField('#simulateAdminTimeInput', '01.09.2017 01:00');
+$I->click('.stickyAdminDebugFooter .setTime');
+$I->wait(1);
+$I->seeElement('#sidebar .createMotion');
+$I->gotoMotion();
+$I->dontSeeElement('.commentForm');
+$I->seeElement('.amendmentCreate .onlyAdmins');
+$I->seeElement('#sidebar .mergeamendments');
