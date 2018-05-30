@@ -41,8 +41,8 @@ $COL_PROCEDURE = chr($currCol++);
 
 $objPHPExcel = new \PHPExcel();
 
-$objPHPExcel->getProperties()->setCreator('Antragsgrün');
-$objPHPExcel->getProperties()->setLastModifiedBy('Antragsgrün');
+$objPHPExcel->getProperties()->setCreator(\Yii::t('export', 'default_creator'));
+$objPHPExcel->getProperties()->setLastModifiedBy(\Yii::t('export', 'default_creator'));
 $objPHPExcel->getProperties()->setTitle($consultation->title);
 $objPHPExcel->getProperties()->setSubject(\Yii::t('export', 'motions'));
 $objPHPExcel->getProperties()->setDescription($consultation->title . ' - ' . \Yii::t('export', 'motions'));

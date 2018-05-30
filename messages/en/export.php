@@ -46,4 +46,5 @@ return [
     'pp_public_site'        => 'Overview (public)',
     'pp_ods_all'            => 'ODS-Export: Everything',
     'pp_unhandled'          => 'Remaining procedure',
+    'default_creator'       => 'Antragsgrün',
 ];

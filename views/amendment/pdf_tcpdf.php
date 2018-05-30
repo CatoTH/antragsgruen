@@ -19,7 +19,7 @@ foreach ($amendment->getInitiators() as $init) {
 $initiatorsStr = implode(', ', $initiators);
 
 // set document information
-$pdf->SetCreator('Antragsgrün');
+$pdf->SetCreator(\Yii::t('export', 'default_creator'));
 $pdf->SetAuthor(implode(', ', $initiators));
 $pdf->SetTitle(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
 $pdf->SetSubject(Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());

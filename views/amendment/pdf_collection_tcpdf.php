@@ -18,8 +18,8 @@ $pdfLayout = $amendments[0]->getMyMotion()->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
 
 // set document information
-$pdf->SetCreator('Antragsgrün');
-$pdf->SetAuthor('Antragsgrün');
+$pdf->SetCreator(\Yii::t('export', 'default_creator'));
+$pdf->SetAuthor(\Yii::t('export', 'default_creator'));
 $pdf->SetTitle(Yii::t('export', 'all_amendments_title'));
 $pdf->SetSubject(Yii::t('export', 'all_amendments_title'));
 

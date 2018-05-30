@@ -17,7 +17,7 @@ foreach ($motion->getInitiators() as $init) {
 $initiatorsStr = implode(', ', $initiators);
 
 // set document information
-$pdf->SetCreator('Antragsgrün');
+$pdf->SetCreator(\Yii::t('export', 'default_creator'));
 $pdf->SetAuthor(implode(', ', $initiators));
 $pdf->SetTitle(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
 $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());

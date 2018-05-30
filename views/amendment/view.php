@@ -40,7 +40,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     }
 }
 
-$this->title = $amendment->getTitle() . ' (' . $consultation->title . ', Antragsgrün)';
+$this->title = $amendment->getTitle() . ' (' . $consultation->title . ')';
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 

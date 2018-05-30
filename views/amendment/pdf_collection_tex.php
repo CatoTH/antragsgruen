@@ -14,7 +14,7 @@ use yii\helpers\Html;
 $layout            = new Layout();
 $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
 $layout->template = $texTemplate->texLayout;
-$layout->author   = 'Antragsgrün';
+$layout->author   = \Yii::t('export', 'default_creator');
 $layout->title    = \Yii::t('export', 'all_amendments_title');
 
 /** @var AntragsgruenApp $params */

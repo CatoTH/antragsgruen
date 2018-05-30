@@ -168,7 +168,7 @@ echo '
 {
   "@context" : "http://schema.org",
   "@type" : "Organization",
-  "name" : "Antragsgrün",
+  "name" : "' . \Yii::t('export', 'default_creator') . '",
   "url" : "' . Html::encode($params->domainPlain) . '",
   "sameAs" : [
     "https://www.facebook.com/Antragsgruen",

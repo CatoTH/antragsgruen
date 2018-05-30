@@ -36,4 +36,25 @@ class LayoutHooks extends HooksAdapter
 
         return $before;
     }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function footerLine($before)
+    {
+        $out         = '<footer class="footer"><div class="container">';
+        $legalLink   = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'legal']);
+        $privacyLink = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'privacy']);
+
+        $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+            \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+            \Yii::t('base', 'privacy_statement') . '</a>';
+
+        $out .= '</div></footer>';
+
+        return $out;
+    }
 }
