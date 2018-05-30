@@ -1,12 +1,12 @@
 @charset "UTF-8";
 
 $icon-font-path: "../../fonts/";
-@import "../../web/css/variables";
+@import "../../../web/css/variables";
 
 $montserratFontPath: "./montserrat/";
 @import "montserrat";
 $OpenSansPath: "../../fonts/OpenSans/fonts";
-@import "../../web/fonts/OpenSans/open-sans.scss";
+@import "../../../web/fonts/OpenSans/open-sans.scss";
 
 $contentBorderRadius: 0;
 $use-box-shadow: false;
@@ -76,18 +76,18 @@ $inlineAmendmentPreambleColor: $colorRed;
 $createMotionBtnColor: $colorYellow;
 $createMotionTextColor: $menuLink;
 
-@import "../../web/css/bootstrap";
-@import "../../web/css/fontello";
-@import "../../web/css/helpers";
-@import "../../web/css/elements";
-@import "../../web/css/bootstrap_fuelux_overwrites";
-@import "../../web/css/base_layout";
-@import "../../web/css/contentpage";
-@import "../../web/css/consultation_motion_list";
-@import "../../web/css/motions";
-@import "../../web/css/proposed_procedure";
-@import "../../web/css/styles";
-@import "../../web/css/sidebar";
+@import "../../../web/css/bootstrap";
+@import "../../../web/css/fontello";
+@import "../../../web/css/helpers";
+@import "../../../web/css/elements";
+@import "../../../web/css/bootstrap_fuelux_overwrites";
+@import "../../../web/css/base_layout";
+@import "../../../web/css/contentpage";
+@import "../../../web/css/consultation_motion_list";
+@import "../../../web/css/motions";
+@import "../../../web/css/proposed_procedure";
+@import "../../../web/css/styles";
+@import "../../../web/css/sidebar";
 
 .motionListStd .motion .title a  {
   font-family: "Montserrat", sans-serif;
@@ -119,5 +119,13 @@ body {
     .prefixCol, .titleCol {
       font-weight: bold;
     }
+  }
+}
+
+.neosMotionMergeOpener {
+  text-align: center;
+  margin-bottom: 10px;
+  button {
+    font-weight: normal;
   }
 }

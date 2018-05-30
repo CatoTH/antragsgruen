@@ -107,8 +107,18 @@ class Permissions
         }
         if (User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
+        } elseif ($motion->iAmInitiator()) {
+            $policy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
+            if ($policy === ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+                return true;
+            } elseif ($policy === ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION) {
+                return (count($motion->getVisibleAmendments()) === 0);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
