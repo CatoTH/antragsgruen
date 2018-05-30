@@ -36,4 +36,9 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
+
+    'debug_deadline_head' => 'Simulate time',
+    'debug_deadline_hint' => 'Only for this browser',
+    'debug_deadline_set'  => 'Set',
+    'debug_deadline_quit' => 'Quit simulation',
 ];

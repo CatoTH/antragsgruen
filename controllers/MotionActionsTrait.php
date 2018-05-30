@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AntiSpam;
 use app\components\UrlHelper;
 use app\models\db\ConsultationLog;
 use app\models\db\IComment;
@@ -53,38 +52,17 @@ trait MotionActionsTrait
     /**
      * @param Motion $motion
      * @param array $viewParameters
-     * @throws Access
      */
     private function writeComment(Motion $motion, &$viewParameters)
     {
-        if (!$motion->motionType->getCommentPolicy()->checkCurrUser()) {
-            throw new Access('No rights to write a comment');
-        }
-        if (\Yii::$app->user->isGuest) {
-            if (AntiSpam::createToken($motion->consultationId) != \Yii::$app->request->post('jsprotection')) {
-                throw new Access(\Yii::t('base', 'err_js_or_login'));
-            }
-        }
         $postComment = \Yii::$app->request->post('comment');
-        $commentForm = new CommentForm();
-        $commentForm->setAttributes($postComment);
-        $commentForm->sectionId = null;
-        if ($postComment['sectionId'] > 0) {
-            foreach ($motion->getActiveSections() as $section) {
-                if ($section->sectionId == $postComment['sectionId']) {
-                    $commentForm->sectionId = $postComment['sectionId'];
-                }
-            }
-        }
-
-        if (User::getCurrentUser()) {
-            $commentForm->userId = User::getCurrentUser()->id;
-        }
+        $commentForm = new CommentForm($motion->getMyMotionType());
+        $commentForm->setAttributes($postComment, $motion->getActiveSections());
 
         try {
-            $comment = $commentForm->saveMotionComment($motion);
-            ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
-            if ($comment->status == MotionComment::STATUS_SCREENING) {
+            $comment = $commentForm->saveMotionCommentWithChecks($motion);
+
+            if ($comment->status === MotionComment::STATUS_SCREENING) {
                 \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
             } else {
                 \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
@@ -192,6 +170,7 @@ trait MotionActionsTrait
      * @param string $name
      * @param string $orga
      * @throws FormError
+     * @throws Internal
      */
     private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
     {
@@ -210,6 +189,7 @@ trait MotionActionsTrait
     /**
      * @param Motion $motion
      * @throws FormError
+     * @throws Internal
      */
     private function motionLike(Motion $motion)
     {
@@ -223,6 +203,7 @@ trait MotionActionsTrait
     /**
      * @param Motion $motion
      * @throws FormError
+     * @throws Internal
      */
     private function motionSupport(Motion $motion)
     {
@@ -265,6 +246,7 @@ trait MotionActionsTrait
     /**
      * @param Motion $motion
      * @throws FormError
+     * @throws Internal
      */
     private function motionDislike(Motion $motion)
     {
@@ -384,37 +366,26 @@ trait MotionActionsTrait
         }
         if (isset($post['deleteComment'])) {
             $this->deleteComment($motion, $commentId);
-
         } elseif (isset($post['commentScreeningAccept'])) {
             $this->screenCommentAccept($motion, $commentId);
-
         } elseif (isset($post['commentScreeningReject'])) {
             $this->screenCommentReject($motion, $commentId);
-
         } elseif (isset($post['motionLike'])) {
             $this->motionLike($motion);
-
         } elseif (isset($post['motionDislike'])) {
             $this->motionDislike($motion);
-
         } elseif (isset($post['motionSupport'])) {
             $this->motionSupport($motion);
-
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->motionSupportRevoke($motion);
-
         } elseif (isset($post['motionSupportFinish'])) {
             $this->motionSupportFinish($motion);
-
         } elseif (isset($post['motionAddTag'])) {
             $this->motionAddTag($motion);
-
         } elseif (isset($post['motionDelTag'])) {
             $this->motionDelTag($motion);
-
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($motion, $viewParameters);
-
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($motion);
         }
@@ -425,7 +396,6 @@ trait MotionActionsTrait
      * @return string
      * @throws \Exception
      * @throws \Throwable
-     * @throws \yii\base\ExitException
      * @throws \yii\db\StaleObjectException
      */
     public function actionDelProposalComment($motionSlug)

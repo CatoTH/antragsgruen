@@ -54,30 +54,21 @@ trait AmendmentActionsTrait
     /**
      * @param Amendment $amendment
      * @param array $viewParameters
-     * @throws Access
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
-        if (!$amendment->getMyMotion()->motionType->getCommentPolicy()->checkCurrUser()) {
-            throw new Access('No rights to write a comment');
-        }
-
-        $consultation = $amendment->getMyConsultation();
-        if (\Yii::$app->user->isGuest) {
-            if (AntiSpam::createToken($consultation->id) != \Yii::$app->request->post('jsprotection')) {
-                throw new Access(\Yii::t('base', 'err_js_or_login'));
-            }
-        }
-        $commentForm = new CommentForm();
+        $commentForm = new CommentForm($amendment->getMyMotionType());
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
-        if (User::getCurrentUser()) {
-            $commentForm->userId = User::getCurrentUser()->id;
-        }
-
         try {
-            $comment = $commentForm->saveAmendmentComment($amendment);
-            ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_COMMENT, $comment->id);
+            $comment = $commentForm->saveAmendmentCommentWithChecks($amendment);
+
+            if ($comment->status === AmendmentComment::STATUS_SCREENING) {
+                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created_needs_screening'));
+            } else {
+                \yii::$app->session->setFlash('screening', \Yii::t('comment', 'created'));
+            }
+
             $this->redirect(UrlHelper::createAmendmentCommentUrl($comment));
         } catch (\Exception $e) {
             $viewParameters['commentForm'] = $commentForm;
@@ -215,6 +206,7 @@ trait AmendmentActionsTrait
      * @param string $name
      * @param string $orga
      * @throws FormError
+     * @throws Internal
      */
     private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '')
     {
@@ -387,7 +379,7 @@ trait AmendmentActionsTrait
         }
 
         $commentId = \Yii::$app->request->post('id');
-        $comment = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);
+        $comment   = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);
         if ($comment && User::isCurrentUser($comment->user)) {
             $comment->delete();
             return json_encode(['success' => true]);

@@ -55,8 +55,6 @@
 
 namespace Helper;
 
-use Codeception\TestCase;
-
 class AccessibilityValidator extends \Codeception\Module
 {
     public static $SUPPORTED_STANDARDS = array(
@@ -72,6 +70,7 @@ class AccessibilityValidator extends \Codeception\Module
 
     /**
      * @return string
+     * @throws \Codeception\Exception\ModuleException
      */
     private function getPageUrl()
     {
@@ -112,7 +111,7 @@ class AccessibilityValidator extends \Codeception\Module
 
         exec($pa11yPath . " -s " . $standard . " -r json '" . addslashes($url) . "'", $return);
         $data = json_decode($return[0], true);
-        if (!$data) {
+        if (!is_array($data)) {
             $msg = 'Invalid data returned from validation service: ';
             throw new \Exception($msg . $return);
         }

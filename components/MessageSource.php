@@ -35,7 +35,7 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getTranslatableCategories()
     {
         if (\Yii::$app->language == 'de') {
-            return [
+            $categories = [
                 'base'            => 'Basis-Layout',
                 'structure'       => 'Interne Bezeichnungen',
                 'con'             => 'Veranstaltung',
@@ -50,10 +50,9 @@ class MessageSource extends \yii\i18n\MessageSource
                 'admin'           => 'Administration',
                 'user'            => 'Account-Einstellungen',
                 'wizard'          => 'Wizard',
-                'memberpetitions' => 'Mitgliederbegehren',
             ];
         } else {
-            return [
+            $categories = [
                 'base'            => 'Basic layout',
                 'structure'       => 'Internal labels',
                 'con'             => 'Consultation',
@@ -68,9 +67,16 @@ class MessageSource extends \yii\i18n\MessageSource
                 'admin'           => 'Administration',
                 'user'            => 'User accounts',
                 'wizard'          => 'Wizard',
-                'memberpetitions' => 'Member petitions',
             ];
         }
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        foreach (array_keys($params->getPluginClasses()) as $pluginId) {
+            $categories[$pluginId] = $pluginId;
+        }
+
+        return $categories;
     }
 
     /**
@@ -130,9 +136,10 @@ class MessageSource extends \yii\i18n\MessageSource
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
-        foreach ($params->getPluginClasses() as $pluginClass) {
-            if ($pluginClass::getMessagePath($category)) {
-                $messageFile = Yii::getAlias($pluginClass::getMessagePath($category)) . "/$language/";
+        foreach (array_keys($params->getPluginClasses()) as $pluginId) {
+            if ($category === $pluginId) {
+                $messageFile = '@app/plugins/' . $pluginId . '/messages/' . $language . '/';
+                $messageFile = Yii::getAlias($messageFile);
             }
         }
 
@@ -162,7 +169,7 @@ class MessageSource extends \yii\i18n\MessageSource
 
             return $messages;
         } else {
-            return null;
+            return [];
         }
     }
 

@@ -10,7 +10,7 @@ $I->dontSee('Unterstützer*innen');
 
 $I->wantTo('enably supporting without login');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicySupportAmendments', \app\models\policies\All::getPolicyID());
+$I->selectFueluxOption('#typePolicySupportAmendments', \app\models\policies\All::getPolicyID());
 $I->checkOption('.amendmentSupportPolicy .amendmentSupport');
 $I->submitForm('.adminTypeForm', [], 'save');
 

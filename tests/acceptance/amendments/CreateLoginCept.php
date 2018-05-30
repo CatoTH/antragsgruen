@@ -5,7 +5,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyName());
+$I->selectFueluxOption('#typePolicyAmendments', \app\models\policies\LoggedIn::getPolicyID());
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();

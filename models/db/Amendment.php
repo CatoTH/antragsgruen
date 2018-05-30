@@ -615,11 +615,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         if ($this->getMyConsultation()->getSettings()->iniatorsMayEdit && $this->iAmInitiator()) {
-            if ($this->getMyMotion()->motionType->amendmentDeadlineIsOver()) {
-                return false;
-            } else {
-                return true;
-            }
+            return $this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
         }
 
         return false;
@@ -1085,7 +1081,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function isDeadlineOver()
     {
-        return $this->getMyMotion()->motionType->amendmentDeadlineIsOver();
+        return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
     }
 
     /**

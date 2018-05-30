@@ -1,9 +1,9 @@
 <?php
 
-use \app\components\Tools;
-use app\components\UrlHelper;
+use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use yii\helpers\Html;
@@ -39,7 +39,6 @@ if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-
     } else {
         echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
     }
-
 }
 echo '</h1>';
 
@@ -47,9 +46,12 @@ echo $layout->getMiniMenu('sidebarSmall');
 
 echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
 
-if (count($consultation->motionTypes) == 1 && $consultation->motionTypes[0]->deadlineMotions != '') {
-    echo '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
-    echo Tools::formatMysqlDateTime($consultation->motionTypes[0]->deadlineMotions) . "</p>\n";
+if (count($consultation->motionTypes) === 1) {
+    $deadline = $consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
+    if ($deadline) {
+        echo '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
+        echo Tools::formatMysqlDateTime($deadline) . "</p>\n";
+    }
 }
 
 $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
@@ -70,6 +72,14 @@ if ($admin) {
 
     echo Html::endForm();
     $layout->addAMDModule('frontend/ContentPageEdit');
+}
+
+foreach ($consultation->motionTypes as $motionType) {
+    foreach ($motionType->getAllCurrentDeadlines(true) as $deadline) {
+        echo '<div class="alert alert-info">';
+        echo \Yii::t('con', 'current_phase') . ': ' . Html::encode($deadline['title']);
+        echo '</div>';
+    }
 }
 
 echo '</div>';

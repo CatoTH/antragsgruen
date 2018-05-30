@@ -6,6 +6,7 @@ return [
     'new_comments'         => 'Neue Kommentare',
     'create_new'           => 'Anlegen...',
     'deadline_circle'      => 'Antrags&shy;schluss',
+    'current_phase'        => 'Aktuelle Phase',
     'My Motions'           => 'Meine Anträge',
     'All Motions'          => 'Anträge',
     'no_motions_yet'       => 'Es gibt noch keine Anträge',

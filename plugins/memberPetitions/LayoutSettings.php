@@ -25,7 +25,7 @@ class LayoutSettings extends Layout
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {
-            $this->breadcrumbs[UrlHelper::homeUrl()] = \Yii::t('memberpetitions', 'bc');
+            $this->breadcrumbs[UrlHelper::homeUrl()] = \Yii::t('memberPetitions', 'bc');
             $url                                     = \Yii::$app->request->url;
             if (strpos($url, $consultation->urlPath) !== false) {
                 $this->breadcrumbs[UrlHelper::createUrl('consultation/index')] = $consultation->titleShort;
@@ -37,14 +37,5 @@ class LayoutSettings extends Layout
                 \Yii::$app->language = $language;
             }
         }
-    }
-
-    /**
-     * @param string $layout
-     */
-    public function setLayout($layout)
-    {
-        parent::setLayout($layout);
-        \app\models\layoutHooks\Layout::addHook(new LayoutHooks($this, $this->consultation));
     }
 }

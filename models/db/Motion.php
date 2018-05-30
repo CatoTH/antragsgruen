@@ -1110,7 +1110,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isDeadlineOver()
     {
-        return $this->motionType->motionDeadlineIsOver();
+        return !$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
     }
 
     /**

@@ -35,7 +35,7 @@ echo $controller->showErrors();
 
 echo '<fieldset class="form-group">
         <label class="col-sm-4 control-label" for="startLayoutType">' .
-    Yii::t('admin', 'Base language variant') . ':</label>
+    Yii::t('admin', 'translating_base') . ':</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
     'wordingBase',
@@ -94,6 +94,12 @@ foreach ($strings as $stringKey => $stringOrig) {
     $options = ['class' => 'form-control', 'placeholder' => $stringOrig];
     echo HTMLTools::smallTextarea('string[' . $encKey . ']', $options, $value);
     echo '</div></div>';
+}
+
+if (count($strings) === 0) {
+    echo '<div class="alert alert-info"><p>';
+    echo Yii::t('admin', 'translating_none');
+    echo '</p></div>';
 }
 
 

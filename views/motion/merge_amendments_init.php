@@ -1,19 +1,21 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\Amendment;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
+ * @var Motion|null $draft
+ * @var Motion|null $unconfirmed
+ * @var Amendment[] $amendments
  */
 
 /** @var \app\controllers\Base $controller */
 $controller  = $this->context;
 $layout      = $controller->layoutParams;
-$draft       = $motion->getMergingDraft(false);
-$unconfirmed = $motion->getMergingUnconfirmed();
 
 $this->title           = str_replace('%NAME%', $motion->getTitleWithPrefix(), \Yii::t('amend', 'merge_init_title'));
 $layout->robotsNoindex = true;
@@ -98,7 +100,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 </thead>
                 <tbody>
                 <?php
-                foreach ($motion->getVisibleAmendmentsSorted() as $amend) {
+                foreach ($amendments as $amend) {
                     $id = 'markAmendment' . $amend->id;
                     echo '<tr class="amendment' . $amend->id . '"><td class="colCheck">';
                     echo Html::checkbox(

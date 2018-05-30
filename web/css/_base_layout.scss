@@ -107,6 +107,46 @@ body > footer {
   }
 }
 
+.stickyAdminDebugFooter {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  padding: 0;
+  background: white;
+  border-top: solid 1px #ccc;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  display: table;
+  width: 100%;
+
+  > * {
+    display: table-cell;
+    padding: 5px;
+    vertical-align: top;
+  }
+  .adminHint {
+    font-size: 0.8em;
+    display: block;
+  }
+  .setterCol {
+    width: 100%;
+  }
+  #simulateAdminTime {
+    width: 200px;
+    float: left;
+    margin-right: 10px;
+  }
+  h2 {
+    white-space: nowrap;
+    margin: 0;
+    font-size: 1.1em;
+  }
+  label {
+    margin: 0;
+  }
+}
+
 *:fullscreen {
   overflow-x: hidden;
   overflow-y: auto;

@@ -286,7 +286,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'Translation / Wording'      => 'Edit the language',
     'translating_hint'           => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.' .
         '<strong>Hint:</strong> Changes here only affect this one consultation.',
-    'Base language variant'      => 'Base language',
+    'translating_none'           => 'No strings to translate',
+    'translating_base'           => 'Base language',
     'tabulardatatype_string'     => 'Text',
     'tabulardatatype_integer'    => 'Number',
     'tabulardatatype_date'       => 'Date',
@@ -306,7 +307,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'amend_pdf_list'             => 'Amendment PDFs',
     'motion_type_names'          => 'Names',
     'motion_type_initiator'      => 'Initiators / supporters',
-    'motion_type_deadline'       => 'Deadline',
     'motion_type_perm'           => 'Permissions',
     'motion_type_perm_motion'    => 'Motions',
     'motion_type_perm_amend'     => 'Amendments',
@@ -396,7 +396,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'support_coll_policy_fix'     => 'Fix settings',
     'support_coll_policy_warning' => 'If there is a support collecting phase, it\'s recommended to enforce a login both for creating and for supporting a motion. Furthermore, enabling confirmation e-mails to the initiator is recommended.',
 
-    'save'                        => 'Save', // 'Save'
     'motion_type_edit'            => 'Edit motion type',
     'motion_type_perm_supp_mot'   => 'Supporting motions',
     'motion_type_perm_supp_amend' => 'Supporting amendments',
@@ -414,6 +413,21 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',
+
+    'motion_deadlines_head'   => 'Deadline / Phases',
+    'motion_deadline_complex' => 'Complex schedule / phases',
+    'motion_deadline_from'    => 'from',
+    'motion_deadline_from_p'  => 'now',
+    'motion_deadline_to'      => 'to',
+    'motion_deadline_to_p'    => 'unlimited',
+    'motion_deadline_name'    => 'Name of phase',
+    'motion_sdeadline_mot'    => 'Motions',
+    'motion_sdeadline_amend'  => 'Amendments',
+    'motion_cdeadline_mot'    => 'Times for motions',
+    'motion_cdeadline_amend'  => 'Times for amendments',
+    'motion_cdeadline_com'    => 'Times for comments',
+    'motion_cdeadline_merge'  => 'Times for merging changes',
+    'motion_cdeadline_add'    => 'Add time range',
 
     'users_head'       => 'Registered users',
     'users_bc'         => 'Users',

@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\components\DateTools;
+use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
@@ -21,8 +23,7 @@ use yii\db\ActiveRecord;
  * @property int $cssIcon
  * @property int $pdfLayout
  * @property int $texTemplateId
- * @property string $deadlineMotions
- * @property string $deadlineAmendments
+ * @property string $deadlines
  * @property int $policyMotions
  * @property int $policyAmendments
  * @property int $policyComments
@@ -58,6 +59,14 @@ class ConsultationMotionType extends ActiveRecord
     const INITIATORS_MERGE_NEVER           = 0;
     const INITIATORS_MERGE_NO_COLLISSION   = 1;
     const INITIATORS_MERGE_WITH_COLLISSION = 2;
+
+    const DEADLINE_MOTIONS    = 'motions';
+    const DEADLINE_AMENDMENTS = 'amendments';
+    const DEADLINE_COMMENTS   = 'comments';
+    const DEADLINE_MERGING    = 'merging';
+    public static $DEADLINE_TYPES = ['motions', 'amendments', 'comments', 'merging'];
+
+    protected $deadlinesObject = null;
 
     /**
      * @return string
@@ -120,6 +129,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionPolicy()
     {
@@ -128,6 +138,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentPolicy()
     {
@@ -136,6 +147,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getCommentPolicy()
     {
@@ -144,6 +156,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionSupportPolicy()
     {
@@ -152,6 +165,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPolicy
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentSupportPolicy()
     {
@@ -160,6 +174,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return ISupportType
+     * @throws \app\models\exceptions\Internal
      */
     public function getMotionSupportTypeClass()
     {
@@ -168,6 +183,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return ISupportType
+     * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentSupportTypeClass()
     {
@@ -189,6 +205,7 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return IPDFLayout|null
+     * @throws \app\models\exceptions\Internal
      */
     public function getPDFLayoutClass()
     {
@@ -234,31 +251,116 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-
     /**
-     * @return bool
+     * @param string $type
+     * @return array
      */
-    public function motionDeadlineIsOver()
+    public function getDeadlinesByType($type)
     {
-        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineMotions);
-        if ($this->deadlineMotions != '' && date('YmdHis') > $normalized) {
-            return true;
-        } else {
-            return false;
+        if ($this->deadlinesObject === null) {
+            $this->deadlinesObject = json_decode($this->deadlines, true);
         }
+        return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
     }
 
     /**
+     * @param array $deadlines
+     */
+    public function setAllDeadlines($deadlines)
+    {
+        $this->deadlines       = json_encode($deadlines);
+        $this->deadlinesObject = null;
+    }
+
+    /**
+     * @param string|null $deadlineMotions
+     * @param string|null $deadlineAmendments
+     */
+    public function setSimpleDeadlines($deadlineMotions, $deadlineAmendments)
+    {
+        $this->setAllDeadlines([
+            static::DEADLINE_MOTIONS    => [['start' => null, 'end' => $deadlineMotions, 'title' => null]],
+            static::DEADLINE_AMENDMENTS => [['start' => null, 'end' => $deadlineAmendments, 'title' => null]],
+        ]);
+    }
+
+    /**
+     * @param array $deadline
+     * @param null|int $timestamp
      * @return bool
      */
-    public function amendmentDeadlineIsOver()
+    public static function isInDeadlineRange($deadline, $timestamp = null)
     {
-        $normalized = str_replace([' ', ':', '-'], ['', '', ''], $this->deadlineAmendments);
-        if ($this->deadlineAmendments != '' && date('YmdHis') > $normalized) {
-            return true;
-        } else {
-            return false;
+        if ($timestamp === null) {
+            $timestamp = DateTools::getCurrentTimestamp();
         }
+        if ($deadline['start']) {
+            $startTs = Tools::dateSql2timestamp($deadline['start']);
+            if ($startTs > $timestamp) {
+                return false;
+            }
+        }
+        if ($deadline['end']) {
+            $endTs = Tools::dateSql2timestamp($deadline['end']);
+            if ($endTs < $timestamp) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @param string $type
+     * @return \DateTime|null
+     */
+    public function getUpcomingDeadline($type)
+    {
+        $deadlines = $this->getDeadlinesByType($type);
+        foreach ($deadlines as $deadline) {
+            if (static::isInDeadlineRange($deadline) && $deadline['end']) {
+                return $deadline['end'];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $type
+     * @return bool
+     */
+    public function isInDeadline($type)
+    {
+        $deadlines = $this->getDeadlinesByType($type);
+        if (count($deadlines) === 0) {
+            return true;
+        }
+        foreach ($deadlines as $deadline) {
+            if (static::isInDeadlineRange($deadline)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param bool $onlyNamed
+     * @return array
+     */
+    public function getAllCurrentDeadlines($onlyNamed = false)
+    {
+        $found = [];
+        foreach (static::$DEADLINE_TYPES as $type) {
+            foreach ($this->getDeadlinesByType($type) as $deadline) {
+                if ($onlyNamed && !$deadline['title']) {
+                    continue;
+                }
+                if (static::isInDeadlineRange($deadline)) {
+                    $deadline['type'] = $type;
+                    $found[] = $deadline;
+                }
+            }
+        }
+        return $found;
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace app\models\policies;
 
+use app\components\DateTools;
+use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 
 class Wurzelwerk extends IPolicy
@@ -37,7 +39,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedMotionMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_ww_motion_denied');
@@ -48,7 +50,7 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedAmendmentMsg()
     {
-        if ($this->motionType->motionDeadlineIsOver()) {
+        if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
         return \Yii::t('structure', 'policy_ww_amend_denied');
@@ -67,6 +69,14 @@ class Wurzelwerk extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
+        $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
+        if (!$this->motionType->isInDeadline($deadlineType)) {
+            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
+            return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
+        }
+        if ($this->motionType->getCommentPolicy()->checkCurrUser(true, true)) {
+            return \Yii::t('amend', 'comments_please_log_in');
+        }
         return \Yii::t('structure', 'policy_ww_comm_denied');
     }
 

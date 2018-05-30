@@ -53,7 +53,7 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
-        if ($locale == 'de') {
+        if ($locale === 'de') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4}) ' .
                 '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches)) {
@@ -66,7 +66,7 @@ class Tools
                     $matches['minute']
                 );
             }
-        } elseif ($locale == 'fr') {
+        } elseif ($locale === 'fr') {
             $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4}) ' .
                 '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches)) {
@@ -79,7 +79,7 @@ class Tools
                     $matches['minute']
                 );
             }
-        } elseif ($locale == 'en') {
+        } elseif ($locale === 'en') {
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
                 '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
             if (preg_match($pattern, $time, $matches)) {
@@ -259,11 +259,13 @@ class Tools
      */
     public static function formatMysqlDate($mysqldate, $locale = null, $allowRelativeDates = true)
     {
+        $currentTs = DateTools::getCurrentTimestamp();
+
         if (strlen($mysqldate) == 0) {
             return '-';
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d") && $allowRelativeDates) {
+        } elseif (substr($mysqldate, 0, 10) == date('Y-m-d', $currentTs) && $allowRelativeDates) {
             return \yii::t('base', 'Today');
-        } elseif (substr($mysqldate, 0, 10) == date("Y-m-d", time() - 3600 * 24) && $allowRelativeDates) {
+        } elseif (substr($mysqldate, 0, 10) == date('Y-m-d', $currentTs - 3600 * 24) && $allowRelativeDates) {
             return \yii::t('base', 'Yesterday');
         }
 
@@ -318,21 +320,21 @@ class Tools
         if (!$deadline) {
             return '?';
         }
-        $seconds = $deadline->getTimestamp() - time();
+        $seconds = $deadline->getTimestamp() - DateTools::getCurrentTimestamp();
         if ($seconds < 0) {
-            return 'Vorbei';
+            return \Yii::t('structure', 'remaining_over');
         }
         if ($seconds >= 3600 * 24) {
             $days = (int)floor($seconds / (3600 * 24));
-            return $days . " " . \Yii::t('structure', $days === 1 ? 'remaining_day' : 'remaining_days');
+            return $days . ' ' . \Yii::t('structure', $days === 1 ? 'remaining_day' : 'remaining_days');
         } elseif ($seconds >= 3600) {
             $hours = (int)floor($seconds / 3600);
-            return $hours . " " . \Yii::t('structure', $hours === 1 ? 'remaining_hour' : 'remaining_hours');
+            return $hours . ' ' . \Yii::t('structure', $hours === 1 ? 'remaining_hour' : 'remaining_hours');
         } elseif ($seconds >= 60) {
             $minutes = (int)floor($seconds / 60);
-            return $minutes . " " . \Yii::t('structure', $minutes === 1 ? 'remaining_minute' : 'remaining_minutes');
+            return $minutes . ' ' . \Yii::t('structure', $minutes === 1 ? 'remaining_minute' : 'remaining_minutes');
         } else {
-            return $seconds . " " . \Yii::t('structure', $seconds === 1 ? 'remaining_second' : 'remaining_seconds');
+            return $seconds . ' ' . \Yii::t('structure', $seconds === 1 ? 'remaining_second' : 'remaining_seconds');
         }
     }
 

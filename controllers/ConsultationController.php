@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\DateTools;
 use app\components\ProposedProcedureFactory;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -17,6 +18,7 @@ use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\forms\ConsultationActivityFilterForm;
 use yii\web\Response;
 
@@ -430,5 +432,30 @@ class ConsultationController extends Base
             'html'    => $html,
             'date'    => date('H:i:s'),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionDebugbarAjax()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        switch (\Yii::$app->request->post('action')) {
+            case 'close':
+                DateTools::setDeadlineDebugMode($this->consultation, false);
+                return json_encode(['success' => true]);
+            case 'setTime':
+                try {
+                    $time = Tools::dateBootstraptime2sql(\Yii::$app->request->post('time'));
+                } catch (Internal $e) {
+                    $time = null;
+                }
+                DateTools::setDeadlineTime($this->consultation, $time);
+                return json_encode(['success' => true]);
+            default:
+                return json_encode(['success' => false, 'error' => 'No operation given']);
+        }
     }
 }

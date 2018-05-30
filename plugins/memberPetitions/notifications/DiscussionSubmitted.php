@@ -28,7 +28,7 @@ class DiscussionSubmitted
         $plain      = str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
             [$motionLink, $motion->getTitleWithPrefix(), $initiator[0]->getGivenNameOrFull()],
-            \Yii::t('memberpetitions', 'submit_discuss_text')
+            \Yii::t('memberPetitions', 'submit_discuss_text')
         );
 
         MailTools::sendWithLog(
@@ -36,7 +36,7 @@ class DiscussionSubmitted
             $motion->getMyConsultation()->site,
             trim($initiator[0]->contactEmail),
             $initiator[0]->userId,
-            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('memberpetitions', 'submit_discuss_title')),
+            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('memberPetitions', 'submit_discuss_title')),
             $plain
         );
     }

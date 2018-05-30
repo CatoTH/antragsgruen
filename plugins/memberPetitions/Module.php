@@ -5,6 +5,8 @@ namespace app\plugins\memberPetitions;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\Site;
+use app\models\layoutHooks\Hooks;
+use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\base\Event;
@@ -61,16 +63,14 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param string $category
-     * @return string|null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @param Layout $layoutSettings
+     * @param Consultation $consultation
+     * @return Hooks[]
      */
-    public static function getMessagePath($category)
+    public static function getForcedLayoutHooks($layoutSettings, $consultation)
     {
-        if ($category === 'memberpetitions') {
-            return '@app/plugins/memberPetitions/messages/';
-        } else {
-            return null;
-        }
+        return [
+            new LayoutHooks($layoutSettings, $consultation)
+        ];
     }
 }

@@ -224,7 +224,6 @@ abstract class DefaultTypeBase extends ISupportType
                 $sup->save();
             }
         }
-
     }
 
 

@@ -9,7 +9,7 @@ $I->see('Antrag stellen');
 
 $I->wantTo('set the deadline to the past');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->fillField('#typeDeadlineMotions', date('d.m.Y 00:00:00', time() - 10));
+$I->fillField('#typeSimpleDeadlineMotions', date('d.m.Y 00:00:00', time() - 10));
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();
@@ -33,7 +33,7 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->fillField('#typeDeadlineMotions', date('d.m.Y 00:00:00', time() + 3600 * 24));
+$I->fillField('#typeSimpleDeadlineMotions', date('d.m.Y 00:00:00', time() + 3600 * 24));
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->gotoConsultationHome();

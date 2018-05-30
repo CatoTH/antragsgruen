@@ -31,6 +31,8 @@ $layout->loadCKEditor();
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
+$amendments = $motion->getVisibleAmendmentsSorted();
+
 /** @var MotionSection[] $newSections */
 $newSections = [];
 foreach ($form->newMotion->getSortedSections(false) as $section) {
@@ -67,18 +69,23 @@ foreach ($motion->getSortedSections(false) as $section) {
     }
 }
 
-$explanation = \Yii::t('amend', 'merge_explanation');
-if ($hasCollidingParagraphs) {
-    $explanation = str_replace('###COLLIDINGHINT###', \Yii::t('amend', 'merge_explanation_colliding'), $explanation);
-} else {
-    $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
-}
-$explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
-echo '<div class="alert alert-info alert-dismissible" role="alert">
+if (count($amendments) > 0) {
+    $explanation = \Yii::t('amend', 'merge_explanation');
+    if ($hasCollidingParagraphs) {
+        $explanation = str_replace(
+            '###COLLIDINGHINT###',
+            \Yii::t('amend', 'merge_explanation_colliding'),
+            $explanation
+        );
+    } else {
+        $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
+    }
+    $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
+    echo '<div class="alert alert-info alert-dismissible" role="alert">
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
-    '<span aria-hidden="true">&times;</span></button>' .
-    $explanation . '</div>';
-
+        '<span aria-hidden="true">&times;</span></button>' .
+        $explanation . '</div>';
+}
 
 echo $controller->showErrors();
 
@@ -234,19 +241,22 @@ if (count($editorials) > 0) {
 }
 
 
-$jsStati = [
-    'processed'         => Amendment::STATUS_PROCESSED,
-    'accepted'          => Amendment::STATUS_ACCEPTED,
-    'rejected'          => Amendment::STATUS_REJECTED,
-    'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,
-];
+if (count($amendments) > 0) {
+    $jsStati = [
+        'processed'         => Amendment::STATUS_PROCESSED,
+        'accepted'          => Amendment::STATUS_ACCEPTED,
+        'rejected'          => Amendment::STATUS_REJECTED,
+        'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,
+    ];
 
-?>
+    ?>
 
     <section class="newAmendments" data-stati="<?= Html::encode(json_encode($jsStati)) ?>">
-        <?php MotionLayoutHelper::printAmendmentStatusSetter($motion->getVisibleAmendmentsSorted(), $amendmentStati); ?>
+        <?php MotionLayoutHelper::printAmendmentStatusSetter($amendments, $amendmentStati); ?>
     </section>
-
+    <?php
+}
+?>
 
     <div class="submitHolder content">
         <button type="submit" name="save" class="btn btn-primary">

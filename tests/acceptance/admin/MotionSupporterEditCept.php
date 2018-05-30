@@ -17,7 +17,7 @@ $I->executeJS('$("#motionSupporterHolder > ul > li:nth(1) .supporterName").val("
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
-$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->checkFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();

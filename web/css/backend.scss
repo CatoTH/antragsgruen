@@ -427,9 +427,26 @@ label.legend {
       cursor: pointer;
     }
   }
-  .form-group.checkbox {
-    margin-top: -13px;
-    margin-bottom: 13px;
+  .deadlineLabel {
+    font-weight: bold;
+  }
+  .deadlineAdder {
+    font-weight: normal;
+  }
+  .deadlineHolder {
+    margin-bottom: 20px;
+  }
+  .deadlineEntry {
+    margin-bottom: 10px;
+  }
+  &.form-horizontal .checkbox {
+    padding-top: 0;
+  }
+  #typeAmendSinglePara {
+    padding-top: 0;
+    .checkbox {
+      padding-bottom: 15px;
+    }
   }
 }
 

@@ -24,7 +24,7 @@ class LayoutHooks extends HooksAdapter
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
             '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">' .
-            \Yii::t('memberpetitions', 'title') . '</a>' .
+            \Yii::t('memberPetitions', 'title') . '</a>' .
             '</span></div>';
         if ($this->consultation) {
             $out .= '<div id="site-description" class="siteDescriptionPetition">' .
@@ -45,15 +45,15 @@ class LayoutHooks extends HooksAdapter
     {
         if (Tools::canRespondToPetition($motion)) {
             $before .= '<div class="content"><div class="alert alert-info">';
-            $before .= \Yii::t('memberpetitions', 'answer_hint');
+            $before .= \Yii::t('memberPetitions', 'answer_hint');
             $before .= '</div></div>';
         }
 
         if ($motion->canMergeAmendments()) {
             $before .= '<div class="content"><div class="alert alert-info">';
-            $before .= \Yii::t('memberpetitions', 'discussion_over');
+            $before .= \Yii::t('memberPetitions', 'discussion_over');
             $before .= '<div style="text-align: center; margin-top: 15px;">' . Html::a(
-                \Yii::t('memberpetitions', 'discussion_over_btn'),
+                \Yii::t('memberPetitions', 'discussion_over_btn'),
                 UrlHelper::createMotionUrl($motion, 'merge-amendments-init'),
                 ['class' => 'btn btn-primary']
             ) . '</div>';
@@ -101,10 +101,10 @@ class LayoutHooks extends HooksAdapter
         if ($deadline) {
             $deadlineStr = \app\components\Tools::formatMysqlDate($deadline->format('Y-m-d'));
             if (Tools::isMotionDeadlineOver($motion)) {
-                $deadlineStr .= ' (' . \Yii::t('memberpetitions', 'response_overdue') . ')';
+                $deadlineStr .= ' (' . \Yii::t('memberPetitions', 'response_overdue') . ')';
             }
             $motionData[] = [
-                'title'   => \Yii::t('memberpetitions', 'response_deadline'),
+                'title'   => \Yii::t('memberPetitions', 'response_deadline'),
                 'content' => $deadlineStr,
             ];
         }
@@ -112,7 +112,7 @@ class LayoutHooks extends HooksAdapter
         $discussionUntil = Tools::getDiscussionUntil($motion);
         if ($discussionUntil) {
             $motionData[] = [
-                'title'   => \Yii::t('memberpetitions', 'discussion_until'),
+                'title'   => \Yii::t('memberPetitions', 'discussion_until'),
                 'content' => \app\components\Tools::formatMysqlDate($discussionUntil->format('Y-m-d')),
             ];
         }
@@ -129,17 +129,17 @@ class LayoutHooks extends HooksAdapter
         if ($motion->motionTypeId === Tools::getDiscussionType($motion->getMyConsultation())->id) {
             switch ($motion->status) {
                 case Motion::STATUS_SUBMITTED_SCREENED:
-                    return \Yii::t('memberpetitions', 'status_discussing');
+                    return \Yii::t('memberPetitions', 'status_discussing');
             }
         }
         if ($motion->motionTypeId === Tools::getPetitionType($motion->getMyConsultation())->id) {
             switch ($motion->status) {
                 case Motion::STATUS_COLLECTING_SUPPORTERS:
-                    return \Yii::t('memberpetitions', 'status_collecting');
+                    return \Yii::t('memberPetitions', 'status_collecting');
                 case Motion::STATUS_SUBMITTED_SCREENED:
-                    return \Yii::t('memberpetitions', 'status_unanswered');
+                    return \Yii::t('memberPetitions', 'status_unanswered');
                 case Motion::STATUS_PROCESSED:
-                    return '✔ ' . \Yii::t('memberpetitions', 'status_answered');
+                    return '✔ ' . \Yii::t('memberPetitions', 'status_answered');
             }
         }
         return $before;

@@ -85,7 +85,20 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        return $this->render('merge_amendments_init', ['motion' => $motion]);
+        $amendments  = $motion->getVisibleAmendmentsSorted();
+        $draft       = $motion->getMergingDraft(false);
+        $unconfirmed = $motion->getMergingUnconfirmed();
+
+        if (count($amendments) === 0 && !$draft && !$unconfirmed) {
+            return $this->redirect(UrlHelper::createMotionUrl($motion, 'merge-amendments'));
+        }
+
+        return $this->render('merge_amendments_init', [
+            'motion'      => $motion,
+            'amendments'  => $amendments,
+            'draft'       => $draft,
+            'unconfirmed' => $unconfirmed,
+        ]);
     }
 
     /**
@@ -122,7 +135,7 @@ trait MotionMergingTrait
             }
 
             if ($newMotion->replacedMotion->slug) {
-                $newMotion->slug = $newMotion->replacedMotion->slug;
+                $newMotion->slug                 = $newMotion->replacedMotion->slug;
                 $newMotion->replacedMotion->slug = null;
                 $newMotion->replacedMotion->save();
             }

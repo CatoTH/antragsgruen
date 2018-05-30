@@ -13,7 +13,7 @@ use yii\helpers\Html;
  */
 
 if (count($motions) === 0) {
-    echo \Yii::t('memberpetitions', 'none');
+    echo \Yii::t('memberPetitions', 'none');
     return;
 }
 
@@ -51,19 +51,19 @@ foreach ($motions as $motion) {
             switch ($motionPhase) {
                 case 1:
                     echo '<li class="sortitem green" data-phase="1" data-created="0">' .
-                        \Yii::t('memberpetitions', 'status_discussing') . '</li>';
+                        \Yii::t('memberPetitions', 'status_discussing') . '</li>';
                     break;
                 case 2:
                     echo '<li class="sortitem green" data-phase="2" data-created="0">' .
-                        \Yii::t('memberpetitions', 'status_collecting') . '</li>';
+                        \Yii::t('memberPetitions', 'status_collecting') . '</li>';
                     break;
                 case 3:
                     echo '<li class="sortitem green" data-phase="3" data-created="0">' .
-                        \Yii::t('memberpetitions', 'status_unanswered') . '</li>';
+                        \Yii::t('memberPetitions', 'status_unanswered') . '</li>';
                     break;
                 case 4:
                     echo '<li class="sortitem green" data-phase="4" data-created="0">' .
-                        \Yii::t('memberpetitions', 'status_answered') . '</li>';
+                        \Yii::t('memberPetitions', 'status_answered') . '</li>';
                     break;
             }
             $lastPhase = $motionPhase;
@@ -114,13 +114,13 @@ foreach ($motions as $motion) {
 
     $deadline = Tools::getPetitionResponseDeadline($motion);
     if ($deadline) {
-        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo ', ' . \Yii::t('memberPetitions', 'index_remaining') . ': ';
         echo \app\components\Tools::formatRemainingTime($deadline);
     }
 
     $deadline = Tools::getDiscussionUntil($motion);
     if ($deadline) {
-        echo ', ' . \Yii::t('memberpetitions', 'index_remaining') . ': ';
+        echo ', ' . \Yii::t('memberPetitions', 'index_remaining') . ': ';
         echo \app\components\Tools::formatRemainingTime($deadline);
     }
     echo '</p>';

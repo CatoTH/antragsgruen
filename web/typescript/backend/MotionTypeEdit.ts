@@ -1,13 +1,10 @@
 class MotionTypeEdit {
     constructor() {
-        $('#typeDeadlineMotionsHolder').datetimepicker({
-            locale: $('#typeDeadlineMotions').data('locale')
-        });
-        $('#typeDeadlineAmendmentsHolder').datetimepicker({
-            locale: $('#typeDeadlineAmendments').data('locale')
-        });
-        $('#typeSupportType').on('change', function () {
-            let hasSupporters = $(this).find("option:selected").data("has-supporters");
+        let $supportType = $('#typeSupportType');
+        $supportType.on('changed.fu.selectlist', () => {
+            let selected = $supportType.find('input').val();
+            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass("hidden");
                 $('#typeAllowMoreSupporters').removeClass("hidden");
@@ -15,10 +12,9 @@ class MotionTypeEdit {
                 $('#typeMinSupportersRow').addClass("hidden");
                 $('#typeAllowMoreSupporters').addClass("hidden");
             }
-        }).change();
+        }).trigger('changed.fu.selectlist');
 
-        $('.deleteTypeOpener a').on('click', function (ev) {
-            ev.preventDefault();
+        $('.deleteTypeOpener button').on('click', () => {
             $('.deleteTypeForm').removeClass('hidden');
             $('.deleteTypeOpener').addClass('hidden');
         });
@@ -26,6 +22,79 @@ class MotionTypeEdit {
         $('[data-toggle="tooltip"]').tooltip();
 
         this.initSectionList();
+        this.initDeadlines();
+    }
+
+    private initDeadlines() {
+        $('#deadlineFormTypeComplex input').change((ev) => {
+            if ($(ev.currentTarget).prop('checked')) {
+                $('.deadlineTypeSimple').addClass('hidden');
+                $('.deadlineTypeComplex').removeClass('hidden');
+            } else {
+                $('.deadlineTypeSimple').removeClass('hidden');
+                $('.deadlineTypeComplex').addClass('hidden');
+            }
+        }).trigger('change');
+
+        $('.datetimepicker').each((i, el) => {
+            $(el).datetimepicker({
+                locale: $(el).find("input").data('locale')
+            });
+        });
+
+        const initLinkedDeadlinePickers = ($row) => {
+            let $from = $row.find(".datetimepickerFrom"),
+                $to = $row.find(".datetimepickerTo");
+            $from.datetimepicker({
+                locale: $from.find("input").data('locale')
+            });
+            $to.datetimepicker({
+                locale: $to.find("input").data('locale'),
+                useCurrent: false
+            });
+
+            const hasError = () => {
+                const fromDate = $from.data("DateTimePicker").date(),
+                    toDate = $to.data("DateTimePicker").date();
+
+                return (fromDate && toDate && toDate.isBefore(fromDate));
+            };
+
+            const setErrorState = () => {
+                if (hasError()) {
+                    $from.addClass("has-error");
+                    $to.addClass("has-error");
+                } else {
+                    $from.removeClass("has-error");
+                    $to.removeClass("has-error");
+                }
+            };
+
+            $from.on("dp.change", setErrorState);
+            $to.on("dp.change", setErrorState);
+        };
+
+        $('.deadlineEntry').each((i, el) => {
+            initLinkedDeadlinePickers($(el));
+        });
+
+        $('.deadlineHolder').each((i, el) => {
+            const $deadlineHolder = $(el),
+                addDeadlineRow = () => {
+                    let html = $('.deadlineRowTemplate').html();
+                    html = html.replace(/TEMPLATE/g, $deadlineHolder.data('type'));
+                    let $newRow = $(html);
+                    $deadlineHolder.find('.deadlineList').append($newRow);
+                    initLinkedDeadlinePickers($newRow);
+                };
+            $deadlineHolder.find('.deadlineAdder').click(addDeadlineRow);
+            $deadlineHolder.on('click', '.delRow', (ev) => {
+                $(ev.currentTarget).parents('.deadlineEntry').remove();
+            });
+            if ($deadlineHolder.find('.deadlineList').children().length === 0) {
+                addDeadlineRow();
+            }
+        });
     }
 
     private initSectionList() {

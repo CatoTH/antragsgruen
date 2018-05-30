@@ -16,13 +16,11 @@ $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
-$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\OnlyInitiator::getTitle());
-$I->selectOption('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupporters', 0);
-$I->uncheckOption('#typeHasOrgaRow input[type=checkbox]');
+$I->uncheckFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
 
 $motionTypePage->saveForm();
-$I->seeOptionIsSelected('#typeSupportType', \app\models\supportTypes\GivenByInitiator::getTitle());
 
 
 
@@ -44,10 +42,9 @@ $I->gotoConsultationHome();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->fillField('#typeMinSupporters', 2);
-$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->checkFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
 $motionTypePage->saveForm();
 $I->seeInField('#typeMinSupporters', 2);
-$I->seeCheckboxIsChecked('#typeHasOrgaRow input[type=checkbox]');
 
 
 $I->wantTo('create a motion, but without supporters');

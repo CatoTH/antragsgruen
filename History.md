@@ -5,7 +5,9 @@
 - Antragsgrün now includes an update mechanism to install a new version from the web interface.
 - The system for editorial texts (like the legal pages or the welcome message) has been overhauled. New features include:
   - It is now possible to add a login message, that appears above the login screen.
+- Instead of only setting the deadline for motions and amendments, there is now an alternative complex phase system with time ranges for motions, amendments, comments and merging amendments into motions, including a debugging tool for admins.
 - The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable
+- If the "amendment merging" mode of a motion is used just to create a new version of the motion, and no amendments actually exist, the process is now greatly simplified.
 
 ### Version 3.8.3 (2018-05-12)
 

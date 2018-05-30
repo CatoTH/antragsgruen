@@ -14,9 +14,9 @@ $motionUrl = \app\tests\_pages\MotionPage::getPageUrl($I, [
 $I->wantTo('check the admin settings');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
-$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::ONLY_INITIATOR);
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
-$I->selectOption('#typeSupportType', \app\models\supportTypes\ISupportType::COLLECTING_SUPPORTERS);
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
 
 $I->logout();
@@ -43,7 +43,7 @@ $I->dontSeeCheckboxIsChecked('.motionDislike');
 $I->dontSeeCheckboxIsChecked('.motionLike');
 $I->checkOption('.motionLike');
 $I->checkOption('.motionDislike');
-$I->checkOption('#typeHasOrgaRow input[type=checkbox]');
+$I->checkFueluxCheckbox('#typeHasOrgaRow label');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 

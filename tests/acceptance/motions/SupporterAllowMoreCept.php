@@ -18,7 +18,7 @@ $I->seeCheckboxIsChecked('#typeAllowMoreSupporters input');
 
 
 $I->wantTo('disable allowing more supporters');
-$I->uncheckOption('#typeAllowMoreSupporters input');
+$I->uncheckFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->cantSeeCheckboxIsChecked('#typeAllowMoreSupporters input');
 

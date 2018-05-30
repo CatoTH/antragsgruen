@@ -36,4 +36,9 @@ return [
     'legal_site_title'      => 'Veranstaltungsseite %SITE%',
     'legal_template'        => '<p><strong>Verantwortlich gemäß § 5 Telemediengesetz (TMG)</strong></p><address>%CONTACT%</address>',
     'html_meta'             => 'Antragsgrün ist ein Antrags-Verwaltungs-System, das speziell für Parteitage, Verbandstagungen sowie Programmdiskussionen entwickelt wurde.',
+
+    'debug_deadline_head' => 'Zeitpunkt simulieren',
+    'debug_deadline_hint' => 'Nur für diesen Browser',
+    'debug_deadline_set'  => 'Setzen',
+    'debug_deadline_quit' => 'Simulation beenden',
 ];

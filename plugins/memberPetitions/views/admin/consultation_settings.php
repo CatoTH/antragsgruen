@@ -13,11 +13,11 @@ use yii\helpers\Html;
 $settings = $consultation->getSettings();
 
 ?>
-<h2 class="green"><?= \Yii::t('memberpetitions', 'sett_title') ?></h2>
+<h2 class="green"><?= \Yii::t('memberPetitions', 'sett_title') ?></h2>
 <section class="content">
     <div class="form-group">
         <label class="col-sm-3 control-label"
-               for="consultationOrgaId"><?= \Yii::t('memberpetitions', 'sett_orgaid') ?>:</label>
+               for="consultationOrgaId"><?= \Yii::t('memberPetitions', 'sett_orgaid') ?>:</label>
         <div class="col-sm-9">
             <input type="text" required name="settings[organizationId]"
                    value="<?= Html::encode($settings->organizationId) ?>"
@@ -27,7 +27,7 @@ $settings = $consultation->getSettings();
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
-               for="minDiscussionTimeId"><?= \Yii::t('memberpetitions', 'sett_minDiscussionTime') ?>:</label>
+               for="minDiscussionTimeId"><?= \Yii::t('memberPetitions', 'sett_minDiscussionTime') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[minDiscussionTime]"
                    value="<?= Html::encode($settings->minDiscussionTime) ?>"
@@ -37,7 +37,7 @@ $settings = $consultation->getSettings();
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
-               for="replyDeadlineId"><?= \Yii::t('memberpetitions', 'sett_replydeadline') ?>:</label>
+               for="replyDeadlineId"><?= \Yii::t('memberPetitions', 'sett_replydeadline') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[replyDeadline]"
                    value="<?= Html::encode($settings->replyDeadline) ?>"

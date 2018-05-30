@@ -86,8 +86,9 @@ $I->see('Standard-Veranstaltung', '.consultation1');
 $I->wantTo('check that the settings were set correctly');
 
 $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
-$I->seeInField('#typeDeadlineMotions', '30.12.2028 20:00');
-$I->seeInField('#typeDeadlineAmendments', '30.11.2026 20:00');
+$I->dontSeeCheckboxIsChecked('#deadlineFormTypeComplex input');
+$I->seeInField('#typeSimpleDeadlineMotions', '30.12.2028 20:00');
+$I->seeInField('#typeSimpleDeadlineAmendments', '30.11.2026 20:00');
 
 $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoConsultation();
 $I->seeCheckboxIsChecked('#maintenanceMode');
@@ -109,4 +110,3 @@ $I->see('Neue Veranstaltung 1', 'h1');
 $I->logout();
 $I->dontSee('Neue Veranstaltung 1', 'h1');
 $I->see('Wartungsmodus', 'h1');
-
