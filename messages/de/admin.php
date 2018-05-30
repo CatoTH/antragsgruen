@@ -292,7 +292,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'Translation / Wording'    => 'Sprache anpassen',
     'translating_hint'         => 'Auf dieser Seite können die Texte der Benutzeroberfläche von Antragsgrün angepasst werden. Falls du eine komplett neue Sprache anlegen und allen anderen Nutzer*innen von Antragsgrün bereit stellen willst, <a href="https://github.com/CatoTH">melde dich</a> einfach bei uns.<br><br>' .
         '<strong>Hinweis:</strong> Änderungen hier wirken sich nur auf die aktuelle Veranstaltung aus - auf keine andere.',
-    'Base language variant'    => 'Basis-Sprachversion',
+    'translating_none'         => 'Keine Texte zu übersetzen',
+    'translating_base'         => 'Basis-Sprachversion',
     'tabulardatatype_string'   => 'Text',
     'tabulardatatype_integer'  => 'Zahl',
     'tabulardatatype_date'     => 'Datum',

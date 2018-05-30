@@ -76,16 +76,6 @@ class ModuleBase extends Module
     }
 
     /**
-     * @param string $category
-     * @return string|null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getMessagePath($category)
-    {
-        return null;
-    }
-
-    /**
      * @return array
      */
     public static function getProvidedLayouts()

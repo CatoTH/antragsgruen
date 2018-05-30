@@ -23,7 +23,7 @@ class MotionPolicy extends IPolicy
      */
     public static function getPolicyName()
     {
-        return \Yii::t('memberpetitions', 'policy_title');
+        return \Yii::t('memberPetitions', 'policy_title');
     }
 
     /**
@@ -31,7 +31,7 @@ class MotionPolicy extends IPolicy
      */
     public function getOnCreateDescription()
     {
-        return \Yii::t('memberpetitions', 'policy_desc');
+        return \Yii::t('memberPetitions', 'policy_desc');
     }
 
     /**
@@ -42,7 +42,7 @@ class MotionPolicy extends IPolicy
         if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
-        return \Yii::t('memberpetitions', 'policy_motion_denied');
+        return \Yii::t('memberPetitions', 'policy_motion_denied');
     }
 
     /**
@@ -53,7 +53,7 @@ class MotionPolicy extends IPolicy
         if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
         }
-        return \Yii::t('memberpetitions', 'policy_amend_denied');
+        return \Yii::t('memberPetitions', 'policy_amend_denied');
     }
 
     /**
@@ -61,7 +61,7 @@ class MotionPolicy extends IPolicy
      */
     public function getPermissionDeniedSupportMsg()
     {
-        return \Yii::t('memberpetitions', 'policy_supp_denied');
+        return \Yii::t('memberPetitions', 'policy_supp_denied');
     }
 
     /**
@@ -69,7 +69,7 @@ class MotionPolicy extends IPolicy
      */
     public function getPermissionDeniedCommentMsg()
     {
-        return \Yii::t('memberpetitions', 'policy_comm_denied');
+        return \Yii::t('memberPetitions', 'policy_comm_denied');
     }
 
 

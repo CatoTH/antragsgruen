@@ -286,7 +286,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'Translation / Wording'      => 'Edit the language',
     'translating_hint'           => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.' .
         '<strong>Hint:</strong> Changes here only affect this one consultation.',
-    'Base language variant'      => 'Base language',
+    'translating_none'           => 'No strings to translate',
+    'translating_base'           => 'Base language',
     'tabulardatatype_string'     => 'Text',
     'tabulardatatype_integer'    => 'Number',
     'tabulardatatype_date'       => 'Date',

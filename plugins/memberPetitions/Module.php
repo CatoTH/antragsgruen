@@ -63,20 +63,6 @@ class Module extends ModuleBase
     }
 
     /**
-     * @param string $category
-     * @return string|null
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getMessagePath($category)
-    {
-        if ($category === 'memberpetitions') {
-            return '@app/plugins/memberPetitions/messages/';
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * @param Layout $layoutSettings
      * @param Consultation $consultation
      * @return Hooks[]

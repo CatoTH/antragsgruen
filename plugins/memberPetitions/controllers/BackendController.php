@@ -91,7 +91,7 @@ class BackendController extends Base
 
         new MotionResponded($motion);
 
-        \Yii::$app->session->setFlash('success', \Yii::t('memberpetitions', 'respond_saved'));
+        \Yii::$app->session->setFlash('success', \Yii::t('memberPetitions', 'respond_saved'));
         return $this->redirect(UrlHelper::createMotionUrl($motion));
     }
 }

@@ -17,18 +17,18 @@ $layout->bodyCssClasses[] = 'memberPetitionList memberPetitionHome';
 
 $myConsultations = Tools::getUserConsultations($site, $user);
 
-$this->title = \Yii::t('memberpetitions', 'title');
+$this->title = \Yii::t('memberPetitions', 'title');
 ?>
-    <h1><?= \Yii::t('memberpetitions', 'title') ?></h1>
+    <h1><?= \Yii::t('memberPetitions', 'title') ?></h1>
     <div class="content">
         <!--
         <section class="createPetition" data-antragsgruen-widget="memberpetitions/HomeCreatePetitions">
             <button type="button" class="btn btn-primary pull-right showWidget">
                 <span class="glyphicon glyphicon-plus"></span>
-                <?= \Yii::t('memberpetitions', 'index_create') ?>
+                <?= \Yii::t('memberPetitions', 'index_create') ?>
             </button>
             <div class="alert alert-success hidden addWidget">
-                <?= \Yii::t('memberpetitions', 'index_create_hint') ?>
+                <?= \Yii::t('memberPetitions', 'index_create_hint') ?>
                 <?php
         foreach ($myConsultations as $consultation) {
             echo '<div class="createRow">';
@@ -50,7 +50,7 @@ $this->title = \Yii::t('memberpetitions', 'title');
 
         <?php
         if (count($myConsultations) > 0) {
-            echo \Yii::t('memberpetitions', 'index_orga_hint');
+            echo \Yii::t('memberPetitions', 'index_orga_hint');
             ?>
             <ul>
                 <?php
@@ -100,7 +100,7 @@ $mySupports = Tools::getSupportedMotions($controller->site);
 
 if (count($myMotions) > 0) {
     ?>
-    <h2 class="green"><?= \Yii::t('memberpetitions', 'index_my_petitions') ?></h2>
+    <h2 class="green"><?= \Yii::t('memberPetitions', 'index_my_petitions') ?></h2>
     <div class="content">
         <?php
         echo $this->render('_motion_list', [
@@ -115,7 +115,7 @@ if (count($myMotions) > 0) {
 
 if (count($mySupports) > 0) {
     ?>
-    <h2 class="green"><?= \Yii::t('memberpetitions', 'index_my_supports') ?></h2>
+    <h2 class="green"><?= \Yii::t('memberPetitions', 'index_my_supports') ?></h2>
     <div class="content">
         <?php
         echo $this->render('_motion_list', [
