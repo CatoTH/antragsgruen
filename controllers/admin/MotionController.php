@@ -111,7 +111,7 @@ class MotionController extends AdminBase
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
 
             $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
-            $motionType->setDeadlines($deadlineForm->generateDeadlineArray());
+            $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
 
             $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
             if (strpos($pdfTemplate, 'php') === 0) {

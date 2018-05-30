@@ -20,10 +20,10 @@ class DeadlineForm
     public static function createFromMotionType(ConsultationMotionType $motionType)
     {
         $form                      = new DeadlineForm();
-        $form->deadlinesMotions    = $motionType->getDeadlines(ConsultationMotionType::DEADLINE_MOTIONS);
-        $form->deadlinesAmendments = $motionType->getDeadlines(ConsultationMotionType::DEADLINE_AMENDMENTS);
-        $form->deadlinesComments   = $motionType->getDeadlines(ConsultationMotionType::DEADLINE_COMMENTS);
-        $form->deadlinesMerging    = $motionType->getDeadlines(ConsultationMotionType::DEADLINE_MERGING);
+        $form->deadlinesMotions    = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MOTIONS);
+        $form->deadlinesAmendments = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_AMENDMENTS);
+        $form->deadlinesComments   = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_COMMENTS);
+        $form->deadlinesMerging    = $motionType->getDeadlinesByType(ConsultationMotionType::DEADLINE_MERGING);
         return $form;
     }
 

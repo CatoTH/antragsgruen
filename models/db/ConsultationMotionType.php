@@ -255,7 +255,7 @@ class ConsultationMotionType extends ActiveRecord
      * @param string $type
      * @return array
      */
-    public function getDeadlines($type)
+    public function getDeadlinesByType($type)
     {
         if ($this->deadlinesObject === null) {
             $this->deadlinesObject = json_decode($this->deadlines, true);
@@ -266,7 +266,7 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @param array $deadlines
      */
-    public function setDeadlines($deadlines)
+    public function setAllDeadlines($deadlines)
     {
         $this->deadlines       = json_encode($deadlines);
         $this->deadlinesObject = null;
@@ -278,7 +278,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function setSimpleDeadlines($deadlineMotions, $deadlineAmendments)
     {
-        $this->setDeadlines([
+        $this->setAllDeadlines([
             static::DEADLINE_MOTIONS    => [['start' => null, 'end' => $deadlineMotions, 'title' => null]],
             static::DEADLINE_AMENDMENTS => [['start' => null, 'end' => $deadlineAmendments, 'title' => null]],
         ]);
@@ -315,7 +315,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getUpcomingDeadline($type)
     {
-        $deadlines = $this->getDeadlines($type);
+        $deadlines = $this->getDeadlinesByType($type);
         foreach ($deadlines as $deadline) {
             if (static::isInDeadlineRange($deadline) && $deadline['end']) {
                 return $deadline['end'];
@@ -330,7 +330,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function isInDeadline($type)
     {
-        $deadlines = $this->getDeadlines($type);
+        $deadlines = $this->getDeadlinesByType($type);
         if (count($deadlines) === 0) {
             return true;
         }
@@ -350,7 +350,7 @@ class ConsultationMotionType extends ActiveRecord
     {
         $found = [];
         foreach (static::$DEADLINE_TYPES as $type) {
-            foreach ($this->getDeadlines($type) as $deadline) {
+            foreach ($this->getDeadlinesByType($type) as $deadline) {
                 if ($onlyNamed && !$deadline['title']) {
                     continue;
                 }

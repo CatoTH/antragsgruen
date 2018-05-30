@@ -5,6 +5,8 @@ namespace app\plugins\memberPetitions;
 use app\models\db\Consultation;
 use app\models\db\Motion;
 use app\models\db\Site;
+use app\models\layoutHooks\Hooks;
+use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\base\Event;
@@ -72,5 +74,17 @@ class Module extends ModuleBase
         } else {
             return null;
         }
+    }
+
+    /**
+     * @param Layout $layoutSettings
+     * @param Consultation $consultation
+     * @return Hooks[]
+     */
+    public static function getForcedLayoutHooks($layoutSettings, $consultation)
+    {
+        return [
+            new LayoutHooks($layoutSettings, $consultation)
+        ];
     }
 }

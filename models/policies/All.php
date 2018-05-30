@@ -70,7 +70,7 @@ class All extends IPolicy
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
         if (!$this->motionType->isInDeadline($deadlineType)) {
-            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlines($deadlineType));
+            $deadlines = DateTools::formatDeadlineRanges($this->motionType->getDeadlinesByType($deadlineType));
             return \Yii::t('structure', 'policy_deadline_over_comm') . ' ' . $deadlines;
         }
         return '';

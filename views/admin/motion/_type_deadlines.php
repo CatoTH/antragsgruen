@@ -73,7 +73,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
     <h4><?= \Yii::t('admin', 'motion_cdeadline_mot') ?>:</h4>
     <div class="deadlineList">
         <?php
-        foreach ($motionType->getDeadlines($type) as $deadline) {
+        foreach ($motionType->getDeadlinesByType($type) as $deadline) {
             echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
@@ -91,7 +91,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
     <h4><?= \Yii::t('admin', 'motion_cdeadline_amend') ?>:</h4>
     <div class="deadlineList">
         <?php
-        foreach ($motionType->getDeadlines($type) as $deadline) {
+        foreach ($motionType->getDeadlinesByType($type) as $deadline) {
             echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
@@ -109,7 +109,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
     <h4><?= \Yii::t('admin', 'motion_cdeadline_merge') ?>:</h4>
     <div class="deadlineList">
         <?php
-        foreach ($motionType->getDeadlines($type) as $deadline) {
+        foreach ($motionType->getDeadlinesByType($type) as $deadline) {
             echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>
@@ -127,7 +127,7 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
     <h4><?= \Yii::t('admin', 'motion_cdeadline_com') ?>:</h4>
     <div class="deadlineList">
         <?php
-        foreach ($motionType->getDeadlines($type) as $deadline) {
+        foreach ($motionType->getDeadlinesByType($type) as $deadline) {
             echo $this->render('_type_deadline_row', ['locale' => $locale, 'type' => $type, 'data' => $deadline]);
         }
         ?>

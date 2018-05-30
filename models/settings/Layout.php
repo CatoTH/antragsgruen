@@ -76,6 +76,15 @@ class Layout
                 \app\models\layoutHooks\Layout::addHook(new GruenesCi2Hooks($this, $this->consultation));
                 break;
         }
+
+        /** @var AntragsgruenApp $params */
+        $params  = \Yii::$app->params;
+        $plugins = $params->getPluginClasses();
+        foreach ($plugins as $plugin) {
+            foreach ($plugin::getForcedLayoutHooks($this, $this->consultation) as $hook) {
+                \app\models\layoutHooks\Layout::addHook($hook);
+            }
+        }
     }
 
     /**
