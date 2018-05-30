@@ -112,6 +112,7 @@ if (isset($_POST['perform_migrations'])) {
     new yii\console\Application($yiiConfig);
     ob_start();
     \app\components\updater\MigrateHelper::performMigrations();
+    \app\components\updater\MigrateHelper::flushCache();
     $output = ob_get_clean();
     $success[] = 'The database has been updated.';
 }

@@ -49,4 +49,17 @@ class MigrateHelper extends MigrateController
             }
         }
     }
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\base\NotSupportedException
+     */
+    public static function flushCache()
+    {
+        $conn = \Yii::$app->get('db', false);
+        if ($conn && ($conn instanceof \yii\db\Connection || $conn instanceof \app\components\DBConnection)) {
+            $schema = $conn->getSchema();
+            $schema->refresh();
+        }
+    }
 }
