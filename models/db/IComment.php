@@ -11,11 +11,13 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property integer $userId
  * @property integer $paragraph
+ * @property integer $parentCommentId
  * @property string $text
  * @property string $dateCreation
  * @property string $name
  * @property integer $status
  * @property User $user
+ * @property IComment $parentComment
  */
 abstract class IComment extends ActiveRecord implements IRSSItem
 {
@@ -30,9 +32,9 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     public static function getStati()
     {
         return [
-            static::STATUS_SCREENING => 'Nicht freigeschaltet',
-            static::STATUS_VISIBLE   => 'Sichtbar',
-            static::STATUS_DELETED   => 'Gelöscht',
+            static::STATUS_SCREENING => \Yii::t('comment', 'status_screening'),
+            static::STATUS_VISIBLE   => \Yii::t('comment', 'status_visible'),
+            static::STATUS_DELETED   => \Yii::t('comment', 'status_deleted'),
         ];
     }
 

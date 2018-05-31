@@ -4,6 +4,8 @@ return [
     'err_no_screening'        => 'Keine Freischaltrechte',
     'err_not_found'           => 'Kommentar nicht gefunden',
     'err_no_del'              => 'Keine Berechtigung zum Löschen',
+    'err_no_name'             => 'Bitte gib deinen Namen an.',
+    'err_no_text'             => 'Bitte gib etwas Text ein.',
     'del_done'                => 'Der Kommentar wurde gelöscht.',
     'not_screened_yet'        => 'noch nicht freigeschaltet',
     'screen_yes'              => 'Freischalten',
@@ -16,5 +18,7 @@ return [
     'link_comment'            => 'Kommentar verlinken',
     'created_needs_screening' => 'Der Kommentar wurde erstellt. Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.',
     'created'                 => 'Der Kommentar wurde erstellt.',
-
+    'status_screening'        => 'Nicht freigeschaltet',
+    'status_visible'          => 'Sichtbar',
+    'status_deleted'          => 'Gelöscht',
 ];
