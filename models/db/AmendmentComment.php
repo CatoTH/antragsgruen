@@ -56,6 +56,29 @@ class AmendmentComment extends IComment
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
+    private $imotion = null;
+
+    /**
+     * @return Amendment|null
+     */
+    public function getIMotion()
+    {
+        if (!$this->imotion) {
+            $current = Consultation::getCurrent();
+            if ($current) {
+                $amendment = $current->getAmendment($this->imotion);
+                if ($amendment) {
+                    $this->imotion = $amendment;
+                } else {
+                    $this->imotion = Amendment::findOne($this->amendmentId);
+                }
+            } else {
+                $this->imotion = Amendment::findOne($this->amendmentId);
+            }
+        }
+        return $this->imotion;
+    }
+
     /**
      * @return ActiveQuery
      */

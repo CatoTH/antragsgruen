@@ -25,11 +25,6 @@ if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
     $form->setDefaultData(-1, -1, User::getCurrentUser());
 }
 
-$baseLink     = UrlHelper::createAmendmentUrl($amendment);
-$visibleStati = [AmendmentComment::STATUS_VISIBLE];
-if ($screenAdmin) {
-    $visibleStati[] = AmendmentComment::STATUS_SCREENING;
-}
 $screeningQueue = 0;
 foreach ($amendment->comments as $comment) {
     if ($comment->status == AmendmentComment::STATUS_SCREENING) {
@@ -45,11 +40,14 @@ if ($screeningQueue > 0) {
     }
     echo '</div>';
 }
-foreach ($amendment->comments as $comment) {
-    if ($comment->paragraph == -1 && in_array($comment->status, $visibleStati)) {
-        $commLink = UrlHelper::createAmendmentCommentUrl($comment);
-        MotionLayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
-    }
+foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
+    /** @var AmendmentComment $comment */
+    echo $this->render('@app/views/motion/_comment', [
+        'comment'  => $comment,
+        'imadmin'  => $screenAdmin,
+        'baseLink' => UrlHelper::createAmendmentUrl($amendment),
+        'commLink' => UrlHelper::createAmendmentCommentUrl($comment),
+    ]);
 }
 
 echo $form->renderFormOrErrorMessage();

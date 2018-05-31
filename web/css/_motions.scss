@@ -256,41 +256,45 @@
   color: darkgray;
 }
 
-.commentForm {
-  margin-top: 20px;
-  margin-bottom: 20px;
-
-  > label {
-    display: block;
-    text-align: center;
-  }
-
-  .submitrow {
-    text-align: center;
-  }
-}
-
 .motionComment {
-  h3 {
+  $commentPadding: 10px;
+  $commentBackground: #fafafa;
+  $commentBorder: lightgrey;
+
+  border: solid 1px $commentBorder;
+  background: $commentBackground;
+  border-radius: 3px;
+  margin: 15px 20px 30px;
+
+  .commentHeader {
     background: none;
     color: $colorLinksLight;
     font-family: $bodyFont;
-    font-size: 13px;
+    font-size: 1em;
     font-weight: bold;
     line-height: 18px;
     margin: 0 0 5px 0;
     text-transform: none;
-    padding: 0;
+    padding: $commentPadding;
+  }
+
+  .commentWriteHeader {
+    border-bottom: solid 1px $commentBackground;
+    font-size: 1.2em;
+  }
+
+  .commentText {
+    padding: 0 $commentPadding $commentPadding $commentPadding;
   }
 
   .date {
     color: #757676;
     float: right;
+    padding: $commentPadding;
     margin-left: 20px;
   }
 
   .commentBottom {
-    margin-top: 10px;
     height: 30px;
     .commentLink {
       float: right;
@@ -307,6 +311,32 @@
         color: #bbb;
       }
     }
+  }
+
+  .screening {
+    > * {
+      display: inline-block;
+      width: 49%;
+      text-align: center;
+    }
+  }
+
+  > label {
+    display: block;
+    text-align: center;
+  }
+
+  &.form-horizontal .form-group {
+    margin-right: $commentPadding;
+    margin-left: $commentPadding;
+    > * {
+      padding-right: 0;
+    }
+  }
+
+  .submitrow {
+    padding: $commentPadding;
+    text-align: center;
   }
 }
 
@@ -557,6 +587,6 @@ iframe.pdfViewer {
     color: gray;
   }
   .motionDataTable {
-     margin-bottom: 25px;
+    margin-bottom: 25px;
   }
 }

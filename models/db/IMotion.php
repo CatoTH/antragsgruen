@@ -22,6 +22,7 @@ use yii\helpers\Html;
  * @property string $dateCreation
  * @property string $datePublication
  * @property string $dateResolution
+ * @property IComment[] $comments
  * @property int $status
  * @property int $proposalStatus
  * @property int $proposalReferenceId
@@ -573,6 +574,30 @@ abstract class IMotion extends ActiveRecord
         } else {
             return $titlePrefix . $new;
         }
+    }
+
+
+    /**
+     * @param bool $screeningAdmin
+     * @param null|int $paragraphNo
+     * @param null $parentId
+     * @return IComment[]
+     */
+    public function getVisibleComments($screeningAdmin, $paragraphNo = null, $parentId = null)
+    {
+        $stati = [IComment::STATUS_VISIBLE];
+        if ($screeningAdmin) {
+            $stati[] = IComment::STATUS_SCREENING;
+        }
+        return array_filter($this->comments, function (IComment $comment) use ($stati, $paragraphNo, $parentId) {
+            if (!in_array($comment->status, $stati)) {
+                return false;
+            }
+            if ($paragraphNo !== null && $paragraphNo !== $comment->paragraph) {
+                return false;
+            }
+            return ($paragraphNo === null || ($paragraphNo === $comment->paragraph));
+        });
     }
 
     /**

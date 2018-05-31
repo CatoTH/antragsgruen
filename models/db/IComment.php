@@ -64,6 +64,11 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     /**
      * @return string
      */
+    abstract public function getIMotion();
+
+    /**
+     * @return string
+     */
     abstract public function getLink();
 
     /**
@@ -81,7 +86,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         if (!$this->user) {
             return false;
         }
-        if (!is_null($this->user->auth) && $user->auth == $this->user->auth) {
+        if (!is_null($this->user->auth) && $user->auth === $this->user->auth) {
             return true;
         }
         return false;
@@ -92,10 +97,10 @@ abstract class IComment extends ActiveRecord implements IRSSItem
      */
     public function isVisibleCurrUser()
     {
-        if ($this->status == static::STATUS_DELETED) {
+        if ($this->status === static::STATUS_DELETED) {
             return false;
         }
-        if ($this->status == static::STATUS_VISIBLE) {
+        if ($this->status === static::STATUS_VISIBLE) {
             return true;
         }
 
@@ -109,7 +114,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             return true;
         }
 
-        return ($identity->id == $this->userId);
+        return ($identity->id === $this->userId);
     }
 
     /**

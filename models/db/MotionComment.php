@@ -62,6 +62,29 @@ class MotionComment extends IComment
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
+    private $imotion = null;
+
+    /**
+     * @return Motion|null
+     */
+    public function getIMotion()
+    {
+        if (!$this->imotion) {
+            $current = Consultation::getCurrent();
+            if ($current) {
+                $motion = $current->getMotion($this->motionId);
+                if ($motion) {
+                    $this->imotion = $motion;
+                } else {
+                    $this->imotion = Motion::findOne($this->motionId);
+                }
+            } else {
+                $this->imotion = Motion::findOne($this->motionId);
+            }
+        }
+        return $this->imotion;
+    }
+
     /**
      * @return ActiveQuery
      */

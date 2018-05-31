@@ -45,8 +45,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         $numComments = $paragraph->getVisibleComments($screenAdmin);
         if (count($numComments) > 0 || $mayOpen) {
             echo '<li class="comment">';
-            $str = '<span class="glyphicon glyphicon-comment"></span>';
-            $str .= '<span class="count" data-count="' . count($numComments) . '"></span>';
+            $str  = '<span class="glyphicon glyphicon-comment"></span>';
+            $str  .= '<span class="count" data-count="' . count($numComments) . '"></span>';
             $zero = '';
             if (count($numComments) == 0) {
                 $zero .= ' zero';
@@ -160,8 +160,12 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
             $baseLink = UrlHelper::createMotionUrl($motion);
             foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
-                $commLink = UrlHelper::createMotionCommentUrl($comment);
-                LayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
+                echo $this->render('@app/views/motion/_comment', [
+                    'comment'  => $comment,
+                    'imadmin'  => $screenAdmin,
+                    'baseLink' => $baseLink,
+                    'commLink' => UrlHelper::createMotionCommentUrl($comment),
+                ]);
             }
 
             echo $form->renderFormOrErrorMessage();
