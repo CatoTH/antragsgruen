@@ -43,6 +43,13 @@ class CommentForm extends Model
     {
         $this->motionType = $motionType;
         parent::__construct($config);
+
+        if (User::getCurrentUser()) {
+            $user         = User::getCurrentUser();
+            $this->userId = $user->id;
+            $this->name   = $user->name;
+            $this->email  = $user->email;
+        }
     }
 
     /**

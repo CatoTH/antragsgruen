@@ -16,6 +16,7 @@ return [
     'text'                    => 'Text',
     'submit_comment'          => 'Kommentar abschicken',
     'link_comment'            => 'Kommentar verlinken',
+    'reply_btn'               => 'Antworten',
     'created_needs_screening' => 'Der Kommentar wurde erstellt. Er wird noch vom Admin kontrolliert und wird dann freigeschaltet.',
     'created'                 => 'Der Kommentar wurde erstellt.',
     'status_screening'        => 'Nicht freigeschaltet',

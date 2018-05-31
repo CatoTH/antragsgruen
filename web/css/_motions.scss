@@ -257,10 +257,6 @@
 }
 
 .motionComment {
-  $commentPadding: 10px;
-  $commentBackground: #fafafa;
-  $commentBorder: lightgrey;
-
   border: solid 1px $commentBorder;
   background: $commentBackground;
   border-radius: 3px;
@@ -273,7 +269,7 @@
     font-size: 1em;
     font-weight: bold;
     line-height: 18px;
-    margin: 0 0 5px 0;
+    margin: 0;
     text-transform: none;
     padding: $commentPadding;
   }
@@ -287,6 +283,14 @@
     padding: 0 $commentPadding $commentPadding $commentPadding;
   }
 
+  .commentName {
+    padding: 0 $commentPadding $commentPadding $commentPadding;
+  }
+
+  .commentFullTextarea {
+    padding: 0 $commentPadding $commentPadding $commentPadding;
+  }
+
   .date {
     color: #757676;
     float: right;
@@ -295,9 +299,39 @@
   }
 
   .commentBottom {
-    height: 30px;
-    .commentLink {
-      float: right;
+    height: 23px;
+    position: relative;
+    .entry {
+      position: absolute;
+      bottom: -1px;
+      height: 24px;
+      font-size: 12px;
+      border-top: solid 1px $commentBorder;
+      text-align: center;
+      font-weight: normal;
+    }
+    .link {
+      left: -1px;
+      padding: 2px;
+      width: 24px;
+      border-right: solid 1px $commentBorder;
+      border-top-right-radius: 3px;
+    }
+    .replyButton {
+      right: -1px;
+      padding: 2px 5px;
+      border-left: solid 1px $commentBorder;
+      border-top-left-radius: 3px;
+    }
+    .delLink {
+      color: red;
+      left: 3px;
+      width: 24px;
+      border-right: solid 1px $commentBorder;
+      border-top-right-radius: 3px;
+    }
+    .delLink + .link {
+      border-top-right-radius: 0;
     }
   }
 

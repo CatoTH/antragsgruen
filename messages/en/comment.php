@@ -16,6 +16,7 @@ return [
     'text'                    => 'Text',
     'submit_comment'          => 'Submit',
     'link_comment'            => 'Link comment',
+    'reply_btn'               => 'Reply',
     'created_needs_screening' => 'The comment has been created. An administrator will review and publish it now.',
     'created'                 => 'The comment has been created.',
     'status_screening'        => 'Not screened yet',

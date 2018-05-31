@@ -22,18 +22,29 @@ if (\Yii::$app->user->isGuest) {
 $user = User::getCurrentUser();
 
 $formIdPre     = 'comment_' . $sectionId . '_' . $paragraphNo;
-$fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
 
 ?>
     <input type="hidden" name="comment[paragraphNo]" value="<?= $paragraphNo ?>">
     <input type="hidden" name="comment[sectionId]" value="<?= $sectionId ?>">
-
+<?php
+if ($user && $user->name) {
+    ?>
+    <div class="commentName">
+        <?= Html::encode($form->name) ?> (<?= Html::encode($form->email) ?>)
+    </div>
+    <div class="commentFullTextarea">
+        <textarea name="comment[text]" title="<?= Html::encode(\Yii::t('comment', 'text')) ?>" class="form-control"
+                  rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
+    </div>
+    <?php
+} else {
+    ?>
     <div class="form-group">
         <label for="<?= $formIdPre ?>_name" class="control-label col-sm-3">
             <?= \Yii::t('comment', 'name') ?>:
         </label>
         <div class="col-sm-9">
-            <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name" <?= $fixedReadOnly ?>
+            <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
                    name="comment[name]" value="<?= Html::encode($form->name) ?>" required autocomplete="name">
         </div>
     </div>
@@ -43,7 +54,7 @@ $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
         </label>
         <div class="col-sm-9">
             <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
-                   autocomplete="email" <?= $fixedReadOnly ?> name="comment[email]"
+                   autocomplete="email" name="comment[email]"
                    value="<?= Html::encode($form->email) ?>"
                 <?= ($consultation->getSettings()->commentNeedsEmail ? ' required' : '') ?>>
         </div>
@@ -52,14 +63,18 @@ $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
         <label for="<?= $formIdPre ?>_text" class="control-label col-sm-3"><?= \Yii::t('comment', 'text') ?>
             :</label>
         <div class="col-sm-9">
-                    <textarea name="comment[text]" title="Text" class="form-control" rows="5"
-                              id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
+            <textarea name="comment[text]" title="Text" class="form-control" rows="5"
+                      id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
         </div>
     </div>
+    <?php
+}
+?>
 
     <div class="submitrow">
-        <button class="btn btn-success" name="writeComment"
-                type="submit"><?= \Yii::t('comment', 'submit_comment') ?></button>
+        <button class="btn btn-success" name="writeComment" type="submit">
+            <?= \Yii::t('comment', 'submit_comment') ?>
+        </button>
     </div>
 <?php
 echo Html::endForm();
