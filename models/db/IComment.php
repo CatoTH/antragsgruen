@@ -63,7 +63,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     abstract public function getMotionTitle();
 
     /**
-     * @return string
+     * @return IMotion
      */
     abstract public function getIMotion();
 

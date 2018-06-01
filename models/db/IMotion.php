@@ -446,7 +446,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string
      */
-    abstract public function getViewUrl();
+    abstract public function getLink();
 
     /**
      * @return string
@@ -596,7 +596,7 @@ abstract class IMotion extends ActiveRecord
             if ($paragraphNo !== null && $paragraphNo !== $comment->paragraph) {
                 return false;
             }
-            return ($paragraphNo === null || ($paragraphNo === $comment->paragraph));
+            return ($parentId === $comment->parentCommentId);
         });
     }
 

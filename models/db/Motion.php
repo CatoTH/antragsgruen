@@ -1097,7 +1097,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return string
      */
-    public function getViewUrl()
+    public function getLink()
     {
         return UrlHelper::createMotionUrl($this);
     }

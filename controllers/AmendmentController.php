@@ -712,7 +712,7 @@ class AmendmentController extends Base
             ])->one();
 
             if ($amendment && $amendment->isReadable()) {
-                return \Yii::$app->response->redirect($amendment->getViewUrl());
+                return \Yii::$app->response->redirect($amendment->getLink());
             }
         } catch (\Exception $e) {
             throw new NotFoundHttpException();

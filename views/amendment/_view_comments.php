@@ -18,8 +18,7 @@ $consultation = $motion->getMyConsultation();
 echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
 echo '<h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
-$form        = $commentForm;
-$screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+$form = $commentForm;
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
     $form = new \app\models\forms\CommentForm($amendment->getMyMotionType(), null);
@@ -28,7 +27,7 @@ if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
 
 $screeningQueue = 0;
 foreach ($amendment->comments as $comment) {
-    if ($comment->status == AmendmentComment::STATUS_SCREENING) {
+    if ($comment->status === AmendmentComment::STATUS_SCREENING) {
         $screeningQueue++;
     }
 }
@@ -41,15 +40,11 @@ if ($screeningQueue > 0) {
     }
     echo '</div>';
 }
+
+$screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
 foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
     /** @var AmendmentComment $comment */
-    echo $this->render('@app/views/motion/_comment', [
-        'comment'    => $comment,
-        'imadmin'    => $screenAdmin,
-        'baseLink'   => UrlHelper::createAmendmentUrl($amendment),
-        'commLink'   => UrlHelper::createAmendmentCommentUrl($comment),
-        'motionType' => $amendment->getMyMotionType(),
-    ]);
+    echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
 }
 
 echo $form->renderFormOrErrorMessage();

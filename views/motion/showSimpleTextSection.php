@@ -10,7 +10,6 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
-use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 $motion         = $section->getMotion();
@@ -158,15 +157,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 }
                 echo '</div>';
             }
-            $baseLink = UrlHelper::createMotionUrl($motion);
             foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
-                echo $this->render('@app/views/motion/_comment', [
-                    'comment'    => $comment,
-                    'imadmin'    => $screenAdmin,
-                    'baseLink'   => $baseLink,
-                    'commLink'   => UrlHelper::createMotionCommentUrl($comment),
-                    'motionType' => $motion->getMyMotionType(),
-                ]);
+                echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
             }
 
             echo $form->renderFormOrErrorMessage();

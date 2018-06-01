@@ -284,13 +284,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
 
     foreach ($motion->getVisibleComments($screeningAdmin, -1, null) as $comment) {
         /** @var MotionComment $comment */
-        echo $this->render('@app/views/motion/_comment', [
-            'comment'    => $comment,
-            'imadmin'    => $screeningAdmin,
-            'baseLink'   => UrlHelper::createMotionUrl($motion),
-            'commLink'   => UrlHelper::createMotionCommentUrl($comment),
-            'motionType' => $motion->getMyMotionType(),
-        ]);
+        echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
     }
 
     echo $form->renderFormOrErrorMessage();

@@ -805,7 +805,7 @@ class MotionController extends Base
             'titlePrefix'    => $prefix
         ]);
         if ($motion && $motion->isReadable()) {
-            return $motion->getViewUrl();
+            return $motion->getLink();
         }
 
         /** @var Amendment|null $amendment */
@@ -815,7 +815,7 @@ class MotionController extends Base
         ])->one();
 
         if ($amendment && $amendment->isReadable()) {
-            return $amendment->getViewUrl();
+            return $amendment->getLink();
         }
 
         return null;

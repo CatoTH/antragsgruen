@@ -147,14 +147,15 @@ class CommentForm extends Model
 
         $user = User::getCurrentUser();
 
-        $comment               = new MotionComment();
-        $comment->motionId     = $motion->id;
-        $comment->sectionId    = ($this->sectionId > 0 ? $this->sectionId : null);
-        $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
-        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
-        $comment->text         = $this->text;
-        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment                  = new MotionComment();
+        $comment->motionId        = $motion->id;
+        $comment->sectionId       = ($this->sectionId > 0 ? $this->sectionId : null);
+        $comment->paragraph       = $this->paragraphNo;
+        $comment->contactEmail    = ($user ? $user->email : $this->email);
+        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->text            = $this->text;
+        $comment->dateCreation    = date('Y-m-d H:i:s');
+        $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
 
         if ($settings->screeningComments) {
             $comment->status = MotionComment::STATUS_SCREENING;
@@ -194,13 +195,14 @@ class CommentForm extends Model
 
         $user = User::getCurrentUser();
 
-        $comment               = new AmendmentComment();
-        $comment->amendmentId  = $amendment->id;
-        $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
-        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
-        $comment->text         = $this->text;
-        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment                  = new AmendmentComment();
+        $comment->amendmentId     = $amendment->id;
+        $comment->paragraph       = $this->paragraphNo;
+        $comment->contactEmail    = ($user ? $user->email : $this->email);
+        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->text            = $this->text;
+        $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
+        $comment->dateCreation    = date('Y-m-d H:i:s');
 
         if ($settings->screeningComments) {
             $comment->status = AmendmentComment::STATUS_SCREENING;

@@ -10,13 +10,11 @@ use yii\helpers\Html;
 
 /**
  * @var IComment $comment
- * @var bool $imadmin
- * @var string $baseLink
- * @var string $commLink
- * @var \app\models\db\ConsultationMotionType $motionType
  */
 
-$screening = ($comment->status == IComment::STATUS_SCREENING);
+$imotion     = $comment->getIMotion();
+$screening   = ($comment->status === IComment::STATUS_SCREENING);
+$screenAdmin = User::havePrivilege($imotion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
 ?>
 
@@ -35,8 +33,8 @@ $screening = ($comment->status == IComment::STATUS_SCREENING);
     </div>
 
     <?php
-    if ($screening && $imadmin) {
-        echo Html::beginForm($commLink, 'post', ['class' => 'screening']);
+    if ($screening) {
+        echo Html::beginForm($comment->getLink(), 'post', ['class' => 'screening']);
         ?>
         <div>
             <button type="submit" class="btn btn-success" name="commentScreeningAccept">
@@ -55,7 +53,7 @@ $screening = ($comment->status == IComment::STATUS_SCREENING);
     <div class="commentBottom">
         <?php
         if ($comment->status === IComment::STATUS_VISIBLE && $comment->canDelete(User::getCurrentUser())) {
-            echo Html::beginForm($baseLink, 'post', ['class' => 'entry delLink']);
+            echo Html::beginForm($imotion->getLink(), 'post', ['class' => 'entry delLink']);
             echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
             echo '<input type="hidden" name="deleteComment" value="on">';
             echo '<button class="link" type="submit">';
@@ -63,8 +61,9 @@ $screening = ($comment->status == IComment::STATUS_SCREENING);
             echo Html::endForm();
         }
 
-        $link = '<span class="glyphicon glyphicon-link"></span>';
-        echo Html::a($link, $commLink, ['class' => 'entry link', 'title' => \Yii::t('comment', 'link_comment')]);
+        $link     = '<span class="glyphicon glyphicon-link"></span>';
+        $linkOpts = ['class' => 'entry link', 'title' => \Yii::t('comment', 'link_comment')];
+        echo Html::a($link, $comment->getLink(), $linkOpts);
         if ($comment->parentCommentId === null) {
             echo '<button type="button" class="entry btn btn-link replyButton">';
             echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
@@ -74,12 +73,17 @@ $screening = ($comment->status == IComment::STATUS_SCREENING);
 </article>
 
 <?php
-$canReply = (!$comment->parentCommentId && $motionType->getCommentPolicy()->checkCurrUserComment(false, false));
+$commentPolicy = $imotion->getMyMotionType()->getCommentPolicy();
+$canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserComment(false, false));
 if (count($comment->replies) > 0 || $canReply) {
     echo '<div class="motionCommentReplies">';
 
+    foreach ($comment->getIMotion()->getVisibleComments($screenAdmin, -1, $comment->id) as $reply) {
+        echo $this->render('@app/views/motion/_comment', ['comment' => $reply]);
+    }
+
     if ($canReply) {
-        $replyForm = new CommentForm($motionType, $comment);
+        $replyForm = new CommentForm($imotion->getMyMotionType(), $comment);
         if (is_a($comment, MotionComment::class)) {
             /** @var MotionComment $comment */
             $replyForm->setDefaultData($comment->paragraph, $comment->sectionId, User::getCurrentUser());
