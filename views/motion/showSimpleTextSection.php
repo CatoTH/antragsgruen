@@ -123,7 +123,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
     if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
-            echo '<section class="commentHolder">';
+            echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
             $motion = $section->getMotion();
             $form   = $commentForm;
 
@@ -139,7 +139,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
 
             if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-                $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+                $form = new \app\models\forms\CommentForm($motion->getMyMotionType(), null);
                 $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
 
@@ -161,10 +161,11 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $baseLink = UrlHelper::createMotionUrl($motion);
             foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
                 echo $this->render('@app/views/motion/_comment', [
-                    'comment'  => $comment,
-                    'imadmin'  => $screenAdmin,
-                    'baseLink' => $baseLink,
-                    'commLink' => UrlHelper::createMotionCommentUrl($comment),
+                    'comment'    => $comment,
+                    'imadmin'    => $screenAdmin,
+                    'baseLink'   => $baseLink,
+                    'commLink'   => UrlHelper::createMotionCommentUrl($comment),
+                    'motionType' => $motion->getMyMotionType(),
                 ]);
             }
 

@@ -23,7 +23,8 @@ use yii\db\ActiveQuery;
  *
  * @property User $user
  * @property Amendment $amendment
- * @property MotionComment $parentComment
+ * @property AmendmentComment $parentComment
+ * @property AmendmentComment[] $replies
  */
 class AmendmentComment extends IComment
 {
@@ -85,6 +86,15 @@ class AmendmentComment extends IComment
     public function getParentComment()
     {
         return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getReplies()
+    {
+        return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
             ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
     }
 

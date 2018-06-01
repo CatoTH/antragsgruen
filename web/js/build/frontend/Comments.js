@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var t=function(){return function(e){this.$widget=e,e.on("click",".replyButton",function(n){var t=$(n.currentTarget).parents(".motionComment").data("id"),i=e.find(".replyTo"+t);i.hasClass("hidden")?(i.removeClass("hidden"),i.find("textarea").focus()):i.addClass("hidden")})}}();n.Comments=t});
+//# sourceMappingURL=Comments.js.map

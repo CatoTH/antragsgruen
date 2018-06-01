@@ -1,6 +1,7 @@
 <?php
 
 use app\components\AntiSpam;
+use app\models\db\IComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
 use \Yii\Helpers\Html;
@@ -10,28 +11,42 @@ use \Yii\Helpers\Html;
  * @var int $sectionId
  * @var CommentForm $form
  * @var \app\models\db\Consultation $consultation
+ * @var IComment $isReplyTo
  */
 
-echo Html::beginForm('', 'post', ['class' => 'commentForm motionComment form-horizontal']);
-?>
-    <h3 class="commentHeader commentWriteHeader"><?= \Yii::t('comment', 'comment_write_title') ?></h3>
-<?php
+$user = User::getCurrentUser();
+
+$classes = 'commentForm motionComment form-horizontal';
+if ($isReplyTo) {
+    $classes .= ' replyComment replyTo' . $isReplyTo->id . ' hidden';
+    $title = \Yii::t('comment', 'comment_reply_title');
+} else {
+    $title = \Yii::t('comment', 'comment_write_title');
+}
+echo Html::beginForm('', 'post', ['class' => $classes]);
+
+if ($user && $user->name) {
+    echo '<div class="commentName">' . Html::encode($form->name) . ' (' . Html::encode($form->email) . ')</div>';
+}
+echo '<h3 class="commentHeader commentWriteHeader">' . $title . '</h3>';
+
 if (\Yii::$app->user->isGuest) {
     echo AntiSpam::getJsProtectionHint($consultation->id);
 }
-$user = User::getCurrentUser();
 
 $formIdPre     = 'comment_' . $sectionId . '_' . $paragraphNo;
+
 
 ?>
     <input type="hidden" name="comment[paragraphNo]" value="<?= $paragraphNo ?>">
     <input type="hidden" name="comment[sectionId]" value="<?= $sectionId ?>">
 <?php
+if ($isReplyTo) {
+    echo '<input type="hidden" name="comment[parentCommentId]" value="' . $isReplyTo->id . '">';
+}
+
 if ($user && $user->name) {
     ?>
-    <div class="commentName">
-        <?= Html::encode($form->name) ?> (<?= Html::encode($form->email) ?>)
-    </div>
     <div class="commentFullTextarea">
         <textarea name="comment[text]" title="<?= Html::encode(\Yii::t('comment', 'text')) ?>" class="form-control"
                   rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>

@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property integer $status
  * @property User $user
  * @property IComment $parentComment
+ * @property IComment[] $replies
  */
 abstract class IComment extends ActiveRecord implements IRSSItem
 {

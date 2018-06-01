@@ -57,7 +57,7 @@ trait AmendmentActionsTrait
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
-        $commentForm = new CommentForm($amendment->getMyMotionType());
+        $commentForm = new CommentForm($amendment->getMyMotionType(), null);
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         try {

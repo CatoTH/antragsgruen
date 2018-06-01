@@ -261,6 +261,9 @@
   background: $commentBackground;
   border-radius: 3px;
   margin: 15px 20px 30px;
+  &.replyComment {
+    margin-top: -15px;
+  }
 
   .commentHeader {
     background: none;
@@ -274,16 +277,20 @@
     padding: $commentPadding;
   }
 
+  .commentName {
+    @media screen and (min-width: 800px) {
+      float: right;
+      padding-top: $commentPadding;
+      padding-right: $commentPadding;
+    }
+  }
+
   .commentWriteHeader {
     border-bottom: solid 1px $commentBackground;
     font-size: 1.2em;
   }
 
   .commentText {
-    padding: 0 $commentPadding $commentPadding $commentPadding;
-  }
-
-  .commentName {
     padding: 0 $commentPadding $commentPadding $commentPadding;
   }
 
@@ -374,59 +381,9 @@
   }
 }
 
-.commentSupporterHolder {
-  float: left;
-  .likes, .dislikes {
-    display: inline-block;
-    border: solid 1px lightgray;
-    margin: 1px;
-    padding: 2px;
-    @include border-radius(3px);
-  }
-  .likes span, .dislikes span {
-    color: lightgray;
-  }
-  button.likes:hover {
-    background-color: #A2BC04;
-  }
-  button.dislikes:hover {
-    background-color: red;
-  }
-  button {
-    background-color: transparent;
-  }
-  .currently {
-    display: inline-block;
-  }
-  .revoke {
-    text-align: center;
-    display: none;
-  }
-  .mine {
-    display: inline-block;
-    height: 20px;
-    width: 240px;
-    position: relative;
-  }
-  .mine:hover .revoke {
-    display: inline-block;
-  }
-  .mine:hover .momentan {
-    display: none;
-  }
-  .currently, .revoke {
-    position: absolute;
-    top: 5px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    margin-left: 20px;
-    font-size: 10px;
-    height: 20px;
-    width: 240px;
-    border: solid 1px gray;
-    @include border-radius(3px);
-    background-color: #eee;
+.motionCommentReplies {
+  @media screen and (min-width: 1000px) {
+    padding-left: 100px;
   }
 }
 

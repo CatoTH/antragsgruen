@@ -11,6 +11,7 @@ return [
     'screen_yes'              => 'Freischalten',
     'screen_no'               => 'Löschen',
     'comment_write_title'     => 'Kommentar schreiben',
+    'comment_reply_title'     => 'Antworten',
     'name'                    => 'Name',
     'email'                   => 'E-Mail',
     'text'                    => 'Text',

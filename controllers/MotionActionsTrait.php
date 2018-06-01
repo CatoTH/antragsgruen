@@ -56,7 +56,7 @@ trait MotionActionsTrait
     private function writeComment(Motion $motion, &$viewParameters)
     {
         $postComment = \Yii::$app->request->post('comment');
-        $commentForm = new CommentForm($motion->getMyMotionType());
+        $commentForm = new CommentForm($motion->getMyMotionType(), null);
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
 
         try {

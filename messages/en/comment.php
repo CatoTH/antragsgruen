@@ -11,6 +11,7 @@ return [
     'screen_yes'              => 'Screen',
     'screen_no'               => 'Delete',
     'comment_write_title'     => 'Write a comment',
+    'comment_reply_title'     => 'Reply',
     'name'                    => 'Name',
     'email'                   => 'E-mail',
     'text'                    => 'Text',

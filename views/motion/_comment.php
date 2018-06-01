@@ -3,7 +3,9 @@
 use app\components\Tools;
 use app\components\HTMLTools;
 use app\models\db\IComment;
+use app\models\db\MotionComment;
 use app\models\db\User;
+use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
 /**
@@ -11,13 +13,14 @@ use yii\helpers\Html;
  * @var bool $imadmin
  * @var string $baseLink
  * @var string $commLink
+ * @var \app\models\db\ConsultationMotionType $motionType
  */
 
 $screening = ($comment->status == IComment::STATUS_SCREENING);
 
 ?>
 
-<article class="motionComment hoverHolder" id="comment<?= $comment->id ?>">
+<article class="motionComment hoverHolder" id="comment<?= $comment->id ?>" data-id="<?= $comment->id ?>">
     <div class="date"><?= Tools::formatMysqlDate($comment->dateCreation) ?></div>
     <h3 class="commentHeader"><?= Html::encode($comment->name) ?>:
         <?php
@@ -69,3 +72,21 @@ $screening = ($comment->status == IComment::STATUS_SCREENING);
         ?>
     </div>
 </article>
+
+<?php
+$canReply = (!$comment->parentCommentId && $motionType->getCommentPolicy()->checkCurrUserComment(false, false));
+if (count($comment->replies) > 0 || $canReply) {
+    echo '<div class="motionCommentReplies">';
+
+    if ($canReply) {
+        $replyForm = new CommentForm($motionType, $comment);
+        if (is_a($comment, MotionComment::class)) {
+            /** @var MotionComment $comment */
+            $replyForm->setDefaultData($comment->paragraph, $comment->sectionId, User::getCurrentUser());
+        } else {
+            $replyForm->setDefaultData(-1, -1, User::getCurrentUser());
+        }
+        echo $replyForm->renderFormOrErrorMessage(true);
+    }
+    echo '</div>';
+}

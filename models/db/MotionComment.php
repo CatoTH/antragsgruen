@@ -28,6 +28,7 @@ use yii\db\ActiveQuery;
  * @property MotionCommentSupporter[] $supporters
  * @property MotionSection $section
  * @property MotionComment $parentComment
+ * @property MotionComment[] $replies
  */
 class MotionComment extends IComment
 {
@@ -107,6 +108,15 @@ class MotionComment extends IComment
     public function getParentComment()
     {
         return $this->hasOne(MotionComment::class, ['id' => 'parentCommentId'])
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getReplies()
+    {
+        return $this->hasMany(MotionComment::class, ['parentCommentId' => 'id'])
             ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
     }
 

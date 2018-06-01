@@ -247,7 +247,8 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
 
 if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID()) {
-    echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
+    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
+    echo '<h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
@@ -261,7 +262,7 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     }
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-        $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+        $form = new CommentForm($motion->getMyMotionType(), null);
         $form->setDefaultData(-1, -1, User::getCurrentUser());
     }
 
@@ -284,10 +285,11 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     foreach ($motion->getVisibleComments($screeningAdmin, -1, null) as $comment) {
         /** @var MotionComment $comment */
         echo $this->render('@app/views/motion/_comment', [
-            'comment'  => $comment,
-            'imadmin'  => $screeningAdmin,
-            'baseLink' => UrlHelper::createMotionUrl($motion),
-            'commLink' => UrlHelper::createMotionCommentUrl($comment),
+            'comment'    => $comment,
+            'imadmin'    => $screeningAdmin,
+            'baseLink'   => UrlHelper::createMotionUrl($motion),
+            'commLink'   => UrlHelper::createMotionCommentUrl($comment),
+            'motionType' => $motion->getMyMotionType(),
         ]);
     }
 

@@ -15,13 +15,14 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
-echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
+echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
+echo '<h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
 $form        = $commentForm;
 $screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType());
+    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType(), null);
     $form->setDefaultData(-1, -1, User::getCurrentUser());
 }
 
@@ -43,10 +44,11 @@ if ($screeningQueue > 0) {
 foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
     /** @var AmendmentComment $comment */
     echo $this->render('@app/views/motion/_comment', [
-        'comment'  => $comment,
-        'imadmin'  => $screenAdmin,
-        'baseLink' => UrlHelper::createAmendmentUrl($amendment),
-        'commLink' => UrlHelper::createAmendmentCommentUrl($comment),
+        'comment'    => $comment,
+        'imadmin'    => $screenAdmin,
+        'baseLink'   => UrlHelper::createAmendmentUrl($amendment),
+        'commLink'   => UrlHelper::createAmendmentCommentUrl($comment),
+        'motionType' => $amendment->getMyMotionType(),
     ]);
 }
 
