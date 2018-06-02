@@ -2,15 +2,20 @@ declare let requirejs: any;
 declare let ANTRAGSGRUEN_STRINGS: string[][];
 
 (function ($: JQueryStatic) {
+    const $myScriptTag = $("#antragsgruenScript");
+    let reqOne = requirejs.config({
+        baseUrl: $myScriptTag.data("resource-base") + "js/build/"
+    });
+
     $("[data-antragsgruen-load-class]").each(function () {
         let loadModule = $(this).data("antragsgruen-load-class");
-        requirejs([loadModule]);
+        reqOne([loadModule]);
     });
 
     $("[data-antragsgruen-widget]").each(function () {
         let $element = $(this),
             loadModule = $element.data("antragsgruen-widget");
-        requirejs([loadModule], function (imports) {
+        reqOne([loadModule], function (imports) {
             let className = loadModule.split('/');
             new imports[className[className.length - 1]]($element);
         });

@@ -389,9 +389,14 @@ class Layout
      */
     public function getAMDLoader()
     {
+        /** @var AntragsgruenApp $params */
+        $params   = \yii::$app->params;
+        $resourceBase = $params->resourceBase;
         $module = $this->resourceUrl('js/build/Antragsgruen.js');
         $src    = $this->resourceUrl('npm/require.js');
-        return '<script data-main="' . addslashes($module) . '" src="' . addslashes($src) . '"></script>';
+        return '<script src="' . addslashes($src) . '"></script>' .
+            '<script src="' . addslashes($module) . '" id="antragsgruenScript" ' .
+            'data-resource-base="' . Html::encode($resourceBase) . '"></script>';
     }
 
     /**
