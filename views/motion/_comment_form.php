@@ -18,12 +18,14 @@ $user = User::getCurrentUser();
 
 $classes = 'commentForm motionComment form-horizontal';
 if ($isReplyTo) {
-    $classes .= ' replyComment replyTo' . $isReplyTo->id . ' hidden';
-    $title = \Yii::t('comment', 'comment_reply_title');
+    $classes   .= ' replyComment replyTo' . $isReplyTo->id . ' hidden';
+    $title     = \Yii::t('comment', 'comment_reply_title');
+    $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo . '_' . $isReplyTo->id;
 } else {
-    $title = \Yii::t('comment', 'comment_write_title');
+    $title     = \Yii::t('comment', 'comment_write_title');
+    $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;
 }
-echo Html::beginForm('', 'post', ['class' => $classes]);
+echo Html::beginForm('', 'post', ['class' => $classes, 'id' => $formIdPre . '_form']);
 
 if ($user && $user->name) {
     echo '<div class="commentName">' . Html::encode($form->name) . ' (' . Html::encode($form->email) . ')</div>';
@@ -33,9 +35,6 @@ echo '<h3 class="commentHeader commentWriteHeader">' . $title . '</h3>';
 if (\Yii::$app->user->isGuest) {
     echo AntiSpam::getJsProtectionHint($consultation->id);
 }
-
-$formIdPre     = 'comment_' . $sectionId . '_' . $paragraphNo;
-
 
 ?>
     <input type="hidden" name="comment[paragraphNo]" value="<?= $paragraphNo ?>">
