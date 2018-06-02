@@ -57,7 +57,21 @@ trait AmendmentActionsTrait
      */
     private function writeComment(Amendment $amendment, &$viewParameters)
     {
-        $commentForm = new CommentForm($amendment->getMyMotionType(), null);
+        $postComment = \Yii::$app->request->post('comment');
+
+        $replyTo = null;
+        if (isset($postComment['parentCommentId']) && $postComment['parentCommentId']) {
+            $replyTo = AmendmentComment::findOne([
+                'id'              => $postComment['parentCommentId'],
+                'amendmentId'     => $amendment->id,
+                'parentCommentId' => null,
+            ]);
+            if ($replyTo && $replyTo->status === IComment::STATUS_DELETED) {
+                $replyTo = null;
+            }
+        }
+
+        $commentForm = new CommentForm($amendment->getMyMotionType(), $replyTo);
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         try {

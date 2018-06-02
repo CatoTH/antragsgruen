@@ -3,11 +3,15 @@
 ## Version 3.9.0 [not released yet]
 
 - Antragsgrün now includes an update mechanism to install a new version from the web interface.
+- The comment system was improved:
+  - It is now possible to reply to comments. The replies will be displayed indented below the main comment.
+  - The layout of comments is more compact and less visually cluttered.
 - The system for editorial texts (like the legal pages or the welcome message) has been overhauled. New features include:
   - It is now possible to add a login message, that appears above the login screen.
 - Instead of only setting the deadline for motions and amendments, there is now an alternative complex phase system with time ranges for motions, amendments, comments and merging amendments into motions, including a debugging tool for admins.
-- The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable
+- The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable.
 - If the "amendment merging" mode of a motion is used just to create a new version of the motion, and no amendments actually exist, the process is now greatly simplified.
+- There are first beginnings of a plugin system based on Yii2's module concept. It's still subject to major changes, though.
 
 ### Version 3.8.3 (2018-05-12)
 

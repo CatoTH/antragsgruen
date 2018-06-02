@@ -563,12 +563,12 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getNewTitlePrefixInternal($titlePrefix)
     {
-        $new = \Yii::t('motion', 'prefix_new_code');
+        $new      = \Yii::t('motion', 'prefix_new_code');
         $newMatch = preg_quote($new, '/');
         if (preg_match('/' . $newMatch . '/i', $titlePrefix)) {
             $parts = preg_split('/(' . $newMatch . '\s*)/i', $titlePrefix, -1, PREG_SPLIT_DELIM_CAPTURE);
-            $last = array_pop($parts);
-            $last = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
+            $last  = array_pop($parts);
+            $last  = ($last > 0 ? $last + 1 : 2); // NEW BLA -> NEW 2
             array_push($parts, $last);
             return implode("", $parts);
         } else {
@@ -576,14 +576,25 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
+    /**
+     * @param bool $screeningAdmin
+     * @return int
+     */
+    public function getNumOfAllVisibleComments($screeningAdmin)
+    {
+        return count(array_filter($this->comments, function (IComment $comment) use ($screeningAdmin) {
+            return ($comment->status === IComment::STATUS_VISIBLE ||
+                ($screeningAdmin && $comment->status === IComment::STATUS_SCREENING));
+        }));
+    }
 
     /**
      * @param bool $screeningAdmin
-     * @param null|int $paragraphNo
-     * @param null $parentId
+     * @param int $paragraphNo
+     * @param null|int $parentId - null == only root level comments
      * @return IComment[]
      */
-    public function getVisibleComments($screeningAdmin, $paragraphNo = null, $parentId = null)
+    public function getVisibleComments($screeningAdmin, $paragraphNo, $parentId)
     {
         $stati = [IComment::STATUS_VISIBLE];
         if ($screeningAdmin) {
@@ -593,10 +604,7 @@ abstract class IMotion extends ActiveRecord
             if (!in_array($comment->status, $stati)) {
                 return false;
             }
-            if ($paragraphNo !== null && $paragraphNo !== $comment->paragraph) {
-                return false;
-            }
-            return ($parentId === $comment->parentCommentId);
+            return ($paragraphNo === $comment->paragraph && $parentId === $comment->parentCommentId);
         });
     }
 

@@ -39,15 +39,15 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
 
     echo '<ul class="bookmarks">';
-    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
-        $numComments = $paragraph->getVisibleComments($screenAdmin);
-        if (count($numComments) > 0 || $mayOpen) {
+        $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
+        if ($numComments > 0 || $mayOpen) {
             echo '<li class="comment">';
             $str  = '<span class="glyphicon glyphicon-comment"></span>';
-            $str  .= '<span class="count" data-count="' . count($numComments) . '"></span>';
+            $str  .= '<span class="count" data-count="' . $numComments . '"></span>';
             $zero = '';
-            if (count($numComments) == 0) {
+            if ($numComments === 0) {
                 $zero .= ' zero';
             }
             echo Html::a($str, '#', ['class' => 'shower' . $zero]);
@@ -120,7 +120,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         gc_collect_cycles();
     }
 
-    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
             echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
             $motion = $section->getMotion();
@@ -157,7 +157,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 }
                 echo '</div>';
             }
-            foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
+            foreach ($paragraph->getVisibleComments($screenAdmin, null) as $comment) {
                 echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
             }
 

@@ -64,10 +64,9 @@ $screenAdmin = User::havePrivilege($imotion->getMyConsultation(), User::PRIVILEG
         $link     = '<span class="glyphicon glyphicon-link"></span>';
         $linkOpts = ['class' => 'entry link', 'title' => \Yii::t('comment', 'link_comment')];
         echo Html::a($link, $comment->getLink(), $linkOpts);
-        if ($comment->parentCommentId === null) {
-            echo '<button type="button" class="entry btn btn-link replyButton">';
-            echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
-        }
+        $replyToId = ($comment->parentCommentId ? $comment->parentCommentId : $comment->id);
+        echo '<button type="button" class="entry btn btn-link replyButton" data-reply-to="' . $replyToId . '">';
+        echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
         ?>
     </div>
 </article>
@@ -78,7 +77,7 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
 if (count($comment->replies) > 0 || $canReply) {
     echo '<div class="motionCommentReplies">';
 
-    foreach ($comment->getIMotion()->getVisibleComments($screenAdmin, -1, $comment->id) as $reply) {
+    foreach ($comment->getIMotion()->getVisibleComments($screenAdmin, $comment->paragraph, $comment->id) as $reply) {
         echo $this->render('@app/views/motion/_comment', ['comment' => $reply]);
     }
 
