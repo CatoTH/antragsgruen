@@ -63,6 +63,7 @@ CREATE TABLE `###TABLE_PREFIX###amendmentComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `amendmentId`       INT(11)     NOT NULL,
+  `parentCommentId`   INT(11)              DEFAULT NULL,
   `paragraph`         SMALLINT(6) NOT NULL,
   `text`              MEDIUMTEXT  NOT NULL,
   `name`              TEXT        NOT NULL,
@@ -421,6 +422,7 @@ CREATE TABLE `###TABLE_PREFIX###motionComment` (
   `id`                INT(11)     NOT NULL,
   `userId`            INT(11)              DEFAULT NULL,
   `motionId`          INT(11)     NOT NULL,
+  `parentCommentId`   INT(11)              DEFAULT NULL,
   `sectionId`         INT(11)              DEFAULT NULL,
   `paragraph`         SMALLINT(6) NOT NULL,
   `text`              MEDIUMTEXT  NOT NULL,
@@ -656,7 +658,8 @@ ALTER TABLE `amendmentAdminComment`
 ALTER TABLE `amendmentComment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_amendment_comment_userIdx` (`userId`),
-  ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`);
+  ADD KEY `fk_amendment_comment_amendmentIdx` (`amendmentId`),
+  ADD KEY `fk_amendment_comment_parents` (`parentCommentId`);
 
 --
 -- Indexes for table `amendmentSection`
@@ -790,7 +793,8 @@ ALTER TABLE `motionAdminComment`
 ALTER TABLE `motionComment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_comment_userIdx` (`userId`),
-  ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`);
+  ADD KEY `fk_comment_notion_idx` (`motionId`, `sectionId`),
+  ADD KEY `fk_motion_comment_parents` (`parentCommentId`);
 
 --
 -- Indexes for table `motionCommentSupporter`
@@ -1025,6 +1029,9 @@ ALTER TABLE `amendmentAdminComment`
 --
 ALTER TABLE `amendmentComment`
   ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
+  ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `amendmentcomment` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
@@ -1166,6 +1173,9 @@ ALTER TABLE `motionAdminComment`
 -- Constraints for table `motionComment`
 --
 ALTER TABLE `motionComment`
+  ADD CONSTRAINT `fk_motion_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `motioncomment` (`id`)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
   ON DELETE CASCADE
   ON UPDATE NO ACTION,

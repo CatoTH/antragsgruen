@@ -7,6 +7,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
+use app\models\db\IComment;
 use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSection;
@@ -21,6 +22,9 @@ class CommentForm extends Model
 {
     /** @var ConsultationMotionType */
     public $motionType;
+
+    /** @var IComment|null */
+    public $replyTo;
 
     /** @var string */
     public $email;
@@ -37,12 +41,21 @@ class CommentForm extends Model
     /**
      * CommentForm constructor.
      * @param ConsultationMotionType $motionType
+     * @param IComment|null $replyTo
      * @param array $config
      */
-    public function __construct($motionType, $config = [])
+    public function __construct($motionType, $replyTo, $config = [])
     {
         $this->motionType = $motionType;
+        $this->replyTo    = $replyTo;
         parent::__construct($config);
+
+        if (User::getCurrentUser()) {
+            $user         = User::getCurrentUser();
+            $this->userId = $user->id;
+            $this->name   = $user->name;
+            $this->email  = $user->email;
+        }
     }
 
     /**
@@ -134,14 +147,15 @@ class CommentForm extends Model
 
         $user = User::getCurrentUser();
 
-        $comment               = new MotionComment();
-        $comment->motionId     = $motion->id;
-        $comment->sectionId    = ($this->sectionId > 0 ? $this->sectionId : null);
-        $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
-        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
-        $comment->text         = $this->text;
-        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment                  = new MotionComment();
+        $comment->motionId        = $motion->id;
+        $comment->sectionId       = ($this->sectionId > 0 ? $this->sectionId : null);
+        $comment->paragraph       = $this->paragraphNo;
+        $comment->contactEmail    = ($user ? $user->email : $this->email);
+        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->text            = $this->text;
+        $comment->dateCreation    = date('Y-m-d H:i:s');
+        $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
 
         if ($settings->screeningComments) {
             $comment->status = MotionComment::STATUS_SCREENING;
@@ -181,13 +195,14 @@ class CommentForm extends Model
 
         $user = User::getCurrentUser();
 
-        $comment               = new AmendmentComment();
-        $comment->amendmentId  = $amendment->id;
-        $comment->paragraph    = $this->paragraphNo;
-        $comment->contactEmail = ($user && $user->fixedData ? $user->email : $this->email);
-        $comment->name         = ($user && $user->fixedData ? $user->name : $this->name);
-        $comment->text         = $this->text;
-        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment                  = new AmendmentComment();
+        $comment->amendmentId     = $amendment->id;
+        $comment->paragraph       = $this->paragraphNo;
+        $comment->contactEmail    = ($user ? $user->email : $this->email);
+        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->text            = $this->text;
+        $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
+        $comment->dateCreation    = date('Y-m-d H:i:s');
 
         if ($settings->screeningComments) {
             $comment->status = AmendmentComment::STATUS_SCREENING;
@@ -209,10 +224,10 @@ class CommentForm extends Model
     }
 
     /**
+     * @param bool $skipError
      * @return string
-     * @throws \app\models\exceptions\Internal
      */
-    public function renderFormOrErrorMessage()
+    public function renderFormOrErrorMessage($skipError = false)
     {
         if ($this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             return \Yii::$app->controller->renderPartial('@app/views/motion/_comment_form', [
@@ -220,11 +235,14 @@ class CommentForm extends Model
                 'consultation' => $this->motionType->getMyConsultation(),
                 'paragraphNo'  => $this->paragraphNo,
                 'sectionId'    => $this->sectionId,
+                'isReplyTo'    => $this->replyTo,
             ]);
-        } else {
+        } elseif (!$skipError) {
             return '<div class="alert alert-info" style="margin: 19px;" role="alert">
         <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
                 $this->motionType->getCommentPolicy()->getPermissionDeniedCommentMsg() . '</div>';
+        } else {
+            return '';
         }
     }
 }

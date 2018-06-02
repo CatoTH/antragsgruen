@@ -10,7 +10,6 @@ use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\MotionComment;
 use app\models\db\User;
 use app\models\forms\CommentForm;
-use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 $motion         = $section->getMotion();
@@ -40,15 +39,15 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
 
     echo '<ul class="bookmarks">';
-    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
-        $numComments = $paragraph->getVisibleComments($screenAdmin);
-        if (count($numComments) > 0 || $mayOpen) {
+        $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
+        if ($numComments > 0 || $mayOpen) {
             echo '<li class="comment">';
-            $str = '<span class="glyphicon glyphicon-comment"></span>';
-            $str .= '<span class="count" data-count="' . count($numComments) . '"></span>';
+            $str  = '<span class="glyphicon glyphicon-comment"></span>';
+            $str  .= '<span class="count" data-count="' . $numComments . '"></span>';
             $zero = '';
-            if (count($numComments) == 0) {
+            if ($numComments === 0) {
                 $zero .= ' zero';
             }
             echo Html::a($str, '#', ['class' => 'shower' . $zero]);
@@ -121,9 +120,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         gc_collect_cycles();
     }
 
-    if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
         if (count($paragraph->comments) > 0 || $section->getMotion()->motionType->getCommentPolicy()) {
-            echo '<section class="commentHolder">';
+            echo '<section class="commentHolder" data-antragsgruen-widget="frontend/Comments">';
             $motion = $section->getMotion();
             $form   = $commentForm;
 
@@ -139,7 +138,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
 
             if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-                $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+                $form = new \app\models\forms\CommentForm($motion->getMyMotionType(), null);
                 $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
 
@@ -158,10 +157,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 }
                 echo '</div>';
             }
-            $baseLink = UrlHelper::createMotionUrl($motion);
-            foreach ($paragraph->getVisibleComments($screenAdmin) as $comment) {
-                $commLink = UrlHelper::createMotionCommentUrl($comment);
-                LayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
+            foreach ($paragraph->getVisibleComments($screenAdmin, null) as $comment) {
+                echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
             }
 
             echo $form->renderFormOrErrorMessage();

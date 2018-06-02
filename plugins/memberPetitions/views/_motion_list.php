@@ -77,7 +77,7 @@ foreach ($motions as $motion) {
         $cssClasses[] = 'tag' . $tag->id;
     }
 
-    $commentCount   = count($motion->getVisibleComments(false));
+    $commentCount   = $motion->getNumOfAllVisibleComments(false);
     $amendmentCount = count($motion->getVisibleAmendments(false));
     $publication    = $motion->datePublication;
 

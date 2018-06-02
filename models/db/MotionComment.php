@@ -14,6 +14,7 @@ use yii\db\ActiveQuery;
  * @property int $userId
  * @property int $motionId
  * @property int $sectionId
+ * @property int $parentCommentId
  * @property int $paragraph
  * @property string $text
  * @property string $name
@@ -26,6 +27,8 @@ use yii\db\ActiveQuery;
  * @property Motion $motion
  * @property MotionCommentSupporter[] $supporters
  * @property MotionSection $section
+ * @property MotionComment $parentComment
+ * @property MotionComment[] $replies
  */
 class MotionComment extends IComment
 {
@@ -44,7 +47,7 @@ class MotionComment extends IComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getUser()
     {
@@ -53,15 +56,38 @@ class MotionComment extends IComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getMotion()
     {
         return $this->hasOne(Motion::class, ['id' => 'motionId']);
     }
 
+    private $imotion = null;
+
     /**
-     * @return \yii\db\ActiveQuery
+     * @return Motion|null
+     */
+    public function getIMotion()
+    {
+        if (!$this->imotion) {
+            $current = Consultation::getCurrent();
+            if ($current) {
+                $motion = $current->getMotion($this->motionId);
+                if ($motion) {
+                    $this->imotion = $motion;
+                } else {
+                    $this->imotion = Motion::findOne($this->motionId);
+                }
+            } else {
+                $this->imotion = Motion::findOne($this->motionId);
+            }
+        }
+        return $this->imotion;
+    }
+
+    /**
+     * @return ActiveQuery
      */
     public function getSupporters()
     {
@@ -69,11 +95,29 @@ class MotionComment extends IComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getSection()
     {
         return $this->hasOne(MotionSection::class, ['motionId' => 'motionId', 'sectionId' => 'sectionId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParentComment()
+    {
+        return $this->hasOne(MotionComment::class, ['id' => 'parentCommentId'])
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getReplies()
+    {
+        return $this->hasMany(MotionComment::class, ['parentCommentId' => 'id'])
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
     }
 
     /**
@@ -83,9 +127,9 @@ class MotionComment extends IComment
     {
         return [
             [['motionId', 'paragraph', 'status', 'dateCreation'], 'required'],
-            ['name', 'required', 'message' => 'Bitte gib deinen Namen an.'],
-            ['text', 'required', 'message' => 'Bitte gib etwas Text ein.'],
-            [['id', 'motionId', 'sectionId', 'paragraph', 'status'], 'number'],
+            ['name', 'required', 'message' => \Yii::t('comment', 'err_no_name')],
+            ['text', 'required', 'message' => \Yii::t('comment', 'err_no_text')],
+            [['id', 'motionId', 'sectionId', 'paragraph', 'status', 'parentCommentId'], 'number'],
             [['text', 'paragraph'], 'safe'],
         ];
     }
@@ -171,7 +215,7 @@ class MotionComment extends IComment
                 }
             ]
         );
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }

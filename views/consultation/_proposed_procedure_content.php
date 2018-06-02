@@ -56,7 +56,7 @@ foreach ($proposedAgenda as $proposedItem) {
                         ?>
                         <tr class="<?= implode(' ', $classes) ?>">
                             <td class="prefix"><?php
-                                echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getViewUrl())
+                                echo Html::a(Html::encode($titlePre . $item->titlePrefix), $item->getLink())
                                 ?></td>
                             <td class="initiator"><?= $item->getInitiatorsStr() ?></td>
                             <td class="procedure">

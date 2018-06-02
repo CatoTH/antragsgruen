@@ -56,7 +56,20 @@ trait MotionActionsTrait
     private function writeComment(Motion $motion, &$viewParameters)
     {
         $postComment = \Yii::$app->request->post('comment');
-        $commentForm = new CommentForm($motion->getMyMotionType());
+
+        $replyTo = null;
+        if (isset($postComment['parentCommentId']) && $postComment['parentCommentId']) {
+            $replyTo = MotionComment::findOne([
+                'id'              => $postComment['parentCommentId'],
+                'motionId'        => $motion->id,
+                'parentCommentId' => null,
+            ]);
+            if ($replyTo && $replyTo->status === IComment::STATUS_DELETED) {
+                $replyTo = null;
+            }
+        }
+
+        $commentForm = new CommentForm($motion->getMyMotionType(), $replyTo);
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
 
         try {
@@ -409,7 +422,7 @@ trait MotionActionsTrait
         }
 
         $commentId = \Yii::$app->request->post('id');
-        $comment = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
+        $comment   = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
         if ($comment && User::isCurrentUser($comment->user)) {
             $comment->delete();
             return json_encode(['success' => true]);

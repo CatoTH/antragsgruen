@@ -1184,7 +1184,7 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return string
      */
-    public function getViewUrl()
+    public function getLink()
     {
         return UrlHelper::createAmendmentUrl($this);
     }

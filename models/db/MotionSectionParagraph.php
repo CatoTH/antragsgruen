@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\db;
 
 class MotionSectionParagraph
@@ -20,20 +21,32 @@ class MotionSectionParagraph
 
     /**
      * @param bool $screeningAdmin
+     * @return int
+     */
+    public function getNumOfAllVisibleComments($screeningAdmin)
+    {
+        return count(array_filter($this->comments, function (IComment $comment) use ($screeningAdmin) {
+            return ($comment->status === IComment::STATUS_VISIBLE ||
+                ($screeningAdmin && $comment->status === IComment::STATUS_SCREENING));
+        }));
+    }
+
+    /**
+     * @param bool $screeningAdmin
+     * @param null|int $parentId - null == only root level comments
      * @return MotionComment[]
      */
-    public function getVisibleComments($screeningAdmin)
+    public function getVisibleComments($screeningAdmin, $parentId)
     {
-        $visibleStati = [MotionComment::STATUS_VISIBLE];
+        $stati = [MotionComment::STATUS_VISIBLE];
         if ($screeningAdmin) {
-            $visibleStati[] = MotionComment::STATUS_SCREENING;
+            $stati[] = MotionComment::STATUS_SCREENING;
         }
-        $comments = [];
-        foreach ($this->comments as $comment) {
-            if (in_array($comment->status, $visibleStati)) {
-                $comments[] = $comment;
+        return array_filter($this->comments, function (MotionComment $comment) use ($stati, $parentId) {
+            if (!in_array($comment->status, $stati)) {
+                return false;
             }
-        }
-        return $comments;
+            return ($parentId === $comment->parentCommentId);
+        });
     }
 }

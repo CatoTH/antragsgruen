@@ -15,24 +15,19 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
-echo '<section class="comments"><h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
+echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
+echo '<h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
 
-$form        = $commentForm;
-$screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+$form = $commentForm;
 
 if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType());
+    $form = new \app\models\forms\CommentForm($amendment->getMyMotionType(), null);
     $form->setDefaultData(-1, -1, User::getCurrentUser());
 }
 
-$baseLink     = UrlHelper::createAmendmentUrl($amendment);
-$visibleStati = [AmendmentComment::STATUS_VISIBLE];
-if ($screenAdmin) {
-    $visibleStati[] = AmendmentComment::STATUS_SCREENING;
-}
 $screeningQueue = 0;
 foreach ($amendment->comments as $comment) {
-    if ($comment->status == AmendmentComment::STATUS_SCREENING) {
+    if ($comment->status === AmendmentComment::STATUS_SCREENING) {
         $screeningQueue++;
     }
 }
@@ -45,11 +40,11 @@ if ($screeningQueue > 0) {
     }
     echo '</div>';
 }
-foreach ($amendment->comments as $comment) {
-    if ($comment->paragraph == -1 && in_array($comment->status, $visibleStati)) {
-        $commLink = UrlHelper::createAmendmentCommentUrl($comment);
-        MotionLayoutHelper::showComment($comment, $screenAdmin, $baseLink, $commLink);
-    }
+
+$screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
+foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
+    /** @var AmendmentComment $comment */
+    echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
 }
 
 echo $form->renderFormOrErrorMessage();

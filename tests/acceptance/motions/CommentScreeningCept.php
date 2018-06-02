@@ -23,16 +23,13 @@ $I->wait(1);
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
 $I->see('Kommentar schreiben', '#section_21_1');
-$I->fillField('#comment_21_1_name', 'My Name');
-$I->fillField('#comment_21_1_email', '');
+$I->see('Testuser (testuser@example.org)', '#section_21_1');
 $I->fillField('#comment_21_1_text', 'Some Text');
-$I->submitForm('#section_21_1 .commentForm', [], 'writeComment');
+$I->submitForm('#comment_21_1_form', [], 'writeComment');
 
-$I->see('My Name', '#section_21_1 .motionComment');
+$I->see('Testuser', '#section_21_1 .motionComment');
 $I->see('Some Text', '#section_21_1 .motionComment');
 $I->dontSee('#section_21_1 .motionComment .delLink');
-
-
 
 
 $I->wantTo('enable screening and force e-mails');
@@ -58,27 +55,19 @@ $I->loginAsStdUser();
 $I->dontSee('Kommentar schreiben');
 $I->click('#section_21_1 .comment .shower');
 $I->see('Kommentar schreiben', '#section_21_1');
-$I->executeJS('$("#comment_21_1_email").removeAttr("required");');
-$I->fillField('#comment_21_1_name', 'Mein Name 2');
-$I->fillField('#comment_21_1_email', '');
 $I->fillField('#comment_21_1_text', 'Noch ein zweiter Kommentar');
-$I->submitForm('#section_21_1 .commentForm', [], 'writeComment');
+$I->submitForm('#comment_21_1_form', [], 'writeComment');
 
-$I->see('Keine E-Mail-Adresse angegeben');
-$I->fillField('#comment_21_1_email', 'testuser@example.org');
-$I->submitForm('#section_21_1 .commentForm', [], 'writeComment');
-
-$I->dontSee('Mein Name 2', '#section_21_1 .motionComment');
 $I->dontSee('Noch ein zweiter Kommentar', '#section_21_1 .motionComment');
 $I->see('1 Kommentar wartet auf Freischaltung', '#section_21_1');
 
+$idBase = '#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID;
+$I->dontSeeElement($idBase . '_form');
+$I->click('#comment' . AcceptanceTester::FIRST_FREE_COMMENT_ID . ' .replyButton');
+$I->seeElement($idBase . '_form');
+$I->fillField($idBase . '_text', 'Noch ein dritter Kommentar');
+$I->submitForm($idBase . '_form', [], 'writeComment');
 
-$I->fillField('#comment_21_1_name', 'Mein Name 3');
-$I->fillField('#comment_21_1_email', 'testuser@example.org');
-$I->fillField('#comment_21_1_text', 'Noch ein dritter Kommentar');
-$I->submitForm('#section_21_1 .commentForm', [], 'writeComment');
-
-$I->dontSee('Mein Name 3', '#section_21_1 .motionComment');
 $I->dontSee('Noch ein dritter Kommentar', '#section_21_1 .motionComment');
 $I->see('2 Kommentare warten auf Freischaltung', '#section_21_1');
 
@@ -94,7 +83,7 @@ $I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE
 $I->seeElement('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2));
 $I->click('.adminTodo .motionCommentScreen' . (AcceptanceTester::FIRST_FREE_COMMENT_ID + 2) . ' a');
 
-$I->see('Mein Name 2', '#section_21_1 .motionComment');
+$I->see('Testuser', '#section_21_1 .motionComment');
 $I->see('Noch ein zweiter Kommentar', '#section_21_1 .motionComment');
 $I->see('2 Kommentare warten auf Freischaltung', '#section_21_1');
 $commId = (AcceptanceTester::FIRST_FREE_COMMENT_ID + 1);

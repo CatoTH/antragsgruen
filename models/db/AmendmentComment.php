@@ -13,6 +13,7 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property int $userId
  * @property int $amendmentId
+ * @property int $parentCommentId
  * @property string $text
  * @property string $name
  * @property string $contactEmail
@@ -22,6 +23,8 @@ use yii\db\ActiveQuery;
  *
  * @property User $user
  * @property Amendment $amendment
+ * @property AmendmentComment $parentComment
+ * @property AmendmentComment[] $replies
  */
 class AmendmentComment extends IComment
 {
@@ -37,7 +40,7 @@ class AmendmentComment extends IComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getUser()
     {
@@ -46,12 +49,53 @@ class AmendmentComment extends IComment
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getAmendment()
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
+    }
+
+    private $imotion = null;
+
+    /**
+     * @return Amendment|null
+     */
+    public function getIMotion()
+    {
+        if (!$this->imotion) {
+            $current = Consultation::getCurrent();
+            if ($current) {
+                $amendment = $current->getAmendment($this->imotion);
+                if ($amendment) {
+                    $this->imotion = $amendment;
+                } else {
+                    $this->imotion = Amendment::findOne($this->amendmentId);
+                }
+            } else {
+                $this->imotion = Amendment::findOne($this->amendmentId);
+            }
+        }
+        return $this->imotion;
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getParentComment()
+    {
+        return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getReplies()
+    {
+        return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
     }
 
     /**
@@ -69,9 +113,9 @@ class AmendmentComment extends IComment
     {
         return [
             [['amendmentId', 'paragraph', 'status', 'dateCreation'], 'required'],
-            ['name', 'required', 'message' => 'Bitte gib deinen Namen an.'],
-            ['text', 'required', 'message' => 'Bitte gib etwas Text ein.'],
-            [['id', 'amendmentId', 'paragraph', 'status'], 'number'],
+            ['name', 'required', 'message' => \Yii::t('comment', 'err_no_name')],
+            ['text', 'required', 'message' => \Yii::t('comment', 'err_no_text')],
+            [['id', 'amendmentId', 'paragraph', 'status', 'parentCommentId'], 'number'],
             [['text', 'paragraph'], 'safe'],
         ];
     }
@@ -162,7 +206,7 @@ class AmendmentComment extends IComment
                 }
             ]
         );
-        $query->orderBy("dateCreation DESC");
+        $query->orderBy('dateCreation DESC');
 
         return $query->all();
     }

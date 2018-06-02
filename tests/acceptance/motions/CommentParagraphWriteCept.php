@@ -42,6 +42,20 @@ $I->see('Some Text', '#section_21_1 .motionComment');
 $I->dontSeeElementInDOM('#section_21_1 .motionComment .delLink');
 
 
+$I->wantTo('write a reply to this comment');
+$I->dontSeeElement('.replyComment');
+$I->dontSeeElement('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_text');
+$I->click('#comment' . AcceptanceTester::FIRST_FREE_COMMENT_ID . ' .replyButton');
+$I->seeElement('.replyComment');
+$I->seeElement('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_text');
+$I->fillField('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_name', 'My Name 2');
+$I->fillField('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_email', 'reply@example.org');
+$I->fillField('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_text', 'This is a reply');
+$I->submitForm('#comment_21_1_' . AcceptanceTester::FIRST_FREE_COMMENT_ID . '_form', [], 'writeComment');
+$I->see(mb_strtoupper('My Name 2'), '#section_21_1 .motionCommentReplies .motionComment');
+$I->see('This is a reply', '#section_21_1 .motionCommentReplies .motionComment');
+$I->dontSeeElementInDOM('#section_21_1 .motionComment .delLink');
+
 
 $I->wantTo('see the comment on the sidebar and the feed');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');

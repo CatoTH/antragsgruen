@@ -108,7 +108,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     </div>
     <?php
 
-    echo $this->render('_set_proposed_procedure', ['motion' => $motion]);
+    echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'msgAlert' => null]);
 }
 if ($motion->proposalFeedbackHasBeenRequested() && $motion->iAmInitiator()) {
     echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
@@ -195,7 +195,7 @@ LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments = $motion->getVisibleAmendments();
-if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() != IPolicy::POLICY_NOBODY) {
+if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
@@ -247,7 +247,8 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
 
 
 if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID()) {
-    echo '<section class="comments"><h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
+    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
+    echo '<h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
@@ -261,19 +262,19 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
     }
 
     if ($form === null || $form->paragraphNo != -1 || $form->sectionId != -1) {
-        $form = new \app\models\forms\CommentForm($motion->getMyMotionType());
+        $form = new CommentForm($motion->getMyMotionType(), null);
         $form->setDefaultData(-1, -1, User::getCurrentUser());
     }
 
     $screeningQueue = 0;
     foreach ($motion->comments as $comment) {
-        if ($comment->status == MotionComment::STATUS_SCREENING && $comment->paragraph == -1) {
+        if ($comment->status === MotionComment::STATUS_SCREENING && $comment->paragraph === -1) {
             $screeningQueue++;
         }
     }
     if ($screeningQueue > 0) {
         echo '<div class="commentScreeningQueue">';
-        if ($screeningQueue == 1) {
+        if ($screeningQueue === 1) {
             echo \Yii::t('motion', 'comment_screen_queue_1');
         } else {
             echo str_replace('%NUM%', $screeningQueue, \Yii::t('motion', 'comment_screen_queue_x'));
@@ -281,12 +282,9 @@ if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID
         echo '</div>';
     }
 
-    $baseLink = UrlHelper::createMotionUrl($motion);
-    foreach ($motion->getVisibleComments($screeningAdmin) as $comment) {
-        if ($comment->paragraph == -1) {
-            $commLink = UrlHelper::createMotionCommentUrl($comment);
-            LayoutHelper::showComment($comment, $screeningAdmin, $baseLink, $commLink);
-        }
+    foreach ($motion->getVisibleComments($screeningAdmin, -1, null) as $comment) {
+        /** @var MotionComment $comment */
+        echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
     }
 
     echo $form->renderFormOrErrorMessage();

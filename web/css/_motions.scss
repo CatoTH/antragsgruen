@@ -256,44 +256,89 @@
   color: darkgray;
 }
 
-.commentForm {
-  margin-top: 20px;
-  margin-bottom: 20px;
-
-  > label {
-    display: block;
-    text-align: center;
-  }
-
-  .submitrow {
-    text-align: center;
-  }
-}
-
 .motionComment {
-  h3 {
+  border: solid 1px $commentBorder;
+  background: $commentBackground;
+  border-radius: 3px;
+  margin: 15px 20px 30px;
+  &.replyComment {
+    margin-top: -15px;
+  }
+
+  .commentHeader {
     background: none;
     color: $colorLinksLight;
     font-family: $bodyFont;
-    font-size: 13px;
+    font-size: 1em;
     font-weight: bold;
     line-height: 18px;
-    margin: 0 0 5px 0;
+    margin: 0;
     text-transform: none;
-    padding: 0;
+    padding: $commentPadding;
+  }
+
+  .commentName {
+    @media screen and (min-width: 800px) {
+      float: right;
+      padding-top: $commentPadding;
+      padding-right: $commentPadding;
+    }
+  }
+
+  .commentWriteHeader {
+    border-bottom: solid 1px $commentBackground;
+    font-size: 1.2em;
+  }
+
+  .commentText {
+    padding: 0 $commentPadding $commentPadding $commentPadding;
+  }
+
+  .commentFullTextarea {
+    padding: 0 $commentPadding $commentPadding $commentPadding;
   }
 
   .date {
     color: #757676;
     float: right;
+    padding: $commentPadding;
     margin-left: 20px;
   }
 
   .commentBottom {
-    margin-top: 10px;
-    height: 30px;
-    .commentLink {
-      float: right;
+    height: 23px;
+    position: relative;
+    .entry {
+      position: absolute;
+      bottom: -1px;
+      height: 24px;
+      font-size: 12px;
+      border-top: solid 1px $commentBorder;
+      text-align: center;
+      font-weight: normal;
+    }
+    .link {
+      left: -1px;
+      padding: 2px;
+      width: 24px;
+      border-right: solid 1px $commentBorder;
+      border-top-right-radius: 3px;
+    }
+    .replyButton {
+      right: -1px;
+      padding: 2px 5px;
+      border-left: solid 1px $commentBorder;
+      border-top-left-radius: 3px;
+    }
+    .delLink {
+      color: red;
+      left: 3px;
+      width: 24px;
+      border-right: solid 1px $commentBorder;
+      border-top-right-radius: 3px;
+    }
+    .delLink + .link {
+      border-top-right-radius: 0;
     }
   }
 
@@ -308,61 +353,40 @@
       }
     }
   }
+
+  .screening {
+    > * {
+      display: inline-block;
+      width: 49%;
+      text-align: center;
+    }
+  }
+
+  > label {
+    display: block;
+    text-align: center;
+  }
+
+  &.form-horizontal .form-group {
+    margin-right: $commentPadding;
+    margin-left: $commentPadding;
+    > * {
+      padding-right: 0;
+    }
+  }
+
+  .submitrow {
+    padding: $commentPadding;
+    text-align: center;
+  }
 }
 
-.commentSupporterHolder {
-  float: left;
-  .likes, .dislikes {
-    display: inline-block;
-    border: solid 1px lightgray;
-    margin: 1px;
-    padding: 2px;
-    @include border-radius(3px);
+.motionCommentReplies {
+  @media screen and (min-width: 1000px) {
+    padding-left: 100px;
   }
-  .likes span, .dislikes span {
-    color: lightgray;
-  }
-  button.likes:hover {
-    background-color: #A2BC04;
-  }
-  button.dislikes:hover {
-    background-color: red;
-  }
-  button {
-    background-color: transparent;
-  }
-  .currently {
-    display: inline-block;
-  }
-  .revoke {
-    text-align: center;
-    display: none;
-  }
-  .mine {
-    display: inline-block;
-    height: 20px;
-    width: 240px;
-    position: relative;
-  }
-  .mine:hover .revoke {
-    display: inline-block;
-  }
-  .mine:hover .momentan {
-    display: none;
-  }
-  .currently, .revoke {
-    position: absolute;
-    top: 5px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    margin-left: 20px;
-    font-size: 10px;
-    height: 20px;
-    width: 240px;
-    border: solid 1px gray;
-    @include border-radius(3px);
-    background-color: #eee;
+  .motionComment {
+    margin-top: -20px;
   }
 }
 
@@ -557,6 +581,6 @@ iframe.pdfViewer {
     color: gray;
   }
   .motionDataTable {
-     margin-bottom: 25px;
+    margin-bottom: 25px;
   }
 }

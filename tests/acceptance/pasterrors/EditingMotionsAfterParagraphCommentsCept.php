@@ -16,13 +16,11 @@ $I->wait(1);
 $I->scrollTo('#section_2_5 .comment .shower');
 $I->click('#section_2_5 .comment .shower');
 $I->seeElement('#section_2_5 .commentForm');
-$I->fillField('#comment_2_5_name', 'My \' \\ Name');
-$I->fillField('#comment_2_5_email', 'test@example.org');
 $I->fillField('#comment_2_5_text', "My test'\n\\My test 2");
 $I->submitForm('#section_2_5 .commentForm', [], 'writeComment');
 
 $I->wantTo('see the comment');
-$I->see('My \' \\ Name', '#section_2_5 .motionComment');
+$I->see('Testadmin', '#section_2_5 .motionComment');
 $I->see("My test'\n\\My test 2", '#section_2_5 .motionComment');
 
 $I->wantTo('edit the motion');

@@ -6,10 +6,8 @@ use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
-use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
-use app\models\db\IComment;
 use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
@@ -80,99 +78,6 @@ class LayoutHelper
             $inits[] = $name;
         }
         return implode(', ', $inits);
-    }
-
-    /**
-     * @param IComment $comment
-     * @param bool $imadmin
-     * @param string $baseLink
-     * @param string $commLink
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function showComment(IComment $comment, $imadmin, $baseLink, $commLink)
-    {
-        $screening = ($comment->status == IComment::STATUS_SCREENING);
-        echo '<article class="motionComment content hoverHolder" id="comment' . $comment->id . '">
-        <div class="date">' . Tools::formatMysqlDate($comment->dateCreation) . '</div>
-        <h3 class="green">' . Html::encode($comment->name) . ':';
-
-        if ($screening) {
-            echo ' <span class="screeningHint">(' . \Yii::t('comment', 'not_screened_yet') . ')</span>';
-        }
-
-        if ($comment->status == IComment::STATUS_VISIBLE && $comment->canDelete(User::getCurrentUser())) {
-            echo Html::beginForm($baseLink, 'post', ['class' => 'delLink hoverElement']);
-            echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
-            echo '<input type="hidden" name="deleteComment" value="on">';
-            echo '<button class="link" type="submit">';
-            echo '<span class="glyphicon glyphicon-trash"></span></button>';
-            echo Html::endForm();
-        }
-        echo '</h3>';
-
-        echo HTMLTools::textToHtmlWithLink($comment->text);
-
-        if ($screening && $imadmin) {
-            echo Html::beginForm($commLink, 'post', ['class' => 'screening']);
-            echo '<div style="display: inline-block; width: 49%; text-align: center;">';
-
-            echo '<button type="submit" class="btn btn-success" name="commentScreeningAccept">';
-            echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('comment', 'screen_yes');
-            echo '</button>';
-
-            echo '</div><div style="display: inline-block; width: 49%; text-align: center;">';
-
-            echo '<button type="submit" class="btn btn-danger" name="commentScreeningReject">';
-            echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('comment', 'screen_no');
-            echo '</button>';
-
-            echo '</div>';
-            echo Html::endForm();
-        }
-
-        echo '<div class="commentBottom"><div class="commentLink">';
-        echo Html::a(\Yii::t('comment', 'link_comment'), $commLink, ['class' => 'hoverElement']);
-        echo '</div>';
-
-        /*
-        if ($motion->consultation->getSettings()->commentsSupportable) {
-            echo Html::beginForm($commLink, 'post', ['class' => 'commentSupporterHolder']);
-
-            $mySupports = MotionCommentSupporter::mySupport($motion);
-
-            $numLikes = $numDislikes = 0;
-            foreach ($comment->supporters as $supp) {
-                if ($supp->likes) {
-                    $numLikes++;
-                } else {
-                    $numDislikes++;
-                }
-            }
-            if ($mySupports !== null) {
-                echo '<span class="likes"><span class="glyphicon glyphicon-thumbs-up"></span> ';
-                echo $numLikes . '</span>';
-                echo '<span class="dislikes"><span class="glyphicon glyphicon-thumbs-down"></span> ';
-                echo $numDislikes . '</span>';
-                echo '<span class="mine"><span class="currently">';
-                if ($mySupports->likes) {
-                    echo '<span class="glyphicon glyphicon-thumbs-up"></span> ';
-                    echo 'Du hast diesen Kommentar positiv bewertet';
-                } else {
-                    echo '<span class="icon-thumbs-down"></span> Du hast diesen Kommentar negativ bewertet';
-                }
-                echo '</span>
-                        <button class="revoke" type="submit" name="commentUndoLike">Bewertung zurücknehmen</button>
-                    </span>';
-            } else {
-                echo '<button class="likes" type="submit" name="commentLike">';
-                echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . $numLikes . '</button>
-                        <button class="dislikes" type="submit" name="commentDislike">';
-                echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . $numDislikes . '</button>';
-            }
-            echo Html::endForm();
-        }
-        */
-        echo '</div></article>';
     }
 
     /**
