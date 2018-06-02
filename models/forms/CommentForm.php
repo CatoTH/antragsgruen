@@ -91,7 +91,14 @@ class CommentForm extends Model
         }
 
         if (User::getCurrentUser()) {
-            $this->userId = User::getCurrentUser()->id;
+            $user         = User::getCurrentUser();
+            $this->userId = $user->id;
+            if ($user->email) {
+                $this->email = $user->email;
+            }
+            if ($user->name) {
+                $this->name = $user->name;
+            }
         }
     }
 
@@ -145,14 +152,12 @@ class CommentForm extends Model
             throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
 
-        $user = User::getCurrentUser();
-
         $comment                  = new MotionComment();
         $comment->motionId        = $motion->id;
         $comment->sectionId       = ($this->sectionId > 0 ? $this->sectionId : null);
         $comment->paragraph       = $this->paragraphNo;
-        $comment->contactEmail    = ($user ? $user->email : $this->email);
-        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->contactEmail    = $this->email;
+        $comment->name            = $this->name;
         $comment->text            = $this->text;
         $comment->dateCreation    = date('Y-m-d H:i:s');
         $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
@@ -193,13 +198,11 @@ class CommentForm extends Model
             throw new FormError(\Yii::t('base', 'err_no_email_given'));
         }
 
-        $user = User::getCurrentUser();
-
         $comment                  = new AmendmentComment();
         $comment->amendmentId     = $amendment->id;
         $comment->paragraph       = $this->paragraphNo;
-        $comment->contactEmail    = ($user ? $user->email : $this->email);
-        $comment->name            = ($user ? $user->name : $this->name);
+        $comment->contactEmail    = $this->email;
+        $comment->name            = $this->name;
         $comment->text            = $this->text;
         $comment->parentCommentId = ($this->replyTo ? $this->replyTo->id : null);
         $comment->dateCreation    = date('Y-m-d H:i:s');

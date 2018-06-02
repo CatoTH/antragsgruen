@@ -44,7 +44,7 @@ if ($isReplyTo) {
     echo '<input type="hidden" name="comment[parentCommentId]" value="' . $isReplyTo->id . '">';
 }
 
-if ($user && $user->name) {
+if ($user && $user->name && $user->email) {
     ?>
     <div class="commentFullTextarea">
         <textarea name="comment[text]" title="<?= Html::encode(\Yii::t('comment', 'text')) ?>" class="form-control"
@@ -52,27 +52,35 @@ if ($user && $user->name) {
     </div>
     <?php
 } else {
+    if (!$user || !$user->name) {
+        ?>
+        <div class="form-group">
+            <label for="<?= $formIdPre ?>_name" class="control-label col-sm-3">
+                <?= \Yii::t('comment', 'name') ?>:
+            </label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
+                       name="comment[name]" value="<?= Html::encode($form->name) ?>" required autocomplete="name">
+            </div>
+        </div>
+        <?php
+    }
+    if (!$user || !$user->email) {
+        ?>
+        <div class="form-group">
+            <label for="<?= $formIdPre ?>_email" class="control-label col-sm-3">
+                <?= \Yii::t('comment', 'email') ?>:
+            </label>
+            <div class="col-sm-9">
+                <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
+                       autocomplete="email" name="comment[email]"
+                       value="<?= Html::encode($form->email) ?>"
+                    <?= ($consultation->getSettings()->commentNeedsEmail ? ' required' : '') ?>>
+            </div>
+        </div>
+        <?php
+    }
     ?>
-    <div class="form-group">
-        <label for="<?= $formIdPre ?>_name" class="control-label col-sm-3">
-            <?= \Yii::t('comment', 'name') ?>:
-        </label>
-        <div class="col-sm-9">
-            <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
-                   name="comment[name]" value="<?= Html::encode($form->name) ?>" required autocomplete="name">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="<?= $formIdPre ?>_email" class="control-label col-sm-3">
-            <?= \Yii::t('comment', 'email') ?>:
-        </label>
-        <div class="col-sm-9">
-            <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
-                   autocomplete="email" name="comment[email]"
-                   value="<?= Html::encode($form->email) ?>"
-                <?= ($consultation->getSettings()->commentNeedsEmail ? ' required' : '') ?>>
-        </div>
-    </div>
     <div class="form-group">
         <label for="<?= $formIdPre ?>_text" class="control-label col-sm-3"><?= \Yii::t('comment', 'text') ?>
             :</label>
