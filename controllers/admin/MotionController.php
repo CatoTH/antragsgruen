@@ -109,6 +109,7 @@ class MotionController extends AdminBase
             $input = \Yii::$app->request->post('type');
             $motionType->setAttributes($input);
             $motionType->amendmentMultipleParagraphs = (isset($input['amendSinglePara']) ? 0 : 1);
+            $motionType->sidebarCreateButton         = (isset($input['sidebarCreateButton']) ? 1 : 0);
 
             $deadlineForm = DeadlineForm::createFromInput(\Yii::$app->request->post('deadlines'));
             $motionType->setAllDeadlines($deadlineForm->generateDeadlineArray());
@@ -246,6 +247,7 @@ class MotionController extends AdminBase
                     $motionType->position                     = 0;
                     $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
                     $motionType->status                       = 0;
+                    $motionType->sidebarCreateButton          = 1;
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);

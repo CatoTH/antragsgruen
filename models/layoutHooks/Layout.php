@@ -118,12 +118,12 @@ class Layout
     }
 
     /**
-     * @param ConsultationMotionType $motionType
+     * @param ConsultationMotionType[] $motionTypes
      * @return string
      */
-    public static function setSidebarCreateMotionButton($motionType)
+    public static function setSidebarCreateMotionButton($motionTypes)
     {
-        return static::callHook('setSidebarCreateMotionButton', [$motionType]);
+        return static::callHook('setSidebarCreateMotionButton', [$motionTypes]);
     }
 
     /**

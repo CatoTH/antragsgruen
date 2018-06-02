@@ -24,13 +24,12 @@ $I->seeInField('#typeMotionPrefix', 'B');
 $I->seeInField('.section' . AcceptanceTester::FIRST_FREE_MOTION_SECTION . ' .sectionTitle input', 'Name');
 $I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 1) . ' .sectionTitle input', 'Foto');
 
-
 $I->wantTo('create another motion type');
 $I->click('#adminLink');
 $I->click('.motionTypeCreate a');
 $I->fillField('#typeTitleSingular', 'Abc1');
 $I->fillField('#typeTitlePlural', 'Abc2');
-$I->fillField('#typeCreateTitle', 'Abc3');
+$I->fillField('#typeCreateTitle', 'Create type 2');
 $I->selectOption('#pdfLayout', 'DBJR');
 $I->fillField('#typeMotionPrefix', 'C');
 $I->checkOption('.preset' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
@@ -39,17 +38,25 @@ $I->submitForm('.motionTypeCreateForm', [], 'create');
 $I->see('Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.');
 $I->seeInField('#typeTitleSingular', 'Abc1');
 $I->seeInField('#typeTitlePlural', 'Abc2');
-$I->seeInField('#typeCreateTitle', 'Abc3');
+$I->seeInField('#typeCreateTitle', 'Create type 2');
 $I->seeInField('#typeMotionPrefix', 'C');
 $I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 5) . ' .sectionTitle input', 'Name');
 $I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 6) . ' .sectionTitle input', 'Foto');
 
+$I->wantTo('highlight the create link in a big, pink button');
+$I->checkFueluxCheckbox('#typeCreateSidebar label');
+$I->submitForm('.adminTypeForm', [], 'save');
 
 $I->wantTo('check if I can see the new types');
 $I->gotoConsultationHome();
-$I->seeElement('#sidebar .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
-$I->seeElement('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
-$I->click('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1) . ' a');
+$I->seeElement('#sidebar .createMotionHolder1 .createMotion1');
+$I->dontSeeElement('#sidebar .createMotionList .createMotion1');
+$I->dontSeeElement('#sidebar .createMotionHolder1 .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('#sidebar .createMotionList .createMotion' . AcceptanceTester::FIRST_FREE_MOTION_TYPE);
+$I->seeElement('#sidebar .createMotionHolder1 .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
+$I->dontSeeElement('#sidebar .createMotionList .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
+
+$I->click('#sidebar .createMotion' . (AcceptanceTester::FIRST_FREE_MOTION_TYPE + 1));
 $I->see('Geschlecht');
 $I->see('Alter');
 $I->click('#adminLink');

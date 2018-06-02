@@ -66,16 +66,8 @@
     position: absolute;
     left: 0;
     top: 0;
-    -moz-transform: rotate(270deg) translateX(-100%);
-    -webkit-transform: rotate(270deg) translateX(-100%);
-    -o-transform: rotate(270deg) translateX(-100%);
-    -ms-transform: rotate(270deg) translateX(-100%);
+    white-space: nowrap;
     transform: rotate(270deg) translateX(-100%);
-
-    -moz-transform-origin: 0% 0%;
-    -ms-transform-origin: 0% 0%;
-    -o-transform-origin: 0% 0%;
-    -webkit-transform-origin: 0% 0%;
     transform-origin: 0% 0%;
 
     display: inline-block;
@@ -83,20 +75,14 @@
     padding: 0 10px 10px;
   }
   .createMotion {
-    background: $createMotionBtnColor; /* Old browsers */
-    background: -moz-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $createMotionBtnColor), color-stop(100%, lighten($createMotionBtnColor, 2.3%))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* IE10+ */
     background: linear-gradient(to bottom, $createMotionBtnColor 0%, lighten($createMotionBtnColor, 2.3%) 100%); /* W3C */
     padding: 10px 30px;
+    margin-left: 15px;
     color: $createMotionTextColor;
     text-decoration: none;
     font-family: $headingFont;
     font-weight: bold;
     font-size: 14px;
-    -webkit-border-radius: 0 0 10px 10px;
     border-radius: 0 0 10px 10px;
     border: solid 1px lighten($createMotionBtnColor, 1.8%);
 
@@ -104,8 +90,6 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 
-    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
     display: inline-block;

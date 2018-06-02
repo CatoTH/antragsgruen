@@ -118,11 +118,11 @@ class HooksAdapter implements Hooks
 
     /**
      * @param string $before
-     * @param ConsultationMotionType $motionType
+     * @param ConsultationMotionType[] $motionTypes
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSidebarCreateMotionButton($before, $motionType)
+    public function setSidebarCreateMotionButton($before, $motionTypes)
     {
         return $before;
     }

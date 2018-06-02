@@ -40,6 +40,7 @@ use yii\db\ActiveRecord;
  * @property int $amendmentMultipleParagraphs
  * @property int $status
  * @property int $layoutTwoCols
+ * @property int $sidebarCreateButton
  * @property int $pdfPageNumbers
  *
  * @property ConsultationSettingsMotionSection[] $motionSections
@@ -382,7 +383,8 @@ class ConsultationMotionType extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'layoutTwoCols'], 'required'],
+            [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'sidebarCreateButton'], 'required'],
+            [['layoutTwoCols'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'supportType', 'status'], 'required'],
             [['contactName', 'contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position'], 'required'],
@@ -390,12 +392,13 @@ class ConsultationMotionType extends ActiveRecord
             [['id', 'consultationId', 'position', 'contactName', 'contactEmail', 'contactPhone'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
-            [['initiatorsCanMergeAmendments', 'pdfLayout', 'layoutTwoCols'], 'number'],
+            [['initiatorsCanMergeAmendments', 'pdfLayout', 'layoutTwoCols', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'layoutTwoCols'], 'safe'],
+            [['sidebarCreateButton'], 'safe']
         ];
     }
 
@@ -423,11 +426,11 @@ class ConsultationMotionType extends ActiveRecord
         $mySections  = $this->motionSections;
         $cmpSections = $cmpMotionType->motionSections;
 
-        if (count($mySections) != count($cmpSections)) {
+        if (count($mySections) !== count($cmpSections)) {
             return false;
         }
         for ($i = 0; $i < count($mySections); $i++) {
-            if ($mySections[$i]->type != $cmpSections[$i]->type) {
+            if ($mySections[$i]->type !== $cmpSections[$i]->type) {
                 return false;
             }
         }

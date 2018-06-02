@@ -22,9 +22,7 @@ foreach ($motionTypes as $motionType) {
 }
 
 if (count($working) > 0) {
-    if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-        \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working[0]);
-    }
+    \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working);
 }
 
 $html = '<div class="sidebar-box"><ul class="nav nav-list"><li class="nav-header">' .

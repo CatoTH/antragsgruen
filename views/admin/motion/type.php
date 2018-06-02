@@ -100,6 +100,17 @@ echo $controller->showErrors();
             ?>
         </div>
     </div>
+    <div class="form-group checkbox checkboxNoPadding" id="typeCreateSidebar">
+        <div class="checkbox col-md-8 col-md-offset-4">
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'type[sidebarCreateButton]',
+                \Yii::t('admin', 'motion_type_create_sidebar'),
+                $motionType->sidebarCreateButton
+            );
+            ?>
+        </div>
+    </div>
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="pdfLayout">

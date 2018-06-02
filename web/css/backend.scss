@@ -442,10 +442,13 @@ label.legend {
   &.form-horizontal .checkbox {
     padding-top: 0;
   }
-  #typeAmendSinglePara {
+
+  .checkboxNoPadding {
     padding-top: 0;
+
     .checkbox {
-      padding-bottom: 15px;
+      padding-bottom: 20px;
+      margin-top: -10px;
     }
   }
 }

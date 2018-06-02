@@ -136,6 +136,7 @@ class MotionEditForm extends Model
     /**
      * @param array $data
      * @param bool $safeOnly
+     * @throws FormError
      */
     public function setAttributes($data, $safeOnly = true)
     {

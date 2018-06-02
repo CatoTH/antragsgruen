@@ -189,6 +189,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `titleSingular`                varchar(100) NOT NULL,
   `titlePlural`                  varchar(100) NOT NULL,
   `createTitle`                  varchar(200) NOT NULL,
+  `sidebarCreateButton`          tinyint(4)   NOT NULL DEFAULT '1',
   `motionPrefix`                 varchar(10)           DEFAULT NULL,
   `position`                     int(11)      NOT NULL,
   `cssIcon`                      varchar(100)          DEFAULT NULL,

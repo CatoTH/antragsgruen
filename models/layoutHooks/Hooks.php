@@ -70,10 +70,10 @@ interface Hooks
 
     /**
      * @param $before
-     * @param ConsultationMotionType $motionType
+     * @param ConsultationMotionType[] $motionTypes
      * @return string
      */
-    public function setSidebarCreateMotionButton($before, $motionType);
+    public function setSidebarCreateMotionButton($before, $motionTypes);
 
     /**
      * @param string $before

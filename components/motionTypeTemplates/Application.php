@@ -39,6 +39,7 @@ trait Application
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
         $type->layoutTwoCols                = 1;
+        $type->sidebarCreateButton          = 0;
         $type->save();
 
         return $type;

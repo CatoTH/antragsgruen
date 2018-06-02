@@ -11,6 +11,7 @@
 - Instead of only setting the deadline for motions and amendments, there is now an alternative complex phase system with time ranges for motions, amendments, comments and merging amendments into motions, including a debugging tool for admins.
 - The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable.
 - If the "amendment merging" mode of a motion is used just to create a new version of the motion, and no amendments actually exist, the process is now greatly simplified.
+- There now can be more than only one "pink create-motion button" in the sidebar. This can be configured on a per-motion-type basis.
 - There are first beginnings of a plugin system based on Yii2's module concept. It's still subject to major changes, though.
 
 ### Version 3.8.3 (2018-05-12)

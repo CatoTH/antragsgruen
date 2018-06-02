@@ -102,7 +102,7 @@ foreach (IPolicy::getPolicies() as $policy) {
         ) ?>
     </div>
 </div>
-<div class="form-group checkbox" id="typeAmendSinglePara">
+<div class="form-group checkbox checkboxNoPadding" id="typeAmendSinglePara">
     <div class="checkbox col-md-8 col-md-offset-4">
         <?php
         echo HTMLTools::fueluxCheckbox(

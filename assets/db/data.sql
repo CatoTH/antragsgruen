@@ -41,7 +41,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m171231_093702_user_organization_ids', '1514713083'),
   ('m180519_180908_siteTexts', '1526808262'),
   ('m180524_153540_motionTypeDeadlines', '1527269132'),
-  ('m180531_062049_parent_motion_ids', '1527748415')
+  ('m180531_062049_parent_motion_ids', '1527748415'),
+  ('m180602_121824_motion_create_buttons', '1527942369')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

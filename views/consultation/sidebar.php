@@ -27,18 +27,30 @@ $hasComments   = false;
 $hasMotions    = false;
 $hasAmendments = false;
 $hasPDF        = false;
+
+/** @var ConsultationMotionType[] $pinkButtonCreates */
+$pinkButtonCreates = [];
+/** @var ConsultationMotionType[] $creatableTypes */
+$creatableTypes = [];
+
 foreach ($consultation->motionTypes as $type) {
-    if ($type->policyComments != IPolicy::POLICY_NOBODY) {
+    if ($type->policyComments !== IPolicy::POLICY_NOBODY) {
         $hasComments = true;
     }
-    if ($type->policyMotions != IPolicy::POLICY_NOBODY) {
+    if ($type->policyMotions !== IPolicy::POLICY_NOBODY) {
         $hasMotions = true;
     }
-    if ($type->policyAmendments != IPolicy::POLICY_NOBODY) {
+    if ($type->policyAmendments !== IPolicy::POLICY_NOBODY) {
         $hasAmendments = true;
     }
     if ($type->getPDFLayoutClass() !== null) {
         $hasPDF = true;
+    }
+
+    if ($type->getMotionPolicy()->checkCurrUserMotion(false, true) && $type->sidebarCreateButton) {
+        $pinkButtonCreates[] = $type;
+    } elseif ($type->getMotionPolicy()->checkCurrUserMotion(false, true)) {
+        $creatableTypes[] = $type;
     }
 }
 
@@ -46,52 +58,37 @@ foreach ($consultation->motionTypes as $type) {
 $layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 
 $showCreate = true;
-if ($consultation->getSettings()->getStartLayoutView() == 'index_layout_agenda') {
+if ($consultation->getSettings()->getStartLayoutView() === 'index_layout_agenda') {
     foreach ($consultation->agendaItems as $item) {
         if ($item->motionType) {
             $showCreate = false;
         }
     }
 }
-if ($showCreate) {
-    $motionTypes = $consultation->motionTypes;
-    $working     = [];
-    foreach ($motionTypes as $motionType) {
-        if ($motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-            $working[] = $motionType;
-        }
-    }
+if ($showCreate || count($pinkButtonCreates) > 0) {
+    \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($pinkButtonCreates);
 
-    if (count($working) > 0) {
-        /** @var ConsultationMotionType[] $working */
-        if (count($working) == 1) {
-            if ($working[0]->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                \app\models\layoutHooks\Layout::setSidebarCreateMotionButton($working[0]);
-            }
-        } else {
-            $html      = '<div class="sidebar-box"><ul class="nav nav-list motions">';
-            $html      .= '<li class="nav-header">' . Yii::t('con', 'create_new') . '</li>';
-            $htmlSmall = '<li class="dropdown">
+    if (count($creatableTypes) > 0) {
+        $html      = '<div class="sidebar-box"><ul class="nav nav-list motions createMotionList">';
+        $html      .= '<li class="nav-header">' . Yii::t('con', 'create_new') . '</li>';
+        $htmlSmall = '<li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
       aria-expanded="false">' . Yii::t('con', 'create_new') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
-            foreach ($working as $motionType) {
-                if ($motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
-                    $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-                    $html             .= '<li class="createMotion' . $motionType->id . '">';
-                    $html             .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
-                    $html             .= Html::encode($motionType->titleSingular) . '</a></li>';
+        foreach ($creatableTypes as $creatableType) {
+            $motionCreateLink = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $creatableType->id]);
+            $html             .= '<li class="createMotion' . $creatableType->id . '">';
+            $html             .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
+            $html             .= Html::encode($creatableType->titleSingular) . '</a></li>';
 
-                    $htmlSmall .= '<li class="createMotion' . $motionType->id . '">';
-                    $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
-                    $htmlSmall .= Html::encode($motionType->titleSingular) . '</a></li>';
-                }
-            }
-            $html                     .= '</ul></div>';
-            $htmlSmall                .= '</ul></li>';
-            $layout->menusHtml[]      = $html;
-            $layout->menusHtmlSmall[] = $htmlSmall;
+            $htmlSmall .= '<li class="createMotion' . $creatableType->id . '">';
+            $htmlSmall .= '<a href="' . Html::encode($motionCreateLink) . '" rel="nofollow">';
+            $htmlSmall .= Html::encode($creatableType->titleSingular) . '</a></li>';
         }
+        $html                     .= '</ul></div>';
+        $htmlSmall                .= '</ul></li>';
+        $layout->menusHtml[]      = $html;
+        $layout->menusHtmlSmall[] = $htmlSmall;
     }
 }
 

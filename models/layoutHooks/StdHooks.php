@@ -157,14 +157,14 @@ class StdHooks extends HooksAdapter
             $privilegeProposal = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($controller->consultation) {
-                $homeUrl = UrlHelper::homeUrl();
-                $out     .= '<li class="active">' .
+                $homeUrl  = UrlHelper::homeUrl();
+                $out      .= '<li class="active">' .
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
                     '</li>';
                 $helpPage = ConsultationText::getPageData($controller->site, $controller->consultation, 'help');
                 if ($helpPage && $helpPage->text !== \Yii::t('pages', 'content_help_place')) {
                     $title = \Yii::t('base', 'Help');
-                    $out      .= '<li>' . Html::a($title, $helpPage->getUrl(), ['id' => 'helpLink']) . '</li>';
+                    $out   .= '<li>' . Html::a($title, $helpPage->getUrl(), ['id' => 'helpLink']) . '</li>';
                 }
             } else {
                 $startLink = UrlHelper::createUrl('manager/index');
@@ -299,23 +299,31 @@ class StdHooks extends HooksAdapter
 
     /**
      * @param string $before
-     * @param ConsultationMotionType $motionType
+     * @param ConsultationMotionType[] $motionTypes
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function setSidebarCreateMotionButton($before, $motionType)
+    public function setSidebarCreateMotionButton($before, $motionTypes)
     {
-        $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
-        $description = $motionType->createTitle;
+        $html      = '<div class="createMotionHolder1"><div class="createMotionHolder2">';
+        $htmlSmall = '';
 
-        $this->layout->menusHtml[]          = '<div class="createMotionHolder1"><div class="createMotionHolder2">' .
-            '<a class="createMotion" href="' . Html::encode($link) . '"
-                    title="' . Html::encode($description) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
-            '</a></div></div>';
-        $this->layout->menusSmallAttachment =
-            '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-            '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
+        foreach ($motionTypes as $motionType) {
+            $link        = UrlHelper::createUrl(['motion/create', 'motionTypeId' => $motionType->id]);
+            $description = $motionType->createTitle;
+
+            $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .
+                'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
+                '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
+                '</a>';
+            $htmlSmall .=
+                '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
+                '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
+        }
+
+        $html                               .= '</div></div>';
+        $this->layout->menusHtml[]          = $html;
+        $this->layout->menusSmallAttachment = $htmlSmall;
 
         return '';
     }

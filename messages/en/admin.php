@@ -327,6 +327,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_plural'         => 'Title (plural)',
     'motion_type_plural_pl'      => 'Motions',
     'motion_type_create_title'   => 'Call to create',
+    'motion_type_create_sidebar' => 'Call to create as big, colored button',
     'motion_type_create_placeh'  => 'Create a motion',
     'motion_type_pdf_layout'     => 'PDF layout',
     'motion_type_title_prefix'   => 'Signature prefix',
