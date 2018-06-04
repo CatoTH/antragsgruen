@@ -1627,11 +1627,11 @@ VALUES
 -- Dumping data for table `userNotification`
 --
 
-INSERT INTO `###TABLE_PREFIX###userNotification` (`id`, `userId`, `consultationId`, `notificationType`, `notificationReferenceId`, `lastNotification`)
+INSERT INTO `###TABLE_PREFIX###userNotification` (`id`, `userId`, `consultationId`, `notificationType`, `notificationReferenceId`, `settings`, `lastNotification`)
 VALUES
-  (1, 2, 1, 3, NULL, '2018-01-23 12:57:06'),
-  (2, 2, 8, 3, NULL, NULL),
-  (3, 2, 9, 3, NULL, NULL);
+  (1, 2, 1, 3, NULL, NULL, '2018-01-23 12:57:06'),
+  (2, 2, 8, 3, NULL, NULL, NULL),
+  (3, 2, 9, 3, NULL, NULL, NULL);
 
 --
 -- Dumping data for table `votingBlock`

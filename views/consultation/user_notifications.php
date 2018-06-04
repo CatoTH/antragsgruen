@@ -50,7 +50,7 @@ echo Html::beginForm($action, 'post', ['class' => 'notificationForm content']);
 
 echo $controller->showErrors();
 
-echo '<fieldset class="col-md-8 col-md-offset-2">
+echo '<fieldset class="col-md-10 col-md-offset-1">
 <legend>' . \Yii::t('con', 'noti_triggers') . '</legend>
 
   <div class="checkbox">

@@ -612,6 +612,7 @@ CREATE TABLE `###TABLE_PREFIX###userNotification` (
   `consultationId`          INT(11)          DEFAULT NULL,
   `notificationType`        SMALLINT(6) NOT NULL,
   `notificationReferenceId` INT(11)          DEFAULT NULL,
+  `settings`                TEXT             DEFAULT NULL,
   `lastNotification`        TIMESTAMP   NULL DEFAULT NULL
 )
   ENGINE = InnoDB

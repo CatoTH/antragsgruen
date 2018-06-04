@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  * @property int $consultationId
  * @property int $notificationType
  * @property int $notificationReferenceId
+ * @property string|null $settings
  * @property string $lastNotification
  *
  * @property Consultation $consultation
@@ -39,7 +40,7 @@ class UserNotification extends ActiveRecord
      */
     public function getConsultation()
     {
-        return $this->hasOne(Consultation::className(), ['id' => 'consultationId']);
+        return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
     /**
@@ -47,7 +48,7 @@ class UserNotification extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'userId'])
+        return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
@@ -60,6 +61,36 @@ class UserNotification extends ActiveRecord
             [['userId', 'consultationId', 'notificationType'], 'required'],
             [['id', 'userId', 'consultationId', 'notificationType', 'notificationReferenceId'], 'number'],
         ];
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $default
+     * @return null|mixed
+     */
+    protected function getSettingByKey($key, $default = null)
+    {
+        if ($this->settings) {
+            $settings = json_decode($this->settings, true);
+            if (isset($settings[$key])) {
+                return $settings[$key];
+            }
+        }
+        return $default;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     */
+    protected function setSettingByKey($key, $value)
+    {
+        $settings = [];
+        if ($this->settings) {
+            $settings = json_decode($this->settings, true);
+        }
+        $settings[$key] = $value;
+        $this->settings = json_encode($settings);
     }
 
     /**
