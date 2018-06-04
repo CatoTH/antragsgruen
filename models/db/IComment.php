@@ -27,6 +27,17 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     const STATUS_VISIBLE   = 0;
     const STATUS_DELETED   = -1;
 
+    const EVENT_PUBLISHED       = 'published';
+
+    /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_PUBLISHED, [$this, 'notifyUsers'], null, false);
+    }
+
     /**
      * @return string[]
      */
@@ -148,17 +159,8 @@ abstract class IComment extends ActiveRecord implements IRSSItem
 
     /**
      */
-    public function sendPublishNotifications()
+    public function notifyUsers()
     {
-        $commentType = UserNotification::NOTIFICATION_NEW_COMMENT;
-        $notified = [];
-        foreach ($this->getConsultation()->userNotifications as $noti) {
-            if ($noti->notificationType === $commentType && !in_array($noti->userId, $notified)) {
-                $noti->user->notifyComment($this);
-                $notified[] = $noti->userId;
-                $noti->lastNotification = date('Y-m-d H:i:s');
-                $noti->save();
-            }
-        }
+        UserNotification::notifyNewComment($this);
     }
 }

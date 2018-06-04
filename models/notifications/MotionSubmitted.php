@@ -39,7 +39,7 @@ class MotionSubmitted extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return \Yii::t('motion', 'submitted_adminnoti_title');
     }

@@ -37,7 +37,7 @@ class MotionWithdrawn extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return \Yii::t('motion', 'withdrawn_adminnoti_title');
     }

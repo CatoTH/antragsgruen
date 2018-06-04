@@ -27,7 +27,8 @@ abstract class Base
         $consultation = $this->consultation;
         $mails        = explode(',', $consultation->adminEmail);
 
-        /** @var IEmailAdmin $this */
+        /** @var IEmailAdmin $maildata */
+        $maildata = $this;
         foreach ($mails as $mail) {
             if (trim($mail) != '') {
                 try {
@@ -36,8 +37,8 @@ abstract class Base
                         $consultation->site,
                         trim($mail),
                         null,
-                        $this->getEmailAdminTitle(),
-                        $this->getEmailAdminText()
+                        $maildata->getEmailAdminSubject(),
+                        $maildata->getEmailAdminText()
                     );
                 } catch (MailNotSent $e) {
                     $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
@@ -49,11 +50,29 @@ abstract class Base
 
     /**
      */
+    private function sendEmailUser()
+    {
+        /** @var IEmailUser $maildata */
+        $maildata = $this;
+
+        $maildata->getEmailUser()->notificationEmail(
+            $this->consultation,
+            $maildata->getEmailUserSubject(),
+            $maildata->getEmailUserText(),
+            $maildata->getEmailUserType()
+        );
+    }
+
+    /**
+     */
     public function send()
     {
         $implements = class_implements($this);
         if (in_array(IEmailAdmin::class, $implements)) {
             $this->sendEmailAdmin();
+        }
+        if (in_array(IEmailUser::class, $implements)) {
+            $this->sendEmailUser();
         }
     }
 }

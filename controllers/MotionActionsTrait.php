@@ -128,7 +128,7 @@ trait MotionActionsTrait
     {
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id) {
+        if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
@@ -146,7 +146,7 @@ trait MotionActionsTrait
             $comment->id
         );
 
-        $comment->sendPublishNotifications();
+        $comment->trigger(IComment::EVENT_PUBLISHED);
     }
 
     /**
@@ -158,7 +158,7 @@ trait MotionActionsTrait
     {
         /** @var MotionComment $comment */
         $comment = MotionComment::findOne($commentId);
-        if (!$comment || $comment->motionId != $motion->id) {
+        if (!$comment || $comment->motionId !== $motion->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {

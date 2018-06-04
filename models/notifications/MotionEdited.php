@@ -34,7 +34,7 @@ class MotionEdited extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return \Yii::t('motion', 'edit_mail_title');
     }

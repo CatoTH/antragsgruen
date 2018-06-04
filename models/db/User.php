@@ -554,9 +554,10 @@ class User extends ActiveRecord implements IdentityInterface
      * @param Consultation $consultation
      * @param string $subject
      * @param string $text
+     * @param int $mailType
      * @throws \app\models\exceptions\ServerConfiguration
      */
-    public function notificationEmail(Consultation $consultation, $subject, $text)
+    public function notificationEmail(Consultation $consultation, $subject, $text, $mailType)
     {
         if ($this->email == '' || !$this->emailConfirmed) {
             return;
@@ -567,47 +568,13 @@ class User extends ActiveRecord implements IdentityInterface
         $gruss        = str_replace('%NAME%', $this->name, \Yii::t('user', 'noti_greeting') . "\n\n");
         $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . $blacklistUrl;
         $text         = $gruss . $text . $sig;
-        $type         = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
         try {
-            MailTools::sendWithLog($type, $consultation->site, $this->email, $this->id, $subject, $text);
+            MailTools::sendWithLog($mailType, $consultation->site, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
     }
 
-    /**
-     * @param Motion $motion
-     * @throws \app\models\exceptions\ServerConfiguration
-     */
-    public function notifyMotion(Motion $motion)
-    {
-        $subject   = \Yii::t('user', 'noti_new_motion_title') . ' ' . $motion->getTitleWithPrefix();
-        $link      = UrlHelper::createUrl(['motion/view', 'motionId' => $motion->id]);
-        $link      = UrlHelper::absolutizeLink($link);
-        $initiator = $motion->getInitiatorsStr();
-        $text      = str_replace(
-            ['%CONSULTATION%', '%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$motion->getMyConsultation()->title, $motion->getTitleWithPrefix(), $link, $initiator],
-            \Yii::t('user', 'noti_new_motion_body')
-        );
-        $this->notificationEmail($motion->getMyConsultation(), $subject, $text);
-    }
-
-    /**
-     * @param IComment $comment
-     * @throws \app\models\exceptions\ServerConfiguration
-     */
-    public function notifyComment(IComment $comment)
-    {
-        $motionTitle = $comment->getMotionTitle();
-        $subject     = str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_comment_title'));
-        $text        = str_replace(
-            ['%TITLE%', '%LINK%'],
-            [$motionTitle, UrlHelper::absolutizeLink($comment->getLink())],
-            \Yii::t('user', 'noti_new_comment_body')
-        );
-        $this->notificationEmail($comment->getConsultation(), $subject, $text);
-    }
 
     /**
      * Checks if this user has the given privilege or at least one of the given privileges (binary OR)

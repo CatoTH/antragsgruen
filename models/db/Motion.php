@@ -818,20 +818,10 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @throws Internal
-     * @throws \app\models\exceptions\ServerConfiguration
      */
     public function onPublishFirst()
     {
-        $motionType = UserNotification::NOTIFICATION_NEW_MOTION;
-        $notified   = [];
-        foreach ($this->getMyConsultation()->userNotifications as $noti) {
-            if ($noti->notificationType == $motionType && !in_array($noti->userId, $notified)) {
-                $noti->user->notifyMotion($this);
-                $notified[]             = $noti->userId;
-                $noti->lastNotification = date('Y-m-d H:i:s');
-                $noti->save();
-            }
-        }
+        UserNotification::notifyNewMotion($this);
         EmailNotifications::sendMotionOnPublish($this);
     }
 

@@ -28,6 +28,14 @@ use yii\db\ActiveQuery;
  */
 class AmendmentComment extends IComment
 {
+    /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_PUBLISHED, [$this, 'logToConsultationLog'], null, false);
+    }
 
     /**
      * @return string
@@ -209,5 +217,12 @@ class AmendmentComment extends IComment
         $query->orderBy('dateCreation DESC');
 
         return $query->all();
+    }
+
+    /**
+     */
+    public function logToConsultationLog()
+    {
+        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::AMENDMENT_COMMENT, $this->id);
     }
 }

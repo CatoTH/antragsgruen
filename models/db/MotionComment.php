@@ -37,6 +37,15 @@ class MotionComment extends IComment
     const STATUS_SCREENING = 1;
 
     /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_PUBLISHED, [$this, 'logToConsultationLog'], null, false);
+    }
+
+    /**
      * @return string
      */
     public static function tableName()
@@ -218,5 +227,12 @@ class MotionComment extends IComment
         $query->orderBy('dateCreation DESC');
 
         return $query->all();
+    }
+
+    /**
+     */
+    public function logToConsultationLog()
+    {
+        ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_COMMENT, $this->id);
     }
 }

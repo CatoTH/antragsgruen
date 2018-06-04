@@ -137,7 +137,7 @@ class AmendmentPublished
             \Yii::t('user', 'noti_amend_mymotion')
         );
 
-        $user->notificationEmail($this->consultation, $subject, $text);
+        $user->notificationEmail($this->consultation, $subject, $text, EMailLog::TYPE_MOTION_NOTIFICATION_USER);
 
         $this->alreadyNotified[] = strtolower($user->email);
         $noti->lastNotification  = date('Y-m-d H:i:s');
@@ -161,7 +161,8 @@ class AmendmentPublished
                 [$this->consultation->title, $motionTitle, $link, $this->amendment->getInitiatorsStr()],
                 \Yii::t('user', 'noti_new_motion_body')
             );
-            $noti->user->notificationEmail($this->consultation, $subject, $text);
+            $notiType = EMailLog::TYPE_MOTION_NOTIFICATION_USER;
+            $noti->user->notificationEmail($this->consultation, $subject, $text, $notiType);
 
             $this->alreadyNotified[] = strtolower($noti->user->email);
             $noti->lastNotification  = date('Y-m-d H:i:s');

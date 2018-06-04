@@ -40,7 +40,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return \Yii::t('amend', 'submitted_adminnoti_title');
     }

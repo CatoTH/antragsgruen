@@ -128,7 +128,7 @@ trait AmendmentActionsTrait
     {
         /** @var AmendmentComment $comment */
         $comment = AmendmentComment::findOne($commentId);
-        if (!$comment || $comment->amendmentId != $amendment->id) {
+        if (!$comment || $comment->amendmentId !== $amendment->id) {
             throw new Internal(\Yii::t('comment', 'err_not_found'));
         }
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
@@ -140,10 +140,7 @@ trait AmendmentActionsTrait
 
         $amendment->refresh();
 
-        $consultation = $amendment->getMyConsultation();
-        ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_COMMENT_SCREEN, $comment->id);
-
-        $comment->sendPublishNotifications();
+        $comment->trigger(IComment::EVENT_PUBLISHED);
     }
 
     /**

@@ -205,9 +205,8 @@ class CommentForm extends Model
         }
 
         if (!$settings->screeningComments) {
-            $comment->sendPublishNotifications();
+            $comment->trigger(IComment::EVENT_PUBLISHED);
         }
-        ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_COMMENT, $comment->id);
 
         return $comment;
     }
@@ -250,10 +249,8 @@ class CommentForm extends Model
         }
 
         if (!$settings->screeningComments) {
-            $comment->sendPublishNotifications();
+            $comment->trigger(IComment::EVENT_PUBLISHED);
         }
-
-        ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::AMENDMENT_COMMENT, $comment->id);
 
         return $comment;
     }

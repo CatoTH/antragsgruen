@@ -38,7 +38,7 @@ class AmendmentWithdrawn extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return \Yii::t('amend', 'withdrawn_adminnoti_title');
     }

@@ -2,6 +2,8 @@
 
 namespace app\models\db;
 
+use app\models\notifications\CommentNotificationSubscriptions;
+use app\models\notifications\MotionNotificationSubscriptions;
 use yii\db\ActiveRecord;
 
 /**
@@ -207,5 +209,41 @@ class UserNotification extends ActiveRecord
             $noti->delete();
         }
         static::$noticache = [];
+    }
+
+    /**
+     * @param Motion $motion
+     */
+    public static function notifyNewMotion(Motion $motion)
+    {
+        $notificationType = UserNotification::NOTIFICATION_NEW_MOTION;
+        $notified         = [];
+        foreach ($motion->getMyConsultation()->userNotifications as $noti) {
+            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified)) {
+                new MotionNotificationSubscriptions($motion, $noti->user);
+
+                $notified[]             = $noti->userId;
+                $noti->lastNotification = date('Y-m-d H:i:s');
+                $noti->save();
+            }
+        }
+    }
+
+    /**
+     * @param IComment $comment
+     */
+    public static function notifyNewComment(IComment $comment)
+    {
+        $notificationType = UserNotification::NOTIFICATION_NEW_COMMENT;
+        $notified = [];
+        foreach ($comment->getConsultation()->userNotifications as $noti) {
+            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified)) {
+                new CommentNotificationSubscriptions($noti->user, $comment);
+
+                $notified[] = $noti->userId;
+                $noti->lastNotification = date('Y-m-d H:i:s');
+                $noti->save();
+            }
+        }
     }
 }

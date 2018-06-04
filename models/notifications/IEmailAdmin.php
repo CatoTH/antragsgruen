@@ -11,10 +11,10 @@ interface IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminText();
+    public function getEmailAdminSubject();
 
     /**
      * @return string
      */
-    public function getEmailAdminTitle();
+    public function getEmailAdminText();
 }
