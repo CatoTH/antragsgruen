@@ -377,7 +377,7 @@
 
   .commentNotifications {
     padding: $commentPadding;
-    overflow: auto;
+    overflow: visible;
     label {
       font-weight: normal;
       font-size: 13px;
