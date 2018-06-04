@@ -158,6 +158,54 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     }
 
     /**
+     * @return int[]
+     */
+    public function getUserIdsBeingRepliedToByThis()
+    {
+        if ($this->parentCommentId === null) {
+            return [];
+        }
+
+        $userIds = [];
+        foreach ($this->getIMotion()->comments as $comment) {
+            if ($comment->id === $this->id) {
+                continue;
+            }
+            if ($comment->id === $this->parentCommentId || $comment->parentCommentId === $this->parentCommentId) {
+                if ($comment->userId && !in_array($comment->userId, $userIds)) {
+                    $userIds[] = $comment->userId;
+                }
+            }
+        }
+
+        return $userIds;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getUserIdsActiveOnThisIMotion()
+    {
+        $userIds = [];
+
+        foreach ($this->getIMotion()->getInitiators() as $initiator) {
+            if ($initiator->userId && !in_array($initiator->userId, $userIds)) {
+                $userIds[] = $initiator->userId;
+            }
+        }
+        foreach ($this->getIMotion()->comments as $comment) {
+            if ($comment->status === IComment::STATUS_DELETED) {
+                continue;
+            }
+            if ($comment->userId && !in_array($comment->userId, $userIds)) {
+                $userIds[] = $comment->userId;
+            }
+        }
+
+        return $userIds;
+    }
+
+    /**
      */
     public function notifyUsers()
     {

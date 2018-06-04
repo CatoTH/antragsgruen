@@ -188,6 +188,7 @@ class CommentForm extends Model
         $comment->motionId        = $motion->id;
         $comment->sectionId       = ($this->sectionId > 0 ? $this->sectionId : null);
         $comment->paragraph       = $this->paragraphNo;
+        $comment->userId          = $this->userId;
         $comment->contactEmail    = $this->email;
         $comment->name            = $this->name;
         $comment->text            = $this->text;
@@ -232,6 +233,7 @@ class CommentForm extends Model
         $comment                  = new AmendmentComment();
         $comment->amendmentId     = $amendment->id;
         $comment->paragraph       = $this->paragraphNo;
+        $comment->userId          = $this->userId;
         $comment->contactEmail    = $this->email;
         $comment->name            = $this->name;
         $comment->text            = $this->text;

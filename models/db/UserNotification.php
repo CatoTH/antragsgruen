@@ -234,10 +234,25 @@ class UserNotification extends ActiveRecord
      */
     public static function notifyNewComment(IComment $comment)
     {
+        $usersRepliedTo = $comment->getUserIdsBeingRepliedToByThis();
+        $usersInSameIMotion = $comment->getUserIdsActiveOnThisIMotion();
+
         $notificationType = UserNotification::NOTIFICATION_NEW_COMMENT;
         $notified = [];
         foreach ($comment->getConsultation()->userNotifications as $noti) {
+            if ($noti->userId === $comment->userId) {
+                continue;
+            }
             if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified)) {
+                $commentSetting = $noti->getSettingByKey('comments', static::$COMMENT_SETTINGS[0]);
+                if ($commentSetting === static::COMMENT_SAME_MOTIONS && !in_array($noti->userId, $usersInSameIMotion)) {
+                    continue;
+                }
+                if ($commentSetting === static::COMMENT_REPLIES && !in_array($noti->userId, $usersRepliedTo)) {
+                    continue;
+                }
+                // static::COMMENT_ALL_IN_CONSULTATION => all users get it
+
                 new CommentNotificationSubscriptions($noti->user, $comment);
 
                 $notified[] = $noti->userId;
