@@ -21,11 +21,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $layout->addAMDModule('frontend/AmendmentShow');
+$layout->loadFuelux();
 $consultation = $amendment->getMyConsultation();
 $motion       = $amendment->getMyMotion();
-if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
-    $layout->loadFuelux();
-}
 
 if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle')) {
     $layout->addBreadcrumb($controller->getRequestValue('backTitle'), $controller->getRequestValue('backUrl'));
