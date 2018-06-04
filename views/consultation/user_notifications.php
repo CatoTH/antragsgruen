@@ -28,7 +28,21 @@ if ($user->email == '' || !$user->emailConfirmed) {
 }
 
 
-$activeMotions = $activeAmendments = $activeComments = $activeAmendmentMyMotion = false;
+$commentSettingOptions = [
+    UserNotification::COMMENT_REPLIES             => \Yii::t('con', 'noti_comments_replies'),
+    UserNotification::COMMENT_SAME_MOTIONS        => \Yii::t('con', 'noti_comments_motions'),
+    UserNotification::COMMENT_ALL_IN_CONSULTATION => \Yii::t('con', 'noti_comments_con'),
+];
+
+$amendmentSettingOptions = [
+    0 => \Yii::t('con', 'noti_amendments_mine'),
+    1 => \Yii::t('con', 'noti_amendments_all'),
+];
+
+$activeMotions    = $activeAmendments = $activeComments = false;
+$commentSetting   = UserNotification::$COMMENT_SETTINGS[0];
+$amendmentSetting = 0;
+
 foreach ($notifications as $noti) {
     switch ($noti->notificationType) {
         case UserNotification::NOTIFICATION_NEW_MOTION:
@@ -36,69 +50,62 @@ foreach ($notifications as $noti) {
             break;
         case UserNotification::NOTIFICATION_NEW_AMENDMENT:
             $activeAmendments = true;
+            if ($amendmentSetting === 0) {
+                $amendmentSetting = 1;
+            }
             break;
         case UserNotification::NOTIFICATION_NEW_COMMENT:
-            $activeComments = true;
+            $activeComments  = true;
+            $commentSetting = $noti->getSettingByKey('comments', UserNotification::$COMMENT_SETTINGS[0]);
             break;
         case UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION:
-            $activeAmendmentMyMotion = true;
+            $activeAmendments = true;
+            break;
     }
 }
+
 
 $action = UrlHelper::createUrl('consultation/notifications');
 echo Html::beginForm($action, 'post', ['class' => 'notificationForm content']);
 
 echo $controller->showErrors();
 
-echo '<fieldset class="col-md-10 col-md-offset-1">
-<legend>' . \Yii::t('con', 'noti_triggers') . '</legend>
 
-  <div class="checkbox">
-    <label>' .
-    Html::checkbox(
-        'notifications[]',
-        $activeMotions,
-        ['class' => 'notiMotion', 'value' => 'motion']
-    ) .
-    \Yii::t('con', 'noti_motions') .
-    '</label>
-  </div>
+?>
+    <fieldset class="col-md-10 col-md-offset-1" data-antragsgruen-widget="frontend/UserNotificationsForm">
+        <legend><?= \Yii::t('con', 'noti_triggers') ?></legend>
 
-  <div class="checkbox">
-    <label>' .
-    Html::checkbox(
-        'notifications[]',
-        $activeAmendments,
-        ['class' => 'notiAmendment', 'value' => 'amendment']
-    ) .
-    \Yii::t('con', 'noti_amendments') .
-    '</label>
-  </div>
+        <div class="notificationRow">
+            <label class="notiMotion">
+                <?= Html::checkbox('notifications[motion]', $activeMotions) ?>
+                <?= \Yii::t('con', 'noti_motions') ?>
+            </label>
+        </div>
 
-  <div class="checkbox">
-    <label>' .
-    Html::checkbox(
-        'notifications[]',
-        $activeAmendmentMyMotion,
-        ['class' => 'amendmentMyMotion', 'value' => 'amendmentMyMotion']
-    ) .
-    \Yii::t('con', 'noti_amendments_my_motion') .
-    '</label>
-  </div>
+        <div class="notificationRow">
+            <label class="notiAmendment">
+                <?= Html::checkbox('notifications[amendment]', $activeAmendments) ?>
+                <?= \Yii::t('con', 'noti_amendments') ?>
+            </label>
+            <div class="amendmentSettings radioList">
+                <?= Html::radioList('notifications[amendmentsettings]', $amendmentSetting, $amendmentSettingOptions) ?>
+            </div>
+        </div>
 
-  <div class="checkbox">
-    <label>' .
-    Html::checkbox(
-        'notifications[]',
-        $activeComments,
-        ['class' => 'notiComment', 'value' => 'comment']
-    ) .
-    \Yii::t('con', 'noti_comments') .
-    '</label>
-  </div>
-
-</fieldset>
+        <div class="notificationRow">
+            <label class="notiComment">
+                <?= Html::checkbox('notifications[comment]', $activeComments) ?>
+                <?= \Yii::t('con', 'noti_comments') ?>
+            </label>
+            <div class="commentSettings radioList">
+                <?= Html::radioList('notifications[commentsetting]', $commentSetting, $commentSettingOptions) ?>
+            </div>
+        </div>
+    </fieldset>
 
     <div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('con', 'noti_save') . '</button>
-</div>' . Html::endForm();
+        <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('con', 'noti_save') ?></button>
+    </div>
+
+<?php
+echo Html::endForm();

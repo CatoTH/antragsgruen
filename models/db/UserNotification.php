@@ -25,6 +25,11 @@ class UserNotification extends ActiveRecord
     const NOTIFICATION_NEW_COMMENT         = 2;
     const NOTIFICATION_AMENDMENT_MY_MOTION = 3;
 
+    const COMMENT_REPLIES             = 0;
+    const COMMENT_SAME_MOTIONS        = 1;
+    const COMMENT_ALL_IN_CONSULTATION = 2;
+    public static $COMMENT_SETTINGS = [1, 0, 2]; // First value defines the default value
+
     /**
      * @return string
      */
@@ -68,7 +73,7 @@ class UserNotification extends ActiveRecord
      * @param mixed $default
      * @return null|mixed
      */
-    protected function getSettingByKey($key, $default = null)
+    public function getSettingByKey($key, $default = null)
     {
         if ($this->settings) {
             $settings = json_decode($this->settings, true);
@@ -83,7 +88,7 @@ class UserNotification extends ActiveRecord
      * @param string $key
      * @param mixed $value
      */
-    protected function setSettingByKey($key, $value)
+    public function setSettingByKey($key, $value)
     {
         $settings = [];
         if ($this->settings) {
@@ -148,6 +153,7 @@ class UserNotification extends ActiveRecord
      * @param Consultation $consultation
      * @param int $type
      * @param int|null $refId
+     * @return UserNotification
      */
     public static function addNotification(User $user, Consultation $consultation, $type, $refId = null)
     {
@@ -160,6 +166,22 @@ class UserNotification extends ActiveRecord
             $noti->notificationReferenceId = $refId;
             $noti->save();
         }
+        return $noti;
+    }
+
+    /**
+     * @param User $user
+     * @param Consultation $consultation
+     * @param int $commentSetting
+     */
+    public static function addCommentNotification(User $user, Consultation $consultation, $commentSetting)
+    {
+        if (!in_array($commentSetting, static::$COMMENT_SETTINGS)) {
+            return;
+        }
+        $noti = static::addNotification($user, $consultation, static::NOTIFICATION_NEW_COMMENT);
+        $noti->setSettingByKey('comments', $commentSetting);
+        $noti->save();
     }
 
     /**

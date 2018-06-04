@@ -210,25 +210,32 @@ class ConsultationController extends Base
 
         if ($this->isPostSet('save')) {
             $newNotis = \Yii::$app->request->post('notifications', []);
-            if (in_array('motion', $newNotis)) {
+            if (isset($newNotis['motion'])) {
                 UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
             } else {
                 UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_MOTION);
             }
-            if (in_array('amendment', $newNotis)) {
-                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_AMENDMENT);
+
+            if (isset($newNotis['amendment'])) {
+                if (isset($newNotis['amendmentsettings']) && $newNotis['amendmentsettings'] == 1) {
+                    UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_AMENDMENT);
+                } else {
+                    UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
+                }
             } else {
                 UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_AMENDMENT);
+                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
             }
-            if (in_array('comment', $newNotis)) {
-                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
+
+            if (isset($newNotis['comment'])) {
+                if (isset($newNotis['commentsetting'])) {
+                    $commentSetting = IntVal($newNotis['commentsetting']);
+                } else {
+                    $commentSetting = UserNotification::$COMMENT_SETTINGS[0];
+                }
+                UserNotification::addCommentNotification($user, $con, $commentSetting);
             } else {
                 UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_NEW_COMMENT);
-            }
-            if (in_array('amendmentMyMotion', $newNotis)) {
-                UserNotification::addNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
-            } else {
-                UserNotification::removeNotification($user, $con, UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION);
             }
             \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
         }

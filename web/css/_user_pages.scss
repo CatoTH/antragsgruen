@@ -1,0 +1,79 @@
+#loginWurzelwerkHint, #loginSamlHint, .login_saml .privacyHint {
+  border-left: solid 1px #808080;
+  padding-left: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 0.8em;
+  overflow: auto;
+}
+
+.login_saml {
+  .privacyHint {
+    border-left: solid 1px #808080;
+    padding-left: 10px;
+    margin-left: 20px;
+    margin-top: 0;
+    font-size: 0.8em;
+    overflow: auto;
+  }
+  .btn {
+    float: left;
+    margin-right: 30px;
+  }
+}
+
+#loginWurzelwerkForgot {
+  font-size: 0.8em;
+  margin-top: -7px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+#loginUsername {
+  .passwordRecovery {
+    text-align: right;
+    font-size: 0.8em;
+  }
+}
+
+.userAccountForm {
+  .requestEmailChange {
+    display: inline-block;
+    margin-left: 10px;
+    font-style: italic;
+    font-size: 0.8em;
+  }
+  .changeRequested {
+    display: block;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  .resendButton {
+    color: $colorLinks;
+    font-style: italic;
+  }
+}
+
+.notificationForm {
+  label {
+    cursor: pointer;
+  }
+  input[type=checkbox] {
+    margin-right: 10px;
+  }
+  .notificationRow {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  .radioList {
+    > div {
+      padding-left: 27px;
+    }
+    label {
+      display: block;
+      font-weight: normal;
+      margin-bottom: 10px;
+    }
+  }
+}

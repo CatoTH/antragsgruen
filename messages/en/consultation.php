@@ -52,8 +52,9 @@ return [
   You can do so in the <a href="%URL%">preferences</a>.',
     'noti_triggers'             => 'What do you want to be notified about?',
     'noti_motions'              => 'New motions / applications',
-    'noti_amendments'           => 'New amendments (all)',
-    'noti_amendments_my_motion' => 'New amendments (my motions)',
+    'noti_amendments'           => 'New amendments',
+    'noti_amendments_all'       => 'All amendments',
+    'noti_amendments_mine'      => 'Amendments to my motions',
     'noti_comments'             => 'New comments',
     'noti_save'                 => 'Save',
 
