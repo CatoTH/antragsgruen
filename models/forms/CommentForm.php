@@ -12,6 +12,7 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSection;
 use app\models\db\User;
+use app\models\db\UserNotification;
 use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
@@ -37,6 +38,9 @@ class CommentForm extends Model
     public $paragraphNo;
     public $sectionId = null;
     public $userId;
+
+    public $notifications        = false;
+    public $notificationsettings = null;
 
     /**
      * CommentForm constructor.
@@ -99,6 +103,18 @@ class CommentForm extends Model
             if ($user->name) {
                 $this->name = $user->name;
             }
+
+            if (isset($values['notifications'])) {
+                $this->notifications = true;
+                if (isset($values['notificationsettings'])) {
+                    $this->notificationsettings = IntVal($values['notificationsettings']);
+                } else {
+                    $this->notificationsettings = UserNotification::$COMMENT_SETTINGS[0];
+                }
+            } else {
+                $this->notifications        = false;
+                $this->notificationsettings = null;
+            }
         }
     }
 
@@ -132,6 +148,22 @@ class CommentForm extends Model
 
         if (!$this->motionType->getCommentPolicy()->checkCurrUserComment(false, false)) {
             throw new Access('No rights to write a comment');
+        }
+    }
+
+    /**
+     */
+    public function saveNotificationSettings()
+    {
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return;
+        }
+        $consultation = $this->motionType->getMyConsultation();
+        if ($this->notifications) {
+            UserNotification::addCommentNotification($user, $consultation, $this->notificationsettings);
+        } else {
+            UserNotification::removeNotification($user, $consultation, UserNotification::NOTIFICATION_NEW_COMMENT);
         }
     }
 

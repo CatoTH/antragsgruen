@@ -75,6 +75,7 @@ trait AmendmentActionsTrait
         $commentForm->setAttributes(\Yii::$app->request->getBodyParam('comment'));
 
         try {
+            $commentForm->saveNotificationSettings();
             $comment = $commentForm->saveAmendmentCommentWithChecks($amendment);
 
             if ($comment->status === AmendmentComment::STATUS_SCREENING) {

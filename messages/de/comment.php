@@ -15,6 +15,7 @@ return [
     'name'                    => 'Name',
     'email'                   => 'E-Mail',
     'text'                    => 'Text',
+    'set_notis'               => 'E-Mail-Benachrichtigungen bei Kommentaren',
     'submit_comment'          => 'Kommentar abschicken',
     'link_comment'            => 'Kommentar verlinken',
     'reply_btn'               => 'Antworten',

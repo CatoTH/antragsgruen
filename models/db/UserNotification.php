@@ -131,6 +131,9 @@ class UserNotification extends ActiveRecord
         ]);
     }
 
+    /** @var UserNotification[] */
+    protected static $noticache = [];
+
     /**
      * @param User $user
      * @param Consultation $consultation
@@ -140,12 +143,16 @@ class UserNotification extends ActiveRecord
      */
     public static function getNotification(User $user, Consultation $consultation, $type, $refId = null)
     {
-        return static::findOne([
-            'userId'                  => $user->id,
-            'consultationId'          => $consultation->id,
-            'notificationType'        => $type,
-            'notificationReferenceId' => $refId,
-        ]);
+        $key = $user->id . '-' . $consultation->id . '-' . $type . '-' . $refId;
+        if (!isset(static::$noticache[$key])) {
+            static::$noticache[$key] = static::findOne([
+                'userId'                  => $user->id,
+                'consultationId'          => $consultation->id,
+                'notificationType'        => $type,
+                'notificationReferenceId' => $refId,
+            ]);
+        }
+        return static::$noticache[$key];
     }
 
     /**
@@ -166,6 +173,9 @@ class UserNotification extends ActiveRecord
             $noti->notificationReferenceId = $refId;
             $noti->save();
         }
+
+        static::$noticache = [];
+
         return $noti;
     }
 
@@ -196,5 +206,6 @@ class UserNotification extends ActiveRecord
         if ($noti) {
             $noti->delete();
         }
+        static::$noticache = [];
     }
 }

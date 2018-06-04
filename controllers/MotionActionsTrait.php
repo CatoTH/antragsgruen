@@ -73,6 +73,7 @@ trait MotionActionsTrait
         $commentForm->setAttributes($postComment, $motion->getActiveSections());
 
         try {
+            $commentForm->saveNotificationSettings();
             $comment = $commentForm->saveMotionCommentWithChecks($motion);
 
             if ($comment->status === MotionComment::STATUS_SCREENING) {

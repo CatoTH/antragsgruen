@@ -1,8 +1,11 @@
 <?php
 
 use app\components\AntiSpam;
+use app\components\HTMLTools;
+use app\models\db\Consultation;
 use app\models\db\IComment;
 use app\models\db\User;
+use app\models\db\UserNotification;
 use app\models\forms\CommentForm;
 use \Yii\Helpers\Html;
 
@@ -10,11 +13,26 @@ use \Yii\Helpers\Html;
  * @var int $paragraphNo
  * @var int $sectionId
  * @var CommentForm $form
- * @var \app\models\db\Consultation $consultation
+ * @var Consultation $consultation
  * @var IComment $isReplyTo
  */
 
 $user = User::getCurrentUser();
+if ($user) {
+    $notiSettings = UserNotification::getNotification($user, $consultation, UserNotification::NOTIFICATION_NEW_COMMENT);
+} else {
+    $notiSettings = null;
+}
+
+$settingOptions = [
+    UserNotification::COMMENT_REPLIES             => \Yii::t('con', 'noti_comments_replies'),
+    UserNotification::COMMENT_SAME_MOTIONS        => \Yii::t('con', 'noti_comments_motions'),
+    UserNotification::COMMENT_ALL_IN_CONSULTATION => \Yii::t('con', 'noti_comments_con'),
+];
+$setting        = UserNotification::$COMMENT_SETTINGS[0];
+if ($notiSettings) {
+    $setting = $notiSettings->getSettingByKey('comments', UserNotification::$COMMENT_SETTINGS[0]);
+}
 
 $classes = 'commentForm motionComment form-horizontal';
 if ($isReplyTo) {
@@ -88,6 +106,18 @@ if ($user && $user->name && $user->email) {
             <textarea name="comment[text]" title="Text" class="form-control" rows="5"
                       id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
         </div>
+    </div>
+    <?php
+}
+
+if ($user) {
+    ?>
+    <div class="commentNotifications">
+        <label>
+            <?= Html::checkbox('comment[notifications]', ($notiSettings !== null), ['class' => 'notisActive']) ?>
+            <?= \Yii::t('comment', 'set_notis') ?>
+        </label>
+        <?= HTMLTools::fueluxSelectbox('comment[notificationsettings]', $settingOptions, $setting, [], false, 'xs') ?>
     </div>
     <?php
 }

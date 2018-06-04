@@ -55,7 +55,7 @@ foreach ($notifications as $noti) {
             }
             break;
         case UserNotification::NOTIFICATION_NEW_COMMENT:
-            $activeComments  = true;
+            $activeComments = true;
             $commentSetting = $noti->getSettingByKey('comments', UserNotification::$COMMENT_SETTINGS[0]);
             break;
         case UserNotification::NOTIFICATION_AMENDMENT_MY_MOTION:

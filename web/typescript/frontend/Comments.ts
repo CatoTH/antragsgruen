@@ -10,5 +10,16 @@ export class Comments {
                 $replyTo.addClass('hidden');
             }
         });
+
+        $widget.on('change', '.commentNotifications .notisActive', (ev) => {
+            const $button = $(ev.currentTarget);
+            if ($button.prop('checked')) {
+                $button.parents('.commentNotifications').find('.selectlist').removeClass('hidden');
+            } else {
+                $button.parents('.commentNotifications').find('.selectlist').addClass('hidden');
+            }
+        });
+
+        $widget.find('.commentNotifications .notisActive').trigger('change');
     }
 }

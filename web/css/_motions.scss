@@ -375,6 +375,24 @@
     }
   }
 
+  .commentNotifications {
+    padding: $commentPadding;
+    overflow: auto;
+    label {
+      font-weight: normal;
+      font-size: 13px;
+    }
+    .btn {
+      font-weight: normal;
+    }
+    .selectlist {
+      float: right;
+    }
+    .dropdown-menu {
+      font-size: 12px;
+    }
+  }
+
   .submitrow {
     padding: $commentPadding;
     text-align: center;

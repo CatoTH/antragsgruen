@@ -57,7 +57,7 @@ return [
     'noti_amendments_mine'      => 'Änderungsanträge zu meinen Anträgen',
     'noti_comments'             => 'Neue Kommentare',
     'noti_comments_replies'     => 'Nur direkte Antworten auf meine Kommentare',
-    'noti_comments_motions'     => 'Zu Anträgen, die ich gestellt oder kommentiert habe',
+    'noti_comments_motions'     => 'Zu Anträgen, die ich gestellt / kommentiert habe',
     'noti_comments_con'         => 'Alle Kommentare in dieser Veranstaltung',
     'noti_save'                 => 'Speichern',
 
