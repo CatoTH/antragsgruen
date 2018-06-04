@@ -147,7 +147,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[startLayoutType]',
                     $consultation->getSettings()->getStartLayouts(),
                     $consultation->getSettings()->startLayoutType,
-                    ['id' => 'startLayoutType', 'class' => 'form-control'],
+                    ['id' => 'startLayoutType'],
                     true
                 );
                 ?></div>
@@ -162,7 +162,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'siteSettings[siteLayout]',
                     \app\models\settings\Layout::getCssLayouts(),
                     $layout,
-                    ['id' => 'siteLayout', 'class' => 'form-control'],
+                    ['id' => 'siteLayout'],
                     true
                 ); ?>
             </div>
@@ -232,7 +232,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[forceMotion]',
                     $motions,
                     $settings->forceMotion,
-                    ['id' => 'forceMotion', 'class' => 'form-control'],
+                    ['id' => 'forceMotion'],
                     true
                 );
                 ?></div>
@@ -328,7 +328,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'consultation[amendmentNumbering]',
                     \app\models\amendmentNumbering\IAmendmentNumbering::getNames(),
                     $consultation->amendmentNumbering,
-                    ['id' => 'amendmentNumbering', 'class' => 'form-control'],
+                    ['id' => 'amendmentNumbering'],
                     true
                 );
                 ?></div>

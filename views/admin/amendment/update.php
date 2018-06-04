@@ -89,7 +89,7 @@ echo '<div class="form-group">';
 echo '<label class="col-md-3 control-label" for="amendmentStatus">';
 echo \Yii::t('admin', 'motion_status');
 echo ':</label><div class="col-md-4">';
-$options = ['class' => 'form-control', 'id' => 'amendmentStatus'];
+$options = ['id' => 'amendmentStatus'];
 $stati   = Amendment::getStatusNamesVisibleForadmins();
 echo HTMLTools::fueluxSelectbox('amendment[status]', $stati, $amendment->status, $options, true);
 echo '</div><div class="col-md-5">';

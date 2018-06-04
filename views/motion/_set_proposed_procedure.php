@@ -91,7 +91,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                     $options[$votingBlock->id] = $votingBlock->title;
                 }
                 $options['NEW'] = '- ' . \Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
-                $attrs          = ['id' => 'votingBlockId', 'class' => 'form-control'];
+                $attrs          = ['id' => 'votingBlockId'];
                 echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $motion->votingBlockId, $attrs);
                 ?>
                 <div class="newBlock">
@@ -191,7 +191,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                 $options[$otherAmend->id] = $otherAmend->getTitle();
             }
         }
-        $attrs = ['id' => 'obsoletedByAmendment', 'class' => 'form-control'];
+        $attrs = ['id' => 'obsoletedByAmendment'];
         echo HTMLTools::fueluxSelectbox('obsoletedByMotion', $options, $preObsoletedBy, $attrs);
         ?>
     </section>

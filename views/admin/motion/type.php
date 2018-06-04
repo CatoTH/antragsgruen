@@ -122,7 +122,7 @@ echo $controller->showErrors();
                 'pdfTemplate',
                 $motionType->getAvailablePDFTemplates(),
                 ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout),
-                ['id' => 'pdfLayout', 'class' => 'form-control'],
+                ['id' => 'pdfLayout'],
                 true
             );
             ?>

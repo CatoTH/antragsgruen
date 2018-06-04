@@ -90,7 +90,7 @@ echo '<div class="content form-horizontal fuelux">';
     foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
         $options[$motionType->id] = $motionType->titleSingular;
     }
-    $attrs = ['id' => 'motionType', 'class' => 'form-control'];
+    $attrs = ['id' => 'motionType'];
     echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
     ?></div>
 </div>
@@ -102,7 +102,7 @@ echo '<div class="content form-horizontal fuelux">';
     foreach ($consultation->motions as $otherMotion) {
         $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
     }
-    $attrs = ['id' => 'parentMotion', 'class' => 'form-control'];
+    $attrs = ['id' => 'parentMotion'];
     echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
     ?></div>
 </div>
