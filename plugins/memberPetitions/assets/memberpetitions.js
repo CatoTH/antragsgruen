@@ -25,53 +25,76 @@ var onInitIsotope = function (Isotope) {
         initialized = true;
     };
 
-    var currFilter = '*',
-        currSort = 'phase';
+    var currTagFilter = '*',
+        currPhaseFilter = '*',
+        currSort = 'phase',
+        currSortAsc = true;
 
-    $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a, .tagList a").click(function (ev) {
+    var setFilters = function () {
+        initIsotope();
+
+        var filter = '';
+        if (currTagFilter !== '*') {
+            filter += currTagFilter;
+        }
+        if (currPhaseFilter !== '*') {
+            filter += currPhaseFilter;
+        }
+        if (currSort !== 'phase') {
+            filter += '.motion';
+        }
+        if (filter === '') {
+            filter = '*'
+        }
+
+        grid.arrange({
+            filter: filter,
+            sortBy: currSort,
+            sortAscending: currSortAsc
+        });
+    };
+
+    $(".motionPhaseFilters button").click(function (ev) {
         ev.preventDefault();
 
+        var filter = $(this).data("filter");
+        if (!filter) {
+            return;
+        }
+        currPhaseFilter = filter;
+        setFilters();
+
+        $(".motionPhaseFilters button").removeClass("active");
+        $(this).addClass("active");
+    });
+
+    $(".tagList a").click(function (ev) {
+        ev.preventDefault();
         initIsotope();
 
         var filter = $(this).data("filter");
         if (!filter) {
             return;
         }
-        if (filter === 'filter' && currSort !== 'phase') {
-            filter = '.motion';
-        }
-        grid.arrange({filter: filter});
 
-        $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a, .tagList a").removeClass("active");
+        currTagFilter = filter;
+        setFilters();
+
+        $(".tagList a").removeClass("active");
         $(this).addClass("active");
-        currFilter = filter;
     });
 
     $(".motionListFilter .motionSort button").click(function () {
         initIsotope();
 
-        var $this = $(this),
-            sort = $(this).data("sort"),
-            asc = ($this.data("order") !== 'desc');
-        var opts = {sortBy: sort, sortAscending: asc};
-        if (sort === 'phase') {
-            if (currFilter === '*') {
-                opts['filter'] = '*';
-            } else {
-                opts['filter'] = currFilter;
-            }
-        } else {
-            if (currFilter === '*') {
-                opts['filter'] = '.motion';
-            } else {
-                opts['filter'] = currFilter;
-            }
-        }
+        var $this = $(this);
+        currSort = $(this).data("sort");
+        currSortAsc = ($this.data("order") !== 'desc');
+        setFilters();
 
-        grid.arrange(opts);
         $(".motionListFilter .motionSort button").removeClass("active");
         $(this).addClass("active");
-        currSort = sort;
+
     });
 };
 

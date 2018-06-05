@@ -51,16 +51,12 @@ $this->title = \Yii::t('memberPetitions', 'title');
         <?php
         if (count($myConsultations) > 0) {
             echo \Yii::t('memberPetitions', 'index_orga_hint');
-            ?>
-            <ul>
-                <?php
-                foreach ($myConsultations as $consultation) {
-                    $url = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
-                    echo '<li>' . Html::a($consultation->title, $url) . '</li>';
-                }
-                ?>
-            </ul>
-            <?php
+
+            foreach ($myConsultations as $consultation) {
+                $url   = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+                $title = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($consultation->title);
+                echo '<div class="orgaListItem">' . Html::a($title, $url, ['class' => 'btn btn-primary']) . '</div>';
+            }
         }
         ?>
     </div>
@@ -90,10 +86,10 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
     </div>
     <?php
 }
-*/
 
 echo $this->render('_motion_sorter', ['myConsultations' => $myConsultations, 'bold' => 'organization']);
 
+*/
 
 $myMotions  = Tools::getMyMotions($controller->site);
 $mySupports = Tools::getSupportedMotions($controller->site);

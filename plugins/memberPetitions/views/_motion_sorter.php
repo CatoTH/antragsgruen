@@ -51,7 +51,7 @@ use yii\helpers\Html;
     </div>
 
     <div class="searchBar clearfix">
-        <div class="btn-group btn-group-sm pull-left motionFilters" role="group" aria-label="Filter motions">
+        <div class="btn-group btn-group-sm pull-left motionFilters motionPhaseFilters" role="group" aria-label="Filter motions">
             <button type="button" class="btn btn-default active" data-filter="*">Alle</button>
             <button type="button" class="btn btn-default" data-filter=".phase1">
                 Offene Diskussion
