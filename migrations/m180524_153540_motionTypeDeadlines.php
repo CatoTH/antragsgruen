@@ -16,7 +16,8 @@ class m180524_153540_motionTypeDeadlines extends Migration
 
         \Yii::$app->db->schema->getTableSchema('consultationMotionType', true);
 
-        $types = \app\models\db\ConsultationMotionType::find()->all();
+        $connection = \Yii::$app->db;
+        $types      = \app\models\db\ConsultationMotionType::find()->all();
         foreach ($types as $type) {
             $amendments = [];
             $motions    = [];
@@ -34,11 +35,14 @@ class m180524_153540_motionTypeDeadlines extends Migration
                     'title' => null,
                 ];
             }
-            $type->setAttribute("deadlines", json_encode([
-                'amendments' => $amendments,
-                'motions'    => $motions,
-            ]));
-            $type->save();
+
+            // Don't use active records here, as later migrations might add/delete other columns which the source code
+            // of the active rectords would already expect here
+            $connection->createCommand()->update(
+                'consultationMotionType',
+                ['deadlines' => json_encode(['amendments' => $amendments, 'motions' => $motions])],
+                ['id' => $type->id]
+            );
         }
 
         $this->dropColumn('consultationMotionType', 'deadlineAmendments');
