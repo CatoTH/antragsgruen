@@ -28,7 +28,7 @@ var onInitIsotope = function (Isotope) {
     var currFilter = '*',
         currSort = 'phase';
 
-    $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a").click(function (ev) {
+    $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a, .tagList a").click(function (ev) {
         ev.preventDefault();
 
         initIsotope();
@@ -42,10 +42,11 @@ var onInitIsotope = function (Isotope) {
         }
         grid.arrange({filter: filter});
 
-        $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a").removeClass("active");
+        $(".motionListFilter .motionFilters button, .motionListFilter .motionFilters a, .tagList a").removeClass("active");
         $(this).addClass("active");
         currFilter = filter;
     });
+
     $(".motionListFilter .motionSort button").click(function () {
         initIsotope();
 

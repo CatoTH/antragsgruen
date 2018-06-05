@@ -43,29 +43,29 @@ if ($statusClustering) {
 
 echo '<ul class="motionList motionListPetitions">';
 foreach ($motions as $motion) {
-    $status      = $motion->getFormattedStatus();
+    $status = $motion->getFormattedStatus();
 
-    $motionPhase = Tools::getMotionPhaseNumber($motion);
+    $motionPhase     = Tools::getMotionPhaseNumber($motion);
+    $motionPhaseName = null;
+    switch ($motionPhase) {
+        case 1:
+            $motionPhaseName = \Yii::t('memberPetitions', 'status_discussing');
+            break;
+        case 2:
+            $motionPhaseName = \Yii::t('memberPetitions', 'status_collecting');
+            break;
+        case 3:
+            $motionPhaseName = \Yii::t('memberPetitions', 'status_unanswered');
+            break;
+        case 4:
+            $motionPhaseName = \Yii::t('memberPetitions', 'status_answered');
+            break;
+    }
+
     if ($statusClustering) {
         if ($motionPhase !== $lastPhase) {
-            switch ($motionPhase) {
-                case 1:
-                    echo '<li class="sortitem green" data-phase="1" data-created="0">' .
-                        \Yii::t('memberPetitions', 'status_discussing') . '</li>';
-                    break;
-                case 2:
-                    echo '<li class="sortitem green" data-phase="2" data-created="0">' .
-                        \Yii::t('memberPetitions', 'status_collecting') . '</li>';
-                    break;
-                case 3:
-                    echo '<li class="sortitem green" data-phase="3" data-created="0">' .
-                        \Yii::t('memberPetitions', 'status_unanswered') . '</li>';
-                    break;
-                case 4:
-                    echo '<li class="sortitem green" data-phase="4" data-created="0">' .
-                        \Yii::t('memberPetitions', 'status_answered') . '</li>';
-                    break;
-            }
+            echo '<li class="sortitem green" data-phase="1" data-created="' . $motionPhase . '">' .
+                $motionPhaseName . '</li>';
             $lastPhase = $motionPhase;
         }
     }
@@ -111,6 +111,16 @@ foreach ($motions as $motion) {
     }
     echo Html::encode($motion->getInitiatorsStr()) . ', ';
     echo \app\components\Tools::formatMysqlDate($motion->dateCreation);
+
+    if ($bold !== 'organization') {
+        echo '<span class="phaseName">. ' . $motionPhaseName;
+        if ($motion->status === IMotion::STATUS_COLLECTING_SUPPORTERS) {
+            $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+            $curr = count($motion->getSupporters());
+            echo ' (' . $curr . ' / ' . $max . ')';
+        }
+        echo '</span>';
+    }
 
     $deadline = Tools::getPetitionResponseDeadline($motion);
     if ($deadline) {

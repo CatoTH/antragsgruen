@@ -15,6 +15,17 @@ $headingTertiaryBackground: rgb(27, 74, 251);
   text-transform: uppercase;
 }
 
+
+.motionListFilter {
+  .tagList {
+    text-align: center;
+    .btn {
+      margin: 2px 4px;
+    }
+    margin-bottom: 15px;
+  }
+}
+
 .motionList {
   li.green {
     @include stdHeading($headingSecondaryText, $headingSecondaryBackground);

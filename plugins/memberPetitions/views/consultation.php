@@ -26,4 +26,4 @@ if ($missing) {
     return;
 }
 
-echo $this->render('_motion_sorter', ['myConsultations' => [$consultation]]);
+echo $this->render('_motion_sorter', ['myConsultations' => [$consultation], 'bold' => '']);

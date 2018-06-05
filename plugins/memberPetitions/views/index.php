@@ -92,7 +92,7 @@ foreach (Tools::getUserConsultations($controller->site, $user) as $consultation)
 }
 */
 
-echo $this->render('_motion_sorter', ['myConsultations' => $myConsultations]);
+echo $this->render('_motion_sorter', ['myConsultations' => $myConsultations, 'bold' => 'organization']);
 
 
 $myMotions  = Tools::getMyMotions($controller->site);
