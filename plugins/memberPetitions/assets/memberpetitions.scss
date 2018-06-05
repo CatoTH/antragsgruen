@@ -24,6 +24,9 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     }
     margin-bottom: 15px;
   }
+  .searchBar {
+    margin-bottom: 30px;
+  }
 }
 
 .motionList {
@@ -35,7 +38,7 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     margin-bottom: 15px;
     width: calc(100% + 42px);
     &:first-child {
-      margin-top: 20px;
+      margin-top: 0;
     }
   }
 }
@@ -76,4 +79,8 @@ $headingTertiaryBackground: rgb(27, 74, 251);
       border-radius: 3px;
     }
   }
+}
+
+.motionListStd, .motionListPetitions {
+  margin: 0;
 }

@@ -28,7 +28,7 @@ use yii\helpers\Html;
 
     ?>
     <div class="tagList">
-        <button class="btn btn-info btn-xs" data-filter="*">Alle</button>
+        <a href="#" class="btn btn-info btn-xs" data-filter="*">Alle</a>
         <?php
         $inCluster = true;
         foreach ($allTags as $tag) {
