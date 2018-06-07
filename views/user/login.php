@@ -30,7 +30,7 @@ $params = \Yii::$app->params;
 
 echo '<h1>' . \Yii::t('user', 'login_title') . '</h1>';
 
-$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login');
+$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_pre');
 if ($loginText && trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';
     echo $loginText->text;
@@ -220,3 +220,11 @@ if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
     echo Html::endForm();
     echo '</div></section>';
 }
+
+$loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_post');
+if ($loginText && trim($loginText->text) !== '') {
+    echo '<div class="content contentPage">';
+    echo $loginText->text;
+    echo '</div>';
+}
+

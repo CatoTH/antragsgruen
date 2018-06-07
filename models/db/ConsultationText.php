@@ -88,11 +88,15 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getUploadUrl()
     {
-        $saveParams = ['pages/upload', 'consultationPath' => $this->consultation->urlPath];
+        if ($this->consultation) {
+            $saveParams = ['pages/upload', 'consultationPath' => $this->consultation->urlPath];
+        } else {
+            $saveParams = ['pages/upload', 'consultationPath' => $this->site->currentConsultation->urlPath];
+        }
         return UrlHelper::createUrl($saveParams);
     }
 
@@ -115,7 +119,8 @@ class ConsultationText extends ActiveRecord
             'legal'       => \Yii::t('pages', 'content_imprint_title'),
             'privacy'     => \Yii::t('pages', 'content_privacy_title'),
             'welcome'     => \Yii::t('pages', 'content_welcome'),
-            'login'       => \Yii::t('pages', 'content_login'),
+            'login_pre'   => \Yii::t('pages', 'content_login_pre'),
+            'login_post'  => \Yii::t('pages', 'content_login_post'),
         ];
     }
 
@@ -124,7 +129,7 @@ class ConsultationText extends ActiveRecord
      */
     public static function getSitewidePages()
     {
-        return ['legal', 'privacy', 'login'];
+        return ['legal', 'privacy', 'login_pre', 'login_post'];
     }
 
     /**
@@ -172,9 +177,14 @@ class ConsultationText extends ActiveRecord
                 $data->breadcrumb = \Yii::t('pages', 'content_welcome');
                 $data->text       = \Yii::t('pages', 'content_welcome_text');
                 break;
-            case 'login':
-                $data->title      = \Yii::t('pages', 'content_login');
-                $data->breadcrumb = \Yii::t('pages', 'content_login');
+            case 'login_pre':
+                $data->title      = \Yii::t('pages', 'content_login_pre');
+                $data->breadcrumb = \Yii::t('pages', 'content_login_pre');
+                $data->text       = '';
+                break;
+            case 'login_post':
+                $data->title      = \Yii::t('pages', 'content_login_post');
+                $data->breadcrumb = \Yii::t('pages', 'content_login_post');
                 $data->text       = '';
                 break;
         }
@@ -207,7 +217,7 @@ class ConsultationText extends ActiveRecord
             ]);
         }
         if (!$foundText && in_array($pageKey, static::getSystemwidePages())) {
-            $template              = ConsultationText::findOne([
+            $template = ConsultationText::findOne([
                 'siteId'   => null,
                 'category' => 'pagedata',
                 'textId'   => $pageKey,
