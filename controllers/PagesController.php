@@ -142,15 +142,23 @@ class PagesController extends Base
             ]);
         }
 
+        $existingFile = ConsultationFile::findFileByContent($this->consultation, $content);
+        if ($existingFile) {
+            return json_encode([
+                'uploaded' => 1,
+                'fileName' => $existingFile->filename,
+                'url'      => $existingFile->getUrl(),
+            ]);
+        }
+
         $file                 = new ConsultationFile();
         $file->consultationId = $this->consultation->id;
         $file->mimetype       = $mime;
         $file->width          = $width;
         $file->height         = $height;
-        $file->filesize       = strlen($content);
-        $file->data           = $content;
         $file->dateCreation   = date('Y-m-d H:i:s');
         $file->setFilename($filename);
+        $file->setData($content);
         if (!$file->save()) {
             return json_encode([
                 'uploaded' => 0,
@@ -184,6 +192,9 @@ class PagesController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', $file->mimetype);
+        \yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        \yii::$app->response->headers->set('Pragma', 'cache');
+        \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         return $file->data;
     }

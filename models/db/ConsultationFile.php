@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property int $width
  * @property int $height
  * @property string $data
+ * @property string $dataHash
  * @property string $dateCreation
  *
  * @property Consultation $consultation
@@ -47,8 +48,8 @@ class ConsultationFile extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'filename', 'filesize', 'mimetype', 'data', 'dateCreation'], 'required'],
-            [['mimetype', 'data'], 'safe'],
+            [['consultationId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
+            [['mimetype', 'width', 'height'], 'safe'],
             [['id', 'consultationId', 'filesize', 'width', 'height'], 'number']
         ];
     }
@@ -58,7 +59,43 @@ class ConsultationFile extends ActiveRecord
      */
     public function setFilename($suggestion)
     {
-        $this->filename = $suggestion; // @TODO
+        $counter  = 1;
+        $filename = $suggestion;
+        while (ConsultationFile::findOne(['consultationId' => $this->consultationId, 'filename' => $filename])) {
+            $counter++;
+            $fileparts = explode('.', $suggestion);
+            if (count($fileparts) > 1) {
+                $fileparts[count($fileparts) - 2] .= '-' . $counter;
+            } else {
+                $fileparts[count($fileparts) - 1] .= '-' . $counter;
+            }
+            $filename = implode('.', $fileparts);
+        }
+
+        $this->filename = $filename;
+    }
+
+    /**
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data     = $data;
+        $this->filesize = strlen($data);
+        $this->dataHash = sha1($data);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param string $content
+     * @return ConsultationFile|null
+     */
+    public static function findFileByContent(Consultation $consultation, $content)
+    {
+        return ConsultationFile::findOne([
+            'consultationId' => $consultation->id,
+            'dataHash'       => sha1($content),
+        ]);
     }
 
     /**

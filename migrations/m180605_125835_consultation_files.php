@@ -21,6 +21,7 @@ class m180605_125835_consultation_files extends Migration
             'width'          => 'INTEGER DEFAULT NULL',
             'height'         => 'INTEGER DEFAULT NULL',
             'data'           => 'MEDIUMBLOB NOT NULL',
+            'dataHash'       => 'VARCHAR(40) NOT NULL',
             'dateCreation'   => 'TIMESTAMP NOT NULL',
         ]);
         $this->addForeignKey('fk_file_consultation', 'consultationFile', 'consultationId', 'consultation', 'id');
