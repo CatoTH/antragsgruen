@@ -47,12 +47,6 @@ var onInitIsotope = function (Isotope) {
             filter = '*'
         }
 
-        console.log({
-            filter: filter,
-            sortBy: currSort,
-            sortAscending: currSortAsc
-        });
-
         grid.arrange({
             filter: filter,
             sortBy: currSort,

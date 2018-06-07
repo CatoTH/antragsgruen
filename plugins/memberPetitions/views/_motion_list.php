@@ -64,7 +64,8 @@ foreach ($motions as $motion) {
 
     if ($statusClustering) {
         if ($motionPhase !== $lastPhase) {
-            echo '<li class="sortitem green" data-phase="1" data-created="' . $motionPhase . '">' .
+            $classes = 'sortitem green phase' . $motionPhase;
+            echo '<li class="' . $classes . '" data-phase="' . $motionPhase . '" data-created="' . $motionPhase . '">' .
                 $motionPhaseName . '</li>';
             $lastPhase = $motionPhase;
         }
