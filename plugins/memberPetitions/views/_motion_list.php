@@ -31,9 +31,9 @@ if ($statusClustering) {
             $created1 = Tools::getMotionTimestamp($motion1);
             $created2 = Tools::getMotionTimestamp($motion2);
             if ($created1 < $created2) {
-                return -1;
-            } elseif ($created1 > $created2) {
                 return 1;
+            } elseif ($created1 > $created2) {
+                return -1;
             } else {
                 return 0;
             }
