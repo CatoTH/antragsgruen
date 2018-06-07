@@ -41,7 +41,7 @@ class NotificationsController extends Controller
                     continue;
                 }
                 $daysOver = floor((time() - $until->getTimestamp()) / (3600 * 24));
-                if (($daysOver % 1) === 0) {
+                if (($daysOver % 7) === 0) {
                     echo "Sending notification for: " . $motion->id . " / " . $motion->title . "\n";
                     new DiscussionOver($motion);
                 }
