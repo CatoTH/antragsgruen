@@ -25,7 +25,13 @@ class ContentPageEdit {
 
         this.editor = CKEDITOR.inline(this.$textHolder.attr('id'), {
             scayt_sLang: 'de_DE',
-            removePlugins: 'lite'
+            removePlugins: 'lite',
+            extraPlugins: 'uploadimage',
+            uploadUrl: this.$form.data('upload-url')
+        });
+        this.editor.on('fileUploadRequest', (evt) => {
+            evt.data['requestData']['foo'] = 'bar';
+            evt.data['requestData']['_csrf'] = this.$form.find('> input[name=_csrf]').val();
         });
 
         this.$textHolder.focus();

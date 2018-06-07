@@ -88,6 +88,15 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
+     * @return string
+     */
+    public function getUploadUrl()
+    {
+        $saveParams = ['pages/upload', 'consultationPath' => $this->consultation->urlPath];
+        return UrlHelper::createUrl($saveParams);
+    }
+
+    /**
      * @return string[]
      */
     public static function getDefaultPages()
