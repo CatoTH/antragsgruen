@@ -25,9 +25,22 @@ class ContentPageEdit {
 
         this.editor = CKEDITOR.inline(this.$textHolder.attr('id'), {
             scayt_sLang: 'de_DE',
-            removePlugins: 'lite',
+            removePlugins: 'lite,showbloks,about,selectall,forms',
             extraPlugins: 'uploadimage',
-            uploadUrl: this.$form.data('upload-url')
+            uploadUrl: this.$form.data('upload-url'),
+            filebrowserBrowseUrl: this.$form.data('image-browse-url'),
+            //filebrowserUploadUrl: '/uploader/upload.php?type=Files',
+            toolbarGroups: [
+                {name: 'basicstyles', groups: ['basicstyles', 'cleanup']},
+                {name: 'colors'},
+                {name: 'links'},
+                {name: 'insert'},
+                {name: 'others'},
+                {name: 'tools'},
+                '/',
+                {name: 'styles'},
+                {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi']}
+            ]
         });
         this.editor.on('fileUploadRequest', (evt) => {
             evt.data['requestData']['foo'] = 'bar';

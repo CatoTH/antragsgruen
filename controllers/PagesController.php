@@ -3,12 +3,10 @@
 namespace app\controllers;
 
 use app\components\HTMLTools;
-use app\components\MessageSource;
 use app\models\db\ConsultationFile;
 use app\models\db\ConsultationText;
 use app\models\db\User;
 use app\models\exceptions\Access;
-use app\models\exceptions\NotFound;
 use app\models\settings\AntragsgruenApp;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -172,6 +170,46 @@ class PagesController extends Base
             'uploaded' => 1,
             'fileName' => $filename,
             'url'      => $file->getUrl(),
+        ]);
+    }
+
+    /**
+     * @return string
+     * @throws Access
+     * @throws \Throwable
+     */
+    public function actionBrowseImages()
+    {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+            throw new Access('No permissions to upload files');
+        }
+
+        $msgSuccess = '';
+        $msgError   = '';
+
+        if (\Yii::$app->request->post('delete') !== null) {
+            try {
+                $file = ConsultationFile::findOne([
+                    'consultationId' => $this->consultation->id,
+                    'id'             => \Yii::$app->request->post('id'),
+                ]);
+                if ($file) {
+                    $file->delete();
+                }
+
+                $this->consultation->refresh();
+
+                $msgSuccess = \Yii::t('pages', 'images_deleted');
+            } catch (\Exception $e) {
+                $msgError = $e->getMessage();
+            }
+        }
+
+        $files = $this->consultation->files;
+        return $this->renderPartial('browse-images', [
+            'files'      => $files,
+            'msgSuccess' => $msgSuccess,
+            'msgError'   => $msgError,
         ]);
     }
 

@@ -19,4 +19,9 @@ return [
     'content_maint_bread'   => 'Wartungsmodus',
     'content_maint_title'   => 'Wartungsmodus',
     'content_maint_text'    => '<p>Diese Veranstaltung wurde vom Admin noch nicht freigeschaltet.</p>',
+
+    'images_browse_title' => 'Wähle ein Bild aus',
+    'images_none'         => 'Noch kein Bild hochgeladen. Lade Bilder hoch, indem du sie per Drag&Drop in den zu bearbeitenden Text ziehst.',
+    'images_delete'       => 'Löschen',
+    'images_deleted'      => 'Das Bild wurde gelöscht.',
 ];

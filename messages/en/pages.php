@@ -21,4 +21,9 @@ return [
     'content_maint_bread'   => 'Maintenance',
     'content_maint_title'   => 'Maintenance mode',
     'content_maint_text'    => '<p>This consultation has not, yet, been made public.</p>',
+
+    'images_browse_title' => 'Browse images uploaded for this consultation',
+    'images_none'         => 'No image uploaded yet.',
+    'images_delete'       => 'Delete',
+    'images_deleted'      => 'The image was deleted.',
 ];

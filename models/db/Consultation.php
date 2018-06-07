@@ -36,6 +36,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationMotionType[] $motionTypes
  * @property ConsultationAgendaItem[] $agendaItems
  * @property ConsultationUserPrivilege[] $userPrivileges
+ * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
@@ -200,6 +201,14 @@ class Consultation extends ActiveRecord
     public function getUserPrivileges()
     {
         return $this->hasMany(ConsultationUserPrivilege::class, ['consultationId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiles()
+    {
+        return $this->hasMany(ConsultationFile::class, ['consultationId' => 'id']);
     }
 
     /**

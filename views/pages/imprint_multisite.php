@@ -38,7 +38,12 @@ echo '<div class="content contentPage">';
 
 if ($admin) {
     echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
-    echo Html::beginForm($saveUrl, 'post', ['data-page-id' => $pageData->id, 'data-page-key' => $pageData->textId]);
+    echo Html::beginForm($saveUrl, 'post', [
+        'data-page-id'          => $pageData->id,
+        'data-page-key'         => $pageData->textId,
+        'data-upload-url'       => $pageData->getUploadUrl(),
+        'data-image-browse-url' => $pageData->getImageBrowseUrl(),
+    ]);
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

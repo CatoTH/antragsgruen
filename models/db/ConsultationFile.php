@@ -60,6 +60,9 @@ class ConsultationFile extends ActiveRecord
     public function setFilename($suggestion)
     {
         $counter  = 1;
+        if (in_array($suggestion, ['upload', 'browse-images', 'delete'])) {
+            $suggestion .= '_file';
+        }
         $filename = $suggestion;
         while (ConsultationFile::findOne(['consultationId' => $this->consultationId, 'filename' => $filename])) {
             $counter++;

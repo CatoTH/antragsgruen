@@ -54,6 +54,7 @@ $urlRules = [
     $dom . 'checkemail'                       => 'user/ajaxIsEmailRegistered',
     $domv . 'page'                            => 'pages/list-pages',
     $domv . 'page/files/upload'               => 'pages/upload',
+    $domv . 'page/files/browse-images'        => 'pages/browse-images',
     $domv . 'page/files/<filename:[^\/]+>'    => 'pages/file',
     $domv . 'page/<pageSlug:[^\/]+>'          => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',

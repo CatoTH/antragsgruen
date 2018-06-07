@@ -97,6 +97,14 @@ class ConsultationText extends ActiveRecord
     }
 
     /**
+     * @return string
+     */
+    public function getImageBrowseUrl()
+    {
+        return UrlHelper::createUrl(['pages/browse-images']);
+    }
+
+    /**
      * @return string[]
      */
     public static function getDefaultPages()
