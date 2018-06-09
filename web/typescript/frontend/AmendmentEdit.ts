@@ -74,7 +74,7 @@ export class AmendmentEdit {
                 $textarea = $holder.find(".texteditor");
 
             let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: editor = editor.getEditor();
+                ckeditor: CKEDITOR.editor = editor.getEditor();
 
             $textarea.parents("form").submit(() => {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
@@ -161,7 +161,7 @@ export class AmendmentEdit {
         if ($holder.hasClass("hidden")) {
             return;
         }
-        let editor: editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
+        let editor: CKEDITOR.editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
         $textarea.parents("form").submit(() => {
             $textarea.parent().find("textarea.raw").val(editor.getData());
             if (typeof(editor.plugins.lite) != 'undefined') {

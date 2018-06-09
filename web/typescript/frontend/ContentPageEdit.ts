@@ -1,26 +1,24 @@
 import editor = CKEDITOR.editor;
 
-class ContentPageEdit {
+export class ContentPageEdit {
     private $editCaller: JQuery;
     private $textHolder: JQuery;
     private $textSaver: JQuery;
-    private $form: JQuery;
     private editor: editor;
 
-    constructor(private $page: JQuery) {
-        this.$form = $page.find('> form');
-        this.$textSaver = this.$form.find('> .textSaver');
-        this.$textHolder = this.$form.find('> .textHolder');
-        this.$editCaller = $page.find('> .editCaller');
+    constructor(private $form: JQuery) {
+        this.$textSaver = $form.find('.textSaver');
+        this.$textHolder = $form.find('.textHolder');
+        this.$editCaller = $form.find('.editCaller');
 
         this.$editCaller.click(this.editCalled.bind(this));
-        this.$textSaver.addClass("hidden");
+        this.$textSaver.addClass('hidden');
         this.$textSaver.find('button').click(this.save.bind(this));
     }
 
     private editCalled(ev) {
         ev.preventDefault();
-        this.$editCaller.addClass("hidden");
+        this.$editCaller.addClass('hidden');
         this.$textHolder.attr('contenteditable', "true");
 
         this.editor = CKEDITOR.inline(this.$textHolder.attr('id'), {
@@ -43,7 +41,6 @@ class ContentPageEdit {
             ]
         });
         this.editor.on('fileUploadRequest', (evt) => {
-            evt.data['requestData']['foo'] = 'bar';
             evt.data['requestData']['_csrf'] = this.$form.find('> input[name=_csrf]').val();
         });
 
@@ -72,7 +69,3 @@ class ContentPageEdit {
 
     }
 }
-
-$('.contentPage').each(function () {
-    new ContentPageEdit($(this));
-});

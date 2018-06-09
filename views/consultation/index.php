@@ -57,11 +57,12 @@ if (count($consultation->motionTypes) === 1) {
 $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 $saveUrl  = $pageData->getSaveUrl();
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
     echo Html::beginForm($saveUrl, 'post', [
-        'data-upload-url'       => $pageData->getUploadUrl(),
-        'data-image-browse-url' => $pageData->getImageBrowseUrl(),
+        'data-upload-url'          => $pageData->getUploadUrl(),
+        'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
+        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
     ]);
+    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';
@@ -74,7 +75,6 @@ if ($admin) {
     echo Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();
-    $layout->addAMDModule('frontend/ContentPageEdit');
 }
 
 foreach ($consultation->motionTypes as $motionType) {

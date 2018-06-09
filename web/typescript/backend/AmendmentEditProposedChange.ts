@@ -20,7 +20,7 @@ export class AmendmentEditProposedChange {
                 $textarea = $holder.find(".texteditor");
 
             let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
-                ckeditor: editor = editor.getEditor();
+                ckeditor: CKEDITOR.editor = editor.getEditor();
 
             $textarea.parents("form").submit(() => {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());

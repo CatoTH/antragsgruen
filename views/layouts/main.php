@@ -17,7 +17,6 @@ if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
         $mainCssFile = null;
         $layout->setPluginLayout($this);
     } catch (\app\models\exceptions\Internal $e) {
-        var_dump($e);
         $mainCssFile = 'css/layout-classic.css';
     }
 } else {

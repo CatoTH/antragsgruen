@@ -94,8 +94,10 @@ class ConsultationText extends ActiveRecord
     {
         if ($this->consultation) {
             $saveParams = ['pages/upload', 'consultationPath' => $this->consultation->urlPath];
-        } else {
+        } elseif ($this->site) {
             $saveParams = ['pages/upload', 'consultationPath' => $this->site->currentConsultation->urlPath];
+        } else {
+            return null;
         }
         return UrlHelper::createUrl($saveParams);
     }
