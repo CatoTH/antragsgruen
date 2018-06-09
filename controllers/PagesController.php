@@ -66,11 +66,39 @@ class PagesController extends Base
             }
         }
 
+        $needsReload = false;
+
         $page->text     = HTMLTools::correctHtmlErrors(\Yii::$app->request->post('data'));
         $page->editDate = date('Y-m-d H:i:s');
+
+        if (\Yii::$app->request->post('title')) {
+            $page->title = \Yii::$app->request->post('title');
+        }
+        if (\Yii::$app->request->post('inMenu') !== null) {
+            $menuPos = (\Yii::$app->request->post('inMenu') ? 1 : null);
+            if ($menuPos !== $page->menuPosition) {
+                $needsReload = true;
+            }
+            $page->menuPosition = $menuPos;
+        }
+        $newTextId   = \Yii::$app->request->post('url');
+        if ($newTextId && !preg_match('/[^\w_\-,\.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
+            $page->textId = $newTextId;
+            $needsReload  = true;
+        }
+
         $page->save();
 
-        return '1';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode([
+            'success'          => true,
+            'title'            => $page->title,
+            'url'              => $page->textId,
+            'allConsultations' => ($page->consultationId === null),
+            'redirectTo'       => ($needsReload ? $page->getUrl() : null),
+        ]);
     }
 
     /**

@@ -71,7 +71,7 @@ echo '</article>';
 
 if ($admin) {
     echo '<div class="textSaver hidden">';
-    echo '<button class="btn btn-primary" type="button" data-save-url="' . Html::encode($saveUrl) . '">';
+    echo '<button class="btn btn-primary" type="submit">';
     echo Yii::t('base', 'save') . '</button></div>';
 
     echo Html::endForm();

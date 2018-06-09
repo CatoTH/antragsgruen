@@ -13,3 +13,19 @@
     max-width: 100%;
   }
 }
+
+.contentSettingsToolbar {
+  padding: 0;
+  .textfield {
+    padding-top: 10px;
+  }
+  input[type=text] {
+    max-width: 160px;
+  }
+  .options {
+    padding-top: 5px;
+    label {
+      font-weight: normal;
+    }
+  }
+}

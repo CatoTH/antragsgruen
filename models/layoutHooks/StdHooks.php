@@ -157,14 +157,15 @@ class StdHooks extends HooksAdapter
             $privilegeProposal = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($controller->consultation) {
-                $homeUrl  = UrlHelper::homeUrl();
-                $out      .= '<li class="active">' .
+                $homeUrl = UrlHelper::homeUrl();
+                $out     .= '<li class="active">' .
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
                     '</li>';
-                $helpPage = ConsultationText::getPageData($controller->site, $controller->consultation, 'help');
-                if ($helpPage && $helpPage->text !== \Yii::t('pages', 'content_help_place')) {
-                    $title = \Yii::t('base', 'Help');
-                    $out   .= '<li>' . Html::a($title, $helpPage->getUrl(), ['id' => 'helpLink']) . '</li>';
+
+                $pages = ConsultationText::getMenuEntries($controller->site, $controller->consultation);
+                foreach ($pages as $page) {
+                    $options = ['class' => 'page' . $page->id];
+                    $out     .= '<li>' . Html::a($page->title, $page->getUrl(), $options) . '</li>';
                 }
             } else {
                 $startLink = UrlHelper::createUrl('manager/index');

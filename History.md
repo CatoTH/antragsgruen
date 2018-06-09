@@ -1,6 +1,6 @@
 # Version history
 
-## Version 3.9.0 [not released yet]
+## Version 4.0.0 [not released yet]
 
 - Antragsgrün now includes an update mechanism to install a new version from the web interface.
 - The comment system was improved:
@@ -9,6 +9,7 @@
   - Now it is easier and more flexible to get e-mail-notifications about comments to motions/amendments: when writing comments, it is possible to opt-in to e-mail-notifications about new comments, either for comments to the same motion, for direct replies, and for all comments to the same consultation.
 - The system for editorial texts (like the legal pages or the welcome message) has been overhauled. New features include:
   - It is now possible to upload images using drag&drop when editing editorial texts.
+  - It is now possible to create new editorial content pages, optionally linked to from the main menu.
   - It is now possible to add a login message, that appears above the login screen.
 - Instead of only setting the deadline for motions and amendments, there is now an alternative complex phase system with time ranges for motions, amendments, comments and merging amendments into motions, including a debugging tool for admins.
 - The RSS-feeds are now embedded in the header of the consultation page, making them auto-discoverable.

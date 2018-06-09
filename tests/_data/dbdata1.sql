@@ -1064,11 +1064,11 @@ INSERT INTO `###TABLE_PREFIX###consultationSettingsTag` (`id`, `consultationId`,
 -- Dumping data for table `consultationText`
 --
 
-INSERT INTO `###TABLE_PREFIX###consultationText` (`id`, `consultationId`, `category`, `textId`, `text`, `editDate`)
+INSERT INTO `###TABLE_PREFIX###consultationText` (`id`, `consultationId`, `category`, `textId`, `menuPosition`, `text`, `editDate`)
 VALUES
-  (1, NULL, 'pagedata', 'privacy', '<p>None of your data are belong to us</p>\n', '2015-11-04 02:37:38'),
-  (2, NULL, 'pagedata', 'legal', 'The administrator of this computer', '2015-11-04 03:14:29'),
-  (3, 7, 'pagedata', 'legal',
+  (1, NULL, 'pagedata', 'privacy', NULL, '<p>None of your data are belong to us</p>\n', '2015-11-04 02:37:38'),
+  (2, NULL, 'pagedata', 'legal', NULL, 'The administrator of this computer', '2015-11-04 03:14:29'),
+  (3, 7, 'pagedata', 'legal', NULL,
    '<p><strong>Verantwortlich gemäß § 5 Telemediengesetz (TMG)</strong></p><address>Antragsgrün</address>',
    '2016-02-28 10:25:31');
 

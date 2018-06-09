@@ -13,6 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property string $category
  * @property string $textId
+ * @property int $menuPosition
  * @property string $title
  * @property string $breadcrumb
  * @property string $text
@@ -57,6 +58,7 @@ class ConsultationText extends ActiveRecord
         return [
             [['category', 'textId'], 'required'],
             [['category', 'textId', 'text', 'breadcrumb', 'title'], 'safe'],
+            [['menuPosition'], 'number'],
         ];
     }
 
@@ -191,6 +193,38 @@ class ConsultationText extends ActiveRecord
                 break;
         }
         return $data;
+    }
+
+    /**
+     * @param Site|null $site
+     * @param Consultation|null $consultation
+     * @return ConsultationText[]
+     */
+    public static function getMenuEntries($site, $consultation)
+    {
+        $pages = [];
+        if ($site) {
+            $pages = array_merge($pages, ConsultationText::findAll(['siteId' => $site->id, 'consultationId' => null]));
+        }
+        if ($consultation) {
+            $pages = array_merge($pages, ConsultationText::findAll(['consultationId' => $consultation->id]));
+        }
+        $pages = array_filter($pages, function (ConsultationText $page) {
+            if ($page->textId === 'help' && $page->text === \Yii::t('pages', 'content_help_place')) {
+                return false;
+            }
+            return $page->menuPosition !== null;
+        });
+        usort($pages, function (ConsultationText $page1, ConsultationText $page2) {
+            if ($page1->menuPosition < $page2->menuPosition) {
+                return -1;
+            } elseif ($page1->menuPosition > $page2->menuPosition) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        return $pages;
     }
 
     /**
