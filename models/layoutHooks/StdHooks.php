@@ -157,6 +157,13 @@ class StdHooks extends HooksAdapter
             $privilegeProposal = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
 
             if ($controller->consultation) {
+                if (User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+                    $icon = '<span class="glyphicon glyphicon-plus-sign"></span>';
+                    $url  = UrlHelper::createUrl('pages/list-pages');
+                    $out  .= '<li class="addPage">' .
+                        Html::a($icon, $url, ['title' => \Yii::t('pages', 'menu_add_btn')]) . '</li>';
+                }
+
                 $homeUrl = UrlHelper::homeUrl();
                 $out     .= '<li class="active">' .
                     Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .

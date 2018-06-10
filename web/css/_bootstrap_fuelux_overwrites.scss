@@ -191,6 +191,7 @@
 .btn-link.btn-danger {
   color: $btn-danger-bg;
   font-weight: normal;
+  border: none;
   &:hover {
     background: transparent;
     color: darken($btn-danger-bg, 20%);

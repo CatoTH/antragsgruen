@@ -20,6 +20,8 @@ export class ContentPageEdit {
         if (this.$contentSettings.length > 0) {
             this.initContentSettings();
         }
+
+        $(".deletePageForm").submit(this.onSubmitDeleteForm.bind(this));
     }
 
     private editCalled(ev) {
@@ -87,8 +89,12 @@ export class ContentPageEdit {
 
                 $(".pageTitle").text(ret['title']);
                 document.title = ret['title'];
-                $("#mainmenu .content" + ret['id']).text(ret['title']);
+                $("#mainmenu .page" + ret['id']).text(ret['title']);
                 $(".breadcrumb").children().last().text(ret['title']);
+
+                if (ret['message']) {
+                    alert(ret['message']);
+                }
 
                 if (ret['redirectTo']) {
                     window.location.href = ret['redirectTo'];
@@ -97,6 +103,17 @@ export class ContentPageEdit {
                 alert('Something went wrong...');
             }
         })
+    }
 
+    private onSubmitDeleteForm(ev, data) {
+        if (data && typeof(data.confirmed) && data.confirmed === true) {
+            return;
+        }
+        ev.preventDefault();
+        bootbox.confirm(__t("admin", "delPageConfirm"), function (result) {
+            if (result) {
+                $(".deletePageForm").trigger("submit", {'confirmed': true});
+            }
+        });
     }
 }

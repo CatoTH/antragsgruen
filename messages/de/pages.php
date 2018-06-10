@@ -1,11 +1,12 @@
 <?php
 
 return [
-    'list_title'    => 'Redaktionelle Texte',
-    'list_add'      => 'Neu anlegen',
-    'list_edit'     => 'Texte bearbeiten',
-    'list_all_cons' => 'Alle Veranstaltungen',
-    'list_this_con' => 'Nur diese Veranstaltung',
+    'list_title'      => 'Redaktionelle Texte',
+    'list_add_std'    => 'Standard-Seite anlegen',
+    'list_add_custom' => 'Neue Seite anlegen',
+    'list_edit'       => 'Texte bearbeiten',
+    'list_all_cons'   => 'Alle Veranstaltungen',
+    'list_this_con'   => 'Nur diese Veranstaltung',
 
     'content_privacy_title' => 'Datenschutzerklärung',
     'content_privacy_bread' => 'Datenschutz',
@@ -31,4 +32,7 @@ return [
     'settings_inmenu'  => 'Im Menü anzeigen',
     'settings_url'     => 'URL',
     'settings_title'   => 'Titel',
+    'settings_delete'  => 'Seite löschen',
+    'create_btn'       => 'Anlegen',
+    'menu_add_btn'     => 'Neue Inhalts-Seite im Menü anlegen',
 ];

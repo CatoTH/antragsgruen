@@ -63,6 +63,18 @@
   .nav > li {
     display: inline-block;
   }
+  li.addPage {
+    width: 0;
+    position: relative;
+    a {
+      position: absolute;
+      z-index: 10;
+      top: 0;
+      left: 10px;
+      opacity: 0.3;
+      margin: 0;
+    }
+  }
   @media screen and (max-width: $screen-xs-max) {
     .container {
       padding-left: 0;

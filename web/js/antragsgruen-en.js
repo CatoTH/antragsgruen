@@ -43,6 +43,7 @@ ANTRAGSGRUEN_STRINGS = {
         "emailNumberMismatch": "The number of names and e-mail-addresses does not match.",
         "delMotionConfirm": "Do you really want to delete this motion?",
         "delAmendmentConfirm": "Do you really want to delete this amendment?",
+        "delPageConfirm": "Do you really want to delete this page?",
         "deleteMotionSectionConfirm": "Do you really want to delete this section? It will be deleted from all motions of this motion type.",
         "consDeleteConfirm": "Do you really want to delete this consultation, including all motions and amendments?",
         "gotoUpdateModeConfirm": "Do you want to enable the update mode? While the update mode is active, this installation of Antragsgrün will be unavailable for all users."

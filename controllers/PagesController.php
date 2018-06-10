@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\HTMLTools;
+use app\components\UrlHelper;
 use app\models\db\ConsultationFile;
 use app\models\db\ConsultationText;
 use app\models\db\User;
@@ -22,6 +23,22 @@ class PagesController extends Base
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             throw new Access('No permissions to edit this page');
         }
+
+        if (\Yii::$app->request->post('create')) {
+            $page                 = new ConsultationText();
+            $page->category       = 'pagedata';
+            $page->textId         = \Yii::$app->request->post('url');
+            $page->title          = \Yii::$app->request->post('title');
+            $page->breadcrumb     = \Yii::$app->request->post('title');
+            $page->consultationId = $this->consultation->id;
+            $page->siteId         = $this->site->id;
+            $page->menuPosition   = 1;
+            $page->text           = '';
+            $page->editDate       = date('Y-m-d H:i:s');
+            $page->save();
+            return \Yii::$app->response->redirect($page->getUrl());
+        }
+
         return $this->render('list');
     }
 
@@ -36,10 +53,10 @@ class PagesController extends Base
 
     /**
      * @param string $pageSlug
-     * @return string
+     * @return ConsultationText|null
      * @throws Access
      */
-    public function actionSavePage($pageSlug)
+    protected function getPageForEdit($pageSlug)
     {
         if (\Yii::$app->request->get('pageId')) {
             $page = ConsultationText::findOne(\Yii::$app->request->get('pageId'));
@@ -66,25 +83,68 @@ class PagesController extends Base
             }
         }
 
+        return $page;
+    }
+
+    /**
+     * @param string $pageSlug
+     * @return string
+     * @throws Access
+     */
+    public function actionSavePage($pageSlug)
+    {
+        $page = $this->getPageForEdit($pageSlug);
+
         $needsReload = false;
+        $message     = '';
 
         $page->text     = HTMLTools::correctHtmlErrors(\Yii::$app->request->post('data'));
         $page->editDate = date('Y-m-d H:i:s');
 
-        if (\Yii::$app->request->post('title')) {
-            $page->title = \Yii::$app->request->post('title');
-        }
-        if (\Yii::$app->request->post('inMenu') !== null) {
-            $menuPos = (\Yii::$app->request->post('inMenu') ? 1 : null);
-            if ($menuPos !== $page->menuPosition) {
-                $needsReload = true;
+        if (!in_array($page->textId, array_keys(ConsultationText::getDefaultPages()))) {
+            if (\Yii::$app->request->post('title')) {
+                if ($page->breadcrumb === $page->title) {
+                    $page->breadcrumb = \Yii::$app->request->post('title');
+                }
+                $page->title = \Yii::$app->request->post('title');
             }
-            $page->menuPosition = $menuPos;
-        }
-        $newTextId   = \Yii::$app->request->post('url');
-        if ($newTextId && !preg_match('/[^\w_\-,\.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
-            $page->textId = $newTextId;
-            $needsReload  = true;
+            if (\Yii::$app->request->post('inMenu') !== null) {
+                $menuPos = (\Yii::$app->request->post('inMenu') ? 1 : null);
+                if ($menuPos !== $page->menuPosition) {
+                    $needsReload = true;
+                }
+                $page->menuPosition = $menuPos;
+            }
+            if (\Yii::$app->request->post('allConsultations') === '1' && $page->consultationId) {
+                $alreadyCreatedPage = ConsultationText::findOne([
+                    'category'       => 'pagedata',
+                    'siteId'         => $page->siteId,
+                    'consultationId' => null,
+                    'textId'         => $page->textId,
+                ]);
+                if ($alreadyCreatedPage) {
+                    $message = 'There already is a site-wide content page with this URL.';
+                } else {
+                    $page->consultationId = null;
+                }
+            }
+            if (\Yii::$app->request->post('allConsultations') === '0' && $page->consultationId === null) {
+                $alreadyCreatedPage = ConsultationText::findOne([
+                    'category'       => 'pagedata',
+                    'consultationId' => $this->consultation->id,
+                    'textId'         => $page->textId,
+                ]);
+                if ($alreadyCreatedPage) {
+                    $message = 'There already is a consultation content page with this URL.';
+                } else {
+                    $page->consultationId = $this->consultation->id;
+                }
+            }
+            $newTextId = \Yii::$app->request->post('url');
+            if ($newTextId && !preg_match('/[^\w_\-,\.äöüß]/siu', $newTextId) && $page->textId !== $newTextId) {
+                $page->textId = $newTextId;
+                $needsReload  = true;
+            }
         }
 
         $page->save();
@@ -94,12 +154,34 @@ class PagesController extends Base
 
         return json_encode([
             'success'          => true,
+            'message'          => $message,
+            'id'               => $page->id,
             'title'            => $page->title,
             'url'              => $page->textId,
             'allConsultations' => ($page->consultationId === null),
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
         ]);
     }
+
+    /**
+     * @param string $pageSlug
+     * @return \yii\console\Response|Response
+     * @throws Access
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDeletePage($pageSlug)
+    {
+        $page = $this->getPageForEdit($pageSlug);
+
+        if (\Yii::$app->request->post('delete')) {
+            $page->delete();
+        }
+
+        $textUrl = UrlHelper::createUrl('pages/list-pages');
+        return \Yii::$app->response->redirect($textUrl);
+    }
+
 
     /**
      * @return string

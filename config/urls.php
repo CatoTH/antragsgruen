@@ -59,6 +59,7 @@ $urlRules = [
     $domv . 'page/<pageSlug:[^\/]+>'          => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
+    $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',

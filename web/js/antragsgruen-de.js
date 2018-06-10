@@ -42,6 +42,7 @@ ANTRAGSGRUEN_STRINGS = {
         "emailNumberMismatch": "Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!",
         "delMotionConfirm": "Diesen Antrag wirklich löschen?",
         "delAmendmentConfirm": "Diesen Änderungsantrag wirklich löschen?",
+        "delPageConfirm": "Diese Seite wirklich löschen?",
         "deleteMotionSectionConfirm": "Wenn dieser Abschnitt gelöscht wird, wird er auch unwiderruflich in allen Anträgen dieses Types gelöscht. Wirklich löschen?",
         "consDeleteConfirm": "Soll diese Veranstaltung mitsamt aller Anträge und Änderungsanträge wirklich gelöscht werden?",
         "gotoUpdateModeConfirm": "Soll der Update-Modus aktiviert werden? Während der Update-Modus aktiv ist, ist diese Antragsgrün-Version nicht verfügbar."
