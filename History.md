@@ -16,6 +16,7 @@
 - If the "amendment merging" mode of a motion is used just to create a new version of the motion, and no amendments actually exist, the process is now greatly simplified.
 - There now can be more than only one "pink create-motion button" in the sidebar. This can be configured on a per-motion-type basis.
 - There are first beginnings of a plugin system based on Yii2's module concept. It's still subject to major changes, though.
+- Improve compatibility with reverse proxies
 
 ### Version 3.8.3 (2018-05-12)
 

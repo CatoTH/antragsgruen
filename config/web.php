@@ -49,6 +49,13 @@ $config = yii\helpers\ArrayHelper::merge(
             ],
             'request'              => [
                 'cookieValidationKey' => $params->randomSeed,
+
+                // Trust proxies from reverse proxies on local networks - necessary for getIsSecureConnection()
+                'trustedHosts' => [
+                    '10.0.0.0/8',
+                    '172.16.0.0/12',
+                    '192.168.0.0/16',
+                ],
             ],
             'assetManager'         => [
                 'appendTimestamp' => false,
