@@ -119,6 +119,24 @@ if ($user->email) {
     </ul>
 </div>
 
+<br><br>
+
+<h2 class="green"><?= \Yii::t('user', 'export_title') ?></h2>
+<div class="content userDataExport">
+    <?= \Yii::t('user', 'export_intro') ?>
+    <div class="exportRow">
+        <?php
+        echo Html::a(
+            \Yii::t('user', 'export_btn'),
+            UrlHelper::createUrl('user/data-export'),
+            ['class' => 'btn btn-primary']
+        );
+        ?>
+    </div>
+</div>
+
+<br><br>
+
 <h2 class="green"><?= \Yii::t('user', 'del_title') ?></h2>
 <?= Html::beginForm($formUrl, 'post', ['class' => 'accountDeleteForm content']) ?>
 <div class="accountEditExplanation alert alert-info" role="alert">

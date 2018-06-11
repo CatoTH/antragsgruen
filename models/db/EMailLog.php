@@ -126,4 +126,23 @@ class EMailLog extends ActiveRecord
     {
         return $this->hasOne(Site::class, ['id' => 'fromSiteId']);
     }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        $types = $this->getTypes();
+        return [
+            'to'         => $this->toEmail,
+            'from'       => $this->fromEmail,
+            'date'       => $this->dateSent,
+            'subject'    => $this->subject,
+            'text'       => $this->text,
+            'message_id' => $this->messageId,
+            'status'     => $this->status,
+            'error'      => $this->error,
+            'type'       => (isset($types[$this->type]) ? $types[$this->type] : $this->type),
+        ];
+    }
 }

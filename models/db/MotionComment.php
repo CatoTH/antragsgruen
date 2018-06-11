@@ -235,4 +235,20 @@ class MotionComment extends IComment
     {
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_COMMENT, $this->id);
     }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        return [
+            'motion_title'  => $this->motion->getTitleWithPrefix(),
+            'motion_link'   => $this->motion->getLink(true),
+            'text'          => $this->text,
+            'name'          => $this->name,
+            'email'         => $this->contactEmail,
+            'date_creation' => $this->dateCreation,
+            'status'        => $this->status,
+        ];
+    }
 }

@@ -17,7 +17,9 @@ use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotificatio
 use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
 use app\models\policies\All;
 use app\models\policies\IPolicy;
+use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\PDF;
 use app\models\sectionTypes\TextSimple;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
@@ -1182,10 +1184,89 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $absolute
      * @return string
      */
-    public function getLink()
+    public function getLink($absolute = false)
     {
-        return UrlHelper::createAmendmentUrl($this);
+        $url = UrlHelper::createAmendmentUrl($this);
+        if ($absolute) {
+            $url = UrlHelper::absolutizeLink($url);
+        }
+        return $url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        $data = [
+            'title'            => $this->getTitle(),
+            'title_prefix'     => $this->titlePrefix,
+            'motion_url'       => $this->getMyMotion()->getLink(true),
+            'url'              => $this->getLink(true),
+            'initiators'       => [],
+            'changed_sections' => [],
+            'reason'           => $this->changeExplanation,
+            'editorial_change' => $this->changeEditorial,
+            'date_creation'    => $this->dateCreation,
+            'date_publication' => $this->datePublication,
+            'date_resolution'  => $this->dateResolution,
+            'status'           => $this->status,
+            'status_string'    => $this->statusString,
+            'status_formatted' => $this->getFormattedStatus(),
+        ];
+
+        foreach ($this->amendmentSupporters as $amendmentSupporter) {
+            if ($amendmentSupporter->role !== MotionSupporter::ROLE_INITIATOR) {
+                continue;
+            }
+            if ($amendmentSupporter->personType === MotionSupporter::PERSON_ORGANIZATION) {
+                $type = 'organization';
+            } else {
+                $type = 'person';
+            }
+            $data['initiators'][] = [
+                'type'            => $type,
+                'name'            => $amendmentSupporter->name,
+                'organization'    => $amendmentSupporter->organization,
+                'resolution_date' => $amendmentSupporter->resolutionDate,
+                'contact_name'    => $amendmentSupporter->contactName,
+                'contact_phone'   => $amendmentSupporter->contactPhone,
+                'contact_email'   => $amendmentSupporter->contactEmail,
+            ];
+        }
+
+        foreach ($this->getSortedSections(false) as $section) {
+            if ($section->getSettings()->type === ISectionType::TYPE_IMAGE) {
+                /** @var Image $type */
+                $type                       = $section->getSectionType();
+                $data['changed_sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'download_url'  => $type->getImageUrl(),
+                    'metadata'      => $section->metadata,
+                ];
+            } elseif ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+                /** @var PDF $type */
+                $type                       = $section->getSectionType();
+                $data['changed_sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'download_url'  => $type->getPdfUrl(),
+                    'metadata'      => $section->metadata,
+                ];
+            } else {
+                $data['changed_sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'data'          => $section->data,
+                    'metadata'      => $section->metadata,
+                ];
+            }
+        }
+
+        return $data;
     }
 }

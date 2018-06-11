@@ -211,4 +211,9 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     {
         UserNotification::notifyNewComment($this);
     }
+
+    /**
+     * @return array
+     */
+    abstract public function getUserdataExportObject();
 }

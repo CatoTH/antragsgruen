@@ -444,9 +444,10 @@ abstract class IMotion extends ActiveRecord
     abstract public function isDeadlineOver();
 
     /**
+     * @param boolean $absolute
      * @return string
      */
-    abstract public function getLink();
+    abstract public function getLink($absolute = false);
 
     /**
      * @return string
@@ -615,4 +616,9 @@ abstract class IMotion extends ActiveRecord
      * @return IAdminComment[]
      */
     abstract public function getAdminComments($types, $sort = 'desc', $limit = null);
+
+    /**
+     * @return array
+     */
+    abstract public function getUserdataExportObject();
 }

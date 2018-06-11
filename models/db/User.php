@@ -150,7 +150,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMotionSupports()
     {
-        return $this->hasMany(MotionSupporter::class, ['motionId' => 'id']);
+        return $this->hasMany(MotionSupporter::class, ['userId' => 'id']);
     }
 
     /**
@@ -803,6 +803,38 @@ class User extends ActiveRecord implements IdentityInterface
             return null;
         }
         return $this->emailChange;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        switch ($this->status) {
+            case static::STATUS_CONFIRMED:
+                $status = 'confirmed';
+                break;
+            case static::STATUS_UNCONFIRMED:
+                $status = 'unconfirmed';
+                break;
+            case static::STATUS_DELETED:
+                $status = 'deleted';
+                break;
+            default:
+                $status = '';
+        }
+        return [
+            'name'             => $this->name,
+            'name_given'       => $this->nameGiven,
+            'name_family'      => $this->nameFamily,
+            'organization'     => $this->organization,
+            'organization_ids' => $this->getMyOrganizationIds(),
+            'email'            => $this->email,
+            'email_confirmed'  => ($this->emailConfirmed == 1),
+            'auth'             => $this->auth,
+            'date_creation'    => $this->dateCreation,
+            'status'           => $status,
+        ];
     }
 
     /**

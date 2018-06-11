@@ -203,7 +203,7 @@ class AmendmentComment extends IComment
 
                     $query->joinWith(
                         [
-                            'motionJoin'    => function ($query) use ($consultation) {
+                            'motionJoin' => function ($query) use ($consultation) {
                                 $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
                                 /** @var ActiveQuery $query */
                                 $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
@@ -224,5 +224,21 @@ class AmendmentComment extends IComment
     public function logToConsultationLog()
     {
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::AMENDMENT_COMMENT, $this->id);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        return [
+            'amendment_title' => $this->amendment->getTitle(),
+            'amendment_link'  => $this->amendment->getLink(true),
+            'text'            => $this->text,
+            'name'            => $this->name,
+            'email'           => $this->contactEmail,
+            'date_creation'   => $this->dateCreation,
+            'status'          => $this->status,
+        ];
     }
 }

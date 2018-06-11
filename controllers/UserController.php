@@ -7,7 +7,10 @@ use app\components\UrlHelper;
 use app\components\WurzelwerkAuthClient;
 use app\components\WurzelwerkAuthClientTest;
 use app\components\WurzelwerkSamlClient;
+use app\models\db\AmendmentSupporter;
 use app\models\db\EMailBlacklist;
+use app\models\db\IMotion;
+use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\exceptions\ExceptionBase;
@@ -18,6 +21,7 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Html;
+use yii\web\Response;
 
 class UserController extends Base
 {
@@ -518,6 +522,72 @@ class UserController extends Base
             'consultation'  => $this->consultation,
             'isBlacklisted' => EMailBlacklist::isBlacklisted($user->email),
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionDataExport()
+    {
+        $this->forceLogin();
+        $user = User::getCurrentUser();
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $data = [
+            'user'                 => $user->getUserdataExportObject(),
+            'motions'              => [],
+            'amendments'           => [],
+            'supported_motions'    => [],
+            'supported_amendments' => [],
+            'comments'             => [],
+            'sent_emails'          => [],
+        ];
+
+        foreach ($user->motionSupports as $motionSupport) {
+            if ($motionSupport->role === MotionSupporter::ROLE_INITIATOR) {
+                $data['motions'][] = $motionSupport->motion->getUserdataExportObject();
+            } else {
+                $data['supported_motions'][] = [
+                    'type'                 => $motionSupport->role,
+                    'url'                  => $motionSupport->motion->getLink(true),
+                    'title'                => $motionSupport->motion->title,
+                    'support_name'         => $motionSupport->name,
+                    'support_organization' => $motionSupport->organization,
+                    'contact_name'         => $motionSupport->contactName,
+                    'contact_email'        => $motionSupport->contactEmail,
+                    'contact_phone'        => $motionSupport->contactPhone,
+                ];
+            }
+        }
+
+        foreach ($user->amendmentSupports as $amendmentSupport) {
+            if ($amendmentSupport->role === AmendmentSupporter::ROLE_INITIATOR) {
+                $data['amendments'][] = $amendmentSupport->amendment->getUserdataExportObject();
+            } else {
+                $data['supported_amendments'][] = [
+                    'type'                 => $amendmentSupport->role,
+                    'url'                  => $amendmentSupport->amendment->getLink(true),
+                    'title'                => $amendmentSupport->amendment->getTitle(),
+                    'support_name'         => $amendmentSupport->name,
+                    'support_organization' => $amendmentSupport->organization,
+                    'contact_name'         => $amendmentSupport->contactName,
+                    'contact_email'        => $amendmentSupport->contactEmail,
+                    'contact_phone'        => $amendmentSupport->contactPhone,
+                ];
+            }
+        }
+
+        foreach ($user->motionComments as $comment) {
+            $data['comments'][] = $comment->getUserdataExportObject();
+        }
+
+        foreach ($user->amendmentComments as $comment) {
+            $data['comments'][] = $comment->getUserdataExportObject();
+        }
+
+        return json_encode($data);
     }
 
     /**

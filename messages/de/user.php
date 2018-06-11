@@ -141,4 +141,8 @@ return [
 
     'notification_title' => 'E-Mail-Benachrichtigungen',
     'notification_intro' => 'Pro Veranstaltung kann einzeln festgelegt werden, wie du per E-Mail über wichtige Ereignisse benachrichtigt werden willst:',
+
+    'export_title' => 'Daten-Export',
+    'export_intro' => 'Hier kannst du alle personenbezogene Daten, die in Antragsgrün über dich gespeichert sind, in einem maschinenlesbaren JSON-Format herunterladen.',
+    'export_btn'   => 'Herunterladen',
 ];

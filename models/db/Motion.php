@@ -16,6 +16,9 @@ use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
+use app\models\sectionTypes\Image;
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\PDF;
 use yii\helpers\Html;
 
 /**
@@ -1085,10 +1088,86 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $absolute
      * @return string
      */
-    public function getLink()
+    public function getLink($absolute = false)
     {
-        return UrlHelper::createMotionUrl($this);
+        $url = UrlHelper::createMotionUrl($this);
+        if ($absolute) {
+            $url = UrlHelper::absolutizeLink($url);
+        }
+        return $url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserdataExportObject()
+    {
+        $data = [
+            'title'            => $this->title,
+            'title_prefix'     => $this->titlePrefix,
+            'url'              => $this->getLink(true),
+            'initiators'       => [],
+            'sections'         => [],
+            'date_creation'    => $this->dateCreation,
+            'date_publication' => $this->datePublication,
+            'date_resolution'  => $this->dateResolution,
+            'status'           => $this->status,
+            'status_string'    => $this->statusString,
+            'status_formatted' => $this->getFormattedStatus(),
+        ];
+
+        foreach ($this->motionSupporters as $motionSupporter) {
+            if ($motionSupporter->role !== MotionSupporter::ROLE_INITIATOR) {
+                continue;
+            }
+            if ($motionSupporter->personType === MotionSupporter::PERSON_ORGANIZATION) {
+                $type = 'organization';
+            } else {
+                $type = 'person';
+            }
+            $data['initiators'][] = [
+                'type'            => $type,
+                'name'            => $motionSupporter->name,
+                'organization'    => $motionSupporter->organization,
+                'resolution_date' => $motionSupporter->resolutionDate,
+                'contact_name'    => $motionSupporter->contactName,
+                'contact_phone'   => $motionSupporter->contactPhone,
+                'contact_email'   => $motionSupporter->contactEmail,
+            ];
+        }
+
+        foreach ($this->getSortedSections(false) as $section) {
+            if ($section->getSettings()->type === ISectionType::TYPE_IMAGE) {
+                /** @var Image $type */
+                $type               = $section->getSectionType();
+                $data['sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'download_url'  => $type->getImageUrl(),
+                    'metadata'      => $section->metadata,
+                ];
+            } elseif ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+                /** @var PDF $type */
+                $type               = $section->getSectionType();
+                $data['sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'download_url'  => $type->getPdfUrl(),
+                    'metadata'      => $section->metadata,
+                ];
+            } else {
+                $data['sections'][] = [
+                    'section_title' => $section->getSettings()->title,
+                    'section_type'  => $section->getSettings()->type,
+                    'data'          => $section->data,
+                    'metadata'      => $section->metadata,
+                ];
+            }
+        }
+
+        return $data;
     }
 }
