@@ -75,6 +75,10 @@ if (isset($_POST['perform_update'])) {
         $update->backupOldFiles(ANTRAGSGRUEN_VERSION);
         $update->performUpdate();
 
+        if (function_exists('opcache_reset')) {
+            opcache_reset();
+        }
+
         // Give Opcache & co some time to notice updated files
         $sleepTime = IntVal(ini_get('opcache.revalidate_freq'));
         if ($sleepTime > 10 || $sleepTime < 1) {
