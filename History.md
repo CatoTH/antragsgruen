@@ -2,7 +2,7 @@
 
 ## Version 4.0.0 [not released yet]
 
-- Antragsgrün now includes an update mechanism to install a new version from the web interface.
+- Antragsgrün now includes an update mechanism to install new versions from the web interface.
 - The comment system was improved:
   - It is now possible to reply to comments. The replies will be displayed indented below the main comment.
   - The layout of comments is more compact and less visually cluttered.

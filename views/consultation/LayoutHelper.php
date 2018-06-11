@@ -21,12 +21,12 @@ class LayoutHelper
      */
     public static function showMotion(Motion $motion, Consultation $consultation)
     {
-        $hasPDF = ($motion->motionType->getPDFLayoutClass() !== null);
+        $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
 
         /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
-        if ($motion->motionType->cssIcon != '') {
-            $classes[] = $motion->motionType->cssIcon;
+        if ($motion->getMyMotionType()->cssIcon != '') {
+            $classes[] = $motion->getMyMotionType()->cssIcon;
         }
 
         if ($motion->status == Motion::STATUS_WITHDRAWN) {

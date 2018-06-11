@@ -10,6 +10,7 @@ use app\components\EmailNotifications;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
+use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
@@ -1010,7 +1011,11 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getMyMotionType()
     {
-        return $this->motionType;
+        try {
+            return $this->getMyConsultation()->getMotionType($this->motionTypeId);
+        } catch (NotFound $e) {
+            return $this->motionType;
+        }
     }
 
     /**
