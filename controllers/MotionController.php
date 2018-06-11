@@ -47,9 +47,9 @@ class MotionController extends Base
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
                 $metadata = json_decode($section->metadata, true);
-                Header('Content-type: ' . $metadata['mime']);
-                echo base64_decode($section->data);
-                \Yii::$app->end(200);
+                \yii::$app->response->format = Response::FORMAT_RAW;
+                \yii::$app->response->headers->add('Content-Type', $metadata['mime']);
+                return base64_decode($section->data);
             }
         }
         return '';
@@ -71,9 +71,9 @@ class MotionController extends Base
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
-                Header('Content-type: application/pdf');
-                echo base64_decode($section->data);
-                \Yii::$app->end(200);
+                \yii::$app->response->format = Response::FORMAT_RAW;
+                \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+                return base64_decode($section->data);
             }
         }
         return '';
