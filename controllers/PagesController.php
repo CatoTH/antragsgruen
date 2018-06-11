@@ -146,6 +146,9 @@ class PagesController extends Base
                 $needsReload  = true;
             }
         }
+        if ($page->textId === 'help') {
+            $page->menuPosition = 1;
+        }
 
         $page->save();
 

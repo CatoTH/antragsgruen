@@ -8,7 +8,7 @@ $I->wantTo('Login as regular user');
 $I->gotoConsultationHome();
 $I->dontSee('Einstellungen', '#adminLink');
 $I->dontSee('Bearbeiten', '.editCaller');
-$I->dontSeeElement('#helpLink');
+$I->dontSeeElement('#mainmenu .page' . AcceptanceTester::FIRST_FREE_CONTENT_ID);
 
 $I->wantTo('create the help page');
 $I->loginAsStdAdmin();
@@ -23,7 +23,7 @@ $I->click('.submitBtn');
 
 $I->wantTo('see the help page');
 $I->gotoConsultationHome();
-$I->seeElement('#helpLink');
+$I->seeElement('#mainmenu .page' . AcceptanceTester::FIRST_FREE_CONTENT_ID);
 $I->see('Einstellungen', '#adminLink');
 $I->see('Bearbeiten', '.editCaller');
 $I->see('Hallo auf Antragsgrün');
@@ -41,7 +41,7 @@ $I->dontSee('Hallo auf Antragsgrün');
 $I->see('Bold test');
 
 $I->wantTo('Go to the help page');
-$I->click('#helpLink');
+$I->click('#mainmenu .page' . AcceptanceTester::FIRST_FREE_CONTENT_ID);
 $I->see('Einstellungen', '#adminLink');
 $I->see('Bearbeiten', '.editCaller');
 $I->see('HILFE', 'h1');
