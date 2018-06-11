@@ -138,4 +138,7 @@ return [
     'no_noti_all'          => 'Alle Antragsgrün-Benachrichtigungen abbestellen',
     'no_noti_blacklist'    => 'Grundsätzlich keine E-Mails mehr an meine E-Mail-Adresse <small>(auch keine Passwort-Wiederherstellungs-Mails etc.)</small>',
     'no_noti_save'         => 'Speichern',
+
+    'notification_title' => 'E-Mail-Benachrichtigungen',
+    'notification_intro' => 'Pro Veranstaltung kann einzeln festgelegt werden, wie du per E-Mail über wichtige Ereignisse benachrichtigt werden willst:',
 ];

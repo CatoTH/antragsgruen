@@ -131,4 +131,7 @@ return [
     'no_noti_all'          => 'Unsubscribe from all notifications',
     'no_noti_blacklist'    => 'No e-mails at all <small>(including password-recovery-emails etc.)</small>',
     'no_noti_save'         => 'Save',
+
+    'notification_title' => 'E-Mail-Notifications',
+    'notification_intro' => 'You can choose for each consultation individually, what you want to be notified about:',
 ];
