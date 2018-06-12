@@ -160,7 +160,7 @@ return [
     'con_url_change'          => 'Change',
     'con_url_path'            => 'Directory',
     'con_pdf_intro'           => 'PDF introduction',
-    'con_pdf_intro_place'     => '...',
+    'con_pdf_intro_place'     => 'Name, photo, age, gender, place of birth, self-introduction, signature',
     'con_prefix_hide'         => '<strong>Hide title signatures</strong>',
     'con_fb_img'              => 'Facebook image',
     'con_logo_url'            => 'Logo URL',

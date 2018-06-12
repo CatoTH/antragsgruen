@@ -129,7 +129,7 @@ if ($hasMotions) {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
             $name       = '<span class="' . Html::encode($motion->getIconCSSClass()) . '"></span>' .
-                HTMLTools::encodeAddShy($motion->title);
+                HTMLTools::encodeAddShy($motion->title ? $motion->title : '-');
             $html       .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
         }
     }

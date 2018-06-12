@@ -332,7 +332,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_templ_motion'    => 'Standard-Vorlage: Antrag',
     'motion_type_templ_motionh'   => 'Titel, Antragstext, Begründung',
     'motion_type_templ_appl'      => 'Standard-Vorlage: Bewerbung',
-    'motion_type_templ_applh'     => '',
+    'motion_type_templ_applh'     => 'Name, Foto, Alter, Geschlecht, Geburtsort, Selbstvorstellung, Unterschrift',
     'motion_type_templ_none'      => '- keine Vorlage -',
     'motion_type_singular'        => 'Titel (Einzahl)',
     'motion_type_singular_pl'     => 'Antrag',
