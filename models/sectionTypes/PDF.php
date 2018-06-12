@@ -10,6 +10,7 @@ use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -126,7 +127,7 @@ class PDF extends ISectionType
         }
 
         /** @var MotionSection $section */
-        $section = $this->section;
+        $section   = $this->section;
         $pdfUrl    = $this->getPdfUrl();
         $iframeUrl = UrlHelper::createMotionUrl($section->getMotion(), 'embeddedpdf', ['file' => $pdfUrl]);
 
@@ -145,11 +146,11 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @throws \Exception
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -170,6 +171,7 @@ class PDF extends ISectionType
         $data = base64_decode($this->section->data);
 
         $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
+        $lastprint = null;
 
         $pdim      = $pdf->getPageDimensions();
         $printArea = array(
@@ -182,18 +184,18 @@ class PDF extends ISectionType
             $page = $pdf->ImportPage($pageNo);
             $dim  = $pdf->getTemplatesize($page);
             if ($params->pdfExportConcat) {
-                $pdf->AddPage($dim['w'] > $dim['h'] ? 'L' : 'P', array($dim['w'], $dim['h']), false, false, false);
+                $pdf->AddPage($dim['width'] > $dim['height'] ? 'L' : 'P', [$dim['width'], $dim['height']], false);
                 $pdf->useTemplate($page);
             } else {
-                $scale = min(array(
+                $scale = min([
                     1,
                     $printArea['w'] / $dim['w'],
                     $printArea['h'] / $dim['h'],
-                ));
-                $print = array(
+                ]);
+                $print = [
                     'w' => $scale * $dim['w'],
                     'h' => $scale * $dim['h'],
-                );
+                ];
                 $curX  = $pdf->getX();
                 if ($curX > $pdim['lm'] and $print['w'] < $pdim['wk'] - ($curX + $pdim['rm'])) {
                     $curX += $abs;
@@ -212,7 +214,8 @@ class PDF extends ISectionType
                 $pdf->useTemplate($page, $print['x'], $print['y'], $print['w'], $print['h']);
 
                 if (is_numeric($params->pdfExportIntegFrame)) {
-                    $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', ['all' => ['width' => $params->pdfExportIntegFrame, 'color' => [0, 0, 0], 'dash' => 0]]);
+                    $border = ['all' => ['width' => $params->pdfExportIntegFrame, 'color' => [0, 0, 0], 'dash' => 0]];
+                    $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', $border);
                 } elseif (is_array($params->pdfExportIntegFrame)) {
                     $config   = $params->pdfExportIntegFrame;
                     $color    = [0, 0, 0];
@@ -260,7 +263,8 @@ class PDF extends ISectionType
                             } else {
                                 $line['x'] = $print['x'] + $print['w'];
                             }
-                            $pdf->Line($line['x'], $line['y'], $line['x'] + $larr['x'], $line['y'] + $larr['y'], ['width' => $linewith, 'color' => $color]);
+                            $styl = ['width' => $linewith, 'color' => $color];
+                            $pdf->Line($line['x'], $line['y'], $line['x'] + $larr['x'], $line['y'] + $larr['y'], $styl);
                         }
                     }
                 }
@@ -273,10 +277,10 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @throws \Exception
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

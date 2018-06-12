@@ -8,6 +8,7 @@ use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 
@@ -88,9 +89,9 @@ class TextHTML extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -116,9 +117,9 @@ class TextHTML extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

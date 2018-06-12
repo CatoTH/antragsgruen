@@ -11,6 +11,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use CatoTH\HTML2OpenDocument\Text;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 
 abstract class ISectionType
@@ -170,15 +171,15 @@ abstract class ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      */
-    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf);
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf);
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      */
-    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf);
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf);
 
     /**
      * @param bool $isRight

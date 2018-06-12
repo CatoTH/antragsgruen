@@ -2,9 +2,10 @@
 
 namespace app\views\pdfLayouts;
 
+use setasign\Fpdi\TcpdfFpdi;
 use Yii;
 
-class DBJRPDF extends \FPDI
+class DBJRPDF extends TcpdfFpdi
 {
     /** @var IPDFLayout */
     private $layout;

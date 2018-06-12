@@ -18,6 +18,7 @@ use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use yii\web\View;
 use CatoTH\HTML2OpenDocument\Text;
@@ -315,10 +316,10 @@ class TextSimple extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @throws \app\models\exceptions\Internal
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -391,10 +392,10 @@ class TextSimple extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @throws \app\models\exceptions\Internal
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

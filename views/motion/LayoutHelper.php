@@ -17,6 +17,7 @@ use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\ISupportType;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -136,12 +137,12 @@ class LayoutHelper
     }
 
     /**
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Motion $motion
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(\FPDI $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(TcpdfFpdi $pdf, IPDFLayout $pdfLayout, Motion $motion)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 

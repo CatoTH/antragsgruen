@@ -16,7 +16,9 @@ if (!file_exists($configFile) && !file_exists($installFile)) {
     die('Antragsgrün is not configured yet. Please create the config/INSTALLING file and call this site again to open the installation wizard.');
 }
 
-require(__DIR__ . '/../vendor/autoload.php');
+$autoloader = require(__DIR__ . '/../vendor/autoload.php');
+$autoloader->add('setasign\FpdiPdfParser', __DIR__ . '/../components/fpdi/src/');
+
 require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 require(__DIR__ . '/../components/yii/Application.php');
 

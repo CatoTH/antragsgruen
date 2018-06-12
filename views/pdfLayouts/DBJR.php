@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\settings\AntragsgruenApp;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
@@ -149,7 +150,7 @@ class DBJR extends IPDFLayout
     }
 
     /**
-     * @return \FPDI
+     * @return TcpdfFpdi
      */
     public function createPDFClass()
     {

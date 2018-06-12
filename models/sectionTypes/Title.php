@@ -9,6 +9,7 @@ use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 use yii\web\View;
@@ -123,19 +124,19 @@ class Title extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         // TODO: Implement printMotionToPDF() method.
     }
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param \FPDI $pdf
+     * @param TcpdfFpdi $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, \FPDI $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

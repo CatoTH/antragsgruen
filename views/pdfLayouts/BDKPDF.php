@@ -2,10 +2,11 @@
 
 namespace app\views\pdfLayouts;
 
+use setasign\Fpdi\TcpdfFpdi;
 use Yii;
 use yii\helpers\Html;
 
-class BDKPDF extends \FPDI
+class BDKPDF extends TcpdfFpdi
 {
     private $headerTitle;
     private $headerPrefix;

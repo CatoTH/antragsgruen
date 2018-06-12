@@ -149,6 +149,15 @@ Add the following settings to your config.json (and adapt them to your needs):
 }
 ```
 
+### FPDI-PDF
+
+If you run into the error "This PDF document probably uses a compression technique which is not supported by the free parser shipped with FPDI. (See https://www.setasign.com/fpdi-pdf-parser for more details)" and decide to use the commercial plugin, you can install the package using the following steps:
+- Extract the content of the package into the directory ``components/fpdi``, so there exists a sub-directory ``src``.
+- Run the command ``./composer.phar dump-autoload``
+
+After that, newer PDF files should be able to be parsed as well.
+
+
 ### Using Redis
 
 Install the Yii2-Redis-package:
