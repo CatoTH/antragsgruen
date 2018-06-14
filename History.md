@@ -19,6 +19,7 @@
 - On the user account page, there now is a tool to export all user data in JSON-format.
 - Add a way to include the commercial FPDI-PDF-plugin.
 - Improve compatibility with reverse proxies.
+- Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 
 ### Version 3.8.3 (2018-05-12)
 

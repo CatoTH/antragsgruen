@@ -9,6 +9,7 @@ use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\events\MotionEvent;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionMergeAmendmentsDraftForm;
 use app\models\forms\MotionMergeAmendmentsForm;
@@ -160,13 +161,18 @@ trait MotionMergingTrait
             ]);
         }
 
+        try {
+            $changes = MotionSectionChanges::motionToSectionChanges($oldMotion, $newMotion);
+        } catch (Inconsistency $e) {
+            $changes = [];
+        }
 
         $draftId = null;
         return $this->render('merge_amendments_confirm', [
             'newMotion'      => $newMotion,
             'deleteDraftId'  => $draftId,
             'amendmentStati' => $amendStati,
-            'changes'        => MotionSectionChanges::motionToSectionChanges($oldMotion, $newMotion),
+            'changes'        => $changes,
         ]);
     }
 

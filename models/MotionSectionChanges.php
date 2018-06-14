@@ -6,6 +6,7 @@ use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
@@ -33,20 +34,24 @@ class MotionSectionChanges
      * @param Motion $oldMotion
      * @param Motion $newMotion
      * @return MotionSectionChanges[]
+     * @throws Inconsistency
      */
     public static function motionToSectionChanges(Motion $oldMotion, Motion $newMotion)
     {
-        $sectionsOld = [];
-        foreach ($oldMotion->getSortedSections(false) as $section) {
-            $sectionsOld[$section->sectionId] = $section;
+        if (!$oldMotion->getMyMotionType()->isCompatibleTo($newMotion->getMyMotionType())) {
+            throw new Inconsistency('The two motions have incompatible types');
         }
 
+        /** @var MotionSection[] $sectionsOld */
+        $sectionsOld = $oldMotion->getSortedSections(false);
+        /** @var MotionSection[] $sectionsNew */
+        $sectionsNew = $newMotion->getSortedSections(false);
         $changes = [];
-        /** @var MotionSection[] $sections */
-        $sections = $newMotion->getSortedSections(false);
-        foreach ($sections as $section) {
-            $oldSection = (isset($sectionsOld[$section->sectionId]) ? $sectionsOld[$section->sectionId] : null);
-            $changes[]  = new MotionSectionChanges($oldSection, $section);
+        for ($i = 0; $i < count($sectionsOld); $i++) {
+            if ($sectionsOld[$i]->getSettings()->type !== $sectionsNew[$i]->getSettings()->type) {
+                throw new Inconsistency('The two motions have incompatible types');
+            }
+            $changes[]  = new MotionSectionChanges($sectionsOld[$i], $sectionsNew[$i]);
         }
 
         return $changes;

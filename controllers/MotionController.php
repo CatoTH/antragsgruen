@@ -19,6 +19,7 @@ use app\models\db\UserNotification;
 use app\models\db\VotingBlock;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\exceptions\MailNotSent;
 use app\models\forms\MotionEditForm;
@@ -358,10 +359,17 @@ class MotionController extends Base
             return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
+        try {
+            $changes = MotionSectionChanges::motionToSectionChanges($parentMotion, $motion);
+        } catch (Inconsistency $e) {
+            $changes = [];
+            \Yii::$app->session->setFlash('error', $e->getMessage());
+        }
+
         return $this->render('view_changes', [
             'newMotion' => $motion,
             'oldMotion' => $parentMotion,
-            'changes'   => MotionSectionChanges::motionToSectionChanges($parentMotion, $motion),
+            'changes'   => $changes,
         ]);
     }
 
@@ -389,10 +397,16 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
 
+        try {
+            $changes = MotionSectionChanges::motionToSectionChanges($parentMotion, $motion);
+        } catch (\Exception $e) {
+            return $this->showErrorpage(500, $e->getMessage());
+        }
+
         return $this->renderPartial('view_changes_odt', [
             'newMotion' => $motion,
             'oldMotion' => $parentMotion,
-            'changes'   => MotionSectionChanges::motionToSectionChanges($parentMotion, $motion),
+            'changes'   => $changes,
         ]);
     }
 
