@@ -110,9 +110,8 @@ echo '<div class="content form-horizontal fuelux">';
 <div class="form-group">
     <label class="col-md-3 control-label" for="motionStatus"><?= \Yii::t('admin', 'motion_status') ?>:</label>
     <div class="col-md-5"><?php
-    $options = ['class' => 'form-control', 'id' => 'motionStatus'];
     $stati   = Motion::getStatusNamesVisibleForadmins();
-    echo HTMLTools::fueluxSelectbox('motion[status]', $stati, $motion->status, $options, true);
+    echo HTMLTools::fueluxSelectbox('motion[status]', $stati, $motion->status, ['id' => 'motionStatus'], true);
     echo '</div><div class="col-md-4">';
     $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
     echo Html::textInput('motion[statusString]', $motion->statusString, $options);
