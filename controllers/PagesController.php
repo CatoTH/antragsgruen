@@ -8,6 +8,7 @@ use app\models\db\ConsultationFile;
 use app\models\db\ConsultationText;
 use app\models\db\User;
 use app\models\exceptions\Access;
+use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -25,18 +26,26 @@ class PagesController extends Base
         }
 
         if (\Yii::$app->request->post('create')) {
-            $page                 = new ConsultationText();
-            $page->category       = 'pagedata';
-            $page->textId         = \Yii::$app->request->post('url');
-            $page->title          = \Yii::$app->request->post('title');
-            $page->breadcrumb     = \Yii::$app->request->post('title');
-            $page->consultationId = $this->consultation->id;
-            $page->siteId         = $this->site->id;
-            $page->menuPosition   = 1;
-            $page->text           = '';
-            $page->editDate       = date('Y-m-d H:i:s');
-            $page->save();
-            return \Yii::$app->response->redirect($page->getUrl());
+            try {
+                $url = \Yii::$app->request->post('url');
+                if (trim($url) === '' || preg_match('/[^\w_\-,\.äöüß]/siu', $url)) {
+                    throw new FormError('Invalid character in the URL');
+                }
+                $page                 = new ConsultationText();
+                $page->category       = 'pagedata';
+                $page->textId         = $url;
+                $page->title          = \Yii::$app->request->post('title');
+                $page->breadcrumb     = \Yii::$app->request->post('title');
+                $page->consultationId = $this->consultation->id;
+                $page->siteId         = $this->site->id;
+                $page->menuPosition   = 1;
+                $page->text           = '';
+                $page->editDate       = date('Y-m-d H:i:s');
+                $page->save();
+                return \Yii::$app->response->redirect($page->getUrl());
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
         }
 
         return $this->render('list');

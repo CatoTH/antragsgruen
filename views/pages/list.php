@@ -23,6 +23,8 @@ $foundPageIds = [];
 
 <div class="content">
     <?php
+    echo $controller->showErrors();
+
     if (count($pages) > 0) {
         ?>
         <strong><?= \Yii::t('pages', 'list_edit') ?></strong>
@@ -65,7 +67,10 @@ $foundPageIds = [];
     ?>
 </div>
 <br>
-<?= Html::beginForm('', 'post', ['class' => 'createPageForm form-inline']) ?>
+<?= Html::beginForm('', 'post', [
+    'class'                    => 'createPageForm form-inline',
+    'data-antragsgruen-widget' => 'frontend/ContentPageCreate',
+]) ?>
 <h2 class="green"><?= \Yii::t('pages', 'list_add_custom') ?></h2>
 <div class="content">
     <div class="form-group">

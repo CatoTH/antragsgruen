@@ -100,6 +100,6 @@ var onInitIsotope = function (Isotope) {
 
 $(function () {
     requirejs([
-        'npm/isotope.pkgd.min.js'
+        '/npm/isotope.pkgd.min.js'
     ], onInitIsotope);
 });
