@@ -51,6 +51,12 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     font-weight: normal;
     font-size: 0.8em;
   }
+  .orgaListItem {
+    margin: 10px 0;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
   .createRow {
     margin-top: 15px;
   }

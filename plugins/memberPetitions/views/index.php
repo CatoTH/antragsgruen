@@ -51,12 +51,13 @@ $this->title = \Yii::t('memberPetitions', 'title');
         <?php
         if (count($myConsultations) > 0) {
             echo \Yii::t('memberPetitions', 'index_orga_hint');
-
+            echo '<div class="orgaList">';
             foreach ($myConsultations as $consultation) {
                 $url   = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
                 $title = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($consultation->title);
                 echo '<div class="orgaListItem">' . Html::a($title, $url, ['class' => 'btn btn-primary']) . '</div>';
             }
+            echo '</div>';
         }
         ?>
     </div>
