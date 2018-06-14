@@ -79,6 +79,7 @@ return [
     'preset_app_call'      => 'Apply',
     'preset_app_name'      => 'Name',
     'preset_app_photo'     => 'Photo',
+    'preset_app_pdf'       => 'PDF',
     'preset_app_data'      => 'Data',
     'preset_app_signature' => 'Signature (scanned)',
     'preset_app_age'       => 'Age',

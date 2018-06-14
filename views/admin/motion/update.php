@@ -3,7 +3,6 @@
 use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
@@ -11,14 +10,14 @@ use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var Consultation $consultation
  * @var Motion $motion
  * @var \app\models\forms\MotionEditForm $form
  */
 
 /** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
+$controller   = $this->context;
+$layout       = $controller->layoutParams;
+$consultation = $controller->consultation;
 
 $this->title = \Yii::t('admin', 'motion_edit_title') . ': ' . $motion->getTitleWithPrefix();
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));

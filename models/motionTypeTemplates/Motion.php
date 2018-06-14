@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components\motionTypeTemplates;
+namespace app\models\motionTypeTemplates;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;

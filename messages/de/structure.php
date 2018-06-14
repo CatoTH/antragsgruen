@@ -79,6 +79,7 @@ return [
     'preset_app_call'      => 'Bewerben',
     'preset_app_name'      => 'Name',
     'preset_app_photo'     => 'Foto',
+    'preset_app_pdf'       => 'PDF',
     'preset_app_data'      => 'Angaben',
     'preset_app_signature' => 'Unterschrift (eingescannt)',
     'preset_app_age'       => 'Alter',

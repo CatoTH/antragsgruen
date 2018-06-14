@@ -17,6 +17,7 @@
 - There now can be more than only one "pink create-motion button" in the sidebar. This can be configured on a per-motion-type basis.
 - There are first beginnings of a plugin system based on Yii2's module concept. It's still subject to major changes, though.
 - On the user account page, there now is a tool to export all user data in JSON-format.
+- It is easier to create PDF-based application motion types, as there now is a template for that when creating a new motion type.
 - Add a way to include the commercial FPDI-PDF-plugin.
 - Improve compatibility with reverse proxies.
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.

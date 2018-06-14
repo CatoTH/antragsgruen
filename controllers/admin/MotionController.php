@@ -19,8 +19,9 @@ use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
-use app\components\motionTypeTemplates\Application as ApplicationTemplate;
-use app\components\motionTypeTemplates\Motion as MotionTemplate;
+use app\models\motionTypeTemplates\Application as ApplicationTemplate;
+use app\models\motionTypeTemplates\Motion as MotionTemplate;
+use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
 use app\models\events\MotionEvent;
 
 class MotionController extends AdminBase
@@ -100,7 +101,7 @@ class MotionController extends AdminBase
             if ($motionType->isDeletable()) {
                 $motionType->status = ConsultationMotionType::STATUS_DELETED;
                 $motionType->save();
-                return $this->render('type_deleted', []);
+                return $this->render('type_deleted');
             } else {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
             }
@@ -218,6 +219,9 @@ class MotionController extends AdminBase
             } elseif (isset($type['preset']) && $type['preset'] == 'motion') {
                 $motionType = MotionTemplate::doCreateMotionType($this->consultation);
                 MotionTemplate::doCreateMotionSections($motionType);
+            } elseif (isset($type['preset']) && $type['preset'] == 'pdfapplication') {
+                $motionType = PDFApplicationTemplate::doCreateApplicationType($this->consultation);
+                PDFApplicationTemplate::doCreateApplicationSections($motionType);
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {
@@ -276,7 +280,7 @@ class MotionController extends AdminBase
             $url = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
             return $this->redirect($url);
         }
-        return $this->render('type_create', []);
+        return $this->render('type_create');
     }
 
     /**
