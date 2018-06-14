@@ -32,6 +32,11 @@ class Tools
         foreach ($site->consultations as $consultation) {
             /** @var ConsultationSettings $settings */
             $settings = $consultation->getSettings();
+
+            if ($settings->maintenanceMode && !$user->hasPrivilege($consultation, User::PRIVILEGE_ANY)) {
+                continue;
+            }
+
             if (in_array($settings->organizationId, $organizations)) {
                 $consultations[] = $consultation;
             }
