@@ -78,10 +78,15 @@ if ($admin) {
 }
 
 foreach ($consultation->motionTypes as $motionType) {
+    $shownPhases = [];
     foreach ($motionType->getAllCurrentDeadlines(true) as $deadline) {
+        if (in_array($deadline['title'], $shownPhases)) {
+            continue;
+        }
         echo '<div class="alert alert-info">';
         echo \Yii::t('con', 'current_phase') . ': ' . Html::encode($deadline['title']);
         echo '</div>';
+        $shownPhases[] = $deadline['title'];
     }
 }
 

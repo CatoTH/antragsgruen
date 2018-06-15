@@ -61,7 +61,7 @@ $sidebarUppercase: false;
 
 $bookmarkAmendmentBackground: $colorYellow;
 $bookmarkAmendmentText: black;
-$bookmarkCommentColor: $colorGreen;
+$bookmarkCommentColor: #00cc00;
 
 $bodyFont: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Montserrat", sans-serif;
@@ -129,4 +129,8 @@ body {
   button {
     font-weight: normal;
   }
+}
+
+.bookmarks > li.comment > a.zero {
+  opacity: 1;
 }
