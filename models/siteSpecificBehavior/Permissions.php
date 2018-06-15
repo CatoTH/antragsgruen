@@ -93,9 +93,13 @@ class Permissions
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
             $draftStati = [
+                Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_MERGING_DRAFT_PUBLIC,
-                Motion::STATUS_MERGING_DRAFT_PRIVATE
+                Motion::STATUS_MERGING_DRAFT_PRIVATE,
+                Motion::STATUS_WITHDRAWN_INVISIBLE,
+                Motion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+                Motion::STATUS_INLINE_REPLY,
             ];
             return !in_array($motion->status, $draftStati);
         });
