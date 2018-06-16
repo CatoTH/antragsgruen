@@ -8,7 +8,6 @@ use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
-use app\models\layoutHooks\GruenesCi2Hooks;
 use yii\helpers\Html;
 use yii\web\AssetBundle;
 use yii\web\View;
@@ -57,7 +56,6 @@ class Layout
         return array_merge([
             'layout-classic'     => 'Antragsgrün-Standard',
             'layout-gruenes-ci'  => 'Grünes CI',
-            'layout-gruenes-ci2' => 'Grünes CI v2',
             'layout-dbjr'        => 'DBJR',
         ], $params->localLayouts, $pluginLayouts);
     }
@@ -69,16 +67,20 @@ class Layout
     {
         $this->mainCssFile = $layout;
         \app\models\layoutHooks\Layout::addHook(new StdHooks($this, $this->consultation));
-        switch ($layout) {
-            case 'layout-gruenes-ci2':
-                \app\models\layoutHooks\Layout::addHook(new GruenesCi2Hooks($this, $this->consultation));
-                break;
-        }
 
         /** @var AntragsgruenApp $params */
         $params  = \Yii::$app->params;
         $plugins = $params->getPluginClasses();
-        foreach ($plugins as $plugin) {
+        foreach ($plugins as $pluginId => $plugin) {
+            foreach ($plugin::getProvidedLayouts() as $layoutId => $layoutDef) {
+                if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
+                    if (isset($layoutDef['hooks']) && $layoutDef['hooks']) {
+                        $hook = new $layoutDef['hooks']($this, $this->consultation);
+                        \app\models\layoutHooks\Layout::addHook($hook);
+                    }
+                }
+            }
+
             foreach ($plugin::getForcedLayoutHooks($this, $this->consultation) as $hook) {
                 \app\models\layoutHooks\Layout::addHook($hook);
             }
