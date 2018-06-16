@@ -39,7 +39,6 @@ class AdminIndex {
     private initUpdates() {
         let $updateWidget = $('.adminCardUpdates main');
         $.get($updateWidget.data('src'), function(data) {
-            console.log(data);
             $updateWidget.html(data);
         });
         $updateWidget.on('click', '.showChanges', (ev) => {

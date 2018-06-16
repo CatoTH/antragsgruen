@@ -1,11 +1,11 @@
 @charset "UTF-8";
 
-@import "variables";
+@import "../../../web/css/variables";
 
-$arvoFontPath: "../fonts/gruenes-ci/";
-@import "../fonts/gruenes-ci/arvo";
-$ptSansFontPath: "../fonts/gruenes-ci/";
-@import "../fonts/gruenes-ci/ptsans";
+$arvoFontPath: "./";
+@import "arvo";
+$ptSansFontPath: "./";
+@import "ptsans";
 
 $colorLinksLight: #6d7e00;
 $colorLinks: #6d7e00;
@@ -24,6 +24,9 @@ $headingSecondaryBackground: rgb(175, 203, 8);
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(27, 74, 251);
 
+$menuDefaultLogo: "../../img/logo.png";
+$menuDefaultLogoWidth: 89px;
+$menuDefaultLogoHeight: 89px;
 $menuFont: "Arvo", sans-serif;
 $menuLink: #6d7e00;
 $menuActive: rgb(115, 115, 115);
@@ -46,26 +49,38 @@ $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
 
-@import "bootstrap";
-@import "fontello";
-@import "helpers";
-@import "elements";
-@import "bootstrap_fuelux_overwrites";
-@import "base_layout";
-@import "contentpage";
-@import "consultation_motion_list";
-@import "motions";
-@import "proposed_procedure";
-@import "styles";
-@import "sidebar";
-@import "user_pages";
+@import "../../../web/css/bootstrap";
+@import "../../../web/css/fontello";
+@import "../../../web/css/helpers";
+@import "../../../web/css/elements";
+@import "../../../web/css/bootstrap_fuelux_overwrites";
+@import "../../../web/css/base_layout";
+@import "../../../web/css/contentpage";
+@import "../../../web/css/consultation_motion_list";
+@import "../../../web/css/motions";
+@import "../../../web/css/proposed_procedure";
+@import "../../../web/css/styles";
+@import "../../../web/css/sidebar";
+@import "../../../web/css/user_pages";
 
 html {
-  background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
+  background: url("../../img/wallpaper.jpg") repeat scroll 0 0 transparent;
 }
 body {
-  background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
+  background: url("../../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
 }
+.logoImg {
+  display: block;
+  width: 377px;
+  height: 55px;
+  background-image: url("../../img/logo.png");
+  @media screen and (max-width: 479px) {
+    width: 300px;
+    height: 44px;
+    background-size: 300px 44px;
+  }
+}
+
 
 .well h1 {
   font-family: "Arvo Gruen", sans-serif;

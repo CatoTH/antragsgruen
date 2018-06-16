@@ -13,10 +13,14 @@ class Module extends ModuleBase
     {
         return [
             'std' => [
-                'title'  => 'Grünes CI v2',
-                'bundle' => Assets::class,
+                'title'  => 'Grünes CI',
+                'bundle' => Assets2::class,
                 'hooks'  => LayoutHooks::class,
-            ]
+            ],
+            'old' => [
+                'title'  => 'Grünes CI (alt)',
+                'bundle' => Assets1::class,
+            ],
         ];
     }
 }

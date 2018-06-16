@@ -81,6 +81,18 @@ html {
 body {
   background: #f5f5f5
 }
+.logoImg {
+  display: block;
+  width: 377px;
+  height: 55px;
+  background-image: url("../img/logo.png");
+  @media screen and (max-width: 479px) {
+    width: 300px;
+    height: 44px;
+    background-size: 300px 44px;
+  }
+}
+
 
 .adminMotionTable {
   tr.motion {

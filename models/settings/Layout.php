@@ -55,7 +55,6 @@ class Layout
 
         return array_merge([
             'layout-classic'     => 'Antragsgrün-Standard',
-            'layout-gruenes-ci'  => 'Grünes CI',
             'layout-dbjr'        => 'DBJR',
         ], $params->localLayouts, $pluginLayouts);
     }
