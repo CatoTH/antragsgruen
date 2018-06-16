@@ -15,8 +15,6 @@ use yii\web\View;
 
 class Layout
 {
-    const DEFAULT_LAYOUT = 'layout-classic';
-
     public $menu                 = [];
     public $breadcrumbs          = [];
     public $multimenu            = [];
@@ -88,11 +86,27 @@ class Layout
     }
 
     /**
+     * @return string
+     */
+    public static function getDefaultLayout()
+    {
+        /** @var AntragsgruenApp $params */
+        $params  = \Yii::$app->params;
+        $plugins = $params->getPluginClasses();
+        foreach ($plugins as $plugin) {
+            if ($plugin::overridesDefaultLayout()) {
+                return $plugin::overridesDefaultLayout();
+            }
+        }
+        return 'layout-classic';
+    }
+
+    /**
      */
     public function setFallbackLayoutIfNotInitializedYet()
     {
         if ($this->mainCssFile === null) {
-            $this->setLayout(Layout::DEFAULT_LAYOUT);
+            $this->setLayout(Layout::getDefaultLayout());
         }
     }
 

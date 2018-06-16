@@ -30,6 +30,14 @@ class Module extends ModuleBase
     }
 
     /**
+     * @return null|string
+     */
+    public static function overridesDefaultLayout()
+    {
+        return 'layout-plugin-neos-std';
+    }
+
+    /**
      * @param Consultation $consultation
      * @return string|ConsultationSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)

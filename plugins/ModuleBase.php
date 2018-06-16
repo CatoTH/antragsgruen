@@ -84,6 +84,14 @@ class ModuleBase extends Module
     }
 
     /**
+     * @return null|string
+     */
+    public static function overridesDefaultLayout()
+    {
+        return null;
+    }
+
+    /**
      * @param Layout $layoutSettings
      * @param Consultation $consultation
      * @return Hooks[]

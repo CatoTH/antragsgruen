@@ -87,7 +87,7 @@ class Base extends Controller
             if ($this->site) {
                 $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
             } else {
-                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+                $this->layoutParams->setLayout(Layout::getDefaultLayout());
             }
         } elseif (isset($params[1]['subdomain'])) {
             if (strpos($params[1]['subdomain'], 'xn--') === 0) {
@@ -103,13 +103,13 @@ class Base extends Controller
             if ($this->site) {
                 $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
             } else {
-                $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+                $this->layoutParams->setLayout(Layout::getDefaultLayout());
             }
         } elseif (!($inInstaller || $inManager) && !$appParams->multisiteMode) {
-            $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+            $this->layoutParams->setLayout(Layout::getDefaultLayout());
             $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
         } else {
-            $this->layoutParams->setLayout(Layout::DEFAULT_LAYOUT);
+            $this->layoutParams->setLayout(Layout::getDefaultLayout());
         }
 
         // Login and Mainainance mode is always allowed
