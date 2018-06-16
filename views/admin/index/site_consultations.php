@@ -118,12 +118,14 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                 $createForm->urlPath,
                 array_merge($textOpts, ['id' => 'newPath', 'pattern' => '[\w_-]+'])
             );
-            $url   = Url::toRoute([
+            $routeParams = [
                 'consultation/index',
-                'subdomain' => $site->subdomain,
                 'consultationPath' => '--CON--'
-            ]);
-            $url   = UrlHelper::absolutizeLink($url);
+            ];
+            if ($controller->getParams()->multisiteMode) {
+                $routeParams['subdomain'] = $site->subdomain;
+            }
+            $url   = UrlHelper::absolutizeLink(Url::toRoute($routeParams));
             echo str_replace('--CON--', $input, $url);
             ?>
         </div>
