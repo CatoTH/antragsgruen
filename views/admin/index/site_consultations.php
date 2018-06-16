@@ -37,7 +37,10 @@ echo '<h2 class="green">' . \Yii::t('admin', 'cons_created_list') . '</h2>';
 echo '<div class="content"><ul id="consultationsList">';
 foreach ($site->consultations as $consultation) {
     $isStandard = ($consultation->id == $site->currentConsultationId);
-    $params     = ['subdomain' => $site->subdomain, 'consultationPath' => $consultation->urlPath];
+    $params     = ['consultationPath' => $consultation->urlPath];
+    if ($controller->getParams()->multisiteMode) {
+        $params['subdomain'] = $site->subdomain;
+    }
 
     echo '<li class="consultation' . $consultation->id . '">';
 
