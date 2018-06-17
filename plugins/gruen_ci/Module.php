@@ -13,13 +13,15 @@ class Module extends ModuleBase
     {
         return [
             'std' => [
-                'title'  => 'Grünes CI',
-                'bundle' => Assets2::class,
-                'hooks'  => LayoutHooks::class,
+                'title'       => 'Grünes CI',
+                'bundle'      => Assets2::class,
+                'hooks'       => LayoutHooks::class,
+                'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
             'old' => [
-                'title'  => 'Grünes CI (alt)',
-                'bundle' => Assets1::class,
+                'title'       => 'Grünes CI (alt)',
+                'bundle'      => Assets1::class,
+                'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
         ];
     }

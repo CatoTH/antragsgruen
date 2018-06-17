@@ -54,9 +54,28 @@ class Layout
         }
 
         return array_merge([
-            'layout-classic'     => 'Antragsgrün-Standard',
-            'layout-dbjr'        => 'DBJR',
+            'layout-classic' => 'Standard',
+            'layout-dbjr'    => 'DBJR',
         ], $params->localLayouts, $pluginLayouts);
+    }
+
+    /**
+     * @param string $layout
+     * @return array|null
+     */
+    public static function getLayoutPluginDef($layout)
+    {
+        /** @var AntragsgruenApp $params */
+        $params  = \Yii::$app->params;
+        $plugins = $params->getPluginClasses();
+        foreach ($plugins as $pluginId => $plugin) {
+            foreach ($plugin::getProvidedLayouts() as $layoutId => $layoutDef) {
+                if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
+                    return $layoutDef;
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -67,19 +86,16 @@ class Layout
         $this->mainCssFile = $layout;
         \app\models\layoutHooks\Layout::addHook(new StdHooks($this, $this->consultation));
 
+        $layoutDef = static::getLayoutPluginDef($layout);
+        if ($layoutDef && isset($layoutDef['hooks']) && $layoutDef['hooks']) {
+            $hook = new $layoutDef['hooks']($this, $this->consultation);
+            \app\models\layoutHooks\Layout::addHook($hook);
+        }
+
         /** @var AntragsgruenApp $params */
         $params  = \Yii::$app->params;
         $plugins = $params->getPluginClasses();
-        foreach ($plugins as $pluginId => $plugin) {
-            foreach ($plugin::getProvidedLayouts() as $layoutId => $layoutDef) {
-                if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
-                    if (isset($layoutDef['hooks']) && $layoutDef['hooks']) {
-                        $hook = new $layoutDef['hooks']($this, $this->consultation);
-                        \app\models\layoutHooks\Layout::addHook($hook);
-                    }
-                }
-            }
-
+        foreach ($plugins as $plugin) {
             foreach ($plugin::getForcedLayoutHooks($this, $this->consultation) as $hook) {
                 \app\models\layoutHooks\Layout::addHook($hook);
             }
@@ -405,10 +421,10 @@ class Layout
     public function getAMDLoader()
     {
         /** @var AntragsgruenApp $params */
-        $params   = \yii::$app->params;
+        $params       = \yii::$app->params;
         $resourceBase = $params->resourceBase;
-        $module = $this->resourceUrl('js/build/Antragsgruen.js');
-        $src    = $this->resourceUrl('npm/require.js');
+        $module       = $this->resourceUrl('js/build/Antragsgruen.js');
+        $src          = $this->resourceUrl('npm/require.js');
         return '<script src="' . addslashes($src) . '"></script>' .
             '<script src="' . addslashes($module) . '" id="antragsgruenScript" ' .
             'data-resource-base="' . Html::encode($resourceBase) . '"></script>';
