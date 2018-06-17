@@ -7,10 +7,8 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\ISectionType;
 use setasign\Fpdi\TcpdfFpdi;
 use TCPDF;
-use Yii;
 
 abstract class IPDFLayout
 {
@@ -29,7 +27,7 @@ abstract class IPDFLayout
 
     /**
      * @param int $classId
-     * @return IPDFLayout|null
+     * @return IPDFLayout|string|null
      * @throws Internal
      */
     public static function getClassById($classId)

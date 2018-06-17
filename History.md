@@ -21,6 +21,7 @@
 - Add a way to include the commercial FPDI-PDF-plugin.
 - Improve compatibility with reverse proxies.
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
+- Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
 
 ### Version 3.8.3 (2018-05-12)
 

@@ -307,6 +307,9 @@ class SiteCreateForm extends Model
      */
     private function doCreateManifestoType(Consultation $consultation)
     {
+        /** @var AntragsgruenApp $config */
+        $config = \Yii::$app->params;
+
         $type                 = new ConsultationMotionType();
         $type->consultationId = $consultation->id;
         $type->titleSingular  = \Yii::t('structure', 'preset_manifesto_singular');
@@ -354,7 +357,7 @@ class SiteCreateForm extends Model
             $type->contactEmail = ConsultationMotionType::CONTACT_REQUIRED;
         }
         $type->supportType                 = ISupportType::ONLY_INITIATOR;
-        $type->texTemplateId               = 1;
+        $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = 1;
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
@@ -416,6 +419,9 @@ class SiteCreateForm extends Model
      */
     private function doCreateMotionType(Consultation $consultation)
     {
+        /** @var AntragsgruenApp $config */
+        $config = \Yii::$app->params;
+
         $type                 = new ConsultationMotionType();
         $type->consultationId = $consultation->id;
         $type->titleSingular  = \Yii::t('structure', 'preset_motion_singular');
@@ -466,7 +472,7 @@ class SiteCreateForm extends Model
         } else {
             $type->supportType = ISupportType::ONLY_INITIATOR;
         }
-        $type->texTemplateId               = 1;
+        $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
