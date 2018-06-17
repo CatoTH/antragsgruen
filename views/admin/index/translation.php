@@ -91,8 +91,7 @@ foreach ($strings as $stringKey => $stringOrig) {
     echo nl2br(Html::encode($stringOrig));
     echo '</label><div class="col-sm-6">';
 
-    $options = ['class' => 'form-control', 'placeholder' => $stringOrig];
-    echo HTMLTools::smallTextarea('string[' . $encKey . ']', $options, $value);
+    echo HTMLTools::smallTextarea('string[' . $encKey . ']', ['class' => 'form-control'], $value);
     echo '</div></div>';
 }
 

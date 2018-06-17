@@ -603,6 +603,12 @@ label.legend {
 }
 
 .motionTypeCreateForm {
+  .typePresetList {
+    // From _forms.scss: .form-horizontal
+    @media (min-width: $screen-sm-min) {
+      padding-top: ($padding-base-vertical + 1); // Default padding plus a border
+    }
+  }
   .typePreset {
     font-weight: bold;
     vertical-align: middle;
