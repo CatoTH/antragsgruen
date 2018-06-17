@@ -8,7 +8,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
-use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
 use yii\helpers\Html;
@@ -49,6 +48,9 @@ class ManagerController extends Base
         $sitesCurrent = [];
         $sitesOld     = [];
         foreach ($sites as $site) {
+            if ($site->status !== Site::STATUS_ACTIVE) {
+                continue;
+            }
             $url      = UrlHelper::createUrl(['consultation/home', 'subdomain' => $site->subdomain]);
             $siteData = [
                 'title'        => ($site->currentConsultation ? $site->currentConsultation->title : $site->title),
@@ -56,7 +58,7 @@ class ManagerController extends Base
                 'url'          => $url,
             ];
             $age      = time() - Tools::dateSql2timestamp($site->currentConsultation->dateCreation);
-            if ($site->status == Site::STATUS_ACTIVE && $age < 4 * 30 * 24 * 3600) {
+            if ($age < 4 * 30 * 24 * 3600) {
                 $sitesCurrent[] = $siteData;
             } else {
                 $sitesOld[] = $siteData;
@@ -93,7 +95,6 @@ class ManagerController extends Base
         }
         $html                            .= '</ul>';
         $this->layoutParams->menusHtml[] = $html;
-
     }
 
     /**
