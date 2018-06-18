@@ -23,7 +23,7 @@ $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|me
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check';
 $userPaths            = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
 $userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange|data-export';
-$domPlainPaths        = 'site-legal|site-privacy|help|password|createsite|siteconfig|antragsgrueninit';
+$domPlainPaths        = 'site-legal|site-privacy|siteconfig|antragsgrueninit';
 $domPlainPaths        .= '|check-subdomain|antragsgrueninitdbtest|userlist';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collissions';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
@@ -92,15 +92,11 @@ $urlRules = array_merge($urlRules, [
 ]);
 
 if ($params->multisiteMode) {
-    $domp     = trim($params->domainPlain, '/');
-    $urlRules = array_merge(
-        [
-            $domp                                    => 'manager/index',
-            $domp . '/<_a:(' . $domPlainPaths . ')>' => 'manager/<_a>',
-            $domp . '/loginsaml'                     => 'user/loginsaml',
-        ],
-        $urlRules
-    );
+    $domp = trim($params->domainPlain, '/');
+
+    foreach ($params->getPluginClasses() as $pluginClass) {
+        $urlRules = array_merge($urlRules, $pluginClass::getManagerUrlRoutes($domp));
+    }
 
     if ($params->prependWWWToSubdomain) {
         foreach ($urlRules as $key => $val) {

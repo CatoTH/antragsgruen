@@ -106,20 +106,29 @@ if ($user->email) {
 
 <br><br>
 
-<h2 class="green"><?= \Yii::t('user', 'notification_title') ?></h2>
-<div class="content">
-    <?= \Yii::t('user', 'notification_intro') ?>
-    <ul>
-        <?php
-        foreach ($controller->site->consultations as $consultation) {
-            $link = UrlHelper::createUrl(['consultation/notifications', 'consultationPath' => $consultation->urlPath]);
-            echo '<li>' . Html::a(Html::encode($consultation->title), $link) . '</li>';
-        }
-        ?>
-    </ul>
-</div>
+<?php
+if ($controller->site) {
+    ?>
 
-<br><br>
+    <h2 class="green"><?= \Yii::t('user', 'notification_title') ?></h2>
+    <div class="content">
+        <?= \Yii::t('user', 'notification_intro') ?>
+        <ul>
+            <?php
+            foreach ($controller->site->consultations as $consultation) {
+                $link = UrlHelper::createUrl(
+                    ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
+                );
+                echo '<li>' . Html::a(Html::encode($consultation->title), $link) . '</li>';
+            }
+            ?>
+        </ul>
+    </div>
+
+    <br><br>
+    <?php
+}
+?>
 
 <h2 class="green"><?= \Yii::t('user', 'export_title') ?></h2>
 <div class="content userDataExport">

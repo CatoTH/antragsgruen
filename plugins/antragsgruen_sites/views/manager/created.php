@@ -18,14 +18,14 @@ $this->title = \Yii::t('wizard', 'created_title');
 
 if ($form->singleMotion) {
     $redirectUrl = Url::toRoute([
-        'motion/edit',
+        '/motion/edit',
         'subdomain'        => $form->site->subdomain,
         'consultationPath' => $form->consultation->urlPath,
         'motionSlug'       => $form->motion->id
     ]);
 } else {
     $redirectUrl = Url::toRoute([
-        'consultation/index',
+        '/consultation/index',
         'subdomain'        => $form->site->subdomain,
         'consultationPath' => $form->consultation->urlPath
     ]);
@@ -43,7 +43,8 @@ if ($form->singleMotion) {
 
     <div style="text-align: center;">
         <button type="submit" class="btn btn-primary">
-            <?php if ($form->singleMotion) {
+            <?php
+            if ($form->singleMotion) {
                 if ($form->wording == SiteCreateForm::WORDING_MANIFESTO) {
                     echo \Yii::t('wizard', 'created_goto_manifesto');
                 } else {
@@ -51,7 +52,8 @@ if ($form->singleMotion) {
                 }
             } else {
                 echo \Yii::t('wizard', 'created_goto_con');
-            } ?>
+            }
+            ?>
         </button>
     </div>
     <?php

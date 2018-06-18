@@ -158,7 +158,14 @@ class UrlHelper
                 return $homeUrl;
             }
         } else {
-            return static::createUrl('/manager/index');
+            /** @var AntragsgruenApp $params */
+            $params = \Yii::$app->params;
+            foreach ($params->getPluginClasses() as $pluginClass) {
+                if ($pluginClass::getDefaultRouteOverride()) {
+                    return static::createUrl($pluginClass::getDefaultRouteOverride());
+                }
+            }
+            return null;
         }
     }
 

@@ -41,6 +41,24 @@ class ModuleBase extends Module
     }
 
     /**
+     * @param string $domainPlain
+     * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getManagerUrlRoutes($domainPlain)
+    {
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    public static function getDefaultRouteOverride()
+    {
+        return null;
+    }
+
+    /**
      * @param string $dommotion
      * @param string $dommotionOld
      * @return array

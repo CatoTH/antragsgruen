@@ -205,17 +205,14 @@ aber das Passwort.</div>';
 <h2 id="opensource" class="green">Open Source</h2>
 
 <div class="content infoSite">
-    <p>Wir Grüne bekennen uns schon lange zu freier Software, insofern ist es für uns selbstverständlich, dass wir
-        Antragsgrün unter einer Open-Source-Lizenz zur Verfügung stellen.</p>
-
-    <p>Der komplette Quellcode von Antragsgrün ist unter
-        <a href="https://github.com/CatoTH/antragsgruen">https://github.com/CatoTH/antragsgruen</a>
-        abrufbar.</p>
-
     <p>Antragsgrün steht unter der „GNU Affero General Public License“. Das heißt, jede und jeder Interessierte kann das
         Tool nicht nur kostenlos einsetzen, sondern bei Bedarf auch Änderungen vornehmen (was auch die Verwendung in
         anderen Parteien oder völlig anderen Organisationen umfasst). Bedingung dafür ist aber unter anderem, dass wir
         als UrheberInnen weiter genannt werden und Änderungen am Tool ebenfalls wieder frei verfügbar gemacht
         werden.</p>
+
+    <p>Der komplette Quellcode von Antragsgrün ist unter
+        <a href="https://github.com/CatoTH/antragsgruen">https://github.com/CatoTH/antragsgruen</a>
+        abrufbar.</p>
 </div>
 

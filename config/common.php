@@ -40,7 +40,12 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
     }
 
     $urls         = require(__DIR__ . DIRECTORY_SEPARATOR . 'urls.php');
-    $defaultRoute = ($params->multisiteMode ? 'manager/index' : 'consultation/index');
+    $defaultRoute = 'consultation/index';
+    foreach ($params->getPluginClasses() as $pluginClass) {
+        if ($pluginClass::getDefaultRouteOverride()) {
+            $defaultRoute = $pluginClass::getDefaultRouteOverride();
+        }
+    }
 }
 
 if (defined('INSTALLING_MODE') || YII_ENV == 'test') {

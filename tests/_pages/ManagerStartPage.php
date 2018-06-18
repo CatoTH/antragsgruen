@@ -9,5 +9,5 @@ use Helper\BasePage;
  */
 class ManagerStartPage extends BasePage
 {
-    public $route = 'manager/index';
+    public $route = '/antragsgruen_sites/manager/index';
 }

@@ -2,6 +2,7 @@
 
 use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
@@ -166,7 +167,14 @@ if ($params->isSamlActive()) {
     if ($controller->consultation) {
         $wwBackUrl = UrlHelper::createUrl('consultation/index');
     } else {
-        $wwBackUrl = UrlHelper::createUrl('manager/index');
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $wwBackUrl = '/';
+        foreach ($params->getPluginClasses() as $pluginClass) {
+            if ($pluginClass::getDefaultRouteOverride()) {
+                $wwBackUrl = UrlHelper::createUrl($pluginClass::getDefaultRouteOverride());
+            }
+        }
     }
     $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $wwBackUrl]);
     echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);

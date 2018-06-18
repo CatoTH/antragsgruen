@@ -29,7 +29,7 @@ class Base extends Controller
     public $site = null;
 
     /** @var string */
-    public $layout = 'column1';
+    public $layout = '@app/views/layouts/column1';
 
     /**
      * @param string $cid the ID of this controller.
