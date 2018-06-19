@@ -64,6 +64,33 @@ class UrlHelper
         return $app;
     }
 
+    /**
+     * @param string $route
+     * @return string[]
+     */
+    protected static function getRouteParts($route)
+    {
+        $parts = explode('/', $route);
+        if (count($parts) === 3) {
+            return [
+                'module'     => ($parts[0] !== '' ? $parts[0] : null),
+                'controller' => $parts[1],
+                'action'     => $parts[2],
+            ];
+        } elseif (count($parts) === 2) {
+            return [
+                'module'     => null,
+                'controller' => $parts[0],
+                'action'     => $parts[1],
+            ];
+        } else {
+            return [
+                'module'     => null,
+                'controller' => null,
+                'view'       => $parts[0],
+            ];
+        }
+    }
 
     /**
      * @param array $route
@@ -73,11 +100,11 @@ class UrlHelper
     {
         $site         = static::$currentSite;
         $consultation = static::$currentConsultation;
-        $routeParts   = explode('/', $route[0]);
+        $routeParts   = static::getRouteParts($route[0]);
 
         if ($consultation !== null && !isset($route['consultationPath'])) {
             // for pages/show-page, consultationPath is optional
-            if ($routeParts[0] !== 'pages' || !in_array($routeParts[1], ['show-page', 'save-page'])) {
+            if ($routeParts['controller'] !== 'pages' || !in_array($routeParts['action'], ['show-page', 'save-page'])) {
                 $route['consultationPath'] = $consultation->urlPath;
             }
         }
@@ -85,7 +112,7 @@ class UrlHelper
             $route['subdomain'] = $site->subdomain;
         }
 
-        if ($routeParts[0] === 'user') {
+        if ($routeParts['controller'] === 'user') {
             unset($route['consultationPath']);
         }
         if (in_array(
@@ -110,8 +137,8 @@ class UrlHelper
         if (!is_array($route)) {
             $route = [$route];
         }
-        $route_parts = explode('/', $route[0]);
-        if ($route_parts[0] !== 'manager') {
+        $routeParts = static::getRouteParts($route[0]);
+        if ($routeParts['controller'] !== 'manager') {
             return static::createSiteUrl($route);
         } else {
             return Url::toRoute($route);
