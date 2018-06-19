@@ -32,7 +32,7 @@ class ManagerController extends Base
             if ($site->status !== Site::STATUS_ACTIVE) {
                 continue;
             }
-            $url      = UrlHelper::createUrl(['consultation/home', 'subdomain' => $site->subdomain]);
+            $url      = UrlHelper::createUrl(['/consultation/home', 'subdomain' => $site->subdomain]);
             $siteData = [
                 'title'        => ($site->currentConsultation ? $site->currentConsultation->title : $site->title),
                 'organization' => $site->organization,
