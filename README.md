@@ -158,6 +158,36 @@ If you run into the error "This PDF document probably uses a compression techniq
 After that, newer PDF files should be able to be parsed as well.
 
 
+### Multisite-Mode
+
+There are two ways to deploy multiple sites using one codebase, each site allowing multiple consultations. However, both of them are non-trivial.
+
+#### Using a completely separate configuration and database
+
+If you want to use two completely different databases, or a different set of active plugins, you can create a separate ``config.json`` for each installation and name them like ``config.db1.json``, ``config.db2.json``, etc. Which one is used on a request depends on the environment variable ``ANTRAGSGRUEN_CONFIG``that is provided to the PHP process. For example, to use ``config.db1.json`` on the hostname ``db1.antragsgruen.local`` on Apache, you can use the following line in the Apache configuration:
+
+``SetEnvIf Host "db1.antragsgruen.local" ANTRAGSGRUEN_CONFIG=/var/www/antragsgruen/config/config.db1.json``
+
+For command line commands, you can set this variable like this:
+
+``ANTRAGSGRUEN_CONFIG=/var/www/antragsgruen/config/config.db1.json ./yii database/migrate``
+
+#### Using the same database, plugin configuration and a site manager
+
+[Antragsgruen.de](https://www.antragsgruen.de/) uses a site manager module on the home page that allows users to create their own sites using a web form. This is done using the ``multisideMode`` and a plugin for the site manager. Relevant entries in the ``config.json`` for this are:
+
+```json
+{
+    "multisiteMode": true,
+    "domainPlain": "https://antragsgruen.de/",
+    "domainSubdomain": "https://<subdomain:[\\w_-]+>.antragsgruen.de/",
+    "plugins": ["antragsgruen_sites"]
+}
+```
+
+Instead of "antragsgruen_sites", a custom plugin managing the authentication and authorization process and providing the custom home page is necessary for this use case. The default manager [antragsgruen_sites](plugins/antragsgruen_sites/) can be used as an example for this
+
+
 ### Using Redis
 
 Install the Yii2-Redis-package:
@@ -205,19 +235,6 @@ After updating the source code from git, do:
 gulp
 ```
 
-### Custom themes
-
-You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
-
-- Create a file ```web/css/layout-my-layout.scss``` using layout-classic.scss as a template
-- Adapt the SCSS variables and add custom styles
-- Run ```gulp``` to compile the SCSS into CSS
-- Add a line ```"layout-my-layout": "My cool new layout"``` to the "localLayouts"-object in config/config.json
-- Now, you can choose your new theme in the consultation settings
-
-A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
-Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
-
 ### Creating custom language variants
 
 Every single message in the user interface can be modified using the web-based translation tool. Just log in as admin and go to Settings / Einstellungen -> Edit the language / Sprache anpassen.
@@ -239,15 +256,40 @@ In multi-site-instances, there might be a need to share language variante betwee
 }
 ```
 
-### Plugins
+## Plugins
 
 **The plugin system is still under heavy development.**
 
-Each plugins has a directory unter [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
+* The plugin system is based on Yii2's [module system](https://www.yiiframework.com/doc/guide/2.0/en/structure-modules) and [asset bundles](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets). 
+* Each plugins has a directory unter [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
+* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex exmple containing a bit of everything can be seen in [memberPetitions](plugins/memberPetitions/).
+* Each plugin has a unique ID that is equivalent to the name of the directory. To activate a plugin, the ID has to be added to the ``plugins``-list in the ``conftig.json``:
 
-Custom URLs can be defined in the Modules.php, custom commands need to be in a ``commands``-directory.
+```json
+{
+    "plugins": [
+        "mylayoutPlugin",
+        "someExtraBehavior"
+    ]
+}
+```
 
-### Testing
+### Custom themes as plugin
+
+The most frequent use case for plugins are custom themes / layouts. You can develop a custom theme using SASS/SCSS for Antragsgrün using the following steps:
+
+- Create a directory for the plugin with a ``Module.php`` and ``Assets.php``. If your directory / plugin ID is ``mylayout``, the namespace of these classes needs to be ``app\plugins\mylayout``.
+- The ``Module.php`` needs the static method ``getProvidedLayout`` that returns the asset bundle. See the [gruen_ci](plugins/gruen_ci/Module.php) or [neos](plugins/neos/Module.php) for examples.
+- Create a file ```plugins/mylayout/assets/mylayout.scss```. Again, use the existing plugins as an example to get the imports right.
+- Adapt the SCSS variables and add custom styles
+- Run ```gulp``` to compile the SCSS into CSS
+- Activate the plugin as said above.
+- Now, you can choose your new theme in the consultation settings
+
+A hint regarding the AGPL license and themes: custom stylesheets and images and changes to the standard stylesheets of
+Antragsgrün do not have to be redistributed under an AGPL license like other changes to the Antragsgrün codebase.
+
+## Testing
 
 #### Installation
 
