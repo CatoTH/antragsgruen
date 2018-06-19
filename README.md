@@ -179,6 +179,7 @@ For command line commands, you can set this variable like this:
 ```json
 {
     "multisiteMode": true,
+    "siteSubdomain": null,
     "domainPlain": "https://antragsgruen.de/",
     "domainSubdomain": "https://<subdomain:[\\w_-]+>.antragsgruen.de/",
     "plugins": ["antragsgruen_sites"]

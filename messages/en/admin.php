@@ -311,6 +311,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_perm_motion'     => 'Motions',
     'motion_type_perm_amend'      => 'Amendments',
     'motion_type_amend_singlep'   => 'Amendments may only change one paragraph',
+    'motion_type_perm_merge'      => 'Merge',
     'motion_type_perm_comment'    => 'Comments',
     'motion_type_perm_supp'       => 'Likes / dislikes',
     'motion_type_create_caller'   => 'Create new motion type',

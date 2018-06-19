@@ -28,13 +28,13 @@ foreach ($consultation->motionTypes as $motionType) {
                 $deadlineName = $motionType->createTitle;
                 break;
             case ConsultationMotionType::DEADLINE_AMENDMENTS:
-                $deadlineName = 'Änderungsanträge stellen';
+                $deadlineName = \Yii::t('admin', 'motion_type_perm_amend');
                 break;
             case ConsultationMotionType::DEADLINE_COMMENTS:
-                $deadlineName = 'Kommentieren';
+                $deadlineName = \Yii::t('admin', 'motion_type_perm_comment');
                 break;
             case ConsultationMotionType::DEADLINE_MERGING:
-                $deadlineName = 'Anträge überarbeiten';
+                $deadlineName = \Yii::t('admin', 'motion_type_perm_merge');
                 break;
             default:
                 $deadlineName = '';
