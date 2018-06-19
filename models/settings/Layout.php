@@ -10,6 +10,7 @@ use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
 use yii\helpers\Html;
 use yii\web\AssetBundle;
+use yii\web\Controller;
 use yii\web\View;
 
 class Layout
@@ -342,13 +343,14 @@ class Layout
 
     /**
      * @param View $view
+     * @param Controller $controller
      */
-    public function registerPluginAssets($view)
+    public function registerPluginAssets($view, $controller)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         foreach ($params->getPluginClasses() as $pluginClass) {
-            foreach ($pluginClass::getActiveAssetBundles() as $assetBundle) {
+            foreach ($pluginClass::getActiveAssetBundles($controller) as $assetBundle) {
                 $assetBundle::register($view);
             }
         }

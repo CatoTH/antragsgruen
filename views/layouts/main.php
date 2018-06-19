@@ -11,7 +11,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$layout->registerPluginAssets($this);
+$layout->registerPluginAssets($this, $controller);
 if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
     try {
         $mainCssFile = null;

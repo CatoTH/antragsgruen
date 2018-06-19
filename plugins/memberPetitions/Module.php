@@ -10,6 +10,7 @@ use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\base\Event;
+use yii\web\Controller;
 
 class Module extends ModuleBase
 {
@@ -24,9 +25,11 @@ class Module extends ModuleBase
     }
 
     /**
+     * @param Controller $controller
      * @return \yii\web\AssetBundle[]
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getActiveAssetBundles()
+    public static function getActiveAssetBundles($controller)
     {
         return [
             Assets::class

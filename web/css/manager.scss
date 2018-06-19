@@ -35,68 +35,6 @@
   }
 }
 
-.infoSite {
-  ul {
-    margin-bottom: 25px;
-    li {
-      margin-top: 7px;
-    }
-  }
-}
-
-.managerHelpPage {
-  .well &.content {
-    padding: 15px 40px 30px;
-  }
-  font-size: 16px;
-  h2 {
-    margin-top: 40px;
-  }
-  h3 {
-    margin-top: 25px;
-  }
-  ul, ol {
-    margin-top: 25px;
-    margin-bottom: 25px;
-  }
-  li {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  .toc {
-    list-style-type: none;
-    margin: 20px 0 60px;
-    padding: 0;
-    ul {
-      margin-top: 0;
-    }
-    > li > a {
-      font-weight: bold;
-    }
-  }
-}
-
-#sidebar {
-  .current-uses-list.nav-list {
-    > li {
-      padding-left: 15px;
-      padding-right: 5px;
-
-      -webkit-hyphens: auto;
-      word-break: break-word;
-      -moz-hyphens: auto;
-      hyphens: auto;
-      overflow: hidden;
-
-      span.orga {
-        font-size: 0.9em;
-        color: #767676;
-        display: block;
-      }
-    }
-  }
-}
-
 .siteCreate {
   .wizard {
     font-family: "Open Sans", sans-serif;

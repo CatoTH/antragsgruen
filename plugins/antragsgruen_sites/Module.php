@@ -10,13 +10,6 @@ use app\plugins\ModuleBase;
 class Module extends ModuleBase
 {
     /**
-     */
-    public function init()
-    {
-        parent::init();
-    }
-
-    /**
      * @param string $domainPlain
      * @return array
      */
@@ -36,6 +29,21 @@ class Module extends ModuleBase
     public static function getDefaultRouteOverride()
     {
         return '/antragsgruen_sites/manager/index';
+    }
+
+    /**
+     * @param \yii\web\Controller $controller
+     * @return \yii\web\AssetBundle[]
+     */
+    public static function getActiveAssetBundles($controller)
+    {
+        if (strpos($controller->route, 'antragsgruen_sites') === 0) {
+            return [
+                Assets::class,
+            ];
+        } else {
+            return [];
+        }
     }
 
     /**

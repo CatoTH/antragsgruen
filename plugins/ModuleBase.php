@@ -10,6 +10,7 @@ use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\memberPetitions\ConsultationSettings;
 use yii\base\Module;
 use yii\web\AssetBundle;
+use yii\web\Controller;
 
 class ModuleBase extends Module
 {
@@ -26,9 +27,10 @@ class ModuleBase extends Module
     }
 
     /**
+     * @param Controller $controller
      * @return AssetBundle[]
      */
-    public static function getActiveAssetBundles()
+    public static function getActiveAssetBundles($controller)
     {
         return [];
     }
