@@ -7,7 +7,8 @@ use yii\helpers\Html;
  * @var Amendment[] $amendments
  */
 
-if (count($amendments) == 0) {
+if (count($amendments) === 0) {
+    $pdf = new TCPDF();
     $pdf->AddPage();
     $pdf->Output('Amendments.pdf', 'I');
 

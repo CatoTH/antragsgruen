@@ -276,7 +276,6 @@ class AmendmentController extends Base
             }
 
             return $this->redirect(UrlHelper::createAmendmentUrl($amendment, 'createdone', ['fromMode' => $fromMode]));
-
         } else {
             return $this->render('create_confirm', [
                 'amendment'     => $amendment,
@@ -353,7 +352,6 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $cloneFrom
      * @return string
-     * @throws NotFound
      * @throws \app\models\exceptions\Internal
      * @throws \app\models\exceptions\NotAmendable
      * @throws \yii\base\ExitException
@@ -362,7 +360,8 @@ class AmendmentController extends Base
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
-            throw new NotFound(\Yii::t('motion', 'err_not_found'));
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (!$motion->isCurrentlyAmendable()) {

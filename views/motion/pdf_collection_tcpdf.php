@@ -7,7 +7,8 @@ use yii\helpers\Html;
  * @var Motion[] $motions
  */
 
-if (count($motions) == 0) {
+if (count($motions) === 0) {
+    $pdf = new TCPDF();
     $pdf->AddPage();
     $pdf->Output('Motions.pdf', 'I');
 
@@ -28,7 +29,6 @@ try {
     foreach ($motions as $motion) {
         \app\views\motion\LayoutHelper::printToPDF($pdf, $pdfLayout, $motion);
     }
-
 } catch (\Exception $e) {
     echo 'Error: ' . Html::encode($e);
     die();

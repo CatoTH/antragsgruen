@@ -17,8 +17,9 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\Base $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
+$controller   = $this->context;
+$layout       = $controller->layoutParams;
+$consultation = $controller->consultation;
 
 $this->title        = \Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
