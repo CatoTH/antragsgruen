@@ -10,6 +10,7 @@ use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
@@ -170,8 +171,16 @@ class PDF extends ISectionType
 
         $data = base64_decode($this->section->data);
 
-        $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
-        $lastprint = null;
+        try {
+            $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
+            $lastprint = null;
+        } catch (CrossReferenceException $e) {
+            $pdf->writeHTML('<p style="font-size: 12px; color: red;"><br>The embedded PDF can not be rendered:</p>');
+            $pdf->writeHTML('<p style="font-size: 12px; font-family: Courier; color: red;"><br>' .
+                Html::encode($e->getMessage()) . '</p>');
+
+            return;
+        }
 
         $pdim      = $pdf->getPageDimensions();
         $printArea = array(
