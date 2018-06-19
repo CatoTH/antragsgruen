@@ -89,8 +89,8 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content">';
 
 /** @var ConsultationSettingsTag[] $tags */
-$tags = array();
-foreach ($consultation->tags as $tag) {
+$tags = [];
+foreach ($consultation->getSortedTags() as $tag) {
     $tags[$tag->id] = $tag;
 }
 
