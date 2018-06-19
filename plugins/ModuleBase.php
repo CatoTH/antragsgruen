@@ -29,6 +29,7 @@ class ModuleBase extends Module
     /**
      * @param Controller $controller
      * @return AssetBundle[]
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getActiveAssetBundles($controller)
     {

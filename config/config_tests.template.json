@@ -22,5 +22,9 @@
   "adminUserIds": [
     3
   ],
+  "plugins": [
+    "gruen_ci",
+    "antragsgruen_sites"
+  ],
   "pdfExportConcat": true
 }

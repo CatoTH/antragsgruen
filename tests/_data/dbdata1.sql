@@ -1544,19 +1544,19 @@ VALUES
       2, 1, 'Vorstandswahlen', 'Testorga2', 0),
   (3, 'parteitag', 'Parteitag', 'Parteitag', '2015-11-05 22:16:30', NULL, '{\"willingToPay\":\"1\"}', 3, 1, 'Parteitag',
       'Testorga3', 0),
-  (4, 'bdk', 'BDK', 'BDK', '2015-11-05 22:16:30', NULL, '{\"siteLayout\":\"layout-gruenes-ci\",\"willingToPay\":\"2\"}',
+  (4, 'bdk', 'BDK', 'BDK', '2015-11-05 22:16:30', NULL, '{\"siteLayout\":\"layout-plugin-gruen_ci-old\",\"willingToPay\":\"2\"}',
       4, 1, 'BDK', 'Testorga4', 0),
   (5, '1laenderrat2015', 'Länderrat', 'Länderrat', '2015-11-05 22:16:30', NULL,
-      '{\"siteLayout\":\"layout-gruenes-ci\",\"showAntragsgruenAd\":true,\"willingToPay\":\"2\"}', 5, 1, 'Länderrat',
+      '{\"siteLayout\":\"layout-plugin-gruen_ci-old\",\"showAntragsgruenAd\":true,\"willingToPay\":\"2\"}', 5, 1, 'Länderrat',
       'Testorga5', 0),
   (6, 'laenderrat-to', 'Länderrat TO', 'Länderrat TO', '2015-11-05 22:16:30', NULL,
-      '{\n    \"siteLayout\": \"layout-gruenes-ci\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": \"2\",\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
+      '{\n    \"siteLayout\": \"layout-plugin-gruen_ci-old\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": \"2\",\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
       6, 1, 'Länderrat TO', 'Testorga6', 0),
   (7, 'supporter', 'Unterstützungs-Sammel-Event', 'Unterstützungs-Sammel-Event', '2016-02-28 08:25:31', NULL,
       '{\n    \"siteLayout\": \"layout-classic\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": \"2\",\n    \"willingToPayLastAskedTs\": 1456680331,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        0,\n        1,\n        3\n    ],\n    \"emailReplyTo\": null,\n    \"emailFromName\": null\n}',
       7, 1, 'Antragsgrün', 'Antragsgrün', 0),
   (8, 'mitgliederbegehren', 'Mitgliederbegehren', 'Mitgliederbegehren', '2017-12-25 14:47:48', NULL,
-      '{\n    \"siteLayout\": \"layout-gruenes-ci2\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": true,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": 0,\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        \"1\",\n        \"3\",\n        0\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
+      '{\n    \"siteLayout\": \"layout-plugin-gruen_ci-std\",\n    \"showAntragsgruenAd\": true,\n    \"forceLogin\": true,\n    \"managedUserAccounts\": false,\n    \"willingToPay\": 0,\n    \"willingToPayLastAskedTs\": 0,\n    \"billSent\": 0,\n    \"loginMethods\": [\n        \"1\",\n        \"3\",\n        0\n    ],\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}',
       8, 1, 'Bündnis 90 / Die GRÜNEN', 'Bündnis 90 / Die Grünen', 0);
 
 --
