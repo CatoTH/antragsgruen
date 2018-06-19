@@ -502,3 +502,31 @@
     }
   }
 }
+
+
+.consultationPhasesWizard {
+  margin-bottom: 40px;
+
+  .wizard > ul > li {
+    min-height: 70px;
+    .chevron {
+      transform: scale(1.5, 1.5);
+      top: 11px;
+    }
+  }
+
+  .title {
+    line-height: 20px;
+    font-weight: bold;
+    margin-top: 3px;
+
+    color: #555;
+  }
+  .active .title {
+    color: #afcb08;
+  }
+  .permissions {
+    line-height: 14px;
+    font-size: 12px;
+  }
+}

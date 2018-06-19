@@ -77,20 +77,9 @@ if ($admin) {
     echo Html::endForm();
 }
 
-$shownPhases = [];
-foreach ($consultation->motionTypes as $motionType) {
-    foreach ($motionType->getAllCurrentDeadlines(true) as $deadline) {
-        if (in_array($deadline['title'], $shownPhases)) {
-            continue;
-        }
-        echo '<div class="alert alert-info">';
-        echo \Yii::t('con', 'current_phase') . ': ' . Html::encode($deadline['title']);
-        echo '</div>';
-        $shownPhases[] = $deadline['title'];
-    }
-}
-
 echo '</div>';
+
+echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 echo $controller->showErrors();
 

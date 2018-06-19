@@ -1,0 +1,156 @@
+/*
+ * From: https://github.com/ExactTarget/fuelux
+ * License: MIT
+ */
+
+.fuelux .wizard {
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #d4d4d4;
+  *zoom: 1;
+  border-radius: 0;
+  margin-left: -1px;
+  margin-right: -1px;
+  overflow: hidden;
+
+  &:before,
+  &:after {
+    display: table;
+    line-height: 0;
+    content: "";
+  }
+
+  &:after {
+    clear: both;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none outside none;
+
+    li {
+      position: relative;
+      float: left;
+      height: 46px;
+      padding: 0 15px 0 30px;
+      margin: 0;
+      font-size: 16px;
+      line-height: 46px;
+      color: #999999;
+      cursor: default;
+      background: #ededed;
+
+      .chevron {
+        position: absolute;
+        top: 0;
+        right: -14px;
+        display: block;
+        border: 24px solid transparent;
+        border-right: 0;
+        border-left: 14px solid #d4d4d4;
+
+        &:before {
+          position: absolute;
+          top: -24px;
+          right: 1px;
+          display: block;
+          border: 24px solid transparent;
+          border-right: 0;
+          border-left: 14px solid #ededed;
+          content: "";
+        }
+      }
+
+      &.complete {
+        color: #468847;
+        background: #f3f4f5;
+        &:hover {
+          cursor: pointer;
+          background: #e7eff8;
+          .chevron:before {
+            border-left: 14px solid #e7eff8;
+          }
+        }
+        .chevron:before {
+          border-left: 14px solid #f3f4f5;
+        }
+      }
+
+      &.active {
+        color: rgb(175, 203, 8);
+        background: #f1f6fc;
+
+        .chevron:before {
+          border-left: 14px solid #f1f6fc;
+        }
+      }
+
+      .badge {
+        margin-right: 8px;
+      }
+
+      &:nth-child(1) {
+        z-index: 10;
+        padding-left: 15px;
+        border-radius: 4px 0 0 4px;
+      }
+
+      &:nth-child(2) {
+        z-index: 9;
+      }
+
+      &:nth-child(3) {
+        z-index: 8;
+      }
+
+      &:nth-child(4) {
+        z-index: 7;
+      }
+
+      &:nth-child(5) {
+        z-index: 6;
+      }
+
+      &:nth-child(6) {
+        z-index: 5;
+      }
+
+      &:nth-child(7) {
+        z-index: 4;
+      }
+
+      &:nth-child(8) {
+        z-index: 3;
+      }
+
+      &:nth-child(9) {
+        z-index: 2;
+      }
+
+      &:nth-child(10) {
+        z-index: 1;
+      }
+    }
+  }
+
+  .actions {
+    float: right;
+    padding-right: 15px;
+    line-height: 44px;
+    vertical-align: middle;
+
+    a {
+      margin-right: 8px;
+      font-size: 12px;
+      line-height: 45px;
+    }
+
+    .btn-prev i {
+      margin-right: 5px;
+    }
+
+    .btn-next i {
+      margin-left: 5px;
+    }
+  }
+}
