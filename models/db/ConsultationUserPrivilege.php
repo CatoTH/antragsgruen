@@ -132,7 +132,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         try {
             MailTools::sendWithLog(
                 EMailLog::TYPE_ACCESS_GRANTED,
-                $consultation->site,
+                $consultation,
                 $email,
                 $user->id,
                 \Yii::t('user', 'acc_grant_email_title'),

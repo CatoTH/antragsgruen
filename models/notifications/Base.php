@@ -34,7 +34,7 @@ abstract class Base
                 try {
                     Tools::sendWithLog(
                         EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                        $consultation->site,
+                        $consultation,
                         trim($mail),
                         null,
                         $maildata->getEmailAdminSubject(),

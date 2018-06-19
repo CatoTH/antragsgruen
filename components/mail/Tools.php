@@ -2,8 +2,8 @@
 
 namespace app\components\mail;
 
+use app\models\db\Consultation;
 use app\models\db\EMailLog;
-use app\models\db\Site;
 use app\models\exceptions\MailNotSent;
 use app\models\exceptions\ServerConfiguration;
 
@@ -11,7 +11,7 @@ class Tools
 {
     /**
      * @param int $mailType
-     * @param Site|null $fromSite
+     * @param Consultation|null $fromConsultation
      * @param string $toEmail
      * @param null|int $toPersonId
      * @param string $subject
@@ -23,7 +23,7 @@ class Tools
      */
     public static function sendWithLog(
         $mailType,
-        $fromSite,
+        $fromConsultation,
         $toEmail,
         $toPersonId,
         $subject,
@@ -52,12 +52,12 @@ class Tools
         $fromEmail = $params->mailFromEmail;
         $fromName  = $params->mailFromName;
         $replyTo   = '';
-        if ($fromSite) {
-            if ($fromSite->getSettings()->emailFromName != '') {
-                $fromName = $fromSite->getSettings()->emailFromName;
+        if ($fromConsultation) {
+            if ($fromConsultation->getSettings()->emailFromName) {
+                $fromName = $fromConsultation->getSettings()->emailFromName;
             }
-            if ($fromSite->getSettings()->emailReplyTo != '') {
-                $replyTo = $fromSite->getSettings()->emailReplyTo;
+            if ($fromConsultation->getSettings()->emailReplyTo) {
+                $replyTo = $fromConsultation->getSettings()->emailReplyTo;
             }
         }
 
@@ -90,8 +90,8 @@ class Tools
         if ($toPersonId) {
             $obj->toUserId = $toPersonId;
         }
-        if ($fromSite) {
-            $obj->fromSiteId = $fromSite->id;
+        if ($fromConsultation) {
+            $obj->fromSiteId = $fromConsultation->siteId;
         }
         $obj->toEmail   = $toEmail;
         $obj->type      = $mailType;

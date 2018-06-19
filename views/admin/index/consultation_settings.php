@@ -192,8 +192,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
 
-        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings,
-            \Yii::t('admin', 'con_proposal_procedure'));
+        $propTitle = \Yii::t('admin', 'con_proposal_procedure');
+        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle);
 
         $boolSettingRow($settings, 'minimalisticUI', $handledSettings, \Yii::t('admin', 'con_minimalistic'));
 
@@ -209,8 +209,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[singleMotionMode]',
                     ($settings->forceMotion !== null),
                     ['id' => 'singleMotionMode']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_single_motion_mode');
+                );
+                echo ' ' . \Yii::t('admin', 'con_single_motion_mode');
                 ?>
             </label></div>
 
@@ -246,8 +246,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[lineNumberingGlobal]',
                     $settings->lineNumberingGlobal,
                     ['id' => 'lineNumberingGlobal']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_line_number_global');
+                );
+                echo ' ' . \Yii::t('admin', 'con_line_number_global');
                 ?>
             </label></div>
 
@@ -259,8 +259,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[screeningMotions]',
                     $settings->screeningMotions,
                     ['id' => 'screeningMotions']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_motion_screening');
+                );
+                echo ' ' . \Yii::t('admin', 'con_motion_screening');
                 ?>
             </label></div>
 
@@ -302,15 +302,15 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     </ul>
                 </div>
                 <label>
-                <?php
-                $handledSettings[] = 'allowMultipleTags';
-                echo Html::checkbox(
-                    'settings[allowMultipleTags]',
-                    $settings->allowMultipleTags,
-                    ['id' => 'allowMultipleTags']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_multiple_topics');
-                ?>
+                    <?php
+                    $handledSettings[] = 'allowMultipleTags';
+                    echo Html::checkbox(
+                        'settings[allowMultipleTags]',
+                        $settings->allowMultipleTags,
+                        ['id' => 'allowMultipleTags']
+                    );
+                    echo ' ' . \Yii::t('admin', 'con_multiple_topics');
+                    ?>
                 </label></div>
         </div>
 
@@ -342,8 +342,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[screeningAmendments]',
                     $settings->screeningAmendments,
                     ['id' => 'screeningAmendments']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_amend_screening');
+                );
+                echo ' ' . \Yii::t('admin', 'con_amend_screening');
                 ?>
             </label></div>
 
@@ -354,8 +354,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[editorialAmendments]',
                     $settings->editorialAmendments,
                     ['id' => 'editorialAmendments']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_amend_editorial');
+                );
+                echo ' ' . \Yii::t('admin', 'con_amend_editorial');
                 ?>
             </label></div>
 
@@ -366,8 +366,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[globalAlternatives]',
                     $settings->globalAlternatives,
                     ['id' => 'globalAlternatives']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_amend_globalalt');
+                );
+                echo ' ' . \Yii::t('admin', 'con_amend_globalalt');
                 ?>
             </label></div>
     </div>
@@ -383,11 +383,10 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[screeningComments]',
                     $settings->screeningComments,
                     ['id' => 'screeningComments']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_comment_screening');
+                );
+                echo ' ' . \Yii::t('admin', 'con_comment_screening');
                 ?>
             </label></div>
-
 
         <div><label>
                 <?php
@@ -396,17 +395,14 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     'settings[commentNeedsEmail]',
                     $settings->commentNeedsEmail,
                     ['id' => 'commentNeedsEmail']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_comment_email');
+                );
+                echo ' ' . \Yii::t('admin', 'con_comment_email');
                 ?>
             </label></div>
-
 
     </div>
     <h2 class="green"><?= \Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content">
-
-
         <div class="form-group">
             <label class="col-sm-3 control-label" for="adminEmail"><?= \Yii::t('admin', 'con_email_admins') ?>:</label>
             <div class="col-sm-9">
@@ -417,36 +413,43 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </div>
 
         <?php
-        $handledSiteSettings[] = 'emailFromName';
-        $placeholder           = str_replace('%NAME%', $params->mailFromName, \Yii::t('admin', 'con_email_from_place'));
-        echo '<div class="form-group">
-    <label class="col-sm-3 control-label" for="emailReplyTo">' .
-            Html::encode(\Yii::t('admin', 'con_email_from')) . ':</label>
-    <div class="col-sm-9">
-    <input type="text" name="siteSettings[emailFromName]" placeholder="' . Html::encode($placeholder) . '" ' .
-            'value="' . Html::encode($siteSettings->emailFromName) . '" class="form-control" id="emailFromName">
-</div></div>';
-
-        $handledSiteSettings[] = 'emailReplyTo';
-        echo '<div class="form-group">
-    <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
-    <div class="col-sm-9">
-    <input type="email" name="siteSettings[emailReplyTo]" ' .
-            'placeholder="' . \Yii::t('admin', 'con_email_replyto_place') . '" ' .
-            'value="' . Html::encode($siteSettings->emailReplyTo) . '" class="form-control" id="emailReplyTo">
-</div></div>';
+        $handledSettings[] = 'emailFromName';
+        $placeholder       = str_replace('%NAME%', $params->mailFromName, \Yii::t('admin', 'con_email_from_place'));
         ?>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="emailReplyTo">
+                <?= \Yii::t('admin', 'con_email_from') ?>:
+            </label>
+            <div class="col-sm-9">
+                <input type="text" name="settings[emailFromName]" class="form-control" id="emailFromName"
+                       placeholder="<?= Html::encode($placeholder) ?>"
+                       value="<?= Html::encode($settings->emailFromName) ?>">
+            </div>
+        </div>
 
-        <div><label><?php
+        <?php $handledSettings[] = 'emailReplyTo'; ?>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
+            <div class="col-sm-9">
+                <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"
+                       placeholder="<?= \Yii::t('admin', 'con_email_replyto_place') ?>"
+                       value="<?= Html::encode($settings->emailReplyTo) ?>">
+            </div>
+        </div>
+
+        <div>
+            <label>
+                <?php
                 $handledSettings[] = 'initiatorConfirmEmails';
                 echo Html::checkbox(
                     'settings[initiatorConfirmEmails]',
                     $settings->initiatorConfirmEmails,
                     ['id' => 'initiatorConfirmEmails']
-                ) . ' ';
-                echo \Yii::t('admin', 'con_send_motion_email');
+                );
+                echo ' ' . \Yii::t('admin', 'con_send_motion_email');
                 ?>
-            </label></div>
+            </label>
+        </div>
 
 
         <div class="saveholder">

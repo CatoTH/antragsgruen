@@ -58,7 +58,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $motion->getMyConsultation()->site,
+                    $motion->getMyConsultation(),
                     trim($initiator[0]->contactEmail),
                     null,
                     $emailTitle,
@@ -103,7 +103,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $motion->getMyConsultation()->site,
+                    $motion->getMyConsultation(),
                     trim($initiator[0]->contactEmail),
                     null,
                     \Yii::t('motion', 'published_email_title'),
@@ -139,7 +139,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
-                    $motion->getMyConsultation()->site,
+                    $motion->getMyConsultation(),
                     trim($initiator[0]->contactEmail),
                     null,
                     $emailTitle,
@@ -196,7 +196,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $amendment->getMyConsultation()->site,
+                    $amendment->getMyConsultation(),
                     trim($initiator[0]->contactEmail),
                     null,
                     $emailTitle,
@@ -230,7 +230,7 @@ class EmailNotifications
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
-                    $amendment->getMyConsultation()->site,
+                    $amendment->getMyConsultation(),
                     trim($initiator[0]->contactEmail),
                     null,
                     $emailTitle,

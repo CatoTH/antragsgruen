@@ -169,7 +169,8 @@ trait SiteAccessTrait
         $link    = UrlHelper::absolutizeLink($link);
         $text    = str_replace(['%LINK%', '%ACCOUNT%'], [$link, $authText], \Yii::t('admin', 'sitacc_admmail_body'));
         try {
-            MailTools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $this->site, $email, $newUser->id, $subject, $text);
+            $consultation = $this->consultation;
+            MailTools::sendWithLog(EMailLog::TYPE_SITE_ADMIN, $consultation, $email, $newUser->id, $subject, $text);
         } catch (MailNotSent $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
             \yii::$app->session->setFlash('error', $errMsg);

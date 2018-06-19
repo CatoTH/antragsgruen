@@ -76,7 +76,7 @@ class AmendmentPublished
         try {
             MailTools::sendWithLog(
                 EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                $this->consultation->site,
+                $this->consultation,
                 trim($initiator[0]->contactEmail),
                 null,
                 \Yii::t('amend', 'published_email_title'),

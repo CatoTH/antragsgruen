@@ -45,7 +45,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m180602_121824_motion_create_buttons', '1527942369'),
   ('m180604_080335_notification_settings', '1528099492'),
   ('m180605_125835_consultation_files', '1528299492'),
-  ('m180609_095225_consultation_text_in_menu', '1528538064')
+  ('m180609_095225_consultation_text_in_menu', '1528538064'),
+  ('m180619_080947_email_settings_to_consultations', '1529396014')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

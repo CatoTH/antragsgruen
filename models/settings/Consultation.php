@@ -53,6 +53,10 @@ class Consultation
     public $motionIntro     = null;
     public $pdfIntroduction = '';
 
+    /** @var null|string */
+    public $emailReplyTo  = null;
+    public $emailFromName = null;
+
     /**
      * @return string[]
      */

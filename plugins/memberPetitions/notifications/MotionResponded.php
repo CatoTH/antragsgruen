@@ -33,7 +33,7 @@ class MotionResponded
 
         MailTools::sendWithLog(
             EMailLog::TYPE_MEMBER_PETITION,
-            $motion->getMyConsultation()->site,
+            $motion->getMyConsultation(),
             trim($initiator[0]->contactEmail),
             $initiator[0]->userId,
             str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('memberPetitions', 'noti_response_title')),

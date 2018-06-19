@@ -44,7 +44,7 @@ class MotionProposedProcedure
 
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
-            $motion->getMyConsultation()->site,
+            $motion->getMyConsultation(),
             trim($initiator[0]->contactEmail),
             null,
             str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),

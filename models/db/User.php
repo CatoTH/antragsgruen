@@ -569,7 +569,7 @@ class User extends ActiveRecord implements IdentityInterface
         $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . $blacklistUrl;
         $text         = $gruss . $text . $sig;
         try {
-            MailTools::sendWithLog($mailType, $consultation->site, $this->email, $this->id, $subject, $text);
+            MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent $e) {
             \yii::$app->session->setFlash('error', \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage());
         }
