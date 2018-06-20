@@ -4,7 +4,8 @@
  * @var app\models\settings\AntragsgruenApp $params
  */
 
-$dom          = $params->domainSubdomain;
+
+$dom          = ($params->domainSubdomain ? $params->domainSubdomain : '/<subdomain:[\\w_-]+>/');
 $domv         = $dom . '<consultationPath:[\w_-]+>/';
 $domadmin     = $domv . 'admin/';
 $dommotion    = $domv . '<motionSlug:[^\/]+\-\d+>';

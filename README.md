@@ -301,7 +301,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * Download the [Selenium Standalone Server](http://www.seleniumhq.org/download/)
 * For the automatical HTML validation, Java needs to be installed and the vnu.jar file from the [Nu Html Checker](https://validator.github.io/validator/) located at /usr/local/bin/vnu.jar.
 * For the automatical accessibility validation, [Pa11y](http://pa11y.org/) needs to be installed. (is done by ``npm install``)
-* The host name ``antragsgruen-test.local`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured
+* The host name ``antragsgruen-test.local`` must point to localhost (by adding an entry to /etc/hosts) and a VirtualHost in your Apache/Nginx-Configuration pointing to the ``web/``-directory of this installation has to be configured. If another host name is to be used, it has to be changed in the [config/TEST_DOMAIN](config/TEST_DOMAIN) and [tests/acceptance.suite.yml](tests/acceptance.suite.yml).
 
 #### Running
 
