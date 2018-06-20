@@ -264,19 +264,11 @@ class StdHooks extends HooksAdapter
      */
     public function footerLine($before)
     {
-        /** @var Base $controller */
-        $controller = \Yii::$app->controller;
-
         $out = '<footer class="footer"><div class="container">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
-            if ($controller->consultation) {
-                $legalLink   = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'legal']);
-                $privacyLink = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'privacy']);
-            } else {
-                $legalLink   = UrlHelper::createUrl('manager/site-legal');
-                $privacyLink = UrlHelper::createUrl('manager/site-privacy');
-            }
+            $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
+            $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
 
             $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
                 \Yii::t('base', 'imprint') . '</a>

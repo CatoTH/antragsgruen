@@ -24,8 +24,7 @@ $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|me
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check';
 $userPaths            = 'login|logout|confirmregistration|loginwurzelwerk|emailblacklist|recovery';
 $userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange|data-export';
-$domPlainPaths        = 'site-legal|site-privacy|siteconfig|antragsgrueninit';
-$domPlainPaths        .= '|check-subdomain|antragsgrueninitdbtest|userlist';
+$domPlainPaths        = 'siteconfig|antragsgrueninit|antragsgrueninitdbtest|userlist';
 $adminMotionPaths     = 'type|typecreate|get-amendment-rewrite-collissions';
 $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist';
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
@@ -95,8 +94,16 @@ $urlRules = array_merge($urlRules, [
 if ($params->multisiteMode) {
     $domp = trim($params->domainPlain, '/');
 
+    $urlRules = array_merge(
+        [
+            $domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>',
+            $domp . '/page/<pageSlug:[^\/]+>/save' => 'pages/save-page',
+        ],
+        $urlRules
+    );
+
     foreach ($params->getPluginClasses() as $pluginClass) {
-        $urlRules = array_merge($urlRules, $pluginClass::getManagerUrlRoutes($domp));
+        $urlRules = array_merge($pluginClass::getManagerUrlRoutes($domp), $urlRules);
     }
 
     if ($params->prependWWWToSubdomain) {

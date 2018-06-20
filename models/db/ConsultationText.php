@@ -67,7 +67,7 @@ class ConsultationText extends ActiveRecord
      */
     public function getUrl()
     {
-        $params = ['pages/show-page', 'pageSlug' => $this->textId];
+        $params = ['/pages/show-page', 'pageSlug' => $this->textId];
         if ($this->consultationId) {
             $params['consultationPath'] = $this->consultation->urlPath;
         }
@@ -79,7 +79,7 @@ class ConsultationText extends ActiveRecord
      */
     public function getSaveUrl()
     {
-        $saveParams = ['pages/save-page', 'pageSlug' => $this->textId];
+        $saveParams = ['/pages/save-page', 'pageSlug' => $this->textId];
         if ($this->consultation) {
             $saveParams['consultationPath'] = $this->consultation->urlPath;
         }
@@ -95,9 +95,9 @@ class ConsultationText extends ActiveRecord
     public function getUploadUrl()
     {
         if ($this->consultation) {
-            $saveParams = ['pages/upload', 'consultationPath' => $this->consultation->urlPath];
+            $saveParams = ['/pages/upload', 'consultationPath' => $this->consultation->urlPath];
         } elseif ($this->site) {
-            $saveParams = ['pages/upload', 'consultationPath' => $this->site->currentConsultation->urlPath];
+            $saveParams = ['/pages/upload', 'consultationPath' => $this->site->currentConsultation->urlPath];
         } else {
             return null;
         }
@@ -109,7 +109,7 @@ class ConsultationText extends ActiveRecord
      */
     public function getImageBrowseUrl()
     {
-        return UrlHelper::createUrl(['pages/browse-images']);
+        return UrlHelper::createUrl(['/pages/browse-images']);
     }
 
     /**

@@ -87,10 +87,12 @@ export class ContentPageEdit {
                 this.$editCaller.removeClass('hidden');
                 this.$contentSettings.addClass('hidden');
 
-                $(".pageTitle").text(ret['title']);
-                document.title = ret['title'];
-                $("#mainmenu .page" + ret['id']).text(ret['title']);
-                $(".breadcrumb").children().last().text(ret['title']);
+                if (ret['title'] !== null) {
+                    $(".pageTitle").text(ret['title']);
+                    document.title = ret['title'];
+                    $("#mainmenu .page" + ret['id']).text(ret['title']);
+                    $(".breadcrumb").children().last().text(ret['title']);
+                }
 
                 if (ret['message']) {
                     alert(ret['message']);

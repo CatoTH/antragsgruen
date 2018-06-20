@@ -32,23 +32,6 @@ class ManagerController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function actionSiteLegal()
-    {
-        return $this->renderContentPage('legal');
-    }
-
-    /**
-     * @return string
-     */
-    public function actionSitePrivacy()
-    {
-        return $this->renderContentPage('privacy');
-    }
-
-    /**
-     * @return string
      * @throws \yii\base\ExitException
      */
     public function actionSiteconfig()

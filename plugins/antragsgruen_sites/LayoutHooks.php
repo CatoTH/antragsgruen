@@ -18,7 +18,7 @@ class LayoutHooks extends HooksAdapter
     public function getStdNavbarHeader($before)
     {
         /** @var Base $controller */
-        $controller   = \Yii::$app->controller;
+        $controller = \Yii::$app->controller;
         if ($controller->consultation) {
             return $before;
         }
@@ -51,6 +51,44 @@ class LayoutHooks extends HooksAdapter
         }
 
         $out .= '</ul>';
+
+        return $out;
+    }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function footerLine($before)
+    {
+        /** @var Base $controller */
+        $controller = \Yii::$app->controller;
+        if ($controller->consultation) {
+            return $before;
+        }
+
+        $out = '<footer class="footer"><div class="container">';
+
+        $legalLink   = UrlHelper::createUrl('/antragsgruen_sites/manager/legal');
+        $privacyLink = UrlHelper::createUrl('/antragsgruen_sites/manager/privacy');
+
+        $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+            \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+            \Yii::t('base', 'privacy_statement') . '</a>';
+
+        $out .= '<span class="version">';
+        if (\Yii::$app->language == 'de') {
+            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
+                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+        } else {
+            $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
+                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+        }
+        $out .= '</span>';
+
+        $out .= '</div></footer>';
 
         return $out;
     }

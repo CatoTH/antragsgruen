@@ -202,4 +202,23 @@ class ManagerController extends Base
             return $this->render('help_en');
         }
     }
+
+    /**
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     */
+    public function actionLegal()
+    {
+        return $this->renderContentPage('legal');
+    }
+
+    /**
+     * @return string
+     */
+    public function actionPrivacy()
+    {
+        return $this->renderContentPage('privacy');
+    }
+
+
 }
