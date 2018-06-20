@@ -79,7 +79,6 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
         ['class' => 'siteConsultationsLink']
     );
     echo '</li>';
-
 }
 
 if (User::currentUserIsSuperuser()) {
@@ -123,7 +122,7 @@ if (User::currentUserIsSuperuser()) {
 echo '</aside></div>';
 
 if (User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
-    if (count($site->consultations) == 1) {
+    if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .
             '<span class="glyphicon glyphicon-trash"></span> ' . \Yii::t('admin', 'index_site_del') .

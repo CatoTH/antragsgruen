@@ -173,7 +173,6 @@ class PDF extends ISectionType
 
         try {
             $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
-            $lastprint = null;
         } catch (CrossReferenceException $e) {
             $pdf->writeHTML('<p style="font-size: 12px; color: red;"><br>The embedded PDF can not be rendered:</p>');
             $pdf->writeHTML('<p style="font-size: 12px; font-family: Courier; color: red;"><br>' .
@@ -182,11 +181,12 @@ class PDF extends ISectionType
             return;
         }
 
+        $lastprint = null;
         $pdim      = $pdf->getPageDimensions();
-        $printArea = array(
+        $printArea = [
             'w' => $pdim['wk'] - ($pdim['lm'] + $pdim['rm']),
             'h' => $pdim['hk'] - ($pdim['tm'] + $pdim['bm']),
-        );
+        ];
         $pdf->setX($pdim['lm']);
 
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {

@@ -30,7 +30,7 @@ class ManagerController extends Base
         return parent::beforeAction($action);
     }
 
- w   /**
+    /**
      * @return string
      * @throws \app\models\exceptions\Internal
      */
