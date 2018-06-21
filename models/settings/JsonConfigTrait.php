@@ -25,6 +25,8 @@ trait JsonConfigTrait
         if ($data == '') {
             return;
         }
+        $data    = str_replace("\r", "", $data);
+        $data    = str_replace(chr(194) . chr(160), " ", $data);
         $dataArr = json_decode($data, true);
         if ($dataArr === null) {
             throw new \Exception('Invalid JSON string: ' . $data);
