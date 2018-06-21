@@ -130,13 +130,24 @@ class UrlHelper
 
     /**
      * @param string|array $route
+     * @param null|Consultation $forceConsultation
      * @return string
      */
-    public static function createUrl($route)
+    public static function createUrl($route, $forceConsultation = null)
     {
         if (!is_array($route)) {
             $route = [$route];
         }
+
+        if ($forceConsultation) {
+            if ($forceConsultation !== static::$currentConsultation) {
+                $params['consultationPath'] = $forceConsultation->urlPath;
+            }
+            if ($forceConsultation->site !== static::$currentSite) {
+                $params['subdomain'] = $forceConsultation->site->subdomain;
+            }
+        }
+
         $routeParts = static::getRouteParts($route[0]);
         if ($routeParts['controller'] !== 'manager') {
             return static::createSiteUrl($route);
@@ -264,16 +275,7 @@ class UrlHelper
     public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
     {
         $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
-
-        $consultation = $motion->getMyConsultation();
-        if ($consultation !== static::$currentConsultation) {
-            $params['consultationPath'] = $consultation->urlPath;
-        }
-        if ($consultation->site !== static::$currentSite) {
-            $params['subdomain'] = $consultation->site->subdomain;
-        }
-
-        return static::createUrl($params);
+        return static::createUrl($params, $motion->getMyConsultation());
     }
 
     /**
@@ -288,16 +290,7 @@ class UrlHelper
             'commentId'  => $motionComment->id,
             '#'          => 'comm' . $motionComment->id
         ];
-
-        $consultation = $motionComment->motion->getMyConsultation();
-        if ($consultation !== static::$currentConsultation) {
-            $params['consultationPath'] = $consultation->urlPath;
-        }
-        if ($consultation->site !== static::$currentSite) {
-            $params['subdomain'] = $consultation->site->subdomain;
-        }
-
-        return static::createUrl($params);
+        return static::createUrl($params, $motionComment->motion->getMyConsultation());
     }
 
     /**
@@ -313,16 +306,7 @@ class UrlHelper
             'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ], $addParams);
-
-        $consultation = $amendment->getMyConsultation();
-        if ($consultation !== static::$currentConsultation) {
-            $params['consultationPath'] = $consultation->urlPath;
-        }
-        if ($consultation->site !== static::$currentSite) {
-            $params['subdomain'] = $consultation->site->subdomain;
-        }
-
-        return static::createUrl($params);
+        return static::createUrl($params, $amendment->getMyConsultation());
     }
 
     /**
@@ -338,16 +322,7 @@ class UrlHelper
             'commentId'   => $amendmentComment->id,
             '#'           => 'comm' . $amendmentComment->id
         ];
-
-        $consultation = $amendmentComment->amendment->getMyConsultation();
-        if ($consultation !== static::$currentConsultation) {
-            $params['consultationPath'] = $consultation->urlPath;
-        }
-        if ($consultation->site !== static::$currentSite) {
-            $params['subdomain'] = $consultation->site->subdomain;
-        }
-
-        return static::createUrl($params);
+        return static::createUrl($params, $amendmentComment->amendment->getMyConsultation());
     }
 
     /**

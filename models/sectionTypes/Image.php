@@ -17,9 +17,10 @@ use CatoTH\HTML2OpenDocument\Text;
 class Image extends ISectionType
 {
     /**
+     * @param bool $absolute
      * @return null|string
      */
-    public function getImageUrl()
+    public function getImageUrl($absolute = false)
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -30,11 +31,17 @@ class Image extends ISectionType
 
         $url = UrlHelper::createUrl(
             [
-                'motion/viewimage',
+                '/motion/viewimage',
                 'motionSlug' => $section->getMotion()->getMotionSlug(),
                 'sectionId'  => $section->sectionId
-            ]
+            ],
+            $motion->getMyConsultation()
         );
+
+        if ($absolute) {
+            $url = UrlHelper::absolutizeLink($url);
+        }
+
         return $url;
     }
 

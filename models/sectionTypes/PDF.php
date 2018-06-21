@@ -18,9 +18,10 @@ use CatoTH\HTML2OpenDocument\Text;
 class PDF extends ISectionType
 {
     /**
+     * @param bool $absolute
      * @return null|string
      */
-    public function getPdfUrl()
+    public function getPdfUrl($absolute = false)
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -34,8 +35,13 @@ class PDF extends ISectionType
                 'motion/viewpdf',
                 'motionSlug' => $section->getMotion()->getMotionSlug(),
                 'sectionId'  => $section->sectionId
-            ]
+            ],
+            $motion->getMyConsultation()
         );
+        if ($absolute) {
+            $url = UrlHelper::absolutizeLink($url);
+        }
+
         return $url;
     }
 

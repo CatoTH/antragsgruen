@@ -1245,7 +1245,7 @@ class Amendment extends IMotion implements IRSSItem
                 $data['changed_sections'][] = [
                     'section_title' => $section->getSettings()->title,
                     'section_type'  => $section->getSettings()->type,
-                    'download_url'  => $type->getImageUrl(),
+                    'download_url'  => $type->getImageUrl(true),
                     'metadata'      => $section->metadata,
                 ];
             } elseif ($section->getSettings()->type === ISectionType::TYPE_PDF) {
@@ -1254,7 +1254,7 @@ class Amendment extends IMotion implements IRSSItem
                 $data['changed_sections'][] = [
                     'section_title' => $section->getSettings()->title,
                     'section_type'  => $section->getSettings()->type,
-                    'download_url'  => $type->getPdfUrl(),
+                    'download_url'  => $type->getPdfUrl(true),
                     'metadata'      => $section->metadata,
                 ];
             } else {
