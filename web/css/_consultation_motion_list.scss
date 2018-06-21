@@ -333,7 +333,6 @@
           margin-right: 10px;
         }
         input.title {
-          width: 250px;
           margin-right: 10px;
         }
         .agendaMotionsRow {
@@ -376,6 +375,19 @@
       h4.amendments {
         font-size: 16px;
       }
+    }
+
+    input.title {
+      width: 400px;
+    }
+    li.agendaItem input.title {
+      width: 350px;
+    }
+    li.agendaItem li.agendaItem input.title {
+      width: 300px;
+    }
+    li.agendaItem li.agendaItem li.agendaItem input.title {
+      width: 250px;
     }
   }
 

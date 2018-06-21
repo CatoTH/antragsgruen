@@ -116,6 +116,7 @@ const taskWatch = gulp.parallel((done) => {
     gulp.watch(main_js_files, taskBuildJs);
     gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], taskBuildJs);
     gulp.watch(["web/css/*.scss"], taskBuildCss);
+    gulp.watch(["web/css/*.scss"], taskBuildPluginCss);
     gulp.watch(["plugins/**/*.scss"], taskBuildPluginCss);
     gulp.watch(['./web/typescript/**/*.ts'], taskBuildTypescript);
     done();
