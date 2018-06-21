@@ -5,7 +5,11 @@
  */
 
 
-$dom          = ($params->domainSubdomain ? $params->domainSubdomain : '/<subdomain:[\\w_-]+>/');
+if ($params->multisiteMode) {
+    $dom = ($params->domainSubdomain ? $params->domainSubdomain : '/<subdomain:[\\w_-]+>/');
+} else {
+    $dom = '/';
+}
 $domv         = $dom . '<consultationPath:[\w_-]+>/';
 $domadmin     = $domv . 'admin/';
 $dommotion    = $domv . '<motionSlug:[^\/]+\-\d+>';
