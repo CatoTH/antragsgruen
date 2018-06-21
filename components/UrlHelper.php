@@ -141,10 +141,10 @@ class UrlHelper
 
         if ($forceConsultation) {
             if ($forceConsultation !== static::$currentConsultation) {
-                $params['consultationPath'] = $forceConsultation->urlPath;
+                $route['consultationPath'] = $forceConsultation->urlPath;
             }
             if ($forceConsultation->site !== static::$currentSite) {
-                $params['subdomain'] = $forceConsultation->site->subdomain;
+                $route['subdomain'] = $forceConsultation->site->subdomain;
             }
         }
 
