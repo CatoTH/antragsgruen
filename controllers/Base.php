@@ -280,18 +280,18 @@ class Base extends Controller
      */
     public function testSiteForcedLogin()
     {
-        if ($this->site == null) {
+        if ($this->consultation === null) {
             return false;
         }
-        if (!$this->site->getSettings()->forceLogin) {
+        if (!$this->consultation->getSettings()->forceLogin) {
             return false;
         }
         if (\Yii::$app->user->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
-        if ($this->site->getSettings()->managedUserAccounts) {
-            if ($this->consultation && !User::havePrivilege($this->consultation, User::PRIVILEGE_ANY)) {
+        if ($this->consultation->getSettings()->managedUserAccounts) {
+            if (!User::havePrivilege($this->consultation, User::PRIVILEGE_ANY)) {
                 $privilege = User::getCurrentUser()->getConsultationPrivilege($this->consultation);
                 if (!$privilege || !$privilege->privilegeView) {
                     $this->redirect(UrlHelper::createUrl('user/consultationaccesserror'));
@@ -322,7 +322,7 @@ class Base extends Controller
         if (!$session->isActive) {
             return '';
         }
-        $str     = '';
+        $str = '';
 
         $error = $session->getFlash('error', null, true);
         if ($error) {
@@ -376,7 +376,8 @@ class Base extends Controller
         Yii::$app->response->content       = $this->render(
             '@app/views/errors/error',
             [
-                'message' => $message
+                'httpStatus' => $status,
+                'message'    => $message
             ]
         );
         Yii::$app->end();

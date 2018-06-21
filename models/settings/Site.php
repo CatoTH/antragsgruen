@@ -11,8 +11,8 @@ class Site
 
     /** @var bool */
     public $showAntragsgruenAd  = true;
-    public $forceLogin          = false;
-    public $managedUserAccounts = false;
+    public $forceLogin          = false; // @TODO Delete this setting after migration is done
+    public $managedUserAccounts = false; // @TODO Delete this setting after migration is done
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];

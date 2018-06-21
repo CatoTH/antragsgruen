@@ -526,7 +526,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function isSocialSharable()
     {
-        if ($this->getMyConsultation()->site->getSettings()->forceLogin) {
+        if ($this->getMyConsultation()->getSettings()->forceLogin) {
             return false;
         }
         if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {

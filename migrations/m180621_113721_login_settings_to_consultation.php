@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Class m180619_080947_email_settings_to_consultations
+ * Class m180621_113721_login_settings_to_consultation
  */
-class m180619_080947_email_settings_to_consultations extends Migration
+class m180621_113721_login_settings_to_consultation extends Migration
 {
     /**
      * {@inheritdoc}
@@ -17,9 +17,9 @@ class m180619_080947_email_settings_to_consultations extends Migration
         foreach ($sites as $site) {
             $siteSettings = $site->getSettings();
             foreach ($site->consultations as $consultation) {
-                $conSettings = $consultation->getSettings();
-                $conSettings->emailReplyTo = $siteSettings->emailReplyTo;
-                $conSettings->emailFromName = $siteSettings->emailFromName;
+                $conSettings                      = $consultation->getSettings();
+                $conSettings->forceLogin          = $siteSettings->forceLogin;
+                $conSettings->managedUserAccounts = $siteSettings->managedUserAccounts;
                 $consultation->setSettings($conSettings);
                 $consultation->save();
             }
@@ -31,7 +31,7 @@ class m180619_080947_email_settings_to_consultations extends Migration
      */
     public function safeDown()
     {
-        echo "m180619_080947_email_settings_to_consultations cannot be reverted.\n";
+        echo "m180621_113721_login_settings_to_consultation cannot be reverted.\n";
 
         return false;
     }

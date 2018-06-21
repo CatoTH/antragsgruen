@@ -32,6 +32,8 @@ class Consultation
     public $editorialAmendments    = true;
     public $globalAlternatives     = true;
     public $proposalProcedurePage  = false;
+    public $forceLogin             = false;
+    public $managedUserAccounts    = false;
 
     // SETTINGS WITHOUT TEST CASES
 

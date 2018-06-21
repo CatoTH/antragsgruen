@@ -21,18 +21,19 @@ $preText      = \Yii::t('admin', 'siteacc_email_text_pre');
 $hasEmail     = ($controller->getParams()->mailService['transport'] !== 'none');
 $hasSaml      = $controller->getParams()->isSamlActive();
 
+echo '<div class="content">';
 echo $controller->showErrors();
 
-
 if ($hasEmail) {
-    echo '<div class="content"><div class="accountEditExplanation alert alert-info" role="alert">' .
+    echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
         \Yii::t('admin', 'siteacc_acc_expl_mail') .
-        '</div></div>';
+        '</div>';
 } else {
-    echo '<div class="content"><div class="accountEditExplanation alert alert-info" role="alert">' .
+    echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
         \Yii::t('admin', 'siteacc_acc_expl_nomail') .
-        '</div></div>';
+        '</div>';
 }
+echo '</div>';
 
 if (count($consultation->userPrivileges) > 0) {
     ?>

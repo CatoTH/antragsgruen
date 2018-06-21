@@ -197,7 +197,7 @@ return [
     'con_send_motion_email'   => 'Send a confirmation e-mail to the proposer of a motion when it is published',
 
     'siteacc_bread'            => 'Access',
-    'siteacc_title'            => 'Access to this site',
+    'siteacc_title'            => 'Access to this consultation',
     'siteacc_policywarning'    => '<h3>Hint:</h3>
 The user administration below is only fully functional when read rights or the right to generate motions, amendments, comments, etc. are set to “Registered users”. Currently, this is not the case.<br>
 <br>
@@ -304,7 +304,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'amend_edit_text_title'       => 'Edit text',
     'amend_edit_text'             => 'Edit',
     'amend_globalalt'             => 'Global alternative',
-    'no_access'                   => 'No access to this site',
+    'no_access'                   => 'No access to this consultation',
     'amend_pdf_list'              => 'Amendment PDFs',
     'motion_type_names'           => 'Names',
     'motion_type_initiator'       => 'Initiators / supporters',

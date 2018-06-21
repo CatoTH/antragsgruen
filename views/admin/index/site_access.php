@@ -8,6 +8,7 @@ use app\models\settings\Site as SiteSettings;
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
+ * @var \app\models\db\Consultation $consultation
  * @var array $admins
  * @var bool $policyWarning
  */
@@ -23,7 +24,8 @@ $layout->addBreadcrumb(\Yii::t('admin', 'siteacc_bread'));
 $layout->loadFuelux();
 $layout->addAMDModule('backend/SiteAccess');
 
-$settings = $site->getSettings();
+$settings    = $site->getSettings();
+$conSettings = $consultation->getSettings();
 
 echo '<h1>' . \Yii::t('admin', 'siteacc_title') . '</h1>';
 
@@ -49,19 +51,25 @@ if ($success) {
             </div>';
 }
 
-echo '<div class="checkbox forceLogin">
-  <label>' . Html::checkbox('forceLogin', $settings->forceLogin) . \Yii::t('admin', 'siteacc_forcelogin') .
-    '</label>
-</div>';
+?>
+<div class="checkbox forceLogin">
+    <label>
+        <?= Html::checkbox('forceLogin', $conSettings->forceLogin) ?>
+        <?= \Yii::t('admin', 'siteacc_forcelogin') ?>
+    </label>
+</div>
 
-echo '<div class="checkbox managedUserAccounts">
-  <label>' . Html::checkbox('managedUserAccounts', $settings->managedUserAccounts) .
-    \Yii::t('admin', 'siteacc_managedusers') . '</label>
-</div>';
+<div class="checkbox managedUserAccounts">
+    <label>
+        <?= Html::checkbox('managedUserAccounts', $conSettings->managedUserAccounts) ?>
+        <?= \Yii::t('admin', 'siteacc_managedusers') ?>
+    </label>
+</div>
 
 
-echo '<fieldset class="loginMethods"><legend>' . \Yii::t('admin', 'siteacc_logins') . ':</legend>';
+<fieldset class="loginMethods"><legend><?= \Yii::t('admin', 'siteacc_logins') ?>:</legend>
 
+<?php
 $method = SiteSettings::LOGIN_STD;
 echo '<div class="checkbox std"><label>';
 if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {

@@ -198,7 +198,7 @@ Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge 
     'con_send_motion_email'   => 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die Antragsteller*in schicken',
 
     'siteacc_bread'            => 'Zugang',
-    'siteacc_title'            => 'Zugang zur Seite',
+    'siteacc_title'            => 'Zugang zur Veranstaltung',
     'siteacc_policywarning'    => '<h3>Hinweis:</h3>
 Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
  von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer*innen" gestellt werden. Aktuell ist

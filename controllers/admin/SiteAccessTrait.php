@@ -332,7 +332,7 @@ trait SiteAccessTrait
     private function needsPolicyWarning()
     {
         $policyWarning = false;
-        if (!$this->site->getSettings()->forceLogin && count($this->consultation->userPrivileges) > 0) {
+        if (!$this->consultation->getSettings()->forceLogin && count($this->consultation->userPrivileges) > 0) {
             $allowed = [IPolicy::POLICY_NOBODY, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_LOGGED_IN];
             foreach ($this->consultation->motionTypes as $type) {
                 if (!in_array($type->policyMotions, $allowed)) {
@@ -362,6 +362,7 @@ trait SiteAccessTrait
     public function actionSiteaccess()
     {
         $site = $this->site;
+        $con  = $this->consultation;
 
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_SITE_ADMIN)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
@@ -371,9 +372,7 @@ trait SiteAccessTrait
         $post = \Yii::$app->request->post();
 
         if ($this->isPostSet('saveLogin')) {
-            $settings                      = $site->getSettings();
-            $settings->forceLogin          = isset($post['forceLogin']);
-            $settings->managedUserAccounts = isset($post['managedUserAccounts']);
+            $settings = $site->getSettings();
             if ($this->isPostSet('login')) {
                 $settings->loginMethods = $post['login'];
             } else {
@@ -386,7 +385,14 @@ trait SiteAccessTrait
                 $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
             }
             $site->setSettings($settings);
-            if ($site->save()) {
+
+            $conSettings                      = $con->getSettings();
+            $conSettings->forceLogin          = isset($post['forceLogin']);
+            $conSettings->managedUserAccounts = isset($post['managedUserAccounts']);
+            $con->setSettings($conSettings);
+
+
+            if ($site->save() && $con->save()) {
                 \yii::$app->session->setFlash('success_login', \Yii::t('base', 'saved'));
             } else {
                 \yii::$app->session->setFlash('error_login', 'An error occurred: ' . print_r($site->getErrors(), true));
@@ -462,6 +468,11 @@ trait SiteAccessTrait
             }
         }
 
-        return $this->render('site_access', ['site' => $site, 'policyWarning' => $policyWarning, 'admins' => $admins]);
+        return $this->render('site_access', [
+            'consultation'  => $this->consultation,
+            'site'          => $site,
+            'policyWarning' => $policyWarning,
+            'admins'        => $admins,
+        ]);
     }
 }

@@ -36,7 +36,7 @@ class LoggedIn extends IPolicy
         if (!$user) {
             return false;
         }
-        if (!$this->motionType->getConsultation()->site->getSettings()->managedUserAccounts) {
+        if (!$this->motionType->getConsultation()->getSettings()->managedUserAccounts) {
             return false;
         }
         $privilege = $this->motionType->getConsultation()->getUserPrivilege($user);
