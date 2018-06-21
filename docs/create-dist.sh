@@ -66,6 +66,7 @@ find . -name ".git" -exec rm -rf {} \;
 rm config/config.json
 rm config/config_tests.json
 touch config/INSTALLING
+sed -i -e 's/repository\-source/dist/g' config/defines.php
 
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION

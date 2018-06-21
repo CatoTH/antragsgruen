@@ -7,6 +7,13 @@ use app\models\exceptions\Network;
 
 class UpdateChecker
 {
+    /**
+     * @return bool
+     */
+    public static function isUpdaterAvailable()
+    {
+        return (defined('ANTRAGSGRUEN_INSTALLATION_SOURCE') && ANTRAGSGRUEN_INSTALLATION_SOURCE === 'dist');
+    }
 
     /**
      * @param null|string $version

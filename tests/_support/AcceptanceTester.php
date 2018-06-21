@@ -36,7 +36,7 @@ class AcceptanceTester extends \Codeception\Actor
     const FIRST_FREE_VOTING_BLOCK_ID        = 3;
     const FIRST_FREE_CONTENT_ID             = 4;
 
-    const ABSOLUTE_URL_TEMPLATE = 'http://antragsgruen-test.local/index-test.php/index-test.php/{CONSULTATION}/{PATH}?subdomain={SUBDOMAIN}';
+    const ABSOLUTE_URL_TEMPLATE = 'http://antragsgruen-test.local/{SUBDOMAIN}/{CONSULTATION}/{PATH}';
 
     public static $ACCEPTED_HTML_ERRORS = [
         'Bad value “popup” for attribute “rel”',

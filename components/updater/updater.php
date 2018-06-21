@@ -1,4 +1,5 @@
 <?php
+
 require(__DIR__ . '/../../vendor/autoload.php');
 require_once(__DIR__ . '/../../config/defines.php');
 require_once(__DIR__ . '/UpdateChecker.php');
@@ -9,10 +10,18 @@ $configFile = __DIR__ . '/../../config/config.json';
 if (!file_exists($configFile)) {
     die("config.json not found");
 }
-
 $config = json_decode(file_get_contents($configFile), true);
+
+if (!\app\components\updater\UpdateChecker::isUpdaterAvailable()) {
+    $title = 'Not available';
+    require(__DIR__ . '/layout-header.php');
+    echo "<div class='content'>The updater can only be used with downloaded packages.</div>";
+    require(__DIR__ . '/layout-footer.php');
+    die();
+}
+
 if (!isset($config['updateKey']) || strlen($config['updateKey']) < 10) {
-    $title = "Not active";
+    $title = 'Not active';
     require(__DIR__ . '/layout-header.php');
     echo "<div class='content'>Update mode is not active</div>";
     require(__DIR__ . '/layout-footer.php');
@@ -86,7 +95,7 @@ if (isset($_POST['perform_update'])) {
         }
         sleep($sleepTime);
 
-        $url = explode('?', $_SERVER['REQUEST_URI']);
+        $url    = explode('?', $_SERVER['REQUEST_URI']);
         $newUrl = $url[0] . '?msg_updated=1';
         Header('Location: ' . $newUrl, true, 302);
         die();
@@ -112,12 +121,12 @@ if (isset($_REQUEST['check_migrations'])) {
 if (isset($_POST['perform_migrations'])) {
     require(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
     $yiiConfig = require(__DIR__ . '/../../config/console.php');
-    $config = json_decode(file_get_contents($configFile), true);
+    $config    = json_decode(file_get_contents($configFile), true);
     new yii\console\Application($yiiConfig);
     ob_start();
     \app\components\updater\MigrateHelper::performMigrations();
     \app\components\updater\MigrateHelper::flushCache();
-    $output = ob_get_clean();
+    $output    = ob_get_clean();
     $success[] = 'The database has been updated.';
 }
 

@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\HTMLTools;
 use app\components\Tools;
+use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsTag;
@@ -389,6 +390,9 @@ class IndexController extends AdminBase
      */
     public function actionGotoUpdate()
     {
+        if (!UpdateChecker::isUpdaterAvailable()) {
+            return $this->showErrorpage(403, 'The updater can only be used with downloaded packages.');
+        }
         if (!User::currentUserIsSuperuser()) {
             return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
