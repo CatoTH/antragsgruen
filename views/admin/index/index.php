@@ -82,7 +82,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
     echo '</li>';
 }
 
-if (User::currentUserIsSuperuser()) {
+if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) {
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_user_list'),
