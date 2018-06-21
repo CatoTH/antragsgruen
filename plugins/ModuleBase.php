@@ -11,6 +11,7 @@ use app\plugins\memberPetitions\ConsultationSettings;
 use yii\base\Module;
 use yii\web\AssetBundle;
 use yii\web\Controller;
+use yii\web\View;
 
 class ModuleBase extends Module
 {
@@ -97,9 +98,11 @@ class ModuleBase extends Module
     }
 
     /**
+     * @param View|null $view
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getProvidedLayouts()
+    public static function getProvidedLayouts($view = null)
     {
         return [];
     }

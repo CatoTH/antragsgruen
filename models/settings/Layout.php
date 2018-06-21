@@ -40,23 +40,36 @@ class Layout
     protected $consultation;
 
     /**
+     * @param View|null $view
      * @return string[]
      */
-    public static function getCssLayouts()
+    public static function getCssLayouts($view = null)
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         $pluginLayouts = [];
         foreach ($params->getPluginClasses() as $pluginId => $pluginClass) {
-            foreach ($pluginClass::getProvidedLayouts() as $layoutId => $layout) {
-                $pluginLayouts['layout-plugin-' . $pluginId . '-' . $layoutId] = $layout['title'];
+            foreach ($pluginClass::getProvidedLayouts($view) as $layoutId => $layout) {
+                $pluginLayouts['layout-plugin-' . $pluginId . '-' . $layoutId] = [
+                    'id'      => 'layout-plugin-' . $pluginId . '-' . $layoutId,
+                    'title'   => $layout['title'],
+                    'preview' => $layout['preview'],
+                ];
             }
         }
 
         return array_merge([
-            'layout-classic' => 'Standard',
-            'layout-dbjr'    => 'DBJR',
+            'layout-classic' => [
+                'id'      => 'layout-classic',
+                'title'   => 'Standard',
+                'preview' => $params->resourceBase . 'img/layout-preview-std.png',
+            ],
+            'layout-dbjr'    => [
+                'id'      => 'layout-dbjr',
+                'title'   => 'DBJR',
+                'preview' => $params->resourceBase . 'img/layout-preview-dbjr.png',
+            ],
         ], $params->localLayouts, $pluginLayouts);
     }
 
@@ -70,7 +83,7 @@ class Layout
         $params  = \Yii::$app->params;
         $plugins = $params->getPluginClasses();
         foreach ($plugins as $pluginId => $plugin) {
-            foreach ($plugin::getProvidedLayouts() as $layoutId => $layoutDef) {
+            foreach ($plugin::getProvidedLayouts(null) as $layoutId => $layoutDef) {
                 if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
                     return $layoutDef;
                 }

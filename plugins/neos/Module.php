@@ -6,6 +6,7 @@ use app\models\db\Consultation;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
+use yii\web\View;
 
 class Module extends ModuleBase
 {
@@ -17,13 +18,22 @@ class Module extends ModuleBase
     }
 
     /**
+     * @param View|null $view
      * @return array
      */
-    public static function getProvidedLayouts()
+    public static function getProvidedLayouts($view = null)
     {
+        if ($view) {
+            $asset = ThumbnailAssets::register($view);
+            $thumbBase = $asset->baseUrl;
+        } else {
+            $thumbBase = '/';
+        }
+
         return [
             'std' => [
                 'title'  => 'NEOS',
+                'preview'     => $thumbBase . '/layout-preview-neos.png',
                 'bundle' => Assets::class,
             ]
         ];

@@ -181,6 +181,44 @@ label.legend {
   }
 }
 
+#consultationSettingsForm {
+  .layoutSelector {
+    .layout {
+      height: 150px;
+      width: 200px;
+      margin: 10px;
+      cursor: pointer;
+
+      display: inline-block;
+      vertical-align: top;
+      input {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+        pointer-events: none;
+      }
+      span {
+        height: 150px;
+        width: 200px;
+        border: solid 1px lightgrey;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+
+        display: inline-block;
+        vertical-align: top;
+      }
+      input:checked + span {
+        border: solid 1px green;
+        box-shadow: 0 0 10px rgba(0, 100, 0, 0.5);
+      }
+      img {
+        height: 150px;
+        display: inline-block;
+      }
+    }
+  }
+}
+
 .consultationCreateForm {
   .fakeUrl {
     input.form-control {

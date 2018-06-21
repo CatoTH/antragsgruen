@@ -154,17 +154,20 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </div>
 
         <fieldset class="form-group">
-            <label class="col-sm-3 control-label" for="siteLayout"><?= \Yii::t('admin', 'con_ci') ?>:</label>
-            <div class="col-sm-9"><?php
+            <div class="col-sm-3 control-label"><?= \Yii::t('admin', 'con_ci') ?>:</div>
+            <div class="col-sm-9 layoutSelector">
+                <?php
                 $layout                = $consultation->site->getSettings()->siteLayout;
                 $handledSiteSettings[] = 'siteLayout';
-                echo HTMLTools::fueluxSelectbox(
-                    'siteSettings[siteLayout]',
-                    \app\models\settings\Layout::getCssLayouts(),
-                    $layout,
-                    ['id' => 'siteLayout'],
-                    true
-                ); ?>
+                foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
+                    echo '<label class="layout">';
+                    echo Html::radio('siteSettings[siteLayout]', $lId === $layout, ['value' => $lId]);
+                    echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
+                        'alt="' . Html::encode($cssLayout['title']) . '" ' .
+                        'title="' . Html::encode($cssLayout['title']) . '"></span>';
+                    echo '</label>';
+                }
+                ?>
             </div>
         </fieldset>
 
