@@ -24,7 +24,6 @@ class AntragsgruenApp
     public $hasWurzelwerk         = false;
     public $hasSaml               = false;
     public $samlOrgaFile          = null;
-    public $createNeedsWurzelwerk = false;
     public $prependWWWToSubdomain = true;
     public $pdfLogo               = '';
     public $confirmEmailAddresses = true;

@@ -395,20 +395,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return bool
-     */
-    public function isEntitledToCreateSites()
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        if ($params->createNeedsWurzelwerk) {
-            return $this->isWurzelwerkUser();
-        } else {
-            return ($this->status == User::STATUS_CONFIRMED);
-        }
-    }
-
-    /**
      * @return null|string
      */
     public function getWurzelwerkName()

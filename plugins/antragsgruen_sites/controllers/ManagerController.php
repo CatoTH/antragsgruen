@@ -120,12 +120,11 @@ class ManagerController extends Base
 
         /** @var User $user */
         $user = \Yii::$app->user->identity;
-
-        if (!$user->isEntitledToCreateSites()) {
+        if ($user->status === User::STATUS_CONFIRMED) {
+            return $user;
+        } else {
             return null;
         }
-
-        return $user;
     }
 
     /**
