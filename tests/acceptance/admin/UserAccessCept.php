@@ -56,6 +56,10 @@ $I->gotoStdAdminPage()->gotoSiteAccessPage();
 
 $I->seeElement('#accountsCreateForm');
 
+$I->dontSeeElement('#emailAddresses');
+$I->click('.addUsersOpener.email');
+$I->seeElement('#emailAddresses');
+
 $I->fillField('#emailAddresses', "testuser@example.org\ntestuser2@example.org");
 $I->fillField('#names', "Test user");
 
@@ -80,6 +84,10 @@ $I->seeElement('#accountsCreateForm');
 
 
 $I->wantTo('add one another time');
+
+$I->dontSeeElement('#emailAddresses');
+$I->click('.addUsersOpener.email');
+$I->seeElement('#emailAddresses');
 
 $I->fillField('#emailAddresses', "testuser2@example.org");
 $I->fillField('#names', "Test user");

@@ -263,6 +263,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
                 <small>(needs to exactly match the box to the left!)</small>',
     'siteacc_new_names'           => 'User Names:<br>
                 <small>(needs to exactly match the box to the left!)</small>',
+    'siteacc_new_saml_ww'         => 'Grünes-Netz-Accounts',
     'siteacc_new_text'            => 'E-mail text',
     'siteacc_new_do'              => 'Create',
     'siteacc_admin_add_done'      => '%username% now has admin permissions.',

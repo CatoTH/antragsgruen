@@ -23,7 +23,6 @@ class Site
 
     const LOGIN_STD        = 0;
     const LOGIN_WURZELWERK = 1;
-    const LOGIN_NAMESPACED = 2;
     const LOGIN_EXTERNAL   = 3;
     const LOGIN_SAML       = 4;
 

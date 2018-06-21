@@ -20,6 +20,7 @@ use yii\db\IntegrityException;
  * @property Consultation $consultation
  * @method render(string $view, array $options)
  * @method isPostSet(string $name)
+ * @method AntragsgruenApp getParams()
  */
 trait SiteAccessTrait
 {
@@ -179,10 +180,53 @@ trait SiteAccessTrait
 
     /**
      */
-    private function addUsers()
+    private function addUsersSamlWw()
     {
-        /** @var AntragsgruenApp $params */
-        $params   = \Yii::$app->params;
+        $usernames = explode("\n", \Yii::$app->request->post('samlWW', ''));
+
+        $errors         = [];
+        $alreadyExisted = [];
+        $created        = 0;
+
+        for ($i = 0; $i < count($usernames); $i++) {
+            if (trim($usernames[$i]) === '') {
+                continue;
+            }
+            try {
+                ConsultationUserPrivilege::createWithUserSamlWW($this->consultation, $usernames[$i]);
+                $created++;
+            } catch (AlreadyExists $e) {
+                $alreadyExisted[] = $usernames[$i];
+            } catch (\Exception $e) {
+                $errors[] = $usernames[$i] . ': ' . $e->getMessage();
+            }
+        }
+        if ($created === 0) {
+            $errors[] = \Yii::t('admin', 'siteacc_user_added_0');
+        }
+        if (count($errors) > 0) {
+            $errMsg = \Yii::t('admin', 'siteacc_err_occ') . ': ' . implode("\n", $errors);
+            \Yii::$app->session->setFlash('error', $errMsg);
+        }
+        if (count($alreadyExisted) > 0) {
+            \Yii::$app->session->setFlash('info', \Yii::t('admin', 'siteacc_user_had') . ': ' .
+                implode(', ', $alreadyExisted));
+        }
+        if ($created > 0) {
+            if ($created == 1) {
+                $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
+            } else {
+                $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
+            }
+            \Yii::$app->session->setFlash('success', $msg);
+        }
+    }
+
+    /**
+     */
+    private function addUsersEmail()
+    {
+        $params   = $this->getParams();
         $post     = \Yii::$app->request->post();
         $hasEmail = ($params->mailService['transport'] != 'none');
 
@@ -190,9 +234,9 @@ trait SiteAccessTrait
         $names     = explode("\n", $post['names']);
         $passwords = ($hasEmail ? null : explode("\n", $post['passwords']));
 
-        if (count($emails) != count($names)) {
+        if (count($emails) !== count($names)) {
             \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_err_linenumber'));
-        } elseif (!$hasEmail && count($emails) != count($passwords)) {
+        } elseif (!$hasEmail && count($emails) !== count($passwords)) {
             \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_err_linenumber'));
         } else {
             $errors         = [];
@@ -204,7 +248,7 @@ trait SiteAccessTrait
                     continue;
                 }
                 try {
-                    ConsultationUserPrivilege::createWithUser(
+                    ConsultationUserPrivilege::createWithUserEmail(
                         $this->consultation,
                         trim($emails[$i]),
                         trim($names[$i]),
@@ -225,7 +269,6 @@ trait SiteAccessTrait
             if (count($alreadyExisted) > 0) {
                 \Yii::$app->session->setFlash('info', \Yii::t('admin', 'siteacc_user_had') . ': ' .
                     implode(', ', $alreadyExisted));
-
             }
             if ($created > 0) {
                 if ($created == 1) {
@@ -385,7 +428,12 @@ trait SiteAccessTrait
         }
 
         if ($this->isPostSet('addUsers')) {
-            $this->addUsers();
+            if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
+                $this->addUsersEmail();
+            }
+            if (trim(\Yii::$app->request->post('samlWW', '')) !== '' && $this->getParams()->isSamlActive()) {
+                $this->addUsersSamlWw();
+            }
         }
 
         if ($this->isPostSet('policyRestrictToUsers')) {

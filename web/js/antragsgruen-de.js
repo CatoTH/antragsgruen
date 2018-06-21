@@ -39,6 +39,7 @@ ANTRAGSGRUEN_STRINGS = {
         "emailMissingCode": "Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.",
         "emailMissingLink": "Im E-Mail-Text muss der Code %LINK% vorkommen.",
         "emailMissingTo": "Es wurden keine E-Mail-Adressen angegeben.",
+        "emailMissingUsername": "Es wurden keine Namen angegeben.",
         "emailNumberMismatch": "Es wurden nicht genauso viele Namen wie E-Mail-Adressen angegeben. Bitte achte darauf, dass für jede Zeile bei den E-Mail-Adressen exakt ein Name angegeben wird!",
         "delMotionConfirm": "Diesen Antrag wirklich löschen?",
         "delAmendmentConfirm": "Diesen Änderungsantrag wirklich löschen?",

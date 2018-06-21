@@ -24,10 +24,15 @@ $I->click('.siteAccessLink');
 
 $I->dontSee('Benachrichtigungs-E-Mail', '.alert-info');
 $I->see('Datenschutzgründen', '.alert-info');
-$I->seeElement('#passwords');
 
 
 $I->wantTo('create an user');
+
+$I->dontSeeElement('#emailAddresses');
+$I->click('.addUsersOpener.email');
+$I->seeElement('#emailAddresses');
+$I->seeElement('#passwords');
+
 $I->fillField('#emailAddresses', 'blibla@example.org');
 $I->fillField('#passwords', 'bliblablubb');
 $I->fillField('#names', 'Kasper');

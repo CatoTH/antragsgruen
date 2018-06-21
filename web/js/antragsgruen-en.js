@@ -40,6 +40,7 @@ ANTRAGSGRUEN_STRINGS = {
         "emailMissingCode": "The text needs to contain the code %ACCOUNT%.",
         "emailMissingLink": "The text needs to contain the code %LINK%.",
         "emailMissingTo": "No e-mail-address was entered.",
+        "emailMissingUsername": "No username was entered.",
         "emailNumberMismatch": "The number of names and e-mail-addresses does not match.",
         "delMotionConfirm": "Do you really want to delete this motion?",
         "delAmendmentConfirm": "Do you really want to delete this amendment?",

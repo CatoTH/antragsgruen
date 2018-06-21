@@ -3,53 +3,61 @@ class SiteAccess {
 
     constructor() {
         this.initSite();
-        this.initUsers();
+        this.initUserList();
+        this.initAddUsers();
         this.initAdmins();
     }
 
     private initSite() {
-        let $siteForm = $("#siteSettingsForm");
-        $siteForm.find(".loginMethods .namespaced input").change(function () {
-            if ($(this).prop("checked")) {
-                $("#accountsForm").removeClass("hidden");
-            } else {
-                $("#accountsForm").addClass("hidden");
-            }
-        }).trigger("change");
-
         $(".managedUserAccounts input").change(function () {
             if ($(this).prop("checked")) {
-                $(".showManagedUsers").show();
+                $(".showManagedUsers").removeClass('hidden');
             } else {
-                $(".showManagedUsers").hide();
+                $(".showManagedUsers").addClass('hidden');
             }
         }).trigger("change");
     }
 
-    private initUsers() {
-        $("#accountsCreateForm").submit(function (ev) {
-            let text = $("#emailText").val();
-            if (text.indexOf("%ACCOUNT%") == -1) {
-                bootbox.alert(__t("admin", "emailMissingCode"));
-                ev.preventDefault();
-            }
-            if (text.indexOf("%LINK%") == -1) {
-                bootbox.alert(__t("admin", "emailMissingLink"));
-                ev.preventDefault();
-            }
-
-            let emails = $("#emailAddresses").val().split("\n"),
-                names = $("#names").val().split("\n");
-            if (emails.length == 1 && emails[0] == "") {
-                ev.preventDefault();
-                bootbox.alert(__t("admin", "emailMissingTo"));
-            }
-            if (emails.length != names.length) {
-                bootbox.alert(__t("admin", "emailNumberMismatch"));
-                ev.preventDefault();
-            }
+    private initAddUsers() {
+        $(".addUsersOpener").click((ev) => {
+            const type = $(ev.currentTarget).data("type");
+            $(".addUsersByLogin").addClass("hidden");
+            $(".addUsersByLogin." + type).removeClass("hidden");
         });
 
+        $("#accountsCreateForm").submit((ev) => {
+            if (!$(".addUsersByLogin.email").hasClass("hidden")) {
+                let text = $("#emailText").val();
+                if (text.indexOf("%ACCOUNT%") == -1) {
+                    bootbox.alert(__t("admin", "emailMissingCode"));
+                    ev.preventDefault();
+                }
+                if (text.indexOf("%LINK%") == -1) {
+                    bootbox.alert(__t("admin", "emailMissingLink"));
+                    ev.preventDefault();
+                }
+
+                let emails = $("#emailAddresses").val().split("\n"),
+                    names = $("#names").val().split("\n");
+                if (emails.length == 1 && emails[0] == "") {
+                    ev.preventDefault();
+                    bootbox.alert(__t("admin", "emailMissingTo"));
+                }
+                if (emails.length != names.length) {
+                    bootbox.alert(__t("admin", "emailNumberMismatch"));
+                    ev.preventDefault();
+                }
+            }
+            if (!$(".addUsersByLogin.samlWW").hasClass("hidden")) {
+                if ($("#samlWW").val() === "") {
+                    ev.preventDefault();
+                    bootbox.alert(__t("admin", "emailMissingUsername"));
+                }
+            }
+        });
+    }
+
+    private initUserList() {
         $('.accountListTable .accessViewCol input[type=checkbox]').change(function () {
             if (!$(this).prop("checked")) {
                 $(this).parents('tr').first().find('.accessCreateCol input[type=checkbox]').prop('checked', false);
@@ -65,7 +73,7 @@ class SiteAccess {
     private initAdmins() {
         this.$adminForm = $("#adminForm");
 
-        this.$adminForm.on('click', '.removeAdmin', (ev)  => {
+        this.$adminForm.on('click', '.removeAdmin', (ev) => {
             let $button = $(ev.currentTarget),
                 $form = $(ev.currentTarget).parents("form").first();
 

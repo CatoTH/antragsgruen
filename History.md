@@ -20,6 +20,7 @@
 - It is easier to create PDF-based application motion types, as there now is a template for that when creating a new motion type.
 - The sender name and reply-to of sent emails can now be set on a per-consultation-base (it was on a per-site-base before).
 - Add a way to include the commercial FPDI-PDF-plugin.
+- In installations that use SAML/Grünes Netz for authentication, it is not possible to restrict the login to a specified list of users.
 - Improve compatibility with reverse proxies.
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.

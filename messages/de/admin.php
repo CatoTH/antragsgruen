@@ -269,6 +269,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
                 <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
     'siteacc_new_names'        => 'Namen der Benutzer*innen:<br>
                 <small>(Exakte Zuordnung zu den Zeilen links!)</small>',
+    'siteacc_new_saml_ww'      => 'Grünes-Netz-Account-Namen',
     'siteacc_new_text'         => 'Text der E-Mail',
     'siteacc_new_do'           => 'Berechtigen / Anlegen',
     'siteacc_admin_add_done'   => '%username% hat nun auch Admin-Rechte.',
