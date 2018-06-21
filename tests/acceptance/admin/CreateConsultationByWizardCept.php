@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
-use app\tests\_pages\ConsultationHomePage;
+use app\tests\_pages\SiteHomePage;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -102,7 +102,7 @@ $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoConsultationCreatePage();
 $I->click('.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID . ' .stdbox button');
 $I->see('Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.');
 
-ConsultationHomePage::openBy($I, [
+SiteHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Neue Veranstaltung 1', 'h1');

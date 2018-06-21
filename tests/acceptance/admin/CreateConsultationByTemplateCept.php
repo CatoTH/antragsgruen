@@ -1,10 +1,15 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
-use app\tests\_pages\ConsultationHomePage;
+use app\tests\_pages\SiteHomePage;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
+
+SiteHomePage::openBy($I, [
+    'subdomain' => 'stdparteitag'
+]);
+
 
 $I->loginAndGotoStdAdminPage()->gotoConsultationCreatePage();
 
@@ -28,7 +33,7 @@ $I->seeNumberOfElements('#sectionsList > li', 5);
 
 
 
-ConsultationHomePage::openBy($I, [
+SiteHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Test2', 'h1');
@@ -59,7 +64,7 @@ $I->see('Die neue Veranstaltung wurde angelegt.');
 $I->see('Noch eine neue Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
 $I->see('Standard-Veranstaltung', '.consultation' . (AcceptanceTester::FIRST_FREE_CONSULTATION_ID + 1));
 
-ConsultationHomePage::openBy($I, [
+SiteHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Noch eine neue Veranstaltung', 'h1');
@@ -72,7 +77,7 @@ $I->gotoStdAdminPage()->gotoConsultationCreatePage();
 $I->click('.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID . ' .stdbox button');
 $I->see('Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.');
 
-ConsultationHomePage::openBy($I, [
+SiteHomePage::openBy($I, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Neue Veranstaltung 1', 'h1');
