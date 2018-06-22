@@ -4,8 +4,6 @@ namespace app\controllers;
 
 use app\components\Tools;
 use app\components\UrlHelper;
-use app\components\WurzelwerkAuthClient;
-use app\components\WurzelwerkAuthClientTest;
 use app\components\WurzelwerkSamlClient;
 use app\models\db\AmendmentSupporter;
 use app\models\db\EMailBlacklist;
@@ -81,70 +79,6 @@ class UserController extends Base
 
         return '';
     }
-
-    /**
-     * @param string $backUrl
-     * @return int|string
-     * @throws \yii\base\ExitException
-     * @throws \yii\base\Exception
-     */
-    public function actionLoginwurzelwerk($backUrl = '')
-    {
-        /** @var AntragsgruenApp $params */
-        $params = Yii::$app->params;
-        if (!$params->hasWurzelwerk) {
-            return 'Wurzelwerk is not supported';
-        }
-
-        if ($backUrl == '') {
-            $backUrl = \Yii::$app->request->post('backUrl', UrlHelper::homeUrl());
-        }
-
-        if (YII_ENV == 'test') {
-            $client = new WurzelwerkAuthClientTest();
-            if ($this->getRequestValue('username')) {
-                $client->setClaimedId($this->getRequestValue('username'));
-                $this->redirect($client->getFakeRedirectUrl($backUrl));
-                return '';
-            }
-        } else {
-            $client = new WurzelwerkAuthClient();
-        }
-
-        if ($this->isRequestSet('openid_claimed_id')) {
-            $client->setClaimedId($this->getRequestValue('openid_claimed_id'));
-        } elseif ($this->isRequestSet('username')) {
-            $client->setClaimedId($this->getRequestValue('username'));
-        }
-
-        if ($this->isRequestSet('openid_mode')) {
-            if ($this->getRequestValue('openid_mode') == 'error') {
-                \yii::$app->session->setFlash('error', 'An error occurred: ' . $this->getRequestValue('openid_error'));
-                return $this->actionLogin($backUrl);
-            } elseif ($this->getRequestValue('openid_mode') == 'cancel') {
-                \yii::$app->session->setFlash('error', 'Aborted login');
-                return $this->actionLogin($backUrl);
-            } elseif ($client->validate()) {
-                $this->loginUser($client->getOrCreateUser());
-                $this->redirect($backUrl);
-            } else {
-                \yii::$app->session->setFlash('error', \Yii::t('user', 'err_unknown_ww_repeat'));
-                return $this->actionLogin($backUrl);
-            }
-            return '';
-        }
-
-        try {
-            $url = $client->buildAuthUrl();
-        } catch (\Exception $e) {
-            return $this->showErrorpage(
-                500,
-                \Yii::t('user', 'err_unknown') . ':<br> "' . Html::encode($e->getMessage()) . '"'
-            );
-        }
-        return Yii::$app->getResponse()->redirect($url);
-    }
-
 
     /**
      * @param string $backUrl

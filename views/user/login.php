@@ -151,60 +151,6 @@ if ($params->isSamlActive()) {
         echo '</div>';
     }
     echo '</section>';
-} elseif ($params->hasWurzelwerk) {
-    $hide_ww_login = !in_array(SiteSettings::LOGIN_WURZELWERK, $loginMethods);
-    echo '<section class="loginWurzelwerk">';
-    if ($hide_ww_login) {
-        echo '<div class="content">
-        <a href="#" onClick="$(\'#admin_login_www\').toggleClass(\'hidden\'); return false;">Admin-Login</a>
-    </div>
-    <div id="admin_login_www" class="hidden">';
-    }
-
-    echo '<h2 class="green">Wurzelwerk-Login</h2>
-    <div class="content row">';
-
-    if ($controller->consultation) {
-        $wwBackUrl = UrlHelper::createUrl('consultation/index');
-    } else {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $wwBackUrl = '/';
-        foreach ($params->getPluginClasses() as $pluginClass) {
-            if ($pluginClass::getDefaultRouteOverride()) {
-                $wwBackUrl = UrlHelper::createUrl($pluginClass::getDefaultRouteOverride());
-            }
-        }
-    }
-    $action = UrlHelper::createUrl(['user/loginwurzelwerk', 'backUrl' => $wwBackUrl]);
-    echo Html::beginForm($action, 'post', ['class' => 'col-sm-4', 'id' => 'wurzelwerkLoginForm']);
-
-    echo '<div class="form-group">
-    <label for="wurzelwerkAccount">WurzelWerk-Account:</label>
-  <input name="username" id="wurzelwerkAccount" type="text" class="form-control">
-    </div>
-
-    <button type="submit" class="btn btn-primary" name="wurzelwerkLogin">
-            <span class="glyphicon glyphicon-log-in"></span> Einloggen
-    </button>
-';
-    echo Html::endForm();
-    echo '<div id="loginWurzelwerkHint">
-    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://service.gruene.de/" umgeleitet,
-    die vom Bundesverband betrieben wird.<br>Dort musst du dein Wurzelwerk-Benutzer*innenname/Passwort
-    eingeben und bestätigen, dass deine E-Mail-Adresse an Antragsgrün übermittelt wird.
-    Dein Wurzelwerk-Passwort bleibt geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
-    <br><br>
-    <a href="https://netz.gruene.de/passwordForgotten.form" class="loginWurzelwerkForgot" target="_blank">
-        Wurzelwerk-Zugangsdaten vergessen?
-    </a>
-        </div>
-</div>';
-
-    if ($hide_ww_login) {
-        echo '</div>';
-    }
-    echo '</section>';
 }
 
 

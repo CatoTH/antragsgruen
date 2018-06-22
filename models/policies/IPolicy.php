@@ -31,7 +31,7 @@ abstract class IPolicy
 
         /** @var AntragsgruenApp $params */
         $params = \yii::$app->params;
-        if ($params->hasWurzelwerk || $params->isSamlActive()) {
+        if ($params->isSamlActive()) {
             $policies[static::POLICY_WURZELWERK] = Wurzelwerk::class;
         }
 

@@ -256,8 +256,6 @@ class UrlHelper
         if (Yii::$app->user->isGuest) {
             if ($params->isSamlActive()) {
                 return Url::toRoute(['/user/loginsaml', 'backUrl' => $target_url]);
-            } elseif ($params->hasWurzelwerk) {
-                return Url::toRoute(['/user/loginwurzelwerk', 'backUrl' => $target_url]);
             } else {
                 return '';
             }

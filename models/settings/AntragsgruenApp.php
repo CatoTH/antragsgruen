@@ -21,7 +21,6 @@ class AntragsgruenApp
     public $domainPlain           = 'http://antragsgruen.local/';
     public $domainSubdomain       = '';
     public $cookieDomain          = null;
-    public $hasWurzelwerk         = false;
     public $hasSaml               = false;
     public $samlOrgaFile          = null;
     public $prependWWWToSubdomain = true;

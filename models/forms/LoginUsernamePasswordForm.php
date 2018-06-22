@@ -155,18 +155,6 @@ class LoginUsernamePasswordForm extends Model
     /**
      * @return User[]
      */
-    private function getCandidatesWurzelwerk()
-    {
-        $wwlike = "openid:https://service.gruene.de/%";
-        $auth   = "openid:https://service.gruene.de/openid/" . $this->username;
-        $sql    = "SELECT * FROM `user` WHERE `auth` = '" . addslashes($auth) . "'";
-        $sql    .= " OR (auth LIKE '$wwlike' AND email = '" . addslashes($this->username) . "')";
-        return User::findBySql($sql)->all();
-    }
-
-    /**
-     * @return User[]
-     */
     private function getCandidatesStdLogin()
     {
         $sql_where1 = "`auth` = 'email:" . addslashes($this->username) . "'";
@@ -185,14 +173,9 @@ class LoginUsernamePasswordForm extends Model
             $methods = SiteSettings::$SITE_MANAGER_LOGIN_METHODS;
         }
 
-        /** @var AntragsgruenApp $app */
-        $app        = \yii::$app->params;
         $candidates = [];
         if (in_array(SiteSettings::LOGIN_STD, $methods)) {
             $candidates = array_merge($candidates, $this->getCandidatesStdLogin());
-        }
-        if (in_array(SiteSettings::LOGIN_WURZELWERK, $methods) && $app->hasWurzelwerk) {
-            $candidates = array_merge($candidates, $this->getCandidatesWurzelwerk());
         }
         return $candidates;
     }

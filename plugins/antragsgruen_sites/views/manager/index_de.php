@@ -138,7 +138,7 @@ echo $this->context->getParams()->getBehaviorClass()->getManagerCurrentHint();
 
 <?php
 
-if ($params->hasWurzelwerk || $params->isSamlActive()) {
+if ($params->isSamlActive()) {
     echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
 <div class="content infoSite">';
 
@@ -152,24 +152,13 @@ if ($params->hasWurzelwerk || $params->isSamlActive()) {
             UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
             'post',
             [
-                'class' => 'form-inline login_' . ($params->hasSaml ? 'saml' : 'openid'),
+                'class' => 'form-inline login_saml',
                 'style' => 'margin-top: 20px;'
             ]
         );
         echo '
         Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
     &quot;Grünes Netz&quot;-Account (Wurzelwerk) ein.<br><br>';
-        if ($params->hasWurzelwerk && !$params->hasSaml) {
-            echo '<div class="form-group">
-        <label for="wwoauth" style="vertical-align: top; margin-top: 5px;">
-            Benutzer*innenname<br>
-            <a href="https://netz.gruene.de/passwordForgotten.form" target="_blank" style="font-size: 0.8em;
-            margin-top: -7px; display: inline-block; margin-bottom: 10px; font-weight: normal;">
-                -Zugangsdaten vergessen?</a>
-        </label>
-        <input type="text" class="form-control" id="wwoauth" name="username" placeholder="Jane Doe">
-    </div>';
-        }
         echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
         echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>

@@ -27,6 +27,7 @@
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
 - Bugfix: The list of tags to select when creating a motion is now sorted in the same way as in the consultation setting page.
+- Obsolete: The old, non-fuctional OpenID-based Wurzelwerk-login was removed
 
 ### Version 3.8.3 (2018-05-12)
 

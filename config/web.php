@@ -79,11 +79,6 @@ if ($params->cookieDomain) {
     ];
 }
 
-if ($params->hasWurzelwerk && !isset($config['components']['authClientCollection']['clients']['wurzelwerk'])) {
-    $config['components']['authClientCollection']['clients']['wurzelwerk'] = [
-        'class' => 'app\components\WurzelwerkAuthClient',
-    ];
-}
 if (YII_ENV_DEV && file_exists($configFile) && strpos($_SERVER['HTTP_USER_AGENT'], 'pa11y') === false) {
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][]      = 'debug';

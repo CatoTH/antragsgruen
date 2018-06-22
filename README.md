@@ -86,14 +86,6 @@ sudo chown -R www-data:www-data runtime
 sudo chown -R www-data:www-data config #Can be skipped if you don't use the Installer
 ```
 
-Set the permissions (example for Mac OS X):
-
-```bash
-sudo chown -R _www:_www web/assets
-sudo chown -R _www:_www runtime
-sudo chown -R _www:_www config #Can be skipped if you don't use the Installer
-```
-
 ### Using Docker
 
 A Dockerfile to compile and run the latest development version of Antragsgrün is provided by [Jugendpresse Deutschland e.V.](https://www.jugendpresse.de) at this repository:
