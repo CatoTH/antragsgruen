@@ -7,21 +7,35 @@ use app\models\db\ConsultationMotionType;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
+use app\models\settings\AntragsgruenApp;
 use setasign\Fpdi\TcpdfFpdi;
 use TCPDF;
 
 abstract class IPDFLayout
 {
     /**
+     * @param AntragsgruenApp $params
      * @return string[]
      */
-    public static function getClasses()
+    public static function getClasses($params)
     {
         return [
-            -1 => '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -',
-            0  => 'LDK Bayern',
-            1  => 'BDK',
-            2  => 'DBJR',
+            -1 => [
+                'title'   => '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -',
+                'preview' => null,
+            ],
+            0  => [
+                'title'   => 'LDK Bayern',
+                'preview' => $params->resourceBase . 'img/pdf_preview_byldk.png',
+            ],
+            1  => [
+                'title'   => 'BDK',
+                'preview' => $params->resourceBase . 'img/pdf_preview_bdk.png',
+            ],
+            2  => [
+                'title'   => 'DBJR',
+                'preview' => $params->resourceBase . 'img/pdf_preview_dbjr.png',
+            ],
         ];
     }
 

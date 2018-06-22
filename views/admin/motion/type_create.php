@@ -85,9 +85,9 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="col-md-9"><?php
         $options = [
-            'class'       => 'form-control',
-            'id'          => 'typeTitleSingular',
-            'required'    => 'required',
+            'class'    => 'form-control',
+            'id'       => 'typeTitleSingular',
+            'required' => 'required',
         ];
         echo Html::textInput('type[titleSingular]', '', $options);
         ?>
@@ -100,9 +100,9 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="col-md-9"><?php
         $options = [
-            'class'       => 'form-control',
-            'id'          => 'typeTitlePlural',
-            'required'    => 'required',
+            'class'    => 'form-control',
+            'id'       => 'typeTitlePlural',
+            'required' => 'required',
         ];
         echo Html::textInput('type[titlePlural]', '', $options);
         ?>
@@ -115,9 +115,9 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="col-md-9"><?php
         $options = [
-            'class'       => 'form-control',
-            'id'          => 'typeCreateTitle',
-            'required'    => 'required',
+            'class'    => 'form-control',
+            'id'       => 'typeCreateTitle',
+            'required' => 'required',
         ];
         echo HTMLTools::smallTextarea('type[createTitle]', $options, '');
         ?>
@@ -128,15 +128,29 @@ echo Html::beginForm('', 'post', [
     <label class="col-md-3 control-label" for="pdfLayout">
         <?= \Yii::t('admin', 'motion_type_pdf_layout') ?>
     </label>
-    <div class="col-md-9"><?php
-        echo HTMLTools::fueluxSelectbox(
-            'type[pdfLayout]',
-            \app\views\pdfLayouts\IPDFLayout::getClasses(),
-            1, // BDK-Layout
-            ['id' => 'pdfLayout'],
-            true
-        );
-        ?></div>
+    <div class="col-md-9 thumbnailedLayoutSelector">
+        <?php
+        $hasTex = isset($motionType->getAvailablePDFTemplates()[1]);
+        foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
+            if ($hasTex) {
+                $checked = ($lId === 1);
+            } else {
+                $checked = ($lId === 'php0');
+            }
+            echo '<label class="layout">';
+            echo Html::radio('type[pdfLayout]', $checked, ['value' => $lId, 'required' => 'required']);
+            echo '<span>';
+            if ($layout['preview']) {
+                echo '<img src="' . Html::encode($layout['preview']) . '" ' .
+                    'alt="' . Html::encode($layout['title']) . '" ' .
+                    'title="' . Html::encode($layout['title']) . '"></span>';
+            } else {
+                echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
+            }
+            echo '</label>';
+        }
+        ?>
+    </div>
 </div>
 
 <div class="form-group">

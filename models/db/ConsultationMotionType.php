@@ -223,12 +223,12 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getOdtTemplateFile()
     {
-        $layout = $this->getConsultation()->site->getSettings()->siteLayout;
+        $layout    = $this->getConsultation()->site->getSettings()->siteLayout;
         $layoutDef = Layout::getLayoutPluginDef($layout);
         if ($layoutDef && $layoutDef['odtTemplate']) {
             return $layoutDef['odtTemplate'];
         } else {
-            $dir    = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+            $dir = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
             return $dir . 'OpenOffice-Template-Std.odt';
         }
     }
@@ -238,17 +238,25 @@ class ConsultationMotionType extends ActiveRecord
      */
     public function getAvailablePDFTemplates()
     {
-        /** @var AntragsgruenApp $config */
-        $config = \Yii::$app->params;
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
         $return = [];
-        foreach (IPDFLayout::getClasses() as $id => $name) {
-            $return['php' . $id] = $name;
+        foreach (IPDFLayout::getClasses($params) as $id => $data) {
+            $return['php' . $id] = $data;
         }
-        if ($config->xelatexPath) {
+        if ($params->xelatexPath) {
             /** @var TexTemplate[] $texLayouts */
             $texLayouts = TexTemplate::find()->all();
             foreach ($texLayouts as $layout) {
-                $return[$layout->id] = $layout->title;
+                if ($layout->id === 1) {
+                    $preview = $params->resourceBase . 'img/pdf_preview_latex_bdk.png';
+                } else {
+                    $preview = null;
+                }
+                $return[$layout->id] = [
+                    'title'   => $layout->title,
+                    'preview' => $preview,
+                ];
             }
         }
         return $return;
@@ -359,7 +367,7 @@ class ConsultationMotionType extends ActiveRecord
                 }
                 if (static::isInDeadlineRange($deadline)) {
                     $deadline['type'] = $type;
-                    $found[] = $deadline;
+                    $found[]          = $deadline;
                 }
             }
         }

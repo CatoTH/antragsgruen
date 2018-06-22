@@ -155,7 +155,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         <fieldset class="form-group">
             <div class="col-sm-3 control-label"><?= \Yii::t('admin', 'con_ci') ?>:</div>
-            <div class="col-sm-9 layoutSelector">
+            <div class="col-sm-9 thumbnailedLayoutSelector">
                 <?php
                 $layout                = $consultation->site->getSettings()->siteLayout;
                 $handledSiteSettings[] = 'siteLayout';

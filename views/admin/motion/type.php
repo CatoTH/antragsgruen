@@ -116,15 +116,22 @@ echo $controller->showErrors();
         <label class="col-md-4 control-label" for="pdfLayout">
             <?= \Yii::t('admin', 'motion_type_pdf_layout') ?>
         </label>
-        <div class="col-md-8">
+        <div class="col-md-8 thumbnailedLayoutSelector">
             <?php
-            echo HTMLTools::fueluxSelectbox(
-                'pdfTemplate',
-                $motionType->getAvailablePDFTemplates(),
-                ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout),
-                ['id' => 'pdfLayout'],
-                true
-            );
+            $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
+            foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
+                echo '<label class="layout">';
+                echo Html::radio('pdfTemplate', $lId === $currValue, ['value' => $lId]);
+                echo '<span>';
+                if ($layout['preview']) {
+                    echo '<img src="' . Html::encode($layout['preview']) . '" ' .
+                        'alt="' . Html::encode($layout['title']) . '" ' .
+                        'title="' . Html::encode($layout['title']) . '"></span>';
+                } else {
+                    echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
+                }
+                echo '</label>';
+            }
             ?>
         </div>
     </div>
@@ -159,7 +166,7 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
             foreach (ISupportType::getImplementations() as $formId => $formClass) {
                 $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
                 $options[]  = [
-                    'title' => $formClass::getTitle(),
+                    'title'      => $formClass::getTitle(),
                     'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
                 ];
             }
@@ -304,17 +311,17 @@ echo '</div>';
 echo Html::endForm();
 
 ?>
-<ul style="display: none;" id="sectionTemplate">
-    <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>
-</ul>
+    <ul style="display: none;" id="sectionTemplate">
+        <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>
+    </ul>
 
-<br><br>
-<div class="deleteTypeOpener content">
-<button class="btn btn-danger btn-link" type="button">
-    <span class="glyphicon glyphicon-trash"></span>
-    <?= \Yii::t('admin', 'motion_type_del_caller') ?>
-</button>
-</div>
+    <br><br>
+    <div class="deleteTypeOpener content">
+        <button class="btn btn-danger btn-link" type="button">
+            <span class="glyphicon glyphicon-trash"></span>
+            <?= \Yii::t('admin', 'motion_type_del_caller') ?>
+        </button>
+    </div>
 
 <?php
 

@@ -260,8 +260,15 @@ class MotionController extends AdminBase
             $motionType->titleSingular = $type['titleSingular'];
             $motionType->titlePlural   = $type['titlePlural'];
             $motionType->createTitle   = $type['createTitle'];
-            $motionType->pdfLayout     = $type['pdfLayout'];
             $motionType->motionPrefix  = $type['motionPrefix'];
+
+            if (strpos($type['pdfLayout'], 'php') === 0) {
+                $motionType->pdfLayout     = IntVal(str_replace('php', '', $type['pdfLayout']));
+                $motionType->texTemplateId = null;
+            } elseif ($type['pdfLayout']) {
+                $motionType->texTemplateId = IntVal($type['pdfLayout']);
+            }
+
             if (!$motionType->save()) {
                 var_dump($motionType->getErrors());
                 die();
