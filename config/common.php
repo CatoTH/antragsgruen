@@ -72,6 +72,7 @@ $components = [
                 'levels' => ['error', 'warning'],
                 'except' => [
                     'yii\web\HttpException:404',
+                    'yii\web\HttpException:400',
                 ],
             ],
         ],
