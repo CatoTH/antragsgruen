@@ -113,30 +113,6 @@ echo $controller->showErrors();
     </div>
 
     <div class="form-group">
-        <label class="col-md-4 control-label" for="pdfLayout">
-            <?= \Yii::t('admin', 'motion_type_pdf_layout') ?>
-        </label>
-        <div class="col-md-8 thumbnailedLayoutSelector">
-            <?php
-            $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
-            foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
-                echo '<label class="layout">';
-                echo Html::radio('pdfTemplate', $lId === $currValue, ['value' => $lId]);
-                echo '<span>';
-                if ($layout['preview']) {
-                    echo '<img src="' . Html::encode($layout['preview']) . '" ' .
-                        'alt="' . Html::encode($layout['title']) . '" ' .
-                        'title="' . Html::encode($layout['title']) . '"></span>';
-                } else {
-                    echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
-                }
-                echo '</label>';
-            }
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group">
         <label class="col-md-4 control-label" for="typeMotionPrefix">
             <?= \Yii::t('admin', 'motion_type_title_prefix') ?>
         </label>
@@ -278,6 +254,27 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
             );
             ?>
         </div>
+    </div>
+
+
+    <h3><?= \Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
+    <div class="thumbnailedLayoutSelector">
+        <?php
+        $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
+        foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
+            echo '<label class="layout">';
+            echo Html::radio('pdfTemplate', $lId === $currValue, ['value' => $lId]);
+            echo '<span>';
+            if ($layout['preview']) {
+                echo '<img src="' . Html::encode($layout['preview']) . '" ' .
+                    'alt="' . Html::encode($layout['title']) . '" ' .
+                    'title="' . Html::encode($layout['title']) . '"></span>';
+            } else {
+                echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
+            }
+            echo '</label>';
+        }
+        ?>
     </div>
 
     <div class="submitRow">

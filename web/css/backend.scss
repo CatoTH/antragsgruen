@@ -226,6 +226,11 @@ label.legend {
       display: inline-block;
     }
   }
+
+  & + .submitRow {
+    margin-top: 70px;
+    margin-bottom: 50px;
+  }
 }
 
 .consultationCreateForm {

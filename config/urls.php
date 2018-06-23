@@ -102,11 +102,15 @@ if ($params->multisiteMode) {
         [
             $domp . '/page/<pageSlug:[^\/]+>/save' => 'pages/save-page',
         ],
-        $urlRules,
-        [
-            $domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>',
-        ]
+        $urlRules
     );
+    if ($params->domainSubdomain) {
+        // The subdomain-scoped version of the login should have a higher priority
+        $urlRules = array_merge($urlRules, [$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>']);
+    } else {
+        // If we use /subdomain/consultation/, the login should have higher priority, not to collide with [consultation]
+        $urlRules = array_merge([$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>'], $urlRules);
+    }
 
     foreach ($params->getPluginClasses() as $pluginClass) {
         $urlRules = array_merge($pluginClass::getManagerUrlRoutes($domp), $urlRules);
