@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 
@@ -196,5 +197,14 @@ class Layout
     public static function getFormattedAmendmentStatus($origStatus, Amendment $amendment)
     {
         return static::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return string
+     */
+    public static function getAdminIndexHint(Consultation $consultation)
+    {
+        return static::callHook('getAdminIndexHint', [$consultation]);
     }
 }

@@ -103,7 +103,7 @@ if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) 
 echo '</ul>';
 echo '</div><aside class="adminIndexSecondary">';
 
-echo $controller->getParams()->getBehaviorClass()->getAdminIndexHint($consultation);
+echo \app\models\layoutHooks\Layout::getAdminIndexHint($consultation);
 
 if (User::currentUserIsSuperuser() && UpdateChecker::isUpdaterAvailable()) {
     $url = UrlHelper::createUrl('admin/index/check-updates');

@@ -3,6 +3,7 @@
 namespace app\models\layoutHooks;
 
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 
@@ -127,4 +128,11 @@ interface Hooks
      * @return string
      */
     public function getFormattedAmendmentStatus($before, Amendment $amendment);
+
+    /**
+     * @param string $before
+     * @param Consultation $consultation
+     * @return string
+     */
+    public function getAdminIndexHint($before, Consultation $consultation);
 }

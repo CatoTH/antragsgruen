@@ -46,7 +46,6 @@ class ManagerController extends Base
             }
         }
 
-        $sitesCurrent = $this->getParams()->getBehaviorClass()->getManagerCurrentSidebarSites($sitesCurrent);
         $html         = '<ul class="nav nav-list current-uses-list">';
         $html         .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sitesCurrent as $data) {
@@ -60,7 +59,6 @@ class ManagerController extends Base
         $this->layoutParams->menusHtml[] = $html;
 
 
-        $sitesOld = $this->getParams()->getBehaviorClass()->getManagerOldSidebarSites($sitesOld);
         $html     = '<ul class="nav nav-list current-uses-list old-uses-list">';
         $html     .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_old_uses') . '</li>';
         $html     .= '<li class="shower"><a href="#" onClick="$(\'.old-uses-list .hidden\').removeClass(\'hidden\');

@@ -70,7 +70,7 @@ class Layout
                 'title'   => 'DBJR',
                 'preview' => $params->resourceBase . 'img/layout-preview-dbjr.png',
             ],
-        ], $params->localLayouts, $pluginLayouts);
+        ], $pluginLayouts);
     }
 
     /**

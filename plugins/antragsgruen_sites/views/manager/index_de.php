@@ -35,10 +35,6 @@ $params = \Yii::$app->params;
     </p>
 </div>
 
-<?php
-echo $this->context->getParams()->getBehaviorClass()->getManagerCurrentHint();
-?>
-
 <h2 id="funktionen" class="green">Welche Funktionen bietet Antragsgrün?</h2>
 
 <div class="content infoSite">

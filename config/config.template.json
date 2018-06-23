@@ -9,7 +9,6 @@
   "mailService": {
     "transport": "sendmail"
   },
-  "localLayouts": {},
   "multisiteMode": true,
   "randomSeed": "RANDOMSEED",
   "domainPlain": "https://www.example.org/",

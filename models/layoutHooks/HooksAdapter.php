@@ -208,4 +208,15 @@ class HooksAdapter implements Hooks
     {
         return $before;
     }
+
+    /**
+     * @param string $before
+     * @param Consultation $consultation
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAdminIndexHint($before, Consultation $consultation)
+    {
+        return $before;
+    }
 }

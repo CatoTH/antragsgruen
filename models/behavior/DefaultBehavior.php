@@ -24,17 +24,6 @@ class DefaultBehavior
     }
 
     /**
-     * Is shown at the right side of the main settings page
-     *
-     * @param Consultation $consultation
-     * @return string
-     */
-    public static function getAdminIndexHint(Consultation $consultation)
-    {
-        return '';
-    }
-
-    /**
      * Is shown at the top of the manager page, mainly to promote current consultations
      *
      * @return string

@@ -4,9 +4,9 @@ namespace app\plugins\antragsgruen_sites;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\layoutHooks\HooksAdapter;
-use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
 class LayoutHooks extends HooksAdapter
@@ -91,5 +91,24 @@ class LayoutHooks extends HooksAdapter
         $out .= '</div></footer>';
 
         return $out;
+    }
+
+    /**
+     * @param string $before
+     * @param Consultation $consultation
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAdminIndexHint($before, Consultation $consultation)
+    {
+        return $before . '<article class="adminCard adminCardSupport">
+        <header>
+            <h2>Verfügbarkeit, Support</h2>
+        </header>
+        <main>
+            Wenn für eine Veranstaltung eine garantierte Verfügbarkeit von Antragsgrün und professioneller Support
+            benötigt wird, setzt euch bitte frühzeitig <a href="https://antragsgruen.de/#support">mit uns in Kontakt</a>!
+        </main>
+    </article>';
     }
 }
