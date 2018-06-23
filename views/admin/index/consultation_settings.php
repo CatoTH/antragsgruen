@@ -180,15 +180,6 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                        value="<?= Html::encode($settings->logoUrl) ?>" class="form-control" id="logoUrl">
             </div>
         </fieldset>
-
-        <?php $handledSettings[] = 'logoUrlFB'; ?>
-        <fieldset class="form-group">
-            <label class="col-sm-3 control-label" for="logoUrlFB"><?= \Yii::t('admin', 'con_fb_img') ?>:</label>
-            <div class="col-sm-9">
-                <input type="text" name="settings[logoUrlFB]"
-                       value="<?= Html::encode($settings->logoUrlFB) ?>" class="form-control" id="logoUrlFB">
-            </div>
-        </fieldset>
         <?php
 
         $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, \Yii::t('admin', 'con_prefix_hide'));

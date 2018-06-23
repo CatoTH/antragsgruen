@@ -51,7 +51,6 @@ class Consultation
 
     /** @var null|string */
     public $logoUrl         = null;
-    public $logoUrlFB       = null;
     public $motionIntro     = null;
     public $pdfIntroduction = '';
 

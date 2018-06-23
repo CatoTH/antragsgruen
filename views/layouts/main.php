@@ -57,9 +57,6 @@ echo '>
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
-if ($controller->consultation && $controller->consultation->getSettings()->logoUrlFB != '') {
-    echo '<link rel="image_src" href="' . Html::encode($controller->consultation->getSettings()->logoUrlFB) . '">';
-}
 if ($layout->robotsNoindex || \app\models\settings\AntragsgruenApp::getInstance()->mode == 'sandbox') {
     echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 } else {
