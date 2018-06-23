@@ -21,6 +21,7 @@
 - Selecting the site layout and PDF layout is now done using thumbnails of the layouts, not by their rather cryptic names.
 - The PDF-introduction of a motion can now be set on a per-motion-type basis.
 - The sender name and reply-to of sent emails can now be set on a per-consultation-base (it was on a per-site-base before).
+- The logo of a consultation can (and has to be) uploaded now in the consultation settings. This enables using it as PDF-logo, and prevents mixed secure content warnings.
 - Add a way to include the commercial FPDI-PDF-plugin.
 - It is now possible to restrict the access to one consultation to specific users, while leaving other consultations open for all.
 - In installations that use SAML/Grünes Netz for authentication, it is not possible to restrict the login to a specified list of users.

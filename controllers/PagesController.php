@@ -232,67 +232,21 @@ class PagesController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $width    = null;
-        $height   = null;
-        $mime     = null;
-        $filename = null;
-        $content  = null;
-        if (isset($_FILES['upload']) && is_uploaded_file($_FILES['upload']['tmp_name'])) {
-            $content = file_get_contents($_FILES['upload']['tmp_name']);
-            $info    = getimagesizefromstring($content);
-            if ($info && in_array($info['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
-                $mime     = $info['mime'];
-                $width    = $info[0];
-                $height   = $info[1];
-                $filename = $_FILES['upload']['name'];
-            } else {
-                return json_encode([
-                    'uploaded' => 0,
-                    'error'    => [
-                        'message' => 'Not a valid image file'
-                    ],
-                ]);
-            }
-        } else {
-            return json_encode([
-                'uploaded' => 0,
-                'error'    => [
-                    'message' => 'No image data uploaded'
-                ],
-            ]);
-        }
-
-        $existingFile = ConsultationFile::findFileByContent($this->consultation, $content);
-        if ($existingFile) {
+        try {
+            $file = ConsultationFile::uploadImage($this->consultation, 'upload');
             return json_encode([
                 'uploaded' => 1,
-                'fileName' => $existingFile->filename,
-                'url'      => $existingFile->getUrl(),
+                'fileName' => $file->filename,
+                'url'      => $file->getUrl(),
             ]);
-        }
-
-        $file                 = new ConsultationFile();
-        $file->consultationId = $this->consultation->id;
-        $file->mimetype       = $mime;
-        $file->width          = $width;
-        $file->height         = $height;
-        $file->dateCreation   = date('Y-m-d H:i:s');
-        $file->setFilename($filename);
-        $file->setData($content);
-        if (!$file->save()) {
+        } catch (FormError $e) {
             return json_encode([
                 'uploaded' => 0,
                 'error'    => [
-                    'message' => json_encode($file->getErrors())
+                    'message' => $e->getMessage()
                 ],
             ]);
         }
-
-        return json_encode([
-            'uploaded' => 1,
-            'fileName' => $filename,
-            'url'      => $file->getUrl(),
-        ]);
     }
 
     /**

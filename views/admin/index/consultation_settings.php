@@ -44,7 +44,11 @@ $boolSettingRow = function ($settings, $field, &$handledSettings, $description) 
 
 ?><h1><?= \Yii::t('admin', 'con_h1') ?></h1>
 <?php
-echo Html::beginForm('', 'post', ['id' => 'consultationSettingsForm', 'class' => 'adminForm form-horizontal fuelux']);
+echo Html::beginForm('', 'post', [
+    'id'      => 'consultationSettingsForm',
+    'class'   => 'adminForm form-horizontal fuelux',
+    'enctype' => 'multipart/form-data',
+]);
 
 echo $controller->showErrors();
 
@@ -158,15 +162,13 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             </div>
         </fieldset>
 
-
-        <?php $handledSettings[] = 'logoUrl'; ?>
         <fieldset class="form-group">
             <label class="col-sm-3 control-label" for="logoUrl"><?= \Yii::t('admin', 'con_logo_url') ?>:</label>
             <div class="col-sm-9">
-                <input type="text" name="settings[logoUrl]"
-                       value="<?= Html::encode($settings->logoUrl) ?>" class="form-control" id="logoUrl">
+                <input type="file" name="newLogo" class="form-control" id="logoUrl">
             </div>
         </fieldset>
+
         <?php
 
         $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, \Yii::t('admin', 'con_prefix_hide'));

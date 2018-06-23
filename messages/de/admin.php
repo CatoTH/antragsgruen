@@ -159,11 +159,9 @@ return [
     'con_pdf_intro'           => 'PDF-Einleitung',
     'con_pdf_intro_place'     => 'Mitgliederversammlung des Lorem Ipsum e.V.',
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
-<small class="conPrefixHide">(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.)
-müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt.
-Das ist dann praktisch, wenn man eine eigene Nummerierung im Titel der Anträge vornimmt.</small>',
+<small class="conPrefixHide">Antragskürzel müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann, werden aber nicht mehr angezeigt.</small>',
     'con_fb_img'              => 'Facebook-Bild',
-    'con_logo_url'            => 'Logo-URL',
+    'con_logo_url'            => 'Neues Logo hochladen',
     'con_ci'                  => 'Layout',
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseiten-Design',

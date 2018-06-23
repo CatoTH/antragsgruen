@@ -151,6 +151,11 @@
   }
 }
 
+.form-control[type=file] {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .breadcrumb {
   background: none;
   filter: none;

@@ -163,7 +163,7 @@ return [
     'con_pdf_intro_place'     => 'Name, photo, age, gender, place of birth, self-introduction, signature',
     'con_prefix_hide'         => '<strong>Hide title signatures</strong>',
     'con_fb_img'              => 'Facebook image',
-    'con_logo_url'            => 'Logo URL',
+    'con_logo_url'            => 'Upload new logo',
     'con_ci'                  => 'Layout',
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage style',

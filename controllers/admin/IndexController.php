@@ -7,6 +7,7 @@ use app\components\Tools;
 use app\components\updater\UpdateChecker;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\db\ConsultationFile;
 use app\models\db\ConsultationSettingsTag;
 use app\models\db\ConsultationText;
 use app\models\db\ISupporter;
@@ -78,6 +79,14 @@ class IndexController extends AdminBase
             $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
             $settings->saveForm($settingsInput, $post['settingsFields']);
+            if (isset($_FILES['newLogo'])) {
+                try {
+                    $file = ConsultationFile::uploadImage($this->consultation, 'newLogo');
+                    $settings->logoUrl = $file->getUrl();
+                } catch (FormError $e) {
+                    \yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
             $model->setSettings($settings);
 
             if (preg_match('/^[\w_-]+$/i', $data['urlPath'])) {

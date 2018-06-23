@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\UrlHelper;
+use app\models\exceptions\FormError;
 use yii\db\ActiveRecord;
 
 /**
@@ -59,7 +60,7 @@ class ConsultationFile extends ActiveRecord
      */
     public function setFilename($suggestion)
     {
-        $counter  = 1;
+        $counter = 1;
         if (in_array($suggestion, ['upload', 'browse-images', 'delete'])) {
             $suggestion .= '_file';
         }
@@ -99,6 +100,54 @@ class ConsultationFile extends ActiveRecord
             'consultationId' => $consultation->id,
             'dataHash'       => sha1($content),
         ]);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param string $formName
+     * @return ConsultationFile
+     * @throws FormError
+     */
+    public static function uploadImage(Consultation $consultation, $formName)
+    {
+        $width    = null;
+        $height   = null;
+        $mime     = null;
+        $filename = null;
+        $content  = null;
+        if (isset($_FILES[$formName]) && is_uploaded_file($_FILES[$formName]['tmp_name'])) {
+            $content = file_get_contents($_FILES[$formName]['tmp_name']);
+            $info    = getimagesizefromstring($content);
+            if ($info && in_array($info['mime'], ['image/png', 'image/jpeg', 'image/gif'])) {
+                $mime     = $info['mime'];
+                $width    = $info[0];
+                $height   = $info[1];
+                $filename = $_FILES[$formName]['name'];
+            } else {
+                throw new FormError('Not a valid image file');
+            }
+        } else {
+            throw new FormError('No image data uploaded');
+        }
+
+        $existingFile = ConsultationFile::findFileByContent($consultation, $content);
+        if ($existingFile) {
+            return $existingFile;
+        }
+
+        $file                 = new ConsultationFile();
+        $file->consultationId = $consultation->id;
+        $file->mimetype       = $mime;
+        $file->width          = $width;
+        $file->height         = $height;
+        $file->dateCreation   = date('Y-m-d H:i:s');
+        $file->setFilename($filename);
+        $file->setData($content);
+        if (!$file->save()) {
+            throw new FormError($file->getErrors());
+        }
+
+        return $file;
     }
 
     /**
