@@ -656,6 +656,18 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return null|ConsultationFile
+     */
+    public function getAbsolutePdfLogo()
+    {
+        $logoUrl = $this->getSettings()->logoUrl;
+        if ($logoUrl === '' || $logoUrl === null || $logoUrl[0] !== '/') {
+            return null;
+        }
+        return ConsultationFile::findFileByName($this, basename($logoUrl));
+    }
+
+    /**
      */
     public function setDeleted()
     {

@@ -104,6 +104,20 @@ class ConsultationFile extends ActiveRecord
 
     /**
      * @param Consultation $consultation
+     * @param $filename
+     * @return ConsultationFile|null
+     */
+    public static function findFileByName(Consultation $consultation, $filename)
+    {
+        return ConsultationFile::findOne([
+            'consultationId' => $consultation->id,
+            'filename'       => $filename,
+        ]);
+    }
+
+
+    /**
+     * @param Consultation $consultation
      * @param string $formName
      * @return ConsultationFile
      * @throws FormError

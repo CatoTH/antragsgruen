@@ -21,20 +21,19 @@ class DBJR extends IPDFLayout
     public function printMotionHeader(Motion $motion)
     {
         $pdf = $this->pdf;
-        /** @var AntragsgruenApp $site */
-        $site     = \yii::$app->params;
         $left     = 23.5;
         $abs      = 5;
         $fontsize = 30;
 
         $dim = $pdf->getPageDimensions();
 
-        if ($site->getAbsolutePdfLogo()) {
+        $logo = $motion->getMyConsultation()->getAbsolutePdfLogo();
+        if ($logo) {
             if (empty($this->headerlogo)) {
-                $this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
+                //$this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
                 $this->headerlogo['w']     = 50;
-                $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
-                $this->headerlogo['h']     = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
+                $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
                 $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
                 if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
                     $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
@@ -43,10 +42,10 @@ class DBJR extends IPDFLayout
                 }
             }
 
-            $logo = $this->headerlogo;
+            $headerlogo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), $logo['x'], $logo['y'], $logo['w'], $logo['h']);
-            $pdf->setY($this->headerlogo['y'] + $this->headerlogo['h'] + $abs);
+            $pdf->Image('@' . $logo->data, $headerlogo['x'], $headerlogo['y'], $headerlogo['w'], $headerlogo['h']);
+            $pdf->setY($headerlogo['y'] + $headerlogo['h'] + $abs);
         }
 
         $pdf->SetFont('helvetica', 'B', $fontsize);
@@ -88,8 +87,6 @@ class DBJR extends IPDFLayout
     public function printAmendmentHeader(Amendment $amendment)
     {
         $pdf = $this->pdf;
-        /** @var AntragsgruenApp $site */
-        $site           = \yii::$app->params;
         $left           = 23.5;
         $abs            = 5;
         $title1Fontsize = 15;
@@ -97,12 +94,13 @@ class DBJR extends IPDFLayout
 
         $dim = $pdf->getPageDimensions();
 
-        if ($site->getAbsolutePdfLogo()) {
+        $logo = $amendment->getMyConsultation()->getAbsolutePdfLogo();
+        if ($logo) {
             if (empty($this->headerlogo)) {
-                $this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
+                //$this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
                 $this->headerlogo['w']     = 50;
-                $this->headerlogo['scale'] = $this->headerlogo['w'] / $this->headerlogo['dim'][0];
-                $this->headerlogo['h']     = $this->headerlogo['dim'][1] * $this->headerlogo['scale'];
+                $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
+                $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
                 $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
                 if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
                     $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
@@ -110,10 +108,11 @@ class DBJR extends IPDFLayout
                     $this->headerlogo['y'] = $dim['tm'];
                 }
             }
-            $logo = $this->headerlogo;
+
+            $headerlogo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image($site->getAbsolutePdfLogo(), $logo['x'], $logo['y'], $logo['w'], $logo['h']);
-            $pdf->setY($logo['y'] + $logo['h'] + $abs);
+            $pdf->Image('@' . $logo->data, $headerlogo['x'], $headerlogo['y'], $headerlogo['w'], $headerlogo['h']);
+            $pdf->setY($headerlogo['y'] + $headerlogo['h'] + $abs);
         }
 
         $pdf->SetTextColor(100, 100, 100, 100);

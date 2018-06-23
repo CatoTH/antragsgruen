@@ -23,7 +23,6 @@ class AntragsgruenApp
     public $hasSaml               = false;
     public $samlOrgaFile          = null;
     public $prependWWWToSubdomain = true;
-    public $pdfLogo               = '';
     public $confirmEmailAddresses = true;
     public $mailFromName          = 'Antragsgrün';
     public $mailFromEmail         = '';
@@ -84,20 +83,6 @@ class AntragsgruenApp
             $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
             $this->domainPlain  .= '://' . $_SERVER['HTTP_HOST'] . '/';
         }
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getAbsolutePdfLogo()
-    {
-        if ($this->pdfLogo === '' || $this->pdfLogo === null) {
-            return null;
-        }
-        if ($this->pdfLogo[0] == '/') {
-            return $this->pdfLogo;
-        }
-        return \yii::$app->basePath . DIRECTORY_SEPARATOR . $this->pdfLogo;
     }
 
     /**
