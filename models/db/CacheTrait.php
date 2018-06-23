@@ -53,7 +53,7 @@ trait CacheTrait
 
     /**
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @param bool $save
      */
     public function setCacheItem($key, $value, $save = true)

@@ -234,7 +234,10 @@ class AmendmentSection extends IMotionSection
                 );
                 $amParagraphs[$paraNo] = $amSec;
             }
-            $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
+            if (count($origParagraphs) > 0) {
+                // $origParagraphs can be empty if the original motion is completely empty
+                $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
+            }
         }
 
         $this->setCacheItem('diffDataToOrigParagraphs', $amParagraphs);
