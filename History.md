@@ -19,6 +19,7 @@
 - On the user account page, there now is a tool to export all user data in JSON-format.
 - It is easier to create PDF-based application motion types, as there now is a template for that when creating a new motion type.
 - Selecting the site layout and PDF layout is now done using thumbnails of the layouts, not by their rather cryptic names.
+- The PDF-introduction of a motion can now be set on a per-motion-type basis.
 - The sender name and reply-to of sent emails can now be set on a per-consultation-base (it was on a per-site-base before).
 - Add a way to include the commercial FPDI-PDF-plugin.
 - It is now possible to restrict the access to one consultation to specific users, while leaving other consultations open for all.

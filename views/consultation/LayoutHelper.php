@@ -25,8 +25,8 @@ class LayoutHelper
 
         /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
-        if ($motion->getMyMotionType()->cssIcon != '') {
-            $classes[] = $motion->getMyMotionType()->cssIcon;
+        if ($motion->getMyMotionType()->getSettings()->cssIcon) {
+            $classes[] = $motion->getMyMotionType()->getSettings()->cssIcon;
         }
 
         if ($motion->status == Motion::STATUS_WITHDRAWN) {

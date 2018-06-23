@@ -59,7 +59,7 @@ class DBJR extends IPDFLayout
         $pdf->SetXY($left, $wraptop);
 
         $pdf->SetFont('helvetica', 'I', 11);
-        $intro = $motion->getMyConsultation()->getSettings()->pdfIntroduction;
+        $intro = $motion->getMyMotionType()->getSettings()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);
@@ -120,7 +120,7 @@ class DBJR extends IPDFLayout
         $pdf->SetFont('helvetica', 'I', 11);
         $pdf->SetXY($left, $pdf->getY());
         $pdf->Ln(3);
-        $intro = $amendment->getMyConsultation()->getSettings()->pdfIntroduction;
+        $intro = $amendment->getMyMotionType()->getSettings()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(0, 0, trim($intro), 0, 'L');
             $pdf->Ln(3);

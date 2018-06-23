@@ -192,6 +192,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `sidebarCreateButton`          tinyint(4)   NOT NULL DEFAULT '1',
   `motionPrefix`                 varchar(10)           DEFAULT NULL,
   `position`                     int(11)      NOT NULL,
+  `settings`                     text DEFAULT NULL,
   `cssIcon`                      varchar(100)          DEFAULT NULL,
   `pdfLayout`                    int(11)      NOT NULL DEFAULT '0',
   `texTemplateId`                int(11)               DEFAULT NULL,

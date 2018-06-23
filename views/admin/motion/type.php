@@ -258,6 +258,17 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
 
 
     <h3><?= \Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
+
+    <div class="form-group">
+        <label class="col-sm-4 control-label" for="pdfIntroduction"><?= \Yii::t('admin', 'con_pdf_intro') ?>
+            :</label>
+        <div class="col-sm-8">
+        <textarea name="type[pdfIntroduction]" class="form-control" id="pdfIntroduction"
+                  placeholder="<?= Html::encode(\Yii::t('admin', 'con_pdf_intro_place')) ?>"
+        ><?= $motionType->getSettings()->pdfIntroduction ?></textarea>
+        </div>
+    </div>
+
     <div class="thumbnailedLayoutSelector">
         <?php
         $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);

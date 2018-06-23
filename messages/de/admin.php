@@ -157,8 +157,7 @@ return [
     'con_url_change'          => 'ändern',
     'con_url_path'            => 'Verzeichnis',
     'con_pdf_intro'           => 'PDF-Einleitung',
-    'con_pdf_intro_place'     => '26. Ordentliche Bundesdelegiertenkonferenz von BÜNDNIS 90/DIE GRÜNEN,' . "\n" .
-        '01.-03. Dezember 2006. Kölnmesse, Köln-Deutz',
+    'con_pdf_intro_place'     => 'Mitgliederversammlung des Lorem Ipsum e.V.',
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
 <small class="conPrefixHide">(Antragskürzel wie z.B. "A1", "A2", "Ä1neu" etc.)
 müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann. Es wird aber nicht mehr angezeigt.

@@ -51,8 +51,7 @@ class Consultation
 
     /** @var null|string */
     public $logoUrl         = null;
-    public $motionIntro     = null;
-    public $pdfIntroduction = '';
+    public $pdfIntroduction = ''; // @TODO Delete this setting after migration is done
 
     /** @var null|string */
     public $emailReplyTo  = null;

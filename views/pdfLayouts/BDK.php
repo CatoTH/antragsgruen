@@ -50,7 +50,7 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
 
-        $title = $motion->getMyConsultation()->getSettings()->pdfIntroduction;
+        $title = $motion->getMyMotionType()->getSettings()->pdfIntroduction;
         $pdf->SetY(40);
         $pdf->SetFont("helvetica", "B", 13);
         $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
@@ -87,7 +87,7 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
 
-        $title = $amendment->getMyConsultation()->getSettings()->pdfIntroduction;
+        $title = $amendment->getMyMotionType()->getSettings()->pdfIntroduction;
         $pdf->SetY(40);
         $pdf->SetFont("helvetica", "B", 13);
         $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');

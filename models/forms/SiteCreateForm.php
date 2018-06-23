@@ -16,6 +16,7 @@ use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\MotionType;
 use app\models\supportTypes\ISupportType;
 use yii\base\Model;
 use yii\helpers\Html;
@@ -362,8 +363,11 @@ class SiteCreateForm extends Model
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
-        $type->layoutTwoCols               = 0;
         $type->sidebarCreateButton         = 1;
+
+        $settings                = new MotionType(null);
+        $settings->layoutTwoCols = 0;
+        $type->setSettings($settings);
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -477,8 +481,11 @@ class SiteCreateForm extends Model
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
-        $type->layoutTwoCols               = 0;
         $type->sidebarCreateButton         = 1;
+
+        $settings                = new MotionType(null);
+        $settings->layoutTwoCols = 0;
+        $type->setSettings($settings);
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);

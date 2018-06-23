@@ -42,7 +42,7 @@ class m180524_153540_motionTypeDeadlines extends Migration
                 'consultationMotionType',
                 ['deadlines' => json_encode(['amendments' => $amendments, 'motions' => $motions])],
                 ['id' => $type->id]
-            );
+            )->execute();
         }
 
         $this->dropColumn('consultationMotionType', 'deadlineAmendments');

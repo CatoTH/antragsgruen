@@ -42,6 +42,7 @@ $doc->setMinRowHeight(0, 1.8);
 $doc->setCellStyle(0, 0, [], $titleStyles);
 
 $row       = 0;
+/*
 $titleRows = explode("\n", $consultation->getSettings()->pdfIntroduction);
 foreach ($titleRows as $titleRow) {
     if (trim($titleRow) !== '' && $row < 7) {
@@ -51,6 +52,7 @@ foreach ($titleRows as $titleRow) {
         $doc->setCellStyle($row, 0, [], $titleStyles);
     }
 }
+*/
 
 $doc->setCell(7, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_title'));
 $doc->setMinRowHeight(7, 1.8);

@@ -21,7 +21,6 @@ use yii\db\ActiveRecord;
  * @property string $createTitle
  * @property string $motionPrefix
  * @property int $position
- * @property int $cssIcon
  * @property int $pdfLayout
  * @property int $texTemplateId
  * @property string $deadlines
@@ -40,7 +39,7 @@ use yii\db\ActiveRecord;
  * @property string $supportTypeSettings
  * @property int $amendmentMultipleParagraphs
  * @property int $status
- * @property int $layoutTwoCols
+ * @property string $settings
  * @property int $sidebarCreateButton
  * @property int $pdfPageNumbers
  *
@@ -394,7 +393,6 @@ class ConsultationMotionType extends ActiveRecord
     {
         return [
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'sidebarCreateButton'], 'required'],
-            [['layoutTwoCols'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'supportType', 'status'], 'required'],
             [['contactName', 'contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position'], 'required'],
@@ -402,14 +400,38 @@ class ConsultationMotionType extends ActiveRecord
             [['id', 'consultationId', 'position', 'contactName', 'contactEmail', 'contactPhone'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
-            [['initiatorsCanMergeAmendments', 'pdfLayout', 'layoutTwoCols', 'sidebarCreateButton'], 'number'],
+            [['initiatorsCanMergeAmendments', 'pdfLayout', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
             [['motionPrefix', 'position', 'supportType', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
-            [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'layoutTwoCols'], 'safe'],
+            [['policySupportAmendments', 'initiatorsCanMergeAmendments'], 'safe'],
             [['sidebarCreateButton'], 'safe']
         ];
+    }
+
+    /** @var null|\app\models\settings\MotionType */
+    private $settingsObject = null;
+
+    /**
+     * @return \app\models\settings\MotionType
+     * @throws \Exception
+     */
+    public function getSettings()
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new \app\models\settings\MotionType($this->settings);
+        }
+        return $this->settingsObject;
+    }
+
+    /**
+     * @param \app\models\settings\MotionType $settings
+     */
+    public function setSettings($settings)
+    {
+        $this->settingsObject = $settings;
+        $this->settings       = $settings->toJSON();
     }
 
     /**

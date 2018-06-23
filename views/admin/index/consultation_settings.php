@@ -109,19 +109,6 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             </div>
         </div>
 
-
-        <?php $handledSettings[] = 'pdfIntroduction'; ?>
-        <fieldset class="form-group">
-            <label class="col-sm-3 control-label" for="pdfIntroduction"><?= \Yii::t('admin', 'con_pdf_intro') ?>
-                :</label>
-            <div class="col-sm-9">
-        <textarea name="settings[pdfIntroduction]" class="form-control" id="pdfIntroduction"
-                  placeholder="<?= Html::encode(\Yii::t('admin', 'con_pdf_intro_place')) ?>"
-        ><?= $settings->pdfIntroduction ?></textarea>
-            </div>
-        </fieldset>
-
-
         <?php $handledSettings[] = 'lineLength'; ?>
         <fieldset class="form-group">
             <label class="col-sm-3 control-label" for="lineLength"><?= \Yii::t('admin', 'con_line_len') ?>

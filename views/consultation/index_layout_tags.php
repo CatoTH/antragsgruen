@@ -78,8 +78,8 @@ foreach ($tagIds as $tagId) {
     foreach ($tag['motions'] as $motion) {
         /** @var Motion $motion */
         $classes = ['motion'];
-        if ($motion->motionType->cssIcon != '') {
-            $classes[] = $motion->motionType->cssIcon;
+        if ($motion->motionType->getSettings()->cssIcon) {
+            $classes[] = $motion->motionType->getSettings()->cssIcon;
         }
         if ($motion->status == Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';

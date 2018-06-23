@@ -5,6 +5,7 @@ namespace app\models\motionTypeTemplates;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\settings\MotionType;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -38,8 +39,12 @@ trait Motion
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
-        $type->layoutTwoCols                = 0;
         $type->sidebarCreateButton          = 1;
+
+        $settings                = new MotionType(null);
+        $settings->layoutTwoCols = 0;
+        $type->setSettings($settings);
+
         $type->save();
 
         return $type;

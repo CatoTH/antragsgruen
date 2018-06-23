@@ -17,6 +17,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\DeadlineForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\MotionType;
 use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\motionTypeTemplates\Application as ApplicationTemplate;
@@ -136,6 +137,10 @@ class MotionController extends AdminBase
                 }
             }
 
+            $settings = $motionType->getSettings();
+            $settings->pdfIntroduction = $input['pdfIntroduction'];
+            $motionType->setSettings($settings);
+
             $form = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
             $motionType->supportTypeSettings = $form->getSettings();
@@ -235,7 +240,6 @@ class MotionController extends AdminBase
                 if (!$motionType) {
                     $motionType                               = new ConsultationMotionType();
                     $motionType->consultationId               = $this->consultation->id;
-                    $motionType->layoutTwoCols                = 0;
                     $motionType->policyMotions                = IPolicy::POLICY_ALL;
                     $motionType->policyAmendments             = IPolicy::POLICY_ALL;
                     $motionType->policyComments               = IPolicy::POLICY_NOBODY;
@@ -252,6 +256,10 @@ class MotionController extends AdminBase
                     $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;
+
+                    $settings = new MotionType(null);
+                    $settings->layoutTwoCols = 0;
+                    $motionType->setSettings($settings);
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
