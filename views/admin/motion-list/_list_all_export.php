@@ -16,8 +16,17 @@ $layout = $controller->layoutParams;
 
 
 $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
-    $link    = UrlHelper::createUrl([$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => '0']);
-    $linkTpl = UrlHelper::createUrl([$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN']);
+    $params     = [$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => '0'];
+    $paramsTmpl = [$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN'];
+    if ($route === 'amendment/pdfcollection') {
+        $params['filename']     = \Yii::t('con', 'feed_amendments') . '.pdf';
+        $paramsTmpl['filename'] = \Yii::t('con', 'feed_amendments') . '.pdf';
+    } elseif ($route === 'motion/pdfcollection') {
+        $params['filename']     = \Yii::t('admin', 'index_pdf_collection') . '.pdf';
+        $paramsTmpl['filename'] = \Yii::t('admin', 'index_pdf_collection') . '.pdf';
+    }
+    $link    = UrlHelper::createUrl($params);
+    $linkTpl = UrlHelper::createUrl($paramsTmpl);
     if ($motionTypeId) {
         $cssClass .= $motionTypeId;
     }

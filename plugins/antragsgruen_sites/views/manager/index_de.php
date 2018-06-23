@@ -1,4 +1,5 @@
 <?php
+
 use app\components\UrlHelper;
 use app\models\db\Site;
 use app\models\db\User;
@@ -13,7 +14,7 @@ use yii\helpers\Html;
 $this->title = 'Antragsgrün - die grüne Online-Antragsverwaltung';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://antragsgruen.de/';
+$controller->layoutParams->canonicalUrl      = 'https://antragsgruen.de/';
 $controller->layoutParams->alternateLanuages = ['en' => 'https://motion.tools/'];
 
 /** @var \app\models\settings\AntragsgruenApp $params */
@@ -75,7 +76,7 @@ $params = \Yii::$app->params;
     <ul>
         <li><strong>Vor-Ort-Präsentationen</strong>. Auf Parteitagen selbst bietet sich der
             Einsatz von Tools an, die speziell dafür ausgelegt sind - wir empfehlen hier <a
-                href="http://openslides.org/de/">OpenSlides</a>.
+                    href="http://openslides.org/de/">OpenSlides</a>.
             (Antragsgrün bietet die Möglichkeit, Anträge und Änderungsanträge in Openslides zu exportieren.)
         </li>
         <li><strong>Wahlen / Abstimmungen</strong>.</li>
@@ -133,49 +134,46 @@ $params = \Yii::$app->params;
 
 
 <?php
-
-if ($params->isSamlActive()) {
-    echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
+echo '<h2 class="green" id="asGreenMember">Als Grünen-Mitglied nutzen</h2>
 <div class="content infoSite">';
 
-    if (User::getCurrentUser()) {
-        $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
-        echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
+if (User::getCurrentUser()) {
+    $url = Html::encode(UrlHelper::createUrl('manager/createsite'));
+    echo '<form method="GET" action="' . $url . '" class="siteCreateForm">
         <button type="submit" class="btn btn-success">
         <span class="glyphicon glyphicon-chevron-right"></span> Seite anlegen</button></form>';
-    } else {
-        echo Html::beginForm(
-            UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
-            'post',
-            [
-                'class' => 'form-inline login_saml',
-                'style' => 'margin-top: 20px;'
-            ]
-        );
-        echo '
+} else {
+    echo Html::beginForm(
+        UrlHelper::createWurzelwerkLoginUrl('manager/createsite'),
+        'post',
+        [
+            'class' => 'form-inline login_saml',
+            'style' => 'margin-top: 20px;'
+        ]
+    );
+    echo '
         Um dir sofort eine eigene Version von Antragsgrün einzurichten, logge dich zunächst mit deinem
     &quot;Grünes Netz&quot;-Account (Wurzelwerk) ein.<br><br>';
-        echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
+    echo '<button type="submit" class="btn btn-primary" name="login_do" style="vertical-align: top;">Einloggen</button>';
 
-        echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
+    echo '<div class="privacyHint"><strong>Erklärung / Datenschutz:</strong><br>
 Du wirst, nachdem du hier deinen Benutzer*innenname eingegeben hast, auf eine "OpenID"-Seite umgeleitet, die vom
 grünen Bundesverband betrieben wird (Adresse im Browser: https://service.gruene.de). Dort wirst du aufgefordert,
 deinen Benutzer*innenname und -Passwort des Grünen Netzes einzugeben. Diese Seite bestätigt
 gegenüber Antragsgrün, dass du Parteimitglied bist und leitet deinen Namen und E-Mail-Adresse weiter - nicht
 aber das Passwort.</div>';
 
-        echo Html::endForm();
-    }
-    echo '</div>';
+    echo Html::endForm();
 }
+echo '</div>';
 ?>
 <h2 id="wer" class="green">Kontakt</h2>
 
 <div class="content infoSite">
     <p>Antragsgrün wird von „<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur“ betrieben. Programmiert wird
         es von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
-            href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a
-            href="http://www.netzminze.de/">Karin Wehle</a>.</p>
+                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a
+                href="http://www.netzminze.de/">Karin Wehle</a>.</p>
 
     <p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen.
         Funktionen, für die sich „Sponsoren“ finden, werden dabei besonders priorisiert.
