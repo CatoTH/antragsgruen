@@ -100,10 +100,12 @@ if ($params->multisiteMode) {
 
     $urlRules = array_merge(
         [
-            $domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>',
             $domp . '/page/<pageSlug:[^\/]+>/save' => 'pages/save-page',
         ],
-        $urlRules
+        $urlRules,
+        [
+            $domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>',
+        ]
     );
 
     foreach ($params->getPluginClasses() as $pluginClass) {

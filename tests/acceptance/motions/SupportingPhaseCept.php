@@ -28,7 +28,7 @@ $I->amOnPage($motionUrl);
 $I->see('Dieser Antrag ist noch nicht eingereicht.');
 $I->see('Du musst dich einloggen, um Anträge unterstützen zu können.');
 $I->dontSeeElement('button[name=motionSupport]');
-$I->dontSeeElement('section.likes');
+$I->dontSeeElement('section.likes form');
 
 $I->loginAsStdUser();
 $I->amOnPage($motionUrl);
@@ -51,7 +51,7 @@ $I->logout();
 
 $I->loginAsStdUser();
 $I->amOnPage($motionUrl);
-$I->seeElement('section.likes');
+$I->seeElement('section.likes form');
 $I->seeElement('button[name=motionLike]');
 $I->seeElement('button[name=motionDislike]');
 $I->seeElement('button[name=motionSupport]');

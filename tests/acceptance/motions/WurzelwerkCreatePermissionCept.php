@@ -2,6 +2,8 @@
 
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
+$scenario->skip('No test available');
+
 $I->populateDBData1();
 
 $I->wantTo('check that I have to login in order to create a motion');
