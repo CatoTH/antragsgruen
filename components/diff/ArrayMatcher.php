@@ -43,13 +43,13 @@ class ArrayMatcher
         };
         $spaceToFill = count($reference) - count($toMatchArr);
 
-        if ($spaceToFill == 0) {
+        if ($spaceToFill === 0) {
             return [$toMatchArr];
         }
-        if (count($toMatchArr) == 0) {
+        if (count($toMatchArr) === 0) {
             return [$emptyArray($spaceToFill)];
         }
-        if ($spaceToFill > 10) {
+        if ($spaceToFill >= 10) {
             // @TODO Find a better solution for this
             // As the number of variants grows exponentially with the number of elements to fill, we need
             // a fallback for this kind of situation. Better a suboptimal solution than a broken site.
@@ -91,7 +91,7 @@ class ArrayMatcher
      */
     public function calcSimilarity($arr1, $arr2)
     {
-        if (count($arr1) != count($arr2)) {
+        if (count($arr1) !== count($arr2)) {
             throw new Internal('calcSimilarity: The number of elements does not match');
         }
         $cacheKey = md5(serialize($arr1) . serialize($arr2));
