@@ -30,6 +30,7 @@
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
 - Bugfix: The list of tags to select when creating a motion is now sorted in the same way as in the consultation setting page.
 - Bugfix: When a section was completely empty in a motion and a amendment was created inserting something to this section, the original motion could not be displayed anymore.
+- Bugfix: When a motion type's create setting was set to "nobody", editing already created motions as an admin was impossible.
 - Obsolete: The old, non-fuctional OpenID-based Wurzelwerk-login was removed.
 - Obsolete: The facebook image feature was removed, as nobody used it and was rather tricky to use anyway.
 

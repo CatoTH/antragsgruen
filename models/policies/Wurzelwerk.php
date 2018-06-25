@@ -95,7 +95,7 @@ class Wurzelwerk extends IPolicy
                 return false;
             }
         }
-        if ($allowAdmins && $user->hasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_ANY)) {
+        if ($allowAdmins && $user->hasPrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
             return true;
         }
         return $user->isWurzelwerkUser();

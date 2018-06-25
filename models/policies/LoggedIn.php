@@ -123,12 +123,11 @@ class LoggedIn extends IPolicy
         }
 
         if ($allowAdmins && User::getCurrentUser()) {
-            foreach ($this->motionType->getConsultation()->site->admins as $admin) {
-                if ($admin->id == User::getCurrentUser()->id) {
-                    return true;
-                }
+            if (User::havePrivilege($this->motionType->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                return true;
             }
         }
+
         if ($this->isWriteForbidden()) {
             return false;
         }

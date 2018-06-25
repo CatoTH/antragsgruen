@@ -2,6 +2,8 @@
 
 namespace app\models\policies;
 
+use app\models\db\User;
+
 class Nobody extends IPolicy
 {
     /**
@@ -70,6 +72,12 @@ class Nobody extends IPolicy
      */
     public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
     {
+        if ($allowAdmins && User::getCurrentUser()) {
+            if (User::havePrivilege($this->motionType->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
