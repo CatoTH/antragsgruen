@@ -35,7 +35,7 @@ class LayoutHelper
             \Yii::t('amend', 'amendment_for_prefix')
         );
 
-        $intro                    = explode("\n", $amendment->getMyMotionType()->getSettings()->pdfIntroduction);
+        $intro                    = explode("\n", $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (count($intro) > 1) {
             array_shift($intro);

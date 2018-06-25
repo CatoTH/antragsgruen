@@ -43,7 +43,7 @@ trait Application
 
         $settings                = new MotionType(null);
         $settings->layoutTwoCols = 1;
-        $type->setSettings($settings);
+        $type->setSettingsObj($settings);
 
         $type->save();
 

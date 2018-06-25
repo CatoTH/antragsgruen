@@ -72,8 +72,8 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        if ($this->motionType->getSettings()->pdfIntroduction) {
-            $intro = $this->motionType->getSettings()->pdfIntroduction;
+        if ($this->motionType->getSettingsObj()->pdfIntroduction) {
+            $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
         } else {
             $intro = \Yii::t('export', 'introduction');
         }
@@ -177,8 +177,8 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        if ($this->motionType->getSettings()->pdfIntroduction) {
-            $intro = $this->motionType->getSettings()->pdfIntroduction;
+        if ($this->motionType->getSettingsObj()->pdfIntroduction) {
+            $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
         } else {
             $intro = \Yii::t('export', 'introduction');
         }

@@ -124,7 +124,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
     if ($sectionType === ISectionType::TYPE_TITLE && count($section->getAmendingSections(false, true)) === 0) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettings()->layoutTwoCols) {
+    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';

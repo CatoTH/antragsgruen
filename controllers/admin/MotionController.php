@@ -137,9 +137,9 @@ class MotionController extends AdminBase
                 }
             }
 
-            $settings = $motionType->getSettings();
+            $settings = $motionType->getSettingsObj();
             $settings->pdfIntroduction = $input['pdfIntroduction'];
-            $motionType->setSettings($settings);
+            $motionType->setSettingsObj($settings);
 
             $form = $motionType->getMotionSupportTypeClass();
             $form->setSettings(\Yii::$app->request->post('initiator'));
@@ -259,7 +259,7 @@ class MotionController extends AdminBase
 
                     $settings = new MotionType(null);
                     $settings->layoutTwoCols = 0;
-                    $motionType->setSettings($settings);
+                    $motionType->setSettingsObj($settings);
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);

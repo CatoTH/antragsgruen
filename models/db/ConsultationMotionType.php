@@ -417,7 +417,7 @@ class ConsultationMotionType extends ActiveRecord
      * @return \app\models\settings\MotionType
      * @throws \Exception
      */
-    public function getSettings()
+    public function getSettingsObj()
     {
         if (!is_object($this->settingsObject)) {
             $this->settingsObject = new \app\models\settings\MotionType($this->settings);
@@ -428,7 +428,7 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @param \app\models\settings\MotionType $settings
      */
-    public function setSettings($settings)
+    public function setSettingsObj($settings)
     {
         $this->settingsObject = $settings;
         $this->settings       = $settings->toJSON();

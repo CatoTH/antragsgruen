@@ -91,7 +91,7 @@ class LayoutHelper
         $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
-        $intro                    = explode("\n", $motion->getMyMotionType()->getSettings()->pdfIntroduction);
+        $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
@@ -117,7 +117,7 @@ class LayoutHelper
         }
 
         foreach ($motion->getSortedSections(true) as $section) {
-            $isRight = ($section->isLayoutRight() && $motion->motionType->getSettings()->layoutTwoCols);
+            $isRight = ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols);
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
         }
 

@@ -265,7 +265,7 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
         <div class="col-sm-8">
         <textarea name="type[pdfIntroduction]" class="form-control" id="pdfIntroduction"
                   placeholder="<?= Html::encode(\Yii::t('admin', 'con_pdf_intro_place')) ?>"
-        ><?= $motionType->getSettings()->pdfIntroduction ?></textarea>
+        ><?= $motionType->getSettingsObj()->pdfIntroduction ?></textarea>
         </div>
     </div>
 

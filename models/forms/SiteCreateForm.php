@@ -367,7 +367,7 @@ class SiteCreateForm extends Model
 
         $settings                = new MotionType(null);
         $settings->layoutTwoCols = 0;
-        $type->setSettings($settings);
+        $type->setSettingsObj($settings);
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -485,7 +485,7 @@ class SiteCreateForm extends Model
 
         $settings                = new MotionType(null);
         $settings->layoutTwoCols = 0;
-        $type->setSettings($settings);
+        $type->setSettingsObj($settings);
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);

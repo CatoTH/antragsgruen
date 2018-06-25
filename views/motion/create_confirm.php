@@ -26,7 +26,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettings()->layoutTwoCols) {
+    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
