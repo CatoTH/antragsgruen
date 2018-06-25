@@ -39,7 +39,3 @@ foreach ($response->getSortedSections(true) as $i => $section) {
     $main .= '</section>';
 }
 echo $main;
-?>
-<div class="content">
-    blbl
-</div>

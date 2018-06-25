@@ -95,6 +95,7 @@ class Tools
             $all = array_merge($all, static::getPetitionType($consultation)->getVisibleMotions(false));
             $all = array_merge($all, static::getMotionsCollecting($consultation));
             $all = array_merge($all, static::getDiscussionType($consultation)->getVisibleMotions(false));
+            $all = array_merge($all, static::getMotionsAnswered($consultation));
         }
         return $all;
     }
