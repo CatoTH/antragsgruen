@@ -28,6 +28,9 @@ use yii\helpers\Html;
 <?php
 $main = '';
 foreach ($response->getSortedSections(true) as $i => $section) {
+    if (trim($section->data) === '') {
+        continue;
+    }
     $sectionType = $section->getSettings()->type;
     $main        .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type;
     if ($response->getMyConsultation()->getSettings()->lineLength > 80) {
