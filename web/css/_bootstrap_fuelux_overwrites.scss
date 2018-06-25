@@ -221,6 +221,8 @@
     }
     .selected-label {
       font-weight: normal;
+      display: block;
+      text-overflow: ellipsis;
     }
   }
 }
