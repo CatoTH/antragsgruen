@@ -134,7 +134,7 @@ class Tools
      */
     public static function getMotionsAnswered(Consultation $consultation)
     {
-        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(false);
+        $motions = Tools::getPetitionType($consultation)->getVisibleMotions(true); // true: wg. processed
         return array_filter($motions, function (Motion $motion) {
             return ($motion->status == IMotion::STATUS_PROCESSED);
         });
