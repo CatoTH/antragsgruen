@@ -100,6 +100,7 @@ if ($params->multisiteMode) {
 
     $urlRules = array_merge(
         [
+            $dom . 'page/<pageSlug:[^\/]+>/save'   => 'pages/save-page',
             $domp . '/page/<pageSlug:[^\/]+>/save' => 'pages/save-page',
         ],
         $urlRules
