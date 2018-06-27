@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
     "content-hash": "563937d13af852223af600a1b6947140",
@@ -587,16 +587,16 @@
         },
         {
             "name": "mailjet/mailjet-apiv3-php",
-            "version": "v1.2.0",
+            "version": "v1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mailjet/mailjet-apiv3-php.git",
-                "reference": "d578bb6edc8cbbf39230d1ce5534427b7172fc7f"
+                "reference": "a56eb5cb5915bc8a98a57f885fec5fe616518ac5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/d578bb6edc8cbbf39230d1ce5534427b7172fc7f",
-                "reference": "d578bb6edc8cbbf39230d1ce5534427b7172fc7f",
+                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/a56eb5cb5915bc8a98a57f885fec5fe616518ac5",
+                "reference": "a56eb5cb5915bc8a98a57f885fec5fe616518ac5",
                 "shasum": ""
             },
             "require": {
@@ -604,6 +604,7 @@
                 "php": ">=5.4.0"
             },
             "require-dev": {
+                "php-coveralls/php-coveralls": "^1.0",
                 "phpunit/phpunit": "^4.8"
             },
             "type": "library",
@@ -632,7 +633,7 @@
                 "php",
                 "v3"
             ],
-            "time": "2017-05-22T12:38:16+00:00"
+            "time": "2018-06-20T06:12:51+00:00"
         },
         {
             "name": "paragonie/random_compat",
