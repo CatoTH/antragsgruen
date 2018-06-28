@@ -409,6 +409,7 @@ class IndexController extends AdminBase
         $form = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
 
-        return $this->redirect($this->getParams()->domainPlain . 'update.php?set_key=' . $updateKey);
+
+        return $this->redirect($this->getParams()->resourceBase . 'update.php?set_key=' . $updateKey);
     }
 }
