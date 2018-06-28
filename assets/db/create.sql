@@ -163,6 +163,28 @@ CREATE TABLE `###TABLE_PREFIX###consultationAgendaItem` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `consultationFile`
+--
+
+CREATE TABLE `###TABLE_PREFIX###consultationFile` (
+  `id`             int(11)      NOT NULL,
+  `consultationId` int(11)      NOT NULL,
+  `filename`       varchar(250) NOT NULL,
+  `filesize`       int(11)      NOT NULL,
+  `mimetype`       varchar(250) NOT NULL,
+  `width`          int(11)               DEFAULT NULL,
+  `height`         int(11)               DEFAULT NULL,
+  `data`           mediumblob   NOT NULL,
+  `dataHash`       varchar(40)  NOT NULL,
+  `dateCreation`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
+  ON UPDATE CURRENT_TIMESTAMP
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `consultationLog`
 --
 
@@ -698,6 +720,14 @@ ALTER TABLE `consultationAgendaItem`
   ADD KEY `motionTypeId` (`motionTypeId`);
 
 --
+-- Indexes for table `consultationFile`
+--
+
+ALTER TABLE `consultationFile`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_file_consultation` (`consultationId`);
+
+--
 -- Indexes for table `consultationLog`
 --
 ALTER TABLE `consultationLog`
@@ -919,6 +949,11 @@ ALTER TABLE `consultation`
 ALTER TABLE `consultationAgendaItem`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `consultationFile`
+--
+ALTER TABLE `consultationFile`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `consultationLog`
 --
 ALTER TABLE `consultationLog`
@@ -1079,6 +1114,12 @@ ALTER TABLE `consultationAgendaItem`
   ADD CONSTRAINT `consultationAgendaItem_ibfk_3` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`)
   ON DELETE SET NULL
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `consultationFile`
+--
+ALTER TABLE `consultationFile`
+  ADD CONSTRAINT `fk_file_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --
 -- Constraints for table `consultationLog`

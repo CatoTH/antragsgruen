@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS `###TABLE_PREFIX###motionSupporter`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###motionSection`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationText`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationAdmin`;
+DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationFile`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###consultationSubscription`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###siteAdmin`;
 DROP TABLE IF EXISTS `###TABLE_PREFIX###emailLog`;
