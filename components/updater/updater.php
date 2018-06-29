@@ -50,7 +50,7 @@ if (isset($_POST['cancel_update'])) {
     $config = json_decode(file_get_contents($configFile), true);
     unset($config['updateKey']);
     file_put_contents($configFile, json_encode($config, JSON_PRETTY_PRINT));
-    Header('Location: ' . $config['domainPlain']);
+    Header('Location: ' . $config['resourceBase']);
     die();
 }
 

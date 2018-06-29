@@ -44,7 +44,7 @@ class AntragsgruenApp
     public $updateKey             = null;
 
     /** @var string[] */
-    public $plugins               = [];
+    public $plugins = [];
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];
@@ -77,7 +77,7 @@ class AntragsgruenApp
     {
         $this->setPropertiesFromJSON($data);
 
-        if ($data == '') {
+        if ($data === '' || $data === null) {
             $this->resourceBase = $_SERVER['SCRIPT_NAME'];
             $this->resourceBase = str_replace('index.php', '', $this->resourceBase);
             $this->domainPlain  = ($this->isHttps() ? 'https' : 'http');
@@ -126,5 +126,19 @@ class AntragsgruenApp
             $plugins[$name] = 'app\\plugins\\' . $name . '\\Module';
         }
         return $plugins;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAbsoluteResourceBase()
+    {
+        $url = $this->domainPlain;
+        if ($url && $url[strlen($url) - 1] === '/' && $this->resourceBase[0] === '/') {
+            $url = substr($url, 0, strlen($url) - 1);
+        }
+        $url .= $this->resourceBase;
+
+        return $url;
     }
 }

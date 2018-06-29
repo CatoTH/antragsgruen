@@ -157,7 +157,7 @@ echo '
       "@context": "http://schema.org",
       "@type": "Organization",
       "url": "' . Html::encode($params->domainPlain) . '",
-      "logo": "' . Html::encode($params->domainPlain) . 'img/logo.png"
+      "logo": "' . Html::encode($params->getAbsoluteResourceBase()) . 'img/logo.png"
     }
 </script>
 <script type="application/ld+json">
