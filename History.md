@@ -26,6 +26,7 @@
 - It is now possible to restrict the access to one consultation to specific users, while leaving other consultations open for all.
 - In installations that use SAML/Grünes Netz for authentication, it is now possible to restrict the login to a specified list of users.
 - Improve compatibility with reverse proxies.
+- The default consultation path is not "std12345678" (random number) anymore, bust simply "std".
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
 - Bugfix: The list of tags to select when creating a motion is now sorted in the same way as in the consultation setting page.

@@ -15,7 +15,6 @@ use app\models\db\VotingBlock;
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
-use app\models\exceptions\NotFound;
 use app\models\forms\AmendmentEditForm;
 use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
