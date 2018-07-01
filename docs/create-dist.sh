@@ -66,6 +66,10 @@ find . -name ".git" -exec rm -rf {} \;
 rm config/config.json
 rm config/config_tests.json
 touch config/INSTALLING
+cp config/.htaccess runtime/
+cp config/.htaccess plugins/
+cp config/.htaccess vendor/
+cp config/.htaccess node_modules/
 sed -i -e 's/repository\-source/dist/g' config/defines.php
 
 cd ..
