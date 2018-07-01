@@ -30,7 +30,8 @@
             </div>
         </header>
         <div class="row logo">
-            <a href="/" class="homeLinkLogo text-hide" disabled>Home<span class="logoImg"></span></a></div>
+            <a href="<?= $config['resourceBase'] ?>" class="homeLinkLogo text-hide" disabled>Home<span class="logoImg"></span></a>
+        </div>
         <ol class="breadcrumb"></ol>
         <div class="row antragsgruen-content">
             <main class="col-md-9 well">

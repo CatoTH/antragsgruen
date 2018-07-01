@@ -75,3 +75,4 @@ sed -i -e 's/repository\-source/dist/g' config/defines.php
 cd ..
 tar cfj ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.tar.bz2 antragsgruen-$ANTRAGSGRUEN_VERSION
 zip -r ../dist/antragsgruen-$ANTRAGSGRUEN_VERSION.zip antragsgruen-$ANTRAGSGRUEN_VERSION
+mv antragsgruen-$ANTRAGSGRUEN_VERSION ../dist/
