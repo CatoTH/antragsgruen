@@ -6,6 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
 use app\models\events\UserEvent;
+use app\models\async\Userdata;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
@@ -792,6 +793,18 @@ class User extends ActiveRecord implements IdentityInterface
             return null;
         }
         return $this->emailChange;
+    }
+
+    /**
+     * @return Userdata
+     * @throws \Exception
+     */
+    public function toAsyncObject()
+    {
+        $object           = new Userdata('');
+        $object->userId   = $this->id;
+        $object->username = $this->auth;
+        return $object;
     }
 
     /**

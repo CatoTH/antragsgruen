@@ -71,6 +71,9 @@ $urlRules = [
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',
 
+    $domv . 'async/user' => 'async/user',
+    $domv . 'async/client' => 'async/client',
+
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
     $domv . 'motion/create'                        => 'motion/create',
     $dommotion                                     => 'motion/view',
