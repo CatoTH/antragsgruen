@@ -140,10 +140,10 @@ class UrlHelper
         }
 
         if ($forceConsultation) {
-            if ($forceConsultation->id !== static::$currentConsultation->id) {
+            if (!static::$currentConsultation || $forceConsultation->id !== static::$currentConsultation->id) {
                 $route['consultationPath'] = $forceConsultation->urlPath;
             }
-            if ($forceConsultation->site->id !== static::$currentSite->id) {
+            if (!static::$currentSite || $forceConsultation->site->id !== static::$currentSite->id) {
                 $route['subdomain'] = $forceConsultation->site->subdomain;
             }
         }
