@@ -10,7 +10,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
@@ -874,6 +873,23 @@ class Amendment extends IMotion implements IRSSItem
         $this->status = Amendment::STATUS_DELETED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_DELETE, $this->id);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        if ($this->status === Amendment::STATUS_DELETED) {
+            return true;
+        }
+        if (!$this->getMyMotion() || $this->getMyMotion()->status === Motion::STATUS_DELETED) {
+            return true;
+        }
+        if (!$this->getMyConsultation()) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -790,6 +790,20 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        if ($this->status === Motion::STATUS_DELETED) {
+            return true;
+        }
+        if (!$this->getMyConsultation()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      */
     public function onMerged()
     {

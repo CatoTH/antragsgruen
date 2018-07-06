@@ -328,6 +328,15 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     */
+    abstract public function setDeleted();
+
+    /**
+     * @return bool
+     */
+    abstract public function isDeleted();
+
+    /**
      * @return ISupporter[]
      */
     abstract public function getInitiators();

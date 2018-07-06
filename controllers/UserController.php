@@ -480,7 +480,7 @@ class UserController extends Base
         ];
 
         foreach ($user->motionSupports as $motionSupport) {
-            if ($motionSupport->motion->status === IMotion::STATUS_DELETED) {
+            if (!$motionSupport->motion || $motionSupport->motion->isDeleted()) {
                 continue;
             }
             if ($motionSupport->role === MotionSupporter::ROLE_INITIATOR) {
@@ -500,7 +500,7 @@ class UserController extends Base
         }
 
         foreach ($user->amendmentSupports as $amendmentSupport) {
-            if ($amendmentSupport->amendment->status === IMotion::STATUS_DELETED) {
+            if (!$amendmentSupport->amendment || $amendmentSupport->amendment->isDeleted()) {
                 continue;
             }
             if ($amendmentSupport->role === AmendmentSupporter::ROLE_INITIATOR) {
@@ -520,15 +520,14 @@ class UserController extends Base
         }
 
         foreach ($user->motionComments as $comment) {
-            if ($comment->motion->status === IMotion::STATUS_DELETED) {
+            if (!$comment->motion || $comment->motion->isDeleted()) {
                 continue;
             }
             $data['comments'][] = $comment->getUserdataExportObject();
         }
 
         foreach ($user->amendmentComments as $comment) {
-            $ame = $comment->amendment;
-            if ($ame->status === IMotion::STATUS_DELETED || $ame->getMyMotion()->status === IMotion::STATUS_DELETED) {
+            if (!$comment->amendment || $comment->amendment->isDeleted()) {
                 continue;
             }
             $data['comments'][] = $comment->getUserdataExportObject();
