@@ -35,7 +35,7 @@ echo Html::beginForm('', 'post', [
             ?>
             <label class="typePreset">
                 <input type="radio" name="type[preset]" value="<?= $motionType->id ?>"
-                       class="preset<?= $motionType->id ?>">
+                       class="preset<?= $motionType->id ?>" required>
                 <span><?= Html::encode($motionType->titleSingular) ?></span>
             </label>
             <div class="typePresetInfo"></div>
