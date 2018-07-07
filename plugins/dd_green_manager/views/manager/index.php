@@ -1,4 +1,5 @@
 <?php
+
 use app\components\UrlHelper;
 use app\models\db\Site;
 use yii\helpers\Html;
@@ -9,43 +10,77 @@ use yii\helpers\Html;
  * @var \app\controllers\Base $controller
  */
 
+$assets = \app\plugins\dd_green_manager\Assets::register($this);
+
 $this->title = 'Democratic documents - Managing motions and amendments online';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl = 'https://motion.tools/';
+$controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
 
-$layout  = $controller->layoutParams;
-$layout->fullWidth = true;
+$layout                   = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manager_index';
+$layout->fullWidth        = true;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
 
 ?>
 <h1>Democratic documents<br>
-    <small>The Online Motion Administration for Associations Conventions, General Assemblies and Party Conventions.
+    <small>The Online Motion Administration for Party Conventions and Congresses.
     </small>
 </h1>
 
 <div class="content infoSite">
-    <p>Democratic documents offers a clear and efficient tool for the effective administration of motions, amendments and
-        candidacies: from submission to administration and print template.</p>
+    <p>Democratic documents offers a clear and efficient tool for the effective administration of motions, amendments
+        and candidacies: from submission to administration and print template.</p>
 
-    <p>A number of organisations are already using the tool successfully such as the federal association of the German
-        Green Party or the German Federal Youth Council. It can be easily adapted to a variety of scenarios.</p>
+    <p>It has been created for managing both national and regional congresses of the German Greens
+        and is by now used by a variety of organizations within and beyond the green party.</p>
+
+    <p>It's available as open source and we provide free hosting for all green parties in Europe. </p>
 </div>
 
-<h2 id="funktionen" class="green">Core functions</h2>
 
+<h2 id="who_uses_it" class="green">Who is already using it?</h2>
+<div class="content contentWhoUsesIt">
+    <div class="list">
+        <a href="https://antraege.gruene.de/" target="_blank">
+            <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
+            <div class="name">Bündnis 90 / Die GRÜNEN</div>
+            <div class="hint">Federal Association</div>
+        </a>
+        <a href="http://amend.fyeg.org/web/" target="_blank">
+            <img src="<?= $assets->baseUrl ?>/logo-fyeg.png" alt="Federation of Young European Greens">
+            <div class="name">Federation of Young European Greens</div>
+            <div class="hint">General Assembly</div>
+        </a>
+    </div>
+    <p>
+        ... as well as dozens of other green organizations (like the
+        <a href="https://convention.younggreens.org.uk/democracy/web/" target="_blank">Young Greens of England and
+            Wales</a> and the
+        <a href="https://bayern.antragsgruen.de/" target="_blank">Bavarian Greens</a>),
+        non-green parties like the austrian NEOS or the
+        <a href="https://mitreden.spd-schleswig-holstein.de/?veranstaltungsreihe_id=default" target="_blank">german
+            SPD</a>,
+        and civil organizations like the
+        <a href="https://tooldoku.dbjr.de/category/antragsgruen/" target="_blank">German Federal Youth Council</a>.
+
+    </p>
+</div>
+
+<h2 id="funktionen" class="green">Core functionality</h2>
 <div class="content infoSite">
     <ul>
-        <li><strong>Submit motions, proposals and discussion papers online</strong></li>
-        <li><strong>Clear amendment</strong></li>
-        <li><strong>Submitted amendments are displayed directly in the relevant text section</strong></li>
+        <li><strong>Submit motions, discussion papers and applications online</strong><br>
+            Flexible and user-friendly submission of motions and applications<br>
+            Intuitive creation and of amendments<br>
+        </li>
         <li><strong>Discuss motions</strong><br>
             Motions as well as amendments can be commented upon, either as a whole document or per paragraph. Depending
-            on preference, the comments function can be open to everybody or restricted to registered users. No comments
-            required? The comments function can be easily deactivated.
+            on preference, the comments function can be open to everybody or restricted to registered users.<br>
+            <small>(No comments required? The comments function can be easily deactivated.)</small>
         </li>
         <li><strong>Sophisticated administration tools</strong><br>
             Automatic email messaging for all essential results.<br>
@@ -60,9 +95,7 @@ $params = \Yii::$app->params;
         <li><strong>Diverse export options and notifications</strong><br>
             Automatically generated PDFs for all motions and amendments with different templates<br>
             Export to different office formats (OpenDocument text, spreadsheet)<br>
-            E-Mail-Notifications<br>
-            Compatible with OpenSlides 1 and 2<br>
-            RSS-Feeds
+            E-Mail-Notifications
         </li>
         <li><strong>Technically mature, data privacy-friendly</strong><br>
             Open source software, verifiable functionality. No black box.<br>
@@ -84,15 +117,25 @@ $params = \Yii::$app->params;
 
 <h2 id="create_version" class="green">Use it</h2>
 <div class="content">
-    <p style="text-align: center;">
-        <a href="/createsite" class="btn btn-success">Create your instance</a>
+    <p>For european green parties, we provide free hosting of sites using this domain for free.
+        You can start using or evaluating this tool by answering a couple of questions about your use case and providing
+        a valid e-mail-address. Creating your own instance only takes two minutes:</p>
+
+    <p style="text-align: center; margin: 30px 0;">
+        <a href="/createsite" class="btn btn-success">Test it / Create your instance</a>
     </p>
+
+    <p>
+        <strong>About internationalization:</strong> We provide a english and german version,
+        as well as a nearly-completele french version. If you are interested in helping translate this tool
+        in other languages, please contact us.</p>
 </div>
 
-<h2 id="selbst_nutzen" class="green">Pricing / Testing</h2>
+<h2 id="selbst_nutzen" class="green">Contact</h2>
 
 <div class="content infoSite">
-    <p>Democratic documents / Antragsgrün is open source software and can be installed for free on servers. The source code is available on <a
+    <p>Democratic documents / Antragsgrün is open source software and can be installed for free on servers. The source
+        code is available on <a
                 href="https://github.com/CatoTH/antragsgruen">Github</a>. On request, we can offer professional support.
     </p>
 
