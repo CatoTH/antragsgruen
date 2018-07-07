@@ -5,6 +5,7 @@ namespace app\plugins;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\layoutHooks\Hooks;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\memberPetitions\ConsultationSettings;
@@ -124,5 +125,28 @@ class ModuleBase extends Module
     public static function getForcedLayoutHooks($layoutSettings, $consultation)
     {
         return [];
+    }
+
+    /**
+     * @return string;
+     */
+    public static function getCustomSiteCreateView()
+    {
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getSiteCreateView()
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        foreach ($params->getPluginClasses() as $pluginClass) {
+            if ($pluginClass::getCustomSiteCreateView()) {
+                return $pluginClass::getCustomSiteCreateView();
+            }
+        }
+        return "@app/plugins/dd_green_manager/views/sitedata_subdomain";
     }
 }

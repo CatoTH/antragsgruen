@@ -55,7 +55,7 @@ $t = function ($string) {
     switch ($mode) {
         case 'subdomain':
         case 'sandbox':
-            echo $this->render('sitedata_subdomain', ['model' => $model, 't' => $t]);
+            echo $this->render(\app\plugins\ModuleBase::getSiteCreateView(), ['model' => $model, 't' => $t]);
             break;
         case 'singlesite':
             echo $this->render('sitedata_singlesite', ['model' => $model, 't' => $t]);
