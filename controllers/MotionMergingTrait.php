@@ -238,10 +238,10 @@ trait MotionMergingTrait
         }
 
         $toMergeAmendmentIds = [];
-        $postAmendIds        = \Yii::$app->request->post('amendments', null);
+        $postAmendIds        = \Yii::$app->request->post('amendments', []);
         $textVersions        = \Yii::$app->request->post('textVersion', []);
         foreach ($motion->getVisibleAmendments() as $amendment) {
-            if ($postAmendIds === null || isset($postAmendIds[$amendment->id])) {
+            if (isset($postAmendIds[$amendment->id])) {
                 if (isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] == 'proposal') {
                     $toMergeAmendmentIds[] = $amendment->proposalReference->id;
                 } else {
