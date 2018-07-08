@@ -1,6 +1,9 @@
 <?php
 
+require_once(__DIR__ . '/components/async/Spool.php');
+require_once(__DIR__ . '/components/async/ConventionListener.php');
 require_once(__DIR__ . '/components/async/ProtocolHandler.php');
+require_once(__DIR__ . '/components/async/InternalClient.php');
 require_once(__DIR__ . '/models/settings/JsonConfigTrait.php');
 require_once(__DIR__ . '/models/async/Userdata.php');
 
@@ -13,141 +16,14 @@ $server->set([
     'task_worker_num' => 1,
 ]);
 
-class Spool
-{
-    /** @var ConventionListener[] */
-    public static $channels = [];
-}
-
-class ConventionListener
-{
-    /** @var swoole_server */
-    private $server;
-    /** @var int */
-    private $fd;
-
-    /**
-     * ConventionListener constructor.
-     * @param swoole_websocket_server $server
-     * @param $fd
-     */
-    public function __construct(swoole_websocket_server $server, $fd)
-    {
-        $this->server = $server;
-        $this->fd     = $fd;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function processMessage($data)
-    {
-        //var_dump($this->server);
-        //var_dump($this->fd)
-        $this->server->push($this->fd, json_encode($data));
-    }
-}
+$protocolHandler = new \app\components\async\ProtocolHandler();
+$internalClient = new \app\components\async\InternalClient();
 
 
-function user_handshake(swoole_http_request $request, swoole_http_response $response)
-{
-    //自定定握手规则，没有设置则用系统内置的（只支持version:13的）
-    if (!isset($request->header['sec-websocket-key'])) {
-        //'Bad protocol implementation: it is not RFC6455.'
-        $response->end();
-        return false;
-    }
-    if (0 === preg_match('#^[+/0-9A-Za-z]{21}[AQgw]==$#', $request->header['sec-websocket-key'])
-        || 16 !== strlen(base64_decode($request->header['sec-websocket-key']))
-    ) {
-        //Header Sec-WebSocket-Key is illegal;
-        $response->end();
-        return false;
-    }
 
-    $key     = base64_encode(sha1($request->header['sec-websocket-key']
-        . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11',
-        true));
-    $headers = array(
-        'Upgrade'               => 'websocket',
-        'Connection'            => 'Upgrade',
-        'Sec-WebSocket-Accept'  => $key,
-        'Sec-WebSocket-Version' => '13',
-        'KeepAlive'             => 'off',
-    );
-    foreach ($headers as $key => $val) {
-        $response->header($key, $val);
-    }
-    $response->status(101);
-    $response->end();
-    global $server;
-    $fd = $request->fd;
-    $server->defer(function () use ($fd, $server) {
-        $server->push($fd, "hello, welcome\n");
-    });
-
-    Spool::$channels[$request->fd] = new ConventionListener($server, $request->fd);
-
-    return true;
-}
-
-$server->on('handshake', 'user_handshake');
-$server->on('open', function (swoole_websocket_server $_server, swoole_http_request $request) {
-    echo "server#{$_server->worker_pid}: handshake success with fd#{$request->fd}\n";
-    var_dump($_server->exist($request->fd), $_server->getClientInfo($request->fd));
-//    var_dump($request);
-    Spool::$channels[$request->fd] = $_server;
-});
-
-$server->on('message', function (swoole_websocket_server $_server, $frame) {
-    $data = json_decode($frame->data, true);
-    if (!$data || !isset($data['operation'])) {
-        echo "Got invalid data package: " . $frame->data . "\n";
-        return;
-    }
-    switch ($data['operation']) {
-        case 'auth':
-            echo "Got auth string: " . $data['auth'] . "\n";
-            \app\components\async\ProtocolHandler::authenticate(
-                $data['auth'],
-                function (\app\models\async\Userdata $ret) use ($_server, $frame) {
-                    echo "\nSuccess: \n";
-                    $_server->push($frame->fd, 'Hello, ' . $ret->username);
-                },
-                function ($ret, $err) use ($_server, $frame) {
-                    echo "\nError: \n";
-                    $_server->push($frame->fd, 'Sorry, something went wrong');
-                }
-            );
-            break;
-    }
-    return;
-
-    var_dump($frame->data);
-    echo "received " . strlen($frame->data) . " bytes\n";
-    if ($frame->data == "close") {
-        $_server->close($frame->fd);
-    } elseif ($frame->data == "task") {
-        $_server->task(['go' => 'die']);
-    } else {
-        //echo "receive from {$frame->fd}:{$frame->data}, opcode:{$frame->opcode}, finish:{$frame->finish}\n";
-        // for ($i = 0; $i < 100; $i++)
-        {
-            $_send = str_repeat('B', rand(100, 800));
-            $_server->push($frame->fd, $_send);
-            // echo "#$i\tserver sent " . strlen($_send) . " byte \n";
-        }
-        $fd = $frame->fd;
-        $_server->tick(2000, function ($id) use ($fd, $_server) {
-            $_send = str_repeat('B', rand(100, 5000));
-            $ret   = $_server->push($fd, $_send);
-            if (!$ret) {
-                var_dump($id);
-                var_dump($_server->clearTimer($id));
-            }
-        });
-    }
-});
+$server->on('handshake', [$protocolHandler, 'websocketHandshake']);
+$server->on('open', [$protocolHandler, 'onOpen']);
+$server->on('message', [$protocolHandler, 'onMessage']);
 
 $server->on('close', function ($_server, $fd) {
     echo "client {$fd} closed\n";
@@ -167,13 +43,6 @@ $server->on('packet', function ($_server, $data, $client) {
     var_dump($client);
 });
 
-$server->on('request', function (swoole_http_request $request, swoole_http_response $response) {
-    if ($request->server['request_method'] === 'POST' && $request->server['remote_addr'] === '127.0.0.1') {
-        foreach (Spool::$channels as $fd => $server) {
-            echo "POST $fd\n";
-            $server->processMessage("Test 1234" . rand(0, 10000));
-        }
-    }
-});
+$server->on('request', [$internalClient, 'onRequest']);
 
 $server->start();

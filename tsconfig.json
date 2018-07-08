@@ -5,7 +5,8 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "experimentalDecorators": true
   },
   "exclude": [
     "node_modules"
