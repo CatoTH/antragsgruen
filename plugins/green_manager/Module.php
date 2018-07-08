@@ -61,6 +61,16 @@ class Module extends ModuleBase
     }
 
     /**
+     * @param Site $site
+     * @return string|SiteSettings
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getSiteSettingsClass($site)
+    {
+        return SiteSettings::class;
+    }
+
+    /**
      * @return null|string
      */
     public static function overridesDefaultLayout()

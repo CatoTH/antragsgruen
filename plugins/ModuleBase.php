@@ -8,7 +8,6 @@ use app\models\layoutHooks\Hooks;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
-use app\plugins\memberPetitions\ConsultationSettings;
 use yii\base\Module;
 use yii\web\AssetBundle;
 use yii\web\Controller;
@@ -90,10 +89,20 @@ class ModuleBase extends Module
 
     /**
      * @param Consultation $consultation
-     * @return string|ConsultationSettings
+     * @return string|\app\models\settings\Consultation
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getConsultationSettingsClass($consultation)
+    {
+        return null;
+    }
+
+    /**
+     * @param Site $site
+     * @return string|\app\models\settings\Site
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getSiteSettingsClass($site)
     {
         return null;
     }

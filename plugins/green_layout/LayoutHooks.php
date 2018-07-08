@@ -5,6 +5,7 @@ namespace app\plugins\green_layout;
 use app\components\UrlHelper;
 use app\models\layoutHooks\HooksAdapter;
 use app\models\layoutHooks\Layout;
+use app\plugins\green_manager\SiteSettings;
 use yii\helpers\Html;
 
 class LayoutHooks extends HooksAdapter
@@ -77,6 +78,16 @@ class LayoutHooks extends HooksAdapter
         $out .= '</div></nav>';
         $out .= Layout::breadcrumbs();
         $out .= '</section>';
+
+        if ($this->consultation) {
+            $warnings = Layout::getSitewidePublicWarnings($this->consultation->site);
+            if (count($warnings) > 0) {
+                $out .= '<div class="alert alert-danger">';
+                $out .= '<p>' . implode('</p><p>', $warnings) . '</p>';
+                $out .= '</div>';
+            }
+        }
+
         return $out;
     }
 

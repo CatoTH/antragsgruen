@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\Site;
 
 class Layout
 {
@@ -206,5 +207,14 @@ class Layout
     public static function getAdminIndexHint(Consultation $consultation)
     {
         return static::callHook('getAdminIndexHint', [$consultation]);
+    }
+
+    /**
+     * @param Site $site
+     * @return string[]
+     */
+    public static function getSitewidePublicWarnings(Site $site)
+    {
+        return static::callHook('getSitewidePublicWarnings', [$site], []);
     }
 }

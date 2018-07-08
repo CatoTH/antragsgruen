@@ -108,7 +108,17 @@ class Site extends ActiveRecord
     public function getSettings()
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\Site($this->settings);
+            $settingsClass = \app\models\settings\Site::class;
+
+            /** @var \app\models\settings\AntragsgruenApp $app */
+            $app = \Yii::$app->params;
+            foreach ($app->getPluginClasses() as $pluginClass) {
+                if ($pluginClass::getSiteSettingsClass($this)) {
+                    $settingsClass = $pluginClass::getSiteSettingsClass($this);
+                }
+            }
+
+            $this->settingsObject = new $settingsClass($this->settings);
         }
         return $this->settingsObject;
     }

@@ -5,6 +5,7 @@ namespace app\plugins\green_manager;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Consultation;
+use app\models\db\Site;
 use app\models\db\User;
 use app\models\layoutHooks\HooksAdapter;
 use yii\helpers\Html;
@@ -86,5 +87,22 @@ class LayoutHooks extends HooksAdapter
         $out .= '</div></footer>';
 
         return $out;
+    }
+
+    /**
+     * @param string[] $before
+     * @param Site $site
+     * @return string[]
+     */
+    public function getSitewidePublicWarnings($before, Site $site)
+    {
+        /** @var SiteSettings $settings */
+        $settings = $site->getSettings();
+        if (!$settings->isConfirmed) {
+            $before[] = '<strong>This site still runs in DEMO mode.</strong><br>' .
+                'It will become permanent once the confirmation e-mail ' .
+                'sent to the person who created this site has been confirmed.';
+        }
+        return $before;
     }
 }

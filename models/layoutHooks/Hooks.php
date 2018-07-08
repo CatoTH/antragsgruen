@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\Site;
 
 interface Hooks
 {
@@ -135,4 +136,11 @@ interface Hooks
      * @return string
      */
     public function getAdminIndexHint($before, Consultation $consultation);
+
+    /**
+     * @param string[] $before
+     * @param Site $site
+     * @return string[]
+     */
+    public function getSitewidePublicWarnings($before, Site $site);
 }

@@ -6,6 +6,7 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
+use app\models\db\Site;
 
 class HooksAdapter implements Hooks
 {
@@ -216,6 +217,17 @@ class HooksAdapter implements Hooks
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getAdminIndexHint($before, Consultation $consultation)
+    {
+        return $before;
+    }
+
+    /**
+     * @param string[] $before
+     * @param Site $site
+     * @return string[]
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getSitewidePublicWarnings($before, Site $site)
     {
         return $before;
     }
