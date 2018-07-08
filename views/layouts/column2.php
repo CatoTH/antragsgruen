@@ -14,7 +14,7 @@ $rowClasses = ['row', 'antragsgruen-content'];
 
 $menus = [];
 if ($params->menu) {
-    $menus[] = ['name' => 'Aktionen', 'items' => $controller->layoutParams->menu];
+    $menus[] = ['name' => 'Actions', 'items' => $controller->layoutParams->menu];
 }
 foreach ($params->multimenu as $m) {
     $menus[] = $m;

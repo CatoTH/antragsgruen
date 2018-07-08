@@ -46,7 +46,7 @@ class LoginUsernamePasswordForm extends Model
     private function sendConfirmationEmail(User $user)
     {
         $bestCode = $user->createEmailConfirmationCode();
-        $params   = ['user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
+        $params   = ['/user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
         $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
 
         \app\components\mail\Tools::sendWithLog(

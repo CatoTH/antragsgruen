@@ -1,0 +1,125 @@
+#sidebar {
+  .current-uses-list.nav-list {
+    > li {
+      padding-left: 15px;
+      padding-right: 5px;
+
+      -webkit-hyphens: auto;
+      word-break: break-word;
+      -moz-hyphens: auto;
+      hyphens: auto;
+      overflow: hidden;
+
+      span.orga {
+        font-size: 0.9em;
+        color: #767676;
+        display: block;
+      }
+    }
+  }
+}
+
+.managerHelpPage {
+  .well &.content {
+    padding: 15px 40px 30px;
+  }
+  font-size: 16px;
+  h2 {
+    margin-top: 40px;
+  }
+  h3 {
+    margin-top: 25px;
+  }
+  ul, ol {
+    margin-top: 25px;
+    margin-bottom: 25px;
+  }
+  li {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .toc {
+    list-style-type: none;
+    margin: 20px 0 60px;
+    padding: 0;
+    ul {
+      margin-top: 0;
+    }
+    > li > a {
+      font-weight: bold;
+    }
+  }
+}
+
+.infoSite {
+  ul {
+    margin-bottom: 25px;
+    li {
+      margin-top: 20px;
+    }
+  }
+}
+
+.downloadCreate {
+  display: flex;
+  margin: 40px 0;
+
+  > * {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.siteCreate {
+  fieldset .radio-label .title.long {
+    font-size: 24px;
+  }
+  .subdomainRow {
+    margin-bottom: 40px;
+  }
+}
+
+.manager_index {
+  font-size: 16px;
+
+  .well {
+    h1 {
+      font-size: 18px;
+      padding: 10px 20px;
+    }
+  }
+}
+
+.manager_index, .manager_create, .manager_created, .manager_help {
+  #page {
+    max-width: 850px;
+    width: auto;
+  }
+}
+
+.contentWhoUsesIt {
+  padding: 10px;
+
+  .list {
+    display: flex;
+    padding-top: 20px;
+    padding-bottom: 40px;
+
+    > * {
+      flex: 1;
+    }
+    img {
+      float: left;
+      height: 70px;
+      margin-right: 15px;
+    }
+    .name {
+      font-weight: bold;
+      font-size: 18px;
+      padding-bottom: 7px;
+    }
+    .hint {
+      font-size: 16px;
+    }
+  }
+}
