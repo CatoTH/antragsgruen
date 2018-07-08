@@ -245,14 +245,14 @@ class SiteCreateWizard {
 
         $form.find("#panelSiteData input").on("keypress", function (ev) {
             let original: any = ev.originalEvent;
-            if (original.charCode == 13) {
+            if (original.charCode === 13 || original.keyCode === 13) {
                 ev.preventDefault();
             }
         });
 
         let obj = this;
         $form.find(".navigation .btn-next").click(function (ev) {
-            if ($(this).attr("type") == "submit") {
+            if ($(this).attr("type") === "submit") {
                 return;
             }
             ev.preventDefault();
