@@ -72,7 +72,7 @@ use yii\helpers\Html;
                 <?php
                 if (!User::getCurrentUser()) {
                     ?>
-                    <br><br>
+                    <br>
                     <legend>Create an account to manage the site</legend>
 
                     <div class="usernameRow">

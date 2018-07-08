@@ -60,6 +60,25 @@
   }
 }
 
+.downloadCreate {
+  display: flex;
+  margin: 40px 0;
+
+  > * {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.siteCreate {
+  fieldset .radio-label .title.long {
+    font-size: 24px;
+  }
+  .subdomainRow {
+    margin-bottom: 40px;
+  }
+}
+
 .manager_index {
   font-size: 16px;
 
@@ -69,7 +88,9 @@
       padding: 10px 20px;
     }
   }
+}
 
+.manager_index, .manager_create, .manager_created, .manager_help {
   #page {
     max-width: 850px;
     width: auto;

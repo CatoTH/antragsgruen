@@ -1,4 +1,5 @@
 <?php
+
 use app\models\db\Site;
 
 /**
@@ -7,24 +8,28 @@ use app\models\db\Site;
  * @var \app\controllers\Base $controller
  */
 
-$this->title = 'Democratic documents - The Green Online Motion Administration';
+$this->title = 'Discuss.green - The Green Online Motion Administration';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
+$layout                   = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manager_help';
+$layout->fullWidth        = true;
+
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = \Yii::$app->params;
 
 ?>
-<h1>Democratic documents<br>
-    <small>The Online Motion Administration for Associations Conventions, General Assemblies and Party Conventions.
+<h1>Discuss.green<br>
+    <small>The Online Motion Administration for General Assemblies and Party Conventions.
     </small>
 </h1>
 
 <div class="content managerHelpPage">
 
-    <h2>Antragsgrün - Manual</h2>
+    <h2>Discuss.green / Antragsgrün - Manual</h2>
 
     <ul class="toc">
         <li>

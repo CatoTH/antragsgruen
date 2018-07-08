@@ -12,7 +12,7 @@ use yii\helpers\Html;
 
 $assets = \app\plugins\dd_green_manager\Assets::register($this);
 
-$this->title = 'Democratic documents - Managing motions and amendments online';
+$this->title = 'Discuss.green - Managing motions and amendments online';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
 $controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
@@ -26,13 +26,13 @@ $layout->fullWidth        = true;
 $params = \Yii::$app->params;
 
 ?>
-<h1>Democratic documents<br>
+<h1>Discuss.green<br>
     <small>The Online Motion Administration for Party Conventions and Congresses.
     </small>
 </h1>
 
 <div class="content infoSite">
-    <p>Democratic documents offers a clear and efficient tool for the effective administration of motions, amendments
+    <p>Discuss.green offers a clear and efficient tool for the effective administration of motions, amendments
         and candidacies: from submission to administration and print template.</p>
 
     <p>It has been created for managing both national and regional congresses of the German Greens
@@ -75,7 +75,9 @@ $params = \Yii::$app->params;
     <ul>
         <li><strong>Submit motions, discussion papers and applications online</strong><br>
             Flexible and user-friendly submission of motions and applications<br>
-            Intuitive creation and of amendments<br>
+            Intuitive creation of amendments<br>
+            Creating final resolutions based on the motions and amendments to them.<br>
+            Managing the agenda of a congress
         </li>
         <li><strong>Discuss motions</strong><br>
             Motions as well as amendments can be commented upon, either as a whole document or per paragraph. Depending
@@ -83,7 +85,6 @@ $params = \Yii::$app->params;
             <small>(No comments required? The comments function can be easily deactivated.)</small>
         </li>
         <li><strong>Sophisticated administration tools</strong><br>
-            Automatic email messaging for all essential results.<br>
             Filter and sorting options for all motions / amendments<br>
             If required: assessment of each submitted motion / amendment with regards to permissibility by the programme
             commission prior to publication.<br>
@@ -117,16 +118,24 @@ $params = \Yii::$app->params;
 
 <h2 id="create_version" class="green">Use it</h2>
 <div class="content">
-    <p>For european green parties, we provide free hosting of sites using this domain for free.
+    <p>Discuss.green / Antragsgrün is open source software and can be installed on any web server that supports PHP and MySQL.</p>
+    <p>For european green parties, we provide <strong>free hosting</strong> of sites on this domain.
         You can start using or evaluating this tool by answering a couple of questions about your use case and providing
-        a valid e-mail-address. Creating your own instance only takes two minutes:</p>
+        a valid e-mail-address. Creating your own instance only takes two minutes.</p>
 
-    <p style="text-align: center; margin: 30px 0;">
-        <a href="/createsite" class="btn btn-success">Test it / Create your instance</a>
-    </p>
+    <div class="downloadCreate">
+        <div>
+            <a href="https://github.com/CatoTH/antragsgruen" class="btn btn-default">
+                Download / Source Code
+            </a>
+        </div>
+        <div>
+            <a href="/createsite" class="btn btn-success">Test it / Create your instance</a>
+        </div>
+    </div>
 
     <p>
-        <strong>About internationalization:</strong> We provide a english and german version,
+        <strong>About internationalization:</strong> We provide an english and german version,
         as well as a nearly-completele french version. If you are interested in helping translate this tool
         in other languages, please contact us.</p>
 </div>
@@ -134,11 +143,6 @@ $params = \Yii::$app->params;
 <h2 id="selbst_nutzen" class="green">Contact</h2>
 
 <div class="content infoSite">
-    <p>Democratic documents / Antragsgrün is open source software and can be installed for free on servers. The source
-        code is available on <a
-                href="https://github.com/CatoTH/antragsgruen">Github</a>. On request, we can offer professional support.
-    </p>
-
     <p style="margin-top: 35px;"><strong>Are there functions missing?
             Do you require professional support and special adaptations?</strong></p>
     <p>If you need customised programming or you would like us to host Antragsgrün on a designated domain, we implement

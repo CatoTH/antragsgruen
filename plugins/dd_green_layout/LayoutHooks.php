@@ -51,7 +51,7 @@ class LayoutHooks extends HooksAdapter
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
-            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Democratic Documents</a>' .
+            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Discuss.green</a>' .
             '</span></div>';
         if ($this->consultation) {
             $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';

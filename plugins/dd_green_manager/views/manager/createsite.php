@@ -11,6 +11,7 @@ use yii\helpers\Url;
 
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manager_create';
 
 $this->title = \Yii::t('wizard', 'title');
 $controller->layoutParams->addCSS('css/formwizard.css');

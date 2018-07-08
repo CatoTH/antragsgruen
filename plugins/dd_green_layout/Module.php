@@ -22,7 +22,7 @@ class Module extends ModuleBase
 
         return [
             'std' => [
-                'title'       => 'Democratic Documents',
+                'title'       => 'Discuss.green',
                 'preview'     => $thumbBase . '/layout-preview-green.png',
                 'bundle'      => Assets::class,
                 'hooks'       => LayoutHooks::class,

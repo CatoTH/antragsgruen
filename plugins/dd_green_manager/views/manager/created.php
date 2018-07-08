@@ -15,6 +15,7 @@ use yii\helpers\Url;
 $controller = $this->context;
 
 $layout     = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'manager_created';
 $layout->fullWidth = true;
 
 $this->title = \Yii::t('wizard', 'created_title');
