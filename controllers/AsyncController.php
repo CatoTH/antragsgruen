@@ -10,7 +10,7 @@ class AsyncController extends Base
 {
     public function actionUser()
     {
-        if (\Yii::$app->request->remoteIP !== '127.0.0.1') {
+        if (\Yii::$app->request->remoteIP !== '127.0.0.1' && \Yii::$app->request->remoteIP !== '::1') {
             throw new UnauthorizedHttpException('This IP is not whitelisted');
         }
         $user = User::getCurrentUser();
