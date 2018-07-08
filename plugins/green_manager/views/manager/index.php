@@ -10,7 +10,7 @@ use yii\helpers\Html;
  * @var \app\controllers\Base $controller
  */
 
-$assets = \app\plugins\dd_green_manager\Assets::register($this);
+$assets = \app\plugins\green_manager\Assets::register($this);
 
 $this->title = 'Discuss.green - Managing motions and amendments online';
 $controller  = $this->context;

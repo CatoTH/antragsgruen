@@ -1,6 +1,6 @@
 <?php
 
-namespace app\plugins\dd_green_manager;
+namespace app\plugins\green_manager;
 
 use app\models\db\Consultation;
 use app\models\db\Site;
@@ -20,8 +20,8 @@ class Module extends ModuleBase
     {
         $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy';
         return [
-            $domainPlain                                    => 'dd_green_manager/manager/index',
-            $domainPlain . '/<_a:(' . $domPlainPaths . ')>' => 'dd_green_manager/manager/<_a>',
+            $domainPlain                                    => 'green_manager/manager/index',
+            $domainPlain . '/<_a:(' . $domPlainPaths . ')>' => 'green_manager/manager/<_a>',
         ];
     }
 
@@ -30,7 +30,7 @@ class Module extends ModuleBase
      */
     public static function getDefaultRouteOverride()
     {
-        return '/dd_green_manager/manager/index';
+        return '/green_manager/manager/index';
     }
 
     /**
@@ -39,7 +39,7 @@ class Module extends ModuleBase
      */
     public static function getActiveAssetBundles($controller)
     {
-        if (strpos($controller->route, 'dd_green_manager') === 0) {
+        if (strpos($controller->route, 'green_manager') === 0) {
             return [
                 Assets::class,
             ];
@@ -65,7 +65,7 @@ class Module extends ModuleBase
      */
     public static function overridesDefaultLayout()
     {
-        return 'layout-plugin-dd_green_layout-std';
+        return 'layout-plugin-green_layout-std';
     }
 
     /**
@@ -73,6 +73,6 @@ class Module extends ModuleBase
      */
     public static function getCustomSiteCreateView()
     {
-        return "@app/plugins/dd_green_manager/views/sitedata_subdomain";
+        return "@app/plugins/green_manager/views/sitedata_subdomain";
     }
 }

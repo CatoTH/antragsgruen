@@ -1,25 +1,18 @@
 <?php
 
-namespace app\plugins\dd_green_manager\controllers;
+namespace app\plugins\green_manager\controllers;
 
-use app\components\HTMLTools;
 use app\components\MessageSource;
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\models\db\ConsultationText;
 use app\models\db\Site;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
 use app\models\db\User;
-use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\forms\SiteCreateForm;
-use app\models\settings\AntragsgruenApp;
-use app\plugins\dd_green_manager\Module;
+use app\plugins\green_manager\Module;
 use yii\helpers\Html;
 use yii\web\Response;
 
@@ -79,7 +72,7 @@ class ManagerController extends Base
 
         $user = $this->eligibleToCreateUser();
         if (!$user) {
-            $this->redirect(UrlHelper::createUrl('/dd_green_manager/manager/index'));
+            $this->redirect(UrlHelper::createUrl('/green_manager/manager/index'));
             \Yii::$app->end();
         }
     }
@@ -90,8 +83,6 @@ class ManagerController extends Base
      */
     protected function createWelcomePage(Consultation $consultation, $name)
     {
-        /** @var AntragsgruenApp $params */
-        $params      = \Yii::$app->params;
         $welcomeHtml = '<h2>Welcome to ' . Html::encode($name) . '</h2>';
         $welcomeHtml .= '<p>You can now start by creating motions, or adjust some detailed settings. As a admin, ';
         $welcomeHtml .= 'you can edit this text and change it to a proper welcome message for your users ';
@@ -154,7 +145,7 @@ class ManagerController extends Base
 
                     $this->createWelcomePage($consultation, $post['SiteCreateForm']['title']);
 
-                    return $this->render('@app/plugins/dd_green_manager/views/manager/created', ['form' => $model]);
+                    return $this->render('@app/plugins/green_manager/views/manager/created', ['form' => $model]);
                 } else {
                     throw new FormError($model->getErrors());
                 }
@@ -164,7 +155,7 @@ class ManagerController extends Base
         }
 
         return $this->render(
-            '@app/plugins/dd_green_manager/views/manager/createsite',
+            '@app/plugins/green_manager/views/manager/createsite',
             [
                 'model'  => $model,
                 'errors' => $errors

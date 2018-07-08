@@ -1,6 +1,6 @@
 <?php
 
-namespace app\plugins\dd_green_manager;
+namespace app\plugins\green_manager;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
@@ -25,10 +25,10 @@ class LayoutHooks extends HooksAdapter
 
         $out = '<ul class="nav navbar-nav">';
 
-        $startLink = UrlHelper::createUrl('/dd_green_manager/manager/index');
+        $startLink = UrlHelper::createUrl('/green_manager/manager/index');
         $out       .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
 
-        $helpLink = UrlHelper::createUrl('/dd_green_manager/manager/help');
+        $helpLink = UrlHelper::createUrl('/green_manager/manager/help');
         $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
 
         if (!User::getCurrentUser()) {
@@ -70,8 +70,8 @@ class LayoutHooks extends HooksAdapter
 
         $out = '<footer class="footer"><div class="container">';
 
-        $legalLink   = UrlHelper::createUrl('/dd_green_manager/manager/legal');
-        $privacyLink = UrlHelper::createUrl('/dd_green_manager/manager/privacy');
+        $legalLink   = UrlHelper::createUrl('/green_manager/manager/legal');
+        $privacyLink = UrlHelper::createUrl('/green_manager/manager/privacy');
 
         $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
             \Yii::t('base', 'imprint') . '</a>

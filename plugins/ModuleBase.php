@@ -147,6 +147,6 @@ class ModuleBase extends Module
                 return $pluginClass::getCustomSiteCreateView();
             }
         }
-        return "@app/plugins/dd_green_manager/views/sitedata_subdomain";
+        return "@app/plugins/green_manager/views/sitedata_subdomain";
     }
 }

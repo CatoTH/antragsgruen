@@ -1,15 +1,15 @@
 <?php
 
-namespace app\plugins\dd_green_manager;
+namespace app\plugins\green_layout;
 
 use yii\web\AssetBundle;
 
 class Assets extends AssetBundle
 {
-    public $sourcePath = '@app/plugins/dd_green_manager/assets/';
+    public $sourcePath = '@app/plugins/green_layout/assets/';
 
     public $css = [
-        'sites.css',
+        'layout-green_layout.css',
     ];
     public $js = [
     ];

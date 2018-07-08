@@ -1,6 +1,6 @@
 <?php
 
-namespace app\plugins\dd_green_layout;
+namespace app\plugins\green_layout;
 
 use app\components\UrlHelper;
 use app\models\layoutHooks\HooksAdapter;
