@@ -7,6 +7,8 @@ use app\components\MessageSource;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;
+use app\models\db\Consultation;
+use app\models\db\ConsultationText;
 use app\models\db\Site;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
@@ -16,6 +18,7 @@ use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\forms\SiteCreateForm;
+use app\models\settings\AntragsgruenApp;
 use app\plugins\dd_green_manager\Module;
 use yii\helpers\Html;
 use yii\web\Response;
@@ -82,6 +85,32 @@ class ManagerController extends Base
     }
 
     /**
+     * @param Consultation $consultation
+     * @throws FormError
+     */
+    protected function createWelcomePage(Consultation $consultation, $name)
+    {
+        /** @var AntragsgruenApp $params */
+        $params      = \Yii::$app->params;
+        $welcomeHtml = '<h2>Welcome to ' . Html::encode($name) . '</h2>';
+        $welcomeHtml .= '<p>You can now start by creating motions, or adjust some detailed settings. As a admin, ';
+        $welcomeHtml .= 'you can edit this text and change it to a proper welcome message for your users ';
+        $welcomeHtml .= 'by using the "Edit" button to the upper right.</p>';
+        $welcomeHtml .= '<p>If you encounter any problems, please do not hesitate to contact us at ' .
+            '<a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a>.</p>';
+
+        $legalText                 = new ConsultationText();
+        $legalText->siteId         = $consultation->siteId;
+        $legalText->consultationId = $consultation->id;
+        $legalText->category       = 'pagedata';
+        $legalText->textId         = 'welcome';
+        $legalText->text           = $welcomeHtml;
+        if (!$legalText->save()) {
+            throw new FormError($legalText->getErrors());
+        }
+    }
+
+    /**
      * @return string
      */
     public function actionCreatesite()
@@ -122,6 +151,8 @@ class ManagerController extends Base
                     $settings->siteLayout = Module::overridesDefaultLayout();
                     $consultation->site->setSettings($settings);
                     $consultation->site->save();
+
+                    $this->createWelcomePage($consultation, $post['SiteCreateForm']['title']);
 
                     return $this->render('@app/plugins/dd_green_manager/views/manager/created', ['form' => $model]);
                 } else {

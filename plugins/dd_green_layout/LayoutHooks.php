@@ -94,8 +94,8 @@ class LayoutHooks extends HooksAdapter
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
         
-    <button type="submit" class="button-submit">
-                <span class="fa fa-search"></span> <span class="text">Suchen</span>
+    <button type="submit" class="button-submit hidden">
+                <span class="fa fa-search"></span> <span class="text">Search</span>
             </button>';
         $html .= Html::endForm();
         return $html;
