@@ -34,7 +34,7 @@ rsync -av --exclude='local' --exclude='/dist' --exclude='/updates' --exclude='/p
 cd local/antragsgruen-$ANTRAGSGRUEN_VERSION
 
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.4.3"
+./composer.phar global require "fxp/composer-asset-plugin:1.4.4"
 ./composer.phar install --no-dev
 
 rm -R local dist updates docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
