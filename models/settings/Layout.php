@@ -507,6 +507,11 @@ class Layout
             return false;
         }
 
+        if (!$this->consultation) {
+            // This are manager pages, generally aimed to advertise the installation
+            return true;
+        }
+
         switch ($this->consultation->getSettings()->robotsPolicy) {
             case \app\models\settings\Consultation::ROBOTS_ALL:
                 return true;
