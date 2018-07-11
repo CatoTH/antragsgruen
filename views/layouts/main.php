@@ -57,10 +57,10 @@ echo '>
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
-if ($layout->robotsNoindex || \app\models\settings\AntragsgruenApp::getInstance()->mode == 'sandbox') {
-    echo '<meta name="robots" content="noindex, nofollow">' . "\n";
-} else {
+if ($layout->isRobotsIndex($controller->action)) {
     echo '<meta name="robots" content="index, follow">' . "\n";
+} else {
+    echo '<meta name="robots" content="noindex, nofollow">' . "\n";
 }
 
 if ($layout->canonicalUrl) {

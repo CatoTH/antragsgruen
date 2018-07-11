@@ -50,6 +50,9 @@ class MotionController extends Base
                 $metadata = json_decode($section->metadata, true);
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', $metadata['mime']);
+                if (!$this->layoutParams->isRobotsIndex($this->action)) {
+                    \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+                }
                 return base64_decode($section->data);
             }
         }
@@ -74,6 +77,9 @@ class MotionController extends Base
             if ($section->sectionId == $sectionId) {
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+                if (!$this->layoutParams->isRobotsIndex($this->action)) {
+                    \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+                }
                 return base64_decode($section->data);
             }
         }
@@ -142,6 +148,9 @@ class MotionController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_tex', ['motion' => $motion]);
@@ -169,6 +178,9 @@ class MotionController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_amend_collection_tex', [
@@ -220,6 +232,10 @@ class MotionController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         if ($this->getParams()->xelatexPath && $texTemplate) {
             return $this->renderPartial('pdf_collection_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
         } else {
@@ -244,6 +260,9 @@ class MotionController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         return $this->renderPartial('view_odt', ['motion' => $motion]);
     }
@@ -260,6 +279,9 @@ class MotionController extends Base
 
         if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+        }
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
         return $this->renderPartial('plain_html', ['motion' => $motion]);
@@ -396,6 +418,9 @@ class MotionController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         try {
             $changes = MotionSectionChanges::motionToSectionChanges($parentMotion, $motion);
@@ -467,6 +492,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
+     * @throws FormError
      */
     public function actionEdit($motionSlug)
     {

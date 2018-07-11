@@ -8,6 +8,7 @@ use app\models\db\Consultation;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
+use yii\base\Action;
 use yii\helpers\Html;
 use yii\web\AssetBundle;
 use yii\web\Controller;
@@ -45,11 +46,8 @@ class Layout
      */
     public static function getCssLayouts($view = null)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
         $pluginLayouts = [];
-        foreach ($params->getPluginClasses() as $pluginId => $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $pluginClass) {
             foreach ($pluginClass::getProvidedLayouts($view) as $layoutId => $layout) {
                 $pluginLayouts['layout-plugin-' . $pluginId . '-' . $layoutId] = [
                     'id'      => 'layout-plugin-' . $pluginId . '-' . $layoutId,
@@ -58,6 +56,9 @@ class Layout
                 ];
             }
         }
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
 
         return array_merge([
             'layout-classic' => [
@@ -79,10 +80,7 @@ class Layout
      */
     public static function getLayoutPluginDef($layout)
     {
-        /** @var AntragsgruenApp $params */
-        $params  = \Yii::$app->params;
-        $plugins = $params->getPluginClasses();
-        foreach ($plugins as $pluginId => $plugin) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $plugin) {
             foreach ($plugin::getProvidedLayouts(null) as $layoutId => $layoutDef) {
                 if ($layout === 'layout-plugin-' . $pluginId . '-' . $layoutId) {
                     return $layoutDef;
@@ -106,10 +104,7 @@ class Layout
             \app\models\layoutHooks\Layout::addHook($hook);
         }
 
-        /** @var AntragsgruenApp $params */
-        $params  = \Yii::$app->params;
-        $plugins = $params->getPluginClasses();
-        foreach ($plugins as $plugin) {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             foreach ($plugin::getForcedLayoutHooks($this, $this->consultation) as $hook) {
                 \app\models\layoutHooks\Layout::addHook($hook);
             }
@@ -121,10 +116,7 @@ class Layout
      */
     public static function getDefaultLayout()
     {
-        /** @var AntragsgruenApp $params */
-        $params  = \Yii::$app->params;
-        $plugins = $params->getPluginClasses();
-        foreach ($plugins as $plugin) {
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             if ($plugin::overridesDefaultLayout()) {
                 return $plugin::overridesDefaultLayout();
             }
@@ -152,9 +144,7 @@ class Layout
             throw new Internal('Invalid layout string: ' . $this->mainCssFile);
         }
 
-        /** @var AntragsgruenApp $params */
-        $params  = \Yii::$app->params;
-        $plugins = $params->getPluginClasses();
+        $plugins = AntragsgruenApp::getActivePlugins();
         if (!isset($plugins[$parts[2]])) {
             throw new Internal('Plugin not found');
         }
@@ -360,9 +350,7 @@ class Layout
      */
     public function registerPluginAssets($view, $controller)
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach ($params->getPluginClasses() as $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             foreach ($pluginClass::getActiveAssetBundles($controller) as $assetBundle) {
                 $assetBundle::register($view);
             }
@@ -501,5 +489,52 @@ class Layout
         } else {
             return '<span class="logoImg"></span>';
         }
+    }
+
+    /**
+     * @param Action $action
+     * @return bool
+     */
+    protected function isRobotsIndexDefault($action)
+    {
+        if (\app\models\settings\AntragsgruenApp::getInstance()->mode === 'sandbox') {
+            return false;
+        }
+        if ($this->consultation->getSettings()->maintenanceMode) {
+            return false;
+        }
+        if ($this->robotsNoindex) {
+            return false;
+        }
+
+        switch ($this->consultation->getSettings()->robotsPolicy) {
+            case \app\models\settings\Consultation::ROBOTS_ALL:
+                return true;
+            case \app\models\settings\Consultation::ROBOTS_NONE:
+                return false;
+            case \app\models\settings\Consultation::ROBOTS_ONLY_HOME:
+            default:
+                if ($action->controller->id === 'consultation' && $action->id === 'home') {
+                    return true;
+                } else {
+                    return false;
+                }
+        }
+    }
+
+    /**
+     * @param Action $action
+     * @return bool
+     */
+    public function isRobotsIndex($action)
+    {
+        $visible = $this->isRobotsIndexDefault($action);
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $override = $plugin::getRobotsIndexOverride($this->consultation, $action, $visible);
+            if ($override !== null) {
+                $visible = $override;
+            }
+        }
+        return $visible;
     }
 }

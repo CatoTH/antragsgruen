@@ -57,7 +57,7 @@ export class ConsultationSettings {
             }
         }).change();
 
-        console.log("!1");
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
 

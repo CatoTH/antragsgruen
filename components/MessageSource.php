@@ -70,9 +70,7 @@ class MessageSource extends \yii\i18n\MessageSource
             ];
         }
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach (array_keys($params->getPluginClasses()) as $pluginId) {
+        foreach (AntragsgruenApp::getActivePluginIds() as $pluginId) {
             $categories[$pluginId] = $pluginId;
         }
 
@@ -134,9 +132,7 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         $messageFile = Yii::getAlias($this->basePath) . "/$language/";
 
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach (array_keys($params->getPluginClasses()) as $pluginId) {
+        foreach (AntragsgruenApp::getActivePluginIds() as $pluginId) {
             if ($category === $pluginId) {
                 $messageFile = '@app/plugins/' . $pluginId . '/messages/' . $language . '/';
                 $messageFile = Yii::getAlias($messageFile);

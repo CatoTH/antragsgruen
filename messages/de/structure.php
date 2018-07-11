@@ -193,4 +193,8 @@ return [
     'remaining_minute'  => 'Minute',
     'remaining_seconds' => 'Sekunden',
     'remaining_second'  => 'Sekunde',
+
+    'robots_policy_none'      => 'Keine',
+    'robots_policy_only_home' => 'Nur die Startseite, keine Anträge',
+    'robots_policy_all'       => 'Alle Seiten, die ohne Login zugänglich sind',
 ];

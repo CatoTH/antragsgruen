@@ -129,6 +129,24 @@ class AntragsgruenApp
     }
 
     /**
+     * @return ModuleBase[]
+     */
+    public static function getActivePlugins()
+    {
+        /** @var AntragsgruenApp $params */
+        $params  = \Yii::$app->params;
+        return $params->getPluginClasses();
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getActivePluginIds()
+    {
+        return array_keys(static::getActivePlugins());
+    }
+
+    /**
      * @return string
      */
     public function getAbsoluteResourceBase()

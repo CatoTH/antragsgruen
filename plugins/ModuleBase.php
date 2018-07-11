@@ -8,6 +8,7 @@ use app\models\layoutHooks\Hooks;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
+use yii\base\Action;
 use yii\base\Module;
 use yii\web\AssetBundle;
 use yii\web\Controller;
@@ -149,13 +150,23 @@ class ModuleBase extends Module
      */
     public static function getSiteCreateView()
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        foreach ($params->getPluginClasses() as $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             if ($pluginClass::getCustomSiteCreateView()) {
                 return $pluginClass::getCustomSiteCreateView();
             }
         }
         return "@app/plugins/green_manager/views/sitedata_subdomain";
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param Action $action
+     * @param boolean $default
+     * @return null|boolean
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getRobotsIndexOverride($consultation, $action, $default)
+    {
+        return null;
     }
 }

@@ -123,6 +123,26 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             </div>
         </fieldset>
 
+        <?php $handledSettings[] = 'robotsPolicy'; ?>
+        <fieldset class="form-group">
+            <div class="col-sm-3 control-label">
+                <?= \Yii::t('admin', 'con_robots') ?>:
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                      data-original-title="<?= Html::encode(\Yii::t('admin', 'con_robots_hint')) ?>"></span>
+            </div>
+            <div class="col-sm-9">
+                <?php
+                foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
+                    echo '<label>';
+                    echo Html::radio('settings[robotsPolicy]', ($settings->robotsPolicy == $policy), [
+                            'value' => $policy,
+                    ]);
+                    echo ' ' . Html::encode($policyName) . '</label><br>';
+                }
+                ?>
+            </div>
+        </fieldset>
+
     </div>
     <h2 class="green"><?= \Yii::t('admin', 'con_appearance') ?></h2>
     <div class="content">

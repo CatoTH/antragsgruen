@@ -168,6 +168,8 @@ return [
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage style',
     'con_line_len'            => 'Line length',
+    'con_robots'              => 'Appears in search engines',
+    'con_robots_hint'         => 'Changes to this settings take several days to become active, as it depends on search engines actively re-crawling this site.',
     'con_title_motions'       => 'Motions',
     'con_feeds_sidebar'       => 'Show feeds in the sidebar',
     'con_minimalistic'        => '<strong>Minimalistic UI</strong><br>

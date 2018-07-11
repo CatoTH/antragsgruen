@@ -74,6 +74,9 @@ class AmendmentController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         if ($this->getParams()->xelatexPath && $amendment->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_tex', ['amendment' => $amendment]);
@@ -109,6 +112,10 @@ class AmendmentController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         if ($this->getParams()->xelatexPath && $texTemplate) {
             return $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
@@ -142,6 +149,9 @@ class AmendmentController extends Base
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.text');
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
 
         return $this->renderPartial('view_odt', ['amendment' => $amendment]);
     }

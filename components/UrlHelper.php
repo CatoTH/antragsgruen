@@ -196,9 +196,7 @@ class UrlHelper
                 return $homeUrl;
             }
         } else {
-            /** @var AntragsgruenApp $params */
-            $params = \Yii::$app->params;
-            foreach ($params->getPluginClasses() as $pluginClass) {
+            foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
                 if ($pluginClass::getDefaultRouteOverride()) {
                     return static::createUrl($pluginClass::getDefaultRouteOverride());
                 }

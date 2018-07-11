@@ -166,6 +166,8 @@ return [
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseiten-Design',
     'con_line_len'            => 'Maximale Zeilenlänge',
+    'con_robots'              => 'Sichtbar in Suchmaschinen',
+    'con_robots_hint'         => 'Änderungen an dieser Einstellung wirken sich erst auf, wenn Suchmaschinen das nächste Mal diese Seite abrufen. Das kann einige Tage dauern.',
     'con_title_motions'       => 'Anträge',
     'con_feeds_sidebar'       => 'Feeds in der Sidebar anzeigen',
     'con_minimalistic'        => '<strong>Minimalistische Ansicht</strong><br>

@@ -110,9 +110,7 @@ class Site extends ActiveRecord
         if (!is_object($this->settingsObject)) {
             $settingsClass = \app\models\settings\Site::class;
 
-            /** @var \app\models\settings\AntragsgruenApp $app */
-            $app = \Yii::$app->params;
-            foreach ($app->getPluginClasses() as $pluginClass) {
+            foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
                 if ($pluginClass::getSiteSettingsClass($this)) {
                     $settingsClass = $pluginClass::getSiteSettingsClass($this);
                 }
@@ -224,18 +222,19 @@ class Site extends ActiveRecord
      */
     public function getBehaviorClass()
     {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-
-        foreach ($params->getPluginClasses() as $pluginClass) {
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $behavior = $pluginClass::getSiteSpecificBehavior($this);
             if ($behavior) {
                 return new $behavior;
             }
         }
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
         if (isset($params->siteBehaviorClasses[$this->id])) {
             return new $params->siteBehaviorClasses[$this->id];
         }
+
         return new DefaultBehavior();
     }
 

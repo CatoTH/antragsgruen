@@ -8,6 +8,7 @@ use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\SearchResult;
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -330,9 +331,7 @@ class Consultation extends ActiveRecord
         if (!is_object($this->settingsObject)) {
             $settingsClass = \app\models\settings\Consultation::class;
 
-            /** @var \app\models\settings\AntragsgruenApp $app */
-            $app = \Yii::$app->params;
-            foreach ($app->getPluginClasses() as $pluginClass) {
+            foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
                 if ($pluginClass::getConsultationSettingsClass($this)) {
                     $settingsClass = $pluginClass::getConsultationSettingsClass($this);
                 }

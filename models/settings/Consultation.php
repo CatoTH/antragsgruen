@@ -13,6 +13,10 @@ class Consultation
     const START_LAYOUT_AGENDA      = 3;
     const START_LAYOUT_AGENDA_LONG = 4;
 
+    const ROBOTS_NONE      = 0;
+    const ROBOTS_ONLY_HOME = 1;
+    const ROBOTS_ALL       = 2;
+
 
     // SETTINGS WITH TEST CASES
 
@@ -48,6 +52,7 @@ class Consultation
     /** @var int */
     public $lineLength      = 80;
     public $startLayoutType = 0;
+    public $robotsPolicy    = 1;
 
     /** @var null|string */
     public $logoUrl         = null;
@@ -67,6 +72,18 @@ class Consultation
             static::START_LAYOUT_TAGS        => \Yii::t('structure', 'home_layout_tags'),
             static::START_LAYOUT_AGENDA      => \Yii::t('structure', 'home_layout_agenda'),
             static::START_LAYOUT_AGENDA_LONG => \Yii::t('structure', 'home_layout_agenda_long'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getRobotPolicies()
+    {
+        return [
+            static::ROBOTS_NONE      => \Yii::t('structure', 'robots_policy_none'),
+            static::ROBOTS_ONLY_HOME => \Yii::t('structure', 'robots_policy_only_home'),
+            static::ROBOTS_ALL       => \Yii::t('structure', 'robots_policy_all'),
         ];
     }
 

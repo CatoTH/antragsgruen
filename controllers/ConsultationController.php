@@ -94,6 +94,10 @@ class ConsultationController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         return $feed->getFeed();
     }
 
@@ -121,6 +125,10 @@ class ConsultationController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         return $feed->getFeed();
     }
 
@@ -147,6 +155,10 @@ class ConsultationController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         return $feed->getFeed();
     }
 
@@ -195,6 +207,10 @@ class ConsultationController extends Base
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/xml');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
         return $feed->getFeed();
     }
 
