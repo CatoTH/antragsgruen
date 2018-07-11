@@ -50,8 +50,7 @@ class MotionNotificationSubscriptions extends Base implements IEmailUser
      */
     public function getEmailUserText()
     {
-        $link      = UrlHelper::createUrl(['motion/view', 'motionId' => $this->motion->id]);
-        $link      = UrlHelper::absolutizeLink($link);
+        $link      = $this->motion->getLink(true);
         $initiator = $this->motion->getInitiatorsStr();
         return str_replace(
             ['%CONSULTATION%', '%TITLE%', '%LINK%', '%INITIATOR%'],

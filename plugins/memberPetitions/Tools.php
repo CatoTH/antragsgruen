@@ -226,8 +226,13 @@ class Tools
 
         foreach ($site->consultations as $consultation) {
             foreach ($consultation->motions as $motion) {
-                if ($motion->iAmInitiator() && $motion->isVisibleForAdmins() &&
-                    $motion->status != Motion::STATUS_INLINE_REPLY) {
+                if ($motion->status === Motion::STATUS_INLINE_REPLY) {
+                    continue;
+                }
+                if (count($motion->replacedByMotions) > 0) {
+                    continue;
+                }
+                if ($motion->iAmInitiator() && $motion->isVisibleForAdmins()) {
                     $motions[] = $motion;
                 }
             }
