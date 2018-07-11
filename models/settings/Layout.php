@@ -500,7 +500,7 @@ class Layout
         if (\app\models\settings\AntragsgruenApp::getInstance()->mode === 'sandbox') {
             return false;
         }
-        if ($this->consultation->getSettings()->maintenanceMode) {
+        if ($this->consultation && $this->consultation->getSettings()->maintenanceMode) {
             return false;
         }
         if ($this->robotsNoindex) {
