@@ -113,7 +113,7 @@ class AntragsgruenApp
      */
     public function isSamlActive()
     {
-        return (class_exists('\SimpleSAML_Auth_Simple') && $this->hasSaml);
+        return ($this->hasSaml && class_exists('\SimpleSAML_Auth_Simple'));
     }
 
     /**
