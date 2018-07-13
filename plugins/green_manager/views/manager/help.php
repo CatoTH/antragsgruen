@@ -11,7 +11,7 @@ use app\models\db\Site;
 $this->title = 'Discuss.green - The Green Online Motion Administration';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
+$controller->layoutParams->canonicalUrl      = 'https://discuss.green/help';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
 $layout                   = $controller->layoutParams;

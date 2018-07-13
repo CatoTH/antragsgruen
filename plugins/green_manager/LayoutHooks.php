@@ -80,7 +80,7 @@ class LayoutHooks extends HooksAdapter
             \Yii::t('base', 'privacy_statement') . '</a>';
 
         $out .= '<span class="version">';
-        $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
+        $out .= '<a href="https://discuss.green/">Antragsgrün</a>, Version ' .
             Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         $out .= '</span>';
 

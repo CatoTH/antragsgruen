@@ -15,7 +15,7 @@ $assets = \app\plugins\green_manager\Assets::register($this);
 $this->title = 'Discuss.green - Managing motions and amendments online';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://motion.tools/';
+$controller->layoutParams->canonicalUrl      = 'https://discuss.green/';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/'];
 
 $layout                   = $controller->layoutParams;
@@ -45,7 +45,7 @@ $params = \Yii::$app->params;
 <h2 id="who_uses_it" class="green">Who is already using it?</h2>
 <div class="content contentWhoUsesIt">
     <div class="list">
-        <a href="https://antraege.gruene.de/" target="_blank">
+        <a href="https://antraege.gruene.de/bdk41" target="_blank">
             <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
             <div class="name">Bündnis 90 / Die GRÜNEN</div>
             <div class="hint">Federal Association</div>
