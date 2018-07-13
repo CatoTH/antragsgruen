@@ -12,9 +12,11 @@ use yii\helpers\Html;
  * @var IComment $comment
  */
 
-$imotion     = $comment->getIMotion();
-$screening   = ($comment->status === IComment::STATUS_SCREENING);
-$screenAdmin = User::havePrivilege($imotion->getMyConsultation(), User::PRIVILEGE_SCREENING);
+$imotion       = $comment->getIMotion();
+$screening     = ($comment->status === IComment::STATUS_SCREENING);
+$screenAdmin   = User::havePrivilege($imotion->getMyConsultation(), User::PRIVILEGE_SCREENING);
+$commentPolicy = $imotion->getMyMotionType()->getCommentPolicy();
+$canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserComment(false, false));
 
 ?>
 
@@ -64,16 +66,17 @@ $screenAdmin = User::havePrivilege($imotion->getMyConsultation(), User::PRIVILEG
         $link     = '<span class="glyphicon glyphicon-link"></span>';
         $linkOpts = ['class' => 'entry link', 'title' => \Yii::t('comment', 'link_comment')];
         echo Html::a($link, $comment->getLink(), $linkOpts);
-        $replyToId = ($comment->parentCommentId ? $comment->parentCommentId : $comment->id);
-        echo '<button type="button" class="entry btn btn-link replyButton" data-reply-to="' . $replyToId . '">';
-        echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
+
+        if ($canReply) {
+            $replyToId = ($comment->parentCommentId ? $comment->parentCommentId : $comment->id);
+            echo '<button type="button" class="entry btn btn-link replyButton" data-reply-to="' . $replyToId . '">';
+            echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
+        }
         ?>
     </div>
 </article>
 
 <?php
-$commentPolicy = $imotion->getMyMotionType()->getCommentPolicy();
-$canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserComment(false, false));
 if (count($comment->replies) > 0 || $canReply) {
     echo '<div class="motionCommentReplies">';
 
