@@ -235,7 +235,7 @@ class ConsultationMotionType extends ActiveRecord
     /**
      * @return string[]
      */
-    public function getAvailablePDFTemplates()
+    public static function getAvailablePDFTemplates()
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
