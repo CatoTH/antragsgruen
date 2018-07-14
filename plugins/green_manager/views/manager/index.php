@@ -140,7 +140,7 @@ $params = \Yii::$app->params;
         in other languages, please contact us.</p>
 </div>
 
-<h2 id="selbst_nutzen" class="green">Contact</h2>
+<h2 id="contact" class="green">Contact</h2>
 
 <div class="content infoSite">
     <p style="margin-top: 35px;"><strong>Are there functions missing?

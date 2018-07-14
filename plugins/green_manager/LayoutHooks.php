@@ -105,4 +105,43 @@ class LayoutHooks extends HooksAdapter
         }
         return $before;
     }
+
+    /**
+     * @param string $before
+     * @param Consultation $consultation
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAdminIndexHint($before, Consultation $consultation)
+    {
+        return $before . '<article class="adminCard adminCardSupport">
+        <header>
+            <h2>Availability, Support</h2>
+        </header>
+        <main>
+            If you need guaranteed availability of Discuss.green or professional support,
+            please <a href="https://discuss.green/#contact">contact us</a> soon!
+        </main>
+    </article>';
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAntragsgruenAd($before)
+    {
+            return '<div class="antragsgruenAd well">
+        <div class="nav-header">Using Discuss.green</div>
+        <div class="content">
+            Du you want to use Discuss.green for your own convention?
+            <div>
+                <a href="https://discuss.green/" title="Information about using Discuss.green / Antragsgrün" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Information
+                </a>
+            </div>
+        </div>
+    </div>';
+    }
 }
