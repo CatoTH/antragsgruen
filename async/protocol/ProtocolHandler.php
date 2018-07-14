@@ -1,14 +1,16 @@
 <?php
 
-namespace app\components\async;
+namespace app\async\protocol;
 
-use app\models\async\Userdata;
+use app\async\models\Userdata;
 
 class ProtocolHandler
 {
-    public function onMessage(\swoole_websocket_server $_server, $frame)
+    public function onMessage(\Swoole\WebSocket\Server $_server, \Swoole\WebSocket\Frame $frame)
     {
-        $data = json_decode($frame->data, true);
+        $data    = json_decode($frame->data, true);
+        $session = Session::getSessionForFd($_server, $frame);
+
         if (!$data || !isset($data['op'])) {
             echo "Got invalid data package: " . $frame->data . "\n";
             return;
@@ -18,48 +20,42 @@ class ProtocolHandler
                 echo "Got auth string: " . $data['auth'] . "\n";
                 $this->authenticate(
                     $data['auth'],
-                    function (Userdata $ret) use ($_server, $frame) {
+                    function (Userdata $ret) use ($session) {
                         echo "\nSuccess: \n";
-                        $_server->push($frame->fd, json_encode([
+                        $session->setUser($ret);
+                        $session->sendDataToClient([
                             'op'   => 'auth_success',
                             'user' => $ret->toJSON(),
-                        ]));
+                        ]);
                     },
-                    function ($ret, $err) use ($_server, $frame) {
+                    function ($ret, $err) use ($session) {
                         echo "\nError: \n";
-                        $_server->push($frame->fd, json_encode([
+                        $session->sendDataToClient([
                             'op'  => 'auth_error',
                             'msg' => $err,
-                        ]));
+                        ]);
                     }
                 );
                 break;
-        }
-        return;
 
-        var_dump($frame->data);
-        echo "received " . strlen($frame->data) . " bytes\n";
-        if ($frame->data == "close") {
-            $_server->close($frame->fd);
-        } elseif ($frame->data == "task") {
-            $_server->task(['go' => 'die']);
-        } else {
-            //echo "receive from {$frame->fd}:{$frame->data}, opcode:{$frame->opcode}, finish:{$frame->finish}\n";
-            // for ($i = 0; $i < 100; $i++)
-            {
-                $_send = str_repeat('B', rand(100, 800));
-                $_server->push($frame->fd, $_send);
-                // echo "#$i\tserver sent " . strlen($_send) . " byte \n";
-            }
-            $fd = $frame->fd;
-            $_server->tick(2000, function ($id) use ($fd, $_server) {
-                $_send = str_repeat('B', rand(100, 5000));
-                $ret   = $_server->push($fd, $_send);
-                if (!$ret) {
-                    var_dump($id);
-                    var_dump($_server->clearTimer($id));
+            case 'subscribe':
+                echo "Got subscribe: " . $data['consultation'] . " / " . $data['channel'] . "\n";
+                if (!$session->isAuthenticated()) {
+                    echo "Session is not authenticated\n";
+                    $session->sendDataToClient([
+                        'op'  => 'error',
+                        'msg' => "Session is not authenticated",
+                    ]);
+                } else {
+                    $channel = Channel::getSpoolFromId($data['consultation'], $data['channel']);
+                    $channel->addSession($session);
+                    $session->sendDataToClient([
+                        'op'           => 'subscribed',
+                        'consultation' => $data['consultation'],
+                        'channel'      => $data['channel'],
+                    ]);
                 }
-            });
+                break;
         }
     }
 
@@ -125,8 +121,6 @@ class ProtocolHandler
             $server->push($connId, json_encode(['op' => 'hello']));
         });
 
-        Spool::$channels[$request->fd] = new ConventionListener($server, $request->fd);
-
         return true;
     }
 
@@ -139,6 +133,5 @@ class ProtocolHandler
         echo "server#{$_server->worker_pid}: handshake success with fd#{$request->fd}\n";
         var_dump($_server->exist($request->fd), $_server->getClientInfo($request->fd));
 //    var_dump($request);
-        Spool::$channels[$request->fd] = $_server;
     }
 }

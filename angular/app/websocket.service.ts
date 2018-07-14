@@ -1,11 +1,14 @@
 import {Injectable} from "@angular/core";
 import {User} from "../classes/User";
+import {Subject, ReplaySubject} from "rxjs";
 
 @Injectable()
 export class WebsocketService {
     private websocket: WebSocket;
     private authCookie: string;
-    private debugListener;
+
+    public authenticated$: Subject<User> = new ReplaySubject<User>(1);
+    public debuglog$: Subject<string> = new Subject<string>();
 
     constructor() {
     }
@@ -19,44 +22,46 @@ export class WebsocketService {
         this.websocket.onerror = this.onError.bind(this);
     }
 
-    public setDebugListener(listener) {
-        this.debugListener = listener;
-    }
-
-    private log(str: string): void {
-        console.log(str);
-        if (this.debugListener) {
-            this.debugListener(str);
-        }
+    public subscribeChannel(consultationId: number, channel: string) {
+        console.log("subscribe", this.websocket);
+        this.websocket.send(JSON.stringify({
+            "op": "subscribe",
+            "consultation": consultationId,
+            "channel": channel,
+        }));
     }
 
     private onopen() {
-        this.websocket.send(JSON.stringify({"op": "auth", "auth": this.authCookie}));
-        this.log('Connected to WebSocket server.');
+        this.websocket.send(JSON.stringify({
+            "op": "auth",
+            "auth": this.authCookie,
+        }));
+        this.debuglog$.next('Connected to WebSocket server.');
     }
 
     private onClose() {
-        this.log('Disconnected');
+        this.debuglog$.next('Disconnected');
     }
 
     private onMessage(evt) {
         try {
             const msg = JSON.parse(evt.data);
             if (!msg['op']) {
-                this.log('Invalid package: ' + evt.data);
+                this.debuglog$.next('Invalid package: ' + evt.data);
                 return;
             }
             switch (msg['op']) {
                 case 'hello':
-                    this.log('Got a friendly Hello from the server');
+                    this.debuglog$.next('Got a friendly Hello from the server');
                     return;
                 case 'auth_error':
-                    this.log('Error authenticating: ' + msg['msg']);
+                    this.debuglog$.next('Error authenticating: ' + msg['msg']);
                     return;
                 case 'auth_success':
                     const user: User = JSON.parse(msg['user']);
-                    console.log("User", user);
-                    this.log("Authenticated: " + user.username);
+                    this.debuglog$.next("Authenticated: " + user.username);
+                    this.authenticated$.next(user);
+                    console.log("next");
                     return;
             }
         } catch (e) {
@@ -65,6 +70,6 @@ export class WebsocketService {
     }
 
     private onError(evt) {
-        this.log('Error occurred: ' + evt.data);
+        this.debuglog$.next('Error occurred: ' + evt.data);
     }
 }
