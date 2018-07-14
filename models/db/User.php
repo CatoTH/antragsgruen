@@ -6,7 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
 use app\models\events\UserEvent;
-use app\models\async\Userdata;
+use app\async\models\Userdata;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
