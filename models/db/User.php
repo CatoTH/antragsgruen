@@ -5,6 +5,7 @@ namespace app\models\db;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
+use app\models\events\UserEvent;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
@@ -46,6 +47,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const EVENT_ACCOUNT_CONFIRMED = 'account_confirmed';
+    const EVENT_DELETED           = 'deleted';
 
     const STATUS_UNCONFIRMED = 1;
     const STATUS_CONFIRMED   = 0;
@@ -842,5 +845,7 @@ class User extends ActiveRecord implements IdentityInterface
         $this->recoveryToken   = null;
         $this->recoveryAt      = null;
         $this->save(false);
+
+        $this->trigger(User::EVENT_DELETED, new UserEvent($this));
     }
 }

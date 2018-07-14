@@ -11,6 +11,7 @@ use app\models\db\IMotion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\UserNotification;
+use app\models\events\UserEvent;
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Login;
@@ -156,6 +157,7 @@ class UserController extends Base
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
+                    $user->trigger(User::EVENT_ACCOUNT_CONFIRMED, new UserEvent($user));
                     $this->loginUser($user);
                     return $this->render('registration_confirmed');
                 }
@@ -429,14 +431,14 @@ class UserController extends Base
 
         if ($this->isPostSet('save')) {
             $post = \Yii::$app->request->post();
-            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] == 'consultation') {
+            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] === 'consultation') {
                 $notis = UserNotification::getUserConsultationNotis($user, $this->consultation);
                 foreach ($notis as $noti) {
                     $noti->delete();
                 }
             }
 
-            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] == 'all') {
+            if (isset($post['unsubscribeOption']) && $post['unsubscribeOption'] === 'all') {
                 foreach ($user->notifications as $noti) {
                     $noti->delete();
                 }

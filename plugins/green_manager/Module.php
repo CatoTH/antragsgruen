@@ -4,14 +4,26 @@ namespace app\plugins\green_manager;
 
 use app\models\db\Consultation;
 use app\models\db\Site;
+use app\models\db\User;
+use app\models\events\UserEvent;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
+use yii\base\Event;
 
 class Module extends ModuleBase
 {
+    /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        Event::on(User::class, User::EVENT_ACCOUNT_CONFIRMED, [Module::class, 'onAccountConfirmed']);
+    }
+
     /**
      * @param string $domainPlain
      * @return array
@@ -84,5 +96,19 @@ class Module extends ModuleBase
     public static function getCustomSiteCreateView()
     {
         return "@app/plugins/green_manager/views/sitedata_subdomain";
+    }
+
+    /**
+     * @param UserEvent $event
+     */
+    public static function onAccountConfirmed(UserEvent $event)
+    {
+        foreach ($event->user->adminSites as $site) {
+            /** @var SiteSettings $settings */
+            $settings              = $site->getSettings();
+            $settings->isConfirmed = true;
+            $site->setSettings($settings);
+            $site->save();
+        }
     }
 }
