@@ -145,13 +145,13 @@ $params = \Yii::$app->params;
 <div class="content infoSite">
     <p style="margin-top: 35px;"><strong>Are there functions missing?
             Do you require professional support and special adaptations?</strong></p>
-    <p>If you need customised programming or you would like us to host Antragsgrün on a designated domain, we implement
-        this at an hourly rate.</p>
+    <p>If you need customised programming or you would like us to host Antragsgrün / Discuss.green on a designated
+        domain, we implement this at an hourly rate.</p>
     <p>
         We are here to answer your questions and requests:
     </p>
     <ul>
-        <li>E-Mail: <a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a></li>
+        <li>E-Mail: <a href="mailto:info@discuss.green">info@discuss.green</a></li>
         <li>Phone: +49-1515-6024223</li>
     </ul>
 </div>
