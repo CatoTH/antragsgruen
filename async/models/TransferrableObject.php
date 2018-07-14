@@ -4,7 +4,7 @@ namespace app\async\models;
 
 use app\models\settings\JsonConfigTrait;
 
-class TransferrableObject
+abstract class TransferrableObject
 {
     use JsonConfigTrait;
 }

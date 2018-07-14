@@ -796,18 +796,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return Userdata
-     * @throws \Exception
-     */
-    public function toAsyncObject()
-    {
-        $object           = new Userdata('');
-        $object->userId   = $this->id;
-        $object->username = $this->auth;
-        return $object;
-    }
-
-    /**
      * @return array
      */
     public function getUserdataExportObject()

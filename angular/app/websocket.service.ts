@@ -63,6 +63,8 @@ export class WebsocketService {
                     this.authenticated$.next(user);
                     console.log("next");
                     return;
+                case 'object':
+                    this.debuglog$.next("Got object: " + msg['type'] + ": " + JSON.stringify(msg['data']));
             }
         } catch (e) {
             console.warn("Invalid package: ", evt.data);

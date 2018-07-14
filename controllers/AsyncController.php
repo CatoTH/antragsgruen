@@ -2,12 +2,17 @@
 
 namespace app\controllers;
 
+use app\async\models\Userdata;
 use app\models\db\User;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
 
 class AsyncController extends Base
 {
+    /**
+     * @return string
+     * @throws UnauthorizedHttpException
+     */
     public function actionUser()
     {
         if (\Yii::$app->request->remoteIP !== '127.0.0.1' && \Yii::$app->request->remoteIP !== '::1') {
@@ -19,9 +24,12 @@ class AsyncController extends Base
         }
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
-        return $user->toAsyncObject()->toJSON();
+        return Userdata::createFromDbObject($user)->toJSON();
     }
 
+    /**
+     * @return string
+     */
     public function actionClient()
     {
         return $this->render('client');

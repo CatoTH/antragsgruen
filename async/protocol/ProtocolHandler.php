@@ -17,11 +17,10 @@ class ProtocolHandler
         }
         switch ($data['op']) {
             case 'auth':
-                echo "Got auth string: " . $data['auth'] . "\n";
                 $this->authenticate(
                     $data['auth'],
                     function (Userdata $ret) use ($session) {
-                        echo "\nSuccess: \n";
+                        echo "Welcome: " . $ret->username . "\n";
                         $session->setUser($ret);
                         $session->sendDataToClient([
                             'op'   => 'auth_success',
@@ -49,6 +48,7 @@ class ProtocolHandler
                 } else {
                     $channel = Channel::getSpoolFromId($data['consultation'], $data['channel']);
                     $channel->addSession($session);
+                    $session->addSubscribedChannel($data['consultation'], $data['channel']);
                     $session->sendDataToClient([
                         'op'           => 'subscribed',
                         'consultation' => $data['consultation'],
@@ -59,9 +59,14 @@ class ProtocolHandler
         }
     }
 
+    /**
+     * @param string $cookie
+     * @param callable $success
+     * @param callable $error
+     */
     public function authenticate($cookie, callable $success, callable $error)
     {
-        $cli = new \swoole_http_client('127.0.0.1', 80);
+        $cli = new \Swoole\Http\Client('127.0.0.1', 80);
         $cli->set(['timeout' => 3.0]);
         $cli->setHeaders([
             'Host'       => 'stdparteitag.antragsgruen.local',
@@ -81,11 +86,11 @@ class ProtocolHandler
     }
 
     /**
-     * @param \swoole_http_request $request
-     * @param \swoole_http_response $response
+     * @param \Swoole\Http\Request $request
+     * @param \Swoole\Http\Response $response
      * @return bool
      */
-    public function websocketHandshake(\swoole_http_request $request, \swoole_http_response $response)
+    public function websocketHandshake(\Swoole\Http\Request $request, \Swoole\Http\Response $response)
     {
         //自定定握手规则，没有设置则用系统内置的（只支持version:13的）
         if (!isset($request->header['sec-websocket-key'])) {
@@ -125,13 +130,23 @@ class ProtocolHandler
     }
 
     /**
-     * @param \swoole_websocket_server $_server
-     * @param \swoole_http_request $request
+     * @param \Swoole\WebSocket\Server $_server
+     * @param \Swoole\Http\Request $request
      */
-    public function onOpen(\swoole_websocket_server $_server, \swoole_http_request $request)
+    public function onOpen(\Swoole\WebSocket\Server $_server, \Swoole\Http\Request $request)
     {
         echo "server#{$_server->worker_pid}: handshake success with fd#{$request->fd}\n";
         var_dump($_server->exist($request->fd), $_server->getClientInfo($request->fd));
 //    var_dump($request);
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $_server
+     * @param int $fd
+     */
+    public function onClose(\Swoole\WebSocket\Server $_server, $fd)
+    {
+        echo "Closing session: " . $fd . "\n";
+        Session::destroySession($fd);
     }
 }

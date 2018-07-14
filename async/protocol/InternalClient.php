@@ -19,11 +19,8 @@ class InternalClient
         $request_uri = $request->server['request_uri'];
 
         if ($request->server['request_method'] === 'POST') {
-            var_dump($request_uri);
-            if (preg_match('/^\/objects\/(?<consultation>\d+)\/?$/siu', $request_uri, $matches)) {
-                var_dump($request);
-                var_dump($matches);
-                $channel = Channel::getSpoolFromId(1, 'motions');
+            if (preg_match('/^\/(?<consultation>\d+)\/(?<channel>\w+)\/?$/siu', $request_uri, $matches)) {
+                $channel = Channel::getSpoolFromId($matches['consultation'], $matches['channel']);
                 $channel->sendToSessions($request->post);
 
                 $response->status(201);
