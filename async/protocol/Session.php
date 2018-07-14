@@ -6,6 +6,7 @@ use app\async\models\Userdata;
 
 class Session
 {
+    /** @var Session[] */
     protected static $REGISTRY = [];
 
     /**
@@ -21,6 +22,22 @@ class Session
         return static::$REGISTRY[$frame->fd];
     }
 
+    /**
+     * @param int $fdNo
+     */
+    public static function destroySession($fdNo)
+    {
+        if (!isset(static::$REGISTRY[$fdNo])) {
+            return;
+        }
+        $session = static::$REGISTRY[$fdNo];
+        foreach ($session->subscribedChannels as $channelDef) {
+            $channel = Channel::getSpoolFromId($channelDef[0], $channelDef[1]);
+            $channel->removeSession($session);
+        }
+        unset(static::$REGISTRY[$fdNo]);
+    }
+
     /** @var \swoole_server */
     private $server;
     /** @var int */
@@ -28,6 +45,9 @@ class Session
 
     /** @var null|Userdata */
     protected $user = null;
+
+    /** @var array */
+    protected $subscribedChannels = [];
 
     /**
      * ConventionListener constructor.
@@ -49,12 +69,27 @@ class Session
     }
 
     /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->server->exist($this->connection);
+    }
+
+    /**
+     * @param int $consultationId
+     * @param string $channelName
+     */
+    public function addSubscribedChannel($consultationId, $channelName)
+    {
+        $this->subscribedChannels[] = [$consultationId, $channelName];
+    }
+
+    /**
      * @param mixed $data
      */
     public function sendDataToClient($data)
     {
-        //var_dump($this->server);
-        //var_dump($this->fd)
         $this->server->push($this->connection, json_encode($data));
     }
 

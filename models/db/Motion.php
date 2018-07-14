@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\async\yii\SwooleClient;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -72,6 +73,10 @@ class Motion extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
         $this->on(static::EVENT_MERGED, [$this, 'onMerged'], null, false);
+
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'publishAsync'], null, false);
+        $this->on(static::EVENT_AFTER_INSERT, [$this, 'publishAsync'], null, false);
+        $this->on(static::EVENT_AFTER_DELETE, [$this, 'publishAsync'], null, false);
     }
 
     /**
@@ -1240,5 +1245,13 @@ class Motion extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function publishAsync()
+    {
+        SwooleClient::publishObject(\app\async\models\Motion::createFromDbObject($this));
     }
 }

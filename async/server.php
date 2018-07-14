@@ -6,6 +6,7 @@ require_once(__DIR__ . '/protocol/ProtocolHandler.php');
 require_once(__DIR__ . '/protocol/InternalClient.php');
 require_once(__DIR__ . '/protocol/Session.php');
 require_once(__DIR__ . '/models/TransferrableObject.php');
+require_once(__DIR__ . '/models/TransferrableChannelObject.php');
 require_once(__DIR__ . '/models/Userdata.php');
 require_once(__DIR__ . '/models/Motion.php');
 
@@ -26,10 +27,7 @@ $internalClient = new \app\async\protocol\InternalClient();
 $server->on('handshake', [$protocolHandler, 'websocketHandshake']);
 $server->on('open', [$protocolHandler, 'onOpen']);
 $server->on('message', [$protocolHandler, 'onMessage']);
-
-$server->on('close', function ($_server, $fd) {
-    echo "client {$fd} closed\n";
-});
+$server->on('close', [$protocolHandler, 'onClose']);
 
 $server->on('task', function ($_server, $worker_id, $task_id, $data) {
     var_dump($worker_id, $task_id, $data);

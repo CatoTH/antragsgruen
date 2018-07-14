@@ -59,10 +59,19 @@ class Channel
     {
         foreach ($this->sessions as $session) {
             try {
-                $session->sendDataToClient($data);
+                if ($session->isActive()) {
+                    $session->sendDataToClient([
+                        'op'   => 'object',
+                        'type' => $this->channelName,
+                        'data' => $data,
+                    ]);
+                } else {
+                    echo "Session is not active anymore: " . $session->getId() . "\n";
+                    Session::destroySession($session->getId());
+                }
             } catch (\Exception $e) {
                 echo "Error sending data to session: " . $session->getId() . "\n";
-                $this->removeSession($session);
+                Session::destroySession($session->getId());
             }
         }
     }
