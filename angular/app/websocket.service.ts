@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {User} from "../classes/User";
 import {Subject, ReplaySubject} from "rxjs";
+import {Motion} from "../classes/Motion";
 
 @Injectable()
 export class WebsocketService {
@@ -8,6 +9,7 @@ export class WebsocketService {
     private authCookie: string;
 
     public authenticated$: Subject<User> = new ReplaySubject<User>(1);
+    public motions$: Subject<Motion> = new ReplaySubject<Motion>(1);
     public debuglog$: Subject<string> = new Subject<string>();
 
     constructor() {
@@ -23,7 +25,6 @@ export class WebsocketService {
     }
 
     public subscribeChannel(consultationId: number, channel: string) {
-        console.log("subscribe", this.websocket);
         this.websocket.send(JSON.stringify({
             "op": "subscribe",
             "consultation": consultationId,
@@ -65,6 +66,8 @@ export class WebsocketService {
                     return;
                 case 'object':
                     this.debuglog$.next("Got object: " + msg['type'] + ": " + JSON.stringify(msg['data']));
+                    this.onGotObject(msg['type'], msg['data']);
+                    return;
             }
         } catch (e) {
             console.warn("Invalid package: ", evt.data);
@@ -73,5 +76,13 @@ export class WebsocketService {
 
     private onError(evt) {
         this.debuglog$.next('Error occurred: ' + evt.data);
+    }
+
+    private onGotObject(type, data) {
+        switch (type) {
+            case 'motions':
+                this.motions$.next(new Motion(data));
+                break;
+        }
     }
 }
