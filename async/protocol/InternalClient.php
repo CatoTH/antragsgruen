@@ -21,7 +21,7 @@ class InternalClient
         if ($request->server['request_method'] === 'POST') {
             if (preg_match('/^\/(?<consultation>\d+)\/(?<channel>\w+)\/?$/siu', $request_uri, $matches)) {
                 $channel = Channel::getSpoolFromId($matches['consultation'], $matches['channel']);
-                $channel->sendToSessions($request->post);
+                $channel->sendToSessions(json_decode($request->post['data'], true));
 
                 $response->status(201);
                 $response->end('Notified all endpoints');
