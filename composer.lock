@@ -347,16 +347,16 @@
         },
         {
             "name": "fxp/composer-asset-plugin",
-            "version": "v1.4.3",
+            "version": "v1.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fxpio/composer-asset-plugin.git",
-                "reference": "3ec92aa5f07ed7398c37b54e0442048abc5306bd"
+                "reference": "0d07328eef6e6f3753aa835fd2faef7fed1717bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fxpio/composer-asset-plugin/zipball/3ec92aa5f07ed7398c37b54e0442048abc5306bd",
-                "reference": "3ec92aa5f07ed7398c37b54e0442048abc5306bd",
+                "url": "https://api.github.com/repos/fxpio/composer-asset-plugin/zipball/0d07328eef6e6f3753aa835fd2faef7fed1717bf",
+                "reference": "0d07328eef6e6f3753aa835fd2faef7fed1717bf",
                 "shasum": ""
             },
             "require": {
@@ -402,7 +402,7 @@
                 "npm",
                 "package"
             ],
-            "time": "2018-05-22T14:43:18+00:00"
+            "time": "2018-07-02T11:37:17+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -637,16 +637,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.15",
+            "version": "v2.0.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "10bcb46e8f3d365170f6de9d05245aa066b81f09"
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/10bcb46e8f3d365170f6de9d05245aa066b81f09",
-                "reference": "10bcb46e8f3d365170f6de9d05245aa066b81f09",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/29af24f25bab834fcbb38ad2a69fa93b867e070d",
+                "reference": "29af24f25bab834fcbb38ad2a69fa93b867e070d",
                 "shasum": ""
             },
             "require": {
@@ -682,7 +682,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2018-06-08T15:26:40+00:00"
+            "time": "2018-07-04T16:31:37+00:00"
         },
         {
             "name": "paragonie/sodium_compat",
@@ -1464,16 +1464,16 @@
         },
         {
             "name": "yiisoft/yii2-composer",
-            "version": "2.0.6",
+            "version": "2.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-composer.git",
-                "reference": "163419f1f197e02f015713b0d4f85598d8f8aa80"
+                "reference": "1439e78be1218c492e6cde251ed87d3f128b9534"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/163419f1f197e02f015713b0d4f85598d8f8aa80",
-                "reference": "163419f1f197e02f015713b0d4f85598d8f8aa80",
+                "url": "https://api.github.com/repos/yiisoft/yii2-composer/zipball/1439e78be1218c492e6cde251ed87d3f128b9534",
+                "reference": "1439e78be1218c492e6cde251ed87d3f128b9534",
                 "shasum": ""
             },
             "require": {
@@ -1514,7 +1514,7 @@
                 "extension installer",
                 "yii2"
             ],
-            "time": "2018-03-21T16:15:55+00:00"
+            "time": "2018-07-05T15:44:47+00:00"
         },
         {
             "name": "yiisoft/yii2-httpclient",
@@ -2165,16 +2165,16 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "2.4.3",
+            "version": "2.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "13b2db0d54068afaabf3ca8ac8b6591d69018f46"
+                "reference": "2060fc1fe8ac2823ff3b8ece04616fc12aca968a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/13b2db0d54068afaabf3ca8ac8b6591d69018f46",
-                "reference": "13b2db0d54068afaabf3ca8ac8b6591d69018f46",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/2060fc1fe8ac2823ff3b8ece04616fc12aca968a",
+                "reference": "2060fc1fe8ac2823ff3b8ece04616fc12aca968a",
                 "shasum": ""
             },
             "require": {
@@ -2252,7 +2252,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2018-06-26T14:09:28+00:00"
+            "time": "2018-07-16T08:14:50+00:00"
         },
         {
             "name": "codeception/phpunit-wrapper",
