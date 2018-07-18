@@ -68,6 +68,10 @@ export class WebsocketService {
                     this.debuglog$.next("Got object: " + msg['type'] + ": " + JSON.stringify(msg['data']));
                     this.onGotObject(msg['type'], msg['data']);
                     return;
+                case 'object-collection':
+                    this.debuglog$.next("Got collection: " + msg['type'] + ": " + JSON.stringify(msg['data']));
+                    this.onGotObjectCollection(msg['type'], msg['data']);
+                    return;
             }
         } catch (e) {
             console.warn("Invalid package: ", evt.data);
@@ -84,5 +88,11 @@ export class WebsocketService {
                 this.motions$.next(new Motion(data));
                 break;
         }
+    }
+
+    private onGotObjectCollection(type, data: object[]) {
+        data.forEach((dat) => {
+            this.onGotObject(type, dat);
+        });
     }
 }

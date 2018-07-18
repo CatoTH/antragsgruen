@@ -47,6 +47,14 @@ trait JsonConfigTrait
     }
 
     /**
+     * @return string
+     */
+    public function toJSONdata()
+    {
+        return get_object_vars($this);
+    }
+
+    /**
      * @param array $formdata
      * @param array $affectedFields
      * @throws FormError

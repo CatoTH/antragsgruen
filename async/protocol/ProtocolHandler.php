@@ -54,6 +54,7 @@ class ProtocolHandler
                         'consultation' => $data['consultation'],
                         'channel'      => $data['channel'],
                     ]);
+                    $channel->loadInitialData($session);
                 }
                 break;
         }
@@ -137,7 +138,6 @@ class ProtocolHandler
     {
         echo "server#{$_server->worker_pid}: handshake success with fd#{$request->fd}\n";
         var_dump($_server->exist($request->fd), $_server->getClientInfo($request->fd));
-//    var_dump($request);
     }
 
     /**
