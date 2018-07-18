@@ -73,6 +73,7 @@ $urlRules = [
 
     $domv . 'async/user' => 'async/user',
     $domv . 'async/client' => 'async/client',
+    $domv . 'async/objects' => 'async/objects',
 
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
     $domv . 'motion/create'                        => 'motion/create',

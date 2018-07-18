@@ -75,4 +75,29 @@ class Channel
             }
         }
     }
+
+    /**
+     * @param Session $session
+     */
+    public function loadInitialData(Session $session)
+    {
+        $cli = new \Swoole\Http\Client('127.0.0.1', 80);
+        $cli->set(['timeout' => 3.0]);
+        $cli->setHeaders([
+            'Host'       => 'stdparteitag.antragsgruen.local',
+            'User-Agent' => 'Swoole Client',
+            'Accept'     => 'application/json',
+        ]);
+        $cli->get('/std-parteitag/async/objects?channel=' . $this->channelName, function ($cli) use ($session) {
+            if ($cli->statusCode === 200) {
+                $session->sendDataToClient([
+                    'op'   => 'object-collection',
+                    'type' => $this->channelName,
+                    'data' => json_decode($cli->body, true),
+                ]);
+            } else {
+                var_dump($cli);
+            }
+        });
+    }
 }
