@@ -134,8 +134,15 @@ echo '</div>';
 $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
-echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
+echo '<section style="overflow: auto;" class="content">';
+echo '<div style="float: left; line-height: 40px; vertical-align: middle;">';
+echo '<a href="' . UrlHelper::homeUrl() . '" id="cancel" name="cancel" class="btn btn-primary"><span class="glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start') . '</a>';
+echo '</div>';
+echo '<div style="float: right;">';
+echo '<button type="submit" name="save" class="btn btn-primary">';
 echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on');
-echo '</button></div>';
+echo '</button>';
+echo '</div>';
+echo '</section>';
 
 echo Html::endForm();
