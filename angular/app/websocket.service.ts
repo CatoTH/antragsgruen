@@ -59,7 +59,7 @@ export class WebsocketService {
                     this.debuglog$.next('Error authenticating: ' + msg['msg']);
                     return;
                 case 'auth_success':
-                    const user: User = JSON.parse(msg['user']);
+                    const user: User = msg['user'];
                     this.debuglog$.next("Authenticated: " + user.username);
                     this.authenticated$.next(user);
                     console.log("next");

@@ -24,7 +24,7 @@ class ProtocolHandler
                         $session->setUser($ret);
                         $session->sendDataToClient([
                             'op'   => 'auth_success',
-                            'user' => $ret->toJSON(),
+                            'user' => $ret->jsonSerialize(),
                         ]);
                     },
                     function ($ret, $err) use ($session) {
