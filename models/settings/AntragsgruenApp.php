@@ -4,7 +4,7 @@ namespace app\models\settings;
 
 use app\plugins\ModuleBase;
 
-class AntragsgruenApp
+class AntragsgruenApp implements \JsonSerializable
 {
     use JsonConfigTrait;
 

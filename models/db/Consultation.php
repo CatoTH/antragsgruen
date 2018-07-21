@@ -348,7 +348,7 @@ class Consultation extends ActiveRecord
     public function setSettings($settings)
     {
         $this->settingsObject = $settings;
-        $this->settings       = $settings->toJSON();
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     /**
