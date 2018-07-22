@@ -1,0 +1,59 @@
+<?php
+
+namespace app\async\models;
+
+class Amendment extends TransferrableChannelObject
+{
+    public $id;
+    public $consultationId;
+    public $motionId;
+    public $motionSlug;
+    public $motionTitle;
+    public $motionTitlePrefix;
+    public $titlePrefix;
+    public $status;
+    public $statusString;
+    public $statusFormatted;
+    public $initiators;
+    public $dateCreation;
+
+    /**
+     * @param \app\models\db\Amendment $amendment
+     * @return Amendment
+     * @throws \Exception
+     */
+    public static function createFromDbObject(\app\models\db\Amendment $amendment)
+    {
+        $motion = $amendment->getMyMotion();
+
+        $object                    = new Amendment('');
+        $object->id                = $amendment->id;
+        $object->consultationId    = $motion->consultationId;
+        $object->motionId          = $motion->id;
+        $object->motionSlug        = $motion->slug;
+        $object->motionTitle       = $motion->title;
+        $object->motionTitlePrefix = $motion->titlePrefix;
+        $object->titlePrefix       = $amendment->titlePrefix;
+        $object->status            = $amendment->status;
+        $object->statusString      = $amendment->statusString;
+        $object->statusFormatted   = $motion->getFormattedStatus();
+        $object->dateCreation      = $motion->dateCreation;
+        $object->initiators        = [];
+        foreach ($motion->getInitiators() as $initiator) {
+            $object->initiators[] = Person::createFromDbMotionObject($initiator);
+        }
+        return $object;
+    }
+
+    /** @return int */
+    public function getConsultation()
+    {
+        return $this->consultationId;
+    }
+
+    /** @return string */
+    public function getPublishChannel()
+    {
+        return 'amendments';
+    }
+}

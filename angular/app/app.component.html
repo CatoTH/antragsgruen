@@ -37,6 +37,22 @@
         <th>...</th>
         <th>...</th>
     </tr>
+    <tr *ngFor="let amendment of sortedAmendments">
+        <th><input type="checkbox"></th>
+        <th>ÄA</th>
+        <th>{{ amendment.titlePrefix }}</th>
+        <th>{{ amendment.motionTitle }}</th>
+        <th>{{ amendment.statusFormatted }}</th>
+        <th>
+            <ul>
+                <li *ngFor="let person of amendment.initiators">
+                    {{ person.name }}
+                </li>
+            </ul>
+        </th>
+        <th>...</th>
+        <th>...</th>
+    </tr>
     </tbody>
 </table>
 
