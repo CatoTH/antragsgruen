@@ -25,7 +25,7 @@ class SwooleClient
     {
         $client = new Client(['base_uri' => 'http://127.0.0.1:9501']);
         $client->post('/' . $object->getConsultation() . '/' . $object->getPublishChannel() . '/', [
-            'form_params' => ['data' => $object->toJSON()]
+            'form_params' => ['data' => $object]
         ]);
 
         // @TODO Error handling

@@ -2,6 +2,7 @@ import {Component, ElementRef} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'app-root',
@@ -22,8 +23,10 @@ export class AppComponent {
         });
         this._websocket.motions$.subscribe((motion) => {
             this.motionCollection.setElement(motion);
-            this.recalcMotionList();
         });
+        // Debounce: if a collection comes, don't recalculate the UI for each element
+        this._websocket.motions$.asObservable().pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+
         this._websocket.connect(el.nativeElement.getAttribute("cookie"));
     }
 
