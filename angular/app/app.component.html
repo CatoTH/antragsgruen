@@ -1,6 +1,43 @@
 <h3>Motions</h3>
-<ul>
-    <li *ngFor="let motion of sortedMotions">{{ motion.id }}: {{ motion.title }} <input type="text"></li>
-</ul>
+<table>
+    <thead>
+    <tr>
+        <th></th>
+        <th>Typ</th>
+        <th>Antragsnr.</th>
+        <th>Titel</th>
+        <th>Status</th>
+        <th>Initiator*innen</th>
+        <th>Thema</th>
+        <th>Export</th>
+        <th>Aktion</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let motion of sortedMotions">
+        <th><input type="checkbox"></th>
+        <th>A</th>
+        <th>{{ motion.titlePrefix }}</th>
+        <th>{{ motion.title }}</th>
+        <th>{{ motion.statusFormatted }}</th>
+        <th>
+            <ul>
+                <li *ngFor="let person of motion.initiators">
+                    {{ person.name }}
+                </li>
+            </ul>
+        </th>
+        <th>
+            <ul>
+                <li *ngFor="let tag of motion.tags">
+                    {{ tag.title }}
+                </li>
+            </ul>
+        </th>
+        <th>...</th>
+        <th>...</th>
+    </tr>
+    </tbody>
+</table>
 
 <pre id="debug">{{ log }}</pre>

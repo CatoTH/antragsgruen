@@ -1,3 +1,6 @@
+import {Person} from "./Person";
+import {MotionTag} from "./MotionTag";
+
 export class Motion {
     public id: string;
     public consultationId: number;
@@ -6,7 +9,8 @@ export class Motion {
     public status: number;
     public statusString: string;
     public statusFormatted: string;
-    public initiators;
+    public initiators: Person[];
+    public tags: MotionTag[];
     public dateCreation: string;
 
     constructor(data) {
