@@ -8,6 +8,7 @@ class Motion extends TransferrableChannelObject
     public $consultationId;
     public $titlePrefix;
     public $title;
+    public $slug;
     public $status;
     public $statusString;
     public $statusFormatted;
@@ -27,11 +28,12 @@ class Motion extends TransferrableChannelObject
         $object->consultationId  = $motion->consultationId;
         $object->titlePrefix     = $motion->titlePrefix;
         $object->title           = $motion->title;
+        $object->slug            = $motion->slug;
         $object->status          = $motion->status;
         $object->statusString    = $motion->statusString;
         $object->statusFormatted = $motion->getFormattedStatus();
         $object->dateCreation    = $motion->dateCreation;
-        $object->initiators = [];
+        $object->initiators      = [];
         foreach ($motion->getInitiators() as $initiator) {
             $object->initiators[] = Person::createFromDbMotionObject($initiator);
         }

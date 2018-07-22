@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {User} from "../classes/User";
 import {Subject, ReplaySubject} from "rxjs";
 import {Motion} from "../classes/Motion";
+import {Amendment} from "../classes/Amendment";
 
 @Injectable()
 export class WebsocketService {
@@ -10,6 +11,7 @@ export class WebsocketService {
 
     public authenticated$: Subject<User> = new ReplaySubject<User>(1);
     public motions$: Subject<Motion> = new ReplaySubject<Motion>(1);
+    public amendments$: Subject<Amendment> = new ReplaySubject<Amendment>(1);
     public debuglog$: Subject<string> = new Subject<string>();
 
     constructor() {
@@ -86,6 +88,9 @@ export class WebsocketService {
         switch (type) {
             case 'motions':
                 this.motions$.next(new Motion(data));
+                break;
+            case 'amendments':
+                this.amendments$.next(new Amendment(data));
                 break;
         }
     }

@@ -1,9 +1,11 @@
-import {Motion} from "./Motion";
+interface Collectible {
+    id: string;
+}
 
-export class Collection {
-    public elements: {[id: string]: Motion} = {};
+export class Collection<A extends Collectible> {
+    public elements: {[id: string]: A} = {};
 
-    public setElement(el: Motion) {
+    public setElement(el: A) {
         this.elements[el.id] = el;
     }
 }
