@@ -10,7 +10,7 @@ use app\models\settings\AntragsgruenApp;
 require_once(__DIR__ . DIRECTORY_SEPARATOR . 'defines.php');
 
 // For PHPExcel
-define('PCLZIP_TEMPORARY_DIR', $params->tmpDir);
+defined('PCLZIP_TEMPORARY_DIR') or define('PCLZIP_TEMPORARY_DIR', $params->tmpDir);
 
 
 if (ini_get('date.timezone') == '') {

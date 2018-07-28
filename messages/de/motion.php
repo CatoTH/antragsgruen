@@ -7,7 +7,7 @@ return [
     'confirm_bread'                      => 'Bestätigen',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
-    'amendment_create_admin'             => 'nur Admins',
+    'amendment_create_admin'             => 'Admin',
     'amendments_merge'                   => 'Änderungsanträge einpflegen',
     'amendments_merge_noamend'           => 'Änderungen einpflegen',
     'none_yet'                           => 'Es gibt noch keine Anträge',

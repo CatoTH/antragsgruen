@@ -8,7 +8,7 @@ return [
     'Motion submitted'              => 'Motion submitted',
     'create_prerequisites'          => 'Requirements for a motion',
     'amendment_create'              => 'Create an amendment',
-    'amendment_create_admin'        => 'only admins',
+    'amendment_create_admin'        => 'admin',
     'amendments_merge'              => 'Merge amendments',
     'amendments_merge_noamend'      => 'Merge changes',
     'none_yet'                      => 'None yet',

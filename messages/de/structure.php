@@ -35,6 +35,7 @@ return [
     'policy_all_title'            => 'Alle',
     'policy_all_desc'             => 'Alle',
     'policy_nobody_title'         => 'Niemand',
+    'policy_nobody_desc'          => 'Änderungsanträge sind deaktiviert. Diese Funktion ist nur als Ausnahme für Admins nutzbar.',
     'policy_nobody_motion_denied' => 'Momentan kann niemand Anträge stellen.',
     'policy_nobody_amend_denied'  => 'Momentan kann niemand Änderungsanträge stellen.',
     'policy_nobody_comm_denied'   => 'Momentan kann niemand Kommentare schreiben.',
