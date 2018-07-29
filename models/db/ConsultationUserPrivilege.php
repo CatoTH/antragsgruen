@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\async\models\UserPrivilege;
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
@@ -156,7 +157,7 @@ class ConsultationUserPrivilege extends ActiveRecord
         if (preg_match('/[^\w]/siu', $username)) {
             throw new FormError('Invalid username');
         }
-        $auth  = 'openid:https://service.gruene.de/openid/' . $username;
+        $auth = 'openid:https://service.gruene.de/openid/' . $username;
 
         /** @var User $user */
         $user = User::find()->where(['auth' => $auth])->andWhere('status != ' . User::STATUS_DELETED)->one();
@@ -191,31 +192,11 @@ class ConsultationUserPrivilege extends ActiveRecord
     }
 
     /**
-     * @param int $permission
-     * @return boolean
+     * @return UserPrivilege
+     * @throws \Exception
      */
-    public function containsPrivilege($permission)
+    public function getAsyncableObject()
     {
-        switch ($permission) {
-            case User::PRIVILEGE_ANY:
-                return (
-                    $this->adminSuper == 1 || $this->adminContentEdit == 1 ||
-                    $this->adminScreen || $this->adminProposals
-                );
-            case User::PRIVILEGE_CONSULTATION_SETTINGS:
-                return ($this->adminSuper == 1);
-            case User::PRIVILEGE_CONTENT_EDIT:
-                return ($this->adminContentEdit == 1);
-            case User::PRIVILEGE_SCREENING:
-                return ($this->adminScreen == 1);
-            case User::PRIVILEGE_CHANGE_PROPOSALS:
-                return ($this->adminProposals == 1);
-            case User::PRIVILEGE_MOTION_EDIT:
-                return ($this->adminSuper == 1);
-            case User::PRIVILEGE_CREATE_MOTIONS_FOR_OTHERS:
-                return ($this->adminSuper == 1);
-            default:
-                return false;
-        }
+        return UserPrivilege::createFromDbObject($this);
     }
 }
