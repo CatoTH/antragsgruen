@@ -10,7 +10,6 @@ use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\UrlHelper;
-use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
@@ -607,6 +606,7 @@ class TextSimple extends ISectionType
         $section = $this->section;
 
         $hasLineNumbers = $section->getSettings()->lineNumbers;
+        $lineLength     = ($hasLineNumbers ? $consultation->getSettings()->lineLength : 0);
         $fixedWidth     = $section->getSettings()->fixedWidth;
         $firstLine      = $section->getFirstLineNumber();
 
@@ -618,7 +618,7 @@ class TextSimple extends ISectionType
             $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
         }
 
-        $cacheDeps = [$hasLineNumbers, $firstLine, $fixedWidth, $section->data];
+        $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->data];
         $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
 
         if (!$tex2) {

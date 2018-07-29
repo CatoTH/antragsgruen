@@ -91,6 +91,7 @@ class LayoutHelper
         $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
+        $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;

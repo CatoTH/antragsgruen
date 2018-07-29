@@ -22,9 +22,10 @@ class LayoutHelper
      */
     public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate)
     {
-        $content           = new Content();
-        $content->template = $texTemplate->texContent;
-        $content->title    = $amendment->getMyMotion()->title;
+        $content             = new Content();
+        $content->template   = $texTemplate->texContent;
+        $content->title      = $amendment->getMyMotion()->title;
+        $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
         if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
             $content->titlePrefix = $amendment->titlePrefix;
         }

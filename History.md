@@ -34,6 +34,7 @@
 - Bugfix: When a section was completely empty in a motion and a amendment was created inserting something to this section, the original motion could not be displayed anymore.
 - Bugfix: When a motion type's create setting was set to "nobody", editing already created motions as an admin was impossible.
 - Bugfix: When creating a new version of a motion, it was not possible to merge none of the amendments.
+- Bugfix: After changing the line length, the old line was still in the cache for LaTeX-based PDF rendering.
 - Obsolete: The old, non-fuctional OpenID-based Wurzelwerk-login was removed.
 - Obsolete: The facebook image feature was removed, as nobody used it and was rather tricky to use anyway.
 

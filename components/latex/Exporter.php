@@ -417,6 +417,7 @@ class Exporter
         }
         $layoutStr   = static::createLayoutString($this->layout);
         $contentStr  = '';
+        $cacheDepend = '';
         $count       = 0;
         $imageFiles  = [];
         $imageHashes = [];
@@ -433,6 +434,7 @@ class Exporter
                 $imageHashes[$this->app->tmpDir . $fileName] = md5($fileData);
                 $imageFiles[]                                = $this->app->tmpDir . $fileName;
             }
+            $cacheDepend .= $content->lineLength . '.';
             $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
@@ -447,7 +449,7 @@ class Exporter
         }
         $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
 
-        $cacheDepend = $str;
+        $cacheDepend .= $str;
         foreach ($imageHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
