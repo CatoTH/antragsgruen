@@ -6,7 +6,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
 use app\models\events\UserEvent;
-use app\async\models\Userdata;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
@@ -55,6 +54,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_CONFIRMED   = 0;
     const STATUS_DELETED     = -1;
 
+    // @TODO Remove and refactor to async object
     const PRIVILEGE_ANY                       = 0;
     const PRIVILEGE_CONSULTATION_SETTINGS     = 1;
     const PRIVILEGE_CONTENT_EDIT              = 2;
@@ -605,7 +605,7 @@ class User extends ActiveRecord implements IdentityInterface
             if ($userPrivilege->userId == $this->id) {
                 $foundMatch = false;
                 foreach ($privilege as $priv) {
-                    if ($userPrivilege->containsPrivilege($priv)) {
+                    if ($userPrivilege->getAsyncableObject()->containsPrivilege($priv)) {
                         $foundMatch = true;
                     }
                 }
