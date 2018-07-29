@@ -7,9 +7,7 @@ use app\models\db\Site;
 use app\models\db\User;
 use app\models\events\UserEvent;
 use app\models\layoutHooks\Hooks;
-use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
-use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\base\Event;
 

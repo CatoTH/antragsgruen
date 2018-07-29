@@ -66,11 +66,6 @@ class ManagerController extends Base
      */
     protected function requireEligibleToCreateUser()
     {
-        if ($this->getParams()->mode == 'sandbox') {
-            // In sandbox mode, everyone is allowed to create a site
-            return;
-        }
-
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('/green_manager/manager/index'));
@@ -80,6 +75,7 @@ class ManagerController extends Base
 
     /**
      * @param Consultation $consultation
+     * @param string $name
      * @throws FormError
      */
     protected function createWelcomePage(Consultation $consultation, $name)

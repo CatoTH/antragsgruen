@@ -14,7 +14,7 @@ $t = function ($string) {
 
 
 ?>
-<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>">
+<div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelPurpose">
     <ul class="steps">
         <li data-target="#stepPurpose" class="stepPurpose">
             <?= $t('step_purpose') ?><span class="chevron"></span>
@@ -28,7 +28,7 @@ $t = function ($string) {
         <li data-target="#stepSpecial" class="stepSpecial">
             <?= $t('step_special') ?><span class="chevron"></span>
         </li>
-        <?php if ($mode != 'sandbox') { ?>
+        <?php if ($mode !== 'sandbox') { ?>
         <li data-target="#stepSite" class="stepSite">
             <?= $t('step_site') ?><span class="chevron"></span>
         </li>
@@ -55,7 +55,7 @@ $t = function ($string) {
     switch ($mode) {
         case 'subdomain':
         case 'sandbox':
-            echo $this->render(\app\plugins\ModuleBase::getSiteCreateView(), ['model' => $model, 't' => $t]);
+            echo $this->render('sitedata_subdomain', ['model' => $model, 't' => $t]);
             break;
         case 'singlesite':
             echo $this->render('sitedata_singlesite', ['model' => $model, 't' => $t]);

@@ -3,6 +3,7 @@
 return [
     'title' => 'Antragsgrün-Seite anlegen',
 
+    'step_language'   => 'Sprache',
     'step_purpose'    => 'Einsatzzweck',
     'step_motions'    => 'Anträge',
     'step_amendments' => 'Änderungsanträge',
@@ -18,6 +19,8 @@ return [
     'purpose_motions'        => 'Anträge',
     'purpose_manifesto'      => 'Programm',
     'purpose_manifesto_desc' => '(Wahl-/Partei-)',
+
+    'language_title' => 'Sprache der Benutzeroberfläche?',
 
     'single_mot_title' => 'Werden mehrere Anträge diskutiert?',
     'single_man_title' => 'Gibt es mehrere Kapitel?',
