@@ -2,6 +2,7 @@
 
 namespace app\async\protocol;
 
+use app\async\models\TransferrableChannelObject;
 use app\async\models\Userdata;
 
 class Session
@@ -49,8 +50,11 @@ class Session
     /** @var array */
     protected $subscribedChannels = [];
 
+    /** @var array */
+    protected $sentObjects = [];
+
     /**
-     * ConventionListener constructor.
+     * Session constructor.
      * @param \Swoole\WebSocket\Server $server
      * @param int $connection
      */
@@ -77,12 +81,13 @@ class Session
     }
 
     /**
-     * @param int $consultationId
+     * @param string $domain
      * @param string $channelName
      */
-    public function addSubscribedChannel($consultationId, $channelName)
+    public function addSubscribedChannel($domain, $channelName)
     {
-        $this->subscribedChannels[] = [$consultationId, $channelName];
+        $this->subscribedChannels[]      = [$domain, $channelName];
+        $this->sentObjects[$channelName] = [];
     }
 
     /**
@@ -91,6 +96,59 @@ class Session
     public function sendDataToClient($data)
     {
         $this->server->push($this->connection, json_encode($data));
+    }
+
+    /**
+     * @param string $channelName
+     * @param TransferrableChannelObject $object
+     */
+    public function sendObjectToClient($channelName, $object)
+    {
+        $this->server->push($this->connection, json_encode([
+            'op'   => 'object',
+            'type' => $channelName,
+            'id'   => $object,
+        ]));
+        $objectId = $object->getId();
+        if (!in_array($objectId, $this->sentObjects[$channelName])) {
+            $this->sentObjects[$channelName][] = $objectId;
+        }
+    }
+
+    /**
+     * @param string $channelName
+     * @param string $objectId
+     */
+    public function deleteObjectFromClient($channelName, $objectId)
+    {
+        if (!in_array($objectId, $this->sentObjects[$channelName])) {
+            return;
+        }
+        $this->server->push($this->connection, json_encode([
+            'op'   => 'object-delete',
+            'type' => $channelName,
+            'id'   => $objectId,
+        ]));
+        $this->sentObjects[$channelName] = array_diff($this->sentObjects[$channelName], [$objectId]);
+    }
+
+    /**
+     * @param string $channelName
+     * @param TransferrableChannelObject[] $objects
+     */
+    public function sendObjectsToClient($channelName, $objects)
+    {
+        $this->server->push($this->connection, json_encode([
+            'op'      => 'object-collection',
+            'type'    => $channelName,
+            'objects' => $objects,
+        ]));
+        foreach ($objects as $object) {
+            $objectId = $object->getId();
+            if (!in_array($objectId, $this->sentObjects[$channelName])) {
+                $this->sentObjects[$channelName][] = $objectId;
+            }
+        }
     }
 
     /**

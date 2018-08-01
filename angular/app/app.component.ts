@@ -22,21 +22,13 @@ export class AppComponent {
             this.log += str + "\n";
         });
         this._websocket.authenticated$.subscribe((user) => {
-            this._websocket.subscribeChannel(1, "motions");
-            this._websocket.subscribeChannel(1, "amendments");
+            this._websocket.subscribeCollectionChannel(1, "motions", this.motionCollection);
+            this._websocket.subscribeCollectionChannel(1, "amendments", this.amendmentCollection);
         });
 
-        this._websocket.motions$.subscribe((motion) => {
-            this.motionCollection.setElement(motion);
-        });
         // Debounce: if a collection comes, don't recalculate the UI for each element
-        this._websocket.motions$.asObservable().pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
-
-        this._websocket.amendments$.subscribe((amendment) => {
-            this.amendmentCollection.setElement(amendment);
-        });
-        // Debounce: if a collection comes, don't recalculate the UI for each element
-        this._websocket.amendments$.asObservable().pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+        this.motionCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+        this.amendmentCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
 
         this._websocket.connect(el.nativeElement.getAttribute("cookie"));
     }
@@ -44,8 +36,6 @@ export class AppComponent {
     private recalcMotionList() {
         this.sortedMotions = Object.keys(this.motionCollection.elements).map(key => this.motionCollection.elements[key]);
         this.sortedAmendments = Object.keys(this.amendmentCollection.elements).map(key => this.amendmentCollection.elements[key]);
-        console.log(this.motionCollection);
-        console.log(this.amendmentCollection);
         console.log(this.sortedMotions);
         console.log(this.sortedAmendments);
     }

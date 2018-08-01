@@ -9,11 +9,10 @@ require_once(__DIR__ . '/models/TransferrableObject.php');
 require_once(__DIR__ . '/models/TransferrableChannelObject.php');
 require_once(__DIR__ . '/models/Userdata.php');
 require_once(__DIR__ . '/models/Motion.php');
+require_once(__DIR__ . '/models/Amendment.php');
 
 
-//$server = new swoole_websocket_server("0.0.0.0", 9501);
 $server = new \Swoole\WebSocket\Server("127.0.0.1", 9501, SWOOLE_BASE);
-//$server->addlistener('0.0.0.0', 9502, SWOOLE_SOCK_UDP);
 $server->set([
     'worker_num'      => 1,
     'task_worker_num' => 1,
