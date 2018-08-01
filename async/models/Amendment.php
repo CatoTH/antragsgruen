@@ -46,14 +46,14 @@ class Amendment extends TransferrableChannelObject
     }
 
     /** @return int */
-    public function getConsultation()
+    public function getDomain()
     {
         return $this->consultationId;
     }
 
     /** @return string */
-    public function getPublishChannel()
+    public function getId()
     {
-        return 'amendments';
+        return $this->id;
     }
 }

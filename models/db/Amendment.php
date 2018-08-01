@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\async\yii\SwooleClient;
 use app\components\diff\AmendmentSectionFormatter;
 use app\components\diff\DiffRenderer;
 use app\components\HashedStaticCache;
@@ -63,6 +64,10 @@ class Amendment extends IMotion implements IRSSItem
         $this->on(static::EVENT_PUBLISHED, [$this, 'onPublish'], null, false);
         $this->on(static::EVENT_PUBLISHED_FIRST, [$this, 'onPublishFirst'], null, false);
         $this->on(static::EVENT_SUBMITTED, [$this, 'setInitialSubmitted'], null, false);
+
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'publishAsync'], null, false);
+        $this->on(static::EVENT_AFTER_INSERT, [$this, 'publishAsync'], null, false);
+        $this->on(static::EVENT_AFTER_DELETE, [$this, 'publishAsync'], null, false);
     }
 
     /**
@@ -1364,5 +1369,17 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         return $data;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function publishAsync()
+    {
+        if ($this->isVisibleForAdmins()) {
+            SwooleClient::publishObject(\app\async\models\Amendment::createFromDbObject($this));
+        } else {
+            SwooleClient::deleteObject($this->getMyMotion()->consultationId, 'amendments', $this->id);
+        }
     }
 }

@@ -29,6 +29,18 @@ class InternalClient
             }
         }
 
+        echo $request->server['request_method'] . "\n";
+        if ($request->server['request_method'] === 'DELETE') {
+            if (preg_match('/^\/(?<consultation>\d+)\/(?<channel>\w+)\/(?<id>\w+)\/?$/siu', $request_uri, $matches)) {
+                $channel = Channel::getSpoolFromId($matches['consultation'], $matches['channel']);
+                $channel->deleteFromSessions($matches['id']);
+
+                $response->status(204);
+                $response->end('Notified all endpoints');
+                return;
+            }
+        }
+
         $response->status(404);
         $response->end('Could not find the endpoint');
     }

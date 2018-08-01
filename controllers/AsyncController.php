@@ -27,7 +27,7 @@ class AsyncController extends Base
             \yii::$app->response->statusCode = 401;
             return json_encode(['error' => 'not logged in']);
         }
-        return json_encode(Userdata::createFromDbObject($user));
+        return json_encode(Userdata::createFromDbObject($user, $this->consultation));
     }
 
     /**

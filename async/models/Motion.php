@@ -45,14 +45,14 @@ class Motion extends TransferrableChannelObject
     }
 
     /** @return int */
-    public function getConsultation()
+    public function getDomain()
     {
         return $this->consultationId;
     }
 
     /** @return string */
-    public function getPublishChannel()
+    public function getId()
     {
-        return 'motions';
+        return $this->id;
     }
 }
