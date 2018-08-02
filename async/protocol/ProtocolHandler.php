@@ -38,12 +38,11 @@ class ProtocolHandler
                 break;
 
             case 'subscribe':
-                echo "Got subscribe: " . $data['consultation'] . " / " . $data['channel'] . "\n";
                 if (!$session->isAuthenticated()) {
                     echo "Session is not authenticated\n";
                     $session->sendDataToClient([
                         'op'  => 'error',
-                        'msg' => "Session is not authenticated",
+                        'msg' => 'Session is not authenticated',
                     ]);
                 } else {
                     $channel = Channel::getSpoolFromId($data['consultation'], $data['channel']);
@@ -146,7 +145,6 @@ class ProtocolHandler
      */
     public function onClose(\Swoole\WebSocket\Server $_server, $fd)
     {
-        echo "Closing session: " . $fd . "\n";
         Session::destroySession($fd);
     }
 }
