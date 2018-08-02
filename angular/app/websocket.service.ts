@@ -1,8 +1,6 @@
 import {Injectable} from "@angular/core";
 import {User} from "../classes/User";
 import {Subject, ReplaySubject} from "rxjs";
-import {Motion} from "../classes/Motion";
-import {Amendment} from "../classes/Amendment";
 import {Collection} from "../classes/Collection";
 
 @Injectable()
@@ -12,12 +10,6 @@ export class WebsocketService {
 
     public authenticated$: Subject<User> = new ReplaySubject<User>(1);
     public debuglog$: Subject<string> = new Subject<string>();
-
-    public motions$: Subject<Motion> = new ReplaySubject<Motion>(1);
-    public motionDeleted$: Subject<string> = new ReplaySubject<string>(1);
-
-    public amendments$: Subject<Amendment> = new ReplaySubject<Amendment>(1);
-    public amendmentDeleted$: Subject<string> = new ReplaySubject<string>(1);
 
     private collections: {[id: string]: Collection<any>} = {};
 
@@ -76,7 +68,7 @@ export class WebsocketService {
                     return;
                 case 'object':
                     this.debuglog$.next("Got object: " + msg['type'] + ": " + JSON.stringify(msg['object']));
-                    this.onGotObject(msg['type'], msg['object']);
+                    this.collections[msg['type']].setElement(msg['object']);
                     return;
                 case 'object-delete':
                     this.debuglog$.next("Deleting object: " + msg['id']);
@@ -84,7 +76,7 @@ export class WebsocketService {
                     return;
                 case 'object-collection':
                     this.debuglog$.next("Got collection: " + msg['type'] + ": " + JSON.stringify(msg['objects']));
-                    this.onGotObjectCollection(msg['type'], msg['objects']);
+                    this.collections[msg['type']].setElements(msg['objects']);
                     return;
             }
         } catch (e) {
@@ -96,24 +88,7 @@ export class WebsocketService {
         this.debuglog$.next('Error occurred: ' + evt.data);
     }
 
-    private onGotObject(type, data) {
-        switch (type) {
-            case 'motions':
-                this.collections['motions'].setElement(new Motion(data));
-                break;
-            case 'amendments':
-                this.collections['amendments'].setElement(new Motion(data));
-                break;
-        }
-    }
-
     private onDeleteObject(type, objectId: string) {
         this.collections[type].deleteElement(objectId);
-    }
-
-    private onGotObjectCollection(type, data: object[]) {
-        data.forEach((dat) => {
-            this.onGotObject(type, dat);
-        });
     }
 }

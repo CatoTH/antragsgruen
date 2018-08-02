@@ -2,10 +2,12 @@
 
 namespace app\async\models;
 
+use app\models\db\Consultation;
 use app\models\exceptions\Internal;
 
 abstract class TransferrableChannelObject extends TransferrableObject
 {
+    /** @var TransferrableChannelObject[] */
     public static $CHANNEL_CLASSES = [
         'amendments' => Amendment::class,
         'motions'    => Motion::class,
@@ -14,8 +16,16 @@ abstract class TransferrableChannelObject extends TransferrableObject
     /** @return string */
     abstract public function getId();
 
-    /** @return int */
+    /** @return string */
     abstract public function getDomain();
+
+    /**
+     * @param Consultation $consultation
+     * @return TransferrableChannelObject[]
+     */
+    static public function getCollection($consultation) {
+        return [];
+    }
 
     /** @return string */
     public function getPublishChannel()

@@ -2,6 +2,8 @@
 
 namespace app\async\models;
 
+use app\models\db\Consultation;
+
 class Amendment extends TransferrableChannelObject
 {
     public $id;
@@ -55,5 +57,23 @@ class Amendment extends TransferrableChannelObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return TransferrableChannelObject[]
+     */
+    public static function getCollection($consultation)
+    {
+        $data = [];
+        foreach ($consultation->motions as $motion) {
+            foreach ($motion->amendments as $amendment) {
+                try {
+                    $data[] = Amendment::createFromDbObject($amendment);
+                } catch (\Exception $e) {
+                }
+            }
+        }
+        return $data;
     }
 }
