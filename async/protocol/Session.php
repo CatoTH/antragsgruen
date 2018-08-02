@@ -105,9 +105,9 @@ class Session
     public function sendObjectToClient($channelName, $object)
     {
         $this->server->push($this->connection, json_encode([
-            'op'   => 'object',
-            'type' => $channelName,
-            'id'   => $object,
+            'op'     => 'object',
+            'type'   => $channelName,
+            'object' => $object,
         ]));
         $objectId = $object->getId();
         if (!in_array($objectId, $this->sentObjects[$channelName])) {

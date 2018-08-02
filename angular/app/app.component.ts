@@ -4,6 +4,8 @@ import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
 import {debounceTime} from 'rxjs/operators';
 import {Amendment} from "../classes/Amendment";
+import {CollectionItem} from "../classes/CollectionItem";
+import {IMotion} from "../classes/IMotion";
 
 @Component({
     selector: 'app-root',
@@ -14,8 +16,7 @@ export class AppComponent {
     public log: string = '';
     public motionCollection: Collection<Motion> = new Collection<Motion>();
     public amendmentCollection: Collection<Amendment> = new Collection<Amendment>();
-    public sortedMotions: Motion[];
-    public sortedAmendments: Amendment[];
+    public sortedItems: IMotion[];
 
     public constructor(private _websocket: WebsocketService, el: ElementRef) {
         this._websocket.debuglog$.subscribe((str) => {
@@ -34,9 +35,17 @@ export class AppComponent {
     }
 
     private recalcMotionList() {
-        this.sortedMotions = Object.keys(this.motionCollection.elements).map(key => this.motionCollection.elements[key]);
-        this.sortedAmendments = Object.keys(this.amendmentCollection.elements).map(key => this.amendmentCollection.elements[key]);
-        console.log(this.sortedMotions);
-        console.log(this.sortedAmendments);
+        this.sortedItems = [];
+        Object.keys(this.motionCollection.elements).forEach(key => {
+            this.sortedItems.push(this.motionCollection.elements[key]);
+        });
+        Object.keys(this.amendmentCollection.elements).forEach(key => {
+            this.sortedItems.push(this.amendmentCollection.elements[key]);
+        });
+        this.sortedItems.sort(IMotion.compareTitlePrefix);
+    }
+
+    private trackElement(index: number, element: CollectionItem) {
+        return element ? element.getTrackId() : null;
     }
 }

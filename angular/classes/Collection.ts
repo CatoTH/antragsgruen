@@ -1,10 +1,7 @@
 import {Subject} from "rxjs";
+import {CollectionItem} from "./CollectionItem";
 
-interface Collectible {
-    id: string;
-}
-
-export class Collection<A extends Collectible> {
+export class Collection<A extends CollectionItem> {
     public elements: { [id: string]: A } = {};
 
     public changed$: Subject<boolean> = new Subject<boolean>();

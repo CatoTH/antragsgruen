@@ -1,22 +1,19 @@
-import {Person} from "./Person";
+import {IMotion} from "./IMotion";
 
-export class Amendment {
-    public id: string;
+export class Amendment extends IMotion {
     public consultationId: number;
     public motionId: number;
     public motionSlug: number;
     public motionTitle: string;
     public motionTitlePrefix: string;
-    public titlePrefix: string;
-    public status: number;
     public statusString: string;
     public statusFormatted: string;
-    public initiators: Person[];
-    public dateCreation: string;
 
     constructor(data) {
+        super();
         Object.keys(data).forEach((key) => {
             this[key] = data[key];
-        })
+        });
+        this.type = 'motion';
     }
 }
