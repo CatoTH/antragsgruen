@@ -2,8 +2,7 @@
 
 namespace app\controllers;
 
-use app\async\models\Amendment;
-use app\async\models\Motion;
+use app\async\models\TransferrableChannelObject;
 use app\async\models\Userdata;
 use app\models\db\User;
 use yii\web\Response;
@@ -31,38 +30,6 @@ class AsyncController extends Base
     }
 
     /**
-     * @return array
-     */
-    private function getObjectsMotions()
-    {
-        $data = [];
-        foreach ($this->consultation->motions as $motion) {
-            try {
-                $data[] = Motion::createFromDbObject($motion);
-            } catch (\Exception $e) {
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @return array
-     */
-    private function getObjectsAmendments()
-    {
-        $data = [];
-        foreach ($this->consultation->motions as $motion) {
-            foreach ($motion->amendments as $amendment) {
-                try {
-                    $data[] = Amendment::createFromDbObject($amendment);
-                } catch (\Exception $e) {
-                }
-            }
-        }
-        return $data;
-    }
-
-    /**
      * @param string $channel
      * @return string
      */
@@ -74,16 +41,8 @@ class AsyncController extends Base
             \yii::$app->response->statusCode = 401;
             return json_encode(['error' => 'This IP is not whitelisted']);
         }
-        switch ($channel) {
-            case 'motions':
-                return json_encode($this->getObjectsMotions());
-                break;
-            case 'amendments':
-                return json_encode($this->getObjectsAmendments());
-                break;
-            default:
-                return json_encode('unknown channel');
-        }
+        $class = TransferrableChannelObject::$CHANNEL_CLASSES[$channel];
+        return json_encode($class::getCollection($this->consultation));
     }
 
     /**

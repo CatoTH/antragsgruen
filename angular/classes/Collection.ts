@@ -9,18 +9,28 @@ export class Collection<A extends CollectionItem> {
     public elementUpdated$: Subject<A> = new Subject<A>();
     public elementDeleted$: Subject<string> = new Subject<string>();
 
-    constructor() {
-        this.elementUpdated$.subscribe(this.setElement);
-        this.elementDeleted$.subscribe(this.deleteElement)
+    constructor(private classConstructor: new (data: string) => A) {
+        this.elementUpdated$.subscribe(this.setElement.bind(this));
+        this.elementDeleted$.subscribe(this.deleteElement.bind(this))
     }
 
-    public setElement(el: A) {
-        this.elements[el.id] = el;
+    public setElement(data: string) {
+        let obj: A = new this.classConstructor(data);
+        this.elements[obj.id] = obj;
         this.changed$.next(true);
     }
 
     public deleteElement(elId: string) {
         delete this.elements[elId];
         this.changed$.next(true);
+    }
+
+    public setElements(arr: string[]) {
+        if (!arr) {
+            console.warn("Got non-array: ", arr);
+        }
+        arr.forEach((data) => {
+            this.setElement(data);
+        });
     }
 }
