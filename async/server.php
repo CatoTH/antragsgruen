@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 require_once(__DIR__ . '/../models/settings/JsonConfigTrait.php');
@@ -11,8 +12,20 @@ require_once(__DIR__ . '/models/Userdata.php');
 require_once(__DIR__ . '/models/Motion.php');
 require_once(__DIR__ . '/models/Amendment.php');
 
+if (isset($_SERVER['ANTRAGSGRUEN_CONFIG'])) {
+    $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'];
+} elseif (isset($_ENV['ANTRAGSGRUEN_CONFIG'])) {
+    $configFile = $_SERVER['ANTRAGSGRUEN_CONFIG'];
+} else {
+    $configFile = __DIR__ . '/../config/config.json';
+}
+$config = json_decode(file_get_contents($configFile), true);
+if (!isset($config['asyncConfig'])) {
+    die('Async mode is not configured');
+}
+$asyncConfig = $config['asyncConfig'];
 
-$server = new \Swoole\WebSocket\Server("127.0.0.1", 9501, SWOOLE_BASE);
+$server = new \Swoole\WebSocket\Server("127.0.0.1", $asyncConfig['port-internal'], SWOOLE_BASE);
 $server->set([
     'worker_num'      => 1,
     'task_worker_num' => 1,
@@ -38,8 +51,9 @@ $server->on('finish', function ($_server, $task_id, $result) {
 });
 
 $server->on('packet', function ($_server, $data, $client) {
-    echo "#" . posix_getpid() . "\tPacket {$data}\n";
-    var_dump($client);
+    if (function_exists('posix_getpid')) {
+        echo "#" . posix_getpid() . "\tPacket {$data}\n";
+    }
 });
 
 $server->on('request', [$internalClient, 'onRequest']);

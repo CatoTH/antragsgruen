@@ -199,6 +199,25 @@ Add the following settings to your config.json (and adapt them to your needs):
 ```
 
 
+### Async mode
+
+To use async features based on Websockets, [Swoole](https://www.swoole.co.uk/) needs to be installed.
+
+The configuration in the `config.json`:
+```json
+{
+    "asyncConfig": {
+        "port-internal": 9501,
+        "port-external": 9501
+    }
+}
+```
+
+Running the server:
+```bash
+async/server.php
+```
+
 ### Command Line Commands
 
 Force a new password for an user:
