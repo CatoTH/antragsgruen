@@ -40,6 +40,7 @@ class AntragsgruenApp implements \JsonSerializable
     public $localMessages         = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
+    public $asyncConfig           = null;
     public $mode                  = 'production'; // [production | sandbox]
     public $updateKey             = null;
 

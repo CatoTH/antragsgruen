@@ -3,19 +3,19 @@
 namespace app\async\yii;
 
 use app\async\models\TransferrableChannelObject;
+use app\models\settings\AntragsgruenApp;
 use GuzzleHttp\Client;
 
 class SwooleClient
 {
     /**
-     * @return \Swoole\Http\Client
+     * @return Client
      */
     protected static function getClient()
     {
-        $cli = new \Swoole\Http\Client('127.0.0.1', 9501);
-        $cli->setHeaders(['User-Agent' => 'swoole-http-client']);
-        //$cli->setCookies(array('test' => 'value'));
-        return $cli;
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        return new Client(['base_uri' => 'http://127.0.0.1:' . $params->asyncConfig['port-internal']]);
     }
 
     /**
@@ -23,7 +23,7 @@ class SwooleClient
      */
     public static function publishObject(TransferrableChannelObject $object)
     {
-        $client = new Client(['base_uri' => 'http://127.0.0.1:9501']);
+        $client = static::getClient();
         $client->post('/' . urlencode($object->getDomain()) . '/' . urlencode($object->getPublishChannel()) . '/', [
             'form_params' => ['data' => $object]
         ]);
@@ -38,7 +38,7 @@ class SwooleClient
      */
     public static function deleteObject($consultationId, $channel, $objectId)
     {
-        $client = new Client(['base_uri' => 'http://127.0.0.1:9501']);
+        $client = static::getClient();
         $client->delete('/' . urlencode($consultationId) . '/' . urlencode($channel) . '/' . urlencode($objectId));
 
         // @TODO Error handling

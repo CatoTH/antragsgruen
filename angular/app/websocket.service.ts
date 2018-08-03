@@ -16,9 +16,9 @@ export class WebsocketService {
     constructor() {
     }
 
-    public connect(authCookie: string) {
+    public connect(authCookie: string, port: number) {
         this.authCookie = authCookie;
-        this.websocket = new WebSocket('ws://127.0.0.1:9501');
+        this.websocket = new WebSocket('ws://' + window.location.host + ':' + port.toString());
         this.websocket.onopen = this.onopen.bind(this);
         this.websocket.onclose = this.onClose.bind(this);
         this.websocket.onmessage = this.onMessage.bind(this);
