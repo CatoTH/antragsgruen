@@ -7,6 +7,7 @@ import {Collection} from "../classes/Collection";
 export class WebsocketService {
     private websocket: WebSocket;
     private authCookie: string;
+    private active = false;
 
     public authenticated$: Subject<User> = new ReplaySubject<User>(1);
     public debuglog$: Subject<string> = new Subject<string>();
@@ -18,6 +19,7 @@ export class WebsocketService {
 
     public connect(authCookie: string, port: number) {
         this.authCookie = authCookie;
+        this.active = false;
         this.websocket = new WebSocket('ws://' + window.location.host + ':' + port.toString());
         this.websocket.onopen = this.onopen.bind(this);
         this.websocket.onclose = this.onClose.bind(this);
@@ -35,6 +37,7 @@ export class WebsocketService {
     }
 
     private onopen() {
+        this.active = true;
         this.websocket.send(JSON.stringify({
             "op": "auth",
             "auth": this.authCookie,
@@ -44,6 +47,7 @@ export class WebsocketService {
 
     private onClose() {
         this.debuglog$.next('Disconnected');
+        this.active = false;
     }
 
     private onMessage(evt) {
@@ -85,7 +89,14 @@ export class WebsocketService {
     }
 
     private onError(evt) {
-        this.debuglog$.next('Error occurred: ' + evt.data);
+        console.error(evt);
+        if (evt.data) {
+            this.debuglog$.next('Error occurred: ' + evt.data);
+        } else if (!this.active) {
+            this.debuglog$.next('Error connecting');
+        } else {
+            this.debuglog$.next('Error');
+        }
     }
 
     private onDeleteObject(type, objectId: string) {
