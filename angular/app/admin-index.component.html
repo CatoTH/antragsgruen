@@ -1,5 +1,4 @@
-<h3>Motions</h3>
-<table>
+<table class="adminMotionTable">
     <thead>
     <tr>
         <th></th>
@@ -18,8 +17,8 @@
         <tr *ngIf="item.type == 'motion'">
             <td><input type="checkbox"></td>
             <td>A</td>
-            <td>{{ item.titlePrefix }}</td>
-            <td>{{ item.title }}</td>
+            <td><a [href]="item.getLink('motion/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
+            <td><a [href]="item.getLink('admin/motion/update', linkTemplates)">{{ item.title }}</a></td>
             <td>{{ item.statusFormatted }}</td>
             <td>
                 <ul>
@@ -41,8 +40,8 @@
         <tr *ngIf="item.type == 'amendment'">
             <td><input type="checkbox"></td>
             <td>ÄA</td>
-            <td>{{ item.titlePrefix }}</td>
-            <td>{{ item.motionTitle }}</td>
+            <td><a [href]="item.getLink('amendment/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
+            <td><a [href]="item.getLink('admin/amendment/update', linkTemplates)">{{ item.motionTitle }}</a></td>
             <td>{{ item.statusFormatted }}</td>
             <td>
                 <ul>

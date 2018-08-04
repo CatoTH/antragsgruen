@@ -1,12 +1,12 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 
-import {AppComponent} from './app.component';
+import {AdminIndexComponent} from './admin-index.component';
 import {WebsocketService} from "./websocket.service";
 
 @NgModule({
     declarations: [
-        AppComponent
+        AdminIndexComponent
     ],
     imports: [
         BrowserModule
@@ -14,7 +14,7 @@ import {WebsocketService} from "./websocket.service";
     providers: [
         WebsocketService
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AdminIndexComponent]
 })
 export class AppModule {
 }
