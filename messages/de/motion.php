@@ -195,6 +195,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
 
-    'goto_line'    => 'Gehe zu Zeile',
-    'goto_line_go' => 'Los',
+    'goto_line'     => 'Gehe zu Zeile',
+    'goto_line_go'  => 'Los',
+    'goto_line_err' => 'Zeile nicht gefunden',
 ];

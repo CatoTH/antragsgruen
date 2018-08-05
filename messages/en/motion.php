@@ -186,6 +186,7 @@ return [
         "Greetings,\n" .
         "  The Antragsgrün-Team",
 
-    'goto_line'    => 'Go to line',
-    'goto_line_go' => 'Go',
+    'goto_line'     => 'Go to line',
+    'goto_line_go'  => 'Go',
+    'goto_line_err' => 'Line not found',
 ];

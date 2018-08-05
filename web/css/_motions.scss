@@ -496,23 +496,22 @@ iframe.pdfViewer {
   border-top: solid 1px #ccc;
   box-shadow: 0 0 3px rgba(0,0,0,0.4);
   display: none;
+  padding: 10px;
   &.active {
-    display: table;
+    display: block;
   }
 
-  h2 {
-    display: table-cell;
-    border-right: solid 1px #ccc;
-    font-size: 16px;
-    padding: 5px;
-    background-color: #eee;
+  .lineNumberNotFound {
+    color: red;
   }
 
-  > div {
-    display: table-cell;
-    padding-left: 10px;
+  .input-group {
+    max-width: 300px;
   }
 
+  .form-group {
+    margin-bottom: 0;
+  }
 }
 
 .share_buttons {
