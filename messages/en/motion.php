@@ -185,4 +185,7 @@ return [
         "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
+
+    'goto_line'    => 'Go to line',
+    'goto_line_go' => 'Go',
 ];

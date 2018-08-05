@@ -1,11 +1,13 @@
 /// <reference path="../typings/jquery-typings.d.ts" />
 
 import '../shared/MotionInitiatorShow';
+import {LineNumberHighlighting} from "./LineNumberHighlighting";
 
 class MotionShow {
 
     constructor() {
         new MotionInitiatorShow();
+        new LineNumberHighlighting();
 
         let $paragraphs = $('.motionTextHolder .paragraph');
         $paragraphs.find('.comment .shower').click(this.showComment.bind(this));

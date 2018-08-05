@@ -61,6 +61,7 @@
     width: 0;
     display: inline-block;
     float: left; // otherwise problems appear at li > p constucts
+    z-index: -1; // Line number highlighting should be behind the text
   }
   .lineNumber:after {
     content: attr(data-line-number);
@@ -117,6 +118,23 @@
       left: $lineNumberOffset + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
             $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
     }
+  }
+
+  .lineNumber.highlighted:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -8px;
+    height: 1.5em;
+    margin-top: -1px;
+    width: 100vw;
+    max-width: $content-max-width;
+    z-index: -1;
+    background-color: rgba(255, 255, 0, 0);
+    transition:background-color 0.5s ease;
+  }
+  .lineNumber.highlighted-active:before {
+    background-color: rgba(255, 255, 0, 1);
   }
 
   &.smallFont {
@@ -465,6 +483,36 @@ iframe.pdfViewer {
 .sectionType5 { // PDFs
   margin-left: -1px;
   margin-right: -1px;
+}
+
+.gotoLineNumerPanel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  right: 0;
+  z-index: 10;
+  background: white;
+  border-top: solid 1px #ccc;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  display: none;
+  &.active {
+    display: table;
+  }
+
+  h2 {
+    display: table-cell;
+    border-right: solid 1px #ccc;
+    font-size: 16px;
+    padding: 5px;
+    background-color: #eee;
+  }
+
+  > div {
+    display: table-cell;
+    padding-left: 10px;
+  }
+
 }
 
 .share_buttons {

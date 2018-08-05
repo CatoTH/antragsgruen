@@ -122,7 +122,7 @@ return [
                                 <strong>Password:</strong> %ADMIN_PASSWORD%
                                 </blockquote>
                                 <br><br>
-                                However, please note that this site will be <strong>deleted after three days</strong>.<br><br>
+                                However, please note that this site might be <strong>deleted after three days</strong>.<br><br>
                                 <em>By the way: you can edit this text by clicking on "edit" on the top right.</em>',
 
     'cons_err_fields_missing' => 'Some fields are missing.',
