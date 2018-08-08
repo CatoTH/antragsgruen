@@ -20,22 +20,48 @@
             <td><a [href]="item.getLink('motion/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
             <td><a [href]="item.getLink('admin/motion/update', linkTemplates)">{{ item.title }}</a></td>
             <td>{{ item.statusFormatted }}</td>
-            <td>
+            <td class="initiatorCol">
                 <ul>
                     <li *ngFor="let person of item.initiators">
                         {{ person.name }}
                     </li>
                 </ul>
             </td>
-            <td>
+            <td class="tagsCol">
                 <ul>
                     <li *ngFor="let tag of item.tags">
                         {{ tag.title }}
                     </li>
                 </ul>
             </td>
-            <td><input type="text" class="form-control"></td>
-            <td>...</td>
+            <td class="exportCol">
+                <a [href]="item.getLink('motion/pdf', linkTemplates)" class="pdf">PDF</a> /
+                <a [href]="item.getLink('motion/pdfamendcollection', linkTemplates)" class="pdf">PDF + ÄAs</a> /
+                <a [href]="item.getLink('motion/odt', linkTemplates)" class="odt">ODT</a> /
+                <a [href]="item.getLink('motion/plainhtml', linkTemplates)" class="pdf">HTML</a>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        Aktion
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li *ngIf="item.isScreenable()">
+                            <a tabindex="-1" href="#" (click)="motionScreen(item, $event)" class="screen">Freischalten</a>
+                        </li>
+                        <li *ngIf="!item.isScreenable()">
+                            <a tabindex="-1" href="#" (click)="motionUnscreen(item, $event)" class="unscreen">Ent-Freischalten</a>
+                        </li>
+                        <li><a tabindex="-1" href="#" (click)="motionCreateFromTemplate(item, $event)" class="asTemplate">
+                            Neuer Antrag auf dieser Basis
+                        </a></li>
+                        <li><a tabindex="-1" href="#" (click)="motionDelete(item, $event)" class="delete">
+                            Löschen
+                        </a></li>
+                    </ul>
+                </div>
+            </td>
         </tr>
         <tr *ngIf="item.type == 'amendment'">
             <td><input type="checkbox"></td>
@@ -43,16 +69,40 @@
             <td><a [href]="item.getLink('amendment/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
             <td><a [href]="item.getLink('admin/amendment/update', linkTemplates)">{{ item.motionTitle }}</a></td>
             <td>{{ item.statusFormatted }}</td>
-            <td>
+            <td class="initiatorCol">
                 <ul>
                     <li *ngFor="let person of item.initiators">
                         {{ person.name }}
                     </li>
                 </ul>
             </td>
-            <td></td>
-            <td><input type="text" class="form-control"></td>
-            <td>...</td>
+            <td class="tagsCol"></td>
+            <td>
+                <a [href]="item.getLink('amendment/pdf', linkTemplates)" class="pdf">PDF</a> /
+                <a [href]="item.getLink('amendment/odt', linkTemplates)" class="odt">ODT</a>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        Aktion
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li *ngIf="item.isScreenable()">
+                            <a tabindex="-1" href="#" (click)="amendmentScreen(item, $event)" class="screen">Freischalten</a>
+                        </li>
+                        <li *ngIf="!item.isScreenable()">
+                            <a tabindex="-1" href="#" (click)="amendmentUnscreen(item, $event)" class="unscreen">Ent-Freischalten</a>
+                        </li>
+                        <li><a tabindex="-1" href="#" (click)="amendmentCreateFromTemplate(item, $event)" class="asTemplate">
+                            Neuer Änderungsantrag auf dieser Basis
+                        </a></li>
+                        <li><a tabindex="-1" href="#" (click)="amendmentDelete(item, $event)" class="delete">
+                            Löschen
+                        </a></li>
+                    </ul>
+                </div>
+            </td>
         </tr>
     </ng-container>
     </tbody>

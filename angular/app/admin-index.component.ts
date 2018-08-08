@@ -4,6 +4,7 @@ import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
 import {debounceTime} from 'rxjs/operators';
 import {Amendment} from "../classes/Amendment";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {CollectionItem} from "../classes/CollectionItem";
 import {IMotion} from "../classes/IMotion";
 
@@ -17,9 +18,11 @@ export class AdminIndexComponent {
     public amendmentCollection: Collection<Amendment> = new Collection<Amendment>(Amendment);
     public sortedItems: IMotion[];
     private ajaxBackendUrl: string;
-    public linkTemplates: {[key: string]: string};
+    public linkTemplates: { [key: string]: string };
 
-    public constructor(private _websocket: WebsocketService, el: ElementRef<Element>) {
+    public constructor(private _websocket: WebsocketService,
+                       private el: ElementRef<Element>,
+                       private _http: HttpClient) {
         // Debounce: if a collection comes, don't recalculate the UI for each element
         this.motionCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
         this.amendmentCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
@@ -61,5 +64,52 @@ export class AdminIndexComponent {
 
     public trackElement(index: number, element: CollectionItem) {
         return element ? element.getTrackId() : null;
+    }
+
+    private callBackend() {
+        let params = new HttpParams();
+        //.set('categories', categories.join(','))
+
+        return this._http
+            .get(this.ajaxBackendUrl, {
+                'params': params,
+                //'headers': authHeader
+            })
+            .pipe(map((body) => {
+                console.log(body);
+            }));
+    }
+
+    public motionScreen(item: Motion, $event) {
+        $event.preventDefault();
+        this.callBackend();
+    }
+
+    public motionUnscreen(item: Motion, $event) {
+        $event.preventDefault();
+    }
+
+    public motionCreateFromTemplate(item: Motion, $event) {
+        $event.preventDefault();
+    }
+
+    public motionDelete(item: Motion, $event) {
+        $event.preventDefault();
+    }
+
+    public amendmentScreen(item: Amendment, $event) {
+        $event.preventDefault();
+    }
+
+    public amendmentUnscreen(item: Amendment, $event) {
+        $event.preventDefault();
+    }
+
+    public amendmentCreateFromTemplate(item: Amendment, $event) {
+        $event.preventDefault();
+    }
+
+    public amendmentDelete(item: Amendment, $event) {
+        $event.preventDefault();
     }
 }
