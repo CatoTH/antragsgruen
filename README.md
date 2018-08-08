@@ -46,7 +46,7 @@ apt-get install php7.2 php7.2-cli php7.2-fpm php7.2-intl php7.2-json php7.2-gd \
 
 #### Installation:
 
-- Download the latest package of Antragsgrün: [antragsgruen-4.0.0rc5.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-4.0.0rc5.tar.bz2)
+- Download the latest package of Antragsgrün: [antragsgruen-4.0.0rc6.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-4.0.0rc6.tar.bz2)
 - Extract the contents into your web folder
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
