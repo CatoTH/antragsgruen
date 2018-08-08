@@ -1,5 +1,6 @@
 import {CollectionItem} from "./CollectionItem";
 import {Person} from "./Person";
+import {STATUS} from "./Status";
 
 export abstract class IMotion extends CollectionItem {
     public titlePrefix: string;
@@ -15,5 +16,14 @@ export abstract class IMotion extends CollectionItem {
         } else {
             return 0;
         }
+    }
+
+    public isScreenable(): boolean {
+        return ([
+            STATUS.DRAFT,
+            STATUS.DRAFT_ADMIN,
+            STATUS.SUBMITTED_UNSCREENED,
+            STATUS.SUBMITTED_UNSCREENED_CHECKED
+        ].indexOf(this.status) !== -1)
     }
 }

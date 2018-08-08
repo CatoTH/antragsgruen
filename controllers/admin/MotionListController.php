@@ -408,4 +408,12 @@ class MotionListController extends AdminBase
 
         return $zip->getContentAndFlush();
     }
+
+    /**
+     * @return string
+     */
+    public function actionAjax()
+    {
+        die("!");
+    }
 }
