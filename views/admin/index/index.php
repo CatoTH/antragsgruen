@@ -86,7 +86,7 @@ if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) 
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_user_list'),
-        UrlHelper::createUrl('admin/userlist'),
+        UrlHelper::createUrl('/manager/userlist'),
         ['class' => 'siteUserList']
     );
     echo '</li>';
@@ -94,7 +94,7 @@ if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) 
     echo '<li>';
     echo Html::a(
         \Yii::t('admin', 'index_site_config'),
-        UrlHelper::createUrl('admin/siteconfig'),
+        UrlHelper::createUrl('/manager/siteconfig'),
         ['class' => 'siteConfigLink']
     );
     echo '</li>';

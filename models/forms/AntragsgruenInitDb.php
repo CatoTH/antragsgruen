@@ -22,6 +22,8 @@ class AntragsgruenInitDb extends Model
     public $sqlDB;
     public $sqlTablePrefix = '';
 
+    public $prettyUrls;
+
     public $adminUsername;
     public $adminPassword;
 
@@ -76,6 +78,12 @@ class AntragsgruenInitDb extends Model
             $this->sqlPassword = '';
         }
         $this->sqlCreateTables = isset($values['sqlCreateTables']);
+
+        if (isset($values['prettyUrls']) && $values['prettyUrls'] === '0') {
+            $this->prettyUrls = false;
+        } else {
+            $this->prettyUrls = true;
+        }
     }
 
     /**
@@ -158,6 +166,13 @@ class AntragsgruenInitDb extends Model
         $connConfig          = $this->getDBConfig();
         $connConfig['class'] = \yii\db\Connection::class;
         \yii::$app->set('db', $connConfig);
+    }
+
+    /**
+     */
+    public function overwritePrettyUrls()
+    {
+        \Yii::$app->urlManager->enablePrettyUrl = $this->prettyUrls;
     }
 
 
@@ -334,5 +349,6 @@ class AntragsgruenInitDb extends Model
         $config->dbConnection = $this->getDBConfig();
         $config->adminUserIds = $this->adminIds;
         $config->baseLanguage = $this->language;
+        $config->prettyUrl    = $this->prettyUrls;
     }
 }

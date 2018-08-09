@@ -81,7 +81,7 @@ $components = [
     'urlManager'   => [
         'class'           => 'app\components\UrlManager',
         'showScriptName'  => false,
-        'enablePrettyUrl' => $params->prettyUrl,
+        'enablePrettyUrl' => ($params->prettyUrl && !(isset($_POST['disablePrettyUrl']) && $_POST['disablePrettyUrl'])),
         'rules'           => $urls
     ],
     'i18n'         => [
