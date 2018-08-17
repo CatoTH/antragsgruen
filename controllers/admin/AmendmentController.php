@@ -50,6 +50,7 @@ class AmendmentController extends AdminBase
     /**
      * @param int $withdrawn
      * @return string
+     * @throws \Exception
      */
     public function actionPdfziplist($withdrawn = 0)
     {
@@ -72,6 +73,7 @@ class AmendmentController extends AdminBase
     /**
      * @param int $withdrawn
      * @return string
+     * @throws \Exception
      */
     public function actionOdtziplist($withdrawn = 0)
     {
