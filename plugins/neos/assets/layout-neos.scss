@@ -70,7 +70,6 @@ $deadlineCircleFont: "Montserrat", sans-serif;
 $buttonFont: "Montserrat", sans-serif;
 $btn-border-radius-base: 0;
 $btn-font-weight: 800;
-$btn-success-border: $colorMagenta;
 
 .btn {
   font-style: italic;
@@ -119,9 +118,7 @@ body {
 }
 
 .footer {
-  color: #fff;
   a, a:link, a:visited {
-    color: #fff;
     text-decoration: underline;
   }
 }
@@ -142,6 +139,12 @@ body {
   }
 }
 
+.consultationPhasesWizard {
+  .title {
+    font-size: 14px;
+  }
+}
+
 .bookmarks > li.comment > a.zero {
   opacity: 1;
 }
@@ -149,6 +152,21 @@ body {
 body.consultationIndex {
   .breadcrumb {
     display: none;
+  }
+}
+
+#mainmenu {
+  .navbar {
+    min-height: 35px;
+  }
+  
+  .navbar .nav li a {
+    font-weight: normal;
+    margin-left: 30px;
+    font-size: 16px;
+  }
+  li.addPage a {
+    left: -40px;
   }
 }
 
@@ -185,5 +203,4 @@ body.consultationIndex {
   h2 + h2 {
     margin-top: -10px;
   }
-
 }
