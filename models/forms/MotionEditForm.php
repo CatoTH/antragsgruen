@@ -144,8 +144,17 @@ class MotionEditForm extends Model
 
         list($values, $files) = $data;
         parent::setAttributes($values, $safeOnly);
+
+        if (isset($values['agendaItem']) && $values['agendaItem']) {
+            foreach ($this->motionType->agendaItems as $agendaItem) {
+                if ($agendaItem->id === IntVal($values['agendaItem'])) {
+                    $this->agendaItem = $agendaItem;
+                }
+            }
+        }
+
         foreach ($this->sections as $section) {
-            if ($this->motionId && $section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($this->motionId && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
@@ -262,6 +271,7 @@ class MotionEditForm extends Model
 
     /**
      * @throws FormError
+     * @throws \yii\base\Exception
      * @return Motion
      */
     public function createMotion()
