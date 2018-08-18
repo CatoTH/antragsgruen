@@ -17,8 +17,8 @@ $colorLightGrey: rgb(166, 166, 166);
 $colorBlue: rgb(27, 74, 251);
 $colorGreenDark: rgb(40, 95, 25);
 $colorGreenLight: rgb(175, 203, 8);
-$colorRed: rgb(221,11,24);
-$colorMagenta: rgb(232, 65, 136);
+$colorRed: rgb(221, 11, 24);
+$colorMagenta: #E84188;
 $colorGreen: green;
 $colorYellow: #ffed00;
 $colorLinksLight: $colorMagenta;
@@ -36,18 +36,20 @@ $alert-success-text: black;
 
 $motionListAmendmentColor: #555;
 
-
 $headingFont: "Montserrat", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
 $headingPrimaryBackground: $colorDarkGrey;
 $headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: $colorLightGrey;
+$headingSecondaryBackground: $colorMagenta;
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(200, 200, 200);
 
-$headingFontUppercase: false;
-$headingFontBold: false;
+$headingFontUppercase: true;
+$headingFontBold: 800;
 $headingTextShadow: false;
+$headingFontItalic: true;
+$headingFontLineHeight: 16px;
+$headingFontSize: 12px;
 
 $menuFont: "Montserrat", sans-serif;
 $menuLink: #343434;
@@ -63,9 +65,16 @@ $bookmarkAmendmentBackground: $colorYellow;
 $bookmarkAmendmentText: black;
 $bookmarkCommentColor: #00cc00;
 
-$bodyFont: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$bodyFont: "Montserrat", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Montserrat", sans-serif;
 $buttonFont: "Montserrat", sans-serif;
+$btn-border-radius-base: 0;
+$btn-font-weight: 800;
+$btn-success-border: $colorMagenta;
+
+.btn {
+  font-style: italic;
+}
 
 $motionFixedFont: 'Open Sans', Consolas, Courier, sans-serif;
 $motionFixedFontColor: #222;
@@ -91,15 +100,16 @@ $createMotionTextColor: $menuLink;
 @import "../../../web/css/sidebar";
 @import "../../../web/css/user_pages";
 
-.motionListStd .motion .title a  {
+.motionListStd .motion .title a {
   font-family: "Montserrat", sans-serif;
 }
 
 html {
-  background: $colorMagenta;
+  background: #DBDBDB;
 }
+
 body {
-  background: $colorMagenta;
+  background: #DBDBDB;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -134,4 +144,46 @@ body {
 
 .bookmarks > li.comment > a.zero {
   opacity: 1;
+}
+
+body.consultationIndex {
+  .breadcrumb {
+    display: none;
+  }
+}
+
+.logoImg {
+  display: block;
+  width: 312px;
+  height: 98px;
+  background-image: url("./neos-antragsschmiede.png");
+  body.consultationIndex & {
+    width: 400px;
+    height: 205px;
+    background-image: url("./neos-logo.png");
+  }
+}
+
+.textHolder {
+  h2 {
+    font-size: 27px;
+    font-family: "Montserrat", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 800;
+    font-style: italic;
+    background-color: $colorMagenta;
+    color: white;
+    float: left;
+    padding: 2px 10px;
+    margin: 2px 0 13px 0;
+    overflow: hidden;
+  }
+  h2 + * {
+    clear: left;
+    overflow: hidden;
+    width: auto;
+  }
+  h2 + h2 {
+    margin-top: -10px;
+  }
+
 }

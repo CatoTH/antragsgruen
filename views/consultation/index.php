@@ -19,10 +19,10 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\ConsultationController $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
-
-$this->title = $consultation->title;
+$controller               = $this->context;
+$layout                   = $controller->layoutParams;
+$layout->bodyCssClasses[] = 'consultationIndex';
+$this->title              = $consultation->title;
 
 
 if ($admin) {
