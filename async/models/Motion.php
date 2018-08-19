@@ -26,12 +26,12 @@ class Motion extends TransferrableChannelObject
     public static function createFromDbObject(\app\models\db\Motion $motion)
     {
         $object                  = new Motion('');
-        $object->id              = $motion->id;
-        $object->consultationId  = $motion->consultationId;
+        $object->id              = IntVal($motion->id);
+        $object->consultationId  = IntVal($motion->consultationId);
         $object->titlePrefix     = $motion->titlePrefix;
         $object->title           = $motion->title;
         $object->slug            = $motion->slug;
-        $object->status          = $motion->status;
+        $object->status          = IntVal($motion->status);
         $object->statusString    = $motion->statusString;
         $object->statusFormatted = $motion->getFormattedStatus();
         $object->dateCreation    = $motion->dateCreation;

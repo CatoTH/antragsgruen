@@ -25,7 +25,7 @@ class SwooleClient
     {
         $client = static::getClient();
         $client->post('/' . urlencode($object->getDomain()) . '/' . urlencode($object->getPublishChannel()) . '/', [
-            'form_params' => ['data' => $object]
+            'form_params' => ['data' => json_encode($object)]
         ]);
 
         // @TODO Error handling

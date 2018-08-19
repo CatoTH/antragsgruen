@@ -19,7 +19,7 @@ class Person extends TransferrableObject
     public static function createFromDbMotionObject(MotionSupporter $supporter)
     {
         $person                 = new Person('');
-        $person->type           = $supporter->personType;
+        $person->type           = IntVal($supporter->personType);
         $person->name           = $supporter->name;
         $person->organization   = $supporter->organization;
         $person->resolutionDate = $supporter->resolutionDate;

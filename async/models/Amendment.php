@@ -29,14 +29,14 @@ class Amendment extends TransferrableChannelObject
         $motion = $amendment->getMyMotion();
 
         $object                    = new Amendment('');
-        $object->id                = $amendment->id;
-        $object->consultationId    = $motion->consultationId;
-        $object->motionId          = $motion->id;
+        $object->id                = IntVal($amendment->id);
+        $object->consultationId    = IntVal($motion->consultationId);
+        $object->motionId          = IntVal($motion->id);
         $object->motionSlug        = $motion->slug;
         $object->motionTitle       = $motion->title;
         $object->motionTitlePrefix = $motion->titlePrefix;
         $object->titlePrefix       = $amendment->titlePrefix;
-        $object->status            = $amendment->status;
+        $object->status            = IntVal($amendment->status);
         $object->statusString      = $amendment->statusString;
         $object->statusFormatted   = $motion->getFormattedStatus();
         $object->dateCreation      = $motion->dateCreation;

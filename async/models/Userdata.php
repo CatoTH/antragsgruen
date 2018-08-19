@@ -21,7 +21,7 @@ class Userdata extends TransferrableObject
     public static function createFromDbObject(User $user, Consultation $consultation)
     {
         $object           = new Userdata('');
-        $object->userId   = $user->id;
+        $object->userId   = IntVal($user->id);
         $object->username = $user->auth;
         $object->privileges = UserPrivilege::createFromDbObject($user->getConsultationPrivilege($consultation));
         return $object;
