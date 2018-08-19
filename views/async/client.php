@@ -47,9 +47,11 @@ $linkTemplates = json_encode([
 ]);
 
 $params = [
-    'init-collections' => $initData,
+    'csrf-param'       => \Yii::$app->request->csrfParam,
+    'csrf-token'       => \Yii::$app->request->csrfToken,
     'ajax-backend'     => UrlHelper::createUrl('/admin/motion-list/ajax'),
     'link-templates'   => $linkTemplates,
+    'init-collections' => $initData,
 ];
 if ($app->asyncConfig) {
     $params['cookie']  = $_COOKIE['PHPSESSID'];

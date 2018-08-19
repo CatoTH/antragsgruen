@@ -4,7 +4,7 @@ import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
 import {debounceTime} from 'rxjs/operators';
 import {Amendment} from "../classes/Amendment";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {CollectionItem} from "../classes/CollectionItem";
 import {IMotion} from "../classes/IMotion";
 
@@ -17,8 +17,10 @@ export class AdminIndexComponent {
     public motionCollection: Collection<Motion> = new Collection<Motion>(Motion);
     public amendmentCollection: Collection<Amendment> = new Collection<Amendment>(Amendment);
     public sortedItems: IMotion[];
-    private ajaxBackendUrl: string;
-    public linkTemplates: { [key: string]: string };
+    private readonly ajaxBackendUrl: string;
+    private readonly csrfParam: string;
+    private readonly csrfToken: string;
+    public readonly linkTemplates: { [key: string]: string };
 
     public constructor(private _websocket: WebsocketService,
                        private el: ElementRef<Element>,
@@ -27,12 +29,14 @@ export class AdminIndexComponent {
         this.motionCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
         this.amendmentCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
 
-        if (el.nativeElement.getAttribute("ws-port")) {
+        if (el.nativeElement.getAttribute('ws-port')) {
             this.initWebsocket(el);
         }
-        this.ajaxBackendUrl = el.nativeElement.getAttribute("ajax-backend");
-        this.linkTemplates = JSON.parse(el.nativeElement.getAttribute("link-templates"));
-        let initData = JSON.parse(el.nativeElement.getAttribute("init-collections"));
+        this.ajaxBackendUrl = el.nativeElement.getAttribute('ajax-backend');
+        this.csrfToken = el.nativeElement.getAttribute('csrf-token');
+        this.csrfParam = el.nativeElement.getAttribute('csrf-param');
+        this.linkTemplates = JSON.parse(el.nativeElement.getAttribute('link-templates'));
+        let initData = JSON.parse(el.nativeElement.getAttribute('init-collections'));
         this.motionCollection.setElements(initData['motions']);
         this.amendmentCollection.setElements(initData['amendments']);
     }
@@ -42,12 +46,12 @@ export class AdminIndexComponent {
             this.log += str + "\n";
         });
         this._websocket.authenticated$.subscribe((user) => {
-            this._websocket.subscribeCollectionChannel(1, "motions", this.motionCollection);
-            this._websocket.subscribeCollectionChannel(1, "amendments", this.amendmentCollection);
+            this._websocket.subscribeCollectionChannel(1, 'motions', this.motionCollection);
+            this._websocket.subscribeCollectionChannel(1, 'amendments', this.amendmentCollection);
         });
         this._websocket.connect(
-            el.nativeElement.getAttribute("cookie"),
-            el.nativeElement.getAttribute("ws-port")
+            el.nativeElement.getAttribute('cookie'),
+            el.nativeElement.getAttribute('ws-port')
         );
     }
 
@@ -66,27 +70,34 @@ export class AdminIndexComponent {
         return element ? element.getTrackId() : null;
     }
 
-    private callBackend() {
-        let params = new HttpParams();
-        //.set('categories', categories.join(','))
-
+    private callBackend(data: URLSearchParams) {
+        data.set(this.csrfParam, this.csrfToken);
         return this._http
-            .get(this.ajaxBackendUrl, {
-                'params': params,
-                //'headers': authHeader
-            })
-            .pipe(map((body) => {
-                console.log(body);
-            }));
+            .post(this.ajaxBackendUrl, data.toString(), {
+                headers: new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded')
+            });
     }
 
     public motionScreen(item: Motion, $event) {
         $event.preventDefault();
-        this.callBackend();
+
+        let params = new URLSearchParams();
+        params.set('operation', 'motionScreen');
+        params.set('motionId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     public motionUnscreen(item: Motion, $event) {
         $event.preventDefault();
+
+        let params = new URLSearchParams();
+        params.set('operation', 'motionUnscreen');
+        params.set('motionId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     public motionCreateFromTemplate(item: Motion, $event) {

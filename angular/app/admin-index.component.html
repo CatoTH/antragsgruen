@@ -19,7 +19,7 @@
             <td>A</td>
             <td><a [href]="item.getLink('motion/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
             <td><a [href]="item.getLink('admin/motion/update', linkTemplates)">{{ item.title }}</a></td>
-            <td>{{ item.statusFormatted }}</td>
+            <td [innerHTML]="item.statusFormatted"></td>
             <td class="initiatorCol">
                 <ul>
                     <li *ngFor="let person of item.initiators">

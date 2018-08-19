@@ -18,9 +18,9 @@ class MotionTag extends TransferrableObject
     public static function createFromDbMotionObject(ConsultationSettingsTag $tag)
     {
         $obj           = new static('');
-        $obj->id       = $tag->id;
+        $obj->id       = IntVal($tag->id);
         $obj->title    = $tag->title;
-        $obj->position = $tag->position;
+        $obj->position = IntVal($tag->position);
         
         return $obj;
     }

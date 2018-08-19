@@ -4,6 +4,7 @@ namespace app\controllers\admin;
 
 use app\components\ZipWriter;
 use app\models\db\User;
+use app\models\exceptions\Access;
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
 use app\models\settings\AntragsgruenApp;
@@ -414,6 +415,54 @@ class MotionListController extends AdminBase
      */
     public function actionAjax()
     {
-        die("!");
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        try {
+            $success = true;
+            $error   = null;
+            $msg     = [];
+
+            $privilegeScreening = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+            $privilegeProposals = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+            if (!($privilegeScreening || $privilegeProposals)) {
+                throw new Access(\Yii::t('admin', 'no_acccess'));
+            }
+
+            switch (\Yii::$app->request->post('operation')) {
+                case 'motionScreen':
+                    if (!$privilegeScreening) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('motionId') as $motionId) {
+                        $motion = $this->consultation->getMotion($motionId);
+                        $motion->setScreened();
+                        $msg[] = 'Screened: ' . $motion->getTitleWithPrefix();
+                    }
+                    break;
+                case 'motionUnscreen':
+                    if (!$privilegeScreening) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('motionId') as $motionId) {
+                        $motion = $this->consultation->getMotion($motionId);
+                        $motion->setUnscreened();
+                        $msg[] = 'Unscreened: ' . $motion->getTitleWithPrefix();
+                    }
+                    break;
+            }
+
+            return json_encode([
+                'success'  => $success,
+                'error'    => $error,
+                'messages' => $msg,
+            ]);
+        } catch (\Exception $e) {
+            return json_encode([
+                'success'  => false,
+                'error'    => $e->getMessage(),
+                'messages' => null,
+            ]);
+        }
     }
 }
