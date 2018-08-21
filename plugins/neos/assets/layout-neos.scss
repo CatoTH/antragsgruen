@@ -45,7 +45,7 @@ $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(200, 200, 200);
 
 $headingFontUppercase: true;
-$headingFontBold: 800;
+$headingFontBold: 700;
 $headingTextShadow: false;
 $headingFontItalic: true;
 $headingFontLineHeight: 16px;
@@ -69,7 +69,7 @@ $bodyFont: "Montserrat", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-s
 $deadlineCircleFont: "Montserrat", sans-serif;
 $buttonFont: "Montserrat", sans-serif;
 $btn-border-radius-base: 0;
-$btn-font-weight: 800;
+$btn-font-weight: 700;
 
 .btn {
   font-style: italic;
@@ -186,7 +186,7 @@ body.consultationIndex {
   h2 {
     font-size: 27px;
     font-family: "Montserrat", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 800;
+    font-weight: 700;
     font-style: italic;
     background-color: $colorMagenta;
     color: white;
