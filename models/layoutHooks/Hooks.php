@@ -32,6 +32,12 @@ interface Hooks
      * @param $before
      * @return string
      */
+    public function favicons($before);
+
+    /**
+     * @param $before
+     * @return string
+     */
     public function beforeContent($before);
 
     /**

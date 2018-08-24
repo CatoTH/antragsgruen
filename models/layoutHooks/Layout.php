@@ -58,6 +58,14 @@ class Layout
     /**
      * @return string
      */
+    public static function favicons()
+    {
+        return static::callHook('favicons');
+    }
+
+    /**
+     * @return string
+     */
     public static function logoRow()
     {
         return static::callHook('logoRow');

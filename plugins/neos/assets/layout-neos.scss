@@ -172,13 +172,32 @@ body.consultationIndex {
 
 .logoImg {
   display: block;
-  width: 312px;
-  height: 98px;
+  width: 300px;
+  height: 92px;
   background-image: url("./neos-antragsschmiede.png");
+  background-size: 300px 92px;
   body.consultationIndex & {
-    width: 400px;
-    height: 205px;
+    width: 200px;
+    height: 51.5px;
     background-image: url("./neos-logo.png");
+    background-size: 200px 51.5px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  #mainmenu {
+    padding-left: 320px;
+    .container {
+      width: auto;
+      padding: 0;
+      margin: 0;
+    }
+  }
+  .logo {
+    width: 300px;
+    margin-top: -30px;
+    margin-bottom: 60px;
+    
   }
 }
 

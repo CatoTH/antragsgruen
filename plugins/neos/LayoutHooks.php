@@ -57,4 +57,24 @@ class LayoutHooks extends HooksAdapter
 
         return $out;
     }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function favicons($before)
+    {
+        $baseUrl = Html::encode(Assets::$myBaseUrl);
+
+        return '
+<link rel="apple-touch-icon" sizes="180x180" href="' . $baseUrl . '/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="' . $baseUrl . '/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="' . $baseUrl . '/favicon-16x16.png">
+<link rel="manifest" href="' . $baseUrl . '/site.webmanifest">
+<link rel="mask-icon" href="' . $baseUrl . '/safari-pinned-tab.svg" color="#ffed00">
+<meta name="msapplication-TileColor" content="#ffed00">
+<meta name="msapplication-TileImage" content="' . $baseUrl . '/mstile-150x150.png">
+<meta name="theme-color" content="#ffffff">';
+    }
 }
