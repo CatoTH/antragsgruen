@@ -94,11 +94,11 @@ class Image extends ISectionType
         if ($app->imageMagickPath === null) {
             return file_get_contents($filename);
         } elseif (!file_exists($app->imageMagickPath)) {
-            throw new Internal("ImageMagick not correctly set up");
+            throw new Internal('ImageMagick not correctly set up');
         }
 
         $tmpfile = $app->tmpDir . uniqid('image-conv-') . "." . $targetType;
-        exec($app->imageMagickPath . " -strip " . escapeshellarg($filename) . " " . escapeshellarg($tmpfile));
+        exec($app->imageMagickPath . ' -strip ' . escapeshellarg($filename) . ' ' . escapeshellarg($tmpfile));
         $converted = (file_exists($tmpfile) ? file_get_contents($tmpfile) : '');
         unlink($tmpfile);
         return $converted;
@@ -179,7 +179,8 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $type    = $section->getSettings();
-        $str     = '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . Html::encode($type->title) . '">';
+        $url     = $this->getImageUrl($this->absolutizeLinks);
+        $str = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
 
@@ -255,7 +256,7 @@ class Image extends ISectionType
      */
     public function getMotionPlainText()
     {
-        return '[BILD]';
+        return '[IMAGE]';
     }
 
     /**
@@ -263,13 +264,14 @@ class Image extends ISectionType
      */
     public function getAmendmentPlainText()
     {
-        return '[BILD]';
+        return '[IMAGE]';
     }
 
     /**
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -293,9 +295,9 @@ class Image extends ISectionType
     public function printAmendmentTeX($isRight, Content $content)
     {
         if ($isRight) {
-            $content->textRight .= '[BILD]';
+            $content->textRight .= '[IMAGE]';
         } else {
-            $content->textMain .= '[BILD]';
+            $content->textMain .= '[IMAGE]';
         }
     }
 
@@ -304,7 +306,7 @@ class Image extends ISectionType
      */
     public function getMotionODS()
     {
-        return '<p>[BILD]</p>';
+        return '<p>[IMAGE]</p>';
     }
 
     /**
@@ -312,7 +314,7 @@ class Image extends ISectionType
      */
     public function getAmendmentODS()
     {
-        return '<p>[BILD]</p>';
+        return '<p>[IMAGE]</p>';
     }
 
     /**
@@ -321,7 +323,7 @@ class Image extends ISectionType
     public function printMotionToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false);
+        $odt->addHtmlTextBlock('[IMAGE]', false);
     }
 
     /**
@@ -330,7 +332,7 @@ class Image extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false);
+        $odt->addHtmlTextBlock('[IMAGE]', false);
     }
 
     /**

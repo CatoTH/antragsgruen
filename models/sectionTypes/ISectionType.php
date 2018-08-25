@@ -26,6 +26,8 @@ abstract class ISectionType
     /** @var IMotionSection */
     protected $section;
 
+    protected $absolutizeLinks = false;
+
     /**
      * @param IMotionSection $section
      */
@@ -47,6 +49,14 @@ abstract class ISectionType
             static::TYPE_TABULAR     => \yii::t('structure', 'section_tabular'),
             static::TYPE_PDF         => \yii::t('structure', 'section_pdf'),
         ];
+    }
+
+    /**
+     * @param boolean $absolutize
+     */
+    public function setAbsolutizeLinks($absolutize)
+    {
+        $this->absolutizeLinks = $absolutize;
     }
 
     /**
