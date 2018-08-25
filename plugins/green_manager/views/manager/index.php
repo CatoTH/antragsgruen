@@ -32,13 +32,19 @@ $params = \Yii::$app->params;
 </h1>
 
 <div class="content infoSite">
-    <p>Discuss.green offers a clear and efficient tool for the effective administration of motions, amendments
-        and candidacies: from submission to administration and print template.</p>
+    <p>
+        Discuss.green offers a clear and efficient tool for the administration of motions, amendments and candidacies,
+        specifically designed for party conventions and congresses.
+    </p>
 
-    <p>It has been created for managing both national and regional congresses of the German Greens
-        and is by now used by a variety of organizations within and beyond the green party.</p>
+    <p>
+        It has been created for managing both national and regional congresses of the German Greens
+        and is by now used by a variety of organizations within and beyond the green party.
+    </p>
 
-    <p>It's available as open source and we provide free hosting for all green parties in Europe. </p>
+    <p>
+        It's available as open source and we provide free hosting for all green parties in Europe.
+    </p>
 </div>
 
 
@@ -48,7 +54,7 @@ $params = \Yii::$app->params;
         <a href="https://antraege.gruene.de/bdk41" target="_blank">
             <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
             <div class="name">Bündnis 90 / Die GRÜNEN</div>
-            <div class="hint">Federal Association</div>
+            <div class="hint">Federal Convention</div>
         </a>
         <a href="http://amend.fyeg.org/web/" target="_blank">
             <img src="<?= $assets->baseUrl ?>/logo-fyeg.png" alt="Federation of Young European Greens">
@@ -119,9 +125,11 @@ $params = \Yii::$app->params;
 <h2 id="create_version" class="green">Use it</h2>
 <div class="content">
     <p>Discuss.green / Antragsgrün is open source software and can be installed on any web server that supports PHP and MySQL.</p>
-    <p>For european green parties, we provide <strong>free hosting</strong> of sites on this domain.
+    <p>
+        For european green parties, we provide <strong>free hosting</strong> of sites on this domain.
         You can start using or evaluating this tool by answering a couple of questions about your use case and providing
-        a valid e-mail-address. Creating your own instance only takes two minutes.</p>
+        a valid e-mail-address. Creating your own instance only takes two minutes.
+    </p>
 
     <div class="downloadCreate">
         <div>
@@ -137,7 +145,14 @@ $params = \Yii::$app->params;
     <p>
         <strong>About internationalization:</strong> We provide an english and german version,
         as well as a nearly-completele french version. If you are interested in helping translate this tool
-        in other languages, please contact us.</p>
+        in other languages, please contact us.
+    </p>
+    <p>
+        <a href="<?= Html::encode(UrlHelper::createUrl('manager/free-hosting')) ?>">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            Details / F.A.Q. regarding the free hosting
+        </a>
+    </p>
 </div>
 
 <h2 id="contact" class="green">Contact</h2>

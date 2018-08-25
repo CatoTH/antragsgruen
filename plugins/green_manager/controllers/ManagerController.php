@@ -174,6 +174,14 @@ class ManagerController extends Base
 
     /**
      * @return string
+     */
+    public function actionFreeHosting()
+    {
+        return $this->render('free_hosting_faq');
+    }
+
+    /**
+     * @return string
      * @throws \app\models\exceptions\Internal
      */
     public function actionLegal()

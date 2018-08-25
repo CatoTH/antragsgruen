@@ -32,6 +32,9 @@ class LayoutHooks extends HooksAdapter
         $helpLink = UrlHelper::createUrl('/green_manager/manager/help');
         $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
 
+        $faqLink = UrlHelper::createUrl('/green_manager/manager/free-hosting');
+        $out      .= '<li>' . Html::a('FAQ', $faqLink, ['id' => 'freeHostingLink']) . '</li>';
+
         if (!User::getCurrentUser()) {
             $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \yii::$app->request->url]);
             $loginTitle = \Yii::t('base', 'menu_login');

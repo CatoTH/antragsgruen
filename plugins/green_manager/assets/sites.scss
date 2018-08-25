@@ -19,7 +19,7 @@
   }
 }
 
-.managerHelpPage {
+.managerHelpPage, .freeHostingPage {
   .well &.content {
     padding: 15px 40px 30px;
   }
@@ -90,7 +90,7 @@
   }
 }
 
-.manager_index, .manager_create, .manager_created, .manager_help {
+.manager_index, .manager_create, .manager_created, .manager_help, .manager_faq {
   #page {
     max-width: 850px;
     width: auto;

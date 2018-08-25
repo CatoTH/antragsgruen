@@ -28,7 +28,7 @@ class Module extends ModuleBase
      */
     public static function getManagerUrlRoutes($domainPlain)
     {
-        $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy';
+        $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy|free-hosting';
         return [
             $domainPlain                                    => 'green_manager/manager/index',
             $domainPlain . '/<_a:(' . $domPlainPaths . ')>' => 'green_manager/manager/<_a>',
