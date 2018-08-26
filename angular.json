@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "web/angular",
+            "outputPath": "web/angular/en",
             "index": "angular/index.html",
             "main": "angular/main.ts",
             "polyfills": "angular/polyfills.ts",
@@ -37,6 +37,34 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "de": {
+              "aot": true,
+              "outputPath": "web/angular/de/",
+              "i18nFile": "angular/locale/messages.de.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "de"
+            },
+            "production-de": {
+              "fileReplacements": [
+                {
+                  "replace": "angular/environments/environment.ts",
+                  "with": "angular/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "none",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "outputPath": "web/angular/de/",
+              "i18nFile": "angular/locale/messages.de.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "de"
             }
           }
         },
@@ -48,6 +76,9 @@
           "configurations": {
             "production": {
               "browserTarget": "antragsgruen:build:production"
+            },
+            "de": {
+              "browserTarget": "antragsgruen:build:de"
             }
           }
         },

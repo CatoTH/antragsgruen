@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="f61c6867295f3b53d23557021f2f4e0aa1d0b8fc" datatype="html">
+        <source>Type</source>
+        <target>Typ</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="68572de01b84c678be4bf8a27b990ecac2f41ce9" datatype="html">
+        <source>Code</source>
+        <target>Antragsnr.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="fdf7cbdc140d0aab0f0b6c06065a0fd448ed6a2e" datatype="html">
+        <source>Title</source>
+        <target>Titel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="81b97b8ea996ad1e4f9fca8415021850214884b1" datatype="html">
+        <source>Status</source>
+        <target>Status</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="f494bd31f095f6dcc656ce87ec2dcf07a2e9b30c" datatype="html">
+        <source>Initiators</source>
+        <target>Antragsteller*innen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="b4506f4293568f9789c037b601cf38ce768ccbf6" datatype="html">
+        <source>Topic</source>
+        <target>Thema</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5f19586aba912ec6eb123ec5ab609a3bcc073066" datatype="html">
+        <source>Export</source>
+        <target>Export</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1bd5e17c9582661e20763a7634ef07881e33bbd7" datatype="html">
+        <source>Action</source>
+        <target>Aktion</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

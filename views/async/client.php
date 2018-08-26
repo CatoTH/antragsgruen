@@ -6,7 +6,6 @@
  */
 
 use app\components\UrlHelper;
-use yii\helpers\Html;
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
@@ -28,8 +27,6 @@ $initData = json_encode([
     'motions'    => \app\async\models\Motion::getCollection($consultation),
     'amendments' => \app\async\models\Amendment::getCollection($consultation),
 ]);
-/** @var \app\models\settings\AntragsgruenApp $app */
-$app = \Yii::$app->params;
 
 $linkTemplates = json_encode([
     'motion/view'               => UrlHelper::createUrl(['/motion/view', 'motionSlug' => '_SLUG_']),
@@ -47,26 +44,12 @@ $linkTemplates = json_encode([
 ]);
 
 $params = [
-    'csrf-param'       => \Yii::$app->request->csrfParam,
-    'csrf-token'       => \Yii::$app->request->csrfToken,
     'ajax-backend'     => UrlHelper::createUrl('/admin/motion-list/ajax'),
     'link-templates'   => $linkTemplates,
     'init-collections' => $initData,
 ];
-if ($app->asyncConfig) {
-    $params['cookie']  = $_COOKIE['PHPSESSID'];
-    $params['ws-port'] = IntVal($app->asyncConfig['port-external']);
-}
-$paramsStr = implode(' ', array_map(function ($key) use ($params) {
-    return $key . '="' . Html::encode($params[$key]) . '"';
-}, array_keys($params)));
-
 
 ?>
 <div class="content">
-    <admin-index <?= $paramsStr ?>></admin-index>
-    <script type="text/javascript" src="/angular/runtime.js"></script>
-    <script type="text/javascript" src="/angular/polyfills.js"></script>
-    <script type="text/javascript" src="/angular/vendor.js"></script>
-    <script type="text/javascript" src="/angular/main.js"></script>
+    <?= \app\components\HTMLTools::getAngularComponent('admin-index', $params) ?>
 </div>
