@@ -16,4 +16,5 @@ node_modules/
 npm-debug.log
 /web/updates/
 /web/assets/*
+/web/angular/
 components/fpdi

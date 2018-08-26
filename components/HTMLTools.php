@@ -945,4 +945,42 @@ class HTMLTools
         }
         return $str;
     }
+
+    /**
+     * @param string $componentName
+     * @param string[] $params
+     * @return string
+     */
+    public static function getAngularComponent($componentName, $params = [])
+    {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+
+        if (UrlHelper::getCurrentConsultation()) {
+            $wordingBase = UrlHelper::getCurrentConsultation()->wordingBase;
+            $langs       = explode(',', $wordingBase);
+            $language    = explode('-', $langs[0])[0];
+        } else {
+            $language = $app->baseLanguage;
+        }
+
+        if ($app->asyncConfig) {
+            $params['cookie']  = $_COOKIE['PHPSESSID'];
+            $params['ws-port'] = IntVal($app->asyncConfig['port-external']);
+        }
+        $params['csrf-param'] = \Yii::$app->request->csrfParam;
+        $params['csrf-token'] = \Yii::$app->request->csrfToken;
+        $paramsStr            = implode(' ', array_map(function ($key) use ($params) {
+            return $key . '="' . Html::encode($params[$key]) . '"';
+        }, array_keys($params)));
+
+        $base = '/angular/' . $language . '/';
+        $html = '<' . $componentName . ' ' . $paramsStr . '></' . $componentName . '>';
+        $html .= '<script src="' . $base . 'runtime.js"></script>';
+        $html .= '<script src="' . $base . 'polyfills.js"></script>';
+        $html .= '<script src="' . $base . 'vendor.js"></script>';
+        $html .= '<script src="' . $base . 'main.js"></script>';
+
+        return $html;
+    }
 }

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\async\models\TransferrableChannelObject;
 use app\async\models\Userdata;
+use app\components\UrlHelper;
 use app\models\db\User;
 use yii\web\Response;
 
@@ -51,6 +52,9 @@ class AsyncController extends Base
      */
     public function actionClient()
     {
+        if (!$this->consultation) {
+            return $this->redirect(UrlHelper::homeUrl());
+        }
         if (!User::getCurrentUser()) {
             return $this->showErrorpage(401, 'please log in');
         }

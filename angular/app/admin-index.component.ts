@@ -1,4 +1,4 @@
-import {Component, ElementRef} from '@angular/core';
+import {Component, ElementRef, LOCALE_ID} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
@@ -39,6 +39,8 @@ export class AdminIndexComponent {
         let initData = JSON.parse(el.nativeElement.getAttribute('init-collections'));
         this.motionCollection.setElements(initData['motions']);
         this.amendmentCollection.setElements(initData['amendments']);
+
+        console.log(LOCALE_ID);
     }
 
     private initWebsocket(el: ElementRef) {
