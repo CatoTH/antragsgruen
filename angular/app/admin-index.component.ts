@@ -102,7 +102,7 @@ export class AdminIndexComponent {
         });
     }
 
-    public motionCreateFromTemplate(item: Motion, $event) {
+    public motionCreateTpl(item: Motion, $event) {
         $event.preventDefault();
     }
 
@@ -118,7 +118,7 @@ export class AdminIndexComponent {
         $event.preventDefault();
     }
 
-    public amendmentCreateFromTemplate(item: Amendment, $event) {
+    public amendmentCreateTpl(item: Amendment, $event) {
         $event.preventDefault();
     }
 

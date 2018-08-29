@@ -11,7 +11,8 @@
         "test:unit": "vendor/bin/codecept run unit",
         "watch": "gulp watch",
         "build": "gulp",
-        "angular": "ng build --configuration=production && ng build --configuration=production-de"
+        "angular": "ng build --configuration=production && ng build --configuration=production-de",
+        "angular:i18n": "ng xi18n"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "~0.6.5",
@@ -75,5 +76,5 @@
         "remove-trailing-separator": "^1.1.0",
         "rxjs": "^6.2.2",
         "zone.js": "^0.8.26"
-    }
+    },
 }

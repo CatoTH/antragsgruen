@@ -9,6 +9,7 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">5</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="68572de01b84c678be4bf8a27b990ecac2f41ce9" datatype="html">
         <source>Code</source>
@@ -17,6 +18,7 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">6</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="fdf7cbdc140d0aab0f0b6c06065a0fd448ed6a2e" datatype="html">
         <source>Title</source>
@@ -25,6 +27,7 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">7</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="81b97b8ea996ad1e4f9fca8415021850214884b1" datatype="html">
         <source>Status</source>
@@ -33,14 +36,16 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">8</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="f494bd31f095f6dcc656ce87ec2dcf07a2e9b30c" datatype="html">
         <source>Initiators</source>
-        <target>Antragsteller*innen</target>
+        <target>Initiator*innen</target>
         <context-group purpose="location">
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">9</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="b4506f4293568f9789c037b601cf38ce768ccbf6" datatype="html">
         <source>Topic</source>
@@ -49,6 +54,7 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">10</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="5f19586aba912ec6eb123ec5ab609a3bcc073066" datatype="html">
         <source>Export</source>
@@ -57,6 +63,7 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">11</context>
         </context-group>
+        <note priority="1" from="description">admin-index column header</note>
       </trans-unit>
       <trans-unit id="1bd5e17c9582661e20763a7634ef07881e33bbd7" datatype="html">
         <source>Action</source>
@@ -65,6 +72,134 @@
           <context context-type="sourcefile">app/admin-index.component.html</context>
           <context context-type="linenumber">12</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">94</context>
+        </context-group>
+        <note priority="1" from="description">admin-index column header</note>
+      </trans-unit>
+      <trans-unit id="c7607bb67cac8e466a6c35b966d43f9bf990e51a" datatype="html">
+        <source>Mot</source>
+        <target>A</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+        <note priority="1" from="description">admin-index motion indicator</note>
+      </trans-unit>
+      <trans-unit id="1ee4fc7202e3074fbac52c67b09e4346f3176abc" datatype="html">
+        <source>PDF</source>
+        <target>PDF</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">88</context>
+        </context-group>
+        <note priority="1" from="description">admin-index export</note>
+      </trans-unit>
+      <trans-unit id="434eaa9af80088614507c18971c6295f1f5f85b3" datatype="html">
+        <source>PDF + Amd.</source>
+        <target>PDF + ÄAs</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+        <note priority="1" from="description">admin-index export</note>
+      </trans-unit>
+      <trans-unit id="bfdec96564c3117af748a4ea8caf12e0c432c057" datatype="html">
+        <source>ODT</source>
+        <target>ODT</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">41</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+        <note priority="1" from="description">admin-index export</note>
+      </trans-unit>
+      <trans-unit id="153aa4062a72c2db19550f8f666631951d79af69" datatype="html">
+        <source>HTML</source>
+        <target>HTML</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+        <note priority="1" from="description">admin-index export</note>
+      </trans-unit>
+      <trans-unit id="9ddf964b8522432df2a1b0d61389fc448f6d0712" datatype="html">
+        <source>Screen</source>
+        <target>Freischalten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+        <note priority="1" from="description">admin-index action dropdown</note>
+      </trans-unit>
+      <trans-unit id="465d3a80aee57d63fa0915f8337f41aed135647c" datatype="html">
+        <source>Un-screen</source>
+        <target>Ent-Freischalten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+        <note priority="1" from="description">admin-index action dropdown</note>
+      </trans-unit>
+      <trans-unit id="4456ae7b2dd4f78cc4554984d17be32b85f8071d" datatype="html">
+        <source>Create a new motion based on this one</source>
+        <target>Neuer Antrag auf dieser Basis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+        <note priority="1" from="description">admin-index action dropdown</note>
+      </trans-unit>
+      <trans-unit id="826b25211922a1b46436589233cb6f1a163d89b7" datatype="html">
+        <source>Delete</source>
+        <target>Löschen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">67</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">112</context>
+        </context-group>
+        <note priority="1" from="description">admin-index action dropdown</note>
+      </trans-unit>
+      <trans-unit id="6b6aefbea2afe234a89dd88742efe3b9d53241f6" datatype="html">
+        <source>Amd</source>
+        <target>ÄA</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+        <note priority="1" from="description">admin-index amendment indicator</note>
+      </trans-unit>
+      <trans-unit id="a580203512a1d4ac16705e97a4d51f6709cdd69e" datatype="html">
+        <source>Create a new amendment based on this one</source>
+        <target>Neuer Änderungsantrag auf dieser Basis</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">app/admin-index.component.html</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+        <note priority="1" from="description">admin-index action dropdown</note>
       </trans-unit>
     </body>
   </file>
