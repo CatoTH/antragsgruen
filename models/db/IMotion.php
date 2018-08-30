@@ -273,7 +273,7 @@ abstract class IMotion extends ActiveRecord
     {
         $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
         $className = $behavior->getPermissionsClass();
-        return new $className;
+        return new $className();
     }
 
 

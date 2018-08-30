@@ -225,14 +225,14 @@ class Site extends ActiveRecord
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             $behavior = $pluginClass::getSiteSpecificBehavior($this);
             if ($behavior) {
-                return new $behavior;
+                return new $behavior();
             }
         }
 
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
         if (isset($params->siteBehaviorClasses[$this->id])) {
-            return new $params->siteBehaviorClasses[$this->id];
+            return new $params->siteBehaviorClasses[$this->id]();
         }
 
         return new DefaultBehavior();

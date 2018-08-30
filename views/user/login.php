@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\forms\LoginUsernamePasswordForm;
-use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
 
@@ -108,7 +107,6 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
 
     echo '</div>
     </section>';
-
 }
 
 

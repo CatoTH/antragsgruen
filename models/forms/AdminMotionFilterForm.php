@@ -608,7 +608,6 @@ class AdminMotionFilterForm extends Model
         if (!$foundMyself && $this->status !== null) {
             $statusNames          = Motion::getStatusNames();
             $stati[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
-
         }
         $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status, [], true);
         $str .= '</label>';

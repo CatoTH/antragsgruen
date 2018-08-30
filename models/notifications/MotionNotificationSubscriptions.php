@@ -2,7 +2,6 @@
 
 namespace app\models\notifications;
 
-use app\components\UrlHelper;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\User;

@@ -270,6 +270,7 @@ class TabularData extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -332,7 +333,6 @@ class TabularData extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printMotionToODT(Text $odt)
     {
@@ -342,7 +342,6 @@ class TabularData extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printAmendmentToODT(Text $odt)
     {

@@ -21,7 +21,7 @@ class BDKPDF extends TcpdfFpdi
     /**
      * rewrite AddPage() for correct functionalities with PDF Concatenation
      */
-    public function AddPage ($orientation = PDF_PAGE_ORIENTATION, $format = PDF_PAGE_FORMAT, $keepmargins = false, $tocpage = false, $footer = true) {
+    public function AddPage($orientation = PDF_PAGE_ORIENTATION, $format = PDF_PAGE_FORMAT, $keepmargins = false, $tocpage = false, $footer = true) {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }

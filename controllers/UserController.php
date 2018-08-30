@@ -7,7 +7,6 @@ use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
 use app\models\db\AmendmentSupporter;
 use app\models\db\EMailBlacklist;
-use app\models\db\IMotion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\UserNotification;

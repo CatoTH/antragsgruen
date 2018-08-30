@@ -32,7 +32,6 @@ foreach ($motion->getSortedSections(false) as $section) {
         }
         echo '" id="' . $htmlId . '">' . Html::encode($section->data);
         echo '</div></div>';
-
     } elseif ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         /** @var TextSimple $simpleSection */
         $simpleSection = $section->getSectionType();

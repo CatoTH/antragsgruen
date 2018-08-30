@@ -3,7 +3,6 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\components\Tools;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
 

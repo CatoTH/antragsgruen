@@ -2,7 +2,6 @@
 
 namespace app\models\forms;
 
-use app\models\db\ConsultationSettingsTag;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\exceptions\Internal;

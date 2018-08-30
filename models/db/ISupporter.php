@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use yii\helpers\Html;
 
 /**
+ * @property int $id
  * @property int $position
  * @property int $userId
  * @property string $role
