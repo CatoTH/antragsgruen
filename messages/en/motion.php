@@ -117,6 +117,7 @@ return [
     'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'submitted_adminnoti_title' => 'Motion withdrawn',
     'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+    'max_size_hint'             => 'Max. %MB% MB',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .

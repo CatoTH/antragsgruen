@@ -7,7 +7,6 @@ use app\models\exceptions\Internal;
 
 class Tools
 {
-
     /**
      * @param string $input
      * @return int
@@ -372,5 +371,46 @@ class Tools
             }
         }
         return implode("\n", $errorStrs);
+    }
+
+    /**
+     * @param string $size
+     * @return int
+     */
+    private static function parsePhpSize($size)
+    {
+        if (is_numeric($size)) {
+            return $size;
+        } else {
+            $value_length = strlen($size);
+            $qty          = substr($size, 0, $value_length - 1);
+            $unit         = strtolower(substr($size, $value_length - 1));
+            switch ($unit) {
+                case 'k':
+                    $qty *= 1024;
+                    break;
+                case 'm':
+                    $qty *= 1048576;
+                    break;
+                case 'g':
+                    $qty *= 1073741824;
+                    break;
+            }
+            return $qty;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public static function getMaxUploadSize()
+    {
+        $post_max_size = static::parsePhpSize(ini_get('post_max_size'));
+        $upload_size   = static::parsePhpSize(ini_get('upload_max_filesize'));
+        if ($upload_size < $post_max_size) {
+            return $upload_size;
+        } else {
+            return $post_max_size;
+        }
     }
 }

@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\MotionSection;
@@ -62,9 +63,14 @@ class Image extends ISectionType
             $required = ($type->required ? 'required' : '');
         }
         $str .= '<div class="form-group" style="overflow: auto;">';
-        $str .= '
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
+        $str .= '<label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+
+        $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
+        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+        $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
+        $str     .= '</div>';
+
+        $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
             ' name="sections[' . $type->id . ']">
         </div>';
         if ($url) {
@@ -180,7 +186,7 @@ class Image extends ISectionType
         $section = $this->section;
         $type    = $section->getSettings();
         $url     = $this->getImageUrl($this->absolutizeLinks);
-        $str = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
+        $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
 

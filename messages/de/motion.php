@@ -136,6 +136,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'withdraw_yes'                       => 'Zurückziehen',
     'withdrawn_adminnoti_title'          => 'Antrag zurückgezogen',
     'withdrawn_adminnoti_body'           => "Es wurde ein Antrag zurückgezogen.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
+    'max_size_hint'                      => 'Max. %MB% MB',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',
     'create_explanation'                 => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.

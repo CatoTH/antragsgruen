@@ -30,6 +30,7 @@
 - Improve compatibility with reverse proxies.
 - The default consultation path is not "std12345678" (random number) anymore, bust simply "std".
 - When creating a motion and it is not clear what agenda item it should belong to, the agenda item can now be set from the motion creation form.
+- Image and PDF upload fields in motions / applications now show the maximum file size.
 - Bugfix: Improved compatibility with servers that do not support URL rewriting ("pretty" URLs).
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
