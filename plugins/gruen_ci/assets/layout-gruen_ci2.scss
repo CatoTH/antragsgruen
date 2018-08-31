@@ -8,6 +8,9 @@ $arvoFontPath: "./";
 $ptSansFontPath: "./";
 @import "ptsans";
 
+$container-md: 1044px;
+$screen-md-min: 1044px;
+
 $contentBorderRadius: 0;
 
 $colorLinksLight: #6d7e00;
@@ -258,7 +261,7 @@ footer.footer {
 
 @media (min-width: $screen-md) {
   main.col-md-9 {
-    width: 750px;
+    width: 770px;
   }
   aside.col-md-3 {
     width: 274px;
