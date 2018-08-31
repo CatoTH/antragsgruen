@@ -46,6 +46,30 @@ $iframe    = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"><
     <section class="pdfVersion" data-src="<?= Html::encode($iframe) ?>"></section>
 <?php
 
+?>
+    <section class="toolbarBelowTitle versionSwitchtoolbar" data-antragsgruen-widget="frontend/MotionCreateConfirm">
+        <div class="styleSwitcher">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <input type="radio" name="viewMode" value="web" autocomplete="off" checked>
+                    <?= \Yii::t('motion', 'confirm_view_web') ?>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="viewMode" value="pdf" autocomplete="off">
+                    <?= \Yii::t('motion', 'confirm_view_pdf') ?>
+                </label>
+            </div>
+        </div>
+    </section>
+
+<?php
+$pdfUrl    = \app\components\UrlHelper::createMotionUrl($motion, 'pdf');
+$iframeUrl = UrlHelper::createMotionUrl($motion, 'embeddedpdf', ['file' => $pdfUrl]);
+$iframe    = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+?>
+    <section class="pdfVersion" data-src="<?= Html::encode($iframe) ?>"></section>
+<?php
+
 $main = $right = '';
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
