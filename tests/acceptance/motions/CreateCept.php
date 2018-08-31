@@ -28,6 +28,8 @@ $I->selectOption('#personTypeOrga', \app\models\db\ISupporter::PERSON_ORGANIZATI
 $I->dontSee('Gremium, LAG...');
 $I->see('Beschlussdatum');
 $I->see('Ansprechperson');
+$I->seeElement('#section_holder_3 label.optional');
+$I->seeElement('#section_holder_2 label.required');
 
 // Fill & Submit Form
 $I->wantTo('create a regular motion, but forgot the organization and resolution date');

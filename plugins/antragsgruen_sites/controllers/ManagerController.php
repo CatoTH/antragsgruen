@@ -15,6 +15,7 @@ use app\models\db\User;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
+use app\models\settings\Consultation;
 use yii\helpers\Html;
 use yii\web\Response;
 
@@ -32,13 +33,21 @@ class ManagerController extends Base
             if ($site->status !== Site::STATUS_ACTIVE) {
                 continue;
             }
+            if (!$site->currentConsultation) {
+                continue;
+            }
+            $consultation = $site->currentConsultation;
+            if ($consultation->getSettings()->robotsPolicy === Consultation::ROBOTS_NONE) {
+                continue;
+            }
+            
             $url      = UrlHelper::createUrl(['/consultation/home', 'subdomain' => $site->subdomain]);
             $siteData = [
-                'title'        => ($site->currentConsultation ? $site->currentConsultation->title : $site->title),
+                'title'        => $consultation->title,
                 'organization' => $site->organization,
                 'url'          => $url,
             ];
-            $age      = time() - Tools::dateSql2timestamp($site->currentConsultation->dateCreation);
+            $age      = time() - Tools::dateSql2timestamp($consultation->dateCreation);
             if ($age < 4 * 30 * 24 * 3600) {
                 $sitesCurrent[] = $siteData;
             } else {
