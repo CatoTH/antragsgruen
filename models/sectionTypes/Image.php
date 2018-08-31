@@ -285,6 +285,19 @@ class Image extends ISectionType
         $params       = \Yii::$app->params;
         $filenameBase = uniqid('motion-pdf-image');
 
+        $metadata = json_decode($this->section->metadata, true);
+        switch ($metadata['mime']) {
+            case 'image/png':
+                $filenameBase .= '.png';
+                break;
+            case 'image/jpg':
+            case 'image/jpeg':
+                $filenameBase .= '.jpg';
+                break;
+            case 'image/gif':
+                $filenameBase .= '.gif';
+        }
+
         $content->imageData[$filenameBase] = base64_decode($this->section->data);
         if ($isRight) {
             $content->textRight .= '\includegraphics[width=4cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";

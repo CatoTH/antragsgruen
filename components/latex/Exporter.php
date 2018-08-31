@@ -427,7 +427,7 @@ class Exporter
             }
             $contentStr .= static::createContentString($content);
             foreach ($content->imageData as $fileName => $fileData) {
-                if (preg_match('/[^a-z0-9_-]/siu', $fileName)) {
+                if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
                     throw new Internal('Invalid image filename');
                 }
                 file_put_contents($this->app->tmpDir . $fileName, $fileData);
