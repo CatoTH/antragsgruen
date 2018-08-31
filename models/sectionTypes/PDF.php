@@ -62,7 +62,7 @@ class PDF extends ISectionType
             $required = ($type->required ? 'required' : '');
         }
         $str .= '<div class="form-group" style="overflow: auto;">';
-        $str .= '<label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+        $str .= $this->getFormLabel();
 
         $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';

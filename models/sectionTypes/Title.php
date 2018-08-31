@@ -22,8 +22,8 @@ class Title extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->getSettings();
-        $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+        $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">';
+        $str .= $this->getFormLabel();
 
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);

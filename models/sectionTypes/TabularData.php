@@ -5,7 +5,6 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\models\db\Consultation;
-use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
@@ -52,7 +51,6 @@ class TabularData extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setMotionData($data)
     {
@@ -74,7 +72,6 @@ class TabularData extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setAmendmentData($data)
     {

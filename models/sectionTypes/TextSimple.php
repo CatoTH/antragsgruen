@@ -14,15 +14,14 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\MotionSection;
-use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
 use yii\web\View;
-use CatoTH\HTML2OpenDocument\Text;
+use CatoTH\HTML2OpenDocument\Text as ODTText;
 
-class TextSimple extends ISectionType
+class TextSimple extends Text
 {
     private $forceMultipleParagraphs = null;
 
@@ -135,7 +134,6 @@ class TextSimple extends ISectionType
 
     /**
      * @param $data
-     * @throws FormError
      */
     public function setMotionData($data)
     {
@@ -146,8 +144,7 @@ class TextSimple extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
-     * @throws \app\models\exceptions\Internal
+s     * @throws \app\models\exceptions\Internal
      */
     public function setAmendmentData($data)
     {
@@ -748,11 +745,11 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param Text $odt
+     * @param ODTText $odt
      * @return void
      * @throws \app\models\exceptions\Internal
      */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(ODTText $odt)
     {
         if ($this->isEmpty()) {
             return;
@@ -792,11 +789,11 @@ class TextSimple extends ISectionType
     }
 
     /**
-     * @param Text $odt
+     * @param ODTText $odt
      * @return void
      * @throws \app\models\exceptions\Internal
      */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(ODTText $odt)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
