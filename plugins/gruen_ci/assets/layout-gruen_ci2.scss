@@ -1,15 +1,15 @@
 @charset "UTF-8";
 
 $icon-font-path: "../../fonts/";
+$container-md: 1044px; // Should be enough space for 92 characters
+$screen-md-min: 1044px;
+$screen-md: 1044;
 @import "../../../web/css/variables";
 
 $arvoFontPath: "./";
 @import "arvo";
 $ptSansFontPath: "./";
 @import "ptsans";
-
-$container-md: 1044px;
-$screen-md-min: 1044px;
 
 $contentBorderRadius: 0;
 
@@ -259,7 +259,7 @@ footer.footer {
   box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
 
-@media (min-width: $screen-md) {
+@media (min-width: $screen-md-min) {
   main.col-md-9 {
     width: 770px;
   }
