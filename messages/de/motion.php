@@ -5,6 +5,8 @@ return [
     'Edit Motion'                        => 'Antrag bearbeiten',
     'Confirm Motion'                     => 'Antrag bestätigen',
     'confirm_bread'                      => 'Bestätigen',
+    'confirm_view_web'                   => 'Web-Fassung',
+    'confirm_view_pdf'                   => 'Druckfassung',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
     'amendment_create_admin'             => 'Admin',

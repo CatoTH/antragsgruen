@@ -67,7 +67,7 @@ if ($supportCollectingStatus) {
     } else {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
 
-        if ($motion->motionType->policySupportMotions != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+        if ($motion->motionType->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
             echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
             echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -134,7 +134,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($sectionType != ISectionType::TYPE_PDF && $sectionType != ISectionType::TYPE_IMAGE) {
+        if ($sectionType !== ISectionType::TYPE_PDF && $sectionType !== ISectionType::TYPE_IMAGE) {
             $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         }
 
@@ -146,7 +146,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
 }
 
 
-if ($right == '') {
+if ($right === '') {
     echo $main;
 } else {
     echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
@@ -164,8 +164,8 @@ if ($right == '') {
                 <div class="input-group-addon"><?= \Yii::t('motion', 'goto_line') ?>:</div>
                 <input type="number" name="lineNumber" id="gotoLineNumber" class="form-control">
                 <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
-                    </span>
+                    <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
+                </span>
             </div>
         </div>
 

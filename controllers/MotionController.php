@@ -87,11 +87,12 @@ class MotionController extends Base
     }
 
     /**
+     * @param string $file
      * @return string
      */
-    public function actionEmbeddedpdf()
+    public function actionEmbeddedpdf($file)
     {
-        return $this->renderPartial('pdf_embed', []);
+        return $this->renderPartial('pdf_embed', ['file' => $file]);
     }
 
     /**

@@ -5,6 +5,8 @@ return [
     'Edit Motion'                   => 'Edit motion',
     'Confirm Motion'                => 'Confirm motion',
     'confirm_bread'                 => 'Confirm',
+    'confirm_view_web'              => 'Web version',
+    'confirm_view_pdf'              => 'PDF version',
     'Motion submitted'              => 'Motion submitted',
     'create_prerequisites'          => 'Requirements for a motion',
     'amendment_create'              => 'Create an amendment',

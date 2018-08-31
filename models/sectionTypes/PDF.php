@@ -154,7 +154,7 @@ class PDF extends ISectionType
      */
     public function isEmpty()
     {
-        return ($this->section->data == '');
+        return ($this->section->data === '');
     }
 
     /**

@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.1.0 [not released yet]
+
+- When creating a motion, the confirmation page now shows a preview of the generated PDF.
+
 ## Version 4.0.0 (2018-09-01)
 
 - Antragsgrün now includes an update mechanism to install new versions from the web interface.
