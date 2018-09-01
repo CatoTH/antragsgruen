@@ -142,7 +142,7 @@ class Title extends ISectionType
             return;
         }
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+        if ($section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 

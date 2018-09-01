@@ -223,7 +223,7 @@ class Image extends ISectionType
             return;
         }
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+        if ($this->section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 

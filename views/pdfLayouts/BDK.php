@@ -3,7 +3,6 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
-use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
@@ -99,7 +98,7 @@ class BDK extends IPDFLayout
         $amendmentData .= '<br><br>';
 
         $amendmentData .= '<table>';
-        $amendmentData .= '<tr><th style="width: 28%;">Antragsteller*innen:</th>';
+        $amendmentData .= '<tr><th style="width: 28%;">' . Html::encode(\Yii::t('motion', 'initiators_head')) . '</th>';
         $amendmentData .= '<td>' . Html::encode($amendment->getInitiatorsStr()) . '</td></tr>';
 
         $amendmentData .= '</table>';
@@ -107,15 +106,5 @@ class BDK extends IPDFLayout
         $pdf->writeHTMLCell(170, 0, 25, 35, $amendmentData, 1, 1, 0, true, 'L');
 
         $pdf->Ln(11);
-    }
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function isSkippingSectionTitles(IMotionSection $section)
-    {
-        return false;
     }
 }

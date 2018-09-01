@@ -144,7 +144,7 @@ class TextSimple extends Text
 
     /**
      * @param array $data
-s     * @throws \app\models\exceptions\Internal
+     * s     * @throws \app\models\exceptions\Internal
      */
     public function setAmendmentData($data)
     {
@@ -324,7 +324,7 @@ s     * @throws \app\models\exceptions\Internal
         /** @var MotionSection $section */
         $section = $this->section;
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+        if ($section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
@@ -396,7 +396,7 @@ s     * @throws \app\models\exceptions\Internal
         /** @var AmendmentSection $section */
         $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
-            if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            if ($section->getSettings()->printTitle) {
                 $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                 $pdf->ln(7);
             }
@@ -413,7 +413,7 @@ s     * @throws \app\models\exceptions\Internal
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
             if (count($diffGroups) > 0) {
-                if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+                if ($section->getSettings()->printTitle) {
                     $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                     $pdf->ln(7);
                 }
@@ -600,15 +600,16 @@ s     * @throws \app\models\exceptions\Internal
 
         $tex = '';
         /** @var MotionSection $section */
-        $section = $this->section;
+        $section  = $this->section;
+        $settings = $section->getSettings();
 
-        $hasLineNumbers = $section->getSettings()->lineNumbers;
+        $hasLineNumbers = $settings->lineNumbers;
         $lineLength     = ($hasLineNumbers ? $consultation->getSettings()->lineLength : 0);
-        $fixedWidth     = $section->getSettings()->fixedWidth;
+        $fixedWidth     = $settings->fixedWidth;
         $firstLine      = $section->getFirstLineNumber();
 
-        if ($consultation->site->getBehaviorClass()->showSectionIntroductionInPdf($section)) {
-            $title = Exporter::encodePlainString($section->getSettings()->title);
+        if ($settings->printTitle) {
+            $title = Exporter::encodePlainString($settings->title);
             if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
                 $title = $section->getMotion()->title;
             }

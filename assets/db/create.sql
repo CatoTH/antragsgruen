@@ -274,7 +274,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsMotionSection` (
   `lineNumbers`   TINYINT(4)   NOT NULL DEFAULT '0',
   `hasComments`   TINYINT(4)   NOT NULL,
   `hasAmendments` TINYINT(4)   NOT NULL DEFAULT '1',
-  `positionRight` SMALLINT(6)           DEFAULT '0'
+  `positionRight` SMALLINT(6)           DEFAULT '0',
+  `printTitle` TINYINT(4)   NOT NULL DEFAULT '1'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

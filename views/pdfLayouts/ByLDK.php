@@ -243,14 +243,4 @@ class ByLDK extends IPDFLayout
 
         return $pdf;
     }
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function isSkippingSectionTitles(IMotionSection $section)
-    {
-        return false;
-    }
 }

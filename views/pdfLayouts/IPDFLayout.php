@@ -104,10 +104,4 @@ abstract class IPDFLayout
      * @param Amendment $amendment
      */
     abstract public function printAmendmentHeader(Amendment $amendment);
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     */
-    abstract public function isSkippingSectionTitles(IMotionSection $section);
 }

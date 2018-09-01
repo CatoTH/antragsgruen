@@ -175,6 +175,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
     'prefix_new_code'                    => 'NEU',
     'comment_for'                        => 'Kommentar zu',
+    'share_facebook'                     => 'Bei Facebook teilen',
+    'share_twitter'                      => 'Bei Twitter teilen',
 
     'diff_bc'          => 'Änderungen',
     'diff_title'       => 'Änderungen von %FROM% zu %TO%',

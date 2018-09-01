@@ -1,4 +1,5 @@
 <?php
+
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
@@ -13,7 +14,7 @@ $sectionId = IntVal($section->id);
 if ($sectionId == 0) {
     $sectionId = '#NEW#';
 }
-$sectionName = 'sections[' . $sectionId . ']';
+$sName = 'sections[' . $sectionId . ']';
 
 ?>
 <li data-id="<?= $sectionId ?>" class="section<?= $sectionId ?>">
@@ -31,65 +32,74 @@ $sectionName = 'sections[' . $sectionId . ']';
                 $attribs['disabled'] = 'disabled';
             }
             echo Html::dropDownList(
-                $sectionName . '[type]',
+                $sName . '[type]',
                 $section->type,
                 ISectionType::getTypes(),
                 $attribs
             );
             ?>
-            <label class="sectionTitle"><span class="sr-only"><?=Yii::t('admin', 'motion_section_name')?></span>
-                <input type="text" name="<?= $sectionName ?>[title]" value="<?= Html::encode($section->title) ?>" required placeholder="Titel" class="form-control">
+            <label class="sectionTitle"><span class="sr-only"><?= Yii::t('admin', 'motion_section_name') ?></span>
+                <input type="text" name="<?= $sName ?>[title]" value="<?= Html::encode($section->title) ?>"
+                       required placeholder="Titel" class="form-control">
             </label>
 
         </div>
         <div class="bottomrow">
             <div class="positionRow">
-
                 <div><?= \Yii::t('admin', 'motion_type_pos') ?></div>
                 <label class="positionSection">
-                    <?= Html::radio($sectionName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
+                    <?= Html::radio($sName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
                     <?= \Yii::t('admin', 'motion_type_pos_left') ?>
                 </label><br>
                 <label class="positionSection">
-                    <?= Html::radio($sectionName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
-                    <?= \Yii::t('admin', 'motion_type_pos_right') ?></label><br>
+                    <?= Html::radio($sName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
+                    <?= \Yii::t('admin', 'motion_type_pos_right') ?>
+                </label><br>
 
+                <label class="printTitleSection">
+                    <?= Html::checkbox($sName . '[printTitle]', $section->printTitle, ['class' => 'fixedWidth']) ?>
+                    <?= \Yii::t('admin', 'motion_type_print_title') ?>
+                </label>
             </div>
             <div class="optionsRow">
 
                 <label class="fixedWidthLabel">
-                    <?= Html::checkbox($sectionName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']) ?>
+                    <?= Html::checkbox($sName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']) ?>
                     <?= Yii::t('admin', 'motion_section_fixed_width') ?>
                 </label>
 
                 <label class="requiredLabel">
-                    <?= Html::checkbox($sectionName . '[required]', $section->required, ['class' => 'required']) ?>
+                    <?= Html::checkbox($sName . '[required]', $section->required, ['class' => 'required']) ?>
                     <?= Yii::t('admin', 'motion_section_required') ?>
                 </label>
 
                 <label class="lineNumbersLabel">
-                    <?= Html::checkbox($sectionName . '[lineNumbers]', $section->lineNumbers, ['class' => 'lineNumbers']) ?>
+                    <?= Html::checkbox($sName . '[lineNumbers]', $section->lineNumbers, ['class' => 'lineNumbers']) ?>
                     <?= Yii::t('admin', 'motion_section_line_numbers') ?>
                 </label>
 
                 <label class="lineLength">
-                    <?= Html::checkbox($sectionName . '[maxLenSet]', ($section->maxLen != 0), ['class' => 'maxLenSet']) ?>
+                    <?= Html::checkbox($sName . '[maxLenSet]', ($section->maxLen != 0), ['class' => 'maxLenSet']) ?>
                     <?= Yii::t('admin', 'motion_section_limit') ?></label>
 
-                <label class="maxLenInput"><input type="number" min="1" name="<?=$sectionName?>[maxLenVal]" value="<?php
-                    if ($section->maxLen > 0) {
-                        echo $section->maxLen;
-                    }
-                    if ($section->maxLen < 0) {
-                        echo -1 * $section->maxLen;
-                    }
-                    ?>"> <?= Yii::t('admin', 'motion_section_chars') ?></label>
-
-                <label class="lineLengthSoft">
-                    <?= Html::checkbox($sectionName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoft']) ?>
-                    <?= Yii::t('admin', 'motion_section_limit_soft') ?>
+                <?php
+                $value = '';
+                if ($section->maxLen > 0) {
+                    $value = IntVal($section->maxLen);
+                }
+                if ($section->maxLen < 0) {
+                    $value = -1 * IntVal($section->maxLen);
+                }
+                ?>
+                <label class="maxLenInput">
+                    <input type="number" min="1" name="<?= $sName ?>[maxLenVal]" value="<?= $value ?>">
+                    <?= Yii::t('admin', 'motion_section_chars') ?>
                 </label>
 
+                <label class="lineLengthSoft">
+                    <?= Html::checkbox($sName . '[maxLenSoft]', ($section->maxLen < 0), ['class' => 'maxLenSoft']) ?>
+                    <?= Yii::t('admin', 'motion_section_limit_soft') ?>
+                </label>
             </div>
             <div class="commAmendRow">
 
@@ -99,7 +109,7 @@ $sectionName = 'sections[' . $sectionId . ']';
                     <label class="commentNone">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_NONE;
-                        echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val])
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val])
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_none') ?>
                     </label>
@@ -107,7 +117,7 @@ $sectionName = 'sections[' . $sectionId . ']';
                     <label class="commentSection">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_MOTION;
-                        echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_whole') ?>
                     </label>
@@ -115,7 +125,7 @@ $sectionName = 'sections[' . $sectionId . ']';
                     <label class="commentParagraph">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS;
-                        echo Html::radio($sectionName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_para') ?>
                     </label>
@@ -124,7 +134,7 @@ $sectionName = 'sections[' . $sectionId . ']';
 
                 <label class="amendmentRow">
                     <?= Html::checkbox(
-                        $sectionName . '[hasAmendments]',
+                        $sName . '[hasAmendments]',
                         ($section->hasAmendments == 1),
                         ['class' => 'hasAmendments']
                     ) ?>
@@ -132,7 +142,7 @@ $sectionName = 'sections[' . $sectionId . ']';
                 </label>
             </div>
         </div>
-        
+
         <?php
         /**
          * @param TabularDataType $row
@@ -164,22 +174,28 @@ $sectionName = 'sections[' . $sectionId . ']';
             <legend><?= Yii::t('admin', 'motion_section_tab_data') ?>:</legend>
             <ul>
                 <?php
-                if ($section->type == ISectionType::TYPE_TABULAR) {
+                if ($section->type === ISectionType::TYPE_TABULAR) {
                     $rows = \app\models\sectionTypes\TabularData::getTabularDataRowsFromData($section->data);
                     $i    = 0;
 
                     foreach ($rows as $rowId => $row) {
-                        echo $dataRowFormatter($row, $i++, $sectionName);
+                        echo $dataRowFormatter($row, $i++, $sName);
                     }
                 }
                 ?>
             </ul>
             <?php
-            $newRow   = new TabularDataType(['rowId' => '#NEWDATA#', 'type' => TabularDataType::TYPE_STRING, 'title' => '']);
-            $template = $dataRowFormatter($newRow, 0, $sectionName);
+            $newRow   = new TabularDataType([
+                'rowId' => '#NEWDATA#',
+                'type'  => TabularDataType::TYPE_STRING,
+                'title' => ''
+            ]);
+            $template = $dataRowFormatter($newRow, 0, $sName);
             ?>
             <a href="#" class="addRow" data-template="<?= Html::encode($template) ?>">
-                <span class="glyphicon glyphicon-plus-sign"></span> <?= Yii::t('admin', 'motion_section_add_line') ?></a>
+                <span class="glyphicon glyphicon-plus-sign"></span>
+                <?= Yii::t('admin', 'motion_section_add_line') ?>
+            </a>
         </div>
 
     </div>

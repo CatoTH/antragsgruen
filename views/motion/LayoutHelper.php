@@ -428,12 +428,14 @@ class LayoutHelper
         $facebook = Html::encode(
             'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
         );
+        $titleTwitter = Html::encode(\Yii::t('motion', 'share_twitter'));
+        $titleFacebook = Html::encode(\Yii::t('motion', 'share_facebook'));
         return '<div class="share_buttons"><ul>
-              <li class="twitter"><a href="' . $twitter . '" title="Bei Twitter teilen">
+              <li class="twitter"><a href="' . $twitter . '" title="' . $titleTwitter . '">
                  <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
               </a></li>
-              <li class="facebook"><a href="' . $facebook . '" title="Bei Facebook teilen">
-                  <span class="icon fontello-facebook"></span> <span class="share_text">teilen</span>
+              <li class="facebook"><a href="' . $facebook . '" title="' . $titleFacebook . '">
+                  <span class="icon fontello-facebook"></span> <span class="share_text">share</span>
               </a></li>
             </ul></div>';
     }
