@@ -1218,7 +1218,7 @@ ALTER TABLE `motionAdminComment`
 -- Constraints for table `motionComment`
 --
 ALTER TABLE `motionComment`
-  ADD CONSTRAINT `fk_motion_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `motioncomment` (`id`)
+  ADD CONSTRAINT `fk_motion_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `motionComment` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_motion_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
