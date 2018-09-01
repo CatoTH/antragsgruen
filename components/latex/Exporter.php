@@ -274,12 +274,14 @@ class Exporter
                     if (count($classes) == 0) {
                         return $content;
                     }
+                    /*
                     if (in_array('underline', $classes)) {
                         // $content = '\uline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
                         // $content = '\sout{' . $content . '}';
                     }
+                    */
                     if (in_array('ins', $classes)) {
                         //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
                         $content = '\textcolor{Insert}{' . $content . '}';

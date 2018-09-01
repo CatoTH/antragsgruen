@@ -8,11 +8,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Site;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
 use app\models\db\User;
-use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
 use app\models\settings\Consultation;
@@ -225,6 +221,4 @@ class ManagerController extends Base
     {
         return $this->renderContentPage('privacy');
     }
-
-
 }

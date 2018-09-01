@@ -21,6 +21,7 @@
     "ext-json": "*",
     "ext-fileinfo": "*",
     "ext-intl": "*",
+    "ext-curl": "*",
     "fxp/composer-asset-plugin": "~1.4.1",
     "yiisoft/yii2": "~2.0.15",
     "yiisoft/yii2-authclient": "^2.1.4",
