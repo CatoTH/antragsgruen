@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.0.0 [not released yet]
+## Version 4.0.0 (2018-09-01)
 
 - Antragsgrün now includes an update mechanism to install new versions from the web interface.
 - The comment system was improved:
