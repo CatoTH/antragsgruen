@@ -300,8 +300,8 @@ class Image extends ISectionType
 
         $content->imageData[$filenameBase] = base64_decode($this->section->data);
         if ($isRight) {
-            $content->textRight .= '\includegraphics[width=4cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";
-            $content->textRight .= '\newline' . "\n";
+            $content->textRight .= '\includegraphics[width=4.9cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";
+            $content->textRight .= '\newline' . "\n" . '\newline' . "\n";
         } else {
             $content->textMain .= '\includegraphics[width=10cm]{' . $params->tmpDir . $filenameBase . '}' . "\n";
         }
