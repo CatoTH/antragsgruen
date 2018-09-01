@@ -379,7 +379,7 @@ class Exporter
             ['\parbox{12.5cm}{\raggedright\begin{itemize}', '\end{itemize}}'],
             $textMain
         );
-        return '\begin{wrapfigure}{r}{0.23\textwidth}
+        return '\setlength{\columnsep}{15mm}' . "\n" . '\begin{wrapfigure}{r}{0.28\textwidth}\small
 \vspace{-0.5cm}
 ' . $textRight . '
 \end{wrapfigure}
