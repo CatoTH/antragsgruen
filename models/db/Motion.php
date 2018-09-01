@@ -979,22 +979,21 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @param bool $skipAgenda
      * @return array
      * @throws Internal
      */
-    public function getDataTable($skipAgenda = false)
+    public function getDataTable()
     {
         $return = [];
 
         $inits = $this->getInitiators();
-        if (count($inits) == 1) {
+        if (count($inits) === 1) {
             $first          = $inits[0];
             $resolutionDate = $first->resolutionDate;
-            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
+            if ($first->personType === MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;
                 $return[\Yii::t('export', 'ResolutionDate')]  = Tools::formatMysqlDate($resolutionDate, null, false);
-            } else {
+            } elseif (mb_stripos($this->title, $first->name) === false) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
         } else {
@@ -1004,7 +1003,7 @@ class Motion extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if ($this->agendaItem && !$skipAgenda) {
+        if ($this->agendaItem) {
             $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) .
                 ' ' . $this->agendaItem->title;
         }
@@ -1014,7 +1013,7 @@ class Motion extends IMotion implements IRSSItem
                 $tags[] = $tag->title;
             }
             $return[\Yii::t('export', 'TopicMulti')] = implode("\n", $tags);
-        } elseif (count($this->tags) == 1) {
+        } elseif (count($this->tags) === 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
         if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {

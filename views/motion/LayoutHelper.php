@@ -96,11 +96,7 @@ class LayoutHelper
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
-        if ($hasAgenda) {
-            $content->title = $motion->agendaItem->title;
-        } else {
-            $content->title = $motion->getTitleWithIntro();
-        }
+        $content->title = $motion->getTitleWithIntro();
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
