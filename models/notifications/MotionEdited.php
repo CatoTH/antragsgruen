@@ -28,7 +28,7 @@ class MotionEdited extends Base implements IEmailAdmin
     {
         $mailText = \Yii::t('motion', 'edit_mail_body');
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
-        return str_replace(['%TITLE%', '%LINK%'], [$this->motion->title, $motionLink], $mailText);
+        return str_replace(['%TITLE%', '%LINK%'], [$this->motion->getTitleWithIntro(), $motionLink], $mailText);
     }
 
     /**

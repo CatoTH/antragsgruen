@@ -306,26 +306,41 @@ class Motion extends IMotion implements IRSSItem
         return $query->all();
     }
 
+    /**
+     * @return string ("Application: John <Doe>")
+     */
+    public function getTitleWithIntro()
+    {
+        try {
+            $intro = $this->getMyMotionType()->getSettingsObj()->motionTitleIntro;
+        } catch (\Exception $e) {
+            $intro = '';
+        }
+        if (mb_strlen($intro) > 0 && mb_substr($intro, mb_strlen($intro) - 1, 1) !== ' ') {
+            $intro .= ' ';
+        }
+        return $intro . $this->title;
+    }
 
     /**
-     * @return string
+     * @return string ("A1: Application: John <Doe>")
      */
     public function getTitleWithPrefix()
     {
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
-            return $this->title;
+            return $this->getTitleWithIntro();
         }
 
         $name = $this->titlePrefix;
-        if (strlen($name) > 1 && !in_array($name[strlen($name) - 1], array(':', '.'))) {
+        if (mb_strlen($name) > 1 && !in_array(mb_substr($name, mb_strlen($name) - 1, 1), [':', '.'])) {
             $name .= ':';
         }
-        $name .= ' ' . $this->title;
+        $name .= ' ' . $this->getTitleWithIntro();
         return $name;
     }
 
     /**
-     * @return string
+     * @return string ("A1: Application: John &lt;Doe&gt;")
      */
     public function getEncodedTitleWithPrefix()
     {
@@ -337,7 +352,7 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
-     * @return string
+     * @return string ("A1new")
      */
     public function getNewTitlePrefix()
     {
@@ -370,7 +385,7 @@ class Motion extends IMotion implements IRSSItem
             if ($exclude && in_array($amendment, $exclude, true)) {
                 continue;
             }
-            if ($amendment->isVisibleForAdmins() && $amendment->status != Amendment::STATUS_DRAFT) {
+            if ($amendment->isVisibleForAdmins() && $amendment->status !== Amendment::STATUS_DRAFT) {
                 $amendments[] = $amendment;
             }
         }
@@ -425,7 +440,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
+            if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
                 return true;
             }
         }

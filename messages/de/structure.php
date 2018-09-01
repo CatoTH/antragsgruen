@@ -87,6 +87,7 @@ return [
     'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
     'preset_app_intro'     => 'Selbstvorstellung',
+    'preset_app_title_int' => 'Bewerbung: ',
 
     'preset_motion_singular' => 'Antrag',
     'preset_motion_plural'   => 'Anträge',

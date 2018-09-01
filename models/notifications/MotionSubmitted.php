@@ -31,7 +31,7 @@ class MotionSubmitted extends Base implements IEmailAdmin
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
         return str_replace(
             ['%TITLE%', '%LINK%', '%INITIATOR%'],
-            [$this->motion->title, $motionLink, $this->motion->getInitiatorsStr()],
+            [$this->motion->getTitleWithIntro(), $motionLink, $this->motion->getInitiatorsStr()],
             \Yii::t('motion', 'submitted_adminnoti_body')
         );
     }

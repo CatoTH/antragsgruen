@@ -7,9 +7,9 @@ class MotionType implements \JsonSerializable
     use JsonConfigTrait;
 
     /** @var string */
-    public $pdfIntroduction   = '';
-    public $cssIcon           = '';
-    public $motionTitlePrefix = '';
+    public $pdfIntroduction  = '';
+    public $cssIcon          = '';
+    public $motionTitleIntro = '';
 
     /** @var bool */
     public $layoutTwoCols = false;

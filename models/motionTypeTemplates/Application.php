@@ -43,6 +43,7 @@ trait Application
 
         $settings                = new MotionType(null);
         $settings->layoutTwoCols = 1;
+        $settings->motionTitleIntro = '';
         $type->setSettingsObj($settings);
 
         $type->save();

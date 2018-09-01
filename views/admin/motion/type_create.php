@@ -126,6 +126,18 @@ echo Html::beginForm('', 'post', [
 </div>
 
 <div class="form-group">
+    <label class="col-md-3 control-label" for="typeMotionPrefix">
+        <?= \Yii::t('admin', 'motion_type_title_prefix') ?>
+    </label>
+    <div class="col-md-2">
+        <?php
+        $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
+        echo Html::textInput('type[motionPrefix]', '', $options);
+        ?>
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-md-3 control-label" for="pdfLayout">
         <?= \Yii::t('admin', 'motion_type_pdf_layout') ?>
     </label>
@@ -150,18 +162,6 @@ echo Html::beginForm('', 'post', [
             }
             echo '</label>';
         }
-        ?>
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="col-md-3 control-label" for="typeMotionPrefix">
-        <?= \Yii::t('admin', 'motion_type_title_prefix') ?>
-    </label>
-    <div class="col-md-2">
-        <?php
-        $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
-        echo Html::textInput('type[motionPrefix]', '', $options);
         ?>
     </div>
 </div>

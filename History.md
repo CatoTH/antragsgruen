@@ -3,6 +3,7 @@
 ## Version 4.1.0 [not released yet]
 
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
+- Motion types can now force motion titles to have a certain beginning, like "Application: ".
 
 ## Version 4.0.0 (2018-09-01)
 

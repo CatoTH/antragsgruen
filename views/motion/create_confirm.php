@@ -20,7 +20,7 @@ $controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);
 $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'confirm_bread'));
 
-echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->title) . '</h1>';
+echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 
 ?>
     <section class="toolbarBelowTitle versionSwitchtoolbar" data-antragsgruen-widget="frontend/MotionCreateConfirm">

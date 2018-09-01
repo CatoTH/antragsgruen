@@ -38,13 +38,21 @@ $locale = Tools::getCurrentDateLocale();
 echo '<h1>' . \Yii::t('admin', 'motion_type_edit') . '</h1>';
 
 if ($supportCollPolicyWarning) {
-    echo '<div class="adminTypePolicyFix alert alert-info alert-dismissible" role="alert">
-<button type="button" class="close" data-dismiss="alert"
-aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
-        Html::beginForm('', 'post', ['id' => 'policyFixForm']) . \Yii::t('admin', 'support_coll_policy_warning') .
-        '<div class="saveholder"><button type="submit" name="supportCollPolicyFix" class="btn btn-primary">' .
-        \Yii::t('admin', 'support_coll_policy_fix') . '</button></div>' .
-        Html::endForm() . '</div>';
+    ?>
+    <div class="adminTypePolicyFix alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <?= Html::beginForm('', 'post', ['id' => 'policyFixForm']) ?>
+        <?= Yii::t('admin', 'support_coll_policy_warning') ?>
+        <div class="saveholder">
+            <button type="submit" name="supportCollPolicyFix" class="btn btn-primary">
+                <?= \Yii::t('admin', 'support_coll_policy_fix') ?>
+            </button>
+        </div>
+        <?= Html::endForm() ?>
+    </div>
+    <?php
 }
 
 echo Html::beginForm($myUrl, 'post', ['class' => 'adminTypeForm form-horizontal fuelux']);
@@ -120,6 +128,18 @@ echo $controller->showErrors();
             <?php
             $options = ['class' => 'form-control', 'id' => 'typeMotionPrefix', 'placeholder' => 'A'];
             echo Html::textInput('type[motionPrefix]', $motionType->motionPrefix, $options);
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="typeMotionIntro">
+            <?= \Yii::t('admin', 'motion_type_title_intro') ?>
+        </label>
+        <div class="col-md-8">
+            <?php
+            $options = ['class' => 'form-control', 'id' => 'typeMotionIntro'];
+            echo Html::textInput('type[typeMotionIntro]', $motionType->getSettingsObj()->motionTitleIntro, $options);
             ?>
         </div>
     </div>
@@ -260,8 +280,9 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
     <h3><?= \Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
 
     <div class="form-group">
-        <label class="col-sm-4 control-label" for="pdfIntroduction"><?= \Yii::t('admin', 'con_pdf_intro') ?>
-            :</label>
+        <label class="col-sm-4 control-label" for="pdfIntroduction">
+            <?= \Yii::t('admin', 'con_pdf_intro') ?>:
+        </label>
         <div class="col-sm-8">
         <textarea name="type[pdfIntroduction]" class="form-control" id="pdfIntroduction"
                   placeholder="<?= Html::encode(\Yii::t('admin', 'con_pdf_intro_place')) ?>"
@@ -298,27 +319,30 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
 
 echo '</div>';
 
-
-echo '<h2 class="green">' . \Yii::t('admin', 'motion_section_title') . '</h2>';
-echo '<div class="content">';
-
-
-echo '<ul id="sectionsList">';
-foreach ($motionType->motionSections as $section) {
-    echo $this->render('_type_sections', ['section' => $section]);
-}
-echo '</ul>';
-
-echo '<a href="#" class="sectionAdder"><span class="glyphicon glyphicon-plus-sign"></span> ' .
-    Yii::t('admin', 'motion_section_add') . '</a>';
-
-echo '<div class="submitRow"><button type="submit" name="save" class="btn btn-primary">' .
-    \Yii::t('base', 'save') . '</button></div>';
-
-echo '</div>';
-echo Html::endForm();
-
 ?>
+    <h2 class="green"><?= \Yii::t('admin', 'motion_section_title') ?></h2>
+    <div class="content">
+
+        <ul id="sectionsList">
+            <?php
+            foreach ($motionType->motionSections as $section) {
+                echo $this->render('_type_sections', ['section' => $section]);
+            }
+            ?>
+        </ul>
+
+        <a href="#" class="sectionAdder">
+            <span class="glyphicon glyphicon-plus-sign"></span>
+            <?= Yii::t('admin', 'motion_section_add') ?>
+        </a>
+
+        <div class="submitRow">
+            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('base', 'save') ?></button>
+        </div>
+    </div>
+
+<?= Html::endForm(); // adminTypeForm    ?>
+
     <ul style="display: none;" id="sectionTemplate">
         <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>
     </ul>
@@ -336,9 +360,14 @@ echo Html::endForm();
 echo Html::beginForm($myUrl, 'post', ['class' => 'deleteTypeForm hidden content']);
 
 if ($motionType->isDeletable()) {
-    echo '<div class="submitRow"><button type="submit" name="delete" class="btn btn-danger">';
-    echo '<span class="glyphicon glyphicon-trash"></span>';
-    echo \Yii::t('admin', 'motion_type_del_btn') . '</button></div>';
+    ?>
+    <div class="submitRow">
+        <button type="submit" name="delete" class="btn btn-danger">
+            <span class="glyphicon glyphicon-trash"></span>
+            <?= \Yii::t('admin', 'motion_type_del_btn') ?>
+        </button>
+    </div>
+    <?php
 } else {
     echo '<p class="notDeletable">' . \Yii::t('admin', 'motion_type_not_deletable') . '</p>';
 }

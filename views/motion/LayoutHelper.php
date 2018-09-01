@@ -99,7 +99,7 @@ class LayoutHelper
         if ($hasAgenda) {
             $content->title = $motion->agendaItem->title;
         } else {
-            $content->title = $motion->title;
+            $content->title = $motion->getTitleWithIntro();
         }
         if (count($intro) > 1) {
             array_shift($intro);
@@ -155,7 +155,7 @@ class LayoutHelper
         // PDFs should be attached at the end, to prevent collission with other parts of the motion text; see #242
         $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type == ISectionType::TYPE_PDF) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF) {
                 $pdfAttachments[] = $section;
             } else {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);

@@ -87,6 +87,7 @@ return [
     'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Place of birth',
     'preset_app_intro'     => 'Introduction',
+    'preset_app_title_int' => 'Application: ',
 
     'preset_motion_singular' => 'Motion',
     'preset_motion_plural'   => 'Motions',

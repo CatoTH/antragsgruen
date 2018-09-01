@@ -343,6 +343,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_create_placeh'   => 'Create a motion',
     'motion_type_pdf_layout'      => 'PDF layout',
     'motion_type_title_prefix'    => 'Signature prefix',
+    'motion_type_title_intro'     => 'Title prefix',
     'motion_type_created_msg'     => 'The motion type has bee created. You can configure it in more detail below.',
     'motion_type_del_caller'      => 'Delete motion type',
     'motion_type_del_btn'         => 'Delete',
