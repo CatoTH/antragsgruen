@@ -1141,23 +1141,23 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFormattedStatus()
     {
-        $statusesNames = Amendment::getStatusNames();
-        $status        = '';
+        $statusNames = Amendment::getStatusNames();
+        $status      = '';
         switch ($this->status) {
             case Amendment::STATUS_SUBMITTED_UNSCREENED:
             case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
-                $status = '<span class="unscreened">' . Html::encode($statusesNames[$this->status]) . '</span>';
+                $status = '<span class="unscreened">' . Html::encode($statusNames[$this->status]) . '</span>';
                 break;
             case Amendment::STATUS_SUBMITTED_SCREENED:
                 $status = '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
                 break;
             case Amendment::STATUS_COLLECTING_SUPPORTERS:
-                $status = Html::encode($statusesNames[$this->status]);
+                $status = Html::encode($statusNames[$this->status]);
                 $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
                 $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportAmendments] . ')</small>';
                 break;
             default:
-                $status .= Html::encode($statusesNames[$this->status]);
+                $status .= Html::encode($statusNames[$this->status]);
         }
         if (trim($this->statusString) != '') {
             $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
