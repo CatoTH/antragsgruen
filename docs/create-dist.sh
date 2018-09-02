@@ -42,6 +42,7 @@ rm config/DEBUG config/config.template.json
 rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml
 rm config/TEST_DOMAIN
 mv web/index-production.php web/index.php
+rm docs/create-dist.sh docs/create-update.php
 
 mkdir plugins
 cp ../../plugins/*php plugins/
