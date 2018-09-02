@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.0.1 [not released yet]
+### Version 4.0.1 (2018-09-02)
 
 - Bugfix: Motion comment tables were not created correctly when MySQL tables names are case-sensitive.
 
