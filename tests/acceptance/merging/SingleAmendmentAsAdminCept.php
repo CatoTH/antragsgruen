@@ -15,11 +15,11 @@ $I->executeJS('$("#amendmentStatus").selectlist("selectByValue", "6");');
 $I->executeJS('$("#otherAmendmentsStatus1").selectlist("selectByValue", "5");');
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
-$I->click('.checkAmendmentCollissions');
+$I->click('.checkAmendmentCollisions');
 $I->wait(1.5);
 
-$I->wantTo('see the collissions');
-$I->seeElement('.amendmentCollissionsHolder .alert-danger');
+$I->wantTo('see the collisions');
+$I->seeElement('.amendmentCollisionsHolder .alert-danger');
 $I->see('Wui helfgod Wiesn', 'del');
 $I->see('Alternatives Ende', 'ins');
 $I->submitForm('#amendmentMergeForm', [], 'save');
@@ -49,9 +49,9 @@ $I->wait(1);
 $I->executeJS('$(".modifySelector input").eq(1).click();');
 $I->executeJS('CKEDITOR.instances.new_paragraphs_2_7.setData(CKEDITOR.instances.new_paragraphs_2_7.getData() + "<p>A modified adaption</p>");');
 
-$I->click('.checkAmendmentCollissions');
+$I->click('.checkAmendmentCollisions');
 $I->wait(1);
-$I->seeElement('.amendmentCollissionsHolder .alert-success');
+$I->seeElement('.amendmentCollisionsHolder .alert-success');
 $I->submitForm('#amendmentMergeForm', [], 'save');
 $I->see('Der Änderungsantrag wurde eingepflegt.', '.alert-success');
 

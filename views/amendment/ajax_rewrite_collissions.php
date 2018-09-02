@@ -3,23 +3,23 @@
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Amendment[] $amendments
- * @var array[] $collissions
+ * @var array[] $collisions
  */
 
 use app\components\HTMLTools;
 use app\components\Tools;
 use yii\helpers\Html;
 
-if (count($collissions) == 0) {
+if (count($collisions) == 0) {
     echo '<div class="content">';
-    echo '<div class="alert alert-success">' . \Yii::t('amend', 'merge1_no_collissions') . '</div>';
+    echo '<div class="alert alert-success">' . \Yii::t('amend', 'merge1_no_collisions') . '</div>';
     echo '</div>';
     return;
 }
 
 ?>
     <div class="content">
-        <div class="alert alert-danger"><?= \Yii::t('amend', 'merge1_collission_intro') ?></div>
+        <div class="alert alert-danger"><?= \Yii::t('amend', 'merge1_collision_intro') ?></div>
     </div>
 <?php
 
@@ -30,7 +30,7 @@ foreach ($amendments[array_keys($amendments)[0]]->getActiveSections() as $sectio
     }
 }
 
-foreach ($collissions as $amendmentId => $sections) {
+foreach ($collisions as $amendmentId => $sections) {
     $amendment = $amendments[$amendmentId];
     echo '<h2 class="green">' .
         Html::encode($amendment->getTitle()) .

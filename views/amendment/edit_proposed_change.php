@@ -59,7 +59,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
         echo Html::beginForm(UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'), 'post', [
             'id'                        => 'proposedChangeTextForm',
             'data-antragsgruen-widget'  => 'backend/AmendmentEditProposedChange',
-            'data-collission-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
+            'data-collision-check-url' => UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change-check'),
         ]);
         ?>
 
@@ -134,9 +134,9 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                 <?= \Yii::t('base', 'save') ?>
             </button>
         </div>
-        <aside id="collissionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+        <aside id="collisionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
             <h2><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
-            <ul class="collissionList">
+            <ul class="collisionList">
                 <?php
                 foreach ($collidingAmendments as $collidingAmendment) {
                     // Keep in sync with AmendmentController::actionEditProposedChangeCheck

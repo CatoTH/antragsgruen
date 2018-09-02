@@ -2,20 +2,20 @@ import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 
 class MergeSingleAmendment {
-    private $collissionHolder: JQuery;
+    private $collisionHolder: JQuery;
     private $form: JQuery;
-    private $checkCollissions: JQuery;
+    private $checkCollisions: JQuery;
     private $affectedParagraphs: JQuery;
     private $stepWizardHolder: JQuery;
     private $steps: {[no: string]: JQuery};
     private editors: AntragsgruenEditor[] = [];
-    private collissionEditors: {[id: string]: AntragsgruenEditor} = {};
+    private collisionEditors: {[id: string]: AntragsgruenEditor} = {};
     private $otherStatsFields: JQuery;
 
     constructor() {
         this.$form = $("#amendmentMergeForm");
-        this.$collissionHolder = $(".amendmentCollissionsHolder");
-        this.$checkCollissions = $(".checkAmendmentCollissions");
+        this.$collisionHolder = $(".amendmentCollisionsHolder");
+        this.$checkCollisions = $(".checkAmendmentCollisions");
         this.$affectedParagraphs = $(".affectedParagraphs > .paragraph");
         this.$otherStatsFields = $(".otherAmendmentStatus input");
 
@@ -26,9 +26,9 @@ class MergeSingleAmendment {
             "3": this.$form.find("> .step_3")
         };
 
-        this.$checkCollissions.click((ev) => {
+        this.$checkCollisions.click((ev) => {
             ev.preventDefault();
-            this.loadCollissions();
+            this.loadCollisions();
         });
         this.$steps["1"].find(".goto_2").click((ev) => {
             ev.preventDefault();
@@ -70,10 +70,10 @@ class MergeSingleAmendment {
         this.editors[key] = new AntragsgruenEditor($paragraph.find(".affectedBlock > .texteditor").attr("id"));
     }
 
-    private loadCollissions() {
+    private loadCollisions() {
         this.gotoStep("3");
 
-        let url = this.$checkCollissions.data("url"),
+        let url = this.$checkCollisions.data("url"),
             sections = {},
             otherAmendmentsStatus = {};
 
@@ -113,18 +113,18 @@ class MergeSingleAmendment {
             'newSections': sections,
             'otherAmendmentsStatus': otherAmendmentsStatus,
             '_csrf': this.$form.find('> input[name=_csrf]').val()
-        }, this.collissionsLoaded.bind(this));
+        }, this.collisionsLoaded.bind(this));
     }
 
-    private collissionsLoaded(html) {
-        this.collissionEditors = {};
-        this.$collissionHolder.html(html);
-        let $texteditors = this.$collissionHolder.find(".amendmentOverrideBlock > .texteditor");
+    private collisionsLoaded(html) {
+        this.collisionEditors = {};
+        this.$collisionHolder.html(html);
+        let $texteditors = this.$collisionHolder.find(".amendmentOverrideBlock > .texteditor");
 
         if ($texteditors.length > 0) {
             $texteditors.each((i, el) => {
                 let id = $(el).attr("id");
-                this.collissionEditors[id] = new AntragsgruenEditor(id);
+                this.collisionEditors[id] = new AntragsgruenEditor(id);
             });
         }
     }
@@ -145,8 +145,8 @@ class MergeSingleAmendment {
                 $input.val($paragraph.data("unchanged-amendment"));
             }
         });
-        for (let id in this.collissionEditors) {
-            let editor: editor = this.collissionEditors[id].getEditor();
+        for (let id in this.collisionEditors) {
+            let editor: editor = this.collisionEditors[id].getEditor();
             if (typeof(editor.plugins.lite) != 'undefined') {
                 editor.plugins.lite.findPlugin(editor).acceptAll();
             }

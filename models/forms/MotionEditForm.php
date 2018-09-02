@@ -214,7 +214,7 @@ class MotionEditForm extends Model
      */
     public function updateTextRewritingAmendments(Motion $motion, $newHtmls, $overrides = [])
     {
-        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+        foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $section_overrides = $overrides[$amendment->id][$section->sectionId];
@@ -227,7 +227,7 @@ class MotionEditForm extends Model
             }
         }
 
-        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+        foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 if (isset($overrides[$amendment->id]) && isset($overrides[$amendment->id][$section->sectionId])) {
                     $section_overrides = $overrides[$amendment->id][$section->sectionId];

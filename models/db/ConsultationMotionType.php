@@ -57,9 +57,9 @@ class ConsultationMotionType extends ActiveRecord
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
 
-    const INITIATORS_MERGE_NEVER           = 0;
-    const INITIATORS_MERGE_NO_COLLISSION   = 1;
-    const INITIATORS_MERGE_WITH_COLLISSION = 2;
+    const INITIATORS_MERGE_NEVER          = 0;
+    const INITIATORS_MERGE_NO_COLLISION   = 1;
+    const INITIATORS_MERGE_WITH_COLLISION = 2;
 
     const DEADLINE_MOTIONS    = 'motions';
     const DEADLINE_AMENDMENTS = 'amendments';
