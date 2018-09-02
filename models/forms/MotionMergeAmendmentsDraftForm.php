@@ -19,10 +19,10 @@ class MotionMergeAmendmentsDraftForm
     public function __construct($origMotion)
     {
         $this->origMotion = $origMotion;
-        $draftStati       = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
+        $draftStatuses    = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
         $this->draft      = Motion::find()
             ->where(['parentMotionId' => $origMotion->id])
-            ->andWhere(['status' => $draftStati])->one();
+            ->andWhere(['status' => $draftStatuses])->one();
         if ($this->draft) {
             $this->draft->dateCreation = date('Y-m-d H:i:s');
         } else {

@@ -66,7 +66,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return string[]
      */
-    public static function getStati()
+    public static function getStatuses()
     {
         return [
             1  => \Yii::t('structure', 'user_status_1'),

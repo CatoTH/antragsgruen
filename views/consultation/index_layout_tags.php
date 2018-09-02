@@ -15,7 +15,7 @@ $tags            = $tagIds = [];
 $hasNoTagMotions = false;
 
 foreach ($consultation->motions as $motion) {
-    if (in_array($motion->status, $consultation->getInvisibleMotionStati())) {
+    if (in_array($motion->status, $consultation->getInvisibleMotionStatuses())) {
         continue;
     }
     if (count($motion->tags) == 0) {

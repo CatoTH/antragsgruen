@@ -368,7 +368,7 @@ class Consultation extends ActiveRecord
     {
         $return = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $this->getInvisibleMotionStati(!$includeWithdrawn))) {
+            if (!in_array($motion->status, $this->getInvisibleMotionStatuses(!$includeWithdrawn))) {
                 $return[] = $motion;
             }
         }
@@ -445,7 +445,7 @@ class Consultation extends ActiveRecord
      * @param bool $withdrawnInvisible
      * @return int[]
      */
-    public function getInvisibleMotionStati($withdrawnInvisible = false)
+    public function getInvisibleMotionStatuses($withdrawnInvisible = false)
     {
         $invisible = [
             IMotion::STATUS_DELETED,
@@ -474,7 +474,7 @@ class Consultation extends ActiveRecord
     /**
      * @return int[]
      */
-    public function getUnreadableStati()
+    public function getUnreadableStatuses()
     {
         $invisible = [
             IMotion::STATUS_DELETED,
@@ -489,9 +489,9 @@ class Consultation extends ActiveRecord
      * @param bool $withdrawnInvisible
      * @return int[]
      */
-    public function getInvisibleAmendmentStati($withdrawnInvisible = false)
+    public function getInvisibleAmendmentStatuses($withdrawnInvisible = false)
     {
-        return $this->getInvisibleMotionStati($withdrawnInvisible);
+        return $this->getInvisibleMotionStatuses($withdrawnInvisible);
     }
 
     /**
@@ -548,7 +548,7 @@ class Consultation extends ActiveRecord
     {
         $results = [];
         foreach ($this->motions as $motion) {
-            if (in_array($motion->status, $this->getInvisibleMotionStati())) {
+            if (in_array($motion->status, $this->getInvisibleMotionStatuses())) {
                 continue;
             }
             $found = false;
@@ -566,7 +566,7 @@ class Consultation extends ActiveRecord
             }
             if (!$found) {
                 foreach ($motion->amendments as $amend) {
-                    if (in_array($amend->status, $this->getInvisibleAmendmentStati())) {
+                    if (in_array($amend->status, $this->getInvisibleAmendmentStatuses())) {
                         continue;
                     }
                     foreach ($amend->getActiveSections() as $section) {

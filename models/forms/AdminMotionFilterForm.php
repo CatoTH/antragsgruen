@@ -597,38 +597,38 @@ class AdminMotionFilterForm extends Model
         // Motion status
 
         $str         .= '<label>' . \Yii::t('admin', 'filter_status') . ':<br>';
-        $stati       = ['' => \Yii::t('admin', 'filter_na')];
+        $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
-            $stati[$statusId] = $statusName;
+            $statuses[$statusId] = $statusName;
             if ($this->status !== null && $this->status == $statusId) {
                 $foundMyself = true;
             }
         }
         if (!$foundMyself && $this->status !== null) {
-            $statusNames          = Motion::getStatusNames();
-            $stati[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
+            $statusNames             = Motion::getStatusNames();
+            $statuses[$this->status] = Html::encode($statusNames[$this->status] . ' (0)');
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[status]', $stati, $this->status, [], true);
+        $str .= HTMLTools::fueluxSelectbox('Search[status]', $statuses, $this->status, [], true);
         $str .= '</label>';
 
 
         // Proposal status
 
         $str         .= '<label>' . \Yii::t('admin', 'filter_proposal_status') . ':<br>';
-        $stati       = ['' => \Yii::t('admin', 'filter_na')];
+        $statuses    = ['' => \Yii::t('admin', 'filter_na')];
         $foundMyself = false;
         foreach ($this->getProposalStatusList() as $statusId => $statusName) {
-            $stati[$statusId] = $statusName;
+            $statuses[$statusId] = $statusName;
             if ($this->proposalStatus !== null && $this->proposalStatus == $statusId) {
                 $foundMyself = true;
             }
         }
         if (!$foundMyself && $this->proposalStatus !== null) {
-            $statusNames          = Motion::getProposedStatiNames();
-            $stati[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
+            $statusNames             = Motion::getProposedStatusesNames();
+            $statuses[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
         }
-        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $stati, $this->proposalStatus, [], true);
+        $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $statuses, $this->proposalStatus, [], true);
         $str .= '</label>';
 
 
@@ -702,8 +702,8 @@ class AdminMotionFilterForm extends Model
             }
             $num[$amend->status]++;
         }
-        $stati = Motion::getStatusNames();
-        foreach ($stati as $statusId => $statusName) {
+        $statuses = Motion::getStatusNames();
+        foreach ($statuses as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }
@@ -731,8 +731,8 @@ class AdminMotionFilterForm extends Model
                 }
             }
         }
-        $stati = Amendment::getProposedStatiNames();
-        foreach ($stati as $statusId => $statusName) {
+        $statuses = Amendment::getProposedStatusesNames();
+        foreach ($statuses as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }

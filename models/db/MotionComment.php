@@ -150,11 +150,11 @@ class MotionComment extends IComment
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+        $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
 
         return static::find()->joinWith('motion', true)
             ->where('motionComment.status = ' . IntVal(static::STATUS_VISIBLE))
-            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')')
+            ->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')')
             ->andWhere('motion.consultationId = ' . IntVal($consultation->id))
             ->orderBy('motionComment.dateCreation DESC')
             ->offset(0)->limit($limit)->all();
@@ -217,9 +217,9 @@ class MotionComment extends IComment
         $query->joinWith(
             [
                 'motion' => function ($query) use ($consultation) {
-                    $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+                    $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
