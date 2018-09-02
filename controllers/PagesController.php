@@ -75,10 +75,10 @@ class PagesController extends Base
 
         if ($page->id) {
             if ($page->siteId && $page->siteId !== $this->site->id) {
-                throw new Access('Some inconsistency ocurred (site): ' . $page->siteId . " / " . $this->site->id);
+                throw new Access('Some inconsistency occurred (site): ' . $page->siteId . " / " . $this->site->id);
             }
             if ($page->consultationId && $page->consultationId !== $this->consultation->id) {
-                throw new Access('Some inconsistency ocurred (consultation)');
+                throw new Access('Some inconsistency occurred (consultation)');
             }
         }
 

@@ -274,7 +274,7 @@ class StdHooks extends HooksAdapter
             return '<div class="antragsgruenAd well">
         <div class="nav-header">Using Antragsgrün</div>
         <div class="content">
-            Du you want to use Antragsgrün / motion.tools for your own assemly?
+            Du you want to use Antragsgrün / motion.tools for your own assembly?
             <div>
                 <a href="https://motion.tools/" title="Information about using Antragsgrün" class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right"></span> Information

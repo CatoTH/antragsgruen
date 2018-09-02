@@ -85,7 +85,7 @@ export class ChangeProposedProcedure {
             } else if (ret['error']) {
                 alert(ret['error']);
             } else {
-                alert('An error ocurred');
+                alert('An error occurred');
             }
         }).fail(() => {
             alert('Could not save');
