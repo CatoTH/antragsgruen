@@ -44,7 +44,7 @@ return [
     'index_todo'                  => 'To Do',
     'index_site_del'              => 'Seite löschen',
     'index_pages'                 => 'Redaktionelle Texte',
-    'motion_prefix_collission'    => 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.',
+    'motion_prefix_collision'     => 'Das angegebene Antragskürzel wird bereits von einem anderen Antrag verwendet.',
     'motion_deleted'              => 'Der Antrag wurde gelöscht.',
     'motion_screened'             => 'Der Antrag wurde freigeschaltet.',
     'motion_edit_text'            => 'Text bearbeiten',
@@ -311,7 +311,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'amend_globalalt'          => 'Globalalternative',
     'amend_deleted'            => 'Der Änderungsantrag wurde gelöscht.',
     'amend_screened'           => 'Der Änderungsantrag wurde freigeschaltet.',
-    'amend_prefix_collission'  => 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.',
+    'amend_prefix_collision'   => 'Das angegebene Antragskürzel wird bereits von einem anderen Änderungsantrag verwendet.',
     'no_access'                => 'Kein Zugriff auf diese Seite',
     'amend_pdf_list'           => 'Änderungsantrags-PDFs',
 

@@ -306,7 +306,7 @@ class MotionMergeConflictTooltip {
                     let $parent = $para.parents(".paragraphHolder");
                     $para.remove();
                     if ($parent.find(".collidingParagraph").length == 0) {
-                        $parent.removeClass("hasCollissions");
+                        $parent.removeClass("hasCollisions");
                     }
                 });
             });
@@ -318,7 +318,7 @@ class MotionMergeConflictTooltip {
                 $para.removeClass("collidingParagraph");
                 let $parent = $para.parents(".paragraphHolder");
                 if ($parent.find(".collidingParagraph").length == 0) {
-                    $parent.removeClass("hasCollissions");
+                    $parent.removeClass("hasCollisions");
                 }
             });
         });
@@ -356,10 +356,10 @@ class MotionMergeAmendmentsTextarea {
         $text.find(".moved .moved").removeClass('moved');
         $text.find(".moved").each(this.markupMovedParagraph.bind(this));
 
-        // Add hints about starting / ending collissions
-        $text.find(".hasCollissions")
-            .attr("data-collission-start-msg", __t('merge', 'colliding_start'))
-            .attr("data-collission-end-msg", __t('merge', 'colliding_end'));
+        // Add hints about starting / ending collisions
+        $text.find(".hasCollisions")
+            .attr("data-collision-start-msg", __t('merge', 'colliding_start'))
+            .attr("data-collision-end-msg", __t('merge', 'colliding_end'));
 
         let newText = $text.html();
         this.texteditor.setData(newText);

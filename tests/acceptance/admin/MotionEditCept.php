@@ -8,12 +8,12 @@ $I->wantTo('edit a motion');
 $I->loginAndGotoMotionList()->gotoMotionEdit(2);
 $I->dontSeeElementInDOM('#sections_1');
 $I->dontSeeElement('#sections_2');
-$I->dontSeeElement('.saveholder .checkAmendmentCollissions');
+$I->dontSeeElement('.saveholder .checkAmendmentCollisions');
 $I->seeElement('.saveholder .save');
 
 $I->click('#motionTextEditCaller button');
 $I->seeElementInDOM('#sections_2');
-$I->seeElement('.saveholder .checkAmendmentCollissions');
+$I->seeElement('.saveholder .checkAmendmentCollisions');
 $I->dontSeeElement('.saveholder .save');
 
 $I->selectFueluxOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
@@ -27,25 +27,25 @@ $I->fillField('#motionNoteInternal', 'Test 123');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData() + "<p>Test 123</p>");');
 
 $I->wantTo('see no conflicts');
-$I->dontSeeElement('.amendmentCollissionsHolder .alert-success');
-$I->executeJS('$(".saveholder .checkAmendmentCollissions").click();');
+$I->dontSeeElement('.amendmentCollisionsHolder .alert-success');
+$I->executeJS('$(".saveholder .checkAmendmentCollisions").click();');
 $I->wait(2);
-$I->seeElement('.amendmentCollissionsHolder .alert-success');
-$I->dontSeeElement('.saveholder .checkAmendmentCollissions');
+$I->seeElement('.amendmentCollisionsHolder .alert-success');
+$I->dontSeeElement('.saveholder .checkAmendmentCollisions');
 $I->seeElement('.saveholder .save');
 
 
 $I->executeJS('$(".wysiwyg-textarea .texteditor").focus();');
 $I->executeJS('$(".wysiwyg-textarea .texteditor").focus();'); // focus isn't actually triggered the first time; no idea why o_O
-$I->seeElement('.saveholder .checkAmendmentCollissions');
+$I->seeElement('.saveholder .checkAmendmentCollisions');
 $I->dontSeeElement('.saveholder .save');
 
 $I->wantTo('see a conflict');
 $I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData(CKEDITOR.instances.sections_2_wysiwyg.getData().replace("Wui helfgod Wiesn", "Wui helfgod Wiesn1"));');
-$I->executeJS('$(".saveholder .checkAmendmentCollissions").click();');
+$I->executeJS('$(".saveholder .checkAmendmentCollisions").click();');
 $I->wait(2);
-$I->dontSeeElement('.amendmentCollissionsHolder .alert-success');
-$I->seeElement('.amendmentCollissionsHolder .alert-danger');
+$I->dontSeeElement('.amendmentCollisionsHolder .alert-success');
+$I->seeElement('.amendmentCollisionsHolder .alert-danger');
 $I->seeElement('#amendmentOverride_274_2_7');
 
 $I->executeJS('CKEDITOR.instances.amendmentOverride_274_2_7.setData(CKEDITOR.instances.amendmentOverride_274_2_7.getData().replace("Bla ,", "Bla,"));');

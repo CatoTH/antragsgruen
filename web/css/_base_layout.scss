@@ -73,7 +73,7 @@ body > footer {
 }
 
 .antragsgruen-content {
-  // Amendment-Markers at the side of a motion should be above the sidebar in case of a collission
+  // Amendment-Markers at the side of a motion should be above the sidebar in case of a collision
   > main {
     z-index: 1;
   }

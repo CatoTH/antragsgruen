@@ -1,5 +1,5 @@
 <div class="step_3">
-    <fieldset class="amendmentCollissionsHolder">
+    <fieldset class="amendmentCollisionsHolder">
         <span class="loading"><?= \Yii::t('amend', 'merge1_loading') ?></span>
     </fieldset>
 

@@ -117,8 +117,8 @@ class AmendmentPublished
         $mergingAllowed = in_array(
             $motion->getMyMotionType()->initiatorsCanMergeAmendments,
             [
-                ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
-                ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION
+                ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
+                ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION
             ]
         );
 
