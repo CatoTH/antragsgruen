@@ -25,7 +25,7 @@
         "bootbox": "^4.4.0",
         "bootstrap-toggle": "*",
         "clipboard": "^2.0.1",
-        "fuelux": "^3.16.6",
+        "fuelux": "^3.17.0",
         "gulp": "^4.0.0",
         "gulp-concat": "^2.6.1",
         "gulp-postcss": "^7.0.1",

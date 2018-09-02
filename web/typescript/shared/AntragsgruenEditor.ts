@@ -91,7 +91,7 @@ export class AntragsgruenEditor {
                 {name: 'colors'},
                 {name: 'others'}
             ],
-            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline',
+            removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline,liststyle',
             extraPlugins: 'tabletools',
             scayt_sLang: 'de_DE',
             title: title,
@@ -105,7 +105,7 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h1 h2 h3 h4;' +
-                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved){list-style-type};' +
+                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,paragraphHolder,hasCollissions,moved);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
@@ -114,13 +114,14 @@ export class AntragsgruenEditor {
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
-                'ul ol li {list-style-type};' +
+                'ul ol li;' +
                 'h2 h3 h4;' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +
                 'span(underline' + strikeClass + ',subscript,superscript);' +
                 'a[href];';
         }
+        console.log(allowedContent);
 
         if (trackChanged) {
             ckeditorConfig.extraPlugins += ',lite';

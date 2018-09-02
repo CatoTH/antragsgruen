@@ -10,6 +10,7 @@ use app\models\AdminTodoItem;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationText;
 use app\models\db\User;
+use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
 class StdHooks extends HooksAdapter
@@ -46,6 +47,33 @@ class StdHooks extends HooksAdapter
 <a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
         $out .= $this->layout->getLogoStr();
         $out .= '</a></div>';
+
+        return $out;
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function favicons($before)
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $resourceBase = Html::encode($params->resourceBase);
+        if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
+            $resourceBase .= 'web/';
+        }
+        $faviconBase = $resourceBase . 'favicons';
+
+        $out = '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBase . '/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="' . $faviconBase . '/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="' . $faviconBase . '/favicon-16x16.png">
+<link rel="manifest" href="' . $faviconBase . '/site.webmanifest">
+<link rel="mask-icon" href="' . $faviconBase . '/safari-pinned-tab.svg" color="#3bb030">
+<meta name="msapplication-TileColor" content="#00a300">
+<meta name="msapplication-TileImage" content="' . $faviconBase . '/mstile-150x150.png">
+<meta name="theme-color" content="#ffffff">';
 
         return $out;
     }

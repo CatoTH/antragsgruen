@@ -348,7 +348,7 @@ class Consultation extends ActiveRecord
     public function setSettings($settings)
     {
         $this->settingsObject = $settings;
-        $this->settings       = $settings->toJSON();
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -641,14 +641,14 @@ class Consultation extends ActiveRecord
             $motions  = MotionSorter::getSortedMotionsFlat($this, $agendaItem->getVisibleMotions());
             foreach ($motions as $motion) {
                 $ids[] = $motion->id;
-                $addMotion ($motion);
+                $addMotion($motion);
             }
         }
         $result[] = null;
 
         foreach ($this->getVisibleMotions() as $motion) {
             if (!(in_array($motion->id, $ids) || count($motion->replacedByMotions) > 0)) {
-                $addMotion ($motion);
+                $addMotion($motion);
             }
         }
         return $result;

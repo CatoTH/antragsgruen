@@ -2,7 +2,7 @@
 
 namespace app\models\settings;
 
-class MotionType
+class MotionType implements \JsonSerializable
 {
     use JsonConfigTrait;
 

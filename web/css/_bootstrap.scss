@@ -1,11 +1,11 @@
-$screen-lg-min: 10000px; // deaktivieren
-$container-md: 1024px;
-$container-desktop: 1024px;
-$grid-float-breakpoint: 992px; // $screen-md-min;
-$zindex-popover: 11000;
-$link-color: $colorLinks;
-$link-hover-color: lighten(darken($colorLinks, 5%), 15%);
-$link-hover-decoration: $linkTextDecoration;
+$screen-lg-min: 10000px !default; // deaktivieren
+$container-md: 1024px !default;
+$container-desktop: 1024px !default;
+$grid-float-breakpoint: 992px !default; // $screen-md-min;
+$zindex-popover: 11000 !default;
+$link-color: $colorLinks !default;
+$link-hover-color: lighten(darken($colorLinks, 5%), 15%) !default;
+$link-hover-decoration: $linkTextDecoration !default;
 $icon-font-path: "../fonts/" !default;
 
 // Core variables and mixins

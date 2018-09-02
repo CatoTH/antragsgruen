@@ -18,7 +18,7 @@ class BDK extends IPDFLayout
      */
     public function createPDFClass()
     {
-        $pdf = new BDKPDF($this);
+        $pdf = new BDKPDF();
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

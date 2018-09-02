@@ -79,7 +79,7 @@ class LayoutHooks extends HooksAdapter
             \Yii::t('base', 'privacy_statement') . '</a>';
 
         $out .= '<span class="version">';
-        if (\Yii::$app->language == 'de') {
+        if (\Yii::$app->language === 'de') {
             $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
                 Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         } else {

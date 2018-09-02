@@ -3,6 +3,7 @@
 return [
     'title' => 'Créer un site',
 
+    'step_language'   => 'Langue',
     'step_purpose'    => 'Objecitf',
     'step_motions'    => 'Motions',
     'step_amendments' => 'Amendements',
@@ -18,6 +19,8 @@ return [
     'purpose_motions'        => 'Motions',
     'purpose_manifesto'      => 'Programme',
     'purpose_manifesto_desc' => '&nbsp;',
+
+    'language_title' => 'Langue du site',
 
     'single_mot_title' => 'Plusieurs motions vont-elles être discutées ?',
     'single_man_title' => 'Y a-t-il plusieurs chapitres / documents ?',

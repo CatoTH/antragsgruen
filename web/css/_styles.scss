@@ -195,6 +195,16 @@
       text-align: right;
     }
   }
+  label.optional {
+    &:after {
+      content: "(" attr(data-optional-str) ")";
+      font-weight: normal;
+      font-style: italic;
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 0.9em;
+    }
+  }
   .submitHolder {
     text-align: right;
   }

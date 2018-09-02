@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AntiSpam;
 use app\components\EmailNotifications;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -344,28 +343,20 @@ trait AmendmentActionsTrait
             $this->deleteComment($amendment, $commentId);
         } elseif (isset($post['commentScreeningAccept'])) {
             $this->screenCommentAccept($amendment, $commentId);
-
         } elseif (isset($post['commentScreeningReject'])) {
             $this->screenCommentReject($amendment, $commentId);
-
         } elseif (isset($post['motionLike'])) {
             $this->amendmentLike($amendment);
-
         } elseif (isset($post['motionDislike'])) {
             $this->amendmentDislike($amendment);
-
         } elseif (isset($post['motionSupport'])) {
             $this->amendmentSupport($amendment);
-
         } elseif (isset($post['motionSupportRevoke'])) {
             $this->amendmentSupportRevoke($amendment);
-
         } elseif (isset($post['amendmentSupportFinish'])) {
             $this->amendmentSupportFinish($amendment);
-
         } elseif (isset($post['writeComment'])) {
             $this->writeComment($amendment, $viewParameters);
-
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($amendment);
         }
@@ -376,9 +367,8 @@ trait AmendmentActionsTrait
      * @param int $amendmentId
      * @return string
      * @throws \Exception
-     * @throws \Throwable
-     * @throws \yii\base\ExitException
      * @throws \yii\db\StaleObjectException
+     * @throws \Throwable
      */
     public function actionDelProposalComment($motionSlug, $amendmentId)
     {

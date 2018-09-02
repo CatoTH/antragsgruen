@@ -100,7 +100,7 @@ class ManagerController extends Base
             }
 
             $file = fopen($configfile, 'w');
-            fwrite($file, $config->toJSON());
+            fwrite($file, json_encode($config, JSON_PRETTY_PRINT));
             fclose($file);
 
             \yii::$app->session->setFlash('success', \Yii::t('manager', 'saved'));

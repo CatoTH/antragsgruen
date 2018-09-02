@@ -60,5 +60,5 @@ $I->gotoConsultationHome(false, 'testcongress', 'testcongress');
 
 $I->see('A1: Chapter title', 'h1');
 $I->see('Chapter content');
-$I->dontSeeElement('#sidebar .amendmentCreate');
+$I->seeElement('#sidebar .amendmentCreate .onlyAdmins');
 $I->seeElement('section.comments');

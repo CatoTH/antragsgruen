@@ -3,7 +3,6 @@
 namespace app\models\settings;
 
 use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
 
 trait JsonConfigTrait
 {
@@ -40,11 +39,11 @@ trait JsonConfigTrait
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function toJSON()
+    public function jsonSerialize()
     {
-        return json_encode(get_object_vars($this), JSON_PRETTY_PRINT);
+        return get_object_vars($this);
     }
 
     /**

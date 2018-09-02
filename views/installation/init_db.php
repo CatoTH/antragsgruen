@@ -25,6 +25,13 @@ $layout->loadFuelux();
 $layout->robotsNoindex = true;
 $layout->addCSS('css/manager.css');
 
+$dbTestUrlPretty = UrlHelper::createUrl('installation/db-test');
+
+$prettyBefore = \Yii::$app->urlManager->enablePrettyUrl;
+\Yii::$app->urlManager->enablePrettyUrl = false;
+$dbTestUrlNotSoPretty = UrlHelper::createUrl('installation/db-test');
+\Yii::$app->urlManager->enablePrettyUrl = $prettyBefore;
+
 echo '<h1>' . \yii::t('manager', 'title_install') . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'antragsgruenInitForm form-horizontal fuelux']);
 
@@ -89,6 +96,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
+    <input type="hidden" name="prettyUrls" value="<?= ($prettyBefore ? 1 : 0) ?>">
     <h2 class="green"><?= \Yii::t('manager', 'config_lang') ?></h2>
     <div class="content">
         <div class="form-group language">
@@ -167,7 +175,8 @@ if (!$form->databaseParamsComeFromEnv()) {
 
         <div class="testDB">
             <button type="button" name="testDB" class="btn btn-default testDBcaller"
-                    data-url="<?= Html::encode(UrlHelper::createUrl('installation/db-test')) ?>">
+                    data-url="<?= Html::encode($dbTestUrlPretty) ?>"
+                    data-url-not-so-pretty="<?= Html::encode($dbTestUrlNotSoPretty) ?>">
                 <?= \Yii::t('manager', 'config_db_test') ?></button>
             <div class="testDBRpending hidden"><?= \Yii::t('manager', 'config_db_testing') ?>...</div>
             <div class="testDBerror hidden">

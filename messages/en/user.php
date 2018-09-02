@@ -134,4 +134,8 @@ return [
 
     'notification_title' => 'E-Mail-Notifications',
     'notification_intro' => 'You can choose for each consultation individually, what you want to be notified about:',
+
+    'export_title' => 'Data export',
+    'export_intro' => 'You can download all personal data saved about you on discuss.green in machine readable JSON format.',
+    'export_btn'   => 'Download',
 ];

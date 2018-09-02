@@ -33,6 +33,7 @@ class SiteCreateForm extends Model
     const WORDING_MOTIONS   = 1;
     const WORDING_MANIFESTO = 2;
     public $wording = 1;
+    public $language;
 
     /** @var bool */
     public $singleMotion    = false;
@@ -71,6 +72,16 @@ class SiteCreateForm extends Model
     public $motion;
 
     /**
+     * SiteCreateForm constructor.
+     * @param array $config
+     */
+    public function __construct(array $config = [])
+    {
+        parent::__construct($config);
+        $this->language = \Yii::$app->language;
+    }
+
+    /**
      * @return array
      */
     public function rules()
@@ -95,7 +106,7 @@ class SiteCreateForm extends Model
     {
         parent::setAttributes($values, $safeOnly);
 
-        $this->wording               = IntVal($values['wording']);
+        $this->wording               = (isset($values['wording']) ? IntVal($values['wording']) : 1);
         $this->singleMotion          = ($values['singleMotion'] == 1);
         $this->hasAmendments         = ($values['hasAmendments'] == 1);
         $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
@@ -158,7 +169,7 @@ class SiteCreateForm extends Model
     {
         $con->amendmentNumbering = 0;
         $con->dateCreation       = date('Y-m-d H:i:s');
-        if (\Yii::$app->language == 'de') {
+        if ($this->language === 'de') {
             $con->wordingBase = ($this->wording == static::WORDING_MANIFESTO ? 'de-programm' : 'de-parteitag');
         } else {
             $con->wordingBase = \Yii::$app->language;

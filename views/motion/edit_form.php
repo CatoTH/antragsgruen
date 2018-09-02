@@ -17,7 +17,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-if ($mode == 'create') {
+if ($mode === 'create') {
     $this->title = $form->motionType->createTitle;
 } else {
     $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
@@ -88,6 +88,24 @@ echo Html::beginForm('', 'post', [
 
 echo '<div class="content">';
 
+if (count($form->motionType->agendaItems) > 0) {
+    echo '<div class="form-group">';
+    echo '<label class="legend">' . \Yii::t('motion', 'agenda_item') . '</label>';
+    if ($form->agendaItem) {
+        echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';
+    } else {
+        $layout->loadFuelux();
+        echo '<div style="position: relative;">';
+        $agendaItems = [];
+        foreach ($form->motionType->agendaItems as $agendaItem) {
+            $agendaItems[$agendaItem->id] = $agendaItem->title;
+        }
+        echo HTMLTools::fueluxSelectbox('agendaItem', $agendaItems, null, ['id' => 'agendaSelect']);
+        echo '</div>';
+    }
+    echo '</div>';
+}
+
 /** @var ConsultationSettingsTag[] $tags */
 $tags = [];
 foreach ($consultation->getSortedTags() as $tag) {
@@ -117,7 +135,7 @@ if (count($tags) == 1) {
             $tagOptions[$tag->id] = $tag->title;
         }
         echo '<div class="form-group">';
-        echo '<label>' . \Yii::t('motion', 'tag_tags') . ':</label><div style="position: relative;">';
+        echo '<label>' . \Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
         echo '</div>';

@@ -6,11 +6,7 @@
  */
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\MotionComment;
-use app\models\db\User;
 use app\models\forms\CommentForm;
-use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 $motion         = $section->getMotion();

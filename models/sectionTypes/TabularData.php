@@ -5,7 +5,6 @@ namespace app\models\sectionTypes;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\models\db\Consultation;
-use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
@@ -52,7 +51,6 @@ class TabularData extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setMotionData($data)
     {
@@ -74,7 +72,6 @@ class TabularData extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setAmendmentData($data)
     {
@@ -270,6 +267,7 @@ class TabularData extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -332,7 +330,6 @@ class TabularData extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printMotionToODT(Text $odt)
     {
@@ -342,7 +339,6 @@ class TabularData extends ISectionType
 
     /**
      * @param Text $odt
-     * @return mixed
      */
     public function printAmendmentToODT(Text $odt)
     {

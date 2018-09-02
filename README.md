@@ -21,8 +21,8 @@ Using the hosted version / testing it
 -------------------------------------
 
 - German: [https://antragsgruen.de](https://antragsgruen.de/)
-- English: [https://motion.tools](https://motion.tools/)
-- French (test version only): [http://motion.tools](http://sandbox.motion.tools/createsite?language=fr)
+- English: [https://motion.tools](https://motion.tools/), [https://discuss.green](https://discuss.green/)
+- French: [https://discuss.green](https://discuss.green/)
 
 Installation
 ------------------------------------------
@@ -46,7 +46,7 @@ apt-get install php7.2 php7.2-cli php7.2-fpm php7.2-intl php7.2-json php7.2-gd \
 
 #### Installation:
 
-- Download the latest package of Antragsgrün: [antragsgruen-4.0.0rc4.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-4.0.0rc4.tar.bz2)
+- Download the latest package of Antragsgrün: [antragsgruen-4.0.0.tar.bz2](https://www.hoessl.eu/antragsgruen/antragsgruen-4.0.0.tar.bz2)
 - Extract the contents into your web folder
 - Access the "antragsgruen/"-folder of your web server, e.g. if you extracted the package into the web root of your host named www.example.org/, then access www.example.org/antragsgruen/
 - Use the web-based installer to configure the database and further settings
@@ -298,7 +298,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 #### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.13.0.jar```
+java -jar selenium-server-standalone-3.14.0.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```

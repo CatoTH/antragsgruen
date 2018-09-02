@@ -2,6 +2,7 @@
 
 use app\components\HTMLTools;
 use app\components\UrlHelper;
+use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
 
 /**
@@ -130,8 +131,8 @@ echo Html::beginForm('', 'post', [
     </label>
     <div class="col-md-9 thumbnailedLayoutSelector">
         <?php
-        $hasTex = isset($motionType->getAvailablePDFTemplates()[1]);
-        foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
+        $hasTex = isset(ConsultationMotionType::getAvailablePDFTemplates()[1]);
+        foreach (ConsultationMotionType::getAvailablePDFTemplates() as $lId => $layout) {
             if ($hasTex) {
                 $checked = ($lId === 1);
             } else {

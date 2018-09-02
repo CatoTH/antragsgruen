@@ -46,7 +46,7 @@ echo Html::dropDownList(
 echo '</div></fieldset>';
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">'  .\Yii::t('base', 'save') . '</button>
+<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
 </div>';
 
 echo Html::endForm();
@@ -103,7 +103,7 @@ if (count($strings) === 0) {
 
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">'  .\Yii::t('base', 'save') . '</button>
+<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
 </div>';
 
 

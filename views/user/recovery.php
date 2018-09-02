@@ -13,7 +13,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title =\Yii::t('user', 'recover_title');
+$this->title = \Yii::t('user', 'recover_title');
 $layout->addBreadcrumb('Passwort');
 $layout->robotsNoindex = true;
 

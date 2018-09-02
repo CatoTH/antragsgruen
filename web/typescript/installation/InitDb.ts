@@ -1,9 +1,11 @@
 export class InitDb {
     private dbTestUrl: string;
+    private dbTestUrlNotSoPretty: string;
 
     constructor(private $form: JQuery) {
         let $testDBcaller = $form.find(".testDBcaller");
         this.dbTestUrl = $testDBcaller.data('url');
+        this.dbTestUrlNotSoPretty = $testDBcaller.data('url-not-so-pretty');
 
         $('#sqlPassword').on('keyup', function () {
             $('#sqlPasswordNone').prop('checked', false);
@@ -28,11 +30,31 @@ export class InitDb {
         window.location.href = href;
     }
 
+    private testDbResult(ret) {
+        let $pending = $('.testDBRpending'),
+            $success = $('.testDBsuccess'),
+            $error = $('.testDBerror'),
+            $createTables = $('.createTables');
+        if (ret['success']) {
+            $success.removeClass('hidden');
+            if (ret['alreadyCreated']) {
+                $createTables.addClass('alreadyCreated');
+            } else {
+                $createTables.removeClass('alreadyCreated');
+            }
+        } else {
+            $error.removeClass('hidden');
+            $error.find('.result').text(ret['error']);
+            $createTables.removeClass('alreadyCreated');
+        }
+        $pending.addClass('hidden');
+    }
+
     private testDb() {
         let $pending = $('.testDBRpending'),
             $success = $('.testDBsuccess'),
             $error = $('.testDBerror'),
-            $createTables = $('.createTables'),
+
             csrf = $('input[name=_csrf]').val(),
             params = {
                 'sqlType': $("input[name=sqlType]").val(),
@@ -49,22 +71,18 @@ export class InitDb {
         $error.addClass('hidden');
         $success.addClass('hidden');
 
-        $.post(this.dbTestUrl, params, function (ret) {
-            if (ret['success']) {
-                $success.removeClass('hidden');
-                if (ret['alreadyCreated']) {
-                    $createTables.addClass('alreadyCreated');
-                } else {
-                    $createTables.removeClass('alreadyCreated');
-                }
+        $.post(this.dbTestUrl, params, this.testDbResult.bind(this)).fail((err) => {
+            if (err.status === 404) {
+                params['disablePrettyUrl'] = '1';
+                $.post(this.dbTestUrlNotSoPretty, params, (ret) => {
+                    this.testDbResult(ret);
+                    $('input[name=prettyUrls]').val('0');
+                }).fail((err) => {
+                    alert("An internal error occurred: " + err.status + " / " + err.responseText);
+                });
             } else {
-                $error.removeClass('hidden');
-                $error.find('.result').text(ret['error']);
-                $createTables.removeClass('alreadyCreated');
+                alert("An internal error occurred: " + err.status + " / " + err.responseText);
             }
-            $pending.addClass('hidden');
-        }).fail(function(err) {
-            alert("An internal error occurred: " + err.status + " / " + err.responseText);
         });
     }
 }

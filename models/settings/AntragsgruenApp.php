@@ -4,7 +4,7 @@ namespace app\models\settings;
 
 use app\plugins\ModuleBase;
 
-class AntragsgruenApp
+class AntragsgruenApp implements \JsonSerializable
 {
     use JsonConfigTrait;
 
@@ -113,7 +113,7 @@ class AntragsgruenApp
      */
     public function isSamlActive()
     {
-        return (class_exists('\SimpleSAML_Auth_Simple') && $this->hasSaml);
+        return ($this->hasSaml && class_exists('\SimpleSAML_Auth_Simple'));
     }
 
     /**

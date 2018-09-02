@@ -32,6 +32,9 @@ class LayoutHooks extends HooksAdapter
         $helpLink = UrlHelper::createUrl('/green_manager/manager/help');
         $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
 
+        $faqLink = UrlHelper::createUrl('/green_manager/manager/free-hosting');
+        $out      .= '<li>' . Html::a('FAQ', $faqLink, ['id' => 'freeHostingLink']) . '</li>';
+
         if (!User::getCurrentUser()) {
             $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \yii::$app->request->url]);
             $loginTitle = \Yii::t('base', 'menu_login');
@@ -80,7 +83,7 @@ class LayoutHooks extends HooksAdapter
             \Yii::t('base', 'privacy_statement') . '</a>';
 
         $out .= '<span class="version">';
-        $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
+        $out .= '<a href="https://discuss.green/">Antragsgrün</a>, Version ' .
             Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         $out .= '</span>';
 
@@ -104,5 +107,44 @@ class LayoutHooks extends HooksAdapter
                 'sent to the person who created this site has been confirmed.';
         }
         return $before;
+    }
+
+    /**
+     * @param string $before
+     * @param Consultation $consultation
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAdminIndexHint($before, Consultation $consultation)
+    {
+        return $before . '<article class="adminCard adminCardSupport">
+        <header>
+            <h2>Availability, Support</h2>
+        </header>
+        <main>
+            If you need guaranteed availability of Discuss.green or professional support,
+            please <a href="https://discuss.green/#contact">contact us</a> soon!
+        </main>
+    </article>';
+    }
+
+    /**
+     * @param $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function getAntragsgruenAd($before)
+    {
+            return '<div class="antragsgruenAd well">
+        <div class="nav-header">Using Discuss.green</div>
+        <div class="content">
+            Du you want to use Discuss.green for your own convention?
+            <div>
+                <a href="https://discuss.green/" title="Information about using Discuss.green / Antragsgrün" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> Information
+                </a>
+            </div>
+        </div>
+    </div>';
     }
 }

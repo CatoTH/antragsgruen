@@ -11,7 +11,7 @@ return [
     'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',
     'amend_number_perline'   => 'A01-070 (Zählung nach betroffener Zeile)',
 
-    'policy_deadline_over'       => 'Der Antragsschluss ist vorbei.<br>Das Anlegen ist möglich:',
+    'policy_deadline_over'       => 'Der Antragsschluss ist vorbei.',
     'policy_deadline_over_comm'  => 'Zum aktuellen Zeitpunkt sind keine Kommentare möglich.<br>Das Kommentieren ist möglich:',
     'policy_deadline_over_merge' => 'Zum aktuellen Zeitpunkt ist das Einpflegen nicht möglich.<br>Das Einpflegen ist möglich:',
     'policy_deadline_from'       => 'ab %from%',
@@ -35,6 +35,7 @@ return [
     'policy_all_title'            => 'Alle',
     'policy_all_desc'             => 'Alle',
     'policy_nobody_title'         => 'Niemand',
+    'policy_nobody_desc'          => 'Änderungsanträge sind deaktiviert. Diese Funktion ist nur als Ausnahme für Admins nutzbar.',
     'policy_nobody_motion_denied' => 'Momentan kann niemand Anträge stellen.',
     'policy_nobody_amend_denied'  => 'Momentan kann niemand Änderungsanträge stellen.',
     'policy_nobody_comm_denied'   => 'Momentan kann niemand Kommentare schreiben.',

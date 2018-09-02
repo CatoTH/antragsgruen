@@ -6,13 +6,12 @@ use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
-use app\models\exceptions\FormError;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
-use \CatoTH\HTML2OpenDocument\Text;
+use \CatoTH\HTML2OpenDocument\Text as ODTText;
 
-class TextHTML extends ISectionType
+class TextHTML extends Text
 {
 
     /**
@@ -37,7 +36,6 @@ class TextHTML extends ISectionType
 
     /**
      * @param string $data
-     * @throws FormError
      */
     public function setMotionData($data)
     {
@@ -48,7 +46,6 @@ class TextHTML extends ISectionType
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setAmendmentData($data)
     {
@@ -144,6 +141,7 @@ class TextHTML extends ISectionType
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
@@ -184,18 +182,18 @@ class TextHTML extends ISectionType
     }
 
     /**
-     * @param Text $odt
+     * @param ODTText $odt
      */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(ODTText $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
     }
 
     /**
-     * @param Text $odt
+     * @param ODTText $odt
      */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(ODTText $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO

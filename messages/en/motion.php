@@ -8,7 +8,7 @@ return [
     'Motion submitted'              => 'Motion submitted',
     'create_prerequisites'          => 'Requirements for a motion',
     'amendment_create'              => 'Create an amendment',
-    'amendment_create_admin'        => 'only admins',
+    'amendment_create_admin'        => 'admin',
     'amendments_merge'              => 'Merge amendments',
     'amendments_merge_noamend'      => 'Merge changes',
     'none_yet'                      => 'None yet',
@@ -117,6 +117,9 @@ return [
     'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'submitted_adminnoti_title' => 'Motion withdrawn',
     'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
+    'field_optional'            => 'optional',
+    'field_required'            => 'required',
+    'max_size_hint'             => 'Max. %MB% MB',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .
@@ -185,4 +188,8 @@ return [
         "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
         "Greetings,\n" .
         "  The Antragsgrün-Team",
+
+    'goto_line'     => 'Go to line',
+    'goto_line_go'  => 'Go',
+    'goto_line_err' => 'Line not found',
 ];

@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.0.0 [not released yet]
+## Version 4.0.0 (2018-09-01)
 
 - Antragsgrün now includes an update mechanism to install new versions from the web interface.
 - The comment system was improved:
@@ -23,17 +23,24 @@
 - The sender name and reply-to of sent emails can now be set on a per-consultation-base (it was on a per-site-base before).
 - The logo of a consultation can (and has to be) uploaded now in the consultation settings. This enables using it as PDF-logo, and prevents mixed secure content warnings.
 - It is now possible to specify the visibility of the page in search engines / set the noindex-tag. By default, only the home page is indexable. Alternatively, everything or nothing can be set to indexable.
+- In the regular motion view, it is now possible to go to a specific line by simply typing in the line number and pressing enter.
 - Add a way to include the commercial FPDI-PDF-plugin.
 - It is now possible to restrict the access to one consultation to specific users, while leaving other consultations open for all.
 - In installations that use SAML/Grünes Netz for authentication, it is now possible to restrict the login to a specified list of users.
 - Improve compatibility with reverse proxies.
 - The default consultation path is not "std12345678" (random number) anymore, bust simply "std".
+- When creating a motion and it is not clear what agenda item it should belong to, the agenda item can now be set from the motion creation form.
+- Image and PDF upload fields in motions / applications now show the maximum file size.
+- When creating a motion, optional fields are now marked as such.
+- Bugfix: Improved compatibility with servers that do not support URL rewriting ("pretty" URLs).
 - Bugfix: When creating a new version of a motion and changing the motion type of this new motion afterwards, the changes between the two versions could not be displayed.
 - Bugfix: When Latex was not activated, new consultations were created with no PDF after saving the motion type the first time.
 - Bugfix: The list of tags to select when creating a motion is now sorted in the same way as in the consultation setting page.
 - Bugfix: When a section was completely empty in a motion and a amendment was created inserting something to this section, the original motion could not be displayed anymore.
 - Bugfix: When a motion type's create setting was set to "nobody", editing already created motions as an admin was impossible.
 - Bugfix: When creating a new version of a motion, it was not possible to merge none of the amendments.
+- Bugfix: After changing the line length, the old line was still in the cache for LaTeX-based PDF rendering.
+- Bugfix: When submitting an application containing a photo and the admin enabled submission confirmations by e-mail, the confirmation e-mail did not corretly link to the image.
 - Obsolete: The old, non-fuctional OpenID-based Wurzelwerk-login was removed.
 - Obsolete: The facebook image feature was removed, as nobody used it and was rather tricky to use anyway.
 

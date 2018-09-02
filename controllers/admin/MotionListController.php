@@ -149,7 +149,7 @@ class MotionListController extends AdminBase
     protected function actionListallProposalAmendments()
     {
         if ($this->isRequestSet('proposalVisible')) {
-            foreach ($this->getRequestValue('amendments') as $amendmentId) {
+            foreach ($this->getRequestValue('amendments', []) as $amendmentId) {
                 $amendment = $this->consultation->getAmendment($amendmentId);
                 if (!$amendment) {
                     continue;
