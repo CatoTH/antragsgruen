@@ -15,4 +15,5 @@ class Content
     public $textMain          = '';
     public $textRight         = '';
     public $imageData         = [];
+    public $lineLength;
 }

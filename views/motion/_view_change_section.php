@@ -2,7 +2,6 @@
 
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
-use yii\helpers\Html;
 
 /**
  * @var \app\models\MotionSectionChanges $change

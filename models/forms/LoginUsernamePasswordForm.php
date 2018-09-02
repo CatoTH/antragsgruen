@@ -7,6 +7,8 @@ use app\models\db\EMailLog;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\Login;
+use app\models\exceptions\LoginInvalidPassword;
+use app\models\exceptions\LoginInvalidUser;
 use app\models\exceptions\MailNotSent;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
@@ -89,11 +91,11 @@ class LoginUsernamePasswordForm extends Model
             $this->error = str_replace('%MINLEN%', static::PASSWORD_MIN_LEN, \Yii::t('user', 'create_err_pwdlength'));
             throw new Login($this->error);
         }
-        if ($this->password != $this->passwordConfirm) {
+        if ($this->password !== $this->passwordConfirm) {
             $this->error = \Yii::t('user', 'create_err_pwdmismatch');
             throw new Login($this->error);
         }
-        if ($this->name == '') {
+        if (!$this->name) {
             $this->error = \Yii::t('user', 'create_err_noname');
             throw new Login($this->error);
         }
@@ -112,7 +114,7 @@ class LoginUsernamePasswordForm extends Model
      * @return User
      * @throws Login
      */
-    private function doCreateAccount($site)
+    public function doCreateAccount($site)
     {
         $this->doCreateAccountValidate($site);
 
@@ -183,9 +185,11 @@ class LoginUsernamePasswordForm extends Model
     /**
      * @param Site|null $site
      * @return User
+     * @throws LoginInvalidUser
+     * @throws LoginInvalidPassword
      * @throws Login
      */
-    private function checkLogin($site)
+    public function checkLogin($site)
     {
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
@@ -199,9 +203,9 @@ class LoginUsernamePasswordForm extends Model
         }
         $candidates = $this->getCandidates($site);
 
-        if (count($candidates) == 0) {
+        if (count($candidates) === 0) {
             $this->error = \Yii::t('user', 'login_err_username');
-            throw new Login($this->error);
+            throw new LoginInvalidUser($this->error);
         }
         foreach ($candidates as $tryUser) {
             if ($tryUser->validatePassword($this->password)) {
@@ -209,7 +213,7 @@ class LoginUsernamePasswordForm extends Model
             }
         }
         $this->error = \Yii::t('user', 'login_err_password');
-        throw new Login($this->error);
+        throw new LoginInvalidPassword($this->error);
     }
 
     /**

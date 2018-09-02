@@ -16,4 +16,18 @@ class Assets extends AssetBundle
     ];
     public $depends = [
     ];
+
+    /** @var null|string */
+    public static $myBaseUrl = null;
+
+    /**
+     * @param \yii\web\View $view
+     * @return AssetBundle
+     */
+    public static function register($view)
+    {
+        $myself = parent::register($view);
+        static::$myBaseUrl = $myself->baseUrl;
+        return $myself;
+    }
 }

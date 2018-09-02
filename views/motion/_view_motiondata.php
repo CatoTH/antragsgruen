@@ -145,7 +145,6 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
         'tdClass' => 'tags',
         'content' => $content,
     ];
-
 } elseif (count($motion->tags) > 0) {
     $tags = [];
     foreach ($motion->tags as $tag) {

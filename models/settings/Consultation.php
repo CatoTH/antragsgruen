@@ -4,7 +4,7 @@ namespace app\models\settings;
 
 use app\models\exceptions\Internal;
 
-class Consultation
+class Consultation implements \JsonSerializable
 {
     use JsonConfigTrait;
 

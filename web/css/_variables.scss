@@ -21,6 +21,9 @@ $blockquote-font-size: 14px !default;
 $motionListAmendmentColor: $colorGreenLight !default;
 
 $headingFont: 'sans-serif' !default;
+$headingFontSize: 15px !default;
+$headingFontLineHeight: 18px !default;
+$headingFontItalic: false !default;
 $headingPrimaryText: black !default;
 $headingPrimaryBackground: white !default;
 $headingSecondaryText: black !default;
@@ -53,10 +56,13 @@ $commentPadding: 10px !default;
 $commentBackground: #fafafa !default;
 $commentBorder: lightgrey !default;
 
+$homeAgendaTitlePrefixWidth: 90px !default;
+
 $screen-lg-min: 10000px; // deaktivieren
-$container-md: 1024px;
-$container-desktop: 1024px;
-$grid-float-breakpoint: 992px; // $screen-md-min;
+$container-md: 1024px !default;
+$container-desktop: 1024px !default;
+$content-max-width: 766px !default;
+$grid-float-breakpoint: 992px !default; // $screen-md-min;
 
 $icon-font-path: "../fonts/" !default;
 $contentBorderRadius: 10px !default;

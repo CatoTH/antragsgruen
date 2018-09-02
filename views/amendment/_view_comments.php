@@ -1,10 +1,8 @@
 <?php
 
-use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
 use app\models\db\User;
-use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
  * @var \yii\web\View $this

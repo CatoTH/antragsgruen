@@ -200,16 +200,21 @@ class MessageSource extends \yii\i18n\MessageSource
             $categoryFilename = 'consultation'; // 'con' is a restricted filename at Windows, see #254
         }
 
-        $consultation = UrlHelper::getCurrentConsultation();
-        if (!$consultation) {
-            $baseFile = $this->getMessageFilePath($categoryFilename, $language);
-            return $this->loadMessagesFromFile($baseFile);
-        };
-        $languages = explode(',', $consultation->wordingBase);
-
         $baseFile     = $this->getMessageFilePath($categoryFilename, 'en');
         $origMessages = $this->loadMessagesFromFile($baseFile);
 
+        $consultation = UrlHelper::getCurrentConsultation();
+        if (!$consultation) {
+            if ($language === 'en') {
+                return $origMessages;
+            } else {
+                $baseFile = $this->getMessageFilePath($categoryFilename, $language);
+                $transMessages = $this->loadMessagesFromFile($baseFile);
+                return array_merge($origMessages, $transMessages);
+            }
+        };
+
+        $languages = explode(',', $consultation->wordingBase);
         $baseMessages = $extMessages = [];
         foreach ($languages as $lang) {
             $parts = explode('-', $lang);

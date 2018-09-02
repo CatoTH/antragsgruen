@@ -29,7 +29,7 @@ class m180623_113955_motionTypeSettings extends Migration
                 // source code of the active rectords would already expect here
                 $connection->createCommand()->update(
                     'consultationMotionType',
-                    ['settings' => $settings->toJSON()],
+                    ['settings' => json_encode($settings, JSON_PRETTY_PRINT)],
                     ['id' => $motionType->id]
                 )->execute();
             }

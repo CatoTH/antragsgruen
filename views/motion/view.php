@@ -156,6 +156,23 @@ if ($right == '') {
     echo '</div></div>';
 }
 
+?>
+    <form class="gotoLineNumerPanel form-inline">
+        <div class="form-group">
+            <label class="sr-only" for="gotoLineNumber">Line number</label>
+            <div class="input-group">
+                <div class="input-group-addon"><?= \Yii::t('motion', 'goto_line') ?>:</div>
+                <input type="number" name="lineNumber" id="gotoLineNumber" class="form-control">
+                <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
+                    </span>
+            </div>
+        </div>
+
+        <span class="lineNumberNotFound hidden"><?= \Yii::t('motion', 'goto_line_err') ?></span>
+    </form>
+<?php
+
 $currUserId    = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
 $supporters    = $motion->getSupporters();
 $supportType   = $motion->motionType->getMotionSupportTypeClass();

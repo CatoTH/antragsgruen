@@ -10,7 +10,6 @@ use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\User;
-use app\models\exceptions\Access;
 use app\models\exceptions\Internal;
 use app\models\exceptions\NotFound;
 use app\models\forms\MergeSingleAmendmentForm;

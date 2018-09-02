@@ -7,6 +7,7 @@ use app\components\latex\Content;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\IMotionSection;
+use app\models\db\MotionSection;
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
@@ -25,6 +26,8 @@ abstract class ISectionType
 
     /** @var IMotionSection */
     protected $section;
+
+    protected $absolutizeLinks = false;
 
     /**
      * @param IMotionSection $section
@@ -50,67 +53,28 @@ abstract class ISectionType
     }
 
     /**
-     * @param bool $fullHtml
-     * @param bool $fixedWidth
-     * @return string
+     * @param boolean $absolutize
      */
-    protected function getTextMotionFormField($fullHtml, $fixedWidth)
+    public function setAbsolutizeLinks($absolutize)
     {
-        $type = $this->section->getSettings();
-        return HTMLTools::getMotionFormField(
-            $type->id,
-            $this->section->data,
-            $type->title,
-            $type->maxLen,
-            $fullHtml,
-            $fixedWidth,
-            $type->getForbiddenMotionFormattings()
-        );
+        $this->absolutizeLinks = $absolutize;
     }
 
+
     /**
-     * @param bool $fullHtml
-     * @param string $data
-     * @param bool $fixedWidth
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function getTextAmendmentFormField($fullHtml, $data, $fixedWidth)
+    protected function getFormLabel()
     {
-        /** @var AmendmentSection $section */
-        $section      = $this->section;
-        $type         = $section->getSettings();
-        $nameBase     = 'sections[' . $type->id . ']';
-        $htmlId       = 'sections_' . $type->id;
-        $originalHtml = ($section->getOriginalMotionSection() ? $section->getOriginalMotionSection()->data : '');
-
-        $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
-        $str .= ' data-max-len="' . $type->maxLen . '"';
-        $str .= ' data-full-html="' . ($fullHtml ? '1' : '0') . '"';
-        $str .= '><label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-
-        $str .= '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
-            'title="' . Html::encode($type->title) . '"></textarea>';
-        $str .= '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
-            'title="' . Html::encode($type->title) . '"></textarea>';
-        $str .= '<div class="motionTextFormatted motionTextFormattings texteditor boxed';
-        if ($fixedWidth) {
-            $str .= ' fixedWidthFont';
+        /** @var MotionSection $section */
+        $type = $this->section->getSettings();
+        $str  = '<label for="sections_' . $type->id . '"';
+        if ($type->required) {
+            $str .= ' class="required" data-required-str="' . Html::encode(\Yii::t('motion', 'field_required')) . '"';
+        } else {
+            $str .= ' class="optional" data-optional-str="' . Html::encode(\Yii::t('motion', 'field_optional')) . '"';
         }
-        $str .= '" data-track-changed="1" data-enter-mode="br" data-no-strike="1" ' .
-            'data-original-html="' . Html::encode($originalHtml) . '" ' .
-            'id="' . $htmlId . '_wysiwyg" title="' . Html::encode($type->title) . '">';
-        $str .= HTMLTools::prepareHTMLForCkeditor($data);
-        $str .= '</div>';
-
-        if (HTMLTools::cleanSimpleHtml($originalHtml) != HTMLTools::cleanSimpleHtml($data)) {
-            $str .= '<div class="modifiedActions"><button class="btn-link resetText" type="button">';
-            $str .= \Yii::t('amend', 'revert_changes');
-            $str .= '</button></div>';
-        }
-
-        $str .= '</div>';
-
+        $str .= '>' . Html::encode($type->title) . '</label>';
         return $str;
     }
 

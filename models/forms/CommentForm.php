@@ -5,7 +5,6 @@ namespace app\models\forms;
 use app\components\AntiSpam;
 use app\models\db\Amendment;
 use app\models\db\AmendmentComment;
-use app\models\db\ConsultationLog;
 use app\models\db\ConsultationMotionType;
 use app\models\db\IComment;
 use app\models\db\Motion;

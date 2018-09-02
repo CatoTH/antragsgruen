@@ -91,6 +91,7 @@ class LayoutHelper
         $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
+        $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;
@@ -151,7 +152,7 @@ class LayoutHelper
 
         $pdfLayout->printMotionHeader($motion);
 
-        // PDFs should be attached at the end, to prevent collission with other parts of the motion text; see #242
+        // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
             if ($section->getSettings()->type == ISectionType::TYPE_PDF) {

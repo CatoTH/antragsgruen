@@ -40,13 +40,15 @@ class EmailNotifications
 
             $sections = $motion->getSortedSections(true);
             foreach ($sections as $section) {
-                $motionHtml .= '<div>';
-                $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-                $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
+                $motionHtml   .= '<div>';
+                $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+                $typedSection = $section->getSectionType();
+                $typedSection->setAbsolutizeLinks(true);
+                $motionHtml .= $typedSection->getMotionPlainHtml();
                 $motionHtml .= '</div>';
             }
 
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
             $plain .= "\n\n" . HTMLTools::toPlainText($motionHtml);
 
             $plain = str_replace('%LINK%', $motionLink, $plain);
@@ -91,12 +93,14 @@ class EmailNotifications
         $sections   = $motion->getSortedSections(true);
 
         foreach ($sections as $section) {
-            $motionHtml .= '<div>';
-            $motionHtml .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-            $motionHtml .= $section->getSectionType()->getMotionPlainHtml();
+            $motionHtml   .= '<div>';
+            $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
+            $typedSection = $section->getSectionType();
+            $typedSection->setAbsolutizeLinks(true);
+            $motionHtml .= $typedSection->getMotionPlainHtml();
             $motionHtml .= '</div>';
         }
-        $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
         $plain .= HTMLTools::toPlainText($html);
 
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
@@ -135,7 +139,7 @@ class EmailNotifications
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
             $plain      = str_replace('%LINK%', $motionLink, $plain);
             $html       = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
-            
+
             try {
                 MailTools::sendWithLog(
                     EMailLog::TYPE_MOTION_SUPPORTER_REACHED,
@@ -161,7 +165,7 @@ class EmailNotifications
             return;
         }
 
-        $initiator = $amendment->getInitiators();
+        $initiator  = $amendment->getInitiators();
         $motionType = $amendment->getMyMotion()->motionType;
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             if ($amendment->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
@@ -174,7 +178,7 @@ class EmailNotifications
                 $emailTitle = \Yii::t('amend', 'submitted_screening_email_subject');
             }
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-            $plain      = $emailText;
+            $plain         = $emailText;
             $amendmentHtml = '<h1>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h1>';
 
             $sections = $amendment->getSortedSections(true);
@@ -184,7 +188,7 @@ class EmailNotifications
                 $amendmentHtml .= '</div>';
             }
 
-            $html = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
             $plain .= "\n\n" . HTMLTools::toPlainText($amendmentHtml);
 
             $plain = str_replace('%LINK%', $amendmentLink, $plain);
@@ -224,8 +228,8 @@ class EmailNotifications
             $plain     = HTMLTools::toPlainText($html);
 
             $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-            $plain      = str_replace('%LINK%', $amendmentLink, $plain);
-            $html       = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
+            $plain         = str_replace('%LINK%', $amendmentLink, $plain);
+            $html          = str_replace('%LINK%', Html::a(Html::encode($amendmentLink), $amendmentLink), $html);
 
             try {
                 MailTools::sendWithLog(

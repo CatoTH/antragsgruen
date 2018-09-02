@@ -1,7 +1,6 @@
 <?php
 
 use app\models\db\Motion;
-use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
 
 /**

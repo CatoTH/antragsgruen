@@ -272,7 +272,7 @@ echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => 
     <div class="thumbnailedLayoutSelector">
         <?php
         $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
-        foreach ($motionType->getAvailablePDFTemplates() as $lId => $layout) {
+        foreach (ConsultationMotionType::getAvailablePDFTemplates() as $lId => $layout) {
             echo '<label class="layout ' . $lId . '">';
             echo Html::radio('pdfTemplate', $lId === $currValue, ['value' => $lId]);
             echo '<span>';

@@ -5,7 +5,6 @@ use app\components\ProposedProcedureAgenda;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\IMotion;
-use app\models\db\User;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 

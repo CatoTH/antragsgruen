@@ -4,7 +4,6 @@ namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\controllers\Base;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\forms\CommentForm;
@@ -23,8 +22,8 @@ class Title extends ISectionType
     public function getMotionFormField()
     {
         $type = $this->section->getSettings();
-        $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>';
+        $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">';
+        $str .= $this->getFormLabel();
 
         if ($type->maxLen != 0) {
             $len = abs($type->maxLen);
@@ -94,11 +93,10 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-
         if (!$section->getOriginalMotionSection()) {
             return '';
         }
-        if ($section->data == $section->getOriginalMotionSection()->data) {
+        if ($this->isEmpty() || $section->data === $section->getOriginalMotionSection()->data) {
             return '';
         }
         if ($sectionTitlePrefix) {
@@ -119,7 +117,7 @@ class Title extends ISectionType
      */
     public function isEmpty()
     {
-        return ($this->section->data == '');
+        return ($this->section->data === '');
     }
 
     /**

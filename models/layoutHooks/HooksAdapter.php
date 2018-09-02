@@ -58,6 +58,15 @@ class HooksAdapter implements Hooks
      * @param $before
      * @return string
      */
+    public function favicons($before)
+    {
+        return $before;
+    }
+
+    /**
+     * @param $before
+     * @return string
+     */
     public function beforeContent($before)
     {
         return $before;

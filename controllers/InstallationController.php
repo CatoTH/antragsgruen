@@ -179,6 +179,7 @@ class InstallationController extends Base
                 }
 
                 $dbForm->overwriteYiiConnection();
+                $dbForm->overwritePrettyUrls();
 
                 if ($dbForm->adminUsername != '' && $dbForm->adminPassword != '') {
                     $dbForm->createOrUpdateAdminAccount();

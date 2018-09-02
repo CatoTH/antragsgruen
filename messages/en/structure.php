@@ -35,6 +35,7 @@ return [
     'policy_all_title'            => 'Everyone',
     'policy_all_desc'             => 'Everyone',
     'policy_nobody_title'         => 'Nobody',
+    'policy_nobody_desc'          => 'Amendments are deactivated. This page is only accessible because you are admin.',
     'policy_nobody_motion_denied' => 'Currently nobody can create motions.',
     'policy_nobody_amend_denied'  => 'Currently nobody can create amendments.',
     'policy_nobody_comm_denied'   => 'Currently nobody can comment.',

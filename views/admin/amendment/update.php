@@ -83,73 +83,105 @@ echo Html::beginForm('', 'post', [
     'data-antragsgruen-widget' => 'backend/AmendmentEdit',
 ]);
 
+
 echo '<div class="content form-horizontal fuelux">';
 
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="amendmentStatus">';
-echo \Yii::t('admin', 'motion_status');
-echo ':</label><div class="col-md-4">';
-$options  = ['id' => 'amendmentStatus'];
-$statuses = Amendment::getStatusNamesVisibleForAdmins();
-echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
-echo '</div><div class="col-md-5">';
-$options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
-echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
-echo '</div></div>';
+?>
+<div class="form-group">
+    <label class="col-md-3 control-label" for="amendmentStatus">
+        <?= \Yii::t('admin', 'motion_status') ?>:
+    </label>
+    <div class="col-md-4">
+        <?php
+        $options  = ['id' => 'amendmentStatus'];
+        $statuses = Amendment::getStatusNamesVisibleForAdmins();
+        echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
+        ?>
+    </div>
+    <div class="col-md-5">
+        <?php
+        $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
+        echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
+        ?>
+    </div>
+</div>
 
+<div class="form-group">
+    <label class="col-md-3 control-label" for="amendmentTitlePrefix">
+        <?= \Yii::t('amend', 'prefix') ?>:
+    </label>
+    <div class="col-md-4">
+        <?php
+        $options = [
+            'class'       => 'form-control',
+            'id'          => 'amendmentTitlePrefix',
+            'placeholder' => \Yii::t('admin', 'amend_prefix_placeholder'),
+        ];
+        echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
+        ?>
+        <small><?= \Yii::t('admin', 'amend_prefix_unique') ?></small>
+    </div>
+</div>
 
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="amendmentTitlePrefix">';
-echo \Yii::t('amend', 'prefix');
-echo ':</label><div class="col-md-4">';
-$options = [
-    'class'       => 'form-control',
-    'id'          => 'amendmentTitlePrefix',
-    'placeholder' => \Yii::t('admin', 'amend_prefix_placeholder'),
-];
-echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
-echo '<small>' . \Yii::t('admin', 'amend_prefix_unique') . '</small>';
-echo '</div></div>';
+    <div class="form-group">
+    <label class="col-md-3 control-label" for="amendmentDateCreation">
+        <?= \Yii::t('admin', 'amend_created_at') ?>:
+    </label>
+    <div class="col-md-4">
+        <div class="input-group date" id="amendmentDateCreationHolder">
+            <?php
+            $locale = Tools::getCurrentDateLocale();
+            $date = Tools::dateSql2bootstraptime($amendment->dateCreation);
+            ?>
+            <input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
+                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+</div>
 
+<div class="form-group">
+    <label class="col-md-3 control-label" for="amendmentDateResolution">
+        <?= \Yii::t('admin', 'amend_resoluted_on') ?>:
+    </label>
+    <div class="col-md-4">
+        <div class="input-group date" id="amendmentDateResolutionHolder">
+            <?php
+            $date = Tools::dateSql2bootstraptime($amendment->dateResolution);
+            ?>
+            <input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
+                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        </div>
+    </div>
+</div>
 
-$locale = Tools::getCurrentDateLocale();
+<div class="form-group">
+    <label class="col-md-3 control-label" for="globalAlternative">
+        <?= \Yii::t('admin', 'amend_globalalt') ?>:
+    </label>
+    <div class="col-md-4">
+        <?= Html::checkbox(
+            'amendment[globalAlternative]',
+            $amendment->globalAlternative,
+            ['id' => 'globalAlternative']
+        ) ?>
+    </div>
+</div>
 
-$date = Tools::dateSql2bootstraptime($amendment->dateCreation);
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="amendmentDateCreation">';
-echo \Yii::t('admin', 'amend_created_at');
-echo ':</label><div class="col-md-4"><div class="input-group date" id="amendmentDateCreationHolder">';
-echo '<input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
-                value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
-echo '</div></div></div>';
+<div class="form-group">
+    <label class="col-md-3 control-label" for="amendmentNoteInternal">
+        <?= \Yii::t('admin', 'internal_note') ?>:
+    </label>
+    <div class="col-md-9">
+        <?php
+        $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
+        echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
+        ?>
+    </div>
+</div>
 
-$date = Tools::dateSql2bootstraptime($amendment->dateResolution);
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="amendmentDateResolution">';
-echo \Yii::t('admin', 'amend_resoluted_on');
-echo ':</label><div class="col-md-4"><div class="input-group date" id="amendmentDateResolutionHolder">';
-echo '<input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
-                value="' . Html::encode($date) . '" data-locale="' . Html::encode($locale) . '">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>';
-echo '</div></div></div>';
-
-
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="globalAlternative">';
-echo \Yii::t('admin', 'amend_globalalt');
-echo ':</label><div class="col-md-4">';
-echo Html::checkbox('amendment[globalAlternative]', $amendment->globalAlternative, ['id' => 'globalAlternative']);
-echo '</div></div>';
-
-
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="amendmentNoteInternal">';
-echo \Yii::t('admin', 'internal_note');
-echo ':</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
-echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
-echo '</div></div>';
+<?php
 
 echo '</div>';
 
@@ -160,22 +192,30 @@ foreach ($sections as $section) {
     echo $section->getSectionType()->getAmendmentFormatted();
 }
 
-if ($amendment->changeEditorial != '') {
-    echo '<section id="amendmentEditorialHint" class="motionTextHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
-    echo '<div class="paragraph"><div class="text motionTextFormattings">';
-    echo $amendment->changeEditorial;
-    echo '</div></div>';
-    echo '</section>';
+if ($amendment->changeEditorial !== '') {
+    ?>
+    <section id="amendmentEditorialHint" class="motionTextHolder">
+        <h3 class="green"><?= \Yii::t('amend', 'editorial_hint') ?></h3>
+        <div class="paragraph">
+            <div class="text motionTextFormattings">
+                <?= $amendment->changeEditorial ?>
+            </div>
+        </div>
+    </section>
+    <?php
 }
 
-if ($amendment->changeExplanation != '') {
-    echo '<section id="amendmentExplanation" class="motionTextHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
-    echo '<div class="paragraph"><div class="text motionTextFormattings">';
-    echo $amendment->changeExplanation;
-    echo '</div></div>';
-    echo '</section>';
+if ($amendment->changeExplanation !== '') {
+    ?>
+    <section id="amendmentExplanation" class="motionTextHolder">
+        <h3 class="green"><?= \Yii::t('amend', 'reason') ?></h3>
+        <div class="paragraph">
+            <div class="text motionTextFormattings">
+                <?= $amendment->changeExplanation ?>
+            </div>
+        </div>
+    </section>
+    <?php
 }
 
 $multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;

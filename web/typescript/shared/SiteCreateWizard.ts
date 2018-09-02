@@ -1,4 +1,5 @@
 interface WizardState {
+    language: string;
     wording: number;
     singleMotion: number;
     motionsInitiatedBy: number;
@@ -24,13 +25,13 @@ interface WizardState {
 }
 
 class SiteCreateWizard {
-    private firstPanel: string = "#panelPurpose";
+    private firstPanel: string;
     private mode: string;
     private data: WizardState;
     private $activePanel: JQuery;
 
     constructor(private $root: JQuery) {
-        this.firstPanel = "#panelPurpose";
+        this.firstPanel = $("#SiteCreateWizard").data("init-step");
         this.mode = $("#SiteCreateWizard").data("mode");
         this.initEvents();
     }
@@ -46,6 +47,7 @@ class SiteCreateWizard {
 
     getWizardState(): WizardState {
         return {
+            language: this.getRadioValue('language', null),
             wording: this.getRadioValue('wording', 1),
             singleMotion: this.getRadioValue('singleMotion', 0),
             motionsInitiatedBy: this.getRadioValue('motionWho', 1),
@@ -102,6 +104,8 @@ class SiteCreateWizard {
 
         switch (this.$activePanel.attr("id")) {
             case 'panelPurpose':
+                return "#panelSingleMotion";
+            case 'panelLanguage':
                 return "#panelSingleMotion";
             case 'panelSingleMotion':
                 if (this.data.singleMotion == 1) {
@@ -248,6 +252,12 @@ class SiteCreateWizard {
             if (original.charCode === 13 || original.keyCode === 13) {
                 ev.preventDefault();
             }
+        });
+
+        $form.find("#panelLanguage input").on("change", function() {
+            const val = $form.find("#panelLanguage input:checked").val();
+            const url = $form.find("#panelLanguage").data("url").replace(/LNG/, val);
+            window.location.href = url;
         });
 
         let obj = this;

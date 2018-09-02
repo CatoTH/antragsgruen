@@ -167,7 +167,6 @@
 }
 
 .motionListBelowAgenda {
-  $titlePrefixWidth: 90px;
   .motion {
     padding: 12px 30px 17px 30px;
 
@@ -182,14 +181,14 @@
       .motionPrefix {
         word-break: break-all;
         word-wrap: break-word;
-        width: $titlePrefixWidth;
+        width: $homeAgendaTitlePrefixWidth;
         float: left;
         left: 30px;
         top: 13px;
       }
       .motionTitle {
         display: block;
-        margin-left: $titlePrefixWidth + 5px;
+        margin-left: $homeAgendaTitlePrefixWidth + 5px;
       }
       .pdfLink {
         display: none;
@@ -197,7 +196,7 @@
     }
     .info {
       display: block;
-      margin-left: 95px;
+      margin-left: $homeAgendaTitlePrefixWidth + 5px;
     }
     .clearfix {
       clear: both;
@@ -206,12 +205,12 @@
   ul.amendments {
     margin-bottom: 10px;
     @media screen and (min-width: 600px) {
-      margin-left: $titlePrefixWidth + 5px;
+      margin-left: $homeAgendaTitlePrefixWidth + 5px;
     }
     > li {
       > a {
         float: left;
-        width: 90px;
+        width: $homeAgendaTitlePrefixWidth;
         left: 0;
         top: 0;
       }
@@ -222,7 +221,7 @@
   }
   h4.amendments {
     @media screen and (min-width: 600px) {
-      margin-left: $titlePrefixWidth + 5px;
+      margin-left: $homeAgendaTitlePrefixWidth + 5px;
     }
     margin-top: 10px;
     margin-bottom: 5px;

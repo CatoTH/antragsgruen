@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\MotionSection;
@@ -62,9 +63,14 @@ class Image extends ISectionType
             $required = ($type->required ? 'required' : '');
         }
         $str .= '<div class="form-group" style="overflow: auto;">';
-        $str .= '
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
+        $str .= $this->getFormLabel();
+
+        $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
+        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+        $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
+        $str     .= '</div>';
+
+        $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
             ' name="sections[' . $type->id . ']">
         </div>';
         if ($url) {
@@ -94,11 +100,11 @@ class Image extends ISectionType
         if ($app->imageMagickPath === null) {
             return file_get_contents($filename);
         } elseif (!file_exists($app->imageMagickPath)) {
-            throw new Internal("ImageMagick not correctly set up");
+            throw new Internal('ImageMagick not correctly set up');
         }
 
         $tmpfile = $app->tmpDir . uniqid('image-conv-') . "." . $targetType;
-        exec($app->imageMagickPath . " -strip " . escapeshellarg($filename) . " " . escapeshellarg($tmpfile));
+        exec($app->imageMagickPath . ' -strip ' . escapeshellarg($filename) . ' ' . escapeshellarg($tmpfile));
         $converted = (file_exists($tmpfile) ? file_get_contents($tmpfile) : '');
         unlink($tmpfile);
         return $converted;
@@ -179,7 +185,8 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $type    = $section->getSettings();
-        $str     = '<img src="' . Html::encode($this->getImageUrl()) . '" alt="' . Html::encode($type->title) . '">';
+        $url     = $this->getImageUrl($this->absolutizeLinks);
+        $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }
 
@@ -255,7 +262,7 @@ class Image extends ISectionType
      */
     public function getMotionPlainText()
     {
-        return '[BILD]';
+        return '[IMAGE]';
     }
 
     /**
@@ -263,19 +270,33 @@ class Image extends ISectionType
      */
     public function getAmendmentPlainText()
     {
-        return '[BILD]';
+        return '[IMAGE]';
     }
 
     /**
      * @param bool $isRight
      * @param Content $content
      * @param Consultation $consultation
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         /** @var AntragsgruenApp $params */
         $params       = \Yii::$app->params;
         $filenameBase = uniqid('motion-pdf-image');
+
+        $metadata = json_decode($this->section->metadata, true);
+        switch ($metadata['mime']) {
+            case 'image/png':
+                $filenameBase .= '.png';
+                break;
+            case 'image/jpg':
+            case 'image/jpeg':
+                $filenameBase .= '.jpg';
+                break;
+            case 'image/gif':
+                $filenameBase .= '.gif';
+        }
 
         $content->imageData[$filenameBase] = base64_decode($this->section->data);
         if ($isRight) {
@@ -293,9 +314,9 @@ class Image extends ISectionType
     public function printAmendmentTeX($isRight, Content $content)
     {
         if ($isRight) {
-            $content->textRight .= '[BILD]';
+            $content->textRight .= '[IMAGE]';
         } else {
-            $content->textMain .= '[BILD]';
+            $content->textMain .= '[IMAGE]';
         }
     }
 
@@ -304,7 +325,7 @@ class Image extends ISectionType
      */
     public function getMotionODS()
     {
-        return '<p>[BILD]</p>';
+        return '<p>[IMAGE]</p>';
     }
 
     /**
@@ -312,7 +333,7 @@ class Image extends ISectionType
      */
     public function getAmendmentODS()
     {
-        return '<p>[BILD]</p>';
+        return '<p>[IMAGE]</p>';
     }
 
     /**
@@ -321,7 +342,7 @@ class Image extends ISectionType
     public function printMotionToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false);
+        $odt->addHtmlTextBlock('[IMAGE]', false);
     }
 
     /**
@@ -330,7 +351,7 @@ class Image extends ISectionType
     public function printAmendmentToODT(Text $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[BILD]', false);
+        $odt->addHtmlTextBlock('[IMAGE]', false);
     }
 
     /**

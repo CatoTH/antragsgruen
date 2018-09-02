@@ -3,6 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\VarStream;
 use app\models\db\Consultation;
@@ -61,9 +62,14 @@ class PDF extends ISectionType
             $required = ($type->required ? 'required' : '');
         }
         $str .= '<div class="form-group" style="overflow: auto;">';
-        $str .= '
-            <label for="sections_' . $type->id . '">' . Html::encode($type->title) . '</label>
-            <input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
+        $str .= $this->getFormLabel();
+
+        $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
+        $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
+        $str     .= str_replace('%MB%', $maxSize, \Yii::t('motion', 'max_size_hint'));
+        $str     .= '</div>';
+
+        $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
             ' name="sections[' . $type->id . ']">
         </div>';
         if ($url) {
@@ -234,8 +240,6 @@ class PDF extends ISectionType
                 } elseif (is_array($params->pdfExportIntegFrame)) {
                     $config   = $params->pdfExportIntegFrame;
                     $color    = [0, 0, 0];
-                    $lw       = 0.1;
-                    $absolute = true;
                     if (isset($config['color'])) {
                         $color = $config['color'];
                         unset($config['color']);
@@ -245,7 +249,6 @@ class PDF extends ISectionType
                         unset($config['lw']);
                     }
                     if (isset($config['abs'])) {
-                        $absolute = $config['abs'];
                         unset($config['abs']);
                     }
                     foreach ($config as $key => $length) {

@@ -146,19 +146,6 @@ class ModuleBase extends Module
     }
 
     /**
-     * @return string
-     */
-    public static function getSiteCreateView()
-    {
-        foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
-            if ($pluginClass::getCustomSiteCreateView()) {
-                return $pluginClass::getCustomSiteCreateView();
-            }
-        }
-        return "@app/plugins/green_manager/views/sitedata_subdomain";
-    }
-
-    /**
      * @param Consultation $consultation
      * @param Action $action
      * @param boolean $default

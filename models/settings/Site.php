@@ -2,7 +2,7 @@
 
 namespace app\models\settings;
 
-class Site
+class Site implements \JsonSerializable
 {
     use JsonConfigTrait;
 

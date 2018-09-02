@@ -111,4 +111,33 @@ class LayoutHooks extends HooksAdapter
         $html .= Html::endForm();
         return $html;
     }
+
+    /**
+     * @param string $before
+     * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function footerLine($before)
+    {
+        $out = '<footer class="footer"><div class="container">';
+
+        if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
+            $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
+            $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
+
+            $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
+                \Yii::t('base', 'imprint') . '</a>
+            <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
+                \Yii::t('base', 'privacy_statement') . '</a>';
+        }
+
+        $out .= '<span class="version">';
+        $out .= '<a href="https://discuss.green/">Discuss.green / Antragsgrün</a>, Version ' .
+            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+        $out .= '</span>';
+
+        $out .= '</div></footer>';
+
+        return $out;
+    }
 }

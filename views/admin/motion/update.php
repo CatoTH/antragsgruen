@@ -204,45 +204,53 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
     </div>
 </div>
 
-<?php
-if (count($consultation->tags) > 0) {
-    echo '<div class="form-group">';
-    echo '<label class="col-md-3 control-label">';
-    echo \Yii::t('admin', 'motion_topics');
-    echo ':</label><div class="col-md-9 tagList">';
-    foreach ($consultation->tags as $tag) {
-        echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
-        foreach ($motion->tags as $mtag) {
-            if ($mtag->id == $tag->id) {
-                echo ' checked';
+<?php if (count($consultation->tags) > 0) { ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label">
+            <?= \Yii::t('admin', 'motion_topics') ?>:
+        </label>
+        <div class="col-md-9 tagList">
+            <?php
+            foreach ($consultation->tags as $tag) {
+                echo '<label><input type="checkbox" name="tags[]" value="' . $tag->id . '"';
+                foreach ($motion->tags as $mtag) {
+                    if ($mtag->id == $tag->id) {
+                        echo ' checked';
+                    }
+                }
+                echo '> ' . Html::encode($tag->title) . '</label>';
             }
-        }
-        echo '> ' . Html::encode($tag->title) . '</label>';
-    }
-    echo '</div></div>';
-}
+            ?>
+        </div>
+    </div>
+<?php } ?>
 
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="nonAmendable">';
-echo \Yii::t('admin', 'motion_non_amendable_title');
-echo ':</label><div class="col-md-9 nonAmendable">';
-echo '<label><input type="checkbox" name="motion[nonAmendable]" value="1"';
-if ($motion->nonAmendable) {
-    echo ' checked';
-}
-echo ' id="nonAmendable"> ' . \Yii::t('admin', 'motion_non_amendable') . '</label>';
-echo '</div></div>';
+<div class="form-group">
+    <label class="col-md-3 control-label" for="nonAmendable">
+        <?= \Yii::t('admin', 'motion_non_amendable_title') ?>:
+    </label>
+    <div class="col-md-9 nonAmendable">
+        <label>
+            <input type="checkbox" name="motion[nonAmendable]" value="1" id="nonAmendable"
+                <?= ($motion->nonAmendable ? 'checked' : '') ?>>
+            <?= \Yii::t('admin', 'motion_non_amendable') ?>
+        </label>
+    </div>
+</div>
 
+<div class="form-group">
+    <label class="col-md-3 control-label" for="motionNoteInternal">
+        <?= \Yii::t('admin', 'motion_note_internal') ?>:
+    </label>
+    <div class="col-md-9">
+        <?php
+        $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
+        echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
+        ?>
+    </div>
+</div>
 
-echo '<div class="form-group">';
-echo '<label class="col-md-3 control-label" for="motionNoteInternal">';
-echo \Yii::t('admin', 'motion_note_internal');
-echo ':</label><div class="col-md-9">';
-$options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
-echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
-echo '</div></div>';
-
-
+<?php
 echo '</div>';
 
 
@@ -265,7 +273,7 @@ if (!$motion->textFixed) {
     }
 
     foreach ($form->sections as $section) {
-        if ($section->getSettings()->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+        if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
             continue;
         }
         echo $section->getSectionType()->getMotionFormField();

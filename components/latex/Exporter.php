@@ -274,12 +274,14 @@ class Exporter
                     if (count($classes) == 0) {
                         return $content;
                     }
+                    /*
                     if (in_array('underline', $classes)) {
                         // $content = '\uline{' . $content . '}';
                     }
                     if (in_array('strike', $classes)) {
                         // $content = '\sout{' . $content . '}';
                     }
+                    */
                     if (in_array('ins', $classes)) {
                         //$content = '\textcolor{Insert}{\uline{' . $content . '}}';
                         $content = '\textcolor{Insert}{' . $content . '}';
@@ -417,6 +419,7 @@ class Exporter
         }
         $layoutStr   = static::createLayoutString($this->layout);
         $contentStr  = '';
+        $cacheDepend = '';
         $count       = 0;
         $imageFiles  = [];
         $imageHashes = [];
@@ -426,13 +429,14 @@ class Exporter
             }
             $contentStr .= static::createContentString($content);
             foreach ($content->imageData as $fileName => $fileData) {
-                if (preg_match('/[^a-z0-9_-]/siu', $fileName)) {
+                if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
                     throw new Internal('Invalid image filename');
                 }
                 file_put_contents($this->app->tmpDir . $fileName, $fileData);
                 $imageHashes[$this->app->tmpDir . $fileName] = md5($fileData);
                 $imageFiles[]                                = $this->app->tmpDir . $fileName;
             }
+            $cacheDepend .= $content->lineLength . '.';
             $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
@@ -447,7 +451,7 @@ class Exporter
         }
         $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
 
-        $cacheDepend = $str;
+        $cacheDepend .= $str;
         foreach ($imageHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }

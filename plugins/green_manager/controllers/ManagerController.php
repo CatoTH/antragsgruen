@@ -10,6 +10,7 @@ use app\models\db\ConsultationText;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\exceptions\LoginInvalidUser;
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\forms\SiteCreateForm;
 use app\plugins\green_manager\Module;
@@ -65,11 +66,6 @@ class ManagerController extends Base
      */
     protected function requireEligibleToCreateUser()
     {
-        if ($this->getParams()->mode == 'sandbox') {
-            // In sandbox mode, everyone is allowed to create a site
-            return;
-        }
-
         $user = $this->eligibleToCreateUser();
         if (!$user) {
             $this->redirect(UrlHelper::createUrl('/green_manager/manager/index'));
@@ -79,6 +75,7 @@ class ManagerController extends Base
 
     /**
      * @param Consultation $consultation
+     * @param string $name
      * @throws FormError
      */
     protected function createWelcomePage(Consultation $consultation, $name)
@@ -88,7 +85,7 @@ class ManagerController extends Base
         $welcomeHtml .= 'you can edit this text and change it to a proper welcome message for your users ';
         $welcomeHtml .= 'by using the "Edit" button to the upper right.</p>';
         $welcomeHtml .= '<p>If you encounter any problems, please do not hesitate to contact us at ' .
-            '<a href="mailto:info@antragsgruen.de">info@antragsgruen.de</a>.</p>';
+            '<a href="mailto:info@discuss.green">info@discuss.green</a>.</p>';
 
         $legalText                 = new ConsultationText();
         $legalText->siteId         = $consultation->siteId;
@@ -118,22 +115,26 @@ class ManagerController extends Base
         if (isset($post['create'])) {
             $post['SiteCreateForm']['contact'] = $post['SiteCreateForm']['organization'];
 
-            if (User::getCurrentUser()) {
-                $user = User::getCurrentUser();
-            } else {
-                $userForm = new LoginUsernamePasswordForm();
-                $userForm->setAttributes([
-                    'createAccount'   => true,
-                    'username'        => $post['SiteCreateForm']['user_email'],
-                    'password'        => $post['SiteCreateForm']['user_pwd'],
-                    'passwordConfirm' => $post['SiteCreateForm']['user_pwd'],
-                    'name'            => $post['SiteCreateForm']['user_name'],
-                ]);
-                $user = $userForm->getOrCreateUser(null);
-                \Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
-            }
-
             try {
+                if (User::getCurrentUser()) {
+                    $user = User::getCurrentUser();
+                } else {
+                    $userForm = new LoginUsernamePasswordForm();
+                    $userForm->setAttributes([
+                        'username'        => $post['SiteCreateForm']['user_email'],
+                        'password'        => $post['SiteCreateForm']['user_pwd'],
+                        'passwordConfirm' => $post['SiteCreateForm']['user_pwd'],
+                        'name'            => $post['SiteCreateForm']['user_name'],
+                    ]);
+                    try {
+                        $user = $userForm->checkLogin(null);
+                        \Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+                    } catch (LoginInvalidUser $e) {
+                        $user = $userForm->doCreateAccount(null);
+                        \Yii::$app->user->login($user, $this->getParams()->autoLoginDuration);
+                    }
+                }
+
                 $model->setAttributes($post['SiteCreateForm']);
                 if ($model->validate()) {
                     $consultation = $model->create($user);
@@ -169,6 +170,14 @@ class ManagerController extends Base
     public function actionHelp()
     {
         return $this->render('help');
+    }
+
+    /**
+     * @return string
+     */
+    public function actionFreeHosting()
+    {
+        return $this->render('free_hosting_faq');
     }
 
     /**

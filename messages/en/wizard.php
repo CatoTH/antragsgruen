@@ -3,6 +3,7 @@
 return [
     'title' => 'Create a site',
 
+    'step_language'   => 'Language',
     'step_purpose'    => 'Purpose',
     'step_motions'    => 'Motions',
     'step_amendments' => 'Amendments',
@@ -18,6 +19,8 @@ return [
     'purpose_motions'        => 'Motions',
     'purpose_manifesto'      => 'Manifesto',
     'purpose_manifesto_desc' => '&nbsp;',
+
+    'language_title' => 'Language of the site',
 
     'single_mot_title' => 'Will multiple motions be discussed?',
     'single_man_title' => 'Are there multiple chapters / documents?',
@@ -119,7 +122,7 @@ return [
                                 <strong>Password:</strong> %ADMIN_PASSWORD%
                                 </blockquote>
                                 <br><br>
-                                However, please note that this site will be <strong>deleted after three days</strong>.<br><br>
+                                However, please note that this site might be <strong>deleted after three days</strong>.<br><br>
                                 <em>By the way: you can edit this text by clicking on "edit" on the top right.</em>',
 
     'cons_err_fields_missing' => 'Some fields are missing.',

@@ -7,7 +7,7 @@ return [
     'confirm_bread'                      => 'Bestätigen',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
-    'amendment_create_admin'             => 'nur Admins',
+    'amendment_create_admin'             => 'Admin',
     'amendments_merge'                   => 'Änderungsanträge einpflegen',
     'amendments_merge_noamend'           => 'Änderungen einpflegen',
     'none_yet'                           => 'Es gibt noch keine Anträge',
@@ -136,6 +136,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'withdraw_yes'                       => 'Zurückziehen',
     'withdrawn_adminnoti_title'          => 'Antrag zurückgezogen',
     'withdrawn_adminnoti_body'           => "Es wurde ein Antrag zurückgezogen.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
+    'field_optional'                     => 'optional',
+    'field_required'                     => 'benötigt',
+    'max_size_hint'                      => 'Max. %MB% MB',
     'max_len_hint'                       => 'Max. %LEN% Zeichen (Aktuell: %COUNT%)',
     'max_len_alert'                      => 'Der Text ist zu lang!',
     'create_explanation'                 => 'Wenn du einen <em>eigenständigen Antrag</em> stellen willst, bist du hier genau richtig.
@@ -194,4 +197,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
         "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
         "  Das Antragsgrün-Team",
+
+    'goto_line'     => 'Gehe zu Zeile',
+    'goto_line_go'  => 'Los',
+    'goto_line_err' => 'Zeile nicht gefunden',
 ];

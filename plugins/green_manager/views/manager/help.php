@@ -11,7 +11,7 @@ use app\models\db\Site;
 $this->title = 'Discuss.green - The Green Online Motion Administration';
 $controller  = $this->context;
 $controller->layoutParams->addCSS('css/manager.css');
-$controller->layoutParams->canonicalUrl      = 'https://motion.tools/help';
+$controller->layoutParams->canonicalUrl      = 'https://discuss.green/help';
 $controller->layoutParams->alternateLanuages = ['de' => 'https://antragsgruen.de/help'];
 
 $layout                   = $controller->layoutParams;
@@ -35,7 +35,7 @@ $params = \Yii::$app->params;
         <li>
             <a href="#basic_structure"
                onClick="$('#basic_structure').scrollintoview({top_offset: -30}); return false;">Basic structure of an
-                Antragsgrün-Site</a>
+                Discuss.green-Site</a>
             <ul>
                 <li><a href="#motions" onClick="$('#motions').scrollintoview({top_offset: -30}); return false;">Motions
                         / Amendments</a></li>
@@ -119,15 +119,15 @@ $params = \Yii::$app->params;
         </li>
     </ul>
 
-    <h2 id="basic_structure">Basic structure of an Antragsgrün-Site</h2>
+    <h2 id="basic_structure">Basic structure of an Discuss.green / Antragsgrün-Site</h2>
 
     <h3 id="motions">Motions / Amendments</h3>
-    <p>“Motion” refers to all kind of documents published on Antragsgrün. Originally, the system was primarily developed
+    <p>“Motion” refers to all kind of documents published on Discuss.green. Originally, the system was primarily developed
         for assemblies of political parties (and it still is one the most wide-spread usages), therefore we still use
         this term, although a lot more kinds of documents than only motions can be submitted and published – like
         applications for elections, (drafts for) manifestos, and so on.</p>
     <p>“Amendment” refers to special documents that aim to alter an existing motion by specifying how the motion is
-        supposed to look after applying the amendment. Antragsgrün specifically aims to ease the handling of lots of
+        supposed to look after applying the amendment. Discuss.green specifically aims to ease the handling of lots of
         amendments by many means. The original motion is annotated, thus indicating which parts of it is disputed, and
         it is easy to adopt the changes into a revised version of the motion (semi-)automatically.</p>
     <p>The submission process of both motions and amendments is highly flexible and adapts to many different scenarios –
@@ -138,7 +138,7 @@ $params = \Yii::$app->params;
     <p>A consultation is a collection of all motions, drafts, applications and so on being discussed at the same time.
         It may for example correspond to an assembly or conference, to a collection of chapters of a larger manifesto or
         an election with several open posts.</p>
-    <p>Each installation of Antragsgrün has at least one such consultation, but can have an arbitrary number as such.
+    <p>Each installation of Discuss.green has at least one such consultation, but can have an arbitrary number as such.
         Therefore if a conferences takes place on a regular basis, it’s not necessary to set up a new site every single
         time or remove the content of the previous conference: a new default consultation can be created, cloning the
         preferences of the previous one, without removing the old one or invalidating existing links to motions.</p>
@@ -150,13 +150,13 @@ $params = \Yii::$app->params;
         in terms of permissions, requirements or deadlines. For example, applications for an election usually need
         different input fields (name, biography, a photo) than motion (title, text, reason). Or some assemblies allow
         submitting urgency motions with another (or no) deadline than regular motions.</p>
-    <p>To enable this kind of flexibility, Antragsgrün uses the concept of motion types. An arbitrary number of motion
+    <p>To enable this kind of flexibility, Discuss.green uses the concept of motion types. An arbitrary number of motion
         types can be created for every consultation, each of them having its own name, structure and permissions. Every
         motion is of exactly one motion type.</p>
     <p>The motion types can be managed in the “Settings” at “Edit motion types”.</p>
 
     <h3 id="agenda">Agenda</h3>
-    <p>Setting up an agenda for a consultation is a purely optional feature of Antragsgrün and targets assemblies and
+    <p>Setting up an agenda for a consultation is a purely optional feature of Discuss.green and targets assemblies and
         conventions.</p>
     <p>For each agenda item, one motion type may (but does not have to) be set. Motions can be submitted for every
         agenda item with a motion type set and will appear under this very agenda item. That way, a convention may have
@@ -174,7 +174,7 @@ $params = \Yii::$app->params;
     <h3 id="proposers">Proposers, Supporters</h3>
 
     <p>Different organizations have different requirements for their members to submit motions of amendments.
-        Antragsgrün tries to cover as many of those needs as possible:</p>
+        Discuss.green tries to cover as many of those needs as possible:</p>
     <ul>
         <li>In the most simple case, submitting a motion is as easy as entering the title, the motion text and your
             name. Optionally, this can be coupled with a login process, requiring a valid username and password.
@@ -218,27 +218,27 @@ $params = \Yii::$app->params;
     <h3 id="login">Login / permissions</h3>
 
     <p>It is possible to restrict functions like submitting motions or amendments, or supporting or commenting on them
-        to registered users. Antragsgrün’s registration process is designed to support different kinds of login
+        to registered users. Discuss.green’s registration process is designed to support different kinds of login
         mechanisms.</p>
     <p>The most common way to register is by e-mail: new users can register an account by entering their address and a
         password and confirming a confirmation e-mail sent to that address. However, it is also possible to close user
         registration and restrict the login system to a list of known addresses. This can be done in the “Settings” at
         “Login / users / admins” by activating the “Only allow selected users to log in” option. Once done so, a new
         section “User accounts” appears, allowing to invite new users by entering their name and e-mail-address.</p>
-    <p>If Antragsgrün is supposed to leverage an existing Single-Sign-On-Solution, it is possible to include other log
-        in mechanisms. For example, Antragsgrün has been successfully deployed in environments providing OpenID- and
+    <p>If Discuss.green is supposed to leverage an existing Single-Sign-On-Solution, it is possible to include other log
+        in mechanisms. For example, Discuss.green has been successfully deployed in environments providing OpenID- and
         SAML-based SSO. If you are interested in that topic, please contact us.</p>
 
     <h3 id="deadlines">Deadlines</h3>
 
-    <p>Antragsgrün supports setting a deadline for submitting motions and amendments. This can be done individually for
+    <p>Discuss.green supports setting a deadline for submitting motions and amendments. This can be done individually for
         each motion type, with separate deadlines for motions and amendments respectively. You can enter an exact time,
         and once that point of time has passed, it is not possible anymore to submit or support motions.</p>
     <p>The deadlines can be set at “Settings” → “Edit motion types” → “Deadline”.</p>
 
     <h3 id="notifications">Notifications</h3>
 
-    <p>Antragsgrün offers many ways to stay up date on what’s happening on a consultation by e-mail-notifications.</p>
+    <p>Discuss.green offers many ways to stay up date on what’s happening on a consultation by e-mail-notifications.</p>
     <p>For <strong>regular participants</strong>, most of the notifications are optional. After registering on a site,
         you can go to the “E-mail notifications”-page via the link in the sidebar to the right. There, you can choose,
         of you want to get notifications when new motions, amendments or comments are published. By default, everyone
@@ -252,7 +252,7 @@ $params = \Yii::$app->params;
 
     <h2 id="merging">Merging amendments into a motion</h2>
 
-    <p>Antragsgrün offers several ways of adopting changes requested by amendments into the corresponding motion. You
+    <p>Discuss.green offers several ways of adopting changes requested by amendments into the corresponding motion. You
         can merge the changes of a single amendment while upholding the other amendments. Of you can merge all
         amendments at once, creating the final decided motion in one step.</p>
     <p>For both ways, it’s important to bear in mind that if two different amendments try to alter the same text
@@ -310,7 +310,7 @@ $params = \Yii::$app->params;
         accept an insertion, the new text given by the amendment will become permanent part of the motion. Above all,
         you can freely edit the text to include editorial changes or modified adoptions.</p>
     <p>However, in this view, conflicts between amendments may occur as well, if they propose to change the same passage
-        of text in an incompatible way. Antragsgrün tries to display as many changes as possible inline, but if that’s
+        of text in an incompatible way. Discuss.green tries to display as many changes as possible inline, but if that’s
         not possible anymore, a collision paragraph will be inserted below the current paragraph, holding all changes
         that could not be merged into the main paragraph automatically. That way, no proposed change is getting lost,
         however the change has to be incorporated and the collision paragraph hast to be deleted manually.</p>
@@ -319,7 +319,7 @@ $params = \Yii::$app->params;
         (global alternatives) can be excluded, greatly reducing the number of conflicts.</p>
     <p>After creating the new motion text, it is important to set the new statuses of the amendments (accepted,
         rejected, accepted modified etc.), as this cannot be determined automatically. While this does not have a
-        functional impact on Antragsgrün, this is helpful for users to get a quick overview over what amendments have
+        functional impact on Discuss.green, this is helpful for users to get a quick overview over what amendments have
         been adopted and which not.</p>
 
     <h4>(Public) Drafts</h4>
@@ -347,7 +347,7 @@ $params = \Yii::$app->params;
         single PDFs in one big folder.</p>
     <p>Several PDF templates with different appearances are provided, covering different use cases. Which template to
         use can be chosen for each motion type individually, at Settings → Edit motion types → PDF Layout. Regular
-        installations of Antragsgrün render PDFs using a rather simple PDF-generator, but for improved typography, PDF
+        installations of Discuss.green render PDFs using a rather simple PDF-generator, but for improved typography, PDF
         generation based on LaTeX is supported as well. If you need other templates than provided, please contact us for
         support.</p>
 
@@ -360,15 +360,15 @@ $params = \Yii::$app->params;
     <h3 id="spreadsheets">Amendments as spreadsheets</h3>
 
     <p>In some editorial meetings, a tabular overview of all submitted amendments is required to efficiently discuss all
-        amendments with the proposers of the original motion. Antragsgrün is able to create such a document
+        amendments with the proposers of the original motion. Discuss.green is able to create such a document
         automatically in the OpenDocument Spreadsheet format, making it easy to edit it with standard software like
         OpenOffice of LibreOffice.</p>
     <p>This export is available for administrators in the motion list (“Motions” at the very top).</p>
 
     <h3 id="openslides">OpenSlides / CSV</h3>
 
-    <p>Several organizations using Antragsgrün to prepare all motions and amendments are using OpenSlides to as a
-        presentation system for their assemblies. Therefore, Antragsgrün also supports a CSV-Export that is specifically
+    <p>Several organizations using Discuss.green to prepare all motions and amendments are using OpenSlides to as a
+        presentation system for their assemblies. Therefore, Discuss.green also supports a CSV-Export that is specifically
         aimed to be imported by both major versions of OpenSlides.</p>
     <p>This export is available for administrators in the motion list (“Motions” at the very top).</p>
 
@@ -381,7 +381,7 @@ $params = \Yii::$app->params;
 
     <h3 id="layout">Adjusting the layout</h3>
 
-    <p>Different aspects of the layout of Antragsgrün can be changed from the web interface – most of them at “Settings”
+    <p>Different aspects of the layout of Discuss.green can be changed from the web interface – most of them at “Settings”
         → “This consultation” → “Appearance”.</p>
     <p>The “Layout”-setting has the biggest impact: it completely changes the design of the whole site and is used to
         activate adaptions to other corporate designs. Aside from the default layout, two themes are included that have
@@ -417,7 +417,7 @@ $params = \Yii::$app->params;
 
     <h3 id="signatures">Signatures / Motion codes</h3>
     <p>Every published motion and amendment is assigned a unique code or signature, like “M1” for motion no. 1, “AM1”
-        for amendment no. 1, or “M1-007” for an amendment affecting motion “M1” at line 7. Antragsgrün supports
+        for amendment no. 1, or “M1-007” for an amendment affecting motion “M1” at line 7. Discuss.green supports
         assigning those signatures manually by the administrator and automatically by different schemata.</p>
     <p>For each motion type, a character can be set, which will be the base for the signatures for the motions of this
         type - “M” in the example above. This way, different signatures can be created for different kinds of documents,
@@ -476,15 +476,15 @@ $params = \Yii::$app->params;
         case, but is used for the “Call for supporter”-phase described above)</p>
 
     <h3 id="translation">Translations / Changing the wording</h3>
-    <p>Antragsgrün supports three ways of change and internationalize the user interface and the wording:</p>
+    <p>Discuss.green supports three ways of change and internationalize the user interface and the wording:</p>
     <ul>
         <li>For each consultation, it is possible to change all strings of the user interface using the web interface.
             This can be done at “Settings” → “Edit the language”. This can be used to change a few words, change the
             e-mail-templates, etc.
         </li>
-        <li>Translation Antragsgrün: It is possible to translate Antragsgrün into another language – currently, we
+        <li>Translation Discuss.green / Antragsgrün: It is possible to translate Discuss.green into another language – currently, we
             provide translations into english, german and french. However, this is not possible using the web interface
-            and needs some changes to the source code. If you are interested in translating Antragsgrün into a language
+            and needs some changes to the source code. If you are interested in translating Discuss.green into a language
             not yet supported, please contact as and we’d be glad to help (especially if you were willing to contribute
             this translation into the main open-source-project).
         </li>

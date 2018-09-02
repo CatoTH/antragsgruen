@@ -1,6 +1,11 @@
 @charset "UTF-8";
 
 $icon-font-path: "../../fonts/";
+$container-md: 1044px; // Should be enough space for 92 characters
+$screen-md-min: 1044px;
+$screen-md: 1044px;
+$container-desktop: 1044px;
+
 @import "../../../web/css/variables";
 
 $arvoFontPath: "./";
@@ -48,6 +53,7 @@ $motionStdFontSize: 16px;
 $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
+$homeAgendaTitlePrefixWidth: 110px;
 
 @import "../../../web/css/bootstrap";
 @import "../../../web/css/fontello";
@@ -255,9 +261,9 @@ footer.footer {
   box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
 
-@media (min-width: $screen-md) {
+@media (min-width: $screen-md-min) {
   main.col-md-9 {
-    width: 750px;
+    width: 770px;
   }
   aside.col-md-3 {
     width: 274px;
