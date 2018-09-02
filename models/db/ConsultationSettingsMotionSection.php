@@ -97,7 +97,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $this->maxLen = 0;
         }
 
-        if ($this->type === ISectionType::TYPE_TABULAR) {
+        if (IntVal($this->type) === ISectionType::TYPE_TABULAR) {
             $this->data = TabularData::saveTabularDataSettingsFromPost($this->data, $data);
         } else {
             $this->data = null;

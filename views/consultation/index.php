@@ -91,26 +91,26 @@ if ($myself) {
         foreach ($myMotions as $motionSupport) {
             $motion = $motionSupport->motion;
             echo '<li>';
-            if ($motion->status == Motion::STATUS_WITHDRAWN) {
+            if ($motion->status === Motion::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
             echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
-            if ($motionSupport->role == MotionSupporter::ROLE_INITIATOR) {
+            if ($motionSupport->role === MotionSupporter::ROLE_INITIATOR) {
                 echo ' (' . Yii::t('motion', 'Initiator') . ')';
             }
-            if ($motionSupport->role == MotionSupporter::ROLE_SUPPORTER) {
+            if ($motionSupport->role === MotionSupporter::ROLE_SUPPORTER) {
                 echo ' (' . Yii::t('motion', 'Supporter') . ')';
             }
             echo ': ' . Html::encode($motion->getStatusNames()[$motion->status]);
             if ($motion->status == Motion::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
-            if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+            if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($motion->getSupporters());
                 echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
-                echo $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+                echo $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
             }
             echo "</li>\n";
@@ -124,7 +124,7 @@ if ($myself) {
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;
             echo '<li>';
-            if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
+            if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
                 echo "<span style='text-decoration: line-through;'>";
             }
             $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
@@ -133,21 +133,21 @@ if ($myself) {
                 $amendmentUrl,
                 ['class' => 'amendment' . $amendment->id]
             );
-            if ($amendmentSupport->role == AmendmentSupporter::ROLE_INITIATOR) {
+            if ($amendmentSupport->role === AmendmentSupporter::ROLE_INITIATOR) {
                 echo ' (' . Yii::t('amend', 'initiator') . ')';
             }
-            if ($amendmentSupport->role == AmendmentSupporter::ROLE_SUPPORTER) {
+            if ($amendmentSupport->role === AmendmentSupporter::ROLE_SUPPORTER) {
                 echo ' (' . Yii::t('amend', 'supporter') . ')';
             }
             echo ': ' . Html::encode($amendment->getStatusNames()[$amendment->status]);
-            if ($amendment->status == Amendment::STATUS_WITHDRAWN) {
+            if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
                 echo '</span>';
             }
-            if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+            if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($amendment->getSupporters());
                 echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
-                echo $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                echo $amendment->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
             }
             echo '</li>';

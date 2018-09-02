@@ -6,7 +6,7 @@ use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
@@ -471,10 +471,10 @@ abstract class IMotion extends ActiveRecord
      */
     public function isSupportingPossibleAtThisStatus()
     {
-        if (!($this->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+        if (!($this->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
             return false;
         }
-        if ($this->getMyMotionType()->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+        if ($this->getMyMotionType()->supportType == SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->status != IMotion::STATUS_COLLECTING_SUPPORTERS) {
                 return false;
             }

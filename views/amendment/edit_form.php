@@ -54,8 +54,8 @@ if ($form->motion->motionType->getAmendmentSupportTypeClass()->collectSupporters
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motion->motionType->getAmendmentSupportTypeClass();
     $str  = \Yii::t('amend', 'support_collect_explanation');
-    $str  = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
-    $str  = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
+    $str  = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
+    $str  = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
 
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('amend', 'support_collect_explanation_title') . '</div>' .
@@ -116,7 +116,8 @@ if ($consultation->getSettings()->editorialAmendments) { ?>
         <label for="amendmentEditorial"><?= \Yii::t('amend', 'editorial_hint') ?></label>
         <textarea name="amendmentEditorial" id="amendmentEditorial"
                   class="raw"><?= Html::encode($form->editorial) ?></textarea>
-        <div class="texteditor motionTextFormattings boxed" id="amendmentEditorial_wysiwyg"><?= $form->editorial ?></div>
+        <div class="texteditor motionTextFormattings boxed"
+             id="amendmentEditorial_wysiwyg"><?= $form->editorial ?></div>
     </div>
     <?php
 }

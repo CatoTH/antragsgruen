@@ -11,14 +11,13 @@ use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\Consultation;
-use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
-use app\models\supportTypes\ISupportType;
 use app\components\EmailNotifications;
 use app\models\events\MotionEvent;
+use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
 /**
@@ -207,7 +206,7 @@ trait MotionActionsTrait
      */
     private function motionLike(Motion $motion)
     {
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'));
@@ -240,7 +239,7 @@ trait MotionActionsTrait
             $name = \Yii::$app->request->post('motionSupportName', '');
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
-        if ($supportType->hasOrganizations() && $orga == '') {
+        if ($supportType->getSettingsObj()->hasOrganizations && $orga == '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
@@ -252,7 +251,7 @@ trait MotionActionsTrait
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
-        if (count($motion->getSupporters()) == $supportType->getMinNumberOfSupporters()) {
+        if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
             EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }
@@ -264,7 +263,7 @@ trait MotionActionsTrait
      */
     private function motionDislike(Motion $motion)
     {
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'));
@@ -367,7 +366,6 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param int $commentId
      * @param array $viewParameters
-     * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal
@@ -408,7 +406,6 @@ trait MotionActionsTrait
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */

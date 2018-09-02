@@ -717,7 +717,7 @@ class Motion extends IMotion implements IRSSItem
                 }
             }
             $supporters    = count($this->getSupporters());
-            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
             if ($supporters < $minSupporters && !$isOrganization) {
                 $needsCollectionPhase = true;
             }

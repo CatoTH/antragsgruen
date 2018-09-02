@@ -4,6 +4,16 @@ interface UserData {
     person_organization: string;
 }
 
+interface InitiatorFormSettings {
+    minSupporters: number;
+    hasOrganizations: boolean;
+    allowMoreSupporters: boolean;
+    skipForOrganizations: boolean;
+    contactName: number;
+    contactPhone: number;
+    contactEmail: number;
+}
+
 export class DefaultInitiatorForm {
     private $supporterAdderRow: JQuery;
     private $fullTextHolder: JQuery;
@@ -15,7 +25,7 @@ export class DefaultInitiatorForm {
     private $otherInitiator: JQuery;
     private otherInitiator: boolean = false;
     private userData: UserData;
-    private contactNameForPersons: number;
+    private settings: InitiatorFormSettings;
 
     private wasPerson: boolean = false;
 
@@ -28,7 +38,7 @@ export class DefaultInitiatorForm {
         this.$supporterAdderRow = this.$supporterData.find('.adderRow');
 
         this.userData = $widget.data('user-data');
-        this.contactNameForPersons = $widget.data('contact-name');
+        this.settings = $widget.data('settings');
 
         this.$otherInitiator = $widget.find('input[name=otherInitiator]');
         this.$otherInitiator.change(this.onChangeOtherInitiator.bind(this)).trigger('change');
@@ -88,10 +98,10 @@ export class DefaultInitiatorForm {
     private setFieldsVisibilityPerson() {
         this.$initiatorData.removeClass('type-organization').addClass('type-person');
         this.$initiatorData.find('.organizationRow').removeClass('hidden');
-        if (this.contactNameForPersons == 2) {
+        if (this.settings.contactName == 2) {
             this.$initiatorData.find('.contactNameRow').removeClass('hidden');
             this.$initiatorData.find('.contactNameRow input').prop('required', true);
-        } else if (this.contactNameForPersons == 1) {
+        } else if (this.settings.contactName == 1) {
             this.$initiatorData.find('.contactNameRow').removeClass('hidden');
             this.$initiatorData.find('.contactNameRow input').prop('required', false);
         } else {

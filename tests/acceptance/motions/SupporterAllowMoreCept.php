@@ -14,13 +14,13 @@ $I->seeElement('.supporterData .adderRow');
 
 $I->click('#adminLink');
 $I->click('.motionType7');
-$I->seeCheckboxIsChecked('#typeAllowMoreSupporters input');
+$I->seeCheckboxIsChecked('#typeAllowMoreSupporters input[type=checkbox]');
 
 
 $I->wantTo('disable allowing more supporters');
 $I->uncheckFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
 $I->submitForm('.adminTypeForm', [], 'save');
-$I->cantSeeCheckboxIsChecked('#typeAllowMoreSupporters input');
+$I->cantSeeCheckboxIsChecked('#typeAllowMoreSupporters input[type=checkbox]');
 
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->click('.createMotion');

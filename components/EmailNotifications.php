@@ -25,7 +25,7 @@ class EmailNotifications
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $motion->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                $min        = $motion->motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
                 $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
             } else {
@@ -170,7 +170,7 @@ class EmailNotifications
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             if ($amendment->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+                $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
                 $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
             } else {

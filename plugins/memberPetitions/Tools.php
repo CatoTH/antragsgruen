@@ -9,7 +9,7 @@ use app\models\db\MotionSupporter;
 use app\models\db\Site;
 use app\models\db\User;
 use app\models\events\MotionEvent;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use app\plugins\memberPetitions\notifications\DiscussionSubmitted;
 use app\plugins\memberPetitions\notifications\PetitionSubmitted;
 use app\components\Tools as DateTools;
@@ -51,7 +51,7 @@ class Tools
     public static function getDiscussionType(Consultation $consultation)
     {
         foreach ($consultation->motionTypes as $motionType) {
-            if ($motionType->supportType !== ISupportType::COLLECTING_SUPPORTERS) {
+            if ($motionType->supportType !== SupportBase::COLLECTING_SUPPORTERS) {
                 return $motionType;
             }
         }
@@ -65,7 +65,7 @@ class Tools
     public static function getPetitionType(Consultation $consultation)
     {
         foreach ($consultation->motionTypes as $motionType) {
-            if ($motionType->supportType === ISupportType::COLLECTING_SUPPORTERS) {
+            if ($motionType->supportType === SupportBase::COLLECTING_SUPPORTERS) {
                 return $motionType;
             }
         }

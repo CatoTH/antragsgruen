@@ -15,7 +15,7 @@ use app\models\db\User;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\TcpdfFpdi;
 use yii\helpers\Html;
@@ -108,7 +108,7 @@ class LayoutHelper
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
-        foreach ($motion->getDataTable($hasAgenda) as $key => $val) {
+        foreach ($motion->getDataTable() as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
@@ -171,8 +171,8 @@ class LayoutHelper
     {
         $user = User::getCurrentUser();
 
-        $hasLike    = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE);
-        $hasDislike = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE);
+        $hasLike    = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE);
+        $hasDislike = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE);
 
         if (!$hasLike && !$hasDislike) {
             return;
@@ -279,14 +279,14 @@ class LayoutHelper
     /**
      * @param IMotion $motion
      * @param IPolicy $policy
-     * @param ISupportType $supportType
+     * @param SupportBase $supportType
      * @param bool $iAmSupporting
      */
-    public static function printSupportingSection($motion, $policy, $supportType, $iAmSupporting)
+    public static function printSupportingSection($motion, $policy, SupportBase $supportType, $iAmSupporting)
     {
         $user = User::getCurrentUser();
 
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
             return;
         }
 

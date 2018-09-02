@@ -18,7 +18,7 @@ use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
 /**
@@ -192,7 +192,7 @@ trait AmendmentActionsTrait
             $name = \Yii::$app->request->post('motionSupportName', '');
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
-        if ($supportClass->hasOrganizations() && $orga == '') {
+        if ($supportClass->getSettingsObj()->hasOrganizations && trim($orga) === '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
@@ -204,8 +204,8 @@ trait AmendmentActionsTrait
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
 
-        $minSupporters = $supportClass->getMinNumberOfSupporters();
-        if (count($amendment->getSupporters()) == $minSupporters) {
+        $minSupporters = $supportClass->getSettingsObj()->minSupporters;
+        if (count($amendment->getSupporters()) === $minSupporters) {
             EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
         }
     }
@@ -239,7 +239,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentLike(Amendment $amendment)
     {
-        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+        if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
         }
         $msg = \Yii::t('amend', 'like_done');
@@ -253,7 +253,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDislike(Amendment $amendment)
     {
-        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+        if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
         }
         $msg          = \Yii::t('amend', 'dislike_done');
@@ -328,7 +328,6 @@ trait AmendmentActionsTrait
      * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
-     * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal

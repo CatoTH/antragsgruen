@@ -6,8 +6,8 @@ use app\components\DateTools;
 use app\components\Tools;
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
-use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
+use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
 use yii\db\ActiveRecord;
 
@@ -32,9 +32,6 @@ use yii\db\ActiveRecord;
  * @property int $initiatorsCanMergeAmendments
  * @property int $motionLikesDislikes
  * @property int $amendmentLikesDislikes
- * @property int $contactName
- * @property int $contactEmail
- * @property int $contactPhone
  * @property int $supportType
  * @property string $supportTypeSettings
  * @property int $amendmentMultipleParagraphs
@@ -50,10 +47,6 @@ use yii\db\ActiveRecord;
  */
 class ConsultationMotionType extends ActiveRecord
 {
-    const CONTACT_NONE     = 0;
-    const CONTACT_OPTIONAL = 1;
-    const CONTACT_REQUIRED = 2;
-
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
 
@@ -174,21 +167,21 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @return ISupportType
+     * @return SupportBase
      * @throws \app\models\exceptions\Internal
      */
     public function getMotionSupportTypeClass()
     {
-        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
+        return SupportBase::getImplementation($this->supportType, $this);
     }
 
     /**
-     * @return ISupportType
+     * @return SupportBase
      * @throws \app\models\exceptions\Internal
      */
     public function getAmendmentSupportTypeClass()
     {
-        return ISupportType::getImplementation($this->supportType, $this, $this->supportTypeSettings);
+        return SupportBase::getImplementation($this->supportType, $this);
     }
 
     /**
@@ -197,7 +190,7 @@ class ConsultationMotionType extends ActiveRecord
     public function getMyConsultation()
     {
         $current = Consultation::getCurrent();
-        if ($current && $current->id == $this->consultationId) {
+        if ($current && $current->id === $this->consultationId) {
             return $current;
         } else {
             return Consultation::findOne($this->consultationId);
@@ -379,7 +372,7 @@ class ConsultationMotionType extends ActiveRecord
     public function isDeletable()
     {
         foreach ($this->motions as $motion) {
-            if ($motion->status != Motion::STATUS_DELETED) {
+            if ($motion->status !== Motion::STATUS_DELETED) {
                 return false;
             }
         }
@@ -395,15 +388,15 @@ class ConsultationMotionType extends ActiveRecord
             [['consultationId', 'titleSingular', 'titlePlural', 'createTitle', 'sidebarCreateButton'], 'required'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'required'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments', 'supportType', 'status'], 'required'],
-            [['contactName', 'contactEmail', 'contactPhone', 'amendmentMultipleParagraphs', 'position'], 'required'],
+            [['amendmentMultipleParagraphs', 'position'], 'required'],
 
-            [['id', 'consultationId', 'position', 'contactName', 'contactEmail', 'contactPhone'], 'number'],
+            [['id', 'consultationId', 'position'], 'number'],
             [['status', 'amendmentMultipleParagraphs', 'amendmentLikesDislikes', 'motionLikesDislikes'], 'number'],
             [['policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'number'],
             [['initiatorsCanMergeAmendments', 'pdfLayout', 'sidebarCreateButton'], 'number'],
 
             [['titleSingular', 'titlePlural', 'createTitle', 'motionLikesDislikes', 'amendmentLikesDislikes'], 'safe'],
-            [['motionPrefix', 'position', 'supportType', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
+            [['motionPrefix', 'position', 'supportType'], 'safe'],
             [['pdfLayout', 'policyMotions', 'policyAmendments', 'policyComments', 'policySupportMotions'], 'safe'],
             [['policySupportAmendments', 'initiatorsCanMergeAmendments'], 'safe'],
             [['sidebarCreateButton'], 'safe']

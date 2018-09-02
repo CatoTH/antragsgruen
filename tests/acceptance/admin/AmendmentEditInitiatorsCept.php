@@ -8,7 +8,7 @@ $I->wantTo('edit an initiator');
 $I->gotoConsultationHome();
 $I->loginAsStdAdmin();
 $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\ISupportType::GIVEN_BY_INITIATOR);
+$I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $page = $I->gotoMotionList()->gotoAmendmentEdit(2);

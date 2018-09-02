@@ -3,7 +3,7 @@
 use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
@@ -66,9 +66,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
-                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
-                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';
@@ -142,9 +142,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
-                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
-                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';

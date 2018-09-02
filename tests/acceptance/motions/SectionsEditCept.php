@@ -39,6 +39,7 @@ $I->wantTo('create a tabular data section');
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->click('.sectionAdder');
+$I->wait(1);
 $I->seeElement('.sectionnew0');
 $I->dontSee($motionTypePage::$tabularLabel, '.sectionnew0 .tabularDataRow');
 $I->see($motionTypePage::$commentsLabel, '.sectionnew0 .commentRow');

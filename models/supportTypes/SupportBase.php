@@ -6,24 +6,68 @@ use app\components\Tools;
 use app\controllers\Base;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
-use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
 use app\models\forms\AmendmentEditForm;
 use app\models\forms\MotionEditForm;
+use app\models\settings\InitiatorForm;
 use yii\web\View;
 
-abstract class DefaultTypeBase extends ISupportType
+abstract class SupportBase
 {
-    /** @var Consultation $motionType $motionType */
-    protected $motionType;
+    const ONLY_INITIATOR        = 0;
+    const GIVEN_BY_INITIATOR    = 1;
+    const COLLECTING_SUPPORTERS = 2;
+
+    const LIKEDISLIKE_LIKE    = 1;
+    const LIKEDISLIKE_DISLIKE = 2;
+    const LIKEDISLIKE_SUPPORT = 4;
 
     /** @var bool */
-    protected $allowMoreSupporters = true;
+    protected $adminMode = false;
+
+    /** @var null|InitiatorForm */
+    protected $settingsObject = null;
+
+    /** @var ConsultationMotionType $motionType */
+    protected $motionType;
+
+    /**
+     * @return SupportBase[]
+     */
+    public static function getImplementations()
+    {
+        return [
+            static::ONLY_INITIATOR        => OnlyInitiator::class,
+            static::GIVEN_BY_INITIATOR    => GivenByInitiator::class,
+            static::COLLECTING_SUPPORTERS => CollectBeforePublish::class,
+        ];
+    }
+
+    /**
+     * @param int $formId
+     * @param ConsultationMotionType $motionType
+     * @return SupportBase
+     * @throws Internal
+     */
+    public static function getImplementation($formId, ConsultationMotionType $motionType)
+    {
+        switch ($formId) {
+            case static::ONLY_INITIATOR:
+                return new OnlyInitiator($motionType);
+            case static::GIVEN_BY_INITIATOR:
+                return new GivenByInitiator($motionType);
+            case static::COLLECTING_SUPPORTERS:
+                return new CollectBeforePublish($motionType);
+            default:
+                throw new Internal('Supporter form type not found');
+        }
+    }
 
     /**
      * @param ConsultationMotionType $motionType
@@ -34,12 +78,63 @@ abstract class DefaultTypeBase extends ISupportType
     }
 
     /**
+     * @return InitiatorForm
+     */
+    public function getSettingsObj()
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new InitiatorForm($this->motionType->supportTypeSettings);
+            $this->fixSettings();
+        }
+        return $this->settingsObject;
+    }
+
+    /**
+     * @param InitiatorForm $settings
+     */
+    public function setSettingsObj(InitiatorForm $settings)
+    {
+        $this->settingsObject = $settings;
+        $this->fixSettings();
+    }
+
+    /**
+     */
+    protected function fixSettings()
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTitle()
+    {
+        return '';
+    }
+
+    /**
+     * @param bool $set
+     */
+    public function setAdminMode($set)
+    {
+        $this->adminMode = $set;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function collectSupportersBeforePublication()
+    {
+        return false;
+    }
+
+    /**
      * @param string $name
      * @return bool
      */
     public function isValidName($name)
     {
-        return (trim($name) != '');
+        return (trim($name) !== '');
     }
 
     /**
@@ -48,22 +143,6 @@ abstract class DefaultTypeBase extends ISupportType
     public static function hasInitiatorGivenSupporters()
     {
         return false;
-    }
-
-    /**
-     * @return int
-     */
-    public function getMinNumberOfSupporters()
-    {
-        return 0;
-    }
-
-    /**
-     * @return bool
-     */
-    public function allowMoreSupporters()
-    {
-        return $this->allowMoreSupporters;
     }
 
     /**
@@ -114,7 +193,7 @@ abstract class DefaultTypeBase extends ISupportType
         }
 
         $initiator = $post['Initiator'];
-        $required  = ConsultationMotionType::CONTACT_REQUIRED;
+        $settings  = $this->getSettingsObj();
 
         $errors = [];
 
@@ -123,13 +202,13 @@ abstract class DefaultTypeBase extends ISupportType
         }
 
         $emailSet   = (isset($initiator['contactEmail']) && trim($initiator['contactEmail']) != '');
-        $checkEmail = ($this->motionType->contactEmail == $required || $emailSet);
+        $checkEmail = ($settings->contactEmail === InitiatorForm::CONTACT_REQUIRED || $emailSet);
         if ($checkEmail && !filter_var($initiator['contactEmail'], FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'No valid e-mail-address given.';
         }
 
         $phoneSet   = (isset($initiator['contactPhone']) && trim($initiator['contactPhone']) != '');
-        $checkPhone = ($this->motionType->contactPhone == $required || $phoneSet);
+        $checkPhone = ($settings->contactPhone === InitiatorForm::CONTACT_REQUIRED || $phoneSet);
         if ($checkPhone && empty($initiator['contactPhone'])) {
             $errors[] = 'No valid phone number given given.';
         }
@@ -149,10 +228,10 @@ abstract class DefaultTypeBase extends ISupportType
             $supporters = $this->parseSupporters(new MotionSupporter());
             $num        = count($supporters);
             if ($personType != ISupporter::PERSON_ORGANIZATION) {
-                if ($num < $this->getMinNumberOfSupporters()) {
+                if ($num < $settings->minSupporters) {
                     $errors[] = 'Not enough supporters.';
                 }
-                if (!$this->allowMoreSupporters() && $num > $this->getMinNumberOfSupporters()) {
+                if (!$settings->allowMoreSupporters && $num > $settings->minSupporters) {
                     $errors[] = 'Too many supporters.';
                 }
             }
@@ -173,7 +252,7 @@ abstract class DefaultTypeBase extends ISupportType
 
     /**
      * @param Motion $motion
-     * @throws FormError
+     * @throws \Throwable
      */
     public function submitMotion(Motion $motion)
     {
@@ -201,7 +280,7 @@ abstract class DefaultTypeBase extends ISupportType
 
     /**
      * @param Amendment $amendment
-     * @throws FormError
+     * @throws \Throwable
      */
     public function submitAmendment(Amendment $amendment)
     {
@@ -232,6 +311,7 @@ abstract class DefaultTypeBase extends ISupportType
      * @param MotionEditForm $editForm
      * @param Base $controller
      * @return string
+     * @throws \Exception
      */
     public function getMotionForm(ConsultationMotionType $motionType, MotionEditForm $editForm, Base $controller)
     {
@@ -266,18 +346,15 @@ abstract class DefaultTypeBase extends ISupportType
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'motionType'          => $motionType,
-                'initiator'           => $initiator,
-                'moreInitiators'      => $moreInitiators,
-                'supporters'          => $supporters,
-                'allowOther'          => $othersPrivilege,
-                'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
-                'minSupporters'       => $this->getMinNumberOfSupporters(),
-                'allowMoreSupporters' => $this->allowMoreSupporters(),
-                'supporterFulltext'   => $this->hasFullTextSupporterField(),
-                'hasOrganizations'    => $this->hasOrganizations(),
-                'adminMode'           => $this->adminMode,
+                'initiator'         => $initiator,
+                'moreInitiators'    => $moreInitiators,
+                'supporters'        => $supporters,
+                'allowOther'        => $othersPrivilege,
+                'isForOther'        => $isForOther,
+                'settings'          => $this->getSettingsObj(),
+                'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
+                'supporterFulltext' => $this->hasFullTextSupporterField(),
+                'adminMode'         => $this->adminMode,
             ],
             $controller
         );
@@ -288,6 +365,7 @@ abstract class DefaultTypeBase extends ISupportType
      * @param AmendmentEditForm $editForm
      * @param Base $controller
      * @return string
+     * @throws \Exception
      */
     public function getAmendmentForm(ConsultationMotionType $motionType, AmendmentEditForm $editForm, Base $controller)
     {
@@ -315,18 +393,15 @@ abstract class DefaultTypeBase extends ISupportType
         return $view->render(
             '@app/views/initiatorForms/default_form',
             [
-                'motionType'          => $motionType,
-                'initiator'           => $initiator,
-                'moreInitiators'      => $moreInitiators,
-                'supporters'          => $supporters,
-                'allowOther'          => $screeningPrivilege,
-                'isForOther'          => $isForOther,
-                'hasSupporters'       => $this->hasInitiatorGivenSupporters(),
-                'minSupporters'       => $this->getMinNumberOfSupporters(),
-                'allowMoreSupporters' => $this->allowMoreSupporters(),
-                'supporterFulltext'   => $this->hasFullTextSupporterField(),
-                'hasOrganizations'    => $this->hasOrganizations(),
-                'adminMode'           => $this->adminMode,
+                'initiator'         => $initiator,
+                'moreInitiators'    => $moreInitiators,
+                'supporters'        => $supporters,
+                'allowOther'        => $screeningPrivilege,
+                'isForOther'        => $isForOther,
+                'settings'          => $this->getSettingsObj(),
+                'hasSupporters'     => $this->hasInitiatorGivenSupporters(),
+                'supporterFulltext' => $this->hasFullTextSupporterField(),
+                'adminMode'         => $this->adminMode,
             ],
             $controller
         );

@@ -5,9 +5,6 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\supportTypes\CollectBeforePublish;
-use app\models\supportTypes\DefaultTypeBase;
-use app\models\supportTypes\ISupportType;
 use yii\helpers\Html;
 
 /**
@@ -148,133 +145,9 @@ echo $controller->showErrors();
 
 echo $this->render('_type_policy', ['motionType' => $motionType]);
 echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => $locale]);
+echo $this->render('_type_initiator', ['motionType' => $motionType]);
 
 ?>
-    <h3><?= \Yii::t('admin', 'motion_type_initiator') ?></h3>
-
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="typeSupportType">
-            <?= \Yii::t('admin', 'motion_type_supp_form') ?>
-        </label>
-        <div class="col-md-8">
-            <?php
-            $options = [];
-            foreach (ISupportType::getImplementations() as $formId => $formClass) {
-                $supporters = ($formClass::hasInitiatorGivenSupporters() || $formClass === CollectBeforePublish::class);
-                $options[]  = [
-                    'title'      => $formClass::getTitle(),
-                    'attributes' => ['data-has-supporters' => ($supporters ? '1' : '0')],
-                ];
-            }
-            echo HTMLTools::fueluxSelectbox(
-                'type[supportType]',
-                $options,
-                $motionType->supportType,
-                ['id' => 'typeSupportType'],
-                true
-            );
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4" style="text-align: right;">
-            <?= \Yii::t('admin', 'motion_type_contact_name') ?>
-        </label>
-        <div class="col-md-8 contactDetails contactName">
-            <?php
-            $options = [
-                ConsultationMotionType::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
-            ];
-            echo Html::radioList('type[contactName]', $motionType->contactName, $options, ['class' => 'form-control']);
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4" style="text-align: right;">
-            <?= \Yii::t('admin', 'motion_type_email') ?>
-        </label>
-        <div class="col-md-8 contactDetails contactEMail">
-            <?php
-            $options = [
-                ConsultationMotionType::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
-            ];
-            echo Html::radioList(
-                'type[contactEmail]',
-                $motionType->contactEmail,
-                $options,
-                ['class' => 'form-control']
-            );
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-md-4" style="text-align: right;">
-            <?= \Yii::t('admin', 'motion_type_phone') ?>
-        </label>
-        <div class="col-md-8 contactDetails contactPhone">
-            <?php
-            $options = [
-                ConsultationMotionType::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                ConsultationMotionType::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                ConsultationMotionType::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
-            ];
-            echo Html::radioList(
-                'type[contactPhone]',
-                $motionType->contactPhone,
-                $options,
-                ['class' => 'form-control']
-            );
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group" id="typeMinSupportersRow">
-        <label class="col-md-4 control-label" for="typeMinSupporters">
-            <?= \Yii::t('admin', 'motion_type_supp_min') ?>
-        </label>
-        <div class="col-md-2">
-            <?php
-            $curForm = $motionType->getMotionSupportTypeClass();
-            echo '<input type="number" name="initiator[minSupporters]" class="form-control" id="typeMinSupporters"';
-            if (is_subclass_of($curForm, DefaultTypeBase::class)) {
-                /** @var \app\models\supportTypes\DefaultTypeBase $curForm */
-                echo ' value="' . Html::encode($curForm->getMinNumberOfSupporters()) . '"';
-            }
-            echo '>';
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group" id="typeAllowMoreSupporters">
-        <div class="checkbox col-md-8 col-md-offset-4">
-            <?php
-            echo HTMLTools::fueluxCheckbox(
-                'initiator[allowMoreSupporters]',
-                \Yii::t('admin', 'motion_type_allow_more_supp'),
-                $curForm->allowMoreSupporters()
-            );
-            ?>
-        </div>
-    </div>
-
-    <div class="form-group" id="typeHasOrgaRow">
-        <div class="checkbox col-md-8 col-md-offset-4">
-            <?php
-            echo HTMLTools::fueluxCheckbox(
-                'initiator[hasOrganizations]',
-                \Yii::t('admin', 'motion_type_ask_orga'),
-                (is_subclass_of($curForm, DefaultTypeBase::class) && $curForm->hasOrganizations())
-            );
-            ?>
-        </div>
-    </div>
 
 
     <h3><?= \Yii::t('admin', 'motion_type_pdf_layout') ?></h3>

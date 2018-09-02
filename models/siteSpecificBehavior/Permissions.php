@@ -202,7 +202,7 @@ class Permissions
             return false;
         }
         $supporters    = count($motion->getSupporters());
-        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
         return ($supporters >= $minSupporters);
     }
 }

@@ -16,7 +16,7 @@ $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Mot
 $controller = $this->context;
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
 
-if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('motion', 'submitted_create') . '</h1>';
     $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_create'));
 } elseif ($motion->isInScreeningProcess()) {
@@ -29,14 +29,14 @@ if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
-if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
     echo \Yii::t('motion', 'confirmed_visible');
 }
 if ($motion->isInScreeningProcess()) {
     echo \Yii::t('motion', 'confirmed_screening');
 }
-if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
-    $min = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
+    $min = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
     echo str_replace('%MIN%', $min, \Yii::t('motion', 'confirmed_support_phase'));
 }
 echo '</div>';
@@ -44,7 +44,7 @@ echo '</div>';
 
 echo Html::beginForm(UrlHelper::createUrl('consultation/index'), 'post', ['id' => 'motionConfirmedForm']);
 
-if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion)));
     ?><br>

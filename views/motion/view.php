@@ -60,7 +60,7 @@ echo $controller->showErrors();
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
-    $min  = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+    $min  = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
     $curr = count($motion->getSupporters());
     if ($curr >= $min) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_reached_hint'));

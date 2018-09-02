@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /**
  * @var \app\models\db\User|null $user
- * @var \app\models\supportTypes\ISupportType $supportType
+ * @var \app\models\supportTypes\SupportBase $supportType
  */
 
 $fixedReadOnly = ($user && $user->fixedData ? 'readonly' : '');
@@ -14,7 +14,7 @@ $disableSubmit = '';
 ?>
     <label style="margin-top: 10px;"><?= \Yii::t('motion', 'support_question') ?></label>
 <?php
-if ($supportType->hasOrganizations() && $user && $user->organization == '' && $user->fixedData) {
+if ($supportType->getSettingsObj()->hasOrganizations && $user && $user->organization == '' && $user->fixedData) {
     echo '<div class="alert alert-danger" role="alert">';
     echo \Yii::t('motion', 'supporting_no_orga_error');
     echo '</div>';
@@ -28,7 +28,7 @@ if ($supportType->hasOrganizations() && $user && $user->organization == '' && $u
                    placeholder="<?= Html::encode(\Yii::t('motion', 'support_name')) ?>">
         </div>
         <?php
-        if ($supportType->hasOrganizations()) {
+        if ($supportType->getSettingsObj()->hasOrganizations) {
             $orga = ($user ? $user->organization : '');
             echo '<div class="col-md-4">';
             echo '<input type="text" name="motionSupportOrga" class="form-control"

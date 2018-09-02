@@ -18,12 +18,12 @@ $page = ConsultationHomePage::openBy(
     ]
 );
 
-$I->see('1. Vorsitzende(r)', '#agendaitem_3');
+$I->see('1. Vorsitzende*r', '#agendaitem_3');
 $I->seeElement('#agendaitem_3 > div > h3 .motionCreateLink');
 $I->click('#agendaitem_3 > div > h3 .motionCreateLink');
 
 $I->see(mb_strtoupper('Bewerben'), '.breadcrumb');
-$I->see(mb_strtoupper('1. Vorsitzende(r): Bewerben'), 'h1');
+$I->see(mb_strtoupper('1. Vorsitzende*r: Bewerben'), 'h1');
 
 $I->dontSee('Voraussetzungen für einen Antrag');
 $I->see('Name', 'label');

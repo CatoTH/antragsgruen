@@ -653,7 +653,7 @@ class Amendment extends IMotion implements IRSSItem
             return false;
         }
         $supporters    = count($this->getSupporters());
-        $minSupporters = $this->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+        $minSupporters = $this->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
         return ($supporters >= $minSupporters);
     }
 
@@ -787,7 +787,7 @@ class Amendment extends IMotion implements IRSSItem
                 }
             }
             $supporters    = count($this->getSupporters());
-            $minSupporters = $motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+            $minSupporters = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
             if ($supporters < $minSupporters && !$isOrganization) {
                 $needsCollectionPhase = true;
             }

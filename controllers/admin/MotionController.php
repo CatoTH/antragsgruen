@@ -17,13 +17,14 @@ use app\models\exceptions\FormError;
 use app\models\forms\DeadlineForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\InitiatorForm;
 use app\models\settings\MotionType;
-use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\motionTypeTemplates\Application as ApplicationTemplate;
 use app\models\motionTypeTemplates\Motion as MotionTemplate;
 use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
 use app\models\events\MotionEvent;
+use app\models\supportTypes\SupportBase;
 
 class MotionController extends AdminBase
 {
@@ -45,7 +46,7 @@ class MotionController extends AdminBase
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
                 $section->motionTypeId = $motionType->id;
-                $section->type         = $data['type'];
+                $section->type         = IntVal($data['type']);
                 $section->status       = ConsultationSettingsMotionSection::STATUS_VISIBLE;
             } else {
                 /** @var ConsultationSettingsMotionSection $section */
@@ -142,9 +143,13 @@ class MotionController extends AdminBase
             $settings->motionTitleIntro = $input['typeMotionIntro'];
             $motionType->setSettingsObj($settings);
 
-            $form = $motionType->getMotionSupportTypeClass();
-            $form->setSettings(\Yii::$app->request->post('initiator'));
-            $motionType->supportTypeSettings = $form->getSettings();
+            $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
+            $settings->saveForm(
+                \Yii::$app->request->post('initiatorSettings', []),
+                \Yii::$app->request->post('initiatorSettingFields', [])
+            );
+            $motionType->supportTypeSettings = json_encode($settings, JSON_PRETTY_PRINT);
+
             $motionType->save();
 
             $this->sectionsSave($motionType);
@@ -157,7 +162,7 @@ class MotionController extends AdminBase
         }
 
         $supportCollPolicyWarning = false;
-        if ($motionType->supportType === ISupportType::COLLECTING_SUPPORTERS) {
+        if ($motionType->supportType === SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->isPostSet('supportCollPolicyFix')) {
                 if ($motionType->policyMotions === IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
@@ -173,8 +178,8 @@ class MotionController extends AdminBase
                 if ($support === IPolicy::POLICY_ALL || $support === IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
                 }
-                $motionType->motionLikesDislikes    |= ISupportType::LIKEDISLIKE_SUPPORT;
-                $motionType->amendmentLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->motionLikesDislikes    |= SupportBase::LIKEDISLIKE_SUPPORT;
+                $motionType->amendmentLikesDislikes |= SupportBase::LIKEDISLIKE_SUPPORT;
                 $motionType->save();
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
                     $settings                         = $this->consultation->getSettings();
@@ -190,8 +195,8 @@ class MotionController extends AdminBase
             $createAmend   = ($motionType->policyAmendments === IPolicy::POLICY_ALL);
             $supportMotion = ($supportMotion === IPolicy::POLICY_ALL || $supportMotion === IPolicy::POLICY_NOBODY);
             $supportAmend  = ($supportAmend === IPolicy::POLICY_ALL || $supportAmend === IPolicy::POLICY_NOBODY);
-            $noOffMotion   = (($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) === 0);
-            $noOffAmend    = (($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) === 0);
+            $noOffMotion   = (($motionType->motionLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
+            $noOffAmend    = (($motionType->amendmentLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
             $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
 
             $supportCollPolicyWarning = (
@@ -249,14 +254,17 @@ class MotionController extends AdminBase
                     $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
                     $motionType->motionLikesDislikes          = 0;
                     $motionType->amendmentLikesDislikes       = 0;
-                    $motionType->contactName                  = ConsultationMotionType::CONTACT_NONE;
-                    $motionType->contactEmail                 = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs  = 1;
                     $motionType->position                     = 0;
-                    $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
+                    $motionType->supportType                  = SupportBase::ONLY_INITIATOR;
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;
+
+                    $initiatorSettings               = new InitiatorForm($type);
+                    $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
+                    $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+                    $initiatorSettings->contactEmail = InitiatorForm::CONTACT_OPTIONAL;
+                    $motionType->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
                     $settings                = new MotionType(null);
                     $settings->layoutTwoCols = 0;
@@ -301,9 +309,7 @@ class MotionController extends AdminBase
 
     /**
      * @param Motion $motion
-     * @throws \Exception
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     private function saveMotionSupporters(Motion $motion)
     {
