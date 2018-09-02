@@ -65,7 +65,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= Amendment::getProposedStatusesNames()[$statusId] ?>
+                    ?>> <?= Amendment::getProposedStatusNames()[$statusId] ?>
                 </label><br>
                 <?php
             }

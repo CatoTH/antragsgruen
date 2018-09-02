@@ -389,7 +389,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getProposedStatusesNames()
+    public static function getProposedStatusNames()
     {
         return [
             static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
@@ -535,14 +535,14 @@ abstract class IMotion extends ActiveRecord
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
                 } else {
-                    return static::getProposedStatusesNames()[$this->proposalStatus] . $explStr;
+                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 }
                 break;
             case static::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
                 break;
             case static::STATUS_VOTE:
-                $str = static::getProposedStatusesNames()[$this->proposalStatus];
+                $str = static::getProposedStatusNames()[$this->proposalStatus];
                 if (is_a($this, Amendment::class)) {
                     /** @var Amendment $this */
                     if ($this->proposalReference) {
@@ -559,8 +559,8 @@ abstract class IMotion extends ActiveRecord
                 return $str;
                 break;
             default:
-                if (isset(static::getProposedStatusesNames()[$this->proposalStatus])) {
-                    return static::getProposedStatusesNames()[$this->proposalStatus] . $explStr;
+                if (isset(static::getProposedStatusNames()[$this->proposalStatus])) {
+                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 } else {
                     return $this->proposalStatus . '?' . $explStr;
                 }

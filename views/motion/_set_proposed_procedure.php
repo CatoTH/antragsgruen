@@ -61,7 +61,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= Motion::getProposedStatusesNames()[$statusId] ?>
+                    ?>> <?= Motion::getProposedStatusNames()[$statusId] ?>
                 </label><br>
                 <?php
             }

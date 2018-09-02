@@ -9,9 +9,9 @@ if (!isset($show_visibility)) {
     $show_visibility = true;
 }
 
-$amendmentStatusesVerbs = \app\models\db\IMotion::getStatusesAsVerbs();
+$amendmentStatusVerbs = \app\models\db\IMotion::getStatusesAsVerbs();
 
-if ($entry->proposalUserStatus !== null || isset($amendmentStatusesVerbs[$entry->proposalStatus])) {
+if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->proposalStatus])) {
     echo '<div class="statusIcons proposalStatusIcons">';
     if ($entry->proposalUserStatus !== null) {
         if ($entry->proposalUserStatus === \app\models\db\IMotion::STATUS_ACCEPTED) {

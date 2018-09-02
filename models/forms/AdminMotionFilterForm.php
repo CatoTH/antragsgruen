@@ -626,7 +626,7 @@ class AdminMotionFilterForm extends Model
             }
         }
         if (!$foundMyself && $this->proposalStatus !== null) {
-            $statusNames             = Motion::getProposedStatusesNames();
+            $statusNames             = Motion::getProposedStatusNames();
             $statuses[$this->status] = Html::encode($statusNames[$this->proposalStatus] . ' (0)');
         }
         $str .= HTMLTools::fueluxSelectbox('Search[proposalStatus]', $statuses, $this->proposalStatus, [], true);
@@ -732,7 +732,7 @@ class AdminMotionFilterForm extends Model
                 }
             }
         }
-        $statuses = Amendment::getProposedStatusesNames();
+        $statuses = Amendment::getProposedStatusNames();
         foreach ($statuses as $statusId => $statusName) {
             if (isset($num[$statusId])) {
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
