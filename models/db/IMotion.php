@@ -241,7 +241,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getStatusNamesVisibleForadmins()
+    public static function getStatusNamesVisibleForAdmins()
     {
         $names     = [];
         $invisible = static::getStatusesInvisibleForAdmins();
