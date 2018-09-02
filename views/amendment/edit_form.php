@@ -159,7 +159,7 @@ echo '<section style="overflow: auto;" class="content">
         <div class="content">
             <div style="float: right;">
                 <button type="submit" name="save" class="btn btn-success">
-                    <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on') . '
+                    <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on') . '
                 </button>
             </div>
             <div style="float: left;">
