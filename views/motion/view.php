@@ -229,10 +229,10 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
             if ($aename == '') {
                 $aename = $amend->id;
             }
-            $amendLink  = UrlHelper::createAmendmentUrl($amend);
-            $amendStati = Amendment::getStatusNames();
+            $amendLink     = UrlHelper::createAmendmentUrl($amend);
+            $amendStatuses = Amendment::getStatusNames();
             echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
-            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStati[$amend->status]) . ')';
+            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
             echo '</li>';
         }
         echo '</ul>';

@@ -57,17 +57,17 @@ use yii\helpers\Html;
                 echo '<span class="by">' . \Yii::t('amend', 'merge1_amend_by') . ': ' .
                     $otherAmend->getInitiatorsStr() . '</span>';
                 echo '</div><div class="col-md-7"><div class="fueluxSelectHolder">';
-                $statiAll = $amendment->getStatusNames();
-                $stati    = [];
-                foreach (Amendment::getStatiMarkAsDoneOnRewriting() as $statusId) {
-                    $stati[$statusId] = $statiAll[$statusId];
+                $statusesAll = $amendment->getStatusNames();
+                $statuses    = [];
+                foreach (Amendment::getStatusesMarkAsDoneOnRewriting() as $statusId) {
+                    $statuses[$statusId] = $statusesAll[$statusId];
                 }
-                $stati[$otherAmend->status] = \Yii::t('amend', 'merge1_status_unchanged') . ': ' .
-                    $statiAll[$amendment->status];
+                $statuses[$otherAmend->status] = \Yii::t('amend', 'merge1_status_unchanged') . ': ' .
+                    $statusesAll[$amendment->status];
                 $statusPre = ($amendment->globalAlternative ? Amendment::STATUS_REJECTED : $otherAmend->status);
                 echo HTMLTools::fueluxSelectbox(
                     'otherAmendmentsStatus[' . $otherAmend->id . ']',
-                    $stati,
+                    $statuses,
                     $statusPre,
                     ['data-amendment-id' => $otherAmend->id, 'id' => 'otherAmendmentsStatus' . $otherAmend->id]
                 );

@@ -67,9 +67,9 @@ class Amendment extends IMotion implements IRSSItem
     /**
      * @return string[]
      */
-    public static function getProposedChangeStati()
+    public static function getProposedChangeStatuses()
     {
-        $stati = [
+        $statuses = [
             IMotion::STATUS_ACCEPTED,
             IMotion::STATUS_REJECTED,
             IMotion::STATUS_MODIFIED_ACCEPTED,
@@ -79,9 +79,9 @@ class Amendment extends IMotion implements IRSSItem
             IMotion::STATUS_CUSTOM_STRING,
         ];
         if (Consultation::getCurrent()) {
-            $stati = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStati($stati);
+            $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
         }
-        return $stati;
+        return $statuses;
     }
 
     /**
@@ -443,7 +443,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $ams = [];
         foreach ($amendments as $am) {
-            if (!in_array($am->status, $consultation->getInvisibleAmendmentStati())) {
+            if (!in_array($am->status, $consultation->getInvisibleAmendmentStatuses())) {
                 $am->getFirstDiffLine();
                 $ams[] = $am;
             }
@@ -461,14 +461,14 @@ class Amendment extends IMotion implements IRSSItem
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
     {
-        $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
-        $query          = Amendment::find();
-        $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+        $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
+        $query             = Amendment::find();
+        $query->where('amendment.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
         $query->joinWith(
             [
-                'motionJoin' => function ($query) use ($invisibleStati, $consultation) {
+                'motionJoin' => function ($query) use ($invisibleStatuses, $consultation) {
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
@@ -487,13 +487,13 @@ class Amendment extends IMotion implements IRSSItem
     public static function getScreeningAmendments(Consultation $consultation)
     {
         $query = Amendment::find();
-        $query->where('amendment.status IN (' . implode(', ', static::getScreeningStati()) . ')');
+        $query->where('amendment.status IN (' . implode(', ', static::getScreeningStatuses()) . ')');
         $query->joinWith(
             [
                 'motionJoin' => function ($query) use ($consultation) {
-                    $invisibleStati = array_map('IntVal', $consultation->getInvisibleMotionStati());
+                    $invisibleStatuses = array_map('IntVal', $consultation->getInvisibleMotionStatuses());
                     /** @var ActiveQuery $query */
-                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStati) . ')');
+                    $query->andWhere('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
                     $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
                 }
             ]
@@ -690,7 +690,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->forceLogin) {
             return false;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
             return false;
         }
         return true;
@@ -760,7 +760,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         if ($this->status == Amendment::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
-        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati())) {
+        } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
         } else {
             $this->status = static::STATUS_WITHDRAWN;
@@ -926,7 +926,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleAmendmentStati())) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleAmendmentStatuses())) {
             return;
         }
         $this->textFixed = 1;
@@ -1047,7 +1047,7 @@ class Amendment extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
             $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
         }
 
@@ -1141,23 +1141,23 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFormattedStatus()
     {
-        $statiNames = Amendment::getStatusNames();
-        $status     = '';
+        $statusesNames = Amendment::getStatusNames();
+        $status        = '';
         switch ($this->status) {
             case Amendment::STATUS_SUBMITTED_UNSCREENED:
             case Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED:
-                $status = '<span class="unscreened">' . Html::encode($statiNames[$this->status]) . '</span>';
+                $status = '<span class="unscreened">' . Html::encode($statusesNames[$this->status]) . '</span>';
                 break;
             case Amendment::STATUS_SUBMITTED_SCREENED:
                 $status = '<span class="screened">' . \Yii::t('amend', 'screened_hint') . '</span>';
                 break;
             case Amendment::STATUS_COLLECTING_SUPPORTERS:
-                $status = Html::encode($statiNames[$this->status]);
+                $status = Html::encode($statusesNames[$this->status]);
                 $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
                 $status .= IPolicy::getPolicyNames()[$this->getMyMotionType()->policySupportAmendments] . ')</small>';
                 break;
             default:
-                $status .= Html::encode($statiNames[$this->status]);
+                $status .= Html::encode($statusesNames[$this->status]);
         }
         if (trim($this->statusString) != '') {
             $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";

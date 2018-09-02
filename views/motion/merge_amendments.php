@@ -13,7 +13,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var MotionMergeAmendmentsForm $form
- * @var array $amendmentStati
+ * @var array $amendmentStatuses
  * @var int[] $toMergeAmendmentIds
  * @var null|Motion $resumeDraft
  */
@@ -242,7 +242,7 @@ if (count($editorials) > 0) {
 
 
 if (count($amendments) > 0) {
-    $jsStati = [
+    $jsStatuses = [
         'processed'         => Amendment::STATUS_PROCESSED,
         'accepted'          => Amendment::STATUS_ACCEPTED,
         'rejected'          => Amendment::STATUS_REJECTED,
@@ -251,8 +251,8 @@ if (count($amendments) > 0) {
 
     ?>
 
-    <section class="newAmendments" data-stati="<?= Html::encode(json_encode($jsStati)) ?>">
-        <?php MotionLayoutHelper::printAmendmentStatusSetter($amendments, $amendmentStati); ?>
+    <section class="newAmendments" data-statuses="<?= Html::encode(json_encode($jsStatuses)) ?>">
+        <?php MotionLayoutHelper::printAmendmentStatusSetter($amendments, $amendmentStatuses); ?>
     </section>
     <?php
 }
