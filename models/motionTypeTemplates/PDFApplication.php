@@ -39,7 +39,7 @@ trait PDFApplication
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton          = 0;
 
-        $initiatorSettings               = new InitiatorForm($type);
+        $initiatorSettings               = new InitiatorForm(null);
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
         $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;

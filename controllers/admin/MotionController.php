@@ -260,7 +260,7 @@ class MotionController extends AdminBase
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;
 
-                    $initiatorSettings               = new InitiatorForm($type);
+                    $initiatorSettings               = new InitiatorForm(null);
                     $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
                     $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
                     $initiatorSettings->contactEmail = InitiatorForm::CONTACT_OPTIONAL;
