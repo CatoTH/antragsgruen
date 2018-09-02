@@ -11,7 +11,7 @@ Es müssen zwei (und nur zwei!) Motion Types angelegt werden:
 
 
 
-## Motion-Statuses
+## Motion Statuses
 
 **Diskussion:**
 

@@ -53,7 +53,7 @@ abstract class IMotion extends ActiveRecord
     // The default state once the motion is visible
     const STATUS_SUBMITTED_SCREENED = 3;
 
-    // This are statuses motions and amendments get as their final state.
+    // These are statuses motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
     // For member petitions, "Processed" means the petition has been replied.
