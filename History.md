@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.0.1 [not released yet]
+
+- Bugfix: Motion comment tables were not created correctly when MySQL tables names are case-sensitive.
+
 ## Version 4.0.0 (2018-09-01)
 
 - Antragsgrün now includes an update mechanism to install new versions from the web interface.
