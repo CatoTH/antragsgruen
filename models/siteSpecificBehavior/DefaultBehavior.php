@@ -47,12 +47,12 @@ class DefaultBehavior
     }
 
     /**
-     * @param int[] $stati
+     * @param int[] $statuses
      * @return int[]
      */
-    public static function getProposedChangeStati($stati)
+    public static function getProposedChangeStatuses($statuses)
     {
-        return $stati;
+        return $statuses;
     }
 
     /**

@@ -66,7 +66,7 @@ return [
     'merge_amtable_text_orig'   => 'Original amendment',
     'merge_amtable_text_prop'   => 'Proposed procedure',
     'merge_status_unchanged'    => 'unchanged',
-    'merge_amend_stati'         => 'Status of the amendments',
+    'merge_amend_statuses'      => 'Status of the amendments',
     'merge_bread'               => 'Revise',
     'merge_title'               => 'Revise %TITLE%',
     'merge_merge'               => 'Merge',

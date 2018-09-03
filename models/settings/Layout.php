@@ -508,7 +508,7 @@ class Layout
         }
 
         if (!$this->consultation) {
-            // This are manager pages, generally aimed to advertise the installation
+            // These are manager pages, generally aimed to advertise the installation
             return true;
         }
 

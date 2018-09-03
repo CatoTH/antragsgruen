@@ -93,9 +93,9 @@ echo '<div class="content form-horizontal fuelux">';
     </label>
     <div class="col-md-4">
         <?php
-        $options = ['id' => 'amendmentStatus'];
-        $stati   = Amendment::getStatusNamesVisibleForadmins();
-        echo HTMLTools::fueluxSelectbox('amendment[status]', $stati, $amendment->status, $options, true);
+        $options  = ['id' => 'amendmentStatus'];
+        $statuses = Amendment::getStatusNamesVisibleForAdmins();
+        echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
         ?>
     </div>
     <div class="col-md-5">

@@ -38,12 +38,12 @@ class MotionSectionParagraph
      */
     public function getVisibleComments($screeningAdmin, $parentId)
     {
-        $stati = [MotionComment::STATUS_VISIBLE];
+        $statuses = [MotionComment::STATUS_VISIBLE];
         if ($screeningAdmin) {
-            $stati[] = MotionComment::STATUS_SCREENING;
+            $statuses[] = MotionComment::STATUS_SCREENING;
         }
-        return array_filter($this->comments, function (MotionComment $comment) use ($stati, $parentId) {
-            if (!in_array($comment->status, $stati)) {
+        return array_filter($this->comments, function (MotionComment $comment) use ($statuses, $parentId) {
+            if (!in_array($comment->status, $statuses)) {
                 return false;
             }
             return ($parentId === $comment->parentCommentId);

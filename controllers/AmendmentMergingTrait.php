@@ -66,7 +66,7 @@ trait AmendmentMergingTrait
 
         $collissions = $amendments = [];
         foreach ($otherAmendments as $amend) {
-            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -150,11 +150,11 @@ trait AmendmentMergingTrait
 
         if ($this->isPostSet('save')) {
             if ($allowStatusChanging) {
-                $newAmendmentStati = \Yii::$app->request->post('otherAmendmentsStatus', []);
+                $newAmendmentStatuses = \Yii::$app->request->post('otherAmendmentsStatus', []);
             } else {
-                $newAmendmentStati = [];
+                $newAmendmentStatuses = [];
                 foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
-                    $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
+                    $newAmendmentStatuses[$newAmendment->id] = $newAmendment->status;
                 }
             }
 
@@ -165,7 +165,7 @@ trait AmendmentMergingTrait
                     \Yii::$app->request->post('amendmentStatus'),
                     \Yii::$app->request->post('newParas', []),
                     \Yii::$app->request->post('amendmentOverride', []),
-                    $newAmendmentStati
+                    $newAmendmentStatuses
                 );
             } else {
                 $newParas = [];
@@ -182,7 +182,7 @@ trait AmendmentMergingTrait
                     Amendment::STATUS_ACCEPTED,
                     $newParas,
                     [],
-                    $newAmendmentStati
+                    $newAmendmentStatuses
                 );
             }
             if ($form->checkConsistency()) {

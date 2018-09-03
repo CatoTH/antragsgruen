@@ -347,7 +347,7 @@ class LayoutHelper
      */
     public static function printAmendmentStatusSetter($amendments, $statusOverrides = [])
     {
-        echo '<h2 class="green">' . \Yii::t('amend', 'merge_amend_stati') . '</h2>
+        echo '<h2 class="green">' . \Yii::t('amend', 'merge_amend_statuses') . '</h2>
     <div class="content form-horizontal">';
 
         foreach ($amendments as $amendment) {
@@ -362,22 +362,22 @@ class LayoutHelper
             echo Html::encode($amendment->getInitiatorsStr());
             echo '</span></label>
     <div class="col-md-9">';
-            $statiAll                  = $amendment->getStatusNames();
-            $stati                     = [
-                Amendment::STATUS_PROCESSED         => $statiAll[Amendment::STATUS_PROCESSED],
-                Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],
-                Amendment::STATUS_REJECTED          => $statiAll[Amendment::STATUS_REJECTED],
-                Amendment::STATUS_MODIFIED_ACCEPTED => $statiAll[Amendment::STATUS_MODIFIED_ACCEPTED],
+            $statusesAll                  = $amendment->getStatusNames();
+            $statuses                     = [
+                Amendment::STATUS_PROCESSED         => $statusesAll[Amendment::STATUS_PROCESSED],
+                Amendment::STATUS_ACCEPTED          => $statusesAll[Amendment::STATUS_ACCEPTED],
+                Amendment::STATUS_REJECTED          => $statusesAll[Amendment::STATUS_REJECTED],
+                Amendment::STATUS_MODIFIED_ACCEPTED => $statusesAll[Amendment::STATUS_MODIFIED_ACCEPTED],
             ];
-            $stati[$amendment->status] = \Yii::t('amend', 'merge_status_unchanged') . ': ' .
-                $statiAll[$amendment->status];
+            $statuses[$amendment->status] = \Yii::t('amend', 'merge_status_unchanged') . ': ' .
+                $statusesAll[$amendment->status];
             if (isset($statusOverrides[$amendment->id])) {
                 $statusPre = $statusOverrides[$amendment->id];
             } else {
                 $statusPre = Amendment::STATUS_PROCESSED;
             }
             $opts = ['id' => 'amendmentStatus' . $amendment->id];
-            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre, $opts);
+            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $statuses, $statusPre, $opts);
             echo '</div></div>';
         }
 

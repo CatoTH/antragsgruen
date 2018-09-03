@@ -15,9 +15,9 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 
-$hasTags     = (count($controller->consultation->tags) > 0);
-$motionStati = Motion::getStatusNames();
-$viewUrl     = UrlHelper::createMotionUrl($entry);
+$hasTags        = (count($controller->consultation->tags) > 0);
+$motionStatuses = Motion::getStatusNames();
+$viewUrl        = UrlHelper::createMotionUrl($entry);
 if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/motion/update', 'motionId' => $entry->id]);
 } else {
@@ -38,7 +38,7 @@ if ($editUrl) {
     echo Html::encode(trim($entry->title) != '' ? $entry->title : '-');
 }
 echo '</span></td>';
-echo '<td>' . Html::encode($motionStati[$entry->status]);
+echo '<td>' . Html::encode($motionStatuses[$entry->status]);
 if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
 }

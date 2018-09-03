@@ -33,7 +33,7 @@ return [
         'Note que tu peux demander des &quot;Editorial changes&quot;.',
     'editorial_hint'            => 'Nuance rédactionnelle',
     'merge_status_unchanged'    => 'inchangé',
-    'merge_amend_stati'         => 'Statut des amendements',
+    'merge_amend_statuses'      => 'Statut des amendements',
     'merge_bread'               => 'Réviser',
     'merge_title'               => 'Réviser TITLE%',
     'merge_new_text'            => 'Nouveau text de la motion',
