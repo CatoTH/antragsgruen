@@ -32,7 +32,7 @@ trait AmendmentMergingTrait
      * @throws NotFound
      * @throws Internal
      */
-    public function actionGetMergeCollissions($motionSlug, $amendmentId)
+    public function actionGetMergeCollisions($motionSlug, $amendmentId)
     {
         $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
         if (!$amendment) {
@@ -43,7 +43,7 @@ trait AmendmentMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]);
+        $otherAmendments = $amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]);
 
         if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
             $otherAmendmentsStatus = \Yii::$app->request->post('otherAmendmentsStatus', []);
@@ -64,27 +64,27 @@ trait AmendmentMergingTrait
             );
         }
 
-        $collissions = $amendments = [];
+        $collisions = $amendments = [];
         foreach ($otherAmendments as $amend) {
             if (in_array($otherAmendmentsStatus[$amend->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $debug = false;
-                $coll  = $section->getRewriteCollissions($newSections[$section->sectionId], false, $debug);
+                $coll  = $section->getRewriteCollisions($newSections[$section->sectionId], false, $debug);
 
                 if (count($coll) > 0) {
                     if (!in_array($amend, $amendments)) {
-                        $amendments[$amend->id]  = $amend;
-                        $collissions[$amend->id] = [];
+                        $amendments[$amend->id] = $amend;
+                        $collisions[$amend->id] = [];
                     }
-                    $collissions[$amend->id][$section->sectionId] = $coll;
+                    $collisions[$amend->id][$section->sectionId] = $coll;
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
-            'amendments'  => $amendments,
-            'collissions' => $collissions,
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
+            'amendments' => $amendments,
+            'collisions' => $collisions,
         ]);
     }
 
@@ -124,7 +124,7 @@ trait AmendmentMergingTrait
         }
         if (!$amendment->canMergeIntoMotion()) {
             if ($amendment->canMergeIntoMotion(true)) {
-                return $this->render('merge_err_collission', [
+                return $this->render('merge_err_collision', [
                     'amendment'           => $amendment,
                     'collidingAmendments' => $amendment->getCollidingAmendments()
                 ]);
@@ -140,7 +140,7 @@ trait AmendmentMergingTrait
         if ($amendment->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
             $collisionHandling   = true;
             $allowStatusChanging = true;
-        } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+        } elseif ($mergingPolicy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {
             $collisionHandling   = true;
             $allowStatusChanging = false;
         } else {
@@ -153,7 +153,7 @@ trait AmendmentMergingTrait
                 $newAmendmentStati = \Yii::$app->request->post('otherAmendmentsStatus', []);
             } else {
                 $newAmendmentStati = [];
-                foreach ($motion->getAmendmentsRelevantForCollissionDetection([$amendment]) as $newAmendment) {
+                foreach ($motion->getAmendmentsRelevantForCollisionDetection([$amendment]) as $newAmendment) {
                     $newAmendmentStati[$newAmendment->id] = $newAmendment->status;
                 }
             }
@@ -224,14 +224,14 @@ trait AmendmentMergingTrait
         }
 
         if ($collisionHandling) {
-            return $this->render('merge_with_collissions', [
+            return $this->render('merge_with_collisions', [
                 'motion'              => $motion,
                 'amendment'           => $amendment,
                 'paragraphSections'   => $paragraphSections,
                 'allowStatusChanging' => $allowStatusChanging
             ]);
         } else {
-            return $this->render('merge_without_collissions', [
+            return $this->render('merge_without_collisions', [
                 'motion'            => $motion,
                 'amendment'         => $amendment,
                 'paragraphSections' => $paragraphSections,

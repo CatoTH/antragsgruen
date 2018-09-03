@@ -860,9 +860,9 @@ s     * @throws \app\models\exceptions\Internal
             $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 
-        $paragraphCollissions = [];
+        $paragraphCollisions = [];
         foreach (array_keys($paragraphs) as $paragraphNo) {
-            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
+            $paragraphCollisions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
         }
 
         $out = '';
@@ -889,13 +889,13 @@ s     * @throws \app\models\exceptions\Internal
             }
 
             $out .= '<div class="paragraphHolder';
-            if (count($paragraphCollissions[$paragraphNo]) > 0) {
-                $out .= ' hasCollissions';
+            if (count($paragraphCollisions[$paragraphNo]) > 0) {
+                $out .= ' hasCollisions';
             }
             $out .= '" data-paragraph-no="' . $paragraphNo . '">';
             $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
-            foreach ($paragraphCollissions[$paragraphNo] as $amendmentId => $paraData) {
+            foreach ($paragraphCollisions[$paragraphNo] as $amendmentId => $paraData) {
                 $amendment    = $amendmentsById[$amendmentId];
                 $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
                 $out          .= '<div class="collidingParagraph"';

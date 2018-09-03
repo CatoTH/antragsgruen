@@ -25,11 +25,11 @@ Bitte beachte, dass sich die weiteren Antragsteller*innen deines Änderungsantra
     'support_collection_reached_hint' => 'Dieser Änderungsantrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Antragsteller*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die Antragsteller*in die Einreichung bestätigen, die den Änderungsantrag angelegt hat.',
     'support_reached_email_subject'   => 'Dein Änderungsantrag: Die notwendige Anzahl von Antragsteller*innen ist erreicht',
     'support_reached_email_body'      => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag \"%TITLE%\" hat die Mindestzahl an weiteren Antragssteller*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht. <br><br>Viele Grüße,<br> Das Antragsgrün-Team',
-    'merge1_collission_intro'         => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
+    'merge1_collision_intro'         => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
 <br>
 Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
 Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
 mit denen es Kollisionen gibt.<br>
 Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten bleibt</strong>.',
-    'merge1_check_collissions'        => 'Weiter / Kollisionen überprüfen',
+    'merge1_check_collisions'        => 'Weiter / Kollisionen überprüfen',
 ];

@@ -345,7 +345,7 @@ class SiteCreateForm extends Model
             $type->policyAmendments = IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         } else {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
@@ -460,7 +460,7 @@ class SiteCreateForm extends Model
             $type->policyAmendments = IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         } else {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }

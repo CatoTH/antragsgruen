@@ -15,7 +15,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('amend', 'merge1_err_collission');
+$this->title = \Yii::t('amend', 'merge1_err_collision');
 
 $motion    = $amendment->getMyMotion();
 $motionUrl = UrlHelper::createMotionUrl($motion);
@@ -29,11 +29,11 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge1_title'));
 
 
 ?>
-<h1><?= \Yii::t('amend', 'merge1_err_collission') ?></h1>
+<h1><?= \Yii::t('amend', 'merge1_err_collision') ?></h1>
 
 <div class="content">
     <div class="alert alert-danger" role="alert">
-        <?= \Yii::t('amend', 'merge1_err_collission_desc') ?>
+        <?= \Yii::t('amend', 'merge1_err_collision_desc') ?>
         <ul>
             <?php foreach ($collidingAmendments as $collidingAmendment) { ?>
                 <li>

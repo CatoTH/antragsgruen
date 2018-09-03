@@ -172,7 +172,7 @@ class AmendmentController extends AdminBase
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $post['titlePrefix'];
@@ -214,7 +214,7 @@ class AmendmentController extends AdminBase
             }
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }

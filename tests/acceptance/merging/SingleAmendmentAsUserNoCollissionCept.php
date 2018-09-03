@@ -19,7 +19,7 @@ $I->checkOption('#initiatorsCanMerge1');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->seeCheckboxIsChecked('#initiatorsCanMerge1');
 
-$I->wantTo('merge amendments with collissions');
+$I->wantTo('merge amendments with collisions');
 $I->logout();
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
@@ -37,7 +37,7 @@ $I->see('Ä6 zu A2', 'ul');
 $I->dontSeeElement('#amendmentMergeForm');
 
 
-$I->wantTo('merge amendments without collissions');
+$I->wantTo('merge amendments without collisions');
 $I->gotoAmendment(true, 2, 276);
 $I->see('In den Antrag übernehmen', '#sidebar');
 $I->click('#sidebar .mergeIntoMotion a');

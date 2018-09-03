@@ -113,9 +113,9 @@ class Permissions
             return true;
         } elseif ($motion->iAmInitiator()) {
             $policy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
-            if ($policy === ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+            if ($policy === ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {
                 return true;
-            } elseif ($policy === ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION) {
+            } elseif ($policy === ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION) {
                 return (count($motion->getVisibleAmendments()) === 0);
             } else {
                 return false;
