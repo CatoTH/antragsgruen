@@ -200,10 +200,10 @@ foreach (IPolicy::getPolicies() as $policy) {
         <label><?php
             echo Html::radio(
                 'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION),
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION),
                 [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
                 ]
             );
             ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
@@ -213,10 +213,10 @@ foreach (IPolicy::getPolicies() as $policy) {
         <label><?php
             echo Html::radio(
                 'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION),
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION),
                 [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
                 ]
             )
             ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_yes') ?>

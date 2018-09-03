@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /**
  * @var Amendment $amendment
  * @var array $paragraphSections
- * @var bool $needsCollissionCheck
+ * @var bool $needsCollisionCheck
  */
 
 $fixedWidthSections = [];
@@ -71,10 +71,10 @@ foreach ($amendment->getActiveSections() as $section) {
         }
 
         echo '<div class="checkButtonRow">';
-        if ($needsCollissionCheck) {
-            $url = UrlHelper::createAmendmentUrl($amendment, 'get-merge-collissions');
-            echo '<button class="checkAmendmentCollissions btn btn-primary" data-url="' . Html::encode($url) . '">' .
-                \Yii::t('amend', 'merge1_check_collissions') . '</button>';
+        if ($needsCollisionCheck) {
+            $url = UrlHelper::createAmendmentUrl($amendment, 'get-merge-collisions');
+            echo '<button class="checkAmendmentCollisions btn btn-primary" data-url="' . Html::encode($url) . '">' .
+                \Yii::t('amend', 'merge1_check_collisions') . '</button>';
         } else {
             echo '<button type="submit" name="save" class="btn btn-primary save">' .
                 \Yii::t('admin', 'save') . '</button>';

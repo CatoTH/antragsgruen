@@ -33,10 +33,10 @@ $this->title = $amendment->getTitle() . ': ' . \Yii::t('amend', 'merge1_title');
 
 /** @var Amendment[] $otherAmendments */
 $otherAmendments = [];
-foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$amendment]) as $otherAmend) {
+foreach ($amendment->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$amendment]) as $otherAmend) {
     $otherAmendments[] = $otherAmend;
 }
-$needsCollissionCheck = (count($otherAmendments) > 0);
+$needsCollisionCheck = (count($otherAmendments) > 0);
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
@@ -49,7 +49,7 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
                 <?= \Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>
             </li>
             <?php
-            if ($needsCollissionCheck) { ?>
+            if ($needsCollisionCheck) { ?>
                 <li data-target="#step2" class="goto_step2">
                     <?= \Yii::t('amend', 'merge1_step2_title') ?><span class="chevron"></span>
                 </li>
@@ -69,9 +69,9 @@ echo $this->render('_merge_step1', [
     'allowStatusChanging' => $allowStatusChanging
 ]);
 echo $this->render('_merge_step2', [
-    'amendment'            => $amendment,
-    'paragraphSections'    => $paragraphSections,
-    'needsCollissionCheck' => $needsCollissionCheck,
+    'amendment'           => $amendment,
+    'paragraphSections'   => $paragraphSections,
+    'needsCollisionCheck' => $needsCollisionCheck,
 ]);
 echo $this->render('_merge_step3', []);
 

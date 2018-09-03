@@ -658,21 +658,21 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @param bool $ignoreCollissionProblems
+     * @param bool $ignoreCollisionProblems
      * @return bool
      * @throws \app\models\exceptions\Internal
      */
-    public function canMergeIntoMotion($ignoreCollissionProblems = false)
+    public function canMergeIntoMotion($ignoreCollisionProblems = false)
     {
         if ($this->getMyConsultation()->havePrivilege(User::PRIVILEGE_CONTENT_EDIT)) {
             return true;
         } elseif ($this->getMyMotion()->iAmInitiator()) {
             $policy = $this->getMyMotionType()->initiatorsCanMergeAmendments;
-            if ($policy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+            if ($policy == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {
                 return true;
-            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && $ignoreCollissionProblems) {
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION && $ignoreCollisionProblems) {
                 return true;
-            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION && !$ignoreCollissionProblems) {
+            } elseif ($policy == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION && !$ignoreCollisionProblems) {
                 return (count($this->getCollidingAmendments()) == 0);
             } else {
                 return false;
@@ -742,9 +742,9 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         $colliding = [];
-        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollissionDetection([$this]) as $amend) {
+        foreach ($this->getMyMotion()->getAmendmentsRelevantForCollisionDetection([$this]) as $amend) {
             foreach ($amend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($mySections[$section->sectionId], false, false);
+                $coll = $section->getRewriteCollisions($mySections[$section->sectionId], false, false);
                 if (count($coll) > 0) {
                     $colliding[$amend->id] = $amend;
                 }
@@ -1187,7 +1187,7 @@ class Amendment extends IMotion implements IRSSItem
 
         foreach ($this->getMyMotion()->getAmendmentsProposedToBeIncluded($includeVoted, [$this->id]) as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $collidesWith, true)) {
                         $collidesWith[] = $amendment;

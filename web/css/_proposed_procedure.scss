@@ -136,7 +136,7 @@
       width: 100%;
     }
   }
-  .statusDetails, .collissions, .publicExplanation {
+  .statusDetails, .collisions, .publicExplanation {
     border-top: solid 1px #eee;
     padding: 10px;
   }
@@ -192,7 +192,7 @@
     text-align: center;
     margin: 0 0 40px 0;
   }
-  #collissionIndicator {
+  #collisionIndicator {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -214,7 +214,7 @@
       font-weight: bold;
     }
 
-    .collissionList {
+    .collisionList {
       display: inline-block;
       margin: 0;
       padding: 0;

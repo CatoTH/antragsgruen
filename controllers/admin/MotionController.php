@@ -358,28 +358,28 @@ class MotionController extends AdminBase
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionGetAmendmentRewriteCollissions($motionId)
+    public function actionGetAmendmentRewriteCollisions($motionId)
     {
         $newSections = \Yii::$app->request->post('newSections', []);
 
         /** @var Motion $motion */
-        $motion      = $this->consultation->getMotion($motionId);
-        $collissions = $amendments = [];
-        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+        $motion     = $this->consultation->getMotion($motionId);
+        $collisions = $amendments = [];
+        foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
-                        $amendments[$amendment->id]  = $amendment;
-                        $collissions[$amendment->id] = [];
+                        $amendments[$amendment->id] = $amendment;
+                        $collisions[$amendment->id] = [];
                     }
-                    $collissions[$amendment->id][$section->sectionId] = $coll;
+                    $collisions[$amendment->id][$section->sectionId] = $coll;
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
-            'amendments'  => $amendments,
-            'collissions' => $collissions,
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
+            'amendments' => $amendments,
+            'collisions' => $collisions,
         ]);
     }
 
@@ -409,7 +409,7 @@ class MotionController extends AdminBase
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
@@ -505,7 +505,7 @@ class MotionController extends AdminBase
             }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->titlePrefix = $post['motion']['titlePrefix'];
             }

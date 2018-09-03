@@ -140,8 +140,8 @@ Thanks to Eric Sesterhenn of [X41 D-SEC GmbH](https://www.x41-dsec.de/) for repo
 - Proposers of motions now can receive an e-mail if a amendment to their motion is published (enabled by default)
 - When merging all amendments into the motion at once...
   - drafts are saved periodically and can be set as public. This way, regular users have read-only access to the current work-in-progress draft of the revised motion.
-  - when a paragraph of an amendment lead to a collission with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
-  - it is now possible to exclude some amendments from merging, to prevent lots of collissions for amendments that replace major parts of the motion
+  - when a paragraph of an amendment led to a collision with changes made by another amendment, all changes of that paragraph of that amendment were marked as colliding. Now, we include as many changes as possible into the merged version and only leave the actually colliding changes in the colliding paragraph below the merged version. This reduces the amount of necessary manual work.
+  - it is now possible to exclude some amendments from merging, to prevent lots of collisions for amendments that replace major parts of the motion
 - Replacing several consecutive paragraphes in an amendment is now displayed in a more sensible way (first all deletions in a row, then all insertions; they were alternating before)
 - Administrators can now be set per consultation, without granting them access to all consultations of this site
 - It's possible to change the motion type of a motion now after creating it. However, this works only between motion types that are structurally similar.
@@ -295,7 +295,7 @@ This release was mainly sponsored by the [German Green Party](https://www.gruene
 ### Version 3.3.4 (2016-06-11)
 
 - Bugfix: empty lines vanished under some circumstances
-- Bugfix: a class name collission in EmailNotifications.php was resolved
+- Bugfix: a class name collision in EmailNotifications.php was resolved
 - Bugfix: uploaded images in motions / applications were not shown 
 
 ### Version 3.3.3 (2016-05-29)

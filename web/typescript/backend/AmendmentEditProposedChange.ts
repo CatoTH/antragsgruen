@@ -3,11 +3,11 @@ import {MotionMergeChangeActions} from "../frontend/MotionMergeAmendments";
 
 export class AmendmentEditProposedChange {
     private hasChanged: boolean = false;
-    private $collissionIndicator: JQuery;
+    private $collisionIndicator: JQuery;
 
     public constructor(private $form: JQuery) {
         this.textEditCalled();
-        this.initCollissionDetection();
+        this.initCollisionDetection();
 
         $form.on("submit", () => {
             $(window).off("beforeunload", AmendmentEditProposedChange.onLeavePage);
@@ -42,25 +42,25 @@ export class AmendmentEditProposedChange {
         });
     }
 
-    private initCollissionDetection() {
-        this.$collissionIndicator = this.$form.find('#collissionIndicator');
+    private initCollisionDetection() {
+        this.$collisionIndicator = this.$form.find('#collisionIndicator');
 
         window.setInterval(() => {
             let sectionData = this.getTextConsolidatedSections();
-            let url = this.$form.data('collission-check-url');
+            let url = this.$form.data('collision-check-url');
             $.post(url, {
                 '_csrf': this.$form.find('> input[name=_csrf]').val(),
                 'sections': sectionData
             }, (ret) => {
-                if (ret['collissions'].length == 0) {
-                    this.$collissionIndicator.addClass('hidden');
+                if (ret['collisions'].length == 0) {
+                    this.$collisionIndicator.addClass('hidden');
                 } else {
-                    this.$collissionIndicator.removeClass('hidden');
+                    this.$collisionIndicator.removeClass('hidden');
                     let listHtml = '';
-                    ret['collissions'].forEach((el) => {
+                    ret['collisions'].forEach((el) => {
                        listHtml += el['html'];
                     });
-                    this.$collissionIndicator.find('.collissionList').html(listHtml);
+                    this.$collisionIndicator.find('.collisionList').html(listHtml);
                 }
             });
 

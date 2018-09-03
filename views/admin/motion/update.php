@@ -254,7 +254,7 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 echo '</div>';
 
 
-$needsCollissionCheck = (!$motion->textFixed && count($motion->getAmendmentsRelevantForCollissionDetection()) > 0);
+$needsCollisionCheck = (!$motion->textFixed && count($motion->getAmendmentsRelevantForCollisionDetection()) > 0);
 if (!$motion->textFixed) {
     echo '<h2 class="green">' . \Yii::t('admin', 'motion_edit_text') . '</h2>
 <div class="content" id="motionTextEditCaller">' .
@@ -264,7 +264,7 @@ if (!$motion->textFixed) {
 </div>
 <div class="content hidden" id="motionTextEditHolder">';
 
-    if ($needsCollissionCheck) {
+    if ($needsCollisionCheck) {
         echo '<div class="alert alert-danger" role="alert">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             <span class="sr-only">' . \Yii::t('admin', 'motion_amrew_warning') . ':</span> ' .
@@ -279,11 +279,11 @@ if (!$motion->textFixed) {
         echo $section->getSectionType()->getMotionFormField();
     }
 
-    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
-    echo '<section class="amendmentCollissionsHolder"></section>';
-    if ($needsCollissionCheck) {
+    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collisions', 'motionId' => $motion->id]);
+    echo '<section class="amendmentCollisionsHolder"></section>';
+    if ($needsCollisionCheck) {
         echo '<div class="checkButtonRow">';
-        echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
+        echo '<button class="checkAmendmentCollisions btn btn-default" data-url="' . Html::encode($url) . '">' .
             \Yii::t('admin', 'motion_amrew_btn1') . '</button>';
         echo '</div>';
     }
@@ -300,9 +300,9 @@ echo $this->render('_update_supporter', [
 ]);
 
 echo '<div class="saveholder">';
-if ($needsCollissionCheck) {
-    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collissions', 'motionId' => $motion->id]);
-    echo '<button class="checkAmendmentCollissions btn btn-default" data-url="' . Html::encode($url) . '">' .
+if ($needsCollisionCheck) {
+    $url = UrlHelper::createUrl(['admin/motion/get-amendment-rewrite-collisions', 'motionId' => $motion->id]);
+    echo '<button class="checkAmendmentCollisions btn btn-default" data-url="' . Html::encode($url) . '">' .
         \Yii::t('admin', 'motion_amrew_btn2') . '</button>';
 }
 echo '<button type="submit" name="save" class="btn btn-primary save">' . \Yii::t('admin', 'save') . '</button>

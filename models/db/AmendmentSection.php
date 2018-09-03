@@ -299,7 +299,7 @@ class AmendmentSection extends IMotionSection
      * @return array
      * @throws Internal
      */
-    public function getRewriteCollissions($newMotionHtml, $asDiff = false, $debug = false)
+    public function getRewriteCollisions($newMotionHtml, $asDiff = false, $debug = false)
     {
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');

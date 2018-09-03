@@ -181,8 +181,8 @@ class AmendmentDiffMerger
 
     /**
      * Sort the amendment paragraphs by the last affected line/word.
-     * This is an attempt to minimize the number of collissions when merging the paragraphs later on,
-     * as amendments changing a lot and therefore colloding more frequently tend to start at earlier lines.
+     * This is an attempt to minimize the number of collisions when merging the paragraphs later on,
+     * as amendments changing a lot and therefore colliding more frequently tend to start at earlier lines.
      */
     private function sortDiffParagraphs()
     {
@@ -212,7 +212,7 @@ class AmendmentDiffMerger
         };
 
         // Figures out if the blank element is to be inserted in the middle of a deletion block.
-        // If so, the "amendmentId"-Attribute needs to be set to trigger a collission
+        // If so, the "amendmentId"-Attribute needs to be set to trigger a collision
         $pendingDeleteAmendment = function ($paraNo, $locAmendNo, $wordNo) {
             if ($wordNo == 0) {
                 return null;
@@ -296,7 +296,7 @@ class AmendmentDiffMerger
     }
 
     /**
-     * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collission.
+     * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collision.
      *
      * @param int $paraNo
      * @param array $changeSet
@@ -348,14 +348,14 @@ class AmendmentDiffMerger
     {
         $words = $this->paraData[$paraNo]['words'];
 
-        $paragraphHadCollissions = false;
-        $groups                  = $this->groupChangeSet($paraNo, $changeSet);
+        $paragraphHadCollisions = false;
+        $groups                 = $this->groupChangeSet($paraNo, $changeSet);
         foreach ($groups as $group) {
             // Transfer the diff from the non-colliding groups to the merged diff and remove the from the changeset.
-            // The changeset that remains will contain the un-mergable collissions
+            // The changeset that remains will contain the un-mergable collisions
 
             if ($group['collides']) {
-                $paragraphHadCollissions = true;
+                $paragraphHadCollisions = true;
                 continue;
             }
 
@@ -371,7 +371,7 @@ class AmendmentDiffMerger
         }
 
         $this->paraData[$paraNo]['words'] = $words;
-        if ($paragraphHadCollissions) {
+        if ($paragraphHadCollisions) {
             $this->paraData[$paraNo]['collidingParagraphs'][] = $changeSet;
         }
     }
