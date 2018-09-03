@@ -4,7 +4,7 @@
 
 The updater provides a way to update Antragsgrün using a web-based interface without having to log use the command line or a SFTP-client. It updates both the code and the database.
 
-Automatic updates are possible within a major version line like 3.x. This means, updating from a minor version like to 3.9.x to 3.10.x will be possible, while updating to a version 4 may or may not be. (There are no plans for a version 4 anyway.)
+Automatic updates are possible within a major version line like 3.x. This means, updating from a minor version like to 4.1.x to 4.2.x will be possible, while updating to a version 5 may or may not be.
 
 Updates are provided as patches, which means only the changed files are downloaded and applied. All updates are signed to ensure code integrity. The [Sodium crypto library](https://download.libsodium.org/doc/) is used for signing (using polyfills for PHP-Versions < 7.2).
 
