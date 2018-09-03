@@ -27,8 +27,8 @@ class AmendmentDiffMergerTest extends TestBase
             ['amendment' => 0, 'text' => 'et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>'],
         ], $merger->getGroupedParagraphData(0));
 
-        $collissions = $merger->getCollidingParagraphGroups(0);
-        $this->assertTrue(isset($collissions[2]));
+        $collisions = $merger->getCollidingParagraphGroups(0);
+        $this->assertTrue(isset($collisions[2]));
     }
 
     public function testBasic()

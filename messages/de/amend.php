@@ -218,7 +218,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
             Dadurch können auch keine Kollisionen mit diesem Änderungsantrag entstehen.<br>
             Bitte beachte aber, dass hierdurch ausschließlich der Status dieser Änderungsanträge gesetzt wird;
             tatsächliche Änderungen am eigentlichen Antrag werden dadurch nicht vorgenommen.',
-    'merge1_collission_intro'    => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
+    'merge1_collision_intro'     => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
             <br>
             Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
             Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
@@ -229,7 +229,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_use_unchanged'       => 'Unverändert übernehmen',
     'merge1_use_modified'        => 'Modifizierte Übernahme',
     'merge1_modify_title'        => 'Änderungsantrag anpassen',
-    'merge1_check_collissions'   => 'Weiter / Kollisionen überprüfen',
+    'merge1_check_collisions'    => 'Weiter / Kollisionen überprüfen',
     'merge1_other_status'        => 'Neue Status der anderen Änderungsanträge',
     'merge1_status_unchanged'    => 'unverändert',
     'merge1_amend_by'            => 'von',
@@ -242,12 +242,12 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge1_done_goto'           => 'Zur neuen Antragsversion',
     'merge1_submitted_by'        => 'Eingereicht von',
     'merge1_submitted_on'        => 'am',
-    'merge1_no_collissions'      => 'Keine Konflikte zu bestehenden Änderungsanträgen',
+    'merge1_no_collisions'       => 'Keine Konflikte zu bestehenden Änderungsanträgen',
     'merge1_manual_changes'      => 'Vorgenommene Änderungen',
     'merge1_manual_amend'        => 'Änderungen des kollidierenden Änderungsantrags %AMEND%',
     'merge1_manual_new'          => 'Neue Version des kollidierenden Änderungsantrags %AMEND%',
-    'merge1_err_collission'      => 'Kann nicht automatisch übernommen werden',
-    'merge1_err_collission_desc' => 'Dieser Änderungsantrag kann leider nicht direkt übernommen werden, da sich einige Änderungen mit Änderungen anderer Änderungsanträge überschneiden. Die kollidierenden Änderungsanträge müssen zunächst zurückgezogen oder von den Antragsteller*innen oder den Administrator*innen angepasst werden. Melde sich bei Fragen am besten direkt bei den Administrator*innen, um diesen Konflikt zu lösen.<br><br>Um folgende Änderungsanträge geht es konkret:',
+    'merge1_err_collision'       => 'Kann nicht automatisch übernommen werden',
+    'merge1_err_collision_desc'  => 'Dieser Änderungsantrag kann leider nicht direkt übernommen werden, da sich einige Änderungen mit Änderungen anderer Änderungsanträge überschneiden. Die kollidierenden Änderungsanträge müssen zunächst zurückgezogen oder von den Antragsteller*innen oder den Administrator*innen angepasst werden. Melde sich bei Fragen am besten direkt bei den Administrator*innen, um diesen Konflikt zu lösen.<br><br>Um folgende Änderungsanträge geht es konkret:',
 
     'proposal_amend_title'       => 'Verfahrensvorschlag',
     'proposal_edit_title'        => 'Verfahrensvorschlag bearbeiten',

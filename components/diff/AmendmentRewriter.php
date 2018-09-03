@@ -237,7 +237,7 @@ class AmendmentRewriter
                 }
             } catch (\Exception $e) {
                 if ($debug) {
-                    echo "COLLISSION\n";
+                    echo "COLLISION\n";
                 }
                 $motionNewDiff = $diff->computeLineDiff($motionOldParas[$paraNo], $affectedByNewMotion[$paraNo]);
                 $motionNewDiff = $renderer->renderHtmlWithPlaceholders($motionNewDiff);

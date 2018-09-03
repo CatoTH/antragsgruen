@@ -23,13 +23,13 @@ export class MotionEdit {
             this.initMotionTextEdit();
         });
 
-        $(".checkAmendmentCollissions").click((ev) => {
+        $(".checkAmendmentCollisions").click((ev) => {
             ev.preventDefault();
-            this.loadAmendmentCollissions();
+            this.loadAmendmentCollisions();
         });
 
         $("#motionUpdateForm").submit(function () {
-            $(".amendmentCollissionsHolder .amendmentOverrideBlock > .texteditor").each(function () {
+            $(".amendmentCollisionsHolder .amendmentOverrideBlock > .texteditor").each(function () {
                 let text = CKEDITOR.instances[$(this).attr("id")].getData();
                 $(this).parents(".amendmentOverrideBlock").find("> textarea").val(text);
             });
@@ -69,20 +69,20 @@ export class MotionEdit {
         });
         $("#motionUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
 
-        if ($(".checkAmendmentCollissions").length > 0) {
+        if ($(".checkAmendmentCollisions").length > 0) {
             $(".wysiwyg-textarea .texteditor").on("focus", function () {
-                $(".checkAmendmentCollissions").show();
+                $(".checkAmendmentCollisions").show();
                 $(".saveholder .save").prop("disabled", true).hide();
             });
-            $(".checkAmendmentCollissions").show();
+            $(".checkAmendmentCollisions").show();
             $(".saveholder .save").prop("disabled", true).hide();
         }
     }
 
-    private loadAmendmentCollissions() {
-        let url = $(".checkAmendmentCollissions").data("url"),
+    private loadAmendmentCollisions() {
+        let url = $(".checkAmendmentCollisions").data("url"),
             sections = {},
-            $holder = $(".amendmentCollissionsHolder");
+            $holder = $(".amendmentCollisionsHolder");
 
         $("#motionTextEditHolder").children().each(function () {
             let $this = $(this);
@@ -101,10 +101,10 @@ export class MotionEdit {
                 $holder.find(".amendmentOverrideBlock > .texteditor").each(function () {
                     new AntragsgruenEditor($(this).attr("id"));
                 });
-                $(".amendmentCollissionsHolder").scrollintoview({top_offset: -50});
+                $(".amendmentCollisionsHolder").scrollintoview({top_offset: -50});
             }
 
-            $(".checkAmendmentCollissions").hide();
+            $(".checkAmendmentCollisions").hide();
             $(".saveholder .save").prop("disabled", false).show();
 
         });

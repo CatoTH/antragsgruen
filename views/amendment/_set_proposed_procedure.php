@@ -245,14 +245,14 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         );
         ?>
     </section>
-    <section class="collissions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+    <section class="collisions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
         <h3><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
-                echo '<li class="collission' . $collidingAmendment->id . '">' . Html::a($title, $url);
+                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }

@@ -674,7 +674,7 @@ class AmendmentController extends Base
         $collidesWith = [];
         foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]) as $compAmend) {
             foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0 && !in_array($compAmend, $collidesWith)) {
                     $collidesWith[] = $compAmend;
                 }
@@ -682,7 +682,7 @@ class AmendmentController extends Base
         }
 
         return json_encode([
-            'collissions' => array_map(function (Amendment $amend) {
+            'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
                 if ($amend->proposalStatus == Amendment::STATUS_VOTE) {

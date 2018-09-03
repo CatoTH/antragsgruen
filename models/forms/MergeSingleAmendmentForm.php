@@ -85,7 +85,7 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
@@ -176,7 +176,7 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
@@ -209,7 +209,7 @@ class MergeSingleAmendmentForm extends Model
      */
     private function setDoneAmendmentsStatuses()
     {
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }

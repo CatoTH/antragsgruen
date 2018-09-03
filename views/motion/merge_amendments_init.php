@@ -167,7 +167,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
     <div class="content">
         <ul class="mergeSingle">
             <?php
-            foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+            foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
                 $mergeUrl = UrlHelper::createAmendmentUrl($amendment, 'merge');
                 ?>
                 <li>
