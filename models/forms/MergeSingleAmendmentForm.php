@@ -28,7 +28,7 @@ class MergeSingleAmendmentForm extends Model
     public $mergeAmendStatus;
 
     /** @var array */
-    public $otherAmendStati;
+    public $otherAmendStatuses;
     public $otherAmendOverrides;
     public $paragraphs;
 
@@ -38,7 +38,7 @@ class MergeSingleAmendmentForm extends Model
      * @param int $newTitlePrefix
      * @param array $paragraphs
      * @param array $otherAmendOverrides
-     * @param array $otherAmendStati
+     * @param array $otherAmendStatuses
      */
     public function __construct(
         Amendment $amendment,
@@ -46,7 +46,7 @@ class MergeSingleAmendmentForm extends Model
         $newStatus,
         $paragraphs,
         $otherAmendOverrides,
-        $otherAmendStati
+        $otherAmendStatuses
     ) {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
@@ -54,7 +54,7 @@ class MergeSingleAmendmentForm extends Model
         $this->mergeAmendment      = $amendment;
         $this->mergeAmendStatus    = $newStatus;
         $this->paragraphs          = $paragraphs;
-        $this->otherAmendStati     = $otherAmendStati;
+        $this->otherAmendStatuses  = $otherAmendStatuses;
         $this->otherAmendOverrides = $otherAmendOverrides;
     }
 
@@ -86,10 +86,10 @@ class MergeSingleAmendmentForm extends Model
         $overrides   = $this->otherAmendOverrides;
 
         foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -177,10 +177,10 @@ class MergeSingleAmendmentForm extends Model
         $overrides   = $this->otherAmendOverrides;
 
         foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -198,7 +198,7 @@ class MergeSingleAmendmentForm extends Model
             }
             $amendment->motionId = $this->newMotion->id;
             $amendment->cache    = '';
-            $amendment->status   = $this->otherAmendStati[$amendment->id];
+            $amendment->status   = $this->otherAmendStatuses[$amendment->id];
             if (!$amendment->save()) {
                 throw new DB($amendment->getErrors());
             }
@@ -210,13 +210,13 @@ class MergeSingleAmendmentForm extends Model
     private function setDoneAmendmentsStatuses()
     {
         foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (!in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (!in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
-            $amendment->status = $this->otherAmendStati[$amendment->id];
+            $amendment->status = $this->otherAmendStatuses[$amendment->id];
             if (!$amendment->save()) {
                 throw new DB($amendment->getErrors());
             }

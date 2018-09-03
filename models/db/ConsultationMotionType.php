@@ -456,7 +456,7 @@ class ConsultationMotionType extends ActiveRecord
     {
         $return = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $this->getConsultation()->getInvisibleMotionStati(!$includeWithdrawn))) {
+            if (!in_array($motion->status, $this->getConsultation()->getInvisibleMotionStatuses(!$includeWithdrawn))) {
                 $return[] = $motion;
             }
         }

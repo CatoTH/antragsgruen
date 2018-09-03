@@ -85,7 +85,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $return = [];
         foreach ($this->consultation->motions as $motion) {
-            if (in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
+            if (in_array($motion->status, $this->consultation->getInvisibleMotionStatuses())) {
                 continue;
             }
             if ($motion->agendaItemId === null || $motion->agendaItemId != $this->id) {
@@ -253,10 +253,10 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getVisibleMotions($includeWithdrawn = true)
     {
-        $stati  = $this->consultation->getInvisibleMotionStati(!$includeWithdrawn);
+        $statuses  = $this->consultation->getInvisibleMotionStatuses(!$includeWithdrawn);
         $return = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $stati)) {
+            if (!in_array($motion->status, $statuses)) {
                 $return[] = $motion;
             }
         }

@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Motion $newMotion
  * @var string $deleteDraftId
- * @var array $amendmentStati
+ * @var array $amendmentStatuses
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
@@ -79,7 +79,7 @@ foreach ($newMotion->getSortedSections(true) as $section) {
 }
 
 echo '<section class="newAmendments">';
-LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStati);
+LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStatuses);
 echo '</section>';
 
 
