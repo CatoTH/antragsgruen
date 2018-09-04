@@ -42,6 +42,7 @@ $I->gotoConsultationHome();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->fillField('#typeMinSupporters', 2);
+$I->checkFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
 $I->checkFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
 $motionTypePage->saveForm();
 $I->seeInField('#typeMinSupporters', 2);
