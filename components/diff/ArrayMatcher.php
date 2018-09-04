@@ -315,7 +315,7 @@ class ArrayMatcher
         }
 
         if (serialize($oldParagraphs) != serialize($oldWithoutEmpty)) {
-            throw new Internal("An internal error matching the paragraphs ocurred");
+            throw new Internal("An internal error matching the paragraphs occurred");
         }
 
         return $newWithoutEmpty;

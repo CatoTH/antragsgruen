@@ -267,6 +267,9 @@ if ($hasPDF) {
             if (count($motionType->getVisibleMotions(false)) == 0) {
                 continue;
             }
+            if ($motionType->getPDFLayoutClass() == null) {
+                continue;
+            }
             $pdfLink = UrlHelper::createUrl([
                 'motion/pdfcollection',
                 'motionTypeId' => $motionType->id,

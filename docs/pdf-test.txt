@@ -1,2 +1,0 @@
-http://1laenderrat2015.antragsgruen-v3.localhost/1laenderrat2015/motion/24/pdf
-- Heading should not exceed page width

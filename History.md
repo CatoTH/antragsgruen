@@ -6,6 +6,10 @@
 - Motion types can now force motion titles to have a certain beginning, like "Application: ".
 - For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
 
+### Version 4.0.1 (2018-09-02)
+
+- Bugfix: Motion comment tables were not created correctly when MySQL tables names are case-sensitive.
+
 ## Version 4.0.0 (2018-09-01)
 
 - Antragsgrün now includes an update mechanism to install new versions from the web interface.

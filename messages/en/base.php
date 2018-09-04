@@ -23,7 +23,7 @@ return [
     'err_cons_not_site'     => 'Invalid URL: this consultation is not part of the given site.',
     'err_site_403'          => 'No access',
     'err_site_410'          => 'This content has been deleted.',
-    'err_site_500'          => 'An internal error has ocurred',
+    'err_site_500'          => 'An internal error has occurred',
     'err_site_404'          => 'The given site does not exist. If you think this is an error, please contact us (info@antragsgruen.de).',
     'err_cons_404'          => 'The given consultation was not found. This is probably a typo in the URL entered in your browser.',
     'err_update_mode'       => 'The site is in maintenance mode due to an update.<br><br>If you are the admin and this is not intentional, you can find further information in the <a href="https://github.com/CatoTH/antragsgruen/blob/master/docs/update-troubleshooting.md">documentation</a>.',

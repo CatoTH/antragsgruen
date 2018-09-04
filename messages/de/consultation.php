@@ -9,7 +9,7 @@ return [
     'current_phase'        => 'Aktuelle Phase',
     'My Motions'           => 'Meine Anträge',
     'All Motions'          => 'Anträge',
-    'no_motions_yet'       => 'Es gibt noch keine Anträge',
+    'no_motions_yet'       => 'Es gibt noch keine Anträge.',
     'My Amendments'        => 'Meine Änderungsanträge',
     'Agenda'               => 'Tagesordnung',
     'Other Motions'        => 'Sonstige Anträge',
