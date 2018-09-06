@@ -13,11 +13,13 @@ class InitiatorForm implements \JsonSerializable
     public $minSupporters       = 1;
     public $hasOrganizations    = true;
     public $allowMoreSupporters = true;
+    public $hasResolutionDate   = 2;
 
     // Used for CollectBeforePublish
     public $skipForOrganizations = true;
 
-    public $contactName = 0;
-    public $contactPhone = 1;
-    public $contactEmail = 2;
+    public $contactName   = 0;
+    public $contactPhone  = 1;
+    public $contactEmail  = 2;
+    public $contactGender = 0;
 }

@@ -104,6 +104,48 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-md-4" style="text-align: right;">
+        <?= \Yii::t('admin', 'motion_type_orga_resolution') ?>
+    </label>
+    <div class="col-md-8 contactDetails contactResolutionDate">
+        <input type="hidden" name="initiatorSettingFields[]" value="hasResolutionDate">
+        <?php
+        echo Html::radioList(
+            'initiatorSettings[hasResolutionDate]',
+            $settings->hasResolutionDate,
+            [
+                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+            ],
+            ['class' => 'form-control']
+        );
+        ?>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-md-4" style="text-align: right;">
+        <?= \Yii::t('admin', 'motion_type_gender') ?>
+    </label>
+    <div class="col-md-8 contactDetails contactGender">
+        <input type="hidden" name="initiatorSettingFields[]" value="contactGender">
+        <?php
+        echo Html::radioList(
+            'initiatorSettings[contactGender]',
+            $settings->contactGender,
+            [
+                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+            ],
+            ['class' => 'form-control']
+        );
+        ?>
+    </div>
+</div>
+
 <div class="form-group" id="typeMinSupportersRow">
     <label class="col-md-4 control-label" for="typeMinSupporters">
         <?= \Yii::t('admin', 'motion_type_supp_min') ?>

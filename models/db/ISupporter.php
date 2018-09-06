@@ -19,6 +19,7 @@ use yii\helpers\Html;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
+ * @property string $extraData
  *
  * @property User|null $user
  */
@@ -128,7 +129,7 @@ abstract class ISupporter extends ActiveRecord
                 $name = $this->user->name;
             }
             if ($this->personType == static::PERSON_NATURAL) {
-                if ($orga != '') {
+                if ($orga !== '') {
                     $name .= ' (' . $orga . ')';
                 }
                 return $name;
@@ -156,5 +157,34 @@ abstract class ISupporter extends ActiveRecord
         } else {
             return $this->name;
         }
+    }
+
+    /**
+     * @param string $name
+     * @param null|mixed $default
+     * @return mixed
+     */
+    public function getExtraData($name, $default = null)
+    {
+        $arr = json_decode($this->extraData, true);
+        if ($arr && isset($arr[$name])) {
+            return $arr[$name];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setExtraData($name, $value)
+    {
+        $arr = json_decode($this->extraData, true);
+        if (!$arr) {
+            $arr = [];
+        }
+        $arr[$name]      = $value;
+        $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
 }

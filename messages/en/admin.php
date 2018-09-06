@@ -416,6 +416,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_email'           => 'E-mail',
     'motion_type_contact_name'    => 'Alternative contact person',
     'motion_type_phone'           => 'Phone number',
+    'motion_type_orga_resolution' => 'Decision date for organizations',
+    'motion_type_gender'          => 'Gender',
     'motion_type_skip'            => 'Don\'t ask',
     'motion_type_optional'        => 'Optional',
     'motion_type_required'        => 'Required',

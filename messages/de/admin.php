@@ -356,6 +356,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_email'           => 'E-Mail-Angabe',
     'motion_type_contact_name'    => 'Alternative Ansprechperson',
     'motion_type_phone'           => 'Telefon-Angabe',
+    'motion_type_orga_resolution' => 'Beschlussdatum bei Gremien',
+    'motion_type_gender'          => 'Gender',
     'motion_type_skip'            => 'Nicht abfragen',
     'motion_type_optional'        => 'Freiwillig',
     'motion_type_required'        => 'Benötigt',

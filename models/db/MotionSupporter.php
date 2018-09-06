@@ -18,6 +18,7 @@ namespace app\models\db;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
+ * @property string $extraData
  *
  * @property User $user
  * @property Motion $motion

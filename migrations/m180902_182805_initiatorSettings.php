@@ -14,11 +14,12 @@ class m180902_182805_initiatorSettings extends Migration
     {
         $types = \app\models\db\ConsultationMotionType::find()->all();
         foreach ($types as $type) {
-            $settings = $type->getMotionSupportTypeClass()->getSettingsObj();
-            $settings->contactEmail = IntVal($type->contactEmail);
-            $settings->contactPhone = IntVal($type->contactPhone);
-            $settings->contactName = IntVal($type->contactName);
-            $type->supportTypeSettings = json_encode($type, JSON_PRETTY_PRINT);
+            $settings                    = $type->getMotionSupportTypeClass()->getSettingsObj();
+            $settings->contactEmail      = IntVal($type->contactEmail);
+            $settings->contactPhone      = IntVal($type->contactPhone);
+            $settings->contactName       = IntVal($type->contactName);
+            $settings->hasResolutionDate = false;
+            $type->supportTypeSettings   = json_encode($type, JSON_PRETTY_PRINT);
             $type->save();
         }
     }
