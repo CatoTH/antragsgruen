@@ -1,3 +1,7 @@
+const CONTACT_NONE = 0;
+const CONTACT_OPTIONAL = 1;
+const CONTACT_REQUIRED = 2;
+
 interface UserData {
     fixed: boolean;
     person_name: string;
@@ -9,12 +13,14 @@ interface InitiatorFormSettings {
     hasOrganizations: boolean;
     allowMoreSupporters: boolean;
     skipForOrganizations: boolean;
+    hasResolutionDate: number;
     contactName: number;
     contactPhone: number;
     contactEmail: number;
+    contactGender: number;
 }
 
-export class DefaultInitiatorForm {
+export class InitiatorForm {
     private $supporterAdderRow: JQuery;
     private $fullTextHolder: JQuery;
     private $initiatorData: JQuery;
@@ -86,6 +92,7 @@ export class DefaultInitiatorForm {
         this.$initiatorData.find('.organizationRow').addClass('hidden');
         this.$initiatorData.find('.contactNameRow').removeClass('hidden');
         this.$initiatorData.find('.resolutionRow').removeClass('hidden');
+        this.$initiatorData.find('.genderRow').addClass('hidden');
         this.$initiatorData.find('.adderRow').addClass('hidden');
         $('.supporterData, .supporterDataHead').addClass('hidden');
     }
@@ -98,16 +105,17 @@ export class DefaultInitiatorForm {
     private setFieldsVisibilityPerson() {
         this.$initiatorData.removeClass('type-organization').addClass('type-person');
         this.$initiatorData.find('.organizationRow').removeClass('hidden');
-        if (this.settings.contactName == 2) {
+        if (this.settings.contactName == CONTACT_REQUIRED) {
             this.$initiatorData.find('.contactNameRow').removeClass('hidden');
             this.$initiatorData.find('.contactNameRow input').prop('required', true);
-        } else if (this.settings.contactName == 1) {
+        } else if (this.settings.contactName == CONTACT_OPTIONAL) {
             this.$initiatorData.find('.contactNameRow').removeClass('hidden');
             this.$initiatorData.find('.contactNameRow input').prop('required', false);
         } else {
             this.$initiatorData.find('.contactNameRow').addClass('hidden');
             this.$initiatorData.find('.contactNameRow input').prop('required', false);
         }
+        this.$initiatorData.find('.genderRow').removeClass('hidden');
         this.$initiatorData.find('.resolutionRow').addClass('hidden');
         this.$initiatorData.find('.adderRow').removeClass('hidden');
         $('.supporterData, .supporterDataHead').removeClass('hidden');

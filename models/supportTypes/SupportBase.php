@@ -70,6 +70,18 @@ abstract class SupportBase
     }
 
     /**
+     * @return string[]
+     */
+    public static function getGenderSelection()
+    {
+        return [
+            'female'  => \Yii::t('structure', 'gender_female'),
+            'male'    => \Yii::t('structure', 'gender_male'),
+            'diverse' => \Yii::t('structure', 'gender_diverse'),
+        ];
+    }
+
+    /**
      * @param ConsultationMotionType $motionType
      */
     public function __construct(ConsultationMotionType $motionType)
@@ -344,7 +356,7 @@ abstract class SupportBase
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
-            '@app/views/initiatorForms/default_form',
+            '@app/views/motion/_create_initiator',
             [
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,
@@ -391,7 +403,7 @@ abstract class SupportBase
             $isForOther = (!User::getCurrentUser() || !$initiator || User::getCurrentUser()->id != $initiator->userId);
         }
         return $view->render(
-            '@app/views/initiatorForms/default_form',
+            '@app/views/motion/_create_initiator',
             [
                 'initiator'         => $initiator,
                 'moreInitiators'    => $moreInitiators,

@@ -199,4 +199,9 @@ return [
     'robots_policy_none'      => 'Keine',
     'robots_policy_only_home' => 'Nur die Startseite, keine Anträge',
     'robots_policy_all'       => 'Alle Seiten, die ohne Login zugänglich sind',
+
+    'gender_na'      => 'Keine Angabe',
+    'gender_female'  => 'Weiblich',
+    'gender_male'    => 'Männlich',
+    'gender_diverse' => 'Inter/Divers',
 ];

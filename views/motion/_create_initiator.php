@@ -3,6 +3,7 @@
 use app\components\Tools;
 use app\models\db\ISupporter;
 use app\models\settings\InitiatorForm;
+use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
@@ -30,15 +31,11 @@ if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
 } else {
     $prePrimaryName = $initiator->name;
 }
-$preOrga        = $initiator->organization;
 $preContactName = $initiator->contactName;
-$preEmail       = $initiator->contactEmail;
-$prePhone       = $initiator->contactPhone;
-$preResolution  = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
 
 $currentUser = \app\models\db\User::getCurrentUser();
 
-echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/DefaultInitiatorForm"
+echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
                 data-user-data="' . Html::encode(json_encode([
         'fixed'               => ($currentUser && $currentUser->fixedData),
@@ -62,44 +59,46 @@ if ($allowOther) {
     }
 }
 
-echo '<div class="form-group">
-<label class="col-sm-3 control-label">' . Yii::t('initiator', 'iAmA') . '</label>
-<div class="col-sm-9">
-<label class="radio-inline">';
-echo Html::radio(
-    'Initiator[personType]',
-    $initiator->personType == ISupporter::PERSON_NATURAL,
-    [
-        'value' => ISupporter::PERSON_NATURAL,
-        'id'    => 'personTypeNatural',
-    ]
-);
-echo ' ' . Yii::t('initiator', 'personNatural') . '
-</label>
-<label class="radio-inline">';
-echo Html::radio(
-    'Initiator[personType]',
-    $initiator->personType == ISupporter::PERSON_ORGANIZATION,
-    [
-        'value' => ISupporter::PERSON_ORGANIZATION,
-        'id'    => 'personTypeOrga',
-    ]
-);
+?>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"><?= Yii::t('initiator', 'iAmA') ?></label>
+        <div class="col-sm-9">
+            <label class="radio-inline">
+                <?php
+                echo Html::radio(
+                    'Initiator[personType]',
+                    $initiator->personType == ISupporter::PERSON_NATURAL,
+                    ['value' => ISupporter::PERSON_NATURAL, 'id' => 'personTypeNatural']
+                );
+                ?>
+                <?= Yii::t('initiator', 'personNatural') ?>
+            </label>
+            <label class="radio-inline">
+                <?php
+                echo Html::radio(
+                    'Initiator[personType]',
+                    $initiator->personType == ISupporter::PERSON_ORGANIZATION,
+                    ['value' => ISupporter::PERSON_ORGANIZATION, 'id' => 'personTypeOrga']
+                );
+                ?>
+                <?= Yii::t('initiator', 'personOrganization') ?>
+            </label>
+        </div>
+    </div>
 
-echo ' ' . Yii::t('initiator', 'personOrganization') . '
-</label>
-</div>
-</div>';
-
+<?php
 if ($adminMode) {
-    echo '<div class="form-group">
-  <label class="col-sm-3 control-label" for="initiatorName">' . Yii::t('initiator', 'username') . '</label>
-  <div class="col-sm-4">';
-    if ($initiator->user) {
-        echo Html::encode($initiator->user->getAuthName());
-    }
-    echo '</div>
-</div>';
+    ?>
+    <div class="form-group">
+        <label class="col-sm-3 control-label" for="initiatorName"><?= Yii::t('initiator', 'username') ?></label>
+        <div class="col-sm-4">
+            <?php
+            if ($initiator->user) {
+                echo Html::encode($initiator->user->getAuthName());
+            }
+            ?></div>
+    </div>
+    <?php
 }
 
 ?>
@@ -117,6 +116,7 @@ if ($adminMode) {
 <?php
 
 if ($settings->hasOrganizations) {
+    $preOrga = $initiator->organization;
     ?>
     <div class="form-group organizationRow">
         <label class="col-sm-3 control-label" for="initiatorOrga">
@@ -130,7 +130,9 @@ if ($settings->hasOrganizations) {
     <?php
 }
 
-?>
+if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE) {
+    $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
+    ?>
     <div class="form-group resolutionRow">
         <label class="col-sm-3 control-label" for="resolutionDate">
             <?= Yii::t('initiator', 'orgaResolution') ?>
@@ -143,7 +145,30 @@ if ($settings->hasOrganizations) {
             </div>
         </div>
     </div>
+    <?php
+}
 
+if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
+    $genderChoices = array_merge(['' => \Yii::t('structure', 'gender_na')], SupportBase::getGenderSelection());
+    ?>
+    <div class="form-group genderRow">
+        <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
+        <div class="col-sm-4">
+            <?php
+            echo \app\components\HTMLTools::fueluxSelectbox(
+                'Initiator[contactGender]',
+                $genderChoices,
+                $initiator->getExtraData('gender'),
+                ['id' => 'initiatorGender'],
+                true
+            );
+            ?>
+        </div>
+    </div>
+    <?php
+}
+
+?>
     <div class="form-group row contact-head">
         <div class="col-sm-9 col-sm-offset-3 contact-head">
             <h3><?= \Yii::t('initiator', 'contactHead') ?></h3>
@@ -163,8 +188,9 @@ if ($settings->hasOrganizations) {
 
 <?php
 if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
+    $preEmail = $initiator->contactEmail;
     ?>
-    <div class="form-group">
+    <div class="form-group emailRow">
         <label class="col-sm-3 control-label" for="initiatorEmail"><?= Yii::t('initiator', 'email') ?></label>
         <div class="col-sm-4">
             <input type="text" class="form-control" id="initiatorEmail" name="Initiator[contactEmail]"
@@ -180,8 +206,9 @@ if ($settings->contactEmail !== InitiatorForm::CONTACT_NONE) {
 
 
 if ($settings->contactPhone !== InitiatorForm::CONTACT_NONE) {
+    $prePhone = $initiator->contactPhone;
     ?>
-    <div class="form-group phone_row">
+    <div class="form-group phoneRow">
         <label class="col-sm-3 control-label" for="initiatorPhone"><?= Yii::t('initiator', 'phone') ?></label>
         <div class="col-sm-4">
             <input type="text" class="form-control" id="initiatorPhone" name="Initiator[contactPhone]"
@@ -228,12 +255,6 @@ foreach ($moreInitiators as $init) {
     echo $getInitiatorRow($init, $settings);
 }
 
-/*
-echo '<div class="adderRow row"><div class="col-sm-3"></div><div class="col-md-9">';
-echo '<a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-echo Yii::t('initiator', 'addInitiator');
-echo '</a></div></div>';
-*/
 
 $new    = new \app\models\db\MotionSupporter();
 $newStr = $getInitiatorRow($new, $settings);

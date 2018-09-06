@@ -199,4 +199,9 @@ return [
     'robots_policy_none'      => 'No pages at all',
     'robots_policy_only_home' => 'Only the home page, no motions',
     'robots_policy_all'       => 'All pages accessible by not-logged-in users',
+
+    'gender_na'      => '-',
+    'gender_female'  => 'Female',
+    'gender_male'    => 'Male',
+    'gender_diverse' => 'Inter/Diverse',
 ];
