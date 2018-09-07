@@ -10,7 +10,4 @@ class MotionType implements \JsonSerializable
     public $pdfIntroduction  = '';
     public $cssIcon          = '';
     public $motionTitleIntro = '';
-
-    /** @var bool */
-    public $layoutTwoCols = false;
 }

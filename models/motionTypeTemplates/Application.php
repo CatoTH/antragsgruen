@@ -47,7 +47,6 @@ trait Application
         $type->supportTypeSettings       = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
         $settings                   = new MotionType(null);
-        $settings->layoutTwoCols    = 1;
         $settings->motionTitleIntro = '';
         $type->setSettingsObj($settings);
 

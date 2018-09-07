@@ -10,7 +10,6 @@ class DBConnection extends \yii\db\Connection
 
     /**
      * @throws \yii\base\ExitException
-     * @throws \yii\base\InvalidConfigException
      */
     public function open()
     {
@@ -27,14 +26,13 @@ class DBConnection extends \yii\db\Connection
                     $view->render(
                         '@app/views/errors/error',
                         [
-                            'name'       => 'Datenbank-Verbindungsfehler',
-                            'message'    => 'Leider ist beim Aufbau der Datenbank-Verbindung ein Fehler aufgetreten.',
+                            'name'       => 'Database connection error',
+                            'message'    => 'An error ocurred when connecting to the database.',
                             'httpStatus' => 500,
                         ],
                         \yii::$app->controller
                     )
                 );
-
             }
             \yii::$app->end(500);
         }

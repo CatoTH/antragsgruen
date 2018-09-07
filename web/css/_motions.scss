@@ -460,17 +460,11 @@
 }
 
 .motionRightCol {
-  padding-left: 0;
   padding-top: 0;
-  &.col-md-3 {
-    padding-left: 0;
-    padding-top: 0;
-  }
+  font-size: 0.9em;
 
   > section {
-    padding-left: 0;
-    padding-top: 0;
-    padding-bottom: 20px;
+    padding: 0 30px 20px 0;
   }
 }
 

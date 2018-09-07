@@ -16,4 +16,5 @@ class Content
     public $textRight         = '';
     public $imageData         = [];
     public $lineLength;
+    public $agendaItemName    = '';
 }

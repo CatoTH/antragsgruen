@@ -51,7 +51,7 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
+    if ($section->isLayoutRight()) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
@@ -76,10 +76,10 @@ if ($right === '') {
 } else {
     ?>
     <div class="webVersion row" style="margin-top: 2px;">
-        <div class="col-md-9 motionMainCol">
+        <div class="col-md-8 motionMainCol">
             <?= $main ?>
         </div>
-        <div class="col-md-3 motionRightCol">
+        <div class="col-md-4 motionRightCol">
             <?= $right ?>
         </div>
     </div>

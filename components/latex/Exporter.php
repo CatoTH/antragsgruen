@@ -59,7 +59,7 @@ class Exporter
         $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
         $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
 
-         // Enforce a workaround to enable empty lines by using <p><br></p>
+        // Enforce a workaround to enable empty lines by using <p><br></p>
         $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
 
         $str = static::encodeHTMLString($str);
@@ -80,11 +80,11 @@ class Exporter
      */
     public static function encodePREString($str)
     {
-        $out = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
+        $out   = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
         $lines = explode("\n", $str);
         foreach ($lines as $line) {
             if (strlen($line) > 0 && $line[0] == ' ') {
-                $out .= '\phantom{.}';
+                $out  .= '\phantom{.}';
                 $line = substr($line, 1);
             }
             $out .= str_replace(' ', '\ ', static::encodePlainString($line));
@@ -308,7 +308,7 @@ class Exporter
                     //return '\textcolor{Insert}{\uline{' . $content . '}}';
                     return '\textcolor{Insert}{' . $content . '}';
                 case 'pre':
-                    return  static::encodePREString($content);
+                    return static::encodePREString($content);
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -336,7 +336,7 @@ class Exporter
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             /** @var \DOMNode $child */
             $child = $body->childNodes->item($i);
-            $out .= static::encodeHTMLNode($child);
+            $out   .= static::encodeHTMLNode($child);
         }
 
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
@@ -403,7 +403,15 @@ class Exporter
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
         $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
         $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
-        $template                         = str_replace(array_keys($replaces), array_values($replaces), $template);
+        $replaces['%APP_TITLE%']          = static::encodePlainString(\Yii::t('export', 'pdf_app_title'));
+        if ($content->agendaItemName) {
+            $replaces['%APP_TOP_LABEL%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_top_label'));
+            $replaces['%APP_TOP%']       = static::encodePlainString($content->agendaItemName);
+        } else {
+            $replaces['%APP_TOP_LABEL%'] = '';
+            $replaces['%APP_TOP%']       = '';
+        }
+        $template = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
 

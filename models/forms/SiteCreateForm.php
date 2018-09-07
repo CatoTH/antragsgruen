@@ -381,9 +381,7 @@ class SiteCreateForm extends Model
         }
         $type->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 0;
-        $type->setSettingsObj($settings);
+        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -499,9 +497,7 @@ class SiteCreateForm extends Model
         }
         $type->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 0;
-        $type->setSettingsObj($settings);
+        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);

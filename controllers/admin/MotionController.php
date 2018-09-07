@@ -266,9 +266,7 @@ class MotionController extends AdminBase
                     $initiatorSettings->contactEmail = InitiatorForm::CONTACT_OPTIONAL;
                     $motionType->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
-                    $settings                = new MotionType(null);
-                    $settings->layoutTwoCols = 0;
-                    $motionType->setSettingsObj($settings);
+                    $motionType->setSettingsObj(new MotionType(null));
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);

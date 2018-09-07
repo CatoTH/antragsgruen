@@ -2,10 +2,13 @@
 
 ## Version 4.1.0 [not released yet]
 
+- Several improvements regarding applications, especially the generated PDFs:
+  - Motion types can now force motion titles to have a certain beginning, like "Application: ".
+  - A new PDF template is introduced specifically for applications, if the LaTeX-based PDF-renderer is used.
+  - For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
-- Motion types can now force motion titles to have a certain beginning, like "Application: ".
-- For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
+- Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
 ### Version 4.0.1 (2018-09-02)

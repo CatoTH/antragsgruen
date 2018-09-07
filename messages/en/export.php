@@ -47,4 +47,6 @@ return [
     'pp_ods_all'            => 'ODS-Export: Everything',
     'pp_unhandled'          => 'Remaining procedure',
     'default_creator'       => 'Antragsgrün',
+    'pdf_app_title'         => 'Application',
+    'pdf_app_top_label'     => 'Agenda item:',
 ];

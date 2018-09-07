@@ -46,9 +46,7 @@ trait Manifesto
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
         $type->supportTypeSettings       = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 0;
-        $type->setSettingsObj($settings);
+        $type->setSettingsObj(new MotionType(null));
 
         $type->save();
 

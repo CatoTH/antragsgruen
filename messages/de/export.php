@@ -47,4 +47,6 @@ return [
     'pp_ods_all'            => 'ODS-Export: Alles',
     'pp_unhandled'          => 'Verfahrensvorschläge der Antragskommission',
     'default_creator'       => 'Antragsgrün',
+    'pdf_app_title'         => 'Bewerbung',
+    'pdf_app_top_label'     => 'Tagesordnungspunkt:',
 ];

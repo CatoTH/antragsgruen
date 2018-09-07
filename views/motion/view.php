@@ -124,7 +124,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
     if ($sectionType === ISectionType::TYPE_TITLE && count($section->getAmendingSections(false, true)) === 0) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
+    if ($section->isLayoutRight()) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
@@ -149,9 +149,9 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
 if ($right === '') {
     echo $main;
 } else {
-    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
+    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-8 motionMainCol">';
     echo $main;
-    echo '</div><div class="col-md-3 motionRightCol">';
+    echo '</div><div class="col-md-4 motionRightCol">';
     echo $right;
     echo '</div></div>';
 }

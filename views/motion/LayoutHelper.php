@@ -85,10 +85,10 @@ class LayoutHelper
      * @param Motion $motion
      * @return Content
      * @throws \app\models\exceptions\Internal
+     * @throws \Exception
      */
     public static function renderTeX(Motion $motion)
     {
-        $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
@@ -96,7 +96,7 @@ class LayoutHelper
         $content->introductionBig = $intro[0];
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
-        $content->title = $motion->getTitleWithIntro();
+        $content->title           = $motion->getTitleWithIntro();
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
@@ -108,25 +108,29 @@ class LayoutHelper
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
+        if ($motion->agendaItem) {
+            $content->agendaItemName = $motion->agendaItem->title;
+        }
+
         foreach ($motion->getDataTable() as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
         foreach ($motion->getSortedSections(true) as $section) {
-            $isRight = ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols);
+            $isRight = $section->isLayoutRight();
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
         }
 
         $supporters = $motion->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
+            $title             = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $supps = [];
+            $supps             = [];
             foreach ($supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
-            $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
             $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
@@ -349,8 +353,8 @@ class LayoutHelper
             //$changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
             $changeset = [];
             $data      = 'data-old-status="' . $amendment->status . '"';
-            $data .= ' data-amendment-id="' . $amendment->id . '"';
-            $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
+            $data      .= ' data-amendment-id="' . $amendment->id . '"';
+            $data      .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
             echo '<div class="form-group amendmentStatus" ' . $data . '>
     <label for="amendmentStatus' . $amendment->id . '" class="col-sm-3 control-label">';
             echo Html::encode($amendment->getShortTitle()) . ':<br><span class="amendSubtitle">';
@@ -384,6 +388,7 @@ class LayoutHelper
      * @param Motion $motion
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \Exception
      */
     public static function createPdf(Motion $motion)
     {
@@ -417,13 +422,13 @@ class LayoutHelper
      */
     public static function getShareButtons($url, $title)
     {
-        $twitter  = Html::encode(
+        $twitter       = Html::encode(
             'https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url)
         );
-        $facebook = Html::encode(
+        $facebook      = Html::encode(
             'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
         );
-        $titleTwitter = Html::encode(\Yii::t('motion', 'share_twitter'));
+        $titleTwitter  = Html::encode(\Yii::t('motion', 'share_twitter'));
         $titleFacebook = Html::encode(\Yii::t('motion', 'share_facebook'));
         return '<div class="share_buttons"><ul>
               <li class="twitter"><a href="' . $twitter . '" title="' . $titleTwitter . '">
