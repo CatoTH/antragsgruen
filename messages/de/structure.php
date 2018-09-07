@@ -204,4 +204,9 @@ return [
     'gender_female'  => 'Weiblich',
     'gender_male'    => 'Männlich',
     'gender_diverse' => 'Inter/Divers',
+
+    'top_separator' => [
+        'text'        => '.',
+        'description' => 'Trenn-Zeichen zwischen Tagesordnungspunkt-Ebenen',
+    ],
 ];

@@ -36,37 +36,37 @@ class MessageSource extends \yii\i18n\MessageSource
     {
         if (\Yii::$app->language == 'de') {
             $categories = [
-                'base'            => 'Basis-Layout',
-                'structure'       => 'Interne Bezeichnungen',
-                'con'             => 'Veranstaltung',
-                'pages'           => 'Redaktionelle Seiten',
-                'motion'          => 'Anträge',
-                'amend'           => 'Änderungsanträge',
-                'diff'            => 'Diff',
-                'export'          => 'Exports',
-                'initiator'       => 'InitiatorInnen',
-                'manager'         => 'Seiten-Konfiguration',
-                'comment'         => 'Kommentare',
-                'admin'           => 'Administration',
-                'user'            => 'Account-Einstellungen',
-                'wizard'          => 'Wizard',
+                'base'      => 'Basis-Layout',
+                'structure' => 'Interne Bezeichnungen',
+                'con'       => 'Veranstaltung',
+                'pages'     => 'Redaktionelle Seiten',
+                'motion'    => 'Anträge',
+                'amend'     => 'Änderungsanträge',
+                'diff'      => 'Diff',
+                'export'    => 'Exports',
+                'initiator' => 'InitiatorInnen',
+                'manager'   => 'Seiten-Konfiguration',
+                'comment'   => 'Kommentare',
+                'admin'     => 'Administration',
+                'user'      => 'Account-Einstellungen',
+                'wizard'    => 'Wizard',
             ];
         } else {
             $categories = [
-                'base'            => 'Basic layout',
-                'structure'       => 'Internal labels',
-                'con'             => 'Consultation',
-                'pages'           => 'Content pages',
-                'motion'          => 'Motion',
-                'amend'           => 'Amendment',
-                'diff'            => 'Diff',
-                'export'          => 'Exports',
-                'initiator'       => 'Proposers',
-                'manager'         => 'Site creation',
-                'comment'         => 'Comments',
-                'admin'           => 'Administration',
-                'user'            => 'User accounts',
-                'wizard'          => 'Wizard',
+                'base'      => 'Basic layout',
+                'structure' => 'Internal labels',
+                'con'       => 'Consultation',
+                'pages'     => 'Content pages',
+                'motion'    => 'Motion',
+                'amend'     => 'Amendment',
+                'diff'      => 'Diff',
+                'export'    => 'Exports',
+                'initiator' => 'Proposers',
+                'manager'   => 'Site creation',
+                'comment'   => 'Comments',
+                'admin'     => 'Administration',
+                'user'      => 'User accounts',
+                'wizard'    => 'Wizard',
             ];
         }
 
@@ -180,15 +180,35 @@ class MessageSource extends \yii\i18n\MessageSource
         return $this->loadMessages($category, $language, false);
     }
 
+    /**
+     * @param string $category
+     * @param string $language
+     * @return array
+     */
+    public function getBaseMessagesWithHints($category, $language)
+    {
+        $messages = $this->loadMessagesRaw($category, $language, false);
+        return array_map(function ($textId, $entry) {
+            if (is_array($entry)) {
+                $entry['id'] = $textId;
+                return $entry;
+            } else {
+                return [
+                    'id'          => $textId,
+                    'text'        => $entry,
+                    'description' => '',
+                ];
+            }
+        }, array_keys($messages), $messages);
+    }
 
     /**
      * @param string $category
      * @param string $language
      * @param bool $withConsultationStrings
      * @return array
-     * @throws Internal
      */
-    protected function loadMessages($category, $language, $withConsultationStrings = true)
+    private function loadMessagesRaw($category, $language, $withConsultationStrings)
     {
         $categories = static::getTranslatableCategories();
         if (!isset($categories[$category])) {
@@ -208,13 +228,13 @@ class MessageSource extends \yii\i18n\MessageSource
             if ($language === 'en') {
                 return $origMessages;
             } else {
-                $baseFile = $this->getMessageFilePath($categoryFilename, $language);
+                $baseFile      = $this->getMessageFilePath($categoryFilename, $language);
                 $transMessages = $this->loadMessagesFromFile($baseFile);
                 return array_merge($origMessages, $transMessages);
             }
         };
 
-        $languages = explode(',', $consultation->wordingBase);
+        $languages    = explode(',', $consultation->wordingBase);
         $baseMessages = $extMessages = [];
         foreach ($languages as $lang) {
             $parts = explode('-', $lang);
@@ -235,12 +255,31 @@ class MessageSource extends \yii\i18n\MessageSource
         $conSpecific = [];
         if ($withConsultationStrings) {
             foreach ($consultation->texts as $text) {
-                if ($text->text != '' && $text->category == $category) {
+                if ($text->text !== '' && $text->category === $category) {
                     $conSpecific[$text->textId] = $text->text;
                 }
             }
         }
 
         return array_merge($origMessages, $baseMessages, $extMessages, $conSpecific);
+    }
+
+
+    /**
+     * @param string $category
+     * @param string $language
+     * @param bool $withConsultationStrings
+     * @return array
+     * @throws Internal
+     */
+    protected function loadMessages($category, $language, $withConsultationStrings = true)
+    {
+        return array_map(function ($entry) {
+            if (is_array($entry)) {
+                return $entry['text'];
+            } else {
+                return $entry;
+            }
+        }, $this->loadMessagesRaw($category, $language, $withConsultationStrings));
     }
 }

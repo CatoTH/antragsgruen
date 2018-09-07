@@ -6,6 +6,7 @@
 - Motion types can now force motion titles to have a certain beginning, like "Application: ".
 - For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
+- Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
 ### Version 4.0.1 (2018-09-02)
 

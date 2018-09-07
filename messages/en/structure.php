@@ -204,4 +204,9 @@ return [
     'gender_female'  => 'Female',
     'gender_male'    => 'Male',
     'gender_diverse' => 'Inter/Diverse',
+
+    'top_separator' => [
+        'text'        => '.',
+        'description' => 'Separator between agenda item levels',
+    ],
 ];
