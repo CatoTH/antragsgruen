@@ -35,7 +35,7 @@ $preContactName = $initiator->contactName;
 
 $currentUser = \app\models\db\User::getCurrentUser();
 
-echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
+echo '<fieldset class="supporterForm supporterFormStd fuelux" data-antragsgruen-widget="frontend/InitiatorForm"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
                 data-user-data="' . Html::encode(json_encode([
         'fixed'               => ($currentUser && $currentUser->fixedData),
@@ -149,7 +149,8 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE) {
 }
 
 if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
-    $genderChoices = array_merge(['' => \Yii::t('structure', 'gender_na')], SupportBase::getGenderSelection());
+    $layout->loadFuelux();
+    $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>
     <div class="form-group genderRow">
         <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>

@@ -17,6 +17,7 @@ use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
 use app\components\EmailNotifications;
 use app\models\events\MotionEvent;
+use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
@@ -182,17 +183,18 @@ trait MotionActionsTrait
      * @param string $string
      * @param string $name
      * @param string $orga
+     * @param string $gender
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
+    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '', $gender = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
 
-        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role);
+        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender);
 
         $motion->refresh();
 
@@ -224,7 +226,7 @@ trait MotionActionsTrait
             throw new FormError('Not possible given the current motion status');
         }
         foreach ($motion->getSupporters() as $supporter) {
-            if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
+            if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
                 return;
             }
@@ -232,6 +234,7 @@ trait MotionActionsTrait
         $supportType = $motion->motionType->getMotionSupportTypeClass();
         $role        = MotionSupporter::ROLE_SUPPORTER;
         $user        = User::getCurrentUser();
+        $gender      = \Yii::$app->request->post('motionSupportGender', '');
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
@@ -243,12 +246,22 @@ trait MotionActionsTrait
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
-        if (trim($name) == '') {
+        if (trim($name) === '') {
             \Yii::$app->session->setFlash('error', 'You need to enter a name');
             return;
         }
+        $validGenderKeys = array_keys(SupportBase::getGenderSelection());
+        if ($supportType->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
+            if (!in_array($gender, $validGenderKeys)) {
+                \Yii::$app->session->setFlash('error', 'You need to fill the gender field');
+                return;
+            }
+        }
+        if (!in_array($gender, $validGenderKeys)) {
+            $gender = '';
+        }
 
-        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
+        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
         if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {

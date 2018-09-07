@@ -69,8 +69,9 @@ class MotionSupporter extends ISupporter
      * @param string $name
      * @param string $orga
      * @param int $role
+     * @param string $gender
      */
-    public static function createSupport(Motion $motion, $user, $name, $orga, $role)
+    public static function createSupport(Motion $motion, $user, $name, $orga, $role, $gender = '')
     {
         $maxPos = 0;
         if ($user) {
@@ -93,13 +94,18 @@ class MotionSupporter extends ISupporter
         }
 
         $support               = new MotionSupporter();
-        $support->motionId     = $motion->id;
-        $support->userId       = ($user ? $user->id : null);
+        $support->motionId     = IntVal($motion->id);
+        $support->userId       = ($user ? IntVal($user->id) : null);
         $support->name         = $name;
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
+        if ($gender !== '') {
+            $support->setExtraDataEntry('gender', $gender);
+        } else {
+            $support->unsetExtraDataEntry('gender');
+        }
         $support->save();
 
         if (!$user) {

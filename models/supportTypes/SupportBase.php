@@ -78,6 +78,7 @@ abstract class SupportBase
             'female'  => \Yii::t('structure', 'gender_female'),
             'male'    => \Yii::t('structure', 'gender_male'),
             'diverse' => \Yii::t('structure', 'gender_diverse'),
+            'na'      => \Yii::t('structure', 'gender_na'),
         ];
     }
 

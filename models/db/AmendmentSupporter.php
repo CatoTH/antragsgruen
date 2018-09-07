@@ -68,9 +68,10 @@ class AmendmentSupporter extends ISupporter
      * @param User|null $user
      * @param string $name
      * @param string $orga
-     * @param null $role
+     * @param string $role
+     * @param string $gender
      */
-    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role)
+    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role, $gender = '')
     {
         $maxPos = 0;
         if ($user) {
@@ -100,6 +101,11 @@ class AmendmentSupporter extends ISupporter
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
+        if ($gender !== '') {
+            $support->setExtraDataEntry('gender', $gender);
+        } else {
+            $support->unsetExtraDataEntry('gender');
+        }
         $support->save();
 
         if (!$user) {

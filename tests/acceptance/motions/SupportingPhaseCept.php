@@ -11,13 +11,15 @@ $motionUrl = \app\tests\_pages\MotionPage::getPageUrl($I, [
 ]);
 
 
-$I->wantTo('check the admin settings');
+$I->wantTo('check the admin settings and enable gender support');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
 $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
 $I->dontSeeElement('#typeMinSupporters');
 $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
+$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='2']"); // Required
+$I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();
 
@@ -61,7 +63,13 @@ $I->wantTo('support this motion');
 
 $I->fillField('input[name=motionSupportName]', 'My name');
 $I->fillField('input[name=motionSupportOrga]', 'My organisation');
+
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
+$I->seeBootboxDialog('Bitte gib etwas im Gender-Feld an');
+$I->acceptBootboxAlert();
+$I->selectFueluxOption('#motionSupportGender', 'male');
+$I->submitForm('.motionSupportForm', [], 'motionSupport');
+
 $I->see('Du unterstützt diesen Antrag nun.');
 $I->dontSeeElement('button[name=motionSupport]');
 $I->see('Du!', 'section.supporters');
@@ -82,11 +90,13 @@ $I->see('aktueller Stand: 0');
 $I->wantTo('support it again');
 
 $I->executeJS('$("input[name=motionSupportOrga]").removeAttr("required");');
+$I->selectFueluxOption('#motionSupportGender', 'na');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->dontSee('Du unterstützt diesen Antrag nun.');
 $I->see('No organization entered');
 
 $I->fillField('input[name=motionSupportOrga]', 'My organisation');
+$I->selectFueluxOption('#motionSupportGender', 'na');
 $I->submitForm('.motionSupportForm', [], 'motionSupport');
 $I->see('Du unterstützt diesen Antrag nun.');
 
@@ -101,6 +111,13 @@ $I->see('Testuser', 'section.supporters');
 $I->submitForm('.motionSupportFinishForm', [], 'motionSupportFinish');
 $I->see('Der Antrag ist nun offiziell eingereicht');
 $I->see('Eingereicht (ungeprüft)', '.motionData');
+
+
+$I->wantTo('Disable gender support because somehow the test fails later on otherwise ;_;');
+$I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
+$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='0']");
+$I->submitForm('.adminTypeForm', [], 'save');
+
 
 
 $I->logout();

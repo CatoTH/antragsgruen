@@ -307,23 +307,22 @@ class LayoutHelper
         }
 
         if ($canSupport) {
-            echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
-
             if ($iAmSupporting) {
+                echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
                 echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
                 echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
                 echo '</div>';
+                echo Html::endForm();
             } else {
                 echo \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
                     'user'        => $user,
                     'supportType' => $supportType,
                 ]);
             }
-            echo Html::endForm();
         } else {
-            if ($cantSupportMsg != '') {
+            if ($cantSupportMsg !== '') {
                 if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
                     $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
                 } else {

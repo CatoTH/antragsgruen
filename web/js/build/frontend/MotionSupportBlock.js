@@ -1,0 +1,2 @@
+define(["require","exports"],function(t,e){"use strict";Object.defineProperty(e,"__esModule",{value:!0});var i=function(t){var e=this;this.$widget=t,console.log(this.$widget),console.log(),this.settings=this.$widget.data("settings"),this.$widget.on("submit",function(t){2===e.settings.contactGender&&""===e.$widget.find("[name=motionSupportGender]").val()&&(t.preventDefault(),bootbox.alert(__t("std","missing_gender")))})};e.MotionSupportBlock=i});
+//# sourceMappingURL=MotionSupportBlock.js.map
