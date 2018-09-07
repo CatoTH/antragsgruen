@@ -277,6 +277,17 @@ class AcceptanceTester extends \Codeception\Actor
 
     /**
      * @param string $selector
+     * @param string $expected
+     */
+    public function seeFueluxOptionIsSelected($selector, $expected)
+    {
+        $value = $this->executeJs('return $("' . addslashes($selector) . '")' .
+            '.selectlist("getValue").value;');
+        $this->assertEquals($expected, $value);
+    }
+
+    /**
+     * @param string $selector
      */
     public function checkFueluxCheckbox($selector)
     {

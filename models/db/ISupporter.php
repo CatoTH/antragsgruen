@@ -80,7 +80,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getNameWithOrga()
     {
-        if ($this->personType === static::PERSON_NATURAL) {
+        if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
             $name = $this->name;
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
@@ -106,7 +106,7 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = Html::encode($this->user->name);
             }
-            if ($this->personType === static::PERSON_NATURAL) {
+            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
                 if ($orga != '') {
                     $name .= ' <small style="font-weight: normal;">';
                     $name .= '(' . $orga . ')';
@@ -128,7 +128,7 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($this->personType === static::PERSON_NATURAL) {
+            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
                 if ($orga !== '') {
                     $name .= ' (' . $orga . ')';
                 }
@@ -148,7 +148,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getGivenNameOrFull()
     {
-        if ($this->user && $this->personType === static::PERSON_NATURAL) {
+        if ($this->user && $this->personType === static::PERSON_NATURAL || $this->personType === null) {
             if ($this->user->nameGiven) {
                 return $this->user->nameGiven;
             } else {
@@ -167,9 +167,9 @@ abstract class ISupporter extends ActiveRecord
     {
         parent::setAttributes($values, $safeOnly);
         if (isset($values['gender'])) {
-            $this->setExtraData('gender', $values['gender']);
+            $this->setExtraDataEntry('gender', $values['gender']);
         } else {
-            $this->unsetExtraData('gender');
+            $this->unsetExtraDataEntry('gender');
         }
         $this->personType = IntVal($this->personType);
         $this->position   = IntVal($this->position);
@@ -181,7 +181,7 @@ abstract class ISupporter extends ActiveRecord
      * @param null|mixed $default
      * @return mixed
      */
-    public function getExtraData($name, $default = null)
+    public function getExtraDataEntry($name, $default = null)
     {
         $arr = json_decode($this->extraData, true);
         if ($arr && isset($arr[$name])) {
@@ -195,7 +195,7 @@ abstract class ISupporter extends ActiveRecord
      * @param string $name
      * @param mixed $value
      */
-    public function setExtraData($name, $value)
+    public function setExtraDataEntry($name, $value)
     {
         $arr = json_decode($this->extraData, true);
         if (!$arr) {
@@ -208,7 +208,7 @@ abstract class ISupporter extends ActiveRecord
     /**
      * @param string $name
      */
-    public function unsetExtraData($name)
+    public function unsetExtraDataEntry($name)
     {
         $arr = json_decode($this->extraData, true);
         if (!$arr) {

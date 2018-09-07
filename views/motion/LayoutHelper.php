@@ -203,7 +203,7 @@ class LayoutHelper
             echo '<ul>';
             foreach ($likes as $supp) {
                 echo '<li>';
-                if ($user && $supp->userId == $user->id) {
+                if ($user && $supp->userId === $user->id) {
                     echo '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());

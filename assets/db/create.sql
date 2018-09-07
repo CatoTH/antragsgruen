@@ -111,7 +111,8 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
   `resolutionDate` DATE                                                         DEFAULT NULL,
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -526,7 +527,8 @@ CREATE TABLE `###TABLE_PREFIX###motionSupporter` (
   `resolutionDate` DATE                                                         DEFAULT NULL,
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

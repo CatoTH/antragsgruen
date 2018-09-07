@@ -351,7 +351,7 @@ class MotionController extends Base
         $supportStatus = '';
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->motionSupporters as $supp) {
-                if ($supp->userId == User::getCurrentUser()->id) {
+                if ($supp->userId === User::getCurrentUser()->id) {
                     $supportStatus = $supp->role;
                 }
             }

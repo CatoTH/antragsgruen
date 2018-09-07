@@ -74,7 +74,7 @@ class MotionSupporter extends ISupporter
         $maxPos = 0;
         if ($user) {
             foreach ($motion->motionSupporters as $supp) {
-                if ($supp->userId == $user->id) {
+                if ($supp->userId === $user->id) {
                     $motion->unlink('motionSupporters', $supp, true);
                 } elseif ($supp->position > $maxPos) {
                     $maxPos = $supp->position;

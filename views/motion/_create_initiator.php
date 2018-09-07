@@ -158,7 +158,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
             echo \app\components\HTMLTools::fueluxSelectbox(
                 'Initiator[gender]',
                 $genderChoices,
-                $initiator->getExtraData('gender'),
+                $initiator->getExtraDataEntry('gender'),
                 ['id' => 'initiatorGender'],
                 true
             );
