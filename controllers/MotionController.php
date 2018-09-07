@@ -47,7 +47,7 @@ class MotionController extends Base
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
-                $metadata = json_decode($section->metadata, true);
+                $metadata                    = json_decode($section->metadata, true);
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', $metadata['mime']);
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
@@ -635,8 +635,9 @@ class MotionController extends Base
                         if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
                             $suppNew = new MotionSupporter();
                             $suppNew->setAttributes($supp->getAttributes());
-                            $suppNew->id       = null;
-                            $suppNew->motionId = $motion->id;
+                            $suppNew->id           = null;
+                            $suppNew->motionId     = $motion->id;
+                            $suppNew->dateCreation = date('Y-m-d H:i:s');
                             $suppNew->save();
                         }
                     }
@@ -656,10 +657,11 @@ class MotionController extends Base
         }
 
 
-        if (count($form->supporters) == 0) {
-            $supporter       = new MotionSupporter();
-            $supporter->role = MotionSupporter::ROLE_INITIATOR;
-            $iAmAdmin        = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (count($form->supporters) === 0) {
+            $supporter               = new MotionSupporter();
+            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
+            $iAmAdmin                = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;

@@ -18,6 +18,7 @@ namespace app\models\db;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contextPhone
+ * @property string $dateCreation
  * @property string $extraData
  *
  * @property User $user
@@ -98,6 +99,7 @@ class AmendmentSupporter extends ISupporter
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
+        $support->dateCreation = date('Y-m-d H:i:s');
         $support->save();
 
         if (!$user) {

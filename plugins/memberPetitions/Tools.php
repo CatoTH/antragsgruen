@@ -419,8 +419,9 @@ class Tools
             foreach ($motion->replacedMotion->getInitiators() as $initiator) {
                 $newInitiator = new MotionSupporter();
                 $newInitiator->setAttributes($initiator->getAttributes(), false);
-                $newInitiator->id       = null;
-                $newInitiator->motionId = $motion->id;
+                $newInitiator->dateCreation = date('Y-m-d H:i:s');
+                $newInitiator->id           = null;
+                $newInitiator->motionId     = $motion->id;
                 $newInitiator->save();
             }
         }

@@ -112,6 +112,7 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
   `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `dateCreation`   TIMESTAMP NOT NULL,
   `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB
@@ -528,6 +529,7 @@ CREATE TABLE `###TABLE_PREFIX###motionSupporter` (
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
   `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `dateCreation`   TIMESTAMP NOT NULL,
   `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB

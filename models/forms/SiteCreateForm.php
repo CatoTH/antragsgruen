@@ -229,11 +229,12 @@ class SiteCreateForm extends Model
                 throw new FormError($motion->getErrors());
             }
 
-            $supporter           = new MotionSupporter();
-            $supporter->motionId = $motion->id;
-            $supporter->userId   = $user->id;
-            $supporter->role     = MotionSupporter::ROLE_INITIATOR;
-            $supporter->position = 0;
+            $supporter               = new MotionSupporter();
+            $supporter->motionId     = $motion->id;
+            $supporter->userId       = $user->id;
+            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter->position     = 0;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
             if (!$supporter->save()) {
                 throw new FormError($motion->getErrors());
             }

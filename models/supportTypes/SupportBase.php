@@ -254,7 +254,7 @@ abstract class SupportBase
         if ($this->hasInitiatorGivenSupporters()) {
             $supporters = $this->parseSupporters(new MotionSupporter());
             $num        = count($supporters);
-            if ($personType != ISupporter::PERSON_ORGANIZATION) {
+            if ($personType !== ISupporter::PERSON_ORGANIZATION) {
                 if ($num < $settings->minSupporters) {
                     $errors[] = 'Not enough supporters.';
                 }
@@ -359,8 +359,9 @@ abstract class SupportBase
             }
         }
         if (!$initiator) {
-            $initiator       = new MotionSupporter();
-            $initiator->role = MotionSupporter::ROLE_INITIATOR;
+            $initiator               = new MotionSupporter();
+            $initiator->dateCreation = date('Y-m-d H:i:s');
+            $initiator->role         = MotionSupporter::ROLE_INITIATOR;
         }
         $othersPrivilege = User::havePrivilege(
             $motionType->getConsultation(),
@@ -451,9 +452,10 @@ abstract class SupportBase
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {
-            $init         = new MotionSupporter();
-            $init->userId = null;
-            $user         = null;
+            $init               = new MotionSupporter();
+            $init->dateCreation = date('Y-m-d H:i:s');
+            $init->userId       = null;
+            $user               = null;
         } else {
             if ($otherInitiator) {
                 $user   = null;
@@ -477,8 +479,9 @@ abstract class SupportBase
                 ]
             );
             if (!$init) {
-                $init         = new MotionSupporter();
-                $init->userId = $userId;
+                $init               = new MotionSupporter();
+                $init->dateCreation = date('Y-m-d H:i:s');
+                $init->userId       = $userId;
             }
         }
 
@@ -512,12 +515,13 @@ abstract class SupportBase
 
         if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
             foreach ($post['moreInitiators']['name'] as $i => $name) {
-                $init             = new MotionSupporter();
-                $init->motionId   = $motion->id;
-                $init->role       = MotionSupporter::ROLE_INITIATOR;
-                $init->position   = $posCount++;
-                $init->personType = MotionSupporter::PERSON_NATURAL;
-                $init->name       = $name;
+                $init               = new MotionSupporter();
+                $init->dateCreation = date('Y-m-d H:i:s');
+                $init->motionId     = $motion->id;
+                $init->role         = MotionSupporter::ROLE_INITIATOR;
+                $init->position     = $posCount++;
+                $init->personType   = MotionSupporter::PERSON_NATURAL;
+                $init->name         = $name;
                 if (isset($post['moreInitiators']['organization'])) {
                     $init->organization = $post['moreInitiators']['organization'][$i];
                 }
@@ -529,8 +533,9 @@ abstract class SupportBase
             $supporters = $this->parseSupporters(new MotionSupporter());
             foreach ($supporters as $sup) {
                 /** @var MotionSupporter $sup */
-                $sup->motionId = $motion->id;
-                $return[]      = $sup;
+                $sup->motionId     = $motion->id;
+                $sup->dateCreation = date('Y-m-d H:i:s');
+                $return[]          = $sup;
             }
         }
 
@@ -554,9 +559,10 @@ abstract class SupportBase
         $otherInitiator  = (isset($post['otherInitiator']) && $othersPrivilege);
 
         if (\Yii::$app->user->isGuest) {
-            $init         = new AmendmentSupporter();
-            $init->userId = null;
-            $user         = null;
+            $init               = new AmendmentSupporter();
+            $init->dateCreation = date('Y-m-d H:i:s');
+            $init->userId       = null;
+            $user               = null;
         } else {
             if ($otherInitiator) {
                 $userId = null;
@@ -580,8 +586,9 @@ abstract class SupportBase
                 ]
             );
             if (!$init) {
-                $init         = new AmendmentSupporter();
-                $init->userId = $userId;
+                $init               = new AmendmentSupporter();
+                $init->dateCreation = date('Y-m-d H:i:s');
+                $init->userId       = $userId;
             }
         }
 
@@ -614,12 +621,13 @@ abstract class SupportBase
 
         if (isset($post['moreInitiators']) && isset($post['moreInitiators']['name'])) {
             foreach ($post['moreInitiators']['name'] as $i => $name) {
-                $init              = new AmendmentSupporter();
-                $init->amendmentId = $amendment->id;
-                $init->role        = AmendmentSupporter::ROLE_INITIATOR;
-                $init->position    = $posCount++;
-                $init->personType  = MotionSupporter::PERSON_NATURAL;
-                $init->name        = $name;
+                $init               = new AmendmentSupporter();
+                $init->amendmentId  = $amendment->id;
+                $init->role         = AmendmentSupporter::ROLE_INITIATOR;
+                $init->position     = $posCount++;
+                $init->personType   = MotionSupporter::PERSON_NATURAL;
+                $init->name         = $name;
+                $init->dateCreation = date('Y-m-d H:i:s');
                 if (isset($post['moreInitiators']['organization'])) {
                     $init->organization = $post['moreInitiators']['organization'][$i];
                 }
@@ -631,8 +639,9 @@ abstract class SupportBase
             $supporters = $this->parseSupporters(new AmendmentSupporter());
             foreach ($supporters as $sup) {
                 /** @var AmendmentSupporter $sup */
-                $sup->amendmentId = $amendment->id;
-                $return[]         = $sup;
+                $sup->amendmentId  = $amendment->id;
+                $sup->dateCreation = date('Y-m-d H:i:s');
+                $return[]          = $sup;
             }
         }
 

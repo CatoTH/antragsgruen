@@ -47,7 +47,8 @@ class MergeSingleAmendmentForm extends Model
         $paragraphs,
         $otherAmendOverrides,
         $otherAmendStatuses
-    ) {
+    )
+    {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
         $this->oldMotion           = $amendment->getMyMotion();
@@ -136,8 +137,9 @@ class MergeSingleAmendmentForm extends Model
         foreach ($this->oldMotion->motionSupporters as $supporter) {
             $newSupporter = new MotionSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
-            $newSupporter->id       = null;
-            $newSupporter->motionId = $this->newMotion->id;
+            $newSupporter->dateCreation = date('Y-m-d H:i:s');
+            $newSupporter->id           = null;
+            $newSupporter->motionId     = $this->newMotion->id;
             if (!$newSupporter->save()) {
                 throw new DB($this->newMotion->getErrors());
             }
@@ -155,7 +157,7 @@ class MergeSingleAmendmentForm extends Model
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->motionId = $this->newMotion->id;
-            $newSection->cache = '';
+            $newSection->cache    = '';
             if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
                 if (isset($newSections[$section->sectionId])) {
                     $newSection->data    = $newSections[$section->sectionId];
@@ -229,10 +231,10 @@ class MergeSingleAmendmentForm extends Model
      */
     public function performRewrite()
     {
-        $previousSlug = $this->oldMotion->slug;
+        $previousSlug          = $this->oldMotion->slug;
         $this->oldMotion->slug = null;
         $this->oldMotion->save();
-        
+
         $this->createNewMotion($previousSlug);
         $this->createNewMotionSections();
         $this->rewriteOtherAmendments();

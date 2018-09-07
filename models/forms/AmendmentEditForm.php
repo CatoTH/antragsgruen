@@ -126,7 +126,8 @@ class AmendmentEditForm extends Model
         foreach ($amendment->amendmentSupporters as $supp) {
             $suppNew = new AmendmentSupporter();
             $suppNew->setAttributes($supp->getAttributes());
-            $this->supporters[] = $suppNew;
+            $suppNew->dateCreation = date('Y-m-d H:i:s');
+            $this->supporters[]    = $suppNew;
         }
     }
 

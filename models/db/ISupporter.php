@@ -19,6 +19,7 @@ use yii\helpers\Html;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
+ * @property string $dateCreation
  * @property string $extraData
  *
  * @property User|null $user

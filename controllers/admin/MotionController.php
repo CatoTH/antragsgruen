@@ -329,10 +329,11 @@ class MotionController extends AdminBase
             if (isset($preSupporters[$preIds[$i]])) {
                 $supporter = $preSupporters[$preIds[$i]];
             } else {
-                $supporter             = new MotionSupporter();
-                $supporter->motionId   = $motion->id;
-                $supporter->role       = MotionSupporter::ROLE_SUPPORTER;
-                $supporter->personType = MotionSupporter::PERSON_NATURAL;
+                $supporter               = new MotionSupporter();
+                $supporter->motionId     = $motion->id;
+                $supporter->role         = MotionSupporter::ROLE_SUPPORTER;
+                $supporter->personType   = MotionSupporter::PERSON_NATURAL;
+                $supporter->dateCreation = date('Y-m-d H:i:s');
             }
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];

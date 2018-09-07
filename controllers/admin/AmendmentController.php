@@ -118,10 +118,11 @@ class AmendmentController extends AdminBase
             if (isset($preSupporters[$preIds[$i]])) {
                 $supporter = $preSupporters[$preIds[$i]];
             } else {
-                $supporter              = new AmendmentSupporter();
-                $supporter->amendmentId = $amendment->id;
-                $supporter->role        = AmendmentSupporter::ROLE_SUPPORTER;
-                $supporter->personType  = AmendmentSupporter::PERSON_NATURAL;
+                $supporter               = new AmendmentSupporter();
+                $supporter->amendmentId  = $amendment->id;
+                $supporter->role         = AmendmentSupporter::ROLE_SUPPORTER;
+                $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
+                $supporter->dateCreation = date('Y-m-d H:i:s');
             }
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
