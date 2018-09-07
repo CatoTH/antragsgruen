@@ -10,6 +10,7 @@ ANTRAGSGRUEN_STRINGS = {
         "draft_restore_confirm": "Really restore this draft?",
         "min_x_supporter": "You have to enter at least %NUM% supporters.",
         "missing_resolution_date": "A resolution date has to be entered.",
+        "missing_gender": "Please select one choice in the field Gender.",
         "pw_x_chars": "The password needs to be at least %NUM% characters long.",
         "pw_min_x_chars": "Min. %NUM% characters",
         "pw_no_match": "The passwords do not match.",

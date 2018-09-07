@@ -244,9 +244,15 @@ export class InitiatorForm {
 
     private submit(ev) {
         if ($('#personTypeOrga').prop('checked')) {
-            if ($('#resolutionDate').val() == '') {
+            if (this.settings.hasResolutionDate === CONTACT_REQUIRED && $('#resolutionDate').val() === '') {
                 ev.preventDefault();
                 bootbox.alert(__t('std', 'missing_resolution_date'));
+            }
+        }
+        if ($('#personTypeNatural').prop('checked')) {
+            if (this.settings.contactGender === CONTACT_REQUIRED && $('#initiatorGender input').val() === '') {
+                ev.preventDefault();
+                bootbox.alert(__t('std', 'missing_gender'));
             }
         }
     }

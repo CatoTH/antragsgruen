@@ -365,9 +365,10 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVisibleAmendments($includeWithdrawn = true)
     {
+        $filtered   = $this->getMyConsultation()->getInvisibleAmendmentStatuses(!$includeWithdrawn);
         $amendments = [];
         foreach ($this->amendments as $amend) {
-            if (!in_array($amend->status, $this->getMyConsultation()->getInvisibleAmendmentStatuses(!$includeWithdrawn))) {
+            if (!in_array($amend->status, $filtered)) {
                 $amendments[] = $amend;
             }
         }
@@ -598,7 +599,7 @@ class Motion extends IMotion implements IRSSItem
             foreach ($motionBlocks as $motions) {
                 foreach ($motions as $motion) {
                     /** @var Motion $motion */
-                    if ($motion->id == $this->id) {
+                    if ($motion->id === $this->id) {
                         $this->setCacheItem('getFirstLineNumber', $lineNo);
                         return $lineNo;
                     } else {
@@ -622,7 +623,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_INITIATOR) {
+            if ($supp->role === MotionSupporter::ROLE_INITIATOR) {
                 $return[] = $supp;
             }
         };
@@ -636,7 +637,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
+            if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
                 $return[] = $supp;
             }
         };
@@ -665,7 +666,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_LIKE) {
+            if ($supp->role === MotionSupporter::ROLE_LIKE) {
                 $return[] = $supp;
             }
         };
@@ -679,7 +680,7 @@ class Motion extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->motionSupporters as $supp) {
-            if ($supp->role == MotionSupporter::ROLE_DISLIKE) {
+            if ($supp->role === MotionSupporter::ROLE_DISLIKE) {
                 $return[] = $supp;
             }
         };
@@ -690,7 +691,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function withdraw()
     {
-        if ($this->status == Motion::STATUS_DRAFT) {
+        if ($this->status === Motion::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
         } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
@@ -764,7 +765,7 @@ class Motion extends IMotion implements IRSSItem
     public function setScreened()
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
-        if ($this->titlePrefix == '') {
+        if ($this->titlePrefix === '') {
             $this->titlePrefix = $this->getMyConsultation()->getNextMotionPrefix($this->motionTypeId);
         }
         $this->save(true);
@@ -993,7 +994,9 @@ class Motion extends IMotion implements IRSSItem
             if ($first->personType === MotionSupporter::PERSON_ORGANIZATION && $resolutionDate > 0) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->organization;
                 $return[\Yii::t('export', 'ResolutionDate')]  = Tools::formatMysqlDate($resolutionDate, null, false);
-            } elseif (mb_stripos($this->title, $first->name) === false) {
+
+                // For applications, the title usually is the name of the person -> no need to repeat the name
+            } elseif (!$first->name || mb_stripos($this->title, $first->name) === false) {
                 $return[\Yii::t('export', 'InitiatorSingle')] = $first->getNameWithResolutionDate(false);
             }
         } else {

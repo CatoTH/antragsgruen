@@ -9,6 +9,7 @@ ANTRAGSGRUEN_STRINGS = {
         "draft_restore_confirm": "Diesen Entwurf wiederherstellen?",
         "min_x_supporter": "Es müssen mindestens %NUM% Unterstützer*innen angegeben werden.",
         "missing_resolution_date": "Es muss ein Beschlussdatum angegeben werden.",
+        "missing_gender": "Bitte gib etwas im Gender-Feld an.",
         "pw_x_chars": "Das Passwort muss mindestens %NUM% Zeichen lang sein.",
         "pw_min_x_chars": "Min. %NUM% Zeichen",
         "pw_no_match": "Die beiden Passwörter stimmen nicht überein.",

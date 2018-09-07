@@ -80,7 +80,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getNameWithOrga()
     {
-        if ($this->personType == static::PERSON_NATURAL) {
+        if ($this->personType === static::PERSON_NATURAL) {
             $name = $this->name;
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
@@ -106,7 +106,7 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = Html::encode($this->user->name);
             }
-            if ($this->personType == static::PERSON_NATURAL) {
+            if ($this->personType === static::PERSON_NATURAL) {
                 if ($orga != '') {
                     $name .= ' <small style="font-weight: normal;">';
                     $name .= '(' . $orga . ')';
@@ -128,7 +128,7 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($this->personType == static::PERSON_NATURAL) {
+            if ($this->personType === static::PERSON_NATURAL) {
                 if ($orga !== '') {
                     $name .= ' (' . $orga . ')';
                 }
@@ -148,7 +148,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getGivenNameOrFull()
     {
-        if ($this->user && $this->personType == static::PERSON_NATURAL) {
+        if ($this->user && $this->personType === static::PERSON_NATURAL) {
             if ($this->user->nameGiven) {
                 return $this->user->nameGiven;
             } else {
@@ -157,6 +157,23 @@ abstract class ISupporter extends ActiveRecord
         } else {
             return $this->name;
         }
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+        if (isset($values['gender'])) {
+            $this->setExtraData('gender', $values['gender']);
+        } else {
+            $this->unsetExtraData('gender');
+        }
+        $this->personType = IntVal($this->personType);
+        $this->position   = IntVal($this->position);
+        $this->userId     = ($this->userId === null ? null : IntVal($this->userId));
     }
 
     /**
@@ -185,6 +202,19 @@ abstract class ISupporter extends ActiveRecord
             $arr = [];
         }
         $arr[$name]      = $value;
+        $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function unsetExtraData($name)
+    {
+        $arr = json_decode($this->extraData, true);
+        if (!$arr) {
+            $arr = [];
+        }
+        unset($arr[$name]);
         $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
 }

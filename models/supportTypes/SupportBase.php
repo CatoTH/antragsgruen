@@ -229,10 +229,25 @@ abstract class SupportBase
         if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
             $errors[] = 'Invalid person type.';
         }
-        $personType = $initiator['personType'];
-        if ($personType == ISupporter::PERSON_ORGANIZATION) {
-            if (empty($initiator['resolutionDate'])) {
-                $errors[] = 'No resolution date entered.';
+
+        $personType = IntVal($initiator['personType']);
+        if ($personType === ISupporter::PERSON_ORGANIZATION &&
+            $settings->hasResolutionDate === InitiatorForm::CONTACT_REQUIRED &&
+            empty($initiator['resolutionDate'])) {
+            $errors[] = 'No resolution date entered.';
+        }
+        if ($personType === ISupporter::PERSON_NATURAL) {
+            $validGenderValues = array_keys(static::getGenderSelection());
+            if ($settings->contactGender === InitiatorForm::CONTACT_REQUIRED) {
+                if (!isset($initiator['gender']) || !in_array($initiator['gender'], $validGenderValues)) {
+                    $errors[] = 'Please enter a valid value in the field Gender';
+                }
+            }
+            if ($settings->contactGender === InitiatorForm::CONTACT_OPTIONAL) {
+                $validGenderValues[] = '';
+                if (isset($initiator['gender']) && !in_array($initiator['gender'], $validGenderValues)) {
+                    $errors[] = 'Please enter a valid value in the field Gender';
+                }
             }
         }
 
@@ -444,7 +459,7 @@ abstract class SupportBase
                 $user   = null;
                 $userId = null;
                 foreach ($motion->motionSupporters as $supporter) {
-                    if ($supporter->role == MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
+                    if ($supporter->role === MotionSupporter::ROLE_INITIATOR && $supporter->userId > 0) {
                         $user   = $supporter->user;
                         $userId = $supporter->userId;
                     }
@@ -473,7 +488,7 @@ abstract class SupportBase
         $init->motionId = $motion->id;
         $init->role     = MotionSupporter::ROLE_INITIATOR;
         $init->position = $posCount++;
-        if ($init->personType == ISupporter::PERSON_NATURAL) {
+        if ($init->personType === ISupporter::PERSON_NATURAL) {
             if ($user && $user->fixedData && !$otherInitiator) {
                 $init->name         = $user->name;
                 $init->organization = $user->organization;
@@ -490,6 +505,7 @@ abstract class SupportBase
             $init->organization = $post['Initiator']['primaryName'];
             $init->contactName  = $post['Initiator']['contactName'];
         }
+
 
         $init->resolutionDate = Tools::dateBootstrapdate2sql($init->resolutionDate);
         $return[]             = $init;

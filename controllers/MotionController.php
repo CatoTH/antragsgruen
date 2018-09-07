@@ -430,7 +430,6 @@ class MotionController extends Base
         }
 
         return $this->renderPartial('view_changes_odt', [
-            'newMotion' => $motion,
             'oldMotion' => $parentMotion,
             'changes'   => $changes,
         ]);
@@ -590,7 +589,7 @@ class MotionController extends Base
      * @param int $cloneFrom
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
      */
     public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {

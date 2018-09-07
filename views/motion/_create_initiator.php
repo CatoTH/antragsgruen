@@ -156,7 +156,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
         <div class="col-sm-4">
             <?php
             echo \app\components\HTMLTools::fueluxSelectbox(
-                'Initiator[contactGender]',
+                'Initiator[gender]',
                 $genderChoices,
                 $initiator->getExtraData('gender'),
                 ['id' => 'initiatorGender'],
@@ -328,15 +328,19 @@ if ($hasSupporters && !$adminMode) {
 
     if ($supporterFulltext) {
         $fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
-        echo '<div class="fullTextAdder"><a href="#">' . Yii::t('initiator', 'fullTextField') . '</a></div>';
-        echo '<div class="form-group hidden" id="fullTextHolder">';
-        echo '<div class="col-md-9">';
-        echo '<textarea class="form-control" placeholder="' . Html::encode($fullTextSyntax) . '" rows="10"></textarea>';
-        echo '</div><div class="col-md-3">';
-        echo '<button type="button" class="btn btn-success fullTextAdd">';
-        echo '<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('initiator', 'fullTextAdd') . '</button>';
-        echo '</div>';
-        echo '</div>';
+        ?>
+        <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
+        <div class="form-group hidden" id="fullTextHolder">
+            <div class="col-md-9">
+                <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"></textarea>
+            </div>
+            <div class="col-md-3">
+                <button type="button" class="btn btn-success fullTextAdd">
+                    <span class="glyphicon glyphicon-plus"></span> <?= Yii::t('initiator', 'fullTextAdd') ?>
+                </button>
+            </div>
+        </div>
+        <?php
     }
 
     echo '</div>';
