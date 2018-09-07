@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\User;
 use app\models\exceptions\Internal;

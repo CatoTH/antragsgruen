@@ -51,7 +51,7 @@ if (file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'INSTALLING')) {
 if (defined('INSTALLING_MODE') || YII_ENV == 'test') {
     $params->dbConnection['class'] = 'yii\db\Connection';
 } else {
-    $params->dbConnection['class'] = 'app\components\DBConnection';
+    $params->dbConnection['class'] = 'app\components\yii\DBConnection';
 }
 
 $components = [
@@ -79,7 +79,7 @@ $components = [
     ],
     'db'           => $params->dbConnection,
     'urlManager'   => [
-        'class'           => 'app\components\UrlManager',
+        'class'           => 'app\components\yii\UrlManager',
         'showScriptName'  => false,
         'enablePrettyUrl' => ($params->prettyUrl && !(isset($_POST['disablePrettyUrl']) && $_POST['disablePrettyUrl'])),
         'rules'           => $urls
@@ -87,7 +87,7 @@ $components = [
     'i18n'         => [
         'translations' => [
             '*' => [
-                'class'    => 'app\components\MessageSource',
+                'class'    => 'app\components\yii\MessageSource',
                 'basePath' => '@app/messages',
             ],
         ],

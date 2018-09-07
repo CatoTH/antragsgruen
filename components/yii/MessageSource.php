@@ -1,7 +1,8 @@
 <?php
 
-namespace app\components;
+namespace app\components\yii;
 
+use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use Yii;

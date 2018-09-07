@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components;
+namespace app\components\yii;
 
 class UrlManager extends \yii\web\UrlManager
 {

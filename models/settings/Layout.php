@@ -2,7 +2,7 @@
 
 namespace app\models\settings;
 
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;

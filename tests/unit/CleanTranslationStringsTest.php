@@ -3,7 +3,7 @@
 namespace unit;
 
 use app\components\HTMLTools;
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use Codeception\Specify;
 use Yii;
 use yii\i18n\I18N;

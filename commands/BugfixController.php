@@ -3,7 +3,7 @@
 namespace app\commands;
 
 use app\components\HTMLTools;
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\models\db\Amendment;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
