@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4209a78225741c2e1f31a155d456879",
+    "content-hash": "78e4cfe967d86739bdb34afda50e1965",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -1412,16 +1412,16 @@
         },
         {
             "name": "yiisoft/yii2-authclient",
-            "version": "2.1.5",
+            "version": "2.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-authclient.git",
-                "reference": "ff826241c231d8f768f4cb58577d6956fdbc5fab"
+                "reference": "573a00211fb95e860647999e3c82808dcad526df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/ff826241c231d8f768f4cb58577d6956fdbc5fab",
-                "reference": "ff826241c231d8f768f4cb58577d6956fdbc5fab",
+                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/573a00211fb95e860647999e3c82808dcad526df",
+                "reference": "573a00211fb95e860647999e3c82808dcad526df",
                 "shasum": ""
             },
             "require": {
@@ -1460,7 +1460,7 @@
                 "oauth",
                 "yii2"
             ],
-            "time": "2018-02-07T21:12:40+00:00"
+            "time": "2018-09-06T21:30:50+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -5119,7 +5119,8 @@
         "ext-zip": "*",
         "ext-json": "*",
         "ext-fileinfo": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
     "platform-overrides": {
