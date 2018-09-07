@@ -144,7 +144,7 @@ class TextSimple extends Text
 
     /**
      * @param array $data
-     * s     * @throws \app\models\exceptions\Internal
+     * @throws \app\models\exceptions\Internal
      */
     public function setAmendmentData($data)
     {
