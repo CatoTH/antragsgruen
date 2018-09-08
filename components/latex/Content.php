@@ -9,6 +9,7 @@ class Content
     public $title;
     public $titlePrefix       = '';
     public $titleLong;
+    public $titleRaw          = '';
     public $introductionBig;
     public $introductionSmall = '';
     public $motionDataTable   = '';

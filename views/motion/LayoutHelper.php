@@ -94,6 +94,7 @@ class LayoutHelper
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
+        $content->titleRaw        = $motion->title;
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
         $content->title           = $motion->getTitleWithIntro();

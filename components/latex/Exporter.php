@@ -398,6 +398,7 @@ class Exporter
         $replaces['%TITLE%']              = static::encodePlainString($content->title);
         $replaces['%TITLEPREFIX%']        = static::encodePlainString($content->titlePrefix);
         $replaces['%TITLE_LONG%']         = static::encodePlainString($content->titleLong);
+        $replaces['%TITLE_RAW%']          = static::encodePlainString($content->titleRaw);
         $replaces['%AUTHOR%']             = $content->author;
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
