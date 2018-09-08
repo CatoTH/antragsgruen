@@ -461,7 +461,10 @@
 
 .motionRightCol {
   padding-top: 0;
-  font-size: 0.9em;
+  font-size: 14px;
+  .motionTextFormattings {
+    font-size: 14px;
+  }
 
   > section {
     padding: 0 30px 20px 0;
