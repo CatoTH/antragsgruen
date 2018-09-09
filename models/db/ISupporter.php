@@ -167,11 +167,7 @@ abstract class ISupporter extends ActiveRecord
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-        if (isset($values['gender'])) {
-            $this->setExtraDataEntry('gender', $values['gender']);
-        } else {
-            $this->unsetExtraDataEntry('gender');
-        }
+        $this->setExtraDataEntry('gender', (isset($values['gender']) ? $values['gender'] : null));
         $this->personType = IntVal($this->personType);
         $this->position   = IntVal($this->position);
         $this->userId     = ($this->userId === null ? null : IntVal($this->userId));
@@ -202,20 +198,11 @@ abstract class ISupporter extends ActiveRecord
         if (!$arr) {
             $arr = [];
         }
-        $arr[$name]      = $value;
-        $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * @param string $name
-     */
-    public function unsetExtraDataEntry($name)
-    {
-        $arr = json_decode($this->extraData, true);
-        if (!$arr) {
-            $arr = [];
+        if ($value !== null) {
+            $arr[$name] = $value;
+        } else {
+            unset($arr[$name]);
         }
-        unset($arr[$name]);
         $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
 }

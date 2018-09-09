@@ -697,12 +697,26 @@ label.legend {
 }
 
 #motionSupporterHolder {
-  ul {
+  ul.supporterList {
     list-style-type: none;
     padding: 0;
 
     > li {
       padding: 5px 0 5px 40px;
+    }
+    .supporterRow {
+      display: flex;
+      flex-direction: row;
+      > * {
+        flex: 1;
+        padding: 0 15px;
+        &:first-child {
+          padding-left: 0;
+        }
+        &:last-child {
+          padding-right: 0;
+        }
+      }
     }
     .nameCol {
       position: relative;

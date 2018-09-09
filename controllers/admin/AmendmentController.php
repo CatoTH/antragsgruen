@@ -104,6 +104,7 @@ class AmendmentController extends AdminBase
     {
         $names         = \Yii::$app->request->post('supporterName', []);
         $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $genders       = \Yii::$app->request->post('supporterGender', []);
         $preIds        = \Yii::$app->request->post('supporterId', []);
         $newSupporters = [];
         /** @var AmendmentSupporter[] $preSupporters */
@@ -127,6 +128,7 @@ class AmendmentController extends AdminBase
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
+            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();

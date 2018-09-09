@@ -1,11 +1,14 @@
 <?php
 
 use app\models\db\ISupporter;
+use app\models\settings\InitiatorForm;
+use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
  * @var ISupporter[] $supporters
  * @var ISupporter $newTemplate
+ * @var InitiatorForm $settings
  */
 
 
@@ -13,12 +16,12 @@ use yii\helpers\Html;
  * @param ISupporter $supporter
  * @return string
  */
-$getSupporterRow = function (\app\models\db\ISupporter $supporter) {
-    $str = '<li><div class="row">';
+$getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($settings) {
+    $str = '<li><div class="supporterRow">';
     $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id) . '">';
 
     $title = Html::encode(\Yii::t('admin', 'motion_supp_name'));
-    $str .= '<div class="col-md-4 nameCol">';
+    $str   .= '<div class="nameCol">';
 
     $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
 
@@ -27,12 +30,28 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) {
     $str .= '</div>';
 
     $title = Html::encode(\Yii::t('admin', 'motion_supp_orga'));
-    $str .= '<div class="col-md-4">';
-    $str .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
-    $str .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
-    $str .= '</div>';
+    $str   .= '<div>';
+    $str   .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
+    $str   .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
+    $str   .= '</div>';
 
-    $str .= '<div class="col-md-4">';
+    if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
+        $genderChoices = array_merge(
+            ['' => \Yii::t('initiator', 'gender') . ':'],
+            SupportBase::getGenderSelection()
+        );
+        $str .= '<div class="colGender">';
+        $str .= \app\components\HTMLTools::fueluxSelectbox(
+            'supporterGender[]',
+            $genderChoices,
+            $supporter->getExtraDataEntry('gender'),
+            [],
+            true
+        );
+        $str .= '</div>';
+    }
+
+    $str .= '<div>';
     $str .= '<a href="#" class="delSupporter"><span class="glyphicon glyphicon-minus-sign"></span></a>';
     if ($supporter->user) {
         $str .= Html::encode($supporter->user->getAuthName());
@@ -44,32 +63,34 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) {
     return $str;
 };
 
-echo '<h2 class="green">' . \Yii::t('admin', 'motion_edit_supporters') . '</h2>
-<div class="content" id="motionSupporterHolder">
-<ul>';
+?>
+<h2 class="green"><?= \Yii::t('admin', 'motion_edit_supporters') ?></h2>
+<div class="content fuelux" id="motionSupporterHolder">
+    <ul class="supporterList">
+        <?php
+        foreach ($supporters as $supporter) {
+            echo $getSupporterRow($supporter);
+        }
+        ?>
+    </ul>
 
-foreach ($supporters as $supporter) {
-    echo $getSupporterRow($supporter);
-}
+    <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
 
-$template = $getSupporterRow($newTemplate);
-echo '</li>
-</ul>';
+    <a href="#" class="supporterRowAdder" data-content="<?= Html::encode($getSupporterRow($newTemplate)) ?>">
+        <span class="glyphicon glyphicon-plus-sign"></span>
+        <?= \Yii::t('admin', 'motion_edit_supporters_add') ?>
+    </a>
 
-echo '<div class="fullTextAdder"><a href="#">' . Yii::t('initiator', 'fullTextField') . '</a></div>';
-
-echo '<a href="#" class="supporterRowAdder" data-content="' . Html::encode($template) . '">
-    <span class="glyphicon glyphicon-plus-sign"></span> ' . \Yii::t('admin', 'motion_edit_supporters_add') . '
-</a>';
-
-$fullTextSyntax = Yii::t('initiator', 'fullTextSyntax');
-echo '<div class="form-group hidden" id="fullTextHolder">';
-echo '<div class="col-md-9">';
-echo '<textarea class="form-control" placeholder="' . Html::encode($fullTextSyntax) . '" rows="10"></textarea>';
-echo '</div><div class="col-md-3">';
-echo '<button type="button" class="btn btn-success fullTextAdd">';
-echo '<span class="glyphicon glyphicon-plus"></span> ' . Yii::t('initiator', 'fullTextAdd') . '</button>';
-echo '</div>';
-echo '</div>';
-
-echo '</div>';
+    <div class="form-group hidden" id="fullTextHolder">
+        <div class="col-md-9">
+            <textarea class="form-control" placeholder="<?= Html::encode(Yii::t('initiator', 'fullTextSyntax')) ?>"
+                      rows="10"></textarea>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-success fullTextAdd">
+                <span class="glyphicon glyphicon-plus"></span>
+                <?= Yii::t('initiator', 'fullTextAdd') ?>
+            </button>
+        </div>
+    </div>
+</div>

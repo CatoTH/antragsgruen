@@ -101,11 +101,7 @@ class MotionSupporter extends ISupporter
         $support->position     = $maxPos + 1;
         $support->role         = $role;
         $support->dateCreation = date('Y-m-d H:i:s');
-        if ($gender !== '') {
-            $support->setExtraDataEntry('gender', $gender);
-        } else {
-            $support->unsetExtraDataEntry('gender');
-        }
+        $support->setExtraDataEntry('gender', ($gender !== '' ? $gender : null));
         $support->save();
 
         if (!$user) {

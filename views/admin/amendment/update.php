@@ -268,7 +268,8 @@ echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $contro
 
 echo $this->render('../motion/_update_supporter', [
     'supporters'  => $amendment->getSupporters(),
-    'newTemplate' => new \app\models\db\AmendmentSupporter()
+    'newTemplate' => new \app\models\db\AmendmentSupporter(),
+    'settings'    => $initiatorClass->getSettingsObj(),
 ]);
 
 

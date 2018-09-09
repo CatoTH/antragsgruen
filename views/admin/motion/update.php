@@ -34,8 +34,8 @@ $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '
 $html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'motion_show') . '</a></li>';
 
 $cloneUrl = UrlHelper::createUrl(['motion/create', 'cloneFrom' => $motion->id]);
-$html .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
-$html .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
+$html     .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
+$html     .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
     \Yii::t('admin', 'motion_new_base_on_this') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
@@ -44,7 +44,7 @@ $html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-tr
     . \Yii::t('admin', 'motion_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 
-$html .= '</ul>';
+$html                .= '</ul>';
 $layout->menusHtml[] = $html;
 
 
@@ -82,40 +82,40 @@ echo '<div class="content form-horizontal fuelux">';
 
 ?>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionType"><?= \Yii::t('admin', 'motion_type') ?></label>
-    <div class="col-md-9"><?php
-    $options = [];
-    foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
-        $options[$motionType->id] = $motionType->titleSingular;
-    }
-    $attrs = ['id' => 'motionType'];
-    echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
-    ?></div>
-</div>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionType"><?= \Yii::t('admin', 'motion_type') ?></label>
+        <div class="col-md-9"><?php
+            $options = [];
+            foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
+                $options[$motionType->id] = $motionType->titleSingular;
+            }
+            $attrs = ['id' => 'motionType'];
+            echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
+            ?></div>
+    </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="parentMotion"><?= \Yii::t('admin', 'motion_replaces') ?></label>
-    <div class="col-md-9"><?php
-    $options = ['-'];
-    foreach ($consultation->motions as $otherMotion) {
-        $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
-    }
-    $attrs = ['id' => 'parentMotion'];
-    echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
-    ?></div>
-</div>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="parentMotion"><?= \Yii::t('admin', 'motion_replaces') ?></label>
+        <div class="col-md-9"><?php
+            $options = ['-'];
+            foreach ($consultation->motions as $otherMotion) {
+                $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
+            }
+            $attrs = ['id' => 'parentMotion'];
+            echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
+            ?></div>
+    </div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionStatus"><?= \Yii::t('admin', 'motion_status') ?>:</label>
-    <div class="col-md-5"><?php
-    $statuses = Motion::getStatusNamesVisibleForAdmins();
-    echo HTMLTools::fueluxSelectbox('motion[status]', $statuses, $motion->status, ['id' => 'motionStatus'], true);
-    echo '</div><div class="col-md-4">';
-    $options  = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
-    echo Html::textInput('motion[statusString]', $motion->statusString, $options);
-    ?></div>
-</div>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionStatus"><?= \Yii::t('admin', 'motion_status') ?>:</label>
+        <div class="col-md-5"><?php
+            $statuses = Motion::getStatusNamesVisibleForAdmins();
+            echo HTMLTools::fueluxSelectbox('motion[status]', $statuses, $motion->status, ['id' => 'motionStatus'], true);
+            echo '</div><div class="col-md-4">';
+            $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
+            echo Html::textInput('motion[statusString]', $motion->statusString, $options);
+            ?></div>
+    </div>
 
 <?php
 if (count($consultation->agendaItems) > 0) {
@@ -134,75 +134,75 @@ if (count($consultation->agendaItems) > 0) {
 }
 ?>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionTitle"><?=  \Yii::t('admin', 'motion_title') ?>:</label>
-    <div class="col-md-9"><?php
-    $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_title')];
-    echo Html::textInput('motion[title]', $motion->title, $options);
-    ?></div>
-</div>
-
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionTitlePrefix"><?= \Yii::t('admin', 'motion_prefix') ?>:</label>
-    <div class="col-md-4"><?php
-    echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, [
-        'class'       => 'form-control',
-        'id'          => 'motionTitlePrefix',
-        'placeholder' => \Yii::t('admin', 'motion_prefix_hint')
-    ]);
-    ?>
-        <small><?= \Yii::t('admin', 'motion_prefix_unique') ?></small>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionTitle"><?= \Yii::t('admin', 'motion_title') ?>:</label>
+        <div class="col-md-9"><?php
+            $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_title')];
+            echo Html::textInput('motion[title]', $motion->title, $options);
+            ?></div>
     </div>
-</div>
+
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionTitlePrefix"><?= \Yii::t('admin', 'motion_prefix') ?>:</label>
+        <div class="col-md-4"><?php
+            echo Html::textInput('motion[titlePrefix]', $motion->titlePrefix, [
+                'class'       => 'form-control',
+                'id'          => 'motionTitlePrefix',
+                'placeholder' => \Yii::t('admin', 'motion_prefix_hint')
+            ]);
+            ?>
+            <small><?= \Yii::t('admin', 'motion_prefix_unique') ?></small>
+        </div>
+    </div>
 
 <?php
 $locale = Tools::getCurrentDateLocale();
-$date = Tools::dateSql2bootstraptime($motion->dateCreation);
+$date   = Tools::dateSql2bootstraptime($motion->dateCreation);
 ?>
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionDateCreation">
-        <?= \Yii::t('admin', 'motion_date_created') ?>:
-    </label>
-    <div class="col-md-4">
-        <div class="input-group date" id="motionDateCreationHolder">
-            <input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
-                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionDateCreation">
+            <?= \Yii::t('admin', 'motion_date_created') ?>:
+        </label>
+        <div class="col-md-4">
+            <div class="input-group date" id="motionDateCreationHolder">
+                <input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 $date = Tools::dateSql2bootstraptime($motion->datePublication);
 ?>
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionDatePublication">
-        <?= \Yii::t('admin', 'motion_date_publication') ?>:
-    </label>
-    <div class="col-md-4">
-        <div class="input-group date" id="motionDatePublicationHolder">
-            <input type="text" class="form-control" name="motion[datePublication]" id="motionDatePublication"
-                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionDatePublication">
+            <?= \Yii::t('admin', 'motion_date_publication') ?>:
+        </label>
+        <div class="col-md-4">
+            <div class="input-group date" id="motionDatePublicationHolder">
+                <input type="text" class="form-control" name="motion[datePublication]" id="motionDatePublication"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
         </div>
     </div>
-</div>
 
 <?php
 $date = Tools::dateSql2bootstraptime($motion->dateResolution);
 ?>
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionDateResolution">
-        <?= \Yii::t('admin', 'motion_date_resolution') ?>:
-    </label>
-    <div class="col-md-4">
-        <div class="input-group date" id="motionDateResolutionHolder">
-            <input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
-                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionDateResolution">
+            <?= \Yii::t('admin', 'motion_date_resolution') ?>:
+        </label>
+        <div class="col-md-4">
+            <div class="input-group date" id="motionDateResolutionHolder">
+                <input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
         </div>
     </div>
-</div>
 
 <?php if (count($consultation->tags) > 0) { ?>
     <div class="form-group">
@@ -225,30 +225,30 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
     </div>
 <?php } ?>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="nonAmendable">
-        <?= \Yii::t('admin', 'motion_non_amendable_title') ?>:
-    </label>
-    <div class="col-md-9 nonAmendable">
-        <label>
-            <input type="checkbox" name="motion[nonAmendable]" value="1" id="nonAmendable"
-                <?= ($motion->nonAmendable ? 'checked' : '') ?>>
-            <?= \Yii::t('admin', 'motion_non_amendable') ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="nonAmendable">
+            <?= \Yii::t('admin', 'motion_non_amendable_title') ?>:
         </label>
+        <div class="col-md-9 nonAmendable">
+            <label>
+                <input type="checkbox" name="motion[nonAmendable]" value="1" id="nonAmendable"
+                    <?= ($motion->nonAmendable ? 'checked' : '') ?>>
+                <?= \Yii::t('admin', 'motion_non_amendable') ?>
+            </label>
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="motionNoteInternal">
-        <?= \Yii::t('admin', 'motion_note_internal') ?>:
-    </label>
-    <div class="col-md-9">
-        <?php
-        $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
-        echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
-        ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="motionNoteInternal">
+            <?= \Yii::t('admin', 'motion_note_internal') ?>:
+        </label>
+        <div class="col-md-9">
+            <?php
+            $options = ['class' => 'form-control', 'id' => 'motionNoteInternal'];
+            echo Html::textarea('motion[noteInternal]', $motion->noteInternal, $options);
+            ?>
+        </div>
     </div>
-</div>
 
 <?php
 echo '</div>';
@@ -296,7 +296,8 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
 echo $this->render('_update_supporter', [
     'supporters'  => $motion->getSupporters(),
-    'newTemplate' => new MotionSupporter()
+    'newTemplate' => new MotionSupporter(),
+    'settings'    => $initiatorClass->getSettingsObj(),
 ]);
 
 echo '<div class="saveholder">';
