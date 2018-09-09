@@ -131,7 +131,7 @@
     max-width: $content-max-width;
     z-index: -1;
     background-color: rgba(255, 255, 0, 0);
-    transition:background-color 0.5s ease;
+    transition: background-color 0.5s ease;
   }
   .lineNumber.highlighted-active:before {
     background-color: rgba(255, 255, 0, 1);
@@ -491,7 +491,7 @@ iframe.pdfViewer {
   z-index: 10;
   background: white;
   border-top: solid 1px #ccc;
-  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
   display: none;
   padding: 10px;
   &.active {
@@ -655,5 +655,36 @@ iframe.pdfViewer {
   }
   .motionDataTable {
     margin-bottom: 25px;
+  }
+}
+
+.motionSupportForm {
+  .supportQuestion {
+    margin-top: 10px;
+  }
+  .supportBlock {
+    display: flex;
+    flex-direction: row;
+    .colName, .colGender, .colOrga {
+      flex: 1;
+      padding: 0 10px;
+    }
+    .colSubmit {
+      flex: 0;
+    }
+    > * {
+      padding: 0 10px;
+      &:first-child {
+        padding-left: 0;
+      }
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+  .loggedOutWarning {
+    font-size: 0.8em;
+    margin-top: 6px;
+    padding: 0 15px;
   }
 }

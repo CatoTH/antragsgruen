@@ -21,7 +21,7 @@ echo Html::beginForm('', 'post', [
 ]);
 
 ?>
-    <label style="margin-top: 10px;"><?= \Yii::t('motion', 'support_question') ?></label>
+    <label class="supportQuestion"><?= \Yii::t('motion', 'support_question') ?></label>
 <?php
 if ($settings->hasOrganizations && $user && $user->organization === '' && $user->fixedData) {
     echo '<div class="alert alert-danger" role="alert">';
@@ -30,18 +30,9 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
     $disableSubmit = 'disabled';
 }
 
-$cols = 2;
-if ($settings->hasOrganizations) {
-    $cols++;
-}
-if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
-    $cols++;
-}
-$width = (12 / $cols);
-
 ?>
-    <div class="row supportBlock fuelux">
-        <div class="col-md-<?= $width ?>">
+    <div class="supportBlock fuelux">
+        <div class="colName">
             <input type="text" name="motionSupportName" class="form-control" required <?= $fixedReadOnly ?>
                    value="<?= Html::encode($name) ?>"
                    placeholder="<?= Html::encode(\Yii::t('motion', 'support_name')) ?>">
@@ -49,7 +40,7 @@ $width = (12 / $cols);
         <?php
         if ($settings->hasOrganizations) {
             $orga = ($user ? $user->organization : '');
-            echo '<div class="col-md-' . $width . '">';
+            echo '<div class="colOrga">';
             echo '<input type="text" name="motionSupportOrga" class="form-control"
                            value="' . Html::encode($orga) . '"
                            placeholder="' . Html::encode(\Yii::t('motion', 'support_orga')) . '" 
@@ -61,7 +52,7 @@ $width = (12 / $cols);
                 ['' => \Yii::t('initiator', 'gender') . ':'],
                 SupportBase::getGenderSelection()
             );
-            echo '<div class="col-md-' . $width . '">';
+            echo '<div class="colGender">';
             echo \app\components\HTMLTools::fueluxSelectbox(
                 'motionSupportGender',
                 $genderChoices,
@@ -72,7 +63,7 @@ $width = (12 / $cols);
             echo '</div>';
         }
         ?>
-        <div class="col-md-<?= $width ?>" style="text-align: right">
+        <div class="colSubmit">
             <button type="submit" name="motionSupport" class="btn btn-success" <?= $disableSubmit ?>>
                 <span class="glyphicon glyphicon-thumbs-up"></span>
                 <?= \Yii::t('motion', 'support') ?>
@@ -83,7 +74,6 @@ $width = (12 / $cols);
 
 <?php
 if (!$user) {
-    echo '<div class="row"><div class="col-md-8" style="font-size: 0.8em; margin-top: 6px;">' .
-        \Yii::t('motion', 'supporting_logged_out_warning') . '</div></div>';
+    echo '<div class="loggedOutWarning">' . \Yii::t('motion', 'supporting_logged_out_warning') . '</div>';
 }
 echo Html::endForm();
