@@ -9,6 +9,7 @@
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
+- Bugfix: The PDF export of applications failed if a tabular data section was added in the motion, but no data rows were set.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
 ### Version 4.0.1 (2018-09-02)
