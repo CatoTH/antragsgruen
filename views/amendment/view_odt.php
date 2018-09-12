@@ -15,7 +15,7 @@ $config = \yii::$app->params;
 $template = $amendment->getMyMotion()->motionType->getOdtTemplateFile();
 $doc      = new Text([
     'templateFile' => $template,
-    'tmpPath'      => $config->tmpDir,
+    'tmpPath'      => $config->getTmpDir(),
     'trustHtml'    => true,
 ]);
 

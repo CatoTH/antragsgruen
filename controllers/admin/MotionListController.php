@@ -271,6 +271,8 @@ class MotionListController extends AdminBase
             return $this->showErrorpage(404, $e->getMessage());
         }
 
+        defined('PCLZIP_TEMPORARY_DIR') or define('PCLZIP_TEMPORARY_DIR', $this->getParams()->getTmpDir());
+
         $excelMime                   = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', $excelMime);

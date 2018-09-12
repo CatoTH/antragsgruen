@@ -51,7 +51,6 @@ class ManagerController extends Base
         if (isset($post['save'])) {
             $config->resourceBase          = $post['resourceBase'];
             $config->baseLanguage          = $post['baseLanguage'];
-            $config->tmpDir                = $post['tmpDir'];
             $config->xelatexPath           = $post['xelatexPath'];
             $config->xdvipdfmx             = $post['xdvipdfmx'];
             $config->mailFromEmail         = $post['mailFromEmail'];

@@ -59,7 +59,7 @@ class Exporter
         $str = str_replace('<br>###LINEBREAK###', '###LINEBREAK###', $str);
         $str = str_replace('<br>' . "\n" . '###LINEBREAK###', '###LINEBREAK###', $str);
 
-         // Enforce a workaround to enable empty lines by using <p><br></p>
+        // Enforce a workaround to enable empty lines by using <p><br></p>
         $str = preg_replace('/(<p[^>]*>)\s*<br>\s*(<\/p>)/siu', '$1 $2', $str);
 
         $str = static::encodeHTMLString($str);
@@ -80,11 +80,11 @@ class Exporter
      */
     public static function encodePREString($str)
     {
-        $out = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
+        $out   = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
         $lines = explode("\n", $str);
         foreach ($lines as $line) {
             if (strlen($line) > 0 && $line[0] == ' ') {
-                $out .= '\phantom{.}';
+                $out  .= '\phantom{.}';
                 $line = substr($line, 1);
             }
             $out .= str_replace(' ', '\ ', static::encodePlainString($line));
@@ -308,7 +308,7 @@ class Exporter
                     //return '\textcolor{Insert}{\uline{' . $content . '}}';
                     return '\textcolor{Insert}{' . $content . '}';
                 case 'pre':
-                    return  static::encodePREString($content);
+                    return static::encodePREString($content);
                 default:
                     //return $content;
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
@@ -336,7 +336,7 @@ class Exporter
         for ($i = 0; $i < $body->childNodes->length; $i++) {
             /** @var \DOMNode $child */
             $child = $body->childNodes->item($i);
-            $out .= static::encodeHTMLNode($child);
+            $out   .= static::encodeHTMLNode($child);
         }
 
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
@@ -432,20 +432,21 @@ class Exporter
                 if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {
                     throw new Internal('Invalid image filename');
                 }
-                file_put_contents($this->app->tmpDir . $fileName, $fileData);
-                $imageHashes[$this->app->tmpDir . $fileName] = md5($fileData);
-                $imageFiles[]                                = $this->app->tmpDir . $fileName;
+                file_put_contents($this->app->getTmpDir() . $fileName, $fileData);
+                $imageHashes[$this->app->getTmpDir() . $fileName] = md5($fileData);
+
+                $imageFiles[] = $this->app->getTmpDir() . $fileName;
             }
             $cacheDepend .= $content->lineLength . '.';
             $count++;
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
-        $filenameBase = $this->app->tmpDir . uniqid('motion-pdf');
+        $filenameBase = $this->app->getTmpDir() . uniqid('motion-pdf');
 
         $cmd = $this->app->xelatexPath;
         $cmd .= ' -interaction=batchmode';
-        $cmd .= ' -output-directory=' . escapeshellarg($this->app->tmpDir);
+        $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
         if ($this->app->xdvipdfmx) {
             $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
         }
