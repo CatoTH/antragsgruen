@@ -365,9 +365,11 @@ s     * @throws \app\models\exceptions\Internal
 
                 // instead of <span class="strike"></span> TCPDF can only handle <s></s>
                 // for striking through text
-                $pattern = '/<span class="strike">(.*)<\/span>/iUs';
-                $replace = '<s>${1}</s>';
-                $text1   = preg_replace($pattern, $replace, $text1);
+                $text1   = preg_replace('/<span class="strike">(.*)<\/span>/iUs', '<s>${1}</s>', $text1);
+
+                // instead of <span class="underline"></span> TCPDF can only handle <u></u>
+                // for underlined text
+                $text1   = preg_replace('/<span class="underline">(.*)<\/span>/iUs', '<u>${1}</u>', $text1);
 
                 $pdf->writeHTMLCell(173, '', 24, $y, $text1, 0, 1, 0, true, '', true);
 
