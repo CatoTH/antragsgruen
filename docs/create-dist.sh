@@ -3,7 +3,6 @@
 # Releasing:
 # - Increase version number in config/defines.php
 # - Write Changelog
-# - Update README.md
 # - Commit this changes to repository
 # - Execute this script (docs/create-dist.sh)
 # - Create the new release on Github, attaching the .tar.bz2- and the .zip-file
