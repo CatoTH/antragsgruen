@@ -272,6 +272,9 @@ class TabularData extends ISectionType
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         $data = json_decode($this->section->data, true);
+        if (!isset($data['rows'])) {
+            return;
+        }
         $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
         if ($isRight) {
