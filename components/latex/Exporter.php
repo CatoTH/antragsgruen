@@ -382,6 +382,7 @@ class Exporter
         return '\setlength{\columnsep}{15mm}' . "\n" . '\begin{wrapfigure}{r}{0.28\textwidth}\small
 \vspace{-0.5cm}
 ' . $textRight . '
+\vspace{30cm}
 \end{wrapfigure}
 ' . $textMain;
     }
