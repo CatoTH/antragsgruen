@@ -4,6 +4,7 @@
 
 - Bugfix: The PDF export of applications failed if a tabular data section was added in the motion, but no data rows were set.
 - Bugfix: Underlined text was not rendered as such in the PHP-based PDF renderer.
+- The WYSIWYG-editor CKEDITOR was updated, including some bug fixes.
 - Temporary files for PDF and ODS generation are not stored in /tmp/ anymore, as there are hosters that block access to this directory. Instead, runtime/tmp is used.
 
 ### Version 4.0.1 (2018-09-02)
