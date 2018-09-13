@@ -14,7 +14,7 @@ class ZipWriter
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params        = \yii::$app->params;
-        $this->zipFile = $params->tmpDir . uniqid('zip-');
+        $this->zipFile = $params->getTmpDir() . uniqid('zip-');
         $this->archive = new \ZipArchive();
         if ($this->archive->open($this->zipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             throw new \Exception("cannot open <$this->zipFile>\n");

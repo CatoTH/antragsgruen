@@ -156,8 +156,15 @@ if (!$multipleParagraphs) {
     echo '<input type="hidden" name="modifiedParagraphNo" value="">';
 }
 
-echo '<div class="submitHolder content"><button type="submit" name="save" class="btn btn-primary">';
-echo '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on');
-echo '</button></div>';
+echo '<section style="overflow: auto;" class="content">
+        <div style="float: right;">
+            <button type="submit" name="save" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on') . '
+            </button>
+        </div>
+        <div style="float: left;">
+            <a href="' . Html::encode(UrlHelper::createMotionUrl($form->motion)) . '" id="cancel" name="cancel" class="btn"><span class="glyphicon glyphicon-chevron-left"></span>' . \Yii::t('amend', 'sidebar_back') . '</a>
+        </div>
+    </section>';
 
 echo Html::endForm();

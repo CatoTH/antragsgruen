@@ -24,7 +24,7 @@ $DEBUG = false;
 $params = \yii::$app->params;
 
 $doc = new Spreadsheet([
-    'tmpPath'   => $params->tmpDir,
+    'tmpPath'   => $params->getTmpDir(),
     'trustHtml' => true,
 ]);
 

@@ -55,14 +55,6 @@ echo '<div class="form-group">
 </div>';
 
 echo '<div class="form-group">
-  <label class="col-sm-4 control-label" for="tmpDir">' . \yii::t('manager', 'tmp_dir') . ':</label>
-  <div class="col-sm-8">
-    <input type="text" required name="tmpDir" placeholder="/tmp/"
-      value="' . Html::encode($config->tmpDir) . '" class="form-control" id="tmpDir">
-  </div>
-</div>';
-
-echo '<div class="form-group">
   <label class="col-sm-4 control-label" for="xelatexPath">' . \yii::t('manager', 'path_xelatex') . ':</label>
   <div class="col-sm-8">
     <input type="text" name="xelatexPath" placeholder="/usr/bin/xelatex"

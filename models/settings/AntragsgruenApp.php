@@ -31,7 +31,6 @@ class AntragsgruenApp implements \JsonSerializable
     public $authClientCollection  = [];
     public $blockedSubdomains     = ['www'];
     public $autoLoginDuration     = 31536000; // 1 Year
-    public $tmpDir                = '/tmp/';
     public $xelatexPath           = null;
     public $xdvipdfmx             = null;
     public $pdfunitePath          = null;
@@ -134,7 +133,7 @@ class AntragsgruenApp implements \JsonSerializable
     public static function getActivePlugins()
     {
         /** @var AntragsgruenApp $params */
-        $params  = \Yii::$app->params;
+        $params = \Yii::$app->params;
         return $params->getPluginClasses();
     }
 
@@ -158,5 +157,17 @@ class AntragsgruenApp implements \JsonSerializable
         $url .= $this->resourceBase;
 
         return $url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTmpDir()
+    {
+        $dir = \Yii::$app->runtimePath . '/tmp';
+        if (!file_exists($dir)) {
+            mkdir($dir, 0700);
+        }
+        return $dir . '/';
     }
 }

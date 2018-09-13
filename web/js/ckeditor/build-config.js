@@ -13,10 +13,10 @@
  * (1) http://ckeditor.com/builder
  *     Visit online builder to build CKEditor from scratch.
  *
- * (2) http://ckeditor.com/builder/fd92af25f9b078cccf1bc75bdf42be85
+ * (2) http://ckeditor.com/builder/23056ca60976e199b680d2f20e5e6e95
  *     Visit online builder to build CKEditor, starting with the same setup as before.
  *
- * (3) http://ckeditor.com/builder/download/fd92af25f9b078cccf1bc75bdf42be85
+ * (3) http://ckeditor.com/builder/download/23056ca60976e199b680d2f20e5e6e95
  *     Straight download link to the latest version of CKEditor (Optimized) with the same setup as before.
  *
  * NOTE:
@@ -38,6 +38,7 @@ var CKBUILDER_CONFIG = {
 		'.jshintignore',
 		'.jshintrc',
 		'.mailmap',
+		'.npm',
 		'.travis.yml',
 		'README.md',
 		'bender-err.log',

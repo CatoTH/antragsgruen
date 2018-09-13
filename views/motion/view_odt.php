@@ -12,7 +12,7 @@ $config = \yii::$app->params;
 $template = $motion->motionType->getOdtTemplateFile();
 $doc      = new \CatoTH\HTML2OpenDocument\Text([
     'templateFile' => $template,
-    'tmpPath'      => $config->tmpDir,
+    'tmpPath'      => $config->getTmpDir(),
     'trustHtml'    => true,
 ]);
 
