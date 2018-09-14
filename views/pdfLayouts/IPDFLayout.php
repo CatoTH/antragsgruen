@@ -4,7 +4,6 @@ namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
-use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;

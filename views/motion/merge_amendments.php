@@ -102,9 +102,16 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
 
 $draftIsPublic   = ($resumeDraft && $resumeDraft->status == Motion::STATUS_MERGING_DRAFT_PUBLIC);
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
+$pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-pdf');
 ?>
     <section id="draftSavingPanel" data-resumed-date="<?= ($resumeDraft ? $resumeDraft->dateCreation : '') ?>">
-        <h2><?= \Yii::t('amend', 'merge_draft_title') ?></h2>
+        <h2>
+            <?= \Yii::t('amend', 'merge_draft_title') ?>
+            <a href="<?= Html::encode($pdfLink) ?>" class="pdfLink" target="_blank">
+                <span class="glyphicon glyphicon-download-alt"></span>
+                PDF
+            </a>
+        </h2>
         <label class="public">
             <a href="<?= Html::encode($publicDraftLink) ?>" target="_blank"
                class="publicLink <?= ($draftIsPublic ? '' : 'hidden') ?>">

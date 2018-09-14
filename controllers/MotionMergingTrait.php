@@ -73,6 +73,37 @@ trait MotionMergingTrait
      * @param string $motionSlug
      * @return string
      */
+    public function actionMergeAmendmentsDraftPdf($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $draft = $motion->getMergingDraft(true);
+        if (!$draft) {
+            return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
+        }
+
+        $filename                    = $motion->getFilenameBase(false) . '-Merging-Draft.pdf';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
+        return $this->render('merge_amendments_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     */
     public function actionMergeAmendmentsInit($motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
