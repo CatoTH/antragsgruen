@@ -6,6 +6,7 @@
 - Bugfix: Underlined text was not rendered as such in the PHP-based PDF renderer.
 - The WYSIWYG-editor CKEDITOR was updated, including some bug fixes.
 - Temporary files for PDF and ODS generation are not stored in /tmp/ anymore, as there are hosters that block access to this directory. Instead, runtime/tmp is used.
+- In the installation, host names including ports (like localhost:3306) are now supported for the database connection.
 
 ### Version 4.0.1 (2018-09-02)
 
