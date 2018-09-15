@@ -93,7 +93,7 @@ abstract class IMotion extends ActiveRecord
 
     // The version of a motion that the convention has agreed upon
     const STATUS_RESOLUTION_PRELIMINARY = 25;
-    const STATUS_RESOLUTION_FINAL = 26;
+    const STATUS_RESOLUTION_FINAL       = 26;
 
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
@@ -134,6 +134,8 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
             static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
             static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
+            static::STATUS_RESOLUTION_PRELIMINARY       => \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'),
+            static::STATUS_RESOLUTION_FINAL             => \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'),
         ];
         if ($includeAdminInvisibles) {
             $propName = \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT');

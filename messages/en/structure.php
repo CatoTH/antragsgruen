@@ -145,6 +145,8 @@ return [
     'STATUS_INLINE_REPLY'                 => 'Response',
     'STATUS_MERGING_DRAFT_PUBLIC'         => 'Merging Draft (public)',
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Merging Draft (invisible)',
+    'STATUS_RESOLUTION_PRELIMINARY'       => 'Resolution (preliminary)',
+    'STATUS_RESOLUTION_FINAL'             => 'Resolution',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
     'PROPOSED_ACCEPTED_AMEND'     => 'Accepted',

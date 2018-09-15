@@ -334,6 +334,15 @@
   margin-bottom: 20px;
 }
 
+.motionMergeConfirmForm {
+  .newMotionStatus, .newMotionInitiator {
+    label {
+      font-weight: normal;
+      display: block;
+    }
+  }
+}
+
 .mergeConfirmToolbar {
   margin-bottom: 30px;
 
@@ -530,7 +539,6 @@
       color: $motionFixedFontColor;
     }
   }
-
   .editorialAmendments {
     h3 {
       font-size: 1em;

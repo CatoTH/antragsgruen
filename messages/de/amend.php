@@ -94,6 +94,12 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_title'                       => '%TITLE% überarbeiten',
     'merge_merge'                       => 'Einpflegen',
     'merge_new_text'                    => 'Neuer Antragstext',
+    'merge_new_status'                  => 'Was soll erzeugt werden?',
+    'merge_new_status_screened'         => 'Eine neue Version dieses Antrags',
+    'merge_new_status_res_f'            => 'Ein Beschluss',
+    'merge_new_status_res_p'            => 'Ein vorläufiger Beschluss',
+    'merge_new_orga'                    => 'Beschlussfassendes Gremium',
+    'merge_new_resolution_date'         => 'Beschlussdatum',
     'merge_confirm_title'               => 'Überarbeitung kontrollieren',
     'merge_confirm_odt'                 => 'Als ODT',
     'merge_confirm_full'                => 'Kompletter Text',
@@ -191,14 +197,14 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'support_finish_err'                => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'               => 'Der Änderungsantrag ist nun offiziell eingereicht',
 
-    'merge1_title'               => 'Änderungen übernehmen',
-    'merge1_step1_title'         => 'Status festlegen',
-    'merge1_step2_title'         => 'Änderungen angeben',
-    'merge1_step3_title'         => 'Kollisionen beheben',
-    'merge1_intro_user'          => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+    'merge1_title'              => 'Änderungen übernehmen',
+    'merge1_step1_title'        => 'Status festlegen',
+    'merge1_step2_title'        => 'Änderungen angeben',
+    'merge1_step3_title'        => 'Kollisionen beheben',
+    'merge1_intro_user'         => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.',
-    'merge1_introduction'        => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+    'merge1_introduction'       => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
             Falls sich durch diese Übernahme andere Änderungsanträge erübrigen, kannst du dies hier markieren.
@@ -206,48 +212,48 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
             Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollisionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
-    'merge1_introduction_user'   => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
+    'merge1_introduction_user'  => 'Wenn der Änderungsantrag in den Antrag übernommen wird, wird eine neue Version des Antrags mit diesen
             Änderungen erstellt. Die bisherige Version des Antrags sowie dieser Änderungsantrag werden archiviert,
             bleiben aber abrufbar.<br><br>
             <strong>Hinweis:</strong> Falls von dieser Übernahme Stellen betroffen sind, auf die sich auch andere
             Änderungsanträge beziehen (die unverändert eingereicht bleiben), kommt es zu Kollisionen.
             In diesem Fall müssen die anderen kollidierenden Änderungsanträge händisch angepasst werden.',
-    'merge1_status_intro'        => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
+    'merge1_status_intro'       => 'Falls durch diese Übernahme andere Änderungsanträge hinfällig werden
             (z.B. weil sie inhaltlich durch diesen mit behandelt werden oder zu Gunsten dieses abgelehnt wurden)
             können sie hier entsprechend markiert werden.<br>
             Dadurch können auch keine Kollisionen mit diesem Änderungsantrag entstehen.<br>
             Bitte beachte aber, dass hierdurch ausschließlich der Status dieser Änderungsanträge gesetzt wird;
             tatsächliche Änderungen am eigentlichen Antrag werden dadurch nicht vorgenommen.',
-    'merge1_collision_intro'     => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
+    'merge1_collision_intro'    => '<strong>Es gibt Kollisionen mit bestehenden Änderungsanträgen</strong><br>
             <br>
             Die Änderungen überschneiden sich mit eingereichten Änderungsanträgen. Es ist daher nötig, die betroffenen
             Absätze nun von Hand zu überarbeiten. Im Folgenden werden alle Abschnitte von Änderungsanträgen aufgeführt,
             mit denen es Kollisionen gibt.<br>
             Bitte pflege deine Änderungen von oben so ein, dass der <strong>Sinn der Änderungsanträge erhalten bleibt</strong>.',
-    'merge1_changein_x'          => 'Änderung von Zeile %LINEFROM% bis %LINETO%',
-    'merge1_changein_1'          => 'Änderung in Zeile %LINEFROM%',
-    'merge1_use_unchanged'       => 'Unverändert übernehmen',
-    'merge1_use_modified'        => 'Modifizierte Übernahme',
-    'merge1_modify_title'        => 'Änderungsantrag anpassen',
-    'merge1_check_collisions'    => 'Weiter / Kollisionen überprüfen',
-    'merge1_other_status'        => 'Neue Status der anderen Änderungsanträge',
-    'merge1_status_unchanged'    => 'unverändert',
-    'merge1_amend_by'            => 'von',
-    'merge1_goon'                => 'Weiter',
-    'merge1_loading'             => 'Überprüfe...',
-    'merge1_motion_prefix'       => 'Neues Kürzel des Antrags',
-    'merge1_amend_status'        => 'Neuer Status dieses Änderungsantrags',
-    'merge1_done_title'          => 'Antrag geändert',
-    'merge1_done_str'            => 'Der Änderungsantrag wurde eingepflegt.',
-    'merge1_done_goto'           => 'Zur neuen Antragsversion',
-    'merge1_submitted_by'        => 'Eingereicht von',
-    'merge1_submitted_on'        => 'am',
-    'merge1_no_collisions'       => 'Keine Konflikte zu bestehenden Änderungsanträgen',
-    'merge1_manual_changes'      => 'Vorgenommene Änderungen',
-    'merge1_manual_amend'        => 'Änderungen des kollidierenden Änderungsantrags %AMEND%',
-    'merge1_manual_new'          => 'Neue Version des kollidierenden Änderungsantrags %AMEND%',
-    'merge1_err_collision'       => 'Kann nicht automatisch übernommen werden',
-    'merge1_err_collision_desc'  => 'Dieser Änderungsantrag kann leider nicht direkt übernommen werden, da sich einige Änderungen mit Änderungen anderer Änderungsanträge überschneiden. Die kollidierenden Änderungsanträge müssen zunächst zurückgezogen oder von den Antragsteller*innen oder den Administrator*innen angepasst werden. Melde sich bei Fragen am besten direkt bei den Administrator*innen, um diesen Konflikt zu lösen.<br><br>Um folgende Änderungsanträge geht es konkret:',
+    'merge1_changein_x'         => 'Änderung von Zeile %LINEFROM% bis %LINETO%',
+    'merge1_changein_1'         => 'Änderung in Zeile %LINEFROM%',
+    'merge1_use_unchanged'      => 'Unverändert übernehmen',
+    'merge1_use_modified'       => 'Modifizierte Übernahme',
+    'merge1_modify_title'       => 'Änderungsantrag anpassen',
+    'merge1_check_collisions'   => 'Weiter / Kollisionen überprüfen',
+    'merge1_other_status'       => 'Neue Status der anderen Änderungsanträge',
+    'merge1_status_unchanged'   => 'unverändert',
+    'merge1_amend_by'           => 'von',
+    'merge1_goon'               => 'Weiter',
+    'merge1_loading'            => 'Überprüfe...',
+    'merge1_motion_prefix'      => 'Neues Kürzel des Antrags',
+    'merge1_amend_status'       => 'Neuer Status dieses Änderungsantrags',
+    'merge1_done_title'         => 'Antrag geändert',
+    'merge1_done_str'           => 'Der Änderungsantrag wurde eingepflegt.',
+    'merge1_done_goto'          => 'Zur neuen Antragsversion',
+    'merge1_submitted_by'       => 'Eingereicht von',
+    'merge1_submitted_on'       => 'am',
+    'merge1_no_collisions'      => 'Keine Konflikte zu bestehenden Änderungsanträgen',
+    'merge1_manual_changes'     => 'Vorgenommene Änderungen',
+    'merge1_manual_amend'       => 'Änderungen des kollidierenden Änderungsantrags %AMEND%',
+    'merge1_manual_new'         => 'Neue Version des kollidierenden Änderungsantrags %AMEND%',
+    'merge1_err_collision'      => 'Kann nicht automatisch übernommen werden',
+    'merge1_err_collision_desc' => 'Dieser Änderungsantrag kann leider nicht direkt übernommen werden, da sich einige Änderungen mit Änderungen anderer Änderungsanträge überschneiden. Die kollidierenden Änderungsanträge müssen zunächst zurückgezogen oder von den Antragsteller*innen oder den Administrator*innen angepasst werden. Melde sich bei Fragen am besten direkt bei den Administrator*innen, um diesen Konflikt zu lösen.<br><br>Um folgende Änderungsanträge geht es konkret:',
 
     'proposal_amend_title'       => 'Verfahrensvorschlag',
     'proposal_edit_title'        => 'Verfahrensvorschlag bearbeiten',

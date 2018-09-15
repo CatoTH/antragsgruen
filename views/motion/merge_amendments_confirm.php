@@ -1,9 +1,11 @@
 <?php
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
+use app\models\db\IMotion;
 
 /**
  * @var \yii\web\View $this
@@ -21,6 +23,7 @@ $layout->robotsNoindex = true;
 $layout->loadFuelux();
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
+$layout->loadDatepicker();
 
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
@@ -31,6 +34,7 @@ $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionConfirmForm',
+    'class'                    => 'motionMergeConfirmForm',
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
 ]);
 
@@ -56,6 +60,41 @@ $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
     </section>
 <?php
 
+if ($newMotion->canCreateResolution()) {
+    $locale = Tools::getCurrentDateLocale();
+    $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
+
+    ?>
+    <h2 class="green"><?= \Yii::t('amend', 'merge_new_status') ?></h2>
+    <div class="content row">
+        <div class="col-md-6 newMotionStatus">
+            <label>
+                <input type="radio" name="newStatus" value="motion" checked>
+                <?= \Yii::t('amend', 'merge_new_status_screened') ?>
+            </label>
+            <label>
+                <input type="radio" name="newStatus" value="resolution_final">
+                <?= \Yii::t('amend', 'merge_new_status_res_f') ?>
+            </label>
+            <label>
+                <input type="radio" name="newStatus" value="resolution_preliminary">
+                <?= \Yii::t('amend', 'merge_new_status_res_p') ?>
+            </label>
+        </div>
+        <div class="col-md-6 newMotionInitiator">
+            <label for="newInitiator"><?= \Yii::t('amend', 'merge_new_orga') ?></label>
+            <input class="form-control" name="newInitiator" type="text" id="newInitiator">
+            <label for="dateResolution"><?= \Yii::t('amend', 'merge_new_resolution_date') ?></label>
+            <div class="input-group date" id="dateResolutionHolder">
+                <input type="text" class="form-control" name="dateResolution" id="dateResolution"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
 foreach ($newMotion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -77,23 +116,26 @@ foreach ($newMotion->getSortedSections(true) as $section) {
 
     echo '</section>';
 }
+if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
+    echo '<section class="newAmendments">';
+    LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStatuses);
+    echo '</section>';
+}
 
-echo '<section class="newAmendments">';
-LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStatuses);
-echo '</section>';
-
-
-echo '<div class="content">
+?>
+    <div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> ' . \Yii::t('base', 'save') . '
+                <span class="glyphicon glyphicon-ok-sign"></span>
+                <?= \Yii::t('base', 'save') ?>
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('amend', 'button_correct') . '
+                <span class="glyphicon glyphicon-remove-sign"></span>
+                <?= \Yii::t('amend', 'button_correct') ?>
             </button>
         </div>
-    </div>';
-
+    </div>
+<?php
 echo Html::endForm();

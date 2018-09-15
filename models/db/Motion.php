@@ -476,6 +476,14 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return bool
      */
+    public function canCreateResolution()
+    {
+        return User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT);
+    }
+
+    /**
+     * @return bool
+     */
     public function canFinishSupportCollection()
     {
         return $this->getPermissionsObject()->motionCanFinishSupportCollection($this);

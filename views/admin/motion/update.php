@@ -84,37 +84,43 @@ echo '<div class="content form-horizontal fuelux">';
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="motionType"><?= \Yii::t('admin', 'motion_type') ?></label>
-        <div class="col-md-9"><?php
+        <div class="col-md-9">
+            <?php
             $options = [];
             foreach ($motion->motionType->getCompatibleMotionTypes() as $motionType) {
                 $options[$motionType->id] = $motionType->titleSingular;
             }
             $attrs = ['id' => 'motionType'];
             echo HTMLTools::fueluxSelectbox('motion[motionType]', $options, $motion->motionTypeId, $attrs, true);
-            ?></div>
+            ?>
+        </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="parentMotion"><?= \Yii::t('admin', 'motion_replaces') ?></label>
-        <div class="col-md-9"><?php
+        <div class="col-md-9">
+            <?php
             $options = ['-'];
             foreach ($consultation->motions as $otherMotion) {
                 $options[$otherMotion->id] = $otherMotion->getTitleWithPrefix();
             }
             $attrs = ['id' => 'parentMotion'];
             echo HTMLTools::fueluxSelectbox('motion[parentMotionId]', $options, $motion->parentMotionId, $attrs, true);
-            ?></div>
+            ?>
+        </div>
     </div>
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="motionStatus"><?= \Yii::t('admin', 'motion_status') ?>:</label>
-        <div class="col-md-5"><?php
-            $statuses = Motion::getStatusNamesVisibleForAdmins();
-            echo HTMLTools::fueluxSelectbox('motion[status]', $statuses, $motion->status, ['id' => 'motionStatus'], true);
+        <div class="col-md-5">
+            <?php
+            $stats = Motion::getStatusNamesVisibleForAdmins();
+            echo HTMLTools::fueluxSelectbox('motion[status]', $stats, $motion->status, ['id' => 'motionStatus'], true);
             echo '</div><div class="col-md-4">';
             $options = ['class' => 'form-control', 'id' => 'motionStatusString', 'placeholder' => '...'];
             echo Html::textInput('motion[statusString]', $motion->statusString, $options);
-            ?></div>
+            ?>
+        </div>
     </div>
 
 <?php
@@ -136,10 +142,13 @@ if (count($consultation->agendaItems) > 0) {
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="motionTitle"><?= \Yii::t('admin', 'motion_title') ?>:</label>
-        <div class="col-md-9"><?php
-            $options = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => \Yii::t('admin', 'motion_title')];
+        <div class="col-md-9">
+            <?php
+            $placeholder = \Yii::t('admin', 'motion_title');
+            $options     = ['class' => 'form-control', 'id' => 'motionTitle', 'placeholder' => $placeholder];
             echo Html::textInput('motion[title]', $motion->title, $options);
-            ?></div>
+            ?>
+        </div>
     </div>
 
     <div class="form-group">

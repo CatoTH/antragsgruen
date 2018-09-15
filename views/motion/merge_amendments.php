@@ -6,7 +6,7 @@ use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\forms\MotionMergeAmendmentsForm;
 use app\models\sectionTypes\TextSimple;
-use \app\views\motion\LayoutHelper as MotionLayoutHelper;
+use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -59,7 +59,7 @@ $hasCollidingParagraphs = false;
 foreach ($motion->getSortedSections(false) as $section) {
     /** @var MotionSection $section */
     $type = $section->getSettings();
-    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+    if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         if (!isset($newSections[$section->sectionId])) {
             $diffMerger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
             if ($diffMerger->hasCollodingParagraphs()) {
@@ -100,7 +100,7 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
 ]);
 
 
-$draftIsPublic   = ($resumeDraft && $resumeDraft->status == Motion::STATUS_MERGING_DRAFT_PUBLIC);
+$draftIsPublic   = ($resumeDraft && $resumeDraft->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
 $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-pdf');
 ?>
@@ -141,13 +141,12 @@ $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-p
     <section class="newMotion">
         <h2 class="green"><?= \Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
-
             <?php
             $changesets = [];
 
             foreach ($motion->getSortedSections(false) as $section) {
                 $type = $section->getSettings();
-                if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
                     /** @var TextSimple $simpleSection */
                     $simpleSection = $section->getSectionType();
 
@@ -194,7 +193,7 @@ $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-p
                         echo $section->getSectionType()->getMotionFormField();
                     }
 
-                    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+                    if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
                         $changes = $section->getAmendingSections(false, true);
                         $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
                             return in_array($section->amendmentId, $toMergeAmendmentIds);
@@ -215,7 +214,6 @@ $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-p
                     }
                 }
             }
-
             ?>
         </div>
     </section>
@@ -224,7 +222,7 @@ $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-p
 
 $editorials = [];
 foreach ($motion->getVisibleAmendments(false) as $amendment) {
-    if ($amendment->changeEditorial != '') {
+    if ($amendment->changeEditorial !== '') {
         $str          = '<div class="amendment content"><h3>';
         $str          .= str_replace(
             ['%TITLE%', '%INITIATOR%'],

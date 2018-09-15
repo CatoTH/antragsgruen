@@ -145,6 +145,8 @@ return [
     'STATUS_INLINE_REPLY'                 => 'Antwort',
     'STATUS_MERGING_DRAFT_PUBLIC'         => 'Einpflegen: Zwischenstand (öffentlich)',
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Einpflegen: Zwischenstand (unsichtbar)',
+    'STATUS_RESOLUTION_PRELIMINARY'       => 'Beschluss (vorläufig)',
+    'STATUS_RESOLUTION_FINAL'             => 'Beschluss',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSED_ACCEPTED_AMEND'     => 'Übernahme',
