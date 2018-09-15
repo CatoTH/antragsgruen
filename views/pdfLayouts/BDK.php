@@ -32,9 +32,39 @@ class BDK extends IPDFLayout
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->SetFont('dejavusans', '', 10);
 
+        $pdf->setHtmlVSpace([
+            'ul'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'li'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'div'        => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'p'          => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'blockquote' => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+        ]);
+
         $this->pdf = $pdf;
 
         return $pdf;
+    }
+
+    /**
+     * @param BDKPDF $pdf
+     * @param string $pdfIntroduction
+     * @param string $tableContent
+     */
+    public static function printHeaderTable(BDKPDF $pdf, $pdfIntroduction, $tableContent)
+    {
+        $title = str_replace("\n", '<br>', $pdfIntroduction);
+        $pdf->SetY(35);
+        $pdf->SetFont("helvetica", "", 13);
+        $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
+
+
+        $pdf->SetFont("helvetica", "", 12);
+
+        $pdf->setCellPaddings(2, 4, 2, 4);
+        $pdf->writeHTMLCell(170, 0, 25, 35, $tableContent, 1, 1, 0, true, 'L');
+
+        $pdf->Ln(7);
+        $pdf->setCellPaddings(0, 0, 0, 0);
     }
 
     /**
@@ -48,14 +78,8 @@ class BDK extends IPDFLayout
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 
-
         $title = $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction;
-        $pdf->SetY(40);
-        $pdf->SetFont("helvetica", "B", 13);
-        $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
 
-
-        $pdf->SetFont("helvetica", "", 12);
         $motionData = '<span style="font-size: 20px; font-weight: bold">';
         $motionData .= Html::encode($motion->titlePrefix) . ' </span>';
         $motionData .= '<span style="font-size: 16px; font-weight: bold;">';
@@ -70,9 +94,7 @@ class BDK extends IPDFLayout
 
         $motionData .= '</table>';
 
-        $pdf->writeHTMLCell(170, 0, 25, 35, $motionData, 1, 1, 0, true, 'L');
-
-        $pdf->Ln(11);
+        BDK::printHeaderTable($this->pdf, $title, $motionData);
     }
 
     /**
@@ -87,12 +109,7 @@ class BDK extends IPDFLayout
 
 
         $title = $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction;
-        $pdf->SetY(40);
-        $pdf->SetFont("helvetica", "B", 13);
-        $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
 
-
-        $pdf->SetFont("helvetica", "", 12);
         $amendmentData = '<span style="font-size: 16px; font-weight: bold;">';
         $amendmentData .= Html::encode($amendment->getTitle()) . '</span>';
         $amendmentData .= '<br><br>';
@@ -103,8 +120,6 @@ class BDK extends IPDFLayout
 
         $amendmentData .= '</table>';
 
-        $pdf->writeHTMLCell(170, 0, 25, 35, $amendmentData, 1, 1, 0, true, 'L');
-
-        $pdf->Ln(11);
+        BDK::printHeaderTable($this->pdf, $title, $amendmentData);
     }
 }

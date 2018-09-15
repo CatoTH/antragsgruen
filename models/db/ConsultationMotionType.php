@@ -429,7 +429,6 @@ class ConsultationMotionType extends ActiveRecord
 
     /**
      * @return \app\models\settings\MotionType
-     * @throws \Exception
      */
     public function getSettingsObj()
     {
