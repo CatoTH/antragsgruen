@@ -11,12 +11,13 @@
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
-### Version 4.0.2 [not released yet]
+### Version 4.0.2 (2018-09-15)
 
 - Bugfix: The PDF export of applications failed if a tabular data section was added in the motion, but no data rows were set.
 - Bugfix: Underlined text was not rendered as such in the PHP-based PDF renderer.
 - The WYSIWYG-editor CKEDITOR was updated, including some bug fixes.
 - Temporary files for PDF and ODS generation are not stored in /tmp/ anymore, as there are hosters that block access to this directory. Instead, runtime/tmp is used.
+- In the installation, host names including ports (like localhost:3306) are now supported for the database connection.
 
 ### Version 4.0.1 (2018-09-02)
 

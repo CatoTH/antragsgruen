@@ -19,6 +19,7 @@ class AntragsgruenInitDb extends Model
     public $sqlHost;
     public $sqlUsername;
     public $sqlPassword;
+    public $sqlPort        = 3306;
     public $sqlDB;
     public $sqlTablePrefix = '';
 
@@ -84,6 +85,11 @@ class AntragsgruenInitDb extends Model
         } else {
             $this->prettyUrls = true;
         }
+        if (strpos($this->sqlHost, ':') !== false) {
+            list($host, $port) = explode(':', $this->sqlHost);
+            $this->sqlHost = $host;
+            $this->sqlPort = IntVal($port);
+        }
     }
 
     /**
@@ -104,6 +110,9 @@ class AntragsgruenInitDb extends Model
         $this->sqlDB       = $_ENV['ANTRAGSGRUEN_MYSQL_DB'];
         $this->sqlHost     = $_ENV['ANTRAGSGRUEN_MYSQL_HOST'];
         $this->sqlType     = 'mysql';
+        if (isset($_ENV['ANTRAGSGRUEN_MYSQL_PORT'])) {
+            $this->sqlPort = IntVal($_ENV['ANTRAGSGRUEN_MYSQL_PORT']);
+        }
     }
 
     /**
@@ -136,6 +145,9 @@ class AntragsgruenInitDb extends Model
                 if ($parts[0] === 'host') {
                     $this->sqlHost = $parts[1];
                 }
+                if ($parts[0] === 'port') {
+                    $this->sqlPort = $parts[1];
+                }
             }
         }
     }
@@ -148,8 +160,12 @@ class AntragsgruenInitDb extends Model
     protected function getDBConfig()
     {
         if ($this->sqlType == 'mysql') {
+            $dsn = 'mysql:host=' . $this->sqlHost . ';dbname=' . $this->sqlDB;
+            if ($this->sqlPort !== 3306) {
+                $dsn .= ';port=' . $this->sqlPort;
+            }
             return [
-                'dsn'            => 'mysql:host=' . $this->sqlHost . ';dbname=' . $this->sqlDB,
+                'dsn'            => $dsn,
                 'emulatePrepare' => true,
                 'username'       => $this->sqlUsername,
                 'password'       => $this->sqlPassword,
@@ -164,7 +180,7 @@ class AntragsgruenInitDb extends Model
     public function overwriteYiiConnection()
     {
         $connConfig          = $this->getDBConfig();
-        $connConfig['class'] = \yii\db\Connection::class;
+        $connConfig['class'] = Connection::class;
         \yii::$app->set('db', $connConfig);
     }
 
