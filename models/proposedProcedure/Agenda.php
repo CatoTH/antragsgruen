@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components;
+namespace app\models\proposedProcedure;
 
 use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
@@ -11,7 +11,7 @@ use app\models\exceptions\Internal;
 use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
 
-class ProposedProcedureAgenda
+class Agenda
 {
     const FORMAT_HTML = 0;
     const FORMAT_ODS  = 1;
@@ -20,7 +20,7 @@ class ProposedProcedureAgenda
     public $title;
     public $blockId;
 
-    /** @var ProposedProcedureAgendaVoting[] */
+    /** @var AgendaVoting[] */
     public $votingBlocks = [];
 
     /** @var ConsultationAgendaItem|null */
@@ -48,7 +48,7 @@ class ProposedProcedureAgenda
     public function addVotingBlock($votingBlock, $includeInvisible, &$handledMotions, &$handledAmends)
     {
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
-        $block = new ProposedProcedureAgendaVoting($title, $votingBlock);
+        $block = new AgendaVoting($title, $votingBlock);
         foreach ($votingBlock->motions as $motion) {
             if ($motion->isProposalPublic() || $includeInvisible) {
                 $block->items[]   = $motion;

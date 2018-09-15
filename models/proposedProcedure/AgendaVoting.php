@@ -1,13 +1,13 @@
 <?php
 
-namespace app\components;
+namespace app\models\proposedProcedure;
 
 use app\models\db\Amendment;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\VotingBlock;
 
-class ProposedProcedureAgendaVoting
+class AgendaVoting
 {
     /** @var string */
     public $title;

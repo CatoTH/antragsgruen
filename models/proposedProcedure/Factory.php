@@ -1,6 +1,6 @@
 <?php
 
-namespace app\components;
+namespace app\models\proposedProcedure;
 
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
@@ -8,10 +8,10 @@ use app\models\db\Motion;
 use app\plugins\memberPetitions\ConsultationSettings;
 
 /**
- * Class ProposedProcedureFactory
- * @package app\components
+ * Class Factory
+ * @package app\models\proposedProcedure
  */
-class ProposedProcedureFactory
+class Factory
 {
     /** @var Consultation */
     public $consultation;
@@ -36,7 +36,7 @@ class ProposedProcedureFactory
     }
 
     /**
-     * @return ProposedProcedureAgenda[]
+     * @return Agenda[]
      */
     protected function createFromAgenda()
     {
@@ -54,7 +54,7 @@ class ProposedProcedureFactory
                 continue;
             }
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $agendaItem->title;
-            $item  = new ProposedProcedureAgenda($idCount++, $title, $agendaItem);
+            $item  = new Agenda($idCount++, $title, $agendaItem);
             foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
@@ -82,7 +82,7 @@ class ProposedProcedureFactory
                 }
             }
 
-            $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
+            $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
             foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
                 $block->items[]   = $motion;
@@ -118,7 +118,7 @@ class ProposedProcedureFactory
      * @param Motion[] $motions
      * @param array $handledVotings
      * @param array $handledAmends
-     * @return ProposedProcedureAgenda[]
+     * @return Agenda[]
      */
     protected function createFromMotions($motions, $handledVotings = [], $handledAmends = [])
     {
@@ -129,7 +129,7 @@ class ProposedProcedureFactory
 
         foreach ($motions as $motion) {
             $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $motion->getTitleWithPrefix();
-            $item  = new ProposedProcedureAgenda($idCount++, $title, null);
+            $item  = new Agenda($idCount++, $title, null);
 
             if (in_array($motion->id, $handledMotions)) {
                 continue;
@@ -158,7 +158,7 @@ class ProposedProcedureFactory
                 }
             }
 
-            $block        = new ProposedProcedureAgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
+            $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
             if ($motion->isProposalPublic() || $this->includeInvisible) {
                 $handledMotions[] = $motion->id;
@@ -183,7 +183,7 @@ class ProposedProcedureFactory
     }
 
     /**
-     * @return ProposedProcedureAgenda[]
+     * @return Agenda[]
      */
     public function create()
     {

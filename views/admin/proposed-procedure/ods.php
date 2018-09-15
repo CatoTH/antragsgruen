@@ -1,15 +1,15 @@
 <?php
 
-use app\components\ProposedProcedureAgenda;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
+use app\models\proposedProcedure\Agenda;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
 use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
- * @var ProposedProcedureAgenda[] $proposedAgenda
+ * @var Agenda[] $proposedAgenda
  * @var Consultation $consultation
  */
 

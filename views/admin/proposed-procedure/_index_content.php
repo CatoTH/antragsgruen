@@ -1,16 +1,16 @@
 <?php
 
 use app\components\HTMLTools;
-use app\components\ProposedProcedureAgenda;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\IMotion;
+use app\models\proposedProcedure\Agenda;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var ProposedProcedureAgenda[] $proposedAgenda
+ * @var Agenda[] $proposedAgenda
  */
 
 foreach ($proposedAgenda as $proposedItem) {
@@ -85,9 +85,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="procedure">
                                 <?php
                                 echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);
-
-                                $format = ProposedProcedureAgenda::FORMAT_HTML;
-                                echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
+                                echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
                                 ?></td>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
