@@ -7,7 +7,7 @@ use app\components\latex\Content;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text as ODTText;
 
@@ -86,9 +86,9 @@ class TextHTML extends Text
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -114,9 +114,9 @@ class TextHTML extends Text
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
@@ -170,7 +170,7 @@ class TextHTML extends Text
      */
     public function getMotionODS()
     {
-        return '<p>Kann nicht angezeigt werden</p>';
+        return '<p>Full HTML is not convertable to Spreadsheets</p>';
     }
 
     /**
@@ -178,7 +178,7 @@ class TextHTML extends Text
      */
     public function getAmendmentODS()
     {
-        return '<p>Kann nicht angezeigt werden</p>';
+        return '<p>Full HTML is not convertable to Spreadsheets</p>';
     }
 
     /**
@@ -187,7 +187,7 @@ class TextHTML extends Text
     public function printMotionToODT(ODTText $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
+        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
     }
 
     /**
@@ -196,7 +196,7 @@ class TextHTML extends Text
     public function printAmendmentToODT(ODTText $odt)
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Kann nicht angezeigt werden]', false); // @TODO
+        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
     }
 
     /**

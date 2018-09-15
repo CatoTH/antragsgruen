@@ -91,6 +91,10 @@ abstract class IMotion extends ActiveRecord
     // The exact status is specified in a free-text field; proposalComment if this status is used in proposalStatus
     const STATUS_CUSTOM_STRING = 23;
 
+    // The version of a motion that the convention has agreed upon
+    const STATUS_RESOLUTION_PRELIMINARY = 25;
+    const STATUS_RESOLUTION_FINAL = 26;
+
     // Purely informational statuses
     const STATUS_MODIFIED            = 7;
     const STATUS_ADOPTED             = 8;

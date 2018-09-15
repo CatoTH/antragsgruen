@@ -2,9 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\IMotionSection;
 use app\models\db\MotionSection;
@@ -12,7 +10,7 @@ use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use CatoTH\HTML2OpenDocument\Text;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 abstract class ISectionType
@@ -135,15 +133,15 @@ abstract class ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      */
-    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf);
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf);
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      */
-    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf);
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf);
 
     /**
      * @param bool $isRight

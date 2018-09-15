@@ -4,7 +4,7 @@ namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
 use app\models\db\Motion;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
@@ -147,7 +147,7 @@ class DBJR extends IPDFLayout
     }
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     public function createPDFClass()
     {

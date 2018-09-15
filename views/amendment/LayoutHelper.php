@@ -9,7 +9,7 @@ use app\models\db\Amendment;
 use app\models\db\TexTemplate;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -88,12 +88,12 @@ class LayoutHelper
     }
 
     /**
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Amendment $amendment
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(TcpdfFpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
+    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 

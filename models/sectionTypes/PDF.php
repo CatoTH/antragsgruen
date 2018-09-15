@@ -12,7 +12,7 @@ use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -159,11 +159,11 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @throws \Exception
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -295,10 +295,10 @@ class PDF extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @throws \Exception
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
