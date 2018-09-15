@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.0.2 [not released yet]
+### Version 4.0.2 (2018-09-15)
 
 - Bugfix: The PDF export of applications failed if a tabular data section was added in the motion, but no data rows were set.
 - Bugfix: Underlined text was not rendered as such in the PHP-based PDF renderer.
