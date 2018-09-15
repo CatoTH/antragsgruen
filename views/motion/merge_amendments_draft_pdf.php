@@ -6,9 +6,10 @@
  */
 
 use app\models\db\Motion;
+use app\views\pdfLayouts\BDK;
 use yii\helpers\Html;
 
-$pdfLayout = $motion->motionType->getPDFLayoutClass();
+$pdfLayout = new BDK($motion->motionType);
 $pdf       = $pdfLayout->createPDFClass();
 
 // set document information
@@ -19,8 +20,18 @@ $pdf->SetSubject(Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix(
 $pdf->startPageGroup();
 $pdf->AddPage();
 
-$pdf->writeHTML('<h1>' . Html::encode($motion->getTitleWithPrefix()) . '</h1>');
-$pdf->writeHTML('<br><br>');
+$motionData = '';
+$motionData .= '<div style="font-size: 15px; font-weight: bold;">';
+$motionData .= \Yii::t('export', 'pdf_merging_draft');
+$motionData .= '</div><br>';
+
+$motionData .= '<span style="font-size: 20px; font-weight: bold">';
+$motionData .= Html::encode($motion->titlePrefix) . ' </span>';
+$motionData .= '<span style="font-size: 16px;">';
+$motionData .= Html::encode($motion->title) . '</span>';
+
+
+BDK::printHeaderTable($pdf, $motion->motionType->getSettingsObj()->pdfIntroduction, $motionData);
 
 
 $pdf->setHtmlVSpace([

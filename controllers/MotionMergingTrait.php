@@ -86,7 +86,7 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $draft = $motion->getMergingDraft(true);
+        $draft = $motion->getMergingDraft(false);
         if (!$draft) {
             return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
         }
