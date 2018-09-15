@@ -2,11 +2,11 @@
 
 namespace app\views\pdfLayouts;
 
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use Yii;
 use yii\helpers\Html;
 
-class BDKPDF extends TcpdfFpdi
+class BDKPDF extends Fpdi
 {
     private $headerTitle;
     private $headerPrefix;
@@ -20,8 +20,19 @@ class BDKPDF extends TcpdfFpdi
 
     /**
      * rewrite AddPage() for correct functionalities with PDF Concatenation
+     * @param string $orientation
+     * @param string $format
+     * @param bool $keepmargins
+     * @param bool $tocpage
+     * @param bool $footer
      */
-    public function AddPage($orientation = PDF_PAGE_ORIENTATION, $format = PDF_PAGE_FORMAT, $keepmargins = false, $tocpage = false, $footer = true) {
+    public function AddPage(
+        $orientation = PDF_PAGE_ORIENTATION,
+        $format = PDF_PAGE_FORMAT,
+        $keepmargins = false,
+        $tocpage = false,
+        $footer = true
+    ) {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }
@@ -37,6 +48,7 @@ class BDKPDF extends TcpdfFpdi
     }
 
     // @codingStandardsIgnoreStart
+
     /**
      */
     public function Header()

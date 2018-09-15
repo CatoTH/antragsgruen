@@ -8,7 +8,7 @@ use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 
 abstract class IPDFLayout
@@ -91,7 +91,7 @@ abstract class IPDFLayout
     }
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     abstract public function createPDFClass();
 

@@ -5,7 +5,7 @@ namespace app\views\pdfLayouts;
 use app\models\db\Amendment;
 use app\models\db\IMotionSection;
 use app\models\db\Motion;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class BDK extends IPDFLayout
@@ -14,7 +14,7 @@ class BDK extends IPDFLayout
     protected $pdf;
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     public function createPDFClass()
     {
