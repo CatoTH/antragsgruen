@@ -15,7 +15,12 @@ use yii\helpers\Html;
 $tags            = $tagIds = [];
 $hasNoTagMotions = false;
 
-foreach ($consultation->motions as $motion) {
+list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+if (count($resolutions) > 0) {
+    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+}
+
+foreach ($motions as $motion) {
     if (in_array($motion->status, $consultation->getInvisibleMotionStatuses())) {
         continue;
     }
@@ -94,7 +99,11 @@ foreach ($tagIds as $tagId) {
         }
         echo '<td class="titleCol">';
         echo '<div class="titleLink">';
-        echo Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
+        echo Html::a(
+            Html::encode($motion->title),
+            UrlHelper::createMotionUrl($motion),
+            ['class' => 'motionLink' . $motion->id]
+        );
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
             echo Html::a(

@@ -252,11 +252,16 @@ class ConsultationAgendaItem extends ActiveRecord
 
     /**
      * @param bool $includeWithdrawn
+     * @param bool $includeResolutions
      * @return Motion[]
      */
-    public function getVisibleMotions($includeWithdrawn = true)
+    public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
     {
         $statuses = $this->consultation->getInvisibleMotionStatuses(!$includeWithdrawn);
+        if (!$includeResolutions) {
+            $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+            $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
+        }
         $return   = [];
         foreach ($this->motions as $motion) {
             if (!in_array($motion->status, $statuses)) {

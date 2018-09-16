@@ -59,7 +59,7 @@ class LayoutHelper
         echo "</p>\n";
         echo '<p class="info">';
         echo Html::encode($motion->getInitiatorsStr());
-        if ($motion->status == Motion::STATUS_WITHDRAWN) {
+        if ($motion->status === Motion::STATUS_WITHDRAWN) {
             echo ' <span class="status">(' . Html::encode($motion->getStatusNames()[$motion->status]) . ')</span>';
         }
         echo '</p>';
@@ -71,20 +71,21 @@ class LayoutHelper
             echo '<ul class="amendments">';
             foreach ($amendments as $amend) {
                 $classes = ['amendmentRow' . $amend->id, 'amendment'];
-                if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                     $classes[] = 'withdrawn';
                 }
                 echo '<li class="' . implode(' ', $classes) . '">';
                 echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
 
-                $title = (trim($amend->titlePrefix) == '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
+                $title = (trim($amend->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
                 echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
                     'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
 
                 echo '<span class="info">';
                 echo Html::encode($amend->getInitiatorsStr());
-                if ($amend->status == Motion::STATUS_WITHDRAWN) {
-                    echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
+                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
+                    $statusName = $amend->getStatusNames()[$amend->status];
+                    echo ' <span class="status">(' . Html::encode($statusName) . ')</span>';
                 }
                 echo '</span>' . "\n";
                 echo "<span class='clearfix'></span>\n";
@@ -141,7 +142,12 @@ class LayoutHelper
 
         $shownMotions = [];
         if ($showMotions) {
-            $motions = $agendaItem->getMotionsFromConsultation();
+            $motions = [];
+            foreach ($agendaItem->getMotionsFromConsultation() as $motion) {
+                if (!$motion->isResolution()) {
+                    $motions[] = $motion;
+                }
+            }
             $motions = MotionSorter::getSortedMotionsFlat($consultation, $motions);
             if (count($motions) > 0) {
                 echo '<ul class="motions">';
