@@ -10,6 +10,7 @@ use yii\helpers\Html;
 use \app\models\settings\Consultation as ConsultationSettings;
 
 /**
+ * @var yii\web\View $this
  * @var Consultation $consultation
  * @var Layout $layout
  * @var bool $admin

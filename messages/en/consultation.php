@@ -9,6 +9,7 @@ return [
     'current_phase'        => 'Current phase',
     'My Motions'           => 'My motions',
     'All Motions'          => 'Motions',
+    'resolutions'          => 'Resolutons',
     'no_motions_yet'       => 'No motions yet',
     'My Amendments'        => 'My amendments',
     'Agenda'               => 'Agenda',

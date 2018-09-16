@@ -154,6 +154,8 @@ class Permissions
                 Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
                 Motion::STATUS_DRAFT_ADMIN,
                 Motion::STATUS_MODIFIED,
+                Motion::STATUS_RESOLUTION_PRELIMINARY,
+                Motion::STATUS_RESOLUTION_FINAL,
             ];
             if (in_array($motion->status, $notAmendableStatuses)) {
                 if ($exceptions) {

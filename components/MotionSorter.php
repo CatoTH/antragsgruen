@@ -278,4 +278,22 @@ class MotionSorter
             return $amendments;
         }
     }
+
+    /**
+     * @param Motion[] $allMotions
+     * @return Motion[][]
+     */
+    public static function getMotionsAndResolutions($allMotions)
+    {
+        $motions     = [];
+        $resolutions = [];
+        foreach ($allMotions as $mot) {
+            if ($mot->isResolution()) {
+                $resolutions[] = $mot;
+            } else {
+                $motions[] = $mot;
+            }
+        }
+        return [$motions, $resolutions];
+    }
 }

@@ -548,6 +548,14 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @return bool
      */
+    public function isResolution()
+    {
+        return in_array($this->status, [static::STATUS_RESOLUTION_FINAL, static::STATUS_RESOLUTION_PRELIMINARY]);
+    }
+
+    /**
+     * @return bool
+     */
     public function isSocialSharable()
     {
         if ($this->getMyConsultation()->getSettings()->forceLogin) {

@@ -146,8 +146,11 @@
 }
 
 .motionTextHolder {
-  .well & > h3.green {
-    margin-bottom: 22px;
+  .well & {
+    > h3.green {
+      margin-bottom: 22px;
+    }
+    padding-bottom: 22px;
   }
   .paragraph {
     font-size: 14px;

@@ -36,7 +36,11 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+if ($motion->isResolution()) {
+    $this->title = $motion->getTitleWithIntro() . ' (' . $motion->getMyConsultation()->title . ')';
+} else {
+    $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+}
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
@@ -44,7 +48,11 @@ $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimali
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
-echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+if ($motion->isResolution()) {
+    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
+} else {
+    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+}
 
 echo $layout->getMiniMenu('motionSidebarSmall');
 
@@ -96,7 +104,7 @@ if ($motion->canFinishSupportCollection()) {
 echo '</div>';
 
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     ?>
     <div class="proposedChangesOpener">
         <button class="btn btn-default btn-sm">
@@ -210,7 +218,8 @@ LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments = $motion->getVisibleAmendments();
-if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY) {
+$nobodyCanAmend = ($motion->motionType->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
+if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
@@ -260,8 +269,8 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     echo '</div></section>';
 }
 
-
-if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID()) {
+$nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
+if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
     echo '<h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;

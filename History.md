@@ -7,8 +7,13 @@
   - A new PDF template is introduced specifically for applications, if the LaTeX-based PDF-renderer is used.
   - For each section of a motion type, it is now possible to specify if the title will be explicitly printed in the PDF of not.
   - If the uploaded image is way too big (bigger than 1000x2000px), it is resized to keep the size of the PDF at a reasonable size.
+- Two new statuses are introduced: "Resoluton" and "Resolution (preliminary)". Motions of these states...
+  - are shown on the consultation home page separately in a slightly different view (initiators are not mentioned anymore).
+  - have a different header as regular motions in the web- and the PDF-view.
+  - can neither have amendments nor comments.
 - Several improvements regarding merging amendments into motions / creating the final motion version:
   - When editing the merged view with the amendments' change inlined into the text, this draft can be exported into a PDF to document the merging process.
+  - After creating the final text, administrators can decide if the new version of this motion is a regular motion again, or a (preliminary) resolution.
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.

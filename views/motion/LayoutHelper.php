@@ -53,8 +53,8 @@ class LayoutHelper
                 if (!$adminMode) {
                     $name .= \Yii::t('initiator', 'visibilityAdmins') . ': ';
                 }
-                if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
-                    if ($supp->name != '') {
+                if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
+                    if ($supp->name) {
                         $name .= Html::encode($supp->name) . ', ';
                     }
                 }
