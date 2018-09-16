@@ -124,7 +124,7 @@ echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
-    /** @var \app\models\db\MotionSection $section $sectionType */
+    /** @var \app\models\db\MotionSection $section */
     $sectionType = $section->getSettings()->type;
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -143,7 +143,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
         if ($sectionType !== ISectionType::TYPE_PDF && $sectionType !== ISectionType::TYPE_IMAGE) {
-            $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+            $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);

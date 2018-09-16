@@ -112,6 +112,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'supporting_permitted'               => 'Berechtigung',
     'download_pdf'                       => 'PDF-Version herunterladen',
     'motion_text'                        => 'Antragstext',
+    'resolution_text'                    => 'Beschlusstext',
     'published_email_body'               => "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
         "Du kannst ihn hier einsehen: %LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .

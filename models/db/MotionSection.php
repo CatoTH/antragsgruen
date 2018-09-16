@@ -141,6 +141,18 @@ class MotionSection extends IMotionSection
     }
 
     /**
+     * @return string
+     */
+    public function getSectionTitle()
+    {
+        $title = $this->getSettings()->title;
+        if ($title === \Yii::t('motion', 'motion_text') && $this->getMotion()->isResolution()) {
+            $title = \Yii::t('motion', 'resolution_text');
+        }
+        return $title;
+    }
+
+    /**
      * @return \string[][]
      * @throws Internal
      */
