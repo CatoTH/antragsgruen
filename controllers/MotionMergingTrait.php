@@ -195,7 +195,8 @@ trait MotionMergingTrait
             }
             $newMotion->save();
 
-            if ($newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
+            // For resolutions, the state of the original motion should not be changed
+            if (!$isResolution && $newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
                 $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
                 $newMotion->replacedMotion->save();
             }

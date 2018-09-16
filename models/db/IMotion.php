@@ -95,8 +95,10 @@ abstract class IMotion extends ActiveRecord
     const STATUS_RESOLUTION_PRELIMINARY = 25;
     const STATUS_RESOLUTION_FINAL       = 26;
 
-    // Purely informational statuses
+    // A new version of this motion exists that should be shown instead. Not visible on the home page.
     const STATUS_MODIFIED            = 7;
+
+    // Purely informational statuses
     const STATUS_ADOPTED             = 8;
     const STATUS_COMPLETED           = 9;
     const STATUS_VOTE                = 11;

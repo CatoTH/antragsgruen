@@ -13,7 +13,7 @@ use yii\helpers\Html;
 
 echo '<h2 class="green">' . \Yii::t('con', 'resolutions') . '</h2>';
 
-echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
+echo '<ul class="motionList motionListStd motionListWithoutAgenda resolutionList">';
 $resolutions = MotionSorter::getSortedMotionsFlat($consultation, $resolutions);
 foreach ($resolutions as $resolution) {
     $hasPDF = ($resolution->getMyMotionType()->getPDFLayoutClass() !== null);
