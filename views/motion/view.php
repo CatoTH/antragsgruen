@@ -213,7 +213,9 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     echo '</div></section>';
 }
 
-LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+if (!$motion->isResolution()) {
+    LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+}
 
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
