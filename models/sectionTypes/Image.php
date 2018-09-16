@@ -47,6 +47,25 @@ class Image extends ISectionType
     }
 
     /**
+     * @param string $mime
+     * @return string|null
+     */
+    public static function getFileExtensionFromMimeType($mime)
+    {
+        switch ($mime) {
+            case 'image/png':
+                return 'png';
+            case 'image/jpg':
+            case 'image/jpeg':
+                return 'jpeg';
+            case 'image/gif':
+                return 'gif';
+            default:
+                return null;
+        }
+    }
+
+    /**
      * @return string
      */
     public function getMotionFormField()
@@ -111,6 +130,48 @@ class Image extends ISectionType
     }
 
     /**
+     * If the image is more than twice as big as the specified size, it is reduced to this size.
+     * A slightly exceeding size is tolerated, as reducing the size is rather comptation intensive.
+     *
+     * Hint: this function returns the raw image data, not the base64-encoded version.
+     *
+     * This only is performed if ImageMagick is installed and configured.
+     *
+     * @param int $width
+     * @param int $height
+     * @param string $fileExtension
+     * @return string
+     */
+    public function resizeIfMassivelyTooBig($width, $height, $fileExtension)
+    {
+        $metadata = json_decode($this->section->metadata, true);
+        if ($metadata['width'] < $width * 2 && $metadata['height'] < $height * 2) {
+            return base64_decode($this->section->data);
+        }
+
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        if ($app->imageMagickPath === null) {
+            return base64_decode($this->section->data);
+        } elseif (!file_exists($app->imageMagickPath)) {
+            throw new Internal('ImageMagick not correctly set up');
+        }
+
+        $tmpfile1 = $app->getTmpDir() . uniqid('image-conv-') . "." . $fileExtension;
+        $tmpfile2 = $app->getTmpDir() . uniqid('image-conv-') . "." . $fileExtension;
+        file_put_contents($tmpfile1, base64_decode($this->section->data));
+
+        exec($app->imageMagickPath . ' -strip -geometry ' . IntVal($width) . 'x' . IntVal($height) . ' '
+            . escapeshellarg($tmpfile1) . ' ' . escapeshellarg($tmpfile2));
+
+        $converted = (file_exists($tmpfile2) ? file_get_contents($tmpfile2) : '');
+        unlink($tmpfile1);
+        unlink($tmpfile2);
+
+        return $converted;
+    }
+
+    /**
      * @param array $data
      * @throws FormError
      */
@@ -125,21 +186,10 @@ class Image extends ISectionType
             throw new FormError('Could not read image.');
         }
 
-        switch ($mime) {
-            case 'image/png':
-                $fileExt = 'png';
-                break;
-            case 'image/jpg':
-            case 'image/jpeg':
-                $fileExt = 'jpeg';
-                break;
-            case 'image/gif':
-                $fileExt = 'gif';
-                break;
-            default:
-                throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
+        $fileExt = static::getFileExtensionFromMimeType($mime);
+        if ($fileExt === null) {
+            throw new FormError('Image type not supported. Supported formats are: JPEG, PNG and GIF.');
         }
-
         $optimized = static::getOptimizedImage($data['tmp_name'], $fileExt);
 
         $metadata                = [
@@ -195,7 +245,7 @@ class Image extends ISectionType
      */
     public function isEmpty()
     {
-        return ($this->section->data == '');
+        return ($this->section->data === '');
     }
 
     /**
@@ -232,7 +282,14 @@ class Image extends ISectionType
 
         $metadata = json_decode($this->section->metadata, true);
         $size     = $this->scaleSize($metadata['width'], $metadata['height'], 80, 60);
-        $img      = '@' . base64_decode($this->section->data);
+        $fileExt  = static::getFileExtensionFromMimeType($metadata['mime']);
+        if ($this->section->isLayoutRight()) {
+            $imageData = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
+        } else {
+            $imageData = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
+        }
+
+        $img = '@' . $imageData;
         switch ($metadata['mime']) {
             case 'image/png':
                 $type = 'PNG';
@@ -282,29 +339,22 @@ class Image extends ISectionType
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
         /** @var AntragsgruenApp $params */
-        $params       = \Yii::$app->params;
-        $filenameBase = uniqid('motion-pdf-image');
-
+        $params   = \Yii::$app->params;
         $metadata = json_decode($this->section->metadata, true);
-        switch ($metadata['mime']) {
-            case 'image/png':
-                $filenameBase .= '.png';
-                break;
-            case 'image/jpg':
-            case 'image/jpeg':
-                $filenameBase .= '.jpg';
-                break;
-            case 'image/gif':
-                $filenameBase .= '.gif';
-        }
 
-        $content->imageData[$filenameBase] = base64_decode($this->section->data);
+        $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
+        $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
+
         if ($isRight) {
             $content->textRight .= '\includegraphics[width=4.9cm]{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
             $content->textRight .= '\newline' . "\n" . '\newline' . "\n";
+            $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
             $content->textMain .= '\includegraphics[width=10cm]{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
+            $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
+
+        $content->imageData[$filenameBase] = $imageData;
     }
 
     /**
