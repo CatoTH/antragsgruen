@@ -338,6 +338,10 @@ class Image extends ISectionType
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+
         /** @var AntragsgruenApp $params */
         $params   = \Yii::$app->params;
         $metadata = json_decode($this->section->metadata, true);

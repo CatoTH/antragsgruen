@@ -5,7 +5,6 @@ namespace app\plugins;
 use app\models\db\Consultation;
 use app\models\db\Site;
 use app\models\layoutHooks\Hooks;
-use app\models\settings\AntragsgruenApp;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 use yii\base\Action;
