@@ -63,7 +63,7 @@ if ($longVersion) {
                 if ($motion->isResolution()) {
                     continue;
                 }
-                LayoutHelper::showMotion($motion, $consultation);
+                echo LayoutHelper::showMotion($motion, $consultation);
                 $shownMotions[] = $motion->id;
             }
             echo '</ul>';
@@ -83,7 +83,7 @@ if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . \Yii::t('con', 'Other Motions') . '</h2>';
     echo '<ul class="motionList motionListStd motionListBelowAgenda">';
     foreach ($otherMotions as $motion) {
-        LayoutHelper::showMotion($motion, $consultation);
+        echo LayoutHelper::showMotion($motion, $consultation);
     }
     echo '</ul>';
 }

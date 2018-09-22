@@ -209,6 +209,26 @@ class Layout
     }
 
     /**
+     * @param string $origLine
+     * @param Motion $motion
+     * @return string
+     */
+    public static function getConsultationMotionLineContent($origLine, Motion $motion)
+    {
+        return static::callHook('getConsultationMotionLineContent', [$motion], $origLine);
+    }
+
+    /**
+     * @param string $origLine
+     * @param Amendment $amendment
+     * @return string
+     */
+    public static function getConsultationAmendmentLineContent($origLine, Amendment $amendment)
+    {
+        return static::callHook('getConsultationAmendmentLineContent', [$amendment], $origLine);
+    }
+
+    /**
      * @param Consultation $consultation
      * @return string
      */

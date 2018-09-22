@@ -13,15 +13,84 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
+    /**
+     * @param Motion $motion
+     * @param Consultation $consultation
+     * @return string;
+     */
+    private static function getMotionLineContent(Motion $motion, Consultation $consultation)
+    {
+        $return = '';
+        $return .= '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+        $return .= '<p class="title">' . "\n";
+
+        $motionUrl = UrlHelper::createMotionUrl($motion);
+        $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
+
+        $return .= '<span class="glyphicon glyphicon-file motionIcon"></span>';
+        if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
+            $return .= '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
+        }
+
+        $title  = (trim($motion->title) === '' ? '-' : $motion->title);
+        $return .= ' <span class="motionTitle">' . Html::encode($title) . '</span>';
+
+        $return .= '</a>';
+
+        $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
+        if ($hasPDF) {
+            $html   = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
+            $return .= Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
+        }
+        $return .= "</p>\n";
+        $return .= '<p class="info">';
+        $return .= Html::encode($motion->getInitiatorsStr());
+        if ($motion->status === Motion::STATUS_WITHDRAWN) {
+            $statusName = $motion->getStatusNames()[$motion->status];
+            $return     .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
+        }
+        $return .= '</p>';
+
+        $return = \app\models\layoutHooks\Layout::getConsultationMotionLineContent($return, $motion);
+
+        return $return;
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return string
+     */
+    private static function getAmendmentLineContent(Amendment $amendment)
+    {
+        $return = '';
+        $return .= '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
+
+        $title  = (trim($amendment->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amendment->titlePrefix);
+        $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
+            'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
+
+        $return .= '<span class="info">';
+        $return .= Html::encode($amendment->getInitiatorsStr());
+        if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
+            $statusName = $amendment->getStatusNames()[$amendment->status];
+            $return     .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
+        }
+        $return .= '</span>' . "\n";
+
+        $return = \app\models\layoutHooks\Layout::getConsultationAmendmentLineContent($return, $amendment);
+
+        return $return;
+    }
 
     /**
      * @param Motion $motion
      * @param Consultation $consultation
+     * @return string
      * @throws \app\models\exceptions\Internal
      */
     public static function showMotion(Motion $motion, Consultation $consultation)
     {
-        $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
+        $return = '';
 
         /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
@@ -35,65 +104,30 @@ class LayoutHelper
         if ($motion->status == Motion::STATUS_MODIFIED) {
             $classes[] = 'modified';
         }
-        echo '<li class="' . implode(' ', $classes) . '">';
-        echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
-        echo '<p class="title">' . "\n";
-
-        $motionUrl = UrlHelper::createMotionUrl($motion);
-        echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
-
-        echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
-        if (!$consultation->getSettings()->hideTitlePrefix && $motion->titlePrefix != '') {
-            echo '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
-        }
-
-        $title = ($motion->title == '' ? '-' : $motion->title);
-        echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';
-
-        echo '</a>';
-
-        if ($hasPDF) {
-            $html = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
-            echo Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
-        }
-        echo "</p>\n";
-        echo '<p class="info">';
-        echo Html::encode($motion->getInitiatorsStr());
-        if ($motion->status === Motion::STATUS_WITHDRAWN) {
-            echo ' <span class="status">(' . Html::encode($motion->getStatusNames()[$motion->status]) . ')</span>';
-        }
-        echo '</p>';
-        echo "<span class='clearfix'></span>\n";
+        $return .= '<li class="' . implode(' ', $classes) . '">';
+        $return .= static::getMotionLineContent($motion, $consultation);
+        $return .= "<span class='clearfix'></span>\n";
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         if (count($amendments) > 0) {
-            echo '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
-            echo '<ul class="amendments">';
+            $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
+            $return .= '<ul class="amendments">';
             foreach ($amendments as $amend) {
                 $classes = ['amendmentRow' . $amend->id, 'amendment'];
                 if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                     $classes[] = 'withdrawn';
                 }
-                echo '<li class="' . implode(' ', $classes) . '">';
-                echo '<span class="date">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
+                $return .= '<li class="' . implode(' ', $classes) . '">';
+                $return .= static::getAmendmentLineContent($amend);
 
-                $title = (trim($amend->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
-                echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
-                    'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
-
-                echo '<span class="info">';
-                echo Html::encode($amend->getInitiatorsStr());
-                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
-                    $statusName = $amend->getStatusNames()[$amend->status];
-                    echo ' <span class="status">(' . Html::encode($statusName) . ')</span>';
-                }
-                echo '</span>' . "\n";
-                echo "<span class='clearfix'></span>\n";
-                echo '</li>' . "\n";
+                $return .= "<span class='clearfix'></span>\n";
+                $return .= '</li>' . "\n";
             }
-            echo '</ul>';
+            $return .= '</ul>';
         }
-        echo '</li>' . "\n";
+        $return .= '</li>' . "\n";
+
+        return $return;
     }
 
     /**
@@ -152,7 +186,7 @@ class LayoutHelper
             if (count($motions) > 0) {
                 echo '<ul class="motions">';
                 foreach ($motions as $motion) {
-                    static::showMotion($motion, $consultation);
+                    echo static::showMotion($motion, $consultation);
                     $shownMotions[] = $motion->id;
                 }
                 echo '</ul>';

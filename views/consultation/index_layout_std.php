@@ -20,7 +20,7 @@ $motions = MotionSorter::getSortedMotions($consultation, $motions);
 foreach ($motions as $name => $motns) {
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motns as $motion) {
-        LayoutHelper::showMotion($motion, $consultation);
+        echo LayoutHelper::showMotion($motion, $consultation);
     }
     echo '</ul>';
 }
