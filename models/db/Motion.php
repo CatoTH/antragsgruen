@@ -729,7 +729,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
             $isOrganization = false;
             foreach ($this->getInitiators() as $initiator) {
-                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
                     $isOrganization = true;
                 }
             }

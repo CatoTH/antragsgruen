@@ -383,6 +383,7 @@ footer.footer {
   }
 }
 
+/*
 .womenQuota {
   position: absolute;
   li.motion > & {
@@ -400,5 +401,14 @@ footer.footer {
   span.glyphicon {
     opacity: 0.5;
     margin-right: 10px;
+  }
+}
+*/
+
+.motionList {
+  .womenQuota {
+    font-size: 0.8em;
+    margin-left: 10px;
+    display: inline-block;
   }
 }

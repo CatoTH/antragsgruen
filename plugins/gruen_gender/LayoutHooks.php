@@ -37,30 +37,42 @@ class LayoutHooks extends HooksAdapter
 
     /**
      * @param float $quota
+     * @param string $before
      * @return string
      */
-    private function formatWomenQuotaCol($quota)
+    private function formatWomenQuotaCol($quota, $before)
     {
-        $women = '<p class="womenQuota">';
+        $women = '<span class="womenQuota">(Frauenanteil: ';
+        /*
         $women .= '<span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
             'title="Frauenanteil"></span>';
+        */
         $women .= round($quota * 100) . '%';
-        $women .= '</p>';
-        return $women;
+        $women .= ')</span>';
+
+        $before = preg_replace_callback(
+            '/(?<pre>class=[\'"]info[\'"].*)(?<post><\/(p|span)>)/siuU',
+            function ($matches) use ($women) {
+                return $matches['pre'] . $women . $matches['post'];
+            },
+            $before
+        );
+
+        return $before;
     }
 
     /**
      * @param string $before
      * @param Motion $motion
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getConsultationMotionLineContent($before, Motion $motion)
     {
-        if (!$motion->isInitiatedByOrganization()) {
+        $collectionPhase = $motion->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication();
+        if (!$motion->isInitiatedByOrganization() && $collectionPhase) {
             $persons = array_merge($motion->getInitiators(), $motion->getSupporters());
             $quota   = $this->getWomensQuota($persons);
-            $before  = $before . $this->formatWomenQuotaCol($quota);
+            $before  = $this->formatWomenQuotaCol($quota, $before);
         }
 
         return $before;
@@ -70,14 +82,15 @@ class LayoutHooks extends HooksAdapter
      * @param string $before
      * @param Amendment $amendment
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getConsultationAmendmentLineContent($before, Amendment $amendment)
     {
-        if (!$amendment->isInitiatedByOrganization()) {
+        $collectionPhase = $amendment->getMyMotionType()->getAmendmentSupportTypeClass()
+            ->collectSupportersBeforePublication();
+        if (!$amendment->isInitiatedByOrganization() && $collectionPhase) {
             $persons = array_merge($amendment->getInitiators(), $amendment->getSupporters());
             $quota   = $this->getWomensQuota($persons);
-            $before  = $before . $this->formatWomenQuotaCol($quota);
+            $before  = $this->formatWomenQuotaCol($quota, $before);
         }
 
         return $before;
