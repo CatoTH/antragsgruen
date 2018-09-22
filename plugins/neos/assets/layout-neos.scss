@@ -143,6 +143,9 @@ body {
   .title {
     font-size: 14px;
   }
+  .wizard > ul > li {
+    width: calc(25% - 5px);
+  }
 }
 
 .bookmarks > li.comment > a.zero {
@@ -223,3 +226,4 @@ body.consultationIndex {
     margin-top: -10px;
   }
 }
+
