@@ -350,6 +350,19 @@ abstract class IMotion extends ActiveRecord
     abstract public function getInitiators();
 
     /**
+     * @return bool
+     */
+    public function isInitiatedByOrganization()
+    {
+        foreach ($this->getInitiators() as $initiator) {
+            if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Hint: the returned string is NOT yet HTML-encoded
      *
      * @return string
