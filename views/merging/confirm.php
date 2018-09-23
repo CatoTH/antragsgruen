@@ -5,7 +5,6 @@ use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
-use app\models\db\IMotion;
 
 /**
  * @var \yii\web\View $this
@@ -109,7 +108,7 @@ foreach ($newMotion->getSortedSections(true) as $section) {
     foreach ($changes as $change) {
         echo '<div class="diffText">';
         if ($change->getSectionId() == $section->sectionId) {
-            echo $this->render('_view_change_section', ['change' => $change]);
+            echo $this->render('@app/views/motion/_view_change_section', ['change' => $change]);
         }
         echo '</div>';
     }

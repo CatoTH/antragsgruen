@@ -50,4 +50,5 @@ return [
     'pdf_app_title'         => 'Application',
     'pdf_app_top_label'     => 'Agenda item:',
     'pdf_merging_draft'     => 'Resolution text in changed view',
+    'pdf_merging_init'      => 'Selected amendments',
 ];

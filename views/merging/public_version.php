@@ -76,7 +76,7 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
             </div>
 
             <div class="draftContent motionMergeStyles">
-                <?= $this->render('_merge_amendments_public', ['motion' => $motion, 'draft' => $draft]) ?>
+                <?= $this->render('_public_version_content', ['motion' => $motion, 'draft' => $draft]) ?>
             </div>
         </div>
     </section>

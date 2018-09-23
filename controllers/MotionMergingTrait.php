@@ -40,7 +40,7 @@ trait MotionMergingTrait
             return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
         }
 
-        return $this->render('merge_amendments_public', ['motion' => $motion, 'draft' => $draft]);
+        return $this->render('@app/views/merging/public_version', ['motion' => $motion, 'draft' => $draft]);
     }
 
     /**
@@ -64,7 +64,10 @@ trait MotionMergingTrait
 
         return json_encode([
             'success' => true,
-            'html'    => $this->renderPartial('_merge_amendments_public', ['motion' => $motion, 'draft' => $draft]),
+            'html'    => $this->renderPartial('@app/views/merging/_public_version_content', [
+                'motion' => $motion,
+                'draft'  => $draft
+            ]),
             'date'    => Tools::formatMysqlDateTime($draft->dateCreation),
         ]);
     }
@@ -97,7 +100,7 @@ trait MotionMergingTrait
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
-        return $this->render('merge_amendments_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
+        return $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
     }
 
     /**
@@ -125,11 +128,50 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createMotionUrl($motion, 'merge-amendments'));
         }
 
-        return $this->render('merge_amendments_init', [
+        return $this->render('@app/views/merging/init', [
             'motion'      => $motion,
             'amendments'  => $amendments,
             'draft'       => $draft,
             'unconfirmed' => $unconfirmed,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param string $activated
+     * @return string
+     */
+    public function actionMergeAmendmentsInitPdf($motionSlug, $activated = '')
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $amendments = $motion->getVisibleAmendmentsSorted();
+        $activatedIds = [];
+        foreach (explode(',', $activated) as $active) {
+            if ($active > 0) {
+                $activatedIds[] = IntVal($active);
+            }
+        }
+
+        $filename                    = $motion->getFilenameBase(false) . '-Merging-Selection.pdf';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
+        return $this->render('@app/views/merging/init_pdf', [
+            'motion'     => $motion,
+            'amendments' => $amendments,
+            'activated'  => $activatedIds,
         ]);
     }
 
@@ -229,7 +271,7 @@ trait MotionMergingTrait
 
             $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
 
-            return $this->render('merge_amendments_done', [
+            return $this->render('@app/views/merging/done', [
                 'newMotion' => $newMotion,
             ]);
         }
@@ -241,7 +283,7 @@ trait MotionMergingTrait
         }
 
         $draftId = null;
-        return $this->render('merge_amendments_confirm', [
+        return $this->render('@app/views/merging/confirm', [
             'newMotion'         => $newMotion,
             'deleteDraftId'     => $draftId,
             'amendmentStatuses' => $amendStatuses,
@@ -319,7 +361,7 @@ trait MotionMergingTrait
             }
         }
 
-        return $this->render('merge_amendments', [
+        return $this->render('@app/views/merging/merging', [
             'motion'              => $motion,
             'form'                => $form,
             'amendmentStatuses'   => $amendStatuses,

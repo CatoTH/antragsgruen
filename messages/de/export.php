@@ -50,4 +50,5 @@ return [
     'pdf_app_title'         => 'Bewerbung',
     'pdf_app_top_label'     => 'Tagesordnungspunkt:',
     'pdf_merging_draft'     => 'Beschlusstext im Änderungsmodus',
+    'pdf_merging_init'      => 'Ausgewählte Änderungsanträge',
 ];

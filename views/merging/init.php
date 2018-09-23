@@ -25,7 +25,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
 
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
-<div class="motionMergeInit">
+<div class="motionMergeInit" data-antragsgruen-widget="frontend/MergeInit">
 
     <div class="content">
         <div class="alert alert-info" role="alert">
@@ -145,6 +145,13 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
             </table>
         </div>
         <?php
+        $exportLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-init-pdf', ['activated' => 'IDS']);
+        ?>
+        <div class="pull-left exportHolder">
+            <a href="<?= Html::encode($exportLink) ?>"><span class="glyphicon glyphicon-download"></span> PDF</a>
+        </div>
+        <?php
+
         if ($draft) {
             ?>
             <input type="hidden" name="discard" value="1">

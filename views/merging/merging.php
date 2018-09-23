@@ -52,7 +52,7 @@ echo '<h1 class="stickyHeader">' . $motion->getEncodedTitleWithPrefix() . '</h1>
 echo '<div class="motionData">';
 
 if (!$motion->getMyConsultation()->getSettings()->minimalisticUI) {
-    include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
+    include(__DIR__ . '/../motion/_view_motiondata.php');
 }
 
 $hasCollidingParagraphs = false;
