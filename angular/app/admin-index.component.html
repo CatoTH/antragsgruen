@@ -1,3 +1,13 @@
+<section class="motionListSearchForm fuelux">
+    <label>
+        Antragsnr.:<br>
+        <input type="text" name="Search[prefix]" value="" class="form-control inputPrefix">
+    </label>
+    <label>Status:<br>
+        <selectlist [items]="getAvailableStatusItems()" [selected]="" (onSelect)="setStatusItem($event)"></selectlist>
+    </label>
+</section>
+
 <table class="adminMotionTable">
     <thead>
     <tr>
@@ -13,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    <ng-container *ngFor="let item of sortedItems; trackBy: trackElement">
+    <ng-container *ngFor="let item of sortedFilteredItems; trackBy: trackElement">
         <tr *ngIf="item.type == 'motion'">
             <td><input type="checkbox"></td>
             <td i18n="admin-index motion indicator">Mot</td>
