@@ -1,4 +1,4 @@
-import {Component, ElementRef, LOCALE_ID} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import {WebsocketService} from "./websocket.service";
 import {Collection} from "../classes/Collection";
 import {Motion} from "../classes/Motion";
@@ -7,6 +7,7 @@ import {Amendment} from "../classes/Amendment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {CollectionItem} from "../classes/CollectionItem";
 import {IMotion} from "../classes/IMotion";
+import {SelectlistItem} from "./selectlist.component";
 
 @Component({
     selector: 'admin-index',
@@ -16,7 +17,11 @@ export class AdminIndexComponent {
     public log: string = '';
     public motionCollection: Collection<Motion> = new Collection<Motion>(Motion);
     public amendmentCollection: Collection<Amendment> = new Collection<Amendment>(Amendment);
-    public sortedItems: IMotion[];
+    public allItems: IMotion[];
+    public sortedFilteredItems: IMotion[];
+
+    private filters: { [filterId: string]: (IMotion) => boolean } = {};
+
     private readonly ajaxBackendUrl: string;
     private readonly csrfParam: string;
     private readonly csrfToken: string;
@@ -39,8 +44,6 @@ export class AdminIndexComponent {
         let initData = JSON.parse(el.nativeElement.getAttribute('init-collections'));
         this.motionCollection.setElements(initData['motions']);
         this.amendmentCollection.setElements(initData['amendments']);
-
-        console.log(LOCALE_ID);
     }
 
     private initWebsocket(el: ElementRef) {
@@ -58,14 +61,25 @@ export class AdminIndexComponent {
     }
 
     private recalcMotionList() {
-        this.sortedItems = [];
+        this.allItems = [];
         Object.keys(this.motionCollection.elements).forEach(key => {
-            this.sortedItems.push(this.motionCollection.elements[key]);
+            this.allItems.push(this.motionCollection.elements[key]);
         });
         Object.keys(this.amendmentCollection.elements).forEach(key => {
-            this.sortedItems.push(this.amendmentCollection.elements[key]);
+            this.allItems.push(this.amendmentCollection.elements[key]);
         });
-        this.sortedItems.sort(IMotion.compareTitlePrefix);
+
+        this.sortedFilteredItems = this.allItems.filter((item: IMotion) => {
+            let matches = true;
+            Object.keys(this.filters).forEach(key => {
+                if (!this.filters[key](item)) {
+                    matches = false;
+                }
+            });
+            return matches;
+        });
+
+        this.sortedFilteredItems.sort(IMotion.compareTitlePrefix);
     }
 
     public trackElement(index: number, element: CollectionItem) {
@@ -124,5 +138,26 @@ export class AdminIndexComponent {
 
     public amendmentDelete(item: Amendment, $event) {
         $event.preventDefault();
+    }
+
+    public getAvailableStatusItems(): SelectlistItem[] {
+
+        if (!this.allItems) {
+            return [];
+        }
+        return Array.from(new Set(this.allItems.map(item => item.status))).map((status) => {
+            return {
+                id: status.toString(),
+                title: "status: " + status.toString(),
+            }
+        });
+    }
+
+    public setStatusItem(selected) {
+        console.log("selected", selected);
+        this.filters['status'] = (motion: IMotion) => {
+            return motion.status == selected.id;
+        };
+        this.recalcMotionList();
     }
 }

@@ -201,7 +201,16 @@ Add the following settings to your config.json (and adapt them to your needs):
 
 ### Async mode
 
-To use async features based on Websockets, [Swoole](https://www.swoole.co.uk/) needs to be installed.
+To use async features based on Websockets, [Swoole](https://www.swoole.co.uk/) needs to be installed. A sample installation works approximately like this:
+```bash
+pecl download swoole
+tar xg swoole-4.2.1.tgz
+cd swoole-4.2.1
+phpize
+./configure --enable-http2  --enable-sockets
+make
+make install
+```
 
 The configuration in the `config.json`:
 ```json
@@ -244,6 +253,27 @@ After updating the source code from git, do:
 ./composer.phar install
 ./yii migrate
 gulp
+```
+
+### Angular
+
+Angular can be compiled in two modes: watching / developing or production.
+
+Developing mode:
+```bash
+ng build --watch # or:
+ng build --watch --configuration=de
+```
+
+Production mode:
+```bash
+ng build --watch --configuration=production # or:
+ng build --watch --configuration=production-de
+```
+
+Extracting the locales:
+```bash
+npm run angular:i18n
 ```
 
 ### Creating custom language variants
