@@ -76,6 +76,7 @@ class ProposedProcedureController extends AdminBase
         } else {
             $proposalFactory = new Factory($this->consultation, true);
         }
+        $filename .= '.ods';
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
