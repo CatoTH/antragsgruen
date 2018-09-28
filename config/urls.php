@@ -37,6 +37,7 @@ $adminAmendmentPaths  = 'excellist|odslist|odslist-short|pdflist|pdfziplist|odtz
 $adminPaths           = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
 $adminPaths           .= '|theming|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
 $adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible';
+$asyncPaths           = 'user|client|objects|translations';
 
 $urlRules = [
     $domadmin . ''                                                => 'admin/index',
@@ -71,10 +72,6 @@ $urlRules = [
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',
 
-    $domv . 'async/user' => 'async/user',
-    $domv . 'async/client' => 'async/client',
-    $domv . 'async/objects' => 'async/objects',
-
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',
     $domv . 'motion/create'                        => 'motion/create',
     $dommotion                                     => 'motion/view',
@@ -87,6 +84,7 @@ $urlRules = [
     $domamendOld                                   => 'amendment/view',
     $domamendOld . '/<_a:(' . $amendPaths . ')>'   => 'amendment/<_a>',
     $dommotionOld . '/amendment/create'            => 'amendment/create',
+    $domv . 'async/<_a:(' . $asyncPaths . ')>'     => 'async/<_a>',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
 ];
