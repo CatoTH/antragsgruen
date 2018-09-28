@@ -2,6 +2,7 @@
 
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
+use app\models\db\IAdminComment;
 use app\models\proposedProcedure\Agenda;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
@@ -11,6 +12,7 @@ use yii\helpers\Html;
  * @var $this yii\web\View
  * @var Agenda[] $proposedAgenda
  * @var Consultation $consultation
+ * @var bool $comments
  */
 
 /** @var \app\controllers\Base $controller */
@@ -27,12 +29,35 @@ $doc = new Spreadsheet([
     'trustHtml' => true,
 ]);
 
+
+$formatComments = function ($currentComments) {
+    $commentsStr = '';
+    $first = true;
+    foreach ($currentComments as $currentComment) {
+        $user        = $currentComment->user;
+        if ($first) {
+            $first = false;
+        } else {
+            $commentsStr .= '<br>';
+        }
+        $commentsStr .= '<p>';
+        $commentsStr .= '<strong>' . Html::encode($user ? $user->name : '-') . ', ';
+        $commentsStr .= \app\components\Tools::formatMysqlDateTime($currentComment->dateCreation) . '</strong></p>';
+        $commentsStr .= \app\components\HTMLTools::textToHtmlWithLink(trim($currentComment->text));
+    }
+
+    return $commentsStr;
+};
+
+
 $currCol = $firstCol = 0;
 
 $COL_PREFIX    = $currCol++;
 $COL_INITIATOR = $currCol++;
 $COL_PROCEDURE = $currCol++;
+$COL_COMMENTS  = $currCol++;
 
+$lastCol = $currCol - 1;
 
 // Title
 
@@ -41,7 +66,7 @@ $doc->setCell(0, 0, Spreadsheet::TYPE_TEXT, $consultation->site->organization);
 $doc->setMinRowHeight(0, 1.8);
 $doc->setCellStyle(0, 0, [], $titleStyles);
 
-$row       = 0;
+$row = 0;
 /*
 $titleRows = explode("\n", $consultation->getSettings()->pdfIntroduction);
 foreach ($titleRows as $titleRow) {
@@ -72,28 +97,38 @@ $doc->setColumnWidth($COL_INITIATOR, 2);
 
 $doc->setCell(9, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
 $doc->setCellStyle(9, $COL_INITIATOR, [], $headerStyle);
-$doc->setColumnWidth($COL_INITIATOR, 4.9);
+$doc->setColumnWidth($COL_INITIATOR, 7);
 
 $doc->setCell(9, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setCellStyle(9, $COL_PROCEDURE, [], $headerStyle);
 $doc->setColumnWidth($COL_PROCEDURE, 19);
 
+if ($comments) {
+    $doc->setCell(9, $COL_COMMENTS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'comments'));
+    $doc->setCellStyle(9, $COL_COMMENTS, [], $headerStyle);
+    $doc->setColumnWidth($COL_COMMENTS, 7);
+}
+
 $doc->setMinRowHeight(9, 1.1);
 
-$doc->drawBorder(9, $firstCol, 9, $COL_PROCEDURE, 0.5);
+$doc->drawBorder(9, $firstCol, 9, $lastCol, 0.5);
 
 
 $printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
-use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
+use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $amendment->getInitiatorsStr());
     $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
     $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);
     $doc->setCellStyle($row, $COL_PROCEDURE, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_COMMENTS, [], $cellStyle);
 
     $minHeight = 1;
     $proposal  = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
+    if (strlen($proposal) > 200) {
+        $minHeight += 2;
+    }
 
     if ($amendment->hasAlternativeProposaltext()) {
         $reference = $amendment->proposalReference;
@@ -114,27 +149,47 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+
+    if ($comments) {
+        $allComments = $amendment->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
+        $commentsStr = $formatComments($allComments);
+        $doc->setCell($row, $COL_COMMENTS, Spreadsheet::TYPE_HTML, $commentsStr);
+        $minHeight = max($minHeight, count($allComments) * 2);
+    }
+
     $doc->setMinRowHeight($row, $minHeight);
 };
 
 
 $printMotion = function (Spreadsheet $doc, \app\models\db\Motion $motion, $row)
-use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE) {
+use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $motion->getInitiatorsStr());
     $doc->setCellStyle($row, $COL_PREFIX, [], $cellStyle);
     $doc->setCellStyle($row, $COL_INITIATOR, [], $cellStyle);
     $doc->setCellStyle($row, $COL_PROCEDURE, [], $cellStyle);
+    $doc->setCellStyle($row, $COL_COMMENTS, [], $cellStyle);
 
     $minHeight = 1;
     $proposal  = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
+    if (strlen($proposal) > 200) {
+        $minHeight += 2;
+    }
     if ($motion->proposalExplanation) {
         $minHeight += 1;
         $proposal  .= '<p>' . Html::encode($motion->proposalExplanation) . '</p>';
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+
+    if ($comments) {
+        $allComments = $motion->getAdminComments([IAdminComment::PROPOSED_PROCEDURE], IAdminComment::SORT_ASC);
+        $commentsStr = $formatComments($allComments);
+        $doc->setCell($row, $COL_COMMENTS, Spreadsheet::TYPE_HTML, $commentsStr);
+        $minHeight = max($minHeight, count($allComments) * 2);
+    }
+
     $doc->setMinRowHeight($row, $minHeight);
 };
 
@@ -174,7 +229,7 @@ foreach ($proposedAgenda as $proposedItem) {
             }
         }
 
-        $doc->drawBorder($firstAgendaRow, $firstCol, $row, $COL_PROCEDURE, 0.5);
+        $doc->drawBorder($firstAgendaRow, $firstCol, $row, $lastCol, 0.5);
         $row++;
     }
 }

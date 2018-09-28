@@ -63,9 +63,10 @@ class ProposedProcedureController extends AdminBase
 
     /**
      * @param int $agendaItemId
+     * @param int $comments
      * @return string
      */
-    public function actionOds($agendaItemId = 0)
+    public function actionOds($agendaItemId = 0, $comments = 0)
     {
         $filename = 'proposed-procedure';
         if ($agendaItemId) {
@@ -83,6 +84,7 @@ class ProposedProcedureController extends AdminBase
 
         return $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
+            'comments'       => (IntVal($comments) === 1),
         ]);
     }
 

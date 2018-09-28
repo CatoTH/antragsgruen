@@ -2167,22 +2167,23 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "2.4.5",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "5fee32d5c82791548931cbc34806b4de6aa1abfc"
+                "reference": "dee493561daf644134c95cf176fd2c25aff59ea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/5fee32d5c82791548931cbc34806b4de6aa1abfc",
-                "reference": "5fee32d5c82791548931cbc34806b4de6aa1abfc",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/dee493561daf644134c95cf176fd2c25aff59ea9",
+                "reference": "dee493561daf644134c95cf176fd2c25aff59ea9",
                 "shasum": ""
             },
             "require": {
                 "behat/gherkin": "^4.4.0",
                 "codeception/phpunit-wrapper": "^6.0.9|^7.0.6",
                 "codeception/stub": "^2.0",
+                "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "facebook/webdriver": ">=1.1.3 <2.0",
@@ -2230,7 +2231,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Codeception\\": "src\\Codeception",
+                    "Codeception\\": "src/Codeception",
                     "Codeception\\Extension\\": "ext"
                 }
             },
@@ -2254,7 +2255,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2018-08-01T07:21:49+00:00"
+            "time": "2018-09-24T09:33:01+00:00"
         },
         {
             "name": "codeception/phpunit-wrapper",

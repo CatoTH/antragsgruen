@@ -16,6 +16,7 @@
   - After creating the final text, administrators can decide if the new version of this motion is a regular motion again, or a (preliminary) resolution.
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
+- When exporting the proposed procedure list into ODS, there is now an option to also include the comments.
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Bugfix: When an optional image was not uploaded, the LaTeX-based PDF export did not work.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
