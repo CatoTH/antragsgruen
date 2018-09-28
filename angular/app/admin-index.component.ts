@@ -8,6 +8,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {CollectionItem} from "../classes/CollectionItem";
 import {IMotion} from "../classes/IMotion";
 import {SelectlistItem} from "./selectlist.component";
+import {Translations} from "../classes/Translations";
 
 @Component({
     selector: 'admin-index',
@@ -145,12 +146,34 @@ export class AdminIndexComponent {
         if (!this.allItems) {
             return [];
         }
-        return Array.from(new Set(this.allItems.map(item => item.status))).map((status) => {
+        let statuses = {};
+        this.allItems.forEach((item) => {
+            let status = item.status.toString();
+            if (statuses[status] === undefined) {
+                statuses[status] = 0;
+            }
+            statuses[status]++;
+        });
+
+        let statusObjects = Object.keys(statuses).map((status: string) => {
             return {
-                id: status.toString(),
-                title: "status: " + status.toString(),
+                id: status,
+                title: Translations.getStatusName(parseInt(status)) + " (" + statuses[status] + ")",
+                num: statuses[status],
             }
         });
+
+        statusObjects.sort((obj1, obj2) => {
+            if (obj2.num > obj1.num) {
+                return 1;
+            } else if (obj2.num < obj1.num) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+
+        return statusObjects;
     }
 
     public setStatusItem(selected) {

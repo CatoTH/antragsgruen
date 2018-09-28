@@ -15,7 +15,7 @@ import {SelectlistComponent} from "./selectlist.component";
         HttpClientModule,
     ],
     providers: [
-        WebsocketService
+        WebsocketService,
     ],
     bootstrap: [AdminIndexComponent]
 })
