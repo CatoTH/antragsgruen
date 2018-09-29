@@ -72,4 +72,13 @@ export class Translations {
                 return '@UNKNOWN@';
         }
     }
+
+    public static getTagName(id: string): string {
+        const name = this.get('tags', id);
+        if (name === undefined) {
+            return '@UNKNOWN@';
+        } else {
+            return name;
+        }
+    }
 }

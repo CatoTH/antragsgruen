@@ -1,4 +1,3 @@
-import {MotionTag} from "./MotionTag";
 import {IMotion} from "./IMotion";
 
 export class Motion extends IMotion {
@@ -7,7 +6,6 @@ export class Motion extends IMotion {
     public slug: string;
     public statusString: string;
     public statusFormatted: string;
-    public tags: MotionTag[];
 
     constructor(data) {
         super();

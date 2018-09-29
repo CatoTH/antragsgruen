@@ -52,5 +52,5 @@ $params = [
 
 ?>
 <div class="content">
-    <?= \app\components\HTMLTools::getAngularComponent('admin-index', $params) ?>
+    <?= \app\components\HTMLTools::getAngularComponent('admin-index', $params, ['structure', 'admin', 'tags']) ?>
 </div>

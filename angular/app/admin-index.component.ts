@@ -141,29 +141,8 @@ export class AdminIndexComponent {
         $event.preventDefault();
     }
 
-    public getAvailableStatusItems(): SelectlistItem[] {
-
-        if (!this.allItems) {
-            return [];
-        }
-        let statuses = {};
-        this.allItems.forEach((item) => {
-            let status = item.status.toString();
-            if (statuses[status] === undefined) {
-                statuses[status] = 0;
-            }
-            statuses[status]++;
-        });
-
-        let statusObjects = Object.keys(statuses).map((status: string) => {
-            return {
-                id: status,
-                title: Translations.getStatusName(parseInt(status)) + " (" + statuses[status] + ")",
-                num: statuses[status],
-            }
-        });
-
-        statusObjects.sort((obj1, obj2) => {
+    private sortAndAddZeroItems(items: SelectlistItem[]): SelectlistItem[] {
+        items.sort((obj1, obj2) => {
             if (obj2.num > obj1.num) {
                 return 1;
             } else if (obj2.num < obj1.num) {
@@ -172,15 +151,79 @@ export class AdminIndexComponent {
                 return 0;
             }
         });
+        items.unshift({
+            id: "0",
+            title: Translations.get('admin', 'filter_na'),
+            num: null,
+        });
+        return items;
+    }
 
-        return statusObjects;
+    public getAvailableStatusItems(): SelectlistItem[] {
+        if (!this.allItems) {
+            return [];
+        }
+        let statuses = {};
+        this.allItems.forEach((item) => {
+            const status = item.status.toString();
+            if (statuses[status] === undefined) {
+                statuses[status] = 0;
+            }
+            statuses[status]++;
+        });
+
+        return this.sortAndAddZeroItems(Object.keys(statuses).map((status: string) => {
+            return {
+                id: status,
+                title: Translations.getStatusName(parseInt(status)),
+                num: statuses[status],
+            }
+        }));
+    }
+
+    public getAvailableTagsItems(): SelectlistItem[] {
+        if (!this.allItems) {
+            return [];
+        }
+        let tags = {};
+        this.allItems.forEach((item) => {
+            item.tags.forEach((tag) => {
+                const tagId = tag.id.toString();
+                if (tags[tagId] === undefined) {
+                    tags[tagId] = 0;
+                }
+                tags[tagId]++;
+            });
+        });
+
+        return this.sortAndAddZeroItems(Object.keys(tags).map((tag: string) => {
+            return {
+                id: tag,
+                title: Translations.getTagName(tag),
+                num: tags[tag],
+            }
+        }));
     }
 
     public setStatusItem(selected) {
-        console.log("selected", selected);
-        this.filters['status'] = (motion: IMotion) => {
-            return motion.status == selected.id;
-        };
+        if (parseInt(selected.id) === 0) {
+            delete this.filters['status'];
+        } else {
+            this.filters['status'] = (motion: IMotion) => {
+                return motion.status == selected.id;
+            };
+        }
+        this.recalcMotionList();
+    }
+
+    public setTagItem(selected) {
+        if (parseInt(selected.id) === 0) {
+            delete this.filters['tag'];
+        } else {
+            this.filters['tag'] = (motion: IMotion) => {
+                return motion.tags.filter(tag => tag.id === parseInt(selected.id)).length > 0;
+            };
+        }
         this.recalcMotionList();
     }
 }

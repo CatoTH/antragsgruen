@@ -5,7 +5,13 @@
         <span class="sr-only">Toggle Dropdown</span>
     </button>
     <ul class="dropdown-menu" role="menu">
-        <li *ngFor="let item of items" [attr.data-value]="item.id"><a href="#">{{ item.title }}</a></li>
+        <li *ngFor="let item of items"
+                [attr.data-num]="item.num"
+                [attr.data-title]="item.title"
+                [attr.data-value]="item.id"><a href="#">
+            {{ item.title }}
+            <span class="num" *ngIf="item.num !== null">({{ item.num }})</span>
+        </a></li>
     </ul>
     <input class="hidden hidden-field" readonly="readonly" title="[Hidden]" aria-hidden="true" type="text" value="">
 </div>

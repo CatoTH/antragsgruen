@@ -64,6 +64,50 @@ class AsyncController extends Base
     }
 
     /**
+     * @param string $category
+     * @return string[]
+     */
+    private function getTranslations($category)
+    {
+        /** @var I18N $i18n */
+        $i18n = \Yii::$app->get('i18n');
+
+        $returnedStrings = [];
+        /** @var MessageSource $messagesource */
+        $messagesource = $i18n->getMessageSource($category);
+        $strings       = $messagesource->getBaseMessagesWithHints($category, $this->consultation->wordingBase);
+
+        $consStrings = [];
+        foreach ($this->consultation->texts as $text) {
+            if ($text->category === $category) {
+                $consStrings[$text->textId] = $text->text;
+            }
+        }
+
+        foreach ($strings as $string) {
+            if (isset($consStrings[$string['id']])) {
+                $returnedStrings[$string['id']] = $consStrings[$string['id']];
+            } else {
+                $returnedStrings[$string['id']] = $string['text'];
+            }
+        }
+
+        return $returnedStrings;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getTags()
+    {
+        $tags = [];
+        foreach ($this->consultation->tags as $tag) {
+            $tags[$tag->id] = $tag->title;
+        }
+        return $tags;
+    }
+
+    /**
      * @param $categories
      * @return string
      */
@@ -74,32 +118,20 @@ class AsyncController extends Base
 
         $returnedStrings = [];
 
-        /** @var I18N $i18n */
-        $i18n = \Yii::$app->get('i18n');
-
         foreach (explode(',', $categories) as $category) {
             if (trim($category) === '') {
                 continue;
             }
-            $returnedStrings[$category] = [];
-
-            /** @var MessageSource $messagesource */
-            $messagesource = $i18n->getMessageSource($category);
-            $strings       = $messagesource->getBaseMessagesWithHints($category, $this->consultation->wordingBase);
-
-            $consStrings = [];
-            foreach ($this->consultation->texts as $text) {
-                if ($text->category === $category) {
-                    $consStrings[$text->textId] = $text->text;
-                }
-            }
-
-            foreach ($strings as $string) {
-                $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : $string['text']);
-                $returnedStrings[$category][$string['id']] = $value;
+            if ($category === 'tags') {
+                $returnedStrings[$category] = $this->getTags();
+            } else {
+                $returnedStrings[$category] = $this->getTranslations($category);
             }
         }
 
-        return 'window.ANTRAGSGRUEN_TRANSLATIONS = ' . json_encode($returnedStrings) . ';';
+        $retJs = 'if (window.ANTRAGSGRUEN_TRANSLATIONS === undefined) window.ANTRAGSGRUEN_TRANSLATIONS = {};';
+        $retJs .= 'window.ANTRAGSGRUEN_TRANSLATIONS = ' .
+            'Object.assign(window.ANTRAGSGRUEN_TRANSLATIONS, ' . json_encode($returnedStrings) . ');';
+        return $retJs;
     }
 }

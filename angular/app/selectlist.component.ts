@@ -5,6 +5,7 @@ declare var $: any;
 export interface SelectlistItem {
     id: string;
     title: string;
+    num: number;
 }
 
 /**
@@ -43,10 +44,10 @@ export class SelectlistComponent {
     {
         this.$el.selectlist();
         this.$el.on('changed.fu.selectlist', (ev, item) => {
-            console.log(item);
             this.onSelect.emit({
                 id: item.value.toString(),
-                title: item.text,
+                title: item.title,
+                num: parseInt(item.num),
             });
         });
     }
