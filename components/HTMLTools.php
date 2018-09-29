@@ -946,13 +946,15 @@ class HTMLTools
         return $str;
     }
 
+    private static $loadedTranslationCategories = [];
+
     /**
      * @param string $componentName
      * @param string[] $params
-     * @param string $transCategories
+     * @param string[] $transCategories
      * @return string
      */
-    public static function getAngularComponent($componentName, $params = [], $transCategories = 'structure')
+    public static function getAngularComponent($componentName, $params = [], $transCategories = ['structure'])
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -965,7 +967,13 @@ class HTMLTools
             $language = $app->baseLanguage;
         }
 
-        $transCategoriesUrl = UrlHelper::createUrl(['async/translations', 'categories' => $transCategories]);
+        $toLoadCategories = [];
+        foreach ($transCategories as $transCategory) {
+            if (!in_array($transCategory, static::$loadedTranslationCategories)) {
+                static::$loadedTranslationCategories[] = $transCategory;
+                $toLoadCategories[]                    = $transCategory;
+            }
+        }
 
         if ($app->asyncConfig) {
             $params['cookie']  = $_COOKIE['PHPSESSID'];
@@ -979,7 +987,14 @@ class HTMLTools
 
         $base = '/angular/' . $language . '/';
         $html = '<' . $componentName . ' ' . $paramsStr . '></' . $componentName . '>';
-        $html .= '<script src="' . Html::encode($transCategoriesUrl) . '"></script>';
+
+        if (count($toLoadCategories) > 0) {
+            $transCategoriesUrl = UrlHelper::createUrl([
+                'async/translations',
+                'categories' => implode(',', $toLoadCategories)
+            ]);
+            $html               .= '<script src="' . Html::encode($transCategoriesUrl) . '"></script>';
+        }
         $html .= '<script src="' . $base . 'runtime.js"></script>';
         $html .= '<script src="' . $base . 'polyfills.js"></script>';
         $html .= '<script src="' . $base . 'vendor.js"></script>';

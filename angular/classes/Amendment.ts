@@ -15,6 +15,7 @@ export class Amendment extends IMotion {
             this[key] = data[key];
         });
         this.type = 'amendment';
+        this.tags = []; // @TODO
     }
 
     public getLink(linkKey: string, linkTemplates: { [key: string]: string }): string {

@@ -6,6 +6,9 @@
     <label>Status:<br>
         <selectlist [items]="getAvailableStatusItems()" [selected]="" (onSelect)="setStatusItem($event)"></selectlist>
     </label>
+    <label>Thema:<br>
+        <selectlist [items]="getAvailableTagsItems()" [selected]="" (onSelect)="setTagItem($event)"></selectlist>
+    </label>
 </section>
 
 <table class="adminMotionTable">

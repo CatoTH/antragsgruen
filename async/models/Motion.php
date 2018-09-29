@@ -66,6 +66,9 @@ class Motion extends TransferrableChannelObject
     {
         $data = [];
         foreach ($consultation->motions as $motion) {
+            if (in_array($motion->status, $motion->getStatusesInvisibleForAdmins())) {
+                continue;
+            }
             try {
                 $data[] = Motion::createFromDbObject($motion);
             } catch (\Exception $e) {

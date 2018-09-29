@@ -1,12 +1,14 @@
 import {CollectionItem} from "./CollectionItem";
 import {Person} from "./Person";
 import {STATUS} from "./Status";
+import {MotionTag} from "./MotionTag";
 
 export abstract class IMotion extends CollectionItem {
     public titlePrefix: string;
     public status: number;
     public initiators: Person[];
     public dateCreation: string;
+    public tags: MotionTag[];
 
     public static compareTitlePrefix(imotion1: IMotion, imotion2: IMotion) {
         if (imotion1.titlePrefix < imotion2.titlePrefix) {

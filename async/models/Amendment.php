@@ -67,7 +67,13 @@ class Amendment extends TransferrableChannelObject
     {
         $data = [];
         foreach ($consultation->motions as $motion) {
+            if (in_array($motion->status, $motion->getStatusesInvisibleForAdmins())) {
+                continue;
+            }
             foreach ($motion->amendments as $amendment) {
+                if (in_array($amendment->status, $amendment->getStatusesInvisibleForAdmins())) {
+                    continue;
+                }
                 try {
                     $data[] = Amendment::createFromDbObject($amendment);
                 } catch (\Exception $e) {
