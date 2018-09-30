@@ -21,6 +21,8 @@ export class AdminIndexComponent {
     public allItems: IMotion[];
     public sortedFilteredItems: IMotion[];
 
+    public searchPrefix = "";
+    public searchTitle = "";
     private filters: { [filterId: string]: (IMotion) => boolean } = {};
 
     private readonly ajaxBackendUrl: string;
@@ -141,6 +143,24 @@ export class AdminIndexComponent {
         $event.preventDefault();
     }
 
+    public getHighlightedTitle(item: IMotion): string {
+        let html = item.getTitle().replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+        if (this.searchTitle !== '') {
+            let search = this.searchTitle.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+            html = html.replace(search, '<mark>' + search + '</mark>');
+        }
+        return html;
+    }
+
+    public getHighlightedPrefix(item: IMotion): string {
+        let html = item.titlePrefix.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+        if (this.searchPrefix !== '') {
+            let search = this.searchPrefix.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+            html = html.replace(search, '<mark>' + search + '</mark>');
+        }
+        return html;
+    }
+
     private sortAndAddZeroItems(items: SelectlistItem[]): SelectlistItem[] {
         items.sort((obj1, obj2) => {
             if (obj2.num > obj1.num) {
@@ -203,6 +223,36 @@ export class AdminIndexComponent {
                 num: tags[tag],
             }
         }));
+    }
+
+    public searchPrefixChange($ev) {
+        if ($ev.currentTarget.value === this.searchPrefix) {
+            return;
+        }
+        this.searchPrefix = $ev.currentTarget.value;
+        if (this.searchPrefix === '') {
+            delete this.filters['prefix'];
+        } else {
+            this.filters['prefix'] = (motion: IMotion) => {
+                return motion.titlePrefix.toLowerCase().indexOf(this.searchPrefix.toLowerCase()) !== -1;
+            };
+        }
+        this.recalcMotionList();
+    }
+
+    public searchTitleChange($ev) {
+        if ($ev.currentTarget.value === this.searchTitle) {
+            return;
+        }
+        this.searchTitle = $ev.currentTarget.value;
+        if (this.searchTitle === '') {
+            delete this.filters['title'];
+        } else {
+            this.filters['title'] = (motion: IMotion) => {
+                return motion.getTitle().toLowerCase().indexOf(this.searchTitle.toLowerCase()) !== -1;
+            };
+        }
+        this.recalcMotionList();
     }
 
     public setStatusItem(selected) {

@@ -28,4 +28,8 @@ export class Amendment extends IMotion {
             .replace(/0123456789/, this.id)
             .replace(/_MOTION_SLUG_/, this.motionSlug)
     }
+
+    public getTitle(): string {
+        return this.motionTitle;
+    }
 }

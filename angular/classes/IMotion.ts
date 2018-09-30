@@ -28,4 +28,6 @@ export abstract class IMotion extends CollectionItem {
             STATUS.SUBMITTED_UNSCREENED_CHECKED
         ].indexOf(this.status) !== -1)
     }
+
+    abstract getTitle(): string;
 }

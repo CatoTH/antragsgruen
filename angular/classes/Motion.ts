@@ -26,4 +26,8 @@ export class Motion extends IMotion {
             .replace(/0123456789/, this.id)
             .replace(/_SLUG_/, slug)
     }
+
+    public getTitle(): string {
+        return this.title;
+    }
 }

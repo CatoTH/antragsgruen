@@ -1,7 +1,13 @@
 <section class="motionListSearchForm fuelux">
     <label>
         Antragsnr.:<br>
-        <input type="text" name="Search[prefix]" value="" class="form-control inputPrefix">
+        <input type="text" class="form-control inputPrefix" [value]="searchPrefix"
+                (change)="searchPrefixChange($event)" (keyup)="searchPrefixChange($event)">
+    </label>
+    <label>
+        Titel:<br>
+        <input type="text" class="form-control inputPrefix" [value]="searchTitle"
+                (change)="searchTitleChange($event)" (keyup)="searchTitleChange($event)">
     </label>
     <label>Status:<br>
         <selectlist [items]="getAvailableStatusItems()" [selected]="" (onSelect)="setStatusItem($event)"></selectlist>
@@ -30,8 +36,8 @@
         <tr *ngIf="item.type == 'motion'">
             <td><input type="checkbox"></td>
             <td i18n="admin-index motion indicator">Mot</td>
-            <td><a [href]="item.getLink('motion/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
-            <td><a [href]="item.getLink('admin/motion/update', linkTemplates)">{{ item.title }}</a></td>
+            <td><a [href]="item.getLink('motion/view', linkTemplates)" [innerHTML]="getHighlightedPrefix(item)"></a></td>
+            <td><a [href]="item.getLink('admin/motion/update', linkTemplates)" [innerHTML]="getHighlightedTitle(item)"></a></td>
             <td [innerHTML]="item.statusFormatted"></td>
             <td class="initiatorCol">
                 <ul>
@@ -86,8 +92,8 @@
         <tr *ngIf="item.type == 'amendment'">
             <td><input type="checkbox"></td>
             <td i18n="admin-index amendment indicator">Amd</td>
-            <td><a [href]="item.getLink('amendment/view', linkTemplates)">{{ item.titlePrefix }}</a></td>
-            <td><a [href]="item.getLink('admin/amendment/update', linkTemplates)">{{ item.motionTitle }}</a></td>
+            <td><a [href]="item.getLink('amendment/view', linkTemplates)" [innerHTML]="getHighlightedPrefix(item)"></a></td>
+            <td><a [href]="item.getLink('admin/amendment/update', linkTemplates)" [innerHTML]="getHighlightedTitle(item)"></a></td>
             <td [innerHTML]="item.statusFormatted"></td>
             <td class="initiatorCol">
                 <ul>
