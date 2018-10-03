@@ -869,6 +869,7 @@ class HTMLTools
         foreach ($shyAfters as $shyAfter) {
             $str = str_replace($shyAfter, $shyAfter . '&shy;', $str);
         }
+        $str = str_replace('&amp;shy;', '&shy;', $str);
         return $str;
     }
 

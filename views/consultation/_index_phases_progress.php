@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
@@ -88,15 +89,14 @@ if (count($namedPhases) === 1) {
                     } else {
                         echo '<li>';
                     }
-
-                    echo '<div class="title">' . Html::encode($namedPhase['title']) . '</div>';
+                    echo '<div class="step-content">';
+                    echo '<div class="title">' . HTMLTools::encodeAddShy($namedPhase['title']) . '</div>';
                     echo '<div class="permissions">';
                     foreach ($namedPhase['permissions'] as $permission) {
                         echo Html::encode($permission) . '<br>';
                     }
                     echo '</div>';
-
-                    echo '<span class="chevron"></span>';
+                    echo '</div>';
                     echo '</li>';
                 }
                 ?>

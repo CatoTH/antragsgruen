@@ -71,6 +71,13 @@ $buttonFont: "Montserrat", sans-serif;
 $btn-border-radius-base: 0;
 $btn-font-weight: 700;
 
+$wizardBackground: #f9f9f9;
+$wizardBorderColor: white;
+$wizardStepInactiveBackground: rgb(240, 156, 192);
+$wizardStepInactiveColor: white;
+$wizardStepActiveBackground: rgba(232, 65, 136, 1);
+$wizardStepActiveColor: #fff;
+
 .btn {
   font-style: italic;
 }
@@ -143,8 +150,36 @@ body {
   .title {
     font-size: 14px;
   }
+  .permissions {
+    display: none;
+  }
   .wizard > ul > li {
-    width: calc(25% - 5px);
+    width: calc(25% - 7px);
+    padding: 0 0 0 30px;
+    font-family: 'Montserrat';
+    font-style: italic;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+
+    .step-content {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .title {
+      font-size: 15px;
+      margin: 0;
+    }
+    &:first-child {
+      .permissions {
+        display: block;
+        font-size: 11px;
+      }
+    }
   }
 }
 
@@ -162,7 +197,7 @@ body.consultationIndex {
   .navbar {
     min-height: 35px;
   }
-  
+
   .navbar .nav li a {
     font-weight: normal;
     margin-left: 30px;
@@ -200,7 +235,7 @@ body.consultationIndex {
     width: 300px;
     margin-top: -30px;
     margin-bottom: 60px;
-    
+
   }
 }
 

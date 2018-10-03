@@ -2,10 +2,26 @@
  * From: https://github.com/ExactTarget/fuelux
  * License: MIT
  */
+@mixin wizardHeight($size) {
+  ul li {
+    height: $size;
+    line-height: $size;
+    &:before {
+      border-top: $size / 3 + 1px inset transparent;
+      border-bottom: $size / 3 + 1px inset transparent;
+      border-left: $size / 3 + 1px solid $wizardBorderColor;
+    }
+    &:after {
+      border-top: $size / 3 + 1px inset transparent;
+      border-bottom: $size / 3 + 1px inset transparent;
+      border-left: $size / 3 + 1px solid $wizardStepInactiveBackground;
+      right: (-1 * $size) / 3;
+    }
+  }
+}
 
 .fuelux .wizard {
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #d4d4d4;
+  border-bottom: 1px solid $wizardBorderColor;
   *zoom: 1;
   border-radius: 0;
   margin-left: -1px;
@@ -23,7 +39,7 @@
     clear: both;
   }
 
-  ul {
+  ul.steps {
     padding: 0;
     margin: 0;
     list-style: none outside none;
@@ -31,34 +47,36 @@
     li {
       position: relative;
       float: left;
-      height: 46px;
       padding: 0 15px 0 30px;
-      margin: 0;
+      margin: 0 0 0 1px;
       font-size: 16px;
-      line-height: 46px;
-      color: #999999;
+      color: $wizardStepInactiveColor;
       cursor: default;
-      background: #ededed;
+      background: $wizardStepInactiveBackground;
 
-      .chevron {
+      &:before {
+        width: 0;
+        height: 0;
         position: absolute;
-        top: 0;
-        right: -14px;
-        display: block;
-        border: 24px solid transparent;
-        border-right: 0;
-        border-left: 14px solid #d4d4d4;
+        content: "";
+        top: -1px;
+        left: -1px;
+        transform: scale(1, 1.5);
+        transform-origin: top;
+      }
+      &:after {
+        width: 0;
+        height: 0;
+        position: absolute;
+        content: "";
+        top: -1px;
+        z-index: 2;
+        transform: scale(1, 1.5);
+        transform-origin: top;
+      }
 
-        &:before {
-          position: absolute;
-          top: -24px;
-          right: 1px;
-          display: block;
-          border: 24px solid transparent;
-          border-right: 0;
-          border-left: 14px solid #ededed;
-          content: "";
-        }
+      &:first-child:before {
+        border: none;
       }
 
       &.complete {
@@ -77,11 +95,10 @@
       }
 
       &.active {
-        color: rgb(175, 203, 8);
-        background: #f1f6fc;
-
-        .chevron:before {
-          border-left: 14px solid #f1f6fc;
+        color: $wizardStepActiveColor;
+        background: $wizardStepActiveBackground;
+        &:after {
+          border-left-color: $wizardStepActiveBackground;
         }
       }
 
@@ -92,7 +109,6 @@
       &:nth-child(1) {
         z-index: 10;
         padding-left: 15px;
-        border-radius: 4px 0 0 4px;
       }
 
       &:nth-child(2) {
@@ -153,4 +169,6 @@
       margin-left: 5px;
     }
   }
+
+  @include wizardHeight(46px);
 }
