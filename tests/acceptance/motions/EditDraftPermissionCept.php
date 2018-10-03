@@ -16,7 +16,7 @@ $I->gotoConsultationHome();
 $I->wantTo('edit the draft');
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID);
-\app\tests\_pages\MotionEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'       => $motion->getMotionSlug(),
@@ -36,7 +36,7 @@ $I->gotoConsultationHome();
 $I->wantTo('edit the draft');
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
-\app\tests\_pages\MotionEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'         => $motion->getMotionSlug(),
@@ -49,7 +49,7 @@ $I->wantTo('edit the draft logged out (should not work)');
 $I->logout();
 /** @var Motion $motion */
 $motion = Motion::findOne(AcceptanceTester::FIRST_FREE_MOTION_ID + 1);
-\app\tests\_pages\MotionEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'         => $motion->getMotionSlug(),

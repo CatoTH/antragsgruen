@@ -13,7 +13,7 @@ $amendmentUrl = \app\tests\_pages\AmendmentPage::getPageUrl($I, [
 
 $I->wantTo('publish the amendment');
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionPage::class,  [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -31,7 +31,7 @@ $I->wantTo('check that amendments created as normal person are in supporting pha
 
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
 $I->loginAsStdUser();
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionPage::class,  [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -52,7 +52,7 @@ $I->dontSee('Eingereicht (ungeprüft)', '.myAmendmentList');
 
 $I->wantTo('check that amendments created as organizations are not in supporting phase');
 
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(\app\tests\_pages\MotionPage::class,  [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,

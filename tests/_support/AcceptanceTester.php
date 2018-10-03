@@ -1,9 +1,12 @@
 <?php
+
 use app\tests\_pages\AdminIndexPage;
 use app\tests\_pages\AdminMotionListPage;
 use app\tests\_pages\AmendmentPage;
 use app\tests\_pages\ConsultationHomePage;
+use app\tests\_pages\MotionCreatePage;
 use app\tests\_pages\MotionPage;
+use Helper\BasePage;
 
 /**
  * Inherited Methods
@@ -114,6 +117,36 @@ class AcceptanceTester extends \Codeception\Actor
         }
         $this->wait(0.1);
         return $page;
+    }
+
+    /**
+     * @param string $subdomain
+     * @param string $path
+     * @param int $motionTypeId
+     * @return MotionCreatePage
+     */
+    public function gotoMotionCreatePage($subdomain = 'stdparteitag', $path = 'std-parteitag', $motionTypeId = 1)
+    {
+        $page = MotionCreatePage::openBy(
+            $this,
+            [
+                'subdomain'        => $subdomain,
+                'consultationPath' => $path,
+                'motionTypeId'     => $motionTypeId,
+            ]
+        );
+        $this->wait(0.1);
+        return $page;
+    }
+
+    /**
+     * @param BasePage|string $page
+     * @param $params
+     * @return BasePage
+     */
+    public function openPage($page, $params = [])
+    {
+        return $page::openBy($this, $params);
     }
 
     /**

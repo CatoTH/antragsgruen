@@ -1,7 +1,5 @@
 <?php
 
-use app\tests\_pages\ConsultationHomePage;
-
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -10,13 +8,7 @@ $I->populateDBData1();
 
 $I->wantTo('open the application form');
 
-$page = ConsultationHomePage::openBy(
-    $I,
-    [
-        'subdomain'        => 'parteitag',
-        'consultationPath' => 'parteitag',
-    ]
-);
+$I->gotoConsultationHome(false, 'parteitag', 'parteitag');
 
 $I->see('1. Vorsitzende*r', '#agendaitem_3');
 $I->seeElement('#agendaitem_3 > div > h3 .motionCreateLink');

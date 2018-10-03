@@ -25,7 +25,7 @@ $I->see('an die angegebene Adresse geschickt', '.alert-success');
 $I->see('E-mail sent to: noemail@example.org');
 $I->seeElement('.changeRequested');
 
-\app\tests\_pages\EmailChangePage::openBy($I, [
+$I->openPage(\app\tests\_pages\EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'kjkjh@example.org',
@@ -33,7 +33,7 @@ $I->seeElement('.changeRequested');
 ]);
 $I->see('Diese E-Mail-Änderung wurde nicht beantragt oder bereits durchgeführt.');
 
-\app\tests\_pages\EmailChangePage::openBy($I, [
+$I->openPage(\app\tests\_pages\EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail@example.org',
@@ -50,7 +50,7 @@ $I->see('5 Minuten', '.alert-danger');
 
 $I->wantTo('confirm the previous mail');
 
-\app\tests\_pages\EmailChangePage::openBy($I, [
+$I->openPage(\app\tests\_pages\EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail@example.org',
@@ -78,7 +78,7 @@ $I->see('an die angegebene Adresse geschickt', '.alert-success');
 $I->see('E-mail sent to: noemail2@example.org');
 $I->see('noemail2@example.org', '.changeRequested');
 
-\app\tests\_pages\EmailChangePage::openBy($I, [
+$I->openPage(\app\tests\_pages\EmailChangePage::class, [
     'subdomain'        => 'parteitag',
     'consultationPath' => 'parteitag',
     'email'            => 'noemail2@example.org',

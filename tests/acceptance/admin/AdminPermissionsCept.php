@@ -28,21 +28,18 @@ $I->dontSeeElement('.siteUserList');
 $I->dontSeeElement('.siteConfigLink');
 
 $I->wantTo('access these pages');
-AdminConsultationPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminConsultationPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->seeElement('#consultationSettingsForm');
-AdminMotionListPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminMotionListPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->seeElement('.motionListForm');
-AdminTranslationPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminTranslationPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->seeElement('#wordingBaseForm');
-AdminMotionTypePage::openBy(
-    $I,
-    ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag', 'motionTypeId' => 1]
-);
+$I->openPage(AdminMotionTypePage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag', 'motionTypeId' => 1]);
 $I->seeElement('.adminTypeForm');
-AdminSiteAccessPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminSiteAccessPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->see('Kein Zugriff auf diese Seite');
 $I->dontSeeElement('#siteSettingsForm');
-AdminAdminConsultationsPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->see('Kein Zugriff auf diese Seite');
 $I->dontSeeElement('.consultationEditForm');
 
@@ -75,10 +72,10 @@ $I->seeElement('.motionType1');
 $I->seeElement('.siteAccessLink');
 $I->seeElement('.siteConsultationsLink');
 
-AdminSiteAccessPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminSiteAccessPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->dontSee('Kein Zugriff auf diese Seite');
 $I->seeElement('#siteSettingsForm');
-AdminAdminConsultationsPage::openBy($I, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
+$I->openPage(AdminAdminConsultationsPage::class, ['subdomain' => 'stdparteitag', 'consultationPath' => 'std-parteitag']);
 $I->dontSee('Kein Zugriff auf diese Seite');
 $I->seeElement('.consultationEditForm');
 

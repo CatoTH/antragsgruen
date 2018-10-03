@@ -10,14 +10,7 @@ $I->populateDBData1();
 // Load Form
 
 $I->wantTo('ensure the amendment does not exist yet');
-MotionPage::openBy(
-    $I,
-    [
-        'subdomain'        => 'stdparteitag',
-        'consultationPath' => 'std-parteitag',
-        'motionSlug'       => '321-o-zapft-is',
-    ]
-);
+$I->gotoMotion(true, '321-o-zapft-is');
 $I->see('A2: O’ZAPFT IS!', 'h1');
 $I->dontSee(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, 'section.amendments ul.amendments');
 
@@ -122,14 +115,7 @@ $I->see('My company', '.motionListStd .amendments');
 
 
 $I->wantTo('see the amendment on the motion page');
-MotionPage::openBy(
-    $I,
-    [
-        'subdomain'        => 'stdparteitag',
-        'consultationPath' => 'std-parteitag',
-        'motionSlug'       => '321-o-zapft-is',
-    ]
-);
+$I->gotoMotion(true, '321-o-zapft-is');
 $I->see('A2: O’ZAPFT IS!', 'h1');
 $I->see(AcceptanceTester::FIRST_FREE_AMENDMENT_TITLE_PREFIX, 'section.amendments ul.amendments');
 
