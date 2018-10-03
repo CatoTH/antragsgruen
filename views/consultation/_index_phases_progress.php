@@ -22,6 +22,28 @@ foreach ($consultation->motionTypes as $motionType) {
         }
     }
 }
+
+usort($namedPhases, function ($phase1, $phase2) {
+    if ($phase1['start'] === '' && $phase2 === '') {
+        return 0;
+    }
+    if ($phase1['start'] === '' && $phase2 !== '') {
+        return -1;
+    }
+    if ($phase1['start'] !== '' && $phase2 === '') {
+        return 1;
+    }
+    $start1 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase1['start']);
+    $start2 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase2['start']);
+    if ($start1 < $start2) {
+        return -1;
+    } elseif ($start1 > $start2) {
+        return 1;
+    } else {
+        return 0;
+    }
+});
+
 foreach ($consultation->motionTypes as $motionType) {
     foreach (ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
         switch ($deadlineType) {
