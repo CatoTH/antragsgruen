@@ -1,11 +1,10 @@
 Antragsgrün
 ===========
 
-The Online Motion Administration/Facilitator for Associations Conventions, General Assemblies and Party Conventions.
-
 Antragsgrün offers a clear and efficient tool for the effective administration of motions, amendments and candidacies: from submission to administration and print template.
 
-A number of organisations are already using the tool successfully such as the federal association of the German Green Party or the German Federal Youth Council. It can be easily adapted to a variety of scenarios.
+A number of organisations are using the tool successfully such as the federal association of the german Green Party, the German Federal Youth Council or the austrian NEOS.
+It can be easily adapted to a variety of scenarios.
 
 Core functions:
 - Submit motions, proposals and discussion papers online
