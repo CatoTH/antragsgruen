@@ -9,6 +9,7 @@ class Content
     public $title;
     public $titlePrefix       = '';
     public $titleLong;
+    public $titleRaw          = '';
     public $introductionBig;
     public $introductionSmall = '';
     public $motionDataTable   = '';
@@ -16,4 +17,5 @@ class Content
     public $textRight         = '';
     public $imageData         = [];
     public $lineLength;
+    public $agendaItemName    = '';
 }

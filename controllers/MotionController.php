@@ -47,7 +47,7 @@ class MotionController extends Base
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId == $sectionId) {
-                $metadata = json_decode($section->metadata, true);
+                $metadata                    = json_decode($section->metadata, true);
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', $metadata['mime']);
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
@@ -87,11 +87,12 @@ class MotionController extends Base
     }
 
     /**
+     * @param string $file
      * @return string
      */
-    public function actionEmbeddedpdf()
+    public function actionEmbeddedpdf($file)
     {
-        return $this->renderPartial('pdf_embed', []);
+        return $this->renderPartial('pdf_embed', ['file' => $file]);
     }
 
     /**
@@ -350,7 +351,7 @@ class MotionController extends Base
         $supportStatus = '';
         if (!\Yii::$app->user->isGuest) {
             foreach ($motion->motionSupporters as $supp) {
-                if ($supp->userId == User::getCurrentUser()->id) {
+                if ($supp->userId === User::getCurrentUser()->id) {
                     $supportStatus = $supp->role;
                 }
             }
@@ -429,7 +430,6 @@ class MotionController extends Base
         }
 
         return $this->renderPartial('view_changes_odt', [
-            'newMotion' => $motion,
             'oldMotion' => $parentMotion,
             'changes'   => $changes,
         ]);
@@ -589,7 +589,7 @@ class MotionController extends Base
      * @param int $cloneFrom
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
+     * @throws \yii\base\Exception
      */
     public function actionCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
@@ -635,8 +635,9 @@ class MotionController extends Base
                         if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
                             $suppNew = new MotionSupporter();
                             $suppNew->setAttributes($supp->getAttributes());
-                            $suppNew->id       = null;
-                            $suppNew->motionId = $motion->id;
+                            $suppNew->id           = null;
+                            $suppNew->motionId     = $motion->id;
+                            $suppNew->dateCreation = date('Y-m-d H:i:s');
                             $suppNew->save();
                         }
                     }
@@ -656,10 +657,11 @@ class MotionController extends Base
         }
 
 
-        if (count($form->supporters) == 0) {
-            $supporter       = new MotionSupporter();
-            $supporter->role = MotionSupporter::ROLE_INITIATOR;
-            $iAmAdmin        = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+        if (count($form->supporters) === 0) {
+            $supporter               = new MotionSupporter();
+            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
+            $iAmAdmin                = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;

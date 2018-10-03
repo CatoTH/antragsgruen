@@ -7,14 +7,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('go to the consultation page');
-
-$page = ConsultationHomePage::openBy(
-    $I,
-    [
-        'subdomain'        => 'parteitag',
-        'consultationPath' => 'parteitag',
-    ]
-);
+$I->gotoConsultationHome(true, 'parteitag', 'parteitag');
 
 $I->see('Parteitag', 'h1');
 $I->dontSeeElementInDOM('.moveHandle');

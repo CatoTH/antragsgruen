@@ -12,7 +12,7 @@ $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
 $I->gotoConsultationHome();
 
 $I->wantTo('edit the draft');
-\app\tests\_pages\AmendmentEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\AmendmentEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'       => '3',
@@ -31,7 +31,7 @@ $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
 $I->gotoConsultationHome();
 
 $I->wantTo('edit the draft');
-\app\tests\_pages\AmendmentEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\AmendmentEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'       => '3',
@@ -43,7 +43,7 @@ $I->seeInField(['name' => 'sections[1]'], 'Neuer Testantrag 2');
 
 $I->wantTo('edit the draft logged out (should not work)');
 $I->logout();
-\app\tests\_pages\AmendmentEditPage::openBy($I, [
+$I->openPage(\app\tests\_pages\AmendmentEditPage::class, [
     'subdomain'        => 'stdparteitag',
     'consultationPath' => 'std-parteitag',
     'motionSlug'       => '3',

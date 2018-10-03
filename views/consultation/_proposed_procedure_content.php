@@ -1,11 +1,11 @@
 <?php
 
-use app\components\ProposedProcedureAgenda;
 use app\models\db\Amendment;
+use app\models\proposedProcedure\Agenda;
 use yii\helpers\Html;
 
 /**
- * @var ProposedProcedureAgenda[] $proposedAgenda
+ * @var Agenda[] $proposedAgenda
  */
 
 foreach ($proposedAgenda as $proposedItem) {
@@ -64,8 +64,7 @@ foreach ($proposedAgenda as $proposedItem) {
                             <td class="procedure">
                                 <?php
                                 if ($item->isProposalPublic()) {
-                                    $format = ProposedProcedureAgenda::FORMAT_HTML;
-                                    echo ProposedProcedureAgenda::formatProposedProcedure($item, $format);
+                                    echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
                                 }
                                 ?></td>
                         </tr>

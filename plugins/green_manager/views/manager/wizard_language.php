@@ -23,7 +23,7 @@ use yii\helpers\Html;
         <legend><?= $t('language_title') ?></legend>
         <div class="options">
             <?php
-            foreach (\app\components\MessageSource::getBaseLanguages() as $key => $name) {
+            foreach (\app\components\yii\MessageSource::getBaseLanguages() as $key => $name) {
                 ?>
                 <label class="radio-label value-motion">
                     <span class="title"><?= Html::encode($name) ?></span>

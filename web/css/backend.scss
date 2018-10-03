@@ -3,7 +3,6 @@
 @import "bootstrap-3.3.7-sass/bootstrap/variables";
 @import "bootstrap-3.3.7-sass/bootstrap/glyphicons";
 @import "bootstrap-3.3.7-sass/bootstrap/mixins";
-@import "bootstrap-3.3.7-sass/bootstrap/tooltip";
 
 .adminForm {
   label {
@@ -384,6 +383,9 @@ label.legend {
       padding-left: 15px;
       font-size: 12px;
     }
+    .printTitleSection {
+      margin-top: 5px;
+    }
 
     &.no-maxLenSet {
       .maxLenInput, .lineLengthSoft {
@@ -444,7 +446,7 @@ label.legend {
     text-align: center;
   }
   .saveholder {
-    .checkAmendmentCollissions {
+    .checkAmendmentCollisions {
       display: none;
     }
   }
@@ -694,12 +696,26 @@ label.legend {
 }
 
 #motionSupporterHolder {
-  ul {
+  ul.supporterList {
     list-style-type: none;
     padding: 0;
 
     > li {
       padding: 5px 0 5px 40px;
+    }
+    .supporterRow {
+      display: flex;
+      flex-direction: row;
+      > * {
+        flex: 1;
+        padding: 0 15px;
+        &:first-child {
+          padding-left: 0;
+        }
+        &:last-child {
+          padding-right: 0;
+        }
+      }
     }
     .nameCol {
       position: relative;
@@ -811,5 +827,12 @@ label.legend {
   }
   .notVisible {
     opacity: 0.5;
+  }
+}
+
+.adminTranslationForm {
+  .description {
+    font-style: italic;
+    font-size: 0.8em;
   }
 }

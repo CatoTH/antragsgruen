@@ -104,6 +104,7 @@ class AmendmentController extends AdminBase
     {
         $names         = \Yii::$app->request->post('supporterName', []);
         $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $genders       = \Yii::$app->request->post('supporterGender', []);
         $preIds        = \Yii::$app->request->post('supporterId', []);
         $newSupporters = [];
         /** @var AmendmentSupporter[] $preSupporters */
@@ -118,14 +119,16 @@ class AmendmentController extends AdminBase
             if (isset($preSupporters[$preIds[$i]])) {
                 $supporter = $preSupporters[$preIds[$i]];
             } else {
-                $supporter              = new AmendmentSupporter();
-                $supporter->amendmentId = $amendment->id;
-                $supporter->role        = AmendmentSupporter::ROLE_SUPPORTER;
-                $supporter->personType  = AmendmentSupporter::PERSON_NATURAL;
+                $supporter               = new AmendmentSupporter();
+                $supporter->amendmentId  = $amendment->id;
+                $supporter->role         = AmendmentSupporter::ROLE_SUPPORTER;
+                $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
+                $supporter->dateCreation = date('Y-m-d H:i:s');
             }
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
+            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();
@@ -172,7 +175,7 @@ class AmendmentController extends AdminBase
 
         if ($this->isPostSet('screen') && $amendment->isInScreeningProcess()) {
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($post['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->status      = Amendment::STATUS_SUBMITTED_SCREENED;
                 $amendment->titlePrefix = $post['titlePrefix'];
@@ -214,7 +217,7 @@ class AmendmentController extends AdminBase
             }
 
             if ($amendment->getMyMotion()->findAmendmentWithPrefix($amdat['titlePrefix'], $amendment)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'amend_prefix_collision'));
             } else {
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }

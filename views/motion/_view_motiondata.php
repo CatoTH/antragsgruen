@@ -3,6 +3,7 @@
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\db\User;
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
@@ -11,7 +12,6 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var \yii\web\View $this
  * @var Motion $motion
  * @var int[] $openedComments
- * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
  * @var \app\controllers\Base $controller
@@ -54,7 +54,7 @@ if ($motion->agendaItem) {
 }
 
 $initiators = $motion->getInitiators();
-if (count($initiators) > 0) {
+if (count($initiators) > 0 && !$motion->isResolution()) {
     $title        = (count($initiators) === 1 ? Yii::t('motion', 'initiators_1') : Yii::t('motion', 'initiators_x'));
     $motionData[] = [
         'title'   => $title,
@@ -68,44 +68,43 @@ $motionData[] = [
     'content'  => $motion->getFormattedStatus(),
 ];
 
+if (!$motion->isResolution()) {
+    $proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+    if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
+        $motionData[] = [
+            'rowClass' => 'proposedStatusRow',
+            'title'    => \Yii::t('amend', 'proposed_status'),
+            'tdClass'  => 'str',
+            'content'  => $motion->getFormattedProposalStatus(true),
+        ];
+    }
+}
 
-if ($motion->replacedMotion) {
-    $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
-    $content = Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
-
-    $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
-    $content     .= '<div class="changesLink">';
-    $content     .= '<span class="glyphicon glyphicon-chevron-right"></span> ';
-    $content     .= Html::a(\Yii::t('motion', 'replaces_motion_diff'), $changesLink);
-    $content     .= '</div>';
-
+if (count($initiators) > 0 && $motion->isResolution()) {
+    $title        = Yii::t('motion', 'resolution_organisation');
+    $names        = array_map(function (MotionSupporter $supp) {
+        return ($supp->personType === MotionSupporter::PERSON_ORGANIZATION ? $supp->organization : $supp->name);
+    }, $initiators);
     $motionData[] = [
-        'rowClass' => 'replacesMotion',
-        'title'    => Yii::t('motion', 'replaces_motion'),
-        'content'  => $content,
+        'title'   => $title,
+        'content' => Html::encode(implode(', ', $names)),
     ];
 }
 
-$proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
-if (($motion->isProposalPublic() && $motion->proposalStatus) || $proposalAdmin) {
-    $motionData[] = [
-        'rowClass' => 'proposedStatusRow',
-        'title'    => \Yii::t('amend', 'proposed_status'),
-        'tdClass'  => 'str',
-        'content'  => $motion->getFormattedProposalStatus(true),
-    ];
-}
 
-if ($motion->dateResolution != '') {
+if ($motion->dateResolution) {
     $motionData[] = [
         'title'   => \Yii::t('motion', 'resoluted_on'),
         'content' => Tools::formatMysqlDate($motion->dateResolution, null, false),
     ];
 }
-$motionData[] = [
-    'title'   => \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
-    'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),
-];
+
+if (!$motion->isResolution()) {
+    $motionData[] = [
+        'title'   => \Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
+        'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),
+    ];
+}
 
 
 $admin = User::havePrivilege($controller->consultation, User::PRIVILEGE_SCREENING);
@@ -153,6 +152,29 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
     $motionData[] = [
         'title'   => (count($motion->tags) > 1 ? \Yii::t('motion', 'tags') : \Yii::t('motion', 'tag')),
         'content' => Html::encode(implode(', ', $tags)),
+    ];
+}
+
+if ($motion->replacedMotion) {
+    $oldLink = UrlHelper::createMotionUrl($motion->replacedMotion);
+    $content = Html::a(Html::encode($motion->replacedMotion->getTitleWithPrefix()), $oldLink);
+
+    $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
+    $content     .= '<div class="changesLink">';
+    $content     .= '<span class="glyphicon glyphicon-chevron-right"></span> ';
+    $content     .= Html::a(\Yii::t('motion', 'replaces_motion_diff'), $changesLink);
+    $content     .= '</div>';
+
+    if ($motion->isResolution() && !$motion->replacedMotion->isResolution()) {
+        $title = Yii::t('motion', 'resolution_of');
+    } else {
+        $title = Yii::t('motion', 'replaces_motion');
+    }
+
+    $motionData[] = [
+        'rowClass' => 'replacesMotion',
+        'title'    => $title,
+        'content'  => $content,
     ];
 }
 

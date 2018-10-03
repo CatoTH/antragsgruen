@@ -126,7 +126,7 @@ class HTMLTools
      * Fixes HTML problems, removes JavaScript, but allows some placeholders in the HREF of links.
      *
      * @param string $html
-     * @returns string
+     * @return string
      */
     public static function cleanHtmlTranslationString($html)
     {
@@ -768,12 +768,12 @@ class HTMLTools
     public static function renderDomToHtml(\DOMNode $node, $skipBody = false)
     {
         if (is_a($node, \DOMElement::class)) {
-            if ($node->nodeName == 'br') {
+            if ($node->nodeName === 'br') {
                 return '<br>';
             }
             /** @var \DOMElement $node */
             $str = '';
-            if (!$skipBody || strtolower($node->nodeName) != 'body') {
+            if (!$skipBody || strtolower($node->nodeName) !== 'body') {
                 $str .= '<' . $node->nodeName;
                 foreach ($node->attributes as $key => $val) {
                     $val = $node->getAttribute($key);
@@ -784,7 +784,7 @@ class HTMLTools
             foreach ($node->childNodes as $child) {
                 $str .= static::renderDomToHtml($child);
             }
-            if (!$skipBody || strtolower($node->nodeName) != 'body') {
+            if (!$skipBody || strtolower($node->nodeName) !== 'body') {
                 $str .= '</' . $node->nodeName . '>';
             }
             return $str;
@@ -869,6 +869,7 @@ class HTMLTools
         foreach ($shyAfters as $shyAfter) {
             $str = str_replace($shyAfter, $shyAfter . '&shy;', $str);
         }
+        $str = str_replace('&amp;shy;', '&shy;', $str);
         return $str;
     }
 

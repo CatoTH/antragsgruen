@@ -87,6 +87,7 @@ return [
     'preset_app_gender'    => 'Geschlecht',
     'preset_app_birthcity' => 'Geburtsort',
     'preset_app_intro'     => 'Selbstvorstellung',
+    'preset_app_title_int' => 'Bewerbung: ',
 
     'preset_motion_singular' => 'Antrag',
     'preset_motion_plural'   => 'Anträge',
@@ -144,6 +145,8 @@ return [
     'STATUS_INLINE_REPLY'                 => 'Antwort',
     'STATUS_MERGING_DRAFT_PUBLIC'         => 'Einpflegen: Zwischenstand (öffentlich)',
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Einpflegen: Zwischenstand (unsichtbar)',
+    'STATUS_RESOLUTION_PRELIMINARY'       => 'Beschluss (vorläufig)',
+    'STATUS_RESOLUTION_FINAL'             => 'Beschluss',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSED_ACCEPTED_AMEND'     => 'Übernahme',
@@ -198,4 +201,14 @@ return [
     'robots_policy_none'      => 'Keine',
     'robots_policy_only_home' => 'Nur die Startseite, keine Anträge',
     'robots_policy_all'       => 'Alle Seiten, die ohne Login zugänglich sind',
+
+    'gender_na'      => 'Keine Angabe',
+    'gender_female'  => 'Weiblich',
+    'gender_male'    => 'Männlich',
+    'gender_diverse' => 'Inter/Divers',
+
+    'top_separator' => [
+        'text'        => '.',
+        'description' => 'Trenn-Zeichen zwischen Tagesordnungspunkt-Ebenen',
+    ],
 ];

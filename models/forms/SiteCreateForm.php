@@ -16,8 +16,9 @@ use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\InitiatorForm;
 use app\models\settings\MotionType;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\base\Model;
 use yii\helpers\Html;
 
@@ -228,11 +229,12 @@ class SiteCreateForm extends Model
                 throw new FormError($motion->getErrors());
             }
 
-            $supporter           = new MotionSupporter();
-            $supporter->motionId = $motion->id;
-            $supporter->userId   = $user->id;
-            $supporter->role     = MotionSupporter::ROLE_INITIATOR;
-            $supporter->position = 0;
+            $supporter               = new MotionSupporter();
+            $supporter->motionId     = $motion->id;
+            $supporter->userId       = $user->id;
+            $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter->position     = 0;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
             if (!$supporter->save()) {
                 throw new FormError($motion->getErrors());
             }
@@ -345,7 +347,7 @@ class SiteCreateForm extends Model
             $type->policyAmendments = IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         } else {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
@@ -358,17 +360,9 @@ class SiteCreateForm extends Model
         } else {
             $type->policyComments = IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions    = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments = IPolicy::POLICY_NOBODY;
-        $type->contactName             = ConsultationMotionType::CONTACT_NONE;
-        if ($this->singleMotion) {
-            $type->contactPhone = ConsultationMotionType::CONTACT_NONE;
-            $type->contactEmail = ConsultationMotionType::CONTACT_NONE;
-        } else {
-            $type->contactPhone = ConsultationMotionType::CONTACT_OPTIONAL;
-            $type->contactEmail = ConsultationMotionType::CONTACT_REQUIRED;
-        }
-        $type->supportType                 = ISupportType::ONLY_INITIATOR;
+        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
+        $type->supportType                 = SupportBase::ONLY_INITIATOR;
         $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = 1;
         $type->motionLikesDislikes         = 0;
@@ -376,9 +370,18 @@ class SiteCreateForm extends Model
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton         = 1;
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 0;
-        $type->setSettingsObj($settings);
+        $initiatorSettings              = new InitiatorForm(null);
+        $initiatorSettings->contactName = InitiatorForm::CONTACT_NONE;
+        if ($this->singleMotion) {
+            $initiatorSettings->contactPhone = InitiatorForm::CONTACT_NONE;
+            $initiatorSettings->contactEmail = InitiatorForm::CONTACT_NONE;
+        } else {
+            $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+            $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
+        }
+        $type->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);
@@ -460,7 +463,7 @@ class SiteCreateForm extends Model
             $type->policyAmendments = IPolicy::POLICY_ALL;
         }
         if ($this->amendMerging) {
-            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION;
+            $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION;
         } else {
             $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         }
@@ -473,20 +476,8 @@ class SiteCreateForm extends Model
         } else {
             $type->policyComments = IPolicy::POLICY_NOBODY;
         }
-        $type->policySupportMotions    = IPolicy::POLICY_NOBODY;
-        $type->policySupportAmendments = IPolicy::POLICY_NOBODY;
-        $type->contactName             = ConsultationMotionType::CONTACT_NONE;
-        $type->contactPhone            = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail            = ConsultationMotionType::CONTACT_REQUIRED;
-        if ($this->needsSupporters) {
-            $type->supportType         = ISupportType::GIVEN_BY_INITIATOR;
-            $type->supportTypeSettings = json_encode([
-                'minSupporters'               => $this->minSupporters,
-                'supportersHaveOrganizations' => false,
-            ]);
-        } else {
-            $type->supportType = ISupportType::ONLY_INITIATOR;
-        }
+        $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
+        $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
         $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
         $type->motionLikesDislikes         = 0;
@@ -494,9 +485,19 @@ class SiteCreateForm extends Model
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton         = 1;
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 0;
-        $type->setSettingsObj($settings);
+        $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
+        $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+        $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
+        if ($this->needsSupporters) {
+            $type->supportType                = SupportBase::GIVEN_BY_INITIATOR;
+            $initiatorSettings->minSupporters = $this->minSupporters;
+        } else {
+            $type->supportType = SupportBase::ONLY_INITIATOR;
+        }
+        $type->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+        $type->setSettingsObj(new MotionType(null));
 
         $deadlineMotions    = ($this->motionDeadline ? $this->motionDeadline->format('Y-m-d H:i:s') : null);
         $deadlineAmendments = ($this->amendmentDeadline ? $this->amendmentDeadline->format('Y-m-d H:i:s') : null);

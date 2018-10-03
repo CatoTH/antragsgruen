@@ -8,17 +8,23 @@ use app\models\db\Motion;
 use yii\helpers\Html;
 
 /**
+ * @var yii\web\View $this
  * @var Consultation $consultation
  * @var \app\models\settings\Layout $layout
  */
 $tags            = $tagIds = [];
 $hasNoTagMotions = false;
 
-foreach ($consultation->motions as $motion) {
-    if (in_array($motion->status, $consultation->getInvisibleMotionStati())) {
+list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+if (count($resolutions) > 0) {
+    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+}
+
+foreach ($motions as $motion) {
+    if (in_array($motion->status, $consultation->getInvisibleMotionStatuses())) {
         continue;
     }
-    if (count($motion->tags) == 0) {
+    if (count($motion->tags) === 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
             $tags[0] = ['name' => \Yii::t('motion', 'tag_none'), 'motions' => []];
@@ -81,7 +87,7 @@ foreach ($tagIds as $tagId) {
         if ($motion->motionType->getSettingsObj()->cssIcon) {
             $classes[] = $motion->motionType->getSettingsObj()->cssIcon;
         }
-        if ($motion->status == Motion::STATUS_WITHDRAWN) {
+        if ($motion->status === Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
         if ($motion->isInScreeningProcess()) {
@@ -93,7 +99,11 @@ foreach ($tagIds as $tagId) {
         }
         echo '<td class="titleCol">';
         echo '<div class="titleLink">';
-        echo Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion), ['class' => 'motionLink' . $motion->id]);
+        echo Html::a(
+            Html::encode($motion->title),
+            UrlHelper::createMotionUrl($motion),
+            ['class' => 'motionLink' . $motion->id]
+        );
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
             echo Html::a(
@@ -105,7 +115,7 @@ foreach ($tagIds as $tagId) {
         echo '</div></td><td class="initiatorRow">';
         $initiators = [];
         foreach ($motion->getInitiators() as $init) {
-            if ($init->personType == \app\models\db\MotionSupporter::PERSON_NATURAL) {
+            if ($init->personType === \app\models\db\MotionSupporter::PERSON_NATURAL) {
                 $initiators[] = $init->name;
             } else {
                 $initiators[] = $init->organization;
@@ -120,7 +130,7 @@ foreach ($tagIds as $tagId) {
         $amends = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
         foreach ($amends as $amend) {
             $classes = ['amendment'];
-            if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+            if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                 $classes[] = 'withdrawn';
             }
             echo '<tr class="' . implode(' ', $classes) . '">';
@@ -130,14 +140,14 @@ foreach ($tagIds as $tagId) {
             echo '<td class="titleCol"><div class="titleLink">';
             $title = \Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
-            if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+            if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                 echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
             }
             echo '</div></td>';
             echo '<td class="initiatorRow">';
             $initiators = [];
             foreach ($amend->getInitiators() as $init) {
-                if ($init->personType == \app\models\db\MotionSupporter::PERSON_NATURAL) {
+                if ($init->personType === \app\models\db\MotionSupporter::PERSON_NATURAL) {
                     $initiators[] = $init->name;
                 } else {
                     $initiators[] = $init->organization;

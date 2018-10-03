@@ -3,11 +3,11 @@
 namespace app\controllers\admin;
 
 use app\components\HTMLTools;
-use app\components\ProposedProcedureFactory;
 use app\components\Tools;
 use app\models\db\AmendmentAdminComment;
 use app\models\db\MotionAdminComment;
 use app\models\db\User;
+use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
 class ProposedProcedureController extends AdminBase
@@ -24,9 +24,9 @@ class ProposedProcedureController extends AdminBase
     {
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
+            $proposalFactory = new Factory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
+            $proposalFactory = new Factory($this->consultation, true);
         }
 
         return $this->render('index', [
@@ -45,9 +45,9 @@ class ProposedProcedureController extends AdminBase
 
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
+            $proposalFactory = new Factory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
+            $proposalFactory = new Factory($this->consultation, true);
         }
 
         $html = $this->renderPartial('_index_content', [
@@ -63,18 +63,20 @@ class ProposedProcedureController extends AdminBase
 
     /**
      * @param int $agendaItemId
+     * @param int $comments
      * @return string
      */
-    public function actionOds($agendaItemId = 0)
+    public function actionOds($agendaItemId = 0, $comments = 0)
     {
         $filename = 'proposed-procedure';
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
             $filename        .= '-' . trim($agendaItem->getShownCode(true), "\t\n\r\0\x0b.");
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true, $agendaItem);
+            $proposalFactory = new Factory($this->consultation, true, $agendaItem);
         } else {
-            $proposalFactory = new ProposedProcedureFactory($this->consultation, true);
+            $proposalFactory = new Factory($this->consultation, true);
         }
+        $filename .= '.ods';
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -83,6 +85,7 @@ class ProposedProcedureController extends AdminBase
 
         return $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
+            'comments'       => (IntVal($comments) === 1),
         ]);
     }
 

@@ -57,7 +57,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 
             <?php
             $foundStatus = false;
-            foreach (Amendment::getProposedChangeStati() as $statusId) {
+            foreach (Amendment::getProposedChangeStatuses() as $statusId) {
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
@@ -65,7 +65,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= Amendment::getProposedStatiNames()[$statusId] ?>
+                    ?>> <?= Amendment::getProposedStatusNames()[$statusId] ?>
                 </label><br>
                 <?php
             }
@@ -218,7 +218,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         <div class="votingStatus">
             <h3><?= \Yii::t('amend', 'proposal_voting_status') ?></h3>
             <?php
-            foreach (Amendment::getVotingStati() as $statusId => $statusName) {
+            foreach (Amendment::getVotingStatuses() as $statusId => $statusName) {
                 ?>
                 <label>
                     <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php
@@ -245,14 +245,14 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         );
         ?>
     </section>
-    <section class="collissions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
+    <section class="collisions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
         <h3><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
                 $title = $collidingAmendment->getShortTitle();
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
-                echo '<li class="collission' . $collidingAmendment->id . '">' . Html::a($title, $url);
+                echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
                     echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
                 }

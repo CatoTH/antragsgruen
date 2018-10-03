@@ -37,7 +37,7 @@ if ($amendment->isInScreeningProcess()) {
     echo \Yii::t('amend', 'confirmed_screening');
 }
 if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
-    $min = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+    $min = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
     echo str_replace('%MIN%', $min, \Yii::t('amend', 'confirmed_support_phase'));
 }
 

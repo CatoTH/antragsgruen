@@ -93,9 +93,9 @@ echo '<div class="content form-horizontal fuelux">';
     </label>
     <div class="col-md-4">
         <?php
-        $options = ['id' => 'amendmentStatus'];
-        $stati   = Amendment::getStatusNamesVisibleForadmins();
-        echo HTMLTools::fueluxSelectbox('amendment[status]', $stati, $amendment->status, $options, true);
+        $options  = ['id' => 'amendmentStatus'];
+        $statuses = Amendment::getStatusNamesVisibleForAdmins();
+        echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
         ?>
     </div>
     <div class="col-md-5">
@@ -268,7 +268,8 @@ echo $initiatorClass->getAmendmentForm($form->motion->motionType, $form, $contro
 
 echo $this->render('../motion/_update_supporter', [
     'supporters'  => $amendment->getSupporters(),
-    'newTemplate' => new \app\models\db\AmendmentSupporter()
+    'newTemplate' => new \app\models\db\AmendmentSupporter(),
+    'settings'    => $initiatorClass->getSettingsObj(),
 ]);
 
 

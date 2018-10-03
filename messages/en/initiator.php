@@ -14,6 +14,7 @@ return [
     'orgaResolution'      => 'Resolution date',
     'visibilityAdmins'    => 'Only visible for admins',
     'email'               => 'E-mail',
+    'gender'              => 'Gender',
     'phone'               => 'Phone',
     'moreInitiators'      => 'Further proposers',
     'addInitiator'        => 'Add a proposer',

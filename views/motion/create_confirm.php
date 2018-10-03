@@ -1,5 +1,6 @@
 <?php
 
+use app\components\UrlHelper;
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -13,26 +14,51 @@ use yii\helpers\Html;
 
 $controller = $this->context;
 
-$this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Motion');
+$this->title = Yii::t('motion', $mode === 'create' ? 'Start a Motion' : 'Edit Motion');
+
 $controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);
-$controller->layoutParams->addBreadcrumb(\Yii::T('motion', 'confirm_bread'));
+$controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'confirm_bread'));
 
-echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->title) . '</h1>';
+echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
+
+?>
+    <section class="toolbarBelowTitle versionSwitchtoolbar" data-antragsgruen-widget="frontend/MotionCreateConfirm">
+        <div class="styleSwitcher">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default active">
+                    <input type="radio" name="viewMode" value="web" autocomplete="off" checked>
+                    <?= \Yii::t('motion', 'confirm_view_web') ?>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="viewMode" value="pdf" autocomplete="off">
+                    <?= \Yii::t('motion', 'confirm_view_pdf') ?>
+                </label>
+            </div>
+        </div>
+    </section>
+
+<?php
+$pdfUrl    = \app\components\UrlHelper::createMotionUrl($motion, 'pdf');
+$iframeUrl = UrlHelper::createMotionUrl($motion, 'embeddedpdf', ['file' => $pdfUrl]);
+$iframe    = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+?>
+    <section class="pdfVersion" data-src="<?= Html::encode($iframe) ?>"></section>
+<?php
 
 $main = $right = '';
 foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
+    if ($section->isLayoutRight()) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
-        if ($section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_PDF &&
-            $section->getSettings()->type != \app\models\sectionTypes\PDF::TYPE_IMAGE
+        if ($section->getSettings()->type !== \app\models\sectionTypes\PDF::TYPE_PDF &&
+            $section->getSettings()->type !== \app\models\sectionTypes\PDF::TYPE_IMAGE
         ) {
             $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         }
@@ -45,51 +71,56 @@ foreach ($motion->getSortedSections(true) as $section) {
     }
 }
 
-if ($right == '') {
+if ($right === '') {
     echo $main;
 } else {
-    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
-    echo $main;
-    echo '</div><div class="col-md-3 motionRightCol">';
-    echo $right;
-    echo '</div></div>';
+    ?>
+    <div class="webVersion row" style="margin-top: 2px;">
+        <div class="col-md-8 motionMainCol">
+            <?= $main ?>
+        </div>
+        <div class="col-md-4 motionRightCol">
+            <?= $right ?>
+        </div>
+    </div>
+    <?php
 }
-
-echo '<div class="motionTextHolder">
-        <h3 class="green">' . \Yii::t('motion', 'initiators_head') . '</h3>
-
+?>
+    <div class="webVersion motionTextHolder">
+        <h3 class="green"><?= \Yii::t('motion', 'initiators_head') ?></h3>
         <div class="content">
-            <ul>';
+            <ul>
+                <?php
+                foreach ($motion->getInitiators() as $unt) {
+                    echo '<li style="font-weight: bold;">' . $unt->getNameWithResolutionDate(true) . '</li>';
+                }
 
-foreach ($motion->getInitiators() as $unt) {
-    echo '<li style="font-weight: bold;">' . $unt->getNameWithResolutionDate(true) . '</li>';
-}
-
-foreach ($motion->getSupporters() as $unt) {
-    echo '<li>' . $unt->getNameWithResolutionDate(true) . '</li>';
-}
-echo '
+                foreach ($motion->getSupporters() as $unt) {
+                    echo '<li>' . $unt->getNameWithResolutionDate(true) . '</li>';
+                }
+                ?>
             </ul>
         </div>
-    </div>';
+    </div>
 
-echo Html::beginForm('', 'post', ['id' => 'motionConfirmForm']);
-
-echo '<div class="content">
+<?= Html::beginForm('', 'post', ['id' => 'motionConfirmForm']) ?>
+    <div class="content">
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span> ' . $motion->getSubmitButtonLabel() . '
+                <span class="glyphicon glyphicon-ok-sign"></span>
+                <?= $motion->getSubmitButtonLabel() ?>
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'button_correct') . '
+                <span class="glyphicon glyphicon-remove-sign"></span>
+                <?= \Yii::t('motion', 'button_correct') ?>
             </button>
         </div>
-    </div>';
+    </div>
+<?= Html::endForm() ?>
 
-echo Html::endForm();
-
+<?php
 if ($deleteDraftId) {
     $controller->layoutParams->addOnLoadJS('localStorage.removeItem(' . json_encode($deleteDraftId) . ');');
 }

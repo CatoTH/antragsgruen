@@ -67,7 +67,7 @@ $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId").selectlis
 
 $I->wantTo('propose to reject the second amendment');
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 280);
-$I->seeElement('#proposedChanges .collission279');
+$I->seeElement('#proposedChanges .collision279');
 $I->executeJS('$("#proposedChanges .proposalStatus' . IMotion::STATUS_REJECTED . ' input").prop("checked", true).change();');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);

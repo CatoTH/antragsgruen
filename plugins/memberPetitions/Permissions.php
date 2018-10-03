@@ -15,12 +15,12 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
     public function motionCanMergeAmendments($motion)
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
-            $draftStati = [
+            $draftStatuses = [
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_MERGING_DRAFT_PUBLIC,
                 Motion::STATUS_MERGING_DRAFT_PRIVATE
             ];
-            return !in_array($motion->status, $draftStati);
+            return !in_array($motion->status, $draftStatuses);
         });
         if (count($replacedByMotions) > 0) {
             return false;

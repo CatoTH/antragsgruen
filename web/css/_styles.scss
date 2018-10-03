@@ -114,6 +114,7 @@
   width: 100%;
   > tbody > tr > th {
     width: 30%;
+    vertical-align: top;
   }
 
   .mergingDraft > * {
@@ -334,6 +335,15 @@
   margin-bottom: 20px;
 }
 
+.motionMergeConfirmForm {
+  .newMotionStatus, .newMotionInitiator {
+    label {
+      font-weight: normal;
+      display: block;
+    }
+  }
+}
+
 .mergeConfirmToolbar {
   margin-bottom: 30px;
 
@@ -415,6 +425,9 @@
       margin-right: 10px;
     }
   }
+  .exportHolder {
+    margin: 5px 0 0 42px;
+  }
 }
 
 .motionMergeStyles {
@@ -434,7 +447,7 @@
   .ICE-Tracking .ice-ins.hover, .ICE-Tracking .ice-ins.hover p {
     background-color: darken(rgba(100, 255, 100, 0.6), 10%);
   }
-  .paragraphHolder.hasCollissions {
+  .paragraphHolder.hasCollisions {
     background-color: #fff5f5;
     margin-top: 15px;
     margin-bottom: 15px;
@@ -442,7 +455,7 @@
     border-bottom: 1px solid #ccc;
     position: relative;
     &:before {
-      content: attr(data-collission-start-msg);
+      content: attr(data-collision-start-msg);
       position: absolute;
       top: -13px;
       text-align: center;
@@ -451,7 +464,7 @@
       width: 100%;
     }
     &:after {
-      content: attr(data-collission-end-msg);
+      content: attr(data-collision-end-msg);
       position: absolute;
       bottom: -13px;
       text-align: center;
@@ -459,7 +472,7 @@
       color: gray;
       width: 100%;
     }
-    + .hasCollissions {
+    + .hasCollisions {
       margin-top: 45px;
     }
   }
@@ -530,7 +543,6 @@
       color: $motionFixedFontColor;
     }
   }
-
   .editorialAmendments {
     h3 {
       font-size: 1em;
@@ -568,6 +580,10 @@
       font-size: 16px;
       padding: 5px;
       background-color: #eee;
+    }
+    .pdfLink {
+      float: right;
+      font-size: 12px;
     }
     .public {
       padding: 5px;

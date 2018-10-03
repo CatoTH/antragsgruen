@@ -5,17 +5,19 @@ namespace app\models\motionTypeTemplates;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\ConsultationSettingsMotionSection;
+use app\models\settings\InitiatorForm;
 use app\models\settings\MotionType;
-use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularDataType;
+use app\models\supportTypes\SupportBase;
 
 trait Application
 {
     /**
      * @param Consultation $consultation
      * @return ConsultationMotionType
+     * @throws \Exception
      */
     public static function doCreateApplicationType(Consultation $consultation)
     {
@@ -31,18 +33,21 @@ trait Application
         $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
-        $type->contactName                  = ConsultationMotionType::CONTACT_NONE;
-        $type->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
-        $type->contactEmail                 = ConsultationMotionType::CONTACT_REQUIRED;
-        $type->supportType                  = ISupportType::ONLY_INITIATOR;
+        $type->supportType                  = SupportBase::ONLY_INITIATOR;
         $type->amendmentMultipleParagraphs  = 0;
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;
         $type->sidebarCreateButton          = 0;
 
-        $settings                = new MotionType(null);
-        $settings->layoutTwoCols = 1;
+        $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
+        $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+        $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
+        $type->supportTypeSettings       = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+        $settings                   = new MotionType(null);
+        $settings->motionTitleIntro = '';
         $type->setSettingsObj($settings);
 
         $type->save();

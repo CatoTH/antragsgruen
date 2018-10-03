@@ -18,6 +18,8 @@ namespace app\models\db;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contextPhone
+ * @property string $dateCreation
+ * @property string $extraData
  *
  * @property User $user
  * @property Amendment $amendment
@@ -66,9 +68,10 @@ class AmendmentSupporter extends ISupporter
      * @param User|null $user
      * @param string $name
      * @param string $orga
-     * @param null $role
+     * @param string $role
+     * @param string $gender
      */
-    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role)
+    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role, $gender = '')
     {
         $maxPos = 0;
         if ($user) {
@@ -97,6 +100,8 @@ class AmendmentSupporter extends ISupporter
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
+        $support->dateCreation = date('Y-m-d H:i:s');
+        $support->setExtraDataEntry('gender', ($gender !== '' ? $gender : null));
         $support->save();
 
         if (!$user) {

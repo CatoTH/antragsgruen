@@ -92,7 +92,7 @@ class Permissions
     public function motionCanMergeAmendments($motion)
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
-            $draftStati = [
+            $draftStatuses = [
                 Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_MERGING_DRAFT_PUBLIC,
@@ -101,7 +101,7 @@ class Permissions
                 Motion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
                 Motion::STATUS_INLINE_REPLY,
             ];
-            return !in_array($motion->status, $draftStati);
+            return !in_array($motion->status, $draftStatuses);
         });
         if (count($replacedByMotions) > 0) {
             return false;
@@ -113,9 +113,9 @@ class Permissions
             return true;
         } elseif ($motion->iAmInitiator()) {
             $policy = $motion->getMyMotionType()->initiatorsCanMergeAmendments;
-            if ($policy === ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION) {
+            if ($policy === ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION) {
                 return true;
-            } elseif ($policy === ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION) {
+            } elseif ($policy === ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION) {
                 return (count($motion->getVisibleAmendments()) === 0);
             } else {
                 return false;
@@ -146,7 +146,7 @@ class Permissions
                     return false;
                 }
             }
-            $notAmendableStati = [
+            $notAmendableStatuses = [
                 Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_COLLECTING_SUPPORTERS,
@@ -154,8 +154,10 @@ class Permissions
                 Motion::STATUS_SUBMITTED_UNSCREENED_CHECKED,
                 Motion::STATUS_DRAFT_ADMIN,
                 Motion::STATUS_MODIFIED,
+                Motion::STATUS_RESOLUTION_PRELIMINARY,
+                Motion::STATUS_RESOLUTION_FINAL,
             ];
-            if (in_array($motion->status, $notAmendableStati)) {
+            if (in_array($motion->status, $notAmendableStatuses)) {
                 if ($exceptions) {
                     throw new NotAmendable('Not amendable in the current state', false);
                 } else {
@@ -202,7 +204,7 @@ class Permissions
             return false;
         }
         $supporters    = count($motion->getSupporters());
-        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
         return ($supporters >= $minSupporters);
     }
 }

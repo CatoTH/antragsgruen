@@ -379,9 +379,10 @@ class Exporter
             ['\parbox{12.5cm}{\raggedright\begin{itemize}', '\end{itemize}}'],
             $textMain
         );
-        return '\begin{wrapfigure}{r}{0.23\textwidth}
+        return '\setlength{\columnsep}{15mm}' . "\n" . '\begin{wrapfigure}{r}{0.28\textwidth}\small
 \vspace{-0.5cm}
 ' . $textRight . '
+\vspace{30cm}
 \end{wrapfigure}
 ' . $textMain;
     }
@@ -398,12 +399,21 @@ class Exporter
         $replaces['%TITLE%']              = static::encodePlainString($content->title);
         $replaces['%TITLEPREFIX%']        = static::encodePlainString($content->titlePrefix);
         $replaces['%TITLE_LONG%']         = static::encodePlainString($content->titleLong);
+        $replaces['%TITLE_RAW%']          = static::encodePlainString($content->titleRaw);
         $replaces['%AUTHOR%']             = $content->author;
         $replaces['%MOTION_DATA_TABLE%']  = $content->motionDataTable;
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
         $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
         $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
-        $template                         = str_replace(array_keys($replaces), array_values($replaces), $template);
+        $replaces['%APP_TITLE%']          = static::encodePlainString(\Yii::t('export', 'pdf_app_title'));
+        if ($content->agendaItemName) {
+            $replaces['%APP_TOP_LABEL%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_top_label'));
+            $replaces['%APP_TOP%']       = static::encodePlainString($content->agendaItemName);
+        } else {
+            $replaces['%APP_TOP_LABEL%'] = '';
+            $replaces['%APP_TOP%']       = '';
+        }
+        $template = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
 

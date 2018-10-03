@@ -46,8 +46,8 @@
       position: sticky;
       position: -webkit-sticky;
       top: -5px;
-      background: rgba(64, 64, 64, 255);
-      z-index: 1;
+      background: $headingPrimaryBackground;
+      z-index: 5;
     }
   }
   h2.green, h3.green, .nav-header, legend.green {
@@ -224,6 +224,7 @@
       font-weight: normal;
       display: block;
       text-overflow: ellipsis;
+      min-height: 20px;
     }
   }
 }

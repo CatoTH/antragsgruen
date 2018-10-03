@@ -2,7 +2,6 @@
 
 namespace app\models\db;
 
-use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TabularData;
 use yii\db\ActiveRecord;
@@ -24,6 +23,7 @@ use yii\db\ActiveRecord;
  * @property int $hasComments
  * @property int $hasAmendments
  * @property int $positionRight
+ * @property int $printTitle
  *
  * @property MotionSection[] $sections
  * @property ConsultationMotionType $motionType
@@ -77,7 +77,6 @@ class ConsultationSettingsMotionSection extends ActiveRecord
 
     /**
      * @param array $data
-     * @throws FormError
      */
     public function setAdminAttributes($data)
     {
@@ -87,7 +86,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
-        $this->positionRight = (isset($data['positionRight']) && $data['positionRight'] == 1 ? 1 : 0);
+        $this->positionRight = (isset($data['positionRight']) && IntVal($data['positionRight']) === 1 ? 1 : 0);
+        $this->printTitle    = (isset($data['printTitle']) && IntVal($data['printTitle']) === 1 ? 1 : 0);
         if (isset($data['maxLenSet'])) {
             $this->maxLen = $data['maxLenVal'];
             if (isset($data['maxLenSoft'])) {
@@ -97,7 +97,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $this->maxLen = 0;
         }
 
-        if ($this->type == ISectionType::TYPE_TABULAR) {
+        if (IntVal($this->type) === ISectionType::TYPE_TABULAR) {
             $this->data = TabularData::saveTabularDataSettingsFromPost($this->data, $data);
         } else {
             $this->data = null;
@@ -111,7 +111,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     {
         return [
             [['motionTypeId', 'title', 'type', 'position', 'status', 'required'], 'required'],
-            [['id', 'type', 'motionTypeId', 'status', 'required', 'positionRight'], 'number'],
+            [['id', 'type', 'motionTypeId', 'status', 'required', 'positionRight', 'printTitle'], 'number'],
             [['position', 'fixedWidth', 'maxLen', 'lineNumbers', 'hasComments', 'hasAmendments'], 'number'],
             [['title', 'maxLen', 'hasComments', 'hasAmendments'], 'safe'],
         ];
@@ -122,10 +122,10 @@ class ConsultationSettingsMotionSection extends ActiveRecord
      */
     public function getAvailableCommentTypes()
     {
-        if ($this->type == ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->type === ISectionType::TYPE_TEXT_SIMPLE) {
             return [static::COMMENTS_NONE, static::COMMENTS_MOTION, static::COMMENTS_PARAGRAPHS];
         }
-        if ($this->type == ISectionType::TYPE_TEXT_HTML) {
+        if ($this->type === ISectionType::TYPE_TEXT_HTML) {
             return [static::COMMENTS_NONE, static::COMMENTS_MOTION];
         }
         return [static::COMMENTS_NONE];

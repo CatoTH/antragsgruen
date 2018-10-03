@@ -8,7 +8,6 @@ use CatoTH\HTML2OpenDocument\Text;
 use yii\helpers\Html;
 
 /**
- * @var \app\models\db\Motion $newMotion
  * @var \app\models\db\Motion $oldMotion
  * @var \app\models\MotionSectionChanges[] $changes
  * @var \app\models\settings\AntragsgruenApp $config
@@ -39,7 +38,7 @@ foreach ($oldMotion->motionSupporters as $supp) {
         $supporters[] = $supp->getNameWithOrga();
     }
 }
-if (count($initiators) == 1) {
+if (count($initiators) === 1) {
     $initiatorStr = \Yii::t('export', 'InitiatorSingle');
 } else {
     $initiatorStr = \Yii::t('export', 'InitiatorMulti');

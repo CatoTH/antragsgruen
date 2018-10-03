@@ -19,7 +19,7 @@ $I->checkOption('#initiatorsCanMerge2');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->seeCheckboxIsChecked('#initiatorsCanMerge2');
 
-$I->wantTo('merge amendments with collissions');
+$I->wantTo('merge amendments with collisions');
 $I->logout();
 $I->gotoConsultationHome();
 $I->loginAsStdUser();
@@ -40,7 +40,7 @@ $I->cantSeeElementInDOM('.otherAmendmentStatus');
 $I->executeJS('$("#amendmentStatus").selectlist("selectByValue", "6");');
 $I->executeJS('$(".save-row .goto_2").click();');
 $I->wait(1);
-$I->click('.checkAmendmentCollissions');
+$I->click('.checkAmendmentCollisions');
 $I->wait(2);
 $I->see('Wui helfgod Wiesn', 'del');
 $I->see('Woibbadinga damischa owe gwihss Sauwedda', 'ins');

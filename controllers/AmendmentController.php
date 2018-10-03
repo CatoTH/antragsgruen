@@ -397,8 +397,9 @@ class AmendmentController extends Base
                         if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
                             $suppNew = new AmendmentSupporter();
                             $suppNew->setAttributes($supp->getAttributes());
-                            $suppNew->id          = null;
-                            $suppNew->amendmentId = $amendment->id;
+                            $suppNew->id           = null;
+                            $suppNew->amendmentId  = $amendment->id;
+                            $suppNew->dateCreation = date('Y-m-d H:i:s');
                             $suppNew->save();
                         }
                     }
@@ -422,8 +423,9 @@ class AmendmentController extends Base
         }
 
         if (count($form->supporters) == 0) {
-            $supporter       = new AmendmentSupporter();
-            $supporter->role = AmendmentSupporter::ROLE_INITIATOR;
+            $supporter               = new AmendmentSupporter();
+            $supporter->role         = AmendmentSupporter::ROLE_INITIATOR;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
             if (User::getCurrentUser() && !$iAmAdmin) {
                 $user                    = User::getCurrentUser();
                 $supporter->userId       = $user->id;
@@ -504,7 +506,7 @@ class AmendmentController extends Base
                 if ($amendment->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
-                $amendment->proposalUserStatus   = null;
+                $amendment->proposalUserStatus = null;
             }
             $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
@@ -549,7 +551,7 @@ class AmendmentController extends Base
             }
 
             $this->consultation->refresh();
-            $response['html'] = $this->renderPartial('_set_proposed_procedure', [
+            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
                 'amendment' => $amendment,
                 'msgAlert'  => $msgAlert,
                 'context'   => \Yii::$app->request->post('context', 'view'),
@@ -631,7 +633,7 @@ class AmendmentController extends Base
             if ($amendment->proposalUserStatus !== null) {
                 $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
             }
-            $amendment->proposalUserStatus   = null;
+            $amendment->proposalUserStatus = null;
             $amendment->save();
         }
 
@@ -674,7 +676,7 @@ class AmendmentController extends Base
         $collidesWith = [];
         foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]) as $compAmend) {
             foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0 && !in_array($compAmend, $collidesWith)) {
                     $collidesWith[] = $compAmend;
                 }
@@ -682,7 +684,7 @@ class AmendmentController extends Base
         }
 
         return json_encode([
-            'collissions' => array_map(function (Amendment $amend) {
+            'collisions' => array_map(function (Amendment $amend) {
                 // Keep in sync with edit_proposed_change.php
                 $title = $amend->getShortTitle();
                 if ($amend->proposalStatus == Amendment::STATUS_VOTE) {

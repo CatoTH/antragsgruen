@@ -53,7 +53,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
 
             <?php
             $foundStatus = false;
-            foreach (Motion::getProposedChangeStati() as $statusId) {
+            foreach (Motion::getProposedChangeStatuses() as $statusId) {
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
@@ -61,7 +61,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         $foundStatus = true;
                         echo 'checked';
                     }
-                    ?>> <?= Motion::getProposedStatiNames()[$statusId] ?>
+                    ?>> <?= Motion::getProposedStatusNames()[$statusId] ?>
                 </label><br>
                 <?php
             }
@@ -209,7 +209,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
         <div class="votingStatus">
             <h3><?= \Yii::t('amend', 'proposal_voting_status') ?></h3>
             <?php
-            foreach (Motion::getVotingStati() as $statusId => $statusName) {
+            foreach (Motion::getVotingStatuses() as $statusId => $statusName) {
                 ?>
                 <label>
                     <input type="radio" name="votingStatus" value="<?= $statusId ?>" <?php

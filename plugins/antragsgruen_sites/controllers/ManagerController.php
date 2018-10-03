@@ -3,7 +3,7 @@
 namespace app\plugins\antragsgruen_sites\controllers;
 
 use app\components\HTMLTools;
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\Base;

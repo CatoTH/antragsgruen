@@ -102,7 +102,7 @@ $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoConsultationCreatePage();
 $I->click('.consultation' . AcceptanceTester::FIRST_FREE_CONSULTATION_ID . ' .stdbox button');
 $I->see('Die Veranstaltung wurde als Standard-Veranstaltung festgelegt.');
 
-SiteHomePage::openBy($I, [
+$I->openPage(SiteHomePage::class, [
     'subdomain' => 'stdparteitag'
 ]);
 $I->see('Neue Veranstaltung 1', 'h1');

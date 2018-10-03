@@ -3,7 +3,7 @@
 use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\policies\IPolicy;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
@@ -66,9 +66,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
-                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
-                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';
@@ -142,9 +142,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [ISupportType::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
-                [ISupportType::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
-                [ISupportType::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';
@@ -200,10 +200,10 @@ foreach (IPolicy::getPolicies() as $policy) {
         <label><?php
             echo Html::radio(
                 'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION),
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION),
                 [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISSION,
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
                 ]
             );
             ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
@@ -213,10 +213,10 @@ foreach (IPolicy::getPolicies() as $policy) {
         <label><?php
             echo Html::radio(
                 'type[initiatorsCanMergeAmendments]',
-                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION),
+                ($motionType->initiatorsCanMergeAmendments == ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION),
                 [
-                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
-                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISSION,
+                    'value' => ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
+                    'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
                 ]
             )
             ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_yes') ?>

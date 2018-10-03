@@ -15,9 +15,9 @@ use app\models\db\User;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -53,8 +53,8 @@ class LayoutHelper
                 if (!$adminMode) {
                     $name .= \Yii::t('initiator', 'visibilityAdmins') . ': ';
                 }
-                if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
-                    if ($supp->name != '') {
+                if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
+                    if ($supp->name) {
                         $name .= Html::encode($supp->name) . ', ';
                     }
                 }
@@ -85,22 +85,19 @@ class LayoutHelper
      * @param Motion $motion
      * @return Content
      * @throws \app\models\exceptions\Internal
+     * @throws \Exception
      */
     public static function renderTeX(Motion $motion)
     {
-        $hasAgenda                = ($motion->agendaItem !== null);
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
+        $content->titleRaw        = $motion->title;
         $content->titlePrefix     = $motion->titlePrefix;
         $content->titleLong       = $motion->getTitleWithPrefix();
-        if ($hasAgenda) {
-            $content->title = $motion->agendaItem->title;
-        } else {
-            $content->title = $motion->title;
-        }
+        $content->title           = $motion->getTitleWithIntro();
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);
@@ -112,25 +109,29 @@ class LayoutHelper
         $initiatorsStr   = implode(', ', $initiators);
         $content->author = $initiatorsStr;
 
-        foreach ($motion->getDataTable($hasAgenda) as $key => $val) {
+        if ($motion->agendaItem) {
+            $content->agendaItemName = $motion->agendaItem->title;
+        }
+
+        foreach ($motion->getDataTable() as $key => $val) {
             $content->motionDataTable .= Exporter::encodePlainString($key) . ':   &   ';
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
         foreach ($motion->getSortedSections(true) as $section) {
-            $isRight = ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols);
+            $isRight = $section->isLayoutRight();
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
         }
 
         $supporters = $motion->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
+            $title             = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $supps = [];
+            $supps             = [];
             foreach ($supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
-            $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
             $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
@@ -138,12 +139,12 @@ class LayoutHelper
     }
 
     /**
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Motion $motion
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(TcpdfFpdi $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Motion $motion)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
@@ -155,7 +156,7 @@ class LayoutHelper
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type == ISectionType::TYPE_PDF) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF) {
                 $pdfAttachments[] = $section;
             } else {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
@@ -175,8 +176,8 @@ class LayoutHelper
     {
         $user = User::getCurrentUser();
 
-        $hasLike    = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE);
-        $hasDislike = ($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE);
+        $hasLike    = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE);
+        $hasDislike = ($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE);
 
         if (!$hasLike && !$hasDislike) {
             return;
@@ -207,7 +208,7 @@ class LayoutHelper
             echo '<ul>';
             foreach ($likes as $supp) {
                 echo '<li>';
-                if ($user && $supp->userId == $user->id) {
+                if ($user && $supp->userId === $user->id) {
                     echo '<span class="label label-info">' . \Yii::t('motion', 'likes_you') . '</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());
@@ -283,14 +284,14 @@ class LayoutHelper
     /**
      * @param IMotion $motion
      * @param IPolicy $policy
-     * @param ISupportType $supportType
+     * @param SupportBase $supportType
      * @param bool $iAmSupporting
      */
-    public static function printSupportingSection($motion, $policy, $supportType, $iAmSupporting)
+    public static function printSupportingSection($motion, $policy, SupportBase $supportType, $iAmSupporting)
     {
         $user = User::getCurrentUser();
 
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
             return;
         }
 
@@ -311,23 +312,22 @@ class LayoutHelper
         }
 
         if ($canSupport) {
-            echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
-
             if ($iAmSupporting) {
+                echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
                 echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
                 echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
                 echo '</div>';
+                echo Html::endForm();
             } else {
                 echo \Yii::$app->controller->renderPartial('@app/views/motion/_support_block', [
                     'user'        => $user,
                     'supportType' => $supportType,
                 ]);
             }
-            echo Html::endForm();
         } else {
-            if ($cantSupportMsg != '') {
+            if ($cantSupportMsg !== '') {
                 if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
                     $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
                 } else {
@@ -347,37 +347,37 @@ class LayoutHelper
      */
     public static function printAmendmentStatusSetter($amendments, $statusOverrides = [])
     {
-        echo '<h2 class="green">' . \Yii::t('amend', 'merge_amend_stati') . '</h2>
+        echo '<h2 class="green">' . \Yii::t('amend', 'merge_amend_statuses') . '</h2>
     <div class="content form-horizontal">';
 
         foreach ($amendments as $amendment) {
             //$changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
             $changeset = [];
             $data      = 'data-old-status="' . $amendment->status . '"';
-            $data .= ' data-amendment-id="' . $amendment->id . '"';
-            $data .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
+            $data      .= ' data-amendment-id="' . $amendment->id . '"';
+            $data      .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
             echo '<div class="form-group amendmentStatus" ' . $data . '>
     <label for="amendmentStatus' . $amendment->id . '" class="col-sm-3 control-label">';
             echo Html::encode($amendment->getShortTitle()) . ':<br><span class="amendSubtitle">';
             echo Html::encode($amendment->getInitiatorsStr());
             echo '</span></label>
     <div class="col-md-9">';
-            $statiAll                  = $amendment->getStatusNames();
-            $stati                     = [
-                Amendment::STATUS_PROCESSED         => $statiAll[Amendment::STATUS_PROCESSED],
-                Amendment::STATUS_ACCEPTED          => $statiAll[Amendment::STATUS_ACCEPTED],
-                Amendment::STATUS_REJECTED          => $statiAll[Amendment::STATUS_REJECTED],
-                Amendment::STATUS_MODIFIED_ACCEPTED => $statiAll[Amendment::STATUS_MODIFIED_ACCEPTED],
+            $statusesAll                  = $amendment->getStatusNames();
+            $statuses                     = [
+                Amendment::STATUS_PROCESSED         => $statusesAll[Amendment::STATUS_PROCESSED],
+                Amendment::STATUS_ACCEPTED          => $statusesAll[Amendment::STATUS_ACCEPTED],
+                Amendment::STATUS_REJECTED          => $statusesAll[Amendment::STATUS_REJECTED],
+                Amendment::STATUS_MODIFIED_ACCEPTED => $statusesAll[Amendment::STATUS_MODIFIED_ACCEPTED],
             ];
-            $stati[$amendment->status] = \Yii::t('amend', 'merge_status_unchanged') . ': ' .
-                $statiAll[$amendment->status];
+            $statuses[$amendment->status] = \Yii::t('amend', 'merge_status_unchanged') . ': ' .
+                $statusesAll[$amendment->status];
             if (isset($statusOverrides[$amendment->id])) {
                 $statusPre = $statusOverrides[$amendment->id];
             } else {
                 $statusPre = Amendment::STATUS_PROCESSED;
             }
             $opts = ['id' => 'amendmentStatus' . $amendment->id];
-            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $stati, $statusPre, $opts);
+            echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $statuses, $statusPre, $opts);
             echo '</div></div>';
         }
 
@@ -389,6 +389,7 @@ class LayoutHelper
      * @param Motion $motion
      * @return string
      * @throws \app\models\exceptions\Internal
+     * @throws \Exception
      */
     public static function createPdf(Motion $motion)
     {
@@ -422,18 +423,20 @@ class LayoutHelper
      */
     public static function getShareButtons($url, $title)
     {
-        $twitter  = Html::encode(
+        $twitter       = Html::encode(
             'https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url)
         );
-        $facebook = Html::encode(
+        $facebook      = Html::encode(
             'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
         );
+        $titleTwitter  = Html::encode(\Yii::t('motion', 'share_twitter'));
+        $titleFacebook = Html::encode(\Yii::t('motion', 'share_facebook'));
         return '<div class="share_buttons"><ul>
-              <li class="twitter"><a href="' . $twitter . '" title="Bei Twitter teilen">
+              <li class="twitter"><a href="' . $twitter . '" title="' . $titleTwitter . '">
                  <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
               </a></li>
-              <li class="facebook"><a href="' . $facebook . '" title="Bei Facebook teilen">
-                  <span class="icon fontello-facebook"></span> <span class="share_text">teilen</span>
+              <li class="facebook"><a href="' . $facebook . '" title="' . $titleFacebook . '">
+                  <span class="icon fontello-facebook"></span> <span class="share_text">share</span>
               </a></li>
             </ul></div>';
     }

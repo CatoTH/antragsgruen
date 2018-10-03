@@ -18,7 +18,7 @@ if (!isset($httpStatus)) {
     $httpStatus = 500;
 }
 if (!isset($name)) {
-    $name = 'Fehler';
+    $name = 'Error';
 }
 
 switch ($httpStatus) {

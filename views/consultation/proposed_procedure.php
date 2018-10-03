@@ -1,12 +1,12 @@
 <?php
 
-use app\components\ProposedProcedureAgenda;
 use app\models\db\User;
+use app\models\proposedProcedure\Agenda;
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var ProposedProcedureAgenda[] $proposedAgenda
+ * @var Agenda[] $proposedAgenda
  */
 
 /** @var \app\controllers\ConsultationController $controller */

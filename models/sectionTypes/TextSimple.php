@@ -16,7 +16,7 @@ use app\models\db\Consultation;
 use app\models\db\MotionSection;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 use yii\web\View;
 use CatoTH\HTML2OpenDocument\Text as ODTText;
@@ -144,7 +144,7 @@ class TextSimple extends Text
 
     /**
      * @param array $data
-s     * @throws \app\models\exceptions\Internal
+     * @throws \app\models\exceptions\Internal
      */
     public function setAmendmentData($data)
     {
@@ -312,10 +312,10 @@ s     * @throws \app\models\exceptions\Internal
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @throws \app\models\exceptions\Internal
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         if ($this->isEmpty()) {
             return;
@@ -324,7 +324,7 @@ s     * @throws \app\models\exceptions\Internal
         /** @var MotionSection $section */
         $section = $this->section;
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+        if ($section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
@@ -390,15 +390,15 @@ s     * @throws \app\models\exceptions\Internal
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @throws \app\models\exceptions\Internal
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
         if ($section->getAmendment()->globalAlternative) {
-            if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+            if ($section->getSettings()->printTitle) {
                 $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                 $pdf->ln(7);
             }
@@ -415,7 +415,7 @@ s     * @throws \app\models\exceptions\Internal
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
 
             if (count($diffGroups) > 0) {
-                if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+                if ($section->getSettings()->printTitle) {
                     $pdfLayout->printSectionHeading($this->section->getSettings()->title);
                     $pdf->ln(7);
                 }
@@ -602,15 +602,16 @@ s     * @throws \app\models\exceptions\Internal
 
         $tex = '';
         /** @var MotionSection $section */
-        $section = $this->section;
+        $section  = $this->section;
+        $settings = $section->getSettings();
 
-        $hasLineNumbers = $section->getSettings()->lineNumbers;
+        $hasLineNumbers = $settings->lineNumbers;
         $lineLength     = ($hasLineNumbers ? $consultation->getSettings()->lineLength : 0);
-        $fixedWidth     = $section->getSettings()->fixedWidth;
+        $fixedWidth     = $settings->fixedWidth;
         $firstLine      = $section->getFirstLineNumber();
 
-        if ($consultation->site->getBehaviorClass()->showSectionIntroductionInPdf($section)) {
-            $title = Exporter::encodePlainString($section->getSettings()->title);
+        if ($settings->printTitle) {
+            $title = Exporter::encodePlainString($settings->title);
             if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
                 $title = $section->getMotion()->title;
             }
@@ -862,9 +863,9 @@ s     * @throws \app\models\exceptions\Internal
             $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 
-        $paragraphCollissions = [];
+        $paragraphCollisions = [];
         foreach (array_keys($paragraphs) as $paragraphNo) {
-            $paragraphCollissions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
+            $paragraphCollisions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
         }
 
         $out = '';
@@ -891,13 +892,13 @@ s     * @throws \app\models\exceptions\Internal
             }
 
             $out .= '<div class="paragraphHolder';
-            if (count($paragraphCollissions[$paragraphNo]) > 0) {
-                $out .= ' hasCollissions';
+            if (count($paragraphCollisions[$paragraphNo]) > 0) {
+                $out .= ' hasCollisions';
             }
             $out .= '" data-paragraph-no="' . $paragraphNo . '">';
             $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
-            foreach ($paragraphCollissions[$paragraphNo] as $amendmentId => $paraData) {
+            foreach ($paragraphCollisions[$paragraphNo] as $amendmentId => $paraData) {
                 $amendment    = $amendmentsById[$amendmentId];
                 $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
                 $out          .= '<div class="collidingParagraph"';

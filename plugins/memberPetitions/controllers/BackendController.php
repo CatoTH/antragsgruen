@@ -58,6 +58,7 @@ class BackendController extends Base
             $supporter->organization = '';
             $supporter->position     = 0;
             $supporter->role         = MotionSupporter::ROLE_INITIATOR;
+            $supporter->dateCreation = date('Y-m-d H:i:s');
             if (!$supporter->save()) {
                 throw new DB($supporter->getErrors());
             }

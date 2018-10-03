@@ -18,6 +18,8 @@ namespace app\models\db;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
+ * @property string $dateCreation
+ * @property string $extraData
  *
  * @property User $user
  * @property Motion $motion
@@ -67,13 +69,14 @@ class MotionSupporter extends ISupporter
      * @param string $name
      * @param string $orga
      * @param int $role
+     * @param string $gender
      */
-    public static function createSupport(Motion $motion, $user, $name, $orga, $role)
+    public static function createSupport(Motion $motion, $user, $name, $orga, $role, $gender = '')
     {
         $maxPos = 0;
         if ($user) {
             foreach ($motion->motionSupporters as $supp) {
-                if ($supp->userId == $user->id) {
+                if ($supp->userId === $user->id) {
                     $motion->unlink('motionSupporters', $supp, true);
                 } elseif ($supp->position > $maxPos) {
                     $maxPos = $supp->position;
@@ -91,12 +94,14 @@ class MotionSupporter extends ISupporter
         }
 
         $support               = new MotionSupporter();
-        $support->motionId     = $motion->id;
-        $support->userId       = ($user ? $user->id : null);
+        $support->motionId     = IntVal($motion->id);
+        $support->userId       = ($user ? IntVal($user->id) : null);
         $support->name         = $name;
         $support->organization = $orga;
         $support->position     = $maxPos + 1;
         $support->role         = $role;
+        $support->dateCreation = date('Y-m-d H:i:s');
+        $support->setExtraDataEntry('gender', ($gender !== '' ? $gender : null));
         $support->save();
 
         if (!$user) {

@@ -13,25 +13,42 @@ $controller   = $this->context;
 $consultation = $controller->consultation;
 
 ?>
-<div class="dropdown dropdown-menu-left exportProcedureDd">
+<div class="dropdown dropdown-menu-left exportProcedureDd"
+     data-antragsgruen-widget="backend/ProposedProcedureExport">
     <button class="btn btn-default dropdown-toggle" type="button" id="exportProcedureBtn"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
         <?= \Yii::t('admin', 'index_export_procedure') ?>
         <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="exportProcedureBtn">
-        <li class="exportLink"><?php
+    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportProcedureBtn">
+        <li class="exportLink">
+            <?php
             $url = UrlHelper::createUrl('admin/proposed-procedure/index');
             echo Html::a(\Yii::t('export', 'pp_admin_site'), $url);
-            ?></li>
-        <li class="exportLink"><?php
+            ?>
+        </li>
+        <li class="exportLink">
+            <?php
             $url = UrlHelper::createUrl('consultation/proposed-procedure');
             echo Html::a(\Yii::t('export', 'pp_public_site'), $url);
-            ?></li>
-        <li class="exportLink"><?php
-            $url = UrlHelper::createUrl('admin/proposed-procedure/ods');
-            echo Html::a(Yii::t('export', 'pp_ods_all'), $url);
-            ?></li>
+            ?>
+        </li>
+        <li role="separator" class="divider"></li>
+        <li class="checkbox">
+            <label>
+                <input type="checkbox" class="c" name="comments">
+                <?= \Yii::t('export', 'pp_ods_comments') ?>
+            </label>
+        </li>
+        <li class="exportLink">
+            <?php
+            $url = UrlHelper::createUrl(['admin/proposed-procedure/ods', 'comments' => 'COMMENTS']);
+            echo Html::a(Yii::t('export', 'pp_ods_all'), $url, [
+                'class'         => 'odsLink',
+                'data-href-tpl' => $url,
+            ]);
+            ?>
+        </li>
         <?php
         if (count($consultation->agendaItems) > 0) {
             foreach (ConsultationAgendaItem::getSortedFromConsultation($consultation) as $item) {
@@ -39,11 +56,16 @@ $consultation = $controller->consultation;
                     continue;
                 }
                 ?>
-                <li class="exportLink"><?php
+                <li class="exportLink">
+                    <?php
                     $route = 'admin/proposed-procedure/ods';
-                    $url   = UrlHelper::createUrl([$route, 'agendaItemId' => $item->id]);
-                    echo Html::a('ODS: ' . $item->title, $url);
-                    ?></li>
+                    $url   = UrlHelper::createUrl([$route, 'agendaItemId' => $item->id, 'comments' => 'COMMENTS']);
+                    echo Html::a('ODS: ' . $item->title, $url, [
+                        'class'         => 'odsLink',
+                        'data-href-tpl' => $url,
+                    ]);
+                    ?>
+                </li>
                 <?php
             }
         }

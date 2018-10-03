@@ -87,6 +87,7 @@ return [
     'preset_app_gender'    => 'Gender',
     'preset_app_birthcity' => 'Place of birth',
     'preset_app_intro'     => 'Introduction',
+    'preset_app_title_int' => 'Application: ',
 
     'preset_motion_singular' => 'Motion',
     'preset_motion_plural'   => 'Motions',
@@ -144,6 +145,8 @@ return [
     'STATUS_INLINE_REPLY'                 => 'Response',
     'STATUS_MERGING_DRAFT_PUBLIC'         => 'Merging Draft (public)',
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Merging Draft (invisible)',
+    'STATUS_RESOLUTION_PRELIMINARY'       => 'Resolution (preliminary)',
+    'STATUS_RESOLUTION_FINAL'             => 'Resolution',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
     'PROPOSED_ACCEPTED_AMEND'     => 'Accepted',
@@ -198,4 +201,14 @@ return [
     'robots_policy_none'      => 'No pages at all',
     'robots_policy_only_home' => 'Only the home page, no motions',
     'robots_policy_all'       => 'All pages accessible by not-logged-in users',
+
+    'gender_na'      => '-',
+    'gender_female'  => 'Female',
+    'gender_male'    => 'Male',
+    'gender_diverse' => 'Inter/Diverse',
+
+    'top_separator' => [
+        'text'        => '.',
+        'description' => 'Separator between agenda item levels',
+    ],
 ];

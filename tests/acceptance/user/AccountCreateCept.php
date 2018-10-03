@@ -10,13 +10,10 @@ $I->populateDBData1();
 // Load Form
 
 $I->wantTo('Load the login page');
-LoginPage::openBy(
-    $I,
-    [
-        'subdomain'        => 'stdparteitag',
-        'consultationPath' => 'std-parteitag',
-    ]
-);
+$I->openPage(LoginPage::class, [
+    'subdomain'        => 'stdparteitag',
+    'consultationPath' => 'std-parteitag',
+]);
 $I->see('Login', 'h1');
 
 
@@ -53,7 +50,6 @@ $I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
 $I->see(mb_strtoupper('Zugang bestätigen'), 'h1');
 
 
-
 $I->wantTo('Confirm the account with a wrong code');
 
 $I->fillField(['id' => 'code'], 'somethingcompletelywrong');
@@ -62,8 +58,6 @@ $I->submitForm('#confirmAccountForm', []);
 
 $I->see(mb_strtoupper('Zugang bestätigen'), 'h1');
 $I->see('Der angegebene Code stimmt leider nicht.');
-
-
 
 
 $I->wantTo('Confirm the account with the correct code');

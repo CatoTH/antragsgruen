@@ -1,7 +1,7 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
-use app\models\db\ConsultationMotionType;
+use app\models\settings\InitiatorForm;
 
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -12,10 +12,10 @@ $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->dontSeeElement('#initiatorContactName');
 
 $form = $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->seeOptionIsSelected("input[name=\"type[contactName]\"]", ConsultationMotionType::CONTACT_NONE);
-$I->selectOption("input[name=\"type[contactName]\"]", ConsultationMotionType::CONTACT_REQUIRED);
+$I->seeOptionIsSelected("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_NONE);
+$I->selectOption("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
 $form->saveForm();
-$I->seeOptionIsSelected("input[name=\"type[contactName]\"]", ConsultationMotionType::CONTACT_REQUIRED);
+$I->seeOptionIsSelected("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
 
 $form = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->wait(1);

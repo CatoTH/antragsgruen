@@ -8,7 +8,7 @@ use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 use yii\web\View;
@@ -82,7 +82,7 @@ class Title extends ISectionType
      */
     public function getSimple($isRight)
     {
-        return Html::encode($this->section->data);
+        return Html::encode($this->getMotionPlainText());
     }
 
     /**
@@ -122,27 +122,27 @@ class Title extends ISectionType
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         // TODO: Implement printMotionToPDF() method.
     }
 
     /**
      * @param IPDFLayout $pdfLayout
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, TcpdfFpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data == $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->data) {
             return;
         }
 
-        if (!$pdfLayout->isSkippingSectionTitles($this->section)) {
+        if ($section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
@@ -150,7 +150,7 @@ class Title extends ISectionType
         $pdf->Ln(7);
 
         $html = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
-            Html::encode($section->data) . '</p>';
+            Html::encode($this->getMotionPlainText()) . '</p>';
         $pdf->writeHTMLCell(170, '', 24, '', $html, 0, 1, 0, true, '', true);
         $pdf->Ln(7);
     }
@@ -178,7 +178,16 @@ class Title extends ISectionType
      */
     public function getMotionPlainText()
     {
-        return $this->section->data;
+        try {
+            $intro = $this->section->getSettings()->motionType->getSettingsObj()->motionTitleIntro;
+        } catch (\Exception $e) {
+            $intro = '';
+        }
+        if (mb_strlen($intro) > 0 && mb_substr($intro, mb_strlen($intro) - 1, 1) !== ' ') {
+            $intro .= ' ';
+        }
+
+        return $intro . $this->section->data;
     }
 
     /**
@@ -197,10 +206,11 @@ class Title extends ISectionType
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
+
         if ($isRight) {
-            $content->textRight .= Exporter::encodePlainString($this->section->data);
+            $content->textRight .= Exporter::encodePlainString($this->getMotionPlainText());
         } else {
-            $content->textMain .= Exporter::encodePlainString($this->section->data);
+            $content->textMain .= Exporter::encodePlainString($this->getMotionPlainText());
         }
     }
 
@@ -233,7 +243,7 @@ class Title extends ISectionType
      */
     public function getMotionODS()
     {
-        return '<p>' . Html::encode($this->section->data) . '</p>';
+        return '<p>' . Html::encode($this->getMotionPlainText()) . '</p>';
     }
 
     /**
@@ -255,7 +265,7 @@ class Title extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h1>' . Html::encode($this->section->data) . '</h1>', false);
+        $odt->addHtmlTextBlock('<h1>' . Html::encode($this->getMotionPlainText()) . '</h1>', false);
     }
 
     /**

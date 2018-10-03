@@ -36,7 +36,11 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->getBreadcrumbTitle());
 }
 
-$this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+if ($motion->isResolution()) {
+    $this->title = $motion->getTitleWithIntro() . ' (' . $motion->getMyConsultation()->title . ')';
+} else {
+    $this->title = $motion->getTitleWithPrefix() . ' (' . $motion->getMyConsultation()->title . ')';
+}
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
@@ -44,7 +48,11 @@ $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimali
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
-echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+if ($motion->isResolution()) {
+    echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
+} else {
+    echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+}
 
 echo $layout->getMiniMenu('motionSidebarSmall');
 
@@ -60,14 +68,14 @@ echo $controller->showErrors();
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
-    $min  = $motion->motionType->getMotionSupportTypeClass()->getMinNumberOfSupporters();
+    $min  = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
     $curr = count($motion->getSupporters());
     if ($curr >= $min) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_reached_hint'));
     } else {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
 
-        if ($motion->motionType->policySupportMotions != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+        if ($motion->motionType->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
             echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
             echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -96,7 +104,7 @@ if ($motion->canFinishSupportCollection()) {
 echo '</div>';
 
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     ?>
     <div class="proposedChangesOpener">
         <button class="btn btn-default btn-sm">
@@ -116,7 +124,7 @@ echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
-    /** @var \app\models\db\MotionSection $section $sectionType */
+    /** @var \app\models\db\MotionSection $section */
     $sectionType = $section->getSettings()->type;
     if ($section->getSectionType()->isEmpty()) {
         continue;
@@ -124,7 +132,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
     if ($sectionType === ISectionType::TYPE_TITLE && count($section->getAmendingSections(false, true)) === 0) {
         continue;
     }
-    if ($section->isLayoutRight() && $motion->motionType->getSettingsObj()->layoutTwoCols) {
+    if ($section->isLayoutRight()) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
@@ -134,8 +142,8 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($sectionType != ISectionType::TYPE_PDF && $sectionType != ISectionType::TYPE_IMAGE) {
-            $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
+        if ($sectionType !== ISectionType::TYPE_PDF && $sectionType !== ISectionType::TYPE_IMAGE) {
+            $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
@@ -146,12 +154,12 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
 }
 
 
-if ($right == '') {
+if ($right === '') {
     echo $main;
 } else {
-    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-9 motionMainCol">';
+    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-8 motionMainCol">';
     echo $main;
-    echo '</div><div class="col-md-3 motionRightCol">';
+    echo '</div><div class="col-md-4 motionRightCol">';
     echo $right;
     echo '</div></div>';
 }
@@ -164,8 +172,8 @@ if ($right == '') {
                 <div class="input-group-addon"><?= \Yii::t('motion', 'goto_line') ?>:</div>
                 <input type="number" name="lineNumber" id="gotoLineNumber" class="form-control">
                 <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
-                    </span>
+                    <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
+                </span>
             </div>
         </div>
 
@@ -178,7 +186,9 @@ $supporters    = $motion->getSupporters();
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
-if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser(false)) {
+
+if (count($supporters) > 0 || $supportCollectingStatus ||
+    ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
     echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
@@ -205,12 +215,15 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
     echo '</div></section>';
 }
 
-LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+if (!$motion->isResolution()) {
+    LayoutHelper::printLikeDislikeSection($motion, $supportPolicy, $supportStatus);
+}
 
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
 $amendments = $motion->getVisibleAmendments();
-if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY) {
+$nobodyCanAmend = ($motion->motionType->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
+if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
@@ -246,10 +259,10 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
             if ($aename == '') {
                 $aename = $amend->id;
             }
-            $amendLink  = UrlHelper::createAmendmentUrl($amend);
-            $amendStati = Amendment::getStatusNames();
+            $amendLink     = UrlHelper::createAmendmentUrl($amend);
+            $amendStatuses = Amendment::getStatusNames();
             echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
-            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStati[$amend->status]) . ')';
+            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
             echo '</li>';
         }
         echo '</ul>';
@@ -260,8 +273,8 @@ if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPoli
     echo '</div></section>';
 }
 
-
-if ($commentWholeMotions && $motion->motionType->getCommentPolicy()->getPolicyID() !== Nobody::getPolicyID()) {
+$nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
+if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
     echo '<h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;

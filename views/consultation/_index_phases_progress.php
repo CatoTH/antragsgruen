@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
@@ -21,6 +22,28 @@ foreach ($consultation->motionTypes as $motionType) {
         }
     }
 }
+
+usort($namedPhases, function ($phase1, $phase2) {
+    if ($phase1['start'] === '' && $phase2 === '') {
+        return 0;
+    }
+    if ($phase1['start'] === '' && $phase2 !== '') {
+        return -1;
+    }
+    if ($phase1['start'] !== '' && $phase2 === '') {
+        return 1;
+    }
+    $start1 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase1['start']);
+    $start2 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase2['start']);
+    if ($start1 < $start2) {
+        return -1;
+    } elseif ($start1 > $start2) {
+        return 1;
+    } else {
+        return 0;
+    }
+});
+
 foreach ($consultation->motionTypes as $motionType) {
     foreach (ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
         switch ($deadlineType) {
@@ -88,15 +111,14 @@ if (count($namedPhases) === 1) {
                     } else {
                         echo '<li>';
                     }
-
-                    echo '<div class="title">' . Html::encode($namedPhase['title']) . '</div>';
+                    echo '<div class="step-content">';
+                    echo '<div class="title">' . HTMLTools::encodeAddShy($namedPhase['title']) . '</div>';
                     echo '<div class="permissions">';
                     foreach ($namedPhase['permissions'] as $permission) {
                         echo Html::encode($permission) . '<br>';
                     }
                     echo '</div>';
-
-                    echo '<span class="chevron"></span>';
+                    echo '</div>';
                     echo '</li>';
                 }
                 ?>

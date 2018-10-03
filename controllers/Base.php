@@ -118,10 +118,7 @@ class Base extends Controller
         }
 
         if (get_class($this) === PagesController::class && $action->id === 'show-page') {
-            $allowedPages = ['maintenance', 'help', 'legal', 'privacy'];
-            if (in_array(\Yii::$app->request->get('pageSlug'), $allowedPages)) {
-                return true;
-            }
+            return true;
         }
 
         if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
@@ -377,7 +374,8 @@ class Base extends Controller
             '@app/views/errors/error',
             [
                 'httpStatus' => $status,
-                'message'    => $message
+                'message'    => $message,
+                'name'       => 'Error',
             ]
         );
         Yii::$app->end();

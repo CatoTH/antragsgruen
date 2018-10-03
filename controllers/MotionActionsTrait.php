@@ -11,14 +11,14 @@ use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\db\Consultation;
-use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
-use app\models\supportTypes\ISupportType;
 use app\components\EmailNotifications;
 use app\models\events\MotionEvent;
+use app\models\settings\InitiatorForm;
+use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
 /**
@@ -183,17 +183,18 @@ trait MotionActionsTrait
      * @param string $string
      * @param string $name
      * @param string $orga
+     * @param string $gender
      * @throws FormError
      * @throws Internal
      */
-    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '')
+    private function motionLikeDislike(Motion $motion, $role, $string, $name = '', $orga = '', $gender = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$motion->motionType->getMotionSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this motion is not possible');
         }
 
-        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role);
+        MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender);
 
         $motion->refresh();
 
@@ -207,7 +208,7 @@ trait MotionActionsTrait
      */
     private function motionLike(Motion $motion)
     {
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_LIKE, \Yii::t('motion', 'like_done'));
@@ -225,7 +226,7 @@ trait MotionActionsTrait
             throw new FormError('Not possible given the current motion status');
         }
         foreach ($motion->getSupporters() as $supporter) {
-            if (User::getCurrentUser() && $supporter->userId == User::getCurrentUser()->id) {
+            if (User::getCurrentUser() && $supporter->userId === User::getCurrentUser()->id) {
                 \Yii::$app->session->setFlash('success', \Yii::t('motion', 'support_already'));
                 return;
             }
@@ -233,6 +234,7 @@ trait MotionActionsTrait
         $supportType = $motion->motionType->getMotionSupportTypeClass();
         $role        = MotionSupporter::ROLE_SUPPORTER;
         $user        = User::getCurrentUser();
+        $gender      = \Yii::$app->request->post('motionSupportGender', '');
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
@@ -240,19 +242,29 @@ trait MotionActionsTrait
             $name = \Yii::$app->request->post('motionSupportName', '');
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
-        if ($supportType->hasOrganizations() && $orga == '') {
+        if ($supportType->getSettingsObj()->hasOrganizations && $orga == '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
-        if (trim($name) == '') {
+        if (trim($name) === '') {
             \Yii::$app->session->setFlash('error', 'You need to enter a name');
             return;
         }
+        $validGenderKeys = array_keys(SupportBase::getGenderSelection());
+        if ($supportType->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
+            if (!in_array($gender, $validGenderKeys)) {
+                \Yii::$app->session->setFlash('error', 'You need to fill the gender field');
+                return;
+            }
+        }
+        if (!in_array($gender, $validGenderKeys)) {
+            $gender = '';
+        }
 
-        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga);
+        $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
 
-        if (count($motion->getSupporters()) == $supportType->getMinNumberOfSupporters()) {
+        if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
             EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }
@@ -264,7 +276,7 @@ trait MotionActionsTrait
      */
     private function motionDislike(Motion $motion)
     {
-        if (!($motion->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+        if (!($motion->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
         }
         $this->motionLikeDislike($motion, MotionSupporter::ROLE_DISLIKE, \Yii::t('motion', 'dislike_done'));
@@ -367,7 +379,6 @@ trait MotionActionsTrait
      * @param Motion $motion
      * @param int $commentId
      * @param array $viewParameters
-     * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal
@@ -408,7 +419,6 @@ trait MotionActionsTrait
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */

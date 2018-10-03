@@ -13,12 +13,12 @@ use app\models\db\IComment;
 use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\Access;
 use app\models\exceptions\DB;
 use app\models\exceptions\FormError;
 use app\models\exceptions\Internal;
 use app\models\forms\CommentForm;
-use app\models\supportTypes\ISupportType;
+use app\models\settings\InitiatorForm;
+use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
 /**
@@ -185,6 +185,7 @@ trait AmendmentActionsTrait
         $supportClass = $amendment->getMyMotion()->motionType->getAmendmentSupportTypeClass();
         $role         = AmendmentSupporter::ROLE_SUPPORTER;
         $user         = User::getCurrentUser();
+        $gender       = \Yii::$app->request->post('motionSupportGender', '');
         if ($user && $user->fixedData) {
             $name = $user->name;
             $orga = $user->organization;
@@ -192,7 +193,7 @@ trait AmendmentActionsTrait
             $name = \Yii::$app->request->post('motionSupportName', '');
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
-        if ($supportClass->hasOrganizations() && $orga == '') {
+        if ($supportClass->getSettingsObj()->hasOrganizations && trim($orga) === '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }
@@ -200,12 +201,22 @@ trait AmendmentActionsTrait
             \Yii::$app->session->setFlash('error', 'You need to enter a name');
             return;
         }
+        $validGenderKeys = array_keys(SupportBase::getGenderSelection());
+        if ($supportClass->getSettingsObj()->contactGender === InitiatorForm::CONTACT_REQUIRED) {
+            if (!in_array($gender, $validGenderKeys)) {
+                \Yii::$app->session->setFlash('error', 'You need to fill the gender field');
+                return;
+            }
+        }
+        if (!in_array($gender, $validGenderKeys)) {
+            $gender = '';
+        }
 
-        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga);
+        $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
 
-        $minSupporters = $supportClass->getMinNumberOfSupporters();
-        if (count($amendment->getSupporters()) == $minSupporters) {
+        $minSupporters = $supportClass->getSettingsObj()->minSupporters;
+        if (count($amendment->getSupporters()) === $minSupporters) {
             EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
         }
     }
@@ -216,17 +227,18 @@ trait AmendmentActionsTrait
      * @param string $string
      * @param string $name
      * @param string $orga
+     * @param string $gender
      * @throws FormError
      * @throws Internal
      */
-    private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '')
+    private function amendmentLikeDislike(Amendment $amendment, $role, $string, $name = '', $orga = '', $gender = '')
     {
         $currentUser = User::getCurrentUser();
         if (!$amendment->getMyMotion()->motionType->getAmendmentSupportPolicy()->checkCurrUser()) {
             throw new FormError('Supporting this amendment is not possible');
         }
 
-        AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role);
+        AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender);
 
         $amendment->refresh();
 
@@ -239,7 +251,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentLike(Amendment $amendment)
     {
-        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_LIKE)) {
+        if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_LIKE)) {
             throw new FormError('Not supported');
         }
         $msg = \Yii::t('amend', 'like_done');
@@ -253,7 +265,7 @@ trait AmendmentActionsTrait
      */
     private function amendmentDislike(Amendment $amendment)
     {
-        if (!($amendment->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_DISLIKE)) {
+        if (!($amendment->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_DISLIKE)) {
             throw new FormError('Not supported');
         }
         $msg          = \Yii::t('amend', 'dislike_done');
@@ -298,7 +310,7 @@ trait AmendmentActionsTrait
 
         $amendment->trigger(Amendment::EVENT_SUBMITTED, new AmendmentEvent($amendment));
 
-        if ($amendment->status == Amendment::STATUS_SUBMITTED_SCREENED) {
+        if ($amendment->status === Amendment::STATUS_SUBMITTED_SCREENED) {
             $amendment->trigger(Amendment::EVENT_PUBLISHED, new AmendmentEvent($amendment));
         } else {
             EmailNotifications::sendAmendmentSubmissionConfirm($amendment);
@@ -328,7 +340,6 @@ trait AmendmentActionsTrait
      * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
-     * @throws Access
      * @throws DB
      * @throws FormError
      * @throws Internal

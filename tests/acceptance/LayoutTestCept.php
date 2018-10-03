@@ -42,6 +42,6 @@ $I->validatePa11y();
 
 
 $I->wantTo('test the manager home page');
-ManagerStartPage::openBy($I);
+$I->openPage(ManagerStartPage::class);
 $I->validateHTML();
 $I->validatePa11y();

@@ -17,13 +17,14 @@ use app\models\exceptions\FormError;
 use app\models\forms\DeadlineForm;
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\InitiatorForm;
 use app\models\settings\MotionType;
-use app\models\supportTypes\ISupportType;
 use app\models\policies\IPolicy;
 use app\models\motionTypeTemplates\Application as ApplicationTemplate;
 use app\models\motionTypeTemplates\Motion as MotionTemplate;
 use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
 use app\models\events\MotionEvent;
+use app\models\supportTypes\SupportBase;
 
 class MotionController extends AdminBase
 {
@@ -45,7 +46,7 @@ class MotionController extends AdminBase
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
                 $section->motionTypeId = $motionType->id;
-                $section->type         = $data['type'];
+                $section->type         = IntVal($data['type']);
                 $section->status       = ConsultationSettingsMotionSection::STATUS_VISIBLE;
             } else {
                 /** @var ConsultationSettingsMotionSection $section */
@@ -137,13 +138,18 @@ class MotionController extends AdminBase
                 }
             }
 
-            $settings = $motionType->getSettingsObj();
-            $settings->pdfIntroduction = $input['pdfIntroduction'];
+            $settings                   = $motionType->getSettingsObj();
+            $settings->pdfIntroduction  = $input['pdfIntroduction'];
+            $settings->motionTitleIntro = $input['typeMotionIntro'];
             $motionType->setSettingsObj($settings);
 
-            $form = $motionType->getMotionSupportTypeClass();
-            $form->setSettings(\Yii::$app->request->post('initiator'));
-            $motionType->supportTypeSettings = $form->getSettings();
+            $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
+            $settings->saveForm(
+                \Yii::$app->request->post('initiatorSettings', []),
+                \Yii::$app->request->post('initiatorSettingFields', [])
+            );
+            $motionType->supportTypeSettings = json_encode($settings, JSON_PRETTY_PRINT);
+
             $motionType->save();
 
             $this->sectionsSave($motionType);
@@ -156,24 +162,24 @@ class MotionController extends AdminBase
         }
 
         $supportCollPolicyWarning = false;
-        if ($motionType->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+        if ($motionType->supportType === SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->isPostSet('supportCollPolicyFix')) {
-                if ($motionType->policyMotions == IPolicy::POLICY_ALL) {
+                if ($motionType->policyMotions === IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
                 }
                 $support = $motionType->policySupportMotions;
-                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                if ($support === IPolicy::POLICY_ALL || $support === IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportMotions = IPolicy::POLICY_LOGGED_IN;
                 }
-                if ($motionType->policyAmendments == IPolicy::POLICY_ALL) {
+                if ($motionType->policyAmendments === IPolicy::POLICY_ALL) {
                     $motionType->policyAmendments = IPolicy::POLICY_LOGGED_IN;
                 }
                 $support = $motionType->policySupportAmendments;
-                if ($support == IPolicy::POLICY_ALL || $support == IPolicy::POLICY_NOBODY) {
+                if ($support === IPolicy::POLICY_ALL || $support === IPolicy::POLICY_NOBODY) {
                     $motionType->policySupportAmendments = IPolicy::POLICY_LOGGED_IN;
                 }
-                $motionType->motionLikesDislikes    |= ISupportType::LIKEDISLIKE_SUPPORT;
-                $motionType->amendmentLikesDislikes |= ISupportType::LIKEDISLIKE_SUPPORT;
+                $motionType->motionLikesDislikes    |= SupportBase::LIKEDISLIKE_SUPPORT;
+                $motionType->amendmentLikesDislikes |= SupportBase::LIKEDISLIKE_SUPPORT;
                 $motionType->save();
                 if (!$this->consultation->getSettings()->initiatorConfirmEmails) {
                     $settings                         = $this->consultation->getSettings();
@@ -185,12 +191,12 @@ class MotionController extends AdminBase
 
             $supportMotion = $motionType->policySupportMotions;
             $supportAmend  = $motionType->policySupportAmendments;
-            $createMotion  = ($motionType->policyMotions == IPolicy::POLICY_ALL);
-            $createAmend   = ($motionType->policyAmendments == IPolicy::POLICY_ALL);
-            $supportMotion = ($supportMotion == IPolicy::POLICY_ALL || $supportMotion == IPolicy::POLICY_NOBODY);
-            $supportAmend  = ($supportAmend == IPolicy::POLICY_ALL || $supportAmend == IPolicy::POLICY_NOBODY);
-            $noOffMotion   = (($motionType->motionLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) == 0);
-            $noOffAmend    = (($motionType->amendmentLikesDislikes & ISupportType::LIKEDISLIKE_SUPPORT) == 0);
+            $createMotion  = ($motionType->policyMotions === IPolicy::POLICY_ALL);
+            $createAmend   = ($motionType->policyAmendments === IPolicy::POLICY_ALL);
+            $supportMotion = ($supportMotion === IPolicy::POLICY_ALL || $supportMotion === IPolicy::POLICY_NOBODY);
+            $supportAmend  = ($supportAmend === IPolicy::POLICY_ALL || $supportAmend === IPolicy::POLICY_NOBODY);
+            $noOffMotion   = (($motionType->motionLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
+            $noOffAmend    = (($motionType->amendmentLikesDislikes & SupportBase::LIKEDISLIKE_SUPPORT) === 0);
             $noEmail       = !$this->consultation->getSettings()->initiatorConfirmEmails;
 
             $supportCollPolicyWarning = (
@@ -199,7 +205,7 @@ class MotionController extends AdminBase
             );
         }
 
-        if ($this->isRequestSet('msg') && $this->getRequestValue('msg') == 'created') {
+        if ($this->isRequestSet('msg') && $this->getRequestValue('msg') === 'created') {
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_type_created_msg'));
         }
 
@@ -218,19 +224,19 @@ class MotionController extends AdminBase
         if ($this->isPostSet('create')) {
             $type         = \Yii::$app->request->post('type');
             $sectionsFrom = null;
-            if (isset($type['preset']) && $type['preset'] == 'application') {
+            if (isset($type['preset']) && $type['preset'] === 'application') {
                 $motionType = ApplicationTemplate::doCreateApplicationType($this->consultation);
                 ApplicationTemplate::doCreateApplicationSections($motionType);
-            } elseif (isset($type['preset']) && $type['preset'] == 'motion') {
+            } elseif (isset($type['preset']) && $type['preset'] === 'motion') {
                 $motionType = MotionTemplate::doCreateMotionType($this->consultation);
                 MotionTemplate::doCreateMotionSections($motionType);
-            } elseif (isset($type['preset']) && $type['preset'] == 'pdfapplication') {
+            } elseif (isset($type['preset']) && $type['preset'] === 'pdfapplication') {
                 $motionType = PDFApplicationTemplate::doCreateApplicationType($this->consultation);
                 PDFApplicationTemplate::doCreateApplicationSections($motionType);
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {
-                    if ($cType->id == $type['preset']) {
+                    if (is_numeric($type['preset']) && $cType->id === IntVal($type['preset'])) {
                         $motionType = new ConsultationMotionType();
                         $motionType->setAttributes($cType->getAttributes(), false);
                         $motionType->id = null;
@@ -248,18 +254,19 @@ class MotionController extends AdminBase
                     $motionType->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
                     $motionType->motionLikesDislikes          = 0;
                     $motionType->amendmentLikesDislikes       = 0;
-                    $motionType->contactName                  = ConsultationMotionType::CONTACT_NONE;
-                    $motionType->contactEmail                 = ConsultationMotionType::CONTACT_OPTIONAL;
-                    $motionType->contactPhone                 = ConsultationMotionType::CONTACT_OPTIONAL;
                     $motionType->amendmentMultipleParagraphs  = 1;
                     $motionType->position                     = 0;
-                    $motionType->supportType                  = ISupportType::ONLY_INITIATOR;
+                    $motionType->supportType                  = SupportBase::ONLY_INITIATOR;
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;
 
-                    $settings = new MotionType(null);
-                    $settings->layoutTwoCols = 0;
-                    $motionType->setSettingsObj($settings);
+                    $initiatorSettings               = new InitiatorForm(null);
+                    $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
+                    $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
+                    $initiatorSettings->contactEmail = InitiatorForm::CONTACT_OPTIONAL;
+                    $motionType->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+
+                    $motionType->setSettingsObj(new MotionType(null));
 
                     $texTemplates              = TexTemplate::find()->all();
                     $motionType->texTemplateId = (count($texTemplates) > 0 ? $texTemplates[0]->id : null);
@@ -292,7 +299,7 @@ class MotionController extends AdminBase
                 }
             }
 
-            $url = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
+            $url = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
             return $this->redirect($url);
         }
         return $this->render('type_create');
@@ -300,14 +307,13 @@ class MotionController extends AdminBase
 
     /**
      * @param Motion $motion
-     * @throws \Exception
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     private function saveMotionSupporters(Motion $motion)
     {
         $names         = \Yii::$app->request->post('supporterName', []);
         $orgas         = \Yii::$app->request->post('supporterOrga', []);
+        $genders       = \Yii::$app->request->post('supporterGender', []);
         $preIds        = \Yii::$app->request->post('supporterId', []);
         $newSupporters = [];
         /** @var MotionSupporter[] $preSupporters */
@@ -316,20 +322,22 @@ class MotionController extends AdminBase
             $preSupporters[$supporter->id] = $supporter;
         }
         for ($i = 0; $i < count($names); $i++) {
-            if (trim($names[$i]) == '' && trim($orgas[$i]) == '') {
+            if (trim($names[$i]) === '' && trim($orgas[$i]) === '') {
                 continue;
             }
             if (isset($preSupporters[$preIds[$i]])) {
                 $supporter = $preSupporters[$preIds[$i]];
             } else {
-                $supporter             = new MotionSupporter();
-                $supporter->motionId   = $motion->id;
-                $supporter->role       = MotionSupporter::ROLE_SUPPORTER;
-                $supporter->personType = MotionSupporter::PERSON_NATURAL;
+                $supporter               = new MotionSupporter();
+                $supporter->motionId     = $motion->id;
+                $supporter->role         = MotionSupporter::ROLE_SUPPORTER;
+                $supporter->personType   = MotionSupporter::PERSON_NATURAL;
+                $supporter->dateCreation = date('Y-m-d H:i:s');
             }
             $supporter->name         = $names[$i];
             $supporter->organization = $orgas[$i];
             $supporter->position     = $i;
+            $supporter->setExtraDataEntry('gender', (isset($genders[$i]) ? $genders[$i] : null));
             if (!$supporter->save()) {
                 var_dump($supporter->getErrors());
                 die();
@@ -351,28 +359,28 @@ class MotionController extends AdminBase
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionGetAmendmentRewriteCollissions($motionId)
+    public function actionGetAmendmentRewriteCollisions($motionId)
     {
         $newSections = \Yii::$app->request->post('newSections', []);
 
         /** @var Motion $motion */
-        $motion      = $this->consultation->getMotion($motionId);
-        $collissions = $amendments = [];
-        foreach ($motion->getAmendmentsRelevantForCollissionDetection() as $amendment) {
+        $motion     = $this->consultation->getMotion($motionId);
+        $collisions = $amendments = [];
+        foreach ($motion->getAmendmentsRelevantForCollisionDetection() as $amendment) {
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                $coll = $section->getRewriteCollissions($newSections[$section->sectionId], false);
+                $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
                     if (!in_array($amendment, $amendments)) {
-                        $amendments[$amendment->id]  = $amendment;
-                        $collissions[$amendment->id] = [];
+                        $amendments[$amendment->id] = $amendment;
+                        $collisions[$amendment->id] = [];
                     }
-                    $collissions[$amendment->id][$section->sectionId] = $coll;
+                    $collisions[$amendment->id][$section->sectionId] = $coll;
                 }
             }
         }
-        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collissions', [
-            'amendments'  => $amendments,
-            'collissions' => $collissions,
+        return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
+            'amendments' => $amendments,
+            'collisions' => $collisions,
         ]);
     }
 
@@ -402,7 +410,7 @@ class MotionController extends AdminBase
 
         if ($this->isPostSet('screen') && $motion->isInScreeningProcess()) {
             if ($this->consultation->findMotionWithPrefix($post['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->status      = Motion::STATUS_SUBMITTED_SCREENED;
                 $motion->titlePrefix = $post['titlePrefix'];
@@ -447,7 +455,7 @@ class MotionController extends AdminBase
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            if ($modat['motionType'] != $motion->motionTypeId) {
+            if (IntVal($modat['motionType']) !== $motion->motionTypeId) {
                 try {
                     /** @var ConsultationMotionType $newType */
                     $newType = ConsultationMotionType::findOne($modat['motionType']);
@@ -463,8 +471,8 @@ class MotionController extends AdminBase
             $motion->title        = $modat['title'];
             $motion->statusString = $modat['statusString'];
             $motion->noteInternal = $modat['noteInternal'];
-            $motion->status       = $modat['status'];
-            $motion->agendaItemId = (isset($modat['agendaItemId']) ? $modat['agendaItemId'] : null);
+            $motion->status       = IntVal($modat['status']);
+            $motion->agendaItemId = (isset($modat['agendaItemId']) ? IntVal($modat['agendaItemId']) : null);
             $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
 
             $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']);
@@ -490,7 +498,7 @@ class MotionController extends AdminBase
                 $motion->datePublication = null;
             }
 
-            if ($modat['parentMotionId'] && $modat['parentMotionId'] != $motion->id &&
+            if ($modat['parentMotionId'] && IntVal($modat['parentMotionId']) !== $motion->id &&
                 $this->consultation->getMotion($modat['parentMotionId'])) {
                 $motion->parentMotionId = IntVal($modat['parentMotionId']);
             } else {
@@ -498,7 +506,7 @@ class MotionController extends AdminBase
             }
 
             if ($this->consultation->findMotionWithPrefix($modat['titlePrefix'], $motion)) {
-                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collission'));
+                \yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_prefix_collision'));
             } else {
                 $motion->titlePrefix = $post['motion']['titlePrefix'];
             }

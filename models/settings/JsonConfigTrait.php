@@ -2,13 +2,13 @@
 
 namespace app\models\settings;
 
+use app\models\exceptions\ConfigurationError;
 use app\models\exceptions\FormError;
 
 trait JsonConfigTrait
 {
     /**
      * @param string|null $data
-     * @throws \Exception
      */
     public function __construct($data)
     {
@@ -17,7 +17,7 @@ trait JsonConfigTrait
 
     /**
      * @param string $data
-     * @throws \Exception
+     * @throws ConfigurationError
      */
     protected function setPropertiesFromJSON($data)
     {
@@ -28,7 +28,7 @@ trait JsonConfigTrait
         $data    = str_replace(chr(194) . chr(160), " ", $data);
         $dataArr = json_decode($data, true);
         if ($dataArr === null) {
-            throw new \Exception('Invalid JSON string: ' . $data);
+            throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
 
         foreach ($dataArr as $key => $val) {

@@ -18,8 +18,8 @@ use yii\helpers\Html;
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 
-$hasTags        = (count($controller->consultation->tags) > 0);
-$amendmentStati = Amendment::getStatusNames();
+$hasTags           = (count($controller->consultation->tags) > 0);
+$amendmentStatuses = Amendment::getStatusNames();
 if (User::havePrivilege($controller->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
     $editUrl = UrlHelper::createUrl(['admin/amendment/update', 'amendmentId' => $entry->id]);
 } else {
@@ -50,7 +50,7 @@ if ($editUrl) {
     echo Html::encode($title);
 }
 echo '</span></td>';
-echo '<td>' . Html::encode($amendmentStati[$entry->status]);
+echo '<td>' . Html::encode($amendmentStatuses[$entry->status]);
 if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
 }

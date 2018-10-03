@@ -105,16 +105,16 @@ class MotionSection extends IMotionSection
      */
     public function getAmendingSections($includeProposals = false, $onlyWithChanges = false)
     {
-        $sections      = [];
-        $motion        = $this->getConsultation()->getMotion($this->motionId);
-        $excludedStati = $this->getConsultation()->getInvisibleAmendmentStati(true);
+        $sections         = [];
+        $motion           = $this->getConsultation()->getMotion($this->motionId);
+        $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses(true);
         if ($includeProposals) {
-            $excludedStati = array_filter($excludedStati, function ($status) {
+            $excludedStatuses = array_filter($excludedStatuses, function ($status) {
                 return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
             });
         }
         foreach ($motion->amendments as $amend) {
-            if (in_array($amend->status, $excludedStati)) {
+            if (in_array($amend->status, $excludedStatuses)) {
                 continue;
             }
             foreach ($amend->sections as $section) {
@@ -138,6 +138,18 @@ class MotionSection extends IMotionSection
             [['motionId', 'sectionId'], 'number'],
             [['dataRaw'], 'safe'],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getSectionTitle()
+    {
+        $title = $this->getSettings()->title;
+        if ($title === \Yii::t('motion', 'motion_text') && $this->getMotion()->isResolution()) {
+            $title = \Yii::t('motion', 'resolution_text');
+        }
+        return $title;
     }
 
     /**

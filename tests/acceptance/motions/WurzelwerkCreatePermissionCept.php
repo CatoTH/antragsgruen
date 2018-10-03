@@ -18,17 +18,13 @@ $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdUser();
 $I->dontSeeElement('#sidebar .createMotion');
 
-\app\tests\_pages\MotionCreatePage::openBy(
-    $I,
-    [
-        'subdomain'        => '1laenderrat2015',
-        'consultationPath' => '1laenderrat2015',
-        'motionTypeId'     => 8
-    ]
-);
+$I->openPage(\app\tests\_pages\MotionEditPage::class, [
+    'subdomain'        => '1laenderrat2015',
+    'consultationPath' => '1laenderrat2015',
+    'motionTypeId'     => 8
+]);
 $I->dontSee(mb_strtoupper('Antrag stellen'), 'h1');
 $I->see('Keine Berechtigung zum Anlegen von Anträgen');
-
 
 
 $I->wantTo('check that I can create a motion as a Wurzelwerk-user');
@@ -46,12 +42,9 @@ $I->gotoConsultationHome(true, '1laenderrat2015', '1laenderrat2015');
 $I->loginAsStdAdmin();
 $I->dontSeeElement('#sidebar .createMotion');
 
-\app\tests\_pages\MotionCreatePage::openBy(
-    $I,
-    [
-        'subdomain'        => '1laenderrat2015',
-        'consultationPath' => '1laenderrat2015',
-        'motionTypeId'     => 8
-    ]
-);
+$I->openPage(\app\tests\_pages\MotionCreatePage::class, [
+    'subdomain'        => '1laenderrat2015',
+    'consultationPath' => '1laenderrat2015',
+    'motionTypeId'     => 8
+]);
 $I->see(mb_strtoupper('Antrag stellen'), 'h1');

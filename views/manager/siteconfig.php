@@ -40,7 +40,7 @@ if (!$editable) {
 echo '<div class="form-group">
     <label class="col-sm-4 control-label" for="baseLanguage">' . \yii::t('manager', 'language') . ':</label>
     <div class="col-sm-8">';
-$languages = \app\components\MessageSource::getBaseLanguages();
+$languages = \app\components\yii\MessageSource::getBaseLanguages();
 echo HTMLTools::fueluxSelectbox('baseLanguage', $languages, $config->baseLanguage, ['id' => 'baseLanguage']);
 echo '</div>
 </div>';

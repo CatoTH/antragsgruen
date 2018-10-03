@@ -4,7 +4,6 @@ namespace app\models\siteSpecificBehavior;
 
 use app\components\MotionSorter;
 use app\models\db\Consultation;
-use app\models\db\IMotionSection;
 use app\models\policies\IPolicy;
 
 class DefaultBehavior
@@ -37,22 +36,12 @@ class DefaultBehavior
     }
 
     /**
-     * @param IMotionSection $section
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function showSectionIntroductionInPdf($section)
-    {
-        return true;
-    }
-
-    /**
-     * @param int[] $stati
+     * @param int[] $statuses
      * @return int[]
      */
-    public static function getProposedChangeStati($stati)
+    public static function getProposedChangeStatuses($statuses)
     {
-        return $stati;
+        return $statuses;
     }
 
     /**

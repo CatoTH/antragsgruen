@@ -4,11 +4,10 @@ namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
 use app\models\db\ConsultationMotionType;
-use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 
 abstract class IPDFLayout
@@ -91,7 +90,7 @@ abstract class IPDFLayout
     }
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     abstract public function createPDFClass();
 
@@ -104,10 +103,4 @@ abstract class IPDFLayout
      * @param Amendment $amendment
      */
     abstract public function printAmendmentHeader(Amendment $amendment);
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     */
-    abstract public function isSkippingSectionTitles(IMotionSection $section);
 }

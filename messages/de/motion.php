@@ -5,6 +5,8 @@ return [
     'Edit Motion'                        => 'Antrag bearbeiten',
     'Confirm Motion'                     => 'Antrag bestätigen',
     'confirm_bread'                      => 'Bestätigen',
+    'confirm_view_web'                   => 'Web-Fassung',
+    'confirm_view_pdf'                   => 'Druckfassung',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
     'amendment_create_admin'             => 'Admin',
@@ -22,6 +24,7 @@ return [
     'initiators_1'                       => 'Antragsteller*in',
     'initiators_x'                       => 'Antragsteller*innen',
     'initiators_head'                    => 'Antragsteller*innen',
+    'resolution_organisation'            => 'Beschluss durch',
     'Supporter'                          => 'Unterstützer*in',
     'supporters_heading'                 => 'Unterstützer*innen',
     'supporting_you'                     => 'Du!',
@@ -49,6 +52,7 @@ return [
     'Prefix'                             => 'Antragsnummer',
     'Title'                              => 'Titel',
     'replaces_motion'                    => 'Ersetzt',
+    'resolution_of'                      => 'Basierend auf',
     'replaces_motion_diff'               => 'Änderungen anzeigen',
     'consultation'                       => 'Veranstaltung',
     'comments'                           => 'Kommentare',
@@ -63,7 +67,7 @@ return [
     'resolution'                         => 'beschlossen',
     'resolution_on'                      => 'beschlossen am',
     'Resolution'                         => 'Beschlossen',
-    'resoluted_on'                       => 'Entschieden am',
+    'resoluted_on'                       => 'Beschlossen am',
     'submitted_on'                       => 'Eingereicht',
     'created_on'                         => 'Angelegt',
     'tag_tags'                           => 'Themenbereich',
@@ -108,6 +112,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'supporting_permitted'               => 'Berechtigung',
     'download_pdf'                       => 'PDF-Version herunterladen',
     'motion_text'                        => 'Antragstext',
+    'resolution_text'                    => 'Beschlusstext',
     'published_email_body'               => "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
         "Du kannst ihn hier einsehen: %LINK%\n\n" .
         "Mit freundlichen Grüßen,\n" .
@@ -173,6 +178,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
     'prefix_new_code'                    => 'NEU',
     'comment_for'                        => 'Kommentar zu',
+    'share_facebook'                     => 'Bei Facebook teilen',
+    'share_twitter'                      => 'Bei Twitter teilen',
 
     'diff_bc'          => 'Änderungen',
     'diff_title'       => 'Änderungen von %FROM% zu %TO%',

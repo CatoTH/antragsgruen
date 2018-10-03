@@ -61,7 +61,7 @@ echo $controller->showErrors();
 
 if ($supportCollectingStatus) {
     echo '<div class="alert alert-info supportCollectionHint" role="alert">';
-    $min  = $motion->motionType->getAmendmentSupportTypeClass()->getMinNumberOfSupporters();
+    $min  = $motion->motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
     $curr = count($amendment->getSupporters());
     if ($curr >= $min) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_reached_hint'));
@@ -106,7 +106,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
     </div>
     <?php
 
-    echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'view']);
+    echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'view', 'msgAlert' => null]);
 }
 if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator()) {
     echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);

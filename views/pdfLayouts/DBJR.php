@@ -3,9 +3,8 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
-use app\models\db\IMotionSection;
 use app\models\db\Motion;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
@@ -148,7 +147,7 @@ class DBJR extends IPDFLayout
     }
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     public function createPDFClass()
     {
@@ -170,18 +169,5 @@ class DBJR extends IPDFLayout
         $this->pdf = $pdf;
 
         return $pdf;
-    }
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     */
-    public function isSkippingSectionTitles(IMotionSection $section)
-    {
-        if ($section->getSettings()->title == \Yii::t('motion', 'motion_text')) {
-            return true;
-        }
-        return false;
-
     }
 }

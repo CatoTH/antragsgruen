@@ -50,8 +50,8 @@ if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePubli
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motionType->getMotionSupportTypeClass();
     $str = \Yii::t('motion', 'support_collect_explanation');
-    $str = str_replace('%MIN%', $supp->getMinNumberOfSupporters(), $str);
-    $str = str_replace('%MIN+1%', ($supp->getMinNumberOfSupporters() + 1), $str);
+    $str = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
+    $str = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
 
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
         \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .

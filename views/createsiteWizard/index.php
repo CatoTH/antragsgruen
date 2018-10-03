@@ -17,20 +17,20 @@ $t = function ($string) {
 <div id="SiteCreateWizard" class="wizard" data-mode="<?= Html::encode($mode) ?>" data-init-step="#panelPurpose">
     <ul class="steps">
         <li data-target="#stepPurpose" class="stepPurpose">
-            <?= $t('step_purpose') ?><span class="chevron"></span>
+            <?= $t('step_purpose') ?>
         </li>
         <li data-target="#stepMotions" class="stepMotions">
-            <?= $t('step_motions') ?><span class="chevron"></span>
+            <?= $t('step_motions') ?>
         </li>
         <li data-target="#stepAmendments" class="stepAmendments">
-            <?= $t('step_amendments') ?><span class="chevron"></span>
+            <?= $t('step_amendments') ?>
         </li>
         <li data-target="#stepSpecial" class="stepSpecial">
-            <?= $t('step_special') ?><span class="chevron"></span>
+            <?= $t('step_special') ?>
         </li>
         <?php if ($mode !== 'sandbox') { ?>
         <li data-target="#stepSite" class="stepSite">
-            <?= $t('step_site') ?><span class="chevron"></span>
+            <?= $t('step_site') ?>
         </li>
         <?php } ?>
     </ul>

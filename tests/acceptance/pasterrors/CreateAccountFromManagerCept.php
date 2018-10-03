@@ -7,7 +7,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('create an account from the manager page');
-ManagerStartPage::openBy($I);
+$I->openPage(ManagerStartPage::class);
 $I->click('#loginLink');
 $I->dontSeeElement('#name');
 $I->click('#createAccount');

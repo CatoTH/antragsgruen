@@ -138,6 +138,20 @@ interface Hooks
 
     /**
      * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function getConsultationMotionLineContent($before, Motion $motion);
+    
+    /**
+     * @param string $before
+     * @param Amendment $amendment
+     * @return string
+     */
+    public function getConsultationAmendmentLineContent($before, Amendment $amendment);
+
+    /**
+     * @param string $before
      * @param Consultation $consultation
      * @return string
      */

@@ -104,7 +104,7 @@ echo Html::beginForm('', 'post', [
             <div class="col-sm-8"><?php
                 echo HTMLTools::fueluxSelectbox(
                     'language',
-                    \app\components\MessageSource::getBaseLanguages(),
+                    \app\components\yii\MessageSource::getBaseLanguages(),
                     $form->language,
                     ['id' => 'language']
                 );

@@ -5,8 +5,9 @@
  * @var Consultation $consultation
  * @var string $category
  */
+
 use app\components\HTMLTools;
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
 use yii\helpers\Html;
@@ -21,6 +22,7 @@ $layout->addCSS('css/backend.css');
 $this->title = 'Einstellungen';
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb('Erweitert');
+$layout->bodyCssClasses[] = 'adminTranslationForm';
 
 echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
@@ -71,12 +73,12 @@ echo '<input type="hidden" name="category" value="' . Html::encode($category) . 
 $i18n = Yii::$app->get('i18n');
 /** @var MessageSource $messagesource */
 $messagesource = $i18n->getMessageSource($category);
-$strings       = $messagesource->getBaseMessages($category, $consultation->wordingBase);
+$strings       = $messagesource->getBaseMessagesWithHints($category, $consultation->wordingBase);
 
 
 $consStrings = [];
 foreach ($consultation->texts as $text) {
-    if ($text->category == $category) {
+    if ($text->category === $category) {
         $consStrings[$text->textId] = $text->text;
     }
 }
@@ -84,11 +86,14 @@ foreach ($consultation->texts as $text) {
 echo '<br><br>';
 
 
-foreach ($strings as $stringKey => $stringOrig) {
-    $encKey = Html::encode(urlencode($stringKey));
-    $value  = (isset($consStrings[$stringKey]) ? $consStrings[$stringKey] : '');
+foreach ($strings as $string) {
+    $encKey = Html::encode(urlencode($string['id']));
+    $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : '');
     echo '<div class="form-group"><label class="col-sm-6 control-label" for="consultationPath">';
-    echo nl2br(Html::encode($stringOrig));
+    echo nl2br(Html::encode($string['text']));
+    if (isset($string['description']) && $string['description'] !== '') {
+        echo '<br><span class="description">' . Html::encode($string['description']) . '</span>';
+    }
     echo '</label><div class="col-sm-6">';
 
     echo HTMLTools::smallTextarea('string[' . $encKey . ']', ['class' => 'form-control'], $value);

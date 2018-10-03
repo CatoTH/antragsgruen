@@ -2,10 +2,10 @@
 
 namespace app\views\pdfLayouts;
 
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use Yii;
 
-class DBJRPDF extends TcpdfFpdi
+class DBJRPDF extends Fpdi
 {
     /** @var IPDFLayout */
     private $layout;
@@ -21,8 +21,19 @@ class DBJRPDF extends TcpdfFpdi
 
     /**
      * rewrite AddPage() for correct functionalities with PDF Concatenation
+     * @param string $orientation
+     * @param string $format
+     * @param bool $keepmargins
+     * @param bool $tocpage
+     * @param bool $footer
      */
-    public function AddPage ($orientation = PDF_PAGE_ORIENTATION, $format = PDF_PAGE_FORMAT, $keepmargins = false, $tocpage = false, $footer = true) {
+    public function AddPage(
+        $orientation = PDF_PAGE_ORIENTATION,
+        $format = PDF_PAGE_FORMAT,
+        $keepmargins = false,
+        $tocpage = false,
+        $footer = true
+    ) {
         parent::AddPage($orientation, $format, $keepmargins, $tocpage);
         $this->setPrintFooter($footer);
     }

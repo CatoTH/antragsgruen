@@ -382,3 +382,33 @@ footer.footer {
     }
   }
 }
+
+/*
+.womenQuota {
+  position: absolute;
+  li.motion > & {
+    top: 17px;
+    right: 30px;
+  }
+  li.motion > .motionTitle {
+    margin-right: 70px;
+  }
+  li.amendment > & {
+    top: 0;
+    right: 0;
+  }
+
+  span.glyphicon {
+    opacity: 0.5;
+    margin-right: 10px;
+  }
+}
+*/
+
+.motionList {
+  .womenQuota {
+    font-size: 0.8em;
+    margin-left: 10px;
+    display: inline-block;
+  }
+}

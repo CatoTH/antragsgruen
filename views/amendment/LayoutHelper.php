@@ -9,7 +9,7 @@ use app\models\db\Amendment;
 use app\models\db\TexTemplate;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -24,9 +24,10 @@ class LayoutHelper
     {
         $content             = new Content();
         $content->template   = $texTemplate->texContent;
-        $content->title      = $amendment->getMyMotion()->title;
+        $content->titleRaw   = $amendment->getMyMotion()->title;
+        $content->title      = $amendment->getMyMotion()->getTitleWithIntro();
         $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
-        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
+        if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix !== '') {
             $content->titlePrefix = $amendment->titlePrefix;
         }
         $content->titleLong = $amendment->titlePrefix . ' - ';
@@ -56,7 +57,7 @@ class LayoutHelper
         }
 
         if ($amendment->changeEditorial != '') {
-            $title = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
+            $title             = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeEditorial]) . "\n";
         }
@@ -66,20 +67,20 @@ class LayoutHelper
         }
 
         if ($amendment->changeExplanation != '') {
-            $title = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
+            $title             = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeExplanation]) . "\n";
         }
 
         $supporters = $amendment->getSupporters();
         if (count($supporters) > 0) {
-            $title = Exporter::encodePlainString(\Yii::t('amend', 'supporters'));
+            $title             = Exporter::encodePlainString(\Yii::t('amend', 'supporters'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
-            $supps = [];
+            $supps             = [];
             foreach ($supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
-            $suppStr = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
             $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
@@ -87,12 +88,12 @@ class LayoutHelper
     }
 
     /**
-     * @param TcpdfFpdi $pdf
+     * @param Fpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Amendment $amendment
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(TcpdfFpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
+    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 

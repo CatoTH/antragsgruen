@@ -111,7 +111,9 @@ CREATE TABLE `###TABLE_PREFIX###amendmentSupporter` (
   `resolutionDate` DATE                                                         DEFAULT NULL,
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `dateCreation`   TIMESTAMP NOT NULL,
+  `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -274,7 +276,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationSettingsMotionSection` (
   `lineNumbers`   TINYINT(4)   NOT NULL DEFAULT '0',
   `hasComments`   TINYINT(4)   NOT NULL,
   `hasAmendments` TINYINT(4)   NOT NULL DEFAULT '1',
-  `positionRight` SMALLINT(6)           DEFAULT '0'
+  `positionRight` SMALLINT(6)           DEFAULT '0',
+  `printTitle`    TINYINT(4)   NOT NULL DEFAULT '1'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -525,7 +528,9 @@ CREATE TABLE `###TABLE_PREFIX###motionSupporter` (
   `resolutionDate` DATE                                                         DEFAULT NULL,
   `contactName`    TEXT,
   `contactEmail`   VARCHAR(100)                                                 DEFAULT NULL,
-  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL
+  `contactPhone`   VARCHAR(100)                                                 DEFAULT NULL,
+  `dateCreation`   TIMESTAMP NOT NULL,
+  `extraData`      TEXT DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

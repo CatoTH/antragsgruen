@@ -7,7 +7,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->wantTo('ensure that ManagerStartPage works');
-ManagerStartPage::openBy($I);
+$I->openPage(ManagerStartPage::class);
 $I->see(mb_strtoupper('Antragsgrün - das grüne Antragstool'), 'h1');
 
 

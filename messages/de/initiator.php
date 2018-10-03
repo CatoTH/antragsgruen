@@ -14,6 +14,7 @@ return [
     'orgaResolution'      => 'Beschlussdatum',
     'visibilityAdmins'    => 'Wird nur Administrator*innen angezeigt',
     'email'               => 'E-Mail',
+    'gender'              => 'Gender',
     'phone'               => 'Telefon',
     'moreInitiators'      => 'Weitere Antragssteller*in',
     'addInitiator'        => 'Antragsteller*in hinzufügen',

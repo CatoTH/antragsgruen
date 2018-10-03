@@ -1,6 +1,9 @@
 <?php
 
 /** @var \Codeception\Scenario $scenario */
+
+use app\tests\_pages\MotionPage;
+
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
@@ -25,7 +28,7 @@ $I->logout();
 
 $I->wantTo('support the motion as a regular user');
 
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -53,7 +56,7 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 
 
 
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,
@@ -79,7 +82,7 @@ $I->click('#fullTextHolder .fullTextAdd');
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 
-\app\tests\_pages\MotionPage::openBy($I, [
+$I->openPage(MotionPage::class, [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
     'motionSlug'       => 116,

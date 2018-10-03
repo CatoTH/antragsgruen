@@ -7,8 +7,8 @@ use app\components\UrlHelper;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\MotionSupporter;
 use app\models\events\MotionEvent;
-use app\models\exceptions\FormError;
 use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionMergeAmendmentsDraftForm;
@@ -40,7 +40,7 @@ trait MotionMergingTrait
             return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
         }
 
-        return $this->render('merge_amendments_public', ['motion' => $motion, 'draft' => $draft]);
+        return $this->render('@app/views/merging/public_version', ['motion' => $motion, 'draft' => $draft]);
     }
 
     /**
@@ -64,9 +64,43 @@ trait MotionMergingTrait
 
         return json_encode([
             'success' => true,
-            'html'    => $this->renderPartial('_merge_amendments_public', ['motion' => $motion, 'draft' => $draft]),
+            'html'    => $this->renderPartial('@app/views/merging/_public_version_content', [
+                'motion' => $motion,
+                'draft'  => $draft
+            ]),
             'date'    => Tools::formatMysqlDateTime($draft->dateCreation),
         ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     */
+    public function actionMergeAmendmentsDraftPdf($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $draft = $motion->getMergingDraft(false);
+        if (!$draft) {
+            return $this->showErrorpage(404, \Yii::t('motion', 'err_draft_not_found'));
+        }
+
+        $filename                    = $motion->getFilenameBase(false) . '-Merging-Draft.pdf';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
+        return $this->render('@app/views/merging/merging_draft_pdf', ['motion' => $motion, 'draft' => $draft]);
     }
 
     /**
@@ -94,7 +128,7 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createMotionUrl($motion, 'merge-amendments'));
         }
 
-        return $this->render('merge_amendments_init', [
+        return $this->render('@app/views/merging/init', [
             'motion'      => $motion,
             'amendments'  => $amendments,
             'draft'       => $draft,
@@ -104,32 +138,72 @@ trait MotionMergingTrait
 
     /**
      * @param string $motionSlug
-     * @param string $amendmentStati
+     * @param string $activated
      * @return string
      */
-    public function actionMergeAmendmentsConfirm($motionSlug, $amendmentStati = '')
+    public function actionMergeAmendmentsInitPdf($motionSlug, $activated = '')
     {
-        $newMotion = $this->consultation->getMotion($motionSlug);
-        if (!$newMotion || $newMotion->status != Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
-        $oldMotion  = $newMotion->replacedMotion;
-        $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
+
+        if (!$motion->canMergeAmendments()) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        $amendments = $motion->getVisibleAmendmentsSorted();
+        $activatedIds = [];
+        foreach (explode(',', $activated) as $active) {
+            if ($active > 0) {
+                $activatedIds[] = IntVal($active);
+            }
+        }
+
+        $filename                    = $motion->getFilenameBase(false) . '-Merging-Selection.pdf';
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
+        \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+
+        return $this->render('@app/views/merging/init_pdf', [
+            'motion'     => $motion,
+            'amendments' => $amendments,
+            'activated'  => $activatedIds,
+        ]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param string $amendmentStatuses
+     * @return string
+     */
+    public function actionMergeAmendmentsConfirm($motionSlug, $amendmentStatuses = '')
+    {
+        $newMotion = $this->consultation->getMotion($motionSlug);
+        if (!$newMotion || $newMotion->status !== Motion::STATUS_DRAFT || !$newMotion->replacedMotion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+        $oldMotion     = $newMotion->replacedMotion;
+        $amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
 
         if ($this->isPostSet('modify')) {
             return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments', [
-                'newMotionId'    => $newMotion->id,
-                'amendmentStati' => $amendmentStati
+                'newMotionId'       => $newMotion->id,
+                'amendmentStatuses' => $amendmentStatuses
             ]));
         }
 
         if ($this->isPostSet('confirm')) {
-            $invisible = $this->consultation->getInvisibleAmendmentStati();
+            $invisible = $this->consultation->getInvisibleAmendmentStatuses();
             foreach ($oldMotion->getVisibleAmendments() as $amendment) {
-                if (isset($amendStati[$amendment->id]) && $amendStati[$amendment->id] != $amendment->status) {
-                    if (!in_array($amendStati[$amendment->id], $invisible)) {
-                        $amendment->status = $amendStati[$amendment->id];
+                if (isset($amendStatuses[$amendment->id])) {
+                    $newStatus = IntVal($amendStatuses[$amendment->id]);
+                    if ($newStatus !== $amendment->status && !in_array($amendStatuses[$amendment->id], $invisible)) {
+                        $amendment->status = $newStatus;
                         $amendment->save();
                     }
                 }
@@ -140,12 +214,53 @@ trait MotionMergingTrait
                 $newMotion->replacedMotion->slug = null;
                 $newMotion->replacedMotion->save();
             }
-            $newMotion->status = $newMotion->replacedMotion->status;
+
+            $isResolution = false;
+            if ($newMotion->canCreateResolution()) {
+                $resolutionMode = \Yii::$app->request->post('newStatus');
+                if ($resolutionMode === 'resolution_final') {
+                    $newMotion->status = IMotion::STATUS_RESOLUTION_FINAL;
+                    $isResolution      = true;
+                } elseif ($resolutionMode === 'resolution_preliminary') {
+                    $newMotion->status = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+                    $isResolution      = true;
+                } else {
+                    $newMotion->status = $newMotion->replacedMotion->status;
+                }
+            } else {
+                $newMotion->status = $newMotion->replacedMotion->status;
+            }
+            if ($isResolution) {
+                $resolutionDate            = \Yii::$app->request->post('dateResolution', '');
+                $resolutionDate            = Tools::dateBootstrapdate2sql($resolutionDate);
+                $newMotion->dateResolution = ($resolutionDate ? $resolutionDate : null);
+            }
             $newMotion->save();
 
-            if ($newMotion->replacedMotion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+            // For resolutions, the state of the original motion should not be changed
+            if (!$isResolution && $newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
                 $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
                 $newMotion->replacedMotion->save();
+            }
+
+            if ($isResolution) {
+                $resolutionBody = \Yii::$app->request->post('newInitiator', '');
+                if (trim($resolutionBody) !== '') {
+                    $body                 = new MotionSupporter();
+                    $body->motionId       = $newMotion->id;
+                    $body->position       = 0;
+                    $body->dateCreation   = date('Y-m-d H:i:s');
+                    $body->personType     = MotionSupporter::PERSON_ORGANIZATION;
+                    $body->role           = MotionSupporter::ROLE_INITIATOR;
+                    $body->organization   = $resolutionBody;
+                    $resolutionDate       = \Yii::$app->request->post('dateResolution', '');
+                    $resolutionDate       = Tools::dateBootstrapdate2sql($resolutionDate);
+                    $body->resolutionDate = ($resolutionDate ? $resolutionDate : null);
+                    if (!$body->save()) {
+                        var_dump($body->getErrors());
+                        die();
+                    }
+                }
             }
 
             $mergingDraft = $oldMotion->getMergingDraft(false);
@@ -156,7 +271,7 @@ trait MotionMergingTrait
 
             $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
 
-            return $this->render('merge_amendments_done', [
+            return $this->render('@app/views/merging/done', [
                 'newMotion' => $newMotion,
             ]);
         }
@@ -168,21 +283,21 @@ trait MotionMergingTrait
         }
 
         $draftId = null;
-        return $this->render('merge_amendments_confirm', [
-            'newMotion'      => $newMotion,
-            'deleteDraftId'  => $draftId,
-            'amendmentStati' => $amendStati,
-            'changes'        => $changes,
+        return $this->render('@app/views/merging/confirm', [
+            'newMotion'         => $newMotion,
+            'deleteDraftId'     => $draftId,
+            'amendmentStatuses' => $amendStatuses,
+            'changes'           => $changes,
         ]);
     }
 
     /**
      * @param string $motionSlug
      * @param int $newMotionId
-     * @param string $amendmentStati
+     * @param string $amendmentStatuses
      * @return string
      */
-    public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStati = '')
+    public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStatuses = '')
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -197,7 +312,7 @@ trait MotionMergingTrait
 
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
-            if (!$newMotion || $newMotion->parentMotionId != $motion->id) {
+            if (!$newMotion || $newMotion->parentMotionId !== $motion->id) {
                 \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
                 return $this->redirect(UrlHelper::createMotionUrl($motion));
             }
@@ -215,25 +330,21 @@ trait MotionMergingTrait
         try {
             if ($this->isPostSet('save')) {
                 $form->setAttributes(\Yii::$app->request->post());
-                try {
-                    $newMotion = $form->createNewMotion();
-                    return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm', [
-                        'fromMode'       => 'create',
-                        'amendmentStati' => json_encode($form->amendStatus),
-                        'draftId'        => $this->getRequestValue('draftId'),
-                    ]));
-                } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
-                }
+                $newMotion = $form->createNewMotion();
+                return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm', [
+                    'fromMode'          => 'create',
+                    'amendmentStatuses' => json_encode($form->amendStatus),
+                    'draftId'           => $this->getRequestValue('draftId'),
+                ]));
             }
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $amendStati = ($amendmentStati == '' ? [] : json_decode($amendmentStati, true));
+        $amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
 
         $resumeDraft = $motion->getMergingDraft(false);
-        if ($resumeDraft && \Yii::$app->request->post('discard', 0) == 1) {
+        if ($resumeDraft && IntVal(\Yii::$app->request->post('discard', 0)) === 1) {
             $resumeDraft = null;
         }
 
@@ -242,7 +353,7 @@ trait MotionMergingTrait
         $textVersions        = \Yii::$app->request->post('textVersion', []);
         foreach ($motion->getVisibleAmendments() as $amendment) {
             if (isset($postAmendIds[$amendment->id])) {
-                if (isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] == 'proposal') {
+                if (isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
                     $toMergeAmendmentIds[] = $amendment->proposalReference->id;
                 } else {
                     $toMergeAmendmentIds[] = $amendment->id;
@@ -250,10 +361,10 @@ trait MotionMergingTrait
             }
         }
 
-        return $this->render('merge_amendments', [
+        return $this->render('@app/views/merging/merging', [
             'motion'              => $motion,
             'form'                => $form,
-            'amendmentStati'      => $amendStati,
+            'amendmentStatuses'   => $amendStatuses,
             'resumeDraft'         => $resumeDraft,
             'toMergeAmendmentIds' => $toMergeAmendmentIds,
         ]);

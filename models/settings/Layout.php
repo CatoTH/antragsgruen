@@ -2,7 +2,7 @@
 
 namespace app\models\settings;
 
-use app\components\MessageSource;
+use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
@@ -508,7 +508,7 @@ class Layout
         }
 
         if (!$this->consultation) {
-            // This are manager pages, generally aimed to advertise the installation
+            // These are manager pages, generally aimed to advertise the installation
             return true;
         }
 

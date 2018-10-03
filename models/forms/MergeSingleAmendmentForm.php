@@ -28,7 +28,7 @@ class MergeSingleAmendmentForm extends Model
     public $mergeAmendStatus;
 
     /** @var array */
-    public $otherAmendStati;
+    public $otherAmendStatuses;
     public $otherAmendOverrides;
     public $paragraphs;
 
@@ -38,7 +38,7 @@ class MergeSingleAmendmentForm extends Model
      * @param int $newTitlePrefix
      * @param array $paragraphs
      * @param array $otherAmendOverrides
-     * @param array $otherAmendStati
+     * @param array $otherAmendStatuses
      */
     public function __construct(
         Amendment $amendment,
@@ -46,15 +46,16 @@ class MergeSingleAmendmentForm extends Model
         $newStatus,
         $paragraphs,
         $otherAmendOverrides,
-        $otherAmendStati
-    ) {
+        $otherAmendStatuses
+    )
+    {
         parent::__construct();
         $this->newTitlePrefix      = $newTitlePrefix;
         $this->oldMotion           = $amendment->getMyMotion();
         $this->mergeAmendment      = $amendment;
         $this->mergeAmendStatus    = $newStatus;
         $this->paragraphs          = $paragraphs;
-        $this->otherAmendStati     = $otherAmendStati;
+        $this->otherAmendStatuses  = $otherAmendStatuses;
         $this->otherAmendOverrides = $otherAmendOverrides;
     }
 
@@ -85,11 +86,11 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -136,8 +137,9 @@ class MergeSingleAmendmentForm extends Model
         foreach ($this->oldMotion->motionSupporters as $supporter) {
             $newSupporter = new MotionSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
-            $newSupporter->id       = null;
-            $newSupporter->motionId = $this->newMotion->id;
+            $newSupporter->dateCreation = date('Y-m-d H:i:s');
+            $newSupporter->id           = null;
+            $newSupporter->motionId     = $this->newMotion->id;
             if (!$newSupporter->save()) {
                 throw new DB($this->newMotion->getErrors());
             }
@@ -155,7 +157,7 @@ class MergeSingleAmendmentForm extends Model
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->motionId = $this->newMotion->id;
-            $newSection->cache = '';
+            $newSection->cache    = '';
             if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
                 if (isset($newSections[$section->sectionId])) {
                     $newSection->data    = $newSections[$section->sectionId];
@@ -176,11 +178,11 @@ class MergeSingleAmendmentForm extends Model
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
 
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -198,7 +200,7 @@ class MergeSingleAmendmentForm extends Model
             }
             $amendment->motionId = $this->newMotion->id;
             $amendment->cache    = '';
-            $amendment->status   = $this->otherAmendStati[$amendment->id];
+            $amendment->status   = $this->otherAmendStatuses[$amendment->id];
             if (!$amendment->save()) {
                 throw new DB($amendment->getErrors());
             }
@@ -209,14 +211,14 @@ class MergeSingleAmendmentForm extends Model
      */
     private function setDoneAmendmentsStatuses()
     {
-        foreach ($this->oldMotion->getAmendmentsRelevantForCollissionDetection([$this->mergeAmendment]) as $amendment) {
-            if (!isset($this->otherAmendStati[$amendment->id])) {
+        foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
+            if (!isset($this->otherAmendStatuses[$amendment->id])) {
                 continue;
             }
-            if (!in_array($this->otherAmendStati[$amendment->id], Amendment::getStatiMarkAsDoneOnRewriting())) {
+            if (!in_array($this->otherAmendStatuses[$amendment->id], Amendment::getStatusesMarkAsDoneOnRewriting())) {
                 continue;
             }
-            $amendment->status = $this->otherAmendStati[$amendment->id];
+            $amendment->status = $this->otherAmendStatuses[$amendment->id];
             if (!$amendment->save()) {
                 throw new DB($amendment->getErrors());
             }
@@ -229,10 +231,10 @@ class MergeSingleAmendmentForm extends Model
      */
     public function performRewrite()
     {
-        $previousSlug = $this->oldMotion->slug;
+        $previousSlug          = $this->oldMotion->slug;
         $this->oldMotion->slug = null;
         $this->oldMotion->save();
-        
+
         $this->createNewMotion($previousSlug);
         $this->createNewMotionSections();
         $this->rewriteOtherAmendments();

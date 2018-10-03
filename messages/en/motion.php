@@ -5,6 +5,8 @@ return [
     'Edit Motion'                   => 'Edit motion',
     'Confirm Motion'                => 'Confirm motion',
     'confirm_bread'                 => 'Confirm',
+    'confirm_view_web'              => 'Web version',
+    'confirm_view_pdf'              => 'PDF version',
     'Motion submitted'              => 'Motion submitted',
     'create_prerequisites'          => 'Requirements for a motion',
     'amendment_create'              => 'Create an amendment',
@@ -23,6 +25,7 @@ return [
     'initiators_1'                  => 'Proposer',
     'initiators_x'                  => 'Proposers',
     'initiators_head'               => 'Proposers',
+    'resolution_organisation'       => 'Deciding body',
     'Supporter'                     => 'Supporters',
     'supporters_heading'            => 'Supporters',
     'supporting_you'                => 'You!',
@@ -50,6 +53,7 @@ return [
     'Prefix'                        => 'Signature',
     'Title'                         => 'Title',
     'replaces_motion'               => 'Replaces',
+    'resolution_of'                 => 'Based on',
     'replaces_motion_diff'          => 'Show changes',
     'consultation'                  => 'Consultation',
     'comments'                      => 'Comments',
@@ -87,6 +91,7 @@ return [
     'supporting_permitted'      => 'Berechtigung',
     'download_pdf'              => 'PDF version',
     'motion_text'               => 'Motion text',
+    'resolution_text'           => 'Decided text',
     'published_email_body'      => "Hi,\n\nyour motion has just been published on Antragsgrün. " .
         "You can see it here: %LINK%\n\n" .
         "Greetings,\n" .
@@ -164,6 +169,8 @@ return [
     'support_finish_done'                => 'The motion is now officially submitted',
     'prefix_new_code'                    => 'new',
     'comment_for'                        => 'Comment for',
+    'share_facebook'                     => 'Share on Facebook',
+    'share_twitter'                      => 'Share on Twitter',
 
     'diff_bc'          => 'Changes',
     'diff_title'       => 'Changes from %FROM% to %TO%',

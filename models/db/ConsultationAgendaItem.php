@@ -85,7 +85,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         $return = [];
         foreach ($this->consultation->motions as $motion) {
-            if (in_array($motion->status, $this->consultation->getInvisibleMotionStati())) {
+            if (in_array($motion->status, $this->consultation->getInvisibleMotionStatuses())) {
                 continue;
             }
             if ($motion->agendaItemId === null || $motion->agendaItemId != $this->id) {
@@ -133,36 +133,39 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public static function getSortedFromConsultation(Consultation $consultation)
     {
+        $separator = \Yii::t('structure', 'top_separator');
+
         // Needs to be synchronized with antragsgruen.js:recalcAgendaCodes
-        $calcNewShownCode = function ($currShownCode, $newInternalCode) {
-            if ($newInternalCode == '#') {
-                $currParts = explode('.', $currShownCode);
+        $calcNewShownCode = function ($currShownCode, $newInternalCode) use ($separator) {
+            if ($newInternalCode === '#') {
+                $currParts = explode($separator, $currShownCode);
                 if (preg_match('/^[a-z]$/siu', $currParts[0])) { // Single alphabetical characters
                     $currParts[0] = chr(ord($currParts[0]) + 1);
                 } else {  // Numbers or mixtures of alphabetical characters and numbers
                     preg_match('/^(?<non_numeric>.*[^0-9])?(?<numeric>[0-9]*)$/su', $currParts[0], $matches);
                     $nonNumeric   = $matches['non_numeric'];
-                    $numeric      = ($matches['numeric'] == '' ? 1 : $matches['numeric']);
+                    $numeric      = ($matches['numeric'] === '' ? 1 : $matches['numeric']);
                     $currParts[0] = $nonNumeric . ++$numeric;
                 }
-                return implode('.', $currParts);
+                return implode($separator, $currParts);
             } else {
                 return $newInternalCode;
             }
         };
 
-        $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode) {
+        $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode, $separator) {
             /** @var Consultation $consultation $items */
             /** @var ConsultationAgendaItem $item */
             if ($fullCodePrefix == '') {
-                $fullCodePrefix = '0.';
+                $fullCodePrefix = '0' . $separator;
             }
             $items         = [];
             $currShownCode = '0.';
             $children      = static::sortItems(static::getItemsByParent($consultation, $item->id));
             foreach ($children as $child) {
                 $currShownCode = $calcNewShownCode($currShownCode, $child->code);
-                $prevCode      = $fullCodePrefix . ($fullCodePrefix[strlen($fullCodePrefix) - 1] == '.' ? '' : '.');
+                $lastChar      = mb_substr($fullCodePrefix, mb_strlen($fullCodePrefix) - 1);
+                $prevCode      = $fullCodePrefix . ($lastChar === $separator ? '' : $separator);
                 $child->setShownCode($currShownCode, $prevCode . $currShownCode);
                 $items = array_merge(
                     $items,
@@ -182,7 +185,7 @@ class ConsultationAgendaItem extends ActiveRecord
             $root[] = $item;
         }
         $root          = static::sortItems($root);
-        $currShownCode = '0.';
+        $currShownCode = '0' . $separator;
         foreach ($root as $item) {
             $currShownCode = $calcNewShownCode($currShownCode, $item->code);
             $item->setShownCode($currShownCode, $currShownCode);
@@ -249,14 +252,19 @@ class ConsultationAgendaItem extends ActiveRecord
 
     /**
      * @param bool $includeWithdrawn
+     * @param bool $includeResolutions
      * @return Motion[]
      */
-    public function getVisibleMotions($includeWithdrawn = true)
+    public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
     {
-        $stati  = $this->consultation->getInvisibleMotionStati(!$includeWithdrawn);
-        $return = [];
+        $statuses = $this->consultation->getInvisibleMotionStatuses(!$includeWithdrawn);
+        if (!$includeResolutions) {
+            $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+            $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
+        }
+        $return   = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $stati)) {
+            if (!in_array($motion->status, $statuses)) {
                 $return[] = $motion;
             }
         }

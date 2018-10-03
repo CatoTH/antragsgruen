@@ -3,9 +3,8 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
-use app\models\db\IMotionSection;
 use app\models\db\Motion;
-use setasign\Fpdi\TcpdfFpdi;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ByLDK extends IPDFLayout
 {
@@ -220,7 +219,7 @@ class ByLDK extends IPDFLayout
     }
 
     /**
-     * @return TcpdfFpdi
+     * @return Fpdi
      */
     public function createPDFClass()
     {
@@ -242,15 +241,5 @@ class ByLDK extends IPDFLayout
         $this->pdf = $pdf;
 
         return $pdf;
-    }
-
-    /**
-     * @param IMotionSection $section
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function isSkippingSectionTitles(IMotionSection $section)
-    {
-        return false;
     }
 }

@@ -41,7 +41,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     /**
      * @return string[]
      */
-    public static function getStati()
+    public static function getStatuses()
     {
         return [
             static::STATUS_SCREENING => \Yii::t('comment', 'status_screening'),

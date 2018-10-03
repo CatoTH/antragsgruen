@@ -19,6 +19,8 @@ use yii\helpers\Html;
  * @property string $contactName
  * @property string $contactEmail
  * @property string $contactPhone
+ * @property string $dateCreation
+ * @property string $extraData
  *
  * @property User|null $user
  */
@@ -79,7 +81,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getNameWithOrga()
     {
-        if ($this->personType == static::PERSON_NATURAL) {
+        if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
             $name = $this->name;
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
@@ -105,7 +107,7 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = Html::encode($this->user->name);
             }
-            if ($this->personType == static::PERSON_NATURAL) {
+            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
                 if ($orga != '') {
                     $name .= ' <small style="font-weight: normal;">';
                     $name .= '(' . $orga . ')';
@@ -127,8 +129,8 @@ abstract class ISupporter extends ActiveRecord
             if ($name == '' && $this->user) {
                 $name = $this->user->name;
             }
-            if ($this->personType == static::PERSON_NATURAL) {
-                if ($orga != '') {
+            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
+                if ($orga !== '') {
                     $name .= ' (' . $orga . ')';
                 }
                 return $name;
@@ -147,7 +149,7 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getGivenNameOrFull()
     {
-        if ($this->user && $this->personType == static::PERSON_NATURAL) {
+        if ($this->user && $this->personType === static::PERSON_NATURAL || $this->personType === null) {
             if ($this->user->nameGiven) {
                 return $this->user->nameGiven;
             } else {
@@ -156,5 +158,51 @@ abstract class ISupporter extends ActiveRecord
         } else {
             return $this->name;
         }
+    }
+
+    /**
+     * @param array $values
+     * @param bool $safeOnly
+     */
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+        $this->setExtraDataEntry('gender', (isset($values['gender']) ? $values['gender'] : null));
+        $this->personType = IntVal($this->personType);
+        $this->position   = IntVal($this->position);
+        $this->userId     = ($this->userId === null ? null : IntVal($this->userId));
+    }
+
+    /**
+     * @param string $name
+     * @param null|mixed $default
+     * @return mixed
+     */
+    public function getExtraDataEntry($name, $default = null)
+    {
+        $arr = json_decode($this->extraData, true);
+        if ($arr && isset($arr[$name])) {
+            return $arr[$name];
+        } else {
+            return $default;
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setExtraDataEntry($name, $value)
+    {
+        $arr = json_decode($this->extraData, true);
+        if (!$arr) {
+            $arr = [];
+        }
+        if ($value !== null) {
+            $arr[$name] = $value;
+        } else {
+            unset($arr[$name]);
+        }
+        $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
 }

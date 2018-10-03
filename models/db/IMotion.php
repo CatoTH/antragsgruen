@@ -6,7 +6,7 @@ use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
-use app\models\supportTypes\ISupportType;
+use app\models\supportTypes\SupportBase;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
@@ -53,7 +53,7 @@ abstract class IMotion extends ActiveRecord
     // The default state once the motion is visible
     const STATUS_SUBMITTED_SCREENED = 3;
 
-    // This are stati motions and amendments get as their final state.
+    // These are statuses motions and amendments get as their final state.
     // "Processed" is mostly used for amendments after merging amendments into th motion,
     // if it's unclear if it was adopted or rejected.
     // For member petitions, "Processed" means the petition has been replied.
@@ -91,8 +91,14 @@ abstract class IMotion extends ActiveRecord
     // The exact status is specified in a free-text field; proposalComment if this status is used in proposalStatus
     const STATUS_CUSTOM_STRING = 23;
 
-    // Purely informational statuses
+    // The version of a motion that the convention has agreed upon
+    const STATUS_RESOLUTION_PRELIMINARY = 25;
+    const STATUS_RESOLUTION_FINAL       = 26;
+
+    // A new version of this motion exists that should be shown instead. Not visible on the home page.
     const STATUS_MODIFIED            = 7;
+
+    // Purely informational statuses
     const STATUS_ADOPTED             = 8;
     const STATUS_COMPLETED           = 9;
     const STATUS_VOTE                = 11;
@@ -106,7 +112,7 @@ abstract class IMotion extends ActiveRecord
      */
     public static function getStatusNames($includeAdminInvisibles = false)
     {
-        $stati = [
+        $statuses = [
             static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
             static::STATUS_DRAFT                        => \Yii::t('structure', 'STATUS_DRAFT'),
             static::STATUS_SUBMITTED_UNSCREENED         => \Yii::t('structure', 'STATUS_SUBMITTED_UNSCREENED'),
@@ -130,23 +136,25 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_OBSOLETED_BY                 => \Yii::t('structure', 'STATUS_OBSOLETED_BY'),
             static::STATUS_CUSTOM_STRING                => \Yii::t('structure', 'STATUS_CUSTOM_STRING'),
             static::STATUS_INLINE_REPLY                 => \Yii::t('structure', 'STATUS_INLINE_REPLY'),
+            static::STATUS_RESOLUTION_PRELIMINARY       => \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'),
+            static::STATUS_RESOLUTION_FINAL             => \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'),
         ];
         if ($includeAdminInvisibles) {
             $propName = \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT');
 
-            // Keep in Sync with static::getStatiInvisibleForAdmins
-            $stati[static::STATUS_DELETED]                     = \Yii::t('structure', 'STATUS_DELETED');
-            $stati[static::STATUS_MERGING_DRAFT_PUBLIC]        = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC');
-            $stati[static::STATUS_MERGING_DRAFT_PRIVATE]       = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE');
-            $stati[static::STATUS_PROPOSED_MODIFIED_AMENDMENT] = $propName;
+            // Keep in Sync with static::getStatusesInvisibleForAdmins
+            $statuses[static::STATUS_DELETED]                     = \Yii::t('structure', 'STATUS_DELETED');
+            $statuses[static::STATUS_MERGING_DRAFT_PUBLIC]        = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PUBLIC');
+            $statuses[static::STATUS_MERGING_DRAFT_PRIVATE]       = \Yii::t('structure', 'STATUS_MERGING_DRAFT_PRIVATE');
+            $statuses[static::STATUS_PROPOSED_MODIFIED_AMENDMENT] = $propName;
         }
-        return $stati;
+        return $statuses;
     }
 
     /**
      * @return string[]
      */
-    public static function getStatiAsVerbs()
+    public static function getStatusesAsVerbs()
     {
         $return = static::getStatusNames();
         foreach ([
@@ -168,7 +176,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getVotingStati()
+    public static function getVotingStatuses()
     {
         return [
             static::STATUS_VOTE     => \Yii::t('structure', 'STATUS_VOTE'),
@@ -180,7 +188,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return int[]
      */
-    public static function getScreeningStati()
+    public static function getScreeningStatuses()
     {
         return [
             static::STATUS_SUBMITTED_UNSCREENED,
@@ -193,7 +201,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function isInScreeningProcess()
     {
-        return in_array($this->status, IMotion::getScreeningStati());
+        return in_array($this->status, IMotion::getScreeningStatuses());
     }
 
     /**
@@ -214,7 +222,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return int[]
      */
-    public static function getStatiMarkAsDoneOnRewriting()
+    public static function getStatusesMarkAsDoneOnRewriting()
     {
         return [
             static::STATUS_PROCESSED,
@@ -227,7 +235,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return int[]
      */
-    public static function getStatiInvisibleForAdmins()
+    public static function getStatusesInvisibleForAdmins()
     {
         // Keep in sync with getStatusNames::$includeAdminInvisibles
         return [
@@ -241,10 +249,10 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getStatusNamesVisibleForadmins()
+    public static function getStatusNamesVisibleForAdmins()
     {
         $names     = [];
-        $invisible = static::getStatiInvisibleForAdmins();
+        $invisible = static::getStatusesInvisibleForAdmins();
         foreach (static::getStatusNames() as $id => $name) {
             if (!in_array($id, $invisible)) {
                 $names[$id] = $name;
@@ -282,7 +290,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function isVisible()
     {
-        return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStati());
+        return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses());
     }
 
     /**
@@ -290,7 +298,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function isVisibleForAdmins()
     {
-        return !in_array($this->status, static::getStatiInvisibleForAdmins());
+        return !in_array($this->status, static::getStatusesInvisibleForAdmins());
     }
 
     /**
@@ -324,7 +332,7 @@ abstract class IMotion extends ActiveRecord
      */
     public function isReadable()
     {
-        return !in_array($this->status, $this->getMyConsultation()->getUnreadableStati());
+        return !in_array($this->status, $this->getMyConsultation()->getUnreadableStatuses());
     }
 
     /**
@@ -340,6 +348,19 @@ abstract class IMotion extends ActiveRecord
      * @return ISupporter[]
      */
     abstract public function getInitiators();
+
+    /**
+     * @return bool
+     */
+    public function isInitiatedByOrganization()
+    {
+        foreach ($this->getInitiators() as $initiator) {
+            if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Hint: the returned string is NOT yet HTML-encoded
@@ -389,7 +410,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getProposedStatiNames()
+    public static function getProposedStatusNames()
     {
         return [
             static::STATUS_ACCEPTED          => \Yii::t('structure', 'PROPOSED_ACCEPTED_AMEND'),
@@ -471,10 +492,10 @@ abstract class IMotion extends ActiveRecord
      */
     public function isSupportingPossibleAtThisStatus()
     {
-        if (!($this->getLikeDislikeSettings() & ISupportType::LIKEDISLIKE_SUPPORT)) {
+        if (!($this->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
             return false;
         }
-        if ($this->getMyMotionType()->supportType == ISupportType::COLLECTING_SUPPORTERS) {
+        if ($this->getMyMotionType()->supportType == SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->status != IMotion::STATUS_COLLECTING_SUPPORTERS) {
                 return false;
             }
@@ -535,14 +556,14 @@ abstract class IMotion extends ActiveRecord
                     $refAmendStr = Html::a($refAmend->getShortTitle(), UrlHelper::createAmendmentUrl($refAmend));
                     return \Yii::t('amend', 'obsoleted_by') . ': ' . $refAmendStr . $explStr;
                 } else {
-                    return static::getProposedStatiNames()[$this->proposalStatus] . $explStr;
+                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 }
                 break;
             case static::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
                 break;
             case static::STATUS_VOTE:
-                $str = static::getProposedStatiNames()[$this->proposalStatus];
+                $str = static::getProposedStatusNames()[$this->proposalStatus];
                 if (is_a($this, Amendment::class)) {
                     /** @var Amendment $this */
                     if ($this->proposalReference) {
@@ -559,8 +580,8 @@ abstract class IMotion extends ActiveRecord
                 return $str;
                 break;
             default:
-                if (isset(static::getProposedStatiNames()[$this->proposalStatus])) {
-                    return static::getProposedStatiNames()[$this->proposalStatus] . $explStr;
+                if (isset(static::getProposedStatusNames()[$this->proposalStatus])) {
+                    return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 } else {
                     return $this->proposalStatus . '?' . $explStr;
                 }
@@ -606,12 +627,12 @@ abstract class IMotion extends ActiveRecord
      */
     public function getVisibleComments($screeningAdmin, $paragraphNo, $parentId)
     {
-        $stati = [IComment::STATUS_VISIBLE];
+        $statuses = [IComment::STATUS_VISIBLE];
         if ($screeningAdmin) {
-            $stati[] = IComment::STATUS_SCREENING;
+            $statuses[] = IComment::STATUS_SCREENING;
         }
-        return array_filter($this->comments, function (IComment $comment) use ($stati, $paragraphNo, $parentId) {
-            if (!in_array($comment->status, $stati)) {
+        return array_filter($this->comments, function (IComment $comment) use ($statuses, $paragraphNo, $parentId) {
+            if (!in_array($comment->status, $statuses)) {
                 return false;
             }
             return ($paragraphNo === $comment->paragraph && $parentId === $comment->parentCommentId);

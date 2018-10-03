@@ -1,7 +1,5 @@
 <?php
 
-use app\tests\_pages\ConsultationHomePage;
-
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
@@ -10,20 +8,14 @@ $I->populateDBData1();
 
 $I->wantTo('open the application form');
 
-$page = ConsultationHomePage::openBy(
-    $I,
-    [
-        'subdomain'        => 'parteitag',
-        'consultationPath' => 'parteitag',
-    ]
-);
+$I->gotoConsultationHome(false, 'parteitag', 'parteitag');
 
-$I->see('1. Vorsitzende(r)', '#agendaitem_3');
+$I->see('1. Vorsitzende*r', '#agendaitem_3');
 $I->seeElement('#agendaitem_3 > div > h3 .motionCreateLink');
 $I->click('#agendaitem_3 > div > h3 .motionCreateLink');
 
 $I->see(mb_strtoupper('Bewerben'), '.breadcrumb');
-$I->see(mb_strtoupper('1. Vorsitzende(r): Bewerben'), 'h1');
+$I->see(mb_strtoupper('1. Vorsitzende*r: Bewerben'), 'h1');
 
 $I->dontSee('Voraussetzungen für einen Antrag');
 $I->see('Name', 'label');
@@ -37,8 +29,8 @@ $I->see('Selbstvorstellung', 'label');
 $I->wantTo('apply for a job');
 
 $I->fillField('#sections_13', 'Jane Doe');
-/*
-$I->attachFile('#sections_14', 'logo.png'); // @TODO Does not work yet with phantomJS? https://github.com/ariya/phantomjs/issues/12506
+
+$I->attachFile('#sections_14', 'logo.png');
 $I->fillField('#sections_15_1', '23');
 $I->fillField('#sections_15_2', 'Female');
 $I->fillField('#sections_15_3', 'Somewhere');
@@ -56,5 +48,3 @@ $I->submitForm('#motionConfirmedForm', [], '');
 
 
 $I->wantTo('check if my application is visible (should not be so)');
-
-*/
