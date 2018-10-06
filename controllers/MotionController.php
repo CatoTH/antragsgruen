@@ -737,13 +737,14 @@ class MotionController extends Base
         $msgAlert = null;
 
         if (\Yii::$app->request->post('setStatus', null) !== null) {
-            if ($motion->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+            $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
+            if ($motion->proposalStatus !== $setStatus) {
                 if ($motion->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
                 $motion->proposalUserStatus = null;
             }
-            $motion->proposalStatus  = \Yii::$app->request->post('setStatus');
+            $motion->proposalStatus  = $setStatus;
             $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
             $motion->votingStatus    = \Yii::$app->request->post('votingStatus', '');
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {

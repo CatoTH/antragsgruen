@@ -502,13 +502,14 @@ class AmendmentController extends Base
         $msgAlert = null;
 
         if (\Yii::$app->request->post('setStatus', null) !== null) {
-            if ($amendment->proposalStatus != \Yii::$app->request->post('setStatus', null)) {
+            $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
+            if ($amendment->proposalStatus !== $setStatus) {
                 if ($amendment->proposalUserStatus !== null) {
                     $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
                 }
                 $amendment->proposalUserStatus = null;
             }
-            $amendment->proposalStatus  = \Yii::$app->request->post('setStatus');
+            $amendment->proposalStatus  = $setStatus;
             $amendment->proposalComment = \Yii::$app->request->post('proposalComment', '');
             $amendment->votingStatus    = \Yii::$app->request->post('votingStatus', '');
             if (\Yii::$app->request->post('proposalExplanation', null) !== null) {

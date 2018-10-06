@@ -31,13 +31,14 @@ class BugfixController extends Controller
         $changedCount = 0;
         foreach ($motion->getActiveSections() as $section) {
             try {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
                 $newText = HTMLTools::cleanSimpleHtml($section->data);
-                if ($newText != $section->data) {
+                $newText = HTMLTools::removeSectioningFragments($newText);
+                if ($newText !== $section->data) {
                     $changedCount++;
-                    $section->data = HTMLTools::cleanSimpleHtml($section->data);
+                    $section->data = $newText;
                     $section->save();
                 }
             } catch (\Exception $e) {
@@ -64,14 +65,15 @@ class BugfixController extends Controller
         $changedCount = 0;
         foreach ($amendment->getActiveSections() as $section) {
             try {
-                if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
 
                 //$newText = HTMLTools::cleanSimpleHtml($section->dataRaw); // don't do this; <del>'s are removed
 
                 $newText = HTMLTools::cleanSimpleHtml($section->data);
-                if ($newText != $section->data) {
+                $newText = HTMLTools::removeSectioningFragments($newText);
+                if ($newText !== $section->data) {
                     $changedCount++;
                     $section->data = $newText;
                     $section->save();
@@ -94,7 +96,7 @@ class BugfixController extends Controller
      */
     public function actionFixAllConsultationTexts($subdomain, $consultation)
     {
-        if ($subdomain == '' || $consultation == '') {
+        if ($subdomain === '' || $consultation === '') {
             $this->stdout('yii bugfix/fix-all-consultation-texts [subdomain] [consultationPath]' . "\n");
             return;
         }

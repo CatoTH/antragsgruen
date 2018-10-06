@@ -18,17 +18,17 @@ echo Html::beginForm($saveUrl, 'POST', [
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
     'class'                    => 'fuelux',
 ]);
-if ($motion->proposalStatus == Motion::STATUS_REFERRED) {
+if ($motion->proposalStatus === Motion::STATUS_REFERRED) {
     $preReferredTo = $motion->proposalComment;
 } else {
     $preReferredTo = '';
 }
-if ($motion->proposalStatus == Motion::STATUS_OBSOLETED_BY) {
+if ($motion->proposalStatus === Motion::STATUS_OBSOLETED_BY) {
     $preObsoletedBy = $motion->proposalComment;
 } else {
     $preObsoletedBy = '';
 }
-if ($motion->proposalStatus == Motion::STATUS_CUSTOM_STRING) {
+if ($motion->proposalStatus === Motion::STATUS_CUSTOM_STRING) {
     $preCustomStr = $motion->proposalComment;
 } else {
     $preCustomStr = '';
@@ -57,7 +57,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                 ?>
                 <label class="proposalStatus<?= $statusId ?>">
                     <input type="radio" name="proposalStatus" value="<?= $statusId ?>" <?php
-                    if ($motion->proposalStatus == $statusId) {
+                    if ($motion->proposalStatus === $statusId) {
                         $foundStatus = true;
                         echo 'checked';
                     }
@@ -162,7 +162,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         </div>
                         <div class="comment">
                             <?php
-                            if ($adminComment->status == IAdminComment::PROPOSED_PROCEDURE) {
+                            if ($adminComment->status === IAdminComment::PROPOSED_PROCEDURE) {
                                 echo '<div class="overv">' . \Yii::t('amend', 'proposal_comment_overview') . '</div>';
                             }
                             ?>
@@ -184,7 +184,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
         <?php
         $options = ['-'];
         foreach ($motion->getMyConsultation()->getVisibleMotionsSorted(false) as $otherMotion) {
-            if ($otherMotion->id == $motion->id) {
+            if ($otherMotion->id === $motion->id) {
                 continue;
             }
             foreach ($otherMotion->getVisibleAmendmentsSorted() as $otherAmend) {
