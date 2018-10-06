@@ -28,6 +28,7 @@ $layout->loadSortable();
 $layout->loadDatepicker();
 $layout->loadCKEditor();
 $layout->loadFuelux();
+$layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';

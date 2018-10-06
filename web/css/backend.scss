@@ -762,6 +762,20 @@ label.legend {
     @include clearfix();
     padding-left: 25px;
   }
+  .fullTextCopy {
+    margin-top: 15px;
+    .ok {
+      display: none;
+    }
+    &.done {
+      .ok {
+        display: inherit;
+      }
+      .normal {
+        display: none;
+      }
+    }
+  }
 }
 
 .adminCard {

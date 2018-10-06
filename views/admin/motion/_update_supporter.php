@@ -91,6 +91,14 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
                 <span class="glyphicon glyphicon-plus"></span>
                 <?= Yii::t('initiator', 'fullTextAdd') ?>
             </button>
+
+            <button class="btn btn-default fullTextCopy" type="button">
+                <span class="glyphicon glyphicon-copy normal"></span>
+                <span class="glyphicon glyphicon-ok ok"></span>
+                <?= \Yii::t('initiator', 'copy_to_clipboard') ?>
+            </button>
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                  data-original-title="<?= \Yii::t('initiator', 'copy_to_clipboard_h') ?>"></span>
         </div>
     </div>
 </div>

@@ -18,6 +18,8 @@ return [
     'phone'               => 'Phone',
     'moreInitiators'      => 'Further proposers',
     'addInitiator'        => 'Add a proposer',
+    'copy_to_clipboard'   => 'Copy',
+    'copy_to_clipboard_h' => 'Copy the list of supporters above to the clipboard in a format suitable to be pasted in the full text field.',
     'supporters'          => 'Supporters',
     'supportersHead'      => 'Supporters',
     'addSupporter'        => 'Add a supporter',

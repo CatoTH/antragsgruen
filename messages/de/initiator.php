@@ -18,6 +18,8 @@ return [
     'phone'               => 'Telefon',
     'moreInitiators'      => 'Weitere Antragssteller*in',
     'addInitiator'        => 'Antragsteller*in hinzufügen',
+    'copy_to_clipboard'   => 'Kopieren',
+    'copy_to_clipboard_h' => 'Die Liste oben in die Zwischenablage kopieren.',
     'supporters'          => 'Unterstützer*innen',
     'supportersHead'      => 'Unterstützer*innen',
     'addSupporter'        => 'Unterstützer*in hinzufügen',

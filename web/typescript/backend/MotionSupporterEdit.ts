@@ -1,4 +1,5 @@
 declare let Sortable: any;
+declare let ClipboardJS: any;
 
 export class MotionSupporterEdit {
     constructor(private $supporterHolder: JQuery) {
@@ -17,7 +18,7 @@ export class MotionSupporterEdit {
         });
 
         let $fullTextHolder = $("#fullTextHolder");
-        $supporterHolder.find(".fullTextAdd").click(function () {
+        $supporterHolder.find(".fullTextAdd").click(() => {
             let lines = $fullTextHolder.find('textarea').val().split(";"),
                 template = $(".supporterRowAdder").data("content"),
                 getNewElement = function () {
@@ -38,18 +39,56 @@ export class MotionSupporterEdit {
                 }
                 let $newEl = getNewElement();
                 if ($firstAffectedRow == null) $firstAffectedRow = $newEl;
-                if ($newEl.find('input.supporterOrga').length > 0) {
-                    let parts = lines[i].split(',');
-                    $newEl.find('input.supporterName').val(parts[0].trim());
-                    if (parts.length > 1) {
-                        $newEl.find('input.supporterOrga').val(parts[1].trim());
-                    }
-                } else {
-                    $newEl.find('input.supporterName').val(lines[i]);
+                let parts = lines[i].split(',');
+
+                let name = parts.shift();
+                $newEl.find('input.supporterName').val(name.trim());
+
+                if ($newEl.find('input.supporterOrga').length > 0 && parts.length > 0) {
+                    let orga = parts.shift();
+                    $newEl.find('input.supporterOrga').val(orga.trim());
+                }
+                if ($newEl.find('.colGender').length > 0 && parts.length > 0) {
+                    $newEl.find('.colGender').first().children().selectlist("selectByValue", parts[0]);
                 }
             }
             $fullTextHolder.find('textarea').select().focus();
             $firstAffectedRow.scrollintoview();
         });
+
+        const $copier = $supporterHolder.find(".fullTextCopy");
+        const clipboard = new ClipboardJS($copier[0], {
+            text: function () {
+                let supporters = [];
+                $supporterHolder.find('.supporterRow').each((i, el) => {
+                    let $el = $(el),
+                        parts = [];
+                    if ($el.find(".supporterName").length) {
+                        parts.push($el.find(".supporterName").val().replace(/,/, ' ').replace(/;/, ' '));
+                    }
+                    if ($el.find(".supporterOrga").length) {
+                        parts.push($el.find(".supporterOrga").val().replace(/,/, ' ').replace(/;/, ' '));
+                    }
+                    if ($el.find(".colGender").length) {
+                        let gender: any = $el.find(".colGender").first().children();
+                        parts.push(gender.selectlist("getValue").value);
+                    }
+                    supporters.push(parts.join(','));
+                });
+                return supporters.join(";");
+            }
+        });
+        clipboard.on('success', () => {
+            $copier.addClass("done");
+            window.setTimeout(() => {
+                $copier.removeClass("done");
+            }, 1000);
+        });
+
+        clipboard.on('error', () => {
+            alert("Could not copy the URL to the clipboard");
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
     }
 }
