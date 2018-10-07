@@ -127,6 +127,7 @@ class AmendmentEditForm extends Model
             $suppNew = new AmendmentSupporter();
             $suppNew->setAttributes($supp->getAttributes());
             $suppNew->dateCreation = date('Y-m-d H:i:s');
+            $suppNew->extraData    = $supp->extraData;
             $this->supporters[]    = $suppNew;
         }
     }

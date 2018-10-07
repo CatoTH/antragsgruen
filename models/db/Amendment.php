@@ -510,7 +510,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR) {
+            if ($supp->role === AmendmentSupporter::ROLE_INITIATOR) {
                 $return[] = $supp;
             }
         };
@@ -524,7 +524,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
+            if ($supp->role === AmendmentSupporter::ROLE_SUPPORTER) {
                 $return[] = $supp;
             }
         };
@@ -538,7 +538,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_LIKE) {
+            if ($supp->role === AmendmentSupporter::ROLE_LIKE) {
                 $return[] = $supp;
             }
         };
@@ -552,7 +552,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         $return = [];
         foreach ($this->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_DISLIKE) {
+            if ($supp->role === AmendmentSupporter::ROLE_DISLIKE) {
                 $return[] = $supp;
             }
         };
@@ -571,7 +571,7 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         foreach ($this->amendmentSupporters as $supp) {
-            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId == $user->id) {
+            if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && $supp->userId === $user->id) {
                 return true;
             }
         }
@@ -588,13 +588,13 @@ class Amendment extends IMotion implements IRSSItem
             $hadLoggedInUser = false;
             foreach ($this->amendmentSupporters as $supp) {
                 $currUser = User::getCurrentUser();
-                if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
+                if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
                     if ($currUser && $currUser->id == $supp->userId) {
                         return true;
                     }
                 }
-                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
+                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
                     if ($currUser && $currUser->hasPrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
@@ -603,7 +603,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                if ($this->getMyMotion()->motionType->getAmendmentPolicy()->getPolicyID() == All::getPolicyID()) {
+                if ($this->getMyMotion()->motionType->getAmendmentPolicy()->getPolicyID() === All::getPolicyID()) {
                     return true;
                 } else {
                     return false;

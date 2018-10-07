@@ -111,7 +111,9 @@ class MotionEditForm extends Model
         foreach ($motion->motionSupporters as $supp) {
             $suppNew = new MotionSupporter();
             $suppNew->setAttributes($supp->getAttributes());
-            $this->supporters[] = $suppNew;
+            $suppNew->dateCreation = date('Y-m-d H:i:s');
+            $suppNew->extraData    = $supp->extraData;
+            $this->supporters[]    = $suppNew;
         }
     }
 

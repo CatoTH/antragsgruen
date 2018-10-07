@@ -393,15 +393,14 @@ class AmendmentController extends Base
                 // Supporting members are not collected in the form, but need to be copied a well
                 if ($supportType->collectSupportersBeforePublication() && $cloneFrom && $iAmAdmin) {
                     $adoptAmend = $this->consultation->getAmendment($cloneFrom);
-                    foreach ($adoptAmend->amendmentSupporters as $supp) {
-                        if ($supp->role == AmendmentSupporter::ROLE_SUPPORTER) {
-                            $suppNew = new AmendmentSupporter();
-                            $suppNew->setAttributes($supp->getAttributes());
-                            $suppNew->id           = null;
-                            $suppNew->amendmentId  = $amendment->id;
-                            $suppNew->dateCreation = date('Y-m-d H:i:s');
-                            $suppNew->save();
-                        }
+                    foreach ($adoptAmend->getSupporters() as $supp) {
+                        $suppNew = new AmendmentSupporter();
+                        $suppNew->setAttributes($supp->getAttributes());
+                        $suppNew->id           = null;
+                        $suppNew->amendmentId  = $amendment->id;
+                        $suppNew->extraData    = $supp->extraData;
+                        $suppNew->dateCreation = date('Y-m-d H:i:s');
+                        $suppNew->save();
                     }
                 }
 
