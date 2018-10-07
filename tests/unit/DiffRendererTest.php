@@ -3,7 +3,6 @@
 namespace unit;
 
 use app\components\diff\DiffRenderer;
-use app\components\HTMLTools;
 use Codeception\Specify;
 
 class DiffRendererTest extends TestBase

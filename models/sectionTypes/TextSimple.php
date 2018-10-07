@@ -474,7 +474,7 @@ class TextSimple extends Text
      */
     public static function stripAfterInsertedNewlines($text)
     {
-        return preg_replace_callback('/((<br>\s*)*<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
+        return preg_replace_callback('/((<br>\s*)+<\/ins>)(?<rest>.*)(?<end><\/[a-z]+>*)$/siu', function ($match) {
             $rest = $match['rest'];
             if (strpos($rest, '<') !== false) {
                 return $match[0];
