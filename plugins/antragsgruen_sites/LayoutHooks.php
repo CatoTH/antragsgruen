@@ -6,10 +6,10 @@ use app\components\UrlHelper;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\models\db\User;
-use app\models\layoutHooks\HooksAdapter;
+use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
-class LayoutHooks extends HooksAdapter
+class LayoutHooks extends Hooks
 {
     /**
      * @param $before

@@ -42,6 +42,8 @@ class LayoutHelper
                     $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
                 }
             }
+            $name = \app\models\layoutHooks\Layout::getMotionDetailsInitiatorName($name, $supp);
+
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
                 if (!$expanded) {

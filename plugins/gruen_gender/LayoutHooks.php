@@ -5,7 +5,7 @@ namespace app\plugins\gruen_gender;
 use app\models\db\Amendment;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
-use app\models\layoutHooks\HooksAdapter;
+use app\models\layoutHooks\Hooks;
 
 /**
  * HINT: Requires the gruen_ci-plugin for styling
@@ -13,7 +13,7 @@ use app\models\layoutHooks\HooksAdapter;
  * Class LayoutHooks
  * @package app\plugins\gruen_gender
  */
-class LayoutHooks extends HooksAdapter
+class LayoutHooks extends Hooks
 {
     /**
      * @param ISupporter[] $supporters
@@ -93,6 +93,39 @@ class LayoutHooks extends HooksAdapter
             $before  = $this->formatWomenQuotaCol($quota, $before);
         }
 
+        return $before;
+    }
+
+    /**
+     * @param string $before
+     * @param ISupporter $supporter
+     * @return string
+     */
+    public function getMotionDetailsInitiatorName($before, ISupporter $supporter)
+    {
+        $imotion         = $supporter->getIMotion();
+        $collectionPhase = $imotion->getMyMotionType()->getAmendmentSupportTypeClass()
+            ->collectSupportersBeforePublication();
+        if (!$imotion->isInitiatedByOrganization() && $collectionPhase) {
+            $persons = array_merge($imotion->getInitiators(), $imotion->getSupporters());
+            $quota   = $this->getWomensQuota($persons);
+            $before .= '<div class="moreSupporters">';
+
+            $num = count($imotion->getSupporters());
+            $before .= '<a href="#supporters">';
+            if ($num === 1) {
+                $before .= 'und 1 weitere Antragsteller*in';
+            } else {
+                $before .= 'und ' . $num . ' weitere Antragsteller*innen';
+            }
+            $before .= '</a> ';
+
+            $before .= '<span class="womenQuota">(Frauenanteil: ';
+            $before .= round($quota * 100) . '%';
+            $before .= ')</span></div>';
+
+            $before = $this->formatWomenQuotaCol($quota, $before);
+        }
         return $before;
     }
 }

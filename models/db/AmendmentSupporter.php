@@ -26,7 +26,6 @@ namespace app\models\db;
  */
 class AmendmentSupporter extends ISupporter
 {
-
     /**
      * @return string
      */
@@ -120,5 +119,13 @@ class AmendmentSupporter extends ISupporter
             [['resolutionDate', 'contactName', 'contactEmail', 'contactPhone'], 'safe'],
             [['position', 'comment', 'personType', 'name', 'organization'], 'safe'],
         ];
+    }
+
+    /**
+     * @return IMotion
+     */
+    public function getIMotion()
+    {
+        return $this->amendment;
     }
 }

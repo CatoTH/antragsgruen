@@ -3,11 +3,11 @@
 namespace app\plugins\gruen_ci;
 
 use app\components\UrlHelper;
-use app\models\layoutHooks\HooksAdapter;
+use app\models\layoutHooks\Hooks;
 use app\models\layoutHooks\Layout;
 use yii\helpers\Html;
 
-class LayoutHooks extends HooksAdapter
+class LayoutHooks extends Hooks
 {
     /**
      * @param $before

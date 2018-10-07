@@ -4,10 +4,10 @@ namespace app\plugins\memberPetitions;
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use app\models\layoutHooks\HooksAdapter;
+use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
-class LayoutHooks extends HooksAdapter
+class LayoutHooks extends Hooks
 {
     /**
      * @param $before

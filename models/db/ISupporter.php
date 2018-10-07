@@ -205,4 +205,9 @@ abstract class ISupporter extends ActiveRecord
         }
         $this->extraData = json_encode($arr, JSON_PRETTY_PRINT);
     }
+
+    /**
+     * @return IMotion
+     */
+    abstract public function getIMotion();
 }

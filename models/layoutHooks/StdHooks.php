@@ -13,7 +13,7 @@ use app\models\db\User;
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
-class StdHooks extends HooksAdapter
+class StdHooks extends Hooks
 {
     /**
      * @param $before
@@ -99,7 +99,7 @@ class StdHooks extends HooksAdapter
         if (is_array($this->layout->breadcrumbs)) {
             $out .= '<ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
-                if ($link == '' || is_null($link)) {
+                if ($link === '' || is_null($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
                 } else {
                     $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';

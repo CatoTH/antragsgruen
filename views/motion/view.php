@@ -189,7 +189,8 @@ $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 
 if (count($supporters) > 0 || $supportCollectingStatus ||
     ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
-    echo '<section class="supporters"><h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
+    echo '<section class="supporters" id="supporters">
+    <h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     $iAmSupporting        = false;

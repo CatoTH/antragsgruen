@@ -3,12 +3,12 @@
 namespace app\plugins\green_layout;
 
 use app\components\UrlHelper;
-use app\models\layoutHooks\HooksAdapter;
+use app\models\layoutHooks\Hooks;
 use app\models\layoutHooks\Layout;
 use app\plugins\green_manager\SiteSettings;
 use yii\helpers\Html;
 
-class LayoutHooks extends HooksAdapter
+class LayoutHooks extends Hooks
 {
     /**
      * @param $before

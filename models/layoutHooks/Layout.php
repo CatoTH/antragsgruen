@@ -5,6 +5,7 @@ namespace app\models\layoutHooks;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
+use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\Site;
 
@@ -226,6 +227,16 @@ class Layout
     public static function getConsultationAmendmentLineContent($origLine, Amendment $amendment)
     {
         return static::callHook('getConsultationAmendmentLineContent', [$amendment], $origLine);
+    }
+
+    /**
+     * @param string $origLine
+     * @param ISupporter $supporter
+     * @return string
+     */
+    public static function getMotionDetailsInitiatorName($origLine, ISupporter $supporter)
+    {
+        return static::callHook('getMotionDetailsInitiatorName', [$supporter], $origLine);
     }
 
     /**
