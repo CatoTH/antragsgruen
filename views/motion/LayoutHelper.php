@@ -34,14 +34,6 @@ class LayoutHelper
         $inits = [];
         foreach ($initiators as $supp) {
             $name = $supp->getNameWithResolutionDate(true);
-            if ($supp->user && $supp->user->isWurzelwerkUser()) {
-                $url = 'https://wurzelwerk.gruene.de/web/' . $supp->user->getWurzelwerkName();
-                if ($adminMode) {
-                    $name .= ' (<a href="' . Html::encode($url) . '">WW</a>)';
-                } else {
-                    $name .= ' (<a href="' . Html::encode($url) . '">' . \Yii::t('initiator', 'ww_profile') . '</a>)';
-                }
-            }
             $name = \app\models\layoutHooks\Layout::getMotionDetailsInitiatorName($name, $supp);
 
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
