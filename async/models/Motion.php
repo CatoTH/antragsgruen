@@ -15,6 +15,7 @@ class Motion extends TransferrableChannelObject
     public $statusString;
     public $statusFormatted;
     public $initiators;
+    public $supporters;
     public $tags;
     public $dateCreation;
 
@@ -37,7 +38,11 @@ class Motion extends TransferrableChannelObject
         $object->dateCreation    = $motion->dateCreation;
         $object->initiators      = [];
         foreach ($motion->getInitiators() as $initiator) {
-            $object->initiators[] = Person::createFromDbMotionObject($initiator);
+            $object->initiators[] = Person::createFromDbIMotionObject($initiator);
+        }
+        $object->supporters      = [];
+        foreach ($motion->getSupporters() as $supporter) {
+            $object->supporters[] = Person::createFromDbIMotionObject($supporter);
         }
         $object->tags = [];
         foreach ($motion->tags as $tag) {

@@ -9,6 +9,7 @@ import {CollectionItem} from "../classes/CollectionItem";
 import {IMotion} from "../classes/IMotion";
 import {SelectlistItem} from "./selectlist.component";
 import {Translations} from "../classes/Translations";
+import {STATUS} from "../classes/Status";
 
 @Component({
     selector: 'admin-index',
@@ -23,7 +24,11 @@ export class AdminIndexComponent {
 
     public searchPrefix = "";
     public searchTitle = "";
+    public searchInitiator = "";
     private filters: { [filterId: string]: (IMotion) => boolean } = {};
+
+    public hasTopics = true;
+    public hasProposedProcedure = false;
 
     private readonly ajaxBackendUrl: string;
     private readonly csrfParam: string;
@@ -143,11 +148,28 @@ export class AdminIndexComponent {
         $event.preventDefault();
     }
 
+    private regexescape(str: string): RegExp {
+        return new RegExp(str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
+    }
+
     public getHighlightedTitle(item: IMotion): string {
         let html = item.getTitle().replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         if (this.searchTitle !== '') {
             let search = this.searchTitle.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
-            html = html.replace(search, '<mark>' + search + '</mark>');
+            html = html.replace(this.regexescape(search), (match) => {
+                return '<mark>' + match + '</mark>';
+            });
+        }
+        return html;
+    }
+
+    public getHighlightedInitiator(item: IMotion): string {
+        let html = item.getInitiatorName().replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+        if (this.searchInitiator !== '') {
+            let search = this.searchInitiator.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+            html = html.replace(this.regexescape(search), (match) => {
+                return '<mark>' + match + '</mark>';
+            });
         }
         return html;
     }
@@ -156,9 +178,22 @@ export class AdminIndexComponent {
         let html = item.titlePrefix.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
         if (this.searchPrefix !== '') {
             let search = this.searchPrefix.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
-            html = html.replace(search, '<mark>' + search + '</mark>');
+            html = html.replace(this.regexescape(search), (match) => {
+                return '<mark>' + match + '</mark>';
+            });
+        }
+        if (html === '') {
+            html = '-';
         }
         return html;
+    }
+
+    public getStatusString(item: IMotion): string {
+        let status = Translations.getStatusName(item.status);
+        if (item.status === STATUS.COLLECTING_SUPPORTERS) {
+            status += ' (' + item.supporters.length.toString(10) + ')';
+        }
+        return status;
     }
 
     private sortAndAddZeroItems(items: SelectlistItem[]): SelectlistItem[] {
@@ -250,6 +285,21 @@ export class AdminIndexComponent {
         } else {
             this.filters['title'] = (motion: IMotion) => {
                 return motion.getTitle().toLowerCase().indexOf(this.searchTitle.toLowerCase()) !== -1;
+            };
+        }
+        this.recalcMotionList();
+    }
+
+    public searchInitiatorChange($ev) {
+        if ($ev.currentTarget.value === this.searchInitiator) {
+            return;
+        }
+        this.searchInitiator = $ev.currentTarget.value;
+        if (this.searchInitiator === '') {
+            delete this.filters['initiator'];
+        } else {
+            this.filters['initiator'] = (motion: IMotion) => {
+                return motion.getInitiatorName().toLowerCase().indexOf(this.searchInitiator.toLowerCase()) !== -1;
             };
         }
         this.recalcMotionList();
