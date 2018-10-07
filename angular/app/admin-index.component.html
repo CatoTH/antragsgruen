@@ -12,7 +12,11 @@
     <label>Status:<br>
         <selectlist [items]="getAvailableStatusItems()" [selected]="" (onSelect)="setStatusItem($event)"></selectlist>
     </label>
-    <label>Thema:<br>
+    <label>Initiator:<br>
+        <input type="text" class="form-control inputPrefix" [value]="searchInitiator"
+                (change)="searchInitiatorChange($event)" (keyup)="searchInitiatorChange($event)">
+    </label>
+    <label *ngIf="hasTopics">Thema:<br>
         <selectlist [items]="getAvailableTagsItems()" [selected]="" (onSelect)="setTagItem($event)"></selectlist>
     </label>
 </section>
@@ -26,7 +30,7 @@
         <th i18n="admin-index column header">Title</th>
         <th i18n="admin-index column header">Status</th>
         <th i18n="admin-index column header">Initiators</th>
-        <th i18n="admin-index column header">Topic</th>
+        <th i18n="admin-index column header" *ngIf="hasTopics">Topic</th>
         <th i18n="admin-index column header">Export</th>
         <th i18n="admin-index column header">Action</th>
     </tr>
@@ -38,15 +42,9 @@
             <td i18n="admin-index motion indicator">Mot</td>
             <td><a [href]="item.getLink('motion/view', linkTemplates)" [innerHTML]="getHighlightedPrefix(item)"></a></td>
             <td><a [href]="item.getLink('admin/motion/update', linkTemplates)" [innerHTML]="getHighlightedTitle(item)"></a></td>
-            <td [innerHTML]="item.statusFormatted"></td>
-            <td class="initiatorCol">
-                <ul>
-                    <li *ngFor="let person of item.initiators">
-                        {{ person.name }}
-                    </li>
-                </ul>
-            </td>
-            <td class="tagsCol">
+            <td class="statusCol">{{ getStatusString(item) }}</td>
+            <td class="initiatorCol" [innerHTML]="getHighlightedInitiator(item)"></td>
+            <td class="tagsCol" *ngIf="hasTopics">
                 <ul>
                     <li *ngFor="let tag of item.tags">
                         {{ tag.title }}
@@ -92,17 +90,14 @@
         <tr *ngIf="item.type == 'amendment'">
             <td><input type="checkbox"></td>
             <td i18n="admin-index amendment indicator">Amd</td>
-            <td><a [href]="item.getLink('amendment/view', linkTemplates)" [innerHTML]="getHighlightedPrefix(item)"></a></td>
+            <td><a [href]="item.getLink('amendment/view', linkTemplates)">
+                &#8627;
+                <span [innerHTML]="getHighlightedPrefix(item)"></span>
+            </a></td>
             <td><a [href]="item.getLink('admin/amendment/update', linkTemplates)" [innerHTML]="getHighlightedTitle(item)"></a></td>
-            <td [innerHTML]="item.statusFormatted"></td>
-            <td class="initiatorCol">
-                <ul>
-                    <li *ngFor="let person of item.initiators">
-                        {{ person.name }}
-                    </li>
-                </ul>
-            </td>
-            <td class="tagsCol"></td>
+            <td class="statusCol">{{ getStatusString(item) }}</td>
+            <td class="initiatorCol" [innerHTML]="getHighlightedInitiator(item)"></td>
+            <td class="tagsCol" *ngIf="hasTopics"></td>
             <td>
                 <a [href]="item.getLink('amendment/pdf', linkTemplates)" class="pdf" i18n="admin-index export">PDF</a> /
                 <a [href]="item.getLink('amendment/odt', linkTemplates)" class="odt" i18n="admin-index export">ODT</a>

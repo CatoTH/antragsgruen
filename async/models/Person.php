@@ -2,7 +2,7 @@
 
 namespace app\async\models;
 
-use app\models\db\MotionSupporter;
+use app\models\db\ISupporter;
 
 class Person extends TransferrableObject
 {
@@ -12,11 +12,11 @@ class Person extends TransferrableObject
     public $resolutionDate;
 
     /**
-     * @param MotionSupporter $supporter
+     * @param ISupporter $supporter
      * @return Person
      * @throws \Exception
      */
-    public static function createFromDbMotionObject(MotionSupporter $supporter)
+    public static function createFromDbIMotionObject(ISupporter $supporter)
     {
         $person                 = new Person('');
         $person->type           = IntVal($supporter->personType);

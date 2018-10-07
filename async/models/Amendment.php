@@ -17,6 +17,7 @@ class Amendment extends TransferrableChannelObject
     public $statusString;
     public $statusFormatted;
     public $initiators;
+    public $supporters;
     public $dateCreation;
 
     /**
@@ -41,8 +42,12 @@ class Amendment extends TransferrableChannelObject
         $object->statusFormatted   = $motion->getFormattedStatus();
         $object->dateCreation      = $motion->dateCreation;
         $object->initiators        = [];
-        foreach ($motion->getInitiators() as $initiator) {
-            $object->initiators[] = Person::createFromDbMotionObject($initiator);
+        foreach ($amendment->getInitiators() as $initiator) {
+            $object->initiators[] = Person::createFromDbIMotionObject($initiator);
+        }
+        $object->supporters        = [];
+        foreach ($amendment->getSupporters() as $supporter) {
+            $object->supporters[] = Person::createFromDbIMotionObject($supporter);
         }
         return $object;
     }
