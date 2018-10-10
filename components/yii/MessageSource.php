@@ -87,22 +87,22 @@ class MessageSource extends \yii\i18n\MessageSource
         /** @var AntragsgruenApp $params */
         $params        = \Yii::$app->params;
         $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
-        if ($language == 'de') {
+        if ($language === 'de') {
             return array_merge([
                 'de-parteitag'       => 'Konferenz / Parteitag',
                 'de-bewerbung'       => 'Bewerbungsverfahren',
                 'de-programm'        => 'Programmdiskussion',
                 'de-bdk'             => 'BDK',
-                'de-memberpetitions' => 'Mitgliederbegehren',
+                'de-neos'            => 'NEOS',
             ], $localMessages);
         };
-        if ($language == 'en') {
+        if ($language === 'en') {
             return array_merge([
                 'en-uk'       => 'English (UK)',
                 'en-congress' => 'Convention',
             ], $localMessages);
         }
-        if ($language == 'fr') {
+        if ($language === 'fr') {
             return array_merge([
                 'fr' => 'Français',
             ], $localMessages);
