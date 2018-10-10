@@ -164,7 +164,7 @@ class Layout
     public function setConsultation(Consultation $consultation)
     {
         $this->consultation = $consultation;
-        if ($consultation && count($this->breadcrumbs) == 0) {
+        if ($consultation && count($this->breadcrumbs) === 0) {
             if ($consultation->getForcedMotion()) {
                 $this->breadcrumbs[UrlHelper::homeUrl()] = $consultation->getForcedMotion()->motionType->titleSingular;
             } else {

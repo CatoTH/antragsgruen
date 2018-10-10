@@ -3,8 +3,10 @@
 namespace app\plugins\neos;
 
 use app\models\db\Consultation;
+use app\models\db\Site;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
+use app\models\siteSpecificBehavior\DefaultBehavior;
 use app\plugins\ModuleBase;
 use yii\web\View;
 
@@ -55,6 +57,16 @@ class Module extends ModuleBase
     public static function getConsultationSettingsClass($consultation)
     {
         return ConsultationSettings::class;
+    }
+
+    /**
+     * @param Site $site
+     * @return null|DefaultBehavior|string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getSiteSpecificBehavior($site)
+    {
+        return SiteSpecificBehavior::class;
     }
 
     /**

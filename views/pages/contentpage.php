@@ -21,7 +21,11 @@ $saveUrl      = $pageData->getSaveUrl();
 $this->title = ($pageData->title ? $pageData->title : $pageData->textId);
 
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb($pageData->breadcrumb ? $pageData->breadcrumb : $pageData->textId);
+if ($controller->action->id !== 'home') {
+    $layout->addBreadcrumb($pageData->breadcrumb ? $pageData->breadcrumb : $pageData->textId);
+} else {
+    $layout->breadcrumbs = [];
+}
 
 echo '<h1 class="pageTitle">' . Html::encode($pageData->title ? $pageData->title : $pageData->textId) . '</h1>';
 

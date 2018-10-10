@@ -176,9 +176,12 @@ class UrlHelper
     public static function homeUrl()
     {
         if (static::$currentConsultation) {
-            $consultation = static::$currentConsultation;
-            $homeOverride = $consultation->site->getBehaviorClass()->hasSiteHomePage();
-            if ($consultation->site->currentConsultationId == $consultation->id || $homeOverride) {
+            $consultation       = static::$currentConsultation;
+            $homeOverride       = $consultation->site->getBehaviorClass()->hasSiteHomePage();
+            $preferConsultation = $consultation->site->getBehaviorClass()->preferConsultationSpecificHomeLink();
+            if ($preferConsultation) {
+                $homeUrl = static::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
+            } elseif ($consultation->site->currentConsultationId === $consultation->id || $homeOverride) {
                 $homeUrl = static::createUrl('/consultation/home');
             } else {
                 $homeUrl = static::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
@@ -311,7 +314,7 @@ class UrlHelper
      */
     public static function createAmendmentCommentUrl(AmendmentComment $amendmentComment)
     {
-        $params       = [
+        $params = [
             '/amendment/view',
             'motionSlug'  => $amendmentComment->amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendmentComment->amendmentId,

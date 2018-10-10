@@ -70,8 +70,8 @@ class Base extends Controller
             $this->showErrorpage(503, \Yii::t('base', 'err_update_mode'));
         }
 
-        $inManager   = (get_class($this) == ManagerController::class);
-        $inInstaller = (get_class($this) == InstallationController::class);
+        $inManager   = (get_class($this) === ManagerController::class);
+        $inInstaller = (get_class($this) === InstallationController::class);
 
         if ($appParams->siteSubdomain) {
             if (strpos($appParams->siteSubdomain, 'xn--') === 0) {
@@ -119,6 +119,12 @@ class Base extends Controller
 
         if (get_class($this) === PagesController::class && $action->id === 'show-page') {
             return true;
+        }
+
+        if (get_class($this) === ConsultationController::class && $action->id === 'home') {
+            if ($this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
+                return true;
+            }
         }
 
         if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
@@ -191,7 +197,7 @@ class Base extends Controller
      * @param string $pageKey
      * @return string
      */
-    protected function renderContentPage($pageKey)
+    public function renderContentPage($pageKey)
     {
         if ($this->consultation) {
             $admin = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);

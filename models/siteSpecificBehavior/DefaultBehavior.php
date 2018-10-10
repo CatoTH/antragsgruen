@@ -53,6 +53,22 @@ class DefaultBehavior
     }
 
     /**
+     * @return bool
+     */
+    public static function preferConsultationSpecificHomeLink()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function siteHomeIsAlwaysPublic()
+    {
+        return false;
+    }
+
+    /**
      * @return null|string
      */
     public static function getSiteHomePage()
