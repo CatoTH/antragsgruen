@@ -113,11 +113,10 @@ foreach ($motions as $motion) {
             $change            .= '<h4>' . \Yii::t('amend', 'reason') . '</h4>';
             $change            .= $changeExplanation;
         }
-
-        // Only amendments with $maxLen text characters are relevant.
+        // If length exceeds $maxLen, don't show the text
         $changeLength = mb_strlen(strip_tags($change));
         if ($changeLength > $maxLen) {
-            continue;
+            $change = '';
         }
 
         $row++;
