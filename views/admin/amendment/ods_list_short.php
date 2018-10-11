@@ -108,6 +108,11 @@ foreach ($motions as $motion) {
         foreach ($amendment->getSortedSections(false) as $section) {
             $change .= $section->getSectionType()->getAmendmentODS();
         }
+        if ($textCombined && !$isNonRelevantReason($amendment->changeExplanation)) {
+            $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
+            $change            .= '<h4>' . \Yii::t('amend', 'reason') . '</h4>';
+            $change            .= $changeExplanation;
+        }
 
         // Only amendments with $maxLen text characters are relevant.
         $changeLength = mb_strlen(strip_tags($change));
@@ -133,11 +138,6 @@ foreach ($motions as $motion) {
         $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
         $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
 
-        if ($textCombined && !$isNonRelevantReason($amendment->changeExplanation)) {
-            $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
-            $change            .= '<h4>' . \Yii::t('amend', 'reason') . '</h4>';
-            $change            .= $changeExplanation;
-        }
         $change = HTMLTools::correctHtmlErrors($change);
         $doc->setCell($row, $COL_CHANGE, Spreadsheet::TYPE_HTML, $change);
 
