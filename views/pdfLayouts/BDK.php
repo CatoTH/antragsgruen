@@ -4,6 +4,7 @@ namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class BDK extends IPDFLayout
@@ -12,7 +13,7 @@ class BDK extends IPDFLayout
     protected $pdf;
 
     /**
-     * @return BDKPDF
+     * @return Fpdi
      */
     public function createPDFClass()
     {
@@ -34,6 +35,7 @@ class BDK extends IPDFLayout
         $pdf->setHtmlVSpace([
             'ul'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
             'li'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'ol'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
             'div'        => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
             'p'          => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
             'blockquote' => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],

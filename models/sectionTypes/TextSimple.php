@@ -349,9 +349,16 @@ class TextSimple extends Text
                     $linesArr[] = $line . '';
                 }
 
+                // Hint about <li>s: The spacing between list items is created by </li><br><li>-markup.
+                // This obviously is incorrect according to HTML, but is rendered correctly neverless.
+                // We just have to take care about additional spacing for the line numbers in these cases.
+
                 if ($hasLineNumbers) {
                     $lineNos = [];
                     for ($i = 0; $i < count($paragraph->lines); $i++) {
+                        if (preg_match('/^<(ul|ol|li)/siu', $linesArr[$i])) {
+                            $lineNos[] = ''; // Just for having an additional <br>
+                        }
                         $lineNos[] = $linenr++;
                     }
                     $text2 = implode('<br>', $lineNos);
