@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.0.2 [not yet released]
+
+- Bugfix: in nested lists in the PHP-based PDF renderer, the line numbers were not aligned correctly to the lines.
+
 ### Version 4.0.2 (2018-09-15)
 
 - Bugfix: The PDF export of applications failed if a tabular data section was added in the motion, but no data rows were set.

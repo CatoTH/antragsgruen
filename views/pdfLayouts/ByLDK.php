@@ -3,6 +3,7 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
+use app\models\db\IMotionSection;
 use app\models\db\Motion;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
@@ -237,6 +238,15 @@ class ByLDK extends IPDFLayout
         //set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
         $pdf->SetFont('dejavusans', '', 10);
+
+        $pdf->setHtmlVSpace([
+            'ul'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'ol'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'li'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'div'        => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'p'          => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+            'blockquote' => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
+        ]);
 
         $this->pdf = $pdf;
 
