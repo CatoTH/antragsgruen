@@ -16,12 +16,12 @@ $layout = $controller->layoutParams;
 
 
 $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
-    $params     = [$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => '0'];
-    $paramsTmpl = [$route, 'motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN'];
-    if ($route === 'amendment/pdfcollection') {
+    $params = array_merge($route, ['motionTypeId' => $motionTypeId, 'withdrawn' => '0']);
+    $paramsTmpl = array_merge($route, ['motionTypeId' => $motionTypeId, 'withdrawn' => 'WITHDRAWN']);
+    if ($route[0] === 'amendment/pdfcollection') {
         $params['filename']     = \Yii::t('con', 'feed_amendments') . '.pdf';
         $paramsTmpl['filename'] = \Yii::t('con', 'feed_amendments') . '.pdf';
-    } elseif ($route === 'motion/pdfcollection') {
+    } elseif ($route[0] === 'motion/pdfcollection') {
         $params['filename']     = \Yii::t('admin', 'index_pdf_collection') . '.pdf';
         $paramsTmpl['filename'] = \Yii::t('admin', 'index_pdf_collection') . '.pdf';
     }
@@ -31,7 +31,7 @@ $getExportLinkLi = function ($title, $route, $motionTypeId, $cssClass) {
         $cssClass .= $motionTypeId;
     }
     $attrs = ['class' => $cssClass, 'data-href-tpl' => $linkTpl];
-    return '<li class="exportLink">' . Html::a(Html::encode($title), $link, $attrs) . '</li>';
+    return '<li class="exportLink">' . Html::a($title, $link, $attrs) . '</li>';
 };
 
 $creatableMotions = [];
@@ -90,32 +90,32 @@ foreach ($consultation->motionTypes as $motionType) {
                     <li role="separator" class="divider"></li>
                     <?php
                     $title = \Yii::t('admin', 'index_export_ods');
-                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslist', $motionType->id, 'motionODS');
+                    echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionType->id, 'motionODS');
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_collection');
-                        echo $getExportLinkLi($title, 'motion/pdfcollection', $motionType->id, 'motionPDF');
+                        echo $getExportLinkLi($title, ['motion/pdfcollection'], $motionType->id, 'motionPDF');
                     }
 
                     if ($controller->getParams()->xelatexPath) {
                         $title = \Yii::t('admin', 'index_pdf_zip_list');
-                        echo $getExportLinkLi($title, 'admin/motion-list/motion-pdfziplist',
-                            $motionType->id, 'motionZIP');
+                        $path  = ['admin/motion-list/motion-pdfziplist'];
+                        echo $getExportLinkLi($title, $path, $motionType->id, 'motionZIP');
                     }
 
                     $title = \Yii::t('admin', 'index_odt_zip_list');
-                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odtziplist',
-                        $motionType->id, 'motionOdtZIP');
+                    $path  = ['admin/motion-list/motion-odtziplist'];
+                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionOdtZIP');
 
                     $title = \Yii::t('admin', 'index_export_ods_listall');
-                    echo $getExportLinkLi($title, 'admin/motion-list/motion-odslistall',
-                        $motionType->id, 'motionODSlist');
+                    $path  = ['admin/motion-list/motion-odslistall'];
+                    echo $getExportLinkLi($title, $path, $motionType->id, 'motionODSlist');
 
                     if (AntragsgruenApp::hasPhpExcel()) {
                         $title = \Yii::t('admin', 'index_export_excel') .
                             ' <span class="errorProne">(' . \Yii::t('admin', 'index_error_prone') . ')</span>';
-                        echo $getExportLinkLi($title, 'admin/motion-list/motion-excellist',
-                            $motionType->id, 'motionExcel');
+                        $path  = ['admin/motion-list/motion-excellist'];
+                        echo $getExportLinkLi($title, $path, $motionType->id, 'motionExcel');
                     }
                     ?>
                 </ul>
@@ -138,21 +138,25 @@ foreach ($consultation->motionTypes as $motionType) {
                 <?php
 
                 $title = Yii::t('admin', 'index_export_ods');
-                echo $getExportLinkLi($title, 'admin/amendment/odslist', null, 'amendmentOds');
+                echo $getExportLinkLi($title, ['admin/amendment/odslist'], null, 'amendmentOds');
+
+                $title = Yii::t('admin', 'index_export_ods_short');
+                $path  = ['admin/amendment/odslist-short', 'maxLen' => 2000, 'textCombined' => 1];
+                echo $getExportLinkLi($title, $path, null, 'amendmentOdsShort');
 
                 $title = \Yii::t('admin', 'index_pdf_collection');
-                echo $getExportLinkLi($title, 'amendment/pdfcollection', null, 'amendmentPDF');
+                echo $getExportLinkLi($title, ['amendment/pdfcollection'], null, 'amendmentPDF');
 
                 $title = \Yii::t('admin', 'index_pdf_list');
-                echo $getExportLinkLi($title, 'admin/amendment/pdflist', null, 'amendmentPdfList');
+                echo $getExportLinkLi($title, ['admin/amendment/pdflist'], null, 'amendmentPdfList');
 
                 if ($controller->getParams()->xelatexPath) {
                     $title = \Yii::t('admin', 'index_pdf_zip_list');
-                    echo $getExportLinkLi($title, 'admin/amendment/pdfziplist', null, 'amendmentPdfZipList');
+                    echo $getExportLinkLi($title, ['admin/amendment/pdfziplist'], null, 'amendmentPdfZipList');
                 }
 
                 $title = \Yii::t('admin', 'index_odt_zip_list');
-                echo $getExportLinkLi($title, 'admin/amendment/odtziplist', null, 'amendmentOdtZipList');
+                echo $getExportLinkLi($title, ['admin/amendment/odtziplist'], null, 'amendmentOdtZipList');
                 ?>
             </ul>
         </div>
@@ -187,12 +191,14 @@ foreach ($consultation->motionTypes as $motionType) {
                 echo Html::a($title, $amendLink, ['class' => 'amendments']);
                 ?></li>
                     -->
-                <li><?php
+                <li>
+                    <?php
                     $add       = '<br><small>' . \Yii::t('admin', 'index_export_oslides_usersh') . '</small>';
                     $title     = \Yii::t('admin', 'index_export_oslides_users') . $add;
                     $usersLink = UrlHelper::createUrl(['admin/index/openslidesusers', 'version' => '2']);
                     echo Html::a($title, $usersLink, ['class' => 'users']);
-                    ?></li>
+                    ?>
+                </li>
                 <?php
                 foreach ($consultation->motionTypes as $motionType) {
                     $motionTypeUrl = UrlHelper::createUrl(
@@ -203,11 +209,13 @@ foreach ($consultation->motionTypes as $motionType) {
                         Html::a($title, $motionTypeUrl, ['class' => 'slidesMotionType' . $motionType->id]) .
                         '</li>';
                 } ?>
-                <li><?php
+                <li>
+                    <?php
                     $title     = \Yii::t('admin', 'index_export_oslides_amend');
                     $amendLink = UrlHelper::createUrl(['admin/amendment/openslides', 'version' => '2']);
                     echo Html::a($title, $amendLink, ['class' => 'amendments']);
-                    ?></li>
+                    ?>
+                </li>
             </ul>
         </div>
         <?php

@@ -23,7 +23,7 @@ class AmendmentController extends AdminBase
      */
     public function actionOdslist($textCombined = false, $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn = (IntVal($withdrawn) === 1);
 
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
@@ -38,12 +38,37 @@ class AmendmentController extends AdminBase
     }
 
     /**
+     * @param int $textCombined
+     * @param int $withdrawn
+     * @param int $maxLen
+     * @return string
+     */
+    public function actionOdslistShort($textCombined = 0, $withdrawn = 0, $maxLen = 2000)
+    {
+        $withdrawn    = (IntVal($withdrawn) === 1);
+        $maxLen       = IntVal($maxLen);
+        $textCombined = (IntVal($textCombined) === 1);
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/vnd.oasis.opendocument.spreadsheet');
+        \yii::$app->response->headers->add('Content-Disposition', 'attachment;filename=amendments.ods');
+        \yii::$app->response->headers->add('Cache-Control', 'max-age=0');
+
+        return $this->renderPartial('ods_list_short', [
+            'motions'      => $this->consultation->getVisibleMotionsSorted($withdrawn),
+            'textCombined' => $textCombined,
+            'maxLen'       => $maxLen,
+            'withdrawn'    => $withdrawn,
+        ]);
+    }
+
+    /**
      * @param int $withdrawn
      * @return string
      */
     public function actionPdflist($withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn = (IntVal($withdrawn) === 1);
         return $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => $withdrawn]);
     }
 
@@ -54,7 +79,7 @@ class AmendmentController extends AdminBase
      */
     public function actionPdfziplist($withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn = (IntVal($withdrawn) === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
@@ -77,7 +102,7 @@ class AmendmentController extends AdminBase
      */
     public function actionOdtziplist($withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn = (IntVal($withdrawn) === 1);
         $zip       = new ZipWriter();
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
@@ -113,7 +138,7 @@ class AmendmentController extends AdminBase
             $preSupporters[$supporter->id] = $supporter;
         }
         for ($i = 0; $i < count($names); $i++) {
-            if (trim($names[$i]) == '' && trim($orgas[$i]) == '') {
+            if (trim($names[$i]) === '' && trim($orgas[$i]) === '') {
                 continue;
             }
             if (isset($preSupporters[$preIds[$i]])) {
