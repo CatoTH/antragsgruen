@@ -38,4 +38,6 @@ Das Antragsschmiede-Team.',
 	'export_intro' => 'Hier kannst du alle personenbezogene Daten, die auf der Antragsschmiede über dich gespeichert sind, in einem maschinenlesbaren JSON-Format herunterladen.',
 	'err_user_acode_notfound' => 'Benutzer_in nicht gefunden / Ungültiger Code',
 	'create_emailconfirm_title' => 'Anmeldung bei Antragsschmiede',
+
+    'login_confirm_registration' => 'Ich stimme der elektronischen Verarbeitung meiner freiwilligen Angaben durch NEOS (Parlamentsklub; NEOS Lab; Politische Partei inkl. Rechtspersonen in den Ländern, derzeit: Rathausklub Wien, Landtagsfraktionen Vorarlberg und NÖ, Landtagsklubs Salzburg und Tirol, Gemeinderatsfraktionen Linz und Salzburg; JUNOS/JUNOS Studierende und UNOS sowie einzelne Mandatar_innen) zu. Meine Angaben zu Name und E-Mail-Adresse dürfen dazu verwendet werden, mir für mich passende Informationen, insbesondere über Newsletter und Veranstaltungshinweise, zukommen zu lassen. Ich kann diese Zustimmung jederzeit per Mail an datenschutz@neos.eu oder per Schreiben an die im Impressum angegebene Adresse widerrufen.',
 ];
