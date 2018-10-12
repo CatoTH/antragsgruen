@@ -89,6 +89,19 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <input type="text" value="<?= Html::encode($preName) ?>" name="name" id="name" class="form-control">
     </div>
 
+    <?php
+    if ($controller->getParams()->dataPrivacyCheckbox) {
+        ?>
+        <div class="form-group hidden checkbox" id="regConfirmation">
+            <label>
+                <input type="checkbox" name="confirmation" id="confirmation">
+                <?= \Yii::t('user', 'login_confirm_registration') ?>:
+            </label>
+        </div>
+        <?php
+    }
+    ?>
+
     <div class="row">
         <div class="col-md-6">
             <button type="submit" class="btn btn-primary" name="loginusernamepassword">

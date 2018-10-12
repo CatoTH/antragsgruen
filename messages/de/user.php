@@ -83,6 +83,8 @@ return [
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
 
+    'login_confirm_registration' => 'Ich stimme der elektronischen Verarbeitung meiner freiwilligen Angaben durch Antragsgrün zu. Meine Angaben zu Name und E-Mail-Adresse dürfen dazu verwendet werden, mir für mich passende Informationen zukommen zu lassen. Ich kann diese Zustimmung jederzeit per Mail an info@antragsgruen.de oder per Schreiben an die im Impressum angegebene Adresse widerrufen.',
+
     'login_err_password'      => 'Falsches Passwort',
     'login_err_username'      => 'Benutzer*innenname nicht gefunden',
     'login_err_siteaccess'    => 'Das Login mit Benutzer*innenname und Passwort ist bei dieser Veranstaltung nicht möglich.',

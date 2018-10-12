@@ -9,12 +9,16 @@ class LoginForm {
                 $("#passwordInput").attr("placeholder", __t("std", "pw_min_x_chars").replace(/%NUM%/, pwMinLen));
                 $("#createStr").removeClass('hidden');
                 $("#loginStr").addClass('hidden');
+                $("#regConfirmation").removeClass('hidden');
+                $("#regConfirmation").find("input").attr("required", "required");
             } else {
                 $("#pwdConfirm").addClass('hidden');
                 $("#regName").addClass('hidden').find("input").removeAttr("required");
                 $("#passwordInput").attr("placeholder", "");
                 $("#createStr").addClass('hidden');
                 $("#loginStr").removeClass('hidden');
+                $("#regConfirmation").addClass('hidden');
+                $("#regConfirmation").find("input").removeAttr("required");
             }
         }).trigger("change");
         $form.submit(function (ev) {

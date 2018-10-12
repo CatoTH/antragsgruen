@@ -78,6 +78,8 @@ return [
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
 
+    'login_confirm_registration' => 'Confirm the registration',
+
     'login_err_password'      => 'Invalid password.',
     'login_err_username'      => 'Username not found.',
     'login_err_siteaccess'    => 'This account is not eligible to log in to this site.',

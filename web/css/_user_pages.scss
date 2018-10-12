@@ -29,10 +29,13 @@
   margin-bottom: 10px;
 }
 
-#loginUsername {
+.loginUsername {
   .passwordRecovery {
     text-align: right;
     font-size: 0.8em;
+  }
+  #regConfirmation {
+    font-size: 11px;
   }
 }
 
