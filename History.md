@@ -1,8 +1,9 @@
 # Version history
 
-### Version 4.0.2 [not yet released]
+### Version 4.0.2 (2018-10-14)
 
 - Bugfix: in nested lists in the PHP-based PDF renderer, the line numbers were not aligned correctly to the lines.
+- Bugfix: added extra safeguards to prevent stale popovers when merging amendments into motions.
 
 ### Version 4.0.2 (2018-09-15)
 

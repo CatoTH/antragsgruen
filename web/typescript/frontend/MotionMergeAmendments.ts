@@ -241,6 +241,13 @@ class MotionMergeChangeTooltip {
             cid = this.$element.parent().data("cid");
         }
         this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+
+        try {
+            // Remove stale objects that were not removed correctly previously
+            const $popovers = $(".popover");
+            $popovers.popover("hide").popover("destroy");
+            $popovers.remove();
+        } catch (e) {}
     }
 }
 
@@ -332,7 +339,16 @@ class MotionMergeConflictTooltip {
         }
         this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
 
+        /*
         this.$element.popover("hide").popover("destroy");
+        */
+
+        try {
+            // Remove stale objects that were not removed correctly previously
+            const $popovers = $(".popover");
+            $popovers.popover("hide").popover("destroy");
+            $popovers.remove();
+        } catch (e) {}
     }
 }
 
