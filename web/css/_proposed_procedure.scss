@@ -136,9 +136,15 @@
       width: 100%;
     }
   }
-  .statusDetails, .collisions, .publicExplanation {
+  .statusDetails, .collisions, .publicExplanation, .notifyProposerSection {
     border-top: solid 1px #eee;
     padding: 10px;
+  }
+  .notifyProposerSection {
+    .submitRow {
+      text-align: center;
+      margin-top: 5px;
+    }
   }
   .saving, .saved {
     border-top: solid 1px #eee;

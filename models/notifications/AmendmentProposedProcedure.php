@@ -14,14 +14,37 @@ class AmendmentProposedProcedure
      * AmendmentProposedProcedure constructor.
      *
      * @param Amendment $amendment
+     * @param string $text
      * @throws MailNotSent
      */
-    public function __construct(Amendment $amendment)
+    public function __construct(Amendment $amendment, $text = '')
     {
         $initiator = $amendment->getInitiators();
-        if (count($initiator) == 0 || $initiator[0]->contactEmail == '') {
+        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
             return;
         }
+
+        if (trim($text) === '') {
+            $text = static::getDefaultText($amendment);
+        }
+
+        MailTools::sendWithLog(
+            EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
+            $amendment->getMyConsultation(),
+            trim($initiator[0]->contactEmail),
+            null,
+            str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
+            $text
+        );
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return string
+     */
+    public static function getDefaultText(Amendment $amendment)
+    {
+        $initiator = $amendment->getInitiators();
 
         switch ($amendment->proposalStatus) {
             case Amendment::STATUS_ACCEPTED:
@@ -42,13 +65,6 @@ class AmendmentProposedProcedure
             $body
         );
 
-        MailTools::sendWithLog(
-            EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
-            $amendment->getMyConsultation(),
-            trim($initiator[0]->contactEmail),
-            null,
-            str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
-            $plain
-        );
+        return $plain;
     }
 }

@@ -62,6 +62,7 @@ export class ChangeProposedProcedure {
         this.initExplanation();
         this.$widget.find('.newBlock').addClass('hidden');
         this.$widget.find('.selectlist').selectlist();
+        this.$widget.find('.notifyProposerSection').addClass('hidden');
     }
 
     private setGlobalProposedStr(html: string) {
@@ -93,8 +94,10 @@ export class ChangeProposedProcedure {
     }
 
     private notifyProposer() {
+        const text = this.$widget.find('textarea[name=proposalNotificationText]').val();
         this.performCallWithReload({
-            'notifyProposer': '1'
+            'notifyProposer': '1',
+            'text': text
         });
     }
 
@@ -165,7 +168,11 @@ export class ChangeProposedProcedure {
         });
 
         this.$widget.on('click', '.saving button', this.saveStatus.bind(this));
-        this.$widget.on('click', '.notifyProposer', this.notifyProposer.bind(this));
+
+        this.$widget.on('click', '.notifyProposer', () => {
+            this.$widget.find('.notifyProposerSection').removeClass('hidden');
+        });
+        this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 
     private initVotingBlock() {
@@ -248,8 +255,6 @@ export class ChangeProposedProcedure {
             } else {
                 alert("Error: " + ret['error']);
             }
-        }).catch(() => {
-            alert("An error occurred");
         });
     }
 

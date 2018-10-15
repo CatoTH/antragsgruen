@@ -14,14 +14,37 @@ class MotionProposedProcedure
      * MotionProposedProcedure constructor.
      *
      * @param Motion $motion
+     * @param string $text
      * @throws MailNotSent
      */
-    public function __construct(Motion $motion)
+    public function __construct(Motion $motion, $text = '')
     {
         $initiator = $motion->getInitiators();
-        if (count($initiator) == 0 || $initiator[0]->contactEmail == '') {
+        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
             return;
         }
+
+        if (trim($text) === '') {
+            $text = static::getDefaultText($motion);
+        }
+
+        MailTools::sendWithLog(
+            EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
+            $motion->getMyConsultation(),
+            trim($initiator[0]->contactEmail),
+            null,
+            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),
+            $text
+        );
+    }
+
+    /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function getDefaultText(Motion $motion)
+    {
+        $initiator = $motion->getInitiators();
 
         switch ($motion->proposalStatus) {
             case Motion::STATUS_ACCEPTED:
@@ -41,14 +64,6 @@ class MotionProposedProcedure
             [$motionLink, $motion->getTitleWithPrefix(), $initiator[0]->getGivenNameOrFull()],
             $body
         );
-
-        MailTools::sendWithLog(
-            EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
-            $motion->getMyConsultation(),
-            trim($initiator[0]->contactEmail),
-            null,
-            str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),
-            $plain
-        );
+        return $plain;
     }
 }

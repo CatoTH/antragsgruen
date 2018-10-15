@@ -261,6 +261,32 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             ?>
         </ul>
     </section>
+    <section class="notifyProposerSection hidden">
+        <h3><?= \Yii::t('amend', 'proposal_notify_text') ?></h3>
+        <?php
+        $defaultText = \app\models\notifications\AmendmentProposedProcedure::getDefaultText($amendment);
+        echo Html::textarea(
+            'proposalNotificationText',
+            $defaultText,
+            [
+                'title' => \Yii::t('amend', 'proposal_notify_text'),
+                'class' => 'form-control',
+                'rows'  => 5,
+            ]
+        );
+        ?>
+        <div class="submitRow">
+            <button type="button" name="notificationSubmit" class="btn btn-success btn-sm">
+                <?php
+                if ($amendment->proposalAllowsUserFeedback()) {
+                    echo \Yii::t('amend', 'proposal_notify_w_feedback');
+                } else {
+                    echo \Yii::t('amend', 'proposal_notify_o_feedback');
+                }
+                ?>
+            </button>
+        </div>
+    </section>
     <section class="saving showIfChanged">
         <button class="btn btn-default btn-sm">
             <?= \Yii::t('amend', 'proposal_save_changes') ?>

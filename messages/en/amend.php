@@ -259,6 +259,7 @@ return [
     'proposal_notify_w_feedback' => 'Notify about the proposal and ask for confirmation',
     'proposal_notify_o_feedback' => 'Notify about the proposal',
     'proposal_notify_notsaved'   => 'Please save the changes',
+    'proposal_notify_text'       => 'Notification text',
     'proposal_no_feedback'       => 'No confirmation yet',
     'proposal_notified'          => 'The proposer has been notified at %DATE%.',
     'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
