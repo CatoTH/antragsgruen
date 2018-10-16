@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.0.4 [not released yet]
+### Version 4.0.4 (2018-10-16)
 
 - Bugfix: Creating the proposed procedure list could fail.
 - Bugfix: A ODS-list could not be exported if a motion had no initiators.
