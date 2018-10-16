@@ -1114,12 +1114,22 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * If no proposed procedure is set, the checkbox in merge_amendments_init should always be preselected,
+     * except for global alternatives.
+     * If there is one, it depends if either the amendment, the proposed procedure or the vote was set as accepted,
+     * or is set as "modified accepted".
+     *
+     * @param boolean $hasProposals
+     *
      * @return bool
      */
-    public function markForMergingByDefault()
+    public function markForMergingByDefault($hasProposals)
     {
         if ($this->globalAlternative) {
             return false;
+        }
+        if (!$hasProposals) {
+            return true;
         }
         if ($this->status === static::STATUS_ACCEPTED || $this->proposalStatus === static::STATUS_ACCEPTED) {
             return true;

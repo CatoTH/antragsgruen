@@ -5,6 +5,7 @@
 - Bugfix: Creating the proposed procedure list could fail.
 - Bugfix: A ODS-list could not be exported if a motion had no initiators.
 - Bugfix: Another bug regarding nested list items and line numbers in PDF generation was fixed.
+- If no proposed procedure is set, the amendment merging page now preselects all amendments for merging (except for global alternatives).
 
 ### Version 4.0.3 (2018-10-14)
 
