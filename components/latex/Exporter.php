@@ -370,7 +370,7 @@ class Exporter
      */
     public static function createTextWithRightString($textMain, $textRight)
     {
-        if ($textRight == '') {
+        if ($textRight === '') {
             return "\\raggedright\n" . $textMain;
         }
 
@@ -381,8 +381,9 @@ class Exporter
         );
         return '\setlength{\columnsep}{15mm}' . "\n" . '\begin{wrapfigure}{r}{0.28\textwidth}\small
 \vspace{-0.5cm}
+\raggedright
 ' . $textRight . '
-\vspace{30cm}
+\vspace{1cm}
 \end{wrapfigure}
 ' . $textMain;
     }
