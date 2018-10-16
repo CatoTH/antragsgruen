@@ -311,6 +311,30 @@ s     * @throws \app\models\exceptions\Internal
     }
 
     /**
+     * This adds <br>-tags where necessary.
+     * Test cases are collected in the "Listen-Test"-motion.
+     * Check in the TCPDF-generated PDF that line numbers match the lines.
+     *
+     * @param string[] $linesArr
+     * @return string[]
+     */
+    private function printMotionToPDFAddLinebreaks($linesArr)
+    {
+        for ($i = 1; $i < count($linesArr); $i++) {
+            // Does this line start with an ol/ul/li?
+            if (!preg_match('/^<(ol|ul|li)/siu', $linesArr[$i])) {
+                continue;
+            }
+            // Does the previous line end a block element? If not, we need the extra BR
+            if (!preg_match('/<\/(div|p|blockquote|ul|ol|h1|h2|h3|h4|h5|h6)>$/siu', $linesArr[$i - 1])) {
+                $linesArr[$i] = '<br>' . $linesArr[$i];
+            }
+        }
+
+        return $linesArr;
+    }
+
+    /**
      * @param IPDFLayout $pdfLayout
      * @param Fpdi $pdf
      * @throws \app\models\exceptions\Internal
@@ -368,7 +392,8 @@ s     * @throws \app\models\exceptions\Internal
 
                 $y = $pdf->getY();
                 $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-                $text1 = implode('<br>', $linesArr);
+                $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
+                $text1    = implode('<br>', $linesArr);
 
                 // instead of <span class="strike"></span> TCPDF can only handle <s></s>
                 // for striking through text
