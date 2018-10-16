@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.0.4 [not released yet]
+
+- Bugfix: Creating the proposed procedure list could fail.
+
 ### Version 4.0.3 (2018-10-14)
 
 - Bugfix: in nested lists in the PHP-based PDF renderer, the line numbers were not aligned correctly to the lines.
