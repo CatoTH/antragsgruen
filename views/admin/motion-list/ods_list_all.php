@@ -78,11 +78,18 @@ foreach ($items as $item) {
                 $body    = \Yii::t('export', 'mail_amendment_x_to_y');
                 $body    = str_replace(['%AMENDMENT%', '%MOTION%'], [$prefix, $item->getMyMotion()->title], $body);
             }
-            $initiator = $item->getInitiators() [0];
-            $email     = $initiator->contactEmail;
-            $phone     = $initiator->contactPhone;
-            $name      = $initiator->getNameWithOrga();
-            $firstName = StringSplitter::first([' '], mb_substr($name, 0, 4) == 'Dr. ' ? mb_substr($name, 4) : $name);
+            if (count($item->getInitiators()) > 0) {
+                $initiator = $item->getInitiators() [0];
+                $email     = $initiator->contactEmail;
+                $phone     = $initiator->contactPhone;
+                $name      = $initiator->getNameWithOrga();
+                $firstName = StringSplitter::first([' '], mb_substr($name, 0, 4) == 'Dr. ' ? mb_substr($name, 4) : $name);
+            } else {
+                $email     = '';
+                $phone     = '';
+                $name      = '';
+                $firstName = '';
+            }
             if ($item instanceof Motion) {
                 $doc->setCell($row, $COL_TITLE, Spreadsheet::TYPE_TEXT, $item->title);
                 $fill ([], ['fo:color' => motionColor]);

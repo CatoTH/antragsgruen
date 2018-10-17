@@ -26,9 +26,17 @@
 - Bugfix: It was not possible to delete admin comments in the proposed procedure.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
-### Version 4.0.2 [not yet released]
+### Version 4.0.4 (2018-10-16)
+
+- Bugfix: Creating the proposed procedure list could fail.
+- Bugfix: A ODS-list could not be exported if a motion had no initiators.
+- Bugfix: Another bug regarding nested list items and line numbers in PDF generation was fixed.
+- If no proposed procedure is set, the amendment merging page now preselects all amendments for merging (except for global alternatives).
+
+### Version 4.0.3 (2018-10-14)
 
 - Bugfix: in nested lists in the PHP-based PDF renderer, the line numbers were not aligned correctly to the lines.
+- Bugfix: added extra safeguards to prevent stale popovers when merging amendments into motions.
 
 ### Version 4.0.2 (2018-09-15)
 

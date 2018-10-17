@@ -5,7 +5,7 @@ namespace app\models\proposedProcedure;
 use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
 use app\models\db\Motion;
-use app\plugins\memberPetitions\ConsultationSettings;
+use app\models\settings\Consultation as ConsultationSettings;
 
 /**
  * Class Factory

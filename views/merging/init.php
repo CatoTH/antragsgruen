@@ -105,7 +105,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                     echo '<tr class="amendment' . $amend->id . '"><td class="colCheck">';
                     echo Html::checkbox(
                         'amendments[' . $amend->id . ']',
-                        $amend->markForMergingByDefault(),
+                        $amend->markForMergingByDefault($hasProposals),
                         ['class' => 'amendment' . $amend->id, 'id' => $id]
                     );
                     echo '</td><td class="colTitle">';
