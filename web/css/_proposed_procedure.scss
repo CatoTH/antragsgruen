@@ -375,7 +375,7 @@
       color: gray;
     }
     .commentList.hasContent {
-      height: 60px;
+      max-height: 200px;
       overflow: auto;
     }
     .comment {
