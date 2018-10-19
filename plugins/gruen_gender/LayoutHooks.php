@@ -68,7 +68,8 @@ class LayoutHooks extends Hooks
      */
     public function getConsultationMotionLineContent($before, Motion $motion)
     {
-        $collectionPhase = $motion->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication();
+        $motionType = $motion->getMyMotionType();
+        $collectionPhase = $motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication();
         if (!$motion->isInitiatedByOrganization() && $collectionPhase) {
             $persons = array_merge($motion->getInitiators(), $motion->getSupporters());
             $quota   = $this->getWomensQuota($persons);

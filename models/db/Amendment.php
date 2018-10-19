@@ -260,7 +260,7 @@ class Amendment extends IMotion implements IRSSItem
     public function getMyConsultation()
     {
         $current = Consultation::getCurrent();
-        if ($current && $current->getAmendment($this->id)) {
+        if ($current && $current->isMyAmendment($this->id)) {
             return $current;
         } else {
             /** @var Motion $motion */
@@ -306,7 +306,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getTypeSections()
     {
-        return $this->getMyMotion()->motionType->motionSections;
+        return $this->getMyMotionType()->motionSections;
     }
 
     /**
@@ -603,7 +603,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                if ($this->getMyMotion()->motionType->getAmendmentPolicy()->getPolicyID() === All::getPolicyID()) {
+                if ($this->getMyMotionType()->getAmendmentPolicy()->getPolicyID() === All::getPolicyID()) {
                     return true;
                 } else {
                     return false;
@@ -778,7 +778,7 @@ class Amendment extends IMotion implements IRSSItem
     public function needsCollectionPhase()
     {
         $needsCollectionPhase = false;
-        $motionType           = $this->getMyMotion()->motionType;
+        $motionType           = $this->getMyMotionType();
         if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
             $isOrganization = false;
             foreach ($this->getInitiators() as $initiator) {
@@ -1059,7 +1059,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getMyMotionType()
     {
-        return $this->getMyMotion()->motionType;
+        return $this->getMyMotion()->getMyMotionType();
     }
 
     /**
@@ -1068,11 +1068,11 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function setMotionType(ConsultationMotionType $motionType)
     {
-        if (!$this->getMyMotion()->motionType->isCompatibleTo($motionType)) {
+        if (!$this->getMyMotionType()->isCompatibleTo($motionType)) {
             throw new FormError('This amendment cannot be changed to the type ' . $motionType->titleSingular);
         }
 
-        $typeMapping = $this->getMyMotion()->motionType->getSectionCompatibilityMapping($motionType);
+        $typeMapping = $this->getMyMotionType()->getSectionCompatibilityMapping($motionType);
         $mySections  = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
             if (!isset($typeMapping[$mySections[$i]->sectionId])) {
@@ -1091,7 +1091,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getLikeDislikeSettings()
     {
-        return $this->getMyMotion()->motionType->amendmentLikesDislikes;
+        return $this->getMyMotionType()->amendmentLikesDislikes;
     }
 
     /**

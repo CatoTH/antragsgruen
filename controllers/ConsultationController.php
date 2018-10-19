@@ -426,6 +426,8 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
+        $this->consultation->preloadAllMotionData();
+
         $this->layout = 'column1';
         $this->consultationSidebar($this->consultation);
 

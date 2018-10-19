@@ -46,6 +46,19 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
+     * @return Consultation|null
+     */
+    public function getMyConsultation()
+    {
+        $consultation = Consultation::getCurrent();
+        if ($this->consultationId === $consultation->id) {
+            return $consultation;
+        } else {
+            return $this->consultation;
+        }
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getParentItem()
@@ -81,11 +94,29 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @return Motion[]
      */
+    public function getMyMotions()
+    {
+        if ($this->getMyConsultation()->hasPreloadedMotionData()) {
+            $motions = [];
+            foreach ($this->getMyConsultation()->motions as $motion) {
+                if ($motion->agendaItemId === $this->id) {
+                    $motions[] = $motion;
+                }
+            }
+            return $motions;
+        } else {
+            return $this->motions;
+        }
+    }
+
+    /**
+     * @return Motion[]
+     */
     public function getMotionsFromConsultation()
     {
         $return = [];
-        foreach ($this->consultation->motions as $motion) {
-            if (in_array($motion->status, $this->consultation->getInvisibleMotionStatuses())) {
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if (in_array($motion->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
                 continue;
             }
             if ($motion->agendaItemId === null || $motion->agendaItemId != $this->id) {
@@ -239,7 +270,7 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getShownCode($full)
     {
         if ($this->shownCode === null) {
-            $items = static::getSortedFromConsultation($this->consultation);
+            $items = static::getSortedFromConsultation($this->getMyConsultation());
             foreach ($items as $item) {
                 if ($item->id == $this->id) {
                     $this->shownCode     = $item->getShownCode(false);
@@ -257,13 +288,13 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
     {
-        $statuses = $this->consultation->getInvisibleMotionStatuses(!$includeWithdrawn);
+        $statuses = $this->getMyConsultation()->getInvisibleMotionStatuses(!$includeWithdrawn);
         if (!$includeResolutions) {
             $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
         }
         $return   = [];
-        foreach ($this->motions as $motion) {
+        foreach ($this->getMyMotions() as $motion) {
             if (!in_array($motion->status, $statuses)) {
                 $return[] = $motion;
             }
@@ -279,6 +310,6 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getVisibleMotionsSorted($includeWithdrawn = true)
     {
         $motions = $this->getVisibleMotions($includeWithdrawn);
-        return MotionSorter::getSortedMotionsFlat($this->consultation, $motions);
+        return MotionSorter::getSortedMotionsFlat($this->getMyConsultation(), $motions);
     }
 }

@@ -59,7 +59,7 @@ class Factory
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
                 }
-                if ($motion->votingBlock) {
+                if ($motion->votingBlockId > 0 && $motion->votingBlock) {
                     $votingBlock = $motion->votingBlock;
                     if (in_array($votingBlock->id, $handledVotings)) {
                         continue;
@@ -72,7 +72,7 @@ class Factory
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
-                    if ($amendment->votingBlock) {
+                    if ($amendment->votingBlockId > 0 && $amendment->votingBlock) {
                         $votingBlock = $amendment->votingBlock;
                         if (in_array($votingBlock->id, $handledVotings)) {
                             continue;

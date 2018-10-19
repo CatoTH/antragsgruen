@@ -126,6 +126,11 @@ class AmendmentSupporter extends ISupporter
      */
     public function getIMotion()
     {
-        return $this->amendment;
+        $amendment = Consultation::getCurrent()->getAmendment($this->amendmentId);
+        if ($amendment) {
+            return $amendment;
+        } else {
+            return $this->amendment;
+        }
     }
 }

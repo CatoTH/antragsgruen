@@ -21,6 +21,7 @@
 - The diff view in amendments now usually show the whole affected line, instead of cutting off the line after the last changed word, giving some more context to the change.
 - When sending a notification to users regarding a proposed procedure, the content of the mail can now be modified by the person sending the notification.
 - Add a option to enforce a confirmation checkbox on registration.
+- The performance of the admin motion list was improved for large installations (> 1000 amendments), by reducing the number of database queries.
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Bugfix: When an optional image was not uploaded, the LaTeX-based PDF export did not work.
 - Bugfix: It was not possible to delete admin comments in the proposed procedure.

@@ -99,13 +99,48 @@ class Consultation extends ActiveRecord
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
+    private $preloadedAllMotionData = false;
+    private $preloadedAmendmentIds  = null;
+    private $preloadedMotionIds     = null;
+
+    /**
+     * Loads Motions, amendments, initiators and tags
+     */
+    public function preloadAllMotionData()
+    {
+        $this->preloadedAllMotionData = true;
+        foreach ($this->motions as $motion) {
+            $this->preloadedMotionIds[] = $motion->id;
+            foreach ($motion->amendments as $amendment) {
+                $this->preloadedAmendmentIds[] = $amendment->id;
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPreloadedMotionData()
+    {
+        return $this->preloadedAllMotionData;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotions()
     {
-        return $this->hasMany(Motion::class, ['consultationId' => 'id'])
-            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+        if ($this->preloadedAllMotionData) {
+            return $this->hasMany(Motion::class, ['consultationId' => 'id'])
+                ->with(
+                    'amendments', 'motionSupporters', 'amendments.amendmentSupporters',
+                    'tags', 'motionSupporters.user', 'amendments.amendmentSupporters.user'
+                )
+                ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+        } else {
+            return $this->hasMany(Motion::class, ['consultationId' => 'id'])
+                ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+        }
     }
 
     /**
@@ -145,17 +180,32 @@ class Consultation extends ActiveRecord
      */
     public function getAmendment($amendmentId)
     {
+        $amendmentId = IntVal($amendmentId);
         foreach ($this->motions as $motion) {
-            if ($motion->status == Motion::STATUS_DELETED) {
+            if ($motion->status === Motion::STATUS_DELETED) {
                 continue;
             }
             foreach ($motion->amendments as $amendment) {
-                if ($amendment->id == $amendmentId && $amendment->status != Amendment::STATUS_DELETED) {
+                if ($amendment->id === $amendmentId && $amendment->status !== Amendment::STATUS_DELETED) {
                     return $amendment;
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * @param int $amendmentId
+     * @return bool
+     */
+    public function isMyAmendment($amendmentId)
+    {
+        if ($this->preloadedAllMotionData) {
+            return in_array($amendmentId, $this->preloadedAmendmentIds);
+        } else {
+            $amendment = $this->getAmendment($amendmentId);
+            return ($amendment !== null);
+        }
     }
 
     /**
@@ -367,7 +417,7 @@ class Consultation extends ActiveRecord
      */
     public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
     {
-        $return = [];
+        $return            = [];
         $invisibleStatuses = $this->getInvisibleMotionStatuses(!$includeWithdrawn);
         if (!$includeResolutions) {
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;

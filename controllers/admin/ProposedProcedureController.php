@@ -22,6 +22,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionIndex($agendaItemId = 0)
     {
+        $this->consultation->preloadAllMotionData();
+
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
             $proposalFactory = new Factory($this->consultation, true, $agendaItem);
@@ -42,6 +44,8 @@ class ProposedProcedureController extends AdminBase
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $this->consultation->preloadAllMotionData();
 
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
@@ -68,6 +72,8 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionOds($agendaItemId = 0, $comments = 0)
     {
+        $this->consultation->preloadAllMotionData();
+
         $filename = 'proposed-procedure';
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
