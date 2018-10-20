@@ -44,7 +44,8 @@ class MotionProposedProcedure
      */
     public static function getDefaultText(Motion $motion)
     {
-        $initiator = $motion->getInitiators();
+        $initiator     = $motion->getInitiators();
+        $initiatorName = (count($initiator) > 0 ? $initiator[0]->getGivenNameOrFull() : null);
 
         switch ($motion->proposalStatus) {
             case Motion::STATUS_ACCEPTED:
@@ -61,7 +62,7 @@ class MotionProposedProcedure
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
         $plain      = str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
-            [$motionLink, $motion->getTitleWithPrefix(), $initiator[0]->getGivenNameOrFull()],
+            [$motionLink, $motion->getTitleWithPrefix(), $initiatorName],
             $body
         );
         return $plain;
