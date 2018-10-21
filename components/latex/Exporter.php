@@ -376,7 +376,7 @@ class Exporter
 
         $textMain = str_replace(
             ['\begin{itemize}', '\end{itemize}'],
-            ['\parbox{12.5cm}{\raggedright\begin{itemize}', '\end{itemize}}'],
+            ['\parbox{11cm}{\raggedright\begin{itemize}', '\end{itemize}}'],
             $textMain
         );
         return '\setlength{\columnsep}{15mm}' . "\n" . '\begin{wrapfigure}{r}{0.28\textwidth}\small
