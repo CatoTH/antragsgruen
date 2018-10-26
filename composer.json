@@ -29,7 +29,7 @@
     "slm/mail": "^2.1.2",
     "mailjet/mailjet-apiv3-php": "^1.3.0",
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
-    "catoth/html2opendocument": "0.11",
+    "catoth/html2opendocument": "0.12",
     "zendframework/zend-servicemanager": "^3.3.0",
     "setasign/fpdi-tcpdf": "^2.0",
     "paragonie/sodium_compat": "^1.6"

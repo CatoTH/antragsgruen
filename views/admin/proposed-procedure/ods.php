@@ -28,6 +28,8 @@ $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
     'trustHtml' => true,
 ]);
+$doc->setMargins("20mm", "10mm", "10mm", "20mm");
+$doc->setPageOrientation("297mm", "210mm", "landscape");
 
 
 $formatComments = function ($currentComments) {
@@ -93,15 +95,15 @@ $doc->setCellStyle(7, $firstCol, [], [
 $headerStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '11pt', 'fo:font-weight' => 'bold'];
 $doc->setCell(9, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(9, $COL_PREFIX, [], $headerStyle);
-$doc->setColumnWidth($COL_INITIATOR, 2);
+$doc->setColumnWidth($COL_PREFIX, 2);
 
 $doc->setCell(9, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
 $doc->setCellStyle(9, $COL_INITIATOR, [], $headerStyle);
-$doc->setColumnWidth($COL_INITIATOR, 7);
+$doc->setColumnWidth($COL_INITIATOR, 5);
 
 $doc->setCell(9, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
 $doc->setCellStyle(9, $COL_PROCEDURE, [], $headerStyle);
-$doc->setColumnWidth($COL_PROCEDURE, 19);
+$doc->setColumnWidth($COL_PROCEDURE, 20);
 
 if ($comments) {
     $doc->setCell(9, $COL_COMMENTS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'comments'));
