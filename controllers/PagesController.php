@@ -323,4 +323,17 @@ class PagesController extends Base
 
         return $file->data;
     }
+
+    /**
+     */
+    public function actionCss()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/css');
+        \yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        \yii::$app->response->headers->set('Pragma', 'cache');
+        \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+
+        return $this->renderPartial('css');
+    }
 }

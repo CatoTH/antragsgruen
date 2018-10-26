@@ -62,6 +62,7 @@ $urlRules = [
     $domv . 'page/files/browse-images'        => 'pages/browse-images',
     $domv . 'page/files/<filename:[^\/]+>'    => 'pages/file',
     $domv . 'page/<pageSlug:[^\/]+>'          => 'pages/show-page',
+    $dom . 'styles.css'                       => 'pages/css',
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
