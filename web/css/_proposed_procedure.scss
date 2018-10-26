@@ -251,6 +251,16 @@
 }
 
 .proposedProcedureOverview {
+  &.openable {
+    margin-bottom: 20px;
+  }
+  h2 {
+    a, a:link, a:hover, a:active {
+      color: #fff;
+
+    }
+  }
+
   table {
     table-layout: fixed;
     margin-top: 25px;

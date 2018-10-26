@@ -18,6 +18,8 @@ class Agenda
 
     /** @var string */
     public $title;
+
+    /** @var int */
     public $blockId;
 
     /** @var AgendaVoting[] */
@@ -28,7 +30,7 @@ class Agenda
 
     /**
      * ProposedProcedureAgenda constructor.
-     * @param string $blockId
+     * @param int $blockId
      * @param string $title
      * @param ConsultationAgendaItem|null $agendaItem
      */

@@ -48,6 +48,7 @@ class Consultation implements \JsonSerializable
     public $initiatorsMayReject    = false;
     public $allowMultipleTags      = false;
     public $odtExportHasLineNumers = true;
+    public $pProcedureExpandAll    = true; // If false: only show max. 1 section in the internal proposed procedure
 
     /** @var int */
     public $lineLength      = 80;

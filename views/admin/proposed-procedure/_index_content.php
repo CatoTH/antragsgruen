@@ -11,12 +11,32 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Agenda[] $proposedAgenda
+ * @var bool $expandAll
+ * @var null|string $expandId
  */
 
 foreach ($proposedAgenda as $proposedItem) {
+    if (!$expandAll && $proposedItem->blockId !== $expandId) {
+        $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]);
+        $expandTitle = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($proposedItem->title);
+        ?>
+        <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview openable">
+            <h2 class="green">
+                <?= Html::a($expandTitle, $expandUrl) ?>
+            </h2>
+        </section>
+        <?php
+        continue;
+    }
+
     ?>
     <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview">
         <h2 class="green">
+            <?php
+            if (!$expandAll) {
+                echo '<span class="glyphicon glyphicon-chevron-down"></span> ';
+            }
+            ?>
             <?= Html::encode($proposedItem->title) ?>
         </h2>
         <div class="content">

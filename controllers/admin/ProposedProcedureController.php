@@ -18,9 +18,10 @@ class ProposedProcedureController extends AdminBase
 
     /**
      * @param int $agendaItemId
+     * @param null|int $expandId
      * @return string
      */
-    public function actionIndex($agendaItemId = 0)
+    public function actionIndex($agendaItemId = 0, $expandId = null)
     {
         $this->consultation->preloadAllMotionData();
 
@@ -33,14 +34,17 @@ class ProposedProcedureController extends AdminBase
 
         return $this->render('index', [
             'proposedAgenda' => $proposalFactory->create(),
+            'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
+            'expandId'       => ($expandId ? IntVal($expandId) : null),
         ]);
     }
 
     /**
      * @param int $agendaItemId
+     * @param null|int $expandId
      * @return string
      */
-    public function actionIndexAjax($agendaItemId = 0)
+    public function actionIndexAjax($agendaItemId = 0, $expandId = null)
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -56,6 +60,8 @@ class ProposedProcedureController extends AdminBase
 
         $html = $this->renderPartial('_index_content', [
             'proposedAgenda' => $proposalFactory->create(),
+            'expandAll'      => $this->consultation->getSettings()->pProcedureExpandAll,
+            'expandId'       => ($expandId ? IntVal($expandId) : null),
         ]);
 
         return json_encode([

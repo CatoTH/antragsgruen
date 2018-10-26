@@ -7,6 +7,8 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var Agenda[] $proposedAgenda
+ * @var bool $expandAll
+ * @var null|string $expandId
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -23,7 +25,11 @@ $layout->addCSS('css/backend.css');
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
-$reloadUrl = UrlHelper::createUrl('admin/proposed-procedure/index-ajax');
+$reloadOptions = ['admin/proposed-procedure/index-ajax'];
+if ($expandId) {
+    $reloadOptions['expandId'] = $expandId;
+}
+$reloadUrl = UrlHelper::createUrl($reloadOptions);
 echo Html::beginForm('', 'post', [
     'class'                    => 'proposedProcedureReloadHolder',
     'data-antragsgruen-widget' => 'backend/ProposedProcedureOverview',
@@ -54,7 +60,11 @@ echo Html::beginForm('', 'post', [
         </div>
     </section>
     <div class="reloadContent">
-        <?= $this->render('_index_content', ['proposedAgenda' => $proposedAgenda]) ?>
+        <?= $this->render('_index_content', [
+            'proposedAgenda' => $proposedAgenda,
+            'expandAll'      => $expandAll,
+            'expandId'       => $expandId,
+        ]) ?>
     </div>
 <?php
 echo Html::endForm();
