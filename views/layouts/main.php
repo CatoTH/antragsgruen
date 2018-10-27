@@ -12,15 +12,18 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->registerPluginAssets($this, $controller);
-if (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
+if (strpos($layout->mainCssFile, 'layout-custom-') === 0) {
+    $mainCssHash = str_replace('layout-custom', '', $layout->mainCssFile);
+    $mainCssFile = \app\components\UrlHelper::createUrl(['/pages/css', 'hash' => $mainCssHash]);
+} elseif (strpos($layout->mainCssFile, 'layout-plugin-') === 0) {
     try {
         $mainCssFile = null;
         $layout->setPluginLayout($this);
     } catch (\app\models\exceptions\Internal $e) {
-        $mainCssFile = 'css/layout-classic.css';
+        $mainCssFile = $layout->resourceUrl('css/layout-classic.css');
     }
 } else {
-    $mainCssFile = 'css/' . $layout->mainCssFile . '.css';
+    $mainCssFile = $layout->resourceUrl('css/' . $layout->mainCssFile . '.css');
 }
 
 if (\app\components\DateTools::isDeadlineDebugModeActive($controller->consultation)) {
@@ -72,9 +75,7 @@ foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
 
-if ($mainCssFile) {
-    echo '<link rel="stylesheet" href="' . $layout->resourceUrl($mainCssFile) . '">' . "\n";
-}
+echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
 echo '<script src="' . $layout->resourceUrl('npm/jquery.min.js') . '"></script>';
 

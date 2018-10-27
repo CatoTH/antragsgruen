@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @var \app\models\settings\Stylesheet $stylesheetSettings
+ */
+
 $css = '
 @charset "UTF-8";
 
@@ -10,23 +14,23 @@ $OpenSansPath: "../fonts/OpenSans/fonts";
 $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
-$colorLinksLight: #6d7e00;
-$colorLinks: #6d7e00;
+$colorLinksLight: ' . $stylesheetSettings->colorLinksLight . ';
+$colorLinks: ' . $stylesheetSettings->colorLinks . ';
 $linkTextDecoration: none;
 $colorDelLink: #FF7777;
 $colorMagenta: rgb(226, 0, 122);
-$brand-primary: $colorMagenta;
-$text-color: rgb(72, 70, 73);
+$brand-primary: ' . $stylesheetSettings->primaryColor . ';
+$text-color: ' . $stylesheetSettings->textColor . ';
 $btn-success-bg: #2c882c;
 
 $table-border-color: $colorGreenLight;
 $headingFont: "Open Sans", sans-serif;
-$headingPrimaryText: rgb(255, 255, 255);
-$headingPrimaryBackground: rgb(40, 95, 25);
-$headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: rgb(175, 203, 8);
-$headingTertiaryText: black;
-$headingTertiaryBackground: rgb(27, 74, 251);
+$headingPrimaryText: ' . $stylesheetSettings->headingPrimaryText . ';
+$headingPrimaryBackground: ' . $stylesheetSettings->headingPrimaryBackground . ';
+$headingSecondaryText: ' . $stylesheetSettings->headingSecondaryText . ';
+$headingSecondaryBackground: ' . $stylesheetSettings->headingSecondaryBackground . ';
+$headingTertiaryText: ' . $stylesheetSettings->headingTertiaryText . ';
+$headingTertiaryBackground: ' . $stylesheetSettings->headingTertiaryBackground . ';
 
 $menuFont: "Open Sans", sans-serif;
 $menuLink: #6d7e00;
@@ -87,4 +91,5 @@ body {
 
 $scss = new \Leafo\ScssPhp\Compiler();
 $scss->addImportPath(\Yii::$app->basePath . '/web/css/');
+$scss->setFormatter(\Leafo\ScssPhp\Formatter\Compressed::class);
 echo $scss->compile($css);

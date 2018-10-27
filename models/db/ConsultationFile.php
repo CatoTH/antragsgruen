@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
+use app\models\settings\Stylesheet;
 use yii\db\ActiveRecord;
 
 /**
@@ -12,6 +13,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $consultationId
+ * @property int $siteId
  * @property string $filename
  * @property int $filesize
  * @property string $mimetype
@@ -49,9 +51,9 @@ class ConsultationFile extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
+            [['siteId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
             [['mimetype', 'width', 'height'], 'safe'],
-            [['id', 'consultationId', 'filesize', 'width', 'height'], 'number']
+            [['id', 'consultationId', 'siteId', 'filesize', 'width', 'height'], 'number']
         ];
     }
 
@@ -100,6 +102,49 @@ class ConsultationFile extends ActiveRecord
             'consultationId' => $consultation->id,
             'dataHash'       => sha1($content),
         ]);
+    }
+
+    /**
+     * @param Site $site
+     * @param Stylesheet $stylesheet
+     * @return ConsultationFile|null
+     */
+    public static function findStylesheetCache(Site $site, Stylesheet $stylesheet)
+    {
+        return ConsultationFile::findOne([
+            'siteId'   => $site->id,
+            'dataHash' => $stylesheet->getSettingsHash(),
+        ]);
+    }
+
+    /**
+     * @param Site $site
+     * @param Stylesheet $stylesheet
+     * @param string $data
+     * @return ConsultationFile|null
+     */
+    public static function createStylesheetCache(Site $site, Stylesheet $stylesheet, $data)
+    {
+        $file = ConsultationFile::findOne([
+            'siteId'   => $site->id,
+            'filename' => 'styles.css',
+        ]);
+        if (!$file) {
+            $file                 = new ConsultationFile();
+            $file->siteId         = $site->id;
+            $file->consultationId = null;
+            $file->filename       = 'styles.css';
+        }
+        $file->dateCreation = date('Y-m-d H:i:s');
+        $file->data         = $data;
+        $file->dataHash     = $stylesheet->getSettingsHash();
+        $file->filesize     = strlen($data);
+        $file->mimetype     = 'text/css';
+        $file->width        = null;
+        $file->height       = null;
+        $file->save();
+
+        return $file;
     }
 
     /**
@@ -178,6 +223,7 @@ class ConsultationFile extends ActiveRecord
 
         $file                 = new ConsultationFile();
         $file->consultationId = $consultation->id;
+        $file->siteId         = $consultation->siteId;
         $file->mimetype       = $mime;
         $file->width          = $width;
         $file->height         = $height;
