@@ -160,4 +160,12 @@ ul.sidebarActions {
   .onlyAdmins {
     font-size: 0.7em;
   }
+  .deactivated {
+    font-style: italic;
+  }
+  .deactivatedMsg {
+    font-size: 13px;
+    color: #dbdbdb;
+    text-transform: none;
+  }
 }

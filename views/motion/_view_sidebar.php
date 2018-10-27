@@ -38,10 +38,10 @@ try {
     $sidebarRows++;
 } catch (\app\models\exceptions\NotAmendable $e) {
     if ($e->isMessagePublic()) {
-        $createLi = '<li class="amendmentCreate">';
-        $createLi .= '<span style="font-style: italic;"><span class="icon glyphicon glyphicon-flash"></span>';
+        $createLi = '<li class="amendmentCreate deactivated">';
+        $createLi .= '<span><span class="icon glyphicon glyphicon-flash"></span>';
         $createLi .= Html::encode(Yii::t('motion', 'amendment_create'));
-        $createLi .= '<br><span style="font-size: 13px; color: #dbdbdb; text-transform: none;">';
+        $createLi .= '<br><span class="deactivatedMsg">';
         $createLi .= Html::encode($e->getMessage()) . '</span></span></li>';
 
         $html .= $createLi;
