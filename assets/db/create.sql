@@ -1073,7 +1073,7 @@ ALTER TABLE `amendmentAdminComment`
 --
 ALTER TABLE `amendmentComment`
   ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
-  ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `amendmentcomment` (`id`)
+  ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `amendmentComment` (`id`)
   ON DELETE CASCADE
   ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
