@@ -59,8 +59,14 @@ $I->fillField('#newBlockTitle', 'Voting 1');
 $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);
 $I->see('Über den Vorschlag informieren und Bestätigung einholen', '#proposedChanges .notificationStatus');
+$I->dontSeeElement('.notifyProposerSection');
 $I->executeJS('$("#proposedChanges button.notifyProposer").click();');
 $I->wait(1);
+$I->seeElement('.notifyProposerSection');
+$I->executeJS('$("#proposedChanges button[name=notificationSubmit]").click();');
+$I->wait(1);
+$I->see('Der/die Antragsteller*in wurde am');
+
 
 $I->assertEquals('Voting 1', $I->executeJS('return $("#votingBlockId").selectlist("selectedItem").text'));
 
@@ -73,8 +79,12 @@ $I->executeJS('$("#proposedChanges .saving button").click();');
 $I->wait(1);
 
 $I->dontSee('Der/die Antragsteller*in wurde am');
+$I->dontSeeElement('.notifyProposerSection');
 $I->executeJS('$("#proposedChanges button.notifyProposer").click();');
 // Not making it visible yet
+$I->wait(1);
+$I->seeElement('.notifyProposerSection');
+$I->executeJS('$("#proposedChanges button[name=notificationSubmit]").click();');
 $I->wait(1);
 $I->see('Der/die Antragsteller*in wurde am');
 
