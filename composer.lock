@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78e4cfe967d86739bdb34afda50e1965",
+    "content-hash": "522e2c12e1161926541c672e0e958c2c",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -164,16 +164,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.11",
+            "version": "0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "864f014cf1f048a25911c3db361c5796e9f9648f"
+                "reference": "5070dc80aa5bbfa0339e64965425395d7536c435"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/864f014cf1f048a25911c3db361c5796e9f9648f",
-                "reference": "864f014cf1f048a25911c3db361c5796e9f9648f",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/5070dc80aa5bbfa0339e64965425395d7536c435",
+                "reference": "5070dc80aa5bbfa0339e64965425395d7536c435",
                 "shasum": ""
             },
             "require": {
@@ -205,7 +205,7 @@
                 "ods",
                 "odt"
             ],
-            "time": "2018-02-10T10:14:45+00:00"
+            "time": "2018-10-26T17:01:56+00:00"
         },
         {
             "name": "cebe/markdown",
@@ -587,16 +587,16 @@
         },
         {
             "name": "mailjet/mailjet-apiv3-php",
-            "version": "v1.3.0",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mailjet/mailjet-apiv3-php.git",
-                "reference": "a56eb5cb5915bc8a98a57f885fec5fe616518ac5"
+                "reference": "6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/a56eb5cb5915bc8a98a57f885fec5fe616518ac5",
-                "reference": "a56eb5cb5915bc8a98a57f885fec5fe616518ac5",
+                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d",
+                "reference": "6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d",
                 "shasum": ""
             },
             "require": {
@@ -633,7 +633,7 @@
                 "php",
                 "v3"
             ],
-            "time": "2018-06-20T06:12:51+00:00"
+            "time": "2018-10-16T11:46:44+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1159,16 +1159,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.2.25",
+            "version": "6.2.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "a5135e2cf02f8c935b71e9e7d676f0f1d31b1b9d"
+                "reference": "367241059ca166e3a76490f4448c284e0a161f15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/a5135e2cf02f8c935b71e9e7d676f0f1d31b1b9d",
-                "reference": "a5135e2cf02f8c935b71e9e7d676f0f1d31b1b9d",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/367241059ca166e3a76490f4448c284e0a161f15",
+                "reference": "367241059ca166e3a76490f4448c284e0a161f15",
                 "shasum": ""
             },
             "require": {
@@ -1217,7 +1217,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2018-09-23T07:52:24+00:00"
+            "time": "2018-10-16T17:24:05+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

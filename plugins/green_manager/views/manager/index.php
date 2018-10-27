@@ -51,7 +51,7 @@ $params = \Yii::$app->params;
 <h2 id="who_uses_it" class="green">Who is already using it?</h2>
 <div class="content contentWhoUsesIt">
     <div class="list">
-        <a href="https://antraege.gruene.de/bdk41" target="_blank">
+        <a href="https://antraege.gruene.de/43bdk" target="_blank">
             <img src="<?= $assets->baseUrl ?>/logo-b90.svg" alt="Bündnis 90 / Die GRÜNEN">
             <div class="name">Bündnis 90 / Die GRÜNEN</div>
             <div class="hint">Federal Convention</div>
@@ -68,8 +68,7 @@ $params = \Yii::$app->params;
             Wales</a> and the
         <a href="https://bayern.antragsgruen.de/" target="_blank">Bavarian Greens</a>),
         non-green parties like the austrian NEOS or the
-        <a href="https://mitreden.spd-schleswig-holstein.de/?veranstaltungsreihe_id=default" target="_blank">german
-            SPD</a>,
+        <a href="https://mitmachen.spd-heidelberg.de/web/" target="_blank">german SPD</a>,
         and civil organizations like the
         <a href="https://tooldoku.dbjr.de/category/antragsgruen/" target="_blank">German Federal Youth Council</a>.
 
