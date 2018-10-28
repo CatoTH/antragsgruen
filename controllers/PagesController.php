@@ -335,8 +335,8 @@ class PagesController extends Base
         \yii::$app->response->headers->set('Pragma', 'cache');
         \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
-        $stylesheetSettings = new Stylesheet('');
-        $file = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
+        $stylesheetSettings = $this->site->getSettings()->getStylesheet();
+        $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
         if ($file) {
             return $file->data;
         }

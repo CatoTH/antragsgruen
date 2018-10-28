@@ -14,13 +14,10 @@ $OpenSansPath: "../fonts/OpenSans/fonts";
 $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
-$colorLinksLight: ' . $stylesheetSettings->colorLinksLight . ';
-$colorLinks: ' . $stylesheetSettings->colorLinks . ';
+' . $stylesheetSettings->toScssVariables() . '
 $linkTextDecoration: none;
 $colorDelLink: #FF7777;
 $colorMagenta: rgb(226, 0, 122);
-$brand-primary: ' . $stylesheetSettings->primaryColor . ';
-$text-color: ' . $stylesheetSettings->textColor . ';
 $btn-success-bg: #2c882c;
 
 $table-border-color: $colorGreenLight;

@@ -17,6 +17,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\AntragsgruenUpdateModeForm;
 use app\models\forms\ConsultationCreateForm;
+use app\models\settings\Stylesheet;
 use yii\web\Response;
 
 /**
@@ -377,6 +378,27 @@ class IndexController extends AdminBase
         return $this->renderPartial('openslides2_user_list', [
             'users' => $users,
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTheming()
+    {
+        $siteSettings = $this->site->getSettings();
+        $stylesheet   = $siteSettings->getStylesheet();
+
+        if ($this->isPostSet('save')) {
+            $settings = \Yii::$app->request->post('stylesheet', []);
+            foreach (Stylesheet::getAllSettings() as $key => $setting) {
+                $stylesheet->$key = $settings[$key];
+            }
+            $siteSettings->setStylesheet($stylesheet);
+            $this->site->setSettings($siteSettings);
+            $this->site->save();
+        }
+
+        return $this->render('theming', ['stylesheet' => $stylesheet]);
     }
 
     /**
