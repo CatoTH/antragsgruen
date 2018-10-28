@@ -10,6 +10,7 @@ return [
     'bread_motion'                => 'Motion',
     'bread_todo'                  => 'To Do',
     'bread_consultation'          => 'Consultation',
+    'bread_theming'               => 'Theme',
     'saved'                       => 'Saved.',
     'save'                        => 'Save',
     'index_title'                 => 'Administration',
@@ -166,6 +167,8 @@ return [
     'con_fb_img'              => 'Facebook image',
     'con_logo_url'            => 'Upload new logo',
     'con_ci'                  => 'Layout',
+    'con_ci_custom'           => 'Custom theme',
+    'con_ci_custom_edit'      => 'Edit custom theme',
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage style',
     'con_line_len'            => 'Line length',
@@ -466,4 +469,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'updates_start'        => 'Start update',
     'updates_error'        => 'Updates could not be loaded',
     'updates_show_changes' => 'Show changes',
+
+    'theme_title' => 'Custom theme',
 ];

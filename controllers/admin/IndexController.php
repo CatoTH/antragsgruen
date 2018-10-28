@@ -394,6 +394,7 @@ class IndexController extends AdminBase
                 $stylesheet->$key = $settings[$key];
             }
             $siteSettings->setStylesheet($stylesheet);
+            $siteSettings->siteLayout = 'layout-custom-' . $stylesheet->getSettingsHash();
             $this->site->setSettings($siteSettings);
             $this->site->save();
         }

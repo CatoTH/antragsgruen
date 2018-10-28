@@ -10,6 +10,7 @@ return [
     'bread_motion'                => 'Antrag',
     'bread_todo'                  => 'To Do',
     'bread_consultation'          => 'Veranstaltung',
+    'bread_theming'               => 'Farbschema',
     'saved'                       => 'Gespeichert.',
     'save'                        => 'Speichern',
     'index_title'                 => 'Administration',
@@ -164,6 +165,8 @@ return [
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Neues Logo hochladen',
     'con_ci'                  => 'Layout',
+    'con_ci_custom'           => 'Eigenes Farbschema',
+    'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseiten-Design',
     'con_line_len'            => 'Maximale Zeilenlänge',
@@ -475,4 +478,6 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'updates_start'        => 'Update starten',
     'updates_error'        => 'Die Updates konnten nicht abgefragt werden',
     'updates_show_changes' => 'Änderungen anzeigen',
+
+    'theme_title' => 'Eigenes Farbschema',
 ];

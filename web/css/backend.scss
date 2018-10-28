@@ -231,6 +231,13 @@ label.legend {
     margin-bottom: 50px;
   }
 }
+.customThemeSelector {
+  margin-top: 20px;
+  .editThemeLink {
+    display: block;
+    margin-left: 10px;
+  }
+}
 
 .consultationCreateForm {
   .fakeUrl {

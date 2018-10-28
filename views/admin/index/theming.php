@@ -3,12 +3,23 @@
 use app\components\UrlHelper;
 use app\models\settings\Stylesheet;
 use yii\helpers\Html;
+
 /**
+ * @var \yii\web\View $this
  * @var Stylesheet $stylesheet
  */
 
+/** @var \app\controllers\admin\IndexController $controller */
+$controller = $this->context;
+$layout     = $controller->layoutParams;
+
+$this->title = \Yii::t('admin', 'theme_title');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('/admin/index'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'), UrlHelper::createUrl('/admin/index/consultation'));
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_theming'));
+
 ?>
-<h1>Theming</h1>
+<h1><?= \Yii::t('admin', 'theme_title') ?></h1>
 
 <?= Html::beginForm(UrlHelper::createUrl('/admin/index/theming'), 'POST', ['class' => 'content themingClass']) ?>
     <table class="table">
@@ -38,7 +49,7 @@ use yii\helpers\Html;
 
     <div class="submitRow">
         <button type="submit" name="save" class="btn btn-primary">
-            Save
+            <?= \Yii::t('admin', 'save') ?>
         </button>
     </div>
 <?= Html::endForm() ?>
