@@ -99,7 +99,7 @@ class StdHooks extends Hooks
         if (is_array($this->layout->breadcrumbs)) {
             $out .= '<ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
-                if ($link === '' || is_null($link)) {
+                if ($link === '' || is_numeric($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
                 } else {
                     $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
