@@ -21,7 +21,7 @@ und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
 (ansonsten verschwindet das %ACCOUNT% ersatzlos).<br><strong>%LINK%</strong> wird immer durch einen Link auf die Antragsschmiede-Seite ersetzt.',
 	'siteacc_existing_users' => 'Bereits eingetragene Benutzer_innen',
 	'siteacc_new_users' => 'Benutzer_innen eintragen',
-	'siteacc_new_names' => '\"Namen der Benutzer_innen:<br><small>(Exakte Zuordnung zu den Zeilen links!)</small>\"',
+	'siteacc_new_names' => 'Namen der Benutzer_innen:<br><small>(Exakte Zuordnung zu den Zeilen links!)</small>',
 	'siteacc_new_saml_ww' => 'gelöscht#8',
 	'sitacc_admmail_subj' => 'Antragsschmiede-Administration',
 	'sitacc_admmail_body' => 'Hallo!
@@ -50,7 +50,7 @@ Das Antragsschmiede-Team',
 	'con_send_motion_email' => 'Beim Anlegen/Freischalten eines Antrags: Bestätigungs-E-Mail an die Antragsteller_in schicken',
 	'siteacc_policy_login' => 'Auf Benutzer_innen einschränken',
 	'siteacc_forcelogin' => 'Nur eingeloggte Benutzer_innen dürfen zugreifen (inkl. <em>lesen</em>)',
-	'siteacc_managedusers' => 'Nur ausgewählten Benutzer_innen das Login erlauben <small class=\"showManagedUsers\">(siehe unten)</small>',
+	'siteacc_managedusers' => 'Nur ausgewählten Benutzer_innen das Login erlauben <small class="showManagedUsers">(siehe unten)</small>',
 	'siteacc_admins_title' => 'Administrator_innen',
 	'siteacc_admins_all_cons' => 'Administrator_in',
 	'siteacc_user_had' => 'Folgende Benutzer_innen hatten bereits Zugriff',
@@ -60,13 +60,13 @@ Das Antragsschmiede-Team',
 	'motion_type_initiator' => 'Antragsteller_in / Unterstützer_innen',
 	'users_head' => 'Registrierte Benutzer_innen',
 	'users_bc' => 'Benutzer_innen',
-	'siteacc_policywarning' => '\"<h3>Hinweis:</h3>
+	'siteacc_policywarning' => '<h3>Hinweis:</h3>
 Die Benutzer_innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Leserechte oder die Rechte zum Anlegen
-von Anträgen, Änderungsanträgen, Kommentaren etc. auf \"\"Nur eingeloggte Benutzer_innen\"\" gestellt werden. Aktuell ist
+von Anträgen, Änderungsanträgen, Kommentaren etc. auf "Nur eingeloggte Benutzer_innen" gestellt werden. Aktuell ist
 das nicht der Fall.<br><br>
 Falls die Seite nur für unten eingetragene Benutzer_innen <em>sichtbar</em> sein soll, wähle die Einstellung gleich unterhalb
 dieses Hinweises aus. Falls die Seite für alle einsehbar sein soll, aber nur eingetragene Benutzer_innen
-Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:\"',
+Anträge etc. stellen können sollen, kannst du das hiermit automatisch einstellen:',
 	'siteacc_accounts_title' => 'Benutzer_innen-Accounts',
 	'siteacc_useraccounts' => 'standard-Antragsschmiede-Accounts <small>(alle mit gültiger E-Mail-Adresse)</small>',
 ];

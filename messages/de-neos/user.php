@@ -8,12 +8,12 @@ ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw
 System gelöscht.<br>
 Eingebrachte (Änderungs-)Anträge bleiben aber erhalten. Um eingebrachte Anträge zu entfernen,
 wende dich bitte an die Administrator_innen der jeweiligen Unterseite.',
-	'noti_bye' => '\"Liebe Grüße,
+	'noti_bye' => 'Liebe Grüße,
 Das Antragsschmiede-Team
 
 --
 
-Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:\"',
+Falls du diese Benachrichtigung abbestellen willst, kannst du das hier tun:',
 	'noti_new_motion_title' => '[Antragsschmiede] Neuer Antrag:',
 	'noti_new_amend_title' => '[Antragsschmiede] Neuer Änderungsantrag zu %TITLE%',
 	'noti_new_comment_title' => '[Antragsschmiede] Neuer Kommentar zu %TITLE%',

@@ -6,10 +6,10 @@ return [
 dein Änderungsantrag zu %MOTION% wurde soeben auf der Antragsschmiede veröffentlicht. Du kannst ihn hier einsehen: %LINK%
 
 Mit freundlichen Grüßen,
-Das Antragsschmiede-Team\"',
+Das Antragsschmiede-Team',
 	'confirmed_support_phase_ww' => 'gelöscht#5',
 	'support_collect_explanation' => 'gelöscht#6',
-	'support_reached_email_body' => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag \"\"%TITLE%\"\" hat die Mindestzahl an Unterstützer_innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über die Antragsschmiede unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung in der Antragsschmiede veröffentlicht. <br><br>Viele Grüße,<br> Das Antragsschmieden-Team',
+	'support_reached_email_body' => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag "%TITLE%" hat die Mindestzahl an Unterstützer_innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über die Antragsschmiede unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung in der Antragsschmiede veröffentlicht. <br><br>Viele Grüße,<br> Das Antragsschmieden-Team',
 	'proposal_email_modified' => 'Hallo %NAME_GIVEN%,
 
 die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.
@@ -28,7 +28,7 @@ Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. Du
 Du kannst ihn hier einsehen: %LINK%
 
 Mit freundlichen Grüßen,
-Das Antragsschmiede-Team\"',
+Das Antragsschmiede-Team',
 	'proposal_email_accepted' => 'Hallo %NAME_GIVEN%,
 
 zu Deiner Information: die Programmkommission wird vorschlagen, deinen Änderungsantrag zu übernehmen.
