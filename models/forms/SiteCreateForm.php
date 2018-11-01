@@ -144,7 +144,7 @@ class SiteCreateForm extends Model
     {
         $site               = new Site();
         $site->title        = $this->title;
-        $site->titleShort   = $this->title;
+        $site->titleShort   = mb_substr($this->title, 0, Site::TITLE_SHORT_MAX_LEN);
         $site->organization = $this->organization;
         $site->contact      = $this->contact;
         $site->subdomain    = $this->subdomain;
@@ -295,7 +295,7 @@ class SiteCreateForm extends Model
         $con             = new Consultation();
         $con->siteId     = $site->id;
         $con->title      = $this->title;
-        $con->titleShort = $this->title;
+        $con->titleShort = mb_substr($this->title, 0, Consultation::TITLE_SHORT_MAX_LEN);
         $con->urlPath    = $this->subdomain;
         $con->adminEmail = $currentUser->email;
         $this->createConsultation($con);

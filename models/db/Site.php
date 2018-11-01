@@ -35,6 +35,8 @@ class Site extends ActiveRecord
     const STATUS_INACTIVE = 1;
     const STATUS_DELETED  = -1;
 
+    const TITLE_SHORT_MAX_LEN = 100;
+
     /**
      * @return string
      */

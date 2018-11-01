@@ -108,6 +108,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                    for="consultationTitleShort"><?= \Yii::t('admin', 'con_title_short') ?>:</label>
             <div class="col-sm-9">
                 <input type="text" required name="consultation[titleShort]"
+                       maxlength="<?= Consultation::TITLE_SHORT_MAX_LEN ?>"
                        value="<?= Html::encode($consultation->titleShort) ?>"
                        class="form-control" id="consultationTitleShort">
             </div>

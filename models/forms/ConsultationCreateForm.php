@@ -73,7 +73,7 @@ class ConsultationCreateForm extends Model
         $consultation->amendmentNumbering = $this->template->amendmentNumbering;
         $consultation->urlPath            = $this->urlPath;
         $consultation->title              = $this->title;
-        $consultation->titleShort         = $this->titleShort;
+        $consultation->titleShort         = mb_substr($this->titleShort, 0, Consultation::TITLE_SHORT_MAX_LEN);
         $consultation->wordingBase        = $this->template->wordingBase;
         $consultation->adminEmail         = $this->template->adminEmail;
         $consultation->dateCreation       = date('Y-m-d H:i:s');

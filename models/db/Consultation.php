@@ -44,6 +44,7 @@ use yii\db\ActiveRecord;
  */
 class Consultation extends ActiveRecord
 {
+    const TITLE_SHORT_MAX_LEN = 45;
 
     /** @var null|Consultation */
     private static $current = null;
