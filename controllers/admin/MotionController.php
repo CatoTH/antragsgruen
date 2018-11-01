@@ -138,9 +138,10 @@ class MotionController extends AdminBase
                 }
             }
 
-            $settings                   = $motionType->getSettingsObj();
-            $settings->pdfIntroduction  = $input['pdfIntroduction'];
-            $settings->motionTitleIntro = $input['typeMotionIntro'];
+            $settings                       = $motionType->getSettingsObj();
+            $settings->pdfIntroduction      = $input['pdfIntroduction'];
+            $settings->motionTitleIntro     = $input['typeMotionIntro'];
+            $settings->hasProposedProcedure = isset($input['proposedProcedure']);
             $motionType->setSettingsObj($settings);
 
             $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();

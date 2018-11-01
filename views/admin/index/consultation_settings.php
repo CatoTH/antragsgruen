@@ -197,7 +197,9 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
 
         $propTitle = \Yii::t('admin', 'con_proposal_procedure');
-        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle);
+        $tooltip = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="" ' .
+            'data-original-title="' . Html::encode(\Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
         $boolSettingRow($settings, 'minimalisticUI', $handledSettings, \Yii::t('admin', 'con_minimalistic'));
 

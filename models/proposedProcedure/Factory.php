@@ -59,6 +59,9 @@ class Factory
                 if (in_array($motion->id, $handledMotions)) {
                     continue;
                 }
+                if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+                    continue;
+                }
                 if ($motion->votingBlockId > 0 && $motion->votingBlock) {
                     $votingBlock = $motion->votingBlock;
                     if (in_array($votingBlock->id, $handledVotings)) {
@@ -132,6 +135,9 @@ class Factory
             $item  = new Agenda($idCount++, $title, null);
 
             if (in_array($motion->id, $handledMotions)) {
+                continue;
+            }
+            if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
                 continue;
             }
 

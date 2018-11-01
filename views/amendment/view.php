@@ -68,7 +68,7 @@ if ($supportCollectingStatus) {
     } else {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_hint'));
     }
-    if ($motion->motionType->policySupportAmendments != IPolicy::POLICY_ALL && !User::getCurrentUser()) {
+    if ($motion->motionType->policySupportAmendments !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
         $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
         echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
         echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
@@ -95,21 +95,26 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
+if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+    if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        ?>
+        <div class="proposedChangesOpener">
+            <button class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-down"></span>
+                <?= \Yii::t('amend', 'proposal_open') ?>
+            </button>
+        </div>
+        <?php
 
-if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
-    ?>
-    <div class="proposedChangesOpener">
-        <button class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-            <?= \Yii::t('amend', 'proposal_open') ?>
-        </button>
-    </div>
-    <?php
-
-    echo $this->render('_set_proposed_procedure', ['amendment' => $amendment, 'context' => 'view', 'msgAlert' => null]);
-}
-if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator()) {
-    echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);
+        echo $this->render('_set_proposed_procedure', [
+            'amendment' => $amendment,
+            'context'   => 'view',
+            'msgAlert'  => null,
+        ]);
+    }
+    if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator()) {
+        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);
+    }
 }
 
 echo $this->render('_view_text', ['amendment' => $amendment]);
@@ -148,6 +153,6 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
 
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
-if ($motion->motionType->policyComments != IPolicy::POLICY_NOBODY) {
+if ($motion->motionType->policyComments !== IPolicy::POLICY_NOBODY) {
     echo $this->render('_view_comments', ['amendment' => $amendment, 'commentForm' => $commentForm]);
 }

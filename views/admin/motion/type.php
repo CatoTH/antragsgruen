@@ -140,6 +140,22 @@ echo $controller->showErrors();
             ?>
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="typeProposedProcedure">
+            <?= \Yii::t('admin', 'motion_type_proposed') ?>
+        </label>
+        <div class="checkbox col-md-8">
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'type[proposedProcedure]',
+                \Yii::t('admin', 'motion_type_proposed_label'),
+                $motionType->getSettingsObj()->hasProposedProcedure,
+                ['id' => 'typeProposedProcedure']
+            );
+            ?>
+        </div>
+    </div>
 <?php
 
 
@@ -214,7 +230,7 @@ echo '</div>';
         </div>
     </div>
 
-<?= Html::endForm(); // adminTypeForm    ?>
+<?= Html::endForm(); // adminTypeForm     ?>
 
     <ul style="display: none;" id="sectionTemplate">
         <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>

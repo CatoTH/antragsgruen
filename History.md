@@ -14,19 +14,21 @@
 - Several improvements regarding merging amendments into motions / creating the final motion version:
   - When editing the merged view with the amendments' change inlined into the text, this draft can be exported into a PDF to document the merging process.
   - After creating the final text, administrators can decide if the new version of this motion is a regular motion again, or a (preliminary) resolution.
+- Several changes regarding the proposed procedures:
+  - Proposed procedures are now an optional functionality per motion type. They are disabled by default.
+  - When exporting the proposed procedure list into ODS, there is now an option to also include the comments.
+  - When sending a notification to users regarding a proposed procedure, the content of the mail can now be modified by the person sending the notification.
+  - Bugfix: It was not possible to delete admin comments in the proposed procedure.
+  - Buffix: Prevent a bug when creating a proposed procedure that collides with another amendment.
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.
 - In the initiator form, the resolution date for organizations submitting a motion is now optional. An additional optional field to add one's gender was added.
-- When exporting the proposed procedure list into ODS, there is now an option to also include the comments.
 - The admin interface for adding/removing supporters of a motion/amendment now has a function to copy the full list of supporters to the clipboard in a format suitable to paste it into the full-text field later on (to easily transfer the supporter list from one motion to a new one).
 - The diff view in amendments now usually show the whole affected line, instead of cutting off the line after the last changed word, giving some more context to the change.
-- When sending a notification to users regarding a proposed procedure, the content of the mail can now be modified by the person sending the notification.
 - Add a option to enforce a confirmation checkbox on registration.
 - The performance of the admin motion list was improved for large installations (> 1000 amendments), by reducing the number of database queries.
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Bugfix: When an optional image was not uploaded, the LaTeX-based PDF export did not work.
-- Bugfix: It was not possible to delete admin comments in the proposed procedure.
 - Bugfix: Prevent broken sites when too long consultation titles are entered.
-- Buffix: Prevent a bug when creating a proposed procedure that collides with another amendment.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
 ### Version 4.0.4 (2018-10-16)

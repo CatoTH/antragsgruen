@@ -104,20 +104,22 @@ if ($motion->canFinishSupportCollection()) {
 echo '</div>';
 
 
-if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
-    ?>
-    <div class="proposedChangesOpener">
-        <button class="btn btn-default btn-sm">
-            <span class="glyphicon glyphicon-chevron-down"></span>
-            <?= \Yii::t('amend', 'proposal_open') ?>
-        </button>
-    </div>
-    <?php
+if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+    if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+        ?>
+        <div class="proposedChangesOpener">
+            <button class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-down"></span>
+                <?= \Yii::t('amend', 'proposal_open') ?>
+            </button>
+        </div>
+        <?php
 
-    echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'msgAlert' => null]);
-}
-if ($motion->proposalFeedbackHasBeenRequested() && $motion->iAmInitiator()) {
-    echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
+        echo $this->render('_set_proposed_procedure', ['motion' => $motion, 'msgAlert' => null]);
+    }
+    if ($motion->proposalFeedbackHasBeenRequested() && $motion->iAmInitiator()) {
+        echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
+    }
 }
 
 echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
