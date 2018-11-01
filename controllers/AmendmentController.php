@@ -677,7 +677,7 @@ class AmendmentController extends Base
         foreach ($amendment->getMyMotion()->getAmendmentsProposedToBeIncluded(true, [$amendment->id]) as $compAmend) {
             foreach ($compAmend->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
-                if (count($coll) > 0 && !in_array($compAmend, $collidesWith)) {
+                if (count($coll) > 0 && !in_array($compAmend, $collidesWith, true)) {
                     $collidesWith[] = $compAmend;
                 }
             }

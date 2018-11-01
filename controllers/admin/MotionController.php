@@ -370,7 +370,7 @@ class MotionController extends AdminBase
             foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
                 $coll = $section->getRewriteCollisions($newSections[$section->sectionId], false);
                 if (count($coll) > 0) {
-                    if (!in_array($amendment, $amendments)) {
+                    if (!in_array($amendment, $amendments, true)) {
                         $amendments[$amendment->id] = $amendment;
                         $collisions[$amendment->id] = [];
                     }
