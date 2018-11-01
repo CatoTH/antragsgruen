@@ -587,16 +587,16 @@
         },
         {
             "name": "mailjet/mailjet-apiv3-php",
-            "version": "v1.4.0",
+            "version": "v1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mailjet/mailjet-apiv3-php.git",
-                "reference": "6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d"
+                "reference": "9d89b9a424a9631bff8e499cbbe34058481e8102"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d",
-                "reference": "6bd2b98dc00b83e8a0ad16999540e6e0b7b5f46d",
+                "url": "https://api.github.com/repos/mailjet/mailjet-apiv3-php/zipball/9d89b9a424a9631bff8e499cbbe34058481e8102",
+                "reference": "9d89b9a424a9631bff8e499cbbe34058481e8102",
                 "shasum": ""
             },
             "require": {
@@ -633,7 +633,7 @@
                 "php",
                 "v3"
             ],
-            "time": "2018-10-16T11:46:44+00:00"
+            "time": "2018-10-31T13:24:45+00:00"
         },
         {
             "name": "paragonie/random_compat",
