@@ -339,6 +339,12 @@
           font-size: 0.8em;
           color: gray;
         }
+        select.motionType {
+          max-width: 170px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          padding-right: 0;
+        }
       }
 
       .motionCreateLink {

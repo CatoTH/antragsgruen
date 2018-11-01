@@ -24,7 +24,7 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
         $title = \Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
     } else {
-        $title = \Yii::t('admin', 'list_prop_user_asked');
+        $title = \Yii::t('admin', 'list_prop_user_not_asked');
         echo '<span class="not_asked" title="' . $title . '">❔</span>';
     }
 

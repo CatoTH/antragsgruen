@@ -82,8 +82,14 @@ foreach ($proposedAgenda as $proposedItem) {
                             $classes       = ['motion' . $item->id];
                             $currentMotion = $item->id;
                         }
-                        if ($item->status == IMotion::STATUS_WITHDRAWN) {
+                        if ($item->status === IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
+                        }
+                        if ($item->proposalStatus === IMotion::STATUS_ACCEPTED) {
+                            $classes[] = 'accepted';
+                        }
+                        if ($item->proposalStatus === IMotion::STATUS_VOTE) {
+                            $classes[] = 'vote';
                         }
                         ?>
                         <tr class="item <?= implode(' ', $classes) ?>" data-id="<?= $item->id ?>">

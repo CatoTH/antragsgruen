@@ -355,6 +355,12 @@
       text-decoration: line-through;
     }
   }
+  tr.vote {
+    background-color: #ffe0cc;
+  }
+  tr.accepted {
+    background-color: #ddffdd;
+  }
   h2 .withdrawn {
     font-size: 0.8em;
     color: #eee;
