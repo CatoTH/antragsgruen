@@ -89,7 +89,7 @@ foreach ($proposedAgenda as $proposedItem) {
                         if ($item->status === IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
-                        if ($item->proposalStatus === IMotion::STATUS_ACCEPTED) {
+                        if ($item->proposalUserStatus === IMotion::STATUS_ACCEPTED) {
                             $classes[] = 'accepted';
                         }
                         if ($item->proposalStatus === IMotion::STATUS_VOTE) {

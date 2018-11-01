@@ -88,6 +88,9 @@ class Factory
             $block        = new AgendaVoting(\Yii::t('export', 'pp_unhandled'), null);
             $block->items = [];
             foreach ($agendaItem->getVisibleMotionsSorted(true) as $motion) {
+                if (!$motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
+                    continue;
+                }
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
                 foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
