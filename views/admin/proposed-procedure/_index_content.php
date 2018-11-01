@@ -16,6 +16,10 @@ use yii\helpers\Html;
  */
 
 foreach ($proposedAgenda as $proposedItem) {
+    if (count($proposedItem->votingBlocks) === 0) {
+        continue;
+    }
+
     if (!$expandAll && $proposedItem->blockId !== $expandId) {
         $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]);
         $expandTitle = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($proposedItem->title);
