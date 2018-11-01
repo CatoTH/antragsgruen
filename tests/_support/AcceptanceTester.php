@@ -322,6 +322,24 @@ class AcceptanceTester extends \Codeception\Actor
     /**
      * @param string $selector
      */
+    public function seeFueluxCheckboxChecked($selector)
+    {
+        $value = $this->executeJs('return $("' . addslashes($selector) . '").checkbox("isChecked");');
+        $this->assertEquals(true, $value);
+    }
+
+    /**
+     * @param string $selector
+     */
+    public function dontSeeFueluxCheckboxChecked($selector)
+    {
+        $value = $this->executeJs('return $("' . addslashes($selector) . '").checkbox("isChecked");');
+        $this->assertEquals(false, $value);
+    }
+
+    /**
+     * @param string $selector
+     */
     public function checkFueluxCheckbox($selector)
     {
         $this->executeJS('$("' . addslashes($selector) . '").checkbox("check").find("input").trigger("change");');
