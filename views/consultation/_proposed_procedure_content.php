@@ -9,6 +9,9 @@ use yii\helpers\Html;
  */
 
 foreach ($proposedAgenda as $proposedItem) {
+    if (count($proposedItem->votingBlocks) === 0) {
+        continue;
+    }
     ?>
     <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview">
         <h2 class="green">
