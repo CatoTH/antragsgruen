@@ -1103,10 +1103,11 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $includeOtherAmendments
      * @param int $internalNestingLevel
      * @return bool
      */
-    public function hasAlternativeProposaltext($internalNestingLevel = 0)
+    public function hasAlternativeProposaltext($includeOtherAmendments = false, $internalNestingLevel = 0)
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
@@ -1115,10 +1116,10 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         // This amendment is obsoleted by an amendment with a modification proposal
-        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
+        if ($includeOtherAmendments && $this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
             $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
             if ($obsoletedBy && $internalNestingLevel < 10) {
-                return $obsoletedBy->hasAlternativeProposaltext($internalNestingLevel + 1);
+                return $obsoletedBy->hasAlternativeProposaltext($includeOtherAmendments, $internalNestingLevel + 1);
             }
         }
 

@@ -11,7 +11,7 @@ use app\models\db\User;
 
 $consultation = $amendment->getMyConsultation();
 
-if ($amendment->hasAlternativeProposaltext() && (
+if ($amendment->hasAlternativeProposaltext(true) && (
         $amendment->isProposalPublic() || User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS) ||
         ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator())
     )) {
