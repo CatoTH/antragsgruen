@@ -295,6 +295,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_notify_replyto'    => 'Reply-To-Adresse',
     'proposal_notify_name'       => 'Absender-Name',
     'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
+    'proposal_set_feedback'      => 'Auf bestätigt setzen',
+    'proposal_set_feedback_conf' => 'Hat die Antragsteller*in dem Verfahrensvorschlag zugestimmt?',
     'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% benachrichtigt.',
     'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified'    => "Hallo %NAME_GIVEN%,\n\n" .

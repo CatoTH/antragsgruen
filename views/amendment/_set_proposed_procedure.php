@@ -124,6 +124,13 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
                         echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
+
+                        echo '<div class="setConfirmationStatus">';
+                        echo '<button class="btn btn-xs btn-link setConfirmation" type="button"
+                                      data-msg="' . Html::encode(\Yii::t('amend', 'proposal_set_feedback_conf')) . '">';
+                        echo \Yii::t('amend', 'proposal_set_feedback');
+                        echo '</button>';
+                        echo '</div>';
                     } elseif ($amendment->proposalStatus !== null) {
                         if ($amendment->proposalAllowsUserFeedback()) {
                             $msg = \Yii::t('amend', 'proposal_notify_w_feedback');

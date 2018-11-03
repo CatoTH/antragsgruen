@@ -264,6 +264,8 @@ return [
     'proposal_notify_replyto'    => 'Reply-To-address',
     'proposal_notify_name'       => 'Sender-name',
     'proposal_no_feedback'       => 'No confirmation yet',
+    'proposal_set_feedback'      => 'Set as confirmed',
+    'proposal_set_feedback_conf' => 'Did the initiator confirm this proposal?',
     'proposal_notified'          => 'The proposer has been notified at %DATE%.',
     'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
     'proposal_email_modified'    => "Hi %NAME_GIVEN%,\n\n" .

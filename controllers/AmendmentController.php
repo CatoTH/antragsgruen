@@ -581,6 +581,23 @@ class AmendmentController extends Base
             }
         }
 
+        if (\Yii::$app->request->post('setProposerHasAccepted')) {
+            $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
+            $amendment->save();
+            ConsultationLog::log(
+                $amendment->getMyConsultation(),
+                User::getCurrentUser()->id,
+                ConsultationLog::AMENDMENT_ACCEPT_PROPOSAL,
+                $amendment->id
+            );
+            $response['success'] = true;
+            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
+                'amendment' => $amendment,
+                'msgAlert'  => $msgAlert,
+                'context'   => \Yii::$app->request->post('context', 'view'),
+            ]);
+        }
+
         if (\Yii::$app->request->post('writeComment')) {
             $adminComment               = new AmendmentAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;

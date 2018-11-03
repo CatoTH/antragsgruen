@@ -61,6 +61,8 @@ class Motion extends IMotion implements IRSSItem
     const EVENT_PUBLISHED_FIRST = 'published_first';
     const EVENT_MERGED          = 'merged'; // Called on the newly created motion
 
+    /**
+     */
     public function init()
     {
         parent::init();
@@ -138,20 +140,6 @@ class Motion extends IMotion implements IRSSItem
     {
         return $this->hasMany(Amendment::class, ['motionId' => 'id'])
             ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
-    }
-
-    /**
-     * @param int $amendmentId
-     * @return Amendment|null
-     */
-    public function getAmendment($amendmentId)
-    {
-        foreach ($this->amendments as $amendment) {
-            if ($amendment->id == $amendmentId && $amendment->status != Amendment::STATUS_DELETED) {
-                return $amendment;
-            }
-        }
-        return null;
     }
 
     /**

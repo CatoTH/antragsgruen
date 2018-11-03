@@ -36,6 +36,7 @@ class ConsultationLog extends ActiveRecord
     const MOTION_SUPPORT             = 24;
     const MOTION_SUPPORT_FINISH      = 26;
     const MOTION_PUBLISH_PROPOSAL    = 30;
+    const MOTION_ACCEPT_PROPOSAL     = 31;
     const AMENDMENT_PUBLISH          = 13;
     const AMENDMENT_WITHDRAW         = 14;
     const AMENDMENT_DELETE           = 15;
@@ -50,11 +51,12 @@ class ConsultationLog extends ActiveRecord
     const AMENDMENT_DISLIKE          = 23;
     const AMENDMENT_CHANGE           = 25;
     const AMENDMENT_PUBLISH_PROPOSAL = 29;
+    const AMENDMENT_ACCEPT_PROPOSAL  = 32;
 
-    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27, 30];
-    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28, 29];
+    public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27, 30, 31];
+    public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28, 29, 32];
 
-    public static $USER_INVISIBLE_EVENTS = [15, 2, 24, 26, 21, 22, 23, 8, 9, 10];
+    public static $USER_INVISIBLE_EVENTS = [15, 2, 24, 26, 21, 22, 23, 8, 9, 10, 31, 32];
 
     /** @var null|Motion */
     private $motion = null;
@@ -241,6 +243,8 @@ class ConsultationLog extends ActiveRecord
             case static::MOTION_LIKE:
             case static::MOTION_UNLIKE:
             case static::MOTION_SUPPORT:
+            case static::MOTION_ACCEPT_PROPOSAL:
+            case static::MOTION_PUBLISH_PROPOSAL:
             case static::MOTION_SUPPORT_FINISH:
                 if ($this->motion) {
                     return UrlHelper::createMotionUrl($this->motion);
@@ -258,6 +262,8 @@ class ConsultationLog extends ActiveRecord
             case static::AMENDMENT_UNLIKE:
             case static::AMENDMENT_DISLIKE:
             case static::AMENDMENT_CHANGE:
+            case static::AMENDMENT_ACCEPT_PROPOSAL:
+            case static::AMENDMENT_PUBLISH_PROPOSAL:
                 if ($this->amendment && $this->amendment->getMyMotion()) {
                     return UrlHelper::createAmendmentUrl($this->amendment);
                 } else {
@@ -300,7 +306,7 @@ class ConsultationLog extends ActiveRecord
      */
     private function formatLogEntryUser($str, $fallback)
     {
-        if ($fallback == '') {
+        if ($fallback === '') {
             $fallback = \Yii::t('structure', 'activity_someone');
         }
         if ($this->user) {

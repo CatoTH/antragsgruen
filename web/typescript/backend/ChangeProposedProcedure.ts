@@ -105,6 +105,17 @@ export class ChangeProposedProcedure {
         });
     }
 
+    private setPropserHasAccepted() {
+        const confirm = this.$widget.find('.setConfirmation').data('msg');
+        bootbox.confirm(confirm, (result) => {
+            if (result) {
+                this.performCallWithReload({
+                    'setProposerHasAccepted': '1',
+                });
+            }
+        });
+    }
+
     private saveStatus() {
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         let data = {
@@ -176,6 +187,7 @@ export class ChangeProposedProcedure {
         this.$widget.on('click', '.notifyProposer', () => {
             this.$widget.find('.notifyProposerSection').removeClass('hidden');
         });
+        this.$widget.on('click', '.setConfirmation', this.setPropserHasAccepted.bind(this));
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 

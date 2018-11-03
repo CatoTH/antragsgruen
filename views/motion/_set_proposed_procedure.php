@@ -106,10 +106,10 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             <div class="notificationStatus">
                 <?php
                 if ($motion->proposalUserStatus !== null) {
-                    if ($motion->proposalUserStatus == Motion::STATUS_ACCEPTED) {
+                    if ($motion->proposalUserStatus === Motion::STATUS_ACCEPTED) {
                         echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
                         echo \Yii::t('amend', 'proposal_user_accepted');
-                    } elseif ($motion->proposalUserStatus == Motion::STATUS_REJECTED) {
+                    } elseif ($motion->proposalUserStatus === Motion::STATUS_REJECTED) {
                         echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
                         echo \Yii::t('amend', 'proposal_user_rejected');
                     } else {
@@ -120,6 +120,13 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                     $date = Tools::formatMysqlDate($motion->proposalNotification, null, false);
                     echo str_replace('%DATE%', $date, $msg);
                     echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
+
+                    echo '<div class="setConfirmationStatus">';
+                    echo '<button class="btn btn-xs btn-link setConfirmation" type="button"
+                                  data-msg="' . Html::encode(\Yii::t('amend', 'proposal_set_feedback_conf')) . '">';
+                    echo \Yii::t('amend', 'proposal_set_feedback');
+                    echo '</button>';
+                    echo '</div>';
                 } elseif ($motion->proposalStatus !== null) {
                     if ($motion->proposalAllowsUserFeedback()) {
                         $msg = \Yii::t('amend', 'proposal_notify_w_feedback');

@@ -19,6 +19,7 @@
   - When exporting the proposed procedure list into ODS, there is now an option to also include the comments.
   - When sending a notification to users regarding a proposed procedure, the content of the mail can now be modified by the person sending the notification.
   - If an amendment is obsoleted by another amendment with a proposed modification, this modification is also shown in the context of the (proposed) obsoleted amendment.
+  - Admins can set a proposal as being accepted by the user. (This is getting logged)
   - Bugfix: It was not possible to delete admin comments in the proposed procedure.
   - Buffix: Prevent a bug when creating a proposed procedure that collides with another amendment.
 - When creating a motion, the confirmation page now shows a preview of the generated PDF.

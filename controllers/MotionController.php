@@ -815,6 +815,22 @@ class MotionController extends Base
             }
         }
 
+        if (\Yii::$app->request->post('setProposerHasAccepted')) {
+            $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
+            $motion->save();
+            ConsultationLog::log(
+                $motion->getMyConsultation(),
+                User::getCurrentUser()->id,
+                ConsultationLog::MOTION_ACCEPT_PROPOSAL,
+                $motion->id
+            );
+            $response['success'] = true;
+            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
+                'motion'   => $motion,
+                'msgAlert' => $msgAlert,
+            ]);
+        }
+
         if (\Yii::$app->request->post('writeComment')) {
             $adminComment               = new MotionAdminComment();
             $adminComment->userId       = User::getCurrentUser()->id;
