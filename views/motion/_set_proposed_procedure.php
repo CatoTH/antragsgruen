@@ -238,6 +238,24 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
 </section>
 <section class="notifyProposerSection hidden">
     <h3><?= \Yii::t('amend', 'proposal_notify_text') ?></h3>
+    <div class="row proposalFrom">
+        <?php
+        $placeholderReplyTo = \Yii::t('amend', 'proposal_notify_replyto') . ': ' .
+            \app\components\mail\Tools::getDefaultReplyTo($motion->getMyConsultation());
+        $placeholderName    = \Yii::t('amend', 'proposal_notify_name') . ': ' .
+            \app\components\mail\Tools::getDefaultMailFromName($motion->getMyConsultation());
+        ?>
+        <div class="col-md-6">
+            <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"
+                   title="<?= \Yii::t('amend', 'proposal_notify_name') ?>"
+                   placeholder="<?= Html::encode($placeholderName) ?>">
+        </div>
+        <div class="col-md-6">
+            <input type="text" name="proposalNotificationReply" id="proposalNotificationReply" class="form-control"
+                   title="<?= \Yii::t('amend', 'proposal_notify_replyto') ?>"
+                   placeholder="<?= Html::encode($placeholderReplyTo) ?>">
+        </div>
+    </div>
     <?php
     $defaultText = \app\models\notifications\MotionProposedProcedure::getDefaultText($motion);
     echo Html::textarea(

@@ -15,9 +15,11 @@ class MotionProposedProcedure
      *
      * @param Motion $motion
      * @param string $text
+     * @param null|string $fromName
+     * @param null|string $replyTo
      * @throws MailNotSent
      */
-    public function __construct(Motion $motion, $text = '')
+    public function __construct(Motion $motion, $text = '', $fromName = null, $replyTo = null)
     {
         $initiator = $motion->getInitiators();
         if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
@@ -34,7 +36,11 @@ class MotionProposedProcedure
             trim($initiator[0]->contactEmail),
             null,
             str_replace('%PREFIX%', $motion->getTitleWithPrefix(), \Yii::t('motion', 'proposal_email_title')),
-            $text
+            $text,
+            '',
+            null,
+            $fromName,
+            $replyTo
         );
     }
 

@@ -15,9 +15,11 @@ class AmendmentProposedProcedure
      *
      * @param Amendment $amendment
      * @param string $text
+     * @param null|string $fromName
+     * @param null|string $replyTo
      * @throws MailNotSent
      */
-    public function __construct(Amendment $amendment, $text = '')
+    public function __construct(Amendment $amendment, $text = '', $fromName = null, $replyTo = null)
     {
         $initiator = $amendment->getInitiators();
         if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
@@ -34,7 +36,11 @@ class AmendmentProposedProcedure
             trim($initiator[0]->contactEmail),
             null,
             str_replace('%PREFIX%', $amendment->getShortTitle(), \Yii::t('amend', 'proposal_email_title')),
-            $text
+            $text,
+            '',
+            null,
+            $fromName,
+            $replyTo
         );
     }
 

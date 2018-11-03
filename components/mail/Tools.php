@@ -10,6 +10,36 @@ use app\models\exceptions\ServerConfiguration;
 class Tools
 {
     /**
+     * @param null|Consultation $consultation
+     * @return string
+     */
+    public static function getDefaultMailFromName($consultation = null)
+    {
+        /** @var \app\models\settings\AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $name   = $params->mailFromName;
+        if ($consultation->getSettings()->emailFromName) {
+            $name = $consultation->getSettings()->emailFromName;
+        }
+        return $name;
+    }
+
+    /**
+     * @param null|Consultation $consultation
+     * @return string
+     */
+    public static function getDefaultReplyTo($consultation = null)
+    {
+        $replyTo = '';
+        if ($consultation) {
+            if ($consultation->getSettings()->emailReplyTo) {
+                $replyTo = $consultation->getSettings()->emailReplyTo;
+            }
+        }
+        return $replyTo;
+    }
+
+    /**
      * @param int $mailType
      * @param Consultation|null $fromConsultation
      * @param string $toEmail
@@ -18,6 +48,8 @@ class Tools
      * @param string $textPlain
      * @param string $textHtml
      * @param null|array $noLogReplaces
+     * @param string|null $fromName
+     * @param string|null $replyTo
      * @throws MailNotSent
      * @throws ServerConfiguration
      */
@@ -29,7 +61,9 @@ class Tools
         $subject,
         $textPlain,
         $textHtml = '',
-        $noLogReplaces = null
+        $noLogReplaces = null,
+        $fromName = null,
+        $replyTo = null
     ) {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -43,22 +77,18 @@ class Tools
             array_values($noLogReplaces),
             $textPlain
         ) : $textPlain);
-        $sendTextHtml = ($noLogReplaces ? str_replace(
+        $sendTextHtml  = ($noLogReplaces ? str_replace(
             array_keys($noLogReplaces),
             array_values($noLogReplaces),
             $textHtml
         ) : $textHtml);
 
         $fromEmail = $params->mailFromEmail;
-        $fromName  = $params->mailFromName;
-        $replyTo   = '';
-        if ($fromConsultation) {
-            if ($fromConsultation->getSettings()->emailFromName) {
-                $fromName = $fromConsultation->getSettings()->emailFromName;
-            }
-            if ($fromConsultation->getSettings()->emailReplyTo) {
-                $replyTo = $fromConsultation->getSettings()->emailReplyTo;
-            }
+        if (!$fromName) {
+            $fromName = static::getDefaultMailFromName($fromConsultation);
+        }
+        if (!$replyTo) {
+            $replyTo = static::getDefaultReplyTo($fromConsultation);
         }
 
         $messageId = explode('@', $fromEmail);

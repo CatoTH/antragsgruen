@@ -795,7 +795,12 @@ class MotionController extends Base
 
         if (\Yii::$app->request->post('notifyProposer')) {
             try {
-                new MotionProposedProcedure($motion, \Yii::$app->request->post('text'));
+                new MotionProposedProcedure(
+                    $motion,
+                    \Yii::$app->request->post('text'),
+                    \Yii::$app->request->post('fromName'),
+                    \Yii::$app->request->post('replyTo')
+                );
                 $motion->proposalNotification = date('Y-m-d H:i:s');
                 $motion->save();
                 $response['success'] = true;

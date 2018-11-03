@@ -94,10 +94,14 @@ export class ChangeProposedProcedure {
     }
 
     private notifyProposer() {
-        const text = this.$widget.find('textarea[name=proposalNotificationText]').val();
+        const text = this.$widget.find('textarea[name=proposalNotificationText]').val(),
+            fromName = this.$widget.find('input[name=proposalNotificationFrom]').val(),
+            replyTo = this.$widget.find('input[name=proposalNotificationReply]').val();
         this.performCallWithReload({
             'notifyProposer': '1',
-            'text': text
+            'text': text,
+            'fromName': fromName,
+            'replyTo': replyTo,
         });
     }
 

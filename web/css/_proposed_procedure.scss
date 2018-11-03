@@ -141,9 +141,12 @@
     padding: 10px;
   }
   .notifyProposerSection {
+    .proposalFrom {
+      margin-bottom: 15px;
+    }
     .submitRow {
       text-align: center;
-      margin-top: 5px;
+      margin-top: 10px;
     }
   }
   .saving, .saved {

@@ -561,7 +561,12 @@ class AmendmentController extends Base
 
         if (\Yii::$app->request->post('notifyProposer')) {
             try {
-                new AmendmentProposedProcedure($amendment, \Yii::$app->request->post('text'));
+                new AmendmentProposedProcedure(
+                    $amendment,
+                    \Yii::$app->request->post('text'),
+                    \Yii::$app->request->post('fromName'),
+                    \Yii::$app->request->post('replyTo')
+                );
                 $amendment->proposalNotification = date('Y-m-d H:i:s');
                 $amendment->save();
                 $response['success'] = true;

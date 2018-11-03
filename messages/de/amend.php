@@ -292,6 +292,8 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_notify_o_feedback' => 'Über den Vorschlag informieren',
     'proposal_notify_notsaved'   => 'Bitte die Änderungen speichern',
     'proposal_notify_text'       => 'Benachrichtigungstext',
+    'proposal_notify_replyto'    => 'Reply-To-Adresse',
+    'proposal_notify_name'       => 'Absender-Name',
     'proposal_no_feedback'       => 'Noch keine Bestätigung erfolgt.',
     'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% benachrichtigt.',
     'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
