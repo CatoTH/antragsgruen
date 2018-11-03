@@ -1103,14 +1103,55 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * return boolean
+     * @param int $internalNestingLevel
+     * @return bool
      */
-    public function hasAlternativeProposaltext()
+    public function hasAlternativeProposaltext($internalNestingLevel = 0)
     {
-        return (
-            in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReference
-        );
+        // This amendment has a direct modification proposal
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
+            $this->proposalReference) {
+            return true;
+        }
+
+        // This amendment is obsoleted by an amendment with a modification proposal
+        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
+            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            if ($obsoletedBy && $internalNestingLevel < 10) {
+                return $obsoletedBy->hasAlternativeProposaltext($internalNestingLevel + 1);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the modification proposed and the amendment to which the modification was directly proposed
+     * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
+     *
+     * @param int $internalNestingLevel
+     * @return array|null
+     */
+    public function getAlternativeProposaltextReference($internalNestingLevel = 0)
+    {
+        // This amendment has a direct modification proposal
+        if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
+            $this->proposalReference) {
+            return [
+                'amendment'    => $this,
+                'modification' => $this->proposalReference,
+            ];
+        }
+
+        // This amendment is obsoleted by an amendment with a modification proposal
+        if ($this->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
+            $obsoletedBy = $this->getMyConsultation()->getAmendment($this->proposalComment);
+            if ($obsoletedBy && $internalNestingLevel < 10) {
+                return $obsoletedBy->getAlternativeProposaltextReference($internalNestingLevel + 1);
+            }
+        }
+
+        return null;
     }
 
     /**
