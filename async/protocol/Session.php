@@ -46,6 +46,10 @@ class Session
 
     /** @var null|Userdata */
     protected $user = null;
+    /** @var null|string */
+    protected $subdomain = null;
+    /** @var null|string */
+    protected $path = null;
 
     /** @var array */
     protected $subscribedChannels = [];
@@ -70,6 +74,22 @@ class Session
     public function getId()
     {
         return $this->connection;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubdomain()
+    {
+        return $this->subdomain;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 
     /**
@@ -161,10 +181,14 @@ class Session
 
     /**
      * @param Userdata $user
+     * @param string $subdomain
+     * @param string $path
      */
-    public function setUser(Userdata $user)
+    public function setUser(Userdata $user, string $subdomain, string $path)
     {
-        $this->user = $user;
+        $this->user      = $user;
+        $this->subdomain = $subdomain;
+        $this->path      = $path;
     }
 
     /**

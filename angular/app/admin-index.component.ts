@@ -45,6 +45,7 @@ export class AdminIndexComponent {
         if (el.nativeElement.getAttribute('ws-port')) {
             this.initWebsocket(el);
         }
+        this._websocket.setSubdomainPath(el.nativeElement.getAttribute('subdomain'), el.nativeElement.getAttribute('path'));
         this.ajaxBackendUrl = el.nativeElement.getAttribute('ajax-backend');
         this.csrfToken = el.nativeElement.getAttribute('csrf-token');
         this.csrfParam = el.nativeElement.getAttribute('csrf-param');

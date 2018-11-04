@@ -4,6 +4,18 @@ namespace app\async\protocol;
 
 class InternalClient
 {
+    /** @var Configuration */
+    private $configuration;
+
+    /**
+     * InternalClient constructor.
+     * @param Configuration $configuration
+     */
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
     /**
      * @param \Swoole\Http\Request $request
      * @param \Swoole\Http\Response $response
@@ -18,9 +30,11 @@ class InternalClient
 
         $request_uri = $request->server['request_uri'];
 
+        $regexpBase = '^\/(?<subdomain>[a-zA-Z0-9_-]+)' . '\/' . '(?<upath>[a-zA-Z0-9_-]+)' . '\/' . '(?<channel>\w+)';
+
         if ($request->server['request_method'] === 'POST') {
-            if (preg_match('/^\/(?<consultation>\d+)\/(?<channel>\w+)\/?$/siu', $request_uri, $matches)) {
-                $channel = Channel::getSpoolFromId($matches['consultation'], $matches['channel']);
+            if (preg_match('/' . $regexpBase . '\/?$/siu', $request_uri, $matches)) {
+                $channel = Channel::getSpoolFromId($matches['subdomain'], $matches['upath'], $matches['channel']);
                 $channel->sendToSessions(json_decode($request->post['data'], true));
 
                 $response->status(201);
@@ -31,8 +45,8 @@ class InternalClient
 
         echo $request->server['request_method'] . "\n";
         if ($request->server['request_method'] === 'DELETE') {
-            if (preg_match('/^\/(?<consultation>\d+)\/(?<channel>\w+)\/(?<id>\w+)\/?$/siu', $request_uri, $matches)) {
-                $channel = Channel::getSpoolFromId($matches['consultation'], $matches['channel']);
+            if (preg_match('/' . $regexpBase . '\/(?<id>\w+)\/?$/siu', $request_uri, $matches)) {
+                $channel = Channel::getSpoolFromId($matches['subdomain'], $matches['upath'], $matches['channel']);
                 $channel->deleteFromSessions($matches['id']);
 
                 $response->status(204);

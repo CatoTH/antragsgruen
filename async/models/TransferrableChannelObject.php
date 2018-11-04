@@ -13,17 +13,35 @@ abstract class TransferrableChannelObject extends TransferrableObject
         'motions'    => Motion::class,
     ];
 
+    /** @var string */
+    protected $subdomain;
+    protected $path;
+
     /** @return string */
     abstract public function getId();
 
-    /** @return string */
-    abstract public function getDomain();
+    /**
+     * @return string
+     */
+    public function getSubdomain()
+    {
+        return $this->subdomain;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
 
     /**
      * @param Consultation $consultation
      * @return TransferrableChannelObject[]
      */
-    static public function getCollection($consultation) {
+    public static function getCollection(Consultation $consultation)
+    {
         return [];
     }
 

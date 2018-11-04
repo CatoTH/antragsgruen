@@ -6,6 +6,22 @@ use app\async\models\Userdata;
 
 class ProtocolHandler
 {
+    /** @var Configuration */
+    private $configuration;
+
+    /**
+     * ProtocolHandler constructor.
+     * @param Configuration $configuration
+     */
+    public function __construct(Configuration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
+
+    /**
+     * @param \Swoole\WebSocket\Server $_server
+     * @param \Swoole\WebSocket\Frame $frame
+     */
     public function onMessage(\Swoole\WebSocket\Server $_server, \Swoole\WebSocket\Frame $frame)
     {
         $data    = json_decode($frame->data, true);
@@ -17,11 +33,22 @@ class ProtocolHandler
         }
         switch ($data['op']) {
             case 'auth':
+                if (!isset($data['subdomain']) || !isset($data['path']) || !isset($data['auth'])) {
+                    $session->sendDataToClient([
+                        'op'  => 'auth_error',
+                        'msg' => 'Missing parameter',
+                    ]);
+                    return;
+                }
+                $subdomain = $data['subdomain'];
+                $path      = $data['path'];
                 $this->authenticate(
+                    $subdomain,
+                    $path,
                     $data['auth'],
-                    function (Userdata $ret) use ($session) {
-                        echo "Welcome: " . $ret->username . "\n";
-                        $session->setUser($ret);
+                    function (Userdata $ret) use ($session, $subdomain, $path) {
+                        echo 'Welcome: ' . $ret->username . "\n";
+                        $session->setUser($ret, $subdomain, $path);
                         $session->sendDataToClient([
                             'op'   => 'auth_success',
                             'user' => $ret->jsonSerialize(),
@@ -45,7 +72,7 @@ class ProtocolHandler
                         'msg' => 'Session is not authenticated',
                     ]);
                 } else {
-                    $channel = Channel::getSpoolFromId($data['consultation'], $data['channel']);
+                    $channel = Channel::getSpoolFromId($session->getSubdomain(), $session->getPath(), $data['channel']);
                     $channel->addSession($session);
                     $session->addSubscribedChannel($data['consultation'], $data['channel']);
                     $session->sendDataToClient([
@@ -60,29 +87,36 @@ class ProtocolHandler
     }
 
     /**
+     * @param string $subdomain
+     * @param string $path
      * @param string $cookie
      * @param callable $success
      * @param callable $error
      */
-    public function authenticate($cookie, callable $success, callable $error)
+    public function authenticate(string $subdomain, string $path, string $cookie, callable $success, callable $error)
     {
-        $cli = new \Swoole\Http\Client('127.0.0.1', 80);
-        $cli->set(['timeout' => 3.0]);
-        $cli->setHeaders([
-            'Host'       => 'stdparteitag.antragsgruen.local',
-            'User-Agent' => 'Swoole Client',
-            'Accept'     => 'application/json',
-            'Cookie'     => 'PHPSESSID=' . $cookie,
-        ]);
-        $cli->get('/std-parteitag/async/user', function ($cli) use ($success, $error) {
-            if ($cli->statusCode === 200) {
-                $user = new Userdata($cli->body);
-                $success($user);
-            } else {
-                var_dump($cli);
-                $error($cli->statusCode, $cli->body);
-            }
-        });
+        try {
+            $cli = new \Swoole\Http\Client('127.0.0.1', 80);
+            $cli->set(['timeout' => 3.0]);
+            echo $this->configuration->getHostname($subdomain) . " - "  . $path . "\n";
+            $cli->setHeaders([
+                'Host'       => $this->configuration->getHostname($subdomain),
+                'User-Agent' => 'Swoole Client',
+                'Accept'     => 'application/json',
+                'Cookie'     => 'PHPSESSID=' . $cookie,
+            ]);
+            $cli->get('/' . $path . '/async/user', function ($cli) use ($success, $error) {
+                if ($cli->statusCode === 200) {
+                    $user = new Userdata($cli->body);
+                    $success($user);
+                } else {
+                    var_dump($cli);
+                    $error($cli->statusCode, $cli->body);
+                }
+            });
+        } catch (\Exception $e) {
+            $error(500, $e->getMessage());
+        }
     }
 
     /**

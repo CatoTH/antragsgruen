@@ -15,7 +15,7 @@
   "homepage": "https://www.antragsgruen.de/",
   "minimum-stability": "stable",
   "require": {
-    "php": ">=5.6.0",
+    "php": ">=7.1.0",
     "ext-dom": "*",
     "ext-zip": "*",
     "ext-json": "*",
@@ -60,7 +60,7 @@
   },
   "config": {
     "platform": {
-      "php": "5.6.36"
+      "php": "7.1.25"
     },
     "optimize-autoloader": true,
     "fxp-asset": {
