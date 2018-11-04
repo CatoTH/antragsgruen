@@ -24,22 +24,28 @@ class SwooleClient
     public static function publishObject(TransferrableChannelObject $object)
     {
         $client = static::getClient();
-        $client->post('/' . urlencode($object->getDomain()) . '/' . urlencode($object->getPublishChannel()) . '/', [
-            'form_params' => ['data' => json_encode($object)]
-        ]);
+        $client->post(
+            '/' . urlencode($object->getSubdomain()) . '/' . urlencode($object->getPath()) .
+            '/' . urlencode($object->getPublishChannel()) . '/',
+            [
+                'form_params' => ['data' => json_encode($object)]
+            ]
+        );
 
         // @TODO Error handling
     }
 
     /**
-     * @param string $consultationId
+     * @param string $subdomain
+     * @param string $path
      * @param string $channel
      * @param string $objectId
      */
-    public static function deleteObject($consultationId, $channel, $objectId)
+    public static function deleteObject(string $subdomain, string $path, string $channel, string $objectId)
     {
         $client = static::getClient();
-        $client->delete('/' . urlencode($consultationId) . '/' . urlencode($channel) . '/' . urlencode($objectId));
+        $client->delete('/' . urlencode($subdomain) . '/' . urlencode($path) . '/' .
+            urlencode($channel) . '/' . urlencode($objectId));
 
         // @TODO Error handling
     }

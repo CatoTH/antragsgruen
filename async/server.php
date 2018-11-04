@@ -6,6 +6,7 @@ require_once(__DIR__ . '/protocol/Channel.php');
 require_once(__DIR__ . '/protocol/ProtocolHandler.php');
 require_once(__DIR__ . '/protocol/InternalClient.php');
 require_once(__DIR__ . '/protocol/Session.php');
+require_once(__DIR__ . '/protocol/Configuration.php');
 require_once(__DIR__ . '/models/TransferrableObject.php');
 require_once(__DIR__ . '/models/TransferrableChannelObject.php');
 require_once(__DIR__ . '/models/Userdata.php');
@@ -23,17 +24,17 @@ $config = json_decode(file_get_contents($configFile), true);
 if (!isset($config['asyncConfig'])) {
     die('Async mode is not configured');
 }
-$asyncConfig = $config['asyncConfig'];
+$asyncConfig = new \app\async\protocol\Configuration($config['asyncConfig']);
 
-$server = new \Swoole\WebSocket\Server("127.0.0.1", $asyncConfig['port-internal'], SWOOLE_BASE);
+$server = new \Swoole\WebSocket\Server("127.0.0.1", $asyncConfig->portInternal, SWOOLE_BASE);
 $server->set([
     'worker_num'      => 1,
     'task_worker_num' => 1,
 ]);
 
-$protocolHandler = new \app\async\protocol\ProtocolHandler();
-$internalClient = new \app\async\protocol\InternalClient();
-
+$protocolHandler = new \app\async\protocol\ProtocolHandler($asyncConfig);
+$internalClient = new \app\async\protocol\InternalClient($asyncConfig);
+\app\async\protocol\Channel::$configuration = $asyncConfig;
 
 
 $server->on('handshake', [$protocolHandler, 'websocketHandshake']);

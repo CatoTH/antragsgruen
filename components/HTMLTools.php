@@ -959,7 +959,8 @@ class HTMLTools
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
 
-        if (UrlHelper::getCurrentConsultation()) {
+        $consultation = UrlHelper::getCurrentConsultation();
+        if ($consultation) {
             $wordingBase = UrlHelper::getCurrentConsultation()->wordingBase;
             $langs       = explode(',', $wordingBase);
             $language    = explode('-', $langs[0])[0];
@@ -978,6 +979,10 @@ class HTMLTools
         if ($app->asyncConfig) {
             $params['cookie']  = $_COOKIE['PHPSESSID'];
             $params['ws-port'] = IntVal($app->asyncConfig['port-external']);
+            if ($consultation) {
+                $params['subdomain'] = $consultation->site->subdomain;
+                $params['path']      = $consultation->urlPath;
+            }
         }
         $params['csrf-param'] = \Yii::$app->request->csrfParam;
         $params['csrf-token'] = \Yii::$app->request->csrfToken;

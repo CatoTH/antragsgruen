@@ -8,13 +8,20 @@ export class WebsocketService {
     private websocket: WebSocket;
     private authCookie: string;
     private active = false;
+    private subdomain: string;
+    private path: string;
 
     public authenticated$: Subject<User> = new ReplaySubject<User>(1);
     public debuglog$: Subject<string> = new Subject<string>();
 
-    private collections: {[id: string]: Collection<any>} = {};
+    private collections: { [id: string]: Collection<any> } = {};
 
     constructor() {
+    }
+
+    public setSubdomainPath(subdomain: string, path: string) {
+        this.subdomain = subdomain;
+        this.path = path;
     }
 
     public connect(authCookie: string, port: number) {
@@ -41,6 +48,8 @@ export class WebsocketService {
         this.websocket.send(JSON.stringify({
             "op": "auth",
             "auth": this.authCookie,
+            "subdomain": this.subdomain,
+            "path": this.path,
         }));
         this.debuglog$.next('Connected to WebSocket server.');
     }

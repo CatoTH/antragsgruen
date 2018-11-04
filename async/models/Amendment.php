@@ -45,17 +45,15 @@ class Amendment extends TransferrableChannelObject
         foreach ($amendment->getInitiators() as $initiator) {
             $object->initiators[] = Person::createFromDbIMotionObject($initiator);
         }
-        $object->supporters        = [];
+        $object->supporters = [];
         foreach ($amendment->getSupporters() as $supporter) {
             $object->supporters[] = Person::createFromDbIMotionObject($supporter);
         }
-        return $object;
-    }
 
-    /** @return int */
-    public function getDomain()
-    {
-        return $this->consultationId;
+        $object->subdomain = $motion->getMyConsultation()->site->subdomain;
+        $object->path      = $motion->getMyConsultation()->urlPath;
+
+        return $object;
     }
 
     /** @return string */
@@ -68,7 +66,7 @@ class Amendment extends TransferrableChannelObject
      * @param Consultation $consultation
      * @return TransferrableChannelObject[]
      */
-    public static function getCollection($consultation)
+    public static function getCollection(Consultation $consultation)
     {
         $data = [];
         foreach ($consultation->motions as $motion) {

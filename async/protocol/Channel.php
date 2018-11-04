@@ -6,19 +6,31 @@ use app\async\models\TransferrableChannelObject;
 
 class Channel
 {
+    /** @var Configuration */
+    public static $configuration;
+
     /** @var Channel[] */
     protected static $channels = [];
 
-    public static function getSpoolFromId($consultationId, $channelName)
+    /**
+     * @param string $subdomain
+     * @param string $path
+     * @param string $channelName
+     * @return Channel
+     */
+    public static function getSpoolFromId(string $subdomain, string $path, string $channelName)
     {
-        if (!isset(static::$channels[$consultationId . '.' . $channelName])) {
-            static::$channels[$consultationId . '.' . $channelName] = new Channel($consultationId, $channelName);
+        $channelId = $subdomain . '.' . $path . '.' . $channelName;
+        if (!isset(static::$channels[$channelId])) {
+            static::$channels[$channelId] = new Channel($subdomain, $path, $channelName);
         }
-        return static::$channels[$consultationId . '.' . $channelName];
+        return static::$channels[$channelId];
     }
 
-    /** @var int */
-    private $consultationId;
+    /** @var string */
+    private $subdomain;
+    /** @var string */
+    private $path;
 
     /** @var string */
     private $channelName;
@@ -28,13 +40,15 @@ class Channel
 
     /**
      * Spool constructor.
-     * @param $consultationId
-     * @param $channelName
+     * @param string $subdomain
+     * @param string $path
+     * @param string $channelName
      */
-    public function __construct($consultationId, $channelName)
+    public function __construct(string $subdomain, string $path, string $channelName)
     {
-        $this->consultationId = $consultationId;
-        $this->channelName    = $channelName;
+        $this->subdomain   = $subdomain;
+        $this->path        = $path;
+        $this->channelName = $channelName;
     }
 
     /**
@@ -60,7 +74,7 @@ class Channel
     public function sendToSessions($data)
     {
         $className = TransferrableChannelObject::$CHANNEL_CLASSES[$this->channelName];
-        $object = new $className($data);
+        $object    = new $className($data);
 
         foreach ($this->sessions as $session) {
             try {
@@ -102,28 +116,32 @@ class Channel
      */
     public function loadInitialData(Session $session)
     {
-        $cli = new \Swoole\Http\Client('127.0.0.1', 80);
-        $cli->set(['timeout' => 3.0]);
-        $cli->setHeaders([
-            'Host'       => 'stdparteitag.antragsgruen.local',
-            'User-Agent' => 'Swoole Client',
-            'Accept'     => 'application/json',
-        ]);
-        $queryUrl = '/std-parteitag/async/objects?channel=' . urlencode($this->channelName);
+        try {
+            $cli = new \Swoole\Http\Client('127.0.0.1', 80);
+            $cli->set(['timeout' => 3.0]);
+            $cli->setHeaders([
+                'Host'       => static::$configuration->getHostname($this->subdomain),
+                'User-Agent' => 'Swoole Client',
+                'Accept'     => 'application/json',
+            ]);
+            $queryUrl = '/' . $this->path . '/async/objects?channel=' . urlencode($this->channelName);
 
-        $cli->get($queryUrl, function ($cli) use ($session) {
-            if ($cli->statusCode === 200) {
-                $objectSrc = json_decode($cli->body, true);
-                $className = TransferrableChannelObject::$CHANNEL_CLASSES[$this->channelName];
+            $cli->get($queryUrl, function ($cli) use ($session) {
+                if ($cli->statusCode === 200) {
+                    $objectSrc = json_decode($cli->body, true);
+                    $className = TransferrableChannelObject::$CHANNEL_CLASSES[$this->channelName];
 
-                $objects = array_map(function ($dat) use ($className) {
-                    return new $className($dat);
-                }, $objectSrc);
+                    $objects = array_map(function ($dat) use ($className) {
+                        return new $className($dat);
+                    }, $objectSrc);
 
-                $session->sendObjectsToClient($this->channelName, $objects);
-            } else {
-                var_dump($cli);
-            }
-        });
+                    $session->sendObjectsToClient($this->channelName, $objects);
+                } else {
+                    var_dump($cli);
+                }
+            });
+        } catch (\Exception $e) {
+            echo 'Error: ' . $e->getMessage() . "\n";
+        }
     }
 }

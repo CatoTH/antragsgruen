@@ -40,7 +40,7 @@ class Motion extends TransferrableChannelObject
         foreach ($motion->getInitiators() as $initiator) {
             $object->initiators[] = Person::createFromDbIMotionObject($initiator);
         }
-        $object->supporters      = [];
+        $object->supporters = [];
         foreach ($motion->getSupporters() as $supporter) {
             $object->supporters[] = Person::createFromDbIMotionObject($supporter);
         }
@@ -48,6 +48,10 @@ class Motion extends TransferrableChannelObject
         foreach ($motion->tags as $tag) {
             $object->tags[] = MotionTag::createFromDbMotionObject($tag);
         }
+
+        $object->subdomain = $motion->getMyConsultation()->site->subdomain;
+        $object->path      = $motion->getMyConsultation()->urlPath;
+
         return $object;
     }
 
