@@ -30,7 +30,7 @@ class AmendmentProposedChangeForm
     protected function initProposal()
     {
         if ($this->amendment->proposalReference) {
-            if ($this->amendment->proposalReference->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            if ($this->amendment->proposalReference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 $this->proposalSections = $this->amendment->proposalReference->getActiveSections();
                 return;
             }
@@ -56,13 +56,14 @@ class AmendmentProposedChangeForm
     /**
      * @param array $postParams
      * @param array $files
+     * @throws \app\models\exceptions\FormError
      */
     private function setSectionData($postParams, $files)
     {
         foreach ($this->proposalSections as $section) {
             if (isset($postParams['sections'][$section->getSettings()->id])) {
                 $type = $section->getSectionType();
-                if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+                if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
                     /** @var \app\models\sectionTypes\TextSimple $type */
                     $type->forceMultipleParagraphMode(true);
                 }
@@ -89,7 +90,7 @@ class AmendmentProposedChangeForm
     {
         $reference = $this->amendment->proposalReference;
         if ($reference) {
-            if ($reference->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+            if ($reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 return $reference;
             }
         }

@@ -113,7 +113,8 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                             break;
                         case ISectionType::TYPE_TEXT_SIMPLE:
                             $diff = new Diff();
-                            echo '<div class="paragraph"><div class="text motionTextFormattings textOrig fixedWidthFont">';
+                            echo '<div class="paragraph">';
+                            echo '<div class="text motionTextFormattings textOrig fixedWidthFont">';
                             echo implode("\n", $diff->compareHtmlParagraphs(
                                 HTMLTools::sectionSimpleHTML($amendSection->getOriginalMotionSection()->data),
                                 HTMLTools::sectionSimpleHTML($amendSection->data),
@@ -130,6 +131,9 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
         ?>
         <div class="save-row">
+            <button class="btn btn-default pull-right" type="submit" name="reset">
+                <?= \Yii::t('amend', 'proposal_reset') ?>
+            </button>
             <button class="btn btn-primary" type="submit" name="save">
                 <?= \Yii::t('base', 'save') ?>
             </button>

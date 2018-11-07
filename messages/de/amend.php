@@ -284,6 +284,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_public_expl_title' => 'Öffentliche Erklärung des Verfahrensvorschlags',
     'proposal_status_title'      => 'Vorgeschlagener Status',
     'proposal_close'             => 'Schließen',
+    'proposal_reset'             => 'Zurücksetzen',
     'proposal_open'              => 'Verfahrensvorschlag bearbeiten',
     'proposal_status_na'         => 'nicht festgelegt',
     'proposal_user_accepted'     => 'Stimmt dem Verfahrensvorschlag zu',

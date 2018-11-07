@@ -254,6 +254,7 @@ return [
     'proposal_status_title'      => 'Proposed status',
     'proposal_close'             => 'Close',
     'proposal_open'              => 'Edit proposed procedure',
+    'proposal_reset'             => 'Reset',
     'proposal_status_na'         => 'not set',
     'proposal_user_accepted'     => 'Agrees to the proposed procedure',
     'proposal_user_rejected'     => '<strong>Disagrees</strong> with the proposed procedure',

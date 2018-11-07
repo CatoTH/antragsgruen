@@ -643,6 +643,21 @@ class AmendmentController extends Base
             return 'Not permitted to change the status';
         }
 
+
+        if (\Yii::$app->request->post('reset', null) !== null) {
+            $reference = $amendment->proposalReference;
+            if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                foreach ($reference->sections as $section) {
+                    $section->delete();
+                }
+
+                $amendment->proposalReferenceId = null;
+                $amendment->save();
+
+                $reference->delete();
+            }
+        }
+
         $form = new AmendmentProposedChangeForm($amendment);
 
         $msgSuccess = null;
