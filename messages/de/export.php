@@ -47,6 +47,7 @@ return [
     'pp_public_site'        => 'Übersicht (öfftl.)',
     'pp_ods_comments'       => 'Kommentare',
     'pp_ods_all'            => 'ODS-Export: Alles',
+    'pp_ods_public'         => 'Nur öffentliche',
     'pp_unhandled'          => 'Verfahrensvorschläge der Antragskommission',
     'default_creator'       => 'Antragsgrün',
     'pdf_app_title'         => 'Bewerbung',

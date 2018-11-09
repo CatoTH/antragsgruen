@@ -47,6 +47,7 @@ return [
     'pp_public_site'        => 'Overview (public)',
     'pp_ods_comments'       => 'Comments',
     'pp_ods_all'            => 'ODS-Export: Everything',
+    'pp_ods_public'         => 'Only public',
     'pp_unhandled'          => 'Remaining procedure',
     'default_creator'       => 'Antragsgrün',
     'pdf_app_title'         => 'Application',

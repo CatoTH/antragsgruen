@@ -16,7 +16,7 @@
   - After creating the final text, administrators can decide if the new version of this motion is a regular motion again, or a (preliminary) resolution.
 - Several changes regarding the proposed procedures:
   - Proposed procedures are now an optional functionality per motion type. They are disabled by default.
-  - When exporting the proposed procedure list into ODS, there is now an option to also include the comments.
+  - When exporting the proposed procedure list into ODS, there is now an option to also include the comments or to only include public visible proposed procedures.
   - When sending a notification to users regarding a proposed procedure, the content of the mail can now be modified by the person sending the notification.
   - If an amendment is obsoleted by another amendment with a proposed modification, this modification is also shown in the context of the (proposed) obsoleted amendment.
   - Admins can set a proposal as being accepted by the user. (This is getting logged)

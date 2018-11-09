@@ -40,9 +40,19 @@ $consultation = $controller->consultation;
                 <?= \Yii::t('export', 'pp_ods_comments') ?>
             </label>
         </li>
+        <li class="checkbox">
+            <label>
+                <input type="checkbox" class="c" name="onlypublic">
+                <?= \Yii::t('export', 'pp_ods_public') ?>
+            </label>
+        </li>
         <li class="exportLink">
             <?php
-            $url = UrlHelper::createUrl(['admin/proposed-procedure/ods', 'comments' => 'COMMENTS']);
+            $url = UrlHelper::createUrl([
+                'admin/proposed-procedure/ods',
+                'comments'   => 'COMMENTS',
+                'onlypublic' => 'ONLYPUBLIC',
+            ]);
             echo Html::a(Yii::t('export', 'pp_ods_all'), $url, [
                 'class'         => 'odsLink',
                 'data-href-tpl' => $url,
@@ -59,7 +69,12 @@ $consultation = $controller->consultation;
                 <li class="exportLink">
                     <?php
                     $route = 'admin/proposed-procedure/ods';
-                    $url   = UrlHelper::createUrl([$route, 'agendaItemId' => $item->id, 'comments' => 'COMMENTS']);
+                    $url   = UrlHelper::createUrl([
+                        $route,
+                        'agendaItemId' => $item->id,
+                        'comments'     => 'COMMENTS',
+                        'onlypublic'   => 'ONLYPUBLIC',
+                    ]);
                     echo Html::a('ODS: ' . $item->title, $url, [
                         'class'         => 'odsLink',
                         'data-href-tpl' => $url,
