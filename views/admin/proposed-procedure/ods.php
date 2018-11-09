@@ -13,6 +13,7 @@ use yii\helpers\Html;
  * @var Agenda[] $proposedAgenda
  * @var Consultation $consultation
  * @var bool $comments
+ * @var bool $onlyPublic
  */
 
 /** @var \app\controllers\Base $controller */
@@ -117,7 +118,7 @@ $doc->drawBorder(9, $firstCol, 9, $lastCol, 0.5);
 
 
 $printAmendment = function (Spreadsheet $doc, \app\models\db\Amendment $amendment, $row)
-use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments) {
+use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments, $onlyPublic) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $amendment->getInitiatorsStr());
@@ -127,27 +128,32 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
     $doc->setCellStyle($row, $COL_COMMENTS, [], $cellStyle);
 
     $minHeight = 1;
-    $proposal  = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
-    if (strlen($proposal) > 200) {
-        $minHeight += 2;
-    }
 
-    if ($amendment->hasAlternativeProposaltext()) {
-        $reference = $amendment->proposalReference;
-        /** @var AmendmentSection[] $sections */
-        $sections = $reference->getSortedSections(false);
-        foreach ($sections as $section) {
-            $firstLine    = $section->getFirstLineNumber();
-            $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-            $originalData = $section->getOriginalMotionSection()->data;
-            $newData      = $section->data;
-            $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
-            $minHeight    += 1;
+    if ($onlyPublic && !$amendment->isProposalPublic()) {
+        $proposal = '';
+    } else {
+        $proposal = '<p>' . $amendment->getFormattedProposalStatus() . '</p>';
+        if (strlen($proposal) > 200) {
+            $minHeight += 2;
         }
-    }
-    if ($amendment->proposalExplanation) {
-        $minHeight += 1;
-        $proposal  .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
+
+        if ($amendment->hasAlternativeProposaltext()) {
+            $reference = $amendment->proposalReference;
+            /** @var AmendmentSection[] $sections */
+            $sections = $reference->getSortedSections(false);
+            foreach ($sections as $section) {
+                $firstLine    = $section->getFirstLineNumber();
+                $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+                $originalData = $section->getOriginalMotionSection()->data;
+                $newData      = $section->data;
+                $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
+                $minHeight    += 1;
+            }
+        }
+        if ($amendment->proposalExplanation) {
+            $minHeight += 1;
+            $proposal  .= '<p>' . Html::encode($amendment->proposalExplanation) . '</p>';
+        }
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
@@ -164,7 +170,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
 
 
 $printMotion = function (Spreadsheet $doc, \app\models\db\Motion $motion, $row)
-use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments) {
+use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $formatComments, $onlyPublic) {
     $cellStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '10pt', 'fo:font-weight' => 'normal'];
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, $motion->getInitiatorsStr());
@@ -174,13 +180,18 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
     $doc->setCellStyle($row, $COL_COMMENTS, [], $cellStyle);
 
     $minHeight = 1;
-    $proposal  = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
-    if (strlen($proposal) > 200) {
-        $minHeight += 2;
-    }
-    if ($motion->proposalExplanation) {
-        $minHeight += 1;
-        $proposal  .= '<p>' . Html::encode($motion->proposalExplanation) . '</p>';
+
+    if ($onlyPublic && !$motion->isProposalPublic()) {
+        $proposal = '';
+    } else {
+        $proposal = '<p>' . $motion->getFormattedProposalStatus() . '</p>';
+        if (strlen($proposal) > 200) {
+            $minHeight += 2;
+        }
+        if ($motion->proposalExplanation) {
+            $minHeight += 1;
+            $proposal  .= '<p>' . Html::encode($motion->proposalExplanation) . '</p>';
+        }
     }
 
     $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);

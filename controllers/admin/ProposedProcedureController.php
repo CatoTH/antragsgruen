@@ -105,6 +105,7 @@ class ProposedProcedureController extends AdminBase
         return $this->renderPartial('ods', [
             'proposedAgenda' => $proposalFactory->create(),
             'comments'       => $comments,
+            'onlyPublic'     => $onlypublic,
         ]);
     }
 
