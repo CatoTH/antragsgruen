@@ -51,7 +51,7 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getMyConsultation()
     {
         $consultation = Consultation::getCurrent();
-        if ($this->consultationId === $consultation->id) {
+        if ($consultation && $this->consultationId === $consultation->id) {
             return $consultation;
         } else {
             return $this->consultation;
