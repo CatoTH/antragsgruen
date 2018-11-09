@@ -377,6 +377,8 @@ class ConsultationController extends Base
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
+        $this->consultation->preloadAllMotionData();
+
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
