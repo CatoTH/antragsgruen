@@ -59,6 +59,7 @@ return [
     'merge_draft_auto_save'     => 'Auto-Save',
     'merge_draft_err_saving'    => 'Error saving. <small>Maybe there are problems with the internet connection?</small>',
     'merge_draft_updated'       => 'Updated',
+    'merge_amtable_all'         => 'All',
     'merge_amtable_merge'       => 'Merge',
     'merge_amtable_title'       => 'Title',
     'merge_amtable_status'      => 'Status',

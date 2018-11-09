@@ -106,7 +106,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                     echo Html::checkbox(
                         'amendments[' . $amend->id . ']',
                         $amend->markForMergingByDefault($hasProposals),
-                        ['class' => 'amendment' . $amend->id, 'id' => $id]
+                        ['class' => 'selectSingle amendment' . $amend->id, 'id' => $id]
                     );
                     echo '</td><td class="colTitle">';
                     echo '<label for="' . $id . '">' . Html::encode($amend->titlePrefix) . '</label>';
@@ -142,6 +142,14 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                 }
                 ?>
                 </tbody>
+                <tfoot>
+                <tr>
+                    <td class="colCheck">
+                        <input type="checkbox" name="selectAll" class="selectAll"
+                               title="<?= \Yii::t('amend', 'merge_amtable_all') ?>">
+                    </td>
+                </tr>
+                </tfoot>
             </table>
         </div>
         <?php

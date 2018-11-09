@@ -378,6 +378,9 @@
     tr {
       border-bottom: solid 1px #afcb08;
     }
+    tfoot tr {
+      border-bottom: none;
+    }
     th {
       font-size: 0.80em;
       line-height: 2.5em;
