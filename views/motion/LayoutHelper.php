@@ -88,10 +88,18 @@ class LayoutHelper
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
-        $content->titleRaw        = $motion->title;
-        $content->titlePrefix     = $motion->titlePrefix;
-        $content->titleLong       = $motion->getTitleWithPrefix();
-        $content->title           = $motion->getTitleWithIntro();
+        if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
+            $names                = IMotion::getStatusNames();
+            $content->titleRaw    = '';
+            $content->titlePrefix = $names[$motion->status];
+            $content->titleLong   = $names[$motion->status];
+            $content->title       = '';
+        } else {
+            $content->titleRaw    = $motion->title;
+            $content->titlePrefix = $motion->titlePrefix;
+            $content->titleLong   = $motion->getTitleWithPrefix();
+            $content->title       = $motion->getTitleWithIntro();
+        }
         if (count($intro) > 1) {
             array_shift($intro);
             $content->introductionSmall = implode("\n", $intro);

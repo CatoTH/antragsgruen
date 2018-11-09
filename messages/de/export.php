@@ -6,6 +6,7 @@ return [
     'introduction'          => 'Antrag an die...',
     'InitiatorSingle'       => 'Antragsteller*in',
     'InitiatorMulti'        => 'Antragsteller*innen',
+    'InitiatorOrga'         => 'Gremium',
     'ResolutionDate'        => 'Beschlussdatum',
     'AgendaItem'            => 'Tagesordnungspunkt',
     'TopicSingle'           => 'Thema',

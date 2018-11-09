@@ -6,6 +6,7 @@ return [
     'introduction'          => 'Motion for...',
     'InitiatorSingle'       => 'Proposer',
     'InitiatorMulti'        => 'Proposers',
+    'InitiatorOrga'         => 'Organization',
     'ResolutionDate'        => 'Resolution date',
     'AgendaItem'            => 'Agenda item',
     'TopicSingle'           => 'Topic',
