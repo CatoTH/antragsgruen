@@ -371,7 +371,7 @@ class Exporter
     public static function createTextWithRightString($textMain, $textRight)
     {
         if ($textRight === '') {
-            return "\\raggedright\n" . $textMain;
+            return "\\vspace{1cm}\\raggedright\n" . $textMain;
         }
 
         $textMain = str_replace(
