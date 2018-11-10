@@ -18,7 +18,7 @@ class Tools
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
         $name   = $params->mailFromName;
-        if ($consultation->getSettings()->emailFromName) {
+        if ($consultation && $consultation->getSettings()->emailFromName) {
             $name = $consultation->getSettings()->emailFromName;
         }
         return $name;
