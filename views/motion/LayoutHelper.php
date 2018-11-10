@@ -91,7 +91,7 @@ class LayoutHelper
         if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
             $names                = IMotion::getStatusNames();
             $content->titleRaw    = $motion->title;
-            $content->titlePrefix = $names[$motion->status];
+            $content->titlePrefix = $names[$motion->status] . "\n";
             $content->titleLong   = $names[$motion->status] . ': ' . $motion->getTitleWithIntro();
             $content->title       = $motion->getTitleWithIntro();
         } else {

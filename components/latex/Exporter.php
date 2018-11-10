@@ -45,6 +45,7 @@ class Exporter
             '^'                      => '\^{}',
             '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
+            "\n"                     => '\\linebreak' . "\n",
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
