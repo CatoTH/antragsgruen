@@ -262,16 +262,37 @@ if ($consultation->getSettings()->showFeeds) {
 if ($hasPDF) {
     $opts = ['class' => 'motionPdfCompilation'];
     $html = '<div class="sidebar-box"><ul class="nav nav-list"><li class="nav-header">PDFs</li>';
+
+    $hasResolutions = false;
+    foreach ($consultation->motions as $motion) {
+        if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
+            $hasResolutions = $motion->motionTypeId;
+        }
+    }
+    if ($hasResolutions) {
+        $pdfLink = UrlHelper::createUrl([
+            '/motion/pdfcollection',
+            'motionTypeId' => $hasResolutions,
+            'resolutions' => 1,
+            'filename'    => 'resolutions.pdf',
+        ]);
+        $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_resolutions');
+        $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
+
+        $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
+        $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
+    }
+
     if (count($consultation->motionTypes) > 1) {
         foreach ($consultation->motionTypes as $motionType) {
-            if (count($motionType->getVisibleMotions(false)) == 0) {
+            if (count($motionType->getVisibleMotions(false)) === 0) {
                 continue;
             }
-            if ($motionType->getPDFLayoutClass() == null) {
+            if ($motionType->getPDFLayoutClass() === null) {
                 continue;
             }
             $pdfLink = UrlHelper::createUrl([
-                'motion/pdfcollection',
+                '/motion/pdfcollection',
                 'motionTypeId' => $motionType->id,
                 'filename'     => $motionType->titlePlural . '.pdf',
             ]);
@@ -282,9 +303,9 @@ if ($hasPDF) {
             $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
             $layout->menusHtmlSmall[] = '<li>' . $link . '</li>';
         }
-    } else {
+    } elseif (count($consultation->motionTypes) === 1) {
         $pdfLink = UrlHelper::createUrl([
-            'motion/pdfcollection',
+            '/motion/pdfcollection',
             'motionTypeId' => $consultation->motionTypes[0]->id,
             'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
         ]);

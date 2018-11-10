@@ -197,12 +197,14 @@ class MotionController extends Base
     /**
      * @param string $motionTypeId
      * @param int $withdrawn
+     * @param int $resolutions
      * @return string
      * @throws \yii\base\ExitException
      */
-    public function actionPdfcollection($motionTypeId = '', $withdrawn = 0)
+    public function actionPdfcollection($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
     {
-        $withdrawn   = ($withdrawn == 1);
+        $withdrawn   = (IntVal($withdrawn) === 1);
+        $resolutions = (IntVal($resolutions) === 1);
         $texTemplate = null;
         try {
             $motions = $this->consultation->getVisibleMotionsSorted($withdrawn);
@@ -215,6 +217,10 @@ class MotionController extends Base
 
             $motionsFiltered = [];
             foreach ($motions as $motion) {
+                $resolutionStates = [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY];
+                if ($resolutions && !in_array($motion->status, $resolutionStates)) {
+                    continue;
+                }
                 if ($texTemplate === null) {
                     $texTemplate       = $motion->motionType->texTemplate;
                     $motionsFiltered[] = $motion;
@@ -224,7 +230,7 @@ class MotionController extends Base
             }
             $motions = $motionsFiltered;
 
-            if (count($motions) == 0) {
+            if (count($motions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }
         } catch (ExceptionBase $e) {
