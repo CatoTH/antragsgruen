@@ -75,8 +75,8 @@
                                i18n="admin-index action dropdown">Un-screen</a>
                         </li>
                         <li>
-                            <a tabindex="-1" href="#" (click)="motionCreateTpl(item, $event)"
-                               class="asTemplate"
+                            <a tabindex="-1" [href]="item.getLink('motion/clone', linkTemplates)"
+                               class="asTemplate" target="_blank"
                                i18n="admin-index action dropdown">Create a new motion based on this one</a>
                         </li>
                         <li>
@@ -118,7 +118,8 @@
                                i18n="admin-index action dropdown">Un-screen</a>
                         </li>
                         <li>
-                            <a tabindex="-1" href="#" (click)="amendmentCreateTpl(item, $event)" class="asTemplate"
+                            <a tabindex="-1" [href]="item.getLink('amendment/clone', linkTemplates)"
+                               class="asTemplate" target="_blank"
                                i18n="admin-index action dropdown">Create a new amendment based on this one</a>
                         </li>
                         <li>

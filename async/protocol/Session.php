@@ -33,7 +33,7 @@ class Session
         }
         $session = static::$REGISTRY[$fdNo];
         foreach ($session->subscribedChannels as $channelDef) {
-            $channel = Channel::getSpoolFromId($channelDef[0], $channelDef[1]);
+            $channel = Channel::getSpoolFromId($channelDef[0], $channelDef[1], $channelDef[2]);
             $channel->removeSession($session);
         }
         unset(static::$REGISTRY[$fdNo]);
@@ -101,12 +101,13 @@ class Session
     }
 
     /**
-     * @param string $domain
+     * @param string $subdomain
+     * @param string $path
      * @param string $channelName
      */
-    public function addSubscribedChannel($domain, $channelName)
+    public function addSubscribedChannel($subdomain, $path, $channelName)
     {
-        $this->subscribedChannels[]      = [$domain, $channelName];
+        $this->subscribedChannels[]      = [$subdomain, $path, $channelName];
         $this->sentObjects[$channelName] = [];
     }
 

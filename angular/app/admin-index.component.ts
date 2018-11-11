@@ -125,28 +125,48 @@ export class AdminIndexComponent {
         });
     }
 
-    public motionCreateTpl(item: Motion, $event) {
-        $event.preventDefault();
-    }
-
     public motionDelete(item: Motion, $event) {
         $event.preventDefault();
+
+        let params = new URLSearchParams();
+        params.set('operation', 'motionDelete');
+        params.set('motionId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     public amendmentScreen(item: Amendment, $event) {
         $event.preventDefault();
+
+        let params = new URLSearchParams();
+        params.set('operation', 'amendmentScreen');
+        params.set('amendmentId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     public amendmentUnscreen(item: Amendment, $event) {
         $event.preventDefault();
-    }
 
-    public amendmentCreateTpl(item: Amendment, $event) {
-        $event.preventDefault();
+        let params = new URLSearchParams();
+        params.set('operation', 'amendmentUnscreen');
+        params.set('amendmentId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     public amendmentDelete(item: Amendment, $event) {
         $event.preventDefault();
+
+        let params = new URLSearchParams();
+        params.set('operation', 'amendmentDelete');
+        params.set('amendmentId[]', item.id);
+        this.callBackend(params).subscribe((returnValue) => {
+            console.log(returnValue);
+        });
     }
 
     private regexescape(str: string): RegExp {
