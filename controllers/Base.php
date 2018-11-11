@@ -412,20 +412,20 @@ class Base extends Controller
      */
     protected function checkConsistency($checkMotion = null, $checkAmendment = null)
     {
-        $consultationId = strtolower($this->consultation->urlPath);
-        $subdomain      = strtolower($this->site->subdomain);
+        $consultationPath = strtolower($this->consultation->urlPath);
+        $subdomain        = strtolower($this->site->subdomain);
 
-        if (strtolower($this->consultation->site->subdomain) != $subdomain) {
+        if (strtolower($this->consultation->site->subdomain) !== $subdomain) {
             Yii::$app->user->setFlash("error", \Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) != $consultationId) {
+        if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
             Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        if ($checkAmendment != null && ($checkMotion == null || $checkAmendment->motionId != $checkMotion->id)) {
+        if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
             Yii::$app->session->setFlash('error', \Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }

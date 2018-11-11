@@ -36,16 +36,22 @@ class AmendmentController extends Base
     /**
      * @param string $motionSlug
      * @param int $amendmentId
+     * @param null|string $redirectView
      * @return Amendment|null
-     * @throws \yii\base\ExitException
      */
-    private function getAmendmentWithCheck($motionSlug, $amendmentId)
+    private function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
     {
         $motion    = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return null;
+        }
+        if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
+            if ($redirectView) {
+                $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
+                return null;
+            }
         }
         $this->checkConsistency($motion, $amendment);
         return $amendment;
@@ -168,7 +174,7 @@ class AmendmentController extends Base
     {
         $this->layout = 'column2';
 
-        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId);
+        $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, 'view');
         if (!$amendment) {
             return '';
         }
