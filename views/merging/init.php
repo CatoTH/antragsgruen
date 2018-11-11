@@ -119,7 +119,7 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                     if ($hasProposals) {
                         echo '<td class="colProposal">' . $amend->getFormattedProposalStatus() . '</td>';
                     }
-                    if ($amend->proposalReference) {
+                    if ($amend->hasAlternativeProposaltext(false)) {
                         echo '<td class="colText hasAlternative">';
                         echo '<label class="textOriginal">';
                         echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="original"> ';

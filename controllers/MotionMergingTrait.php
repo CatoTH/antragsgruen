@@ -154,7 +154,7 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
-        $amendments = $motion->getVisibleAmendmentsSorted();
+        $amendments   = $motion->getVisibleAmendmentsSorted();
         $activatedIds = [];
         foreach (explode(',', $activated) as $active) {
             if ($active > 0) {
@@ -353,7 +353,10 @@ trait MotionMergingTrait
         $textVersions        = \Yii::$app->request->post('textVersion', []);
         foreach ($motion->getVisibleAmendments() as $amendment) {
             if (isset($postAmendIds[$amendment->id])) {
-                if (isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
+                if ($amendment->hasAlternativeProposaltext(false) &&
+                    isset($textVersions[$amendment->id]) &&
+                    $textVersions[$amendment->id] === 'proposal'
+                ) {
                     $toMergeAmendmentIds[] = $amendment->proposalReference->id;
                 } else {
                     $toMergeAmendmentIds[] = $amendment->id;
