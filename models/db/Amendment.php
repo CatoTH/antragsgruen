@@ -1379,7 +1379,8 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->isVisibleForAdmins()) {
             SwooleClient::publishObject(\app\async\models\Amendment::createFromDbObject($this));
         } else {
-            SwooleClient::deleteObject($this->getMyMotion()->consultationId, 'amendments', $this->id);
+            $consultation = $this->getMyConsultation();
+            SwooleClient::deleteObject($consultation->site->subdomain, $consultation->urlPath, 'amendments', $this->id);
         }
     }
 }

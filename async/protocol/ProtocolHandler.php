@@ -74,7 +74,7 @@ class ProtocolHandler
                 } else {
                     $channel = Channel::getSpoolFromId($session->getSubdomain(), $session->getPath(), $data['channel']);
                     $channel->addSession($session);
-                    $session->addSubscribedChannel($data['consultation'], $data['channel']);
+                    $session->addSubscribedChannel($session->getSubdomain(), $session->getPath(), $data['channel']);
                     $session->sendDataToClient([
                         'op'           => 'subscribed',
                         'consultation' => $data['consultation'],

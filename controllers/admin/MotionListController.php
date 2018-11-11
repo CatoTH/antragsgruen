@@ -425,6 +425,7 @@ class MotionListController extends AdminBase
 
             $privilegeScreening = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
             $privilegeProposals = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+            $privilegeContent   = User::havePrivilege($this->consultation, User::PRIVILEGE_MOTION_EDIT);
             if (!($privilegeScreening || $privilegeProposals)) {
                 throw new Access(\Yii::t('admin', 'no_acccess'));
             }
@@ -448,6 +449,46 @@ class MotionListController extends AdminBase
                         $motion = $this->consultation->getMotion($motionId);
                         $motion->setUnscreened();
                         $msg[] = 'Unscreened: ' . $motion->getTitleWithPrefix();
+                    }
+                    break;
+                case 'motionDelete':
+                    if (!$privilegeContent) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('motionId') as $motionId) {
+                        $motion = $this->consultation->getMotion($motionId);
+                        $motion->setDeleted();
+                        $msg[] = 'Deleted: ' . $motion->getTitleWithPrefix();
+                    }
+                    break;
+                case 'amendmentScreen':
+                    if (!$privilegeScreening) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('amendmentId') as $amendmentId) {
+                        $amendment = $this->consultation->getAmendment($amendmentId);
+                        $amendment->setScreened();
+                        $msg[] = 'Screened: ' . $amendment->getTitle();
+                    }
+                    break;
+                case 'amendmentUnscreen':
+                    if (!$privilegeScreening) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('amendmentId') as $amendmentId) {
+                        $amendment = $this->consultation->getAmendment($amendmentId);
+                        $amendment->setUnscreened();
+                        $msg[] = 'Unscreened: ' . $amendment->getTitle();
+                    }
+                    break;
+                case 'amendmentDelete':
+                    if (!$privilegeContent) {
+                        throw new Access(\Yii::t('admin', 'no_acccess'));
+                    }
+                    foreach (\Yii::$app->request->post('amendmentId') as $amendmentId) {
+                        $amendment = $this->consultation->getAmendment($amendmentId);
+                        $amendment->setDeleted();
+                        $msg[] = 'Deleted: ' . $amendment->getTitle();
                     }
                     break;
             }

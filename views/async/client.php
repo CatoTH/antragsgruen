@@ -35,10 +35,12 @@ $linkTemplates = json_encode([
     'motion/plainhtml'          => UrlHelper::createUrl(['/motion/plainhtml', 'motionSlug' => '_SLUG_']),
     'motion/pdf'                => UrlHelper::createUrl(['/motion/pdf', 'motionSlug' => '_SLUG_']),
     'motion/pdfamendcollection' => UrlHelper::createUrl(['/motion/pdfamendcollection', 'motionSlug' => '_SLUG_']),
+    'motion/clone'              => UrlHelper::createUrl(['/motion/create', 'cloneFrom' => '_SLUG_']),
 
-    'amendment/view' => UrlHelper::createUrl(['/amendment/view', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
-    'amendment/odt'  => UrlHelper::createUrl(['/amendment/odt', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
-    'amendment/pdf'  => UrlHelper::createUrl(['/amendment/pdf', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
+    'amendment/view'  => UrlHelper::createUrl(['/amendment/view', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
+    'amendment/odt'   => UrlHelper::createUrl(['/amendment/odt', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
+    'amendment/pdf'   => UrlHelper::createUrl(['/amendment/pdf', 'motionSlug' => '_MOTION_SLUG_', 'amendmentId' => '0123456789']),
+    'amendment/clone' => UrlHelper::createUrl(['/amendment/create', 'motionSlug' => '_MOTION_SLUG_', 'cloneFrom' => '0123456789']),
 
     'admin/motion/update'    => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '0123456789']),
     'admin/amendment/update' => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '0123456789']),
