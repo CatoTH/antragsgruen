@@ -22,34 +22,53 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_theming'));
 <h1><?= \Yii::t('admin', 'theme_title') ?></h1>
 
 <?= Html::beginForm(UrlHelper::createUrl('/admin/index/theming'), 'POST', ['class' => 'content themingClass']) ?>
-    <table class="table">
-        <?php
-        foreach (Stylesheet::getAllSettings() as $key => $setting) {
-            ?>
-            <tr>
-                <th>
-                    <label for="stylesheet-<?= Html::encode($key) ?>"><?= Html::encode($setting['title']) ?></label>
-                </th>
-                <td>
-                    <?php
-                    if ($setting['type'] === Stylesheet::TYPE_COLOR) {
-                        ?>
-                        <input type="color" name="stylesheet[<?= Html::encode($key) ?>]"
-                               id="stylesheet-<?= Html::encode($key) ?>"
-                               value="<?= Html::encode($stylesheet->getValue($key)) ?>">
-                        <?php
-                    }
-                    ?>
-                </td>
-            </tr>
-            <?php
-        }
+<table class="table">
+    <?php
+    foreach (Stylesheet::getAllSettings() as $key => $setting) {
         ?>
-    </table>
+        <tr>
+            <th>
+                <label for="stylesheet-<?= Html::encode($key) ?>"><?= Html::encode($setting['title']) ?></label>
+            </th>
+            <td>
+                <?php
+                if ($setting['type'] === Stylesheet::TYPE_COLOR) {
+                    ?>
+                    <input type="color" name="stylesheet[<?= Html::encode($key) ?>]"
+                           id="stylesheet-<?= Html::encode($key) ?>"
+                           value="<?= Html::encode($stylesheet->getValue($key)) ?>">
+                    <?php
+                }
+                if ($setting['type'] === Stylesheet::TYPE_NUMBER) {
+                    ?>
+                    <input type="number" name="stylesheet[<?= Html::encode($key) ?>]"
+                           id="stylesheet-<?= Html::encode($key) ?>"
+                           value="<?= Html::encode($stylesheet->getValue($key)) ?>">
+                    <?php
+                }
+                if ($setting['type'] === Stylesheet::TYPE_PIXEL) {
+                    ?>
+                    <input type="number" name="stylesheet[<?= Html::encode($key) ?>]"
+                           id="stylesheet-<?= Html::encode($key) ?>"
+                           value="<?= Html::encode($stylesheet->getValue($key)) ?>">
+                    <?php
+                }
+                if ($setting['type'] === Stylesheet::TYPE_CHECKBOX) {
+                    echo Html::checkbox('stylesheet[' . $key . ']', $stylesheet->getValue($key), [
+                        'id' => 'stylesheet-' . $key
+                    ]);
+                }
+                ?>
+            </td>
+        </tr>
+        <?php
+    }
+    ?>
+</table>
 
-    <div class="submitRow">
-        <button type="submit" name="save" class="btn btn-primary">
-            <?= \Yii::t('admin', 'save') ?>
-        </button>
-    </div>
+<div class="submitRow">
+    <button type="submit" name="save" class="btn btn-primary">
+        <?= \Yii::t('admin', 'save') ?>
+    </button>
+</div>
 <?= Html::endForm() ?>

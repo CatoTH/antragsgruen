@@ -3,21 +3,21 @@
 @import "variables";
 
 @mixin border-radius-top {
-  -moz-border-radius-topleft: 10px;
-  -webkit-border-top-left-radius: 10px;
-  border-top-left-radius: 10px;
-  -moz-border-radius-topright: 10px;
-  -webkit-border-top-right-radius: 10px;
-  border-top-right-radius: 10px;
+  -moz-border-radius-topleft: $contentBorderRadius;
+  -webkit-border-top-left-radius: $contentBorderRadius;
+  border-top-left-radius: $contentBorderRadius;
+  -moz-border-radius-topright: $contentBorderRadius;
+  -webkit-border-top-right-radius: $contentBorderRadius;
+  border-top-right-radius: $contentBorderRadius;
 }
 
 @mixin border-radius-bottom {
-  -moz-border-radius-bottomright: 10px;
-  -webkit-border-bottom-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  -moz-border-radius-bottomleft: 10px;
-  -webkit-border-bottom-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  -moz-border-radius-bottomright: $contentBorderRadius;
+  -webkit-border-bottom-right-radius: $contentBorderRadius;
+  border-bottom-right-radius: $contentBorderRadius;
+  -moz-border-radius-bottomleft: $contentBorderRadius;
+  -webkit-border-bottom-left-radius: $contentBorderRadius;
+  border-bottom-left-radius: $contentBorderRadius;
 }
 
 @mixin border-radius($radius) {

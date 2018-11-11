@@ -391,7 +391,18 @@ class IndexController extends AdminBase
         if ($this->isPostSet('save')) {
             $settings = \Yii::$app->request->post('stylesheet', []);
             foreach (Stylesheet::getAllSettings() as $key => $setting) {
-                $stylesheet->$key = $settings[$key];
+                switch ($setting['type']) {
+                    case Stylesheet::TYPE_CHECKBOX:
+                        $stylesheet->$key = isset($settings[$key]);
+                        break;
+                    case Stylesheet::TYPE_NUMBER:
+                    case Stylesheet::TYPE_PIXEL:
+                        $stylesheet->$key = IntVal($settings[$key]);
+                        break;
+                    case Stylesheet::TYPE_COLOR:
+                        $stylesheet->$key = $settings[$key];
+                        break;
+                }
             }
             $siteSettings->setStylesheet($stylesheet);
             $siteSettings->siteLayout = 'layout-custom-' . $stylesheet->getSettingsHash();

@@ -22,12 +22,12 @@ $btn-success-bg: #2c882c;
 
 $table-border-color: $colorGreenLight;
 $headingFont: "Open Sans", sans-serif;
-$headingPrimaryText: ' . $stylesheetSettings->headingPrimaryText . ';
-$headingPrimaryBackground: ' . $stylesheetSettings->headingPrimaryBackground . ';
-$headingSecondaryText: ' . $stylesheetSettings->headingSecondaryText . ';
-$headingSecondaryBackground: ' . $stylesheetSettings->headingSecondaryBackground . ';
-$headingTertiaryText: ' . $stylesheetSettings->headingTertiaryText . ';
-$headingTertiaryBackground: ' . $stylesheetSettings->headingTertiaryBackground . ';
+$headingPrimaryText: rgb(255, 255, 255);
+$headingPrimaryBackground: rgb(40, 95, 25);
+$headingSecondaryText: rgb(255, 255, 255);
+$headingSecondaryBackground: rgb(175, 203, 8);
+$headingTertiaryText: black;
+$headingTertiaryBackground: rgb(27, 74, 251);
 
 $menuFont: "Open Sans", sans-serif;
 $menuLink: #6d7e00;
@@ -85,6 +85,7 @@ body {
   }
 }
 ';
+
 
 $scss = new \Leafo\ScssPhp\Compiler();
 $scss->addImportPath(\Yii::$app->basePath . '/web/css/');
