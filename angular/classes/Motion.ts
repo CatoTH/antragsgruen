@@ -16,12 +16,12 @@ export class Motion extends IMotion {
     }
 
     public getLink(linkKey: string, linkTemplates: { [key: string]: string }): string {
-        let template = linkTemplates[linkKey];
+        const template = linkTemplates[linkKey];
         if (!template) {
             console.warn('Unknown link key:', linkKey);
             return '';
         }
-        let slug = (this.slug ? this.slug : this.id);
+        const slug = (this.slug ? this.slug : this.id);
         return template
             .replace(/0123456789/, this.id)
             .replace(/_SLUG_/, slug)
