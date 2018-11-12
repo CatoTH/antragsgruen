@@ -891,7 +891,7 @@ class TextSimple extends Text
 
         /** @var Amendment[] $amendmentsById */
         $amendmentsById = [];
-        foreach ($section->getAmendingSections(true) as $sect) {
+        foreach ($section->getAmendingSections(true, false, true) as $sect) {
             $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
         }
 

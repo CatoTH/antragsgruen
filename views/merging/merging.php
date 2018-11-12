@@ -194,7 +194,7 @@ $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-p
                     }
 
                     if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-                        $changes = $section->getAmendingSections(false, true);
+                        $changes = $section->getAmendingSections(false, true, true);
                         $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
                             return in_array($section->amendmentId, $toMergeAmendmentIds);
                         });

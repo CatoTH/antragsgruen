@@ -101,17 +101,22 @@ class MotionSection extends IMotionSection
     /**
      * @param bool $includeProposals
      * @param bool $onlyWithChanges
+     * @param bool $allStatuses
      * @return AmendmentSection[]|null
      */
-    public function getAmendingSections($includeProposals = false, $onlyWithChanges = false)
+    public function getAmendingSections($includeProposals = false, $onlyWithChanges = false, $allStatuses = false)
     {
         $sections         = [];
         $motion           = $this->getConsultation()->getMotion($this->motionId);
-        $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses(true);
-        if ($includeProposals) {
-            $excludedStatuses = array_filter($excludedStatuses, function ($status) {
-                return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
-            });
+        if ($allStatuses) {
+            $excludedStatuses = $this->getConsultation()->getUnreadableStatuses();
+        } else {
+            $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses(true);
+            if ($includeProposals) {
+                $excludedStatuses = array_filter($excludedStatuses, function ($status) {
+                    return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+                });
+            }
         }
         foreach ($motion->amendments as $amend) {
             if (in_array($amend->status, $excludedStatuses)) {
@@ -335,7 +340,7 @@ class MotionSection extends IMotionSection
     {
         if (is_null($this->amendmentDiffMerger)) {
             $sections = [];
-            foreach ($this->getAmendingSections(true) as $section) {
+            foreach ($this->getAmendingSections(true, false, true) as $section) {
                 if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }

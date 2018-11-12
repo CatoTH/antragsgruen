@@ -109,7 +109,9 @@ $layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
                         ['class' => 'selectSingle amendment' . $amend->id, 'id' => $id]
                     );
                     echo '</td><td class="colTitle">';
-                    echo '<label for="' . $id . '">' . Html::encode($amend->titlePrefix) . '</label>';
+                    echo '<label for="' . $id . '">';
+                    echo Html::a(Html::encode($amend->titlePrefix), $amend->getLink());
+                    echo '</label>';
                     if ($amend->globalAlternative) {
                         echo ' <small>(' . \Yii::t('amend', 'global_alternative') . ')</small>';
                     }

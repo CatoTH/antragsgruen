@@ -14,6 +14,7 @@
 - Several improvements regarding merging amendments into motions / creating the final motion version:
   - When editing the merged view with the amendments' change inlined into the text, this draft can be exported into a PDF to document the merging process.
   - After creating the final text, administrators can decide if the new version of this motion is a regular motion again, or a (preliminary) resolution.
+  - Bugfix: If an amendment had certain statuses, it was selectable for merging, but was not actually merged then.
 - Several changes regarding the proposed procedures:
   - Proposed procedures are now an optional functionality per motion type. They are disabled by default.
   - When exporting the proposed procedure list into ODS, there is now an option to also include the comments or to only include public visible proposed procedures.
