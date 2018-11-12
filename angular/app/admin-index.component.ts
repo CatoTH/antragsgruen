@@ -11,6 +11,11 @@ import {SelectlistItem} from "./selectlist.component";
 import {Translations} from "../classes/Translations";
 import {STATUS} from "../classes/Status";
 
+interface MotionWithAmendments {
+    motion: Motion;
+    amendments: Amendment[];
+}
+
 @Component({
     selector: 'admin-index',
     templateUrl: './admin-index.component.html',
@@ -88,7 +93,33 @@ export class AdminIndexComponent {
             return matches;
         });
 
-        this.sortedFilteredItems.sort(IMotion.compareTitlePrefix);
+        this.sortedFilteredItems = AdminIndexComponent.sortMotionsAmendmentsByPrefix(this.sortedFilteredItems);
+    }
+
+    private static sortMotionsAmendmentsByPrefix(items: IMotion[]): IMotion[] {
+        let byMotion: {[id: string]: MotionWithAmendments} = {};
+        let amendmentsWithoutMotion: Amendment[] = [];
+        let sortedItems = items.sort(IMotion.compareTitlePrefix);
+
+        sortedItems.filter(item => item['motionId'] === undefined).forEach((item: Motion) => {
+            byMotion[item.id] = {motion: item, amendments: []};
+        });
+        sortedItems.filter(item => item['motionId'] !== undefined).forEach((item: Amendment) => {
+            if (byMotion[item.motionId] !== undefined) {
+                byMotion[item.motionId].amendments.push(item);
+            } else {
+                amendmentsWithoutMotion.push(item);
+            }
+        });
+
+        let sorted: IMotion[] = [];
+        Object.keys(byMotion).forEach(entryId => {
+            sorted.push(byMotion[entryId].motion);
+            sorted.splice(sorted.length, 0, ...byMotion[entryId].amendments);
+        });
+        sorted.splice(sorted.length, 0, ...amendmentsWithoutMotion);
+
+        return sorted;
     }
 
     public trackElement(index: number, element: CollectionItem) {

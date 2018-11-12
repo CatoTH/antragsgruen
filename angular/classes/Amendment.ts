@@ -19,14 +19,15 @@ export class Amendment extends IMotion {
     }
 
     public getLink(linkKey: string, linkTemplates: { [key: string]: string }): string {
-        let template = linkTemplates[linkKey];
+        const template = linkTemplates[linkKey];
         if (!template) {
             console.warn('Unknown link key:', linkKey);
             return '';
         }
+        const slug = (this.motionSlug ? this.motionSlug : this.motionId);
         return template
             .replace(/0123456789/, this.id)
-            .replace(/_MOTION_SLUG_/, this.motionSlug)
+            .replace(/_MOTION_SLUG_/, slug)
     }
 
     public getTitle(): string {
