@@ -100,6 +100,7 @@ class Permissions
                 Motion::STATUS_WITHDRAWN_INVISIBLE,
                 Motion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
                 Motion::STATUS_INLINE_REPLY,
+                Motion::STATUS_DRAFT_ADMIN,
             ];
             return !in_array($motion->status, $draftStatuses);
         });
