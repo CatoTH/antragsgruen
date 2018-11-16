@@ -32,6 +32,7 @@
 - Bugfix: When a motion type was created from the scratch and motion sections positioned right were added, the layout didn't switch to two-column mode.
 - Bugfix: When an optional image was not uploaded, the LaTeX-based PDF export did not work.
 - Bugfix: Prevent broken sites when too long consultation titles are entered.
+- Bugfix: Under some circumstances, a motion assigned to an agenda item did not appear to be assigned correctly in the consultation home page.
 - Internal: translatable strings can now include a comment / description which will be displayed in the translation page.
 
 ### Version 4.0.4 (2018-10-16)
