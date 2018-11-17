@@ -44,7 +44,7 @@ class MotionSection extends IMotionSection
         $motion = $this->getMotion();
         if ($motion) {
             foreach ($motion->motionType->motionSections as $section) {
-                if ($section->id == $this->sectionId) {
+                if ($section->id === $this->sectionId) {
                     return $section;
                 }
             }
@@ -52,7 +52,7 @@ class MotionSection extends IMotionSection
             /** @var ConsultationSettingsMotionSection $section */
             $section = ConsultationSettingsMotionSection::findOne($this->sectionId);
             foreach ($section->motionType->motionSections as $section) {
-                if ($section->id == $this->sectionId) {
+                if ($section->id === $this->sectionId) {
                     return $section;
                 }
             }

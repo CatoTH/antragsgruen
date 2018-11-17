@@ -429,7 +429,7 @@ abstract class IMotion extends ActiveRecord
     public function getTitleSection()
     {
         foreach ($this->sections as $section) {
-            if ($section->getSettings()->type == ISectionType::TYPE_TITLE) {
+            if ($section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
                 return $section;
             }
         }
