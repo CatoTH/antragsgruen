@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.1.0 [not released yet]
+## Version 4.1.0 (2018-11-17)
 
 - Several improvements regarding applications, especially the generated PDFs:
   - Motion types can now force motion titles to have a certain beginning, like "Application: ".
