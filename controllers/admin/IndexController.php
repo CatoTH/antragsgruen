@@ -400,6 +400,7 @@ class IndexController extends AdminBase
                         $stylesheet->$key = IntVal($settings[$key]);
                         break;
                     case Stylesheet::TYPE_COLOR:
+                    case Stylesheet::TYPE_FONT:
                         $stylesheet->$key = $settings[$key];
                         break;
                 }

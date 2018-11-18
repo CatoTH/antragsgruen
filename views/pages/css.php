@@ -15,7 +15,6 @@ $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
 ' . $stylesheetSettings->toScssVariables() . '
-$linkTextDecoration: none;
 $colorDelLink: #FF7777;
 $colorMagenta: rgb(226, 0, 122);
 $btn-success-bg: #2c882c;
@@ -33,13 +32,11 @@ $menuFont: "Open Sans", sans-serif;
 $menuLink: #6d7e00;
 $menuActive: rgb(115, 115, 115);
 
-$sidebarBackground: $colorMagenta;
 $sidebarActionFont: "Open Sans", sans-serif;
 
 $bookmarkAmendmentBackground: $colorGreenLight;
 $bookmarkCommentColor: $colorMagenta;
 
-$bodyFont: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 $deadlineCircleFont: "Open Sans", sans-serif;
 $buttonFont: "Open Sans", sans-serif;
 $motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;

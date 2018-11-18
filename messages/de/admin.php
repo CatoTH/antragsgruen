@@ -479,5 +479,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'updates_error'        => 'Die Updates konnten nicht abgefragt werden',
     'updates_show_changes' => 'Änderungen anzeigen',
 
-    'theme_title' => 'Eigenes Farbschema',
+    'theme_title'         => 'Eigenes Farbschema',
+    'theme_block_text'    => 'Text',
+    'theme_block_layout'  => 'Grundlayout',
+    'theme_block_buttons' => 'Buttons',
 ];
