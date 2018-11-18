@@ -16,9 +16,11 @@ class Stylesheet implements \JsonSerializable
     public $colorLinks;
     public $colorLinksLight;
     public $brandPrimary;
+    public $buttonFont;
     public $textColor;
     public $sidebarBackground;
     public $sidebarActionFont;
+    public $headingFont;
     public $headingPrimaryText;
     public $headingPrimaryBackground;
     public $headingSecondaryText;
@@ -26,9 +28,11 @@ class Stylesheet implements \JsonSerializable
     public $headingTertiaryText;
     public $headingTertiaryBackground;
     public $linkTextDecoration;
-
     public $useBoxShadow;
     public $contentBorderRadius;
+    public $menuActive;
+    public $menuLink;
+    public $menuFont;
 
     /**
      * @return array
@@ -53,16 +57,86 @@ class Stylesheet implements \JsonSerializable
             'sidebarBackground'   => [
                 'group'    => 'layout',
                 'default'  => '#e2007a',
-                'title'    => 'Background of the motion-sidebar',
+                'title'    => 'Motion-sidebar: background',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'sidebarBackground',
             ],
             'sidebarActionFont'   => [
                 'group'    => 'layout',
                 'default'  => '"Open Sans", sans-serif',
-                'title'    => 'Font of the motion-sidebar',
+                'title'    => 'Motion-sidebar: font',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'sidebarActionFont',
+            ],
+            'headingFont'         => [
+                'group'    => 'layout',
+                'default'  => '"Open Sans", sans-serif',
+                'title'    => 'Headings: font',
+                'type'     => static::TYPE_FONT,
+                'scssName' => 'headingFont',
+            ],
+            'headingPrimaryText'  => [
+                'group'    => 'layout',
+                'default'  => '#ffffff',
+                'title'    => 'Headings (1): font color',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingPrimaryText',
+            ],
+            'headingPrimaryBackground'  => [
+                'group'    => 'layout',
+                'default'  => '#285f19',
+                'title'    => 'Headings (1): background',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingPrimaryBackground',
+            ],
+            'headingSecondaryText'  => [
+                'group'    => 'layout',
+                'default'  => '#ffffff',
+                'title'    => 'Headings (2): font color',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingSecondaryText',
+            ],
+            'headingSecondaryBackground'  => [
+                'group'    => 'layout',
+                'default'  => '#afcb08',
+                'title'    => 'Headings (2): background',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingSecondaryBackground',
+            ],
+            'headingTertiaryText'  => [
+                'group'    => 'layout',
+                'default'  => '#000000',
+                'title'    => 'Headings (3): font color',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingTertiaryText',
+            ],
+            'headingTertiaryBackground'  => [
+                'group'    => 'layout',
+                'default'  => '#1b4afb',
+                'title'    => 'Headings (3): background',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'headingTertiaryBackground',
+            ],
+            'menuFont'         => [
+                'group'    => 'layout',
+                'default'  => '"Open Sans", sans-serif',
+                'title'    => 'Menu: font',
+                'type'     => static::TYPE_FONT,
+                'scssName' => 'menuFont',
+            ],
+            'menuLink' => [
+                'group'    => 'layout',
+                'default'  => '#6d7e00',
+                'title'    => 'Menu: link color',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'menuLink',
+            ],
+            'menuActive' => [
+                'group'    => 'layout',
+                'default'  => '#739b9b',
+                'title'    => 'Menu: active links',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'menuActive',
             ],
             'bodyFont'            => [
                 'group'    => 'text',
@@ -105,6 +179,13 @@ class Stylesheet implements \JsonSerializable
                 'title'    => 'Color of primary buttons',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'brand-primary',
+            ],
+            'buttonFont'          => [
+                'group'    => 'buttons',
+                'default'  => '"Open Sans", sans-serif',
+                'title'    => 'Font of buttons',
+                'type'     => static::TYPE_FONT,
+                'scssName' => 'buttonFont',
             ],
         ];
     }

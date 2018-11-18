@@ -20,17 +20,6 @@ $colorMagenta: rgb(226, 0, 122);
 $btn-success-bg: #2c882c;
 
 $table-border-color: $colorGreenLight;
-$headingFont: "Open Sans", sans-serif;
-$headingPrimaryText: rgb(255, 255, 255);
-$headingPrimaryBackground: rgb(40, 95, 25);
-$headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: rgb(175, 203, 8);
-$headingTertiaryText: black;
-$headingTertiaryBackground: rgb(27, 74, 251);
-
-$menuFont: "Open Sans", sans-serif;
-$menuLink: #6d7e00;
-$menuActive: rgb(115, 115, 115);
 
 $sidebarActionFont: "Open Sans", sans-serif;
 
@@ -38,7 +27,6 @@ $bookmarkAmendmentBackground: $colorGreenLight;
 $bookmarkCommentColor: $colorMagenta;
 
 $deadlineCircleFont: "Open Sans", sans-serif;
-$buttonFont: "Open Sans", sans-serif;
 $motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;
 $motionFixedFontColor: #222;
 $motionFixedWidth: 740px;
