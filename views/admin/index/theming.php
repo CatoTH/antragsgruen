@@ -35,16 +35,17 @@ foreach (Stylesheet::getAllSettings() as $key => $setting) {
 <?php
 foreach ($settingsByBlock as $group => $settings) {
     ?>
-    <h2 class="green"><?= $group ?></h2>
+    <h2 class="green"><?= Html::encode(\Yii::t('admin', 'theme_block_' . $group)) ?></h2>
     <table class="table content">
         <?php
         foreach ($settings as $key => $setting) {
+            $title = \Yii::t('admin', 'theme_' . $key);
             ?>
             <tr>
-                <th class="col-md-4">
-                    <label for="stylesheet-<?= Html::encode($key) ?>"><?= Html::encode($setting['title']) ?></label>
+                <th>
+                    <label for="stylesheet-<?= Html::encode($key) ?>"><?= Html::encode($title) ?></label>
                 </th>
-                <td class="col-md-8">
+                <td>
                     <?php
                     if ($setting['type'] === Stylesheet::TYPE_COLOR) {
                         ?>

@@ -15,25 +15,14 @@ $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
 ' . $stylesheetSettings->toScssVariables() . '
-$colorDelLink: #FF7777;
-$colorMagenta: rgb(226, 0, 122);
-$btn-success-bg: #2c882c;
 
 $table-border-color: $colorGreenLight;
 
 $sidebarActionFont: "Open Sans", sans-serif;
-
-$bookmarkAmendmentBackground: $colorGreenLight;
-$bookmarkCommentColor: $colorMagenta;
-
 $deadlineCircleFont: "Open Sans", sans-serif;
-$motionFixedFont: "VeraMono", Consolas, Courier, sans-serif;
-$motionFixedFontColor: #222;
 $motionFixedWidth: 740px;
-$motionStdFontSize: 14px;
 $inlineAmendmentPreambleHeight: 30px;
-$inlineAmendmentPreambleColor: $colorMagenta;
-$createMotionBtnColor: $colorMagenta;
+$inlineAmendmentPreambleColor: rgb(226, 0, 122);
 
 @import "bootstrap";
 @import "fontello";

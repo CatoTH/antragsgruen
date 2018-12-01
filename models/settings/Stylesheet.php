@@ -15,11 +15,16 @@ class Stylesheet implements \JsonSerializable
     public $bodyFont;
     public $colorLinks;
     public $colorLinksLight;
+    public $colorDelLink;
     public $brandPrimary;
     public $buttonFont;
+    public $buttonSuccessBackground;
     public $textColor;
     public $sidebarBackground;
     public $sidebarActionFont;
+    public $createMotionBtnColor;
+    public $bookmarkAmendmentBackground;
+    public $bookmarkCommentColor;
     public $headingFont;
     public $headingPrimaryText;
     public $headingPrimaryBackground;
@@ -33,6 +38,9 @@ class Stylesheet implements \JsonSerializable
     public $menuActive;
     public $menuLink;
     public $menuFont;
+    public $motionFixedFontColor;
+    public $motionFixedFont;
+    public $motionStdFontSize;
 
     /**
      * @return array
@@ -40,150 +48,177 @@ class Stylesheet implements \JsonSerializable
     public static function getAllSettings()
     {
         return [
-            'useBoxShadow'        => [
+            'useBoxShadow'                => [
                 'group'    => 'layout',
                 'default'  => true,
-                'title'    => 'Box shadows',
                 'type'     => static::TYPE_CHECKBOX,
                 'scssName' => 'use-box-shadow',
             ],
-            'contentBorderRadius' => [
+            'contentBorderRadius'         => [
                 'group'    => 'layout',
                 'default'  => 10,
-                'title'    => 'Content border radius (px)',
                 'type'     => static::TYPE_PIXEL,
                 'scssName' => 'contentBorderRadius',
             ],
-            'sidebarBackground'   => [
+            'sidebarBackground'           => [
                 'group'    => 'layout',
                 'default'  => '#e2007a',
-                'title'    => 'Motion-sidebar: background',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'sidebarBackground',
             ],
-            'sidebarActionFont'   => [
+            'sidebarActionFont'           => [
                 'group'    => 'layout',
                 'default'  => '"Open Sans", sans-serif',
-                'title'    => 'Motion-sidebar: font',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'sidebarActionFont',
             ],
-            'headingFont'         => [
+            'createMotionBtnColor'        => [
+                'group'    => 'layout',
+                'default'  => '#e2007a',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'createMotionBtnColor',
+            ],
+            'bookmarkAmendmentBackground' => [
+                'group'    => 'layout',
+                'default'  => '#afcb08',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'bookmarkAmendmentBackground',
+            ],
+            'bookmarkCommentColor'        => [
+                'group'    => 'layout',
+                'default'  => '#e2007a',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'bookmarkCommentColor',
+            ],
+            'headingFont'                 => [
                 'group'    => 'layout',
                 'default'  => '"Open Sans", sans-serif',
-                'title'    => 'Headings: font',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'headingFont',
             ],
-            'headingPrimaryText'  => [
+            'headingPrimaryText'          => [
                 'group'    => 'layout',
                 'default'  => '#ffffff',
-                'title'    => 'Headings (1): font color',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingPrimaryText',
             ],
-            'headingPrimaryBackground'  => [
+            'headingPrimaryBackground'    => [
                 'group'    => 'layout',
                 'default'  => '#285f19',
-                'title'    => 'Headings (1): background',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingPrimaryBackground',
             ],
-            'headingSecondaryText'  => [
+            'headingSecondaryText'        => [
                 'group'    => 'layout',
                 'default'  => '#ffffff',
-                'title'    => 'Headings (2): font color',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingSecondaryText',
             ],
             'headingSecondaryBackground'  => [
                 'group'    => 'layout',
                 'default'  => '#afcb08',
-                'title'    => 'Headings (2): background',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingSecondaryBackground',
             ],
-            'headingTertiaryText'  => [
+            'headingTertiaryText'         => [
                 'group'    => 'layout',
                 'default'  => '#000000',
-                'title'    => 'Headings (3): font color',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingTertiaryText',
             ],
-            'headingTertiaryBackground'  => [
+            'headingTertiaryBackground'   => [
                 'group'    => 'layout',
                 'default'  => '#1b4afb',
-                'title'    => 'Headings (3): background',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingTertiaryBackground',
             ],
-            'menuFont'         => [
+            'menuFont'                    => [
                 'group'    => 'layout',
                 'default'  => '"Open Sans", sans-serif',
-                'title'    => 'Menu: font',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'menuFont',
             ],
-            'menuLink' => [
+            'menuLink'                    => [
                 'group'    => 'layout',
                 'default'  => '#6d7e00',
-                'title'    => 'Menu: link color',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'menuLink',
             ],
-            'menuActive' => [
+            'menuActive'                  => [
                 'group'    => 'layout',
                 'default'  => '#739b9b',
-                'title'    => 'Menu: active links',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'menuActive',
             ],
-            'bodyFont'            => [
+            'bodyFont'                    => [
                 'group'    => 'text',
                 'default'  => '"Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-                'title'    => 'Base font',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'bodyFont',
             ],
-            'textColor'           => [
+            'textColor'                   => [
                 'group'    => 'text',
                 'default'  => '#484649',
-                'title'    => 'Default text color',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'textColor',
             ],
-            'colorLinks'          => [
+            'colorLinks'                  => [
                 'group'    => 'text',
                 'default'  => '#6d7e00',
-                'title'    => 'Color of links (normal)',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'colorLinks',
             ],
-            'colorLinksLight'     => [
+            'colorLinksLight'             => [
                 'group'    => 'text',
                 'default'  => '#6d7e00',
-                'title'    => 'Color of links (light)',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'colorLinksLight',
             ],
-            'linkTextDecoration'  => [
+            'colorDelLink'                => [
+                'group'    => 'text',
+                'default'  => '#FF7777',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'colorDelLink',
+            ],
+            'linkTextDecoration'          => [
                 'group'    => 'text',
                 'default'  => false,
-                'title'    => 'Undelined links',
                 'type'     => static::TYPE_CHECKBOX,
                 'scssName' => 'linkTextDecoration',
             ],
-            'brandPrimary'        => [
+            'motionFixedFont'             => [
+                'group'    => 'text',
+                'default'  => '"VeraMono", Consolas, Courier, sans-serif',
+                'type'     => static::TYPE_FONT,
+                'scssName' => 'motionFixedFont',
+            ],
+            'motionFixedFontColor'        => [
+                'group'    => 'text',
+                'default'  => '#222',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'motionFixedFontColor',
+            ],
+            'motionStdFontSize'           => [
+                'group'    => 'text',
+                'default'  => 14,
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'motionStdFontSize',
+            ],
+            'brandPrimary'                => [
                 'group'    => 'buttons',
                 'default'  => '#e2007a',
-                'title'    => 'Color of primary buttons',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'brand-primary',
             ],
-            'buttonFont'          => [
+            'buttonSuccessBackground'     => [
+                'group'    => 'buttons',
+                'default'  => '#2c882c',
+                'type'     => static::TYPE_COLOR,
+                'scssName' => 'btn-success-bg',
+            ],
+            'buttonFont'                  => [
                 'group'    => 'buttons',
                 'default'  => '"Open Sans", sans-serif',
-                'title'    => 'Font of buttons',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'buttonFont',
             ],

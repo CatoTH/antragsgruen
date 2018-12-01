@@ -871,4 +871,22 @@ label.legend {
   .submitRow {
     text-align: center;
   }
+  @media screen and (min-width: 550px) {
+    th {
+      width: 40%;
+    }
+    td {
+      width: 60%;
+    }
+  }
+  @media screen and (max-width: 449px) {
+    th {
+      display: block;
+    }
+    td {
+      display: block;
+      border-top: none !important;
+    }
+  }
+
 }
