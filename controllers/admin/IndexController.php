@@ -81,7 +81,7 @@ class IndexController extends AdminBase
             $settings->saveForm($settingsInput, $post['settingsFields']);
             if (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
                 try {
-                    $file = ConsultationFile::uploadImage($this->consultation, 'newLogo');
+                    $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo');
                     $settings->logoUrl = $file->getUrl();
                 } catch (FormError $e) {
                     \yii::$app->session->setFlash('error', $e->getMessage());
@@ -338,10 +338,16 @@ class IndexController extends AdminBase
             }
         }
 
+        $consultations = $site->consultations;
+        usort($consultations, function (Consultation $con1, Consultation $con2) {
+            return -1 * Tools::compareSqlTimes($con1->dateCreation, $con2->dateCreation);
+        });
+
         return $this->render('site_consultations', [
-            'site'        => $site,
-            'createForm'  => $form,
-            'wizardModel' => $form->siteCreateWizard,
+            'site'          => $site,
+            'consultations' => $consultations,
+            'createForm'    => $form,
+            'wizardModel'   => $form->siteCreateWizard,
         ]);
     }
 
@@ -406,7 +412,7 @@ class IndexController extends AdminBase
             return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
 
-        $form = new AntragsgruenUpdateModeForm();
+        $form      = new AntragsgruenUpdateModeForm();
         $updateKey = $form->activateUpdate();
 
 

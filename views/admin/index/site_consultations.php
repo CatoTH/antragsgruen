@@ -8,6 +8,7 @@ use yii\helpers\Url;
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Site $site
+ * @var \app\models\db\Consultation[] $consultations
  * @var \app\models\forms\ConsultationCreateForm $createForm
  * @var \app\models\forms\SiteCreateForm $wizardModel
  */
@@ -35,7 +36,7 @@ echo $controller->showErrors();
 echo Html::beginForm('', 'post', ['class' => 'consultationEditForm']);
 echo '<h2 class="green">' . \Yii::t('admin', 'cons_created_list') . '</h2>';
 echo '<div class="content"><ul id="consultationsList">';
-foreach ($site->consultations as $consultation) {
+foreach ($consultations as $consultation) {
     $isStandard = ($consultation->id == $site->currentConsultationId);
     $params     = ['consultationPath' => $consultation->urlPath];
     if ($controller->getParams()->multisiteMode) {

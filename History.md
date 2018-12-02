@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.1.1 [not released yet]
+
+- In the list of consultations, the newest consultation now appears at the top.
+
 ## Version 4.1.0 (2018-11-17)
 
 - Several improvements regarding applications, especially the generated PDFs:

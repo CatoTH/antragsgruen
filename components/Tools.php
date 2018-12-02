@@ -338,6 +338,24 @@ class Tools
     }
 
     /**
+     * @param string $dateTime1
+     * @param string $dateTime2
+     * @return int
+     */
+    public static function compareSqlTimes($dateTime1, $dateTime2)
+    {
+        $ts1 = static::dateSql2timestamp($dateTime1);
+        $ts2 = static::dateSql2timestamp($dateTime2);
+        if ($ts1 < $ts2) {
+            return -1;
+        } elseif ($ts1 > $ts2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    /**
      * @param string $filename
      * @param bool $noUmlaut
      * @return string
