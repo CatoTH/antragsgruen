@@ -97,7 +97,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         <?php
         if (!$comment) {
             ?>
-            <div class="privateParagraphNoteOpener ">
+            <div class="privateParagraphNoteOpener hidden">
                 <button class="btn btn-link btn-xs">
                     <span class="glyphicon glyphicon-pushpin"></span>
                     <?= \Yii::t('motion', 'private_notes') ?>
@@ -106,8 +106,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             <?php
         }
         if ($comment) {
+            $id = 'privateNote_' . $section->sectionId . '_' . $paragraphNo;
             ?>
-            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>">
+            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="<?= $id ?>">
                 <button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>
                 <?= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') ?>
             </blockquote>
@@ -117,9 +118,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
         <label>
             <?= \Yii::t('motion', 'private_notes') ?>
-            <textarea class="form-control" name="noteText">
-                <?= Html::encode($comment ? $comment->text : '') ?>
-            </textarea>
+            <textarea class="form-control" name="noteText"
+            ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
         </label>
         <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">
         <input type="hidden" name="sectionId" value="<?= $section->sectionId ?>">

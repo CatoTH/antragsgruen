@@ -822,15 +822,26 @@ iframe.pdfViewer {
   blockquote {
     color: #666;
     font-style: italic;
+    cursor: pointer;
   }
 }
 
-ul + .privateParagraphNoteHolder .privateParagraphNoteOpener, ol + .privateParagraphNoteHolder .privateParagraphNoteOpener {
-  left: 85px;
+ul + .privateParagraphNoteHolder, ol + .privateParagraphNoteHolder {
+  .privateParagraphNoteOpener {
+    left: 85px;
+  }
+  blockquote {
+    margin-left: 45px;
+  }
 }
 
-blockquote + .privateParagraphNoteHolder .privateParagraphNoteOpener {
-  left: 100px;
+blockquote + .privateParagraphNoteHolder {
+  .privateParagraphNoteOpener {
+    left: 100px;
+  }
+  blockquote {
+    margin-left: 60px;
+  }
 }
 
 

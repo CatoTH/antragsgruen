@@ -377,13 +377,14 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     * @throws \Throwable
      */
     private function savePrivateNote(Motion $motion)
     {
         $user      = User::getCurrentUser();
         $noteText  = trim(\Yii::$app->request->post('noteText', ''));
         $paragraph = IntVal(\Yii::$app->request->post('paragraphNo', -1));
-        if (!$user || $noteText === '') {
+        if (!$user) {
             return;
         }
 
@@ -393,13 +394,13 @@ trait MotionActionsTrait
             $section = null;
         }
 
-        $comment = null;
-        foreach ($motion->comments as $comm) {
-            if ($comm->userId === $user->id && $comm->status === MotionComment::STATUS_PRIVATE &&
-                $comm->paragraph === $paragraph && $comm->sectionId === $section) {
-                $comment = $comm;
-            }
+        $comment = $motion->getPrivateComment($section, $paragraph);
+        if ($comment && $noteText === '') {
+            $comment->delete();
+            $motion->refresh();
+            return;
         }
+
         if (!$comment) {
             $comment = new MotionComment();
         }
@@ -412,6 +413,8 @@ trait MotionActionsTrait
         $comment->dateCreation = date('Y-m-d H:i:s');
         $comment->name         = ($user->name ? $user->name : '-');
         $comment->save();
+
+        $motion->refresh();
     }
 
     /**

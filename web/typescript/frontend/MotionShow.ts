@@ -66,22 +66,31 @@ class MotionShow {
 
     private initPrivateComments()
     {
-        if ($(".privateNoteOpener").length === 0) {
-            $(".privateParagraphNoteOpener").removeClass('hidden');
+        if ($('.privateParagraph, .privateNote').length > 0) {
+            $('.privateParagraphNoteOpener').removeClass('hidden');
         }
-        $(".privateNoteOpener").click(() => {
-            $(".privateNoteOpener").remove();
-            $(".motionData .privateNotes").removeClass('hidden');
-            $(".motionData .privateNotes textarea").focus();
-            $(".privateParagraphNoteOpener").removeClass('hidden');
+        $('.privateNoteOpener').click(() => {
+            $('.privateNoteOpener').remove();
+            $('.motionData .privateNotes').removeClass('hidden');
+            $('.motionData .privateNotes textarea').focus();
+            $('.privateParagraphNoteOpener').removeClass('hidden');
         });
-        $(".privateParagraphNoteOpener").click((ev) => {
+        $('.privateParagraphNoteOpener').click((ev) => {
             $(ev.currentTarget).addClass('hidden');
             const $form = $(ev.currentTarget).parents('.privateParagraphNoteHolder').find('form');
-            console.log($(ev.currentTarget).parents('.privateParagraphNoteHolder'));
-            console.log($form);
             $form.removeClass('hidden');
             $form.find('textarea').focus();
+        });
+        $('.privateNotes blockquote').click(() => {
+            $('.privateNotes blockquote').addClass('hidden');
+            $('.privateNotes form').removeClass('hidden');
+            $('.privateNotes textarea').focus();
+        });
+        $('.privateParagraphNoteHolder blockquote').click((ev) => {
+            const $target = $(ev.currentTarget).parents('.privateParagraphNoteHolder');
+            $target.find('blockquote').addClass('hidden');
+            $target.find('form').removeClass('hidden');
+            $target.find('textarea').focus();
         });
     }
 
