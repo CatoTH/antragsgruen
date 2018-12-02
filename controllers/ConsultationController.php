@@ -174,18 +174,8 @@ class ConsultationController extends Base
             MotionComment::getNewestByConsultation($this->consultation, 20),
             AmendmentComment::getNewestByConsultation($this->consultation, 20)
         );
-        usort($items, function ($item1, $item2) {
-            /** @var IRSSItem $item1 */
-            /** @var IRSSItem $item2 */
-            $ts1 = Tools::dateSql2timestamp($item1->getDate());
-            $ts2 = Tools::dateSql2timestamp($item2->getDate());
-            if ($ts1 < $ts2) {
-                return 1;
-            }
-            if ($ts1 > $ts2) {
-                return -1;
-            }
-            return 0;
+        usort($items, function (IRSSItem $item1, IRSSItem $item2) {
+            return -1 * Tools::compareSqlTimes($item1->getDate(), $item2->getDate());
         });
         $items = array_slice($items, 0, 20);
 

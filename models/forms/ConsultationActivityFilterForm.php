@@ -41,26 +41,6 @@ class ConsultationActivityFilterForm extends Model
     }
 
     /**
-     * @param ConsultationLog[] $entries
-     * @return ConsultationLog[]
-     */
-    protected static function sortByDate($entries)
-    {
-        usort($entries, function (ConsultationLog $el1, ConsultationLog $el2) {
-            $ts1 = Tools::dateSql2timestamp($el1->actionTime);
-            $ts2 = Tools::dateSql2timestamp($el2->actionTime);
-            if ($ts1 < $ts2) {
-                return 1;
-            } elseif ($ts1 > $ts2) {
-                return -1;
-            } else {
-                return 0;
-            }
-        });
-        return $entries;
-    }
-
-    /**
      * @return ConsultationLog[]
      */
     public function getAllLogEntries()
@@ -80,7 +60,9 @@ class ConsultationActivityFilterForm extends Model
     public function getLogEntries()
     {
         $entries = $this->getAllLogEntries();
-        $entries = static::sortByDate($entries);
+        usort($entries, function (ConsultationLog $el1, ConsultationLog $el2) {
+            return -1 * Tools::compareSqlTimes($el1->actionTime, $el2->actionTime);
+        });
         return array_slice($entries, $this->page * $this->entriesPerPage, $this->entriesPerPage);
     }
 

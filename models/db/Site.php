@@ -172,15 +172,9 @@ class Site extends ActiveRecord
         }
 
         usort($shownSites, function (Site $site1, Site $site2) {
-            $ts1 = Tools::dateSql2timestamp($site1->currentConsultation->dateCreation);
-            $ts2 = Tools::dateSql2timestamp($site2->currentConsultation->dateCreation);
-            if ($ts1 < $ts2) {
-                return 1;
-            } elseif ($ts1 < $ts2) {
-                return -1;
-            } else {
-                return 0;
-            }
+            $date1 = $site1->currentConsultation->dateCreation;
+            $date2 = $site2->currentConsultation->dateCreation;
+            return -1 * Tools::compareSqlTimes($date1, $date2);
         });
 
         return $shownSites;

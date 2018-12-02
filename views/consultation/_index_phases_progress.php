@@ -84,15 +84,7 @@ usort($namedPhases, function ($phase1, $phase2) {
     if ($phase1['start'] && !$phase2['start']) {
         return 1;
     }
-    $ts1 = Tools::dateSql2timestamp($phase1['start']);
-    $ts2 = Tools::dateSql2timestamp($phase2['start']);
-    if ($ts1 < $ts2) {
-        return -1;
-    } elseif ($ts1 > $ts2) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return Tools::compareSqlTimes($phase1['start'], $phase2['start']);
 });
 
 if (count($namedPhases) === 1) {

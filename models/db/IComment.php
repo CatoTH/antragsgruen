@@ -141,18 +141,8 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             MotionComment::getNewestByConsultation($consultation, $limit),
             AmendmentComment::getNewestByConsultation($consultation, $limit)
         );
-        usort($comments, function ($comm1, $comm2) {
-            /** @var IComment $comm1 */
-            /** @var IComment $comm2 */
-            $ts1 = Tools::dateSql2timestamp($comm1->getDate());
-            $ts2 = Tools::dateSql2timestamp($comm2->getDate());
-            if ($ts1 < $ts2) {
-                return 1;
-            }
-            if ($ts1 > $ts2) {
-                return -1;
-            }
-            return 0;
+        usort($comments, function (IComment $comm1, IComment $comm2) {
+            return -1 * Tools::compareSqlTimes($comm1->getDate(), $comm2->getDate());
         });
         return array_slice($comments, 0, $limit);
     }
