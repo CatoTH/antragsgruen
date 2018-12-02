@@ -193,28 +193,28 @@ $motionData = \app\models\layoutHooks\Layout::getMotionViewData($motionData, $mo
 
 
 if (User::getCurrentUser()) {
-    $comment = null;
-    foreach ($motion->comments as $comm) {
-        if ($comm->status === \app\models\db\IComment::STATUS_PRIVATE && $comm->paragraph === -1) {
-            $comment = $comm;
-        }
+    $comment = $motion->getPrivateComment(null, -1);
+
+    $str = '';
+    if ($comment) {
+        $str .= '<blockquote>';
+        $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>';
+        $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
     }
-    $str = '<blockquote>';
-    $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>';
-    $str .= HTMLTools::textToHtmlWithLink($comment->text) . '</blockquote>';
     $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
-    $str .= '<textarea class="form-control" name="noteText">';
+    $str .= '<textarea class="form-control" name="noteText" title="' . \Yii::t('motion', 'private_notes') . '">';
     if ($comment) {
         $str .= Html::encode($comment->text);
     }
     $str .= '</textarea>';
-    $str .= '<input type="hidden" name="paragraphNo" value="0">';
-    $str .= '<button type="submit" name="saveNote" class="btn btn-success">' .
+    $str .= '<input type="hidden" name="paragraphNo" value="-1">';
+    $str .= '<input type="hidden" name="sectionId" value="">';
+    $str .= '<button type="submit" name="savePrivateNote" class="btn btn-success">' .
         \Yii::t('base', 'save') . '</button>';
     $str .= Html::endForm();
 
     $motionData[] = [
-        'rowClass' => 'privateNotes' . ($hasPrivateComments ? '' : ' hidden'),
+        'rowClass' => 'privateNotes' . ($comment ? '' : ' hidden'),
         'title'    => \Yii::t('motion', 'private_notes'),
         'content'  => $str,
     ];

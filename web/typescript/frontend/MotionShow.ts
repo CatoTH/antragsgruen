@@ -34,6 +34,7 @@ class MotionShow {
         $(".share_buttons a").click(this.shareLinkClicked.bind(this));
 
         this.markMovedParagraphs();
+        this.initPrivateComments();
     }
 
     private markMovedParagraphs() {
@@ -60,6 +61,27 @@ class MotionShow {
             let $msg = $('<div class="movedParagraphHint"></div>');
             $msg.text(msg);
             $msg.insertBefore($node);
+        });
+    }
+
+    private initPrivateComments()
+    {
+        if ($(".privateNoteOpener").length === 0) {
+            $(".privateParagraphNoteOpener").removeClass('hidden');
+        }
+        $(".privateNoteOpener").click(() => {
+            $(".privateNoteOpener").remove();
+            $(".motionData .privateNotes").removeClass('hidden');
+            $(".motionData .privateNotes textarea").focus();
+            $(".privateParagraphNoteOpener").removeClass('hidden');
+        });
+        $(".privateParagraphNoteOpener").click((ev) => {
+            $(ev.currentTarget).addClass('hidden');
+            const $form = $(ev.currentTarget).parents('.privateParagraphNoteHolder').find('form');
+            console.log($(ev.currentTarget).parents('.privateParagraphNoteHolder'));
+            console.log($form);
+            $form.removeClass('hidden');
+            $form.find('textarea').focus();
         });
     }
 

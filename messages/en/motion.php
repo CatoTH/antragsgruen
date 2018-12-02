@@ -55,7 +55,7 @@ return [
     'replaces_motion'               => 'Replaces',
     'resolution_of'                 => 'Based on',
     'replaces_motion_diff'          => 'Show changes',
-    'private_notes'                 => 'Private notes',
+    'private_notes'                 => 'Private note',
     'consultation'                  => 'Consultation',
     'comments'                      => 'Comments',
     'comment_screen_queue_1'        => '1 comment waiting for screening',

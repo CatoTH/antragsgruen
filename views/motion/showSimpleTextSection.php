@@ -5,6 +5,7 @@
  * @var null|CommentForm $commentForm
  */
 
+use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\MotionComment;
@@ -89,13 +90,44 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     } else {
         echo $paragraph->origStr;
     }
+
+    $comment = $motion->getPrivateComment($section->sectionId, $paragraphNo);
     ?>
-    <div class="privateParagraphNoteOpener">
-        <button class="btn btn-link btn-xs">
+    <section class="privateParagraphNoteHolder">
+        <?php
+        if (!$comment) {
+            ?>
+            <div class="privateParagraphNoteOpener ">
+                <button class="btn btn-link btn-xs">
+                    <span class="glyphicon glyphicon-pushpin"></span>
+                    <?= \Yii::t('motion', 'private_notes') ?>
+                </button>
+            </div>
+            <?php
+        }
+        if ($comment) {
+            ?>
+            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>">
+                <button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>
+                <?= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') ?>
+            </blockquote>
+            <?php
+        }
+        ?>
+        <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
+        <label>
             <?= \Yii::t('motion', 'private_notes') ?>
-            <span class="glyphicon glyphicon-pushpin"></span>
+            <textarea class="form-control" name="noteText">
+                <?= Html::encode($comment ? $comment->text : '') ?>
+            </textarea>
+        </label>
+        <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">
+        <input type="hidden" name="sectionId" value="<?= $section->sectionId ?>">
+        <button type="submit" name="savePrivateNote" class="btn btn-success">
+            <?= \Yii::t('base', 'save') ?>
         </button>
-    </div>
+        <?= Html::endForm() ?>
+    </section>
     <?php
     echo '</div>';
 
@@ -151,13 +183,13 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
 
             $screeningQueue = 0;
             foreach ($paragraph->comments as $comment) {
-                if ($comment->status == MotionComment::STATUS_SCREENING) {
+                if ($comment->status === MotionComment::STATUS_SCREENING) {
                     $screeningQueue++;
                 }
             }
             if ($screeningQueue > 0) {
                 echo '<div class="commentScreeningQueue">';
-                if ($screeningQueue == 1) {
+                if ($screeningQueue === 1) {
                     echo \Yii::t('amend', 'comments_screening_queue_1');
                 } else {
                     echo str_replace('%NUM%', $screeningQueue, \Yii::t('amend', 'comments_screening_queue_x'));

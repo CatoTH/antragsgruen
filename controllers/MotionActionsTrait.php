@@ -377,6 +377,45 @@ trait MotionActionsTrait
 
     /**
      * @param Motion $motion
+     */
+    private function savePrivateNote(Motion $motion)
+    {
+        $user      = User::getCurrentUser();
+        $noteText  = trim(\Yii::$app->request->post('noteText', ''));
+        $paragraph = IntVal(\Yii::$app->request->post('paragraphNo', -1));
+        if (!$user || $noteText === '') {
+            return;
+        }
+
+        if (\Yii::$app->request->post('sectionId', 0) > 0) {
+            $section = IntVal(\Yii::$app->request->post('sectionId', 0));
+        } else {
+            $section = null;
+        }
+
+        $comment = null;
+        foreach ($motion->comments as $comm) {
+            if ($comm->userId === $user->id && $comm->status === MotionComment::STATUS_PRIVATE &&
+                $comm->paragraph === $paragraph && $comm->sectionId === $section) {
+                $comment = $comm;
+            }
+        }
+        if (!$comment) {
+            $comment = new MotionComment();
+        }
+        $comment->motionId     = $motion->id;
+        $comment->userId       = $user->id;
+        $comment->text         = $noteText;
+        $comment->status       = IComment::STATUS_PRIVATE;
+        $comment->paragraph    = $paragraph;
+        $comment->sectionId    = $section;
+        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment->name         = ($user->name ? $user->name : '-');
+        $comment->save();
+    }
+
+    /**
+     * @param Motion $motion
      * @param int $commentId
      * @param array $viewParameters
      * @throws DB
@@ -413,6 +452,8 @@ trait MotionActionsTrait
             $this->writeComment($motion, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($motion);
+        } elseif (isset($post['savePrivateNote'])) {
+            $this->savePrivateNote($motion);
         }
     }
 
