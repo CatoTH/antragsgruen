@@ -449,6 +449,11 @@
   }
 }
 
+.motionSupportFinishForm, .amendmentSupportFinishForm {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .sectionType0 + .motionTextHolder {
   // Don't let amendment markers be hidden behind the next section
   clear: both;
@@ -646,6 +651,19 @@ iframe.pdfViewer {
     > textarea {
       display: none;
     }
+  }
+}
+
+.personalNoteOpener {
+  margin-top: -20px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  width: 30%;
+  .btn {
+    font-weight: normal;
+  }
+  & + .proposedChangesOpener .btn {
+    margin-top: -30px;
   }
 }
 

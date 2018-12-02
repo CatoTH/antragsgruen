@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.2.0 [not released yet]
+
+- When logged in, users can now add private notes to each motion, amendment and motion paragraph.
+
 ### Version 4.1.1 (2018-12-09)
 
 - In the list of consultations, the newest consultation now appears at the top.

@@ -83,8 +83,6 @@ if ($supportCollectingStatus) {
 if ($amendment->canFinishSupportCollection()) {
     echo Html::beginForm('', 'post', ['class' => 'amendmentSupportFinishForm']);
 
-    echo '<div style="text-align: center; margin-bottom: 20px;">';
-
     echo '<button type="submit" name="amendmentSupportFinish" class="btn btn-success">';
     echo \Yii::t('amend', 'support_finish_btn');
     echo '</button>';
