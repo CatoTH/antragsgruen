@@ -24,4 +24,5 @@ return [
     'status_screening'        => 'Not screened yet',
     'status_visible'          => 'Visible',
     'status_deleted'          => 'Deleted',
+    'status_private'          => 'Private',
 ];

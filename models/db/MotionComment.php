@@ -32,10 +32,6 @@ use yii\db\ActiveQuery;
  */
 class MotionComment extends IComment
 {
-    const STATUS_VISIBLE   = 0;
-    const STATUS_DELETED   = -1;
-    const STATUS_SCREENING = 1;
-
     /**
      */
     public function init()
@@ -117,7 +113,8 @@ class MotionComment extends IComment
     public function getParentComment()
     {
         return $this->hasOne(MotionComment::class, ['id' => 'parentCommentId'])
-            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
     /**
@@ -126,7 +123,8 @@ class MotionComment extends IComment
     public function getReplies()
     {
         return $this->hasMany(MotionComment::class, ['parentCommentId' => 'id'])
-            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
     /**
@@ -181,6 +179,9 @@ class MotionComment extends IComment
      */
     public function addToFeed(RSSExporter $feed)
     {
+        if ($this->status === static::STATUS_PRIVATE) {
+            return;
+        }
         $feed->addEntry(
             UrlHelper::createMotionCommentUrl($this),
             \Yii::t('motion', 'comment_for') . ': ' . $this->getMotionTitle(),
@@ -233,6 +234,9 @@ class MotionComment extends IComment
      */
     public function logToConsultationLog()
     {
+        if ($this->status === static::STATUS_PRIVATE) {
+            return;
+        }
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::MOTION_COMMENT, $this->id);
     }
 
