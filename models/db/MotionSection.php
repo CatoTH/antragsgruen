@@ -222,9 +222,14 @@ class MotionSection extends IMotionSection
 
             if ($includeComments) {
                 $paragraph->comments = [];
+                $paragraph->privateComment = null;
                 foreach ($this->comments as $comment) {
-                    if ($comment->paragraph == $paraNo) {
-                        $paragraph->comments[] = $comment;
+                    if ($comment->paragraph === $paraNo) {
+                        if ($comment->status === IComment::STATUS_PRIVATE) {
+                            $paragraph->privateComment = $comment;
+                        } else {
+                            $paragraph->comments[] = $comment;
+                        }
                     }
                 }
             }

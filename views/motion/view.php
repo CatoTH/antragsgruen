@@ -48,6 +48,10 @@ $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimali
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
+$hasPrivateComments = count(array_filter($motion->comments, function (MotionComment $comment) {
+    return $comment->status === \app\models\db\IComment::STATUS_PRIVATE;
+})) > 0;
+
 if ($motion->isResolution()) {
     echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 } else {
@@ -101,9 +105,9 @@ if ($motion->canFinishSupportCollection()) {
 
 echo '</div>';
 
-if (User::getCurrentUser()) {
+if (User::getCurrentUser() && !$hasPrivateComments) {
     ?>
-    <div class="personalNoteOpener">
+    <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm">
             <span class="glyphicon glyphicon-pushpin"></span>
             <?= \Yii::t('motion', 'private_notes') ?>
@@ -267,7 +271,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
                 echo '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
             }
             $aename = $amend->titlePrefix;
-            if ($aename == '') {
+            if ($aename === '') {
                 $aename = $amend->id;
             }
             $amendLink     = UrlHelper::createAmendmentUrl($amend);

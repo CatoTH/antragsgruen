@@ -89,6 +89,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     } else {
         echo $paragraph->origStr;
     }
+    ?>
+    <div class="privateParagraphNoteOpener">
+        <button class="btn btn-link btn-xs">
+            <?= \Yii::t('motion', 'private_notes') ?>
+            <span class="glyphicon glyphicon-pushpin"></span>
+        </button>
+    </div>
+    <?php
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
@@ -111,8 +119,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo str_replace('###LINENUMBER###', '', $amendmentSection->strDiff);
         echo '</div>';
 
-        // Seems to be necessary to limit memory consumption
-        // Problem can be seen e.g. at https://bdk.antragsgruen.de/39/motion/144
+        // Limit memory consumption
         unset($amParas);
         unset($amendmentSection->amendmentSection);
         unset($amendmentSection);

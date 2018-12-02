@@ -654,17 +654,71 @@ iframe.pdfViewer {
   }
 }
 
-.personalNoteOpener {
+.motionData {
+  .privateNotes {
+    th {
+      padding-top: 25px;
+    }
+    td {
+      padding-top: 20px;
+    }
+    blockquote {
+      margin-left: 0;
+      cursor: pointer;
+    }
+    textarea {
+      line-height: 1.1;
+      height: 50px;
+      width: 100%;
+      @media screen and (min-width: 800px) {
+        width: calc(100% - 110px);
+      }
+    }
+    .btn {
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+    .btnEdit {
+      margin-left: -30px;
+      margin-top: -1px;
+      float: left;
+    }
+  }
+}
+
+.privateNoteOpener {
   margin-top: -20px;
   margin-bottom: 10px;
   padding-left: 10px;
   width: 30%;
+
   .btn {
     font-weight: normal;
   }
+
   & + .proposedChangesOpener .btn {
     margin-top: -30px;
   }
+}
+
+
+.privateParagraphNoteOpener {
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  opacity: 0.3;
+
+  .btn {
+    font-weight: normal;
+  }
+}
+
+ul + .privateParagraphNoteOpener, ol + .privateParagraphNoteOpener {
+  left: 85px;
+}
+
+blockquote + .privateParagraphNoteOpener {
+  left: 100px;
 }
 
 .motionChangeView {
