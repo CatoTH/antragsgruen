@@ -7,6 +7,7 @@ class Layout
     /** @var string */
     public $template;
     public $assetRoot;
+    public $pluginRoot;
     public $language = 'ngerman'; // english
 
     public $title;

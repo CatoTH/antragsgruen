@@ -14,17 +14,18 @@ use yii\helpers\Html;
  * @var Amendment[] $amendments
  */
 
-$layout            = new Layout();
-$layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-$layout->template  = $texTemplate->texLayout;
-$layout->author    = \Yii::t('export', 'default_creator');
-$layout->title     = $motion->getTitleWithPrefix();
+$layout             = new Layout();
+$layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+$layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+$layout->template   = $texTemplate->texLayout;
+$layout->author     = \Yii::t('export', 'default_creator');
+$layout->title      = $motion->getTitleWithPrefix();
 
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
 try {
-    $exporter = new Exporter($layout, $params);
-    $contents = [];
+    $exporter   = new Exporter($layout, $params);
+    $contents   = [];
     $contents[] = \app\views\motion\LayoutHelper::renderTeX($motion);
 
     foreach ($amendments as $amendment) {

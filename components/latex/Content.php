@@ -18,4 +18,7 @@ class Content
     public $imageData         = [];
     public $lineLength;
     public $agendaItemName    = '';
+    public $publicationDate   = '';
+    public $typeName          = '';
+    public $logoData          = null;
 }

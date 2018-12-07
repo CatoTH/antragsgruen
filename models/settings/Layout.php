@@ -6,6 +6,7 @@ use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
+use app\models\db\ConsultationFile;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
 use yii\base\Action;
@@ -472,7 +473,7 @@ class Layout
         $controller   = \Yii::$app->controller;
         $resourceBase = $controller->getParams()->resourceBase;
 
-        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl != '') {
+        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl !== '') {
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
             $filename = basename($path['path']);
             $filename = substr($filename, 0, strrpos($filename, '.'));
@@ -482,7 +483,7 @@ class Layout
                 $filename
             );
             $logoUrl  = $controller->consultation->getSettings()->logoUrl;
-            if (!isset($path['host']) && $logoUrl[0] != '/') {
+            if (!isset($path['host']) && $logoUrl[0] !== '/') {
                 $logoUrl = $resourceBase . $logoUrl;
             }
             return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
@@ -497,7 +498,7 @@ class Layout
      */
     protected function isRobotsIndexDefault($action)
     {
-        if (\app\models\settings\AntragsgruenApp::getInstance()->mode === 'sandbox') {
+        if (AntragsgruenApp::getInstance()->mode === 'sandbox') {
             return false;
         }
         if ($this->consultation && $this->consultation->getSettings()->maintenanceMode) {

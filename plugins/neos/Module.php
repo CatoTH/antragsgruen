@@ -26,7 +26,7 @@ class Module extends ModuleBase
     public static function getProvidedLayouts($view = null)
     {
         if ($view) {
-            $asset = ThumbnailAssets::register($view);
+            $asset     = ThumbnailAssets::register($view);
             $thumbBase = $asset->baseUrl;
         } else {
             $thumbBase = '/';
@@ -34,9 +34,9 @@ class Module extends ModuleBase
 
         return [
             'std' => [
-                'title'  => 'NEOS',
-                'preview'     => $thumbBase . '/layout-preview-neos.png',
-                'bundle' => Assets::class,
+                'title'   => 'NEOS',
+                'preview' => $thumbBase . '/layout-preview-neos.png',
+                'bundle'  => Assets::class,
             ]
         ];
     }
@@ -78,6 +78,17 @@ class Module extends ModuleBase
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultLogo()
+    {
+        return [
+            'image/png',
+            \Yii::$app->basePath . '/plugins/neos/assets/neos-antragsschmiede.png'
         ];
     }
 }
