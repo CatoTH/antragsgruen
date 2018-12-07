@@ -28,6 +28,10 @@ export class MotionMergeAmendmentsPublic {
         this.$draftContent.find(".appendHint").each((i, el) => {
             let $el = $(el),
                 amendmentId = $el.data("amendment-id");
+            if (amendmentId === undefined) {
+                $el = $el.parents("[data-amendment-id]").first();
+                amendmentId = $el.data("amendment-id");
+            }
             if (amendmentId) {
                 $el.addClass("amendmentAjaxTooltip");
                 $el.data("initialized", "0");
