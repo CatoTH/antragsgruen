@@ -93,6 +93,17 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
+if (User::getCurrentUser() && !$amendment->getPrivateComment(null, -1)) {
+    ?>
+    <div class="privateNoteOpener">
+        <button class="btn btn-link btn-sm">
+            <span class="glyphicon glyphicon-pushpin"></span>
+            <?= \Yii::t('motion', 'private_notes') ?>
+        </button>
+    </div>
+    <?php
+}
+
 if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
     if (User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
         ?>

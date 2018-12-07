@@ -35,6 +35,7 @@ class MotionShow {
 
         this.markMovedParagraphs();
         this.initPrivateComments();
+        this.initCmdEnterSubmit();
     }
 
     private markMovedParagraphs() {
@@ -168,6 +169,15 @@ class MotionShow {
                 $paragraph.find("> .textOrig").removeClass("hidden");
                 $paragraph.find("> .textAmendment").addClass("hidden");
             });
+        });
+    }
+
+    private initCmdEnterSubmit() {
+        $(document).on('keypress', 'form textarea', (ev) => {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+                let $textarea = $(ev.currentTarget);
+                $textarea.parents("form").first().find("button[type=submit]").trigger("click");
+            }
         });
     }
 }

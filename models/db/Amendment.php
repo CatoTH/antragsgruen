@@ -41,6 +41,7 @@ use yii\helpers\Html;
  * @property int $globalAlternative
  *
  * @property AmendmentComment[] $comments
+ * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
  * @property Amendment $proposalReference
@@ -100,7 +101,31 @@ class Amendment extends IMotion implements IRSSItem
     public function getComments()
     {
         return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED)
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_PRIVATE);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrivateComments()
+    {
+        $userId = User::getCurrentUser()->id;
+        return $this->hasMany(AmendmentComment::class, ['amendmentId' => 'id'])
+            ->andWhere(AmendmentComment::tableName() . '.status = ' . AmendmentComment::STATUS_PRIVATE)
+            ->andWhere(AmendmentComment::tableName() . '.userId = ' . IntVal($userId));
+    }
+
+    /**
+     * @return AmendmentComment|null
+     */
+    public function getPrivateComment()
+    {
+        // One-to-many-relashionship, but with the current version there can be only 0 or 1 comments
+        foreach ($this->privateComments as $comment) {
+            return $comment;
+        }
+        return null;
     }
 
     /**

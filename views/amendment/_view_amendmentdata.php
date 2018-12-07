@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -15,39 +16,86 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
 $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
-echo '<table class="motionDataTable">
-                <tr>
-                    <th>' . Yii::t('amend', 'motion') . ':</th>
-                    <td>' .
-    Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)) . '</td>
-                </tr>
-                <tr>
-                    <th>' . Yii::t('amend', 'initiator'), ':</th>
-                    <td>';
+?>
+<table class="motionDataTable">
+    <tr>
+        <th><?= Yii::t('amend', 'motion') ?>:</th>
+        <td><?= Html::a(Html::encode($motion->title), UrlHelper::createMotionUrl($motion)) ?></td>
+    </tr>
+    <tr>
+        <th><?= Yii::t('amend', 'initiator') ?>:</th>
+        <td><?= MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation) ?></td>
+    </tr>
+    <tr class="statusRow">
+        <th><?= \Yii::t('amend', 'status') ?>:</th>
+        <td>
+            <?php
+            $screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
+            echo $amendment->getFormattedStatus();
+            ?>
+        </td>
+    </tr>
+    <?php
+    $proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+    if (($amendment->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {
+        ?>
+        <tr class="proposedStatusRow">
+            <th><?= \Yii::t('amend', 'proposed_status') ?>:</th>
+            <td class="str"><?= $amendment->getFormattedProposalStatus(true) ?></td>
+        </tr>
+        <?php
+    }
+    if ($amendment->dateResolution) {
+        ?>
+        <tr>
+            <th><?= \Yii::t('amend', 'resoluted_on') ?>:</th>
+            <td><?= Tools::formatMysqlDate($amendment->dateResolution) ?></td>
+        </tr>
+        <?php
+    }
+    ?>
+    <tr>
+        <th><?= \Yii::t('amend', ($amendment->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
+        <td><?= Tools::formatMysqlDateTime($amendment->dateCreation) ?></td>
+    </tr>
+    <?php
 
-echo MotionLayoutHelper::formatInitiators($amendment->getInitiators(), $consultation);
 
-echo '</td></tr>
-                <tr class="statusRow"><th>' . \Yii::t('amend', 'status') . ':</th><td>';
+    if (User::getCurrentUser()) {
+        $comment = $amendment->getPrivateComment();
 
-$screeningMotionsShown = $consultation->getSettings()->screeningMotionsShown;
-echo $amendment->getFormattedStatus();
-echo '</td>
-                </tr>';
+        $str = '';
+        if ($comment) {
+            $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
+            $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit">' .
+                '</span></button>';
+            $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
+        }
+        $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
+        $str .= '<textarea class="form-control" name="noteText" title="' . \Yii::t('motion', 'private_notes') . '">';
+        if ($comment) {
+            $str .= Html::encode($comment->text);
+        }
+        $str .= '</textarea>';
+        $str .= '<input type="hidden" name="paragraphNo" value="-1">';
+        $str .= '<input type="hidden" name="sectionId" value="">';
+        $str .= '<button type="submit" name="savePrivateNote" class="btn btn-success">' .
+            \Yii::t('base', 'save') . '</button>';
+        $str .= Html::endForm();
 
-$proposalAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
-if (($amendment->isProposalPublic() && $amendment->proposalStatus) || $proposalAdmin) {
-    echo '<tr class="proposedStatusRow"><th>' . \Yii::t('amend', 'proposed_status') . ':</th><td class="str">';
-    echo $amendment->getFormattedProposalStatus(true);
-    echo '</td></tr>';
-}
+        ?>
+        <tr class="privateNotes<?= ($comment ? '' : ' hidden') ?>">
+            <th><?= \Yii::t('motion', 'private_notes') ?></th>
+            <td><?= $str ?></td>
+        </tr>
+        <?php
 
-if ($amendment->dateResolution != '') {
-    echo '<tr><th>' . \Yii::t('amend', 'resoluted_on') . ':</th>
-       <td>' . Tools::formatMysqlDate($amendment->dateResolution) . '</td>
-     </tr>';
-}
-echo '<tr><th>' . \Yii::t('amend', ($amendment->isSubmitted() ? 'submitted_on' : 'created_on')) . ':</th>
-       <td>' . Tools::formatMysqlDateTime($amendment->dateCreation) . '</td>
-                </tr>';
-echo '</table>';
+        $motionData[] = [
+            'rowClass' => 'privateNotes' . ($comment ? '' : ' hidden'),
+            'title'    => \Yii::t('motion', 'private_notes'),
+            'content'  => $str,
+        ];
+    }
+
+    ?>
+</table>

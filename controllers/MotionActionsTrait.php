@@ -415,6 +415,9 @@ trait MotionActionsTrait
         $comment->save();
 
         $motion->refresh();
+
+        $this->redirect(UrlHelper::createMotionCommentUrl($comment));
+        \yii::$app->end();
     }
 
     /**

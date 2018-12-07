@@ -337,12 +337,47 @@ trait AmendmentActionsTrait
     }
 
     /**
+     * @param (Amendment $amendment
+     * @throws \Throwable
+     */
+    private function savePrivateNote(Amendment $amendment)
+    {
+        $user     = User::getCurrentUser();
+        $noteText = trim(\Yii::$app->request->post('noteText', ''));
+        if (!$user) {
+            return;
+        }
+
+        $comment = $amendment->getPrivateComment();
+        if ($comment && $noteText === '') {
+            $comment->delete();
+            $amendment->refresh();
+            return;
+        }
+
+        if (!$comment) {
+            $comment = new AmendmentComment();
+        }
+        $comment->amendmentId  = $amendment->id;
+        $comment->userId       = $user->id;
+        $comment->text         = $noteText;
+        $comment->status       = IComment::STATUS_PRIVATE;
+        $comment->paragraph    = 0;
+        $comment->dateCreation = date('Y-m-d H:i:s');
+        $comment->name         = ($user->name ? $user->name : '-');
+        $comment->save();
+
+        $amendment->refresh();
+    }
+
+    /**
      * @param Amendment $amendment
      * @param int $commentId
      * @param array $viewParameters
      * @throws DB
      * @throws FormError
      * @throws Internal
+     * @throws \Throwable
      */
     private function performShowActions(Amendment $amendment, $commentId, &$viewParameters)
     {
@@ -370,6 +405,8 @@ trait AmendmentActionsTrait
             $this->writeComment($amendment, $viewParameters);
         } elseif (isset($post['setProposalAgree'])) {
             $this->setProposalAgree($amendment);
+        } elseif (isset($post['savePrivateNote'])) {
+            $this->savePrivateNote($amendment);
         }
     }
 

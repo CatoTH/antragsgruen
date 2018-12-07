@@ -106,9 +106,8 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             <?php
         }
         if ($comment) {
-            $id = 'privateNote_' . $section->sectionId . '_' . $paragraphNo;
             ?>
-            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="<?= $id ?>">
+            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="comm<?= $comment->id ?>">
                 <button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>
                 <?= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') ?>
             </blockquote>

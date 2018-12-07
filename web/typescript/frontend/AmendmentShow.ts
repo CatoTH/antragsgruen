@@ -11,6 +11,9 @@ class AmendmentShow {
         if (s.length == 2) {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
+
+        this.initPrivateComments();
+        this.initCmdEnterSubmit();
     }
 
     private delSubmit(ev) {
@@ -28,6 +31,29 @@ class AmendmentShow {
         if (window.open(target, '_blank', 'width=600,height=460')) {
             ev.preventDefault();
         }
+    }
+
+    private initCmdEnterSubmit() {
+        $(document).on('keypress', 'form textarea', (ev) => {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+                let $textarea = $(ev.currentTarget);
+                $textarea.parents("form").first().find("button[type=submit]").trigger("click");
+            }
+        });
+    }
+
+    private initPrivateComments()
+    {
+        $('.privateNoteOpener').click(() => {
+            $('.privateNoteOpener').remove();
+            $('.motionData .privateNotes').removeClass('hidden');
+            $('.motionData .privateNotes textarea').focus();
+        });
+        $('.privateNotes blockquote').click(() => {
+            $('.privateNotes blockquote').addClass('hidden');
+            $('.privateNotes form').removeClass('hidden');
+            $('.privateNotes textarea').focus();
+        });
     }
 }
 

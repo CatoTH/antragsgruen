@@ -197,7 +197,7 @@ if (User::getCurrentUser()) {
 
     $str = '';
     if ($comment) {
-        $str .= '<blockquote class="privateNote">';
+        $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
         $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>';
         $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
     }

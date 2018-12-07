@@ -789,7 +789,7 @@ iframe.pdfViewer {
     position: absolute;
     bottom: 0;
     left: 40px;
-    opacity: 0.3;
+    opacity: 0.5;
 
     .btn {
       font-weight: normal;
@@ -810,7 +810,7 @@ iframe.pdfViewer {
 
   .btn {
     margin-top: 2px;
-    margin-left: 5px;
+    margin-left: 0;
   }
 
   .btnEdit {
@@ -833,6 +833,9 @@ ul + .privateParagraphNoteHolder, ol + .privateParagraphNoteHolder {
   blockquote {
     margin-left: 45px;
   }
+  form {
+    margin-left: 40px;
+  }
 }
 
 blockquote + .privateParagraphNoteHolder {
@@ -841,6 +844,9 @@ blockquote + .privateParagraphNoteHolder {
   }
   blockquote {
     margin-left: 60px;
+  }
+  form {
+    margin-left: 55px;
   }
 }
 
