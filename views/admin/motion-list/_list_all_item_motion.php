@@ -30,17 +30,20 @@ if ($colMark) {
 }
 echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
-echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
+echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
 if ($editUrl) {
     echo Html::a(Html::encode(trim($entry->title) != '' ? $entry->title : '-'), $editUrl);
 } else {
-    echo Html::encode(trim($entry->title) != '' ? $entry->title : '-');
+    echo Html::encode(trim($entry->title) !== '' ? $entry->title : '-');
 }
 echo '</span></td>';
 echo '<td>' . Html::encode($motionStatuses[$entry->status]);
-if ($entry->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
+}
+if ($entry->statusString !== '') {
+    echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';
 if ($colProposals) {
@@ -54,7 +57,7 @@ if ($colProposals) {
 }
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {
-    if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
         $initiators[] = $initiator->organization;
     } else {
         $initiators[] = $initiator->name;
@@ -69,7 +72,7 @@ if ($hasTags) {
     echo '<td>' . Html::encode(implode(', ', $tags)) . '</td>';
 }
 echo '<td class="exportCol">';
-if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout != -1) {
+if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
     echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
     echo Html::a(
         \Yii::t('admin', 'list_pdf_amend'),

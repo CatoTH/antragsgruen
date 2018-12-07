@@ -4,6 +4,7 @@
 
 - In the list of consultations, the newest consultation now appears at the top.
 - Clicking on changes in the public version of a merging draft now always opens a tooltip with the summary of the amendment, including the proposers of that amendment.
+- The custom status string is now also shown in the admin motion list.
 - Bugfix: the date of the last saved draft when merging motions was not set correctly on Safari.
 
 ## Version 4.1.0 (2018-11-17)

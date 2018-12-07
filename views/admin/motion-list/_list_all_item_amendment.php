@@ -35,15 +35,15 @@ echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
 echo '<a href="' . Html::encode($viewUrl) . '">';
-if ($lastMotion && $entry->motionId == $lastMotion->id) {
+if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";
 }
-echo Html::encode($entry->titlePrefix != '' ? $entry->titlePrefix : '-') . '</a></td>';
+echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
-if ($lastMotion && $entry->motionId == $lastMotion->id) {
+if ($lastMotion && $entry->motionId === $lastMotion->id) {
     echo "&#8627;";
 }
-$title = (trim($entry->getMyMotion()->title) != '' ? $entry->getMyMotion()->title : '-');
+$title = (trim($entry->getMyMotion()->title) !== '' ? $entry->getMyMotion()->title : '-');
 if ($editUrl) {
     echo Html::a(Html::encode($title), $editUrl);
 } else {
@@ -51,8 +51,11 @@ if ($editUrl) {
 }
 echo '</span></td>';
 echo '<td>' . Html::encode($amendmentStatuses[$entry->status]);
-if ($entry->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+if ($entry->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
+}
+if ($entry->statusString !== '') {
+    echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';
 
@@ -64,7 +67,7 @@ if ($colProposals) {
     $name = $entry->getFormattedProposalStatus();
     echo Html::a(($name ? $name : '-'), UrlHelper::createAmendmentUrl($entry));
 
-    if ($entry->proposalStatus == Amendment::STATUS_MODIFIED_ACCEPTED) {
+    if ($entry->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
         echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right"></span> ' .
             Html::a(\Yii::t('admin', 'amend_edit_text'), $url) . '</div>';
@@ -74,7 +77,7 @@ if ($colProposals) {
 
 $initiators = [];
 foreach ($entry->getInitiators() as $initiator) {
-    if ($initiator->personType == \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
         $initiators[] = $initiator->organization;
     } else {
         $initiators[] = $initiator->name;
@@ -85,7 +88,7 @@ if ($hasTags) {
     echo '<td></td>';
 }
 echo '<td class="exportCol">';
-if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout != -1) {
+if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
     echo Html::a('PDF', UrlHelper::createAmendmentUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
 }
 echo Html::a('ODT', UrlHelper::createAmendmentUrl($entry, 'odt'), ['class' => 'odt']);

@@ -1211,8 +1211,8 @@ class Amendment extends IMotion implements IRSSItem
             default:
                 $status .= Html::encode($statusNames[$this->status]);
         }
-        if (trim($this->statusString) != '') {
-            $status .= " <small>(" . Html::encode($this->statusString) . ")</small>";
+        if (trim($this->statusString) !== '') {
+            $status .= ' <small>(' . Html::encode($this->statusString) . ')</small>';
         }
 
         return Layout::getFormattedAmendmentStatus($status, $this);
