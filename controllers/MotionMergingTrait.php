@@ -68,7 +68,7 @@ trait MotionMergingTrait
                 'motion' => $motion,
                 'draft'  => $draft
             ]),
-            'date'    => Tools::formatMysqlDateTime($draft->dateCreation),
+            'date'    => ($draft->getDateTime() ? $draft->getDateTime()->format('c') : ''),
         ]);
     }
 
@@ -396,6 +396,9 @@ trait MotionMergingTrait
             \Yii::$app->request->post('sections', [])
         );
 
-        return json_encode(['success' => true, 'date' => $draft->dateCreation]);
+        return json_encode([
+            'success' => true,
+            'date'    => ($draft->getDateTime() ? $draft->getDateTime()->format('c') : ''),
+        ]);
     }
 }

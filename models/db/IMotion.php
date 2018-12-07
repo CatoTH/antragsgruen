@@ -488,6 +488,18 @@ abstract class IMotion extends ActiveRecord
     }
 
     /**
+     * @return \DateTime|null
+     */
+    public function getDateTime()
+    {
+        if ($this->dateCreation) {
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation);
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @return bool
      */
     public function isSupportingPossibleAtThisStatus()

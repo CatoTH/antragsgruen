@@ -3,6 +3,7 @@
 ### Version 4.1.1 [not released yet]
 
 - In the list of consultations, the newest consultation now appears at the top.
+- Bugfix: the date of the last saved draft when merging motions was not set correctly on Safari.
 
 ## Version 4.1.0 (2018-11-17)
 
