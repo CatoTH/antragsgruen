@@ -31,12 +31,12 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 5.6. Recommended: 7.2. Required packages for Debian Linux:
+- PHP >= 5.6. Recommended: 7.2+. Required packages for Debian Linux:
 
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php7.2 php7.2-cli php7.2-fpm php7.2-intl php7.2-json php7.2-gd \
-                php7.2-mysql php7.2-opcache php7.2-curl php7.2-xml php7.2-mbstring php7.2-zip
+apt-get install php7.3 php7.3-cli php7.3-fpm php7.3-intl php7.3-json php7.3-gd \
+                php7.3-mysql php7.3-opcache php7.3-curl php7.3-xml php7.3-mbstring php7.3-zip
 ```
 
 - Apache or nginx. Example files are provided here:
@@ -297,7 +297,7 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 #### Running
 
 * Start Selenium: ```
-java -jar selenium-server-standalone-3.14.0.jar```
+java -jar selenium-server-standalone-3.141.59.jar```
 * Run all acceptance tests: ```
 run run test:acceptance```
 * Run all unit tests: ```
