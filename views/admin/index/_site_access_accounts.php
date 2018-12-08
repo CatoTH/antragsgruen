@@ -46,6 +46,7 @@ if (count($consultation->userPrivileges) > 0) {
             <th class="emailCol"><?= \Yii::t('admin', 'siteacc_user_login') ?></th>
             <th class="accessViewCol"><?= \Yii::t('admin', 'siteacc_user_read') ?></th>
             <th class="accessCreateCol"><?= \Yii::t('admin', 'siteacc_user_write') ?></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -56,23 +57,37 @@ if (count($consultation->userPrivileges) > 0) {
             }
             $checkView   = ($privilege->privilegeView === 1 ? 'checked' : '');
             $checkCreate = ($privilege->privilegeCreate === 1 ? 'checked' : '');
+            $user        = $privilege->user;
             ?>
-            <tr class="user<?= $privilege->userId ?>">
-                <td class="nameCol"><?= Html::encode($privilege->user->name) ?></td>
-                <td class="emailCol"><?= Html::encode($privilege->user->getAuthName()) ?></td>
+            <tr class="user<?= $user->id ?>">
+                <td class="nameCol"><?= Html::encode($user->name) ?></td>
+                <td class="emailCol"><?= Html::encode($user->getAuthName()) ?></td>
                 <td class="accessViewCol">
                     <label>
                         <span class="sr-only"><?= \Yii::t('admin', 'siteacc_perm_read') ?></span>
-                        <input type="checkbox" name="access[<?= $privilege->userId ?>][]"
+                        <input type="checkbox" name="access[<?= $user->id ?>][]"
                                value="view" <?= $checkView ?>>
                     </label>
                 </td>
                 <td class="accessCreateCol">
                     <label>
                         <span class="sr-only"><?= \Yii::t('admin', 'siteacc_perm_write') ?></span>
-                        <input type="checkbox" name="access[<?= $privilege->userId ?>][]"
+                        <input type="checkbox" name="access[<?= $user->id ?>][]"
                                value="create" <?= $checkCreate ?>>
                     </label>
+                </td>
+                <td class="deleteCol">
+                    <?php
+                    if ($user->id !== \app\models\db\User::getCurrentUser()->id) {
+                        ?>
+                        <button type="button" data-id="<?= $user->id ?>" class="link deleteUser"
+                                data-name="<?= Html::encode($user->name . ' / ' . $user->getAuthName()) ?>"
+                                title="<?= \Yii::t('admin', 'siteacc_del_btn') ?>">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <?php
+                    }
+                    ?>
                 </td>
             </tr>
             <?php
@@ -94,13 +109,13 @@ echo Html::beginForm('', 'post', ['id' => 'accountsCreateForm', 'class' => 'admi
     <h3 class="lightgreen"><?= \Yii::t('admin', 'siteacc_new_users') ?></h3>
     <div class="addUserTypeChooser content">
         <button class="btn btn-default addUsersOpener email" type="button" data-type="email">
-            Per E-Mail
+            <?= \Yii::t('admin', 'siteacc_add_email_btn') ?>
         </button>
         <?php
         if ($hasSaml) {
             ?>
             <button class="btn btn-default addUsersOpener samlWW" type="button" data-type="samlWW">
-                Per Grünes Netz
+                <?= \Yii::t('admin', 'siteacc_add_ww_btn') ?>
             </button>
             <?php
         }

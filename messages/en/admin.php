@@ -225,6 +225,8 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_add_name_title'   => 'Wurzelwerk username / E-mail address',
     'siteacc_add_name_place'   => 'Name',
     'siteacc_add_btn'          => 'Add',
+    'siteacc_del_btn'          => 'Delete',
+    'siteacc_user_del_done'    => 'The user was remove from this consultation.',
     'siteacc_accounts_title'   => 'User accounts',
     'siteacc_email_text_pre'   => 'Hi,
 

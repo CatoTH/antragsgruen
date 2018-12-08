@@ -5,6 +5,7 @@ class SiteAccess {
         this.initSite();
         this.initUserList();
         this.initAddUsers();
+        this.initDelUser();
         this.initAdmins();
     }
 
@@ -57,6 +58,23 @@ class SiteAccess {
         });
     }
 
+    private initDelUser() {
+        $(".accountListTable .deleteUser").on("click", (ev) => {
+            ev.preventDefault();
+            const $button = $(ev.currentTarget),
+                $form = $(ev.currentTarget).parents("form").first();
+
+            const msg = __t("admin", "removeUserConfirm").replace(/%NAME%/, $button.data("name"));
+            bootbox.confirm(msg, (result) => {
+                if (result) {
+                    let id = $button.data("id");
+                    $form.append('<input type="hidden" name="deleteUser" value="' + id + '">');
+                    $form.submit();
+                }
+            });
+        });
+    }
+
     private initUserList() {
         $('.accountListTable .accessViewCol input[type=checkbox]').change(function () {
             if (!$(this).prop("checked")) {
@@ -77,7 +95,7 @@ class SiteAccess {
             let $button = $(ev.currentTarget),
                 $form = $(ev.currentTarget).parents("form").first();
 
-            bootbox.confirm(__t("admin", "removeAdminConfirm"), function (result) {
+            bootbox.confirm(__t("admin", "removeAdminConfirm"), (result) => {
                 if (result) {
                     let id = $button.data("id");
                     $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');

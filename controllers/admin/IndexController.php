@@ -234,8 +234,8 @@ class IndexController extends AdminBase
                 $key   = urldecode($key);
                 $found = false;
                 foreach ($consultation->texts as $text) {
-                    if ($text->category == $category && $text->textId == $key) {
-                        if ($val == '') {
+                    if ($text->category === $category && $text->textId === $key) {
+                        if ($val === '') {
                             $text->delete();
                         } else {
                             $text->text = HTMLTools::cleanHtmlTranslationString($val);
@@ -244,7 +244,7 @@ class IndexController extends AdminBase
                         $found = true;
                     }
                 }
-                if (!$found && $val != '') {
+                if (!$found && $val !== '') {
                     $text                 = new ConsultationText();
                     $text->consultationId = $consultation->id;
                     $text->category       = $category;
@@ -325,10 +325,10 @@ class IndexController extends AdminBase
         if ($this->isPostSet('delete') && count($post['delete']) == 1) {
             foreach ($site->consultations as $consultation) {
                 $keys = array_keys($post['delete']);
-                if ($consultation->id == $keys[0] && $site->currentConsultationId != $consultation->id) {
+                if ($consultation->id === $keys[0] && $site->currentConsultationId !== $consultation->id) {
                     $consultation->setDeleted();
                     \yii::$app->session->setFlash('success', \Yii::t('admin', 'cons_delete_done'));
-                    if ($this->consultation->id == $consultation->id) {
+                    if ($this->consultation->id === $consultation->id) {
                         $fallback = $this->site->currentConsultation->urlPath;
 
                         $url = UrlHelper::createUrl(['admin/index/siteconsultations', 'consultationPath' => $fallback]);

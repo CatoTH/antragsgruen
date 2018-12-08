@@ -428,12 +428,19 @@ trait SiteAccessTrait
             }
         }
 
-        if ($this->isPostSet('saveUsers')) {
+        if ($this->isPostSet('deleteUser')) {
+            $toDeleteUserId = IntVal($post['deleteUser']);
+            foreach ($this->consultation->userPrivileges as $privilege) {
+                if ($privilege->userId === $toDeleteUserId) {
+                    $privilege->delete();
+                    \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_del_done'));
+                }
+            }
+            $this->consultation->refresh();
+        } elseif ($this->isPostSet('saveUsers')) {
             $this->saveUsers();
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_saved'));
-        }
-
-        if ($this->isPostSet('addUsers')) {
+        } elseif ($this->isPostSet('addUsers')) {
             if (trim(\Yii::$app->request->post('emailAddresses', '')) !== '') {
                 $this->addUsersEmail();
             }

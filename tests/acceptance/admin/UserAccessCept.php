@@ -157,3 +157,13 @@ $I->loginAsStdUser();
 $I->seeElement('#sidebar .createMotion');
 $I->click('#sidebar .createMotion');
 $I->see('Antrag stellen', 'h1');
+
+
+$I->wantTo('remove her from the list again');
+$I->logout();
+$I->loginAsStdAdmin();
+$I->gotoStdAdminPage()->gotoSiteAccessPage();
+$I->click('.accountListTable .user2 .deleteUser');
+$I->seeBootboxDialog('testuser@example.org');
+$I->acceptBootboxConfirm();
+$I->dontSeeElement('.accountListTable .user2');

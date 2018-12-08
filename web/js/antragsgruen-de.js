@@ -37,6 +37,7 @@ ANTRAGSGRUEN_STRINGS = {
         "agendaAddEntry": "Eintrag hinzufügen",
         "agendaDelEntryConfirm": "Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?",
         "removeAdminConfirm": "Diesem Zugang wirklich die Admin-Rechte entziehen?",
+        "removeUserConfirm": "%NAME% wirklich von DIESER Veranstaltung entfernen? Eingereichte Anträge etc. bleiben erhalten und müssen explizit gelöscht werden.",
         "emailMissingCode": "Im E-Mail-Text muss der Code %ACCOUNT% vorkommen.",
         "emailMissingLink": "Im E-Mail-Text muss der Code %LINK% vorkommen.",
         "emailMissingTo": "Es wurden keine E-Mail-Adressen angegeben.",
