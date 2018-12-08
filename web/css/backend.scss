@@ -651,6 +651,12 @@ label.legend {
   }
 }
 
+.siteAccountListTable {
+  .deleteUser {
+    color: $colorDelLink;
+  }
+}
+
 .sysadminForm {
   text-align: right;
 }

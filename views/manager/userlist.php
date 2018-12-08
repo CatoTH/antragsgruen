@@ -1,4 +1,5 @@
 <?php
+
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\User;
@@ -19,26 +20,48 @@ $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl(
 $layout->addBreadcrumb(\Yii::t('admin', 'users_bc'));
 
 ?>
-<h1><?=\Yii::t('admin', 'index_settings')?></h1>
-<div class="content">
-    <table class="table">
+    <h1><?= \Yii::t('admin', 'users_head') ?></h1>
+<?php
+echo Html::beginForm('', 'post', [
+    'class'                    => 'content',
+    'data-antragsgruen-widget' => 'backend/UserList',
+])
+?>
+    <table class="table siteAccountListTable">
         <thead>
         <tr>
-            <th><?=\Yii::t('admin', 'users_name')?></th>
-            <th><?=\Yii::t('admin', 'users_auth')?></th>
-            <th><?=\Yii::t('admin', 'users_registered')?></th>
+            <th><?= \Yii::t('admin', 'users_name') ?></th>
+            <th><?= \Yii::t('admin', 'users_auth') ?></th>
+            <th><?= \Yii::t('admin', 'users_registered') ?></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <?php
         foreach ($users as $user) {
-            echo '<tr>';
-            echo '<td>' . Html::encode($user->name) . '</td>';
-            echo '<td>' . Html::encode($user->getAuthName()) . '</td>';
-            echo '<td>' . Tools::formatMysqlDateTime($user->dateCreation) . '</td>';
-            echo '</tr>';
+            ?>
+            <tr>
+                <td><?= Html::encode($user->name) ?></td>
+                <td><?= Html::encode($user->getAuthName()) ?></td>
+                <td><?= Tools::formatMysqlDateTime($user->dateCreation) ?></td>
+                <td>
+                    <?php
+                    if ($user->id !== \app\models\db\User::getCurrentUser()->id) {
+                        ?>
+                        <button type="button" data-id="<?= $user->id ?>" class="link deleteUser"
+                                data-name="<?= Html::encode($user->name . ' / ' . $user->getAuthName()) ?>"
+                                title="<?= \Yii::t('admin', 'siteacc_del_btn') ?>">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </button>
+                        <?php
+                    }
+                    ?>
+                </td>
+            </tr>
+            <?php
         }
         ?>
         </tbody>
     </table>
-</div>
+<?php
+echo Html::endForm();

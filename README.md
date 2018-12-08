@@ -299,9 +299,9 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * Start Selenium: ```
 java -jar selenium-server-standalone-3.141.59.jar```
 * Run all acceptance tests: ```
-run run test:acceptance```
+npm run test:acceptance```
 * Run all unit tests: ```
-run run test:unit```
+npm run test:unit```
 * Run a single acceptence-test: ```
 npm run test:acceptance MotionCreateCept```
 

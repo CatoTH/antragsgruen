@@ -23,7 +23,7 @@ class ManagerController extends Base
 
         $currentHost = parse_url(\Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
         $managerHost = parse_url($this->getParams()->domainPlain, PHP_URL_HOST);
-        if ($currentHost != $managerHost) {
+        if ($currentHost !== $managerHost) {
             return $this->redirect($this->getParams()->domainPlain, 301);
         }
 
@@ -131,7 +131,15 @@ class ManagerController extends Base
             return $this->showErrorpage(403, 'Only admins are allowed to access this page.');
         }
 
-        $users = User::find()->orderBy('dateCreation DESC')->all();
+        if ($this->isPostSet('deleteUser')) {
+            $user = User::findOne(['id' => \Yii::$app->request->post('deleteUser')]);
+            if ($user) {
+                $user->deleteAccount();
+                \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_user_del_done'));
+            }
+        }
+
+        $users = User::find()->where('status != ' . IntVal(User::STATUS_DELETED))->orderBy('dateCreation DESC')->all();
 
         return $this->render('userlist', ['users' => $users]);
     }
