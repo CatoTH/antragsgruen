@@ -352,10 +352,9 @@ class IndexController extends AdminBase
     }
 
     /**
-     * @param int $version
      * @return string
      */
-    public function actionOpenslidesusers($version = 1)
+    public function actionOpenslidesusers()
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'text/csv');
@@ -375,15 +374,9 @@ class IndexController extends AdminBase
             }
         }
 
-        if ($version == 2) {
-            return $this->renderPartial('openslides2_user_list', [
-                'users' => $users,
-            ]);
-        } else {
-            return $this->renderPartial('openslides1_user_list', [
-                'users' => $users,
-            ]);
-        }
+        return $this->renderPartial('openslides2_user_list', [
+            'users' => $users,
+        ]);
     }
 
     /**
