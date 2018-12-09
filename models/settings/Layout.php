@@ -473,7 +473,7 @@ class Layout
         $controller   = \Yii::$app->controller;
         $resourceBase = $controller->getParams()->resourceBase;
 
-        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl !== '') {
+        if ($controller->consultation && $controller->consultation->getSettings()->logoUrl) {
             $path     = parse_url($controller->consultation->getSettings()->logoUrl);
             $filename = basename($path['path']);
             $filename = substr($filename, 0, strrpos($filename, '.'));

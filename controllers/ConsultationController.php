@@ -79,7 +79,7 @@ class ConsultationController extends Base
         $newest = Motion::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
-        if ($this->consultation->getSettings()->logoUrl != '') {
+        if ($this->consultation->getSettings()->logoUrl) {
             $feed->setImage($this->consultation->getSettings()->logoUrl);
         } else {
             $feed->setImage('/img/logo.png');
@@ -110,7 +110,7 @@ class ConsultationController extends Base
         $newest = Amendment::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
-        if ($this->consultation->getSettings()->logoUrl != '') {
+        if ($this->consultation->getSettings()->logoUrl) {
             $feed->setImage($this->consultation->getSettings()->logoUrl);
         } else {
             $feed->setImage('/img/logo.png');
@@ -140,7 +140,7 @@ class ConsultationController extends Base
         $newest = IComment::getNewestByConsultation($this->consultation, 20);
 
         $feed = new RSSExporter();
-        if ($this->consultation->getSettings()->logoUrl != '') {
+        if ($this->consultation->getSettings()->logoUrl) {
             $feed->setImage($this->consultation->getSettings()->logoUrl);
         } else {
             $feed->setImage('/img/logo.png');
@@ -180,7 +180,7 @@ class ConsultationController extends Base
         $items = array_slice($items, 0, 20);
 
         $feed = new RSSExporter();
-        if ($this->consultation->getSettings()->logoUrl != '') {
+        if ($this->consultation->getSettings()->logoUrl) {
             $feed->setImage($this->consultation->getSettings()->logoUrl);
         } else {
             $feed->setImage('/img/logo.png');
