@@ -5,6 +5,7 @@ namespace app\components\latex;
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
+use app\models\sectionTypes\Image;
 use app\models\settings\AntragsgruenApp;
 
 class Exporter
@@ -353,14 +354,15 @@ class Exporter
      */
     public static function createLayoutString(Layout $layout)
     {
-        $template                = $layout->template;
-        $template                = str_replace("\r", "", $template);
-        $replaces                = [];
-        $replaces['%LANGUAGE%']  = $layout->language;
-        $replaces['%ASSETROOT%'] = $layout->assetRoot;
-        $replaces['%TITLE%']     = static::encodePlainString($layout->title);
-        $replaces['%AUTHOR%']    = $layout->author;
-        $template                = str_replace(array_keys($replaces), array_values($replaces), $template);
+        $template                 = $layout->template;
+        $template                 = str_replace("\r", "", $template);
+        $replaces                 = [];
+        $replaces['%LANGUAGE%']   = $layout->language;
+        $replaces['%ASSETROOT%']  = $layout->assetRoot;
+        $replaces['%PLUGINROOT%'] = $layout->pluginRoot;
+        $replaces['%TITLE%']      = static::encodePlainString($layout->title);
+        $replaces['%AUTHOR%']     = $layout->author;
+        $template                 = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;
     }
 
@@ -395,6 +397,9 @@ class Exporter
      */
     public static function createContentString(Content $content)
     {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
         $template                         = $content->template;
         $template                         = str_replace("\r", "", $template);
         $replaces                         = [];
@@ -407,13 +412,28 @@ class Exporter
         $replaces['%TEXT%']               = static::createTextWithRightString($content->textMain, $content->textRight);
         $replaces['%INTRODUCTION_BIG%']   = $content->introductionBig;
         $replaces['%INTRODUCTION_SMALL%'] = $content->introductionSmall;
-        $replaces['%APP_TITLE%']          = static::encodePlainString(\Yii::t('export', 'pdf_app_title'));
+        $replaces['%PAGE_LABEL%']         = static::encodePlainString(\Yii::t('export', 'pdf_page_label'));
+        $replaces['%INITIATOR_LABEL%']    = static::encodePlainString(\Yii::t('export', 'Initiators'));
+        $replaces['%PUBLICATION_DATE%']   = static::encodePlainString($content->publicationDate);
+        $replaces['%MOTION_TYPE%']        = static::encodePlainString($content->typeName);
+        $replaces['%TITLE_LABEL%']        = static::encodePlainString(\Yii::t('export', 'title'));
+
+        $replaces['%APP_TITLE%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_title'));
         if ($content->agendaItemName) {
             $replaces['%APP_TOP_LABEL%'] = static::encodePlainString(\Yii::t('export', 'pdf_app_top_label'));
             $replaces['%APP_TOP%']       = static::encodePlainString($content->agendaItemName);
         } else {
             $replaces['%APP_TOP_LABEL%'] = '';
             $replaces['%APP_TOP%']       = '';
+        }
+        if ($content->logoData) {
+            $fileExt                           = Image::getFileExtensionFromMimeType($content->logoData[0]);
+            $filenameBase                      = uniqid('motion-pdf-image') . '.' . $fileExt;
+            $tmpPath                           = $params->getTmpDir() . $filenameBase;
+            $replaces['%LOGO%']                = '\includegraphics[width=4.9cm]{' . $tmpPath . '}';
+            $content->imageData[$filenameBase] = $content->logoData[1];
+        } else {
+            $replaces['%LOGO%'] = '';
         }
         $template = str_replace(array_keys($replaces), array_values($replaces), $template);
         return $template;

@@ -1,0 +1,185 @@
+\documentclass[paper=a4, 12pt, pagesize, parskip=half, DIV=calc]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage{fixltx2e}
+\usepackage{lineno}
+\usepackage{tabularx}
+\usepackage{scrpage2}
+\usepackage[normalem]{ulem}
+\usepackage[right]{eurosym}
+\usepackage{fontspec}
+\usepackage{geometry}
+\usepackage{color}
+\usepackage{lastpage}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\newfontfamily\ArvoGruen[
+  Path=/Users/tobiashossl/Sites/antragsgruen/plugins/neos/assets/montserrat/
+]{Montserrat-Black.ttf}
+\newfontfamily\ArvoRegular[
+  Path=/Users/tobiashossl/Sites/antragsgruen/plugins/neos/assets/montserrat/
+]{Montserrat-Regular.ttf}
+\newfontfamily\AntragsgruenSection[
+  Path=/Users/tobiashossl/Sites/antragsgruen/plugins/neos/assets/montserrat/
+]{Montserrat-Bold.ttf}
+\setmainfont[
+  Path=/Users/tobiashossl/Sites/antragsgruen/plugins/neos/assets/source-sans-pro/,
+  BoldFont=SourceSerifPro-Bold.ttf,
+  ItalicFont=SourceSerifPro-It.ttf,
+  BoldItalicFont=SourceSerifPro-BoldIt.ttf
+]{SourceSerifPro-Regular.ttf}
+
+\definecolor{Insert}{rgb}{0,0.6,0}
+\definecolor{Delete}{rgb}{1,0,0}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+}
+\urlstyle{same}
+
+\title{A2: O’zapft is!}
+\author{Testuser}
+\geometry{a4paper, portrait, top=20mm, left=20mm, right=20mm, bottom=25mm, includehead=true}
+
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\renewcommand\sectionmark[1]{\markright{\MakeMarkcase {\hskip .5em\relax#1}}}
+\setcounter{secnumdepth}{0}
+
+\newcommand\invisiblesection[1]{%
+  \refstepcounter{section}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \sectionmark{#1}
+}
+
+\ohead{}
+\ofoot{\ArvoRegular \footnotesize 01.12.2018}
+\cfoot{\ArvoRegular \footnotesize Seite \thepage \
+/ {\hypersetup{linkcolor=black}\pageref{LastPage}}}
+\ifoot{\ArvoRegular \footnotesize A1}
+\setheadsepline{0.4pt}
+\setfootsepline{0.4pt}
+
+\begin{document}
+
+\shorthandoff{"}
+\sloppy
+\hyphenpenalty=10000
+\hbadness=10000
+
+\setcounter{page}{1}
+\thispagestyle{scrheadings}
+\clearscrheadfoot
+\setheadsepline{0pt}
+\ofoot{\ArvoRegular \footnotesize 01.12.2018}
+\cfoot{\ArvoRegular \footnotesize Seite \thepage \
+/ {\hypersetup{linkcolor=black}\pageref{LastPage}}}
+\ifoot{\ArvoRegular \footnotesize A1}
+
+
+\vspace*{-25mm}
+\begin{flushright}
+ \includegraphics[width=4.9cm]{/Users/tobiashossl/Sites/antragsgruen/plugins/neos/assets/neos-antragsschmiede.png}
+
+\end{flushright}
+
+\vspace*{-2mm}
+\hrulefill
+\vspace*{2mm}
+
+\invisiblesection{\ArvoRegular A2: O’zapft is!}
+\begin{center}\AntragsgruenSection Antrag\end{center}
+
+\raggedright
+Antragsteller\_in: \textbf{Landtagsklub XYZ (Erstantragssteller LA ABCDEF)} \linebreak
+\linebreak
+betreffend: \textbf{O’zapft is!} \linebreak
+
+\raggedright
+\linenumbers
+\resetlinenumber[1]
+Der Landtag wolle beschließen:
+
+Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch mim Radl foahn \linebreak
+Ohrwaschl Steckerleis wann griagd ma nacha wos z’dringa glacht Mamalad, muass? I \linebreak
+bin a woschechta Bayer sowos oamoi und sei und glei wirds no fui lustiga: Jo mei \linebreak
+is des schee middn ognudelt, Trachtnhuat Biawambn gscheid: Griasd eich midnand \linebreak
+etza nix Gwiass woass ma ned owe. Dahoam gscheckate middn Spuiratz des is a \linebreak
+gmahde Wiesn. Des is schee so Obazda san da, Haferl pfenningguat schoo griasd \linebreak
+eich midnand.
+
+\begin{itemize}
+\item Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn \linebreak
+Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?
+\end{itemize}
+
+\begin{itemize}
+\item Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui \linebreak
+huift vui woaß?
+\end{itemize}
+
+\begin{itemize}
+\item Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda \linebreak
+gwiss nia need Weiznglasl.
+\end{itemize}
+
+\begin{itemize}
+\item Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.
+\end{itemize}
+
+I waar soweid Blosmusi es nomoi. Broadwurschtbudn des is a gmahde Wiesn Kirwa \linebreak
+mogsd a Bussal Guglhupf schüds nei. Luja i moan oiwei Baamwach Watschnbaam, \linebreak
+wiavui baddscher! Biakriagal a fescha Bua Semmlkneedl iabaroi oba um Godds wujn \linebreak
+Ledahosn wui Greichats. Geh um Godds wujn luja heid greaßt eich nachad woaß \linebreak
+Breihaus eam! De om auf’n Gipfe auf gehds beim Schichtl mehra Baamwach a bissal \linebreak
+wos gehd ollaweil gscheid:
+
+\begin{quotation}\noindent
+Scheans Schdarmbeaga See i hob di narrisch gean i jo mei is des schee! Nia \linebreak
+eam hod vasteh i sog ja nix, i red ja bloß sammawiedaguad, umma eana \linebreak
+obandeln! Zwoa jo mei scheans amoi, san und hoggd Milli barfuaßat gscheit. \linebreak
+Foidweg vui huift vui singan, mehra Biakriagal om auf’n Gipfe! Ozapfa \linebreak
+sodala Charivari greaßt eich nachad Broadwurschtbudn do middn liberalitas \linebreak
+Bavariae sowos Leonhardifahrt:
+\end{quotation}
+
+Wui helfgod Wiesn, ognudelt schaugn: Dahoam gelbe Rüam Schneid singan wo hi \linebreak
+sauba i moan scho aa no a Maß a Maß und no a Maß nimma. Is umananda a ganze \linebreak
+Hoiwe zwoa, Schneid. Vui huift vui Brodzeid kumm geh naa i daad vo de allerweil, \linebreak
+gor. Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats iabaroi Prosd \linebreak
+Engelgwand nix Reiwadatschi.Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog \linebreak
+i daad Almrausch, Ewig und drei Dog nackata wea ko, dea ko. Meidromml \linebreak
+Graudwiggal nois dei, nackata. No Diandldrahn nix Gwiass woass ma ned hod \linebreak
+boarischer: Samma sammawiedaguad wos, i hoam Brodzeid. Jo mei Sepp Gaudi, is ma \linebreak
+Wuascht do Hendl Xaver Prosd eana an a bravs. Sauwedda an Brezn, abfieseln.
+
+\nolinenumbers
+\begin{center}\AntragsgruenSection Begründung\end{center}
+I-Düpferl-Reita, Bettbrunza, Zwedschgnmanndl, Goaspeterl, junga Duttara, dreckata Drek, Dramhappada, boaniga, damischa Depp, Woibbadinga, di hams midam Stickl Brot ausm Woid raußzogn, Betonschedl, mit deinen Badwandlfüaß, Goggolore, Ruaßnosn.
+
+Krummhaxata Goaßbog, Fliedschal, Schdeckalfisch, gscherta Hamml, Saubreiß, japanischer, Pimpanell, kropfata Hamml, Nasnboara, elendiger, Hausdracha, Grantlhuaba, Honigscheißa, Pfennigfuxa, Gmoadepp, oide Bixn, Beißzanga, Mistviach, Dreeghamml, Bodschal, Voiksdepp, Grischbal, Aufmüpfiga, Freibialädschn, gwampate Sau, Umstandskrama, glei foid da Wadschnbam um, Jungfa, Umstandskrama, Bruinschlanga, Oasch, Schbruchbeidl, Kittlschliaffa, Grantlhuaba, Radlfahra, Hallodri!
+
+Woibbadinga, Pfennigfuxa, Zwedschgndatschi, Scheißbürschdl, Schbringgingal, Halbkreisingeneur, elendiger, damischa Depp, Haumdaucha, Ruaßnosn, Griasgram, Rutschn, Beißn, Bodschal, Hosnscheissa, Dreegsau, oida Daggl, Dreegschleida, Schwobnsäckle, Beißn.
+
+Asphaltwanzn, Zwedschgnmanndl, Hopfastanga, gscherte Nuss, Saufbeitl, oida Daddara, Vieh mit Haxn, Bruinschlanga, Daamaluudscha, Bierdimpfl, Hundsbua, oida Daggl, Kirchalicht, Doafdrottl, gscheate Ruam, schiache Goaß, Schuibuamtratza, Zwedschgarl, oide Schäwan.
+
+Herrgoddsacklzementfixlujja, Voiksdepp, Hopfastanga, Hundsgribbe, Schdeckalfisch, Chaotngschwerl, ja, wo samma denn, Hoibschaariga, Hundsbua, Frichdal, glei fangst a boa!
+
+Du ogsoachte, aus’gschammta, Auftaklta, kropfata Hamml, klebrigs Biaschal, Beißn, Ruaßnosn, Honigscheißa, eigschnabbda, Ecknsteha, Freibialädschn, du saudamischa, Hockableiba, Aufschneida, Saubreiß, japanischer, hoit’s Mei, Saubreiß, Badwaschl, Kasberlkopf.
+
+Saubreiß, Geizgroogn, Erzdepp, Rotzgloggn, Radlfahra, glei fangst a boa, Eisackla, Aff, Grawurgl, Haumdaucha, Schachtlhuba, Bauantrampl, Schlawina, schiache Goaß, depperta Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\newline
+\linebreak
+Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, greißlicha Uhu, oida Daddara!
+
+
+
+
+\end{document}

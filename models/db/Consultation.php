@@ -723,6 +723,30 @@ class Consultation extends ActiveRecord
         return ConsultationFile::findFileByName($this, basename($logoUrl));
     }
 
+
+    /**
+     * @return array
+     */
+    public function getPdfLogoData()
+    {
+        $file = ConsultationFile::findFileByUrl($this, $this->getSettings()->logoUrl);
+        if ($file) {
+            return [$file->mimetype, $file->data];
+        } else {
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                if ($plugin::getDefaultLogo()) {
+                    $logo = $plugin::getDefaultLogo();
+                    $logo[1] = file_get_contents($logo[1]);
+                    return $logo;
+                }
+            }
+        }
+        return [
+            'image/png',
+            file_get_contents(\Yii::$app->basePath . '/web/img/logo.png')
+        ];
+    }
+
     /**
      */
     public function setDeleted()

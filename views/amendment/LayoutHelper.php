@@ -5,6 +5,7 @@ namespace app\views\amendment;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
+use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\TexTemplate;
 use app\models\settings\AntragsgruenApp;
@@ -27,15 +28,18 @@ class LayoutHelper
         $content->titleRaw   = $amendment->getMyMotion()->title;
         $content->title      = $amendment->getMyMotion()->getTitleWithIntro();
         $content->lineLength = $amendment->getMyConsultation()->getSettings()->lineLength;
+        $content->logoData   = $amendment->getMyConsultation()->getPdfLogoData();
         if (!$amendment->getMyConsultation()->getSettings()->hideTitlePrefix && $amendment->titlePrefix !== '') {
             $content->titlePrefix = $amendment->titlePrefix;
         }
-        $content->titleLong = $amendment->titlePrefix . ' - ';
-        $content->titleLong .= str_replace(
+        $content->titleLong       = $amendment->titlePrefix . ' - ';
+        $content->titleLong       .= str_replace(
             '%PREFIX%',
             $amendment->getMyMotion()->titlePrefix,
             \Yii::t('amend', 'amendment_for_prefix')
         );
+        $content->publicationDate = Tools::formatMysqlDate($amendment->datePublication);
+        $content->typeName        = \Yii::t('export', 'amendment');
 
         $intro                    = explode("\n", $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
@@ -66,7 +70,7 @@ class LayoutHelper
             $section->getSectionType()->printAmendmentTeX(false, $content);
         }
 
-        if ($amendment->changeExplanation != '') {
+        if ($amendment->changeExplanation !== '') {
             $title             = Exporter::encodePlainString(\Yii::t('amend', 'reason'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeExplanation]) . "\n";
@@ -144,13 +148,12 @@ class LayoutHelper
         }
         $texTemplate = $amendment->getMyMotion()->motionType->texTemplate;
 
-        $layout            = new Layout();
-        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
-        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
-        $layout->template = $texTemplate->texLayout;
-        $layout->author   = $amendment->getInitiatorsStr();
-        $layout->title    = $amendment->getTitle();
+        $layout             = new Layout();
+        $layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+        $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        $layout->template   = $texTemplate->texLayout;
+        $layout->author     = $amendment->getInitiatorsStr();
+        $layout->title      = $amendment->getTitle();
 
         /** @var AntragsgruenApp $params */
         $params   = \yii::$app->params;

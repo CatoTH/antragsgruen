@@ -115,6 +115,33 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
+    /**
+     * @param Consultation $consultation
+     * @param string $url
+     * @return ConsultationFile|null
+     */
+    public static function findFileByUrl(Consultation $consultation, $url)
+    {
+        if (preg_match('/^\/(?<consultation>[\w_-]+)\/page\/files\/(?<filename>.*)$/siu', $url, $matches)) {
+            $conFound = null;
+            if (mb_strtolower($matches['consultation']) === mb_strtolower($consultation->urlPath)) {
+                $conFound = $consultation;
+            } else {
+                foreach ($consultation->site->consultations as $con) {
+                    if (mb_strtolower($matches['consultation']) === mb_strtolower($con->urlPath)) {
+                        $conFound = $con;
+                    }
+                }
+            }
+            if (!$conFound) {
+                return null;
+            }
+            return static::findFileByName($conFound, $matches['filename']);
+        } else {
+            return null;
+        }
+    }
+
 
     /**
      * @param Consultation $consultation

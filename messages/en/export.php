@@ -18,6 +18,7 @@ return [
     'motion'                => 'Motion',
     'misc'                  => 'Other',
     'motions'               => 'Motions',
+    'amendment'             => 'Amendment',
     'amendments'            => 'Amendments',
     'line'                  => 'Line',
     'status'                => 'Status',
@@ -53,6 +54,7 @@ return [
     'default_creator'       => 'Antragsgrün',
     'pdf_app_title'         => 'Application',
     'pdf_app_top_label'     => 'Agenda item:',
+    'pdf_page_label'        => 'Page',
     'pdf_merging_draft'     => 'Resolution text in changed view',
     'pdf_merging_init'      => 'Selected amendments',
 ];

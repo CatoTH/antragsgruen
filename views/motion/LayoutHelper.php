@@ -6,6 +6,7 @@ use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
+use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
@@ -86,6 +87,7 @@ class LayoutHelper
         $content                  = new Content();
         $content->template        = $motion->getMyMotionType()->texTemplate->texContent;
         $content->lineLength      = $motion->getMyConsultation()->getSettings()->lineLength;
+        $content->logoData        = $motion->getMyConsultation()->getPdfLogoData();
         $intro                    = explode("\n", $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction);
         $content->introductionBig = $intro[0];
         if (in_array($motion->status, [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY])) {
@@ -108,8 +110,10 @@ class LayoutHelper
         foreach ($motion->getInitiators() as $init) {
             $initiators[] = $init->getNameWithResolutionDate(false);
         }
-        $initiatorsStr   = implode(', ', $initiators);
-        $content->author = $initiatorsStr;
+        $initiatorsStr            = implode(', ', $initiators);
+        $content->author          = $initiatorsStr;
+        $content->publicationDate = Tools::formatMysqlDate($motion->datePublication);
+        $content->typeName        = $motion->motionType->titleSingular;
 
         if ($motion->agendaItem) {
             $content->agendaItemName = $motion->agendaItem->title;
@@ -401,13 +405,12 @@ class LayoutHelper
         }
         $texTemplate = $motion->motionType->texTemplate;
 
-        $layout            = new Layout();
-        $layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-        //$layout->templateFile = \yii::$app->basePath . DIRECTORY_SEPARATOR .
-        //    'assets' . DIRECTORY_SEPARATOR . 'motion_std.tex';
-        $layout->template = $texTemplate->texLayout;
-        $layout->author   = $motion->getInitiatorsStr();
-        $layout->title    = $motion->getTitleWithPrefix();
+        $layout             = new Layout();
+        $layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+        $layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+        $layout->template   = $texTemplate->texLayout;
+        $layout->author     = $motion->getInitiatorsStr();
+        $layout->title      = $motion->getTitleWithPrefix();
 
         /** @var AntragsgruenApp $params */
         $params   = \yii::$app->params;

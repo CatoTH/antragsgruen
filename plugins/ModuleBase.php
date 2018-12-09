@@ -155,4 +155,12 @@ class ModuleBase extends Module
     {
         return null;
     }
+
+    /**
+     * @return array
+     */
+    public static function getDefaultLogo()
+    {
+        return null;
+    }
 }

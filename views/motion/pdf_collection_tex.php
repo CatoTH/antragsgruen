@@ -12,11 +12,12 @@ use yii\helpers\Html;
  * @var Motion[] $motions
  */
 
-$layout            = new Layout();
-$layout->assetRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
-$layout->template  = $texTemplate->texLayout;
-$layout->author    = \Yii::t('export', 'default_creator');
-$layout->title     = $motions[0]->motionType->titlePlural;
+$layout             = new Layout();
+$layout->assetRoot  = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR;
+$layout->pluginRoot = \yii::$app->basePath . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+$layout->template   = $texTemplate->texLayout;
+$layout->author     = \Yii::t('export', 'default_creator');
+$layout->title      = $motions[0]->motionType->titlePlural;
 
 /** @var AntragsgruenApp $params */
 $params = \yii::$app->params;
