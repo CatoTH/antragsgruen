@@ -121,6 +121,9 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getPrivateComment()
     {
+        if (!User::getCurrentUser()) {
+            return null;
+        }
         // One-to-many-relashionship, but with the current version there can be only 0 or 1 comments
         foreach ($this->privateComments as $comment) {
             return $comment;

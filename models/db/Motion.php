@@ -131,6 +131,9 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getPrivateComment($sectionId, $paragraphNo)
     {
+        if (!User::getCurrentUser()) {
+            return null;
+        }
         foreach ($this->privateComments as $comment) {
             if ($comment->sectionId === $sectionId && $comment->paragraph === $paragraphNo) {
                 return $comment;
