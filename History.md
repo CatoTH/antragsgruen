@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.1.1 [not released yet]
+### Version 4.1.1 (2018-12-09)
 
 - In the list of consultations, the newest consultation now appears at the top.
 - Clicking on changes in the public version of a merging draft now always opens a tooltip with the summary of the amendment, including the proposers of that amendment.
