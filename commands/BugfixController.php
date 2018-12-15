@@ -9,7 +9,6 @@ use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
 use app\models\sectionTypes\ISectionType;
-use Leafo\ScssPhp\Compiler;
 use yii\console\Controller;
 
 /**
@@ -199,16 +198,5 @@ class BugfixController extends Controller
         } catch (\Exception $e) {
             $this->stderr("An exception occurred: " . $e->getMessage());
         }
-    }
-
-    /**
-     *
-     */
-    public function actionScss()
-    {
-        $scss = new Compiler();
-        $scss->addImportPath(__DIR__ . '/../web/css/');
-        $layoutScss = file_get_contents(__DIR__ . '/../web/css/layout-classic.scss');
-        echo $scss->compile($layoutScss);
     }
 }
