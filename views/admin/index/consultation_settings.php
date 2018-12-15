@@ -136,7 +136,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                 foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
                     echo '<label>';
                     echo Html::radio('settings[robotsPolicy]', ($settings->robotsPolicy == $policy), [
-                            'value' => $policy,
+                        'value' => $policy,
                     ]);
                     echo ' ' . Html::encode($policyName) . '</label><br>';
                 }
@@ -180,6 +180,21 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     echo '</label>';
                 }
                 ?>
+            </div>
+            <div class="col-sm-3"></div>
+            <div class="col-sm-9 customThemeSelector">
+                <label>
+                    <?php
+                    $isCustom = (strpos($layout, 'layout-custom-') !== false);
+                    echo Html::radio('siteSettings[siteLayout]', $isCustom, ['value' => 'custom']);
+                    echo ' ' . \Yii::t('admin', 'con_ci_custom');
+                    ?>
+                </label>
+                <?= Html::a(
+                    '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('admin', 'con_ci_custom_edit'),
+                    UrlHelper::createUrl('/admin/index/theming'),
+                    ['class' => 'editThemeLink']
+                ) ?>
             </div>
         </fieldset>
 

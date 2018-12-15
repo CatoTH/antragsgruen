@@ -35,7 +35,7 @@ $adminMotionListPaths = 'index|motion-excellist|motion-odslist|motion-pdfziplist
 $adminMotionListPaths .= '|motion-odtziplist|motion-odslistall|motion-openslides';
 $adminAmendmentPaths  = 'excellist|odslist|odslist-short|pdflist|pdfziplist|odtziplist|openslides';
 $adminPaths           = 'consultation|consultationextended|translation|siteaccess|siteconsultations|openslidesusers';
-$adminPaths           .= '|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
+$adminPaths           .= '|theming|todo|proposed-procedure|ods-proposed-procedure|check-updates|goto-update';
 $adminPpPaths         = 'index-ajax|ods|save-motion-comment|save-amendment-comment|save-motion-visible|save-amendment-visible';
 
 $urlRules = [
@@ -62,6 +62,7 @@ $urlRules = [
     $domv . 'page/files/browse-images'        => 'pages/browse-images',
     $domv . 'page/files/<filename:[^\/]+>'    => 'pages/file',
     $domv . 'page/<pageSlug:[^\/]+>'          => 'pages/show-page',
+    $dom . 'styles<hash:[^\/]+>.css'          => 'pages/css',
     $dom . 'page/<pageSlug:[^\/]+>'           => 'pages/show-page',
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',

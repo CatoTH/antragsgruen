@@ -32,7 +32,8 @@
     "catoth/html2opendocument": "0.12",
     "zendframework/zend-servicemanager": "^3.3.0",
     "setasign/fpdi-tcpdf": "^2.0",
-    "paragonie/sodium_compat": "^1.6"
+    "paragonie/sodium_compat": "^1.6",
+    "leafo/scssphp": "^0.7.7"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.0.12",

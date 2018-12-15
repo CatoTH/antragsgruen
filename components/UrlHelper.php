@@ -121,6 +121,7 @@ class UrlHelper
                 'consultation/home',
                 'admin/index/admins',
                 'admin/index/consultations',
+                'pages/css',
             ]
         )) {
             unset($route['consultationPath']);

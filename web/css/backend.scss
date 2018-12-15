@@ -231,6 +231,13 @@ label.legend {
     margin-bottom: 50px;
   }
 }
+.customThemeSelector {
+  margin-top: 20px;
+  .editThemeLink {
+    display: block;
+    margin-left: 10px;
+  }
+}
 
 .consultationCreateForm {
   .fakeUrl {
@@ -858,4 +865,28 @@ label.legend {
     font-style: italic;
     font-size: 0.8em;
   }
+}
+
+.themingForm {
+  .submitRow {
+    text-align: center;
+  }
+  @media screen and (min-width: 550px) {
+    th {
+      width: 40%;
+    }
+    td {
+      width: 60%;
+    }
+  }
+  @media screen and (max-width: 449px) {
+    th {
+      display: block;
+    }
+    td {
+      display: block;
+      border-top: none !important;
+    }
+  }
+
 }

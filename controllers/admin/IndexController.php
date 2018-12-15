@@ -17,6 +17,7 @@ use app\models\db\User;
 use app\models\exceptions\FormError;
 use app\models\forms\AntragsgruenUpdateModeForm;
 use app\models\forms\ConsultationCreateForm;
+use app\models\settings\Stylesheet;
 use yii\web\Response;
 
 /**
@@ -377,6 +378,42 @@ class IndexController extends AdminBase
         return $this->renderPartial('openslides2_user_list', [
             'users' => $users,
         ]);
+    }
+
+    /**
+     * @return string
+     */
+    public function actionTheming()
+    {
+        $siteSettings = $this->site->getSettings();
+        $stylesheet   = $siteSettings->getStylesheet();
+
+        if ($this->isPostSet('save')) {
+            $settings = \Yii::$app->request->post('stylesheet', []);
+            foreach (Stylesheet::getAllSettings() as $key => $setting) {
+                switch ($setting['type']) {
+                    case Stylesheet::TYPE_CHECKBOX:
+                        $stylesheet->$key = isset($settings[$key]);
+                        break;
+                    case Stylesheet::TYPE_NUMBER:
+                    case Stylesheet::TYPE_PIXEL:
+                        $stylesheet->$key = IntVal($settings[$key]);
+                        break;
+                    case Stylesheet::TYPE_COLOR:
+                    case Stylesheet::TYPE_FONT:
+                        $stylesheet->$key = $settings[$key];
+                        break;
+                }
+            }
+            $siteSettings->setStylesheet($stylesheet);
+            $siteSettings->siteLayout = 'layout-custom-' . $stylesheet->getSettingsHash();
+            $this->site->setSettings($siteSettings);
+            $this->site->save();
+
+            $this->layoutParams->setLayout($siteSettings->siteLayout);
+        }
+
+        return $this->render('theming', ['stylesheet' => $stylesheet]);
     }
 
     /**

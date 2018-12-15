@@ -10,6 +10,7 @@ use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\Stylesheet;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -322,5 +323,26 @@ class PagesController extends Base
         \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
 
         return $file->data;
+    }
+
+    /**
+     */
+    public function actionCss()
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'text/css');
+        \yii::$app->response->headers->set('Expires', gmdate('D, d M Y H:i:s \G\M\T', time() + 3600 * 24 * 7));
+        \yii::$app->response->headers->set('Pragma', 'cache');
+        \yii::$app->response->headers->set('Cache-Control', 'public, max-age=' . (3600 * 24 * 7));
+
+        $stylesheetSettings = $this->site->getSettings()->getStylesheet();
+        $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
+        if ($file) {
+            return $file->data;
+        }
+
+        $data = $this->renderPartial('css', ['stylesheetSettings' => $stylesheetSettings]);
+        ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $data);
+        return $data;
     }
 }
