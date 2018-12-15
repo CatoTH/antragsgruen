@@ -11,15 +11,19 @@
   span.underline {
     border-bottom: solid 1px black;
   }
+
   span.strike {
     text-decoration: line-through;
   }
+
   span.subscript {
     // @TODO
   }
+
   span.superscript {
     // @TODO
   }
+
   h1, .well & h1 {
     background: none;
     color: black;
@@ -35,10 +39,12 @@
     margin: 0;
     font-size: 1.4em;
   }
+
   h3 {
     margin: 0;
     font-size: 1.3em;
   }
+
   h4 {
     margin: 0;
     font-size: 1.2em;
@@ -63,6 +69,7 @@
     float: left; // otherwise problems appear at li > p constucts
     z-index: -1; // Line number highlighting should be behind the text
   }
+
   .lineNumber:after {
     content: attr(data-line-number);
     color: #C3C3C3;
@@ -71,20 +78,24 @@
     font-weight: normal;
     text-decoration: none;
   }
+
   > ul, > ol {
     padding-left: $fixedWidthTextListPadding;
 
     .lineNumber {
       left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
     }
+
     ul, ol {
       .lineNumber {
         left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
       }
+
       ul, ol {
         .lineNumber {
           left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
         }
+
         ul, ol {
           .lineNumber {
             left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
@@ -93,15 +104,18 @@
       }
     }
   }
+
   .fourdigitsLineNumbers & {
     .lineNumber {
       left: $lineNumberOffset4 + -1 * $fixedWidthTextStdPadding;
     }
+
     > ul, > ol {
       .lineNumber {
         left: $lineNumberOffset4 + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
       }
     }
+
     > blockquote {
       .lineNumber {
         left: $lineNumberOffset4 + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
@@ -133,12 +147,14 @@
     background-color: rgba(255, 255, 0, 0);
     transition: background-color 0.5s ease;
   }
+
   .lineNumber.highlighted-active:before {
     background-color: rgba(255, 255, 0, 1);
   }
 
   &.smallFont {
     font-size: 12px;
+
     > blockquote {
       font-size: 12px;
     }
@@ -150,8 +166,10 @@
     > h3.green {
       margin-bottom: 22px;
     }
+
     padding-bottom: 22px;
   }
+
   .paragraph {
     font-size: 14px;
     clear: both;
@@ -163,8 +181,10 @@
 
     .text {
       padding: 15px 10px 15px $fixedWidthTextStdPadding;
+
       &.collidingAmendment {
         margin-top: -20px;
+
         > h3 {
           font-size: 1.2em;
           margin-top: 0;
@@ -178,22 +198,27 @@
       margin: 0;
     }
   }
+
   .textAmendment {
     width: $motionFixedWidth;
     position: relative;
+
     del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
       color: #ff0000;
       text-decoration: line-through;
     }
+
     ins, ul.inserted, ol.inserted, blockquote.inserted, pre.inserted {
       text-decoration: underline;
     }
+
     .preamble {
       position: absolute;
       top: -($inlineAmendmentPreambleHeight - 10);
       height: $inlineAmendmentPreambleHeight;
       color: $inlineAmendmentPreambleColor;
       width: 100%;
+
       > div {
         position: absolute;
         bottom: 0;
@@ -204,12 +229,14 @@
         overflow: hidden;
         text-overflow: ellipsis;
         width: 100%;
+
         h3 {
           font-size: 14px;
           display: inline-block;
           margin: 0;
           font-weight: bold;
         }
+
         .moreAffected {
           font-style: italic;
           font-size: 0.8em;
@@ -218,6 +245,7 @@
         }
       }
     }
+
     .movedParagraphHint {
       font-style: italic;
       font-size: 0.8em;
@@ -225,6 +253,7 @@
       color: #bbccbb;
     }
   }
+
   .tabularData {
     > tbody > tr:first-child {
       > td, > th {
@@ -264,19 +293,24 @@
       border-bottom-right-radius: 10px;
       font-weight: bold;
     }
+
     &.comment > a {
       @include linear-gradient(90deg, $bookmarkCommentColor, lighten($bookmarkCommentColor, 3.5%));
+
       &.zero {
         opacity: 0.5;
       }
+
       .count:after {
         content: attr(data-count);
         padding-left: 4px;
       }
     }
+
     &.amendment > a {
       @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
     }
+
     .hider {
       @include linear-gradient(90deg, rgb(180, 180, 180), rgb(220, 220, 220));
     }
@@ -293,6 +327,7 @@
   background: $commentBackground;
   border-radius: 3px;
   margin: 15px 20px 30px;
+
   &.replyComment {
     margin-top: -15px;
   }
@@ -340,6 +375,7 @@
   .commentBottom {
     height: 23px;
     position: relative;
+
     .entry {
       position: absolute;
       bottom: -1px;
@@ -349,6 +385,7 @@
       text-align: center;
       font-weight: normal;
     }
+
     .link {
       left: -1px;
       padding: 2px;
@@ -356,12 +393,14 @@
       border-right: solid 1px $commentBorder;
       border-top-right-radius: 3px;
     }
+
     .replyButton {
       right: -1px;
       padding: 2px 5px;
       border-left: solid 1px $commentBorder;
       border-top-left-radius: 3px;
     }
+
     .delLink {
       color: red;
       left: 3px;
@@ -369,6 +408,7 @@
       border-right: solid 1px $commentBorder;
       border-top-right-radius: 3px;
     }
+
     .delLink + .link {
       border-top-right-radius: 0;
     }
@@ -380,6 +420,7 @@
 
     a:link, a:visited {
       color: #ccc;
+
       &:hover, &:focus {
         color: #bbb;
       }
@@ -402,6 +443,7 @@
   &.form-horizontal .form-group {
     margin-right: $commentPadding;
     margin-left: $commentPadding;
+
     > * {
       padding-right: 0;
     }
@@ -410,16 +452,20 @@
   .commentNotifications {
     padding: $commentPadding;
     overflow: visible;
+
     label {
       font-weight: normal;
       font-size: 13px;
     }
+
     .btn {
       font-weight: normal;
     }
+
     .selectlist {
       float: right;
     }
+
     .dropdown-menu {
       font-size: 12px;
     }
@@ -435,6 +481,7 @@
   @media screen and (min-width: 1000px) {
     padding-left: 100px;
   }
+
   .motionComment {
     margin-top: -20px;
   }
@@ -442,11 +489,17 @@
 
 .withdrawForm {
   text-align: center;
+
   .ask {
     font-size: 16px;
     margin-bottom: 15px;
     margin-top: 15px;
   }
+}
+
+.motionSupportFinishForm, .amendmentSupportFinishForm {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 .sectionType0 + .motionTextHolder {
@@ -456,6 +509,7 @@
 
 .sectionType3 { // Images
   padding: 10px;
+
   img {
     max-height: 200px;
     max-width: 100%;
@@ -465,6 +519,7 @@
 .motionRightCol {
   padding-top: 0;
   font-size: 14px;
+
   .motionTextFormattings {
     font-size: 14px;
   }
@@ -497,6 +552,7 @@ iframe.pdfViewer {
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
   display: none;
   padding: 10px;
+
   &.active {
     display: block;
   }
@@ -520,22 +576,27 @@ iframe.pdfViewer {
     content: " ";
     display: table;
   }
+
   &:after {
     clear: both;
   }
+
   ul {
     padding: 0;
     margin: 0;
   }
+
   li {
     height: 30px;
     display: inline-block;
     margin-right: 14px;
     overflow: hidden;
     width: 103px;
+
     &:last-child {
       margin-right: 0;
     }
+
     a {
       font-family: Arial, Helvetica, sans-serif;
       color: #fff;
@@ -548,22 +609,27 @@ iframe.pdfViewer {
       text-decoration: none;
       border: 1px solid #ddd;
       background-color: #fff;
+
       &:hover {
         background-color: #eee;
       }
     }
+
     &.facebook {
       a {
         color: #247bbd;
         padding-left: 5px;
+
         .icon {
           font-size: 17px;
         }
       }
     }
+
     &.twitter {
       a {
         color: #247bbd;
+
         .icon {
           font-size: 20px;
         }
@@ -576,18 +642,22 @@ iframe.pdfViewer {
   #motionTitlePrefix, .dropdown-toggle {
     max-width: 230px;
   }
+
   .checkButtonRow {
     text-align: center;
     margin: 20px 0;
   }
+
   .otherAmendmentStatus {
     .row {
       margin-bottom: 15px;
     }
+
     .by {
       display: block;
       font-size: 0.8em;
     }
+
     .amendmentAjaxTooltip {
       float: right;
       color: gray;
@@ -595,14 +665,17 @@ iframe.pdfViewer {
       margin-top: 7px;
     }
   }
+
   .affectedParagraphs {
     .paragraph.unmodified .affectedBlock {
       display: none;
     }
+
     .paragraph.modified .unmodifiedVersion {
       display: none;
     }
   }
+
   .affectedBlock {
     margin-top: 20px;
 
@@ -610,16 +683,20 @@ iframe.pdfViewer {
       display: none;
     }
   }
+
   .modifySelector {
     margin-top: 15px;
+
     label {
       margin-right: 20px;
       font-weight: normal;
     }
   }
+
   .save-row {
     text-align: center;
   }
+
   .saveholder {
     .checkAmendmentCollisions {
       display: none;
@@ -631,6 +708,7 @@ iframe.pdfViewer {
   .amendmentBy {
     color: gray;
   }
+
   .amendmentOverrideBlock {
     background-color: #f5f5f5;
     margin: 15px -10px;
@@ -649,13 +727,139 @@ iframe.pdfViewer {
   }
 }
 
+.motionData {
+  .privateNotes {
+    th {
+      padding-top: 25px;
+    }
+
+    td {
+      padding-top: 20px;
+    }
+
+    blockquote {
+      margin-left: 0;
+      cursor: pointer;
+      font-style: italic;
+      color: #666;
+    }
+
+    textarea {
+      line-height: 1.1;
+      height: 50px;
+      width: 100%;
+      @media screen and (min-width: 800px) {
+        width: calc(100% - 110px);
+      }
+    }
+
+    .btn {
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+
+    .btnEdit {
+      margin-left: -30px;
+      margin-top: -1px;
+      float: left;
+    }
+  }
+}
+
+.privateNoteOpener {
+  margin-top: -20px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  width: 30%;
+
+  .btn {
+    font-weight: normal;
+  }
+
+  & + .proposedChangesOpener .btn {
+    margin-top: -30px;
+  }
+}
+
+
+.privateParagraphNoteHolder {
+  font-family: $bodyFont;
+
+  .privateParagraphNoteOpener {
+    position: absolute;
+    bottom: 0;
+    left: 40px;
+    opacity: 0.5;
+
+    .btn {
+      font-weight: normal;
+    }
+  }
+
+  label {
+    width: 100%;
+    @media screen and (min-width: 800px) {
+      width: calc(100% - 110px);
+    }
+  }
+  textarea.form-control {
+    line-height: 1.1;
+    height: 50px;
+    width: 100%;
+  }
+
+  .btn {
+    margin-top: 2px;
+    margin-left: 0;
+  }
+
+  .btnEdit {
+    margin-left: -30px;
+    margin-top: -1px;
+    float: left;
+  }
+
+  blockquote {
+    color: #666;
+    font-style: italic;
+    cursor: pointer;
+  }
+}
+
+ul + .privateParagraphNoteHolder, ol + .privateParagraphNoteHolder {
+  .privateParagraphNoteOpener {
+    left: 85px;
+  }
+  blockquote {
+    margin-left: 45px;
+  }
+  form {
+    margin-left: 40px;
+  }
+}
+
+blockquote + .privateParagraphNoteHolder {
+  .privateParagraphNoteOpener {
+    left: 100px;
+  }
+  blockquote {
+    margin-left: 60px;
+  }
+  form {
+    margin-left: 55px;
+  }
+}
+
+
 .motionChangeView {
   .notDisplayable {
     color: red;
   }
+
   .noChanges {
     color: gray;
   }
+
   .motionDataTable {
     margin-bottom: 25px;
   }
@@ -665,26 +869,33 @@ iframe.pdfViewer {
   .supportQuestion {
     margin-top: 10px;
   }
+
   .supportBlock {
     display: flex;
     flex-direction: row;
+
     .colName, .colGender, .colOrga {
       flex: 1;
       padding: 0 10px;
     }
+
     .colSubmit {
       flex: 0;
     }
+
     > * {
       padding: 0 10px;
+
       &:first-child {
         padding-left: 0;
       }
+
       &:last-child {
         padding-right: 0;
       }
     }
   }
+
   .loggedOutWarning {
     font-size: 0.8em;
     margin-top: 6px;

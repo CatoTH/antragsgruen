@@ -223,7 +223,7 @@ class MotionSection extends IMotionSection
             if ($includeComments) {
                 $paragraph->comments = [];
                 foreach ($this->comments as $comment) {
-                    if ($comment->paragraph == $paraNo) {
+                    if ($comment->paragraph === $paraNo) {
                         $paragraph->comments[] = $comment;
                     }
                 }

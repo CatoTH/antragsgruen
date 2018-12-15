@@ -24,4 +24,5 @@ return [
     'status_screening'        => 'Nicht freigeschaltet',
     'status_visible'          => 'Sichtbar',
     'status_deleted'          => 'Gelöscht',
+    'status_private'          => 'Privat',
 ];

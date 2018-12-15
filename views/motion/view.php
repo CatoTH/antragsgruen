@@ -46,7 +46,7 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 $minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimalisticUI;
 $minHeight               = max($sidebarRows * 40 - 100, 0);
-$supportCollectingStatus = ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
+$supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
 if ($motion->isResolution()) {
     echo '<h1>' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
@@ -91,8 +91,6 @@ if ($supportCollectingStatus) {
 if ($motion->canFinishSupportCollection()) {
     echo Html::beginForm('', 'post', ['class' => 'motionSupportFinishForm']);
 
-    echo '<div style="text-align: center; margin-bottom: 20px;">';
-
     echo '<button type="submit" name="motionSupportFinish" class="btn btn-success">';
     echo \Yii::t('motion', 'support_finish_btn');
     echo '</button>';
@@ -103,6 +101,16 @@ if ($motion->canFinishSupportCollection()) {
 
 echo '</div>';
 
+if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
+    ?>
+    <div class="privateNoteOpener">
+        <button class="btn btn-link btn-sm">
+            <span class="glyphicon glyphicon-pushpin"></span>
+            <?= \Yii::t('motion', 'private_notes') ?>
+        </button>
+    </div>
+    <?php
+}
 
 if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
     if (!$motion->isResolution() && User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
@@ -202,7 +210,7 @@ if (count($supporters) > 0 || $supportCollectingStatus ||
         foreach ($supporters as $supp) {
             /** @var MotionSupporter $supp */
             echo '<li>';
-            if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
+            if (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported)) {
                 echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
                 $iAmSupporting = true;
             }
@@ -259,7 +267,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
                 echo '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
             }
             $aename = $amend->titlePrefix;
-            if ($aename == '') {
+            if ($aename === '') {
                 $aename = $amend->id;
             }
             $amendLink     = UrlHelper::createAmendmentUrl($amend);

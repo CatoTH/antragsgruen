@@ -54,6 +54,7 @@ return [
     'replaces_motion'                    => 'Ersetzt',
     'resolution_of'                      => 'Basierend auf',
     'replaces_motion_diff'               => 'Änderungen anzeigen',
+    'private_notes'                      => 'Private Notiz',
     'consultation'                       => 'Veranstaltung',
     'comments'                           => 'Kommentare',
     'comment_screen_queue_1'             => '1 Kommentar wartet auf Freischaltung',

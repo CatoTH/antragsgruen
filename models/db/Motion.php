@@ -44,6 +44,7 @@ use yii\helpers\Html;
  * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
+ * @property MotionComment[] $privateComments
  * @property ConsultationSettingsTag[] $tags
  * @property MotionSection[] $sections
  * @property MotionSupporter[] $motionSupporters
@@ -108,7 +109,37 @@ class Motion extends IMotion implements IRSSItem
     public function getComments()
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
-            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED);
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
+            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrivateComments()
+    {
+        $userId = User::getCurrentUser()->id;
+        return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
+            ->andWhere(MotionComment::tableName() . '.status = ' . MotionComment::STATUS_PRIVATE)
+            ->andWhere(MotionComment::tableName() . '.userId = ' . IntVal($userId));
+    }
+
+    /**
+     * @param int|null $sectionId
+     * @param int $paragraphNo
+     * @return MotionComment|null
+     */
+    public function getPrivateComment($sectionId, $paragraphNo)
+    {
+        if (!User::getCurrentUser()) {
+            return null;
+        }
+        foreach ($this->privateComments as $comment) {
+            if ($comment->sectionId === $sectionId && $comment->paragraph === $paragraphNo) {
+                return $comment;
+            }
+        }
+        return null;
     }
 
     /**

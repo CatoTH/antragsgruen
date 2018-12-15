@@ -26,8 +26,9 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     const STATUS_SCREENING = 1;
     const STATUS_VISIBLE   = 0;
     const STATUS_DELETED   = -1;
+    const STATUS_PRIVATE   = -2;
 
-    const EVENT_PUBLISHED       = 'published';
+    const EVENT_PUBLISHED = 'published';
 
     /**
      */
@@ -47,6 +48,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             static::STATUS_SCREENING => \Yii::t('comment', 'status_screening'),
             static::STATUS_VISIBLE   => \Yii::t('comment', 'status_visible'),
             static::STATUS_DELETED   => \Yii::t('comment', 'status_deleted'),
+            static::STATUS_PRIVATE   => \Yii::t('comment', 'status_private'),
         ];
     }
 
@@ -92,16 +94,11 @@ abstract class IComment extends ActiveRecord implements IRSSItem
         if ($user === null) {
             return false;
         }
-        if ($user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+        if ($this->status !== static::STATUS_PRIVATE &&
+            $user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
             return true;
         }
-        if (!$this->user) {
-            return false;
-        }
-        if (!is_null($this->user->auth) && $user->auth === $this->user->auth) {
-            return true;
-        }
-        return false;
+        return ($this->userId && $this->userId === $user->id);
     }
 
     /**
@@ -109,24 +106,23 @@ abstract class IComment extends ActiveRecord implements IRSSItem
      */
     public function isVisibleCurrUser()
     {
-        if ($this->status === static::STATUS_DELETED) {
-            return false;
+        $user = User::getCurrentUser();
+        switch ($this->status) {
+            case static::STATUS_DELETED:
+                return false;
+            case static::STATUS_VISIBLE:
+                return true;
+            case static::STATUS_PRIVATE:
+                return ($user && $user->id === $this->userId);
+            case static::STATUS_SCREENING:
+                if ($user && $user->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
+                    return true;
+                } else {
+                    return ($user && $user->id === $this->userId);
+                }
+            default:
+                return false;
         }
-        if ($this->status === static::STATUS_VISIBLE) {
-            return true;
-        }
-
-        $user = \Yii::$app->user;
-        if ($user->isGuest) {
-            return false;
-        }
-        /** @var User $identity */
-        $identity = $user->identity;
-        if ($identity->hasPrivilege($this->getConsultation(), User::PRIVILEGE_SCREENING)) {
-            return true;
-        }
-
-        return ($identity->id === $this->userId);
     }
 
     /**
@@ -184,7 +180,7 @@ abstract class IComment extends ActiveRecord implements IRSSItem
             }
         }
         foreach ($this->getIMotion()->comments as $comment) {
-            if ($comment->status === IComment::STATUS_DELETED) {
+            if ($comment->status === IComment::STATUS_DELETED || $comment->status === IComment::STATUS_PRIVATE) {
                 continue;
             }
             if ($comment->userId && !in_array($comment->userId, $userIds)) {

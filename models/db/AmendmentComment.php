@@ -53,7 +53,7 @@ class AmendmentComment extends IComment
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'userId'])
-            ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
+            ->andWhere(User::tableName() . '.status != ' . IntVal(User::STATUS_DELETED));
     }
 
     /**
@@ -62,7 +62,7 @@ class AmendmentComment extends IComment
     public function getAmendment()
     {
         return $this->hasOne(Amendment::class, ['id' => 'amendmentId'])
-            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
+            ->andWhere(Amendment::tableName() . '.status != ' . IntVal(Amendment::STATUS_DELETED));
     }
 
     private $imotion = null;
@@ -94,7 +94,8 @@ class AmendmentComment extends IComment
     public function getParentComment()
     {
         return $this->hasOne(AmendmentComment::class, ['id' => 'parentCommentId'])
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
     }
 
     /**
@@ -103,7 +104,8 @@ class AmendmentComment extends IComment
     public function getReplies()
     {
         return $this->hasMany(AmendmentComment::class, ['parentCommentId' => 'id'])
-            ->andWhere(AmendmentComment::tableName() . '.status != ' . AmendmentComment::STATUS_DELETED);
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_DELETED))
+            ->andWhere(AmendmentComment::tableName() . '.status != ' . IntVal(AmendmentComment::STATUS_PRIVATE));
     }
 
     /**
@@ -160,6 +162,9 @@ class AmendmentComment extends IComment
      */
     public function addToFeed(RSSExporter $feed)
     {
+        if ($this->status === static::STATUS_PRIVATE) {
+            return;
+        }
         $feed->addEntry(
             UrlHelper::createAmendmentCommentUrl($this),
             \Yii::t('motion', 'comment_for') . ': ' . $this->getMotionTitle(),
@@ -192,7 +197,7 @@ class AmendmentComment extends IComment
     public static function getScreeningComments(Consultation $consultation)
     {
         $query = AmendmentComment::find();
-        $query->where('amendmentComment.status = ' . static::STATUS_SCREENING);
+        $query->where('amendmentComment.status = ' . IntVal(static::STATUS_SCREENING));
         $query->joinWith(
             [
                 'amendment' => function ($query) use ($consultation) {
@@ -223,6 +228,9 @@ class AmendmentComment extends IComment
      */
     public function logToConsultationLog()
     {
+        if ($this->status === static::STATUS_PRIVATE) {
+            return;
+        }
         ConsultationLog::logCurrUser($this->getConsultation(), ConsultationLog::AMENDMENT_COMMENT, $this->id);
     }
 

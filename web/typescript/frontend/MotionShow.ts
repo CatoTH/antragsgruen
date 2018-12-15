@@ -34,6 +34,8 @@ class MotionShow {
         $(".share_buttons a").click(this.shareLinkClicked.bind(this));
 
         this.markMovedParagraphs();
+        this.initPrivateComments();
+        this.initCmdEnterSubmit();
     }
 
     private markMovedParagraphs() {
@@ -60,6 +62,36 @@ class MotionShow {
             let $msg = $('<div class="movedParagraphHint"></div>');
             $msg.text(msg);
             $msg.insertBefore($node);
+        });
+    }
+
+    private initPrivateComments()
+    {
+        if ($('.privateParagraph, .privateNote').length > 0) {
+            $('.privateParagraphNoteOpener').removeClass('hidden');
+        }
+        $('.privateNoteOpener').click(() => {
+            $('.privateNoteOpener').remove();
+            $('.motionData .privateNotes').removeClass('hidden');
+            $('.motionData .privateNotes textarea').focus();
+            $('.privateParagraphNoteOpener').removeClass('hidden');
+        });
+        $('.privateParagraphNoteOpener').click((ev) => {
+            $(ev.currentTarget).addClass('hidden');
+            const $form = $(ev.currentTarget).parents('.privateParagraphNoteHolder').find('form');
+            $form.removeClass('hidden');
+            $form.find('textarea').focus();
+        });
+        $('.privateNotes blockquote').click(() => {
+            $('.privateNotes blockquote').addClass('hidden');
+            $('.privateNotes form').removeClass('hidden');
+            $('.privateNotes textarea').focus();
+        });
+        $('.privateParagraphNoteHolder blockquote').click((ev) => {
+            const $target = $(ev.currentTarget).parents('.privateParagraphNoteHolder');
+            $target.find('blockquote').addClass('hidden');
+            $target.find('form').removeClass('hidden');
+            $target.find('textarea').focus();
         });
     }
 
@@ -137,6 +169,15 @@ class MotionShow {
                 $paragraph.find("> .textOrig").removeClass("hidden");
                 $paragraph.find("> .textAmendment").addClass("hidden");
             });
+        });
+    }
+
+    private initCmdEnterSubmit() {
+        $(document).on('keypress', 'form textarea', (ev) => {
+            if (ev.originalEvent['metaKey'] && ev.originalEvent['keyCode'] === 13) {
+                let $textarea = $(ev.currentTarget);
+                $textarea.parents("form").first().find("button[type=submit]").trigger("click");
+            }
         });
     }
 }

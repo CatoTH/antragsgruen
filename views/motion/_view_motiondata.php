@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
@@ -14,6 +15,7 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var int[] $openedComments
  * @var null|string $supportStatus
  * @var bool $consolidatedAmendments
+ * @var bool $hasPrivateComments
  * @var \app\controllers\Base $controller
  */
 
@@ -189,6 +191,34 @@ if ((!isset($skip_drafts) || !$skip_drafts) && $motion->getMergingDraft(true)) {
 
 $motionData = \app\models\layoutHooks\Layout::getMotionViewData($motionData, $motion);
 
+
+if (User::getCurrentUser()) {
+    $comment = $motion->getPrivateComment(null, -1);
+
+    $str = '';
+    if ($comment) {
+        $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
+        $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>';
+        $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
+    }
+    $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
+    $str .= '<textarea class="form-control" name="noteText" title="' . \Yii::t('motion', 'private_notes') . '">';
+    if ($comment) {
+        $str .= Html::encode($comment->text);
+    }
+    $str .= '</textarea>';
+    $str .= '<input type="hidden" name="paragraphNo" value="-1">';
+    $str .= '<input type="hidden" name="sectionId" value="">';
+    $str .= '<button type="submit" name="savePrivateNote" class="btn btn-success">' .
+        \Yii::t('base', 'save') . '</button>';
+    $str .= Html::endForm();
+
+    $motionData[] = [
+        'rowClass' => 'privateNotes' . ($comment ? '' : ' hidden'),
+        'title'    => \Yii::t('motion', 'private_notes'),
+        'content'  => $str,
+    ];
+}
 
 echo '<table class="motionDataTable">';
 foreach ($motionData as $row) {
