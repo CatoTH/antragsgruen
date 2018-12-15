@@ -299,11 +299,11 @@ cp config/config_tests.template.json config/config_tests.json && vi config/confi
 * Start Selenium: ```
 java -jar selenium-server-standalone-3.141.59.jar```
 * Run all acceptance tests: ```
-npm run test:acceptance```
+vendor/bin/codecept run acceptance```
 * Run all unit tests: ```
-npm run test:unit```
+vendor/bin/codecept run unit```
 * Run a single acceptence-test: ```
-npm run test:acceptance MotionCreateCept```
+vendor/bin/codecept run acceptance motions/CreateCept```
 
 
 Reporting security issues

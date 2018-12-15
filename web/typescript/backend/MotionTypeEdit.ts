@@ -1,3 +1,5 @@
+import Sortable = require('sortablejs');
+
 class MotionTypeEdit {
     constructor() {
         let $supportType = $('#typeSupportType');
@@ -101,7 +103,7 @@ class MotionTypeEdit {
         let $list = $('#sectionsList'),
             newCounter = 0;
 
-        $list.data("sortable", Sortable.create($list[0], {
+        $list.data("sortable", Sortable.create(<HTMLElement>$list[0], {
             handle: '.drag-handle',
             animation: 150
         }));
@@ -158,7 +160,7 @@ class MotionTypeEdit {
             $list.find('.maxLenSet').trigger('change');
 
             let $tab = $newObj.find('.tabularDataRow ul');
-            $tab.data("sortable", Sortable.create($tab[0], {
+            $tab.data("sortable", Sortable.create(<HTMLElement>$tab[0], {
                 handle: '.drag-data-handle',
                 animation: 150
             }));
