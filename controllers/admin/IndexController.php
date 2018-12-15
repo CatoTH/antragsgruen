@@ -409,6 +409,8 @@ class IndexController extends AdminBase
             $siteSettings->siteLayout = 'layout-custom-' . $stylesheet->getSettingsHash();
             $this->site->setSettings($siteSettings);
             $this->site->save();
+
+            $this->layoutParams->setLayout($siteSettings->siteLayout);
         }
 
         return $this->render('theming', ['stylesheet' => $stylesheet]);

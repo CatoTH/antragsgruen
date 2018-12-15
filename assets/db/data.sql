@@ -59,7 +59,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m180902_182805_initiatorSettings', '1536090959'),
   ('m180906_171118_supporterExtraData', '1536090959'),
   ('m181027_094836_fix_amendment_comment_relation', '1541091342'),
-  ('m181101_161124_proposed_procedure_active', '1541091342')
+  ('m181101_161124_proposed_procedure_active', '1541091342'),
+  ('m181027_174827_consultationFilesSite', '1544887273')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

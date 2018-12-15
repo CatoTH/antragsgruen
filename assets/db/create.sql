@@ -170,7 +170,8 @@ CREATE TABLE `###TABLE_PREFIX###consultationAgendaItem` (
 
 CREATE TABLE `###TABLE_PREFIX###consultationFile` (
   `id`             int(11)      NOT NULL,
-  `consultationId` int(11)      NOT NULL,
+  `consultationId` int(11)               DEFAULT NULL,
+  `siteId`         int(11)               DEFAULT NULL,
   `filename`       varchar(250) NOT NULL,
   `filesize`       int(11)      NOT NULL,
   `mimetype`       varchar(250) NOT NULL,
@@ -730,7 +731,8 @@ ALTER TABLE `consultationAgendaItem`
 
 ALTER TABLE `consultationFile`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_file_consultation` (`consultationId`);
+  ADD KEY `fk_file_consultation` (`consultationId`),
+  ADD KEY `consultation_file_site` (`siteId`);
 
 --
 -- Indexes for table `consultationLog`
@@ -1124,6 +1126,7 @@ ALTER TABLE `consultationAgendaItem`
 -- Constraints for table `consultationFile`
 --
 ALTER TABLE `consultationFile`
+  ADD CONSTRAINT `fk_consultation_file_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_file_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
 
 --

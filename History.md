@@ -2,6 +2,7 @@
 
 ## Version 4.2.0 [not released yet]
 
+- It is now possible to modify the layout of Antragsgrün, e.g. by choosing custom colors. To create a custom theme, go to "Settings" -> "This consultation" -> "Custom theme".
 - When logged in, users can now add private notes to each motion, amendment and motion paragraph.
 
 ### Version 4.1.1 (2018-12-09)
