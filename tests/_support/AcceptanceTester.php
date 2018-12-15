@@ -73,7 +73,7 @@ class AcceptanceTester extends \Codeception\Actor
      * @param string $motionSlug
      * @return MotionPage
      */
-    public function gotoMotion($check = true, $motionSlug = '2')
+    public function gotoMotion($check = true, $motionSlug = '321-o-zapft-is')
     {
         if (is_numeric($motionSlug)) {
             /** @var \app\models\db\Motion $motion */
@@ -101,7 +101,7 @@ class AcceptanceTester extends \Codeception\Actor
      * @param int $amendmentId
      * @return AmendmentPage
      */
-    public function gotoAmendment($check = true, $motionSlug = '2', $amendmentId = 1)
+    public function gotoAmendment($check = true, $motionSlug = '321-o-zapft-is', $amendmentId = 1)
     {
         $page = AmendmentPage::openBy(
             $this,
