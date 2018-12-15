@@ -34,7 +34,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         if ($el.data('initialized') == '0') {
             $el.data('initialized', '1');
             let classes = "popover popover-amendment-ajax " + $el.data('tooltip-extra-class');
-            let placement = 'right';
+            let placement: "auto" | "left" | "right" | "top" | "bottom" = 'right';
             if ($el.data('placement')) {
                 placement = $el.data('placement');
             }
