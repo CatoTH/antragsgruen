@@ -12,7 +12,7 @@ $I->gotoConsultationHome(true, 'parteitag', 'parteitag');
 $I->see('Parteitag', 'h1');
 $I->dontSeeElementInDOM('.moveHandle');
 $I->see('0. Tagesordnung', '.motionListWithinAgenda');
-$I->see('1. Wahl: 1. Vorsitzende', '.motionListWithinAgenda');
+$I->see('1. 1. Vorsitzende', '.motionListWithinAgenda');
 $I->see('3. Sonstiges', '.motionListWithinAgenda');
 $I->dontSee('1. Sonstiges', '.motionListWithinAgenda');
 $I->see('Bewerben', '#agendaitem_3 > div > h3');
@@ -52,7 +52,7 @@ $I->wantTo('further change the agenda a bit');
 $I->see('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListWithinAgenda").children().eq(0));');
 $I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-change");');
-$I->see('2. Wahl: Schatzmeister', '.motionListWithinAgenda');
+$I->see('2. Schatzmeister', '.motionListWithinAgenda');
 $I->see('3. More Motions', '.motionListWithinAgenda');
 $I->see('2. Anträge', '.motionListWithinAgenda');
 

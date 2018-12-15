@@ -1,4 +1,4 @@
-import Sortable = require('sortablejs');
+declare var Sortable;
 
 class MotionTypeEdit {
     constructor() {
