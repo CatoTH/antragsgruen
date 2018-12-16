@@ -7,6 +7,7 @@
 - Improvements regarding uploaded images:
   - Images uploaded at one consultation can now be used in other consultations of the same site as well.
   - Distorted images in content pages are now prevented.
+  - Instead of only uploading new consultation logos, the logo can now also be chosen from the already uploaded images.
 
 ### Version 4.1.1 (2018-12-09)
 

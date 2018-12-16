@@ -163,7 +163,9 @@ return [
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
 <small class="conPrefixHide">Antragskürzel müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann, werden aber nicht mehr angezeigt.</small>',
     'con_fb_img'              => 'Facebook-Bild',
-    'con_logo_url'            => 'Neues Logo hochladen',
+    'con_logo_url'            => 'Logo',
+    'con_logo_url_upload'     => 'Neues Logo hochladen',
+    'con_logo_url_choose'     => 'Auswählen',
     'con_ci'                  => 'Layout',
     'con_ci_custom'           => 'Eigenes Farbschema',
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',

@@ -80,7 +80,10 @@ class IndexController extends AdminBase
             $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
             $settings->saveForm($settingsInput, $post['settingsFields']);
-            if (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
+
+            if (isset($post['consultationLogo']) && $post['consultationLogo']) {
+                $settings->logoUrl = $post['consultationLogo'];
+            } elseif (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
                 try {
                     $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo');
                     $settings->logoUrl = $file->getUrl();

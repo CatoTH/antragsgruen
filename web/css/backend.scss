@@ -8,13 +8,16 @@
   label {
     font-weight: normal;
   }
+
   .content {
     overflow: visible;
   }
+
   .adminCard {
     .removeAdmin {
       float: right;
     }
+
     label {
       display: inline-block;
       margin-right: 20px;
@@ -65,9 +68,11 @@ label.legend {
   h3 {
     font-size: 18px;
   }
+
   .adminMenuList > li {
     font-weight: bold;
     margin-top: 20px;
+
     &.secondary {
       font-weight: normal;
     }
@@ -76,6 +81,7 @@ label.legend {
       margin-top: 10px;
     }
   }
+
   .motionTypeCreate {
     font-weight: normal;
     font-style: italic;
@@ -83,10 +89,12 @@ label.legend {
 
   .delSiteCaller {
     text-align: right;
+
     button {
       color: red;
     }
   }
+
   .adminIndexSecondary {
     padding-bottom: 10px;
   }
@@ -96,16 +104,20 @@ label.legend {
   .adminIndexHolder {
     display: flex;
     flex-direction: row;
+
     > *:first-child {
       flex: 0.7;
     }
+
     > *:last-child {
       flex: 0.3;
     }
+
     .adminIndexSecondary {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
+
       .btn {
         width: 100%;
       }
@@ -125,11 +137,14 @@ label.legend {
     list-style: none;
     margin: 0;
     padding: 0;
+
     li {
       padding-bottom: 15px;
+
       .action {
         font-size: 0.8em;
       }
+
       .description {
         font-size: 0.8em;
       }
@@ -167,10 +182,12 @@ label.legend {
       bottom: 10px;
       right: 10px;
     }
+
     html.no-touchevents & {
       .delbox {
         visibility: hidden;
       }
+
       &:hover {
         .delbox {
           visibility: visible;
@@ -179,6 +196,79 @@ label.legend {
     }
   }
 }
+
+#consultationSettingsForm {
+  .logoRow {
+    .logoPreview img {
+      max-width: 100%;
+    }
+
+    .image-chooser-dd {
+      text-align: right;
+    }
+  }
+}
+
+.imageChooser {
+  text-align: right;
+
+  .uploadCol {
+    position: relative;
+    max-width: 200px;
+    display: inline-block;
+
+    label {
+      cursor: pointer;
+      position: absolute;
+      top: 7px;
+      right: 10px;
+    }
+
+    input {
+      opacity: 0;
+    }
+  }
+
+  .imageChooserDd {
+    display: inline-block;
+
+    button {
+      font-weight: normal;
+    }
+
+    .dropdown-menu {
+      width: 300px;
+      @media screen and (min-width: 600px) {
+        width: 450px;
+      }
+      @media screen and (min-width: 800px) {
+        width: 600px;
+      }
+    }
+
+    ul {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      list-style: none;
+
+      li {
+        flex: 1;
+        flex-basis: 150px;
+        height: 150px;
+        line-height: 150px;
+        vertical-align: middle;
+        text-align: center;
+      }
+
+      img {
+        max-width: 140px;
+        max-height: 140px;
+      }
+    }
+  }
+}
+
 
 .thumbnailedLayoutSelector {
   padding-left: 5px !important; // cancels bootstrap padding
@@ -192,11 +282,13 @@ label.legend {
 
     display: inline-block;
     vertical-align: bottom;
+
     input {
       position: absolute;
       clip: rect(0, 0, 0, 0);
       pointer-events: none;
     }
+
     span {
       border: solid 1px lightgrey;
       border-radius: 5px;
@@ -206,10 +298,12 @@ label.legend {
       display: inline-block;
       vertical-align: bottom;
     }
+
     input:checked + span {
       border: solid 1px green;
       box-shadow: 0 0 10px rgba(0, 100, 0, 0.5);
     }
+
     .placeholder {
       height: 150px;
       width: 200px;
@@ -219,6 +313,7 @@ label.legend {
       text-align: center;
       font-style: italic;
     }
+
     img {
       max-height: 150px;
       max-width: 200px;
@@ -231,8 +326,10 @@ label.legend {
     margin-bottom: 50px;
   }
 }
+
 .customThemeSelector {
   margin-top: 20px;
+
   .editThemeLink {
     display: block;
     margin-left: 10px;
@@ -246,9 +343,11 @@ label.legend {
       width: 130px;
     }
   }
+
   .settingsTypeLabel {
     font-weight: normal;
   }
+
   #SiteCreateWizard {
     display: none;
   }
@@ -274,6 +373,7 @@ label.legend {
       label {
         font-weight: normal;
       }
+
       background-color: #f4fFf4;
     }
 
@@ -289,11 +389,13 @@ label.legend {
       cursor: move;
       padding: 0 10px 10px;
     }
+
     &.title, &.image {
       .drag-handle {
         margin-top: 33px;
       }
     }
+
     &.textSimple, &.textHtml {
       .drag-handle {
         margin-top: 55px;
@@ -306,6 +408,7 @@ label.legend {
       vertical-align: top;
       margin-right: 16px;
     }
+
     .toprow {
       padding: 10px 10px 0;
       border-bottom: 1px solid #afa;
@@ -313,15 +416,18 @@ label.legend {
       .remover {
         font-size: 20px;
         float: right;
+
         &:link, &:visited {
           color: red;
           opacity: 0.4;
+
           &:hover {
             opacity: 1;
           }
         }
       }
     }
+
     .bottomrow {
       display: table;
       table-layout: fixed;
@@ -340,56 +446,69 @@ label.legend {
       vertical-align: top;
       width: 210px;
     }
+
     .commentrow, .optionsRow {
       border-left: 1px solid #afa;
     }
+
     .commentRow {
       margin-bottom: 10px;
     }
+
     .commAmendRow {
       label {
         margin-bottom: 0;
       }
     }
+
     .tabularDataRow {
       display: none;
       border-top: solid 1px #afa;
       padding: 10px;
+
       ul {
         list-style-type: none;
         margin: 0;
         padding: 0;
+
         > li {
           margin: 0;
           padding: 5px;
+
           > .drag-data-handle {
             font-size: 16px;
             font-weight: bold;
             cursor: move;
             padding: 0 10px 10px;
           }
+
           .form-control {
             display: inline-block;
             width: 200px;
           }
         }
       }
+
       .addRow {
         padding-left: 40px;
         margin-top: 6px;
         display: inline-block;
       }
     }
+
     .maxLenInput {
       padding-left: 15px;
+
       input {
         width: 60px;
       }
     }
+
     .lineLengthSoft {
       padding-left: 15px;
       font-size: 12px;
     }
+
     .printTitleSection {
       margin-top: 5px;
     }
@@ -399,37 +518,46 @@ label.legend {
         display: none;
       }
     }
+
     &.image {
       .commentrow {
         display: none;
       }
+
       .lineNumbersLabel, .fixedWidthLabel, .lineLength {
         display: none;
       }
     }
+
     &.title {
       .lineNumbersLabel, .fixedWidthLabel {
         display: none;
       }
+
       .commentrow {
         display: none;
       }
     }
+
     &.textHtml {
       .lineNumbersLabel, .fixedWidthLabel {
         display: none;
       }
+
       .commentParagraph {
         display: none;
       }
     }
+
     &.tabularData {
       .commentRow {
         display: none;
       }
+
       .lineNumbersLabel, .fixedWidthLabel, .lineLength {
         display: none;
       }
+
       .tabularDataRow {
         display: block;
       }
@@ -441,6 +569,7 @@ label.legend {
   #motionTextEditCaller {
     text-align: center;
   }
+
   .tagList, .nonAmendable {
     label {
       font-weight: normal;
@@ -452,6 +581,7 @@ label.legend {
   .checkButtonRow {
     text-align: center;
   }
+
   .saveholder {
     .checkAmendmentCollisions {
       display: none;
@@ -469,37 +599,46 @@ label.legend {
   .submitRow {
     text-align: center;
   }
+
   .sectionAdder {
 
   }
+
   .contactDetails {
     label {
       font-weight: normal;
       margin-right: 20px;
     }
   }
+
   .initiatorsCanMergeRow {
     .control-label {
       font-weight: bold;
     }
+
     label {
       display: block;
       font-weight: normal;
       cursor: pointer;
     }
   }
+
   .deadlineLabel {
     font-weight: bold;
   }
+
   .deadlineAdder {
     font-weight: normal;
   }
+
   .deadlineHolder {
     margin-bottom: 20px;
   }
+
   .deadlineEntry {
     margin-bottom: 10px;
   }
+
   &.form-horizontal .checkbox {
     padding-top: 0;
   }
@@ -517,6 +656,7 @@ label.legend {
 .motionListExportRow {
   > .export {
     text-align: right;
+
     > * {
       display: inline-block;
     }
@@ -564,41 +704,51 @@ label.legend {
   .markCol {
     width: 30px;
   }
+
   .typeCol {
     width: 5%;
   }
+
   .prefixCol {
     width: 10%;
   }
+
   .actionCol {
     width: 120px;
     overflow: visible;
   }
+
   .proposalCol {
     .editModified {
       font-size: 0.8em;
     }
   }
+
   td.titleCol {
     text-indent: 0;
+
     > span {
       display: inline-block;
       padding-left: 5px;
       padding-right: 5px;
     }
   }
+
   td.exportCol {
     font-size: 0.9em;
   }
+
   &.JColResizer {
     .actionCol {
       overflow: visible;
     }
   }
+
   .dropdown-menu {
     left: auto;
     right: 0;
   }
+
   .amendmentAjaxTooltip {
     float: right;
     color: gray;
@@ -613,6 +763,7 @@ label.legend {
     border: solid 1px gray;
     position: relative;
   }
+
   th {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -622,6 +773,7 @@ label.legend {
 #siteSettingsForm {
   .loginMethods {
     margin-top: 20px;
+
     div.checkbox {
       margin-left: 15px;
     }
@@ -630,6 +782,7 @@ label.legend {
 
 .accountEditExplanation {
   font-size: 12px;
+
   h3 {
     margin: 0;
     margin-bottom: 10px;
@@ -642,6 +795,7 @@ label.legend {
   textarea {
     width: 100%;
   }
+
   .deleteUser {
     color: $colorDelLink;
   }
@@ -649,8 +803,10 @@ label.legend {
 
 .accountListTable {
   margin-top: 10px;
+
   .accessViewCol, .accessCreateCol {
     text-align: center;
+
     label {
       display: block;
       margin: 0;
@@ -675,6 +831,7 @@ label.legend {
       padding-top: ($padding-base-vertical + 1); // Default padding plus a border
     }
   }
+
   .typePreset {
     font-weight: bold;
     vertical-align: middle;
@@ -683,12 +840,14 @@ label.legend {
       display: inline-block;
       vertical-align: middle;
     }
+
     input {
       vertical-align: middle;
       margin-top: 0;
       margin-right: 6px;
     }
   }
+
   .typePresetInfo {
     padding-left: 10px;
     margin-left: 20px;
@@ -706,6 +865,7 @@ label.legend {
   .notDeletable {
     font-style: italic;
   }
+
   .submitRow {
     text-align: right;
   }
@@ -719,22 +879,28 @@ label.legend {
     > li {
       padding: 5px 0 5px 40px;
     }
+
     .supporterRow {
       display: flex;
       flex-direction: row;
+
       > * {
         flex: 1;
         padding: 0 15px;
+
         &:first-child {
           padding-left: 0;
         }
+
         &:last-child {
           padding-right: 0;
         }
       }
     }
+
     .nameCol {
       position: relative;
+
       .moveHandle {
         position: absolute;
         left: -15px;
@@ -744,49 +910,61 @@ label.legend {
         cursor: move;
       }
     }
+
     .delSupporter {
       float: right;
       color: #f77;
       margin-top: 5px;
     }
+
     html.no-touchevents & {
       > li {
         .moveHandle {
           display: none;
         }
+
         .delSupporter {
           visibility: hidden;
         }
       }
+
       > li:hover {
         .moveHandle {
           display: inherit;
         }
+
         .delSupporter {
           visibility: visible;
         }
       }
     }
   }
+
   .supporterRowAdder {
     margin-left: 42px;
   }
+
   .fullTextAdder {
     float: right;
   }
+
   #fullTextHolder {
     @include clearfix();
     padding-left: 25px;
   }
+
   .fullTextCopy {
     margin-top: 15px;
+
     .ok {
       display: none;
     }
+
     &.done {
       .ok {
         display: inherit;
       }
+
       .normal {
         display: none;
       }
@@ -813,6 +991,7 @@ label.legend {
       font-size: inherit;
     }
   }
+
   main {
     padding: 5px;
   }
@@ -828,9 +1007,11 @@ label.legend {
   ul {
     padding-left: 20px;
   }
+
   .showChanges {
     font-size: 12px;
   }
+
   .changes {
     font-size: 12px;
     font-family: $motionFixedFont;
@@ -842,19 +1023,24 @@ label.legend {
   font-size: 0.8em;
   margin-top: 2px;
   margin-right: 8px;
+
   *[title] {
     cursor: help;
   }
+
   .accepted {
     color: green;
     cursor: help;
   }
+
   .rejected {
     color: red;
   }
+
   .visible {
     opacity: 0.8;
   }
+
   .notVisible {
     opacity: 0.5;
   }
@@ -871,6 +1057,7 @@ label.legend {
   .submitRow {
     text-align: center;
   }
+
   @media screen and (min-width: 550px) {
     th {
       width: 40%;

@@ -6,7 +6,6 @@ use app\components\yii\MessageSource;
 use app\controllers\Base;
 use app\models\db\Consultation;
 use app\components\UrlHelper;
-use app\models\db\ConsultationFile;
 use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
 use yii\base\Action;

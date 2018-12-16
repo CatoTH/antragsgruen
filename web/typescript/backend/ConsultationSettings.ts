@@ -3,33 +3,35 @@
 declare let Sortable: any;
 
 export class ConsultationSettings {
-    constructor() {
-        let $form = $("#consultationSettingsForm");
+    constructor(private $form: JQuery) {
+        this.initLogoUpload();
+        this.initUrlPath();
+        this.initTags();
+        this.initAdminMayEdit();
+        this.initSingleMotionMode();
 
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+
+    private initUrlPath() {
         $('.urlPathHolder .shower a').click(function (ev) {
             ev.preventDefault();
             $('.urlPathHolder .shower').addClass('hidden');
             $('.urlPathHolder .holder').removeClass('hidden');
         });
+    }
 
-        $form.submit(function () {
-            let items = $("#tagsList").pillbox('items'),
-                tags = [],
-                $node = $('<input type="hidden" name="tags">'),
-                i;
-            for (i = 0; i < items.length; i++) {
-                if (typeof(items[i].id) == 'undefined') {
-                    tags.push({"id": 0, "name": items[i].text});
-                } else {
-                    tags.push({"id": items[i].id, "name": items[i].text});
-                }
+    private initSingleMotionMode() {
+        $("#singleMotionMode").change(function () {
+            if ($(this).prop("checked")) {
+                $("#forceMotionRow").removeClass("hidden");
+            } else {
+                $("#forceMotionRow").addClass("hidden");
             }
-            $node.attr("value", JSON.stringify(tags));
-            $form.append($node);
-        });
+        }).change();
+    }
 
-        Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
-
+    private initAdminMayEdit() {
         let $adminsMayEdit = $("#adminsMayEdit"),
             $iniatorsMayEdit = $("#iniatorsMayEdit").parents("label").first().parent();
         $adminsMayEdit.change(function () {
@@ -48,18 +50,48 @@ export class ConsultationSettings {
             }
         });
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
+    }
 
-        $("#singleMotionMode").change(function () {
-            if ($(this).prop("checked")) {
-                $("#forceMotionRow").removeClass("hidden");
-            } else {
-                $("#forceMotionRow").addClass("hidden");
+    private initTags() {
+        this.$form.submit(() => {
+            let items = $("#tagsList").pillbox('items'),
+                tags = [],
+                $node = $('<input type="hidden" name="tags">'),
+                i;
+            for (i = 0; i < items.length; i++) {
+                if (typeof (items[i].id) == 'undefined') {
+                    tags.push({"id": 0, "name": items[i].text});
+                } else {
+                    tags.push({"id": items[i].id, "name": items[i].text});
+                }
             }
-        }).change();
+            $node.attr("value", JSON.stringify(tags));
+            this.$form.append($node);
+        });
 
-        $('[data-toggle="tooltip"]').tooltip();
+        Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
+    }
+
+    private initLogoUpload() {
+        const $logoRow = this.$form.find('.logoRow'),
+            $uploadLabel = $logoRow.find('.uploadCol label .text');
+        $logoRow.on('click', '.imageChooserDd a', ev => {
+            ev.preventDefault();
+            const src = $(ev.currentTarget).find("img").attr("src");
+            $logoRow.find('input[name=consultationLogo]').val(src);
+            if ($logoRow.find('.logoPreview img').length === 0) {
+                $logoRow.prepend('<img src="" alt="">');
+            }
+            $logoRow.find('.logoPreview img').attr('src', src).removeClass('hidden');
+            $uploadLabel.text($uploadLabel.data('title'));
+            $logoRow.find("input[type=file]").val('');
+        });
+        $logoRow.find("input[type=file]").change(() => {
+            const path = $logoRow.find("input[type=file]").val().split('\\');
+            const filename = path[path.length - 1];
+            $logoRow.find('input[name=consultationLogo]').val('');
+            $logoRow.find(".logoPreview img").addClass('hidden');
+            $uploadLabel.text(filename);
+        });
     }
 }
-
-
-new ConsultationSettings();

@@ -26,8 +26,6 @@ $this->title = \Yii::t('admin', 'con_h1');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'));
 
-$layout->addAMDModule('backend/ConsultationSettings');
-
 /**
  * @param \app\models\settings\Consultation $settings
  * @param string $field
@@ -45,9 +43,10 @@ $boolSettingRow = function ($settings, $field, &$handledSettings, $description) 
 ?><h1><?= \Yii::t('admin', 'con_h1') ?></h1>
 <?php
 echo Html::beginForm('', 'post', [
-    'id'      => 'consultationSettingsForm',
-    'class'   => 'adminForm form-horizontal fuelux',
-    'enctype' => 'multipart/form-data',
+    'id'                       => 'consultationSettingsForm',
+    'class'                    => 'adminForm form-horizontal fuelux',
+    'enctype'                  => 'multipart/form-data',
+    'data-antragsgruen-widget' => 'backend/ConsultationSettings',
 ]);
 
 echo $controller->showErrors();
@@ -169,11 +168,11 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             <div class="col-sm-3 control-label"><?= \Yii::t('admin', 'con_ci') ?>:</div>
             <div class="col-sm-9 thumbnailedLayoutSelector">
                 <?php
-                $layout                = $consultation->site->getSettings()->siteLayout;
+                $layoutId              = $consultation->site->getSettings()->siteLayout;
                 $handledSiteSettings[] = 'siteLayout';
                 foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
                     echo '<label class="layout">';
-                    echo Html::radio('siteSettings[siteLayout]', $lId === $layout, ['value' => $lId]);
+                    echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
                     echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
                         'alt="' . Html::encode($cssLayout['title']) . '" ' .
                         'title="' . Html::encode($cssLayout['title']) . '"></span>';
@@ -185,7 +184,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             <div class="col-sm-9 customThemeSelector">
                 <label>
                     <?php
-                    $isCustom = (strpos($layout, 'layout-custom-') !== false);
+                    $isCustom = (strpos($layoutId, 'layout-custom-') !== false);
                     echo Html::radio('siteSettings[siteLayout]', $isCustom, ['value' => 'custom']);
                     echo ' ' . \Yii::t('admin', 'con_ci_custom');
                     ?>
@@ -198,10 +197,49 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             </div>
         </fieldset>
 
-        <fieldset class="form-group">
+        <fieldset class="form-group logoRow">
             <label class="col-sm-3 control-label" for="logoUrl"><?= \Yii::t('admin', 'con_logo_url') ?>:</label>
-            <div class="col-sm-9">
-                <input type="file" name="newLogo" class="form-control" id="logoUrl">
+            <div class="col-sm-2 logoPreview">
+                <?php
+                if ($settings->logoUrl) {
+                    echo $layout->getLogoStr();
+                }
+                ?>
+            </div>
+            <div class="col-sm-7 imageChooser">
+                <input type="hidden" name="consultationLogo" value="" autocomplete="off">
+                <div class="uploadCol">
+                    <input type="file" name="newLogo" class="form-control" id="logoUrl">
+                    <label for="logoUrl">
+                        <span class="glyphicon glyphicon-upload"></span>
+                        <span class="text" data-title="<?= Html::encode(\Yii::t('admin', 'con_logo_url_upload')) ?>">
+                            <?= \Yii::t('admin', 'con_logo_url_upload') ?>
+                        </span>
+                    </label>
+                </div>
+                <?php
+                if (count($consultation->site->files) > 0) {
+                    ?>
+                    <div class="dropdown imageChooserDd">
+                        <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <?= \Yii::t('admin', 'con_logo_url_choose') ?>
+                            <span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
+                            <ul>
+                                <?php
+                                foreach ($consultation->site->files as $file) {
+                                    $src = $file->getUrl();
+                                    echo '<li><a href="#"><img alt="" src="' . Html::encode($src) . '"></a></li>';
+                                }
+                                ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
         </fieldset>
 
@@ -212,8 +250,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
 
         $propTitle = \Yii::t('admin', 'con_proposal_procedure');
-        $tooltip = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title="" ' .
-            'data-original-title="' . Html::encode(\Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+        $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
+            'title="" data-original-title="' . Html::encode(\Yii::t('admin', 'con_proposal_tt')) . '"></span>';
         $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
         $boolSettingRow($settings, 'minimalisticUI', $handledSettings, \Yii::t('admin', 'con_minimalistic'));
