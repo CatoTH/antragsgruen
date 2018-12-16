@@ -46,6 +46,26 @@ class ConsultationFile extends ActiveRecord
     }
 
     /**
+     * @return Consultation|null
+     */
+    public function getMyConsultation()
+    {
+        if (Consultation::getCurrent() && Consultation::getCurrent()->id === $this->consultationId) {
+            return Consultation::getCurrent();
+        } else {
+            return $this->consultation;
+        }
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSite()
+    {
+        return $this->hasOne(Site::class, ['id' => 'siteId']);
+    }
+
+    /**
      * @return array
      */
     public function rules()
@@ -242,6 +262,6 @@ class ConsultationFile extends ActiveRecord
      */
     public function getUrl()
     {
-        return UrlHelper::createUrl(['pages/file', 'filename' => $this->filename]);
+        return UrlHelper::createUrl(['pages/file', 'filename' => $this->filename], $this->getMyConsultation());
     }
 }

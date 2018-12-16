@@ -1,7 +1,5 @@
 <?php
 
-use app\tests\_pages\ConsultationHomePage;
-
 /** @var \Codeception\Scenario $scenario */
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();

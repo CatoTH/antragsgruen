@@ -26,6 +26,7 @@ use yii\db\ActiveRecord;
  * @property Consultation $currentConsultation
  * @property Consultation[] $consultations
  * @property ConsultationText[] $texts
+ * @property ConsultationFile[] $files
  * @property User[] $admins
  * @property TexTemplate
  */
@@ -69,6 +70,14 @@ class Site extends ActiveRecord
     public function getTexTemplates()
     {
         return $this->hasMany(TexTemplate::class, ['siteId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiles()
+    {
+        return $this->hasMany(ConsultationFile::class, ['siteId' => 'id']);
     }
 
     /**

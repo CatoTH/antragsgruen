@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\HTMLTools;
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationFile;
 use app\models\db\ConsultationText;
@@ -10,7 +11,6 @@ use app\models\db\User;
 use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
-use app\models\settings\Stylesheet;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -293,7 +293,18 @@ class PagesController extends Base
             }
         }
 
-        $files = $this->consultation->files;
+        $files = $this->site->files;
+        usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
+            $currentCon = $this->consultation->id;
+            if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {
+                return -1;
+            }
+            if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
+                return 1;
+            }
+            return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);
+        });
+
         return $this->renderPartial('browse-images', [
             'files'      => $files,
             'msgSuccess' => $msgSuccess,
