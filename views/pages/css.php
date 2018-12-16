@@ -39,6 +39,18 @@ $inlineAmendmentPreambleColor: rgb(226, 0, 122);
 @import "sidebar";
 @import "user_pages";
 
+';
+
+if ($stylesheetSettings->backgroundImage) {
+    $css .= '
+body {
+    background: url("' . $stylesheetSettings->backgroundImage . '") no-repeat scroll center center transparent;
+    background-size: cover;
+    background-attachment: fixed;
+}
+';
+} else {
+    $css .= '
 html {
   background: url("../img/wallpaper.jpg") repeat scroll 0 0 transparent;
 }
@@ -46,8 +58,10 @@ html {
 body {
   background: url("../img/backgroundGradient.png") repeat-x scroll 0 0 transparent;
 }
+    ';
+}
 
-.logoImg {
+$css .= '.logoImg {
   display: block;
   width: 377px;
   height: 55px;

@@ -80,7 +80,7 @@ export class ConsultationSettings {
             const src = $(ev.currentTarget).find("img").attr("src");
             $logoRow.find('input[name=consultationLogo]').val(src);
             if ($logoRow.find('.logoPreview img').length === 0) {
-                $logoRow.prepend('<img src="" alt="">');
+                $logoRow.find('.logoPreview').prepend('<img src="" alt="">');
             }
             $logoRow.find('.logoPreview img').attr('src', src).removeClass('hidden');
             $uploadLabel.text($uploadLabel.data('title'));

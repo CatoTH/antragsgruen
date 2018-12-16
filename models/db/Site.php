@@ -81,6 +81,17 @@ class Site extends ActiveRecord
     }
 
     /**
+     * @return ConsultationFile[]
+     */
+    public function getFileImages()
+    {
+        $images = array_filter($this->files, function (ConsultationFile $file) {
+            return (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif']));
+        });
+        return array_values($images);
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAdmins()

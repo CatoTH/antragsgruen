@@ -218,7 +218,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     </label>
                 </div>
                 <?php
-                if (count($consultation->site->files) > 0) {
+                $images = $consultation->site->getFileImages();
+                if (count($images) > 0) {
                     ?>
                     <div class="dropdown imageChooserDd">
                         <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
@@ -229,7 +230,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
                             <ul>
                                 <?php
-                                foreach ($consultation->site->files as $file) {
+                                foreach ($images as $file) {
                                     $src = $file->getUrl();
                                     echo '<li><a href="#"><img alt="" src="' . Html::encode($src) . '"></a></li>';
                                 }
@@ -278,7 +279,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         $handledSettings[] = 'forceMotion';
         $motions           = [];
         foreach ($consultation->motions as $motion) {
-            if ($motion->status != Motion::STATUS_DELETED) {
+            if ($motion->status !== Motion::STATUS_DELETED) {
                 $motions[$motion->id] = $motion->getTitleWithPrefix();
             }
         }

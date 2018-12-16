@@ -11,6 +11,7 @@ class Stylesheet implements \JsonSerializable
     const TYPE_PIXEL    = 'pixel';
     const TYPE_NUMBER   = 'number';
     const TYPE_FONT     = 'font';
+    const TYPE_IMAGE    = 'image';
 
     public $bodyFont;
     public $colorLinks;
@@ -35,6 +36,7 @@ class Stylesheet implements \JsonSerializable
     public $linkTextDecoration;
     public $useBoxShadow;
     public $contentBorderRadius;
+    public $backgroundImage;
     public $menuActive;
     public $menuLink;
     public $menuFont;
@@ -91,43 +93,43 @@ class Stylesheet implements \JsonSerializable
                 'scssName' => 'bookmarkCommentColor',
             ],
             'headingFont'                 => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '"Open Sans", sans-serif',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'headingFont',
             ],
             'headingPrimaryText'          => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#ffffff',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingPrimaryText',
             ],
             'headingPrimaryBackground'    => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#285f19',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingPrimaryBackground',
             ],
             'headingSecondaryText'        => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#ffffff',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingSecondaryText',
             ],
             'headingSecondaryBackground'  => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#afcb08',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingSecondaryBackground',
             ],
             'headingTertiaryText'         => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#000000',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingTertiaryText',
             ],
             'headingTertiaryBackground'   => [
-                'group'    => 'layout',
+                'group'    => 'headings',
                 'default'  => '#1b4afb',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingTertiaryBackground',
@@ -149,6 +151,12 @@ class Stylesheet implements \JsonSerializable
                 'default'  => '#739b9b',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'menuActive',
+            ],
+            'backgroundImage'             => [
+                'group'    => 'layout',
+                'default'  => '',
+                'type'     => static::TYPE_IMAGE,
+                'scssName' => 'backgroundImage',
             ],
             'bodyFont'                    => [
                 'group'    => 'text',

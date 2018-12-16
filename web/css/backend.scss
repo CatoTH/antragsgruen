@@ -1076,4 +1076,17 @@ label.legend {
     }
   }
 
+  .imageChooser {
+    text-align: left;
+
+    .uploadCol label {
+      right: auto;
+      left: 0;
+      font-weight: normal;
+    }
+  }
+
+  .logoPreview img {
+    max-width: 150px;
+  }
 }
