@@ -11,6 +11,7 @@ return [
     'bread_todo'                  => 'To Do',
     'bread_consultation'          => 'Veranstaltung',
     'bread_theming'               => 'Farbschema',
+    'bread_language'              => 'Sprache',
     'saved'                       => 'Gespeichert.',
     'save'                        => 'Speichern',
     'index_title'                 => 'Administration',

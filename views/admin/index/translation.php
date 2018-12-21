@@ -19,12 +19,12 @@ $layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 
-$this->title = 'Einstellungen';
+$this->title = \Yii::t('admin', 'Translation / Wording');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb('Erweitert');
+$layout->addBreadcrumb(\Yii::t('admin', 'bread_language'));
 $layout->bodyCssClasses[] = 'adminTranslationForm';
 
-echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
+echo '<h1>' . \Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
 
 <div class="alert alert-info" role="alert">' . \Yii::t('admin', 'translating_hint') . '</div>';
@@ -57,7 +57,7 @@ echo '<br><br>';
 
 
 foreach (MessageSource::getTranslatableCategories() as $catId => $catName) {
-    if ($catId == $category) {
+    if ($catId === $category) {
         echo '[<strong>' . Html::encode($catName) . '</strong>] ';
     } else {
         $link = UrlHelper::createUrl(['admin/index/translation', 'category' => $catId]);

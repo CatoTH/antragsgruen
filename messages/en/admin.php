@@ -11,6 +11,7 @@ return [
     'bread_todo'                  => 'To Do',
     'bread_consultation'          => 'Consultation',
     'bread_theming'               => 'Theme',
+    'bread_language'              => 'Language',
     'saved'                       => 'Saved.',
     'save'                        => 'Save',
     'index_title'                 => 'Administration',
