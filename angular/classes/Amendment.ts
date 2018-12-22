@@ -24,7 +24,7 @@ export class Amendment extends IMotion {
             console.warn('Unknown link key:', linkKey);
             return '';
         }
-        const slug = (this.motionSlug ? this.motionSlug : this.motionId);
+        const slug = (this.motionSlug ? this.motionSlug : this.motionId.toString(10));
         return template
             .replace(/0123456789/, this.id)
             .replace(/_MOTION_SLUG_/, slug)

@@ -117,7 +117,7 @@ class Channel
     public function loadInitialData(Session $session)
     {
         try {
-            $cli = new \Swoole\Http\Client('127.0.0.1', 80);
+            $cli = new \Swoole\Coroutine\Http\Client('127.0.0.1', 80);
             $cli->set(['timeout' => 3.0]);
             $cli->setHeaders([
                 'Host'       => static::$configuration->getHostname($this->subdomain),
@@ -126,20 +126,20 @@ class Channel
             ]);
             $queryUrl = '/' . $this->path . '/async/objects?channel=' . urlencode($this->channelName);
 
-            $cli->get($queryUrl, function ($cli) use ($session) {
-                if ($cli->statusCode === 200) {
-                    $objectSrc = json_decode($cli->body, true);
-                    $className = TransferrableChannelObject::$CHANNEL_CLASSES[$this->channelName];
+            $cli->get($queryUrl);
 
-                    $objects = array_map(function ($dat) use ($className) {
-                        return new $className($dat);
-                    }, $objectSrc);
+            if ($cli->statusCode === 200) {
+                $objectSrc = json_decode($cli->body, true);
+                $className = TransferrableChannelObject::$CHANNEL_CLASSES[$this->channelName];
 
-                    $session->sendObjectsToClient($this->channelName, $objects);
-                } else {
-                    var_dump($cli);
-                }
-            });
+                $objects = array_map(function ($dat) use ($className) {
+                    return new $className($dat);
+                }, $objectSrc);
+
+                $session->sendObjectsToClient($this->channelName, $objects);
+            } else {
+                var_dump($cli);
+            }
         } catch (\Exception $e) {
             echo 'Error: ' . $e->getMessage() . "\n";
         }

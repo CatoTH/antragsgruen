@@ -31,7 +31,7 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 5.6. Recommended: 7.2+. Required packages for Debian Linux:
+- PHP >= 7.1. Recommended: 7.2+. Required packages for Debian Linux:
 
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
@@ -204,10 +204,10 @@ Add the following settings to your config.json (and adapt them to your needs):
 To use async features based on Websockets, [Swoole](https://www.swoole.co.uk/) needs to be installed. A sample installation works approximately like this:
 ```bash
 pecl download swoole
-tar xg swoole-4.2.1.tgz
-cd swoole-4.2.1
+tar xg swoole-4.2.10.tgz
+cd swoole-4.2.10
 phpize
-./configure --enable-http2  --enable-sockets
+./configure --enable-http2  --enable-sockets --enable-coroutine
 make
 make install
 ```
