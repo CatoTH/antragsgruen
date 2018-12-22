@@ -96,7 +96,7 @@ class ProtocolHandler
     public function authenticate(string $subdomain, string $path, string $cookie, callable $success, callable $error)
     {
         try {
-            $cli = new \Swoole\Http\Client('127.0.0.1', 80);
+            $cli = new \Swoole\Coroutine\Http\Client('127.0.0.1', 80);
             $cli->set(['timeout' => 3.0]);
             echo $this->configuration->getHostname($subdomain) . " - "  . $path . "\n";
             $cli->setHeaders([
@@ -105,15 +105,14 @@ class ProtocolHandler
                 'Accept'     => 'application/json',
                 'Cookie'     => 'PHPSESSID=' . $cookie,
             ]);
-            $cli->get('/' . $path . '/async/user', function ($cli) use ($success, $error) {
-                if ($cli->statusCode === 200) {
-                    $user = new Userdata($cli->body);
-                    $success($user);
-                } else {
-                    var_dump($cli);
-                    $error($cli->statusCode, $cli->body);
-                }
-            });
+            $cli->get('/' . $path . '/async/user');
+            if ($cli->statusCode === 200) {
+                $user = new Userdata($cli->body);
+                $success($user);
+            } else {
+                var_dump($cli);
+                $error($cli->statusCode, $cli->body);
+            }
         } catch (\Exception $e) {
             $error(500, $e->getMessage());
         }
