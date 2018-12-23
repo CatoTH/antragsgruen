@@ -185,7 +185,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                 <label>
                     <?php
                     $isCustom = (strpos($layoutId, 'layout-custom-') !== false);
-                    echo Html::radio('siteSettings[siteLayout]', $isCustom, ['value' => 'custom']);
+                    echo Html::radio('siteSettings[siteLayout]', $isCustom, ['value' => $layoutId]);
                     echo ' ' . \Yii::t('admin', 'con_ci_custom');
                     ?>
                 </label>

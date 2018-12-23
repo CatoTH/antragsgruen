@@ -409,7 +409,7 @@ class IndexController extends AdminBase
                     case Stylesheet::TYPE_IMAGE:
                         if (isset($settings[$key]) && $settings[$key]) {
                             $stylesheet->$key = $settings[$key];
-                        } elseif (isset($_FILES['uploaded_' . $key]) && $_FILES['uploaded_' . $key]) {
+                        } elseif (isset($_FILES['uploaded_' . $key]) && $_FILES['uploaded_' . $key]['tmp_name']) {
                             try {
                                 $file = ConsultationFile::uploadImage($this->consultation, 'uploaded_' . $key);
 
