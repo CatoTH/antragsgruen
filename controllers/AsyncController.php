@@ -60,7 +60,7 @@ class AsyncController extends Base
         if (!User::getCurrentUser()) {
             return $this->showErrorpage(401, 'please log in');
         }
-        return $this->render('client');
+        return $this->render('client-vue');
     }
 
     /**
