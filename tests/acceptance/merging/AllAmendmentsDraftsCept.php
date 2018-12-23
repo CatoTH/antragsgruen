@@ -47,6 +47,17 @@ $I->seeElement('#updateBtn');
 $I->see('Neue Zeile', '.ice-ins');
 $I->dontSee('Neuer Punkt', '.ice-ins');
 
+$I->wantTo('see the info windows');
+$I->dontSeeElement('.popover-amendment-ajax');
+$I->click("//ul[@data-cid='1']"); // Neue Zeile, Ä3
+$I->wait(1);
+$I->seeElement('.popover-amendment-ajax');
+$I->see('Tester', '.popover-amendment-ajax');
+
+$I->click("//ins[@data-cid='5']"); // Woibbadinga damischa, Ä2
+$I->wait(1);
+$I->seeElement('.popover-amendment-ajax');
+$I->see('Testadmin', '.popover-amendment-ajax');
 
 $I->wantTo('restore the draft');
 $I->gotoConsultationHome()->gotoMotionView(2);

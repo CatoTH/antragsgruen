@@ -846,6 +846,8 @@ class User extends ActiveRecord implements IdentityInterface
         $this->recoveryAt      = null;
         $this->save(false);
 
+        ConsultationUserPrivilege::deleteAll(['userId' => $this->id]);
+
         $this->trigger(User::EVENT_DELETED, new UserEvent($this));
     }
 }
