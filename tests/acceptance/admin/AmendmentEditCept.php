@@ -14,6 +14,7 @@ $I->click('#amendmentTextEditCaller button');
 $I->seeElementInDOM('#sections_2');
 
 $I->selectFueluxOption('#amendmentStatus', \app\models\db\IMotion::STATUS_COMPLETED);
+$I->fillField('#amendmentStatusString', 'völlig erschöpft');
 $I->fillField('#amendmentTitlePrefix', 'Ä1neu');
 $I->fillField('#amendmentDateCreation', '01.01.2015 01:02');
 $I->fillField('#amendmentDateResolution', '02.03.2015 04:05');
@@ -25,7 +26,13 @@ $I->submitForm('#amendmentUpdateForm', [], 'save');
 $I->wantTo('verify the changes are visible');
 $I->click('.sidebarActions .view');
 $I->see(mb_strtoupper('Ä1neu zu A2'));
+$I->see('Erledigt (völlig erschöpft)');
 $I->see('Test 123', 'p.inserted');
 $I->see('Another Reason');
 $I->see('02.03.2015');
 $I->see('01.01.2015');
+
+$I->wantTo('see the changes in the motion list');
+$I->gotoMotionList();
+$I->see('Ä1neu', '.amendment1');
+$I->see('Erledigt (völlig erschöpft)', '.amendment1');

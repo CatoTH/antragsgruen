@@ -18,6 +18,7 @@ $I->dontSeeElement('.saveholder .save');
 
 $I->selectFueluxOption('#motionStatus', \app\models\db\IMotion::STATUS_COMPLETED);
 $I->see('Erledigt', '#motionStatus .selected-label');
+$I->fillField('#motionStatusString', 'völlig erschöpft');
 
 $I->fillField('#motionTitle', 'Neuer Titel');
 $I->fillField('#motionTitlePrefix', 'A2neu');
@@ -60,6 +61,7 @@ $I->see(mb_strtoupper('A2neu: Neuer Titel'));
 $I->see('Test 123');
 $I->see('02.03.2015');
 $I->see('01.01.2015');
+$I->see('Erledigt (völlig erschöpft)');
 $I->see('Wui helfgod Wiesn1');
 
 
@@ -68,3 +70,10 @@ $I->gotoAmendment(true, 2, 274);
 $I->see('Wui helfgod Wiesn1Bla');
 $I->gotoAmendment(true, 2, 3);
 $I->dontSee('Wui helfgod Wiesn');
+
+
+$I->wantTo('see the changes in the motion list');
+$I->gotoMotionList();
+$I->see('A2neu', '.motion2');
+$I->see('Neuer Titel', '.motion2');
+$I->see('Erledigt (völlig erschöpft)', '.motion2');

@@ -42,7 +42,7 @@ echo '<td>' . Html::encode($motionStatuses[$entry->status]);
 if ($entry->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
 }
-if ($entry->statusString !== '') {
+if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';

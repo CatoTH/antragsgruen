@@ -54,7 +54,7 @@ echo '<td>' . Html::encode($amendmentStatuses[$entry->status]);
 if ($entry->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     echo ' (' . count($entry->getSupporters()) . ')';
 }
-if ($entry->statusString !== '') {
+if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';
