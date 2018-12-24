@@ -554,9 +554,9 @@ class User extends ActiveRecord implements IdentityInterface
         $code         = $this->getNotificationUnsubscribeCode();
         $blacklistUrl = UrlHelper::createUrl(['user/emailblacklist', 'code' => $code]);
         $blacklistUrl = UrlHelper::absolutizeLink($blacklistUrl);
-        $gruss        = str_replace('%NAME%', $this->name, \Yii::t('user', 'noti_greeting') . "\n\n");
-        $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . $blacklistUrl;
-        $text         = $gruss . $text . $sig;
+        $salutation   = str_replace('%NAME%', $this->name, \Yii::t('user', 'noti_greeting') . "\n\n");
+        $sig          = "\n\n" . \Yii::t('user', 'noti_bye') . "\n" . $blacklistUrl;
+        $text         = $salutation . $text . $sig;
         try {
             MailTools::sendWithLog($mailType, $consultation, $this->email, $this->id, $subject, $text);
         } catch (MailNotSent $e) {
