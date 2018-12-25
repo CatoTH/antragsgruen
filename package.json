@@ -73,6 +73,7 @@
     "@angular/platform-browser-dynamic": "^7.1.4",
     "@angular/router": "^7.1.4",
     "@types/es6-promise": "^3.3.0",
+    "axios": "^0.18.0",
     "clone-buffer": "^1.0.0",
     "cloneable-readable": "^1.1.2",
     "core-js": "^2.6.1",

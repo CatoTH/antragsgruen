@@ -1007,4 +1007,59 @@ class HTMLTools
 
         return $html;
     }
+
+    public static function getVueComponent($componentName, $params = [], $transCategories = ['structure']): string
+    {
+        /** @var \app\models\settings\AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+
+        $consultation = UrlHelper::getCurrentConsultation();
+
+        $toLoadCategories = [];
+        foreach ($transCategories as $transCategory) {
+            if (!in_array($transCategory, static::$loadedTranslationCategories)) {
+                static::$loadedTranslationCategories[] = $transCategory;
+                $toLoadCategories[]                    = $transCategory;
+            }
+        }
+
+        if ($app->asyncConfig) {
+            $params['cookie']  = $_COOKIE['PHPSESSID'];
+            $params['wsPort'] = IntVal($app->asyncConfig['port-external']);
+            if ($consultation) {
+                $params['subdomain'] = $consultation->site->subdomain;
+                $params['path']      = $consultation->urlPath;
+            }
+        }
+        $params['csrfParam'] = \Yii::$app->request->csrfParam;
+        $params['csrfToken'] = \Yii::$app->request->csrfToken;
+
+        $html = '<script src="/vue/build.js"></script>';
+
+        if (count($toLoadCategories) > 0) {
+            $transCategoriesUrl = UrlHelper::createUrl([
+                'async/translations',
+                'categories' => implode(',', $toLoadCategories)
+            ]);
+            $html               .= '<script src="' . Html::encode($transCategoriesUrl) . '"></script>';
+        }
+
+        $template = '<' . $componentName;
+        foreach (array_keys($params) as $name) {
+            $template .= ' :' . $name . '="' . $name . '"';
+        }
+        $template .= '/>';
+
+        $html .= '<div id="admin-index"></div>';
+        $html .= '<script>new Vue({
+            el: "#admin-index",
+            template: ' . json_encode($template) . ',
+            components: {
+                AdminList
+            },
+            data: ' . json_encode($params) . '
+        });</script>';
+
+        return $html;
+    }
 }

@@ -17,4 +17,5 @@ npm-debug.log
 /web/updates/
 /web/assets/*
 /web/angular/
+/web/vue/
 components/fpdi

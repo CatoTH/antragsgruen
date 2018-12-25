@@ -14,7 +14,6 @@ $consultation = $controller->consultation;
 $this->title = \Yii::t('admin', 'list_head_title');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_list'));
 $layout->addJS('js/colResizable-1.6.min.js');
-$layout->addJS('vue/build.js');
 $layout->addCSS('css/backend.css');
 $layout->loadFuelux();
 $layout->fullWidth  = true;
@@ -25,12 +24,12 @@ echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
 echo $this->render('@app/views/admin/motion-list/_list_all_export');
 
 
-$initData = json_encode([
+$initData = [
     'motions'    => \app\async\models\Motion::getCollection($consultation),
     'amendments' => \app\async\models\Amendment::getCollection($consultation),
-]);
+];
 
-$linkTemplates = json_encode([
+$linkTemplates = [
     'motion/view'               => UrlHelper::createUrl(['/motion/view', 'motionSlug' => '_SLUG_']),
     'motion/odt'                => UrlHelper::createUrl(['/motion/odt', 'motionSlug' => '_SLUG_']),
     'motion/plainhtml'          => UrlHelper::createUrl(['/motion/plainhtml', 'motionSlug' => '_SLUG_']),
@@ -45,36 +44,13 @@ $linkTemplates = json_encode([
 
     'admin/motion/update'    => UrlHelper::createUrl(['/admin/motion/update', 'motionId' => '0123456789']),
     'admin/amendment/update' => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '0123456789']),
-]);
-
-$params = [
-    'ajax-backend'     => UrlHelper::createUrl('/admin/motion-list/ajax'),
-    'link-templates'   => $linkTemplates,
-    'init-collections' => $initData,
 ];
 
-?>
-<!--
-<div class="content">
-    <?= \app\components\HTMLTools::getAngularComponent('admin-index', $params, ['structure', 'admin', 'tags']) ?>
-</div>
--->
-
-<div id="app"></div>
-<script>
-    $(function () {
-        new Vue({
-            el: "#app",
-            template: `<admin-list :name="'Test'" :initialEnthusiasm="23" :subdomain="subdomain" :path="path" :cookie="cookie" :wsPort="wsPort" />`,
-            components: {
-                AdminList
-            },
-            data: {
-                subdomain: 'stdparteitag',
-                path: 'std-parteitag',
-                cookie: <?= json_encode($_COOKIE['PHPSESSID']) ?>,
-                wsPort: <?= IntVal(\Yii::$app->params->asyncConfig['port-external']) ?>
-            }
-        });
-    })
-</script>
+echo \app\components\HTMLTools::getVueComponent(
+    'admin-list',
+    [
+        'ajaxBackendUrl'  => UrlHelper::createUrl('/admin/motion-list/ajax'),
+        'linkTemplates'   => json_encode($linkTemplates),
+        'initCollections' => json_encode($initData),
+    ]
+);
