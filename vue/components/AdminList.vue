@@ -39,7 +39,7 @@
             </tr>
             </thead>
             <tbody>
-            <template v-for="item in sortedFilteredItems">
+            <template v-for="item in sortedFilteredItems()">
                 <tr v-if="item.type === 'motion'">
                     <td><input type="checkbox"></td>
                     <td i18n="admin-index motion indicator">Mot</td>
@@ -181,12 +181,12 @@
 
         private _websocket: WebsocketService;
         private log = '';
-        private _linkTemplates: { [key: string]: string };
+        public linkTemplatesArr: { [key: string]: string };
 
         public motionCollection: Collection<Motion> = new Collection<Motion>(<any>Motion);
         public amendmentCollection: Collection<Amendment> = new Collection<Amendment>(<any>Amendment);
         allItems: IMotion[];
-        private _sortedFilteredItems: IMotion[];
+        public _sortedFilteredItems: IMotion[];
 
         public searchPrefix = "";
         public searchTitle = "";
@@ -200,7 +200,7 @@
             const data = JSON.parse(this.initCollections);
             this.motionCollection.setElements(data['motions']);
             this.amendmentCollection.setElements(data['amendments']);
-            this._linkTemplates = JSON.parse(this.linkTemplates);
+            this.linkTemplatesArr = JSON.parse(this.linkTemplates);
 
             this.recalcMotionList();
             this.initWebsocket();
@@ -227,13 +227,8 @@
             return this._hasTopics;
         }
 
-        get sortedFilteredItems(): IMotion[] {
+        public sortedFilteredItems(): IMotion[] {
             return this._sortedFilteredItems;
-        }
-
-        get linkTemplatesArr(): { [key: string]: string } {
-            console.log(this._linkTemplates);
-            return this._linkTemplates;
         }
 
         public recalcMotionList() {
@@ -244,7 +239,6 @@
             Object.keys(this.amendmentCollection.elements).forEach(key => {
                 this.allItems.push(this.amendmentCollection.elements[key]);
             });
-            console.log("2");
 
             this._sortedFilteredItems = this.allItems.filter((item: IMotion) => {
                 let matches = true;
@@ -257,7 +251,7 @@
             });
 
             this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByPrefix(this._sortedFilteredItems);
-            console.log("3");
+            console.log(this._sortedFilteredItems);
         }
 
         private static sortMotionsAmendmentsByPrefix(items: IMotion[]): IMotion[] {
@@ -481,11 +475,12 @@
             }));
         }
 
-        public searchPrefixChange($ev) {
-            if ($ev.currentTarget.value === this.searchPrefix) {
+        public searchPrefixChange($ev: KeyboardEvent) {
+            const element = <HTMLInputElement>$ev.target;
+            if (element.value === this.searchPrefix) {
                 return;
             }
-            this.searchPrefix = $ev.currentTarget.value;
+            this.searchPrefix = element.value;
             if (this.searchPrefix === '') {
                 delete this.filters['prefix'];
             } else {
