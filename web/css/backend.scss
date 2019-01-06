@@ -266,6 +266,74 @@ label.legend {
         max-height: 140px;
       }
     }
+
+    .imageEditLink {
+      margin-right: 10px;
+    }
+  }
+}
+
+.uploadedFilesManage {
+  .files {
+    display: block;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    vertical-align: top;
+
+    > li {
+      display: inline-block;
+      width: 150px;
+      height: 170px;
+      vertical-align: top;
+      text-align: center;
+
+      * {
+        vertical-align: middle;
+        text-align: center;
+      }
+
+      > div {
+        display: block;
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+      }
+
+      img {
+        display: inline-block;
+        max-width: 150px;
+        max-height: 150px;
+      }
+
+      form {
+        display: block;
+        height: 20px;
+        line-height: 20px;
+      }
+    }
+  }
+
+  .msgSuccess {
+    text-align: center;
+    padding: 20px;
+    color: green;
+    font-weight: bold;
+  }
+
+  .msgError {
+    text-align: center;
+    padding: 20px;
+    color: red;
+    font-weight: bold;
+  }
+
+  .noImages {
+    text-align: center;
+    padding: 20px;
+    color: grey;
+    font-weight: bold;
+    font-style: italic;
   }
 }
 

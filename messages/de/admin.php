@@ -12,6 +12,7 @@ return [
     'bread_consultation'          => 'Veranstaltung',
     'bread_theming'               => 'Farbschema',
     'bread_language'              => 'Sprache',
+    'bread_files'                 => 'Dateien',
     'saved'                       => 'Gespeichert.',
     'save'                        => 'Speichern',
     'index_title'                 => 'Administration',
@@ -167,6 +168,7 @@ return [
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Neues Logo hochladen',
     'con_logo_url_choose'     => 'Auswählen',
+    'con_logo_edit_images'    => 'Bilder verwalten',
     'con_ci'                  => 'Layout',
     'con_ci_custom'           => 'Eigenes Farbschema',
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
@@ -519,4 +521,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'theme_motionFixedFontColor'        => 'Text fester Zeichenbreite: Farbe',
     'theme_motionFixedFont'             => 'Text fester Zeichenbreite: Schriftart',
     'theme_motionStdFontSize'           => 'Text fester Zeichenbreite: Größe',
+
+    'files_title' => 'Hochgeladene Dateien',
+    'files_none'  => 'Keine Dateien hochgeladen',
 ];

@@ -75,7 +75,7 @@ export class ConsultationSettings {
     private initLogoUpload() {
         const $logoRow = this.$form.find('.logoRow'),
             $uploadLabel = $logoRow.find('.uploadCol label .text');
-        $logoRow.on('click', '.imageChooserDd a', ev => {
+        $logoRow.on('click', '.imageChooserDd ul    a', ev => {
             ev.preventDefault();
             const src = $(ev.currentTarget).find("img").attr("src");
             $logoRow.find('input[name=consultationLogo]').val(src);

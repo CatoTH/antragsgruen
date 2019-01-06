@@ -1,7 +1,7 @@
 class ImageChooser {
     constructor(private $row) {
         const $uploadLabel = $row.find('.uploadCol label .text');
-        $row.on('click', '.imageChooserDd a', ev => {
+        $row.on('click', '.imageChooserDd ul a', ev => {
             ev.preventDefault();
             const src = $(ev.currentTarget).find("img").attr("src");
             $row.find('input[type=hidden]').val(src);

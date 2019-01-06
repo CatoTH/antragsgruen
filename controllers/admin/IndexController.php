@@ -433,6 +433,56 @@ class IndexController extends AdminBase
     }
 
     /**
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function actionFiles()
+    {
+        $msgSuccess = '';
+        $msgError   = '';
+
+        if (\Yii::$app->request->post('delete') !== null) {
+            try {
+                $file = ConsultationFile::findOne([
+                    'siteId' => $this->consultation->site->id,
+                    'id'     => \Yii::$app->request->post('id'),
+                ]);
+                if ($file) {
+                    $file->delete();
+                }
+
+                $this->consultation->refresh();
+                $this->site->refresh();
+
+                $msgSuccess = \Yii::t('pages', 'images_deleted');
+            } catch (\Exception $e) {
+                $msgError = $e->getMessage();
+            }
+        }
+
+        $files = $this->site->files;
+        $files = array_values(array_filter($files, function (ConsultationFile $file) {
+            return $file->filename !== 'styles.css';
+        }));
+        usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
+            $currentCon = $this->consultation->id;
+            if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {
+                return -1;
+            }
+            if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
+                return 1;
+            }
+            return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);
+        });
+
+        return $this->render('uploaded_files', [
+            'files'      => $files,
+            'msgSuccess' => $msgSuccess,
+            'msgError'   => $msgError,
+        ]);
+    }
+
+    /**
      * @throws \yii\base\ExitException
      * @return string
      */

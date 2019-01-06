@@ -12,6 +12,7 @@ return [
     'bread_consultation'          => 'Consultation',
     'bread_theming'               => 'Theme',
     'bread_language'              => 'Language',
+    'bread_files'                 => 'Files',
     'saved'                       => 'Saved.',
     'save'                        => 'Save',
     'index_title'                 => 'Administration',
@@ -169,6 +170,7 @@ return [
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Upload new logo',
     'con_logo_url_choose'     => 'Choose',
+    'con_logo_edit_images'    => 'Manage images',
     'con_ci'                  => 'Layout',
     'con_ci_custom'           => 'Custom theme',
     'con_ci_custom_edit'      => 'Edit custom theme',
@@ -511,4 +513,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'theme_motionFixedFont'             => 'Fixed-width text font',
     'theme_motionStdFontSize'           => 'Fixed-width text size (px)',
 
+    'files_title' => 'Uploaded files',
+    'files_none'  => 'No uploaded files',
 ];

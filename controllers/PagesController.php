@@ -294,6 +294,9 @@ class PagesController extends Base
         }
 
         $files = $this->site->files;
+        $files = array_values(array_filter($files, function (ConsultationFile $file) {
+            return $file->filename !== 'styles.css';
+        }));
         usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
             $currentCon = $this->consultation->id;
             if ($file1->consultationId === $currentCon && $file1->consultationId !== $currentCon) {

@@ -62,21 +62,21 @@ foreach ($settingsByBlock as $group => $settings) {
                     if ($setting['type'] === Stylesheet::TYPE_FONT) {
                         ?>
                         <input type="text" name="stylesheet[<?= Html::encode($key) ?>]"
-                               id="stylesheet-<?= Html::encode($key) ?>"
+                               id="stylesheet-<?= Html::encode($key) ?>" class="form-control"
                                value="<?= Html::encode($stylesheet->getValue($key)) ?>">
                         <?php
                     }
                     if ($setting['type'] === Stylesheet::TYPE_NUMBER) {
                         ?>
                         <input type="number" name="stylesheet[<?= Html::encode($key) ?>]"
-                               id="stylesheet-<?= Html::encode($key) ?>"
+                               id="stylesheet-<?= Html::encode($key) ?>" class="form-control"
                                value="<?= Html::encode($stylesheet->getValue($key)) ?>">
                         <?php
                     }
                     if ($setting['type'] === Stylesheet::TYPE_PIXEL) {
                         ?>
                         <input type="number" name="stylesheet[<?= Html::encode($key) ?>]"
-                               id="stylesheet-<?= Html::encode($key) ?>"
+                               id="stylesheet-<?= Html::encode($key) ?>" class="form-control" min="0"
                                value="<?= Html::encode($stylesheet->getValue($key)) ?>">
                         <?php
                     }
@@ -111,6 +111,7 @@ foreach ($settingsByBlock as $group => $settings) {
                             <?php
                             $images = $consultation->site->getFileImages();
                             if (count($images) > 0) {
+                                $imgEditLink = UrlHelper::createUrl('/admin/index/files');
                                 ?>
                                 <div class="dropdown imageChooserDd">
                                     <button class="btn btn-default dropdown-toggle" type="button"
@@ -129,6 +130,10 @@ foreach ($settingsByBlock as $group => $settings) {
                                             }
                                             ?>
                                         </ul>
+                                        <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                            <?= Html::encode(\Yii::t('admin', 'con_logo_edit_images')) ?>
+                                        </a>
                                     </div>
                                 </div>
                                 <?php

@@ -226,6 +226,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                 <?php
                 $images = $consultation->site->getFileImages();
                 if (count($images) > 0) {
+                    $imgEditLink = UrlHelper::createUrl('/admin/index/files');
                     ?>
                     <div class="dropdown imageChooserDd">
                         <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
@@ -242,6 +243,10 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                                 }
                                 ?>
                             </ul>
+                            <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                <?= Html::encode(\Yii::t('admin', 'con_logo_edit_images')) ?>
+                            </a>
                         </div>
                     </div>
                     <?php
