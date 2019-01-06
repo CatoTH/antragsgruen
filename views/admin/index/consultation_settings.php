@@ -184,13 +184,19 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             <div class="col-sm-9 customThemeSelector">
                 <label>
                     <?php
-                    $isCustom = (strpos($layoutId, 'layout-custom-') !== false);
-                    echo Html::radio('siteSettings[siteLayout]', $isCustom, ['value' => $layoutId]);
+                    $isCustom  = (strpos($layoutId, 'layout-custom-') !== false);
+                    $hasCustom = (count($consultation->site->getSettings()->stylesheetSettings) > 0);
+                    $options   = ['value' => $layoutId];
+                    if (!$hasCustom) {
+                        $options['disabled'] = 'disabled';
+                    }
+                    echo Html::radio('siteSettings[siteLayout]', $isCustom, $options);
                     echo ' ' . \Yii::t('admin', 'con_ci_custom');
                     ?>
                 </label>
                 <?= Html::a(
-                    '<span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('admin', 'con_ci_custom_edit'),
+                    '<span class="glyphicon glyphicon-chevron-right"></span> ' .
+                    ($hasCustom ? \Yii::t('admin', 'con_ci_custom_edit') : \Yii::t('admin', 'con_ci_custom_create')),
                     UrlHelper::createUrl('/admin/index/theming'),
                     ['class' => 'editThemeLink']
                 ) ?>

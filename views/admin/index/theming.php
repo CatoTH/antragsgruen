@@ -10,8 +10,9 @@ use yii\helpers\Html;
  */
 
 /** @var \app\controllers\admin\IndexController $controller */
-$controller = $this->context;
-$layout     = $controller->layoutParams;
+$controller   = $this->context;
+$consultation = $controller->consultation;
+$layout       = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
 
 $this->title = \Yii::t('admin', 'theme_title');

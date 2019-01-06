@@ -170,6 +170,7 @@ return [
     'con_ci'                  => 'Layout',
     'con_ci_custom'           => 'Eigenes Farbschema',
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
+    'con_ci_custom_create'    => 'Eigenes Farbschema anlegen',
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseiten-Design',
     'con_line_len'            => 'Maximale Zeilenlänge',

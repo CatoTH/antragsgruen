@@ -172,6 +172,7 @@ return [
     'con_ci'                  => 'Layout',
     'con_ci_custom'           => 'Custom theme',
     'con_ci_custom_edit'      => 'Edit custom theme',
+    'con_ci_custom_create'    => 'Create custom theme',
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage style',
     'con_line_len'            => 'Line length',
