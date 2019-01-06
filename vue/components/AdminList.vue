@@ -40,8 +40,8 @@
             </thead>
             <tbody>
             <template v-for="item in sortedFilteredItems()">
-                <tr v-if="item.type === 'motion'">
-                    <td><input type="checkbox"></td>
+                <tr v-if="item.type === 'motion'" :key="item.getTrackId()">
+                    <td><input type="checkbox"><input type="text"></td>
                     <td i18n="admin-index motion indicator">Mot</td>
                     <td><a v-bind:href="item.getLink('motion/view', linkTemplatesArr)"
                            v-html="getHighlightedPrefix(item)"></a></td>
@@ -95,7 +95,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr v-if="item.type === 'amendment'">
+                <tr v-if="item.type === 'amendment'" :key="item.getTrackId()">
                     <td><input type="checkbox"></td>
                     <td i18n="admin-index amendment indicator">Amd</td>
                     <td><a v-bind:href="item.getLink('amendment/view', linkTemplatesArr)">
