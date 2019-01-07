@@ -12,8 +12,8 @@
                        @change="searchTitleChange" @keyup="searchTitleChange">
             </label>
             <label>Status:<br>
-                <!--<selectlist [items]="getAvailableStatusItems()" [selected]=""
-                            @select="setStatusItem"></selectlist>-->
+                <select-list :items="getAvailableStatusItems()"
+                             @selected="setStatusItem"/>
             </label>
             <label>Initiator:<br>
                 <input type="text" class="form-control inputPrefix" v-bind:value="searchInitiator"
@@ -41,7 +41,7 @@
             <tbody>
             <template v-for="item in sortedFilteredItems()">
                 <tr v-if="item.type === 'motion'" :key="item.getTrackId()">
-                    <td><input type="checkbox"><input type="text"></td>
+                    <td><input type="checkbox"></td>
                     <td i18n="admin-index motion indicator">Mot</td>
                     <td><a v-bind:href="item.getLink('motion/view', linkTemplatesArr)"
                            v-html="getHighlightedPrefix(item)"></a></td>
@@ -75,11 +75,11 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-if="item.isScreenable()">
-                                    <a tabindex="-1" href="#" @click="motionScreen(item)" class="screen"
+                                    <a tabindex="-1" href="#" @click="motionScreen(item, $event)" class="screen"
                                        i18n="admin-index action dropdown">Screen</a>
                                 </li>
                                 <li v-if="!item.isScreenable()">
-                                    <a tabindex="-1" href="#" @click="motionUnscreen(item)" class="unscreen"
+                                    <a tabindex="-1" href="#" @click="motionUnscreen(item, $event)" class="unscreen"
                                        i18n="admin-index action dropdown">Un-screen</a>
                                 </li>
                                 <li>
@@ -88,7 +88,7 @@
                                        i18n="admin-index action dropdown">Create a new motion based on this one</a>
                                 </li>
                                 <li>
-                                    <a tabindex="-1" href="#" @click="motionDelete(item)" class="delete"
+                                    <a tabindex="-1" href="#" @click="motionDelete(item, $event)" class="delete"
                                        i18n="admin-index action dropdown">Delete</a>
                                 </li>
                             </ul>
@@ -108,9 +108,11 @@
                     <td class="initiatorCol" v-html="getHighlightedInitiator(item)"></td>
                     <td class="tagsCol" v-if="hasTopics"></td>
                     <td>
-                        <a v-bind:href="item.getLink('amendment/pdf', linkTemplatesArr)" class="pdf" i18n="admin-index export">PDF</a>
+                        <a v-bind:href="item.getLink('amendment/pdf', linkTemplatesArr)" class="pdf"
+                           i18n="admin-index export">PDF</a>
                         /
-                        <a v-bind:href="item.getLink('amendment/odt', linkTemplatesArr)" class="odt" i18n="admin-index export">ODT</a>
+                        <a v-bind:href="item.getLink('amendment/odt', linkTemplatesArr)" class="odt"
+                           i18n="admin-index export">ODT</a>
                     </td>
                     <td>
                         <div class="btn-group">
@@ -121,11 +123,11 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-if="item.isScreenable()">
-                                    <a tabindex="-1" href="#" @click="amendmentScreen(item)" class="screen"
+                                    <a tabindex="-1" href="#" @click="amendmentScreen(item, $event)" class="screen"
                                        i18n="admin-index action dropdown">Screen</a>
                                 </li>
                                 <li v-if="!item.isScreenable()">
-                                    <a tabindex="-1" href="#" @click="amendmentUnscreen(item)" class="unscreen"
+                                    <a tabindex="-1" href="#" @click="amendmentUnscreen(item, $event)" class="unscreen"
                                        i18n="admin-index action dropdown">Un-screen</a>
                                 </li>
                                 <li>
@@ -134,7 +136,7 @@
                                        i18n="admin-index action dropdown">Create a new amendment based on this one</a>
                                 </li>
                                 <li>
-                                    <a tabindex="-1" href="#" @click="amendmentDelete(item)" class="delete"
+                                    <a tabindex="-1" href="#" @click="amendmentDelete(item, $event)" class="delete"
                                        i18n="admin-index action dropdown">Delete</a>
                                 </li>
                             </ul>
@@ -161,13 +163,19 @@
     import {STATUS} from "../classes/Status";
     import {CollectionItem} from "../classes/CollectionItem";
     import axios from 'axios';
+    import {debounceTime} from 'rxjs/operators';
+    import SelectList from "./SelectList.vue";
 
     interface MotionWithAmendments {
         motion: Motion;
         amendments: Amendment[];
     }
 
-    @Component
+    @Component({
+        components: {
+            "select-list": SelectList
+        }
+    })
     export default class AdminList extends Vue {
         @Prop() subdomain!: string;
         @Prop() ajaxBackendUrl!: string;
@@ -198,8 +206,12 @@
 
         created() {
             const data = JSON.parse(this.initCollections);
+
             this.motionCollection.setElements(data['motions']);
             this.amendmentCollection.setElements(data['amendments']);
+            this.motionCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+            this.amendmentCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+
             this.linkTemplatesArr = JSON.parse(this.linkTemplates);
 
             this.recalcMotionList();
@@ -251,7 +263,8 @@
             });
 
             this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByPrefix(this._sortedFilteredItems);
-            console.log(this._sortedFilteredItems);
+
+            this.$forceUpdate();
         }
 
         private static sortMotionsAmendmentsByPrefix(items: IMotion[]): IMotion[] {

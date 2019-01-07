@@ -255,25 +255,16 @@ After updating the source code from git, do:
 gulp
 ```
 
-### Angular
-
-Angular can be compiled in two modes: watching / developing or production.
+### Vue
 
 Developing mode:
 ```bash
-ng build --watch # or:
-ng build --watch --configuration=de
+npx webpack --watch
 ```
 
-Production mode:
+Build production package:
 ```bash
-ng build --watch --configuration=production # or:
-ng build --watch --configuration=production-de
-```
-
-Extracting the locales:
-```bash
-npm run angular:i18n
+NODE_ENV=production npx webpack
 ```
 
 ### Creating custom language variants

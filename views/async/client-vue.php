@@ -52,5 +52,6 @@ echo \app\components\HTMLTools::getVueComponent(
         'ajaxBackendUrl'  => UrlHelper::createUrl('/admin/motion-list/ajax'),
         'linkTemplates'   => json_encode($linkTemplates),
         'initCollections' => json_encode($initData),
-    ]
+    ],
+    ['structure', 'admin', 'tags']
 );
