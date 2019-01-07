@@ -14,6 +14,7 @@ $controller   = $this->context;
 $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
+$layout->addJS('js/jscolor.js');
 
 $this->title = \Yii::t('admin', 'theme_title');
 $layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('/admin/index'));
@@ -54,8 +55,8 @@ foreach ($settingsByBlock as $group => $settings) {
                     <?php
                     if ($setting['type'] === Stylesheet::TYPE_COLOR) {
                         ?>
-                        <input type="color" name="stylesheet[<?= Html::encode($key) ?>]"
-                               id="stylesheet-<?= Html::encode($key) ?>"
+                        <input type="text" name="stylesheet[<?= Html::encode($key) ?>]"
+                               id="stylesheet-<?= Html::encode($key) ?>" class="jscolor form-control"
                                value="<?= Html::encode($stylesheet->getValue($key)) ?>">
                         <?php
                     }

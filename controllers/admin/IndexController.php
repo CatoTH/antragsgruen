@@ -403,6 +403,13 @@ class IndexController extends AdminBase
                         $stylesheet->$key = IntVal($settings[$key]);
                         break;
                     case Stylesheet::TYPE_COLOR:
+                        if (preg_match('/^[a-f0-9]{6}$/siu', $settings[$key])) {
+                            $stylesheet->$key = '#' . $settings[$key];
+                        }
+                        if (preg_match('/^#[a-f0-9]{6}$/siu', $settings[$key])) {
+                            $stylesheet->$key = $settings[$key];
+                        }
+                        break;
                     case Stylesheet::TYPE_FONT:
                         $stylesheet->$key = $settings[$key];
                         break;
