@@ -46,6 +46,8 @@ $linkTemplates = [
     'admin/amendment/update' => UrlHelper::createUrl(['/admin/amendment/update', 'amendmentId' => '0123456789']),
 ];
 
+
+echo '<div class="content">';
 echo \app\components\HTMLTools::getVueComponent(
     'admin-list',
     [
@@ -55,3 +57,4 @@ echo \app\components\HTMLTools::getVueComponent(
     ],
     ['structure', 'admin', 'tags']
 );
+echo '</div>';

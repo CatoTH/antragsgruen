@@ -12,30 +12,43 @@
                        @change="searchTitleChange" @keyup="searchTitleChange">
             </label>
             <label>Status:<br>
-                <select-list :items="getAvailableStatusItems()"
-                             @selected="setStatusItem"/>
+                <select-list :items="getAvailableStatusItems()" @selected="setStatusItem"/>
             </label>
             <label>Initiator:<br>
                 <input type="text" class="form-control inputPrefix" v-bind:value="searchInitiator"
                        @change="searchInitiatorChange" @keyup="searchInitiatorChange">
             </label>
             <label v-if="hasTopics">Thema:<br>
-                <!--<selectlist v-bind:items="getAvailableTagsItems()" selected=""
-                            @select="setTagItem"></selectlist>-->
+                <select-list :items="getAvailableTagsItems()" @selected="setTagItem"/>
             </label>
         </section>
         <table class="adminMotionTable">
             <thead>
             <tr>
                 <th></th>
-                <th i18n="admin-index column header">Type</th>
-                <th i18n="admin-index column header">Code</th>
-                <th i18n="admin-index column header">Title</th>
-                <th i18n="admin-index column header">Status</th>
-                <th i18n="admin-index column header">Initiators</th>
-                <th i18n="admin-index column header" v-if="hasTopics">Topic</th>
-                <th i18n="admin-index column header">Export</th>
-                <th i18n="admin-index column header">Action</th>
+                <th>Type</th>
+                <th>
+                    <span v-if="sort === 'prefix'" class="sortSelected">Code</span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'prefix'" @click="setSort('prefix')">Code</button>
+                </th>
+                <th>
+                    <span v-if="sort === 'title'" class="sortSelected">Title</span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'title'" @click="setSort('title')">Title</button>
+                </th>
+                <th>
+                    <span v-if="sort === 'status'" class="sortSelected">Status</span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'status'" @click="setSort('status')">Status</button>
+                </th>
+                <th>
+                    <span v-if="sort === 'initiator'" class="sortSelected">Initiators</span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'initiator'" @click="setSort('initiator')">Initiators</button>
+                </th>
+                <th v-if="hasTopics">
+                    <span v-if="sort === 'topic'" class="sortSelected">Topic</span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'topic'" @click="setSort('topic')">Topic</button>
+                </th>
+                <th>Export</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
@@ -196,13 +209,11 @@
         allItems: IMotion[];
         public _sortedFilteredItems: IMotion[];
 
+        public sort = "prefix";
         public searchPrefix = "";
         public searchTitle = "";
         public searchInitiator = "";
         private filters: { [filterId: string]: (IMotion) => boolean } = {};
-
-        private _hasTopics = true;
-        public hasProposedProcedure = false;
 
         created() {
             const data = JSON.parse(this.initCollections);
@@ -236,7 +247,10 @@
         }
 
         get hasTopics(): boolean {
-            return this._hasTopics;
+            return Object.keys(this.motionCollection.elements).filter(motionId => {
+                const motion: Motion = this.motionCollection.elements[motionId];
+                return motion.tags.length > 0;
+            }).length > 0;
         }
 
         public sortedFilteredItems(): IMotion[] {
@@ -262,9 +276,72 @@
                 return matches;
             });
 
-            this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByPrefix(this._sortedFilteredItems);
+            switch (this.sort) {
+                case 'title':
+                    this._sortedFilteredItems = AdminList.sortMotionsAmendmentsTitle(this._sortedFilteredItems);
+                    break;
+                case 'status':
+                    this._sortedFilteredItems = AdminList.sortMotionsAmendmentsStatus(this._sortedFilteredItems);
+                    break;
+                case 'initiator':
+                    this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByInitiator(this._sortedFilteredItems);
+                    break;
+                case 'topic':
+                    this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByTopic(this._sortedFilteredItems);
+                    break;
+                case 'prefix':
+                default:
+                    this._sortedFilteredItems = AdminList.sortMotionsAmendmentsByPrefix(this._sortedFilteredItems);
+            }
 
             this.$forceUpdate();
+        }
+
+        private static compareValues(val1, val2) {
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+
+        private static sortMotionsAmendmentsStatus(items: IMotion[]): IMotion[] {
+            return items.sort((motion1, motion2) => {
+                if (motion1.status == motion2.status) {
+                    return AdminList.compareValues(motion1.titlePrefix, motion2.titlePrefix);
+                } else {
+                    return AdminList.compareValues(motion1.status, motion2.status);
+                }
+            });
+        }
+
+        private static sortMotionsAmendmentsByTopic(items: IMotion[]): IMotion[] {
+            return items.sort((motion1, motion2) => {
+                return AdminList.compareValues(motion1.titlePrefix, motion2.titlePrefix);
+                // @TODO
+            });
+        }
+
+        private static sortMotionsAmendmentsByInitiator(items: IMotion[]): IMotion[] {
+            return items.sort((motion1, motion2) => {
+                if (motion1.getInitiatorName() == motion2.getInitiatorName()) {
+                    return AdminList.compareValues(motion1.titlePrefix, motion2.titlePrefix);
+                } else {
+                    return AdminList.compareValues(motion1.getInitiatorName(), motion2.getInitiatorName());
+                }
+            });
+        }
+
+        private static sortMotionsAmendmentsTitle(items: IMotion[]): IMotion[] {
+            return items.sort((motion1, motion2) => {
+                if (motion1.getTitle() == motion2.getTitle()) {
+                    return AdminList.compareValues(motion1.titlePrefix, motion2.titlePrefix);
+                } else {
+                    return AdminList.compareValues(motion1.getTitle(), motion2.getTitle());
+                }
+            });
         }
 
         private static sortMotionsAmendmentsByPrefix(items: IMotion[]): IMotion[] {
@@ -553,6 +630,11 @@
                     return motion.tags.filter(tag => tag.id === parseInt(selected.id)).length > 0;
                 };
             }
+            this.recalcMotionList();
+        }
+
+        public setSort(type: string): void {
+            this.sort = type;
             this.recalcMotionList();
         }
     }
