@@ -1,61 +1,85 @@
 <template>
     <section>
         <section class="motionListSearchForm fuelux">
-            <label>
-                Antragsnr.:<br>
+            <label class="filterPrefix">
+                {{ translate('admin', 'filter_prefix') }}:<br>
                 <input type="text" class="form-control inputPrefix" v-bind:value="searchPrefix"
                        @change="searchPrefixChange" @keyup="searchPrefixChange">
             </label>
-            <label>
-                Titel:<br>
+            <label class="filterTitle">
+                {{ translate('admin', 'filter_title') }}:<br>
                 <input type="text" class="form-control inputPrefix" v-bind:value="searchTitle"
                        @change="searchTitleChange" @keyup="searchTitleChange">
             </label>
-            <label>Status:<br>
+            <label class="filterStatus">
+                {{ translate('admin', 'filter_status') }}:<br>
                 <select-list :items="getAvailableStatusItems()" @selected="setStatusItem"/>
             </label>
-            <label>Initiator:<br>
+            <label class="filterInitiator">
+                {{ translate('admin', 'filter_initiator') }}:<br>
                 <input type="text" class="form-control inputPrefix" v-bind:value="searchInitiator"
                        @change="searchInitiatorChange" @keyup="searchInitiatorChange">
             </label>
-            <label v-if="hasTopics">Thema:<br>
+            <label v-if="hasTopics" class="filterTopics">
+                {{ translate('admin', 'filter_tag') }}:<br>
                 <select-list :items="getAvailableTagsItems()" @selected="setTagItem"/>
             </label>
         </section>
+        <br style="clear:both;">
         <table class="adminMotionTable">
             <thead>
             <tr>
                 <th></th>
-                <th>Type</th>
+                <th>{{ translate('admin', 'list_type') }}</th>
                 <th>
-                    <span v-if="sort === 'prefix'" class="sortSelected">Code</span>
-                    <button class="btn-link sortSelectable" v-if="sort !== 'prefix'" @click="setSort('prefix')">Code</button>
+                    <span v-if="sort === 'prefix'" class="sortSelected">
+                        {{ translate('admin', 'list_prefix') }}
+                    </span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'prefix'" @click="setSort('prefix')">
+                        {{ translate('admin', 'list_prefix') }}
+                    </button>
                 </th>
                 <th>
-                    <span v-if="sort === 'title'" class="sortSelected">Title</span>
-                    <button class="btn-link sortSelectable" v-if="sort !== 'title'" @click="setSort('title')">Title</button>
+                    <span v-if="sort === 'title'" class="sortSelected">
+                        {{ translate('admin', 'list_title') }}
+                    </span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'title'" @click="setSort('title')">
+                        {{ translate('admin', 'list_title') }}
+                    </button>
                 </th>
                 <th>
-                    <span v-if="sort === 'status'" class="sortSelected">Status</span>
-                    <button class="btn-link sortSelectable" v-if="sort !== 'status'" @click="setSort('status')">Status</button>
+                    <span v-if="sort === 'status'" class="sortSelected">
+                        {{ translate('admin', 'list_status') }}
+                    </span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'status'" @click="setSort('status')">
+                        {{ translate('admin', 'list_status') }}
+                    </button>
                 </th>
                 <th>
-                    <span v-if="sort === 'initiator'" class="sortSelected">Initiators</span>
-                    <button class="btn-link sortSelectable" v-if="sort !== 'initiator'" @click="setSort('initiator')">Initiators</button>
+                    <span v-if="sort === 'initiator'" class="sortSelected">
+                        {{ translate('admin', 'list_initiators') }}
+                    </span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'initiator'" @click="setSort('initiator')">
+                        {{ translate('admin', 'list_initiators') }}
+                    </button>
                 </th>
                 <th v-if="hasTopics">
-                    <span v-if="sort === 'topic'" class="sortSelected">Topic</span>
-                    <button class="btn-link sortSelectable" v-if="sort !== 'topic'" @click="setSort('topic')">Topic</button>
+                    <span v-if="sort === 'topic'" class="sortSelected">
+                        {{ translate('admin', 'list_tag') }}
+                    </span>
+                    <button class="btn-link sortSelectable" v-if="sort !== 'topic'" @click="setSort('topic')">
+                        {{ translate('admin', 'list_tag') }}
+                    </button>
                 </th>
-                <th>Export</th>
-                <th>Action</th>
+                <th>{{ translate('admin', 'list_export') }}</th>
+                <th>{{ translate('admin', 'list_action') }}</th>
             </tr>
             </thead>
             <tbody>
             <template v-for="item in sortedFilteredItems()">
                 <tr v-if="item.type === 'motion'" :key="item.getTrackId()">
                     <td><input type="checkbox"></td>
-                    <td i18n="admin-index motion indicator">Mot</td>
+                    <td i18n="admin-index motion indicator">{{ translate('admin', 'list_motion_short') }}</td>
                     <td><a v-bind:href="item.getLink('motion/view', linkTemplatesArr)"
                            v-html="getHighlightedPrefix(item)"></a></td>
                     <td><a v-bind:href="item.getLink('admin/motion/update', linkTemplatesArr)"
@@ -73,7 +97,7 @@
                         <a v-bind:href="item.getLink('motion/pdf', linkTemplatesArr)" class="pdf"
                            i18n="admin-index export">PDF</a> /
                         <a v-bind:href="item.getLink('motion/pdfamendcollection', linkTemplatesArr)" class="pdf"
-                           i18n="admin-index export">PDF + Amd.</a> /
+                           i18n="admin-index export">{{ translate('admin', 'list_pdf_amend') }}</a> /
                         <a v-bind:href="item.getLink('motion/odt', linkTemplatesArr)" class="odt"
                            i18n="admin-index export">ODT</a> /
                         <a v-bind:href="item.getLink('motion/plainhtml', linkTemplatesArr)" class="html"
@@ -83,26 +107,26 @@
                         <div class="btn-group">
                             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                     aria-expanded="false">
-                                Action
+                                {{ translate('admin', 'list_action') }}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-if="item.isScreenable()">
                                     <a tabindex="-1" href="#" @click="motionScreen(item, $event)" class="screen"
-                                       i18n="admin-index action dropdown">Screen</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_screen') }}</a>
                                 </li>
                                 <li v-if="!item.isScreenable()">
                                     <a tabindex="-1" href="#" @click="motionUnscreen(item, $event)" class="unscreen"
-                                       i18n="admin-index action dropdown">Un-screen</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_unscreen') }}</a>
                                 </li>
                                 <li>
                                     <a tabindex="-1" v-bind:href="item.getLink('motion/clone', linkTemplatesArr)"
                                        class="asTemplate" target="_blank"
-                                       i18n="admin-index action dropdown">Create a new motion based on this one</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_template_motion') }}</a>
                                 </li>
                                 <li>
                                     <a tabindex="-1" href="#" @click="motionDelete(item, $event)" class="delete"
-                                       i18n="admin-index action dropdown">Delete</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_delete') }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -110,7 +134,7 @@
                 </tr>
                 <tr v-if="item.type === 'amendment'" :key="item.getTrackId()">
                     <td><input type="checkbox"></td>
-                    <td i18n="admin-index amendment indicator">Amd</td>
+                    <td i18n="admin-index amendment indicator">{{ translate('admin', 'list_amend_short') }}</td>
                     <td><a v-bind:href="item.getLink('amendment/view', linkTemplatesArr)">
                         &#8627;
                         <span v-html="getHighlightedPrefix(item)"></span>
@@ -131,26 +155,26 @@
                         <div class="btn-group">
                             <button class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                     aria-expanded="false">
-                                Action
+                                {{ translate('admin', 'list_action') }}
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 <li v-if="item.isScreenable()">
                                     <a tabindex="-1" href="#" @click="amendmentScreen(item, $event)" class="screen"
-                                       i18n="admin-index action dropdown">Screen</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_screen') }}</a>
                                 </li>
                                 <li v-if="!item.isScreenable()">
                                     <a tabindex="-1" href="#" @click="amendmentUnscreen(item, $event)" class="unscreen"
-                                       i18n="admin-index action dropdown">Un-screen</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_unscreen') }}</a>
                                 </li>
                                 <li>
                                     <a tabindex="-1" v-bind:href="item.getLink('amendment/clone', linkTemplatesArr)"
                                        class="asTemplate" target="_blank"
-                                       i18n="admin-index action dropdown">Create a new amendment based on this one</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_template_amendment') }}</a>
                                 </li>
                                 <li>
                                     <a tabindex="-1" href="#" @click="amendmentDelete(item, $event)" class="delete"
-                                       i18n="admin-index action dropdown">Delete</a>
+                                       i18n="admin-index action dropdown">{{ translate('admin', 'list_delete') }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -176,6 +200,7 @@
     import {STATUS} from "../classes/Status";
     import {CollectionItem} from "../classes/CollectionItem";
     import axios from 'axios';
+    import {merge} from 'rxjs';
     import {debounceTime} from 'rxjs/operators';
     import SelectList from "./SelectList.vue";
 
@@ -220,8 +245,10 @@
 
             this.motionCollection.setElements(data['motions']);
             this.amendmentCollection.setElements(data['amendments']);
-            this.motionCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
-            this.amendmentCollection.changed$.pipe(debounceTime(1)).subscribe(this.recalcMotionList.bind(this));
+
+            merge(this.motionCollection.changed$, this.amendmentCollection.changed$).pipe(debounceTime(1)).subscribe(() => {
+                this.recalcMotionList();
+            });
 
             this.linkTemplatesArr = JSON.parse(this.linkTemplates);
 
@@ -370,10 +397,6 @@
             return sorted;
         }
 
-        public trackElement(index: number, element: CollectionItem) {
-            return element ? element.getTrackId() : null;
-        }
-
         private callBackend(data: URLSearchParams): Promise<any> {
             data.set(this.csrfParam, this.csrfToken);
             return axios.post(
@@ -491,6 +514,10 @@
                 html = '-';
             }
             return html;
+        }
+
+        public translate(category: string, key: string): string {
+            return Translations.get(category, key);
         }
 
         public getStatusString(item: IMotion): string {

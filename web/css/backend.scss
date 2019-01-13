@@ -756,6 +756,13 @@ label.legend {
     width: 60px;
   }
 
+
+  .filterTitle, .filterInitiator {
+    input.form-control {
+      width: 150px;
+    }
+  }
+
   > * {
     float: left;
     margin-right: 20px;
@@ -857,6 +864,9 @@ label.legend {
     text-overflow: ellipsis;
   }
 
+  mark {
+    padding: 0;
+  }
   .sortSelected {
     text-decoration: underline;
   }
