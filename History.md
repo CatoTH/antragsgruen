@@ -9,6 +9,7 @@
   - Distorted images in content pages are now prevented.
   - Instead of only uploading new consultation logos, the logo can now also be chosen from the already uploaded images.
 - Bugfix: if an admin of a consultation was deleted without revoking the admin permissions first, the permission page could not be rendered anymore.
+- Bugfix: In the PDF-collection containing all motions, the header page of a motion contained the status header of the previous motion, if the PHP-based PDF-renderer was used.
 
 ### Version 4.1.1 (2018-12-09)
 

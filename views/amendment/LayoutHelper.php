@@ -101,9 +101,6 @@ class LayoutHelper
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
-        $pdf->startPageGroup();
-        $pdf->AddPage();
-
         $pdfLayout->printAmendmentHeader($amendment);
 
         if ($amendment->changeEditorial != '') {

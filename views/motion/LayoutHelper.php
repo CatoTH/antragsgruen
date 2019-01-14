@@ -154,9 +154,6 @@ class LayoutHelper
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
-        $pdf->startPageGroup();
-        $pdf->AddPage();
-
         $pdfLayout->printMotionHeader($motion);
 
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242

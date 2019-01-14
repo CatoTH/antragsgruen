@@ -16,6 +16,11 @@ class ByLDK extends IPDFLayout
         $pdf      = $this->pdf;
         $settings = $this->motionType->getConsultation()->getSettings();
 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(true);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
         if (file_exists($settings->logoUrl)) {
             $pdf->setJPEGQuality(100);
             $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
@@ -120,6 +125,11 @@ class ByLDK extends IPDFLayout
     {
         $pdf      = $this->pdf;
         $settings = $this->motionType->getConsultation()->getSettings();
+
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(true);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
 
         if (file_exists($settings->logoUrl)) {
             $pdf->setJPEGQuality(100);
@@ -227,9 +237,6 @@ class ByLDK extends IPDFLayout
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(true);
 
         $pdf->SetMargins(25, 40, 25);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);

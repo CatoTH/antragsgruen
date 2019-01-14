@@ -22,9 +22,6 @@ class BDK extends IPDFLayout
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-
         $pdf->SetMargins(25, 27, 25);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
 
@@ -75,6 +72,11 @@ class BDK extends IPDFLayout
     {
         $pdf = $this->pdf;
 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
         $pdf->setMotionTitle($motion->titlePrefix, $motion->title);
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
@@ -105,6 +107,12 @@ class BDK extends IPDFLayout
     {
         $pdf = $this->pdf;
 
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
+        $pdf->setMotionTitle($amendment->titlePrefix, '');
         $pdf->setPrintHeader(true);
         $pdf->setPrintFooter(true);
 

@@ -19,6 +19,12 @@ class DBJR extends IPDFLayout
     public function printMotionHeader(Motion $motion)
     {
         $pdf = $this->pdf;
+
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(true);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
         $left     = 23.5;
         $abs      = 5;
         $fontsize = 30;
@@ -84,7 +90,13 @@ class DBJR extends IPDFLayout
      */
     public function printAmendmentHeader(Amendment $amendment)
     {
-        $pdf = $this->pdf;
+        $pdf            = $this->pdf;
+
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(true);
+        $pdf->startPageGroup();
+        $pdf->AddPage();
+
         $left           = 23.5;
         $abs            = 5;
         $title1Fontsize = 15;
@@ -155,9 +167,6 @@ class DBJR extends IPDFLayout
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(true);
 
         $pdf->SetMargins(23, 40, 23);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
