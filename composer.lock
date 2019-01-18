@@ -2390,11 +2390,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-<<<<<<< HEAD
             "time": "2019-01-01T15:39:52+00:00"
-=======
-            "time": "2018-12-07T10:48:17+00:00"
->>>>>>> Multisite
         },
         {
             "name": "codeception/specify",

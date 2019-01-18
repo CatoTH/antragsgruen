@@ -71,7 +71,7 @@ class Motion extends TransferrableChannelObject
      * @param Consultation $consultation
      * @return TransferrableChannelObject[]
      */
-    public static function getCollection($consultation)
+    public static function getCollection(Consultation $consultation)
     {
         $data = [];
         foreach ($consultation->motions as $motion) {
