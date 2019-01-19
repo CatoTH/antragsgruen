@@ -1024,7 +1024,7 @@ class HTMLTools
         }
 
         if ($app->asyncConfig) {
-            $params['cookie']  = $_COOKIE['PHPSESSID'];
+            $params['cookie']  = \Yii::$app->session->getId();
             $params['wsUri'] = $app->asyncConfig['ws-uri'];
             if ($consultation) {
                 $params['subdomain'] = $consultation->site->subdomain;
