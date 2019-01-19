@@ -463,7 +463,7 @@ trait SiteAccessTrait
         foreach ($this->consultation->userPrivileges as $privilege) {
             if (!isset($admins[$privilege->userId])) {
                 if (!$privilege->user) {
-                    //continue; // User is deleted and an obsolete privilege entry remains
+                    continue; // User is deleted and an obsolete privilege entry remains
                 }
                 $privileges = [];
                 if ($privilege->adminProposals) {
