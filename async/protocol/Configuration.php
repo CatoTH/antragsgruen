@@ -26,7 +26,7 @@ class Configuration
             throw new \Exception('Missing configuration: port-internal');
         }
         if (isset($config['port-external'])) {
-            $this->portInternal = IntVal($config['port-external']);
+            $this->portExternal = IntVal($config['port-external']);
         } else {
             throw new \Exception('Missing configuration: port-external');
         }

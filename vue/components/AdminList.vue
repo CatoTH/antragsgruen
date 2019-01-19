@@ -198,7 +198,6 @@
     import {Translations} from "../classes/Translations";
     import {SelectlistItem} from "../../angular/app/selectlist.component";
     import {STATUS} from "../classes/Status";
-    import {CollectionItem} from "../classes/CollectionItem";
     import axios from 'axios';
     import {merge} from 'rxjs';
     import {debounceTime} from 'rxjs/operators';
@@ -219,7 +218,7 @@
         @Prop() ajaxBackendUrl!: string;
         @Prop() path!: string;
         @Prop() cookie!: string;
-        @Prop() wsPort!: number;
+        @Prop() wsUri!: string;
         @Prop() csrfParam!: string;
         @Prop() csrfToken!: string;
         @Prop() linkTemplates!: string;
@@ -266,7 +265,7 @@
                 this._websocket.subscribeCollectionChannel(1, 'motions', this.motionCollection);
                 this._websocket.subscribeCollectionChannel(1, 'amendments', this.amendmentCollection);
             });
-            this._websocket.connect(this.cookie, this.wsPort);
+            this._websocket.connect(this.cookie, this.wsUri);
         }
 
         get debugLog(): string {

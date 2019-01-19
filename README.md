@@ -217,7 +217,8 @@ The configuration in the `config.json`:
 {
     "asyncConfig": {
         "port-internal": 9501,
-        "port-external": 9501
+        "port-external": 9501,
+        "ws-uri": "ws://127.0.0.1:9501/"
     }
 }
 ```

@@ -22,10 +22,10 @@ export class WebsocketService {
         this.path = path;
     }
 
-    public connect(authCookie: string, port: number) {
+    public connect(authCookie: string, wsUri: string) {
         this.authCookie = authCookie;
         this.active = false;
-        this.websocket = new WebSocket('ws://' + window.location.host + ':' + port.toString());
+        this.websocket = new WebSocket(wsUri);
         this.websocket.onopen = this.onopen.bind(this);
         this.websocket.onclose = this.onClose.bind(this);
         this.websocket.onmessage = this.onMessage.bind(this);
