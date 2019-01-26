@@ -153,9 +153,17 @@ foreach ($settingsByBlock as $group => $settings) {
 
 <?php } ?>
 
-<div class="submitRow content">
-    <button type="submit" name="save" class="btn btn-primary">
-        <?= \Yii::t('admin', 'save') ?>
-    </button>
-</div>
+<section class="content saveCancelRow">
+    <div class="saveCol">
+        <button type="submit" name="save" class="btn btn-primary">
+            <?= \Yii::t('admin', 'save') ?>
+        </button>
+    </div>
+    <div class="cancelCol">
+        <button type="button" class="btn btn-default btnResetTheme"
+                data-confirm="<?= Html::encode(\Yii::t('admin', 'theme_reset_confirm')) ?>">
+            <?= \Yii::t('admin', 'theme_reset_btn') ?>
+        </button>
+    </div>
+</section>
 <?= Html::endForm() ?>

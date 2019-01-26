@@ -27,5 +27,15 @@ export class Theming {
         this.$form.find('.row_image').each((i, el) => {
             new ImageChooser($(el));
         });
+
+        this.$form.on('click', '.btnResetTheme', (ev) => {
+            ev.preventDefault();
+            bootbox.confirm($(ev.currentTarget).data("confirm"), (result) => {
+                if (result) {
+                    this.$form.append('<input type="hidden" name="resetTheme" value="1">');
+                    this.$form.submit();
+                }
+            });
+        });
     }
 }

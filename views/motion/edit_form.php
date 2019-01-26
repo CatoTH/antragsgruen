@@ -152,15 +152,21 @@ echo '</div>';
 $initiatorClass = $form->motionType->getMotionSupportTypeClass();
 echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 
-echo '<section style="overflow: auto;" class="content">
-        <div style="float: right;">
-            <button type="submit" name="save" class="btn btn-primary">
-                <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('motion', 'go_on') . '
-            </button>
-        </div>
-        <div style="float: left;">
-            <a href="' . Html::encode(UrlHelper::homeUrl()) . '" id="cancel" name="cancel" class="btn"><span class="glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start') . '</a>
-        </div>
-    </section>';
+?>
+<section class="content saveCancelRow">
+    <div class="saveCol">
+        <button type="submit" name="save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <?= \Yii::t('motion', 'go_on') ?>
+        </button>
+    </div>
+    <div class="cancelCol">
+        <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" name="cancel" class="btn">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <?= \Yii::t('motion', 'back_start') ?>
+        </a>
+    </div>
+</section>
 
+<?php
 echo Html::endForm();

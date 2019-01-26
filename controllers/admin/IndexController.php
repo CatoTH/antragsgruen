@@ -436,6 +436,20 @@ class IndexController extends AdminBase
             $this->layoutParams->setLayout($siteSettings->siteLayout);
         }
 
+        if ($this->isPostSet('resetTheme')) {
+            $data = [];
+            foreach (Stylesheet::getAllSettings() as $key => $setting) {
+                $data[$key] = $setting['default'];
+            }
+            $stylesheet = new Stylesheet($data);
+            $siteSettings->setStylesheet($stylesheet);
+            $siteSettings->siteLayout = 'layout-custom-' . $stylesheet->getSettingsHash();
+            $this->site->setSettings($siteSettings);
+            $this->site->save();
+
+            $this->layoutParams->setLayout($siteSettings->siteLayout);
+        }
+
         return $this->render('theming', ['stylesheet' => $stylesheet]);
     }
 

@@ -156,15 +156,21 @@ if (!$multipleParagraphs) {
     echo '<input type="hidden" name="modifiedParagraphNo" value="">';
 }
 
-echo '<section style="overflow: auto;" class="content">
-        <div style="float: right;">
-            <button type="submit" name="save" class="btn btn-primary">
-                <span class="glyphicon glyphicon-chevron-right"></span> ' . \Yii::t('amend', 'go_on') . '
-            </button>
-        </div>
-        <div style="float: left;">
-            <a href="' . Html::encode(UrlHelper::createMotionUrl($form->motion)) . '" id="cancel" name="cancel" class="btn"><span class="glyphicon glyphicon-chevron-left"></span>' . \Yii::t('amend', 'sidebar_back') . '</a>
-        </div>
-    </section>';
+?>
+<section class="content saveCancelRow">
+    <div class="saveCol">
+        <button type="submit" name="save" class="btn btn-primary">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <?= \Yii::t('amend', 'go_on') ?>
+        </button>
+    </div>
+    <div class="cancelCol">
+        <a href="<?= Html::encode(UrlHelper::createMotionUrl($form->motion)) ?>" id="cancel" name="cancel" class="btn">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <?= \Yii::t('amend', 'sidebar_back') ?>
+        </a>
+    </div>
+</section>
 
+<?php
 echo Html::endForm();

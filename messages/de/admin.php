@@ -521,6 +521,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'theme_motionFixedFontColor'        => 'Text fester Zeichenbreite: Farbe',
     'theme_motionFixedFont'             => 'Text fester Zeichenbreite: Schriftart',
     'theme_motionStdFontSize'           => 'Text fester Zeichenbreite: Größe',
+    'theme_reset_btn'                   => 'Farbschema zurücksetzen',
+    'theme_reset_confirm'               => 'Sollen alle Werte auf den jeweiligen Standard zurückgesetzt werden?',
 
     'files_title' => 'Hochgeladene Dateien',
     'files_none'  => 'Keine Dateien hochgeladen',
