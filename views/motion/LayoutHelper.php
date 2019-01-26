@@ -171,6 +171,31 @@ class LayoutHelper
     }
 
     /**
+     * @param Motion $motion
+     * @return string
+     */
+    public static function createPdfTcpdf(Motion $motion)
+    {
+        $pdfLayout = $motion->motionType->getPDFLayoutClass();
+        $pdf       = $pdfLayout->createPDFClass();
+
+        $initiators = [];
+        foreach ($motion->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+
+        // set document information
+        $pdf->SetCreator(\Yii::t('export', 'default_creator'));
+        $pdf->SetAuthor(implode(', ', $initiators));
+        $pdf->SetTitle(\Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
+        $pdf->SetSubject(\Yii::t('motion', 'Motion') . " " . $motion->getTitleWithPrefix());
+
+        static::printToPDF($pdf, $pdfLayout, $motion);
+
+        return $pdf->Output('', 'S');
+    }
+
+    /**
      * @param IMotion $motion
      * @param IPolicy $policy
      * @param int $supportStatus
@@ -387,14 +412,13 @@ class LayoutHelper
         echo '</div>';
     }
 
-
     /**
      * @param Motion $motion
      * @return string
      * @throws \app\models\exceptions\Internal
      * @throws \Exception
      */
-    public static function createPdf(Motion $motion)
+    public static function createPdfLatex(Motion $motion)
     {
         $cache = \Yii::$app->cache->get($motion->getPdfCacheKey());
         if ($cache && !YII_DEBUG) {

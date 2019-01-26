@@ -27,6 +27,7 @@ use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
 use app\models\notifications\MotionProposedProcedure;
 use app\models\events\MotionEvent;
+use app\views\motion\LayoutHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -39,7 +40,6 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $sectionId
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionViewimage($motionSlug, $sectionId)
     {
@@ -63,7 +63,6 @@ class MotionController extends Base
      * @param string $motionSlug
      * @param int $sectionId
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionViewpdf($motionSlug, $sectionId)
     {
@@ -98,7 +97,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return Motion|null
-     * @throws \yii\base\ExitException
      */
     private function getMotionWithCheck($motionSlug)
     {
@@ -135,7 +133,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
+     * @throws \Exception
      */
     public function actionPdf($motionSlug)
     {
@@ -154,16 +152,15 @@ class MotionController extends Base
         }
 
         if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
-            return $this->renderPartial('pdf_tex', ['motion' => $motion]);
+            return LayoutHelper::createPdfLatex($motion);
         } else {
-            return $this->renderPartial('pdf_tcpdf', ['motion' => $motion]);
+            return LayoutHelper::createPdfTcpdf($motion);
         }
     }
 
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionPdfamendcollection($motionSlug)
     {
@@ -199,7 +196,6 @@ class MotionController extends Base
      * @param int $withdrawn
      * @param int $resolutions
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionPdfcollection($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
     {
@@ -253,7 +249,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionOdt($motionSlug)
     {
@@ -278,7 +273,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionPlainhtml($motionSlug)
     {
@@ -299,7 +293,6 @@ class MotionController extends Base
      * @param int $commentId
      * @return string
      * @throws Internal
-     * @throws \yii\base\ExitException
      */
     public function actionView($motionSlug, $commentId = 0)
     {
@@ -371,7 +364,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionViewChanges($motionSlug)
     {
@@ -405,7 +397,6 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionViewChangesOdt($motionSlug)
     {

@@ -135,9 +135,34 @@ class LayoutHelper
     /**
      * @param Amendment $amendment
      * @return string
+     */
+    public static function createPdfTcpdf(Amendment $amendment)
+    {
+        $pdfLayout = $amendment->getMyMotion()->motionType->getPDFLayoutClass();
+        $pdf       = $pdfLayout->createPDFClass();
+
+        $initiators = [];
+        foreach ($amendment->getInitiators() as $init) {
+            $initiators[] = $init->getNameWithResolutionDate(false);
+        }
+
+        // set document information
+        $pdf->SetCreator(\Yii::t('export', 'default_creator'));
+        $pdf->SetAuthor(implode(', ', $initiators));
+        $pdf->SetTitle(\Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
+        $pdf->SetSubject(\Yii::t('amend', 'amendment') . ' ' . $amendment->getTitle());
+
+        static::printToPDF($pdf, $pdfLayout, $amendment);
+
+        return $pdf->Output('', 'S');
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public static function createPdf(Amendment $amendment)
+    public static function createPdfLatex(Amendment $amendment)
     {
         $cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
         if ($cache) {

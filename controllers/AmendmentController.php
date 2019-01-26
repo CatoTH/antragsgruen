@@ -20,6 +20,7 @@ use app\components\EmailNotifications;
 use app\models\forms\AmendmentProposedChangeForm;
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
+use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -85,9 +86,9 @@ class AmendmentController extends Base
         }
 
         if ($this->getParams()->xelatexPath && $amendment->getMyMotionType()->texTemplateId) {
-            return $this->renderPartial('pdf_tex', ['amendment' => $amendment]);
+            return LayoutHelper::createPdfLatex($amendment);
         } else {
-            return $this->renderPartial('pdf_tcpdf', ['amendment' => $amendment]);
+            return LayoutHelper::createPdfTcpdf($amendment);
         }
     }
 

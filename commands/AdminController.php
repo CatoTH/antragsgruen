@@ -102,7 +102,7 @@ class AdminController extends Controller
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();
             if ($params->xelatexPath) {
-                \app\views\motion\LayoutHelper::createPdf($motion);
+                \app\views\motion\LayoutHelper::createPdfLatex($motion);
             }
             foreach ($motion->amendments as $amendment) {
                 if ($amendment->status == Amendment::STATUS_DELETED) {
@@ -111,7 +111,7 @@ class AdminController extends Controller
                 echo '  - Amendment ' . $amendment->id . "\n";
                 $amendment->getFirstDiffLine();
                 if ($params->xelatexPath) {
-                    \app\views\amendment\LayoutHelper::createPdf($amendment);
+                    \app\views\amendment\LayoutHelper::createPdfLatex($amendment);
                 }
             }
         }

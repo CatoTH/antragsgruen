@@ -361,7 +361,12 @@ class MotionListController extends AdminBase
 
         $zip = new ZipWriter();
         foreach ($motions as $motion) {
-            $zip->addFile($motion->getFilenameBase(false) . '.pdf', LayoutHelper::createPdf($motion));
+            if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
+                $file = LayoutHelper::createPdfLatex($motion);
+            } else {
+                $file = LayoutHelper::createPdfTcpdf($motion);
+            }
+            $zip->addFile($motion->getFilenameBase(false) . '.pdf', $file);
         }
 
         \yii::$app->response->format = Response::FORMAT_RAW;
