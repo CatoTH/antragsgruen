@@ -14,12 +14,12 @@
     },
     "devDependencies": {
         "@types/bootbox": "^4.4.36",
-        "@types/bootstrap": "^3.3.40",
-        "@types/ckeditor": "^4.9.4",
+        "@types/bootstrap": "^3.3.41",
+        "@types/ckeditor": "^4.9.5",
         "@types/clipboard": "^1.5.36",
         "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
-        "@types/jquery": "^2.0.51",
-        "@types/sortablejs": "^1.7.0",
+        "@types/jquery": "^2.0.53",
+        "@types/sortablejs": "^1.7.2",
         "@types/typeahead": "^0.11.32",
         "autoprefixer": "^8.6.5",
         "bootbox": "^4.4.0",
@@ -39,9 +39,9 @@
         "pa11y": "^5.1.0",
         "pdfjs-dist": "^1.10.100",
         "requirejs": "^2.3.6",
-        "sortablejs": "^1.7.0",
+        "sortablejs": "^1.8.1",
         "typeahead.js": "^0.11.1",
-        "typescript": "^3.2.2"
+        "typescript": "^3.2.4"
     },
     "directories": {
         "bin": "./bin/"
@@ -51,7 +51,7 @@
         "cloneable-readable": "^1.1.2",
         "eonasdan-bootstrap-datetimepicker": "^4.17.47",
         "isotope-layout": "^3.0.6",
-        "moment": "^2.23.0",
+        "moment": "^2.24.0",
         "remove-trailing-separator": "^1.1.0"
     }
 }
