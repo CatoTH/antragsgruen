@@ -74,7 +74,7 @@ trait AmendmentMergingTrait
                 $coll  = $section->getRewriteCollisions($newSections[$section->sectionId], false, $debug);
 
                 if (count($coll) > 0) {
-                    if (!in_array($amend, $amendments)) {
+                    if (!isset($amendments[$amend->id])) {
                         $amendments[$amend->id] = $amend;
                         $collisions[$amend->id] = [];
                     }
