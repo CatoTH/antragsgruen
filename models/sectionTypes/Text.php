@@ -97,7 +97,7 @@ abstract class Text extends ISectionType
         $str .= HTMLTools::prepareHTMLForCkeditor($data);
         $str .= '</div>';
 
-        if (HTMLTools::cleanSimpleHtml($originalHtml) != HTMLTools::cleanSimpleHtml($data)) {
+        if (HTMLTools::cleanSimpleHtml($originalHtml) !== HTMLTools::cleanSimpleHtml($data)) {
             $str .= '<div class="modifiedActions"><button class="btn-link resetText" type="button">';
             $str .= \Yii::t('amend', 'revert_changes');
             $str .= '</button></div>';

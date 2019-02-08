@@ -13,6 +13,7 @@
 - Bugfix: In the PDF-collection containing all motions, the header page of a motion contained the status header of the previous motion, if the PHP-based PDF-renderer was used.
 - Bugfix: Exporting the PDF-collection as ZIP file did not work for the PHP-based PDF-renderer.
 - Bugfix: Merging amendments produced an error in some cases with many amendments.
+- Bugfix: Amendments to motions with numbered lists (OLs) behaved incorrectly, especially when merging them into the motion.
 
 ### Version 4.1.1 (2018-12-09)
 

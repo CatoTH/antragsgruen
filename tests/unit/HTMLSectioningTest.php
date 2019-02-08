@@ -236,4 +236,48 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
         $out    = HTMLTools::removeSectioningFragments($orig);
         $this->assertEquals($expect, $out);
     }
+
+    public function testRemoveSplitFragmentsWithWhitespaces() {
+        $orig = '
+<ul>
+<li>
+<p>Line 1.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Line 2.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Line 3.</p>
+</li>
+</ul>
+<ul>
+<li>
+<p>Line 4.</p>
+</li>
+</ul>';
+        $expect = '<ul>
+<li>
+<p>Line 1.</p>
+</li>
+
+<li>
+<p>Line 2.</p>
+</li>
+
+<li>
+<p>Line 3.</p>
+</li>
+
+<li>
+<p>Line 4.</p>
+</li>
+</ul>';
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out    = HTMLTools::removeSectioningFragments($orig);
+        $this->assertEquals($expect, $out);
+    }
 }

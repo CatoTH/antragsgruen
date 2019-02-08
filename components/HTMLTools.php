@@ -223,6 +223,10 @@ class HTMLTools
         // Remove <a>...</a>
         $html = preg_replace('/<a>(.*)<\/a>/siuU', '$1', $html);
 
+        // When editing amendments, list items are split into <ol start="2"> items.
+        // After editing, it should be merged into one list again.
+        $html = preg_replace('/<\/ol>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
+
         $allowedTags = [
             'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',
             'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
@@ -262,6 +266,7 @@ class HTMLTools
                 }
             }
         );
+
         $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
 
         // Text always needs to be in a block container. This is the normal case anyway,
@@ -317,6 +322,11 @@ class HTMLTools
      */
     public static function prepareHTMLForCkeditor($html)
     {
+        // When editing amendments, list items are split into <ol start="2"> items
+        // (it's possible to edit only one list item)
+        // However, CKEDITOR strips the start.
+        $html = preg_replace('/<\/ol>\s*<ol( start=\"?\'?\d*\"?\'?)?\">/siu', '', $html);
+
         $html = preg_replace('/(<[^\/][^>]*>) (\w)/siu', '\\1&nbsp;\\2', $html);
         $html = preg_replace('/(\w) (<\/[^>]*>)/siu', '\\1&nbsp;\\2', $html);
         return $html;
@@ -480,19 +490,20 @@ class HTMLTools
         for ($i = 0; $i < $children->length; $i++) {
             $appendToPrev = false;
             $child        = $children->item($i);
-            if (is_a($child, \DOMText::class) && trim($child->nodeValue) == '') {
+            if (is_a($child, \DOMText::class) && trim($child->nodeValue) === '') {
                 $body->removeChild($child);
                 $i--;
+                continue;
             }
             /** @var \DOMElement $child */
 
-            if ($i == 0) {
+            if ($i === 0) {
                 continue;
             }
-            if (strtolower($child->nodeName) == 'ul' && strtolower($children->item($i - 1)->nodeName) == 'ul') {
+            if (strtolower($child->nodeName) === 'ul' && strtolower($children->item($i - 1)->nodeName) === 'ul') {
                 $appendToPrev = true;
             }
-            if (strtolower($child->nodeName) == 'ol' && strtolower($children->item($i - 1)->nodeName) == 'ol') {
+            if (strtolower($child->nodeName) === 'ol' && strtolower($children->item($i - 1)->nodeName) === 'ol') {
                 $startPrev = $children->item($i - 1)->getAttribute('start');
                 if ($startPrev) {
                     $startPrev = IntVal($startPrev);
@@ -512,7 +523,8 @@ class HTMLTools
             }
 
             if ($appendToPrev) {
-                foreach ($child->childNodes as $subchild) {
+                while ($child->childNodes->length) {
+                    $subchild = $child->childNodes->item(0);
                     $child->removeChild($subchild);
                     $children->item($i - 1)->appendChild($subchild);
                 }

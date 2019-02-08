@@ -49,11 +49,12 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
                 <?= \Yii::t('amend', 'merge1_step1_title') ?><span class="chevron"></span>
             </li>
             <?php
-            if ($needsCollisionCheck) { ?>
+            if ($needsCollisionCheck) {
+                ?>
                 <li data-target="#step2" class="goto_step2">
                     <?= \Yii::t('amend', 'merge1_step2_title') ?><span class="chevron"></span>
                 </li>
-            <?php
+                <?php
             }
             ?>
             <li data-target="#step3" class="goto_step3">
@@ -73,6 +74,6 @@ echo $this->render('_merge_step2', [
     'paragraphSections'   => $paragraphSections,
     'needsCollisionCheck' => $needsCollisionCheck,
 ]);
-echo $this->render('_merge_step3', []);
+echo $this->render('_merge_step3');
 
 echo Html::endForm();

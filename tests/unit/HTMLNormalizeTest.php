@@ -115,10 +115,30 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
-    public function testPrepareForCKEditor()
+    public function testMergingOls()
+    {
+        $orig   = '<ol><li>List item 1</li></ol>' . "\n\t" . '<ol start="2"><li>List item 2</li></ol>';
+        $expect = '<ol><li>List item 1</li>' . "\n" . '<li>List item 2</li>' . "\n" . '</ol>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testPrepareForCKEditor1()
     {
         $orig   = '<p><strong> Test</strong></p> Test2';
         $expect = '<p><strong>&nbsp;Test</strong></p> Test2';
+        $out    = HTMLTools::prepareHTMLForCkeditor($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     */
+    public function testPrepareForCKEditor2()
+    {
+        $orig   = '<ol><li>List item 1</li></ol>' . "\n" . '<ol start="2"><li>List item 2</li></ol>';
+        $expect = '<ol><li>List item 1</li><li>List item 2</li></ol>';
         $out    = HTMLTools::prepareHTMLForCkeditor($orig);
         $this->assertEquals($expect, $out);
     }
@@ -320,7 +340,6 @@ Test 2.</p>
         $expect = '<p>Test more .</p>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
-
     }
 
     /**

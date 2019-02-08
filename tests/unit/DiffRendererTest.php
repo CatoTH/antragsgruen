@@ -174,6 +174,16 @@ class DiffRendererTest extends TestBase
         $this->assertEquals('<ul><li>###LINENUMBER###Nested 1</li><li class="inserted">Nested <strong>2</strong></li></ul>', $rendered);
     }
 
+    public function testChangedOlNumbering()
+    {
+        return; // @TODO
+
+        $renderer = new DiffRenderer();
+        $html = '###DEL_START###<ol start="2">###DEL_END######INS_START###<ol start="1">###INS_END###<li>Test 123</li></ol>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('', $rendered);
+    }
+
     /**
      */
     public function testParagraphContainsDiff()
