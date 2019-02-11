@@ -66,6 +66,14 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         </label>
     </div>
 
+    <?php
+    if ($controller->consultation && $controller->consultation->getSettings()->managedUserAccounts) {
+        echo '<div class="alert alert-info managedAccountHint hidden"><p>';
+        echo \Yii::t('user', 'login_managed_hint');
+        echo '</p></div>';
+    }
+    ?>
+
     <div class="form-group">
         <label for="username"><?= \Yii::t('user', 'login_username') ?>:</label>
         <input class="form-control" name="username" id="username" type="text" autofocus required

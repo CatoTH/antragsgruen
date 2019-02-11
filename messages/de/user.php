@@ -82,6 +82,7 @@ return [
     'login_forgot_pw'         => 'Passwort vergessen?',
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
+    'login_managed_hint'      => '<strong>Hinweis:</strong> neu angelegte Zugänge müssen zunächst von einer Administratorin bzw. einem Administratoren freigeschaltet werden.',
 
     'login_confirm_registration' => 'Ich stimme der elektronischen Verarbeitung meiner freiwilligen Angaben durch Antragsgrün zu. Meine Angaben zu Name und E-Mail-Adresse dürfen dazu verwendet werden, mir für mich passende Informationen zukommen zu lassen. Ich kann diese Zustimmung jederzeit per Mail an info@antragsgruen.de oder per Schreiben an die im Impressum angegebene Adresse widerrufen.',
 
