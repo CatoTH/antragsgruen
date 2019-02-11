@@ -117,7 +117,7 @@ class Base extends Controller
             return true;
         }
 
-        if (get_class($this) === PagesController::class && $action->id === 'show-page') {
+        if (get_class($this) === PagesController::class && in_array($action->id, ['show-page', 'css'])) {
             return true;
         }
 
