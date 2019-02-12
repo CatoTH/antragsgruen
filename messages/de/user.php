@@ -83,6 +83,11 @@ return [
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
     'login_managed_hint'      => '<strong>Hinweis:</strong> neu angelegte Zugänge müssen zunächst von einer Administratorin bzw. einem Administratoren freigeschaltet werden.',
+    'managed_account_ask_btn' => 'Berechtigung anfragen',
+    'managed_account_asked'   => 'Berechtigung angefragt.',
+
+    'acc_request_noti_subject' => 'Anfrage: Zugriff auf Antragsgrün-Seite',
+    'acc_request_noti_body'    => 'Die Benutzerin / der Benutzer %USERNAME% (%EMAIL%) fragt an, Zugriff auf die Seite "%CONSULTATION%" zu bekommen. Auf folgender Seite kannst du die Anfrage ggf. bestätigen: %ACTIONLINK%',
 
     'login_confirm_registration' => 'Ich stimme der elektronischen Verarbeitung meiner freiwilligen Angaben durch Antragsgrün zu. Meine Angaben zu Name und E-Mail-Adresse dürfen dazu verwendet werden, mir für mich passende Informationen zukommen zu lassen. Ich kann diese Zustimmung jederzeit per Mail an info@antragsgruen.de oder per Schreiben an die im Impressum angegebene Adresse widerrufen.',
 

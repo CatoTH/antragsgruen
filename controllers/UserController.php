@@ -6,6 +6,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\components\WurzelwerkSamlClient;
 use app\models\db\AmendmentSupporter;
+use app\models\db\ConsultationUserPrivilege;
 use app\models\db\EMailBlacklist;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
@@ -101,7 +102,7 @@ class UserController extends Base
                 $user = $usernamePasswordForm->getOrCreateUser($this->site);
                 $this->loginUser($user);
 
-                $unconfirmed = $user->status == User::STATUS_UNCONFIRMED;
+                $unconfirmed = $user->status === User::STATUS_UNCONFIRMED;
                 if ($unconfirmed && $this->getParams()->confirmEmailAddresses) {
                     $backUrl = UrlHelper::createUrl([
                         'user/confirmregistration',
@@ -158,6 +159,11 @@ class UserController extends Base
                 if ($user->save()) {
                     $user->trigger(User::EVENT_ACCOUNT_CONFIRMED, new UserEvent($user));
                     $this->loginUser($user);
+
+                    if ($this->consultation && $this->consultation->getSettings()->managedUserAccounts) {
+                        ConsultationUserPrivilege::askForConsultationPermission($user, $this->consultation);
+                    }
+
                     return $this->render('registration_confirmed');
                 }
             } else {
@@ -542,6 +548,30 @@ class UserController extends Base
      */
     public function actionConsultationaccesserror()
     {
-        return $this->render('@app/views/errors/consultation_access');
+        $user = User::getCurrentUser();
+
+        if ($this->isPostSet('askPermission')) {
+            ConsultationUserPrivilege::askForConsultationPermission($user, $this->consultation);
+            $this->consultation->refresh();
+        }
+
+        if ($user) {
+            $askForPermission   = true;
+            $askedForPermission = false;
+            foreach ($this->consultation->userPrivileges as $privilege) {
+                if ($privilege->userId === $user->id) {
+                    $askForPermission   = false;
+                    $askedForPermission = true;
+                }
+            }
+        } else {
+            $askForPermission   = false;
+            $askedForPermission = false;
+        }
+
+        return $this->render('@app/views/errors/consultation_access', [
+            'askForPermission'   => $askForPermission,
+            'askedForPermission' => $askedForPermission,
+        ]);
     }
 }

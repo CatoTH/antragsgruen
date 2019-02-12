@@ -78,6 +78,11 @@ return [
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
     'login_managed_hint'      => '<strong>Hint:</strong> new accounts have to be screened by an admin before they can access this site.',
+    'managed_account_ask_btn' => 'Ask for permission',
+    'managed_account_asked'   => 'Asked for permission.',
+
+    'acc_request_noti_subject' => 'Request: Access to the site',
+    'acc_request_noti_body'    => 'The user %USERNAME% (%EMAIL%) asks for access to the site "%CONSULTATION%". On the following page you can grant the permission: %ACTIONLINK%',
 
     'login_confirm_registration' => 'Confirm the registration',
 

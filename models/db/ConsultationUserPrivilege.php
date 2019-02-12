@@ -7,6 +7,7 @@ use app\components\UrlHelper;
 use app\models\exceptions\AlreadyExists;
 use app\models\exceptions\FormError;
 use app\models\exceptions\MailNotSent;
+use app\models\notifications\UserAsksPermission;
 use yii\db\ActiveRecord;
 
 /**
@@ -217,5 +218,35 @@ class ConsultationUserPrivilege extends ActiveRecord
             default:
                 return false;
         }
+    }
+
+    /**
+     * @param User $user
+     * @param Consultation $consultation
+     * @return ConsultationUserPrivilege
+     */
+    public static function askForConsultationPermission(User $user, Consultation $consultation)
+    {
+        foreach ($consultation->userPrivileges as $userPrivilege) {
+            if ($userPrivilege->userId === $user->id) {
+                // Already asked
+                return $userPrivilege;
+            }
+        }
+
+        $priv                   = new ConsultationUserPrivilege();
+        $priv->userId           = $user->id;
+        $priv->consultationId   = $consultation->id;
+        $priv->privilegeView    = 0;
+        $priv->privilegeCreate  = 0;
+        $priv->adminContentEdit = 0;
+        $priv->adminProposals   = 0;
+        $priv->adminScreen      = 0;
+        $priv->adminSuper       = 0;
+        $priv->save();
+
+        new UserAsksPermission($user, $consultation);
+
+        return $priv;
     }
 }
