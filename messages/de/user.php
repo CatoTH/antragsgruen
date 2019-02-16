@@ -109,8 +109,10 @@ return [
         . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %CODE%\n\n"
         . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
 
-    'access_denied_title' => 'Kein Zugriff',
-    'access_denied_body'  => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator*innen dieser Seite (Impressum).',
+    'access_denied_title'  => 'Kein Zugriff',
+    'access_denied_body'   => 'Dein Zugang ist für diese Seite nicht freigeschaltet.',
+    'access_granted_email' => "Hallo,\n\ndu hast soeben Zugriff auf diese Veranstaltung bekommen:\n%LINK%\n\n"
+        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
 
     'confirm_title'     => 'Zugang bestätigen',
     'confirm_username'  => 'E-Mail-Adresse / Benutzer*innenname',

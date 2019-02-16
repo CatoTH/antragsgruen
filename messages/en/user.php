@@ -104,8 +104,10 @@ return [
         . "...or enter the following code on the site: %CODE%\n\n"
         . "With kind regards,\n\tTeam Antragsgrün",
 
-    'access_denied_title' => 'No access',
-    'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
+    'access_denied_title'  => 'No access',
+    'access_denied_body'   => 'You don\' have access to this site.',
+    'access_granted_email' => "Hi,\n\nYou just got access to: %LINK%\n\n"
+        . "With kind regards,\n\tTeam Antragsgrün",
 
     'confirm_title'     => 'Confirm your account',
     'confirm_username'  => 'E-mail-address / username',

@@ -33,7 +33,7 @@ um deinen Antragsschmiede-Zugang zu aktivieren, klicke entweder auf folgenden Li
 
 Liebe Grüße,
 Das Antragsschmiede-Team.',
-	'access_denied_body' => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator_innen dieser Seite (Impressum).',
+	'access_denied_body' => 'Dein Zugang ist für diese Seite nicht freigeschaltet.',
 	'no_noti_all' => 'Alle Antragsschmiede-Benachrichtigungen abbestellen',
 	'export_intro' => 'Hier kannst du alle personenbezogene Daten, die auf der Antragsschmiede über dich gespeichert sind, in einem maschinenlesbaren JSON-Format herunterladen.',
 	'err_user_acode_notfound' => 'Benutzer_in nicht gefunden / Ungültiger Code',

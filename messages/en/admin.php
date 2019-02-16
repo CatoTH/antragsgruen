@@ -248,18 +248,12 @@ Here is your login data:
 Good-bye,
   Team Antragsgrün',
     'siteacc_acc_expl_mail'    => '<h3>Explanation:</h3>
-If this whole site or some functionality on it should only be accessible for specific persons,
-you can specify these persons below.<br>
-<br>
 To grant access to persons, enter their e-mail-addresses in the text field below.
 By submitting the form ("Create"), an invitation e-mail will be sent to the given addresses.<br>
 If the users entered do not have an account yet, one will be created automatically.
 The <strong>%ACCOUNT%</strong> in the e-mail text will be replaced by the user data.<br>
 <strong>%LINK%</strong> will be replaced by a link to this site.',
     'siteacc_acc_expl_nomail'  => '<h3>Explanation:</h3>
-If this whole site or some functionality on it should only be accessible for specific persons,
-you can specify these persons below.<br>
-<br>
 To grant access to persons, enter their e-mail-addresses in the text field below.
 As there is <strong>no e-mail-delivery configured</strong>, it is necessary that you enter the passwords for the users here and send the passwords to them manually.<br><br>' .
         'However, for <strong>privacy reasons</strong> it would be more advisible to configure the e-mail-delivery and let Antragsgrün create the passwords internally and send the passwords to the users automatically.',
@@ -299,6 +293,9 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_user_added_0'        => 'Nobody was added.',
     'siteacc_user_saved'          => 'The permissions were saved.',
     'siteacc_user_restr_done'     => 'Now, only registered users can create content.',
+    'siteacc_screen_users'        => 'Requested access',
+    'siteacc_screen_users_btn'    => 'Grant access',
+    'siteacc_noscreen_users_btn'  => 'Don\' grant access',
     'Translation / Wording'       => 'Edit the language',
     'translating_hint'            => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.' .
         '<strong>Hint:</strong> Changes here only affect this one consultation.',
