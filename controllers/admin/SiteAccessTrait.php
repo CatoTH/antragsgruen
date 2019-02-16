@@ -442,6 +442,7 @@ trait SiteAccessTrait
                     $privilege->delete();
                 }
             }
+            $this->consultation->refresh();
         }
 
         if ($this->isPostSet('deleteUser')) {

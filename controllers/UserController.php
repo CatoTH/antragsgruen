@@ -153,7 +153,7 @@ class UserController extends Base
             $user = User::findOne(['auth' => 'email:' . $this->getRequestValue('email')]);
             if (!$user) {
                 $msgError = \Yii::t('user', 'err_email_acc_notfound');
-            } elseif ($user->checkEmailConfirmationCode($this->getRequestValue('code'))) {
+            } elseif ($user->checkEmailConfirmationCode(trim($this->getRequestValue('code')))) {
                 $user->emailConfirmed = 1;
                 $user->status         = User::STATUS_CONFIRMED;
                 if ($user->save()) {
@@ -162,9 +162,12 @@ class UserController extends Base
 
                     if ($this->consultation && $this->consultation->getSettings()->managedUserAccounts) {
                         ConsultationUserPrivilege::askForConsultationPermission($user, $this->consultation);
+                        $needsAdminScreening = true;
+                    } else {
+                        $needsAdminScreening = false;
                     }
 
-                    return $this->render('registration_confirmed');
+                    return $this->render('registration_confirmed', ['needsAdminScreening' => $needsAdminScreening]);
                 }
             } else {
                 $msgError = \Yii::t('user', 'err_code_wrong');

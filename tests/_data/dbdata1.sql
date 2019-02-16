@@ -862,7 +862,7 @@ INSERT INTO `amendmentSupporter` (`id`, `amendmentId`, `position`, `userId`, `ro
 
 INSERT INTO `###TABLE_PREFIX###consultation` (`id`, `siteId`, `urlPath`, `wordingBase`, `title`, `titleShort`, `eventDateFrom`, `eventDateTo`, `amendmentNumbering`, `adminEmail`, `dateCreation`, `dateDeletion`, `settings`)
 VALUES
-  (1, 1, 'std-parteitag', 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'tobias@hoessl.eu', '2015-11-16 22:35:58',
+  (1, 1, 'std-parteitag', 'de-parteitag', 'Test2', 'Test2', NULL, NULL, 0, 'testadmin@example.org', '2015-11-16 22:35:58',
    NULL,
    '{\n    \"maintenanceMode\": false,\n    \"screeningMotions\": false,\n    \"screeningAmendments\": false,\n    \"lineNumberingGlobal\": false,\n    \"iniatorsMayEdit\": false,\n    \"hideTitlePrefix\": false,\n    \"showFeeds\": true,\n    \"commentNeedsEmail\": false,\n    \"screeningComments\": false,\n    \"initiatorConfirmEmails\": false,\n    \"adminsMayEdit\": true,\n    \"forceMotion\": null,\n    \"editorialAmendments\": true,\n    \"globalAlternatives\": true,\n    \"proposalProcedurePage\": true,\n    \"forceLogin\": false,\n    \"managedUserAccounts\": false,\n    \"minimalisticUI\": false,\n    \"commentsSupportable\": false,\n    \"screeningMotionsShown\": false,\n    \"initiatorsMayReject\": false,\n    \"allowMultipleTags\": false,\n    \"odtExportHasLineNumers\": true,\n    \"lineLength\": 80,\n    \"startLayoutType\": 0,\n    \"logoUrl\": \"\",\n    \"emailReplyTo\": \"\",\n    \"emailFromName\": \"\"\n}'),
   (2, 2, 'vorstandswahlen', 'de-bewerbung', 'Vorstandswahlen', 'Vorstandswahlen', NULL, NULL, 0,

@@ -225,19 +225,19 @@ class UrlHelper
             if ($params->domainSubdomain) {
                 if (mb_strpos($url, $params->resourceBase) === 0) {
                     $url = mb_substr($url, mb_strlen($params->resourceBase));
-                } elseif ($url[0] == '/') {
+                } elseif ($url[0] === '/') {
                     $url = mb_substr($url, 1);
                 }
                 $dom = str_replace('<subdomain:[\w_-]+>', static::$currentSite->subdomain, $params->domainSubdomain);
                 return $dom . $url;
             } else {
-                if ($url[0] == '/') {
+                if ($url[0] === '/') {
                     $url = mb_substr($url, 1);
                 }
                 return $params->domainPlain . $url;
             }
         } else {
-            if ($url[0] == '/') {
+            if ($url[0] === '/') {
                 $url = mb_substr($url, 1);
             }
             return $params->domainPlain . $url;

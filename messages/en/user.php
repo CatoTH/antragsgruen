@@ -115,8 +115,9 @@ return [
     'confirm_code'      => 'Confirmation code',
     'confirm_btn_do'    => 'Confirm',
 
-    'confirmed_title' => 'Account confirmed',
-    'confirmed_msg'   => 'Your\'re all set! Your account is confirmed and you are good to go.',
+    'confirmed_title'         => 'Account confirmed',
+    'confirmed_msg'           => 'Your\'re all set! Your account is confirmed and you are good to go.',
+    'confirmed_screening_msg' => 'Your account is now valid. The admin has been notified to grant you access to this site.',
 
     'recover_title'       => 'Password recovery',
     'recover_step1'       => '1. Enter your e-mail-address',

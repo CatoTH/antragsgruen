@@ -122,8 +122,9 @@ return [
     'confirm_code'      => 'Bestätigungs-Code',
     'confirm_btn_do'    => 'Bestätigen',
 
-    'confirmed_title' => 'Zugang bestätigt',
-    'confirmed_msg'   => 'Alles klar! Dein zugang ist freigeschaltet und du kannst loslegen!',
+    'confirmed_title'         => 'Zugang bestätigt',
+    'confirmed_msg'           => 'Alles klar! Dein Zugang ist freigeschaltet und du kannst loslegen!',
+    'confirmed_screening_msg' => 'Dein Zugang ist nun eingerichtet. Der Admin der Veranstaltung wurde benachrichtigt, ihn für diese Veranstaltung freizuschalten.',
 
     'recover_title'       => 'Passwort zurücksetzen',
     'recover_step1'       => '1. Gib deine E-Mail-Adresse ein',

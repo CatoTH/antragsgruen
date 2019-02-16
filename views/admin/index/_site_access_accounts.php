@@ -122,7 +122,7 @@ if (count($privilegesScreening) > 0) {
             $user        = $privilege->user;
             ?>
             <tr class="user<?= $user->id ?>">
-                <td class="deleteCol">
+                <td class="selectCol">
                     <input type="checkbox" name="userId[]" value="<?= $user->id ?>" id="screenUser<?= $user->id ?>">
                 </td>
                 <td class="nameCol">
@@ -157,18 +157,6 @@ echo Html::beginForm('', 'post', ['id' => 'accountsCreateForm', 'class' => 'admi
 ?>
     <h3 class="lightgreen"><?= \Yii::t('admin', 'siteacc_new_users') ?></h3>
     <div class="addUserTypeChooser content">
-        <?php
-        if ($hasEmail) {
-            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-                \Yii::t('admin', 'siteacc_acc_expl_mail') .
-                '</div>';
-        } else {
-            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-                \Yii::t('admin', 'siteacc_acc_expl_nomail') .
-                '</div>';
-        }
-        ?>
-
         <button class="btn btn-default addUsersOpener email" type="button" data-type="email">
             <?= \Yii::t('admin', 'siteacc_add_email_btn') ?>
         </button>
@@ -208,6 +196,17 @@ if ($hasSaml) {
 if ($hasEmail) {
     ?>
     <section class="addUsersByLogin email hidden content">
+        <?php
+        if ($hasEmail) {
+            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
+                \Yii::t('admin', 'siteacc_acc_expl_mail') .
+                '</div>';
+        } else {
+            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
+                \Yii::t('admin', 'siteacc_acc_expl_nomail') .
+                '</div>';
+        }
+        ?>
         <div class="row">
             <label class="col-md-6">
                 <?= \Yii::t('admin', 'siteacc_new_emails') ?>
