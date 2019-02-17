@@ -17,7 +17,7 @@ use yii\helpers\Html; ?>
 <h1><?= \Yii::t('user', 'access_denied_title') ?></h1>
 
 <div class="content">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger noAccessAlert">
         <p><?= \Yii::t('user', 'access_denied_body') ?></p>
     </div>
 
@@ -32,7 +32,7 @@ use yii\helpers\Html; ?>
         echo Html::endForm();
     }
     if ($askedForPermission) {
-        echo '<div class="alert alert-info"><p>';
+        echo '<div class="alert alert-info askedForPermissionAlert"><p>';
         echo \Yii::t('user', 'managed_account_asked');
         echo '</p></div>';
     }
