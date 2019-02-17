@@ -30,7 +30,7 @@ abstract class Base
         /** @var IEmailAdmin $maildata */
         $maildata = $this;
         foreach ($mails as $mail) {
-            if (trim($mail) != '') {
+            if (trim($mail) !== '') {
                 try {
                     Tools::sendWithLog(
                         EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,

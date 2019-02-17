@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\Consultation;
+use app\models\db\ConsultationUserPrivilege;
 use yii\helpers\Html;
 
 /**
@@ -21,23 +22,26 @@ $preText      = \Yii::t('admin', 'siteacc_email_text_pre');
 $hasEmail     = ($controller->getParams()->mailService['transport'] !== 'none');
 $hasSaml      = $controller->getParams()->isSamlActive();
 
-echo '<div class="content">';
 echo $controller->showErrors();
 
-if ($hasEmail) {
-    echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-        \Yii::t('admin', 'siteacc_acc_expl_mail') .
-        '</div>';
-} else {
-    echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-        \Yii::t('admin', 'siteacc_acc_expl_nomail') .
-        '</div>';
-}
-echo '</div>';
 
-if (count($consultation->userPrivileges) > 0) {
+/** @var ConsultationUserPrivilege[] $privilegesWithAccess */
+$privilegesWithAccess = [];
+/** @var ConsultationUserPrivilege[] $privilegesScreening */
+$privilegesScreening  = [];
+foreach ($consultation->userPrivileges as $priv) {
+    if (!$priv->user) {
+        continue;
+    }
+    if ($priv->isAskingForPermission()) {
+        $privilegesScreening[] = $priv;
+    } else {
+        $privilegesWithAccess[] = $priv;
+    }
+}
+
+if (count($privilegesWithAccess) > 0) {
     ?>
-    <h3 class="lightgreen"><?= \Yii::t('admin', 'siteacc_existing_users') ?></h3>
     <?= Html::beginForm('', 'post', ['id' => 'accountsEditForm', 'class' => 'adminForm form-horizontal content']) ?>
     <table class="accountListTable table table-condensed">
         <thead>
@@ -51,10 +55,7 @@ if (count($consultation->userPrivileges) > 0) {
         </thead>
         <tbody>
         <?php
-        foreach ($consultation->userPrivileges as $privilege) {
-            if (!$privilege->user) {
-                continue;
-            }
+        foreach ($privilegesWithAccess as $privilege) {
             $checkView   = ($privilege->privilegeView === 1 ? 'checked' : '');
             $checkCreate = ($privilege->privilegeCreate === 1 ? 'checked' : '');
             $user        = $privilege->user;
@@ -98,6 +99,54 @@ if (count($consultation->userPrivileges) > 0) {
 
     <div class="saveholder">
         <button type="submit" name="saveUsers" class="btn btn-primary"><?= \Yii::t('base', 'save') ?></button>
+    </div>
+    <?php
+    echo Html::endForm();
+}
+
+if (count($privilegesScreening) > 0) {
+    ?>
+    <h3 class="lightgreen"><?= \Yii::t('admin', 'siteacc_screen_users') ?></h3>
+    <?= Html::beginForm('', 'post', ['id' => 'accountsScreenForm', 'class' => 'adminForm form-horizontal content']) ?>
+    <table class="accountListTable table table-condensed">
+        <thead>
+        <tr>
+            <th class="screenCol"></th>
+            <th class="nameCol"><?= \Yii::t('admin', 'siteacc_user_name') ?></th>
+            <th class="emailCol"><?= \Yii::t('admin', 'siteacc_user_login') ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        foreach ($privilegesScreening as $privilege) {
+            $user        = $privilege->user;
+            ?>
+            <tr class="user<?= $user->id ?>">
+                <td class="selectCol">
+                    <input type="checkbox" name="userId[]" value="<?= $user->id ?>" id="screenUser<?= $user->id ?>">
+                </td>
+                <td class="nameCol">
+                    <label for="screenUser<?= $user->id ?>"><?= Html::encode($user->name) ?></label>
+                </td>
+                <td class="emailCol">
+                    <label for="screenUser<?= $user->id ?>"><?= Html::encode($user->getAuthName()) ?></label>
+                </td>
+            </tr>
+            <?php
+        }
+        ?>
+        </tbody>
+    </table>
+
+    <div class="saveholder">
+        <button type="submit" name="noAccess" class="btn btn-danger">
+            <span class="glyphicon glyphicon-thumbs-down"></span>
+            <?= \Yii::t('admin', 'siteacc_noscreen_users_btn') ?>
+        </button>
+        <button type="submit" name="grantAccess" class="btn btn-success">
+            <span class="glyphicon glyphicon-thumbs-up"></span>
+            <?= \Yii::t('admin', 'siteacc_screen_users_btn') ?>
+        </button>
     </div>
     <?php
     echo Html::endForm();
@@ -147,6 +196,17 @@ if ($hasSaml) {
 if ($hasEmail) {
     ?>
     <section class="addUsersByLogin email hidden content">
+        <?php
+        if ($hasEmail) {
+            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
+                \Yii::t('admin', 'siteacc_acc_expl_mail') .
+                '</div>';
+        } else {
+            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
+                \Yii::t('admin', 'siteacc_acc_expl_nomail') .
+                '</div>';
+        }
+        ?>
         <div class="row">
             <label class="col-md-6">
                 <?= \Yii::t('admin', 'siteacc_new_emails') ?>

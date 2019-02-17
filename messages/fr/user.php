@@ -94,7 +94,7 @@ return [
         . "Bien à toi,\n\tL'équipe Antragsgrün",
 
     'access_denied_title' => 'Accès refusé',
-    'access_denied_body'  => 'Tu n\'as pas accès au site. Si tu penses qu\'il y a une erreur, tu peux contacter les admistrateurs du site (tels qu\'indiqué dans l\'imprint).',
+    'access_denied_body'  => 'Tu n\'as pas accès au site.',
 
     'confirm_title'     => 'Confirmer ton compte',
     'confirm_username'  => 'Addresse email / nom d\'utilisateur',

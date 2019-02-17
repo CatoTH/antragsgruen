@@ -77,6 +77,12 @@ return [
     'login_forgot_pw'         => 'Forgot your password?',
     'login_openid'            => 'OpenID login',
     'login_openid_url'        => 'OpenID URL',
+    'login_managed_hint'      => '<strong>Hint:</strong> new accounts have to be screened by an admin before they can access this site.',
+    'managed_account_ask_btn' => 'Ask for permission',
+    'managed_account_asked'   => 'Asked for permission.',
+
+    'acc_request_noti_subject' => 'Request: Access to the site',
+    'acc_request_noti_body'    => 'The user %USERNAME% (%EMAIL%) asks for access to the site "%CONSULTATION%". On the following page you can grant the permission: %ACTIONLINK%',
 
     'login_confirm_registration' => 'Confirm the registration',
 
@@ -98,8 +104,10 @@ return [
         . "...or enter the following code on the site: %CODE%\n\n"
         . "With kind regards,\n\tTeam Antragsgrün",
 
-    'access_denied_title' => 'No access',
-    'access_denied_body'  => 'You don\' have access to this site. If you think this is an error, please contact the site administrator (as stated in the imprint).',
+    'access_denied_title'  => 'No access',
+    'access_denied_body'   => 'You don\' have access to this site.',
+    'access_granted_email' => "Hi,\n\nYou just got access to: %LINK%\n\n"
+        . "With kind regards,\n\tTeam Antragsgrün",
 
     'confirm_title'     => 'Confirm your account',
     'confirm_username'  => 'E-mail-address / username',
@@ -107,8 +115,9 @@ return [
     'confirm_code'      => 'Confirmation code',
     'confirm_btn_do'    => 'Confirm',
 
-    'confirmed_title' => 'Account confirmed',
-    'confirmed_msg'   => 'Your\'re all set! Your account is confirmed and you are good to go.',
+    'confirmed_title'         => 'Account confirmed',
+    'confirmed_msg'           => 'Your\'re all set! Your account is confirmed and you are good to go.',
+    'confirmed_screening_msg' => 'Your account is now valid. The admin has been notified to grant you access to this site.',
 
     'recover_title'       => 'Password recovery',
     'recover_step1'       => '1. Enter your e-mail-address',

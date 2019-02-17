@@ -92,7 +92,7 @@ class Tools
         }
 
         $messageId = explode('@', $fromEmail);
-        if (count($messageId) == 2) {
+        if (count($messageId) === 2) {
             $messageId = uniqid() . '@' . $messageId[1];
         } else {
             $messageId = uniqid() . '@antragsgruen.de';

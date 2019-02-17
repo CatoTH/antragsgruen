@@ -587,21 +587,21 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         foreach ($consultation->site->admins as $admin) {
-            if ($admin->id == $this->id) {
+            if ($admin->id === $this->id) {
                 return true;
             }
         }
 
         // Only site adminitrators are allowed to administer users.
         // All other rights are granted to every consultation-level administrator
-        if ($privilege == User::PRIVILEGE_SITE_ADMIN) {
+        if ($privilege === User::PRIVILEGE_SITE_ADMIN) {
             return false;
         }
 
         $privilege = (is_array($privilege) ? $privilege : [$privilege]);
 
         foreach ($consultation->userPrivileges as $userPrivilege) {
-            if ($userPrivilege->userId == $this->id) {
+            if ($userPrivilege->userId === $this->id) {
                 $foundMatch = false;
                 foreach ($privilege as $priv) {
                     if ($userPrivilege->containsPrivilege($priv)) {

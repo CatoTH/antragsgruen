@@ -11,6 +11,7 @@ class LoginForm {
                 $("#loginStr").addClass('hidden');
                 $("#regConfirmation").removeClass('hidden');
                 $("#regConfirmation").find("input").attr("required", "required");
+                $(".managedAccountHint").removeClass('hidden');
             } else {
                 $("#pwdConfirm").addClass('hidden');
                 $("#regName").addClass('hidden').find("input").removeAttr("required");
@@ -19,6 +20,7 @@ class LoginForm {
                 $("#loginStr").removeClass('hidden');
                 $("#regConfirmation").addClass('hidden');
                 $("#regConfirmation").find("input").removeAttr("required");
+                $(".managedAccountHint").addClass('hidden');
             }
         }).trigger("change");
         $form.submit(function (ev) {

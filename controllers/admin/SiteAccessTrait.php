@@ -76,7 +76,7 @@ trait SiteAccessTrait
     {
         $permissions = \Yii::$app->request->post('adminTypes');
         foreach ($permissions as $userId => $types) {
-            if ($userId == User::getCurrentUser()->id) {
+            if ($userId === User::getCurrentUser()->id) {
                 continue;
             }
 
@@ -244,7 +244,7 @@ trait SiteAccessTrait
             $created        = 0;
 
             for ($i = 0; $i < count($emails); $i++) {
-                if ($emails[$i] == '') {
+                if ($emails[$i] === '') {
                     continue;
                 }
                 try {
@@ -271,7 +271,7 @@ trait SiteAccessTrait
                     implode(', ', $alreadyExisted));
             }
             if ($created > 0) {
-                if ($created == 1) {
+                if ($created === 1) {
                     $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
                 } else {
                     $msg = str_replace('%NUM%', $created, \Yii::t('admin', 'siteacc_user_added_x'));
@@ -419,13 +419,30 @@ trait SiteAccessTrait
         if ($this->isPostSet('removeAdmin')) {
             /** @var User $todel */
             $todel = User::findOne($post['removeAdmin']);
-            if ($todel && $todel->id != User::getCurrentUser()->id) {
+            if ($todel && $todel->id !== User::getCurrentUser()->id) {
                 $this->site->unlink('admins', $todel, true);
                 $this->unlinkConsultationAdmin($todel);
                 \Yii::$app->session->setFlash('success', \Yii::t('admin', 'siteacc_admin_del_done'));
             } else {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'siteacc_admin_del_notf'));
             }
+        }
+
+        if ($this->isPostSet('grantAccess') && isset($post['userId']) && count($post['userId']) > 0) {
+            foreach ($this->consultation->userPrivileges as $privilege) {
+                if (in_array($privilege->userId, $post['userId'])) {
+                    $privilege->grantPermission();
+                }
+            }
+        }
+
+        if ($this->isPostSet('noAccess') && isset($post['userId']) && count($post['userId']) > 0) {
+            foreach ($this->consultation->userPrivileges as $privilege) {
+                if (in_array($privilege->userId, $post['userId'])) {
+                    $privilege->delete();
+                }
+            }
+            $this->consultation->refresh();
         }
 
         if ($this->isPostSet('deleteUser')) {

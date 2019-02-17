@@ -82,6 +82,12 @@ return [
     'login_forgot_pw'         => 'Passwort vergessen?',
     'login_openid'            => 'OpenID-Login',
     'login_openid_url'        => 'OpenID-URL',
+    'login_managed_hint'      => '<strong>Hinweis:</strong> neu angelegte Zugänge müssen zunächst von einer Administratorin bzw. einem Administratoren freigeschaltet werden.',
+    'managed_account_ask_btn' => 'Berechtigung anfragen',
+    'managed_account_asked'   => 'Berechtigung angefragt.',
+
+    'acc_request_noti_subject' => 'Anfrage: Zugriff auf Antragsgrün-Seite',
+    'acc_request_noti_body'    => 'Die Benutzerin / der Benutzer %USERNAME% (%EMAIL%) fragt an, Zugriff auf die Seite "%CONSULTATION%" zu bekommen. Auf folgender Seite kannst du die Anfrage ggf. bestätigen: %ACTIONLINK%',
 
     'login_confirm_registration' => 'Ich stimme der elektronischen Verarbeitung meiner freiwilligen Angaben durch Antragsgrün zu. Meine Angaben zu Name und E-Mail-Adresse dürfen dazu verwendet werden, mir für mich passende Informationen zukommen zu lassen. Ich kann diese Zustimmung jederzeit per Mail an info@antragsgruen.de oder per Schreiben an die im Impressum angegebene Adresse widerrufen.',
 
@@ -103,8 +109,10 @@ return [
         . "...oder gib, wenn du auf Antragsgrün danach gefragt wirst, folgenden Code ein: %CODE%\n\n"
         . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
 
-    'access_denied_title' => 'Kein Zugriff',
-    'access_denied_body'  => 'Dein Zugang ist für diese Seite nicht freigeschaltet. Falls du meinst, dass das ein Fehler ist, wende dich bitte an die Administrator*innen dieser Seite (Impressum).',
+    'access_denied_title'  => 'Kein Zugriff',
+    'access_denied_body'   => 'Dein Zugang ist für diese Seite nicht freigeschaltet.',
+    'access_granted_email' => "Hallo,\n\ndu hast soeben Zugriff auf diese Veranstaltung bekommen:\n%LINK%\n\n"
+        . "Liebe Grüße,\n\tDas Antragsgrün-Team.",
 
     'confirm_title'     => 'Zugang bestätigen',
     'confirm_username'  => 'E-Mail-Adresse / Benutzer*innenname',
@@ -114,8 +122,9 @@ return [
     'confirm_code'      => 'Bestätigungs-Code',
     'confirm_btn_do'    => 'Bestätigen',
 
-    'confirmed_title' => 'Zugang bestätigt',
-    'confirmed_msg'   => 'Alles klar! Dein zugang ist freigeschaltet und du kannst loslegen!',
+    'confirmed_title'         => 'Zugang bestätigt',
+    'confirmed_msg'           => 'Alles klar! Dein Zugang ist freigeschaltet und du kannst loslegen!',
+    'confirmed_screening_msg' => 'Dein Zugang ist nun eingerichtet. Der Admin der Veranstaltung wurde benachrichtigt, ihn für diese Veranstaltung freizuschalten.',
 
     'recover_title'       => 'Passwort zurücksetzen',
     'recover_step1'       => '1. Gib deine E-Mail-Adresse ein',
