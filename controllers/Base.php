@@ -120,6 +120,12 @@ class Base extends Controller
         if (get_class($this) === PagesController::class && in_array($action->id, ['show-page', 'css'])) {
             return true;
         }
+        if (get_class($this) === PagesController::class && $action->id === 'file' && $this->consultation) {
+            $logo = basename($this->consultation->getSettings()->logoUrl);
+            if ($logo && isset($params[1]) && isset($params[1]['filename']) && $params[1]['filename'] === $logo) {
+                return true;
+            }
+        }
 
         if (get_class($this) === ConsultationController::class && $action->id === 'home') {
             if ($this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
