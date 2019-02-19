@@ -28,8 +28,8 @@ class ByLDK extends IPDFLayout
 
         if (!$settings->hideTitlePrefix) {
             $revName = $motion->titlePrefix;
-            if ($revName == '') {
-                $revName = 'Entwurf';
+            if ($revName === '') {
+                $revName = \Yii::t('export', 'draft');
                 $pdf->SetFont('helvetica', 'I', '25');
                 $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', '25') + 3.1;
             } else {
