@@ -242,7 +242,7 @@ trait MotionActionsTrait
             $name = \Yii::$app->request->post('motionSupportName', '');
             $orga = \Yii::$app->request->post('motionSupportOrga', '');
         }
-        if ($supportType->getSettingsObj()->hasOrganizations && $orga == '') {
+        if ($supportType->getSettingsObj()->hasOrganizations && $orga === '') {
             \Yii::$app->session->setFlash('error', 'No organization entered');
             return;
         }

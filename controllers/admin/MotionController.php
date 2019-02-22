@@ -149,6 +149,13 @@ class MotionController extends AdminBase
                 \Yii::$app->request->post('initiatorSettings', []),
                 \Yii::$app->request->post('initiatorSettingFields', [])
             );
+            $settings->initiatorCanBeOrganization = $this->isPostSet('initiatorCanBeOrganization');
+            $settings->initiatorCanBePerson       = $this->isPostSet('initiatorCanBePerson');
+            if (!$settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+                // Probably a mistake
+                $settings->initiatorCanBeOrganization = true;
+                $settings->initiatorCanBePerson       = true;
+            }
             $motionType->supportTypeSettings = json_encode($settings, JSON_PRETTY_PRINT);
 
             $motionType->save();

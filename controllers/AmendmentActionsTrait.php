@@ -337,7 +337,7 @@ trait AmendmentActionsTrait
     }
 
     /**
-     * @param (Amendment $amendment
+     * @param Amendment $amendment
      * @throws \Throwable
      */
     private function savePrivateNote(Amendment $amendment)

@@ -672,6 +672,14 @@ label.legend {
 
   }
 
+  .control-label {
+    font-weight: bold;
+  }
+
+  input[type=checkbox] {
+    margin-right: 4px;
+  }
+
   .contactDetails {
     label {
       font-weight: normal;
@@ -680,10 +688,6 @@ label.legend {
   }
 
   .initiatorsCanMergeRow {
-    .control-label {
-      font-weight: bold;
-    }
-
     label {
       display: block;
       font-weight: normal;

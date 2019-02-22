@@ -10,6 +10,9 @@ class InitiatorForm implements \JsonSerializable
     const CONTACT_OPTIONAL = 1;
     const CONTACT_REQUIRED = 2;
 
+    public $initiatorCanBePerson       = true;
+    public $initiatorCanBeOrganization = true;
+
     public $minSupporters       = 1;
     public $hasOrganizations    = true;
     public $allowMoreSupporters = true;

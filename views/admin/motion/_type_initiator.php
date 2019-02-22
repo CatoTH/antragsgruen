@@ -42,9 +42,31 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 </div>
 
 <div class="form-group">
-    <label class="col-md-4" style="text-align: right;">
+    <div class="col-md-4 control-label">
+        <?= \Yii::t('admin', 'motion_type_person_type') ?>
+    </div>
+    <div class="col-md-8 contactDetails personTypes">
+        <div class="form-control">
+            <label>
+                <?php
+                echo Html::checkbox('initiatorCanBePerson', $settings->initiatorCanBePerson);
+                echo \Yii::t('admin', 'motion_type_person_natural');
+                ?>
+            </label>
+            <label>
+                <?php
+                echo Html::checkbox('initiatorCanBeOrganization', $settings->initiatorCanBeOrganization);
+                echo \Yii::t('admin', 'motion_type_person_orga');
+                ?>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_contact_name') ?>
-    </label>
+    </div>
     <div class="col-md-8 contactDetails contactName">
         <input type="hidden" name="initiatorSettingFields[]" value="contactName">
         <?php
@@ -63,9 +85,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 </div>
 
 <div class="form-group">
-    <label class="col-md-4" style="text-align: right;">
+    <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_email') ?>
-    </label>
+    </div>
     <div class="col-md-8 contactDetails contactEMail">
         <input type="hidden" name="initiatorSettingFields[]" value="contactEmail">
         <?php
@@ -84,9 +106,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 </div>
 
 <div class="form-group">
-    <label class="col-md-4" style="text-align: right;">
+    <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_phone') ?>
-    </label>
+    </div>
     <div class="col-md-8 contactDetails contactPhone">
         <input type="hidden" name="initiatorSettingFields[]" value="contactPhone">
         <?php
@@ -105,9 +127,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 </div>
 
 <div class="form-group">
-    <label class="col-md-4" style="text-align: right;">
+    <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_orga_resolution') ?>
-    </label>
+    </div>
     <div class="col-md-8 contactDetails contactResolutionDate">
         <input type="hidden" name="initiatorSettingFields[]" value="hasResolutionDate">
         <?php
@@ -126,9 +148,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 </div>
 
 <div class="form-group">
-    <label class="col-md-4" style="text-align: right;">
+    <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_gender') ?>
-    </label>
+    </div>
     <div class="col-md-8 contactDetails contactGender">
         <input type="hidden" name="initiatorSettingFields[]" value="contactGender">
         <?php
