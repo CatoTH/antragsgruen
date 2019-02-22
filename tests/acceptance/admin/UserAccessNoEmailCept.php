@@ -9,6 +9,7 @@ $I->loginAndGotoStdAdminPage()->gotoSiteAccessPage();
 $I->checkOption('input[name=managedUserAccounts]');
 $I->submitForm('#siteSettingsForm', [], 'saveLogin');
 
+$I->click('.addUsersOpener.email');
 $I->see('Benachrichtigungs-E-Mail', '.alert-info');
 $I->dontSee('Datenschutzgründen', '.alert-info');
 $I->dontSeeElement('#passwords');
@@ -22,14 +23,13 @@ $I->gotoConsultationHome();
 $I->click('#adminLink');
 $I->click('.siteAccessLink');
 
-$I->dontSee('Benachrichtigungs-E-Mail', '.alert-info');
-$I->see('Datenschutzgründen', '.alert-info');
-
-
 $I->wantTo('create an user');
 
 $I->dontSeeElement('#emailAddresses');
 $I->click('.addUsersOpener.email');
+$I->dontSee('Benachrichtigungs-E-Mail', '.alert-info');
+$I->see('Datenschutzgründen', '.alert-info');
+
 $I->seeElement('#emailAddresses');
 $I->seeElement('#passwords');
 

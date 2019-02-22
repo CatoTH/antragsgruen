@@ -196,17 +196,9 @@ if ($hasSaml) {
 if ($hasEmail) {
     ?>
     <section class="addUsersByLogin email hidden content">
-        <?php
-        if ($hasEmail) {
-            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-                \Yii::t('admin', 'siteacc_acc_expl_mail') .
-                '</div>';
-        } else {
-            echo '<div class="accountEditExplanation alert alert-info" role="alert">' .
-                \Yii::t('admin', 'siteacc_acc_expl_nomail') .
-                '</div>';
-        }
-        ?>
+        <div class="accountEditExplanation alert alert-info" role="alert">
+            <?= \Yii::t('admin', 'siteacc_acc_expl_mail') ?>
+        </div>
         <div class="row">
             <label class="col-md-6">
                 <?= \Yii::t('admin', 'siteacc_new_emails') ?>
@@ -233,6 +225,9 @@ if ($hasEmail) {
 } else {
     ?>
     <section class="addUsersByLogin email hidden content">
+        <div class="accountEditExplanation alert alert-info" role="alert">
+            <?= \Yii::t('admin', 'siteacc_acc_expl_nomail') ?>
+        </div>
         <div class="row">
             <label class="col-md-4">
                 <?= \Yii::t('admin', 'siteacc_new_emails') ?>
