@@ -21,9 +21,11 @@ class ByLDK extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
-        if (file_exists($settings->logoUrl)) {
+        $this->setHeaderLogo($motion->getMyConsultation(), 32);
+        if ($this->headerlogo) {
+            $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image($settings->logoUrl, 22, 32, 47, 26);
+            $pdf->Image('@' . $logo['data'], 22, 32, $logo['w'], $logo['h']);
         }
 
         if (!$settings->hideTitlePrefix) {

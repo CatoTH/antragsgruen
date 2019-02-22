@@ -9,9 +9,6 @@ use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
 {
-
-    private $headerlogo = [];
-
     /**
      * @param Motion $motion
      * @throws \app\models\exceptions\Internal
@@ -29,27 +26,12 @@ class DBJR extends IPDFLayout
         $abs      = 5;
         $fontsize = 30;
 
-        $dim = $pdf->getPageDimensions();
-
-        $logo = $motion->getMyConsultation()->getAbsolutePdfLogo();
-        if ($logo) {
-            if (empty($this->headerlogo)) {
-                //$this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
-                $this->headerlogo['w']     = 50;
-                $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
-                $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
-                $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
-                if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
-                    $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
-                } else {
-                    $this->headerlogo['y'] = $dim['tm'];
-                }
-            }
-
-            $headerlogo = $this->headerlogo;
+        $this->setHeaderLogo($motion->getMyConsultation(), $abs);
+        if ($this->headerlogo) {
+            $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image('@' . $logo->data, $headerlogo['x'], $headerlogo['y'], $headerlogo['w'], $headerlogo['h']);
-            $pdf->setY($headerlogo['y'] + $headerlogo['h'] + $abs);
+            $pdf->Image('@' . $logo['data'], $logo['x'], $logo['y'], $logo['w'], $logo['h']);
+            $pdf->setY($logo['y'] + $logo['h'] + $abs);
         }
 
         $pdf->SetFont('helvetica', 'B', $fontsize);

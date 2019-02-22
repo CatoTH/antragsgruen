@@ -3,6 +3,7 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\exceptions\Internal;
@@ -65,6 +66,9 @@ abstract class IPDFLayout
     /** @var TCPDF */
     protected $pdf;
 
+    /** @var null|array */
+    protected $headerlogo = null;
+
     /**
      * @param ConsultationMotionType $motionType
      */
@@ -87,6 +91,28 @@ abstract class IPDFLayout
         $this->pdf->SetFont('helvetica', '', 12);
         $this->pdf->ln(2);
         $this->pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @param int $abs
+     */
+    protected function setHeaderLogo(Consultation $consultation, $abs)
+    {
+        $logo = $consultation->getAbsolutePdfLogo();
+        if ($logo && !$this->headerlogo) {
+            $dim = $this->pdf->getPageDimensions();
+            $this->headerlogo['w']     = 50;
+            $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
+            $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
+            $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
+            $this->headerlogo['data']  = $logo->data;
+            if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
+                $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
+            } else {
+                $this->headerlogo['y'] = $dim['tm'];
+            }
+        }
     }
 
     /**

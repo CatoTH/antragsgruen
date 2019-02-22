@@ -10,6 +10,7 @@
   - Distorted images in content pages are now prevented.
   - Instead of only uploading new consultation logos, the logo can now also be chosen from the already uploaded images.
   - Bugfix: The logo of a consultation is now also shown on the login page, if the consultation is only accessible for logged-in users.
+  - Bugfix: The uploaded logo of a consultation was not shown on some generated PDFs where it was actually intended to.
 - Some internal libraries (Yii, Bootstrap) were updated.
 - Bugfix: if an admin of a consultation was deleted without revoking the admin permissions first, the permission page could not be rendered anymore.
 - Bugfix: In the PDF-collection containing all motions, the header page of a motion contained the status header of the previous motion, if the PHP-based PDF-renderer was used.
