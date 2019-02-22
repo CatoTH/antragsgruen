@@ -226,12 +226,13 @@ abstract class SupportBase
             $errors[] = 'No valid phone number given given.';
         }
 
-        $types = array_keys(ISupporter::getPersonTypes());
-        if (!isset($initiator['personType']) || !in_array($initiator['personType'], $types)) {
+        $personType = IntVal($initiator['personType']);
+        if ($personType === ISupporter::PERSON_NATURAL && !$settings->initiatorCanBePerson) {
             $errors[] = 'Invalid person type.';
         }
-
-        $personType = IntVal($initiator['personType']);
+        if ($personType === ISupporter::PERSON_ORGANIZATION && !$settings->initiatorCanBeOrganization) {
+            $errors[] = 'Invalid person type.';
+        }
         if ($personType === ISupporter::PERSON_ORGANIZATION &&
             $settings->hasResolutionDate === InitiatorForm::CONTACT_REQUIRED &&
             empty($initiator['resolutionDate'])) {

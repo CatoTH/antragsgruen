@@ -48,17 +48,6 @@ abstract class ISupporter extends ActiveRecord
     }
 
     /**
-     * @return string[]
-     */
-    public static function getPersonTypes()
-    {
-        return [
-            static::PERSON_NATURAL      => \Yii::t('structure', 'person_type_natural'),
-            static::PERSON_ORGANIZATION => \Yii::t('structure', 'person_type_orga'),
-        ];
-    }
-
-    /**
      * @return \yii\db\ActiveQuery
      */
     public function getUser()

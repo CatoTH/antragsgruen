@@ -59,7 +59,8 @@ if ($allowOther) {
     }
 }
 
-?>
+if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+    ?>
     <div class="form-group">
         <label class="col-sm-3 control-label"><?= Yii::t('initiator', 'iAmA') ?></label>
         <div class="col-sm-9">
@@ -85,8 +86,15 @@ if ($allowOther) {
             </label>
         </div>
     </div>
+    <?php
+}
+if ($settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+    echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_NATURAL, ['id' => 'personTypeHidden']);
+}
+if (!$settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
+    echo Html::hiddenInput('Initiator[personType]', ISupporter::PERSON_ORGANIZATION, ['id' => 'personTypeHidden']);
+}
 
-<?php
 if ($adminMode) {
     ?>
     <div class="form-group">
@@ -115,7 +123,7 @@ if ($adminMode) {
     </div>
 <?php
 
-if ($settings->hasOrganizations) {
+if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     $preOrga = $initiator->organization;
     ?>
     <div class="form-group organizationRow">
@@ -130,7 +138,7 @@ if ($settings->hasOrganizations) {
     <?php
 }
 
-if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE) {
+if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBeOrganization) {
     $preResolution = Tools::dateSql2bootstrapdate($initiator->resolutionDate);
     ?>
     <div class="form-group resolutionRow">
@@ -148,7 +156,7 @@ if ($settings->hasResolutionDate !== InitiatorForm::CONTACT_NONE) {
     <?php
 }
 
-if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
+if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initiatorCanBePerson) {
     $layout->loadFuelux();
     $genderChoices = array_merge(['' => ''], SupportBase::getGenderSelection());
     ?>

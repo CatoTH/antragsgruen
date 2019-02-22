@@ -49,7 +49,8 @@ export class InitiatorForm {
         this.$otherInitiator = $widget.find('input[name=otherInitiator]');
         this.$otherInitiator.change(this.onChangeOtherInitiator.bind(this)).trigger('change');
 
-        $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this)).first().trigger('change');
+        $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this));
+        this.onChangePersonType();
 
         this.$initiatorAdderRow.find('a').click(this.initiatorAddRow.bind(this));
         this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
@@ -73,7 +74,13 @@ export class InitiatorForm {
     }
 
     private onChangePersonType() {
-        if ($('#personTypeOrga').prop('checked')) {
+        let isOrganization = false;
+        if ($("#personTypeHidden").length > 0 && $("#personTypeHidden").val() == '1') { // PERSON_ORGANIZATION === 1
+            isOrganization = true;
+        } else if ($('#personTypeOrga').prop('checked')) {
+            isOrganization = true;
+        }
+        if (isOrganization) {
             this.setFieldsVisibilityOrganization();
             this.setFieldsReadonlyOrganization();
             if (this.wasPerson) {
