@@ -61,7 +61,7 @@ if ($allowOther) {
 
 if ($settings->initiatorCanBePerson && $settings->initiatorCanBeOrganization) {
     ?>
-    <div class="form-group">
+    <div class="form-group personTypeSelector">
         <label class="col-sm-3 control-label"><?= Yii::t('initiator', 'iAmA') ?></label>
         <div class="col-sm-9">
             <label class="radio-inline">
