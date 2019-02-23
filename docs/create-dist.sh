@@ -58,11 +58,24 @@ rm -R vendor/tecnickcom/tcpdf/examples
 rm -R vendor/phpoffice/phpexcel/unitTests/
 rm -R vendor/phpoffice/phpexcel/Examples/
 rm -R vendor/fzaninotto/faker/
+rm -R vendor/fxp/composer-asset-plugin/Tests
+rm -R vendor/symfony/css-selector/Tests
+rm -R vendor/zendframework/zend-servicemanager/bin
+rm -R vendor/zendframework/zend-validator/bin
+rm -R vendor/leafo/scssphp/bin
+rm -R vendor/cebe/markdown/bin
+rm -R vendor/slm/mail/tests
+rm -R vendor/yiisoft/yii2/i18n/migrations
+rm -R vendor/yiisoft/yii2/log/migrations
 find vendor -type l -exec rm {} \;
 find vendor/zendframework -name "doc" -exec rm -R {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/
+find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
+find . -name ".gitignore" -exec rm {} \;
+find . -name ".gitattributes" -exec rm {} \;
+find . -name ".travis" -exec rm {} \;
 rm config/config.json
 rm config/config_tests.json
 touch config/INSTALLING
