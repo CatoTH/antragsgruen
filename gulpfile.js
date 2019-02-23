@@ -129,4 +129,4 @@ gulp.task('build-plugin-css', taskBuildPluginCss);
 gulp.task('copy-files', taskCopyFiles);
 gulp.task('watch', taskWatch);
 
-gulp.task('default', gulp.parallel(taskBuildJs, taskBuildTypescript, taskBuildCss, taskBuildPdfjs, taskCopyFiles));
+gulp.task('default', gulp.parallel(taskBuildJs, taskBuildTypescript, taskBuildCss, taskBuildPdfjs, taskCopyFiles, taskBuildPluginCss));
