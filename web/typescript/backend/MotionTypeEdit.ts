@@ -25,6 +25,7 @@ class MotionTypeEdit {
 
         this.initSectionList();
         this.initDeadlines();
+        this.initInitiatorForm();
     }
 
     private initDeadlines() {
@@ -95,6 +96,31 @@ class MotionTypeEdit {
             });
             if ($deadlineHolder.find('.deadlineList').children().length === 0) {
                 addDeadlineRow();
+            }
+        });
+    }
+
+    private initInitiatorForm() {
+        const $initiatorCanBePerson = $("input[name=initiatorCanBePerson]");
+        const $initiatorCanBeOrga = $("input[name=initiatorCanBeOrganization]");
+        $initiatorCanBePerson.change(() => {
+            if ($initiatorCanBePerson.prop("checked")) {
+                $(".formGroupGender").removeClass("hidden");
+            } else {
+                $(".formGroupGender").addClass("hidden");
+                if (!$initiatorCanBeOrga.prop("checked")) {
+                    $initiatorCanBeOrga.prop("checked", true).change();
+                }
+            }
+        });
+        $initiatorCanBeOrga.change(() => {
+            if ($initiatorCanBeOrga.prop("checked")) {
+                $(".formGroupResolutionDate").removeClass("hidden");
+            } else {
+                $(".formGroupResolutionDate").addClass("hidden");
+                if (!$initiatorCanBePerson.prop("checked")) {
+                    $initiatorCanBePerson.prop("checked", true).change();
+                }
             }
         });
     }

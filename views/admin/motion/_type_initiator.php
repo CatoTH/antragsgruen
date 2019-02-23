@@ -126,7 +126,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group formGroupResolutionDate">
     <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_orga_resolution') ?>
     </div>
@@ -147,7 +147,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     </div>
 </div>
 
-<div class="form-group">
+<div class="form-group formGroupGender">
     <div class="col-md-4 control-label">
         <?= \Yii::t('admin', 'motion_type_gender') ?>
     </div>
