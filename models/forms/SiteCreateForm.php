@@ -691,7 +691,7 @@ class SiteCreateForm extends Model
         $user->email           = $email;
         $user->name            = 'Admin';
         $user->status          = User::STATUS_CONFIRMED;
-        $user->emailConfirmed  = true;
+        $user->emailConfirmed  = 1;
         $user->dateCreation    = date('Y-m-d H:i:s');
         $user->pwdEnc          = password_hash('admin', PASSWORD_DEFAULT);
         $user->organizationIds = '';
