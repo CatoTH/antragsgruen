@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.2.1 [not released yet]
+
+- Bugfix: logos whose filename had special characters were not displayed in the generated PDF.
+
 ## Version 4.2.0 (2019-02-23)
 
 - It is now possible to modify the layout of Antragsgrün, e.g. by choosing custom colors or uploading a background image. To create a custom theme, go to "Settings" -> "This consultation" -> "Custom theme".

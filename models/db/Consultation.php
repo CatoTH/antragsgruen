@@ -720,7 +720,7 @@ class Consultation extends ActiveRecord
         if ($logoUrl === '' || $logoUrl === null || $logoUrl[0] !== '/') {
             return null;
         }
-        return ConsultationFile::findFileByName($this, basename($logoUrl));
+        return ConsultationFile::findFileByName($this, urldecode(basename($logoUrl)));
     }
 
 

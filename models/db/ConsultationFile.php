@@ -201,7 +201,7 @@ class ConsultationFile extends ActiveRecord
             if (!$conFound) {
                 return null;
             }
-            return static::findFileByName($conFound, $matches['filename']);
+            return static::findFileByName($conFound, urldecode($matches['filename']));
         } else {
             return null;
         }
