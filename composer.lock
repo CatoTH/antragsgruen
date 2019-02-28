@@ -1409,16 +1409,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.16",
+            "version": "2.0.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399"
+                "reference": "089198cced57c4b8c9545ddc56001a1bd114b2dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/789de9783d41e6ca10fffc3644a43a764f79b399",
-                "reference": "789de9783d41e6ca10fffc3644a43a764f79b399",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/089198cced57c4b8c9545ddc56001a1bd114b2dd",
+                "reference": "089198cced57c4b8c9545ddc56001a1bd114b2dd",
                 "shasum": ""
             },
             "require": {
@@ -1505,7 +1505,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2019-01-30T23:54:16+00:00"
+            "time": "2019-02-28T07:03:06+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -2034,16 +2034,16 @@
         },
         {
             "name": "zendframework/zend-uri",
-            "version": "2.6.1",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-uri.git",
-                "reference": "3b6463645c6766f78ce537c70cb4fdabee1e725f"
+                "reference": "b2785cd38fe379a784645449db86f21b7739b1ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-uri/zipball/3b6463645c6766f78ce537c70cb4fdabee1e725f",
-                "reference": "3b6463645c6766f78ce537c70cb4fdabee1e725f",
+                "url": "https://api.github.com/repos/zendframework/zend-uri/zipball/b2785cd38fe379a784645449db86f21b7739b1ee",
+                "reference": "b2785cd38fe379a784645449db86f21b7739b1ee",
                 "shasum": ""
             },
             "require": {
@@ -2058,8 +2058,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6.x-dev",
-                    "dev-develop": "2.7.x-dev"
+                    "dev-master": "2.7.x-dev",
+                    "dev-develop": "2.8.x-dev"
                 }
             },
             "autoload": {
@@ -2077,7 +2077,7 @@
                 "uri",
                 "zf"
             ],
-            "time": "2018-04-30T13:40:08+00:00"
+            "time": "2019-02-27T21:39:04+00:00"
         },
         {
             "name": "zendframework/zend-validator",
@@ -2357,16 +2357,16 @@
         },
         {
             "name": "codeception/phpunit-wrapper",
-            "version": "6.0.14",
+            "version": "6.0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/phpunit-wrapper.git",
-                "reference": "3b64beb0af3e63145af982e64718ab80d2417739"
+                "reference": "299e3aece31489ed962e6c39fe2fb6f3bbd2eb16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/3b64beb0af3e63145af982e64718ab80d2417739",
-                "reference": "3b64beb0af3e63145af982e64718ab80d2417739",
+                "url": "https://api.github.com/repos/Codeception/phpunit-wrapper/zipball/299e3aece31489ed962e6c39fe2fb6f3bbd2eb16",
+                "reference": "299e3aece31489ed962e6c39fe2fb6f3bbd2eb16",
                 "shasum": ""
             },
             "require": {
@@ -2380,7 +2380,7 @@
             },
             "require-dev": {
                 "codeception/specify": "*",
-                "vlucas/phpdotenv": "^2.4"
+                "vlucas/phpdotenv": "^3.0"
             },
             "type": "library",
             "autoload": {
@@ -2399,7 +2399,7 @@
                 }
             ],
             "description": "PHPUnit classes used by Codeception",
-            "time": "2019-01-13T10:35:17+00:00"
+            "time": "2019-02-26T20:47:56+00:00"
         },
         {
             "name": "codeception/specify",
