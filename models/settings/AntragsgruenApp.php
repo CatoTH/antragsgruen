@@ -113,7 +113,7 @@ class AntragsgruenApp implements \JsonSerializable
      */
     public function isSamlActive()
     {
-        return ($this->hasSaml && class_exists('\SimpleSAML_Auth_Simple'));
+        return ($this->hasSaml && class_exists('\SimpleSAML\Auth\Simple'));
     }
 
     /**

@@ -4,7 +4,7 @@ namespace app\components;
 
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use SimpleSAML_Auth_Simple;
+use SimpleSAML\Auth\Simple;
 use yii\authclient\ClientInterface;
 use app\models\db\User;
 
@@ -16,7 +16,7 @@ class WurzelwerkSamlClient implements ClientInterface
     const PARAM_FAMILY_NAME  = 'urn:oid:2.5.4.4';
     const PARAM_ORGANIZATION = 'membershipOrganizationKey';
 
-    /** @var SimpleSAML_Auth_Simple */
+    /** @var Simple */
     private $auth;
 
     private $params;
@@ -27,7 +27,7 @@ class WurzelwerkSamlClient implements ClientInterface
     public function __construct()
     {
 
-        $this->auth   = new SimpleSAML_Auth_Simple('default-sp');
+        $this->auth   = new Simple('default-sp');
         $this->params = $this->auth->getAttributes();
     }
 
