@@ -146,14 +146,17 @@ class MotionController extends Base
 
     /**
      * @param string $motionSlug
+     * @param null|string $showAlways
      * @return string
      * @throws \Exception
      */
-    public function actionPdf($motionSlug)
+    public function actionPdf($motionSlug, $showAlways = null)
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING) &&
+            $motion->getShowAlwaysToken() !== $showAlways
+        ) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 

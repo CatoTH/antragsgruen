@@ -79,6 +79,6 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function getShowAlwaysToken()
     {
-        return md5('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->data);
+        return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->data);
     }
 }

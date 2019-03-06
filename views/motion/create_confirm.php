@@ -39,7 +39,7 @@ echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->
     </section>
 
 <?php
-$pdfUrl    = \app\components\UrlHelper::createMotionUrl($motion, 'pdf');
+$pdfUrl    = UrlHelper::createMotionUrl($motion, 'pdf', ['showAlways' => $motion->getShowAlwaysToken()]);
 $iframeUrl = UrlHelper::createMotionUrl($motion, 'embeddedpdf', ['file' => $pdfUrl]);
 $iframe    = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
 ?>

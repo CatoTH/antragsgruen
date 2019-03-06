@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AntragsgruenApp;
 use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -663,4 +664,12 @@ abstract class IMotion extends ActiveRecord
      * @return array
      */
     abstract public function getUserdataExportObject();
+
+    /**
+     * @return string
+     */
+    public function getShowAlwaysToken()
+    {
+        return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->id);
+    }
 }
