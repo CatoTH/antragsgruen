@@ -19,9 +19,10 @@ class Image extends ISectionType
 {
     /**
      * @param bool $absolute
+     * @param bool $showAlways
      * @return null|string
      */
-    public function getImageUrl($absolute = false)
+    public function getImageUrl($absolute = false, $showAlways = false)
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -30,14 +31,15 @@ class Image extends ISectionType
             return null;
         }
 
-        $url = UrlHelper::createUrl(
-            [
-                '/motion/viewimage',
-                'motionSlug' => $section->getMotion()->getMotionSlug(),
-                'sectionId'  => $section->sectionId
-            ],
-            $motion->getMyConsultation()
-        );
+        $params = [
+            '/motion/viewimage',
+            'motionSlug' => $section->getMotion()->getMotionSlug(),
+            'sectionId'  => $section->sectionId
+        ];
+        if ($showAlways) {
+            $params['showAlways'] = $section->getShowAlwaysToken();
+        }
+        $url = UrlHelper::createUrl($params, $motion->getMyConsultation());
 
         if ($absolute) {
             $url = UrlHelper::absolutizeLink($url);
@@ -223,10 +225,11 @@ class Image extends ISectionType
 
     /**
      * @param bool $isRight
+     * @param bool $showAlways
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showAlways = false)
     {
         if ($this->isEmpty()) {
             return '';
@@ -235,7 +238,7 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $type    = $section->getSettings();
-        $url     = $this->getImageUrl($this->absolutizeLinks);
+        $url     = $this->getImageUrl($this->absolutizeLinks, $showAlways);
         $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
         return $str;
     }

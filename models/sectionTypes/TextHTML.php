@@ -57,10 +57,11 @@ class TextHTML extends Text
 
     /**
      * @param bool $isRight
+     * @param bool $showAlways
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showAlways = false)
     {
         return $this->section->data;
     }

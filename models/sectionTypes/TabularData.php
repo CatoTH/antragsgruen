@@ -80,9 +80,11 @@ class TabularData extends ISectionType
 
     /**
      * @param bool $isRight
+     * @param bool $showToken
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showToken = false)
     {
         if ($this->isEmpty()) {
             return '';

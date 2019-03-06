@@ -39,14 +39,22 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @param int $sectionId
+     * @param null|string $showAlways
      * @return string
      */
-    public function actionViewimage($motionSlug, $sectionId)
+    public function actionViewimage($motionSlug, $sectionId, $showAlways = null)
     {
-        $motion = $this->getMotionWithCheck($motionSlug);
+        $motion    = $this->getMotionWithCheck($motionSlug);
+        $sectionId = IntVal($sectionId);
 
         foreach ($motion->getActiveSections() as $section) {
-            if ($section->sectionId == $sectionId) {
+            if ($section->sectionId === $sectionId) {
+                if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
+                    !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)
+                ) {
+                    return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+                }
+
                 $metadata                    = json_decode($section->metadata, true);
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', $metadata['mime']);
@@ -62,18 +70,23 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @param int $sectionId
+     * @param string|null $showAlways
      * @return string
+     * @throws NotFoundHttpException
      */
-    public function actionViewpdf($motionSlug, $sectionId)
+    public function actionViewpdf($motionSlug, $sectionId, $showAlways = null)
     {
-        $motion = $this->getMotionWithCheck($motionSlug);
-
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
-            return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
-        }
+        $motion    = $this->getMotionWithCheck($motionSlug);
+        $sectionId = IntVal($sectionId);
 
         foreach ($motion->getActiveSections() as $section) {
-            if ($section->sectionId == $sectionId) {
+            if ($section->sectionId === $sectionId) {
+                if (!$motion->isReadable() && $section->getShowAlwaysToken() !== $showAlways &&
+                    !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)
+                ) {
+                    return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
+                }
+
                 \yii::$app->response->format = Response::FORMAT_RAW;
                 \yii::$app->response->headers->add('Content-Type', 'application/pdf');
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
@@ -82,7 +95,8 @@ class MotionController extends Base
                 return base64_decode($section->data);
             }
         }
-        return '';
+
+        throw new NotFoundHttpException('Not found');
     }
 
     /**
@@ -822,7 +836,7 @@ class MotionController extends Base
                 $motion->id
             );
             $response['success'] = true;
-            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
+            $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                 'motion'   => $motion,
                 'msgAlert' => $msgAlert,
             ]);

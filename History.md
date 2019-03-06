@@ -3,6 +3,7 @@
 ### Version 4.2.1 [not released yet]
 
 - Bugfix: logos whose filename had special characters were not displayed in the generated PDF.
+- Bugfix: When uploading a PDF for an application as not-logged-in user, the PDF was not displayed correctly in the confirmation view.
 
 ## Version 4.2.0 (2019-02-23)
 

@@ -105,9 +105,10 @@ abstract class ISectionType
 
     /**
      * @param bool $isRight
+     * @param bool $showAlways
      * @return string
      */
-    abstract public function getSimple($isRight);
+    abstract public function getSimple($isRight, $showAlways = false);
 
     /**
      * @return string

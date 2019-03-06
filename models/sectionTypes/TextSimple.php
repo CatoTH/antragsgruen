@@ -176,11 +176,11 @@ class TextSimple extends Text
 
     /**
      * @param bool $isRight
+     * @param bool $showAlways
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @throws \app\models\exceptions\Internal
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showAlways = false)
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';

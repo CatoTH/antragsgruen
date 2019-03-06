@@ -51,9 +51,10 @@ foreach ($motion->getSortedSections(true) as $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
+
     if ($section->isLayoutRight()) {
         $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
-        $right .= $section->getSectionType()->getSimple(true);
+        $right .= $section->getSectionType()->getSimple(true, true);
         $right .= '</section>';
     } else {
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
@@ -64,7 +65,7 @@ foreach ($motion->getSortedSections(true) as $section) {
         }
         $main .= '<div class="consolidated">';
 
-        $main .= $section->getSectionType()->getSimple(false);
+        $main .= $section->getSectionType()->getSimple(false, true);
 
         $main .= '</div>';
         $main .= '</section>';

@@ -20,9 +20,10 @@ class PDF extends ISectionType
 {
     /**
      * @param bool $absolute
+     * @param bool $showAlways
      * @return null|string
      */
-    public function getPdfUrl($absolute = false)
+    public function getPdfUrl($absolute = false, $showAlways = false)
     {
         /** @var MotionSection $section */
         $section = $this->section;
@@ -31,14 +32,15 @@ class PDF extends ISectionType
             return null;
         }
 
-        $url = UrlHelper::createUrl(
-            [
-                'motion/viewpdf',
-                'motionSlug' => $section->getMotion()->getMotionSlug(),
-                'sectionId'  => $section->sectionId
-            ],
-            $motion->getMyConsultation()
-        );
+        $params = [
+            'motion/viewpdf',
+            'motionSlug' => $section->getMotion()->getMotionSlug(),
+            'sectionId'  => $section->sectionId
+        ];
+        if ($showAlways) {
+            $params['showAlways'] = $section->getShowAlwaysToken();
+        }
+        $url    = UrlHelper::createUrl($params, $motion->getMyConsultation());
         if ($absolute) {
             $url = UrlHelper::absolutizeLink($url);
         }
@@ -127,10 +129,11 @@ class PDF extends ISectionType
 
     /**
      * @param bool $isRight
+     * @param $showAlways
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showAlways = false)
     {
         if ($this->isEmpty()) {
             return '';
@@ -141,7 +144,7 @@ class PDF extends ISectionType
 
         /** @var MotionSection $section */
         $section   = $this->section;
-        $pdfUrl    = $this->getPdfUrl();
+        $pdfUrl    = $this->getPdfUrl(false, $showAlways);
         $iframeUrl = UrlHelper::createMotionUrl($section->getMotion(), 'embeddedpdf', ['file' => $pdfUrl]);
 
         $str = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
@@ -238,8 +241,8 @@ class PDF extends ISectionType
                     $border = ['all' => ['width' => $params->pdfExportIntegFrame, 'color' => [0, 0, 0], 'dash' => 0]];
                     $pdf->Rect($print['x'], $print['y'], $print['w'], $print['h'], 'D', $border);
                 } elseif (is_array($params->pdfExportIntegFrame)) {
-                    $config   = $params->pdfExportIntegFrame;
-                    $color    = [0, 0, 0];
+                    $config = $params->pdfExportIntegFrame;
+                    $color  = [0, 0, 0];
                     if (isset($config['color'])) {
                         $color = $config['color'];
                         unset($config['color']);

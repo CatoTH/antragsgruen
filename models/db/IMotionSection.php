@@ -10,6 +10,7 @@ use app\models\sectionTypes\TextHTML;
 use app\models\sectionTypes\TextSimple;
 use app\models\sectionTypes\Title;
 use app\models\sectionTypes\PDF;
+use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
 /**
@@ -71,5 +72,13 @@ abstract class IMotionSection extends ActiveRecord
     public function isLayoutRight()
     {
         return ($this->getSettings()->positionRight == 1);
+    }
+
+    /**
+     * @return string
+     */
+    public function getShowAlwaysToken()
+    {
+        return md5('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->data);
     }
 }

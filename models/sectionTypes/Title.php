@@ -77,10 +77,11 @@ class Title extends ISectionType
 
     /**
      * @param bool $isRight
+     * @param bool $showAlways
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getSimple($isRight)
+    public function getSimple($isRight, $showAlways = false)
     {
         return Html::encode($this->getMotionPlainText());
     }
