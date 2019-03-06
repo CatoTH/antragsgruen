@@ -787,6 +787,13 @@ ul.searchResults {
   }
 }
 
+.createConfirmPage {
+  .sectionType3, .sectionType4 {
+    padding-left: $fixedWidthTextStdPadding;
+  }
+}
+
+
 .amendmentAjaxTooltip {
   cursor: pointer;
 }

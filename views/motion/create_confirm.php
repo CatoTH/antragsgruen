@@ -19,6 +19,7 @@ $this->title = Yii::t('motion', $mode === 'create' ? 'Start a Motion' : 'Edit Mo
 $controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);
 $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'confirm_bread'));
+$controller->layoutParams->bodyCssClasses[] = 'createConfirmPage';
 
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
 
