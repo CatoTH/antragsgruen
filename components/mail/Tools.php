@@ -26,14 +26,22 @@ class Tools
 
     /**
      * @param null|Consultation $consultation
-     * @return string
+     * @return string|null
      */
     public static function getDefaultReplyTo($consultation = null)
     {
-        $replyTo = '';
+        /** @var \app\models\settings\AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
+        $replyTo = null;
         if ($consultation) {
             if ($consultation->getSettings()->emailReplyTo) {
                 $replyTo = $consultation->getSettings()->emailReplyTo;
+            } elseif ($params->multisiteMode && $consultation->adminEmail) {
+                $email = trim(explode(',', $consultation->adminEmail)[0]);
+                if ($email) {
+                    $replyTo = $email;
+                }
             }
         }
         return $replyTo;

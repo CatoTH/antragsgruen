@@ -65,7 +65,7 @@ abstract class Base
      * @param string $html
      * @param string $fromName
      * @param string $fromEmail
-     * @param string $replyTo
+     * @param string|null $replyTo
      * @param string $messageId
      * @return \Zend\Mail\Message|array
      */
@@ -80,9 +80,9 @@ abstract class Base
         $mId->setId($messageId);
         $mail->getHeaders()->addHeader($mId);
 
-        if ($html == '') {
+        if ($html === '') {
             $mail->setBody($plain);
-            $content = new \Zend\Mail\Header\ContentType();
+            $content = new ContentType();
             $content->setType('text/plain');
             $content->addParameter('charset', 'UTF-8');
             $mail->getHeaders()->addHeader($content);
@@ -110,7 +110,7 @@ abstract class Base
             $contentType->setType('multipart/alternative');
         }
 
-        if ($replyTo != '') {
+        if ($replyTo) {
             $reply_to_head = new \Zend\Mail\Header\ReplyTo();
             $reply_to_addr = new \Zend\Mail\AddressList();
             $reply_to_addr->add($replyTo);
@@ -129,7 +129,7 @@ abstract class Base
      */
     public function send($message, $toEmail)
     {
-        if (YII_ENV == 'test' || mb_strpos($toEmail, '@example.org') !== false) {
+        if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
             return EMailLog::STATUS_SKIPPED_OTHER;
         }
         if (EMailBlacklist::isBlacklisted($toEmail)) {

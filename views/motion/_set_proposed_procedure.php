@@ -247,10 +247,10 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
     <h3><?= \Yii::t('amend', 'proposal_notify_text') ?></h3>
     <div class="row proposalFrom">
         <?php
-        $placeholderReplyTo = \Yii::t('amend', 'proposal_notify_replyto') . ': ' .
-            \app\components\mail\Tools::getDefaultReplyTo($motion->getMyConsultation());
-        $placeholderName    = \Yii::t('amend', 'proposal_notify_name') . ': ' .
-            \app\components\mail\Tools::getDefaultMailFromName($motion->getMyConsultation());
+        $replyTo            = \app\components\mail\Tools::getDefaultReplyTo($motion->getMyConsultation());
+        $fromName           = \app\components\mail\Tools::getDefaultMailFromName($motion->getMyConsultation());
+        $placeholderReplyTo = \Yii::t('amend', 'proposal_notify_replyto') . ': ' . $replyTo;
+        $placeholderName    = \Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
         ?>
         <div class="col-md-6">
             <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"
