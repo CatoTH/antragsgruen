@@ -44,7 +44,10 @@ class AntragsgruenApp implements \JsonSerializable
     public $updateKey             = null;
 
     /** @var string[] */
-    public $plugins = [];
+    protected $plugins = [];
+
+    /** @var string[][] */
+    protected $sitePlugins = [];
 
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];
@@ -117,12 +120,27 @@ class AntragsgruenApp implements \JsonSerializable
     }
 
     /**
+     * @return string[]
+     */
+    public function getPluginNames()
+    {
+        $names = $this->plugins;
+        $currSubdomain = (isset($_SERVER['HTTP_HOST']) ? explode('.', $_SERVER['HTTP_HOST'])[0] : '');
+        if ($this->multisiteMode && count($this->sitePlugins) && isset($this->sitePlugins[$currSubdomain])) {
+            foreach ($this->sitePlugins[$currSubdomain] as $name) {
+                $names[] = $name;
+            }
+        }
+        return array_unique($names);
+    }
+
+    /**
      * @return ModuleBase[]
      */
     public function getPluginClasses()
     {
         $plugins = [];
-        foreach ($this->plugins as $name) {
+        foreach ($this->getPluginNames() as $name) {
             $plugins[$name] = 'app\\plugins\\' . $name . '\\Module';
         }
         return $plugins;
