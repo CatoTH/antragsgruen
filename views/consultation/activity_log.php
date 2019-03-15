@@ -22,13 +22,18 @@ echo '<div class="content activityLogPage">';
 
 
 $entries = $form->getLogEntries();
-if (count($entries) == 0) {
+if (count($entries) === 0) {
     echo '<div class="alert alert-info">' . \Yii::t('structure', 'activity_none') . '</div>';
 } else {
     echo $form->getPagination('consultation/activitylog');
 
     echo '<ul class="list-group activityLog">';
     foreach ($entries as $entry) {
+        if ($entry->formatLogEntry() === null) {
+            // Deleted items; they break the pagination, but that's still better than eager-loading all dependant items
+            continue;
+        }
+
         $link = $entry->getLink();
         if ($link) {
             echo '<a href="' . Html::encode($link) . '" class="list-group-item">';

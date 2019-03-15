@@ -56,7 +56,7 @@ class ConsultationLog extends ActiveRecord
     public static $MOTION_ACTION_TYPES    = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 24, 26, 27, 30, 31];
     public static $AMENDMENT_ACTION_TYPES = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 25, 28, 29, 32];
 
-    public static $USER_INVISIBLE_EVENTS = [15, 2, 24, 26, 21, 22, 23, 8, 9, 10, 31, 32];
+    public static $USER_INVISIBLE_EVENTS = [29, 6, 19, 15, 2, 24, 26, 21, 22, 23, 8, 9, 10, 31, 32];
 
     /** @var null|Motion */
     private $motion = null;
@@ -393,7 +393,7 @@ class ConsultationLog extends ActiveRecord
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function formatLogEntry()
     {
@@ -421,11 +421,12 @@ class ConsultationLog extends ActiveRecord
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
             case static::MOTION_COMMENT:
-                $str = \Yii::t('structure', 'activity_MOTION_COMMENT');
                 if ($this->motionComment) {
-                    $str = $this->formatLogEntryUser($str, $this->motionComment->name);
+                    $str = \Yii::t('structure', 'activity_MOTION_COMMENT');
+                    return $this->formatLogEntryUser($str, $this->motionComment->name);
+                } else {
+                    return null;
                 }
-                return $str;
             case static::MOTION_SCREEN:
                 $str = \Yii::t('structure', 'activity_MOTION_SCREEN');
                 return $str;
@@ -455,12 +456,13 @@ class ConsultationLog extends ActiveRecord
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
             case static::AMENDMENT_COMMENT:
-                $str = \Yii::t('structure', 'activity_AMENDMENT_COMMENT');
-                $str = $this->formatLogEntryAmendment($str);
                 if ($this->amendmentComment) {
-                    $str = $this->formatLogEntryUser($str, $this->amendmentComment->name);
+                    $str = \Yii::t('structure', 'activity_AMENDMENT_COMMENT');
+                    $str = $this->formatLogEntryAmendment($str);
+                    return $this->formatLogEntryUser($str, $this->amendmentComment->name);
+                } else {
+                    return null;
                 }
-                return $str;
             case static::AMENDMENT_SCREEN:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SCREEN');
                 $str = $this->formatLogEntryAmendment($str);
