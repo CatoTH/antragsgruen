@@ -234,7 +234,7 @@ class Amendment extends IMotion implements IRSSItem
     public function getTitle()
     {
         $motion = $this->getMyMotion();
-        if ($motion->titlePrefix != '') {
+        if ($motion->titlePrefix !== '') {
             $showMotionPrefix = (mb_stripos($this->titlePrefix, $motion->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
@@ -255,6 +255,14 @@ class Amendment extends IMotion implements IRSSItem
                 return $prefix . \yii::t('amend', 'amend_for') . $motion->title;
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitleWithPrefix()
+    {
+        return $this->getTitle();
     }
 
     /**

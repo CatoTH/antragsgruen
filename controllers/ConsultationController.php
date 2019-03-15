@@ -167,7 +167,6 @@ class ConsultationController extends Base
      */
     public function actionFeedall()
     {
-        /** @var IRSSItem[] $comments */
         $items = array_merge(
             Motion::getNewestByConsultation($this->consultation, 20),
             Amendment::getNewestByConsultation($this->consultation, 20),

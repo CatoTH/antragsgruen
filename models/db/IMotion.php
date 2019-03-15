@@ -351,6 +351,11 @@ abstract class IMotion extends ActiveRecord
     abstract public function getInitiators();
 
     /**
+     * @return string
+     */
+    abstract public function getTitleWithPrefix();
+
+    /**
      * @return bool
      */
     public function isInitiatedByOrganization()

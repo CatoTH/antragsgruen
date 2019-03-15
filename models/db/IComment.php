@@ -86,6 +86,47 @@ abstract class IComment extends ActiveRecord implements IRSSItem
     abstract public function getLink();
 
     /**
+     * @param int $maxLength
+     * @return string
+     */
+    public function getTextAbstract($maxLength)
+    {
+        $urlsearch = $urlreplace = [];
+        $wwwsearch = $wwwreplace = [];
+
+        $urlMaxlen      = 250;
+        $urlMaxlenEnd   = 50;
+        $urlMaxlenHost  = 150;
+        $urlPatternHost = '[-a-zäöüß0-9\_\.]';
+        $urlPattern     = '([-a-zäöüß0-9\_\$\.\:;\/?=\+\~@,%#!\'\[\]\|]|\&(?!amp\;|lt\;|gt\;|quot\;)|\&amp\;)';
+        $urlPatternEnd  = '([-a-zäöüß0-9\_\$\:\/=\+\~@%#\|]|\&(?!amp\;|lt\;|gt\;|quot\;)|\&amp\;)';
+
+        $endPattern     = "($urlPatternEnd|($urlPattern*\\($urlPattern{0,$urlMaxlenEnd}\\)){1,3})";
+        $hostUrlPattern = "$urlPatternHost{1,$urlMaxlenHost}(\\/?($urlPattern{0,$urlMaxlen}$endPattern)?)?";
+
+        $urlsearch[]  = "/([({\\[\\|>\\s])((https?|ftp|news):\\/\\/|mailto:)($hostUrlPattern)/siu";
+        $urlreplace[] = "\\1[LINK]";
+
+        $urlsearch[]  = "/^((https?|ftp|news):\\/\\/|mailto:)($hostUrlPattern)/siu";
+        $urlreplace[] = "[LINK]";
+
+        $wwwsearch[]  = "/([({\\[\\|>\\s])((?<![\\/\\/])www\\.)($hostUrlPattern)/siu";
+        $wwwreplace[] = "\\1[LINK]";
+
+        $wwwsearch[]  = "/^((?<![\\/\\/])www\\.)($hostUrlPattern)/siu";
+        $wwwreplace[] = "[LINK]";
+
+        $text = preg_replace($urlsearch, $urlreplace, $this->text);
+        $text = preg_replace($wwwsearch, $wwwreplace, $text);
+
+        if (mb_strlen($this->text) > $maxLength) {
+            $text = explode("\n", wordwrap(str_replace("\n", " ", $text), $maxLength))[0] . '…';
+        }
+
+        return $text;
+    }
+
+    /**
      * @param User|null $user
      * @return bool
      */
