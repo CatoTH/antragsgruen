@@ -37,6 +37,18 @@ $settings = $consultation->getSettings();
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
+               for="maxOverallTime"><?= \Yii::t('member_petitions', 'sett_maxOverallTime') ?>:<br>
+            <small><?= \Yii::t('member_petitions', 'sett_maxOverallTimeD') ?></small>
+        </label>
+        <div class="col-sm-9">
+            <input type="number" required name="settings[maxOverallTime]"
+                   value="<?= Html::encode($settings->maxOverallTime) ?>"
+                   class="form-control" id="maxOverallTime">
+            <input type="hidden" name="settingsFields[]" value="maxOverallTime">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label"
                for="replyDeadlineId"><?= \Yii::t('member_petitions', 'sett_replydeadline') ?>:</label>
         <div class="col-sm-9">
             <input type="number" required name="settings[replyDeadline]"

@@ -15,6 +15,8 @@ return [
     'sett_replydeadline'     => 'Antwort-Frist (Tage)',
     'sett_title'             => 'Beteiligungsgrün',
     'sett_minDiscussionTime' => 'Min. Diskussionszeit (Tage)',
+    'sett_maxOverallTime'    => 'Max. Gesamtzeit (Tage)',
+    'sett_maxOverallTimeD'   => '(Diskussion + Begehren; 0 = ∞)',
 
     'status_collecting'   => 'Unterstützer*innen sammeln',
     'status_unanswered'   => 'Noch nicht beantwortet',

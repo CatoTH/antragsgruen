@@ -363,6 +363,71 @@ class Tools
         return $date;
     }
 
+    public static function isDiscussion(IMotion $motion)
+    {
+        return $motion->getMyMotionType()->id === Tools::getDiscussionType($motion->getMyConsultation())->id;
+    }
+
+    public static function isPetition(IMotion $motion)
+    {
+        return $motion->getMyMotionType()->id === Tools::getPetitionType($motion->getMyConsultation())->id;
+    }
+
+    /**
+     * @param Motion $motion
+     * @return \DateTime|null
+     * @throws \Exception
+     */
+    public static function getMotionOverallLimit(Motion $motion)
+    {
+        /** @var ConsultationSettings $settings */
+        $settings = $motion->getMyConsultation()->getSettings();
+        if (!($settings->maxOverallTime > 0)) {
+            return null;
+        }
+
+        if (!$motion->isVisible()) {
+            // Withdrawn, finished discussions etc.
+            return null;
+        }
+        if (Tools::isPetition($motion) && in_array($motion->status, [
+                Motion::STATUS_SUBMITTED_SCREENED,
+                Motion::STATUS_PROCESSED,
+                Motion::STATUS_INLINE_REPLY,
+            ])) {
+            return null;
+        }
+
+        $baseMotion = $motion;
+        $recLimit   = 100;
+        while ($baseMotion->replacedMotion && $recLimit > 0) {
+            $baseMotion = $baseMotion->replacedMotion;
+            $recLimit--;
+        }
+
+        if (!$baseMotion->datePublication) {
+            return null;
+        }
+        $date = new \DateTime($motion->datePublication);
+        $date->add(new \DateInterval('P' . $settings->maxOverallTime . "D"));
+
+        return $date;
+    }
+
+    /**
+     * @param Motion $motion
+     * @return bool
+     * @throws \Exception
+     */
+    public static function isMotionOverallDeadlineOver(Motion $motion)
+    {
+        $deadline = static::getMotionOverallLimit($motion);
+        if (!$deadline) {
+            return false;
+        }
+        return $deadline->getTimestamp() < time();
+    }
+
     /**
      * @param IMotion $motion
      * @return int

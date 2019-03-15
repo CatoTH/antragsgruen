@@ -9,6 +9,7 @@ class ConsultationSettings extends Consultation
     public $organizationId = '';
     public $replyDeadline = 14;
     public $minDiscussionTime = 21;
+    public $maxOverallTime = 0;
 
     /**
      * @return string
