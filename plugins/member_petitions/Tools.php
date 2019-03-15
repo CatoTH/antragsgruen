@@ -83,9 +83,10 @@ class Tools
 
     /**
      * @param Consultation[] $consultations
+     * @param bool $includeArchived
      * @return Motion[]
      */
-    public static function getAllMotions($consultations)
+    public static function getAllMotions($consultations, $includeArchived = false)
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -96,6 +97,13 @@ class Tools
             $all = array_merge($all, static::getMotionsCollecting($consultation));
             $all = array_merge($all, static::getDiscussionType($consultation)->getVisibleMotions(false));
             $all = array_merge($all, static::getMotionsAnswered($consultation));
+        }
+        if (!$includeArchived) {
+            $all = array_values(array_filter($all, function (Motion $motion) {
+                return !in_array($motion->status, [
+                    Motion::STATUS_PAUSED,
+                ]);
+            }));
         }
         return $all;
     }
@@ -386,14 +394,21 @@ class Tools
             return null;
         }
 
-        if (!$motion->isVisible()) {
+        if (!$motion->isReadable()) {
             // Withdrawn, finished discussions etc.
+            return null;
+        }
+        if (Tools::isDiscussion($motion) && in_array($motion->status, [
+                Motion::STATUS_MODIFIED,
+                Motion::STATUS_PAUSED,
+            ])) {
             return null;
         }
         if (Tools::isPetition($motion) && in_array($motion->status, [
                 Motion::STATUS_SUBMITTED_SCREENED,
                 Motion::STATUS_PROCESSED,
                 Motion::STATUS_INLINE_REPLY,
+                Motion::STATUS_PAUSED,
             ])) {
             return null;
         }
@@ -408,7 +423,7 @@ class Tools
         if (!$baseMotion->datePublication) {
             return null;
         }
-        $date = new \DateTime($motion->datePublication);
+        $date = new \DateTime($baseMotion->datePublication);
         $date->add(new \DateInterval('P' . $settings->maxOverallTime . "D"));
 
         return $date;

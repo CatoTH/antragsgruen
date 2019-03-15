@@ -8,11 +8,19 @@ use yii\helpers\Html;
  * @var string $bold
  */
 
+// Yes, this is far from elegant...
+$showArchived = isset($_REQUEST['showArchived']);
+
 ?>
 <div class="content motionListFilter">
+
+    <label class="showArchivedRow">
+        <input type="checkbox" name="showArchived" <?= ($showArchived ? 'checked' : '') ?>>
+        Archivierte Begehren anzeigen
+    </label>
     <?php
 
-    $motions  = Tools::getAllMotions($myConsultations);
+    $motions  = Tools::getAllMotions($myConsultations, $showArchived);
     $tags     = Tools::getMostPopularTags($motions);
     $tagsTop3 = array_splice($tags, 0, 3);
     $allTags  = Tools::getMostPopularTags($motions);

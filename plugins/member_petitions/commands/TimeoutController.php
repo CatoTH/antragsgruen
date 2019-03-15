@@ -4,6 +4,7 @@ namespace app\plugins\member_petitions\commands;
 
 use app\components\UrlHelper;
 use app\models\db\Consultation;
+use app\models\db\Motion;
 use app\plugins\member_petitions\Tools;
 use yii\console\Controller;
 
@@ -37,7 +38,7 @@ class TimeoutController extends Controller
 
         echo "Timeouting the following petitions:\n";
         foreach ($this->getConsultations() as $consultation) {
-            foreach ($consultation->getVisibleMotions(false, false) as $motion) {
+            foreach (Tools::getAllMotions([$consultation]) as $motion) {
                 UrlHelper::setCurrentConsultation($motion->getMyConsultation());
                 UrlHelper::setCurrentSite($motion->getMyConsultation()->site);
 
@@ -45,6 +46,16 @@ class TimeoutController extends Controller
                     echo $motion->id . " - " . $motion->getMyConsultation()->urlPath . " - " . $motion->title . " (";
                     $limit = Tools::getMotionOverallLimit($motion);
                     echo $limit->format('Y-m-d');
+                    echo ")\n";
+
+                    $motion->status = Motion::STATUS_PAUSED;
+                    $motion->save();
+                } else {
+                    echo $motion->id . " - " . $motion->getMyConsultation()->urlPath . " - " . $motion->title . " (";
+                    $limit = Tools::getMotionOverallLimit($motion);
+                    if ($limit) {
+                        echo $limit->format('Y-m-d');
+                    }
                     echo ")\n";
                 }
             }

@@ -22,6 +22,7 @@ return [
     'status_unanswered'   => 'Noch nicht beantwortet',
     'status_answered'     => 'Beantwortet',
     'status_discussing'   => 'Offene Diskussion',
+    'status_paused'       => 'Zeit abgelaufen',
     'my_petitions'        => 'Meine Mitgliederbegehren',
     'none'                => 'Keine',
     'response_deadline'   => 'Beantwortungsfrist',

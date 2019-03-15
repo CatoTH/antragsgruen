@@ -102,4 +102,12 @@ $(function () {
     requirejs([
         '/npm/isotope.pkgd.min.js'
     ], onInitIsotope);
+
+    $(".showArchivedRow").change(function() {
+        var url = window.location.href.split("?")[0];
+        if ($(".showArchivedRow input").prop("checked")) {
+            url += "?showArchived=1";
+        }
+        window.location.href = url;
+    });
 });

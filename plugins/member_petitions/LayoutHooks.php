@@ -130,6 +130,8 @@ class LayoutHooks extends Hooks
             switch ($motion->status) {
                 case Motion::STATUS_SUBMITTED_SCREENED:
                     return \Yii::t('member_petitions', 'status_discussing');
+                case Motion::STATUS_PAUSED:
+                    return \Yii::t('member_petitions', 'status_paused');
             }
         }
         if ($motion->motionTypeId === Tools::getPetitionType($motion->getMyConsultation())->id) {
@@ -140,6 +142,8 @@ class LayoutHooks extends Hooks
                     return \Yii::t('member_petitions', 'status_unanswered');
                 case Motion::STATUS_PROCESSED:
                     return '✔ ' . \Yii::t('member_petitions', 'status_answered');
+                case Motion::STATUS_PAUSED:
+                    return \Yii::t('member_petitions', 'status_paused');
             }
         }
         return $before;

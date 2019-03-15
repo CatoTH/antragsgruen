@@ -22,6 +22,7 @@ return [
     'status_unanswered'   => 'Not answered yet',
     'status_answered'     => 'Answered',
     'status_discussing'   => 'Open discussion',
+    'status_paused'       => 'Time over',
     'my_petitions'        => 'My petitions',
     'none'                => 'None',
     'response_deadline'   => 'Response deadline',
