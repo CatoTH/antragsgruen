@@ -101,7 +101,7 @@ foreach ($motions as $motion) {
     $motionUrl = UrlHelper::createMotionUrl($motion);
     echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
 
-    $title = ($motion->title == '' ? '-' : $motion->title);
+    $title = ($motion->title === '' ? '-' : $motion->title);
     echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';
 
     echo '</a>';
@@ -133,6 +133,10 @@ foreach ($motions as $motion) {
     if ($deadline) {
         echo ', ' . \Yii::t('member_petitions', 'index_remaining') . ': ';
         echo \app\components\Tools::formatRemainingTime($deadline);
+    }
+
+    if ($motion->status === Motion::STATUS_PAUSED) {
+        echo '<span class="timeOver">' . \Yii::t('member_petitions', 'status_paused') . '</span>';
     }
     echo '</p>';
     echo '</li>';

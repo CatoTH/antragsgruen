@@ -2,9 +2,12 @@
 
 namespace app\plugins\member_petitions;
 
+use app\models\db\AmendmentComment;
 use app\models\db\Consultation;
+use app\models\db\IComment;
 use app\models\db\IMotion;
 use app\models\db\Motion;
+use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\Site;
 use app\models\db\User;
@@ -568,5 +571,44 @@ class Tools
         } else {
             return 0;
         }
+    }
+
+    /**
+     * @param Consultation[] $consultations
+     * @param int $limit
+     * @return IComment[]
+     */
+    public static function getNewestCommentsForConsultations($consultations, $limit)
+    {
+        /** @var IComment[] $comments */
+        $comments = [];
+        foreach ($consultations as $consultation) {
+            $comments = array_merge(
+                MotionComment::getNewestByConsultation($consultation, $limit * 5),
+                AmendmentComment::getNewestByConsultation($consultation, $limit * 5)
+            );
+        }
+
+        usort($comments, function (IComment $comm1, IComment $comm2) {
+            return -1 * DateTools::compareSqlTimes($comm1->getDate(), $comm2->getDate());
+        });
+
+        $filtered = [];
+        $foundIds = [];
+        foreach ($comments as $comment) {
+            $id = null;
+            if (is_a($comment, MotionComment::class)) {
+                $id = 'motion.' . $comment->motionId;
+            }
+            if (is_a($comment, AmendmentComment::class)) {
+                $id = 'amendment.' . $comment->amendmentId;
+            }
+            if (!in_array($id, $foundIds) && count($filtered) < $limit) {
+                $foundIds[] = $id;
+                $filtered[] = $comment;
+            }
+        }
+
+        return array_slice($filtered, 0, $limit);
     }
 }

@@ -19,13 +19,79 @@ $headingTertiaryBackground: rgb(27, 74, 251);
 .motionListFilter {
   .tagList {
     text-align: center;
+
     .btn {
       margin: 2px 4px;
     }
+
     margin-bottom: 15px;
   }
+
   .searchBar {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
+  }
+}
+
+.showArchivedRow {
+  font-weight: normal;
+  margin-bottom: 25px;
+}
+
+.mostRecentComments {
+  margin-bottom: 15px;
+
+  h2.green {
+    margin-left: -21px !important;
+    margin-right: -21px !important;
+  }
+
+  .commentList {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .motionCommentHolder {
+    flex-basis: 50%;
+    flex-grow: 0;
+
+    &:nth-child(even) .motionComment {
+      margin-right: 0;
+    }
+
+    &:nth-child(odd) .motionComment {
+      margin-left: 0;
+    }
+  }
+
+  .motionComment {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+
+
+    .commentHeader {
+      padding: 5px;
+    }
+
+    .date {
+      padding: 5px 5px 0 0;
+
+    }
+
+    .commentText {
+      padding: 0 5px 5px 5px;
+      min-height: 59px; // 3 lines
+      .glyphicon {
+        font-size: 0.8em;
+      }
+    }
+
+    .motionLink {
+      padding: 0 5px 5px 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 
@@ -37,9 +103,18 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     margin-top: 50px;
     margin-bottom: 15px;
     width: calc(100% + 42px);
+
     &:first-child {
       margin-top: 0;
     }
+  }
+
+  .timeOver {
+    display: inline-block;
+    padding-left: 10px;
+    font-size: 0.8em;
+    font-style: italic;
+    color: gray;
   }
 }
 
@@ -51,15 +126,19 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     font-weight: normal;
     font-size: 0.8em;
   }
+
   .orgaListItem {
     margin: 10px 0;
+
     &:first-child {
       margin-top: 0;
     }
   }
+
   .createRow {
     margin-top: 15px;
   }
+
   .content {
     img {
       max-width: 100%;
@@ -74,9 +153,11 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     .comments {
       background-color: rgb(226, 0, 122);
     }
+
     .amendments {
       background-color: rgb(175, 203, 8);
     }
+
     .comments, .amendments {
       display: inline-block;
       padding: 3px 6px;

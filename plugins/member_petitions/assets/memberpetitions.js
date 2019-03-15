@@ -33,6 +33,14 @@ var onInitIsotope = function (Isotope) {
     var setFilters = function () {
         initIsotope();
 
+        console.log(currTagFilter, currPhaseFilter, currSort);
+
+        if (currTagFilter === '*' && currPhaseFilter === '*' && (currSort === 'phase' || currSort === 'comments')) {
+            $(".mostRecentComments").removeClass("hidden");
+        } else {
+            $(".mostRecentComments").addClass("hidden");
+        }
+
         var filter = '';
         if (currTagFilter !== '*') {
             filter += currTagFilter;
@@ -94,7 +102,6 @@ var onInitIsotope = function (Isotope) {
 
         $(".motionListFilter .motionSort button").removeClass("active");
         $(this).addClass("active");
-
     });
 };
 
