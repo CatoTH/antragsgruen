@@ -254,7 +254,7 @@ In multi-site-instances, there might be a need to share language variante betwee
 
 * The plugin system is based on Yii2's [module system](https://www.yiiframework.com/doc/guide/2.0/en/structure-modules) and [asset bundles](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets). 
 * Each plugins has a directory under [plugins/](plugins/). It requires at least a ``Module.php`` which inherits from [ModuleBase.php](plugins/ModuleBase.php).
-* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex exmple containing a bit of everything can be seen in [memberPetitions](plugins/memberPetitions/).
+* Custom URLs can be defined in the Modules.php, the corresponding controllers are in the ``controller``-subdirectory, the views in ``views``, custom commands need to be in a ``commands``-directory. A rather complex exmple containing a bit of everything can be seen in [member_petitions](plugins/member_petitions/).
 * Each plugin has a unique ID that is equivalent to the name of the directory. To activate a plugin, the ID has to be added to the ``plugins``-list in the ``config.json``:
 
 ```json
