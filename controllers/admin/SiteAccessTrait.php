@@ -228,7 +228,7 @@ trait SiteAccessTrait
     {
         $params   = $this->getParams();
         $post     = \Yii::$app->request->post();
-        $hasEmail = ($params->mailService['transport'] != 'none');
+        $hasEmail = ($params->mailService['transport'] !== 'none');
 
         $emails    = explode("\n", $post['emailAddresses']);
         $names     = explode("\n", $post['names']);

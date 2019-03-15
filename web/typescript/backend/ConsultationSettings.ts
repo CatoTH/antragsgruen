@@ -52,6 +52,12 @@ export class ConsultationSettings {
         if (!$adminsMayEdit.prop("checked")) $iniatorsMayEdit.addClass("hidden");
     }
 
+    private htmlEntityDecode(html: string): string {
+        const el: HTMLElement = document.createElement('div');
+        el.innerHTML = html;
+        return el.innerText;
+    }
+
     private initTags() {
         this.$form.submit(() => {
             let items = $("#tagsList").pillbox('items'),
@@ -59,10 +65,11 @@ export class ConsultationSettings {
                 $node = $('<input type="hidden" name="tags">'),
                 i;
             for (i = 0; i < items.length; i++) {
+                const text = this.htmlEntityDecode(items[i].text);
                 if (typeof (items[i].id) == 'undefined') {
-                    tags.push({"id": 0, "name": items[i].text});
+                    tags.push({"id": 0, "name": text});
                 } else {
-                    tags.push({"id": items[i].id, "name": items[i].text});
+                    tags.push({"id": items[i].id, "name": text});
                 }
             }
             $node.attr("value", JSON.stringify(tags));

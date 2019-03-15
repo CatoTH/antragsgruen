@@ -4,6 +4,7 @@
 
 - Bugfix: logos whose filename had special characters were not displayed in the generated PDF.
 - Bugfix: When uploading a PDF for an application as not-logged-in user, the PDF was not displayed correctly in the confirmation view.
+- Bugfix: Tags containing an ampersand (&) were double-encoded. This bugfix only affects newly created tags.
 - Multi-Site mode: it is now possible to activate plugins on a per-subdomain basis.
 - Multi-Site mode: If no Reply-To is set in a consultation, the Admin's email address will be set as Reply-To for outgoing e-mails.
 
