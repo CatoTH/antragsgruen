@@ -65,5 +65,27 @@ label {
 button.link {
   background: transparent;
   border: none;
+  align-items: normal;
+  cursor: pointer;
+  display: inline;
+  font: inherit;
+  height: auto;
+  padding: 0;
+  perspective-origin: 0 0;
+  text-align: start;
+  transform-origin: 0 0;
+  width: auto;
+  -moz-appearance: none;
+  -webkit-logical-height: 1em;
+  -webkit-logical-width: auto;
 }
-
+@supports (-moz-appearance:none) {
+  button.link::-moz-focus-inner {
+    border: none;
+    padding: 0;
+  }
+  button.link:focus {
+    outline-style: dotted;
+    outline-width: 1px;
+  }
+}

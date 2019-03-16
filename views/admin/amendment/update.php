@@ -32,7 +32,7 @@ $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
-$html .= '<span class="glyphicon glyphicon-file"></span> ' . \Yii::t('admin', 'amend_show') . '' . '</a></li>';
+$html .= '<span class="icon glyphicon glyphicon-file"></span>' . \Yii::t('admin', 'amend_show') . '</a></li>';
 
 $cloneUrl = Html::encode(UrlHelper::createUrl([
     'amendment/create',
@@ -40,12 +40,12 @@ $cloneUrl = Html::encode(UrlHelper::createUrl([
     'cloneFrom'  => $amendment->id
 ]));
 $html     .= '<li><a href="' . $cloneUrl . '" class="clone">';
-$html     .= '<span class="glyphicon glyphicon-duplicate"></span> ' .
+$html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
     \Yii::t('admin', 'list_template_amendment') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
-$html .= '<button type="submit" class="link"><span class="glyphicon glyphicon-trash"></span> '
+$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash"></span>'
     . \Yii::t('admin', 'amend_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 

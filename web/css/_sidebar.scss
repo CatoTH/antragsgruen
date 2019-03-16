@@ -127,7 +127,7 @@ ul.sidebarActions {
   font-style: normal;
   font-weight: bold;
 
-  li a, li > span, form {
+  li a, li > span, button {
     display: block;
     @if $sidebarUppercase {
       text-transform: uppercase;
@@ -138,23 +138,15 @@ ul.sidebarActions {
     padding-bottom: 10px;
     text-indent: -12px;
     margin: 7px 0 7px 15px;
-  }
 
-  li a:hover {
-    color: darken($sidebarTextColor, 10%);
+    &:hover {
+      color: darken($sidebarTextColor, 10%);
+    }
   }
 
   .icon {
     color: $sidebarTextColor;
     margin-right: 10px;
-  }
-  button {
-    text-transform: uppercase;
-    font-size: 14px;
-    line-height: 18px;
-    color: $sidebarTextColor;
-    text-indent: -9px;
-    text-align: left;
   }
 
   .onlyAdmins {

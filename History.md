@@ -6,6 +6,7 @@
 - Bugfix: When uploading a PDF for an application as not-logged-in user, the PDF was not displayed correctly in the confirmation view.
 - Bugfix: Tags containing an ampersand (&) were double-encoded. This bugfix only affects newly created tags.
 - Bugfix: If comments were deleted by the user, this resulted in rather awkward entries in the activity log.
+- Bugfix: The styling of the links in the sidebar when editing motions or amendments was inconsistent.
 - Multi-Site mode: it is now possible to activate plugins on a per-subdomain basis.
 - Multi-Site mode: If no Reply-To is set in a consultation, the Admin's email address will be set as Reply-To for outgoing e-mails.
 
