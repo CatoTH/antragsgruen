@@ -1,6 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
+use app\components\Tools as DateTools;
+use app\models\db\Motion;
 use app\plugins\member_petitions\Tools;
 use yii\helpers\Html;
 
@@ -16,7 +18,15 @@ $showArchived = isset($_REQUEST['showArchived']);
 <div class="content motionListFilter" id="motionListSorter">
     <?php
 
-    $motions  = Tools::getAllMotions($myConsultations, $showArchived);
+    $motions  = Tools::getAllMotions($myConsultations);
+    $motions = array_values(array_filter($motions, function (Motion $motion) use ($showArchived) {
+        $isArchived = in_array($motion->status, [Motion::STATUS_PAUSED]);
+        if ($showArchived) {
+            return $isArchived;
+        } else {
+            return !$isArchived;
+        }
+    }));
     $tags     = Tools::getMostPopularTags($motions);
     $tagsTop3 = array_splice($tags, 0, 3);
     $allTags  = Tools::getMostPopularTags($motions);
@@ -110,45 +120,61 @@ $showArchived = isset($_REQUEST['showArchived']);
         </div>
     </div>
 
-    <label class="showArchivedRow">
-        <input type="checkbox" name="showArchived" <?= ($showArchived ? 'checked' : '') ?>>
-        Archivierte Begehren anzeigen
-    </label>
+    <div class="showArchivedRow">
+        <?php
+        $arrow = '<span class="glyphicon glyphicon-chevron-right"></span>';
+        if ($showArchived) {
+            $baselink = UrlHelper::createUrl(['consultation/index']) . '#motionListSorter';
+            echo Html::a($arrow . ' Aktuelle Begehren anzeigen', $baselink);
+        } else {
+            $baselink = UrlHelper::createUrl(['consultation/index', 'showArchived' => 1]) . '#motionListSorter';
+            echo Html::a($arrow . ' Archivierte Begehren anzeigen', $baselink);
+        }
+        ?>
+    </div>
 
     <?php
-    $comments = Tools::getNewestCommentsForConsultations($myConsultations, 4);
+    $comments = Tools::getNewestCommentsForConsultations($myConsultations, 10);
     ?>
-    <div class="mostRecentComments">
-        <h2 class="green">Neueste Kommentare</h2>
-        <div class="commentList">
-            <?php
-            foreach ($comments as $comment) {
-                $text  = $comment->getTextAbstract(150);
-                $title = $comment->getIMotion()->getTitleWithPrefix();
-                $more  = '<span class="glyphicon glyphicon-chevron-right"></span> weiter';
-                ?>
-                <div class="motionCommentHolder">
-                    <article class="motionComment">
-                        <div class="date"><?= \app\components\Tools::formatMysqlDate($comment->dateCreation) ?></div>
-                        <h3 class="commentHeader"><?= Html::encode($comment->name) ?></h3>
-                        <div class="commentText">
-                            <?= Html::encode($text) ?>
-                            <?= Html::a($more, $comment->getLink()) ?>
-                        </div>
-                        <footer class="motionLink">
-                            Zu: <?= Html::a(Html::encode($title), $comment->getLink()) ?>
-                        </footer>
-                    </article>
-                </div>
+    <div class="mostRecentComments <?= (count($comments) > 4 ? 'shortened' : '') ?>">
+        <h2 class="green">Aktuell diskutiert</h2>
+        <div class="commentListHolder">
+            <div class="commentList">
                 <?php
-            }
-            ?>
-        </div>
-        <div class="moreActivitiesLink">
-            <?php
-            $title = '<span class="glyphicon glyphicon-chevron-right"></span> Weitere aktuelle Aktivitäten';
-            echo Html::a($title, UrlHelper::createUrl('consultation/activitylog'));
-            ?>
+                foreach ($comments as $comment) {
+                    $text  = $comment->getTextAbstract(150);
+                    $title = $comment->getIMotion()->getTitleWithPrefix();
+                    $more  = '<span class="glyphicon glyphicon-chevron-right"></span> weiter';
+                    ?>
+                    <div class="motionCommentHolder">
+                        <article class="motionComment">
+                            <div class="date"><?= DateTools::formatMysqlDate($comment->dateCreation) ?></div>
+                            <h3 class="commentHeader"><?= Html::encode($comment->name) ?></h3>
+                            <div class="commentText">
+                                <?= Html::encode($text) ?>
+                                <?= Html::a($more, $comment->getLink()) ?>
+                            </div>
+                            <footer class="motionLink">
+                                Zu: <?= Html::a(Html::encode($title), $comment->getLink()) ?>
+                            </footer>
+                        </article>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <div class="moreActivitiesLink">
+                <?php
+                $title = '<span class="glyphicon glyphicon-chevron-right"></span> Weitere aktuelle Aktivitäten';
+                echo Html::a($title, UrlHelper::createUrl('consultation/activitylog'));
+                ?>
+            </div>
+            <div class="showAllComments">
+                <button class="btn btn-link">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    Weitere anzeigen
+                </button>
+            </div>
         </div>
     </div>
 

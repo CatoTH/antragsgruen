@@ -110,12 +110,7 @@ $(function () {
         '/npm/isotope.pkgd.min.js'
     ], onInitIsotope);
 
-    $(".showArchivedRow").change(function() {
-        var url = window.location.href.split("?")[0];
-        if ($(".showArchivedRow input").prop("checked")) {
-            url += "?showArchived=1";
-        }
-        url += "#motionListSorter";
-        window.location.href = url;
+    $(".commentListHolder .showAllComments button").click(function () {
+        $(".mostRecentComments").removeClass("shortened");
     });
 });

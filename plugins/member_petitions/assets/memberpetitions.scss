@@ -33,7 +33,6 @@ $headingTertiaryBackground: rgb(27, 74, 251);
 }
 
 .showArchivedRow {
-  font-weight: normal;
   margin-bottom: 25px;
 }
 
@@ -49,6 +48,43 @@ $headingTertiaryBackground: rgb(27, 74, 251);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  .commentListHolder {
+    position: relative;
+
+  }
+  .showAllComments {
+    display: none;
+    text-align: center;
+    button {
+      font-weight: normal;
+    }
+  }
+  &.shortened {
+    .showAllComments {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 11;
+    }
+    .commentListHolder {
+      overflow: hidden;
+      max-height: 340px;
+
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        height: 70px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+        z-index: 10;
+      }
+    }
   }
 
   .motionCommentHolder {
@@ -66,7 +102,7 @@ $headingTertiaryBackground: rgb(27, 74, 251);
   }
 
   .motionComment {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-size: 0.9em;
 
 

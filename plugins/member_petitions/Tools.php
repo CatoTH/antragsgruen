@@ -86,10 +86,9 @@ class Tools
 
     /**
      * @param Consultation[] $consultations
-     * @param bool $includeArchived
      * @return Motion[]
      */
-    public static function getAllMotions($consultations, $includeArchived = false)
+    public static function getAllMotions($consultations)
     {
         $all = [];
         foreach ($consultations as $consultation) {
@@ -100,13 +99,6 @@ class Tools
             $all = array_merge($all, static::getMotionsCollecting($consultation));
             $all = array_merge($all, static::getDiscussionType($consultation)->getVisibleMotions(false));
             $all = array_merge($all, static::getMotionsAnswered($consultation));
-        }
-        if (!$includeArchived) {
-            $all = array_values(array_filter($all, function (Motion $motion) {
-                return !in_array($motion->status, [
-                    Motion::STATUS_PAUSED,
-                ]);
-            }));
         }
         return $all;
     }
