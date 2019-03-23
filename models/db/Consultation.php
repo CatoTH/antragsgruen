@@ -748,6 +748,21 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return string[]
+     */
+    public function getAdminEmails()
+    {
+        $mails        = preg_split('/[,;]/', $this->adminEmail);
+        $filtered     = [];
+        foreach ($mails as $mail) {
+            if (trim($mail) !== '') {
+                $filtered[] = trim($mail);
+            }
+        }
+        return $filtered;
+    }
+
+    /**
      */
     public function setDeleted()
     {

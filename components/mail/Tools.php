@@ -38,9 +38,9 @@ class Tools
             if ($consultation->getSettings()->emailReplyTo) {
                 $replyTo = $consultation->getSettings()->emailReplyTo;
             } elseif ($params->multisiteMode && $consultation->adminEmail) {
-                $email = trim(explode(',', $consultation->adminEmail)[0]);
-                if ($email) {
-                    $replyTo = $email;
+                $adminEmails = $consultation->getAdminEmails();
+                if (count($adminEmails) > 0) {
+                    $replyTo = $adminEmails[0];
                 }
             }
         }

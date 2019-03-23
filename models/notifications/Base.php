@@ -25,25 +25,23 @@ abstract class Base
     private function sendEmailAdmin()
     {
         $consultation = $this->consultation;
-        $mails        = explode(',', $consultation->adminEmail);
+        $mails        = $consultation->getAdminEmails();
 
         /** @var IEmailAdmin $maildata */
         $maildata = $this;
         foreach ($mails as $mail) {
-            if (trim($mail) !== '') {
-                try {
-                    Tools::sendWithLog(
-                        EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
-                        $consultation,
-                        trim($mail),
-                        null,
-                        $maildata->getEmailAdminSubject(),
-                        $maildata->getEmailAdminText()
-                    );
-                } catch (MailNotSent $e) {
-                    $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                    \yii::$app->session->setFlash('error', $errMsg);
-                }
+            try {
+                Tools::sendWithLog(
+                    EMailLog::TYPE_MOTION_NOTIFICATION_ADMIN,
+                    $consultation,
+                    trim($mail),
+                    null,
+                    $maildata->getEmailAdminSubject(),
+                    $maildata->getEmailAdminText()
+                );
+            } catch (MailNotSent $e) {
+                $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+                \yii::$app->session->setFlash('error', $errMsg);
             }
         }
     }
