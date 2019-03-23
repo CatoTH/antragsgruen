@@ -54,6 +54,7 @@ $headingTertiaryBackground: rgb(27, 74, 251);
   .motionCommentHolder {
     flex-basis: 50%;
     flex-grow: 0;
+    max-width: 50%;
 
     &:nth-child(even) .motionComment {
       margin-right: 0;

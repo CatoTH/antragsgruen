@@ -115,6 +115,7 @@ $(function () {
         if ($(".showArchivedRow input").prop("checked")) {
             url += "?showArchived=1";
         }
+        url += "#motionListSorter";
         window.location.href = url;
     });
 });

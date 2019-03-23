@@ -13,7 +13,7 @@ use yii\helpers\Html;
 $showArchived = isset($_REQUEST['showArchived']);
 
 ?>
-<div class="content motionListFilter">
+<div class="content motionListFilter" id="motionListSorter">
     <?php
 
     $motions  = Tools::getAllMotions($myConsultations, $showArchived);
