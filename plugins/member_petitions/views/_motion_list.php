@@ -139,6 +139,15 @@ foreach ($motions as $motion) {
         echo '<span class="timeOver">' . \Yii::t('member_petitions', 'status_paused') . '</span>';
     }
     echo '</p>';
+    $abstract = null;
+    foreach ($motion->getSortedSections(true) as $section) {
+        if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+            $abstract = $section->data;
+        }
+    }
+    if ($abstract) {
+        echo '<blockquote class="abstract">' . Html::encode($abstract) . '</blockquote>';
+    }
     echo '</li>';
 }
 echo '</ul>';

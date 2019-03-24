@@ -207,4 +207,16 @@ $headingTertiaryBackground: rgb(27, 74, 251);
 
 .motionListStd, .motionListPetitions {
   margin: 0;
+
+  .sortitem.motion {
+    margin-bottom: 20px;
+  }
+  .info {
+    margin: 0;
+  }
+  
+  .abstract {
+    margin-left: 0;
+    color: gray;
+  }
 }
