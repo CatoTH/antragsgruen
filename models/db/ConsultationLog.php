@@ -459,8 +459,8 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::AMENDMENT_COMMENT:
                 if ($this->amendmentComment) {
-                    $abstract = $this->motionComment->getTextAbstract(190);
-                    $str      = $this->formatLogEntryUser('###USER###', $this->motionComment->name) . ': ';
+                    $abstract = $this->amendmentComment->getTextAbstract(190);
+                    $str      = $this->formatLogEntryUser('###USER###', $this->amendmentComment->name) . ': ';
                     $str      .= '<span class="quote">' . Html::encode($abstract) . '</span>';
                     return '<blockquote>' . $str . '</blockquote>';
                 } else {
