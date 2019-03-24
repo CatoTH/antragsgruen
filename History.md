@@ -3,6 +3,7 @@
 ### Version 4.2.2 [not released yet]
 
 - The activity log was slightly improved: comments are teasered and the pagination doesn't grow endlessly.
+- If multiple motion sections of the type "Title" were defined, the second, third etc. ones will now be treated as regular sections and therefore be displayed.
 
 ### Version 4.2.1 (2019-03-23)
 

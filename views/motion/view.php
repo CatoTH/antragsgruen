@@ -139,7 +139,8 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    if ($sectionType === ISectionType::TYPE_TITLE && count($section->getAmendingSections(false, true)) === 0) {
+    if ($motion->getTitleSection() && $motion->getTitleSection()->sectionId === $section->sectionId &&
+        count($section->getAmendingSections(false, true)) === 0) {
         continue;
     }
     if ($section->isLayoutRight()) {

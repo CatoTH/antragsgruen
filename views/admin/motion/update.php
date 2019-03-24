@@ -283,7 +283,7 @@ if (!$motion->textFixed) {
     }
 
     foreach ($form->sections as $section) {
-        if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+        if ($motion->getTitleSection() && $section->sectionId === $motion->getTitleSection()->sectionId) {
             continue;
         }
         echo $section->getSectionType()->getMotionFormField();
