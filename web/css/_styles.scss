@@ -777,6 +777,11 @@ ul.searchResults {
     float: right;
     color: gray;
   }
+  .motion {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .description {
     margin-top: 10px;
   }
@@ -784,6 +789,18 @@ ul.searchResults {
     color: gray;
     //font-weight: normal;
     font-style: italic;
+  }
+  .quote {
+    color: gray;
+
+    &:before {
+      content: '„';
+      display: inline;
+    }
+    &:after {
+      content: '“';
+      display: inline;
+    }
   }
 }
 

@@ -422,8 +422,10 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::MOTION_COMMENT:
                 if ($this->motionComment) {
-                    $str = \Yii::t('structure', 'activity_MOTION_COMMENT');
-                    return $this->formatLogEntryUser($str, $this->motionComment->name);
+                    $abstract = $this->motionComment->getTextAbstract(190);
+                    $str      = $this->formatLogEntryUser('###USER###', $this->motionComment->name) . ': ';
+                    $str      .= '<span class="quote">' . Html::encode($abstract) . '</span>';
+                    return '<blockquote>' . $str . '</blockquote>';
                 } else {
                     return null;
                 }
@@ -457,9 +459,10 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::AMENDMENT_COMMENT:
                 if ($this->amendmentComment) {
-                    $str = \Yii::t('structure', 'activity_AMENDMENT_COMMENT');
-                    $str = $this->formatLogEntryAmendment($str);
-                    return $this->formatLogEntryUser($str, $this->amendmentComment->name);
+                    $abstract = $this->motionComment->getTextAbstract(190);
+                    $str      = $this->formatLogEntryUser('###USER###', $this->motionComment->name) . ': ';
+                    $str      .= '<span class="quote">' . Html::encode($abstract) . '</span>';
+                    return '<blockquote>' . $str . '</blockquote>';
                 } else {
                     return null;
                 }

@@ -90,13 +90,26 @@ class ConsultationActivityFilterForm extends Model
             $str .= '<li class="disabled"><a href="' . $url . '" aria-label="Previous">' . $prev . '</a></li>';
         }
 
-        for ($i = 0; $i < $maxPage; $i++) {
-            $url = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $i]));
-            if ($this->page == $i) {
-                $str .= '<li class="active"><a href="' . $url . '">' . ($i + 1) . '</a></li>';
-            } else {
-                $str .= '<li><a href="' . $url . '">' . ($i + 1) . '</a></li>';
-            }
+        $first = max($this->page - 5, 0);
+        $last  = min($this->page + 5, $maxPage);
+        if ($first > 0) {
+            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => 0]));
+            $str .= '<li><a href="' . $link . '">1</a></li>';
+        }
+        if ($first > 1) {
+            $str .= '<li><a class="disabled">...</a></li>';
+        }
+        for ($i = $first; $i <= $last; $i++) {
+            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $i]));
+            $str .= '<li class="' . ($i === $this->page ? ' active' : '') . '">';
+            $str .= '<a href="' . $link . '">' . ($i + 1) . '</a></li>';
+        }
+        if ($last < ($maxPage - 1)) {
+            $str .= '<li><a class="disabled">...</a></li>';
+        }
+        if ($last < $maxPage) {
+            $link = Html::encode(UrlHelper::createUrl([$urlBase, 'page' => $maxPage]));
+            $str .= '<li><a href="' . $link . '">' . ($maxPage + 1) . '</a></li>';
         }
 
         $next = '<span aria-hidden="true">&raquo;</span>';

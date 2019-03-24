@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.2.2 [not released yet]
+
+- The activity log was slightly improved: comments are teasered and the pagination doesn't grow endlessly.
+
 ### Version 4.2.1 (2019-03-23)
 
 - Bugfix: logos whose filename had special characters were not displayed in the generated PDF.
