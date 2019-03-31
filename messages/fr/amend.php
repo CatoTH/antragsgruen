@@ -152,7 +152,6 @@ return [
     'merge1_changein_x'        => 'Modifier de la ligne %LINEFROM% à la ligne %LINETO%',
     'merge1_changein_1'        => 'Modifier à la ligne %LINEFROM%',
     'merge1_use_unchanged'     => 'Adopter comme tel',
-    'merge1_use_modified'      => 'Adoption avec modification',
     'merge1_modify_title'      => 'Modifier l\'amendement',
     'merge1_check_collisions'  => 'Suivant / vérifier les collisions',
     'merge1_other_status'      => 'Nouveaux statuts des autres amendements',

@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentRewriter;
-use app\components\diff\DiffRenderer;
+use app\components\diff\SingleAmendmentMergeViewParagraphData;
 use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
@@ -115,6 +116,7 @@ trait AmendmentMergingTrait
      * @throws Internal
      * @throws NotFound
      * @throws \yii\base\ExitException
+     * @throws \app\models\exceptions\DB
      */
     public function actionMerge($motionSlug, $amendmentId)
     {
@@ -199,29 +201,7 @@ trait AmendmentMergingTrait
             }
         }
 
-        $paragraphSections = [];
-        $diffRenderer      = new DiffRenderer();
-        $diffRenderer->setFormatting(DiffRenderer::FORMATTING_CLASSES);
-
-        foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
-            $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
-            $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
-            $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);
-
-            $paraLineNumbers = $section->getParagraphLineNumberHelper();
-            $paragraphs      = [];
-            foreach (array_keys($paragraphsDiff) as $paraNo) {
-                $paragraphs[$paraNo] = [
-                    'lineFrom' => $paraLineNumbers[$paraNo],
-                    'lineTo'   => $paraLineNumbers[$paraNo + 1] - 1,
-                    'plain'    => $paragraphsPlain[$paraNo],
-                    'diff'     => $diffRenderer->renderHtmlWithPlaceholders($paragraphsDiff[$paraNo]),
-                ];
-            }
-
-            $paragraphSections[$section->sectionId] = $paragraphs;
-        }
+        $paragraphSections = SingleAmendmentMergeViewParagraphData::createFromAmendment($amendment);
 
         if ($collisionHandling) {
             return $this->render('merge_with_collisions', [

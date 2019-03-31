@@ -1,4 +1,5 @@
 <?php
+use app\components\Diff\SingleAmendmentMergeViewParagraphData;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
@@ -7,7 +8,7 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var Amendment $amendment
  * @var \app\models\db\Consultation $consultation
- * @var array[][] $paragraphSections
+ * @var SingleAmendmentMergeViewParagraphData[][] $paragraphSections
  */
 
 /** @var \app\controllers\Base $controller */
@@ -44,9 +45,9 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
 
 ?>
     <div class="content">
-        <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_intro_user') ?></div>
+        <div class="alert alert-info"><?= Yii::t('amend', 'merge1_intro_user') ?></div>
         <div class="form-group">
-            <label for="motionTitlePrefix"><?= \Yii::t('amend', 'merge1_motion_prefix') ?></label>
+            <label for="motionTitlePrefix"><?= Yii::t('amend', 'merge1_motion_prefix') ?></label>
             <input type="text" class="form-control" id="motionTitlePrefix" name="motionTitlePrefix"
                    value="<?= Html::encode($amendment->getMyMotion()->getNewTitlePrefix()) ?>">
         </div>
@@ -63,14 +64,14 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
                              data-section-id="<?= $sectionId ?>" data-paragraph-no="<?= $paragraphNo ?>">
                         <h2 class="green">
                             <?php
-                            if ($parDat['lineFrom'] == $parDat['lineTo']) {
-                                $tpl = \Yii::t('amend', 'merge1_changein_1');
+                            if ($parDat->lineFrom == $parDat->lineTo) {
+                                $tpl = Yii::t('amend', 'merge1_changein_1');
                             } else {
-                                $tpl = \Yii::t('amend', 'merge1_changein_x');
+                                $tpl = Yii::t('amend', 'merge1_changein_x');
                             }
                             echo str_replace(
                                 ['%LINEFROM%', '%LINETO%'],
-                                [$parDat['lineFrom'], $parDat['lineTo']],
+                                [$parDat->lineFrom, $parDat->lineTo],
                                 $tpl
                             );
                             ?>:
@@ -78,7 +79,7 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
                         <div class="content">
                             <div class="unmodifiedVersion motionTextHolder">
                                 <div class="paragraph">
-                                    <div class="text motionTextFormattings <?= $fixedClass ?>"><?= $parDat['diff'] ?></div>
+                                    <div class="text motionTextFormattings <?= $fixedClass ?>"><?= $parDat->diff ?></div>
                                 </div>
                             </div>
                         </div>
@@ -90,7 +91,7 @@ echo Html::beginForm('', 'post', ['id' => 'amendmentMergeForm', 'class' => 'fuel
         </fieldset>
 
         <div class="saveholder content">
-            <button type="submit" name="save" class="btn btn-primary save"><?= \Yii::t('admin', 'save') ?></button>
+            <button type="submit" name="save" class="btn btn-primary save"><?= Yii::t('admin', 'save') ?></button>
         </div>
     </div>
 <?php

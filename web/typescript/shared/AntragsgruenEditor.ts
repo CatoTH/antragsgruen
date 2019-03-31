@@ -121,7 +121,6 @@ export class AntragsgruenEditor {
                 'span(underline' + strikeClass + ',subscript,superscript);' +
                 'a[href];';
         }
-        console.log(allowedContent);
 
         if (trackChanged) {
             ckeditorConfig.extraPlugins += ',lite';

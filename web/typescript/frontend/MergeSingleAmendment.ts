@@ -58,16 +58,28 @@ class MergeSingleAmendment {
     private initAffectedParagraph(el) {
         let $paragraph = $(el);
 
-        $paragraph.find(".modifySelector input").change(function () {
-            if ($paragraph.find(".modifySelector input:checked").val() == "1") {
-                $paragraph.addClass("modified").removeClass("unmodified");
+        $paragraph.find(".versionSelector input").change(() => {
+            if ($paragraph.find(".versionSelector input:checked").val() == "modified") {
+                $paragraph.removeClass("originalVersion").addClass("modifiedVersion");
             } else {
-                $paragraph.removeClass("modified").addClass("unmodified");
+                $paragraph.addClass("originalVersion").removeClass("modifiedVersion");
+            }
+        }).trigger("change");
+        $paragraph.find(".modifySelector input").change(() => {
+            if ($paragraph.find(".modifySelector input").prop("checked")) {
+                $paragraph.addClass("changed").removeClass("unchanged");
+            } else {
+                $paragraph.removeClass("changed").addClass("unchanged");
             }
         }).trigger("change");
 
         let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no");
-        this.editors[key] = new AntragsgruenEditor($paragraph.find(".affectedBlock > .texteditor").attr("id"));
+        if ($paragraph.find(".originalVersion.modifyText").length > 0) {
+            this.editors[key + '_original'] = new AntragsgruenEditor($paragraph.find(".originalVersion.modifyText > .texteditor").attr("id"));
+        }
+        if ($paragraph.find(".modifiedVersion.modifyText").length > 0) {
+            this.editors[key + '_modified'] = new AntragsgruenEditor($paragraph.find(".modifiedVersion.modifyText > .texteditor").attr("id"));
+        }
     }
 
     private loadCollisions() {
@@ -79,13 +91,15 @@ class MergeSingleAmendment {
 
         this.$affectedParagraphs.each((i, el) => {
             let $el = $(el),
-                modified = $el.find(".modifySelector input:checked").val(),
+                version = $el.find(".versionSelector input:checked").val(),
+                changed = $el.find(".modifySelector input").prop("checked"),
                 sectionId = $el.data("section-id"),
                 paragraphNo = $el.data("paragraph-no"),
                 text;
 
-            if (modified) {
-                let editor: editor = this.editors[sectionId + "_" + paragraphNo].getEditor(),
+            if (changed) {
+                const srcId = sectionId + "_" + paragraphNo + (version === 'modified' ? '_modified' : '_original');
+                let editor: editor = this.editors[srcId].getEditor(),
                     dataOrig = editor.getData();
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
@@ -95,7 +109,11 @@ class MergeSingleAmendment {
                     text = editor.getData();
                 }
             } else {
-                text = $el.data("unchanged-amendment");
+                if (version === 'modified') {
+                    text = $el.data("modified-amendment");
+                } else {
+                    text = $el.data("unchanged-amendment");
+                }
             }
 
             if (sections[$el.data("section-id")] === undefined) {
@@ -132,17 +150,23 @@ class MergeSingleAmendment {
     private onSubmit() {
         this.$affectedParagraphs.each((i, el) => {
             let $paragraph = $(el),
+                version = $paragraph.find(".versionSelector input:checked").val(),
+                changed = $paragraph.find(".modifySelector input").prop("checked"),
                 $input = $paragraph.find(".modifiedText");
 
-            if ($paragraph.find(".modifySelector input:checked").val() == "1") {
-                let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no"),
+            if (changed) {
+                let key = $paragraph.data("section-id") + "_" + $paragraph.data("paragraph-no") + (version === 'modified' ? '_modified' : '_original'),
                     editor: editor = this.editors[key].getEditor();
                 if (typeof(editor.plugins.lite) != 'undefined') {
                     editor.plugins.lite.findPlugin(editor).acceptAll();
                 }
                 $input.val(editor.getData());
             } else {
-                $input.val($paragraph.data("unchanged-amendment"));
+                if (version === 'modified') {
+                    $input.val($paragraph.data("modified-amendment"));
+                } else {
+                    $input.val($paragraph.data("unchanged-amendment"));
+                }
             }
         });
         for (let id in this.collisionEditors) {

@@ -667,29 +667,43 @@ iframe.pdfViewer {
   }
 
   .affectedParagraphs {
-    .paragraph.unmodified .affectedBlock {
+    .paragraph.originalVersion .modifiedVersion {
       display: none;
     }
 
-    .paragraph.modified .unmodifiedVersion {
+    .paragraph.modifiedVersion .originalVersion {
+      display: none;
+    }
+    .paragraph.changed .motionTextHolder {
+      display: none;
+    }
+    .paragraph.unchanged .modifyText {
       display: none;
     }
   }
 
-  .affectedBlock {
+  .modifiedText {
+    display: none;
+  }
+
+  .modifyText {
     margin-top: 20px;
-
-    > textarea {
-      display: none;
-    }
   }
-
-  .modifySelector {
+  .selectorToolbar {
     margin-top: 15px;
-
+    display: flex;
+    flex-direction: row;
     label {
       margin-right: 20px;
       font-weight: normal;
+    }
+
+    .modifySelector {
+      text-align: right;
+      flex: 1;
+    }
+    .versionSelector {
+      flex: 1;
     }
   }
 

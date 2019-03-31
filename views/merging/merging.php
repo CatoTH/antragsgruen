@@ -62,7 +62,7 @@ foreach ($motion->getSortedSections(false) as $section) {
     if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
         if (!isset($newSections[$section->sectionId])) {
             $diffMerger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
-            if ($diffMerger->hasCollodingParagraphs()) {
+            if ($diffMerger->hasCollidingParagraphs()) {
                 $hasCollidingParagraphs = true;
             }
         }

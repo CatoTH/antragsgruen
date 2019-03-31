@@ -207,7 +207,7 @@ class AmendmentDiffMerger
      */
     private function moveInsertIntoOwnWord($paraNo, $amendingNo, $wordNo, $insert)
     {
-        $insertArr              = function ($arr, $pos, $insertedEl) {
+        $insertArr = function ($arr, $pos, $insertedEl) {
             return array_merge(array_slice($arr, 0, $pos + 1), [$insertedEl], array_slice($arr, $pos + 1));
         };
 
@@ -475,7 +475,7 @@ class AmendmentDiffMerger
     /**
      * @return boolean
      */
-    public function hasCollodingParagraphs()
+    public function hasCollidingParagraphs()
     {
         foreach ($this->paraData as $paragraph) {
             if (count($paragraph['collidingParagraphs']) > 0) {
