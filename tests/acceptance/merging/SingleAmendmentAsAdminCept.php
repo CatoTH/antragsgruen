@@ -46,8 +46,10 @@ $I->click('.mergeIntoMotion a');
 $I->wait(1);
 $I->click('.save-row .goto_2');
 $I->wait(1);
-$I->executeJS('$(".modifySelector input").eq(1).click();');
-$I->executeJS('CKEDITOR.instances.new_paragraphs_2_7.setData(CKEDITOR.instances.new_paragraphs_2_7.getData() + "<p>A modified adaption</p>");');
+$I->dontSeeElement('.versionSelector');
+$I->executeJS('$(".modifySelector input").click();');
+$I->wait(1);
+$I->executeJS('CKEDITOR.instances.new_paragraphs_original_2_7.setData(CKEDITOR.instances.new_paragraphs_original_2_7.getData() + "<p>A modified adaption</p>");');
 
 $I->click('.checkAmendmentCollisions');
 $I->wait(1);
