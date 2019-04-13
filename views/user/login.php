@@ -156,7 +156,7 @@ if ($params->isSamlActive()) {
 
     echo Html::endForm();
     echo '<div id="loginSamlHint">
-    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://netz.gruene.de/" umgeleitet,
+    <strong>Hinweis:</strong> Hier wirst du auf eine Seite unter "https://saml.gruene.de/" umgeleitet,
     die vom Bundesverband betrieben wird.<br>Dort musst du dein Benutzer*innenname/Passwort des Grünen Netzes
     (Wurzelwerk) eingeben. Dein Passwort bleibt dabei geheim und wird <i>nicht</i> an Antragsgrün übermittelt.
     <br><br>

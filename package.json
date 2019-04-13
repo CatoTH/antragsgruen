@@ -15,7 +15,7 @@
     "devDependencies": {
         "@types/bootbox": "^4.4.36",
         "@types/bootstrap": "^3.3.42",
-        "@types/ckeditor": "^4.9.7",
+        "@types/ckeditor": "^4.9.8",
         "@types/clipboard": "^1.5.36",
         "@types/eonasdan-bootstrap-datetimepicker": "4.17.22",
         "@types/jquery": "^2.0.53",
@@ -33,15 +33,15 @@
         "gulp-sass": "^4.0.2",
         "gulp-sourcemaps": "^2.6.5",
         "gulp-typescript": "^4.0.2",
-        "gulp-uglify": "^3.0.1",
+        "gulp-uglify": "^3.0.2",
         "intl": "^1.2.5",
-        "jquery": "^3.3.1",
+        "jquery": "^3.4.0",
         "pa11y": "^5.1.0",
         "pdfjs-dist": "^1.10.100",
         "requirejs": "^2.3.6",
-        "sortablejs": "^1.8.3",
+        "sortablejs": "^1.8.4",
         "typeahead.js": "^0.11.1",
-        "typescript": "^3.3.3333"
+        "typescript": "^3.4.3"
     },
     "directories": {
         "bin": "./bin/"
