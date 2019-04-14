@@ -10,13 +10,19 @@ class Site implements \JsonSerializable
     public $siteLayout = 'layout-classic';
 
     /** @var bool */
-    public $showAntragsgruenAd = true;
+    public $showAntragsgruenAd  = true;
+    public $forceLogin          = false;
+    public $managedUserAccounts = false;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];
 
     /** @var array */
     public $stylesheetSettings = [];
+
+    /** @var null|string */
+    public $emailReplyTo  = null;
+    public $emailFromName = null;
 
     const LOGIN_STD        = 0;
     const LOGIN_WURZELWERK = 1;
