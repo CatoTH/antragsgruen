@@ -28,6 +28,15 @@ If you don't have shell access to the server, installing major new versions (e.g
 
 Here is a list of SQL statements necessary to upgrade, starting with the upgrade from 3.6 to 3.7:
 
+#### Upgrading from 3.8 to 4.0
+
+```sql
+ALTER TABLE `consultationText` ADD `menuPosition` INT DEFAULT NULL AFTER `textId`;
+```
+
+Disable the `addColumn` line in [m180609_095225_consultation_text_in_menu](../migrations/m180609_095225_consultation_text_in_menu.php#L15) or mark the migration as done with `./yii migrate/mark m180609_095225_consultation_text_in_menu`.
+
+
 #### Upgrading from 3.7 to 3.8
 
 ```sql
