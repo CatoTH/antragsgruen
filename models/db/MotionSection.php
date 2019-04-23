@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\diff\AmendmentDiffMerger;
+use app\components\diff\amendmentMerger\SectionMerger;
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
@@ -328,17 +328,17 @@ class MotionSection extends IMotionSection
         throw new Internal('Did not find myself: Motion ' . $this->motionId . ' / Section ' . $this->sectionId);
     }
 
-    /** @var null|AmendmentDiffMerger */
-    private $amendmentDiffMerger = null;
+    /** @var null|SectionMerger */
+    private $merger = null;
 
     /**
      * @param int[] $toMergeAmendmentIds
      *
-     * @return AmendmentDiffMerger
+     * @return SectionMerger
      */
     public function getAmendmentDiffMerger($toMergeAmendmentIds)
     {
-        if (is_null($this->amendmentDiffMerger)) {
+        if (is_null($this->merger)) {
             $sections = [];
             foreach ($this->getAmendingSections(true, false, true) as $section) {
                 if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
@@ -346,12 +346,11 @@ class MotionSection extends IMotionSection
                 }
             }
 
-            $merger = new AmendmentDiffMerger();
+            $merger = new SectionMerger();
             $merger->initByMotionSection($this);
             $merger->addAmendingSections($sections);
-            $merger->mergeParagraphs();
-            $this->amendmentDiffMerger = $merger;
+            $this->merger = $merger;
         }
-        return $this->amendmentDiffMerger;
+        return $this->merger;
     }
 }
