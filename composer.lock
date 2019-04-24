@@ -1509,19 +1509,20 @@
         },
         {
             "name": "yiisoft/yii2-authclient",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-authclient.git",
-                "reference": "ea00d08f9f18e4602152e9e902c488d9e54c119a"
+                "reference": "b87d1d07686a14a8fdd8b0f5547d40f51a17f04a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/ea00d08f9f18e4602152e9e902c488d9e54c119a",
-                "reference": "ea00d08f9f18e4602152e9e902c488d9e54c119a",
+                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/b87d1d07686a14a8fdd8b0f5547d40f51a17f04a",
+                "reference": "b87d1d07686a14a8fdd8b0f5547d40f51a17f04a",
                 "shasum": ""
             },
             "require": {
+                "yiisoft/yii2": "~2.0.13",
                 "yiisoft/yii2-httpclient": "~2.0.5"
             },
             "require-dev": {
@@ -1560,7 +1561,7 @@
                 "oauth",
                 "yii2"
             ],
-            "time": "2019-04-16T12:48:00+00:00"
+            "time": "2019-04-23T11:28:08+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -1618,16 +1619,16 @@
         },
         {
             "name": "yiisoft/yii2-httpclient",
-            "version": "2.0.8",
+            "version": "2.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-httpclient.git",
-                "reference": "4a41e008aa571bce690e4a992dedb61275d31a35"
+                "reference": "d788e6783c76ef043a5bff1f2b47d82cf44bbe8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-httpclient/zipball/4a41e008aa571bce690e4a992dedb61275d31a35",
-                "reference": "4a41e008aa571bce690e4a992dedb61275d31a35",
+                "url": "https://api.github.com/repos/yiisoft/yii2-httpclient/zipball/d788e6783c76ef043a5bff1f2b47d82cf44bbe8c",
+                "reference": "d788e6783c76ef043a5bff1f2b47d82cf44bbe8c",
                 "shasum": ""
             },
             "require": {
@@ -1664,7 +1665,7 @@
                 "httpclient",
                 "yii2"
             ],
-            "time": "2019-04-16T12:34:40+00:00"
+            "time": "2019-04-23T11:06:27+00:00"
         },
         {
             "name": "zendframework/zend-escaper",
