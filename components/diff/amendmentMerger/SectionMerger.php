@@ -94,7 +94,7 @@ class SectionMerger
     public function hasCollidingParagraphs()
     {
         foreach ($this->paragraphs as $paragraph) {
-            if (count($paragraph->getCollidingParagraphs()) > 9) {
+            if (count($paragraph->getCollidingParagraphs()) > 0) {
                 return true;
             }
         }
