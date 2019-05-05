@@ -26,7 +26,8 @@
         "bootstrap": "^3.4.1",
         "bootstrap-toggle": "*",
         "clipboard": "^2.0.4",
-        "fuelux": "^3.17.0",
+        "extend": "^3.0.2",
+        "fuelux": "^3.17.1",
         "gulp": "^4.0.1",
         "gulp-concat": "^2.6.1",
         "gulp-postcss": "^7.0.1",
@@ -35,14 +36,13 @@
         "gulp-typescript": "^4.0.2",
         "gulp-uglify": "^3.0.2",
         "intl": "^1.2.5",
-        "jquery": "^3.4.0",
+        "jquery": "^3.4.1",
         "pa11y": "^5.1.0",
         "pdfjs-dist": "^1.10.100",
         "requirejs": "^2.3.6",
         "sortablejs": "^1.9.0",
         "typeahead.js": "^0.11.1",
-        "typescript": "^3.4.4",
-        "extend": "^3.0.2"
+        "typescript": "^3.4.5"
     },
     "directories": {
         "bin": "./bin/"
