@@ -58,7 +58,7 @@ class MigrateHelper extends MigrateController
     public static function flushCache()
     {
         $conn = \Yii::$app->get('db', false);
-        if ($conn && ($conn instanceof \yii\db\Connection || $conn instanceof \app\components\DBConnection)) {
+        if ($conn && ($conn instanceof Connection || $conn instanceof \app\components\yii\DBConnection)) {
             $schema = $conn->getSchema();
             $schema->refresh();
         }
