@@ -66,6 +66,38 @@ if ($success) {
         </label>
     </div>
 
+<?php
+$conPwd = new \app\components\ConsultationAccessPassword($consultation);
+?>
+    <div class="checkbox conpw <?= ($conPwd->isPasswordSet() ? 'hasPassword' : 'noPassword') ?>">
+        <label class="setter">
+            <?= Html::checkbox('pwdProtected', $conPwd->isPasswordSet()) ?>
+            <?= Yii::t('admin', 'siteacc_con_pw') ?>
+            <button class="btn btn-xs btn-default setNewPassword" type="button">
+                <?= Yii::t('admin', 'siteacc_con_pw_set') ?>
+            </button>
+        </label>
+        <div class="setPasswordHolder">
+            <input type="password" name="consultationPassword" class="form-control"
+                   placeholder="<?= Yii::t('admin', 'siteacc_con_pw_place') ?>"
+                   title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
+            <?php if ($conPwd->isPasswordSet()) { ?>
+                <label class="otherConsultations">
+                    <input type="radio" name="otherConsultations" value="0"
+                        <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
+                    <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
+                </label>
+                <label class="otherConsultations">
+                    <input type="radio" name="otherConsultations" value="1"
+                        <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
+                    <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
+                </label>
+            <?php } else { ?>
+                <input type="hidden" name="otherConsultations" value="1">
+            <?php } ?>
+        </div>
+    </div>
+
 
     <fieldset class="loginMethods">
         <legend><?= Yii::t('admin', 'siteacc_logins') ?>:</legend>
@@ -104,40 +136,6 @@ if ($success) {
                 echo ' ' . Yii::t('admin', 'siteacc_otherlogins');
                 ?>
             </label>
-        </div>
-
-        <?php
-        $conPwd = new \app\components\ConsultationAccessPassword($consultation);
-        ?>
-        <div class="checkbox conpw <?= ($conPwd->isPasswordSet() ? 'hasPassword' : 'noPassword') ?>">
-            <label class="setter">
-                <?php
-                $method = SiteSettings::LOGIN_CON_PWD;
-                echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
-                echo ' ' . Yii::t('admin', 'siteacc_con_pw');
-                ?>
-                <button class="btn btn-xs btn-default setNewPassword" type="button">
-                    <?= Yii::t('admin', 'siteacc_con_pw_set') ?>
-                </button>
-            </label>
-            <div class="setPasswordHolder">
-                <input type="password" name="consultationPassword" class="form-control"
-                       title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
-                <?php if ($conPwd->isPasswordSet()) { ?>
-                    <label class="otherConsultations">
-                        <input type="radio" name="otherConsultations" value="0"
-                               <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
-                        <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
-                    </label>
-                    <label class="otherConsultations">
-                        <input type="radio" name="otherConsultations" value="1"
-                               <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
-                        <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
-                    </label>
-                <?php } else { ?>
-                    <input type="hidden" name="otherConsultations" value="1">
-                <?php } ?>
-            </div>
         </div>
     </fieldset>
 

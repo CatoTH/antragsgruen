@@ -392,8 +392,8 @@ trait SiteAccessTrait
             $conSettings->forceLogin          = isset($post['forceLogin']);
             $conSettings->managedUserAccounts = isset($post['managedUserAccounts']);
 
-            if (in_array(\app\models\settings\Site::LOGIN_CON_PWD, $settings->loginMethods)) {
-                if (isset($post['consultationPassword']) && trim($post['consultationPassword'])) {
+            if ($this->isPostSet('pwdProtected') && $this->isPostSet('consultationPassword')) {
+                if (trim($post['consultationPassword'])) {
                     $pwdTools               = new ConsultationAccessPassword($con);
                     $pwd                    = trim($post['consultationPassword']);
                     $conSettings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
@@ -401,6 +401,8 @@ trait SiteAccessTrait
                         $pwdTools->setPwdForOtherConsultations($pwd);
                     }
                 }
+            } else {
+                $conSettings->accessPwd = null;
             }
 
             $con->setSettings($conSettings);

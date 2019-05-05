@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\ConsultationAccessPassword;
 use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
@@ -54,20 +55,20 @@ class Base extends Controller
      */
     public function beforeAction($action)
     {
-        \yii::$app->response->headers->add('X-Xss-Protection', '1');
-        \yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
-        \yii::$app->response->headers->add('X-Frame-Options', 'sameorigin');
+        Yii::$app->response->headers->add('X-Xss-Protection', '1');
+        Yii::$app->response->headers->add('X-Content-Type-Options', 'nosniff');
+        Yii::$app->response->headers->add('X-Frame-Options', 'sameorigin');
 
         if (!parent::beforeAction($action)) {
             return false;
         }
 
-        $params = \Yii::$app->request->resolve();
+        $params = Yii::$app->request->resolve();
         /** @var AntragsgruenApp $appParams */
-        $appParams = \Yii::$app->params;
+        $appParams = Yii::$app->params;
 
         if ($appParams->updateKey) {
-            $this->showErrorpage(503, \Yii::t('base', 'err_update_mode'));
+            $this->showErrorpage(503, Yii::t('base', 'err_update_mode'));
         }
 
         $inManager   = (get_class($this) === ManagerController::class);
@@ -107,7 +108,7 @@ class Base extends Controller
             }
         } elseif (!($inInstaller || $inManager) && !$appParams->multisiteMode) {
             $this->layoutParams->setLayout(Layout::getDefaultLayout());
-            $this->showErrorpage(500, \Yii::t('base', 'err_no_site_internal'));
+            $this->showErrorpage(500, Yii::t('base', 'err_no_site_internal'));
         } else {
             $this->layoutParams->setLayout(Layout::getDefaultLayout());
         }
@@ -133,7 +134,7 @@ class Base extends Controller
             }
         }
 
-        if ($this->testMaintenanceMode() || $this->testSiteForcedLogin()) {
+        if ($this->testMaintenanceMode() || $this->testSiteForcedLogin() || $this->testConsultationPwd()) {
             return false;
         }
         return true;
@@ -148,7 +149,7 @@ class Base extends Controller
     public function redirect($url, $statusCode = 302)
     {
         $response = parent::redirect($url, $statusCode);
-        \Yii::$app->end();
+        Yii::$app->end();
         return $response;
     }
 
@@ -158,7 +159,7 @@ class Base extends Controller
      */
     protected function isPostSet($name)
     {
-        $post = \Yii::$app->request->post();
+        $post = Yii::$app->request->post();
         return isset($post[$name]);
     }
 
@@ -168,7 +169,7 @@ class Base extends Controller
      */
     protected function isGetSet($name)
     {
-        $get = \Yii::$app->request->get();
+        $get = Yii::$app->request->get();
         return isset($get[$name]);
     }
 
@@ -188,11 +189,11 @@ class Base extends Controller
      */
     public function getRequestValue($name, $default = null)
     {
-        $post = \Yii::$app->request->post();
+        $post = Yii::$app->request->post();
         if (isset($post[$name])) {
             return $post[$name];
         }
-        $get = \Yii::$app->request->get();
+        $get = Yii::$app->request->get();
         if (isset($get[$name])) {
             return $get[$name];
         }
@@ -242,7 +243,7 @@ class Base extends Controller
     public function getParams()
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        $app = Yii::$app->params;
         return $app;
     }
 
@@ -295,7 +296,7 @@ class Base extends Controller
         if (!$this->consultation->getSettings()->forceLogin) {
             return false;
         }
-        if (\Yii::$app->user->getIsGuest()) {
+        if (Yii::$app->user->getIsGuest()) {
             $this->redirect(UrlHelper::createUrl(['user/login', 'backUrl' => $_SERVER['REQUEST_URI']]));
             return true;
         }
@@ -312,13 +313,36 @@ class Base extends Controller
     }
 
     /**
+     * @return bool
+     */
+    public function testConsultationPwd()
+    {
+        if (!Yii::$app->user->getIsGuest()) {
+            return false;
+        }
+        if (!$this->consultation->getSettings()->accessPwd) {
+            return false;
+        }
+        $cookie     = Yii::$app->request->cookies->get('consultationPwd');
+        $pwdChecker = new ConsultationAccessPassword($this->consultation);
+        if (!$pwdChecker->checkCookie($cookie)) {
+            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
+            $this->redirect($loginUrl);
+            Yii::$app->end();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      */
     public function forceLogin()
     {
-        if (\Yii::$app->user->getIsGuest()) {
-            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+        if (Yii::$app->user->getIsGuest()) {
+            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
             $this->redirect($loginUrl);
-            \yii::$app->end();
+            Yii::$app->end();
         }
     }
 
@@ -327,7 +351,7 @@ class Base extends Controller
      */
     public function showErrors()
     {
-        $session = \Yii::$app->session;
+        $session = Yii::$app->session;
         if (!$session->isActive) {
             return '';
         }
@@ -399,7 +423,7 @@ class Base extends Controller
     protected function consultationNotFound()
     {
         $url     = Html::encode($this->getParams()->domainPlain);
-        $message = str_replace('%URL%', $url, \Yii::t('base', 'err_cons_404'));
+        $message = str_replace('%URL%', $url, Yii::t('base', 'err_cons_404'));
         $this->showErrorpage(404, $message);
     }
 
@@ -408,7 +432,7 @@ class Base extends Controller
      */
     protected function consultationError()
     {
-        $this->showErrorpage(500, \Yii::t('base', 'err_site_404'));
+        $this->showErrorpage(500, Yii::t('base', 'err_site_404'));
     }
 
     /**
@@ -422,17 +446,17 @@ class Base extends Controller
         $subdomain        = strtolower($this->site->subdomain);
 
         if (strtolower($this->consultation->site->subdomain) !== $subdomain) {
-            Yii::$app->user->setFlash("error", \Yii::t('base', 'err_cons_not_site'));
+            Yii::$app->user->setFlash("error", Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
-            Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+            Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
-            Yii::$app->session->setFlash('error', \Yii::t('base', 'err_amend_not_consult'));
+            Yii::$app->session->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
     }

@@ -117,7 +117,7 @@ class SiteAccess {
     }
 
     private initConPwd() {
-        const $widget = $(".loginMethods .conpw"),
+        const $widget = $(".conpw"),
             $checkbox = $widget.find('.setter input[type=checkbox]');
         $checkbox.change(() => {
             if ($checkbox.prop("checked")) {
