@@ -7,6 +7,7 @@ class SiteAccess {
         this.initAddUsers();
         this.initDelUser();
         this.initAdmins();
+        this.initConPwd();
     }
 
     private initSite() {
@@ -113,6 +114,24 @@ class SiteAccess {
             }
         });
         this.$adminForm.find('.adminCard .typeSite input').trigger('change');
+    }
+
+    private initConPwd() {
+        const $widget = $(".loginMethods .conpw"),
+            $checkbox = $widget.find('.setter input[type=checkbox]');
+        $checkbox.change(() => {
+            if ($checkbox.prop("checked")) {
+                $widget.addClass("checked");
+            } else {
+                $widget.removeClass("checked");
+            }
+        }).trigger("change");
+
+        $widget.find('.setNewPassword').click(ev => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            $widget.addClass('changePwd');
+        });
     }
 }
 

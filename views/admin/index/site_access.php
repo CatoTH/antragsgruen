@@ -17,32 +17,32 @@ use app\models\settings\Site as SiteSettings;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'siteacc_title');
+$this->title = Yii::t('admin', 'siteacc_title');
 $layout->addCSS('css/backend.css');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'siteacc_bread'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'siteacc_bread'));
 $layout->loadFuelux();
 $layout->addAMDModule('backend/SiteAccess');
 
 $settings    = $site->getSettings();
 $conSettings = $consultation->getSettings();
 
-echo '<h1>' . \Yii::t('admin', 'siteacc_title') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 
 if ($policyWarning) {
     echo '<div class="accountEditExplanation alert alert-info alert-dismissible" role="alert">
 <button type="button" class="close" data-dismiss="alert"
 aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
-        Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . \Yii::t('admin', 'siteacc_policywarning') .
+        Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . Yii::t('admin', 'siteacc_policywarning') .
         '<div class="saveholder"><button type="submit" name="policyRestrictToUsers" class="btn btn-primary">' .
-        \Yii::t('admin', 'siteacc_policy_login') . '</button></div>' .
+        Yii::t('admin', 'siteacc_policy_login') . '</button></div>' .
         Html::endForm() . '</div>';
 }
 
 
 echo Html::beginForm('', 'post', ['id' => 'siteSettingsForm', 'class' => 'content adminForm form-horizontal']);
 
-$success = \Yii::$app->session->getFlash('success_login', null, true);
+$success = Yii::$app->session->getFlash('success_login', null, true);
 if ($success) {
     echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
@@ -52,58 +52,99 @@ if ($success) {
 }
 
 ?>
-<div class="checkbox forceLogin">
-    <label>
-        <?= Html::checkbox('forceLogin', $conSettings->forceLogin) ?>
-        <?= \Yii::t('admin', 'siteacc_forcelogin') ?>
-    </label>
-</div>
+    <div class="checkbox forceLogin">
+        <label>
+            <?= Html::checkbox('forceLogin', $conSettings->forceLogin) ?>
+            <?= Yii::t('admin', 'siteacc_forcelogin') ?>
+        </label>
+    </div>
 
-<div class="checkbox managedUserAccounts">
-    <label>
-        <?= Html::checkbox('managedUserAccounts', $conSettings->managedUserAccounts) ?>
-        <?= \Yii::t('admin', 'siteacc_managedusers') ?>
-    </label>
-</div>
+    <div class="checkbox managedUserAccounts">
+        <label>
+            <?= Html::checkbox('managedUserAccounts', $conSettings->managedUserAccounts) ?>
+            <?= Yii::t('admin', 'siteacc_managedusers') ?>
+        </label>
+    </div>
 
 
-<fieldset class="loginMethods"><legend><?= \Yii::t('admin', 'siteacc_logins') ?>:</legend>
+    <fieldset class="loginMethods">
+        <legend><?= Yii::t('admin', 'siteacc_logins') ?>:</legend>
 
+        <div class="checkbox std">
+            <label>
+                <?php
+                $method = SiteSettings::LOGIN_STD;
+                if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
+                    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled' => 'disabled']);
+                } else {
+                    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
+                }
+                echo ' ' . Yii::t('admin', 'siteacc_useraccounts');
+                ?>
+            </label>
+        </div>
+        <?php
+        if ($controller->getParams()->isSamlActive()) {
+            $method = SiteSettings::LOGIN_WURZELWERK;
+            echo '<div class="checkbox wurzelwerk"><label>' .
+                Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .
+                ' ' . Yii::t('admin', 'siteacc_ww') .
+                '</label></div>';
+        }
+        ?>
+        <div class="checkbox external">
+            <label>
+                <?php
+                $method = SiteSettings::LOGIN_EXTERNAL;
+                if (User::getCurrentUser()->getAuthType() === SiteSettings::LOGIN_EXTERNAL) {
+                    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled']);
+                } else {
+                    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
+                }
+                echo ' ' . Yii::t('admin', 'siteacc_otherlogins');
+                ?>
+            </label>
+        </div>
+
+        <?php
+        $conPwd = new \app\components\ConsultationAccessPassword($consultation);
+        ?>
+        <div class="checkbox conpw <?= ($conPwd->isPasswordSet() ? 'hasPassword' : 'noPassword') ?>">
+            <label class="setter">
+                <?php
+                $method = SiteSettings::LOGIN_CON_PWD;
+                echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
+                echo ' ' . Yii::t('admin', 'siteacc_con_pw');
+                ?>
+                <button class="btn btn-xs btn-default setNewPassword" type="button">
+                    <?= Yii::t('admin', 'siteacc_con_pw_set') ?>
+                </button>
+            </label>
+            <div class="setPasswordHolder">
+                <input type="password" name="consultationPassword" class="form-control"
+                       title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
+                <?php if ($conPwd->isPasswordSet()) { ?>
+                    <label class="otherConsultations">
+                        <input type="radio" name="otherConsultations" value="0"
+                               <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
+                        <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
+                    </label>
+                    <label class="otherConsultations">
+                        <input type="radio" name="otherConsultations" value="1"
+                               <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
+                        <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
+                    </label>
+                <?php } else { ?>
+                    <input type="hidden" name="otherConsultations" value="1">
+                <?php } ?>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="saveholder">
+        <button type="submit" name="saveLogin" class="btn btn-primary"><?= Yii::t('base', 'save') ?></button>
+    </div>
 <?php
-$method = SiteSettings::LOGIN_STD;
-echo '<div class="checkbox std"><label>';
-if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_STD) {
-    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled' => 'disabled']);
-} else {
-    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
-}
-echo ' ' . \Yii::t('admin', 'siteacc_useraccounts') . '</label>
-</div>';
-
-if ($controller->getParams()->isSamlActive()) {
-    $method = SiteSettings::LOGIN_WURZELWERK;
-    echo '<div class="checkbox wurzelwerk">
-  <label>' . Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]) .
-        \Yii::t('admin', 'siteacc_ww') . '</label>
-</div>';
-}
-
-$method = SiteSettings::LOGIN_EXTERNAL;
-echo '<div class="checkbox external">
-  <label>';
-if (User::getCurrentUser()->getAuthType() == SiteSettings::LOGIN_EXTERNAL) {
-    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled']);
-} else {
-    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
-}
-echo ' ' . \Yii::t('admin', 'siteacc_otherlogins') . '</label>
-</div>';
-
-echo '</fieldset>';
-
-echo '<div class="saveholder">
-<button type="submit" name="saveLogin" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
-</div>';
 
 echo Html::endForm();
 

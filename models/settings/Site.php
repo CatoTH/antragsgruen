@@ -22,6 +22,7 @@ class Site implements \JsonSerializable
     const LOGIN_WURZELWERK = 1;
     const LOGIN_EXTERNAL   = 3;
     const LOGIN_SAML       = 4;
+    const LOGIN_CON_PWD    = 5;
 
     public static $SITE_MANAGER_LOGIN_METHODS = [0, 1, 3];
 

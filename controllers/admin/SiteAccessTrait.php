@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\components\ConsultationAccessPassword;
 use app\components\UrlHelper;
 use app\models\db\ConsultationUserPrivilege;
 use app\models\db\EMailLog;
@@ -356,8 +357,8 @@ trait SiteAccessTrait
     }
 
     /**
-     * @throws \Exception
      * @return string
+     * @throws \Exception
      */
     public function actionSiteaccess()
     {
@@ -374,14 +375,15 @@ trait SiteAccessTrait
         if ($this->isPostSet('saveLogin')) {
             $settings = $site->getSettings();
             if ($this->isPostSet('login')) {
-                $settings->loginMethods = $post['login'];
+                $settings->loginMethods = array_map('IntVal', $post['login']);
             } else {
                 $settings->loginMethods = [];
             }
-            if (User::getCurrentUser()->getAuthType() == \app\models\settings\Site::LOGIN_STD) {
+            // Prevent locking out myself
+            if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_STD) {
                 $settings->loginMethods[] = \app\models\settings\Site::LOGIN_STD;
             }
-            if (User::getCurrentUser()->getAuthType() == \app\models\settings\Site::LOGIN_EXTERNAL) {
+            if (User::getCurrentUser()->getAuthType() === \app\models\settings\Site::LOGIN_EXTERNAL) {
                 $settings->loginMethods[] = \app\models\settings\Site::LOGIN_EXTERNAL;
             }
             $site->setSettings($settings);
@@ -389,6 +391,18 @@ trait SiteAccessTrait
             $conSettings                      = $con->getSettings();
             $conSettings->forceLogin          = isset($post['forceLogin']);
             $conSettings->managedUserAccounts = isset($post['managedUserAccounts']);
+
+            if (in_array(\app\models\settings\Site::LOGIN_CON_PWD, $settings->loginMethods)) {
+                if (isset($post['consultationPassword']) && trim($post['consultationPassword'])) {
+                    $pwdTools               = new ConsultationAccessPassword($con);
+                    $pwd                    = trim($post['consultationPassword']);
+                    $conSettings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
+                    if ($post['otherConsultations'] === '1') {
+                        $pwdTools->setPwdForOtherConsultations($pwd);
+                    }
+                }
+            }
+
             $con->setSettings($conSettings);
 
 
