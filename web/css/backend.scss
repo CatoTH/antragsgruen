@@ -874,7 +874,7 @@ label.legend {
       }
     }
     @media screen and (min-width: 800px) {
-      .setPasswordHolder input {
+      .setPasswordHolder input[type=password] {
         width: 40%;
       }
     }

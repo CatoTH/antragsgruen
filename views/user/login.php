@@ -10,6 +10,7 @@ use app\models\settings\Site as SiteSettings;
  * @var LoginUsernamePasswordForm $usernamePasswordForm
  * @var string $backUrl
  * @var string|null $conPwdErr
+ * @var \app\models\db\Consultation $conPwdConsultation
  */
 
 /** @var \app\controllers\UserController $controller */
@@ -55,6 +56,12 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                     echo '</div>';
                 }
                 ?>
+                <div class="row content">
+                    <label><?= Yii::t('motion', 'consultation') ?>:</label>
+                    <div>
+                        <?= Html::encode($conPwdConsultation->title) ?>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label for="conpwd"><?= Yii::t('user', 'login_con_pwd') ?>:</label>

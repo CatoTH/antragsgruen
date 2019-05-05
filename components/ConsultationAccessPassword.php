@@ -129,6 +129,6 @@ class ConsultationAccessPassword
      */
     public function setCorrectCookie()
     {
-        setcookie('consultationPwd', $conPwd->createCookieHash(), time() + 365 * 24 * 3600);
+        setcookie('consultationPwd', $this->createCookieHash(), time() + 365 * 24 * 3600);
     }
 }

@@ -98,6 +98,15 @@ class UserController extends Base
 
         $usernamePasswordForm = new LoginUsernamePasswordForm();
 
+        $conPwdConsultation = $this->consultation;
+        if (Yii::$app->request->get('passConId')) {
+            foreach ($this->site->consultations as $consultation) {
+                if ($consultation->urlPath === Yii::$app->request->get('passConId')) {
+                    $conPwdConsultation = $consultation;
+                }
+            }
+        }
+
         if ($this->isPostSet('loginusernamepassword')) {
             $usernamePasswordForm->setAttributes(Yii::$app->request->post());
             try {
@@ -127,8 +136,8 @@ class UserController extends Base
         }
 
         $conPwdErr = null;
-        if ($this->isPostSet('loginconpwd') && $this->consultation) {
-            $conPwd = new ConsultationAccessPassword($this->consultation);
+        if ($this->isPostSet('loginconpwd') && $conPwdConsultation) {
+            $conPwd = new ConsultationAccessPassword($conPwdConsultation);
             if ($conPwd->checkPassword(Yii::$app->request->post('password'))) {
                 $conPwd->setCorrectCookie();
                 $this->redirect($backUrl);
@@ -149,6 +158,7 @@ class UserController extends Base
             [
                 'backUrl'              => $backUrl,
                 'usernamePasswordForm' => $usernamePasswordForm,
+                'conPwdConsultation'   => $conPwdConsultation,
                 'conPwdErr'            => $conPwdErr,
             ]
         );
