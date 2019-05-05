@@ -323,9 +323,8 @@ class Base extends Controller
         if (!$this->consultation->getSettings()->accessPwd) {
             return false;
         }
-        $cookie     = Yii::$app->request->cookies->get('consultationPwd');
         $pwdChecker = new ConsultationAccessPassword($this->consultation);
-        if (!$pwdChecker->checkCookie($cookie)) {
+        if (!$pwdChecker->isCookieLoggedIn()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
             $this->redirect($loginUrl);
             Yii::$app->end();

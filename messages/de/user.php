@@ -70,6 +70,8 @@ return [
     'acc_grant_email_userdata'  => "E-Mail / Benutzer*innenname: %EMAIL%\nPasswort: %PASSWORD%",
 
     'login_title'             => 'Login',
+    'login_con_pwd_title'     => 'Login mit Veranstaltungs-Passwort',
+    'login_con_pwd'           => 'Veranstaltungs-Passwort',
     'login_username_title'    => 'Login per Benutzer*innenname / Passwort',
     'login_create_account'    => 'Neuen Zugang anlegen',
     'login_username'          => 'E-Mail-Adresse / Benutzer*innenname',

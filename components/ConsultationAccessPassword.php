@@ -115,4 +115,20 @@ class ConsultationAccessPassword
             die("LibSodium: " . $e->getMessage());
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function isCookieLoggedIn()
+    {
+        $cookie = (isset($_COOKIE['consultationPwd']) ? $_COOKIE['consultationPwd'] : null);
+        return $this->checkCookie($cookie);
+    }
+
+    /**
+     */
+    public function setCorrectCookie()
+    {
+        setcookie('consultationPwd', $conPwd->createCookieHash(), time() + 365 * 24 * 3600);
+    }
 }
