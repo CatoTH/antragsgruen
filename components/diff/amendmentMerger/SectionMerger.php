@@ -89,6 +89,15 @@ class SectionMerger
     }
 
     /**
+     * @param int $paraNo
+     * @return int[]
+     */
+    public function getAffectingAmendmentIds($paraNo)
+    {
+        return $this->paragraphs[$paraNo]->getAffectingAmendmentIds();
+    }
+
+    /**
      * @return boolean
      */
     public function hasCollidingParagraphs()

@@ -148,49 +148,15 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
             foreach ($motion->getSortedSections(false) as $section) {
                 $type = $section->getSettings();
                 if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                    /** @var TextSimple $simpleSection */
-                    $simpleSection = $section->getSectionType();
-
-                    $nameBase = 'sections[' . $type->id . ']';
-                    $htmlId   = 'sections_' . $type->id;
-                    $holderId = 'section_holder_' . $type->id;
-
-                    echo '<div class="form-group wysiwyg-textarea" id="' . $holderId . '" data-fullHtml="0">';
-                    echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';
-
-                    echo '<textarea name="' . $nameBase . '[raw]" class="raw" id="' . $htmlId . '" ' .
-                        'title="' . Html::encode($type->title) . '"></textarea>';
-                    echo '<textarea name="' . $nameBase . '[consolidated]" class="consolidated" ' .
-                        'title="' . Html::encode($type->title) . '"></textarea>';
-                    echo '<div class="texteditor motionTextFormattings boxed ICE-Tracking';
-                    if ($section->getSettings()->fixedWidth) {
-                        echo ' fixedWidthFont';
-                    }
-                    echo '" data-allow-diff-formattings="1" ' .
-                        'id="' . $htmlId . '_wysiwyg" title="">';
-
                     if (isset($newSections[$section->sectionId])) {
+                        // @TODO
                         echo $newSections[$section->sectionId]->dataRaw;
                     } else {
                         echo $this->render('_merging_section', [
                             'toMergeAmendmentIds' => $toMergeAmendmentIds,
                             'section'             => $section,
                         ]);
-                        echo $simpleSection->getMotionTextWithInlineAmendments($toMergeAmendmentIds, $changesets);
                     }
-
-                    echo '</div>';
-
-                    if (count($toMergeAmendmentIds) > 0) {
-                        echo '<div class="mergeActionHolder">';
-                        echo '<button type="button" class="acceptAllChanges btn btn-small btn-default">' .
-                            Yii::t('amend', 'merge_accept_all') . '</button> ';
-                        echo '<button type="button" class="rejectAllChanges btn btn-small btn-default">' .
-                            Yii::t('amend', 'merge_reject_all') . '</button>';
-                        echo '</div>';
-                    }
-
-                    echo '</div>';
                 } else {
                     if (isset($newSections[$section->sectionId])) {
                         echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();

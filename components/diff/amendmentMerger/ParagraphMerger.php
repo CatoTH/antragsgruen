@@ -448,4 +448,14 @@ class ParagraphMerger
 
         return $grouped;
     }
+
+    /**
+     * @return int[]
+     */
+    public function getAffectingAmendmentIds()
+    {
+        return array_map(function (ParagraphDiff $diff) {
+            return $diff->amendment;
+        }, $this->diffs);
+    }
 }

@@ -9,6 +9,7 @@
 use app\models\db\MotionSection;
 
 $merger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
+$mergerAll = $section->getAmendmentDiffMerger(null);
 
 $amendmentsById = [];
 foreach ($section->getAmendingSections(true, false, true) as $sect) {
@@ -23,6 +24,7 @@ foreach (array_keys($paragraphs) as $paragraphNo) {
         'toMergeAmendmentIds' => $toMergeAmendmentIds,
         'amendmentsById'      => $amendmentsById,
         'merger'              => $merger,
+        'mergerAll'           => $mergerAll,
         'paragraphNo'         => $paragraphNo,
     ]);
 }

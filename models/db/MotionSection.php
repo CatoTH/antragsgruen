@@ -106,8 +106,8 @@ class MotionSection extends IMotionSection
      */
     public function getAmendingSections($includeProposals = false, $onlyWithChanges = false, $allStatuses = false)
     {
-        $sections         = [];
-        $motion           = $this->getConsultation()->getMotion($this->motionId);
+        $sections = [];
+        $motion   = $this->getConsultation()->getMotion($this->motionId);
         if ($allStatuses) {
             $excludedStatuses = $this->getConsultation()->getUnreadableStatuses();
         } else {
@@ -328,20 +328,26 @@ class MotionSection extends IMotionSection
         throw new Internal('Did not find myself: Motion ' . $this->motionId . ' / Section ' . $this->sectionId);
     }
 
-    /** @var null|SectionMerger */
-    private $merger = null;
+    /** @var null|SectionMerger[] */
+    private $mergers = [];
 
     /**
-     * @param int[] $toMergeAmendmentIds
+     * @param int[]|null $toMergeAmendmentIds
      *
      * @return SectionMerger
      */
     public function getAmendmentDiffMerger($toMergeAmendmentIds)
     {
-        if (is_null($this->merger)) {
+        if ($toMergeAmendmentIds === null) {
+            $key = '-';
+        } else {
+            sort($toMergeAmendmentIds);
+            $key = implode("-", $toMergeAmendmentIds);
+        }
+        if (!isset($this->mergers[$key])) {
             $sections = [];
             foreach ($this->getAmendingSections(true, false, true) as $section) {
-                if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
+                if ($toMergeAmendmentIds === null || in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }
             }
@@ -349,8 +355,8 @@ class MotionSection extends IMotionSection
             $merger = new SectionMerger();
             $merger->initByMotionSection($this);
             $merger->addAmendingSections($sections);
-            $this->merger = $merger;
+            $this->mergers[$key] = $merger;
         }
-        return $this->merger;
+        return $this->mergers[$key];
     }
 }
