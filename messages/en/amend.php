@@ -89,6 +89,7 @@ return [
     'merge_submitted_to_motion' => 'Go to the motion',
     'merge_colliding'           => 'Colliding amendment',
     'merge_title_changes'       => 'Title changes',
+    'merge_all'                 => 'All changes...',
     'merge_accept_all'          => 'Accept all changes',
     'merge_reject_all'          => 'Reject all changes',
 

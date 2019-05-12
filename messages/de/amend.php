@@ -111,6 +111,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_submitted_str'               => 'Der Antrag wurde überarbeitet',
     'merge_submitted_to_motion'         => 'Zum neuen Antrag',
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
+    'merge_all'                         => 'Alle Änderungen...',
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
     'merge_init_explanation'            => '<p>Hier kannst Du eine neue Version des Antrags erstellen, in dem einige oder alle beantragten Änderungen aufgegriffen werden.</p>

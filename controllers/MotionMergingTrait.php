@@ -74,6 +74,31 @@ trait MotionMergingTrait
 
     /**
      * @param string $motionSlug
+     * @param int $sectionId
+     * @param int $paragraphNo
+     * @param string $amendmentIds
+     * @return string
+     */
+    public function actionMergeAmendmentsParagraphAjax($motionSlug, $sectionId, $paragraphNo, $amendmentIds = '')
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+        }
+        $amendmentIds = array_map(function ($amendmentId) {
+            return IntVal($amendmentId);
+        }, array_filter(explode(",", $amendmentIds), function ($amendmentId) {
+            return $amendmentId !== '';
+        }));
+
+        return json_encode($amendmentIds);
+    }
+
+    /**
+     * @param string $motionSlug
      * @return string
      */
     public function actionMergeAmendmentsDraftPdf($motionSlug)

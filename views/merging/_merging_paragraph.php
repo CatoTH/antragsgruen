@@ -42,10 +42,18 @@ foreach ($groupedParaData as $part) {
     $paragraphText .= $text;
 }
 
-$type     = $section->getSettings();
-$nameBase = 'sections[' . $type->id . '][' . $paragraphNo . ']';
-$htmlId   = 'sections_' . $type->id . '_' . $paragraphNo;
-$holderId = 'section_holder_' . $type->id . '_' . $paragraphNo;
+$type      = $section->getSettings();
+$nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
+$htmlId    = 'sections_' . $type->id . '_' . $paragraphNo;
+$holderId  = 'section_holder_' . $type->id . '_' . $paragraphNo;
+$reloadUrl = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments-paragraph-ajax', [
+    'sectionId'    => $type->id,
+    'paragraphNo'  => $paragraphNo,
+    'amendmentIds' => 'DUMMY',
+]);
+
+echo '<section class="paragraphWrapper" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
+    'data-reload-url="' . Html::encode($reloadUrl) . '">';
 
 $allAmendingIds  = $mergerAll->getAffectingAmendmentIds($paragraphNo);
 $currAmendingIds = $merger->getAffectingAmendmentIds($paragraphNo);
@@ -58,7 +66,9 @@ if (count($allAmendingIds) > 0) {
             $active    = in_array($amendingId, $currAmendingIds);
             ?>
             <div class="btn-group">
-                <button type="button" class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs">
+                <button type="button" class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs toggleAmendment">
+                    <input name="<?= $nameBase ?>[<?= $amendingId ?>]" value="<?= ($active ? '1' : '0') ?>"
+                           type="hidden" class="amendmentActive" data-amendment-id="<?= $amendingId ?>">
                     <?= Html::encode($amendment->titlePrefix) ?>
                 </button>
                 <button class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs dropdown-toggle"
@@ -81,7 +91,7 @@ if (count($allAmendingIds) > 0) {
             <div class="btn-group">
                 <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                    Alle Änderungen...
+                    <?= Yii::t('amend', 'merge_all') ?>
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
@@ -95,22 +105,25 @@ if (count($allAmendingIds) > 0) {
     <?php
 }
 ?>
-<div class="form-group wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0">
-    <!--suppress HtmlFormInputWithoutLabel -->
-    <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
-              title="<?= Html::encode($type->title) ?>"></textarea>
-    <!--suppress HtmlFormInputWithoutLabel -->
-    <textarea name="<?= $nameBase ?>[consolidated]" class="consolidated"
-              title="<?= Html::encode($type->title) ?>"></textarea>
-    <div class="texteditor motionTextFormattings boxed ICE-Tracking<?php
-    if ($section->getSettings()->fixedWidth) {
-        echo ' fixedWidthFont';
-    }
-    ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
-        <div class="paragraphHolder<?= (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') ?>"
-             data-paragraph-no="<?= $paragraphNo ?>">
+    <div class="form-group wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0">
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
+                  title="<?= Html::encode($type->title) ?>"></textarea>
+        <!--suppress HtmlFormInputWithoutLabel -->
+        <textarea name="<?= $nameBase ?>[consolidated]" class="consolidated"
+                  title="<?= Html::encode($type->title) ?>"></textarea>
+        <div class="texteditor motionTextFormattings boxed ICE-Tracking<?php
+        if ($section->getSettings()->fixedWidth) {
+            echo ' fixedWidthFont';
+        }
+        ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
+            <div class="paragraphHolder<?= (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') ?>"
+                 data-paragraph-no="<?= $paragraphNo ?>">
+                <?= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById) ?>
+            </div>
+        </div>
+        <div class="collissionsHolder">
             <?php
-            echo DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
 
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
                 $amendment    = $amendmentsById[$amendmentId];
@@ -151,4 +164,6 @@ if (count($allAmendingIds) > 0) {
             ?>
         </div>
     </div>
-</div>
+
+<?php
+echo '</section>';

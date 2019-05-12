@@ -482,6 +482,52 @@ class MotionMergeAmendmentsTextarea {
     }
 }
 
+class MotionMergeAmendmentsParagraph {
+    private sectionId: number;
+    private paragraphId: number;
+
+    constructor(private $holder: JQuery) {
+        this.sectionId = parseInt($holder.data('sectionId'));
+        this.paragraphId = parseInt($holder.data('paragraphId'));
+
+        this.initButtons();
+    }
+
+    private hasChanged() {
+        return false; // @TODO
+    }
+
+    private initButtons() {
+        this.$holder.find('.toggleAmendment').click((ev) => {
+            if (this.hasChanged()) {
+                alert("TO DO");
+            } else {
+                const $input = $(ev.currentTarget).find(".amendmentActive");
+                if (parseInt($input.val()) === 1) {
+                    $input.val("0");
+                    $input.parents(".btn-group").find(".btn").addClass("btn-default").removeClass("btn-success");
+                } else {
+                    $input.val("1");
+                    $input.parents(".btn-group").find(".btn").removeClass("btn-default").addClass("btn-success");
+                }
+                this.reloadText();
+            }
+        });
+    }
+
+    private reloadText() {
+        const amendmentIds = [];
+        this.$holder.find(".amendmentActive[value='1']").each((i, el) => {
+            amendmentIds.push(parseInt($(el).data('amendment-id')));
+        });
+        console.log(this.$holder, this.$holder.data("reload-url"));
+        const url = this.$holder.data("reload-url").replace('DUMMY', amendmentIds.join(","));
+        $.get(url, (data) => {
+            console.log(data);
+        });
+    }
+}
+
 export class MotionMergeAmendments {
     public static activePopup: MotionMergeChangeTooltip | MotionMergeConflictTooltip = null;
     public static currMouseX: number = null;
@@ -491,11 +537,15 @@ export class MotionMergeAmendments {
 
     constructor(private $form: JQuery) {
         $(".wysiwyg-textarea").each((i, el) => {
-            let $el = $(el);
+            const $el = $(el);
             this.textareas[$el.attr("id")] = new MotionMergeAmendmentsTextarea($el, this);
             $el.on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
+        });
+
+        $(".paragraphWrapper").each((i, el) => {
+            new MotionMergeAmendmentsParagraph($(el));
         });
 
         this.$form.on("submit", () => {
