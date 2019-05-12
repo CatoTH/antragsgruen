@@ -247,7 +247,8 @@ class MotionMergeChangeTooltip {
             const $popovers = $(".popover");
             $popovers.popover("hide").popover("destroy");
             $popovers.remove();
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 }
 
@@ -348,15 +349,16 @@ class MotionMergeConflictTooltip {
             const $popovers = $(".popover");
             $popovers.popover("hide").popover("destroy");
             $popovers.remove();
-        } catch (e) {}
+        } catch (e) {
+        }
     }
 }
 
 class MotionMergeAmendmentsTextarea {
     private texteditor: editor;
 
-    private prepareText() {
-        let $text = $('<div>' + this.texteditor.getData() + '</div>');
+    private prepareText(html: string) {
+        let $text = $('<div>' + html + '</div>');
 
         // Move the amendment-Data from OL's and UL's to their list items
         $text.find("ul.appendHint, ol.appendHint").each((i, el) => {
@@ -465,6 +467,12 @@ class MotionMergeAmendmentsTextarea {
         return this.texteditor.getData();
     }
 
+    public setText(html: string)
+    {
+        this.prepareText(html);
+        this.initializeTooltips();
+    }
+
     constructor(private $holder: JQuery, private rootObject: MotionMergeAmendments) {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
@@ -474,8 +482,7 @@ class MotionMergeAmendmentsTextarea {
             $holder.find("textarea.consolidated").val(this.texteditor.getData());
         });
 
-        this.prepareText();
-        this.initializeTooltips();
+        this.setText(this.texteditor.getData());
 
         this.$holder.find(".acceptAllChanges").click(this.acceptAll.bind(this));
         this.$holder.find(".rejectAllChanges").click(this.rejectAll.bind(this));
@@ -486,7 +493,7 @@ class MotionMergeAmendmentsParagraph {
     private sectionId: number;
     private paragraphId: number;
 
-    constructor(private $holder: JQuery) {
+    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea) {
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
 
@@ -520,9 +527,16 @@ class MotionMergeAmendmentsParagraph {
         this.$holder.find(".amendmentActive[value='1']").each((i, el) => {
             amendmentIds.push(parseInt($(el).data('amendment-id')));
         });
-        console.log(this.$holder, this.$holder.data("reload-url"));
         const url = this.$holder.data("reload-url").replace('DUMMY', amendmentIds.join(","));
         $.get(url, (data) => {
+            this.textarea.setText(data.text);
+
+            let collissions = '';
+            data.collissions.forEach(str => {
+               collissions += str;
+            });
+
+            this.$holder.find(".collissionsHolder").html(collissions);
             console.log(data);
         });
     }
@@ -536,16 +550,15 @@ export class MotionMergeAmendments {
     private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
 
     constructor(private $form: JQuery) {
-        $(".wysiwyg-textarea").each((i, el) => {
-            const $el = $(el);
-            this.textareas[$el.attr("id")] = new MotionMergeAmendmentsTextarea($el, this);
-            $el.on("mousemove", (ev) => {
+        $(".paragraphWrapper").each((i, el) => {
+            const $para = $(el);
+            const $textarea = $para.find(".wysiwyg-textarea");
+            this.textareas[$textarea.attr("id")] = new MotionMergeAmendmentsTextarea($textarea, this);
+            $textarea.on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
-        });
 
-        $(".paragraphWrapper").each((i, el) => {
-            new MotionMergeAmendmentsParagraph($(el));
+            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")]);
         });
 
         this.$form.on("submit", () => {

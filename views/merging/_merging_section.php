@@ -11,6 +11,9 @@ use app\models\db\MotionSection;
 $merger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
 $mergerAll = $section->getAmendmentDiffMerger(null);
 
+echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
+echo '<div class="content">';
+
 $amendmentsById = [];
 foreach ($section->getAmendingSections(true, false, true) as $sect) {
     $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
@@ -28,3 +31,5 @@ foreach (array_keys($paragraphs) as $paragraphNo) {
         'paragraphNo'         => $paragraphNo,
     ]);
 }
+
+echo '</div>';

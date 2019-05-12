@@ -8,7 +8,6 @@
  * @var int $paragraphNo
  */
 
-use app\components\diff\DiffRenderer;
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\MotionSection;
@@ -18,29 +17,9 @@ use yii\helpers\Html;
 $CHANGESET_COUNTER = 0;
 $changeset         = [];
 
-$paragraphCollisions = $merger->getCollidingParagraphGroups($paragraphNo);
-
-$out             = '';
-$groupedParaData = $merger->getGroupedParagraphData($paragraphNo);
-$paragraphText   = '';
-foreach ($groupedParaData as $part) {
-    $text = $part['text'];
-
-    if ($part['amendment'] > 0) {
-        $amendment = $amendmentsById[$part['amendment']];
-        $cid       = $CHANGESET_COUNTER++;
-        if (!isset($changeset[$amendment->id])) {
-            $changeset[$amendment->id] = [];
-        }
-        $changeset[$amendment->id][] = $cid;
-
-        $mid  = $cid . '-' . $amendment->id;
-        $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
-        $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
-    }
-
-    $paragraphText .= $text;
-}
+$paragraphMerger     = $merger->getParagraphMerger($paragraphNo);
+$paragraphCollisions = $paragraphMerger->getCollidingParagraphGroups();
+$paragraphText       = $paragraphMerger->getFormattedDiffText($amendmentsById);
 
 $type      = $section->getSettings();
 $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
@@ -119,47 +98,14 @@ if (count($allAmendingIds) > 0) {
         ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
             <div class="paragraphHolder<?= (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') ?>"
                  data-paragraph-no="<?= $paragraphNo ?>">
-                <?= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById) ?>
+                <?= $paragraphText ?>
             </div>
         </div>
         <div class="collissionsHolder">
             <?php
-
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
                 $amendment    = $amendmentsById[$amendmentId];
-                $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
-                ?>
-                <div class="collidingParagraph" data-link="<?= Html::encode($amendmentUrl) ?>"
-                     data-username="<?= Html::encode($amendment->getInitiatorsStr()) ?>">
-                    <p class="collidingParagraphHead"><strong><?=
-                            Yii::t('amend', 'merge_colliding') . ': ' .
-                            Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) ?>
-                        </strong></p>
-                    <?php
-                    $paragraphText = '';
-
-                    foreach ($paraData as $part) {
-                        $text = $part['text'];
-
-                        if ($part['amendment'] > 0) {
-                            $amendment = $amendmentsById[$part['amendment']];
-                            $cid       = $CHANGESET_COUNTER++;
-                            if (!isset($changeset[$amendment->id])) {
-                                $changeset[$amendment->id] = [];
-                            }
-                            $changeset[$amendment->id][] = $cid;
-
-                            $mid  = $cid . '-' . $amendment->id;
-                            $text = str_replace('###INS_START###', '###INS_START' . $mid . '###', $text);
-                            $text = str_replace('###DEL_START###', '###DEL_START' . $mid . '###', $text);
-                        }
-
-                        $paragraphText .= $text;
-                    }
-
-                    echo DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
-                    ?></div>
-                <?php
+                echo $paragraphMerger->getFormattedCollission($paraData, $amendment, $amendmentsById);
             }
             ?>
         </div>

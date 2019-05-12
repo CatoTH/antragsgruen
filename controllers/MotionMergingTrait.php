@@ -94,7 +94,35 @@ trait MotionMergingTrait
             return $amendmentId !== '';
         }));
 
-        return json_encode($amendmentIds);
+        $section = null;
+        foreach ($motion->sections as $sec) {
+            if ($sec->sectionId === IntVal($sectionId)) {
+                $section = $sec;
+            }
+        }
+        if (!$section) {
+            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+        }
+
+        $amendmentsById = [];
+        foreach ($section->getAmendingSections(true, false, true) as $sect) {
+            $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
+        }
+
+        $merger        = $section->getAmendmentDiffMerger($amendmentIds)->getParagraphMerger(IntVal($paragraphNo));
+        $paragraphText = $merger->getFormattedDiffText($amendmentsById);
+        $collissions   = [];
+
+        $paragraphCollisions = $merger->getCollidingParagraphGroups();
+        foreach ($paragraphCollisions as $amendmentId => $paraData) {
+            $amendment = $amendmentsById[$amendmentId];
+            $collissions[] = $merger->getFormattedCollission($paraData, $amendment, $amendmentsById);
+        }
+
+        return json_encode([
+            'text'        => $paragraphText,
+            'collissions' => $collissions,
+        ]);
     }
 
     /**

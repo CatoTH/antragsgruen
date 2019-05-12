@@ -141,52 +141,50 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
 
     <section class="newMotion">
         <h2 class="green"><?= Yii::t('amend', 'merge_new_text') ?></h2>
-        <div class="content">
-            <?php
-            $changesets = [];
-
-            foreach ($motion->getSortedSections(false) as $section) {
-                $type = $section->getSettings();
-                if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                    if (isset($newSections[$section->sectionId])) {
-                        // @TODO
-                        echo $newSections[$section->sectionId]->dataRaw;
-                    } else {
-                        echo $this->render('_merging_section', [
-                            'toMergeAmendmentIds' => $toMergeAmendmentIds,
-                            'section'             => $section,
-                        ]);
-                    }
+        <?php
+        foreach ($motion->getSortedSections(false) as $section) {
+            $type = $section->getSettings();
+            if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                if (isset($newSections[$section->sectionId])) {
+                    // @TODO
+                    echo $newSections[$section->sectionId]->dataRaw;
                 } else {
-                    if (isset($newSections[$section->sectionId])) {
-                        echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
-                    } else {
-                        echo $section->getSectionType()->getMotionFormField();
-                    }
+                    echo $this->render('_merging_section', [
+                        'toMergeAmendmentIds' => $toMergeAmendmentIds,
+                        'section'             => $section,
+                    ]);
+                }
+            } else {
+                echo '<div class="content">';
+                if (isset($newSections[$section->sectionId])) {
+                    echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
+                } else {
+                    echo $section->getSectionType()->getMotionFormField();
+                }
 
-                    if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-                        $changes = $section->getAmendingSections(false, true, true);
-                        $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
-                            return in_array($section->amendmentId, $toMergeAmendmentIds);
-                        });
-                        /** @var \app\models\db\AmendmentSection[] $changes */
-                        if (count($changes) > 0) {
-                            echo '<div class="titleChanges">';
-                            echo '<div class="title">' . Yii::t('amend', 'merge_title_changes') . '</div>';
-                            foreach ($changes as $amendingSection) {
-                                $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
-                                echo '<div class="change">';
-                                echo '<div class="prefix">' . Html::encode($titlePrefix) . '</div>';
-                                echo '<div class="text">' . Html::encode($amendingSection->data) . '</div>';
-                                echo '</div>';
-                            }
+                if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+                    $changes = $section->getAmendingSections(false, true, true);
+                    $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
+                        return in_array($section->amendmentId, $toMergeAmendmentIds);
+                    });
+                    /** @var \app\models\db\AmendmentSection[] $changes */
+                    if (count($changes) > 0) {
+                        echo '<div class="titleChanges">';
+                        echo '<div class="title">' . Yii::t('amend', 'merge_title_changes') . '</div>';
+                        foreach ($changes as $amendingSection) {
+                            $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
+                            echo '<div class="change">';
+                            echo '<div class="prefix">' . Html::encode($titlePrefix) . '</div>';
+                            echo '<div class="text">' . Html::encode($amendingSection->data) . '</div>';
                             echo '</div>';
                         }
+                        echo '</div>';
                     }
                 }
+                echo '</div>';
             }
-            ?>
-        </div>
+        }
+        ?>
     </section>
 <?php
 

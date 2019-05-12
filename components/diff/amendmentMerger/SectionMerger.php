@@ -37,9 +37,9 @@ class SectionMerger
     {
         $this->paragraphStrings = $paras;
 
-        $this->paragraphs     = [];
+        $this->paragraphs = [];
         foreach ($paras as $paraNo => $paraStr) {
-            $this->paragraphs[$paraNo]     = new ParagraphMerger($paraStr);
+            $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr);
         }
     }
 
@@ -68,6 +68,15 @@ class SectionMerger
             $newParas = HTMLTools::sectionSimpleHTML($section->data);
             $this->addAmendingParagraphs($section->amendmentId, $newParas);
         }
+    }
+
+    /**
+     * @param int $paraNo
+     * @return ParagraphMerger
+     */
+    public function getParagraphMerger($paraNo)
+    {
+        return $this->paragraphs[$paraNo];
     }
 
     /**
