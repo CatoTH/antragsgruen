@@ -54,14 +54,14 @@ class ConsultationAccessPassword
     }
 
     /**
-     * @param string $pwd
+     * @param string $pwdHash
      */
-    public function setPwdForOtherConsultations($pwd)
+    public function setPwdForOtherConsultations($pwdHash)
     {
         foreach ($this->site->consultations as $otherCon) {
             if ($otherCon->id !== $this->consultation->id) {
                 $otherSett            = $otherCon->getSettings();
-                $otherSett->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
+                $otherSett->accessPwd = $pwdHash;
                 $otherCon->setSettings($otherSett);
                 $otherCon->save();
             }
@@ -90,6 +90,7 @@ class ConsultationAccessPassword
         if (!$cookie) {
             return false;
         }
+        $passwordHashes = explode(",", $cookie);
         /** @var AntragsgruenApp $app */
         $app      = \Yii::$app->params;
         $hashBase = $app->randomSeed . $this->consultation->getSettings()->accessPwd;
@@ -98,7 +99,7 @@ class ConsultationAccessPassword
         } catch (\SodiumException $e) {
             die("LibSodium: " . $e->getMessage());
         }
-        return $cookie === $correctHash;
+        return in_array($correctHash, $passwordHashes);
     }
 
     /**
@@ -129,6 +130,11 @@ class ConsultationAccessPassword
      */
     public function setCorrectCookie()
     {
-        setcookie('consultationPwd', $this->createCookieHash(), time() + 365 * 24 * 3600);
+        $cookie    = (isset($_COOKIE['consultationPwd']) ? explode(",", $_COOKIE['consultationPwd']) : []);
+        $cookie[]  = $this->createCookieHash();
+        $newCookie = implode(",", array_filter($cookie, function ($hash) {
+            return ($hash !== "");
+        }));
+        setcookie('consultationPwd', $newCookie, time() + 365 * 24 * 3600);
     }
 }

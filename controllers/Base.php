@@ -84,6 +84,9 @@ class Base extends Controller
             }
 
             $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            if ($consultation === '' && $this->isGetSet('passConId')) {
+                $consultation = Yii::$app->request->get('passConId');
+            }
             $this->loadConsultation($subdomain, $consultation);
             if ($this->site) {
                 $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
@@ -100,6 +103,9 @@ class Base extends Controller
             }
 
             $consultation = (isset($params[1]['consultationPath']) ? $params[1]['consultationPath'] : '');
+            if ($consultation === '' && $this->isGetSet('passConId')) {
+                $consultation = Yii::$app->request->get('passConId');
+            }
             $this->loadConsultation($subdomain, $consultation);
             if ($this->site) {
                 $this->layoutParams->setLayout($this->site->getSettings()->siteLayout);
@@ -238,11 +244,11 @@ class Base extends Controller
     }
 
     /**
-     * @return \app\models\settings\AntragsgruenApp
+     * @return AntragsgruenApp
      */
     public function getParams()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = Yii::$app->params;
         return $app;
     }

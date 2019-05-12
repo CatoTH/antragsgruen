@@ -398,7 +398,7 @@ trait SiteAccessTrait
                     $pwd                    = trim($post['consultationPassword']);
                     $conSettings->accessPwd = password_hash($pwd, PASSWORD_DEFAULT);
                     if ($post['otherConsultations'] === '1') {
-                        $pwdTools->setPwdForOtherConsultations($pwd);
+                        $pwdTools->setPwdForOtherConsultations($conSettings->accessPwd);
                     }
                 }
             } else {
