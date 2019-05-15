@@ -1509,16 +1509,16 @@
         },
         {
             "name": "yiisoft/yii2-authclient",
-            "version": "2.2.1",
+            "version": "2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-authclient.git",
-                "reference": "b87d1d07686a14a8fdd8b0f5547d40f51a17f04a"
+                "reference": "00ae89f4b82df6380b0113557d1e9b918c243337"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/b87d1d07686a14a8fdd8b0f5547d40f51a17f04a",
-                "reference": "b87d1d07686a14a8fdd8b0f5547d40f51a17f04a",
+                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/00ae89f4b82df6380b0113557d1e9b918c243337",
+                "reference": "00ae89f4b82df6380b0113557d1e9b918c243337",
                 "shasum": ""
             },
             "require": {
@@ -1561,7 +1561,7 @@
                 "oauth",
                 "yii2"
             ],
-            "time": "2019-04-23T11:28:08+00:00"
+            "time": "2019-05-14T19:51:04+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -1619,16 +1619,16 @@
         },
         {
             "name": "yiisoft/yii2-httpclient",
-            "version": "2.0.10",
+            "version": "2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-httpclient.git",
-                "reference": "d3d780d37bc8aa092e9ae555ed38645464587a07"
+                "reference": "cf532447447216bd8cb167689ac18f4e7dc1c1a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-httpclient/zipball/d3d780d37bc8aa092e9ae555ed38645464587a07",
-                "reference": "d3d780d37bc8aa092e9ae555ed38645464587a07",
+                "url": "https://api.github.com/repos/yiisoft/yii2-httpclient/zipball/cf532447447216bd8cb167689ac18f4e7dc1c1a7",
+                "reference": "cf532447447216bd8cb167689ac18f4e7dc1c1a7",
                 "shasum": ""
             },
             "require": {
@@ -1665,7 +1665,7 @@
                 "httpclient",
                 "yii2"
             ],
-            "time": "2019-04-30T14:57:35+00:00"
+            "time": "2019-05-14T13:33:37+00:00"
         },
         {
             "name": "zendframework/zend-escaper",
