@@ -269,6 +269,14 @@ trait MotionMergingTrait
                 $mergingDraft->save();
             }
 
+            // If the old motion was the only / forced motion of the consultation, set the new one as the forced one.
+            if ($this->consultation->getSettings()->forceMotion === $oldMotion->id) {
+                $settings = $this->consultation->getSettings();
+                $settings->forceMotion = $newMotion->id;
+                $this->consultation->setSettings($settings);
+                $this->consultation->save();
+            }
+
             $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
 
             return $this->render('@app/views/merging/done', [

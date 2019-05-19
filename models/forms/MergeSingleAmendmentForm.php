@@ -246,6 +246,14 @@ class MergeSingleAmendmentForm extends Model
         $this->oldMotion->status = Motion::STATUS_MODIFIED;
         $this->oldMotion->save();
 
+        $consultation = $this->oldMotion->getMyConsultation();
+        $conSettings = $consultation->getSettings();
+        if ($conSettings->forceMotion === $this->oldMotion->id) {
+            $conSettings->forceMotion = $this->newMotion->id;
+            $consultation->setSettings($conSettings);
+            $consultation->save();
+        }
+
         $this->newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($this->newMotion));
 
         return $this->newMotion;

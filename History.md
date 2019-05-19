@@ -6,6 +6,7 @@
 - If a single amendment is merged into the motion and there exists a modified adoption to it, one can now choose between those two versions. (Previously, only the original amendment was merged, the modified version was not offered)
 - The activity log was slightly improved: comments are teasered and the pagination doesn't grow endlessly.
 - If multiple motion sections of the type "Title" were defined, the second, third etc. ones will now be treated as regular sections and therefore be displayed.
+- If a consultation is configured as having only one motion and that motion is overhauled using the "merge amendments"-method, the new version will now be set as the new default motion for this consultation.
 
 ### Version 4.2.1 (2019-03-23)
 

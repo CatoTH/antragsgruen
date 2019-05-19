@@ -28,7 +28,7 @@ If you don't have shell access to the server, installing major new versions (e.g
 
 Here is a list of SQL statements necessary to upgrade, starting with the upgrade from 3.6 to 3.7:
 
-#### Upgrading from 3.8 to 4.0
+#### Upgrading from 3.8 to 4.0 (incomplete)
 
 ```sql
 ALTER TABLE `consultationText` ADD `menuPosition` INT DEFAULT NULL AFTER `textId`;
