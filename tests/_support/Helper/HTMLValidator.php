@@ -94,13 +94,18 @@ class HTMLValidator extends \Codeception\Module
 
         if ($this->hasModule('\Helper\AntragsgruenWebDriver')) {
             $webdriver = $this->getModule('\Helper\AntragsgruenWebDriver');
-            return $webdriver->webDriver->getPageSource();
+            $html = $webdriver->webDriver->getPageSource();
         } elseif ($this->hasModule('WebDriver')) {
             $webdriver = $this->getModule('WebDriver');
-            return $webdriver->webDriver->getPageSource();
+            $html = $webdriver->webDriver->getPageSource();
         } else {
             throw new \Exception('This validator needs WebDriver to work');
         }
+        if (strpos($html, '<!DOCTYPE html>') === false) {
+            // Seems to be stripped by getPageSource()
+            $html = '<!DOCTYPE html>' . $html;
+        }
+        return $html;
     }
 
     /**
