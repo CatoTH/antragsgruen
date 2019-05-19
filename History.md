@@ -2,6 +2,7 @@
 
 ### Version 4.2.2 [not released yet]
 
+- Feature: Consultations can be protected with a password. This password can be spread amongst eligible users. This serves as a quick&dirty alternative to dealing with user accounts.
 - If a single amendment is merged into the motion and there exists a modified adoption to it, one can now choose between those two versions. (Previously, only the original amendment was merged, the modified version was not offered)
 - The activity log was slightly improved: comments are teasered and the pagination doesn't grow endlessly.
 - If multiple motion sections of the type "Title" were defined, the second, third etc. ones will now be treated as regular sections and therefore be displayed.

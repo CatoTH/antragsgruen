@@ -850,6 +850,38 @@ label.legend {
       margin-left: 15px;
     }
   }
+  .conpw {
+    .setPasswordHolder {
+      padding: 10px 20px;
+      display: none;
+    }
+    .setNewPassword {
+      display: none;
+    }
+    &.checked.hasPassword {
+      .setNewPassword {
+        display: inline;
+      }
+    }
+    &.checked.hasPassword.changePwd {
+      .setNewPassword {
+        display: none;
+      }
+    }
+    &.checked.noPassword, &.checked.hasPassword.changePwd {
+      .setPasswordHolder {
+        display: block;
+      }
+    }
+    @media screen and (min-width: 800px) {
+      .setPasswordHolder input[type=password] {
+        width: 40%;
+      }
+    }
+    label.otherConsultations:first-of-type {
+      padding-left: 0;
+    }
+  }
 }
 
 .accountEditExplanation {

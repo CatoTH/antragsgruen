@@ -63,8 +63,9 @@ return [
     'acc_grant_email_title'     => 'Antragsgrün access',
     'acc_grant_email_userdata'  => "E-mail / username: %EMAIL%\nPassword: %PASSWORD%",
 
-
     'login_title'             => 'Login',
+    'login_con_pwd_title'     => 'Login using the consultation-password',
+    'login_con_pwd'           => 'Consultation-password',
     'login_username_title'    => 'Login using username/password',
     'login_create_account'    => 'Create a new account',
     'login_username'          => 'E-mail address / username',

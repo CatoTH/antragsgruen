@@ -191,7 +191,7 @@ Si cela ne doit être <em>visible</em> que pour les utilisateurs ci-dessous, val
     'siteacc_logins'         => 'Les variantes de connexion suivantes sont possibles',
     'siteacc_useraccounts'   => 'Comptes Antragsgrün standards <small>(toute personne avec une adresse email valide)</small>',
     'siteacc_ww'             => 'Wurzelwerk <small>(toute personne ayant accès au système allemand Wurzelwerk)</small>',
-    'siteacc_otherlogins'    => 'Autres méthodes <small>(OpenID, peut-être Facebook / Twitter dans le future)</small>',
+    'siteacc_otherlogins'    => 'OpenID',
     'siteacc_admins_title'   => 'Administrateurs de ce site',
     'siteacc_admins_add'     => 'Ajouter',
     'siteacc_add_ww'         => 'Nom Wurzelwerk',

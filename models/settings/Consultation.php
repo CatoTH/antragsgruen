@@ -38,6 +38,7 @@ class Consultation implements \JsonSerializable
     public $proposalProcedurePage  = false;
     public $forceLogin             = false;
     public $managedUserAccounts    = false;
+    public $accessPwd              = null;
 
     // SETTINGS WITHOUT TEST CASES
 
