@@ -88,6 +88,7 @@ return [
     'merge_submitted_str'       => 'The new version of this motion has been saved',
     'merge_submitted_to_motion' => 'Go to the motion',
     'merge_colliding'           => 'Colliding amendment',
+    'merge_colliding_hint'      => 'The following changes could not be merged automatically. Please merge them manually.',
     'merge_title_changes'       => 'Title changes',
     'merge_all'                 => 'All changes...',
     'merge_accept_all'          => 'Accept all changes',

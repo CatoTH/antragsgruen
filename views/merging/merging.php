@@ -91,12 +91,17 @@ echo $controller->showErrors();
 
 echo '</div>';
 
+$amendmentStatuses = [];
+foreach ($amendments as $amendment) {
+    $amendmentStatuses[$amendment->id] = $amendment->status;
+}
 
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
     'class'                    => 'motionMergeForm motionMergeStyles fuelux',
     'enctype'                  => 'multipart/form-data',
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
+    'data-amendment-statuses'  => $amendmentStatuses,
 ]);
 
 
@@ -214,22 +219,6 @@ if (count($editorials) > 0) {
     <?php
 }
 
-
-if (count($amendments) > 0) {
-    $jsStatuses = [
-        'processed'         => Amendment::STATUS_PROCESSED,
-        'accepted'          => Amendment::STATUS_ACCEPTED,
-        'rejected'          => Amendment::STATUS_REJECTED,
-        'modified_accepted' => Amendment::STATUS_MODIFIED_ACCEPTED,
-    ];
-
-    ?>
-
-    <section class="newAmendments" data-statuses="<?= Html::encode(json_encode($jsStatuses)) ?>">
-        <?php MotionLayoutHelper::printAmendmentStatusSetter($amendments, $amendmentStatuses); ?>
-    </section>
-    <?php
-}
 ?>
 
     <div class="submitHolder content">

@@ -554,6 +554,28 @@
       }
     }
   }
+
+  .dividerLabeled {
+    position: relative;
+    overflow: visible;
+    &:after {
+      content: attr(data-label);
+      position: absolute;
+      display: block;
+      top: -8px;
+      left: 20px;
+      background-color: white;
+      font-size: 0.8em;
+      padding-left: 0;
+      padding-right: 10px;
+      color: gray;
+    }
+  }
+
+  .amendmentLink {
+    color: $link-color;
+  }
+
   #draftSavingPanel {
     position: fixed;
     bottom: 0;

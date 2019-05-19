@@ -111,6 +111,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_submitted_str'               => 'Der Antrag wurde überarbeitet',
     'merge_submitted_to_motion'         => 'Zum neuen Antrag',
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
+    'merge_colliding_hint'              => 'Die folgenden Änderungen konnten nicht automatisch eingebettet werden. Bitte füge die Änderungen von Hand ein.',
     'merge_all'                         => 'Alle Änderungen...',
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',

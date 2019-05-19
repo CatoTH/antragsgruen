@@ -495,8 +495,8 @@ class ParagraphMerger
      */
     public function getFormattedCollission($paraData, Amendment $amendment, $amendmentsById)
     {
-        $amendmentUrl  = UrlHelper::createAmendmentUrl($amendment);
-        $paragraphText = '';
+        $amendmentUrl      = UrlHelper::createAmendmentUrl($amendment);
+        $paragraphText     = '';
         $CHANGESET_COUNTER = 0;
 
         foreach ($paraData as $part) {
@@ -517,9 +517,11 @@ class ParagraphMerger
         $out = '<div class="collidingParagraph" data-link="<?= Html::encode($amendmentUrl) ?>"
                      data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">
                      <p class="collidingParagraphHead"><strong>' .
-                            \Yii::t('amend', 'merge_colliding') . ': ' .
-                            Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .
-                        '</strong></p>';
+            \Yii::t('amend', 'merge_colliding') . ': ' .
+            Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .
+            '</strong></p>';
+
+        $out .= '<div class="alert alert-danger"><p>' . \Yii::t('amend', 'merge_colliding_hint') . '</p></div>';
         $out .= DiffRenderer::renderForInlineDiff($paragraphText, $amendmentsById);
         $out .= '</div>';
 

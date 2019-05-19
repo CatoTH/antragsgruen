@@ -40,14 +40,35 @@ if (count($allAmendingIds) > 0) {
     ?>
     <div>
         <?php
+        $modUs            = [];
+        $normalAmendments = [];
         foreach ($allAmendingIds as $amendingId) {
             $amendment = $amendmentsById[$amendingId];
-            $active    = in_array($amendingId, $currAmendingIds);
+            if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                $modUs[$amendment->id] = $amendment;
+            } else {
+                $normalAmendments[] = $amendment;
+            }
+        }
+        foreach ($normalAmendments as $amendment) {
+            $active       = in_array($amendment->id, $currAmendingIds);
+            $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
+
+            $statuses = [
+                Amendment::STATUS_PROCESSED         => Yii::t('structure', 'STATUS_PROCESSED'),
+                Amendment::STATUS_ACCEPTED          => Yii::t('structure', 'STATUS_ACCEPTED'),
+                Amendment::STATUS_REJECTED          => Yii::t('structure', 'STATUS_REJECTED'),
+                Amendment::STATUS_MODIFIED_ACCEPTED => Yii::t('structure', 'STATUS_MODIFIED_ACCEPTED'),
+            ];
+            $statusesAll                  = $amendment->getStatusNames();
+            $statuses[$amendment->status] = Yii::t('amend', 'merge_status_unchanged') . ': ' .
+                $statusesAll[$amendment->status];
+
             ?>
             <div class="btn-group">
                 <button type="button" class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs toggleAmendment">
-                    <input name="<?= $nameBase ?>[<?= $amendingId ?>]" value="<?= ($active ? '1' : '0') ?>"
-                           type="hidden" class="amendmentActive" data-amendment-id="<?= $amendingId ?>">
+                    <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
+                           type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
                     <?= Html::encode($amendment->titlePrefix) ?>
                 </button>
                 <button class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs dropdown-toggle"
@@ -56,11 +77,35 @@ if (count($allAmendingIds) > 0) {
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
+                    <?php
+                    if ($amendment->proposalReferenceId && isset($modUs[$amendment->proposalReferenceId])) {
+                        ?>
+                        <li>
+                            <a href="#" class="setVersion" data-version="orig">
+                                <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="setVersion" data-version="prop">
+                                <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
+                            </a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <?php
+                    }
+                    ?>
+                    <li>
+                        <a href="<?= Html::encode($amendmentUrl) ?>" class="amendmentLink">
+                            <span class="glyphicon glyphicon-new-window"></span> Show
+                        </a>
+                    </li>
+                    <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>
+                    <?php
+                    foreach ($statuses as $statusId => $statusName) {
+                        echo '<li><a href="" class="setStatus" data-status="' . $statusId . '">' .
+                            Html::encode($statusName) . '</a></li>';
+                    }
+                    ?>
                 </ul>
             </div>
             <?php
@@ -74,7 +119,7 @@ if (count($allAmendingIds) > 0) {
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-right">
                     <li><a href="#"><?= Yii::t('amend', 'merge_accept_all') ?></a></li>
                     <li><a href="#"><?= Yii::t('amend', 'merge_reject_all') ?></a></li>
                 </ul>
@@ -104,7 +149,7 @@ if (count($allAmendingIds) > 0) {
         <div class="collissionsHolder">
             <?php
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
-                $amendment    = $amendmentsById[$amendmentId];
+                $amendment = $amendmentsById[$amendmentId];
                 echo $paragraphMerger->getFormattedCollission($paraData, $amendment, $amendmentsById);
             }
             ?>
