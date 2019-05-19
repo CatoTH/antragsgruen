@@ -326,7 +326,7 @@ class Base extends Controller
         if (!Yii::$app->user->getIsGuest()) {
             return false;
         }
-        if (!$this->consultation->getSettings()->accessPwd) {
+        if (!$this->consultation || !$this->consultation->getSettings()->accessPwd) {
             return false;
         }
         $pwdChecker = new ConsultationAccessPassword($this->consultation);
