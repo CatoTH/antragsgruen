@@ -11,6 +11,9 @@ $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 $I->dontSeeElement('#proposedChanges');
 $I->dontSeeElement('#proposedProcedureLink');
 
+// Remove relicts from previous test cases
+$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
 $I->wantTo('log in');
 $I->gotoConsultationHome();
 $I->seeElement('.motionRow118');

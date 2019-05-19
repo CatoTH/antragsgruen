@@ -7,6 +7,10 @@ $I->populateDBData1();
 
 $I->wantTo('see the activated proposed procedure');
 $I->gotoConsultationHome();
+
+// Remove relicts from previous test cases
+$I->executeJS('for (let key in localStorage) localStorage.removeItem(key);');
+
 $I->loginAsProposalAdmin();
 $I->gotoAmendment(true, 'Testing_proposed_changes-630', 279);
 
