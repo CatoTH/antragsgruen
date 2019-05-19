@@ -25,14 +25,19 @@ $params = \Yii::$app->params;
 
 <div class="content infoSite">
     <p>Antragsgrün ist ein <strong>Antrags-Verwaltungs-System</strong>, das speziell für <strong>Parteitage,
-            Verbandstagungen
-            sowie Programmdiskussionen</strong> entwickelt wurde.</p>
+            Verbandstagungen sowie Programmdiskussionen</strong> entwickelt wurde.</p>
 
-    <p>Es hilft, eine größere Zahl von Anträgen, Änderungsanträgen und
-        Kommentaren übersichtlich, nutzer*innenfreundlich und effizient darzustellen. Zum Einsatz kommt es vor allem bei
-        grünen Parteitagen, von der BDK bis hin zu kommunalen Programmparteitagen, sowie dem Deutschen Bundesjugendring.
+    <p>
+        Es hilft, eine größere Zahl von Anträgen, Änderungsanträgen und
+        Kommentaren übersichtlich, nutzer*innenfreundlich und effizient darzustellen.
         Es ist hoch flexibel, kann an verschiedenste Bedürfnisse angepasst werden und wird kontinuierlich
         weiterentwickelt.
+    </p>
+
+    <p>
+        Zum Einsatz kommt es unter anderem bei Parteitagen, von Bundesdelegiertenkonferenzen
+        bis hin zu kommunalen Programmparteitagen,
+        sowie bei Jugendorganisationen wie dem Deutschen Bundesjugendring.
     </p>
 </div>
 
@@ -191,7 +196,7 @@ echo '</div>';
     <p>Antragsgrün steht unter der „GNU Affero General Public License“. Das heißt, jede und jeder Interessierte kann das
         Tool nicht nur kostenlos einsetzen, sondern bei Bedarf auch Änderungen vornehmen (was auch die Verwendung in
         anderen Parteien oder völlig anderen Organisationen umfasst). Bedingung dafür ist aber unter anderem, dass wir
-        als UrheberInnen weiter genannt werden und Änderungen am Tool ebenfalls wieder frei verfügbar gemacht
+        als Urheber*innen weiter genannt werden und Änderungen am Tool ebenfalls wieder frei verfügbar gemacht
         werden.</p>
 
     <p>Der komplette Quellcode von Antragsgrün ist unter
