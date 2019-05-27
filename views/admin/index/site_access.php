@@ -81,20 +81,16 @@ $conPwd = new \app\components\ConsultationAccessPassword($consultation);
             <input type="password" name="consultationPassword" class="form-control"
                    placeholder="<?= Yii::t('admin', 'siteacc_con_pw_place') ?>"
                    title="<?= Yii::t('admin', 'siteacc_con_pw_set') ?>">
-            <?php if ($conPwd->isPasswordSet()) { ?>
-                <label class="otherConsultations">
-                    <input type="radio" name="otherConsultations" value="0"
-                        <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
-                    <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
-                </label>
-                <label class="otherConsultations">
-                    <input type="radio" name="otherConsultations" value="1"
-                        <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
-                    <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
-                </label>
-            <?php } else { ?>
-                <input type="hidden" name="otherConsultations" value="1">
-            <?php } ?>
+            <label class="otherConsultations">
+                <input type="radio" name="otherConsultations" value="0"
+                    <?= ($conPwd->allHaveSamePwd() ? '' : 'checked') ?>>
+                <?= Yii::t('admin', 'siteacc_con_pw_set_this') ?>
+            </label>
+            <label class="otherConsultations">
+                <input type="radio" name="otherConsultations" value="1"
+                    <?= ($conPwd->allHaveSamePwd() ? 'checked' : '') ?>>
+                <?= Yii::t('admin', 'siteacc_con_pw_set_all') ?>
+            </label>
         </div>
     </div>
 
