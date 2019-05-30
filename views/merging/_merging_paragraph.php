@@ -31,7 +31,8 @@ $reloadUrl = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments
     'amendmentIds' => 'DUMMY',
 ]);
 
-echo '<section class="paragraphWrapper" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
+echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') .
+    '" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
     'data-reload-url="' . Html::encode($reloadUrl) . '">';
 
 $allAmendingIds  = $mergerAll->getAffectingAmendmentIds($paragraphNo);
@@ -141,16 +142,15 @@ if (count($allAmendingIds) > 0) {
             echo ' fixedWidthFont';
         }
         ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
-            <div class="paragraphHolder<?= (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') ?>"
-                 data-paragraph-no="<?= $paragraphNo ?>">
+            <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
                 <?= $paragraphText ?>
             </div>
         </div>
-        <div class="collissionsHolder">
+        <div class="collisionsHolder">
             <?php
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                echo $paragraphMerger->getFormattedCollission($paraData, $amendment, $amendmentsById);
+                echo $paragraphMerger->getFormattedCollision($paraData, $amendment, $amendmentsById);
             }
             ?>
         </div>

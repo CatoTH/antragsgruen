@@ -111,17 +111,17 @@ trait MotionMergingTrait
 
         $merger        = $section->getAmendmentDiffMerger($amendmentIds)->getParagraphMerger(IntVal($paragraphNo));
         $paragraphText = $merger->getFormattedDiffText($amendmentsById);
-        $collissions   = [];
+        $collisions   = [];
 
         $paragraphCollisions = $merger->getCollidingParagraphGroups();
         foreach ($paragraphCollisions as $amendmentId => $paraData) {
             $amendment = $amendmentsById[$amendmentId];
-            $collissions[] = $merger->getFormattedCollission($paraData, $amendment, $amendmentsById);
+            $collisions[] = $merger->getFormattedCollision($paraData, $amendment, $amendmentsById);
         }
 
         return json_encode([
             'text'        => $paragraphText,
-            'collissions' => $collissions,
+            'collisions' => $collisions,
         ]);
     }
 

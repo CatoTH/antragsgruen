@@ -493,7 +493,7 @@ class ParagraphMerger
      * @param $amendmentsById
      * @return string
      */
-    public function getFormattedCollission($paraData, Amendment $amendment, $amendmentsById)
+    public function getFormattedCollision($paraData, Amendment $amendment, $amendmentsById)
     {
         $amendmentUrl      = UrlHelper::createAmendmentUrl($amendment);
         $paragraphText     = '';

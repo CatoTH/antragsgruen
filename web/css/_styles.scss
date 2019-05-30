@@ -451,31 +451,42 @@
   .ICE-Tracking .ice-ins.hover, .ICE-Tracking .ice-ins.hover p {
     background-color: darken(rgba(100, 255, 100, 0.6), 10%);
   }
-  .paragraphHolder.hasCollisions {
-    background-color: #fff5f5;
-    margin-top: 15px;
-    margin-bottom: 15px;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
-    position: relative;
-    &:before {
-      content: attr(data-collision-start-msg);
-      position: absolute;
-      top: -13px;
-      text-align: center;
-      font-size: 0.7em;
-      color: gray;
-      width: 100%;
+
+  .texteditorBox {
+    min-height: 15px;
+  }
+
+  .hasCollisions {
+    .form-group {
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    &:after {
-      content: attr(data-collision-end-msg);
-      position: absolute;
-      bottom: -13px;
-      text-align: center;
-      font-size: 0.7em;
-      color: gray;
-      width: 100%;
+    .texteditorBox {
+      border: 0;
+      border-bottom: 1px solid #ccc;
+      border-radius: 0;
     }
+    .paragraphHolder {
+      position: relative;
+
+      &:before {
+        content: attr(data-collision-start-msg);
+        position: absolute;
+        top: -13px;
+        text-align: center;
+        font-size: 0.7em;
+        color: gray;
+        width: 100%;
+      }
+    }
+
+    .collisionsHolder {
+      padding-bottom: 5px;
+      padding-top: 5px;
+      padding-left: 10px;
+      background-color: #f5f5f5;
+    }
+
     + .hasCollisions {
       margin-top: 45px;
     }

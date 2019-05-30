@@ -531,13 +531,17 @@ class MotionMergeAmendmentsParagraph {
         $.get(url, (data) => {
             this.textarea.setText(data.text);
 
-            let collissions = '';
-            data.collissions.forEach(str => {
-               collissions += str;
+            let collisions = '';
+            data.collisions.forEach(str => {
+               collisions += str;
             });
 
-            this.$holder.find(".collissionsHolder").html(collissions);
-            console.log(data);
+            this.$holder.find(".collisionsHolder").html(collisions);
+            if (data.collisions.length > 0) {
+                this.$holder.addClass("hasCollisions");
+            } else {
+                this.$holder.removeClass("hasCollisions");
+            }
         });
     }
 }
