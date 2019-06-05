@@ -5562,16 +5562,16 @@
         },
         {
             "name": "yiisoft/yii2-debug",
-            "version": "2.1.4",
+            "version": "2.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-debug.git",
-                "reference": "4cc407f34fd90e410d806ea3264781a9fb4fd1ef"
+                "reference": "a6bbf55093e154e2eeb2c778af8717989495270e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/4cc407f34fd90e410d806ea3264781a9fb4fd1ef",
-                "reference": "4cc407f34fd90e410d806ea3264781a9fb4fd1ef",
+                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/a6bbf55093e154e2eeb2c778af8717989495270e",
+                "reference": "a6bbf55093e154e2eeb2c778af8717989495270e",
                 "shasum": ""
             },
             "require": {
@@ -5615,7 +5615,7 @@
                 "debugger",
                 "yii2"
             ],
-            "time": "2019-05-14T13:39:56+00:00"
+            "time": "2019-06-04T14:21:49+00:00"
         },
         {
             "name": "yiisoft/yii2-shell",
