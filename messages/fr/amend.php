@@ -80,6 +80,7 @@ return [
     'sidebar_back'                      => 'Retour à la motion',
     'sidebar_mergeintomotion'           => 'Intégrer à la motion',
     'back_to_amend'                     => 'Retour à l\'amendement',
+    'according_to'                      => 'selon',
     'initiated_by'                      => 'Déposé par',
     'confirm_bread'                     => 'Confirmer',
     'affects_x_paragraphs'              => 'Affecte %num% paragraphes',

@@ -70,6 +70,11 @@ return [
     'amend_singlepara_single' => 'Only one passage',
     'amend_singlepara_multi'  => 'Multiple passages',
 
+    'amend_amendments_title'  => 'Can an amendment be amended in turn?',
+    'amend_amendments_desc'   => 'If not, then only motions can be amended.',
+    'amend_amendments_yes'    => 'Yes',
+    'amend_amendments_no'     => 'No',
+
     'amend_merging_title'  => 'Adopting amendments',
     'amend_merging_desc'   => 'Are proposers of motions allowed to adopt amendments by themselves?',
     'amend_merging_yes'    => 'Yes',

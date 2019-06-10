@@ -44,6 +44,7 @@ $t = function ($string) {
     <?= $this->render('supporters', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amendments', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_single_para', ['model' => $model, 't' => $t]) ?>
+    <?= $this->render('amend_amendments', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_who', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_deadline', ['model' => $model, 't' => $t]) ?>
     <?= $this->render('amend_screening', ['model' => $model, 't' => $t]) ?>

@@ -113,6 +113,17 @@ foreach (IPolicy::getPolicies() as $policy) {
         ?>
     </div>
 </div>
+<div class="form-group checkbox checkboxNoPadding" id="typeAmendAmendments">
+    <div class="checkbox col-md-8 col-md-offset-4">
+        <?php
+        echo HTMLTools::fueluxCheckbox(
+            'type[amendAmendments]',
+            \Yii::t('admin', 'motion_type_amend_amends'),
+            $motionType->amendAmendments
+        );
+        ?>
+    </div>
+</div>
 
 
 <!-- Support policy for amendments -->

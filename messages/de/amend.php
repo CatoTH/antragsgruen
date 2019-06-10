@@ -158,6 +158,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'sidebar_back'                      => 'Zurück zum Antrag',
     'sidebar_mergeintomotion'           => 'In den Antrag übernehmen',
     'back_to_amend'                     => 'Zurück zum Änderungsantrag',
+    'according_to'                      => 'gemäß',
     'initiated_by'                      => 'gestellt von',
     'confirm_bread'                     => 'Bestätigen',
     'affects_x_paragraphs'              => 'Bezieht sich auf insgesamt %num% Absätze',

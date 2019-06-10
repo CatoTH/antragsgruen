@@ -92,6 +92,9 @@ class LayoutHelper
     {
         $return = '';
 
+        if ($motion->underlyingAmendment)
+            return $return;
+
         /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
         if ($motion->getMyMotionType()->getSettingsObj()->cssIcon) {
@@ -120,12 +123,66 @@ class LayoutHelper
                 $return .= '<li class="' . implode(' ', $classes) . '">';
                 $return .= static::getAmendmentLineContent($amend);
 
+                $title = (trim($amend->titlePrefix) == '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
+                $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
+                    'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
+
+                $return .= '<span class="info">';
+                $return .= Html::encode($amend->getInitiatorsStr());
+                if ($amend->status == Motion::STATUS_WITHDRAWN) {
+                    $return .= ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
+                }
+                $return .= '</span>' . "\n";
                 $return .= "<span class='clearfix'></span>\n";
-                $return .= '</li>' . "\n";
+                $return .= self::showNestedAmendments($consultation, $amend);
+                $return .= echo '</li>' . "\n";
             }
             $return .= '</ul>';
         }
         $return .= '</li>' . "\n";
+
+        return $return;
+    }
+
+    /**
+     * @param Amendment $amendment
+     * @param Consultation $consultation
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     */
+
+    private static function showNestedAmendments($consultation, $amendment)
+    {
+        $return = '';
+
+        if ($amendment->amendedMotion) {
+            $amendments = MotionSorter::getSortedAmendments($consultation, $amendment->amendedMotion->getVisibleAmendments());
+            if (sizeof($amendments) > 0) {
+                $return .= '<ul style="list-style-type: circle">';
+                foreach ($amendments as $amend) {
+                    if ($amend->status == Amendment::STATUS_WITHDRAWN) {
+                        $return .= '<li class="withdrawn amendment">';
+                    }
+                    else {
+                        $return .= '<li>';
+                    }
+                    $return .= '<span class="date" style="right: 3px; position: absolute">' . Tools::formatMysqlDate($amend->dateCreation) . '</span>' . "\n";
+                    $title = (trim($amend->titlePrefix) == '' ? \Yii::t('amend', 'amendment') : $amend->titlePrefix);
+                    $return .= '<a style="font-weight: bold; margin-right: 5px" href="' . Html::encode(UrlHelper::createAmendmentUrl($amend)) . '" ' .
+                        'class="amendmentTitle amendment' . $amend->id . '">' . Html::encode($title) . '</a>';
+                    $return .= '<span class="info">';
+                    $return .= Html::encode($amend->getInitiatorsStr());
+                    if ($amend->status == Motion::STATUS_WITHDRAWN) {
+                        $return .= ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';
+                    }
+                    $return .= '</span>' . "\n";
+                    $return .= "<span class='clearfix'></span>\n";
+                    $return .= self::showNestedAmendments($consultation, $amend);
+                    $return .= '</li>' . "\n";
+                }
+                $return .= '</ul>';
+            }
+        }
 
         return $return;
     }

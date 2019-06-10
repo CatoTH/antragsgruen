@@ -35,6 +35,7 @@ trait Application
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
         $type->supportType                  = SupportBase::ONLY_INITIATOR;
         $type->amendmentMultipleParagraphs  = 0;
+        $type->amendAmendments              = 0;
         $type->motionLikesDislikes          = 0;
         $type->amendmentLikesDislikes       = 0;
         $type->status                       = ConsultationMotionType::STATUS_VISIBLE;

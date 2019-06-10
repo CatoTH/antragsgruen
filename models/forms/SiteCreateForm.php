@@ -40,6 +40,7 @@ class SiteCreateForm extends Model
     public $singleMotion    = false;
     public $hasAmendments   = true;
     public $amendSinglePara = false;
+    public $amendAmendments = false;
     public $amendMerging    = false;
     public $motionScreening = true;
     public $amendScreening  = true;
@@ -111,6 +112,7 @@ class SiteCreateForm extends Model
         $this->singleMotion          = ($values['singleMotion'] == 1);
         $this->hasAmendments         = ($values['hasAmendments'] == 1);
         $this->amendSinglePara       = ($values['amendSinglePara'] == 1);
+        $this->amendAmendments       = ($values['amendAmendments'] == 1);
         $this->motionScreening       = ($values['motionScreening'] == 1);
         $this->amendScreening        = ($values['amendScreening'] == 1);
         $this->amendMerging          = ($values['amendMerging'] == 1);
@@ -365,6 +367,7 @@ class SiteCreateForm extends Model
         $type->supportType                 = SupportBase::ONLY_INITIATOR;
         $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = 1;
+        $type->amendAmendments             = 0;
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;
@@ -480,6 +483,7 @@ class SiteCreateForm extends Model
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
         $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
+        $type->amendAmendments             = ($this->amendAmendments ? 1 : 0);
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
         $type->status                      = ConsultationMotionType::STATUS_VISIBLE;

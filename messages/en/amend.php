@@ -126,6 +126,7 @@ return [
     'sidebar_back'                      => 'Back to the motion',
     'sidebar_mergeintomotion'           => 'Adopt changes into motion',
     'back_to_amend'                     => 'Back to the amendment',
+    'according_to'                      => 'according to',
     'initiated_by'                      => 'Submitted by',
     'confirm_bread'                     => 'Confirm',
     'affects_x_paragraphs'              => 'Affects %num% paragraphs',

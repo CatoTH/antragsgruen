@@ -70,6 +70,11 @@ return [
     'amend_singlepara_single' => 'Nur eine Textstelle',
     'amend_singlepara_multi'  => 'Mehrere Textstellen',
 
+    'amend_amendments_title'  => 'Können zu Änderungsanträgen wiederum Änderungsanträge gestellt werden?',
+    'amend_amendments_desc'   => 'Wenn nicht, dann können nur zu Anträgen Änderungsanträge gestellt werden.',
+    'amend_amendments_yes'    => 'Ja',
+    'amend_amendments_no'     => 'Nein',
+
     'amend_merging_title'  => 'Änderungsanträge übernehmen',
     'amend_merging_desc'   => 'Dürfen Antragsteller*innen von Anträgen zugehörige Änderungsanträge selbständig übernehmen?',
     'amend_merging_yes'    => 'Ja',

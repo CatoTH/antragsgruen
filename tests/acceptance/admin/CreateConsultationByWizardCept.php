@@ -51,6 +51,9 @@ $I->click('#panelHasAmendments button.btn-next');
 $I->click('#panelAmendSinglePara .value-1');
 $I->click('#panelAmendSinglePara button.btn-next');
 
+$I->click('#panelAmendAmendments .value-0');
+$I->click('#panelAmendAmendments button.btn-next');
+
 $I->click('#panelAmendWho .value-3');
 $I->click('#panelAmendWho button.btn-next');
 

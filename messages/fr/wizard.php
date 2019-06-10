@@ -70,6 +70,11 @@ return [
     'amend_singlepara_single' => 'Seulement un  passage',
     'amend_singlepara_multi'  => 'Passages multiples',
 
+    'amend_amendments_title'  => 'Peut-on amender des amendements ?',
+    'amend_amendments_desc'   => 'Si non, on ne peu qu\'amender des motions.',
+    'amend_amendments_yes'    => 'Oui',
+    'amend_amendments_no'     => 'Non',
+
     'comments_title' => 'Commentaires aux motions ?',
     'comments_desc'  => 'Les utilisateurs sont-ils autorisés à commenter les motions et amendements?',
     'comments_no'    => 'Non',

@@ -10,6 +10,8 @@ use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
 use app\models\db\IMotion;
+use app\models\db\Motion;
+use app\models\db\MotionSection;
 use app\models\db\User;
 use app\models\db\VotingBlock;
 use app\models\events\AmendmentEvent;
@@ -360,6 +362,141 @@ class AmendmentController extends Base
                 'mode'         => $fromMode,
                 'form'         => $form,
                 'consultation' => $this->consultation,
+            ]
+        );
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @return string
+     * @throws \app\models\exceptions\Internal
+     * @throws \app\models\exceptions\NotAmendable
+     * @throws \yii\base\Exception
+     * @throws \yii\base\ExitException
+     */
+    public function actionAmend($motionSlug, $amendmentId)
+    {
+        $amendment = $this->consultation->getAmendment($amendmentId);
+
+        if (!$amendment) {
+            \Yii::$app->session->setFlash('error', \Yii::t('amend', 'err_not_found'));
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (!$amendment->isCurrentlyAmendable()) {
+            if ($amendment->isCurrentlyAmendable(true, true)) {
+                $loginUrl = UrlHelper::createLoginUrl(['amend', 'motionSlug' => $motionSlug, 'amendmentId' => $amendmentId]);
+                return $this->redirect($loginUrl);
+            } else {
+                return $this->showErrorpage(403, \Yii::t('amend', 'err_create_permission'));
+            }
+        }
+
+        $amendedMotion = $amendment->amendedMotion;
+        if (!$amendedMotion) {
+            $motion = $this->consultation->getMotion($motionSlug);
+            $consultation = $motion->motionType->getConsultation();
+
+            $amendedMotion = new Motion();
+
+            $amendedMotion->status = Motion::STATUS_SUBMITTED_SCREENED;
+            $amendedMotion->consultationId = $motion->motionType->consultationId;
+            $amendedMotion->textFixed = ($consultation->getSettings()->adminsMayEdit ? 0 : 1);
+            $amendedMotion->title = $motion->title . ' ' . \Yii::t('amend', 'according_to') . ' ' . $amendment->titlePrefix;
+            $amendedMotion->titlePrefix = $amendment->titlePrefix;
+            $amendedMotion->dateCreation = date('Y-m-d H:i:s');
+            $amendedMotion->motionTypeId = $motion->motionType->id;
+            $amendedMotion->cache = '';
+            $amendedMotion->agendaItemId = ($motion->agendaItem ? $motion->agendaItem->id : null);
+
+            $amendedSections = [];
+
+            foreach ($amendment->getActiveSections() as $section) {
+                $amendedSection = new MotionSection();
+                if ($section->getSettings()->type == ISectionType::TYPE_TITLE) {
+                    $amendedSection->data = $amendedSection->dataRaw = $amendedMotion->title;
+                } else {
+                    $amendedSection->data = $section->data;
+                    $amendedSection->dataRaw = $section->dataRaw;
+                }
+                $amendedSection->sectionId = $section->sectionId;
+                $amendedSection->cache = '';
+                $amendedSection->refresh();
+                $amendedSections [] = $amendedSection;
+            }
+
+            if ($amendedMotion->save()) {
+                $amendedMotion->link('underlyingAmendment', $amendment);
+
+                try {
+                    $amendedMotion->motionType->getMotionSupportTypeClass()->submitMotion($amendedMotion);
+                } catch (FormError $e) {
+                    \Yii::$app->session->setFlash('error', $e->getMessage());
+                }
+
+                foreach ($motion->tags as $tagId) {
+                    /** @var ConsultationSettingsTag $tag */
+                    $tag = ConsultationSettingsTag::findOne(['id' => $tagId, 'consultationId' => $consultation->id]);
+                    if ($tag) {
+                        $amendedMotion->link('tags', $tag);
+                    }
+                }
+
+                foreach ($amendedSections as $amendedSection) {
+                    $amendedSection->motionId = $amendedMotion->id;
+                    $amendedSection->save();
+                }
+
+                $amendedMotion->refreshTitle();
+                $amendedMotion->slug = $amendedMotion->createSlug();
+                $amendedMotion->save();
+            } else {
+                \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_create'));
+            }
+        }
+
+        $motion = $amendedMotion;
+
+        $form        = new AmendmentEditForm($motion, null);
+        $iAmAdmin    = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
+
+        if ($this->isPostSet('save')) {
+            try {
+                $amendment = $form->createAmendment();
+
+                $nextUrl = [
+                    'amendment/createconfirm',
+                    'motionSlug'  => $motion->getMotionSlug(),
+                    'amendmentId' => $amendment->id,
+                    'fromMode'    => 'create',
+                    'draftId'     => $this->getRequestValue('draftId'),
+                ];
+                return $this->redirect(UrlHelper::createUrl($nextUrl));
+            } catch (FormError $e) {
+                \Yii::$app->session->setFlash('error', $e->getMessage());
+            }
+        }
+
+        if (count($form->supporters) == 0) {
+            $supporter       = new AmendmentSupporter();
+            $supporter->role = AmendmentSupporter::ROLE_INITIATOR;
+            if (User::getCurrentUser() && !$iAmAdmin) {
+                $user                    = User::getCurrentUser();
+                $supporter->userId       = $user->id;
+                $supporter->name         = $user->name;
+                $supporter->contactEmail = $user->email;
+                $supporter->personType   = AmendmentSupporter::PERSON_NATURAL;
+            }
+            $form->supporters[] = $supporter;
+        }
+
+        return $this->render(
+            'edit_form',
+            [
+                'mode'         => 'create',
+                'consultation' => $this->consultation,
+                'form'         => $form,
             ]
         );
     }

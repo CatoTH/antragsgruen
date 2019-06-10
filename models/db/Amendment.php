@@ -10,6 +10,8 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
+use app\models\exceptions\Internal;
+use app\models\exceptions\NotAmendable;
 use app\models\layoutHooks\Layout;
 use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
 use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
@@ -47,6 +49,7 @@ use yii\helpers\Html;
  * @property Amendment $proposalReference
  * @property Amendment $proposalReferencedBy
  * @property VotingBlock $votingBlock
+ * @property Motion $amendedMotion
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -326,6 +329,15 @@ class Amendment extends IMotion implements IRSSItem
             }
         }
         return $this->myMotion;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAmendedMotion()
+    {
+        return $this->hasOne(Motion::class, ['id' => 'motionId'])
+            ->viaTable('amendedMotion', ['amendmentId' => 'id']);
     }
 
     /**
@@ -691,6 +703,23 @@ class Amendment extends IMotion implements IRSSItem
         $supporters    = count($this->getSupporters());
         $minSupporters = $this->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
         return ($supporters >= $minSupporters);
+    }
+
+    /**
+     * @param bool $allowAdmins
+     * @param bool $assumeLoggedIn
+     * @param bool $throwExceptions
+     * @return bool
+     * @throws NotAmendable
+     * @throws Internal
+     */
+    public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
+    {
+        if ($this->getMyMotionType()->amendAmendments)
+            return $this->getMyMotion()->isCurrentlyAmendable($allowAdmins, $assumeLoggedIn, $throwExceptions);
+        if ($throwExceptions)
+            throw new NotAmendable('Amendments to this type of motion cannot be amended in turn', false);
+        return false;
     }
 
     /**

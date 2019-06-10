@@ -10,6 +10,7 @@ interface WizardState {
     minSupporters: number;
     hasAmendments: number;
     amendSinglePara: number;
+    amendAmendments: number;
     amendMerging: number;
     amendmentInitiatedBy: number;
     amendmentDeadlineExists: number;
@@ -58,6 +59,7 @@ class SiteCreateWizard {
             minSupporters: this.$root.find("input.minSupporters").val(),
             hasAmendments: this.getRadioValue('hasAmendments', 1),
             amendSinglePara: this.getRadioValue('amendSinglePara', 0),
+            amendAmendments: this.getRadioValue('amendAmendments', 0),
             amendMerging: this.getRadioValue('amendMerging', 0),
             amendmentInitiatedBy: this.getRadioValue('amendmentWho', 1),
             amendmentDeadlineExists: this.getRadioValue('amendmentDeadline', 0),
@@ -132,6 +134,8 @@ class SiteCreateWizard {
                     return "#panelComments";
                 }
             case 'panelAmendSinglePara':
+                return "#panelAmendAmendments";
+            case 'panelAmendAmendments':
                 return "#panelAmendWho";
             case 'panelAmendWho':
                 if (this.data.amendmentInitiatedBy == 1) { // MOTION_INITIATED_ADMINS
