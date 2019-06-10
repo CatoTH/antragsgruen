@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `motion`
  * - `amendment`
  */
-class m190609_165938_create_junction_table_for_motion_and_amendment_tables extends Migration
+class m190609_165938_amendedMotion extends Migration
 {
     /**
      * {@inheritdoc}

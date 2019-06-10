@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles adding amendAmendments to table `consultationMotionType`.
  */
-class m190610_044858_add_amendAmendments_column_to_consultationMotionType_table extends Migration
+class m190610_044858_amendAmendments extends Migration
 {
     /**
      * {@inheritdoc}
