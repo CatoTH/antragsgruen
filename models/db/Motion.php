@@ -306,6 +306,7 @@ class Motion extends IMotion implements IRSSItem
         $query = Motion::find();
         $query->where('motion.status NOT IN (' . implode(', ', $invisibleStatuses) . ')');
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
+        $query->joinWith('underlyingAmendment')->andWhere('amendment.id IS NULL');
         $query->orderBy("dateCreation DESC");
         $query->offset(0)->limit($limit);
 
