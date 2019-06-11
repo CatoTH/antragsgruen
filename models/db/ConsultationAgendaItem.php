@@ -295,7 +295,7 @@ class ConsultationAgendaItem extends ActiveRecord
         }
         $return   = [];
         foreach ($this->getMyMotions() as $motion) {
-            if (!in_array($motion->status, $statuses)) {
+            if (!$motion->underlyingAmendment && !in_array($motion->status, $statuses)) {
                 $return[] = $motion;
             }
         }

@@ -425,7 +425,7 @@ class Consultation extends ActiveRecord
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
         }
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $invisibleStatuses)) {
+            if (!$motion->underlyingAmendment && !in_array($motion->status, $invisibleStatuses)) {
                 $return[] = $motion;
             }
         }
