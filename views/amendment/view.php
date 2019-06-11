@@ -167,7 +167,7 @@ if ($amendment->amendedMotion) {
 } else {
     $amendments = [];
 }
-if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY) {
+if (count($amendments) > 0 || ($amendment->getMyMotionType()->amendAmendments && $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY)) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
