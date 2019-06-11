@@ -9,6 +9,7 @@ use app\models\db\Amendment;
 use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentSupporter;
 use app\models\db\ConsultationLog;
+use app\models\db\ConsultationSettingsTag;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
@@ -428,12 +429,6 @@ class AmendmentController extends Base
 
             if ($amendedMotion->save()) {
                 $amendedMotion->link('underlyingAmendment', $amendment);
-
-                try {
-                    $amendedMotion->motionType->getMotionSupportTypeClass()->submitMotion($amendedMotion);
-                } catch (FormError $e) {
-                    \Yii::$app->session->setFlash('error', $e->getMessage());
-                }
 
                 foreach ($motion->tags as $tagId) {
                     /** @var ConsultationSettingsTag $tag */
