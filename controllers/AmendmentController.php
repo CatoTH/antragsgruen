@@ -96,9 +96,27 @@ class AmendmentController extends Base
     }
 
     /**
+     * @param Amendment[] $amendments
+     * @param Motion $motion
+     * @param int $withdrawn
+     * @return Amendment[]
+     * @throws \app\models\exceptions\Internal
+     */
+    private function addAmendments($amendments, $motion, $withdrawn = 0)
+    {
+        foreach ($motion->getVisibleAmendmentsSorted($withdrawn) as $amendment) {
+            $amendments[] = $amendment;
+            if ($amendment->amendedMotion)
+                $amendments = $this->addAmendments($amendments, $amendment->amendedMotion, $withdrawn);
+        }
+        return $amendments;
+    }
+
+    /**
      * @param int $withdrawn
      * @return string
      * @throws \yii\base\ExitException
+     * @throws \app\models\exceptions\Internal
      */
     public function actionPdfcollection($withdrawn = 0)
     {
@@ -114,8 +132,9 @@ class AmendmentController extends Base
             if ($texTemplate === null) {
                 $texTemplate = $motion->motionType->texTemplate;
             }
-            $amendments = array_merge($amendments, $motion->getVisibleAmendmentsSorted($withdrawn));
+            $amendments = $this->addAmendments($amendments, $motion, $withdrawn);
         }
+
         if (count($amendments) == 0) {
             $this->showErrorpage(404, \Yii::t('amend', 'none_yet'));
         }
