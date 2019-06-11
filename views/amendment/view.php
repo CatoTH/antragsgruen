@@ -162,6 +162,61 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
 
 MotionLayoutHelper::printLikeDislikeSection($amendment, $supportPolicy, $supportStatus);
 
+if ($amendment->amendedMotion) {
+    $amendments = $amendment->amendedMotion->getVisibleAmendments();
+} else {
+    $amendments = [];
+}
+if (count($amendments) > 0 || $motion->motionType->getAmendmentPolicy()->getPolicyID() !== IPolicy::POLICY_NOBODY) {
+    echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
+    <div class="content">';
+
+    if ($amendment->isCurrentlyAmendable(false, true)) {
+        echo '<div class="pull-right">';
+        $title = '<span class="icon glyphicon glyphicon-flash"></span>';
+        $title .= \Yii::t('motion', 'amendment_create');
+        $amendCreateUrl = UrlHelper::createAmendmentUrl($amendment, 'amend');
+        echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .
+            $title . '</a>';
+        echo '</div>';
+    }
+
+    // Global alternatives first, then sorted by titlePrefix
+    usort($amendments, function (Amendment $amend1, Amendment $amend2) {
+        if ($amend1->globalAlternative && !$amend2->globalAlternative) {
+            return -1;
+        }
+        if (!$amend1->globalAlternative && $amend2->globalAlternative) {
+            return 1;
+        }
+        return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
+    });
+
+    if (count($amendments) > 0) {
+        echo '<ul class="amendments">';
+        foreach ($amendments as $amend) {
+            echo '<li>';
+            if ($amend->globalAlternative) {
+                echo '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
+            }
+            $aename = $amend->titlePrefix;
+            if ($aename == '') {
+                $aename = $amend->id;
+            }
+            $amendLink = UrlHelper::createAmendmentUrl($amend);
+            $amendStatuses = Amendment::getStatusNames();
+            echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
+            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
+            echo '</li>';
+        }
+        echo '</ul>';
+    } else {
+        echo '<em>' . \Yii::t('motion', 'amends_none') . '</em>';
+    }
+
+    echo '</div></section>';
+}
+
 if ($motion->motionType->policyComments !== IPolicy::POLICY_NOBODY) {
     echo $this->render('_view_comments', ['amendment' => $amendment, 'commentForm' => $commentForm]);
 }
