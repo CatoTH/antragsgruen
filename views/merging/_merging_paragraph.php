@@ -55,7 +55,7 @@ if (count($allAmendingIds) > 0) {
             $active       = in_array($amendment->id, $currAmendingIds);
             $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
 
-            $statuses = [
+            $statuses                     = [
                 Amendment::STATUS_PROCESSED         => Yii::t('structure', 'STATUS_PROCESSED'),
                 Amendment::STATUS_ACCEPTED          => Yii::t('structure', 'STATUS_ACCEPTED'),
                 Amendment::STATUS_REJECTED          => Yii::t('structure', 'STATUS_REJECTED'),
@@ -66,7 +66,7 @@ if (count($allAmendingIds) > 0) {
                 $statusesAll[$amendment->status];
 
             ?>
-            <div class="btn-group">
+            <div class="btn-group amendmentStatus" data-amendment-id="<?= $amendment->id ?>">
                 <button type="button" class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs toggleAmendment">
                     <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
                            type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
@@ -103,7 +103,8 @@ if (count($allAmendingIds) > 0) {
                     <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>
                     <?php
                     foreach ($statuses as $statusId => $statusName) {
-                        echo '<li><a href="" class="setStatus" data-status="' . $statusId . '">' .
+                        echo '<li class="status' . $statusId . '">' .
+                            '<a href="" class="setStatus" data-status="' . $statusId . '">' .
                             Html::encode($statusName) . '</a></li>';
                     }
                     ?>
@@ -130,20 +131,22 @@ if (count($allAmendingIds) > 0) {
     <?php
 }
 ?>
-    <div class="form-group wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0">
-        <!--suppress HtmlFormInputWithoutLabel -->
-        <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
-                  title="<?= Html::encode($type->title) ?>"></textarea>
-        <!--suppress HtmlFormInputWithoutLabel -->
-        <textarea name="<?= $nameBase ?>[consolidated]" class="consolidated"
-                  title="<?= Html::encode($type->title) ?>"></textarea>
-        <div class="texteditor motionTextFormattings boxed ICE-Tracking<?php
-        if ($section->getSettings()->fixedWidth) {
-            echo ' fixedWidthFont';
-        }
-        ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
-            <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
-                <?= $paragraphText ?>
+    <div class="form-group">
+        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0">
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
+                      title="<?= Html::encode($type->title) ?>"></textarea>
+            <!--suppress HtmlFormInputWithoutLabel -->
+            <textarea name="<?= $nameBase ?>[consolidated]" class="consolidated"
+                      title="<?= Html::encode($type->title) ?>"></textarea>
+            <div class="texteditor motionTextFormattings boxed ICE-Tracking<?php
+            if ($section->getSettings()->fixedWidth) {
+                echo ' fixedWidthFont';
+            }
+            ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
+                <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
+                    <?= $paragraphText ?>
+                </div>
             </div>
         </div>
         <div class="collisionsHolder">

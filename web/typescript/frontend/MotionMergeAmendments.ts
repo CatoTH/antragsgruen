@@ -493,7 +493,7 @@ class MotionMergeAmendmentsParagraph {
     private sectionId: number;
     private paragraphId: number;
 
-    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea) {
+    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea, private amendmentStatuses) {
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
 
@@ -519,6 +519,10 @@ class MotionMergeAmendmentsParagraph {
                 }
                 this.reloadText();
             }
+        });
+
+        this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', (ev, ev2) => {
+            console.log("onShow", ev, ev2);
         });
     }
 
@@ -552,8 +556,12 @@ export class MotionMergeAmendments {
 
     public $draftSavingPanel: JQuery;
     private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
+    private amendmentStatuses;
 
     constructor(private $form: JQuery) {
+        this.amendmentStatuses = $form.data("amendment-statuses");
+        console.log(this.amendmentStatuses);
+
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
             const $textarea = $para.find(".wysiwyg-textarea");
@@ -562,7 +570,7 @@ export class MotionMergeAmendments {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")]);
+            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")], this.amendmentStatuses);
         });
 
         this.$form.on("submit", () => {
