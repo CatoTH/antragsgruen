@@ -33,7 +33,7 @@
     "zendframework/zend-servicemanager": "^3.3.0",
     "setasign/fpdi-tcpdf": "^2.0",
     "paragonie/sodium_compat": "^1.6",
-    "leafo/scssphp": "^0.7.7"
+    "leafo/scssphp": "^0.8.4"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "^2.1.3",
@@ -54,7 +54,6 @@
   "suggest": {
     "yiisoft/yii2-redis": "Allows using redis for caching",
     "simplesamlphp/simplesamlphp": "Allowed Single Sign On Authentication using SAML",
-    "phpoffice/phpexcel": "Allows exporting amendments into Excel format. Does not work well, therefore not really suggested.",
     "predis/predis": "If simplesaml should store its data to redis"
   },
   "config": {
