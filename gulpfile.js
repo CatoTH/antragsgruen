@@ -9,7 +9,7 @@ const gulp = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
 
     main_js_files = [
-        "node_modules/bootstrap/dist/js/bootstrap.js", "node_modules/bootbox/bootbox.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
+        "node_modules/bootstrap/dist/js/bootstrap.js", "node_modules/bootbox/src/bootbox.all.js", "web/js/scrollintoview.js", "web/js/jquery.isonscreen.js",
         "node_modules/intl/dist/Intl.min.js"
     ];
 
@@ -17,7 +17,7 @@ const taskCopyFiles = gulp.series((done) => {
     gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/typeahead.js/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
+    gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
     gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));

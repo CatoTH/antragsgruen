@@ -10,7 +10,7 @@ use yii\helpers\Html;
 /**
  * @var yii\web\View $this
  * @var IMotion $entries
- * @var \app\models\forms\AdminMotionFilterForm $search
+ * @var AdminMotionFilterForm $search
  * @var boolean $privilegeScreening
  * @var boolean $privilegeProposals
  */
