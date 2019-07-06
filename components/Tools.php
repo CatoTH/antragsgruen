@@ -344,8 +344,8 @@ class Tools
      */
     public static function compareSqlTimes($dateTime1, $dateTime2)
     {
-        $ts1 = static::dateSql2timestamp($dateTime1);
-        $ts2 = static::dateSql2timestamp($dateTime2);
+        $ts1 = ($dateTime1 ? static::dateSql2timestamp($dateTime1) : 0);
+        $ts2 = ($dateTime2 ? static::dateSql2timestamp($dateTime2) : 0);
         if ($ts1 < $ts2) {
             return -1;
         } elseif ($ts1 > $ts2) {
