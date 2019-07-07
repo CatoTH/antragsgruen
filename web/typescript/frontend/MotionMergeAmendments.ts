@@ -1,6 +1,40 @@
 import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 
+const STATUS_ACCEPTED = 4;
+const STATUS_MODIFIED_ACCEPTED = 6;
+const STATUS_PROCESSED = 17;
+const STATUS_ADOPTED = 8;
+const STATUS_COMPLETED = 9;
+
+class AmendmentStatuses {
+    private static statuses: {[amendmentId: number]: number};
+    private static statusListeners: {[amendmentId: number]: MotionMergeAmendmentsParagraph[]} = {};
+
+    public static init(statuses: {[amendmentId: number]: number}) {
+        console.log("Init statuses");
+        AmendmentStatuses.statuses = statuses;
+        Object.keys(statuses).forEach(amendmentId => {
+           AmendmentStatuses.statusListeners[amendmentId] = [];
+        });
+    }
+
+    public static getAmendmentStatus(amendmentId: number): number {
+        return AmendmentStatuses.statuses[amendmentId];
+    }
+
+    public static registerParagraph(amendmentId: number, paragraph: MotionMergeAmendmentsParagraph) {
+        AmendmentStatuses.statusListeners[amendmentId].push(paragraph);
+    }
+
+    public static setStatus(amendmentId: number, status: number) {
+        AmendmentStatuses.statuses[amendmentId] = status;
+        AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
+            paragraph.onAmendmentStatusChanged(amendmentId, status);
+        });
+    }
+}
+
 export class MotionMergeChangeActions {
     public static removeEmptyParagraphs() {
         $('.paragraphHolder').each((i, el) => {
@@ -433,11 +467,14 @@ class MotionMergeAmendmentsParagraph {
     private sectionId: number;
     private paragraphId: number;
 
-    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea, private amendmentStatuses) {
+    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea) {
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
 
         this.initButtons();
+        $holder.find(".amendmentStatus").each((i: number, element) => {
+            AmendmentStatuses.registerParagraph($(element).data("amendment-id"), this);
+        });
     }
 
     private initButtons() {
@@ -465,9 +502,49 @@ class MotionMergeAmendmentsParagraph {
             }
         });
 
-        this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', (ev, ev2) => {
-            console.log("onShow", ev, ev2);
+        const initTooltip = ($holder: JQuery) => {
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            const currentStatus = AmendmentStatuses.getAmendmentStatus(amendmentId);
+
+            $holder.find(".dropdown-menu .selected").removeClass("selected");
+            $holder.find(".dropdown-menu .status" + currentStatus).addClass("selected");
+        };
+
+        this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', ev => {
+            initTooltip($(ev.currentTarget))
         });
+
+        this.$holder.find(".btn-group .setStatus").click(ev => {
+            ev.preventDefault();
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setStatus(amendmentId, parseInt($(ev.currentTarget).data("status")));
+            initTooltip($holder);
+        });
+    }
+
+    public onAmendmentStatusChanged(amendmentId: number, status: number) {
+        if (this.textarea.hasChanges()) {
+            console.log("Skipping, as there are changes");
+            return;
+        }
+        const $holder = this.$holder.find(".amendmentStatus[data-amendment-id=" + amendmentId + "]");
+        const $btn = $holder.find(".btn");
+        const $input = $holder.find("input.amendmentActive");
+        if ([
+            STATUS_ACCEPTED,
+            STATUS_MODIFIED_ACCEPTED,
+            STATUS_PROCESSED,
+            STATUS_ADOPTED,
+            STATUS_COMPLETED
+        ].indexOf(status) !== -1) {
+            $input.val("1");
+            $btn.removeClass("btn-default").addClass("btn-success");
+        } else {
+            $input.val("0");
+            $btn.addClass("btn-default").removeClass("btn-success");
+        }
+        this.reloadText();
     }
 
     private reloadText() {
@@ -500,11 +577,9 @@ export class MotionMergeAmendments {
 
     public $draftSavingPanel: JQuery;
     private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
-    private amendmentStatuses;
 
     constructor(private $form: JQuery) {
-        this.amendmentStatuses = $form.data("amendment-statuses");
-        console.log(this.amendmentStatuses);
+        AmendmentStatuses.init($form.data("amendment-statuses"));
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
@@ -515,7 +590,7 @@ export class MotionMergeAmendments {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")], this.amendmentStatuses);
+            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")]);
         });
 
         this.$form.on("submit", () => {

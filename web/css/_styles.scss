@@ -477,6 +477,19 @@
     font-weight: bold;
   }
 
+  .amendmentStatus {
+    .selected {
+      a:before {
+        content: '✓';
+        display: block;
+        float: left;
+        width: 16px;
+        margin-left: -16px;
+        text-align: center;
+      }
+    }
+  }
+
   .hasCollisions {
     .form-group {
       border: 1px solid #ccc;
