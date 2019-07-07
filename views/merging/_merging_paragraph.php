@@ -127,6 +127,7 @@ if (count($allAmendingIds) > 0) {
                 </ul>
             </div>
         </div>
+        <div class="changedIndicator pull-right hidden"><?= Yii::t('amend', 'merge_changed') ?></div>
     </div>
     <?php
 }

@@ -10,27 +10,27 @@ export class MotionMergeChangeActions {
         });
     }
 
-    public static accept(node: Element) {
+    public static accept(node: Element, onFinished: () => void = null) {
         let $node = $(node);
         if ($node.hasClass("ice-ins")) {
-            MotionMergeChangeActions.insertAccept(node);
+            MotionMergeChangeActions.insertAccept(node, onFinished);
         }
         if ($node.hasClass("ice-del")) {
-            MotionMergeChangeActions.deleteAccept(node);
+            MotionMergeChangeActions.deleteAccept(node, onFinished);
         }
     }
 
-    public static reject(node: Element) {
+    public static reject(node: Element, onFinished: () => void = null) {
         let $node = $(node);
         if ($node.hasClass("ice-ins")) {
-            MotionMergeChangeActions.insertReject($node);
+            MotionMergeChangeActions.insertReject($node, onFinished);
         }
         if ($node.hasClass("ice-del")) {
-            MotionMergeChangeActions.deleteReject($node);
+            MotionMergeChangeActions.deleteReject($node, onFinished);
         }
     }
 
-    public static insertReject($node: JQuery) {
+    public static insertReject($node: JQuery, onFinished: () => void = null) {
         let $removeEl: JQuery,
             name = $node[0].nodeName.toLowerCase();
         if (name == 'li') {
@@ -40,17 +40,19 @@ export class MotionMergeChangeActions {
         }
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
             $removeEl.css("overflow", "hidden").height($removeEl.height());
-            $removeEl.animate({"height": "0"}, 250, function () {
+            $removeEl.animate({"height": "0"}, 250, () => {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
                 MotionMergeChangeActions.removeEmptyParagraphs();
+                if (onFinished) onFinished();
             });
         } else {
             $removeEl.remove();
+            if (onFinished) onFinished();
         }
     }
 
-    public static insertAccept(node: Element) {
+    public static insertAccept(node: Element, onFinished: () => void = null) {
         let $this: JQuery = $(node);
         $this.removeClass("ice-cts ice-ins appendHint moved");
         $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
@@ -63,9 +65,10 @@ export class MotionMergeChangeActions {
         if (node.nodeName.toLowerCase() == 'ins') {
             $this.replaceWith($this.html());
         }
+        if (onFinished) onFinished();
     }
 
-    public static deleteReject($node: JQuery) {
+    public static deleteReject($node: JQuery, onFinished: () => void = null) {
         $node.removeClass("ice-cts ice-del appendHint");
         $node.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
         let nodeName = $node[0].nodeName.toLowerCase();
@@ -78,9 +81,10 @@ export class MotionMergeChangeActions {
         if (nodeName == 'del') {
             $node.replaceWith($node.html());
         }
+        if (onFinished) onFinished();
     }
 
-    public static deleteAccept(node: Element) {
+    public static deleteAccept(node: Element, onFinished: () => void = null) {
         let name = node.nodeName.toLowerCase(),
             $removeEl: JQuery;
         if (name == 'li') {
@@ -91,20 +95,22 @@ export class MotionMergeChangeActions {
 
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
             $removeEl.css("overflow", "hidden").height($removeEl.height());
-            $removeEl.animate({"height": "0"}, 250, function () {
+            $removeEl.animate({"height": "0"}, 250, () => {
                 $removeEl.remove();
                 $(".collidingParagraph:empty").remove();
                 MotionMergeChangeActions.removeEmptyParagraphs();
+                if (onFinished) onFinished();
             });
         } else {
             $removeEl.remove();
+            if (onFinished) onFinished();
         }
     }
 }
 
 
 class MotionMergeChangeTooltip {
-    constructor(private $element, mouseX: number, mouseY: number, private parent: MotionMergeAmendmentsTextarea) {
+    constructor(private $element: JQuery, mouseX: number, mouseY: number, private parent: MotionMergeAmendmentsTextarea) {
         let positionX: number = null,
             positionY: number = null;
         $element.popover({
@@ -112,7 +118,7 @@ class MotionMergeChangeTooltip {
             'animation': false,
             'trigger': 'manual',
             'placement': function (popover) {
-                let $popover = $(popover);
+                let $popover = $(<string>popover);
                 window.setTimeout(() => {
                     let width = $popover.width(),
                         elTop = $element.offset().top,
@@ -137,7 +143,7 @@ class MotionMergeChangeTooltip {
         });
 
         $element.popover('show');
-        let $popover = $element.find("> .popover");
+        let $popover: JQuery = $element.find("> .popover");
         $popover.on("mousemove", (ev) => {
             ev.stopPropagation();
         });
@@ -145,7 +151,7 @@ class MotionMergeChangeTooltip {
     }
 
     private getContent() {
-        let $myEl = this.$element,
+        let $myEl: JQuery = this.$element,
             html,
             cid = $myEl.data("cid");
         if (cid == undefined) {
@@ -211,7 +217,6 @@ class MotionMergeChangeTooltip {
         this.parent.saveEditorSnapshot();
         this.destroy();
         action.call(this);
-        $(".collidingParagraph:empty").remove();
         this.parent.focusTextarea();
 
         window.scrollTo(scrollX, scrollY);
@@ -220,7 +225,11 @@ class MotionMergeChangeTooltip {
     private accept() {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
-                MotionMergeChangeActions.accept(el);
+                MotionMergeChangeActions.accept(el, () => {
+                    console.log("Accept");
+                    console.log($("#sections_56_13_wysiwyg").html());
+                    this.parent.onChanged();
+                });
             });
         });
     }
@@ -228,121 +237,22 @@ class MotionMergeChangeTooltip {
     private reject() {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
-                MotionMergeChangeActions.reject(el);
-            });
-        });
-    }
-
-    public destroy() {
-        this.$element.popover("hide").popover("destroy");
-
-        let cid = this.$element.data("cid");
-        if (cid == undefined) {
-            cid = this.$element.parent().data("cid");
-        }
-        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
-
-        try {
-            // Remove stale objects that were not removed correctly previously
-            const $popovers = $(".popover");
-            $popovers.popover("hide").popover("destroy");
-            $popovers.remove();
-        } catch (e) {
-        }
-    }
-}
-
-class MotionMergeConflictTooltip {
-    constructor(private $element, currMouseX, private parent: MotionMergeAmendmentsTextarea) {
-        $element.popover({
-            'container': 'body',
-            'animation': false,
-            'trigger': 'manual',
-            'placement': 'bottom',
-            'html': true,
-            'title': __t("merge", "colliding_title"),
-            'content': this.getContent.bind(this)
-        });
-        $element.popover('show');
-
-        let $popover = $("body > .popover"),
-            width = $popover.width();
-        $popover.css("left", Math.floor($element.offset().left + currMouseX - (width / 2) + 20) + "px");
-        $popover.on("mousemove", function (ev) {
-            ev.stopPropagation();
-        });
-        window.setTimeout(this.removePopupIfInactive.bind(this), 500);
-    }
-
-    private removePopupIfInactive() {
-        if (this.$element.is(":hover")) {
-            return window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
-        }
-        if ($("body").find(".popover:hover").length > 0) {
-            return window.setTimeout(this.removePopupIfInactive.bind(this), 1000);
-        }
-        this.destroy();
-    }
-
-    private performActionWithUI(action) {
-        this.parent.saveEditorSnapshot();
-        this.destroy();
-        action.call(this);
-        $(".collidingParagraph:empty").remove();
-        this.parent.focusTextarea();
-    }
-
-
-    private getContent() {
-        let $this = this.$element,
-            html = '<div style="white-space: nowrap;"><button type="button" class="btn btn-small btn-default delTitle">' +
-                '<span style="text-decoration: line-through">' + __t("merge", "title") + '</span></button>';
-        html += '<button type="button" class="reject btn btn-small btn-default"><span class="glyphicon glyphicon-trash"></span></button>';
-        html += '<a href="#" class="btn btn-small btn-default opener" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>';
-        html += '<div class="initiator" style="font-size: 0.8em;"></div>';
-        html += '</div>';
-        let $el = $(html);
-        $el.find(".delTitle").attr("title", __t("merge", "title_del_title"));
-        $el.find(".reject").attr("title", __t("merge", "title_del_colliding"));
-        $el.find("a.opener").attr("href", $this.find("a").attr("href")).attr("title", __t("merge", "title_open_in_blank"));
-        $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $this.parents(".collidingParagraph").data("username"));
-        $el.find(".reject").click(() => {
-            this.performActionWithUI.call(this, () => {
-                let $para = $this.parents(".collidingParagraph");
-                $para.css({"overflow": "hidden"}).height($para.height());
-                $para.animate({"height": "0"}, 250, function () {
-                    let $parent = $para.parents(".paragraphHolder");
-                    $para.remove();
-                    if ($parent.find(".collidingParagraph").length == 0) {
-                        $parent.removeClass("hasCollisions");
-                    }
+                MotionMergeChangeActions.reject(el, () => {
+                    console.log("onFinished");
+                    this.parent.onChanged();
                 });
             });
         });
-        $el.find(".delTitle").click(() => {
-            this.performActionWithUI.call(this, () => {
-                let $para = $this.parents(".collidingParagraph");
-                $this.remove();
-                $para.removeClass("collidingParagraph");
-                let $parent = $para.parents(".paragraphHolder");
-                if ($parent.find(".collidingParagraph").length == 0) {
-                    $parent.removeClass("hasCollisions");
-                }
-            });
-        });
-        return $el;
     }
 
     public destroy() {
+        this.$element.popover("hide").popover("destroy");
+
         let cid = this.$element.data("cid");
         if (cid == undefined) {
             cid = this.$element.parent().data("cid");
         }
         this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
-
-        /*
-        this.$element.popover("hide").popover("destroy");
-        */
 
         try {
             // Remove stale objects that were not removed correctly previously
@@ -356,13 +266,14 @@ class MotionMergeConflictTooltip {
 
 class MotionMergeAmendmentsTextarea {
     private texteditor: editor;
+    private unchangedText: string = null;
 
     private prepareText(html: string) {
-        let $text = $('<div>' + html + '</div>');
+        let $text: JQuery = $('<div>' + html + '</div>');
 
         // Move the amendment-Data from OL's and UL's to their list items
         $text.find("ul.appendHint, ol.appendHint").each((i, el) => {
-            let $this = $(el),
+            let $this: JQuery = $(el),
                 appendHint = $this.data("append-hint");
             $this.find("> li").addClass("appendHint").attr("data-append-hint", appendHint)
                 .attr("data-link", $this.data("link"))
@@ -381,6 +292,9 @@ class MotionMergeAmendmentsTextarea {
 
         let newText = $text.html();
         this.texteditor.setData(newText);
+        this.unchangedText = this.normalizeHtml(this.texteditor.getData());
+        this.texteditor.fire('saveSnapshot');
+        console.log("snapshot")
     }
 
     private markupMovedParagraph(i, el) {
@@ -403,19 +317,6 @@ class MotionMergeAmendmentsTextarea {
     }
 
     private initializeTooltips() {
-        this.$holder.on('mouseover', '.collidingParagraphHead', (ev) => {
-            $(ev.target).parents(".collidingParagraph").addClass("hovered");
-
-            if (MotionMergeAmendments.activePopup) {
-                MotionMergeAmendments.activePopup.destroy();
-            }
-            MotionMergeAmendments.activePopup = new MotionMergeConflictTooltip(
-                $(ev.currentTarget), MotionMergeAmendments.currMouseX, this
-            );
-        }).on('mouseout', '.collidingParagraphHead', (ev) => {
-            $(ev.target).parents(".collidingParagraph").removeClass("hovered");
-        });
-
         this.$holder.on("mouseover", ".appendHint", (ev) => {
             if (MotionMergeAmendments.activePopup) {
                 MotionMergeAmendments.activePopup.destroy();
@@ -467,13 +368,47 @@ class MotionMergeAmendmentsTextarea {
         return this.texteditor.getData();
     }
 
-    public setText(html: string)
-    {
+    public setText(html: string) {
         this.prepareText(html);
         this.initializeTooltips();
     }
 
-    constructor(private $holder: JQuery, private rootObject: MotionMergeAmendments) {
+    private normalizeHtml(html: string) {
+        const entities = {
+            '&nbsp;': ' ',
+            '&ndash;': '-',
+            '&auml;': 'ä',
+            '&ouml;': 'ö',
+            '&uuml;': 'ü',
+            '&Auml;': 'Ä',
+            '&Ouml;': 'Ö',
+            '&Uuml;': 'Ü',
+            '&szlig;': 'ß',
+            '&bdquo;': '„',
+            '&ldquo;': '“',
+            '&bull;': '•',
+            '&sect;': '§',
+            '&eacute;': 'é',
+            '&rsquo;': '’',
+            '&euro;': '€'
+        };
+        Object.keys(entities).forEach(ent => {
+            html = html.replace(new RegExp(ent, 'g'), entities[ent]);
+        });
+
+        return html.replace(/\s+</g, '<').replace(/>\s+/g, '>').replace(/<[^>]*>/g, '');
+    }
+
+    public onChanged() {
+        console.log(this.texteditor.getData());
+        if (this.normalizeHtml(this.texteditor.getData()) === this.unchangedText) {
+            this.$changedIndicator.addClass("hidden");
+        } else {
+            this.$changedIndicator.removeClass("hidden");
+        }
+    }
+
+    constructor(private $holder: JQuery, private $changedIndicator: JQuery, private rootObject: MotionMergeAmendments) {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
         this.texteditor = edit.getEditor();
@@ -486,6 +421,8 @@ class MotionMergeAmendmentsTextarea {
 
         this.$holder.find(".acceptAllChanges").click(this.acceptAll.bind(this));
         this.$holder.find(".rejectAllChanges").click(this.rejectAll.bind(this));
+
+        this.texteditor.on('change', this.onChanged.bind(this));
     }
 }
 
@@ -537,7 +474,7 @@ class MotionMergeAmendmentsParagraph {
 
             let collisions = '';
             data.collisions.forEach(str => {
-               collisions += str;
+                collisions += str;
             });
 
             this.$holder.find(".collisionsHolder").html(collisions);
@@ -551,7 +488,7 @@ class MotionMergeAmendmentsParagraph {
 }
 
 export class MotionMergeAmendments {
-    public static activePopup: MotionMergeChangeTooltip | MotionMergeConflictTooltip = null;
+    public static activePopup: MotionMergeChangeTooltip = null;
     public static currMouseX: number = null;
 
     public $draftSavingPanel: JQuery;
@@ -565,7 +502,8 @@ export class MotionMergeAmendments {
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
             const $textarea = $para.find(".wysiwyg-textarea");
-            this.textareas[$textarea.attr("id")] = new MotionMergeAmendmentsTextarea($textarea, this);
+            const $changed = $para.find(".changedIndicator");
+            this.textareas[$textarea.attr("id")] = new MotionMergeAmendmentsTextarea($textarea, $changed, this);
             $textarea.on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });

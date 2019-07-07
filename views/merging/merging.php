@@ -1,12 +1,9 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\forms\MotionMergeAmendmentsForm;
-use app\models\sectionTypes\TextSimple;
-use app\views\motion\LayoutHelper as MotionLayoutHelper;
 use yii\helpers\Html;
 
 /**
