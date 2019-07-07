@@ -96,8 +96,9 @@ if (count($allAmendingIds) > 0) {
                     }
                     ?>
                     <li>
-                        <a href="<?= Html::encode($amendmentUrl) ?>" class="amendmentLink">
-                            <span class="glyphicon glyphicon-new-window"></span> Show
+                        <a href="<?= Html::encode($amendmentUrl) ?>" class="amendmentLink" target="_blank">
+                            <span class="glyphicon glyphicon-new-window"></span>
+                            <?= Yii::t('amend', 'merge_amend_show') ?>
                         </a>
                     </li>
                     <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>

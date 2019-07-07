@@ -118,7 +118,7 @@ class MotionMergeChangeTooltip {
             'animation': false,
             'trigger': 'manual',
             'placement': function (popover) {
-                let $popover = $(<string>popover);
+                let $popover = $(popover);
                 window.setTimeout(() => {
                     let width = $popover.width(),
                         elTop = $element.offset().top,
@@ -226,8 +226,6 @@ class MotionMergeChangeTooltip {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
                 MotionMergeChangeActions.accept(el, () => {
-                    console.log("Accept");
-                    console.log($("#sections_56_13_wysiwyg").html());
                     this.parent.onChanged();
                 });
             });
@@ -238,7 +236,6 @@ class MotionMergeChangeTooltip {
         this.performActionWithUI(() => {
             this.affectedChangesets().each((i, el) => {
                 MotionMergeChangeActions.reject(el, () => {
-                    console.log("onFinished");
                     this.parent.onChanged();
                 });
             });
@@ -267,6 +264,7 @@ class MotionMergeChangeTooltip {
 class MotionMergeAmendmentsTextarea {
     private texteditor: editor;
     private unchangedText: string = null;
+    private hasChanged: boolean = false;
 
     private prepareText(html: string) {
         let $text: JQuery = $('<div>' + html + '</div>');
@@ -294,7 +292,7 @@ class MotionMergeAmendmentsTextarea {
         this.texteditor.setData(newText);
         this.unchangedText = this.normalizeHtml(this.texteditor.getData());
         this.texteditor.fire('saveSnapshot');
-        console.log("snapshot")
+        this.onChanged();
     }
 
     private markupMovedParagraph(i, el) {
@@ -400,12 +398,17 @@ class MotionMergeAmendmentsTextarea {
     }
 
     public onChanged() {
-        console.log(this.texteditor.getData());
         if (this.normalizeHtml(this.texteditor.getData()) === this.unchangedText) {
             this.$changedIndicator.addClass("hidden");
+            this.hasChanged = false;
         } else {
             this.$changedIndicator.removeClass("hidden");
+            this.hasChanged = true;
         }
+    }
+
+    public hasChanges(): boolean {
+        return this.hasChanged;
     }
 
     constructor(private $holder: JQuery, private $changedIndicator: JQuery, private rootObject: MotionMergeAmendments) {
@@ -437,16 +440,10 @@ class MotionMergeAmendmentsParagraph {
         this.initButtons();
     }
 
-    private hasChanged() {
-        return false; // @TODO
-    }
-
     private initButtons() {
         this.$holder.find('.toggleAmendment').click((ev) => {
-            if (this.hasChanged()) {
-                alert("TO DO");
-            } else {
-                const $input = $(ev.currentTarget).find(".amendmentActive");
+            const $input = $(ev.currentTarget).find(".amendmentActive");
+            const doToggle = () => {
                 if (parseInt($input.val()) === 1) {
                     $input.val("0");
                     $input.parents(".btn-group").find(".btn").addClass("btn-default").removeClass("btn-success");
@@ -455,6 +452,16 @@ class MotionMergeAmendmentsParagraph {
                     $input.parents(".btn-group").find(".btn").removeClass("btn-default").addClass("btn-success");
                 }
                 this.reloadText();
+            };
+
+            if (this.textarea.hasChanges()) {
+                bootbox.confirm(__t('merge', 'reloadParagraph'), (result) => {
+                    if (result) {
+                        doToggle();
+                    }
+                });
+            } else {
+                doToggle();
             }
         });
 
