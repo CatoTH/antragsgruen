@@ -4,7 +4,6 @@ namespace app\models\forms;
 
 use app\models\db\Motion;
 use app\models\db\MotionSection;
-use app\models\exceptions\Internal;
 
 class MotionMergeAmendmentsDraftForm
 {
@@ -14,6 +13,7 @@ class MotionMergeAmendmentsDraftForm
 
     /**
      * MotionMergeAmendmentsDraftForm constructor.
+     *
      * @param Motion $origMotion
      */
     public function __construct($origMotion)
@@ -21,8 +21,8 @@ class MotionMergeAmendmentsDraftForm
         $this->origMotion = $origMotion;
         $draftStatuses    = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
         $this->draft      = Motion::find()
-            ->where(['parentMotionId' => $origMotion->id])
-            ->andWhere(['status' => $draftStatuses])->one();
+                                  ->where(['parentMotionId' => $origMotion->id])
+                                  ->andWhere(['status' => $draftStatuses])->one();
         if ($this->draft) {
             $this->draft->dateCreation = date('Y-m-d H:i:s');
         } else {
@@ -38,34 +38,12 @@ class MotionMergeAmendmentsDraftForm
     }
 
     /**
-     * @param int $sectionId
-     * @return MotionSection
-     * @throws Internal
-     */
-    private function getSection($sectionId)
-    {
-        foreach ($this->draft->sections as $section) {
-            if ($section->sectionId == $sectionId) {
-                return $section;
-            }
-        }
-        foreach ($this->origMotion->sections as $section) {
-            if ($section->sectionId == $sectionId) {
-                $newSection = new MotionSection();
-                $newSection->setAttributes($section->getAttributes(), false);
-                $newSection->motionId = $this->draft->id;
-                return $newSection;
-            }
-        }
-        throw new Internal('Invalid section');
-    }
-
-    /**
      * @param int $public
-     * @param string[] $sections
+     * @param string $data
+     *
      * @return Motion
      */
-    public function save($public, $sections)
+    public function save($public, $data)
     {
         if ($public) {
             $this->draft->status = Motion::STATUS_MERGING_DRAFT_PUBLIC;
@@ -74,13 +52,28 @@ class MotionMergeAmendmentsDraftForm
         }
         $this->draft->save();
 
-        foreach ($this->origMotion->sections as $origSection) {
-            $section = $this->getSection($origSection->sectionId);
-            if (isset($sections[$section->sectionId])) {
-                $section->dataRaw = $sections[$section->sectionId];
-                $section->data    = '';
+        $section = null;
+        foreach ($this->draft->sections as $existingSection) {
+            $section = $existingSection;
+        }
+        if (!$section) {
+            $section = new MotionSection();
+            $section->setAttributes($this->origMotion->sections[0]->getAttributes(), false);
+            $section->motionId = $this->draft->id;
+        }
+        $section->dataRaw = $data;
+        $section->data    = '';
+        $section->save();
+
+        foreach ($this->draft->sections as $oldSection) {
+            if ($oldSection->sectionId !== $section->sectionId) {
+                try {
+                    $oldSection->delete();
+                } catch (\Throwable $e) {
+                    var_dump($e);
+                    die();
+                }
             }
-            $section->save();
         }
 
         return $this->draft;

@@ -454,7 +454,7 @@ trait MotionMergingTrait
         $form  = new MotionMergeAmendmentsDraftForm($motion);
         $draft = $form->save(
             \Yii::$app->request->post('public', 0),
-            \Yii::$app->request->post('sections', [])
+            \Yii::$app->request->post('data', null)
         );
 
         return json_encode([

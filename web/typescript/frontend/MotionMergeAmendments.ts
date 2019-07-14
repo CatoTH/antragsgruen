@@ -1,4 +1,4 @@
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 
 const STATUS_ACCEPTED = 4;
@@ -8,14 +8,14 @@ const STATUS_ADOPTED = 8;
 const STATUS_COMPLETED = 9;
 
 class AmendmentStatuses {
-    private static statuses: {[amendmentId: number]: number};
-    private static statusListeners: {[amendmentId: number]: MotionMergeAmendmentsParagraph[]} = {};
+    private static statuses: { [amendmentId: number]: number };
+    private static statusListeners: { [amendmentId: number]: MotionMergeAmendmentsParagraph[] } = {};
 
-    public static init(statuses: {[amendmentId: number]: number}) {
+    public static init(statuses: { [amendmentId: number]: number }) {
         console.log("Init statuses");
         AmendmentStatuses.statuses = statuses;
         Object.keys(statuses).forEach(amendmentId => {
-           AmendmentStatuses.statusListeners[amendmentId] = [];
+            AmendmentStatuses.statusListeners[amendmentId] = [];
         });
     }
 
@@ -32,6 +32,10 @@ class AmendmentStatuses {
         AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
             paragraph.onAmendmentStatusChanged(amendmentId, status);
         });
+    }
+
+    public static getAll(): { [amendmentId: number]: number } {
+        return AmendmentStatuses.statuses;
     }
 }
 
@@ -445,11 +449,11 @@ class MotionMergeAmendmentsTextarea {
         return this.hasChanged;
     }
 
-    constructor(private $holder: JQuery, private $changedIndicator: JQuery, private rootObject: MotionMergeAmendments) {
+    constructor(private $holder: JQuery, private $changedIndicator: JQuery) {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
         this.texteditor = edit.getEditor();
-        this.rootObject.addSubmitListener(() => {
+        MotionMergeAmendments.addSubmitListener(() => {
             $holder.find("textarea.raw").val(this.texteditor.getData());
             $holder.find("textarea.consolidated").val(this.texteditor.getData());
         });
@@ -464,12 +468,17 @@ class MotionMergeAmendmentsTextarea {
 }
 
 class MotionMergeAmendmentsParagraph {
-    private sectionId: number;
-    private paragraphId: number;
+    public sectionId: number;
+    public paragraphId: number;
+    public textarea: MotionMergeAmendmentsTextarea;
 
-    constructor(private $holder: JQuery, private textarea: MotionMergeAmendmentsTextarea) {
+    constructor(private $holder: JQuery) {
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
+
+        const $textarea = $holder.find(".wysiwyg-textarea");
+        const $changed = $holder.find(".changedIndicator");
+        this.textarea = new MotionMergeAmendmentsTextarea($textarea, $changed);
 
         this.initButtons();
         $holder.find(".amendmentStatus").each((i: number, element) => {
@@ -569,31 +578,45 @@ class MotionMergeAmendmentsParagraph {
             }
         });
     }
+
+    public getDraftData() {
+        const amendmentToggles = {};
+        this.$holder.find(".amendmentStatus").each((id, el) => {
+            const $el = $(el);
+            amendmentToggles[$el.data("amendment-id")] = ($el.find(".btn-success").length > 0);
+        });
+        return {
+            amendmentToggles,
+            text: this.textarea.getContent(),
+        };
+    }
 }
 
+/**
+ * Singleton object
+ */
 export class MotionMergeAmendments {
     public static activePopup: MotionMergeChangeTooltip = null;
     public static currMouseX: number = null;
+    public static $form;
 
     public $draftSavingPanel: JQuery;
-    private textareas: { [id: string]: MotionMergeAmendmentsTextarea } = {};
+    private paragraphs: MotionMergeAmendmentsParagraph[] = [];
 
-    constructor(private $form: JQuery) {
+    constructor($form: JQuery) {
+        MotionMergeAmendments.$form = $form;
         AmendmentStatuses.init($form.data("amendment-statuses"));
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
-            const $textarea = $para.find(".wysiwyg-textarea");
-            const $changed = $para.find(".changedIndicator");
-            this.textareas[$textarea.attr("id")] = new MotionMergeAmendmentsTextarea($textarea, $changed, this);
-            $textarea.on("mousemove", (ev) => {
+            $para.find(".wysiwyg-textarea").on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            new MotionMergeAmendmentsParagraph($para, this.textareas[$textarea.attr("id")]);
+            this.paragraphs.push(new MotionMergeAmendmentsParagraph($para));
         });
 
-        this.$form.on("submit", () => {
+        MotionMergeAmendments.$form.on("submit", () => {
             $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
         });
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
@@ -605,7 +628,7 @@ export class MotionMergeAmendments {
         return __t("std", "leave_changed_page");
     }
 
-    public addSubmitListener(cb) {
+    public static addSubmitListener(cb) {
         this.$form.submit(cb);
     }
 
@@ -624,28 +647,31 @@ export class MotionMergeAmendments {
     }
 
     private saveDraft() {
-        let sections = {};
-        for (let id of Object.getOwnPropertyNames(this.textareas)) {
-            sections[id.replace('section_holder_', '')] = this.textareas[id].getContent();
-        }
+        let data = {
+            "amendmentStatuses": AmendmentStatuses.getAll(),
+            "paragraphs": {},
+        };
+        this.paragraphs.forEach(para => {
+            data.paragraphs[para.sectionId + '_' + para.paragraphId] = para.getDraftData();
+        });
         let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
         $.ajax({
             type: "POST",
-            url: this.$form.data('draftSaving'),
+            url: MotionMergeAmendments.$form.data('draftSaving'),
             data: {
                 'public': (isPublic ? 1 : 0),
-                'sections': sections,
-                '_csrf': this.$form.find('> input[name=_csrf]').val()
+                'data': JSON.stringify(data),
+                '_csrf': MotionMergeAmendments.$form.find('> input[name=_csrf]').val()
             },
             success: (ret) => {
                 if (ret['success']) {
                     this.$draftSavingPanel.find('.savingError').addClass('hidden');
                     this.setDraftDate(new Date(ret['date']));
                     if (isPublic) {
-                        this.$form.find('.publicLink').removeClass('hidden');
+                        MotionMergeAmendments.$form.find('.publicLink').removeClass('hidden');
                     } else {
-                        this.$form.find('.publicLink').addClass('hidden');
+                        MotionMergeAmendments.$form.find('.publicLink').addClass('hidden');
                     }
                 } else {
                     this.$draftSavingPanel.find('.savingError').removeClass('hidden');
@@ -685,7 +711,7 @@ export class MotionMergeAmendments {
     }
 
     private initDraftSaving() {
-        this.$draftSavingPanel = this.$form.find('#draftSavingPanel');
+        this.$draftSavingPanel = MotionMergeAmendments.$form.find('#draftSavingPanel');
         this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
         this.$draftSavingPanel.find('input[name=public]').on('change', this.saveDraft.bind(this));
         this.initAutosavingDraft();

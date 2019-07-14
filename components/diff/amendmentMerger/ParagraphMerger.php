@@ -514,7 +514,7 @@ class ParagraphMerger
             $paragraphText .= $text;
         }
 
-        $out = '<div class="collidingParagraph" data-link="<?= Html::encode($amendmentUrl) ?>"
+        $out = '<div class="collidingParagraph" data-link="' . Html::encode($amendmentUrl) . '"
                      data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">
                      <p class="collidingParagraphHead"><strong>' .
             \Yii::t('amend', 'merge_colliding') . ': ' .
