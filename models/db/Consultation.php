@@ -349,7 +349,7 @@ class Consultation extends ActiveRecord
     {
         $notis = [];
         foreach ($this->userNotifications as $userNotification) {
-            if ($userNotification->notificationType == $type) {
+            if ($userNotification->notificationType === $type && $userNotification->user) {
                 $notis[] = $userNotification;
             }
         }

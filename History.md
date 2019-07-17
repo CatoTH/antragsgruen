@@ -1,5 +1,10 @@
 # Version history
 
+### Version 4.2.3
+
+- Bugfix: If a user subscribed to notifications and had is account deleted afterwards, the site crashed later on when this notification was attempted to be sent.
+- When a consultation is protected with a password, it can now be selected right away if only this one consultation or all should be protected.
+
 ### Version 4.2.2 (2019-05-20)
 
 - Consultations can be protected with a password. This password can be spread amongst eligible users. This serves as a quick&dirty alternative to dealing with user accounts.
