@@ -219,7 +219,7 @@ class UserNotification extends ActiveRecord
         $notificationType = UserNotification::NOTIFICATION_NEW_MOTION;
         $notified         = [];
         foreach ($motion->getMyConsultation()->userNotifications as $noti) {
-            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified)) {
+            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified) && $noti->user) {
                 new MotionNotificationSubscriptions($motion, $noti->user);
 
                 $notified[]             = $noti->userId;
@@ -243,7 +243,7 @@ class UserNotification extends ActiveRecord
             if ($noti->userId === $comment->userId) {
                 continue;
             }
-            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified)) {
+            if ($noti->notificationType === $notificationType && !in_array($noti->userId, $notified) && $noti->user) {
                 $commentSetting = $noti->getSettingByKey('comments', static::$COMMENT_SETTINGS[0]);
                 if ($commentSetting === static::COMMENT_SAME_MOTIONS && !in_array($noti->userId, $usersInSameIMotion)) {
                     continue;
