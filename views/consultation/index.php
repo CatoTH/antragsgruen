@@ -32,7 +32,7 @@ if ($admin) {
 echo '<h1>';
 
 echo Html::encode($consultation->title);
-if ($consultation->eventDateFrom !== '' && $consultation->eventDateFrom !== '0000-00-00') {
+if ($consultation->eventDateFrom && $consultation->eventDateFrom !== '0000-00-00') {
     if ($consultation->eventDateFrom !== $consultation->eventDateTo) {
         echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
         echo ' - ' . Tools::formatMysqlDate($consultation->eventDateTo);
@@ -83,29 +83,47 @@ echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 echo $controller->showErrors();
 
+$getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISupporter $supporter) {
+    $class = [];
+    $title = '';
+    switch ($supporter->role) {
+        case MotionSupporter::ROLE_INITIATOR:
+            $title = Yii::t('motion', 'Initiator');
+            $class[] = 'initiator';
+            break;
+        case MotionSupporter::ROLE_SUPPORTER:
+            $title = Yii::t('motion', 'Supporter');
+            $class[] = 'supporter';
+            break;
+        case MotionSupporter::ROLE_LIKE:
+            $title = Yii::t('motion', 'like');
+            $class[] = 'like';
+            break;
+        case MotionSupporter::ROLE_DISLIKE:
+            $title = Yii::t('motion', 'dislike');
+            $class[] = 'dislike';
+            break;
+    }
+    if ($motion->status === Motion::STATUS_WITHDRAWN) {
+        $class[] = 'withdrawn';
+    }
+    return [implode(" ", $class), $title];
+};
+
 if ($myself) {
     if (count($myMotions)) {
         echo '<h3 class="green">' . Yii::t('con', 'My Motions') . '</h3>';
-        echo '<div class="content myMotionList"><ul>';
+        echo '<div class="content myImotionList myMotionList"><ul>';
 
         foreach ($myMotions as $motionSupport) {
             $motion = $motionSupport->motion;
-            echo '<li>';
-            if ($motion->status === Motion::STATUS_WITHDRAWN) {
-                echo "<span style='text-decoration: line-through;'>";
-            }
+            list($class, $title) = $getMyMotionAttrs($motion, $motionSupport);
+            echo '<li class="' . $class . '"><div class="firstLine">';
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
             echo Html::a(Html::encode($motion->getTitleWithPrefix()), $motionLink, ['class' => 'motion' . $motion->id]);
-            if ($motionSupport->role === MotionSupporter::ROLE_INITIATOR) {
-                echo ' (' . Yii::t('motion', 'Initiator') . ')';
-            }
-            if ($motionSupport->role === MotionSupporter::ROLE_SUPPORTER) {
-                echo ' (' . Yii::t('motion', 'Supporter') . ')';
-            }
+            echo ' (' . Html::encode($title) . ')';
             echo ': ' . Html::encode($motion->getStatusNames()[$motion->status]);
-            if ($motion->status == Motion::STATUS_WITHDRAWN) {
-                echo '</span>';
-            }
+            echo '</div>';
             if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($motion->getSupporters());
@@ -120,29 +138,16 @@ if ($myself) {
 
     if (count($myAmendments) > 0) {
         echo '<h3 class="green">' . Yii::t('con', 'My Amendments') . '</h3>';
-        echo '<div class="content myAmendmentList"><ul>';
+        echo '<div class="content myImotionList myAmendmentList"><ul>';
         foreach ($myAmendments as $amendmentSupport) {
             $amendment = $amendmentSupport->amendment;
-            echo '<li>';
-            if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
-                echo "<span style='text-decoration: line-through;'>";
-            }
+            list($class, $title) = $getMyMotionAttrs($amendment, $amendmentSupport);
+            echo '<li class="' . $class . '"><div class="firstLine">';
             $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
-            echo Html::a(
-                Html::encode($amendment->getTitle()),
-                $amendmentUrl,
-                ['class' => 'amendment' . $amendment->id]
-            );
-            if ($amendmentSupport->role === AmendmentSupporter::ROLE_INITIATOR) {
-                echo ' (' . Yii::t('amend', 'initiator') . ')';
-            }
-            if ($amendmentSupport->role === AmendmentSupporter::ROLE_SUPPORTER) {
-                echo ' (' . Yii::t('amend', 'supporter') . ')';
-            }
+            echo Html::a(Html::encode($amendment->getTitle()), $amendmentUrl, ['class' => 'amendment' . $amendment->id]);
+            echo ' (' . Html::encode($title) . ')';
             echo ': ' . Html::encode($amendment->getStatusNames()[$amendment->status]);
-            if ($amendment->status === Amendment::STATUS_WITHDRAWN) {
-                echo '</span>';
-            }
+            echo '</div>';
             if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
                 echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($amendment->getSupporters());

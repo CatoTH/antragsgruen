@@ -28,7 +28,7 @@ class ConsultationController extends Base
      * @param \yii\base\Action $action
      * @return bool
      * @throws \Exception
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      * @throws \yii\base\ExitException
      * @throws \yii\web\BadRequestHttpException
      */
@@ -44,7 +44,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      * @throws \yii\base\ExitException
      */
     public function actionSearch()
@@ -72,7 +72,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public function actionFeedmotions()
     {
@@ -103,7 +103,7 @@ class ConsultationController extends Base
 
     /**
      * @return string
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public function actionFeedamendments()
     {

@@ -2,6 +2,17 @@
 
 @import "variables";
 
+.consultationIndex {
+  .myImotionList {
+    .widthdrawn .firstLine {
+      text-decoration: line-through;
+    }
+    .initiator .firstLine a {
+      font-weight: bold;
+    }
+  }
+}
+
 .motionList {
   .motion {
     position: relative;

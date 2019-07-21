@@ -470,16 +470,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedMotionsByConsultation(Consultation $consultation)
     {
-        $initiator = MotionSupporter::ROLE_INITIATOR;
         $query     = MotionSupporter::find();
         $query->innerJoin(
             'motion',
-            'motionSupporter.motionId = motion.id AND motionSupporter.role = "' . addslashes($initiator) . '"'
+            'motionSupporter.motionId = motion.id'
         );
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('motionSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy('motion.dateCreation DESC');
+        $query->orderBy('(motionSupporter.role = "initiates") DESC, motion.dateCreation DESC');
 
         return $query->all();
     }
@@ -490,19 +489,17 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getMySupportedAmendmentsByConsultation(Consultation $consultation)
     {
-        $initiator = AmendmentSupporter::ROLE_INITIATOR;
         $query     = AmendmentSupporter::find();
         $query->innerJoin(
             'amendment',
-            'amendmentSupporter.amendmentId = amendment.id AND ' .
-            'amendmentSupporter.role = "' . addslashes($initiator) . '"'
+            'amendmentSupporter.amendmentId = amendment.id'
         );
         $query->innerJoin('motion', 'motion.id = amendment.motionId');
         $query->where('motion.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('amendment.status != ' . IntVal(Motion::STATUS_DELETED));
         $query->andWhere('motion.consultationId = ' . IntVal($consultation->id));
         $query->andWhere('amendmentSupporter.userId = ' . IntVal($this->id));
-        $query->orderBy('amendment.dateCreation DESC');
+        $query->orderBy('(amendmentSupporter.role = "initiates") DESC, amendment.dateCreation DESC');
 
         return $query->all();
     }

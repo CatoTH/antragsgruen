@@ -14,7 +14,7 @@ if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
 
-echo '<h2 class="green">' . \Yii::t('con', 'All Motions') . '</h2>';
+echo '<h2 class="green">' . Yii::t('con', 'All Motions') . '</h2>';
 
 $motions = MotionSorter::getSortedMotions($consultation, $motions);
 foreach ($motions as $name => $motns) {
@@ -26,5 +26,5 @@ foreach ($motions as $name => $motns) {
 }
 
 if (count($motions) === 0) {
-    echo '<div class="content noMotionsYet">' . \Yii::t('con', 'no_motions_yet') . '</div>';
+    echo '<div class="content noMotionsYet">' . Yii::t('con', 'no_motions_yet') . '</div>';
 }
