@@ -118,6 +118,7 @@ if ($consultation->getSettings()->proposalProcedurePage) {
     $html .= "</ul></div>";
 
     $layout->menusHtml[] = $html;
+    $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
 }
 
 if ($hasMotions) {

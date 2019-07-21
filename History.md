@@ -2,6 +2,7 @@
 
 - The inline amendment mode in the regular motion view (using the green bookmarks at the right) can now be used on devices with small screens as well.
 - Several styling improvements, especially for devices with small screens (e.g. smartphones)
+- Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens
 
 ### Version 4.2.3 (2019-07-18)
 

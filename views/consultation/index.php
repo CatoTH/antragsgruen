@@ -13,8 +13,8 @@ use yii\helpers\Html;
  * @var \app\models\db\Consultation $consultation
  * @var Motion[] $motions
  * @var \app\models\db\User|null $myself
- * @var \app\models\db\MotionSupporter[] $myMotions
- * @var \app\models\db\AmendmentSupporter[] $myAmendments
+ * @var MotionSupporter[] $myMotions
+ * @var AmendmentSupporter[] $myAmendments
  * @var bool $admin
  */
 
@@ -32,8 +32,8 @@ if ($admin) {
 echo '<h1>';
 
 echo Html::encode($consultation->title);
-if ($consultation->eventDateFrom != '' && $consultation->eventDateFrom != '0000-00-00') {
-    if ($consultation->eventDateFrom != $consultation->eventDateTo) {
+if ($consultation->eventDateFrom !== '' && $consultation->eventDateFrom !== '0000-00-00') {
+    if ($consultation->eventDateFrom !== $consultation->eventDateTo) {
         echo ', ' . Tools::formatMysqlDate($consultation->eventDateFrom);
         echo ' - ' . Tools::formatMysqlDate($consultation->eventDateTo);
     } else {
@@ -49,7 +49,7 @@ echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;
 if (count($consultation->motionTypes) === 1) {
     $deadline = $consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
     if ($deadline) {
-        echo '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
+        echo '<p class="deadlineCircle">' . Yii::t('con', 'deadline_circle') . ': ';
         echo Tools::formatMysqlDateTime($deadline) . "</p>\n";
     }
 }
@@ -107,9 +107,9 @@ if ($myself) {
                 echo '</span>';
             }
             if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-                echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
+                echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($motion->getSupporters());
-                echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
+                echo ' <small>(' . Yii::t('motion', 'support_collect_min') . ': ';
                 echo $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
             }
@@ -144,9 +144,9 @@ if ($myself) {
                 echo '</span>';
             }
             if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
-                echo '<div>' . \Yii::t('motion', 'support_collect_status') . ': ';
+                echo '<div>' . Yii::t('motion', 'support_collect_status') . ': ';
                 echo count($amendment->getSupporters());
-                echo ' <small>(' . \Yii::t('motion', 'support_collect_min') . ': ';
+                echo ' <small>(' . Yii::t('motion', 'support_collect_min') . ': ';
                 echo $amendment->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 echo ')</small></div>';
             }
