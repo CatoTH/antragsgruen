@@ -316,7 +316,12 @@
       position: absolute;
       top: -($inlineAmendmentPreambleHeight - 10);
       height: $inlineAmendmentPreambleHeight;
-      width: 100%;
+      @media screen and (min-width: 800px) {
+        width: 100%;
+      }
+      @media screen and (max-width: 799px) {
+        width: calc(100% - #{$fixedWidthTextStdPaddingSmall} - 10px);
+      }
 
       > a {
         position: absolute;

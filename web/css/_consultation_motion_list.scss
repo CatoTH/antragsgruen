@@ -23,7 +23,12 @@
 
     > .date {
       color: #757676;
-      margin-left: 20px;
+      @media screen and (min-width: 800px) {
+        margin-left: 20px;
+      }
+      @media screen and (max-width: 799px) {
+        margin-left: 12px;
+      }
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
       right: 12px;
@@ -39,8 +44,8 @@
       margin-bottom: 3px;
 
       .motionIcon {
-        width: 27px;
-        margin-left: -30px;
+        width: 21px;
+        margin-left: -24px;
         color: $colorLinksLight;
       }
 
@@ -116,7 +121,12 @@
       > .date {
         color: #757676;
         display: block;
-        margin-left: 20px;
+        @media screen and (min-width: 800px) {
+          margin-left: 20px;
+        }
+        @media screen and (max-width: 799px) {
+          margin-left: 12px;
+        }
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
         right: -8px;
@@ -276,8 +286,13 @@
   }
   ul.motions {
     list-style-type: none;
-    margin: 0 0 0 50px;
     padding: 0;
+    @media screen and (min-width: 800px) {
+      margin: 0 0 0 50px;
+    }
+    @media screen and (max-width: 799px) {
+      margin: 0 0 0 26px;
+    }
   }
   ul.amendments {
     > li > .date {
@@ -299,7 +314,12 @@
 
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
-    padding-left: 20px;
+    @media screen and (min-width: 800px) {
+      padding-left: 20px;
+    }
+    @media screen and (max-width: 799px) {
+      padding-left: 16px;
+    }
     position: relative;
 
     .delAgendaItem, .delAgendaItem:link, .delAgendaItem:visited {
@@ -311,7 +331,12 @@
 
     > div {
       margin-bottom: 5px;
-      padding: 5px 10px 10px;
+      @media screen and (min-width: 800px) {
+        padding: 5px 10px 10px;
+      }
+      @media screen and (max-width: 799px) {
+        padding: 5px 10px 10px 0;
+      }
 
       > h3 {
         overflow: auto;
