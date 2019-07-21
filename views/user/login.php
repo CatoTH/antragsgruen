@@ -217,28 +217,6 @@ if ($params->isSamlActive()) {
     echo '</section>';
 }
 
-
-if (in_array(SiteSettings::LOGIN_EXTERNAL, $loginMethods)) {
-    echo '<section class="loginOpenID">
-    <h2 class="green">' . Yii::t('user', 'login_openid') . '</h2>
-	<div class="content row">';
-    echo Html::beginForm('', 'post', ['class' => 'col-sm-6']);
-
-    echo '<div class="form-group">
-        <label for="openidUrl">' . Yii::t('user', 'login_openid_url') . '</label>
-        <input class="form-control" name="OAuthLoginForm[openIdUrl]"
-            id="openidUrl" type="text" placeholder="https://...">
-      </div>
-
-	  <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-log-in"></span> ' . Yii::t('user', 'login_btn_login') . '
-      </button>
-    ';
-
-    echo Html::endForm();
-    echo '</div></section>';
-}
-
 $loginText = \app\models\db\ConsultationText::getPageData($controller->site, $controller->consultation, 'login_post');
 if ($loginText && trim($loginText->text) !== '') {
     echo '<div class="content contentPage">';

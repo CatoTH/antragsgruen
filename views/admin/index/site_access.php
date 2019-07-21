@@ -120,19 +120,6 @@ $conPwd = new \app\components\ConsultationAccessPassword($consultation);
                 '</label></div>';
         }
         ?>
-        <div class="checkbox external">
-            <label>
-                <?php
-                $method = SiteSettings::LOGIN_EXTERNAL;
-                if (User::getCurrentUser()->getAuthType() === SiteSettings::LOGIN_EXTERNAL) {
-                    echo Html::checkbox('login[]', true, ['value' => $method, 'disabled']);
-                } else {
-                    echo Html::checkbox('login[]', in_array($method, $settings->loginMethods), ['value' => $method]);
-                }
-                echo ' ' . Yii::t('admin', 'siteacc_otherlogins');
-                ?>
-            </label>
-        </div>
     </fieldset>
 
     <div class="saveholder">
