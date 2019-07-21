@@ -7,6 +7,7 @@
   margin-left: 0;
   text-rendering: optimizeLegibility;
   font-size: $motionStdFontSize;
+  hyphens: auto;
 
   span.underline {
     border-bottom: solid 1px black;
@@ -61,30 +62,52 @@
     color: $motionFixedFontColor;
   }
 
-  .lineNumber {
-    position: relative;
-    @media screen and (min-width: 800px) {
+  @media screen and (min-width: 800px) {
+    .lineNumber {
+      position: relative;
       left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
+      @media screen and (max-width: 799px) {
+        left: $lineNumberOffset - 5px + -1 * $fixedWidthTextStdPaddingSmall;
+      }
+      width: 0;
+      display: inline-block;
+      float: left; // otherwise problems appear at li > p constucts
+      z-index: -1; // Line number highlighting should be behind the text
     }
-    @media screen and (max-width: 799px) {
-      left: $lineNumberOffset - 5px + -1 * $fixedWidthTextStdPaddingSmall;
-    }
-    width: 0;
-    display: inline-block;
-    float: left; // otherwise problems appear at li > p constucts
-    z-index: -1; // Line number highlighting should be behind the text
   }
-
   .lineNumber:after {
     content: attr(data-line-number);
     color: #C3C3C3;
     font-size: $motionStdFontSize;
-    @media screen and (max-width: 799px) {
-      font-size: $motionStdFontSize - 2;
-    }
     font-style: normal;
     font-weight: normal;
     text-decoration: none;
+  }
+
+  @media screen and (max-width: 799px) {
+    br {
+      display: none;
+    }
+    .lineNumber {
+      position: relative;
+      bottom: -3px;
+      left: -2px;
+    }
+    .lineNumber:first-of-type {
+      position: relative;
+      left: $lineNumberOffset - 5px + -1 * $fixedWidthTextStdPaddingSmall;
+      width: 0;
+      bottom: auto;
+      display: inline-block;
+      float: left; // otherwise problems appear at li > p constucts
+      z-index: -1; // Line number highlighting should be behind the text
+    }
+    .lineNumber:after {
+      font-size: $motionStdFontSize - 4;
+    }
+    .lineNumber:first-of-type:after {
+      font-size: $motionStdFontSize - 2;
+    }
   }
 
   @media screen and (min-width: 800px) {
@@ -149,24 +172,24 @@
     > ul, > ol {
       padding-left: $fixedWidthTextListPaddingSmall;
 
-      .lineNumber {
+      .lineNumber:first-of-type {
         left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
       }
 
       ul, ol {
         padding-left: 15px;
 
-        .lineNumber {
+        .lineNumber:first-of-type {
           left: $lineNumberOffset - 5px + -1 * (2 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
         }
 
         ul, ol {
-          .lineNumber {
+          .lineNumber:first-of-type {
             left: $lineNumberOffset - 5px + -1 * (3 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
           }
 
           ul, ol {
-            .lineNumber {
+            .lineNumber:first-of-type {
               left: $lineNumberOffset - 5px + -1 * (4 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
             }
           }
@@ -175,18 +198,18 @@
     }
 
     .fourdigitsLineNumbers & {
-      .lineNumber {
+      .lineNumber:first-of-type {
         left: $lineNumberOffset4 - 5px + -1 * $fixedWidthTextListPaddingSmall;
       }
 
       > ul, > ol {
-        .lineNumber {
+        .lineNumber:first-of-type {
           left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
         }
       }
 
       > blockquote {
-        .lineNumber {
+        .lineNumber:first-of-type {
           left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextStdPaddingSmall + $fixedWidthTextQuotePadding +
             $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMarginSmall);
         }
@@ -197,7 +220,7 @@
       @include motionParagraphBlockquote();
       margin-left: $fixedWidthTextQuoteMarginSmall;
 
-      .lineNumber {
+      .lineNumber:first-of-type {
         left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextStdPaddingSmall + $fixedWidthTextQuotePadding +
             $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMarginSmall);
       }
