@@ -34,7 +34,7 @@ if ($controller->isRequestSet('backUrl') && $controller->isRequestSet('backTitle
     if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
         $layout->addBreadcrumb($amendment->titlePrefix);
     } else {
-        $layout->addBreadcrumb(\Yii::t('amend', 'amendment'));
+        $layout->addBreadcrumb(Yii::t('amend', 'amendment'));
     }
 }
 
@@ -64,18 +64,18 @@ if ($supportCollectingStatus) {
     $min  = $motion->motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
     $curr = count($amendment->getSupporters());
     if ($curr >= $min) {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_reached_hint'));
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_reached_hint'));
     } else {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('amend', 'support_collection_hint'));
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('amend', 'support_collection_hint'));
     }
     if ($motion->motionType->policySupportAmendments !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
-        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+        $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
         echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
         echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
             '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
-            \Yii::t('base', 'menu_login') . '</a>';
+            Yii::t('base', 'menu_login') . '</a>';
 
-        echo Html::encode(\Yii::t('structure', 'policy_logged_supp_denied'));
+        echo Html::encode(Yii::t('structure', 'policy_logged_supp_denied'));
         echo '</div>';
     }
     echo '</div>';
@@ -84,7 +84,7 @@ if ($amendment->canFinishSupportCollection()) {
     echo Html::beginForm('', 'post', ['class' => 'amendmentSupportFinishForm']);
 
     echo '<button type="submit" name="amendmentSupportFinish" class="btn btn-success">';
-    echo \Yii::t('amend', 'support_finish_btn');
+    echo Yii::t('amend', 'support_finish_btn');
     echo '</button>';
 
     echo Html::endForm();
@@ -93,12 +93,12 @@ if ($amendment->canFinishSupportCollection()) {
 echo '</div>';
 echo '</div>';
 
-if (User::getCurrentUser() && !$amendment->getPrivateComment(null, -1)) {
+if (User::getCurrentUser() && !$amendment->getPrivateComment()) {
     ?>
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm">
             <span class="glyphicon glyphicon-pushpin"></span>
-            <?= \Yii::t('motion', 'private_notes') ?>
+            <?= Yii::t('motion', 'private_notes') ?>
         </button>
     </div>
     <?php
@@ -110,7 +110,7 @@ if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
         <div class="proposedChangesOpener">
             <button class="btn btn-default btn-sm">
                 <span class="glyphicon glyphicon-chevron-down"></span>
-                <?= \Yii::t('amend', 'proposal_open') ?>
+                <?= Yii::t('amend', 'proposal_open') ?>
             </button>
         </div>
         <?php
@@ -128,14 +128,14 @@ if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
 
 echo $this->render('_view_text', ['amendment' => $amendment]);
 
-$currUserId    = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
+$currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $amendment->getSupporters();
 $supportPolicy = $motion->motionType->getAmendmentSupportPolicy();
 $supportType   = $motion->motionType->getAmendmentSupportTypeClass();
 
 if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkCurrUser()) {
     echo '<section class="supporters" id="supporters">
-    <h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
+    <h2 class="green">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     $iAmSupporting        = false;
@@ -145,7 +145,7 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
         foreach ($supporters as $supp) {
             echo '<li>';
             if (($currUserId && $supp->userId == $currUserId) || in_array($supp->id, $anonymouslySupported)) {
-                echo '<span class="label label-info">' . \Yii::t('amend', 'supporter_you') . '</span> ';
+                echo '<span class="label label-info">' . Yii::t('amend', 'supporter_you') . '</span> ';
                 $iAmSupporting = true;
             }
             echo Html::encode($supp->getNameWithOrga());
@@ -153,7 +153,7 @@ if (count($supporters) > 0 || $supportCollectingStatus || $supportPolicy->checkC
         }
         echo '</ul>';
     } else {
-        echo '<em>' . \Yii::t('amend', 'supporter_none') . '</em><br>';
+        echo '<em>' . Yii::t('amend', 'supporter_none') . '</em><br>';
     }
     echo '<br>';
     MotionLayoutHelper::printSupportingSection($amendment, $supportPolicy, $supportType, $iAmSupporting);

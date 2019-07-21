@@ -266,11 +266,13 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $includeMotionPrefix
+     *
      * @return string
      */
-    public function getShortTitle()
+    public function getShortTitle($includeMotionPrefix = true)
     {
-        if ($this->getMyMotion()->titlePrefix != '') {
+        if ($this->getMyMotion()->titlePrefix !== '' && $includeMotionPrefix) {
             $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->getMyMotion()->titlePrefix) === false);
         } else {
             $showMotionPrefix = false;
@@ -278,7 +280,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->title;
         } else {
-            if ($this->getMyMotion()->titlePrefix != '') {
+            if ($this->getMyMotion()->titlePrefix !== '') {
                 if ($showMotionPrefix) {
                     return $this->titlePrefix . \Yii::t('amend', 'amend_for') . $this->getMyMotion()->titlePrefix;
                 } else {

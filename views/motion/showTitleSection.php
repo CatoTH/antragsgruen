@@ -48,16 +48,17 @@ echo '</div>';
 foreach ($amendingSections as $amendmentSection) {
     $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
     echo '<div class="text textAmendment hidden motionTextFormattings fixedWidthFont amendment' . $amendment->id . '">';
-    echo '<div class="preamble"><div>';
-    echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
-    echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
+
+    echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
+    echo '<h3><span class="glyphicon glyphicon-chevron-right"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';
+    echo ', ' . Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
     $amParas = $amendment->getChangedParagraphs($motion->getActiveSections(), true);
     if (count($amParas) > 1) {
         echo '<div class="moreAffected">';
-        echo str_replace('%num%', count($amParas), \Yii::t('amend', 'affects_x_paragraphs'));
+        echo str_replace('%num%', count($amParas), Yii::t('amend', 'affects_x_paragraphs'));
         echo '</div>';
     }
-    echo '</div></div>';
+    echo '</a></div>';
     echo str_replace('###LINENUMBER###', '', $amendmentSection->data);
     echo '</div>';
 }

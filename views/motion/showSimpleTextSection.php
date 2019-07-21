@@ -52,7 +52,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 $zero .= ' zero';
             }
             echo Html::a($str, '#', ['class' => 'shower' . $zero]);
-            echo Html::a($str, '#', ['class' => 'hider' . $zero]);
+            echo Html::a($str, '#', ['class' => 'hider active' . $zero]);
             echo '</li>';
         }
     }
@@ -100,7 +100,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             <div class="privateParagraphNoteOpener hidden">
                 <button class="btn btn-link btn-xs">
                     <span class="glyphicon glyphicon-pushpin"></span>
-                    <?= \Yii::t('motion', 'private_notes') ?>
+                    <?= Yii::t('motion', 'private_notes') ?>
                 </button>
             </div>
             <?php
@@ -116,14 +116,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         ?>
         <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
         <label>
-            <?= \Yii::t('motion', 'private_notes') ?>
+            <?= Yii::t('motion', 'private_notes') ?>
             <textarea class="form-control" name="noteText"
             ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
         </label>
         <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">
         <input type="hidden" name="sectionId" value="<?= $section->sectionId ?>">
         <button type="submit" name="savePrivateNote" class="btn btn-success">
-            <?= \Yii::t('base', 'save') ?>
+            <?= Yii::t('base', 'save') ?>
         </button>
         <?= Html::endForm() ?>
     </section>
@@ -137,16 +137,16 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             echo ' fixedWidthFont';
         }
         echo '">';
-        echo '<div class="preamble"><div>';
-        echo '<h3>' . \Yii::t('amend', 'amendment') . ' ' . Html::encode($amendment->titlePrefix) . '</h3>';
-        echo ', ' . \Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
+        echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
+        echo '<h3><span class="glyphicon glyphicon-chevron-right"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';
+        echo ', ' . Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
         $amParas = $amendment->getChangedParagraphs($motion->getActiveSections(), true);
         if (count($amParas) > 1) {
             echo '<div class="moreAffected">';
-            echo str_replace('%num%', count($amParas), \Yii::t('amend', 'affects_x_paragraphs'));
+            echo str_replace('%num%', count($amParas), Yii::t('amend', 'affects_x_paragraphs'));
             echo '</div>';
         }
-        echo '</div></div>';
+        echo '</a></div>';
         echo str_replace('###LINENUMBER###', '', $amendmentSection->strDiff);
         echo '</div>';
 
@@ -165,7 +165,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             $form   = $commentForm;
 
             if (in_array($paragraphNo, $openedComments)) {
-                $screening = \Yii::$app->session->getFlash('screening', null, true);
+                $screening = Yii::$app->session->getFlash('screening', null, true);
                 if ($screening) {
                     echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
@@ -176,7 +176,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             }
 
             if ($form === null || $form->paragraphNo != $paragraphNo || $form->sectionId != $section->sectionId) {
-                $form = new \app\models\forms\CommentForm($motion->getMyMotionType(), null);
+                $form = new CommentForm($motion->getMyMotionType(), null);
                 $form->setDefaultData($paragraphNo, $section->sectionId, User::getCurrentUser());
             }
 
@@ -189,9 +189,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
             if ($screeningQueue > 0) {
                 echo '<div class="commentScreeningQueue">';
                 if ($screeningQueue === 1) {
-                    echo \Yii::t('amend', 'comments_screening_queue_1');
+                    echo Yii::t('amend', 'comments_screening_queue_1');
                 } else {
-                    echo str_replace('%NUM%', $screeningQueue, \Yii::t('amend', 'comments_screening_queue_x'));
+                    echo str_replace('%NUM%', $screeningQueue, Yii::t('amend', 'comments_screening_queue_x'));
                 }
                 echo '</div>';
             }

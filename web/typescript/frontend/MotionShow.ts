@@ -1,10 +1,88 @@
 /// <reference path="../typings/jquery-typings.d.ts" />
 
 import '../shared/MotionInitiatorShow';
-import {LineNumberHighlighting} from "./LineNumberHighlighting";
+import { LineNumberHighlighting } from "./LineNumberHighlighting";
+
+class MotionParagraph {
+    private activeAmendmentId: number = null;
+    private $paraFirstLine: JQuery;
+    private readonly lineHeight: number;
+
+    constructor(private $element: JQuery) {
+        this.$paraFirstLine = $element.find(".lineNumber").first();
+        this.lineHeight = this.$paraFirstLine.height();
+
+        let amends = $element.find(".bookmarks > .amendment");
+        amends = amends.sort(function (el1, el2) {
+            return $(el1).data("first-line") - $(el2).data("first-line");
+        });
+        $element.find(".bookmarks").append(amends);
+
+        $element.find('ul.bookmarks li.amendment').each((num, el) => {
+            this.initInlineAmendmentPosition($(el));
+            this.toggleInlineAmendmentBehavior($(el));
+        });
+    }
+
+    private initInlineAmendmentPosition($amendment: JQuery) {
+        let firstLine = $amendment.data("first-line"),
+            targetOffset = (firstLine - this.$paraFirstLine.data("line-number")) * this.lineHeight,
+            $prevBookmark = $amendment.prevAll(),
+            delta = targetOffset;
+        $prevBookmark.each(function () {
+            let $pre = $(this);
+            delta -= $pre.height();
+            delta -= parseInt($pre.css("margin-top"));
+            delta -= 7;
+        });
+        if (delta < 0) {
+            delta = 0;
+        }
+        $amendment.css('margin-top', delta + "px");
+    }
+
+    private showInlineAmendment(amendmentId: number) {
+        if (this.activeAmendmentId) {
+            this.hideInlineAmendment(this.activeAmendmentId);
+        }
+        this.$element.find("> .textOrig").addClass("hidden");
+        this.$element.find("> .textAmendment").addClass("hidden");
+        this.$element.find("> .textAmendment.amendment" + amendmentId).removeClass("hidden");
+        this.$element.find(".bookmarks .amendment" + amendmentId).find("a").addClass('active');
+        this.activeAmendmentId = amendmentId;
+    }
+
+    private hideInlineAmendment(amendmentId: number) {
+        this.$element.find("> .textOrig").removeClass("hidden");
+        this.$element.find("> .textAmendment").addClass("hidden");
+        this.$element.find(".bookmarks .amendment" + amendmentId).find("a").removeClass('active');
+        this.activeAmendmentId = null;
+    }
+
+
+    private toggleInlineAmendmentBehavior($amendment: JQuery) {
+        const $link = $amendment.find("a"),
+            amendmentId = $link.data("id");
+        if ($("html").hasClass("touchevents")) {
+            $link.click((ev) => {
+                ev.preventDefault();
+                if (this.$element.find("> .textAmendment.amendment" + amendmentId).hasClass("hidden")) {
+                    this.showInlineAmendment(amendmentId)
+                } else {
+                    this.hideInlineAmendment(amendmentId);
+                }
+            });
+        } else {
+            $amendment.mouseover(() => {
+                this.showInlineAmendment(amendmentId);
+            }).mouseout(() => {
+                this.hideInlineAmendment(amendmentId);
+            });
+        }
+    }
+}
 
 class MotionShow {
-
     constructor() {
         new MotionInitiatorShow();
         new LineNumberHighlighting();
@@ -16,7 +94,9 @@ class MotionShow {
         $paragraphs.filter('.commentsOpened').find('.comment .shower').click();
         $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').click();
 
-        $paragraphs.each(this.initParagraph.bind(this));
+        $paragraphs.each((i, el) => {
+            new MotionParagraph($(el));
+        });
 
 
         $('.tagAdderHolder').click(function (ev) {
@@ -65,8 +145,7 @@ class MotionShow {
         });
     }
 
-    private initPrivateComments()
-    {
+    private initPrivateComments() {
         if ($('.privateParagraph, .privateNote').length > 0) {
             $('.privateParagraphNoteOpener').removeClass('hidden');
         }
@@ -98,7 +177,7 @@ class MotionShow {
     private delSubmit(ev) {
         ev.preventDefault();
         let form = ev.target;
-        bootbox.confirm(__t("std", "del_confirm"), function (result) {
+        bootbox.confirm(__t("std", "del_confirm"), (result) => {
             if (result) {
                 form.submit();
             }
@@ -114,10 +193,11 @@ class MotionShow {
 
     private showComment(ev) {
         ev.preventDefault();
-        let $node = $(ev.currentTarget),
-            $commentHolder = $node.parents('.paragraph').first().find('.commentHolder');
+        const $node = $(ev.currentTarget),
+            $commentHolder = $node.parents('.paragraph').first().find('.commentHolder'),
+            $bookmark = $node.parent();
         $node.addClass('hidden');
-        $node.parent().find('.hider').removeClass('hidden');
+        $bookmark.find('.hider').removeClass('hidden');
         $commentHolder.removeClass('hidden');
         if (!$commentHolder.isOnScreen(0.1, 0.1)) {
             $commentHolder.scrollintoview({top_offset: -100});
@@ -125,51 +205,13 @@ class MotionShow {
     }
 
     private hideComment(ev) {
-        let $this = $(ev.currentTarget);
-        $this.addClass('hidden');
-        $this.parent().find('.shower').removeClass('hidden');
+        const $node = $(ev.currentTarget),
+            $bookmark = $node.parent();
+        $node.addClass('hidden');
+        $bookmark.find('.shower').removeClass('hidden');
 
-        $this.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
+        $node.parents('.paragraph').first().find('.commentHolder').addClass('hidden');
         ev.preventDefault();
-    }
-
-    private initParagraph(i, el) {
-        let $paragraph = $(el),
-            $paraFirstLine = $paragraph.find(".lineNumber").first(),
-            lineHeight = $paraFirstLine.height();
-
-        let amends = $paragraph.find(".bookmarks > .amendment");
-        amends = amends.sort(function (el1, el2) {
-            return $(el1).data("first-line") - $(el2).data("first-line");
-        });
-        $paragraph.find(".bookmarks").append(amends);
-
-        $paragraph.find('ul.bookmarks li.amendment').each(function () {
-            let $amendment = $(this),
-                firstLine = $amendment.data("first-line"),
-                targetOffset = (firstLine - $paraFirstLine.data("line-number")) * lineHeight,
-                $prevBookmark = $amendment.prevAll(),
-                delta = targetOffset;
-            $prevBookmark.each(function () {
-                let $pre = $(this);
-                delta -= $pre.height();
-                delta -= parseInt($pre.css("margin-top"));
-                delta -= 7;
-            });
-            if (delta < 0) {
-                delta = 0;
-            }
-            $amendment.css('margin-top', delta + "px");
-
-            $amendment.mouseover(function () {
-                $paragraph.find("> .textOrig").addClass("hidden");
-                $paragraph.find("> .textAmendment").addClass("hidden");
-                $paragraph.find("> .textAmendment.amendment" + $amendment.find("a").data("id")).removeClass("hidden");
-            }).mouseout(function () {
-                $paragraph.find("> .textOrig").removeClass("hidden");
-                $paragraph.find("> .textAmendment").addClass("hidden");
-            });
-        });
     }
 
     private initCmdEnterSubmit() {

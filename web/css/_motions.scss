@@ -63,7 +63,12 @@
 
   .lineNumber {
     position: relative;
-    left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
+    @media screen and (min-width: 800px) {
+      left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
+    }
+    @media screen and (max-width: 799px) {
+      left: $lineNumberOffset - 5px + -1 * $fixedWidthTextStdPaddingSmall;
+    }
     width: 0;
     display: inline-block;
     float: left; // otherwise problems appear at li > p constucts
@@ -74,63 +79,128 @@
     content: attr(data-line-number);
     color: #C3C3C3;
     font-size: $motionStdFontSize;
+    @media screen and (max-width: 799px) {
+      font-size: $motionStdFontSize - 2;
+    }
     font-style: normal;
     font-weight: normal;
     text-decoration: none;
   }
 
-  > ul, > ol {
-    padding-left: $fixedWidthTextListPadding;
+  @media screen and (min-width: 800px) {
+    > ul, > ol {
+      padding-left: $fixedWidthTextListPadding;
 
-    .lineNumber {
-      left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
-    }
-
-    ul, ol {
       .lineNumber {
-        left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+        left: $lineNumberOffset + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
       }
 
       ul, ol {
+        padding-left: $fixedWidthTextListPadding;
+
         .lineNumber {
-          left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+          left: $lineNumberOffset + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
         }
 
         ul, ol {
           .lineNumber {
-            left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+            left: $lineNumberOffset + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+          }
+
+          ul, ol {
+            .lineNumber {
+              left: $lineNumberOffset + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+            }
           }
         }
       }
     }
-  }
 
-  .fourdigitsLineNumbers & {
-    .lineNumber {
-      left: $lineNumberOffset4 + -1 * $fixedWidthTextStdPadding;
-    }
-
-    > ul, > ol {
+    .fourdigitsLineNumbers & {
       .lineNumber {
-        left: $lineNumberOffset4 + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+        left: $lineNumberOffset4 - 5px + -1 * $fixedWidthTextStdPadding;
+      }
+
+      > ul, > ol {
+        .lineNumber {
+          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPadding);
+        }
+      }
+
+      > blockquote {
+        .lineNumber {
+          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
+            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
+        }
       }
     }
 
     > blockquote {
+      @include motionParagraphBlockquote();
+      margin-left: $fixedWidthTextQuoteMargin;
+
       .lineNumber {
-        left: $lineNumberOffset4 + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
+        left: $lineNumberOffset + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
             $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
       }
     }
   }
+  @media screen and (max-width: 799px) {
+    > ul, > ol {
+      padding-left: $fixedWidthTextListPaddingSmall;
 
-  > blockquote {
-    @include motionParagraphBlockquote();
-    margin-left: $fixedWidthTextQuoteMargin;
+      .lineNumber {
+        left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+      }
 
-    .lineNumber {
-      left: $lineNumberOffset + -1 * ($fixedWidthTextStdPadding + $fixedWidthTextQuotePadding +
-            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMargin);
+      ul, ol {
+        padding-left: 15px;
+
+        .lineNumber {
+          left: $lineNumberOffset - 5px + -1 * (2 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+        }
+
+        ul, ol {
+          .lineNumber {
+            left: $lineNumberOffset - 5px + -1 * (3 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+          }
+
+          ul, ol {
+            .lineNumber {
+              left: $lineNumberOffset - 5px + -1 * (4 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+            }
+          }
+        }
+      }
+    }
+
+    .fourdigitsLineNumbers & {
+      .lineNumber {
+        left: $lineNumberOffset4 - 5px + -1 * $fixedWidthTextListPaddingSmall;
+      }
+
+      > ul, > ol {
+        .lineNumber {
+          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+        }
+      }
+
+      > blockquote {
+        .lineNumber {
+          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextStdPaddingSmall + $fixedWidthTextQuotePadding +
+            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMarginSmall);
+        }
+      }
+    }
+
+    > blockquote {
+      @include motionParagraphBlockquote();
+      margin-left: $fixedWidthTextQuoteMarginSmall;
+
+      .lineNumber {
+        left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextStdPaddingSmall + $fixedWidthTextQuotePadding +
+            $fixedWidthTextQuoteBorder + $fixedWidthTextQuoteMarginSmall);
+      }
     }
   }
 
@@ -180,7 +250,12 @@
     }
 
     .text {
-      padding: 15px 10px 15px $fixedWidthTextStdPadding;
+      @media screen and (min-width: 800px) {
+        padding: 15px 10px 15px $fixedWidthTextStdPadding;
+      }
+      @media screen and (max-width: 799px) {
+        padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
+      }
 
       &.collidingAmendment {
         margin-top: -20px;
@@ -200,7 +275,9 @@
   }
 
   .textAmendment {
-    width: $motionFixedWidth;
+    @media screen and (min-width: 800px) {
+      width: $motionFixedWidth;
+    }
     position: relative;
 
     del, ul.deleted, ol.deleted, blockquote.deleted, pre.deleted {
@@ -216,19 +293,23 @@
       position: absolute;
       top: -($inlineAmendmentPreambleHeight - 10);
       height: $inlineAmendmentPreambleHeight;
-      color: $inlineAmendmentPreambleColor;
       width: 100%;
 
-      > div {
+      > a {
         position: absolute;
         bottom: 0;
         left: 0;
         max-height: $inlineAmendmentPreambleHeight;
-        padding-right: 50px;
+        //padding-right: 50px; Should not overlap the bookmark links
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         width: 100%;
+        color: $inlineAmendmentPreambleColor;
+
+        &:link, &:visited {
+          color: $inlineAmendmentPreambleColor;
+        }
 
         h3 {
           font-size: 14px;
@@ -242,6 +323,12 @@
           font-size: 0.8em;
           margin-top: -3px;
           color: #bbccbb;
+        }
+      }
+
+      @media screen and (max-width: 799px) {
+        .amendment {
+          display: none;
         }
       }
     }
@@ -285,20 +372,53 @@
       left: 2px;
       color: $bookmarkAmendmentText;
       min-width: 40px;
-      -moz-border-radius-topright: 10px;
-      -webkit-border-top-right-radius: 10px;
       border-top-right-radius: 10px;
-      -moz-border-radius-bottomright: 10px;
-      -webkit-border-bottom-right-radius: 10px;
       border-bottom-right-radius: 10px;
       font-weight: bold;
+      @media screen and (max-width: 799px) {
+        &:before {
+          content: '';
+          display: block;
+          position: absolute;
+          top: 0;
+          left: -3px;
+          width: 3px;
+          height: 100%;
+        }
+
+        &:after {
+          content: " ";
+          position: absolute;
+          left: -2px;
+          top: 50%;
+          height: 0;
+          width: 0;
+          border-width: 2px;
+          margin-top: -2px;
+          border-style: solid;
+          border-color: rgba(255, 255, 255, 0);
+          border-left-color: #ffffff;
+        }
+      }
     }
 
     &.comment > a {
       @include linear-gradient(90deg, $bookmarkCommentColor, lighten($bookmarkCommentColor, 3.5%));
 
+      &:before {
+        background: $bookmarkCommentColor;
+      }
+
+      &.active {
+        @include linear-gradient(90deg, darken($bookmarkCommentColor, 5.5%), darken($bookmarkCommentColor, 2.5%));
+
+        &:before {
+          background: darken($bookmarkCommentColor, 3.5%);
+        }
+      }
+
       &.zero {
-        opacity: 0.5;
+        opacity: 0.30;
       }
 
       .count:after {
@@ -309,6 +429,18 @@
 
     &.amendment > a {
       @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
+
+      &:before {
+        background: $bookmarkAmendmentBackground;
+      }
+
+      &.active {
+        @include linear-gradient(90deg, darken($bookmarkAmendmentBackground, 3.5%), $bookmarkAmendmentBackground);
+
+        &:before {
+          background: darken($bookmarkAmendmentBackground, 3.5%);
+        }
+      }
     }
 
     .hider {
@@ -674,9 +806,11 @@ iframe.pdfViewer {
     .paragraph.modifiedVersion .originalVersion {
       display: none;
     }
+
     .paragraph.changed .motionTextHolder {
       display: none;
     }
+
     .paragraph.unchanged .modifyText {
       display: none;
     }
@@ -689,10 +823,12 @@ iframe.pdfViewer {
   .modifyText {
     margin-top: 20px;
   }
+
   .selectorToolbar {
     margin-top: 15px;
     display: flex;
     flex-direction: row;
+
     label {
       margin-right: 20px;
       font-weight: normal;
@@ -702,6 +838,7 @@ iframe.pdfViewer {
       text-align: right;
       flex: 1;
     }
+
     .versionSelector {
       flex: 1;
     }
@@ -816,6 +953,7 @@ iframe.pdfViewer {
       width: calc(100% - 110px);
     }
   }
+
   textarea.form-control {
     line-height: 1.1;
     height: 50px;
@@ -844,9 +982,11 @@ ul + .privateParagraphNoteHolder, ol + .privateParagraphNoteHolder {
   .privateParagraphNoteOpener {
     left: 85px;
   }
+
   blockquote {
     margin-left: 45px;
   }
+
   form {
     margin-left: 40px;
   }
@@ -856,9 +996,11 @@ blockquote + .privateParagraphNoteHolder {
   .privateParagraphNoteOpener {
     left: 100px;
   }
+
   blockquote {
     margin-left: 60px;
   }
+
   form {
     margin-left: 55px;
   }

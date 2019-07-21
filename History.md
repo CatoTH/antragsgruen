@@ -1,5 +1,8 @@
 # Version history
 
+- The inline amendment mode in the regular motion view (using the green bookmarks at the right) can now be used on devices with small screens as well.
+- Several styling improvements, especially for devices with small screens (e.g. smartphones)
+
 ### Version 4.2.3 (2019-07-18)
 
 - Bugfix: If a user subscribed to notifications and had is account deleted afterwards, the site crashed later on when this notification was attempted to be sent.

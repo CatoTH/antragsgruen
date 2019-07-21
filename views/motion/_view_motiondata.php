@@ -139,7 +139,6 @@ if ($admin && count($motion->getMyConsultation()->tags) > 0) {
         \Yii::t('motion', 'tag_add') .
         '</button>';
     $content .= Html::endForm();
-    $content .= '</td> </tr>';
 
     $motionData[] = [
         'title'   => \Yii::t('motion', 'tag_tags'),
