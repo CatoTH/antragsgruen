@@ -7,13 +7,19 @@ const STATUS_PROCESSED = 17;
 const STATUS_ADOPTED = 8;
 const STATUS_COMPLETED = 9;
 
+enum AMENDMENT_VERSION {
+    ORIGINAL = 'orig',
+    PROPOSED_PROCEDURE = 'prop',
+}
+
 class AmendmentStatuses {
     private static statuses: { [amendmentId: number]: number };
+    private static versions: { [amendmentId: number]: AMENDMENT_VERSION };
     private static statusListeners: { [amendmentId: number]: MotionMergeAmendmentsParagraph[] } = {};
 
-    public static init(statuses: { [amendmentId: number]: number }) {
-        console.log("Init statuses");
+    public static init(statuses: { [amendmentId: number]: number }, versions: { [amendmentId: number]: AMENDMENT_VERSION }) {
         AmendmentStatuses.statuses = statuses;
+        AmendmentStatuses.versions = versions;
         Object.keys(statuses).forEach(amendmentId => {
             AmendmentStatuses.statusListeners[amendmentId] = [];
         });
@@ -21,6 +27,10 @@ class AmendmentStatuses {
 
     public static getAmendmentStatus(amendmentId: number): number {
         return AmendmentStatuses.statuses[amendmentId];
+    }
+
+    public static getAmendmentVersion(amendmentId: number): AMENDMENT_VERSION {
+        return AmendmentStatuses.versions[amendmentId];
     }
 
     public static registerParagraph(amendmentId: number, paragraph: MotionMergeAmendmentsParagraph) {
@@ -34,8 +44,19 @@ class AmendmentStatuses {
         });
     }
 
-    public static getAll(): { [amendmentId: number]: number } {
+    public static setVersion(amendmentId: number, version: AMENDMENT_VERSION) {
+        AmendmentStatuses.versions[amendmentId] = version;
+        AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
+            paragraph.onAmendmentVersionChanged();
+        });
+    }
+
+    public static getAllStatuses(): { [amendmentId: number]: number } {
         return AmendmentStatuses.statuses;
+    }
+
+    public static getAllVersions(): { [amendmentId: number]: AMENDMENT_VERSION } {
+        return AmendmentStatuses.versions;
     }
 }
 
@@ -380,32 +401,37 @@ class MotionMergeAmendmentsTextarea {
         });
     }
 
-    private acceptAll() {
-        this.texteditor.fire('saveSnapshot');
-        this.$holder.find(".collidingParagraph").each((i, el) => {
-            let $this = $(el);
-            $this.find(".collidingParagraphHead").remove();
-            $this.replaceWith($this.children());
-        });
+
+    public acceptAll() {
+        this.saveEditorSnapshot();
         this.$holder.find(".ice-ins").each((i, el) => {
             MotionMergeChangeActions.insertAccept(el);
         });
         this.$holder.find(".ice-del").each((i, el) => {
             MotionMergeChangeActions.deleteAccept(el);
         });
+        this.onChanged();
+        window.setTimeout(() => {
+            // Wait for animation -> remove "all dropdown"
+            this.onChanged();
+            this.saveEditorSnapshot();
+        }, 1000);
     }
 
-    private rejectAll() {
-        this.texteditor.fire('saveSnapshot');
-        this.$holder.find(".collidingParagraph").each((i, el) => {
-            $(el).remove();
-        });
+    public rejectAll() {
+        this.saveEditorSnapshot();
         this.$holder.find(".ice-ins").each((i, el) => {
             MotionMergeChangeActions.insertReject($(el));
         });
         this.$holder.find(".ice-del").each((i, el) => {
             MotionMergeChangeActions.deleteReject($(el));
         });
+        this.onChanged();
+        window.setTimeout(() => {
+            // Wait for animation -> remove "all dropdown"
+            this.onChanged();
+            this.saveEditorSnapshot();
+        }, 1000);
     }
 
     public saveEditorSnapshot() {
@@ -460,13 +486,18 @@ class MotionMergeAmendmentsTextarea {
             this.$changedIndicator.removeClass("unchanged");
             this.hasChanged = true;
         }
+        if (this.$holder.find(".ice-ins").length > 0 || this.$holder.find(".ice-del").length > 0) {
+            this.$mergeActionHolder.removeClass("hidden");
+        } else {
+            this.$mergeActionHolder.addClass("hidden");
+        }
     }
 
     public hasChanges(): boolean {
         return this.hasChanged;
     }
 
-    constructor(private $holder: JQuery, private $changedIndicator: JQuery) {
+    constructor(private $holder: JQuery, private $changedIndicator: JQuery, private $mergeActionHolder: JQuery) {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
         this.texteditor = edit.getEditor();
@@ -476,9 +507,6 @@ class MotionMergeAmendmentsTextarea {
         });
 
         this.setText(this.texteditor.getData());
-
-        this.$holder.find(".acceptAllChanges").click(this.acceptAll.bind(this));
-        this.$holder.find(".rejectAllChanges").click(this.rejectAll.bind(this));
 
         this.texteditor.on('change', this.onChanged.bind(this));
     }
@@ -495,7 +523,8 @@ class MotionMergeAmendmentsParagraph {
 
         const $textarea = $holder.find(".wysiwyg-textarea");
         const $changed = $holder.find(".changedIndicator");
-        this.textarea = new MotionMergeAmendmentsTextarea($textarea, $changed);
+        const $mergeActionHolder = $holder.find(".mergeActionHolder");
+        this.textarea = new MotionMergeAmendmentsTextarea($textarea, $changed, $mergeActionHolder);
 
         this.initButtons();
         $holder.find(".amendmentStatus").each((i: number, element) => {
@@ -531,9 +560,11 @@ class MotionMergeAmendmentsParagraph {
         const initTooltip = ($holder: JQuery) => {
             const amendmentId = parseInt($holder.data("amendment-id"));
             const currentStatus = AmendmentStatuses.getAmendmentStatus(amendmentId);
+            const currentVersion = AmendmentStatuses.getAmendmentVersion(amendmentId);
 
             $holder.find(".dropdown-menu .selected").removeClass("selected");
             $holder.find(".dropdown-menu .status" + currentStatus).addClass("selected");
+            $holder.find(".dropdown-menu .version" + currentVersion).addClass("selected");
         };
 
         this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', ev => {
@@ -547,6 +578,32 @@ class MotionMergeAmendmentsParagraph {
             AmendmentStatuses.setStatus(amendmentId, parseInt($(ev.currentTarget).data("status")));
             initTooltip($holder);
         });
+
+        this.$holder.find(".btn-group .setVersion").click(ev => {
+            ev.preventDefault();
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVersion(amendmentId, $(ev.currentTarget).data("version"));
+            initTooltip($holder);
+        });
+
+        this.$holder.find(".mergeActionHolder .acceptAll").click(ev => {
+            ev.preventDefault();
+            this.textarea.acceptAll();
+        });
+
+        this.$holder.find(".mergeActionHolder .rejectAll").click(ev => {
+            ev.preventDefault();
+            this.textarea.rejectAll();
+        });
+    }
+
+    public onAmendmentVersionChanged() {
+        if (this.textarea.hasChanges()) {
+            console.log("Skipping, as there are changes");
+            return;
+        }
+        this.reloadText();
     }
 
     public onAmendmentStatusChanged(amendmentId: number, status: number) {
@@ -574,11 +631,15 @@ class MotionMergeAmendmentsParagraph {
     }
 
     private reloadText() {
-        const amendmentIds = [];
+        const amendments = [];
         this.$holder.find(".amendmentActive[value='1']").each((i, el) => {
-            amendmentIds.push(parseInt($(el).data('amendment-id')));
+            const amendmentId = parseInt($(el).data('amendment-id'));
+            amendments.push({
+                id: amendmentId,
+                version: AmendmentStatuses.getAmendmentVersion(amendmentId),
+            });
         });
-        const url = this.$holder.data("reload-url").replace('DUMMY', amendmentIds.join(","));
+        const url = this.$holder.data("reload-url").replace('DUMMY', JSON.stringify(amendments));
         $.get(url, (data) => {
             this.textarea.setText(data.text);
 
@@ -622,7 +683,7 @@ export class MotionMergeAmendments {
 
     constructor($form: JQuery) {
         MotionMergeAmendments.$form = $form;
-        AmendmentStatuses.init($form.data("amendment-statuses"));
+        AmendmentStatuses.init($form.data("amendment-statuses"), $form.data("amendment-versions"));
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
@@ -665,7 +726,8 @@ export class MotionMergeAmendments {
 
     private saveDraft() {
         let data = {
-            "amendmentStatuses": AmendmentStatuses.getAll(),
+            "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
+            "amendmentVersions": AmendmentStatuses.getAllVersions(),
             "paragraphs": {},
         };
         this.paragraphs.forEach(para => {

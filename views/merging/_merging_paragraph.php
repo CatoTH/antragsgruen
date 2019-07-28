@@ -1,7 +1,7 @@
 <?php
 /**
  * @var MotionSection $section
- * @var int[] $toMergeAmendmentIds
+ * @var int[] $toMergeMainIds
  * @var Amendment[] $amendmentsById
  * @var \app\components\diff\amendmentMerger\SectionMerger $merger
  * @var \app\components\diff\amendmentMerger\SectionMerger $mergerAll
@@ -26,9 +26,9 @@ $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
 $htmlId    = 'sections_' . $type->id . '_' . $paragraphNo;
 $holderId  = 'section_holder_' . $type->id . '_' . $paragraphNo;
 $reloadUrl = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments-paragraph-ajax', [
-    'sectionId'    => $type->id,
-    'paragraphNo'  => $paragraphNo,
-    'amendmentIds' => 'DUMMY',
+    'sectionId'   => $type->id,
+    'paragraphNo' => $paragraphNo,
+    'amendments'  => 'DUMMY',
 ]);
 
 echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') .
@@ -42,7 +42,8 @@ if (count($allAmendingIds) > 0) {
     <div class="changeToolbar">
         <div class="statuses">
             <?php
-            $modUs            = [];
+            $modUs = [];
+            /** @var Amendment[] $normalAmendments */
             $normalAmendments = [];
             foreach ($allAmendingIds as $amendingId) {
                 $amendment = $amendmentsById[$amendingId];
@@ -52,8 +53,11 @@ if (count($allAmendingIds) > 0) {
                     $normalAmendments[] = $amendment;
                 }
             }
+            if (count($normalAmendments) > 0) {
+                $normalAmendments = \app\components\MotionSorter::getSortedAmendments($normalAmendments[0]->getMyConsultation(), $normalAmendments);
+            }
             foreach ($normalAmendments as $amendment) {
-                $active       = in_array($amendment->id, $currAmendingIds);
+                $active       = in_array($amendment->id, $toMergeMainIds);
                 $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
 
                 $statuses                     = [
@@ -79,29 +83,29 @@ if (count($allAmendingIds) > 0) {
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu">
-                        <?php
-                        if ($amendment->proposalReferenceId && isset($modUs[$amendment->proposalReferenceId])) {
-                            ?>
-                            <li>
-                                <a href="#" class="setVersion" data-version="orig">
-                                    <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="setVersion" data-version="prop">
-                                    <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
-                                </a>
-                            </li>
-                            <li role="separator" class="divider"></li>
-                            <?php
-                        }
-                        ?>
                         <li>
                             <a href="<?= Html::encode($amendmentUrl) ?>" class="amendmentLink" target="_blank">
                                 <span class="glyphicon glyphicon-new-window"></span>
                                 <?= Yii::t('amend', 'merge_amend_show') ?>
                             </a>
                         </li>
+                        <?php
+                        if ($amendment->proposalReferenceId && isset($modUs[$amendment->proposalReferenceId])) {
+                            ?>
+                            <li role="separator" class="divider"></li>
+                            <li class="versionorig">
+                                <a href="#" class="setVersion" data-version="orig">
+                                    <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
+                                </a>
+                            </li>
+                            <li class="versionprop">
+                                <a href="#" class="setVersion" data-version="prop">
+                                    <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
+                                </a>
+                            </li>
+                            <?php
+                        }
+                        ?>
                         <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>
                         <?php
                         foreach ($statuses as $statusId => $statusName) {
@@ -118,7 +122,7 @@ if (count($allAmendingIds) > 0) {
         </div>
         <div class="actions">
             <div class="changedIndicator unchanged"><?= Yii::t('amend', 'merge_changed') ?></div>
-            <div class="mergeActionHolder">
+            <div class="mergeActionHolder hidden">
                 <div class="btn-group">
                     <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
@@ -127,8 +131,8 @@ if (count($allAmendingIds) > 0) {
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="#"><?= Yii::t('amend', 'merge_accept_all') ?></a></li>
-                        <li><a href="#"><?= Yii::t('amend', 'merge_reject_all') ?></a></li>
+                        <li><a href="#" class="acceptAll"><?= Yii::t('amend', 'merge_accept_all') ?></a></li>
+                        <li><a href="#" class="rejectAll"><?= Yii::t('amend', 'merge_reject_all') ?></a></li>
                     </ul>
                 </div>
             </div>

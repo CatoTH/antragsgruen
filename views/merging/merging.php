@@ -11,7 +11,9 @@ use yii\helpers\Html;
  * @var Motion $motion
  * @var MotionMergeAmendmentsForm $form
  * @var array $amendmentStatuses
- * @var int[] $toMergeAmendmentIds
+ * @var array $amendmentVersions
+ * @var int[] $toMergeMainIds
+ * @var int[] $toMergeResolvedIds
  * @var null|Motion $resumeDraft
  */
 
@@ -52,36 +54,14 @@ if (!$motion->getMyConsultation()->getSettings()->minimalisticUI) {
     include(__DIR__ . '/../motion/_view_motiondata.php');
 }
 
-$hasCollidingParagraphs = false;
-foreach ($motion->getSortedSections(false) as $section) {
-    /** @var MotionSection $section */
-    $type = $section->getSettings();
-    if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-        if (!isset($newSections[$section->sectionId])) {
-            $diffMerger = $section->getAmendmentDiffMerger($toMergeAmendmentIds);
-            if ($diffMerger->hasCollidingParagraphs()) {
-                $hasCollidingParagraphs = true;
-            }
-        }
-    }
-}
-
 if (count($amendments) > 0) {
     $explanation = Yii::t('amend', 'merge_explanation');
-    if ($hasCollidingParagraphs) {
-        $explanation = str_replace(
-            '###COLLIDINGHINT###',
-            Yii::t('amend', 'merge_explanation_colliding'),
-            $explanation
-        );
-    } else {
-        $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
-    }
+    $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
     $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
     echo '<div class="alert alert-info alert-dismissible" role="alert">
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
-        '<span aria-hidden="true">&times;</span></button>' .
-        $explanation . '</div>';
+         '<span aria-hidden="true">&times;</span></button>' .
+         $explanation . '</div>';
 }
 
 echo $controller->showErrors();
@@ -99,6 +79,7 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
     'data-amendment-statuses'  => $amendmentStatuses,
+    'data-amendment-versions'  => $amendmentVersions,
 ]);
 
 
@@ -152,8 +133,10 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
                     echo $newSections[$section->sectionId]->dataRaw;
                 } else {
                     echo $this->render('_merging_section', [
-                        'toMergeAmendmentIds' => $toMergeAmendmentIds,
-                        'section'             => $section,
+                        'toMergeResolvedIds' => $toMergeResolvedIds,
+                        'toMergeMainIds'     => $toMergeMainIds,
+                        'amendmentVersions'  => $amendmentVersions,
+                        'section'            => $section,
                     ]);
                 }
             } else {
@@ -166,8 +149,8 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
 
                 if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
                     $changes = $section->getAmendingSections(false, true, true);
-                    $changes = array_filter($changes, function ($section) use ($toMergeAmendmentIds) {
-                        return in_array($section->amendmentId, $toMergeAmendmentIds);
+                    $changes = array_filter($changes, function ($section) use ($toMergeMainIds) {
+                        return in_array($section->amendmentId, $toMergeMainIds);
                     });
                     /** @var \app\models\db\AmendmentSection[] $changes */
                     if (count($changes) > 0) {
