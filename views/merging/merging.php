@@ -140,7 +140,7 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
                     ]);
                 }
             } else {
-                echo '<div class="content">';
+                echo '<div class="content sectionType' . $type->type . '" data-section-id="' . $section->sectionId . '">';
                 if (isset($newSections[$section->sectionId])) {
                     echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
                 } else {

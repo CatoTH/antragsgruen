@@ -729,7 +729,14 @@ export class MotionMergeAmendments {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
             "paragraphs": {},
+            "sections": {},
         };
+        $(".sectionType0").each((i, el) => {
+            const $section = $(el),
+                sectionId = $section.data("section-id");
+            data.sections[sectionId] = $section.find(".form-control").val();
+        });
+
         this.paragraphs.forEach(para => {
             data.paragraphs[para.sectionId + '_' + para.paragraphId] = para.getDraftData();
         });

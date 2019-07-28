@@ -14,7 +14,7 @@ $merger = $section->getAmendmentDiffMerger($toMergeResolvedIds);
 $mergerAll = $section->getAmendmentDiffMerger(null);
 
 echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
-echo '<div class="content">';
+echo '<div class="content sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
 
 $amendmentsById = [];
 foreach ($section->getAmendingSections(true, false, true) as $sect) {

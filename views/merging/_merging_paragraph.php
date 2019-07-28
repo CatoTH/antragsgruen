@@ -50,10 +50,15 @@ if (count($allAmendingIds) > 0) {
                 if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                     $modUs[$amendment->id] = $amendment;
                 } else {
-                    $normalAmendments[] = $amendment;
+                    $normalAmendments[$amendment->id] = $amendment;
                 }
             }
+            foreach ($modUs as $amendment) {
+                // ModUs that modify a paragraph unaffected by the original amendment
+                $normalAmendments[$amendment->proposalReferencedBy->id] = $amendment->proposalReferencedBy;
+            }
             if (count($normalAmendments) > 0) {
+                $normalAmendments = array_values($normalAmendments);
                 $normalAmendments = \app\components\MotionSorter::getSortedAmendments($normalAmendments[0]->getMyConsultation(), $normalAmendments);
             }
             foreach ($normalAmendments as $amendment) {
@@ -90,7 +95,7 @@ if (count($allAmendingIds) > 0) {
                             </a>
                         </li>
                         <?php
-                        if ($amendment->proposalReferenceId && isset($modUs[$amendment->proposalReferenceId])) {
+                        if ($amendment->proposalReference) {
                             ?>
                             <li role="separator" class="divider"></li>
                             <li class="versionorig">

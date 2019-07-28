@@ -112,7 +112,6 @@ trait MotionMergingTrait
             } else {
                 $amendmentIds[] = $amendment['id'];
             }
-
         }
 
         $amendmentsById = [];
