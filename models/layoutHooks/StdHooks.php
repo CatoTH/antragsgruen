@@ -259,30 +259,22 @@ class StdHooks extends Hooks
     public function getAntragsgruenAd($before)
     {
         if (\Yii::$app->language == 'de') {
-            return '<div class="antragsgruenAd well">
-        <div class="nav-header">Dein Antragsgrün</div>
+            $url = 'https://antragsgruen.de/';
+        } else {
+            $url = 'https://motion.tools/';
+        }
+
+        return '<div class="antragsgruenAd well">
+        <div class="nav-header">' . \Yii::t('con', 'aad_title') . '</div>
         <div class="content">
-            Du willst Antragsgrün für deine(n) Verband, Verein oder Arbeitsgruppe einsetzen?
+            ' . \Yii::t('con', 'aad_text') . '
             <div>
-                <a href="https://antragsgruen.de/" title="Das Antragstool selbst einsetzen" class="btn btn-primary">
+                <a href="' . $url . '" title="' . \Yii::t('con', 'aad_btn') . '" class="btn btn-primary">
                 <span class="glyphicon glyphicon-chevron-right"></span> Infos
                 </a>
             </div>
         </div>
     </div>';
-        } else {
-            return '<div class="antragsgruenAd well">
-        <div class="nav-header">Using Antragsgrün</div>
-        <div class="content">
-            Du you want to use Antragsgrün / motion.tools for your own assembly?
-            <div>
-                <a href="https://motion.tools/" title="Information about using Antragsgrün" class="btn btn-primary">
-                <span class="glyphicon glyphicon-chevron-right"></span> Information
-                </a>
-            </div>
-        </div>
-    </div>';
-        }
     }
 
     /**

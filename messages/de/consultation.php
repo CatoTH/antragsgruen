@@ -83,4 +83,8 @@ return [
     'proposal_invisible'       => 'nicht sichtbar',
     'proposal_autoupdate'      => 'Auto-Update',
     'proposal_updated'         => 'Stand',
+
+    'aad_title' => 'Dein Antragsgrün',
+    'aad_text'  => 'Du willst Antragsgrün für deine(n) Verband, Verein oder Arbeitsgruppe einsetzen?',
+    'aad_btn'   => 'Das Antragstool selbst einsetzen',
 ];

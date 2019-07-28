@@ -80,4 +80,8 @@ return [
     'proposal_invisible'       => 'not public',
     'proposal_autoupdate'      => 'Auto-Update',
     'proposal_updated'         => 'Updated',
+
+    'aad_title' => 'Using Antragsgrün',
+    'aad_text'  => 'Do you want to use Antragsgrün / motion.tools for your own assembly?',
+    'aad_btn'   => 'Information about using Antragsgrün',
 ];

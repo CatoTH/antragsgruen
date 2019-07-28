@@ -261,6 +261,12 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
 
+        $handledSiteSettings[] = 'showAntragsgruenAd';
+        echo '<div><label>';
+        echo Html::checkbox('siteSettings[showAntragsgruenAd]', $siteSettings->showAntragsgruenAd, ['id' => 'showAntragsgruenAd']) . ' ';
+        echo \Yii::t('admin', 'con_show_ad');
+        echo '</label></div>';
+
         $propTitle = \Yii::t('admin', 'con_proposal_procedure');
         $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
             'title="" data-original-title="' . Html::encode(\Yii::t('admin', 'con_proposal_tt')) . '"></span>';
