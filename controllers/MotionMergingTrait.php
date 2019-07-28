@@ -13,6 +13,7 @@ use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\forms\MotionMergeAmendmentsDraftForm;
 use app\models\forms\MotionMergeAmendmentsForm;
+use app\models\forms\MotionMergeAmendmentsInitForm;
 use app\models\MotionSectionChanges;
 use yii\web\Response;
 
@@ -104,7 +105,7 @@ trait MotionMergingTrait
             return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
-        $amendments = json_decode($amendments, true);
+        $amendments   = json_decode($amendments, true);
         $amendmentIds = [];
         foreach ($amendments as $amendment) {
             if ($amendment['version'] === 'prop') {
@@ -381,7 +382,7 @@ trait MotionMergingTrait
      *
      * @return string
      */
-    public function actionMergeAmendments($motionSlug, $newMotionId = 0, $amendmentStatuses = '')
+    public function actionMergeAmendments($motionSlug, $newMotionId = 0/*, $amendmentStatuses = ''*/)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -396,6 +397,7 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
+        /*
         if ($newMotionId > 0) {
             $newMotion = $this->consultation->getMotion($newMotionId);
             if (!$newMotion || $newMotion->parentMotionId !== $motion->id) {
@@ -413,9 +415,18 @@ trait MotionMergingTrait
         }
 
         $form = new MotionMergeAmendmentsForm($motion, $newMotion);
+        */
 
         try {
             if ($this->isPostSet('save')) {
+                $newMotion                 = new Motion();
+                $newMotion->motionTypeId   = $motion->motionTypeId;
+                $newMotion->agendaItemId   = $motion->agendaItemId;
+                $newMotion->consultationId = $motion->consultationId;
+                $newMotion->parentMotionId = $newMotion->id;
+                $newMotion->refresh();
+
+                $form = new MotionMergeAmendmentsForm($motion, $newMotion);
                 $form->setAttributes(\Yii::$app->request->post());
                 $newMotion = $form->createNewMotion();
 
@@ -429,45 +440,20 @@ trait MotionMergingTrait
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
+        //$amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
 
         $resumeDraft = $motion->getMergingDraft(false);
-        if ($resumeDraft && IntVal(\Yii::$app->request->post('discard', 0)) === 1) {
-            $resumeDraft = null;
+        if ($resumeDraft && IntVal(\Yii::$app->request->post('discard', 0)) && count($resumeDraft->sections) === 1) {
+            $form = MotionMergeAmendmentsInitForm::initFromDraft($motion, $resumeDraft);
+        } else {
+            $form = MotionMergeAmendmentsInitForm::fromInitForm(
+                $motion,
+                \Yii::$app->request->post('amendments', []),
+                \Yii::$app->request->post('textVersion', [])
+            );
         }
 
-        $toMergeMainIds     = [];
-        $toMergeResolvedIds = [];
-        $postAmendIds       = \Yii::$app->request->post('amendments', []);
-        $textVersions       = \Yii::$app->request->post('textVersion', []);
-        $amendmentVersions  = [];
-        foreach ($motion->getVisibleAmendments() as $amendment) {
-            if (isset($postAmendIds[$amendment->id])) {
-                $toMergeMainIds[] = $amendment->id;
-            }
-
-            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
-                $amendmentVersions[$amendment->id] = 'prop';
-                if (isset($postAmendIds[$amendment->id])) {
-                    $toMergeResolvedIds[] = $amendment->proposalReference->id;
-                }
-            } else {
-                $amendmentVersions[$amendment->id] = 'orig';
-                if (isset($postAmendIds[$amendment->id])) {
-                    $toMergeResolvedIds[] = $amendment->id;
-                }
-            }
-        }
-
-        return $this->render('@app/views/merging/merging', [
-            'motion'             => $motion,
-            'form'               => $form,
-            'amendmentStatuses'  => $amendStatuses,
-            'amendmentVersions'  => $amendmentVersions,
-            'resumeDraft'        => $resumeDraft,
-            'toMergeMainIds'     => $toMergeMainIds,
-            'toMergeResolvedIds' => $toMergeResolvedIds,
-        ]);
+        return $this->render('@app/views/merging/merging', ['form' => $form,]);
     }
 
     /**

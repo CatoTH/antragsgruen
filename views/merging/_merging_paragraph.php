@@ -1,10 +1,8 @@
 <?php
 /**
  * @var MotionSection $section
- * @var int[] $toMergeMainIds
+ * @var \app\models\forms\MotionMergeAmendmentsInitForm $form
  * @var Amendment[] $amendmentsById
- * @var \app\components\diff\amendmentMerger\SectionMerger $merger
- * @var \app\components\diff\amendmentMerger\SectionMerger $mergerAll
  * @var int $paragraphNo
  */
 
@@ -13,13 +11,8 @@ use app\models\db\Amendment;
 use app\models\db\MotionSection;
 use yii\helpers\Html;
 
-
-$CHANGESET_COUNTER = 0;
-$changeset         = [];
-
-$paragraphMerger     = $merger->getParagraphMerger($paragraphNo);
-$paragraphCollisions = $paragraphMerger->getCollidingParagraphGroups();
-$paragraphText       = $paragraphMerger->getFormattedDiffText($amendmentsById);
+$paragraphCollisions = $form->getParagraphTextCollisions($section, $paragraphNo);
+$paragraphText = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
 
 $type      = $section->getSettings();
 $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
@@ -35,34 +28,18 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
      '" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
      'data-reload-url="' . Html::encode($reloadUrl) . '">';
 
-$allAmendingIds  = $mergerAll->getAffectingAmendmentIds($paragraphNo);
-$currAmendingIds = $merger->getAffectingAmendmentIds($paragraphNo);
+
+
+$allAmendingIds  = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
 if (count($allAmendingIds) > 0) {
     ?>
     <div class="changeToolbar">
         <div class="statuses">
             <?php
-            $modUs = [];
-            /** @var Amendment[] $normalAmendments */
-            $normalAmendments = [];
-            foreach ($allAmendingIds as $amendingId) {
-                $amendment = $amendmentsById[$amendingId];
-                if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                    $modUs[$amendment->id] = $amendment;
-                } else {
-                    $normalAmendments[$amendment->id] = $amendment;
-                }
-            }
-            foreach ($modUs as $amendment) {
-                // ModUs that modify a paragraph unaffected by the original amendment
-                $normalAmendments[$amendment->proposalReferencedBy->id] = $amendment->proposalReferencedBy;
-            }
-            if (count($normalAmendments) > 0) {
-                $normalAmendments = array_values($normalAmendments);
-                $normalAmendments = \app\components\MotionSorter::getSortedAmendments($normalAmendments[0]->getMyConsultation(), $normalAmendments);
-            }
+            list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
             foreach ($normalAmendments as $amendment) {
-                $active       = in_array($amendment->id, $toMergeMainIds);
+                /** @var Amendment $amendment */
+                $active       = $form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo);
                 $amendmentUrl = UrlHelper::createAmendmentUrl($amendment);
 
                 $statuses                     = [
@@ -168,7 +145,7 @@ if (count($allAmendingIds) > 0) {
             <?php
             foreach ($paragraphCollisions as $amendmentId => $paraData) {
                 $amendment = $amendmentsById[$amendmentId];
-                echo $paragraphMerger->getFormattedCollision($paraData, $amendment, $amendmentsById);
+                echo \app\components\diff\amendmentMerger\ParagraphMerger::getFormattedCollision($paraData, $amendment, $amendmentsById);
             }
             ?>
         </div>

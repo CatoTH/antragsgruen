@@ -2,16 +2,11 @@
 
 /**
  * @var \yii\web\View $this
- * @var int[] $toMergeMainIds
- * @var int[] $toMergeResolvedIds
- * @var array $amendmentVersions
+ * @var \app\models\forms\MotionMergeAmendmentsInitForm $form
  * @var MotionSection $section
  */
 
 use app\models\db\MotionSection;
-
-$merger = $section->getAmendmentDiffMerger($toMergeResolvedIds);
-$mergerAll = $section->getAmendmentDiffMerger(null);
 
 echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
 echo '<div class="content sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
@@ -25,12 +20,10 @@ $paragraphs = $section->getTextParagraphObjects(false, false, false);
 
 foreach (array_keys($paragraphs) as $paragraphNo) {
     echo $this->render('_merging_paragraph', [
-        'section'             => $section,
-        'toMergeMainIds'      => $toMergeMainIds,
-        'amendmentsById'      => $amendmentsById,
-        'merger'              => $merger,
-        'mergerAll'           => $mergerAll,
-        'paragraphNo'         => $paragraphNo,
+        'section'        => $section,
+        'form'           => $form,
+        'amendmentsById' => $amendmentsById,
+        'paragraphNo'    => $paragraphNo,
     ]);
 }
 

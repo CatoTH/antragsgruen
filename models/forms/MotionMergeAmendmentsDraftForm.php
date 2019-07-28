@@ -78,4 +78,8 @@ class MotionMergeAmendmentsDraftForm
 
         return $this->draft;
     }
+
+    public function getRegularSections() {
+
+    }
 }

@@ -3,23 +3,18 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
-use app\models\forms\MotionMergeAmendmentsForm;
+use app\models\forms\MotionMergeAmendmentsInitForm;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var Motion $motion
- * @var MotionMergeAmendmentsForm $form
- * @var array $amendmentStatuses
- * @var array $amendmentVersions
- * @var int[] $toMergeMainIds
- * @var int[] $toMergeResolvedIds
- * @var null|Motion $resumeDraft
+ * @var MotionMergeAmendmentsInitForm $form
  */
 
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
+$motion     = $form->motion;
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
@@ -34,15 +29,8 @@ $amendments = $motion->getVisibleAmendmentsSorted();
 
 /** @var MotionSection[] $newSections */
 $newSections = [];
-foreach ($form->newMotion->getSortedSections(false) as $section) {
+foreach ($motion->getSortedSections(false) as $section) {
     $newSections[$section->sectionId] = $section;
-}
-if ($resumeDraft) {
-    foreach ($resumeDraft->sections as $section) {
-        if (!isset($newSections[$section->sectionId])) {
-            $newSections[$section->sectionId] = $section;
-        }
-    }
 }
 
 
@@ -68,25 +56,20 @@ echo $controller->showErrors();
 
 echo '</div>';
 
-$amendmentStatuses = [];
-foreach ($amendments as $amendment) {
-    $amendmentStatuses[$amendment->id] = $amendment->status;
-}
-
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
     'class'                    => 'motionMergeForm motionMergeStyles fuelux',
     'enctype'                  => 'multipart/form-data',
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
-    'data-amendment-statuses'  => $amendmentStatuses,
-    'data-amendment-versions'  => $amendmentVersions,
+    'data-amendment-statuses'  => $form->amendmentStatuses,
+    'data-amendment-versions'  => $form->amendmentVersions,
 ]);
 
 
-$draftIsPublic   = ($resumeDraft && $resumeDraft->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
+$draftIsPublic   = ($form->resumeDraft && $form->resumeDraft->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
 $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-pdf');
-$resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->getDateTime()->format('c') : '');
+$resumedDate     = ($form->resumeDraft && $form->resumeDraft->getDateTime() ? $form->resumeDraft->getDateTime()->format('c') : '');
 ?>
     <section id="draftSavingPanel" data-resumed-date="<?= $resumedDate ?>">
         <h2>
@@ -128,30 +111,13 @@ $resumedDate     = ($resumeDraft && $resumeDraft->getDateTime() ? $resumeDraft->
         foreach ($motion->getSortedSections(false) as $section) {
             $type = $section->getSettings();
             if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                if (isset($newSections[$section->sectionId])) {
-                    // @TODO
-                    echo $newSections[$section->sectionId]->dataRaw;
-                } else {
-                    echo $this->render('_merging_section', [
-                        'toMergeResolvedIds' => $toMergeResolvedIds,
-                        'toMergeMainIds'     => $toMergeMainIds,
-                        'amendmentVersions'  => $amendmentVersions,
-                        'section'            => $section,
-                    ]);
-                }
+                echo $this->render('_merging_section', ['form' => $form, 'section' => $section]);
             } else {
                 echo '<div class="content sectionType' . $type->type . '" data-section-id="' . $section->sectionId . '">';
-                if (isset($newSections[$section->sectionId])) {
-                    echo $newSections[$section->sectionId]->getSectionType()->getMotionFormField();
-                } else {
-                    echo $section->getSectionType()->getMotionFormField();
-                }
+                echo $form->getRegularSection($section)->getSectionType()->getMotionFormField();
 
                 if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
                     $changes = $section->getAmendingSections(false, true, true);
-                    $changes = array_filter($changes, function ($section) use ($toMergeMainIds) {
-                        return in_array($section->amendmentId, $toMergeMainIds);
-                    });
                     /** @var \app\models\db\AmendmentSection[] $changes */
                     if (count($changes) > 0) {
                         echo '<div class="titleChanges">';
