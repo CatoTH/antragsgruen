@@ -346,7 +346,7 @@ class MotionSection extends IMotionSection
         }
         if (!isset($this->mergers[$key])) {
             $sections = [];
-            foreach ($this->getAmendingSections(true, false, true) as $section) {
+            foreach ($this->getAmendingSections(true, false, false) as $section) {
                 if ($toMergeAmendmentIds === null || in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }

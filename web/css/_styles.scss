@@ -469,12 +469,34 @@
     }
   }
 
+  .changeToolbar {
+    display: flex;
+    flex-direction: row;
+  }
+  .statuses {
+    flex: 1;
+  }
+  .actions {
+    flex: 0;
+    text-align: right;
+    white-space: nowrap;
+    vertical-align: top;
+    > * {
+      display: inline-block;
+      vertical-align: top;
+    }
+  }
+
   .changedIndicator {
     color: gray;
     margin-right: 10px;
     font-size: 0.8em;
     margin-top: 2px;
     font-weight: bold;
+    visibility: visible;
+    &.unchanged {
+      visibility: hidden;
+    }
   }
 
   .amendmentStatus {

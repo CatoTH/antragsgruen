@@ -22,7 +22,7 @@ foreach ($draft->sections as $section) {
 $changesets = [];
 foreach ($motion->getSortedSections(false) as $section) {
     $type = $section->getSettings();
-    if ($type->type == \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+    if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
         $htmlId = 'sections_' . $type->id;
         echo '<div class="form-group paragraph" id="section_holder_' . $type->id . '">';
         echo '<label for="' . $htmlId . '">' . Html::encode($type->title) . '</label>';

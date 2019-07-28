@@ -156,7 +156,8 @@ class MotionMergeChangeTooltip {
             'animation': false,
             'trigger': 'manual',
             'placement': function (popover) {
-                let $popover = $(popover);
+                let $popover = $(<any>popover);
+                $popover.data("element", $element);
                 window.setTimeout(() => {
                     let width = $popover.width(),
                         elTop = $element.offset().top,
@@ -287,13 +288,27 @@ class MotionMergeChangeTooltip {
         if (cid == undefined) {
             cid = this.$element.parent().data("cid");
         }
-        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+
+        let focusAtSameCid = false;
+        this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").each((i, el) => {
+            if ($(el).is(":hover")) {
+                focusAtSameCid = true;
+            }
+        });
+        if (!focusAtSameCid) {
+            this.$element.parents(".texteditor").first().find("[data-cid=" + cid + "]").removeClass("hover");
+        }
 
         try {
             // Remove stale objects that were not removed correctly previously
-            const $popovers = $(".popover");
-            $popovers.popover("hide").popover("destroy");
-            $popovers.remove();
+            $(".popover").each((i, stale) => {
+                const $stale = $(stale);
+                if (!$stale.data("element").is(":hover")) {
+                    $stale.popover("hide").popover("destroy");
+                    $stale.remove();
+                    console.warn("Removed stale window: ", $stale);
+                }
+            });
         } catch (e) {
         }
     }
@@ -354,12 +369,14 @@ class MotionMergeAmendmentsTextarea {
 
     private initializeTooltips() {
         this.$holder.on("mouseover", ".appendHint", (ev) => {
+            const $target = $(ev.currentTarget);
+            if ($target.parents('.paragraphWrapper').first().find('.amendmentStatus.open').length > 0) {
+                return;
+            }
             if (MotionMergeAmendments.activePopup) {
                 MotionMergeAmendments.activePopup.destroy();
             }
-            MotionMergeAmendments.activePopup = new MotionMergeChangeTooltip(
-                $(ev.currentTarget), ev.pageX, ev.pageY, this
-            );
+            MotionMergeAmendments.activePopup = new MotionMergeChangeTooltip($target, ev.pageX, ev.pageY, this);
         });
     }
 
@@ -437,10 +454,10 @@ class MotionMergeAmendmentsTextarea {
 
     public onChanged() {
         if (this.normalizeHtml(this.texteditor.getData()) === this.unchangedText) {
-            this.$changedIndicator.addClass("hidden");
+            this.$changedIndicator.addClass("unchanged");
             this.hasChanged = false;
         } else {
-            this.$changedIndicator.removeClass("hidden");
+            this.$changedIndicator.removeClass("unchanged");
             this.hasChanged = true;
         }
     }
