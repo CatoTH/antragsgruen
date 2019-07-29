@@ -447,6 +447,10 @@ class MotionMergeAmendmentsTextarea {
         return this.texteditor.getData();
     }
 
+    public getUnchangedContent(): string {
+        return this.unchangedText;
+    }
+
     public setText(html: string) {
         this.prepareText(html);
         this.initializeTooltips();
@@ -507,6 +511,11 @@ class MotionMergeAmendmentsTextarea {
         });
 
         this.setText(this.texteditor.getData());
+
+        if ($holder.data("unchanged")) {
+            this.unchangedText = $holder.data("unchanged");
+            this.onChanged();
+        }
 
         this.texteditor.on('change', this.onChanged.bind(this));
     }
@@ -668,6 +677,7 @@ class MotionMergeAmendmentsParagraph {
         return {
             amendmentToggles,
             text: this.textarea.getContent(),
+            unchanged: this.textarea.getUnchangedContent(),
         };
     }
 }
@@ -727,7 +737,7 @@ export class MotionMergeAmendments {
     }
 
     private saveDraft() {
-        let data = {
+        const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
             "paragraphs": {},

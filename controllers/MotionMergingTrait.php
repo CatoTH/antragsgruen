@@ -378,11 +378,10 @@ trait MotionMergingTrait
     /**
      * @param string $motionSlug
      * @param int $newMotionId
-     * @param string $amendmentStatuses
      *
      * @return string
      */
-    public function actionMergeAmendments($motionSlug, $newMotionId = 0/*, $amendmentStatuses = ''*/)
+    public function actionMergeAmendments($motionSlug, $newMotionId = 0)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -439,8 +438,6 @@ trait MotionMergingTrait
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
-
-        //$amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
 
         $resumeDraft = $motion->getMergingDraft(false);
         if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {

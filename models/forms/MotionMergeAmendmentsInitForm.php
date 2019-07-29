@@ -177,6 +177,21 @@ class MotionMergeAmendmentsInitForm
     }
 
     /**
+     * @param MotionSection $section
+     * @param int $paragraphNo
+     *
+     * @return string|null
+     */
+    public function getUnchangedParagraphText(MotionSection $section, $paragraphNo)
+    {
+        if ($this->draftData) {
+            return $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['unchanged'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * @param int $amendmentId
      * @param MotionSection $section
      * @param int $paragraphNo

@@ -12,7 +12,7 @@ use app\models\db\MotionSection;
 use yii\helpers\Html;
 
 $paragraphCollisions = $form->getParagraphTextCollisions($section, $paragraphNo);
-$paragraphText = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
+$paragraphText       = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
 
 $type      = $section->getSettings();
 $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
@@ -29,8 +29,7 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
      'data-reload-url="' . Html::encode($reloadUrl) . '">';
 
 
-
-$allAmendingIds  = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
+$allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
 if (count($allAmendingIds) > 0) {
     ?>
     <div class="changeToolbar">
@@ -124,7 +123,12 @@ if (count($allAmendingIds) > 0) {
 }
 ?>
     <div class="form-group">
-        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0">
+        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" <?php
+        $unchanged = $form->getUnchangedParagraphText($section, $paragraphNo);
+        if ($unchanged) {
+            echo 'data-unchanged="' . Html::encode($unchanged) . '"';
+        }
+        ?>>
             <!--suppress HtmlFormInputWithoutLabel -->
             <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
                       title="<?= Html::encode($type->title) ?>"></textarea>
@@ -135,7 +139,7 @@ if (count($allAmendingIds) > 0) {
             if ($section->getSettings()->fixedWidth) {
                 echo ' fixedWidthFont';
             }
-            ?>'" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
+            ?>" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
                 <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
                     <?= $paragraphText ?>
                 </div>
