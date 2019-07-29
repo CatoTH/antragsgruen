@@ -5,6 +5,7 @@ namespace app\models\forms;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\sectionTypes\ISectionType;
 
 class MotionMergeAmendmentsInitForm
 {
@@ -68,10 +69,6 @@ class MotionMergeAmendmentsInitForm
         $form->amendmentVersions  = $form->draftData['amendmentVersions'];
         $form->amendmentStatuses  = $form->draftData['amendmentStatuses'];
 
-        echo '<pre>';
-        var_dump($form->draftData);
-        die();
-
         return $form;
     }
 
@@ -82,8 +79,16 @@ class MotionMergeAmendmentsInitForm
      */
     public function getRegularSection(MotionSection $section)
     {
-        // @TODO Return drafted section
-        return $section;
+        if ($this->draftData && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
+            $clone = new MotionSection();
+            $clone->setAttributes($section->getAttributes(), false);
+            $clone->data    = $this->draftData['sections'][$section->sectionId];
+            $clone->dataRaw = $this->draftData['sections'][$section->sectionId];
+
+            return $clone;
+        } else {
+            return $section;
+        }
     }
 
     /**
@@ -95,7 +100,7 @@ class MotionMergeAmendmentsInitForm
     public function getMergerForParagraph(MotionSection $section, $paragraphNo)
     {
         if ($this->draftData) {
-            $paragraphData = $this->draftData[$section->sectionId . '_' . $paragraphNo];
+            $paragraphData = $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo];
 
             return $section->getAmendmentDiffMerger($paragraphData['amendmentToggles'])->getParagraphMerger($paragraphNo);
         } else {
@@ -162,9 +167,13 @@ class MotionMergeAmendmentsInitForm
      */
     public function getParagraphText(MotionSection $section, $paragraphNo, $amendmentsById)
     {
-        $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
+        if ($this->draftData) {
+            return $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['text'];
+        } else {
+            $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
 
-        return $paragraphMerger->getFormattedDiffText($amendmentsById);
+            return $paragraphMerger->getFormattedDiffText($amendmentsById);
+        }
     }
 
     /**
@@ -177,7 +186,7 @@ class MotionMergeAmendmentsInitForm
     public function isAmendmentActiveForParagraph($amendmentId, MotionSection $section, $paragraphNo)
     {
         if ($this->draftData) {
-            // @TODO
+            return in_array($amendmentId, $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['amendmentToggles']);
         } else {
             return in_array($amendmentId, $this->toMergeMainIds);
         }

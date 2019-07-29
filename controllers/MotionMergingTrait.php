@@ -443,7 +443,7 @@ trait MotionMergingTrait
         //$amendStatuses = ($amendmentStatuses === '' ? [] : json_decode($amendmentStatuses, true));
 
         $resumeDraft = $motion->getMergingDraft(false);
-        if ($resumeDraft && IntVal(\Yii::$app->request->post('discard', 0)) && count($resumeDraft->sections) === 1) {
+        if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {
             $form = MotionMergeAmendmentsInitForm::initFromDraft($motion, $resumeDraft);
         } else {
             $form = MotionMergeAmendmentsInitForm::fromInitForm(

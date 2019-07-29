@@ -658,10 +658,12 @@ class MotionMergeAmendmentsParagraph {
     }
 
     public getDraftData() {
-        const amendmentToggles = {};
+        const amendmentToggles = [];
         this.$holder.find(".amendmentStatus").each((id, el) => {
             const $el = $(el);
-            amendmentToggles[$el.data("amendment-id")] = ($el.find(".btn-success").length > 0);
+            if ($el.find(".btn-success").length > 0) {
+                amendmentToggles.push($el.data("amendment-id"));
+            }
         });
         return {
             amendmentToggles,
