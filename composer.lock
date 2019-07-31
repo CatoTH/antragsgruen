@@ -1415,16 +1415,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.23",
+            "version": "2.0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "d430bf78cf59e341bf4a1cb401a4ae71a889a492"
+                "reference": "4c9e05f7411bfe4d6ba9b38a2feea6e4353f1457"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/d430bf78cf59e341bf4a1cb401a4ae71a889a492",
-                "reference": "d430bf78cf59e341bf4a1cb401a4ae71a889a492",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/4c9e05f7411bfe4d6ba9b38a2feea6e4353f1457",
+                "reference": "4c9e05f7411bfe4d6ba9b38a2feea6e4353f1457",
                 "shasum": ""
             },
             "require": {
@@ -1461,48 +1461,48 @@
             "authors": [
                 {
                     "name": "Qiang Xue",
+                    "role": "Founder and project lead",
                     "email": "qiang.xue@gmail.com",
-                    "homepage": "http://www.yiiframework.com/",
-                    "role": "Founder and project lead"
+                    "homepage": "http://www.yiiframework.com/"
                 },
                 {
                     "name": "Alexander Makarov",
+                    "role": "Core framework development",
                     "email": "sam@rmcreative.ru",
-                    "homepage": "http://rmcreative.ru/",
-                    "role": "Core framework development"
+                    "homepage": "http://rmcreative.ru/"
                 },
                 {
                     "name": "Maurizio Domba",
-                    "homepage": "http://mdomba.info/",
-                    "role": "Core framework development"
+                    "role": "Core framework development",
+                    "homepage": "http://mdomba.info/"
                 },
                 {
                     "name": "Carsten Brandt",
+                    "role": "Core framework development",
                     "email": "mail@cebe.cc",
-                    "homepage": "http://cebe.cc/",
-                    "role": "Core framework development"
+                    "homepage": "http://cebe.cc/"
                 },
                 {
                     "name": "Timur Ruziev",
+                    "role": "Core framework development",
                     "email": "resurtm@gmail.com",
-                    "homepage": "http://resurtm.com/",
-                    "role": "Core framework development"
+                    "homepage": "http://resurtm.com/"
                 },
                 {
                     "name": "Paul Klimov",
-                    "email": "klimov.paul@gmail.com",
-                    "role": "Core framework development"
+                    "role": "Core framework development",
+                    "email": "klimov.paul@gmail.com"
                 },
                 {
                     "name": "Dmitry Naumenko",
-                    "email": "d.naumenko.a@gmail.com",
-                    "role": "Core framework development"
+                    "role": "Core framework development",
+                    "email": "d.naumenko.a@gmail.com"
                 },
                 {
                     "name": "Boudewijn Vahrmeijer",
+                    "role": "Core framework development",
                     "email": "info@dynasource.eu",
-                    "homepage": "http://dynasource.eu",
-                    "role": "Core framework development"
+                    "homepage": "http://dynasource.eu"
                 }
             ],
             "description": "Yii PHP Framework Version 2",
@@ -1511,7 +1511,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2019-07-16T19:44:09+00:00"
+            "time": "2019-07-30T15:17:45+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -3639,20 +3639,20 @@
             "authors": [
                 {
                     "name": "Manuel Pichler",
+                    "role": "Project Founder",
                     "email": "github@manuel-pichler.de",
-                    "homepage": "https://github.com/manuelpichler",
-                    "role": "Project Founder"
+                    "homepage": "https://github.com/manuelpichler"
                 },
                 {
                     "name": "Other contributors",
-                    "homepage": "https://github.com/phpmd/phpmd/graphs/contributors",
-                    "role": "Contributors"
+                    "role": "Contributors",
+                    "homepage": "https://github.com/phpmd/phpmd/graphs/contributors"
                 },
                 {
                     "name": "Marc Würth",
+                    "role": "Project Maintainer",
                     "email": "ravage@bluewin.ch",
-                    "homepage": "https://github.com/ravage84",
-                    "role": "Project Maintainer"
+                    "homepage": "https://github.com/ravage84"
                 }
             ],
             "description": "PHPMD is a spin-off project of PHP Depend and aims to be a PHP equivalent of the well known Java tool PMD.",
@@ -3779,8 +3779,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sb@sebastian-bergmann.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sb@sebastian-bergmann.de"
                 }
             ],
             "description": "Library that provides collection, processing, and rendering functionality for PHP code coverage information.",
@@ -4047,8 +4047,8 @@
             "authors": [
                 {
                     "name": "Sebastian Bergmann",
-                    "email": "sebastian@phpunit.de",
-                    "role": "lead"
+                    "role": "lead",
+                    "email": "sebastian@phpunit.de"
                 }
             ],
             "description": "The PHP Unit Testing framework.",
