@@ -12,7 +12,7 @@ use app\models\db\MotionSection;
 use yii\helpers\Html;
 
 $paragraphCollisions = $form->getParagraphTextCollisions($section, $paragraphNo);
-$paragraphText       = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
+$draftParagraph      = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
 
 $type      = $section->getSettings();
 $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
@@ -123,12 +123,7 @@ if (count($allAmendingIds) > 0) {
 }
 ?>
     <div class="form-group">
-        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" <?php
-        $unchanged = $form->getUnchangedParagraphText($section, $paragraphNo);
-        if ($unchanged) {
-            echo 'data-unchanged="' . Html::encode($unchanged) . '"';
-        }
-        ?>>
+        <div class="wysiwyg-textarea" id="<?= $holderId ?>" data-fullHtml="0" data-unchanged="<?= Html::encode($draftParagraph->unchanged) ?>">
             <!--suppress HtmlFormInputWithoutLabel -->
             <textarea name="<?= $nameBase ?>[raw]" class="raw" id="<?= $htmlId ?>"
                       title="<?= Html::encode($type->title) ?>"></textarea>
@@ -141,7 +136,7 @@ if (count($allAmendingIds) > 0) {
             }
             ?>" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
                 <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
-                    <?= $paragraphText ?>
+                    <?= $draftParagraph->text ?>
                 </div>
             </div>
         </div>

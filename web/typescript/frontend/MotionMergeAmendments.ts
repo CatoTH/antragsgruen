@@ -16,19 +16,14 @@ class AmendmentStatuses {
     private static statuses: { [amendmentId: number]: number };
     private static versions: { [amendmentId: number]: AMENDMENT_VERSION };
     private static statusListeners: { [amendmentId: number]: MotionMergeAmendmentsParagraph[] } = {};
-    private static inputs: { [amendmentId: number]: HTMLElement } = {};
 
-    public static init(versions: { [amendmentId: number]: AMENDMENT_VERSION }) {
-        AmendmentStatuses.statuses = {};
+    public static init(statuses: { [amendmentId: number]: number }, versions: { [amendmentId: number]: AMENDMENT_VERSION }) {
+        AmendmentStatuses.statuses = statuses;
+        AmendmentStatuses.versions = versions;
 
-        document.querySelectorAll("input.amendmentStatus[type=hidden]").forEach((el: HTMLElement) => {
-            const amendmentId = parseInt(el.getAttribute("name").split("[")[1]);
-            AmendmentStatuses.statuses[amendmentId] = parseInt(el.getAttribute("value"));
-            AmendmentStatuses.inputs[amendmentId] = el;
+        Object.keys(statuses).forEach(amendmentId => {
             AmendmentStatuses.statusListeners[amendmentId] = [];
         });
-
-        AmendmentStatuses.versions = versions;
     }
 
     public static getAmendmentStatus(amendmentId: number): number {
@@ -48,7 +43,6 @@ class AmendmentStatuses {
         AmendmentStatuses.statusListeners[amendmentId].forEach(paragraph => {
             paragraph.onAmendmentStatusChanged(amendmentId, status);
         });
-        AmendmentStatuses.inputs[amendmentId].setAttribute("value", status.toString(10));
     }
 
     public static setVersion(amendmentId: number, version: AMENDMENT_VERSION) {
@@ -702,7 +696,9 @@ export class MotionMergeAmendments {
 
     constructor($form: JQuery) {
         MotionMergeAmendments.$form = $form;
-        AmendmentStatuses.init($form.data("amendment-versions"));
+
+        const draft = JSON.parse(document.getElementById('mergeDraft').getAttribute('value'));
+        AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions);
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);

@@ -78,6 +78,64 @@ class Draft implements \JsonSerializable
         return $draft;
     }
 
+    /**
+     * @param Init $form
+     * @param array $textVersions
+     *
+     * @return Draft
+     */
+    public static function initFromForm(Init $form, $textVersions)
+    {
+        $draft = new Draft();
+        $draft->init($form->motion);
+
+        $draft->sections = []; // Empty = default values
+
+        $draft->paragraphs = [];
+        foreach ($form->motion->getSortedSections(false) as $section) {
+            if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                continue;
+            }
+
+            $amendmentsById = [];
+            foreach ($section->getAmendingSections(true, false, true) as $sect) {
+                $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
+            }
+
+
+            $paragraphs = $section->getTextParagraphObjects(false, false, false);
+            foreach (array_keys($paragraphs) as $paragraphNo) {
+                $allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
+                $paragraphText  = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
+                list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
+
+                $draftPara                   = new DraftParagraph();
+                $draftPara->unchanged        = null;
+                $draftPara->text             = $paragraphText;
+                $draftPara->amendmentToggles = [];
+                foreach ($normalAmendments as $amendment) {
+                    if ($form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo)) {
+                        $draftPara->amendmentToggles[] = $amendment->id;
+                    }
+                }
+
+                $draft->paragraphs[$section->sectionId . '_' . $paragraphNo] = $draftPara;
+            }
+        }
+
+        foreach ($form->motion->getVisibleAmendments() as $amendment) {
+            $draft->amendmentStatuses[$amendment->id] = $amendment->status;
+
+            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
+                $draft->amendmentVersions[$amendment->id] = 'prop';
+            } else {
+                 $draft->amendmentVersions[$amendment->id] = 'orig';
+            }
+        }
+
+        return $draft;
+    }
+
     public function save($public)
     {
         if ($public) {

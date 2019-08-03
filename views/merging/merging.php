@@ -61,7 +61,6 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
     'enctype'                  => 'multipart/form-data',
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
-    'data-amendment-versions'  => $form->amendmentVersions,
 ]);
 
 
@@ -164,12 +163,9 @@ if (count($editorials) > 0) {
     <?php
 }
 
-foreach ($form->amendmentStatuses as $amendmentId => $status) {
-    echo '<input type="hidden" name="amendmentStatus[' . $amendmentId . ']" value="' . $status . '" class="amendmentStatus">';
-}
-
+echo Html::input('hidden', 'mergeDraft', json_encode($form->draftData), ['id' => 'mergeDraft']);
 ?>
-
+    <input type="hidden" name="mergeDe" id="mergeDraft"
     <div class="submitHolder content">
         <button type="submit" name="save" class="btn btn-primary">
             <span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('amend', 'go_on') ?>

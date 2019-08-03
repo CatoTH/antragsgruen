@@ -15,13 +15,10 @@ class Init
     private $toMergeMainIds;
     private $toMergeResolvedIds;
 
-    public $amendmentVersions;
-    public $amendmentStatuses;
-
     public $resumeDraft = null;
 
     /** @var Draft */
-    public $draftData = null;
+    public $draftData;
 
     /**
      * @param Motion $motion
@@ -36,27 +33,23 @@ class Init
         $form->motion             = $motion;
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
-        $form->amendmentVersions  = [];
-        $form->amendmentStatuses  = [];
         foreach ($motion->getVisibleAmendments() as $amendment) {
             if (isset($postAmendIds[$amendment->id])) {
                 $form->toMergeMainIds[] = $amendment->id;
             }
 
             if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
-                $form->amendmentVersions[$amendment->id] = 'prop';
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $amendment->proposalReference->id;
                 }
             } else {
-                $form->amendmentVersions[$amendment->id] = 'orig';
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $amendment->id;
                 }
             }
-
-            $form->amendmentStatuses[$amendment->id] = $amendment->status;
         }
+
+        $form->draftData = Draft::initFromForm($form, $textVersions);
 
         return $form;
     }
@@ -68,8 +61,6 @@ class Init
         $form->draftData          = $draft;
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
-        $form->amendmentVersions  = $form->draftData->amendmentVersions;
-        $form->amendmentStatuses  = $form->draftData->amendmentStatuses;
 
         return $form;
     }
@@ -81,7 +72,7 @@ class Init
      */
     public function getRegularSection(MotionSection $section)
     {
-        if ($this->draftData && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
+        if ($this->draftData && isset($this->draftData->sections[$section->sectionId]) && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
             $clone = new MotionSection();
             $clone->setAttributes($section->getAttributes(), false);
             $clone->data    = $this->draftData->sections[$section->sectionId];
@@ -103,11 +94,6 @@ class Init
     {
         if ($this->draftData) {
             $paragraphData = $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
-            if (!is_object($paragraphData)) {
-                var_dump($paragraphData);;
-                echo $section->sectionId . "!" . $paragraphNo;
-                die();
-            }
 
             return $section->getAmendmentDiffMerger($paragraphData->amendmentToggles)->getParagraphMerger($paragraphNo);
         } else {
@@ -180,21 +166,6 @@ class Init
             $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
 
             return $paragraphMerger->getFormattedDiffText($amendmentsById);
-        }
-    }
-
-    /**
-     * @param MotionSection $section
-     * @param int $paragraphNo
-     *
-     * @return string|null
-     */
-    public function getUnchangedParagraphText(MotionSection $section, $paragraphNo)
-    {
-        if ($this->draftData) {
-            return $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->unchanged;
-        } else {
-            return null;
         }
     }
 
