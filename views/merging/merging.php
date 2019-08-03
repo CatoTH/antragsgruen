@@ -61,7 +61,6 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
     'enctype'                  => 'multipart/form-data',
     'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
-    'data-amendment-statuses'  => $form->amendmentStatuses,
     'data-amendment-versions'  => $form->amendmentVersions,
 ]);
 
@@ -163,6 +162,10 @@ if (count($editorials) > 0) {
         <div><?= implode('', $editorials) ?></div>
     </section>
     <?php
+}
+
+foreach ($form->amendmentStatuses as $amendmentId => $status) {
+    echo '<input type="hidden" name="amendmentStatus[' . $amendmentId . ']" value="' . $status . '" class="amendmentStatus">';
 }
 
 ?>

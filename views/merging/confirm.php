@@ -9,7 +9,6 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Motion $newMotion
- * @var string $deleteDraftId
  * @var array $amendmentStatuses
  * @var \app\models\MotionSectionChanges[] $changes
  */

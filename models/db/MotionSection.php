@@ -158,12 +158,12 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return \string[][]
+     * @return string[][]
      * @throws Internal
      */
     public function getTextParagraphLines()
     {
-        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
 

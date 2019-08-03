@@ -7,13 +7,11 @@ use app\models\db\MotionSection;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\TextSimple;
-use yii\base\Model;
 
-class MotionMergeAmendmentsForm extends Model
+class MotionMergeAmendmentsForm
 {
     /** @var Motion */
     public $origMotion;
-    public $newMotion;
 
     /** @var array */
     public $sections;
@@ -24,66 +22,83 @@ class MotionMergeAmendmentsForm extends Model
 
     /**
      * @param Motion $origMotion
-     * @param Motion $newMotion
      */
-    public function __construct(Motion $origMotion, Motion $newMotion)
+    public function __construct(Motion $origMotion)
     {
-        parent::__construct();
         $this->origMotion = $origMotion;
-        $this->newMotion  = $newMotion;
-    }
-
-    /**
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            [['origMotion', 'newMotion'], 'required'],
-            [['sections', 'amendStatus'], 'safe']
-        ];
     }
 
     /**
      * @return Motion
-     * @throws Internal
-     * @throws \app\models\exceptions\FormError
      */
-    public function createNewMotion()
+    private function createMotion()
     {
-        $this->newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
-        $this->newMotion->motionTypeId   = $this->origMotion->motionTypeId;
-        $this->newMotion->agendaItemId   = $this->origMotion->agendaItemId;
-        $this->newMotion->consultationId = $this->origMotion->consultationId;
-        $this->newMotion->parentMotionId = $this->origMotion->id;
-        $this->newMotion->cache          = '';
-        $this->newMotion->title          = '';
-        $this->newMotion->dateCreation   = date('Y-m-d H:i:s');
-        $this->newMotion->status         = Motion::STATUS_DRAFT;
-        if (!$this->newMotion->save()) {
-            var_dump($this->newMotion->getErrors());
+        $newMotion                 = new Motion();
+        $newMotion->motionTypeId   = $this->origMotion->motionTypeId;
+        $newMotion->agendaItemId   = $this->origMotion->agendaItemId;
+        $newMotion->consultationId = $this->origMotion->consultationId;
+        $newMotion->parentMotionId = $this->origMotion->id;
+        $newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
+        $newMotion->cache          = '';
+        $newMotion->title          = '';
+        $newMotion->dateCreation   = date('Y-m-d H:i:s');
+        $newMotion->status         = Motion::STATUS_DRAFT;
+        if (!$newMotion->save()) {
+            var_dump($newMotion->getErrors());
             throw new Internal();
         }
 
+        $newMotion->refresh();
+
         foreach ($this->origMotion->tags as $tag) {
-            $this->newMotion->link('tags', $tag);
+            $newMotion->link('tags', $tag);
         }
 
-        foreach ($this->origMotion->motionType->motionSections as $sectionType) {
+        return $newMotion;
+    }
+
+    /**
+     * @param MotionSection $section
+     * @param MotionSection $origSection
+     * @param array $post
+     *
+     * @throws \app\models\exceptions\FormError
+     */
+    private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, $post)
+    {
+        $paragraphs = [];
+        foreach ($origSection->getTextParagraphLines() as $paraNo => $para) {
+            $consolidated = $post['sections'][$section->sectionId][$paraNo]['consolidated'];
+            $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
+            $paragraphs[] = $consolidated;
+        }
+        $html = implode("\n", $paragraphs);
+        $section->getSectionType()->setMotionData($html);
+        $section->dataRaw = $html;
+    }
+
+    /**
+     * @param array $post
+     *
+     * @return Motion
+     * @throws Internal
+     * @throws \app\models\exceptions\FormError
+     */
+    public function createNewMotion($post)
+    {
+        $newMotion = $this->createMotion();
+
+        foreach ($this->origMotion->getActiveSections() as $origSection) {
             $section            = new MotionSection();
-            $section->sectionId = $sectionType->id;
-            $section->motionId  = $this->newMotion->id;
+            $section->sectionId = $origSection->sectionId;
+            $section->motionId  = $newMotion->id;
             $section->cache     = '';
             $section->data      = '';
             $section->dataRaw   = '';
             $section->refresh();
 
             if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                $consolidated = $this->sections[$section->sectionId]['consolidated'];
-                $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
-                /** @var TextSimple data */
-                $section->getSectionType()->setMotionData($consolidated);
-                $section->dataRaw = $this->sections[$section->sectionId]['raw'];
+                $this->mergeSimpleTextSection($section, $origSection, $post);
             } elseif (isset($this->sections[$section->sectionId])) {
                 $section->getSectionType()->setMotionData($this->sections[$section->sectionId]);
             } else {
@@ -97,9 +112,27 @@ class MotionMergeAmendmentsForm extends Model
             $this->motionSections[] = $section;
         }
 
-        $this->newMotion->refreshTitle();
-        $this->newMotion->save();
 
-        return $this->newMotion;
+        $newMotion->refreshTitle();
+        $newMotion->save();
+
+        return $newMotion;
+    }
+
+    /**
+     * @param array $post
+     *
+     * @return string
+     */
+    public function encodeAmendmentStatuses($post)
+    {
+        $statuses = [];
+        if (isset($post['amendmentStatus'])) {
+            foreach ($post['amendmentStatus'] as $key => $val) {
+                $statuses[IntVal($key)] = IntVal($val);
+            }
+        }
+
+        return json_encode($statuses);
     }
 }
