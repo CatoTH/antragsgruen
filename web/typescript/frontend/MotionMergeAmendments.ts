@@ -709,7 +709,8 @@ export class MotionMergeAmendments {
             this.paragraphs.push(new MotionMergeAmendmentsParagraph($para));
         });
 
-        MotionMergeAmendments.$form.on("submit", () => {
+        MotionMergeAmendments.$form.on("submit", (ev) => {
+            this.saveDraft(true);
             $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
         });
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
@@ -739,7 +740,7 @@ export class MotionMergeAmendments {
         this.$draftSavingPanel.find(".lastSaved .value").text(formatted);
     }
 
-    private saveDraft() {
+    private saveDraft(onlyInput = false) {
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
@@ -757,35 +758,40 @@ export class MotionMergeAmendments {
         });
         let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
-        $.ajax({
-            type: "POST",
-            url: MotionMergeAmendments.$form.data('draftSaving'),
-            data: {
-                'public': (isPublic ? 1 : 0),
-                'data': JSON.stringify(data),
-                '_csrf': MotionMergeAmendments.$form.find('> input[name=_csrf]').val()
-            },
-            success: (ret) => {
-                if (ret['success']) {
-                    this.$draftSavingPanel.find('.savingError').addClass('hidden');
-                    this.setDraftDate(new Date(ret['date']));
-                    if (isPublic) {
-                        MotionMergeAmendments.$form.find('.publicLink').removeClass('hidden');
+        const dataStr = JSON.stringify(data);
+        document.getElementById('mergeDraft').setAttribute('value', dataStr);
+
+        if (!onlyInput) {
+            $.ajax({
+                type: "POST",
+                url: MotionMergeAmendments.$form.data('draftSaving'),
+                data: {
+                    'public': (isPublic ? 1 : 0),
+                    data: dataStr,
+                    '_csrf': MotionMergeAmendments.$form.find('> input[name=_csrf]').val()
+                },
+                success: (ret) => {
+                    if (ret['success']) {
+                        this.$draftSavingPanel.find('.savingError').addClass('hidden');
+                        this.setDraftDate(new Date(ret['date']));
+                        if (isPublic) {
+                            MotionMergeAmendments.$form.find('.publicLink').removeClass('hidden');
+                        } else {
+                            MotionMergeAmendments.$form.find('.publicLink').addClass('hidden');
+                        }
                     } else {
-                        MotionMergeAmendments.$form.find('.publicLink').addClass('hidden');
+                        this.$draftSavingPanel.find('.savingError').removeClass('hidden');
+                        this.$draftSavingPanel.find('.savingError .errorNetwork').addClass('hidden');
+                        this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
                     }
-                } else {
+                },
+                error: () => {
                     this.$draftSavingPanel.find('.savingError').removeClass('hidden');
-                    this.$draftSavingPanel.find('.savingError .errorNetwork').addClass('hidden');
-                    this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorNetwork').removeClass('hidden');
+                    this.$draftSavingPanel.find('.savingError .errorHolder').text('').addClass('hidden');
                 }
-            },
-            error: () => {
-                this.$draftSavingPanel.find('.savingError').removeClass('hidden');
-                this.$draftSavingPanel.find('.savingError .errorNetwork').removeClass('hidden');
-                this.$draftSavingPanel.find('.savingError .errorHolder').text('').addClass('hidden');
-            }
-        });
+            });
+        }
     }
 
     private initAutosavingDraft() {
@@ -793,7 +799,7 @@ export class MotionMergeAmendments {
 
         window.setInterval(() => {
             if ($toggle.prop('checked')) {
-                this.saveDraft();
+                this.saveDraft(false);
             }
         }, 5000);
 
@@ -813,8 +819,8 @@ export class MotionMergeAmendments {
 
     private initDraftSaving() {
         this.$draftSavingPanel = MotionMergeAmendments.$form.find('#draftSavingPanel');
-        this.$draftSavingPanel.find('.saveDraft').on('click', this.saveDraft.bind(this));
-        this.$draftSavingPanel.find('input[name=public]').on('change', this.saveDraft.bind(this));
+        this.$draftSavingPanel.find('.saveDraft').on('click', () => this.saveDraft(false));
+        this.$draftSavingPanel.find('input[name=public]').on('change', () => this.saveDraft(false));
         this.initAutosavingDraft();
 
         if (this.$draftSavingPanel.data("resumed-date")) {

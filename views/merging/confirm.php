@@ -7,9 +7,8 @@ use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Motion $newMotion
- * @var array $amendmentStatuses
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
@@ -23,11 +22,11 @@ $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotion
 $layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
 
-$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $newMotion->getTitleWithPrefix();
 
 ?>
-    <h1><?= \Yii::t('amend', 'merge_confirm_title') ?></h1>
+    <h1><?= Yii::t('amend', 'merge_confirm_title') ?></h1>
 <?php
 
 echo Html::beginForm('', 'post', [
@@ -36,7 +35,7 @@ echo Html::beginForm('', 'post', [
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendmentsConfirm'
 ]);
 
-$odtText = '<span class="glyphicon glyphicon-download"></span> ' . \Yii::t('amend', 'merge_confirm_odt');
+$odtText = '<span class="glyphicon glyphicon-download"></span> ' . Yii::t('amend', 'merge_confirm_odt');
 $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 ?>
     <section class="toolbarBelowTitle mergeConfirmToolbar">
@@ -44,11 +43,11 @@ $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-default active">
                     <input type="radio" name="diffStyle" value="full" autocomplete="off" checked>
-                    <?= \Yii::t('amend', 'merge_confirm_full') ?>
+                    <?= Yii::t('amend', 'merge_confirm_full') ?>
                 </label>
                 <label class="btn btn-default">
                     <input type="radio" name="diffStyle" value="diff" autocomplete="off">
-                    <?= \Yii::t('amend', 'merge_confirm_diff') ?>
+                    <?= Yii::t('amend', 'merge_confirm_diff') ?>
                 </label>
             </div>
         </div>
@@ -63,26 +62,26 @@ if ($newMotion->canCreateResolution()) {
     $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
 
     ?>
-    <h2 class="green"><?= \Yii::t('amend', 'merge_new_status') ?></h2>
+    <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
     <div class="content row">
         <div class="col-md-6 newMotionStatus">
             <label>
                 <input type="radio" name="newStatus" value="motion" checked>
-                <?= \Yii::t('amend', 'merge_new_status_screened') ?>
+                <?= Yii::t('amend', 'merge_new_status_screened') ?>
             </label>
             <label>
                 <input type="radio" name="newStatus" value="resolution_final">
-                <?= \Yii::t('amend', 'merge_new_status_res_f') ?>
+                <?= Yii::t('amend', 'merge_new_status_res_f') ?>
             </label>
             <label>
                 <input type="radio" name="newStatus" value="resolution_preliminary">
-                <?= \Yii::t('amend', 'merge_new_status_res_p') ?>
+                <?= Yii::t('amend', 'merge_new_status_res_p') ?>
             </label>
         </div>
         <div class="col-md-6 newMotionInitiator">
-            <label for="newInitiator"><?= \Yii::t('amend', 'merge_new_orga') ?></label>
+            <label for="newInitiator"><?= Yii::t('amend', 'merge_new_orga') ?></label>
             <input class="form-control" name="newInitiator" type="text" id="newInitiator">
-            <label for="dateResolution"><?= \Yii::t('amend', 'merge_new_resolution_date') ?></label>
+            <label for="dateResolution"><?= Yii::t('amend', 'merge_new_resolution_date') ?></label>
             <div class="input-group date" id="dateResolutionHolder">
                 <input type="text" class="form-control" name="dateResolution" id="dateResolution"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
@@ -125,13 +124,13 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
         <div style="float: right;">
             <button type="submit" name="confirm" class="btn btn-success">
                 <span class="glyphicon glyphicon-ok-sign"></span>
-                <?= \Yii::t('base', 'save') ?>
+                <?= Yii::t('base', 'save') ?>
             </button>
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
                 <span class="glyphicon glyphicon-remove-sign"></span>
-                <?= \Yii::t('amend', 'button_correct') ?>
+                <?= Yii::t('amend', 'button_correct') ?>
             </button>
         </div>
     </div>

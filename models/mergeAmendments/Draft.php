@@ -136,9 +136,12 @@ class Draft implements \JsonSerializable
         return $draft;
     }
 
-    public function save($public)
+    /**
+     * @param null|boolean $public
+     */
+    public function save($public = null)
     {
-        if ($public) {
+        if ($public || ($public === null && $this->draftMotion->status === Motion::STATUS_MERGING_DRAFT_PUBLIC)) {
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PUBLIC;
         } else {
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PRIVATE;

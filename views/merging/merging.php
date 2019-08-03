@@ -165,7 +165,6 @@ if (count($editorials) > 0) {
 
 echo Html::input('hidden', 'mergeDraft', json_encode($form->draftData), ['id' => 'mergeDraft']);
 ?>
-    <input type="hidden" name="mergeDe" id="mergeDraft"
     <div class="submitHolder content">
         <button type="submit" name="save" class="btn btn-primary">
             <span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('amend', 'go_on') ?>

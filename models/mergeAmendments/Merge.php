@@ -117,21 +117,4 @@ class Merge
 
         return $newMotion;
     }
-
-    /**
-     * @param array $post
-     *
-     * @return string
-     */
-    public function encodeAmendmentStatuses($post)
-    {
-        $statuses = [];
-        if (isset($post['amendmentStatus'])) {
-            foreach ($post['amendmentStatus'] as $key => $val) {
-                $statuses[IntVal($key)] = IntVal($val);
-            }
-        }
-
-        return json_encode($statuses);
-    }
 }
