@@ -11,9 +11,9 @@ use app\models\db\MotionSupporter;
 use app\models\events\MotionEvent;
 use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
-use app\models\forms\MotionMergeAmendmentsDraftForm;
-use app\models\forms\MotionMergeAmendmentsForm;
-use app\models\forms\MotionMergeAmendmentsInitForm;
+use app\models\mergeAmendments\Draft;
+use app\models\mergeAmendments\Merge;
+use app\models\mergeAmendments\Init;
 use app\models\MotionSectionChanges;
 use yii\web\Response;
 
@@ -72,7 +72,7 @@ trait MotionMergingTrait
                 'motion' => $motion,
                 'draft'  => $draft
             ]),
-            'date'    => ($draft->getDateTime() ? $draft->getDateTime()->format('c') : ''),
+            'date'    => ($draft->draftMotion->getDateTime() ? $draft->draftMotion->getDateTime()->format('c') : ''),
         ]);
     }
 
@@ -340,8 +340,7 @@ trait MotionMergingTrait
 
             $mergingDraft = $oldMotion->getMergingDraft(false);
             if ($mergingDraft) {
-                $mergingDraft->status = IMotion::STATUS_DELETED;
-                $mergingDraft->save();
+                $mergingDraft->delete();
             }
 
             // If the old motion was the only / forced motion of the consultation, set the new one as the forced one.
@@ -394,7 +393,7 @@ trait MotionMergingTrait
 
         try {
             if ($this->isPostSet('save')) {
-                $form = new MotionMergeAmendmentsForm($motion);
+                $form      = new Merge($motion);
                 $newMotion = $form->createNewMotion(\Yii::$app->request->post());
 
                 return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm', [
@@ -408,9 +407,9 @@ trait MotionMergingTrait
 
         $resumeDraft = $motion->getMergingDraft(false);
         if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {
-            $form = MotionMergeAmendmentsInitForm::initFromDraft($motion, $resumeDraft);
+            $form = Init::initFromDraft($motion, $resumeDraft);
         } else {
-            $form = MotionMergeAmendmentsInitForm::fromInitForm(
+            $form = Init::fromInitForm(
                 $motion,
                 \Yii::$app->request->post('amendments', []),
                 \Yii::$app->request->post('textVersion', [])
@@ -438,15 +437,15 @@ trait MotionMergingTrait
             return json_encode(['success' => false, 'error' => 'Motion not editable']);
         }
 
-        $form  = new MotionMergeAmendmentsDraftForm($motion);
-        $draft = $form->save(
-            \Yii::$app->request->post('public', 0),
+        $draft = Draft::initFromJson(
+            $motion,
             \Yii::$app->request->post('data', null)
         );
+        $draft->save(\Yii::$app->request->post('public', 0));
 
         return json_encode([
             'success' => true,
-            'date'    => ($draft->getDateTime() ? $draft->getDateTime()->format('c') : ''),
+            'date'    => ($draft->draftMotion->getDateTime() ? $draft->draftMotion->getDateTime()->format('c') : ''),
         ]);
     }
 }

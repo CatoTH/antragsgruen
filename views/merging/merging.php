@@ -3,12 +3,12 @@
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
-use app\models\forms\MotionMergeAmendmentsInitForm;
+use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var MotionMergeAmendmentsInitForm $form
+ * @var Init $form
  */
 
 /** @var \app\controllers\Base $controller */

@@ -1,7 +1,7 @@
 <?php
 /**
  * @var MotionSection $section
- * @var \app\models\forms\MotionMergeAmendmentsInitForm $form
+ * @var \app\models\mergeAmendments\Init $form
  * @var Amendment[] $amendmentsById
  * @var int $paragraphNo
  */

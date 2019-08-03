@@ -2,7 +2,7 @@
 
 /**
  * @var \yii\web\View $this
- * @var \app\models\forms\MotionMergeAmendmentsInitForm $form
+ * @var \app\models\mergeAmendments\Init $form
  * @var MotionSection $section
  */
 

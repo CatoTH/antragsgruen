@@ -1,14 +1,13 @@
 <?php
 
-namespace app\models\forms;
+namespace app\models\mergeAmendments;
 
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
 
-class MotionMergeAmendmentsForm
+class Merge
 {
     /** @var Motion */
     public $origMotion;

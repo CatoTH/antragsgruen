@@ -1,13 +1,13 @@
 <?php
 
-namespace app\models\forms;
+namespace app\models\mergeAmendments;
 
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\sectionTypes\ISectionType;
 
-class MotionMergeAmendmentsInitForm
+class Init
 {
     /** @var Motion */
     public $motion;
@@ -19,6 +19,8 @@ class MotionMergeAmendmentsInitForm
     public $amendmentStatuses;
 
     public $resumeDraft = null;
+
+    /** @var Draft */
     public $draftData = null;
 
     /**
@@ -26,11 +28,11 @@ class MotionMergeAmendmentsInitForm
      * @param array $postAmendIds
      * @param array $textVersions
      *
-     * @return MotionMergeAmendmentsInitForm
+     * @return Init
      */
     public static function fromInitForm(Motion $motion, $postAmendIds, $textVersions)
     {
-        $form                     = new MotionMergeAmendmentsInitForm();
+        $form                     = new Init();
         $form->motion             = $motion;
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
@@ -59,15 +61,15 @@ class MotionMergeAmendmentsInitForm
         return $form;
     }
 
-    public static function initFromDraft(Motion $motion, Motion $draft)
+    public static function initFromDraft(Motion $motion, Draft $draft)
     {
-        $form                     = new MotionMergeAmendmentsInitForm();
+        $form                     = new Init();
         $form->motion             = $motion;
-        $form->draftData          = json_decode($draft->sections[0]->dataRaw, true);
+        $form->draftData          = $draft;
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
-        $form->amendmentVersions  = $form->draftData['amendmentVersions'];
-        $form->amendmentStatuses  = $form->draftData['amendmentStatuses'];
+        $form->amendmentVersions  = $form->draftData->amendmentVersions;
+        $form->amendmentStatuses  = $form->draftData->amendmentStatuses;
 
         return $form;
     }
@@ -82,8 +84,8 @@ class MotionMergeAmendmentsInitForm
         if ($this->draftData && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
             $clone = new MotionSection();
             $clone->setAttributes($section->getAttributes(), false);
-            $clone->data    = $this->draftData['sections'][$section->sectionId];
-            $clone->dataRaw = $this->draftData['sections'][$section->sectionId];
+            $clone->data    = $this->draftData->sections[$section->sectionId];
+            $clone->dataRaw = $this->draftData->sections[$section->sectionId];
 
             return $clone;
         } else {
@@ -100,9 +102,14 @@ class MotionMergeAmendmentsInitForm
     public function getMergerForParagraph(MotionSection $section, $paragraphNo)
     {
         if ($this->draftData) {
-            $paragraphData = $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo];
+            $paragraphData = $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
+            if (!is_object($paragraphData)) {
+                var_dump($paragraphData);;
+                echo $section->sectionId . "!" . $paragraphNo;
+                die();
+            }
 
-            return $section->getAmendmentDiffMerger($paragraphData['amendmentToggles'])->getParagraphMerger($paragraphNo);
+            return $section->getAmendmentDiffMerger($paragraphData->amendmentToggles)->getParagraphMerger($paragraphNo);
         } else {
             return $section->getAmendmentDiffMerger($this->toMergeResolvedIds)->getParagraphMerger($paragraphNo);
         }
@@ -168,7 +175,7 @@ class MotionMergeAmendmentsInitForm
     public function getParagraphText(MotionSection $section, $paragraphNo, $amendmentsById)
     {
         if ($this->draftData) {
-            return $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['text'];
+            return $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->text;
         } else {
             $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
 
@@ -185,7 +192,7 @@ class MotionMergeAmendmentsInitForm
     public function getUnchangedParagraphText(MotionSection $section, $paragraphNo)
     {
         if ($this->draftData) {
-            return $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['unchanged'];
+            return $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->unchanged;
         } else {
             return null;
         }
@@ -201,7 +208,7 @@ class MotionMergeAmendmentsInitForm
     public function isAmendmentActiveForParagraph($amendmentId, MotionSection $section, $paragraphNo)
     {
         if ($this->draftData) {
-            return in_array($amendmentId, $this->draftData['paragraphs'][$section->sectionId . '_' . $paragraphNo]['amendmentToggles']);
+            return in_array($amendmentId, $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->amendmentToggles);
         } else {
             return in_array($amendmentId, $this->toMergeMainIds);
         }

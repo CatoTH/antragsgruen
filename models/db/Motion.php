@@ -12,6 +12,7 @@ use app\models\exceptions\Internal;
 use app\models\exceptions\NotAmendable;
 use app\models\exceptions\NotFound;
 use app\models\layoutHooks\Layout;
+use app\models\mergeAmendments\Draft;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
 use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
@@ -538,7 +539,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param boolean $onlyPublic
-     * @return Motion|null
+     * @return Draft|null
      */
     public function getMergingDraft($onlyPublic)
     {
@@ -547,10 +548,15 @@ class Motion extends IMotion implements IRSSItem
         } else {
             $status = [Motion::STATUS_MERGING_DRAFT_PUBLIC, Motion::STATUS_MERGING_DRAFT_PRIVATE];
         }
-        return Motion::findOne([
+        $motion = Motion::findOne([
             'parentMotionId' => $this->id,
             'status'         => $status,
         ]);
+        if ($motion) {
+            return Draft::initFromJson($this, $motion->sections[0]->dataRaw);
+        } else {
+            return null;
+        }
     }
 
     /**
