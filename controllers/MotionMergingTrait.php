@@ -2,13 +2,9 @@
 
 namespace app\controllers;
 
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\db\IMotion;
 use app\models\db\Motion;
-use app\models\db\MotionSupporter;
-use app\models\events\MotionEvent;
 use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\mergeAmendments\Draft;
@@ -261,95 +257,15 @@ trait MotionMergingTrait
 
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
-        $oldMotion     = $newMotion->replacedMotion;
-
-        $mergingDraft = $oldMotion->getMergingDraft(false);
+        $oldMotion = $newMotion->replacedMotion;
 
         if ($this->isPostSet('modify')) {
-            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments', [
-                'newMotionId'       => $newMotion->id
-            ]));
+            return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments'));
         }
 
         if ($this->isPostSet('confirm')) {
-            $invisible = $this->consultation->getInvisibleAmendmentStatuses();
-            foreach ($oldMotion->getVisibleAmendments() as $amendment) {
-                if (isset($amendStatuses[$amendment->id])) {
-                    $newStatus = IntVal($amendStatuses[$amendment->id]);
-                    if ($newStatus !== $amendment->status && !in_array($amendStatuses[$amendment->id], $invisible)) {
-                        $amendment->status = $newStatus;
-                        $amendment->save();
-                    }
-                }
-            }
-
-            if ($newMotion->replacedMotion->slug) {
-                $newMotion->slug                 = $newMotion->replacedMotion->slug;
-                $newMotion->replacedMotion->slug = null;
-                $newMotion->replacedMotion->save();
-            }
-
-            $isResolution = false;
-            if ($newMotion->canCreateResolution()) {
-                $resolutionMode = \Yii::$app->request->post('newStatus');
-                if ($resolutionMode === 'resolution_final') {
-                    $newMotion->status = IMotion::STATUS_RESOLUTION_FINAL;
-                    $isResolution      = true;
-                } elseif ($resolutionMode === 'resolution_preliminary') {
-                    $newMotion->status = IMotion::STATUS_RESOLUTION_PRELIMINARY;
-                    $isResolution      = true;
-                } else {
-                    $newMotion->status = $newMotion->replacedMotion->status;
-                }
-            } else {
-                $newMotion->status = $newMotion->replacedMotion->status;
-            }
-            if ($isResolution) {
-                $resolutionDate            = \Yii::$app->request->post('dateResolution', '');
-                $resolutionDate            = Tools::dateBootstrapdate2sql($resolutionDate);
-                $newMotion->dateResolution = ($resolutionDate ? $resolutionDate : null);
-            }
-            $newMotion->save();
-
-            // For resolutions, the state of the original motion should not be changed
-            if (!$isResolution && $newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
-                $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
-                $newMotion->replacedMotion->save();
-            }
-
-            if ($isResolution) {
-                $resolutionBody = \Yii::$app->request->post('newInitiator', '');
-                if (trim($resolutionBody) !== '') {
-                    $body                 = new MotionSupporter();
-                    $body->motionId       = $newMotion->id;
-                    $body->position       = 0;
-                    $body->dateCreation   = date('Y-m-d H:i:s');
-                    $body->personType     = MotionSupporter::PERSON_ORGANIZATION;
-                    $body->role           = MotionSupporter::ROLE_INITIATOR;
-                    $body->organization   = $resolutionBody;
-                    $resolutionDate       = \Yii::$app->request->post('dateResolution', '');
-                    $resolutionDate       = Tools::dateBootstrapdate2sql($resolutionDate);
-                    $body->resolutionDate = ($resolutionDate ? $resolutionDate : null);
-                    if (!$body->save()) {
-                        var_dump($body->getErrors());
-                        die();
-                    }
-                }
-            }
-
-            if ($mergingDraft) {
-                $mergingDraft->delete();
-            }
-
-            // If the old motion was the only / forced motion of the consultation, set the new one as the forced one.
-            if ($this->consultation->getSettings()->forceMotion === $oldMotion->id) {
-                $settings              = $this->consultation->getSettings();
-                $settings->forceMotion = $newMotion->id;
-                $this->consultation->setSettings($settings);
-                $this->consultation->save();
-            }
-
-            $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
+            $merger = new Merge($oldMotion);
+            $merger->confirm($newMotion);
 
             return $this->render('@app/views/merging/done', [
                 'newMotion' => $newMotion,
@@ -361,6 +277,8 @@ trait MotionMergingTrait
         } catch (Inconsistency $e) {
             $changes = [];
         }
+
+        $mergingDraft = $oldMotion->getMergingDraft(false);
 
         return $this->render('@app/views/merging/confirm', [
             'newMotion'         => $newMotion,
@@ -389,21 +307,22 @@ trait MotionMergingTrait
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
+        $resumeDraft = $motion->getMergingDraft(false);
+
         try {
             if ($this->isPostSet('save')) {
-                $draft = Draft::initFromJson($motion, \Yii::$app->request->post('mergeDraft', null));
-                $draft->save(null);
+                $draft = Draft::initFromJson($motion, $resumeDraft->public, new \DateTime('now'), \Yii::$app->request->post('mergeDraft', null));
+                $draft->save();
 
                 $form      = new Merge($motion);
                 $newMotion = $form->createNewMotion(\Yii::$app->request->post());
 
-                return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm', ['fromMode' => 'create']));
+                return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
             }
         } catch (\Exception $e) {
             \yii::$app->session->setFlash('error', $e->getMessage());
         }
 
-        $resumeDraft = $motion->getMergingDraft(false);
         if ($resumeDraft && !\Yii::$app->request->post('discard', 0) && count($resumeDraft->sections) === 1) {
             $form = Init::initFromDraft($motion, $resumeDraft);
         } else {
@@ -434,11 +353,9 @@ trait MotionMergingTrait
             return json_encode(['success' => false, 'error' => 'Motion not editable']);
         }
 
-        $draft = Draft::initFromJson(
-            $motion,
-            \Yii::$app->request->post('data', null)
-        );
-        $draft->save(\Yii::$app->request->post('public', 0));
+        $public = (IntVal(\Yii::$app->request->post('public', 0)) === 1);
+        $draft  = Draft::initFromJson($motion, $public, new \DateTime('now'), \Yii::$app->request->post('data', null));
+        $draft->save();
 
         return json_encode([
             'success' => true,

@@ -63,13 +63,11 @@ echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'p
     'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
 ]);
 
-
-$draftIsPublic   = ($form->resumeDraft && $form->resumeDraft->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');
 $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-pdf');
-$resumedDate     = ($form->resumeDraft && $form->resumeDraft->getDateTime() ? $form->resumeDraft->getDateTime()->format('c') : '');
+$resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c') : '');
 ?>
-    <section id="draftSavingPanel" data-resumed-date="<?= $resumedDate ?>">
+    <section id="draftSavingPanel" data-resumed-date="<?= ($resumedDate) ?>">
         <h2>
             <?= Yii::t('amend', 'merge_draft_title') ?>
             <a href="<?= Html::encode($pdfLink) ?>" class="pdfLink" target="_blank">
@@ -79,10 +77,10 @@ $resumedDate     = ($form->resumeDraft && $form->resumeDraft->getDateTime() ? $f
         </h2>
         <label class="public">
             <a href="<?= Html::encode($publicDraftLink) ?>" target="_blank"
-               class="publicLink <?= ($draftIsPublic ? '' : 'hidden') ?>">
+               class="publicLink <?= ($form->draftData->public ? '' : 'hidden') ?>">
                 <span class="glyphicon glyphicon-share"></span>
             </a>
-            <input type="checkbox" name="public" <?= ($draftIsPublic ? 'checked' : '') ?>>
+            <input type="checkbox" name="public" <?= ($form->draftData->public ? 'checked' : '') ?>>
             <?= Yii::t('amend', 'merge_draft_public') ?>
         </label>
         <label class="autosave">

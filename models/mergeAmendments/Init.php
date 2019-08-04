@@ -15,8 +15,6 @@ class Init
     private $toMergeMainIds;
     private $toMergeResolvedIds;
 
-    public $resumeDraft = null;
-
     /** @var Draft */
     public $draftData;
 

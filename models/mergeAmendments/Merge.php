@@ -2,8 +2,12 @@
 
 namespace app\models\mergeAmendments;
 
+use app\components\Tools;
+use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\db\MotionSupporter;
+use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
@@ -28,20 +32,37 @@ class Merge
     }
 
     /**
+     * @return Motion|null
+     */
+    public function getMergedMotionDraft()
+    {
+        $newTitlePrefix = $this->origMotion->getNewTitlePrefix();
+        $newMotion      = Motion::find()
+                                ->where(['parentMotionId' => $this->origMotion->id])
+                                ->andWhere(['status' => Motion::STATUS_DRAFT])
+                                ->andWhere(['titlePrefix' => $newTitlePrefix])->one();
+
+        return $newMotion;
+    }
+
+    /**
      * @return Motion
      */
     private function createMotion()
     {
-        $newMotion                 = new Motion();
-        $newMotion->motionTypeId   = $this->origMotion->motionTypeId;
-        $newMotion->agendaItemId   = $this->origMotion->agendaItemId;
-        $newMotion->consultationId = $this->origMotion->consultationId;
-        $newMotion->parentMotionId = $this->origMotion->id;
-        $newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
-        $newMotion->cache          = '';
-        $newMotion->title          = '';
-        $newMotion->dateCreation   = date('Y-m-d H:i:s');
-        $newMotion->status         = Motion::STATUS_DRAFT;
+        $newMotion = $this->getMergedMotionDraft();
+        if (!$newMotion) {
+            $newMotion                 = new Motion();
+            $newMotion->consultationId = $this->origMotion->consultationId;
+            $newMotion->parentMotionId = $this->origMotion->id;
+            $newMotion->motionTypeId   = $this->origMotion->motionTypeId;
+            $newMotion->titlePrefix    = $this->origMotion->getNewTitlePrefix();
+        }
+        $newMotion->agendaItemId = $this->origMotion->agendaItemId;
+        $newMotion->cache        = '';
+        $newMotion->title        = '';
+        $newMotion->dateCreation = date('Y-m-d H:i:s');
+        $newMotion->status       = Motion::STATUS_DRAFT;
         if (!$newMotion->save()) {
             var_dump($newMotion->getErrors());
             throw new Internal();
@@ -116,5 +137,90 @@ class Merge
         $newMotion->save();
 
         return $newMotion;
+    }
+
+    public function confirm(Motion $newMotion)
+    {
+        $oldMotion = $this->origMotion;
+
+        $invisible = $oldMotion->consultation->getInvisibleAmendmentStatuses();
+        foreach ($oldMotion->getVisibleAmendments() as $amendment) {
+            if (isset($amendStatuses[$amendment->id])) {
+                $newStatus = IntVal($amendStatuses[$amendment->id]);
+                if ($newStatus !== $amendment->status && !in_array($amendStatuses[$amendment->id], $invisible)) {
+                    $amendment->status = $newStatus;
+                    $amendment->save();
+                }
+            }
+        }
+
+        if ($newMotion->replacedMotion->slug) {
+            $newMotion->slug                 = $newMotion->replacedMotion->slug;
+            $newMotion->replacedMotion->slug = null;
+            $newMotion->replacedMotion->save();
+        }
+
+        $isResolution = false;
+        if ($newMotion->canCreateResolution()) {
+            $resolutionMode = \Yii::$app->request->post('newStatus');
+            if ($resolutionMode === 'resolution_final') {
+                $newMotion->status = IMotion::STATUS_RESOLUTION_FINAL;
+                $isResolution      = true;
+            } elseif ($resolutionMode === 'resolution_preliminary') {
+                $newMotion->status = IMotion::STATUS_RESOLUTION_PRELIMINARY;
+                $isResolution      = true;
+            } else {
+                $newMotion->status = $newMotion->replacedMotion->status;
+            }
+        } else {
+            $newMotion->status = $newMotion->replacedMotion->status;
+        }
+        if ($isResolution) {
+            $resolutionDate            = \Yii::$app->request->post('dateResolution', '');
+            $resolutionDate            = Tools::dateBootstrapdate2sql($resolutionDate);
+            $newMotion->dateResolution = ($resolutionDate ? $resolutionDate : null);
+        }
+        $newMotion->save();
+
+        // For resolutions, the state of the original motion should not be changed
+        if (!$isResolution && $newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
+            $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
+            $newMotion->replacedMotion->save();
+        }
+
+        if ($isResolution) {
+            $resolutionBody = \Yii::$app->request->post('newInitiator', '');
+            if (trim($resolutionBody) !== '') {
+                $body                 = new MotionSupporter();
+                $body->motionId       = $newMotion->id;
+                $body->position       = 0;
+                $body->dateCreation   = date('Y-m-d H:i:s');
+                $body->personType     = MotionSupporter::PERSON_ORGANIZATION;
+                $body->role           = MotionSupporter::ROLE_INITIATOR;
+                $body->organization   = $resolutionBody;
+                $resolutionDate       = \Yii::$app->request->post('dateResolution', '');
+                $resolutionDate       = Tools::dateBootstrapdate2sql($resolutionDate);
+                $body->resolutionDate = ($resolutionDate ? $resolutionDate : null);
+                if (!$body->save()) {
+                    var_dump($body->getErrors());
+                    die();
+                }
+            }
+        }
+
+        $mergingDraft = $oldMotion->getMergingDraft(false);
+        if ($mergingDraft) {
+            $mergingDraft->delete();
+        }
+
+        // If the old motion was the only / forced motion of the consultation, set the new one as the forced one.
+        if ($oldMotion->consultation->getSettings()->forceMotion === $oldMotion->id) {
+            $settings              = $oldMotion->consultation->getSettings();
+            $settings->forceMotion = $newMotion->id;
+            $oldMotion->consultation->setSettings($settings);
+            $oldMotion->consultation->save();
+        }
+
+        $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
     }
 }

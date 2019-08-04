@@ -340,6 +340,7 @@ class MotionMergeAmendmentsTextarea {
     private texteditor: editor;
     private unchangedText: string = null;
     private hasChanged: boolean = false;
+    private changedListeners: {(): void}[] = [];
 
     private prepareText(html: string) {
         let $text: JQuery = $('<div>' + html + '</div>');
@@ -368,6 +369,10 @@ class MotionMergeAmendmentsTextarea {
         this.unchangedText = this.normalizeHtml(this.texteditor.getData());
         this.texteditor.fire('saveSnapshot');
         this.onChanged();
+    }
+
+    public addChangedListener(cb: () => void) {
+        this.changedListeners.push(cb);
     }
 
     private markupMovedParagraph(i, el) {
@@ -496,6 +501,7 @@ class MotionMergeAmendmentsTextarea {
         } else {
             this.$mergeActionHolder.addClass("hidden");
         }
+        this.changedListeners.forEach(cb => cb());
     }
 
     public hasChanges(): boolean {
@@ -526,6 +532,7 @@ class MotionMergeAmendmentsParagraph {
     public sectionId: number;
     public paragraphId: number;
     public textarea: MotionMergeAmendmentsTextarea;
+    public hasUnsavedChanges = false;
 
     constructor(private $holder: JQuery) {
         this.sectionId = parseInt($holder.data('sectionId'));
@@ -540,6 +547,8 @@ class MotionMergeAmendmentsParagraph {
         $holder.find(".amendmentStatus").each((i: number, element) => {
             AmendmentStatuses.registerParagraph($(element).data("amendment-id"), this);
         });
+
+        this.textarea.addChangedListener(() => this.hasUnsavedChanges = true);
     }
 
     private initButtons() {
@@ -554,6 +563,7 @@ class MotionMergeAmendmentsParagraph {
                     $input.parents(".btn-group").find(".btn").removeClass("btn-default").addClass("btn-success");
                 }
                 this.reloadText();
+                this.hasUnsavedChanges = true;
             };
 
             if (this.textarea.hasChanges()) {
@@ -587,6 +597,7 @@ class MotionMergeAmendmentsParagraph {
             const amendmentId = parseInt($holder.data("amendment-id"));
             AmendmentStatuses.setStatus(amendmentId, parseInt($(ev.currentTarget).data("status")));
             initTooltip($holder);
+            this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".btn-group .setVersion").click(ev => {
@@ -595,16 +606,19 @@ class MotionMergeAmendmentsParagraph {
             const amendmentId = parseInt($holder.data("amendment-id"));
             AmendmentStatuses.setVersion(amendmentId, $(ev.currentTarget).data("version"));
             initTooltip($holder);
+            this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".mergeActionHolder .acceptAll").click(ev => {
             ev.preventDefault();
             this.textarea.acceptAll();
+            this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".mergeActionHolder .rejectAll").click(ev => {
             ev.preventDefault();
             this.textarea.rejectAll();
+            this.hasUnsavedChanges = true;
         });
     }
 
@@ -664,6 +678,7 @@ class MotionMergeAmendmentsParagraph {
             } else {
                 this.$holder.removeClass("hasCollisions");
             }
+            this.hasUnsavedChanges = true;
         });
     }
 
@@ -681,6 +696,10 @@ class MotionMergeAmendmentsParagraph {
             unchanged: this.textarea.getUnchangedContent(),
         };
     }
+
+    public onDraftChanged() {
+        this.hasUnsavedChanges = false;
+    }
 }
 
 /**
@@ -693,6 +712,7 @@ export class MotionMergeAmendments {
 
     public $draftSavingPanel: JQuery;
     private paragraphs: MotionMergeAmendmentsParagraph[] = [];
+    private hasUnsavedChanges = false;
 
     constructor($form: JQuery) {
         MotionMergeAmendments.$form = $form;
@@ -741,6 +761,11 @@ export class MotionMergeAmendments {
     }
 
     private saveDraft(onlyInput = false) {
+        if (this.paragraphs.filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
+            console.log("Has no unsaved changes");
+            return;
+        }
+
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
@@ -784,6 +809,9 @@ export class MotionMergeAmendments {
                         this.$draftSavingPanel.find('.savingError .errorNetwork').addClass('hidden');
                         this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
                     }
+
+                    this.paragraphs.forEach(par => par.onDraftChanged());
+                    this.hasUnsavedChanges = false;
                 },
                 error: () => {
                     this.$draftSavingPanel.find('.savingError').removeClass('hidden');
@@ -819,14 +847,22 @@ export class MotionMergeAmendments {
 
     private initDraftSaving() {
         this.$draftSavingPanel = MotionMergeAmendments.$form.find('#draftSavingPanel');
-        this.$draftSavingPanel.find('.saveDraft').on('click', () => this.saveDraft(false));
-        this.$draftSavingPanel.find('input[name=public]').on('change', () => this.saveDraft(false));
+        this.$draftSavingPanel.find('.saveDraft').on('click', () => {
+            this.hasUnsavedChanges = true;
+            this.saveDraft(false);
+        });
+        this.$draftSavingPanel.find('input[name=public]').on('change', () => {
+            this.hasUnsavedChanges = true;
+            this.saveDraft(false)
+        });
         this.initAutosavingDraft();
 
         if (this.$draftSavingPanel.data("resumed-date")) {
             let date = new Date(this.$draftSavingPanel.data("resumed-date"));
             this.setDraftDate(date);
         }
+
+        $(".sectionType0").change(() => this.hasUnsavedChanges = true);
 
         $("#yii-debug-toolbar").remove();
     }

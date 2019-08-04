@@ -58,10 +58,10 @@ class Motion extends IMotion implements IRSSItem
 {
     use CacheTrait;
 
-    const EVENT_SUBMITTED       = 'submitted';
-    const EVENT_PUBLISHED       = 'published';
+    const EVENT_SUBMITTED = 'submitted';
+    const EVENT_PUBLISHED = 'published';
     const EVENT_PUBLISHED_FIRST = 'published_first';
-    const EVENT_MERGED          = 'merged'; // Called on the newly created motion
+    const EVENT_MERGED = 'merged'; // Called on the newly created motion
 
     /**
      */
@@ -91,6 +91,7 @@ class Motion extends IMotion implements IRSSItem
         if (Consultation::getCurrent()) {
             $statuses = Consultation::getCurrent()->site->getBehaviorClass()->getProposedChangeStatuses($statuses);
         }
+
         return $statuses;
     }
 
@@ -101,6 +102,7 @@ class Motion extends IMotion implements IRSSItem
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
+
         return $app->tablePrefix . 'motion';
     }
 
@@ -110,8 +112,8 @@ class Motion extends IMotion implements IRSSItem
     public function getComments()
     {
         return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
-            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
-            ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
+                    ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_DELETED)
+                    ->andWhere(MotionComment::tableName() . '.status != ' . MotionComment::STATUS_PRIVATE);
     }
 
     /**
@@ -120,14 +122,16 @@ class Motion extends IMotion implements IRSSItem
     public function getPrivateComments()
     {
         $userId = User::getCurrentUser()->id;
+
         return $this->hasMany(MotionComment::class, ['motionId' => 'id'])
-            ->andWhere(MotionComment::tableName() . '.status = ' . MotionComment::STATUS_PRIVATE)
-            ->andWhere(MotionComment::tableName() . '.userId = ' . IntVal($userId));
+                    ->andWhere(MotionComment::tableName() . '.status = ' . MotionComment::STATUS_PRIVATE)
+                    ->andWhere(MotionComment::tableName() . '.userId = ' . IntVal($userId));
     }
 
     /**
      * @param int|null $sectionId
      * @param int $paragraphNo
+     *
      * @return MotionComment|null
      */
     public function getPrivateComment($sectionId, $paragraphNo)
@@ -140,6 +144,7 @@ class Motion extends IMotion implements IRSSItem
                 return $comment;
             }
         }
+
         return null;
     }
 
@@ -147,14 +152,15 @@ class Motion extends IMotion implements IRSSItem
      * @param int[] $types
      * @param string $sort
      * @param int|null $limit
+     *
      * @return MotionAdminComment[]
      */
     public function getAdminComments($types, $sort = 'desc', $limit = null)
     {
         return MotionAdminComment::find()
-            ->where(['motionId' => $this->id, 'status' => $types])
-            ->orderBy(['dateCreation' => $sort])
-            ->limit($limit)->all();
+                                 ->where(['motionId' => $this->id, 'status' => $types])
+                                 ->orderBy(['dateCreation' => $sort])
+                                 ->limit($limit)->all();
     }
 
     /**
@@ -171,7 +177,7 @@ class Motion extends IMotion implements IRSSItem
     public function getAmendments()
     {
         return $this->hasMany(Amendment::class, ['motionId' => 'id'])
-            ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
+                    ->andWhere(Amendment::tableName() . '.status != ' . Amendment::STATUS_DELETED);
     }
 
     /**
@@ -180,7 +186,7 @@ class Motion extends IMotion implements IRSSItem
     public function getTags()
     {
         return $this->hasMany(ConsultationSettingsTag::class, ['id' => 'tagId'])
-            ->viaTable('motionTag', ['motionId' => 'id']);
+                    ->viaTable('motionTag', ['motionId' => 'id']);
     }
 
     /**
@@ -193,6 +199,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param null|int $filer_type
+     *
      * @return MotionSection[]
      */
     public function getActiveSections($filer_type = null)
@@ -205,6 +212,7 @@ class Motion extends IMotion implements IRSSItem
                 }
             }
         }
+
         return $sections;
     }
 
@@ -297,6 +305,7 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @param Consultation $consultation
      * @param int $limit
+     *
      * @return Motion[]
      */
     public static function getNewestByConsultation(Consultation $consultation, $limit = 5)
@@ -314,6 +323,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param Consultation $consultation
+     *
      * @return Motion[]
      */
     public static function getScreeningMotions(Consultation $consultation)
@@ -339,6 +349,7 @@ class Motion extends IMotion implements IRSSItem
         if (mb_strlen($intro) > 0 && mb_substr($intro, mb_strlen($intro) - 1, 1) !== ' ') {
             $intro .= ' ';
         }
+
         return $intro . $this->title;
     }
 
@@ -356,6 +367,7 @@ class Motion extends IMotion implements IRSSItem
             $name .= ':';
         }
         $name .= ' ' . $this->getTitleWithIntro();
+
         return $name;
     }
 
@@ -368,6 +380,7 @@ class Motion extends IMotion implements IRSSItem
         $title = Html::encode($title);
         $title = str_replace(" - \n", "<br>", $title);
         $title = str_replace("\n", "<br>", $title);
+
         return $title;
     }
 
@@ -381,6 +394,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param bool $includeWithdrawn
+     *
      * @return Amendment[]
      */
     public function getVisibleAmendments($includeWithdrawn = true)
@@ -392,11 +406,13 @@ class Motion extends IMotion implements IRSSItem
                 $amendments[] = $amend;
             }
         }
+
         return $amendments;
     }
 
     /**
      * @param null|Amendment[] $exclude
+     *
      * @return Amendment[]
      */
     public function getAmendmentsRelevantForCollisionDetection($exclude = null)
@@ -410,12 +426,14 @@ class Motion extends IMotion implements IRSSItem
                 $amendments[] = $amendment;
             }
         }
+
         return $amendments;
     }
 
     /**
      * @param boolean $includeVoted
      * @param null|int[] $exclude
+     *
      * @return Amendment[]
      */
     public function getAmendmentsProposedToBeIncluded($includeVoted, $exclude = null)
@@ -436,17 +454,20 @@ class Motion extends IMotion implements IRSSItem
                 $amendments[] = $amendment;
             }
         }
+
         return $amendments;
     }
 
     /**
      * @param bool $includeWithdrawn
+     *
      * @return Amendment[]
      * @throws Internal
      */
     public function getVisibleAmendmentsSorted($includeWithdrawn = true)
     {
         $amendments = $this->getVisibleAmendments($includeWithdrawn);
+
         return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }
 
@@ -465,6 +486,7 @@ class Motion extends IMotion implements IRSSItem
                 return true;
             }
         }
+
         return false;
     }
 
@@ -513,6 +535,7 @@ class Motion extends IMotion implements IRSSItem
      * @param bool $allowAdmins
      * @param bool $assumeLoggedIn
      * @param bool $throwExceptions
+     *
      * @return bool
      * @throws NotAmendable
      * @throws Internal
@@ -520,6 +543,7 @@ class Motion extends IMotion implements IRSSItem
     public function isCurrentlyAmendable($allowAdmins = true, $assumeLoggedIn = false, $throwExceptions = false)
     {
         $permissions = $this->getPermissionsObject();
+
         return $permissions->isCurrentlyAmendable($this, $allowAdmins, $assumeLoggedIn, $throwExceptions);
     }
 
@@ -534,11 +558,13 @@ class Motion extends IMotion implements IRSSItem
                 $replacedByMotions[] = $replMotion;
             }
         }
+
         return $replacedByMotions;
     }
 
     /**
      * @param boolean $onlyPublic
+     *
      * @return Draft|null
      */
     public function getMergingDraft($onlyPublic)
@@ -553,7 +579,9 @@ class Motion extends IMotion implements IRSSItem
             'status'         => $status,
         ]);
         if ($motion) {
-            return Draft::initFromJson($this, $motion->sections[0]->dataRaw);
+            $public = ($motion->status === Motion::STATUS_MERGING_DRAFT_PUBLIC);
+
+            return Draft::initFromJson($this, $public, $motion->getDateTime(), $motion->sections[0]->dataRaw);
         } else {
             return null;
         }
@@ -589,6 +617,7 @@ class Motion extends IMotion implements IRSSItem
         if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
             return false;
         }
+
         return true;
     }
 
@@ -600,6 +629,7 @@ class Motion extends IMotion implements IRSSItem
         foreach ($this->tags as $tag) {
             return $tag->getCSSIconClass();
         }
+
         return 'glyphicon glyphicon-file';
     }
 
@@ -620,6 +650,7 @@ class Motion extends IMotion implements IRSSItem
         }
 
         $this->setCacheItem('getNumberOfCountableLines', $num);
+
         return $num;
     }
 
@@ -642,6 +673,7 @@ class Motion extends IMotion implements IRSSItem
                     /** @var Motion $motion */
                     if ($motion->id === $this->id) {
                         $this->setCacheItem('getFirstLineNumber', $lineNo);
+
                         return $lineNo;
                     } else {
                         $lineNo += $motion->getNumberOfCountableLines();
@@ -653,6 +685,7 @@ class Motion extends IMotion implements IRSSItem
             return 1;
         } else {
             $this->setCacheItem('getFirstLineNumber', 1);
+
             return 1;
         }
     }
@@ -668,6 +701,7 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         };
+
         return $return;
     }
 
@@ -695,8 +729,10 @@ class Motion extends IMotion implements IRSSItem
             if ($supp1->id < $supp2->id) {
                 return -1;
             }
+
             return 0;
         });
+
         return $return;
     }
 
@@ -711,6 +747,7 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         };
+
         return $return;
     }
 
@@ -725,6 +762,7 @@ class Motion extends IMotion implements IRSSItem
                 $return[] = $supp;
             }
         };
+
         return $return;
     }
 
@@ -764,6 +802,7 @@ class Motion extends IMotion implements IRSSItem
                 $needsCollectionPhase = true;
             }
         }
+
         return $needsCollectionPhase;
     }
 
@@ -857,6 +896,7 @@ class Motion extends IMotion implements IRSSItem
         if (!$this->getMyConsultation()) {
             return true;
         }
+
         return false;
     }
 
@@ -952,12 +992,14 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param bool
+     *
      * @return string
      */
     public function getFilenameBase($noUmlaut)
     {
         $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
+
         return Tools::sanitizeFilename($title, $noUmlaut);
     }
 
@@ -972,6 +1014,7 @@ class Motion extends IMotion implements IRSSItem
 
         $random = \Yii::$app->getSecurity()->generateRandomKey(2);
         $random = ord($random[0]) + ord($random[1]) * 256;
+
         return $title . '-' . $random;
     }
 
@@ -1001,6 +1044,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param RSSExporter $feed
+     *
      * @throws Internal
      */
     public function addToFeed(RSSExporter $feed)
@@ -1049,7 +1093,7 @@ class Motion extends IMotion implements IRSSItem
         }
         if ($this->agendaItem) {
             $return[\Yii::t('export', 'AgendaItem')] = $this->agendaItem->getShownCode(true) .
-                ' ' . $this->agendaItem->title;
+                                                       ' ' . $this->agendaItem->title;
         }
         if (count($this->tags) > 1) {
             $tags = [];
@@ -1070,11 +1114,13 @@ class Motion extends IMotion implements IRSSItem
     /**
      * @param string $prefix
      * @param null|Amendment $ignore
+     *
      * @return null|Amendment
      */
     public function findAmendmentWithPrefix($prefix, $ignore = null)
     {
         $numbering = $this->getMyConsultation()->getAmendmentNumbering();
+
         return $numbering->findAmendmentWithPrefix($this, $prefix, $ignore);
     }
 
@@ -1092,6 +1138,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param ConsultationMotionType $motionType
+     *
      * @throws FormError
      */
     public function setMotionType(ConsultationMotionType $motionType)
@@ -1166,6 +1213,7 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param bool $absolute
+     *
      * @return string
      */
     public function getLink($absolute = false)
@@ -1174,6 +1222,7 @@ class Motion extends IMotion implements IRSSItem
         if ($absolute) {
             $url = UrlHelper::absolutizeLink($url);
         }
+
         return $url;
     }
 

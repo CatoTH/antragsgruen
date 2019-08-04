@@ -13,6 +13,12 @@ class Draft implements \JsonSerializable
     /** @var Motion */
     public $draftMotion;
 
+    /** @var boolean */
+    public $public;
+
+    /** @var \DateTime|null */
+    public $time;
+
     /** @var int[] */
     public $amendmentStatuses;
 
@@ -60,11 +66,13 @@ class Draft implements \JsonSerializable
 
     /**
      * @param Motion $origMotion
+     * @param boolean $public
+     * @param \DateTime|null $time
      * @param string $data
      *
      * @return Draft
      */
-    public static function initFromJson(Motion $origMotion, $data)
+    public static function initFromJson(Motion $origMotion, $public, $time, $data)
     {
         $draft = new Draft();
         $draft->init($origMotion);
@@ -74,6 +82,8 @@ class Draft implements \JsonSerializable
         $draft->paragraphs        = DraftParagraph::fromJsonArr($json['paragraphs']);
         $draft->amendmentVersions = $json['amendmentVersions'];
         $draft->amendmentStatuses = $json['amendmentStatuses'];
+        $draft->public            = $public;
+        $draft->time              = $time;
 
         return $draft;
     }
@@ -129,7 +139,7 @@ class Draft implements \JsonSerializable
             if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
                 $draft->amendmentVersions[$amendment->id] = 'prop';
             } else {
-                 $draft->amendmentVersions[$amendment->id] = 'orig';
+                $draft->amendmentVersions[$amendment->id] = 'orig';
             }
         }
 
@@ -137,11 +147,10 @@ class Draft implements \JsonSerializable
     }
 
     /**
-     * @param null|boolean $public
      */
-    public function save($public = null)
+    public function save()
     {
-        if ($public || ($public === null && $this->draftMotion->status === Motion::STATUS_MERGING_DRAFT_PUBLIC)) {
+        if ($this->public) {
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PUBLIC;
         } else {
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PRIVATE;
