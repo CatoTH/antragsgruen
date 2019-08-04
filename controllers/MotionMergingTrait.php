@@ -339,6 +339,7 @@ trait MotionMergingTrait
      * @param $motionSlug
      *
      * @return string
+     * @throws \Exception
      */
     public function actionSaveMergingDraft($motionSlug)
     {

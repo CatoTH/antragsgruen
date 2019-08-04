@@ -2,10 +2,12 @@
 
 /**
  * @var Motion $motion
- * @var Motion $draft
+ * @var Draft $draft
  */
 
 use app\models\db\Motion;
+use app\models\mergeAmendments\Draft;
+use app\models\sectionTypes\ISectionType;
 use app\views\pdfLayouts\BDK;
 use yii\helpers\Html;
 
@@ -42,13 +44,17 @@ $pdf->setHtmlVSpace([
     'blockquote' => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
 ]);
 
-foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) as $section) {
+foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
     $pdf->SetFont('Helvetica');
     $pdf->writeHTML('<h2>' . Html::encode($section->getSettings()->title) . '</h2><br>');
 
     $pdf->SetFont('Courier');
 
-    $html = $section->dataRaw;
+    $paragraphs = [];
+    foreach ($section->getTextParagraphLines() as $paraNo => $para) {
+        $paragraphs[] = $draft->paragraphs[$section->sectionId . '_' . $paraNo]->text;
+    }
+    $html = implode("\n", $paragraphs);
 
     // the following code is disgusting and doesn't even try to generate valid HTML.
     // Only code that will be rendered correctly by TCPDF.
@@ -58,6 +64,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
         if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
             $content .= '<sub>' . $matches2['append'] . '</sub> ';
         }
+
         return '<span color="green"><b><u>' . $content . '</u></b></span>';
     }, $html);
     $html = preg_replace_callback('/<del(?<attrs> [^>]*)?>(?<content>.*)<\/del>/siuU', function ($matches) {
@@ -65,6 +72,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
         if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attrs'], $matches2)) {
             $content .= '<sub>' . $matches2['append'] . '</sub> ';
         }
+
         return '<span color="red"><b><s>' . $content . '</s></b></span>';
     }, $html);
 
@@ -78,6 +86,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
             if (preg_match('/data\-append\-hint=["\'](?<append>[^"\']*)["\']/siu', $matches['attributes'], $matches2)) {
                 $content .= '<sub>' . $matches2['append'] . '</sub> ';
             }
+
             return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
         },
         $html
@@ -89,6 +98,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
         function ($matches) {
             $content = $matches['content'];
             $content = '<div color="green"><b><u>' . $content . '</u></b></div>';
+
             return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
         },
         $html
@@ -100,6 +110,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
         function ($matches) {
             $content = $matches['content'];
             $content = '<div color="red"><b><s>' . $content . '</s></b></div>';
+
             return '<' . $matches['tag'] . ' ' . $matches['attributes'] . '>' . $content . '</' . $matches['tag'] . '>';
         },
         $html
@@ -113,6 +124,7 @@ foreach ($draft->getActiveSections(\app\models\sectionTypes\ISectionType::TYPE_T
                 $str .= ' ' . $matches['attributes'];
             }
             $str .= '>';
+
             return $str;
         },
         $html

@@ -44,11 +44,11 @@ class BDK extends IPDFLayout
     }
 
     /**
-     * @param BDKPDF $pdf
+     * @param Fpdi $pdf
      * @param string $pdfIntroduction
      * @param string $tableContent
      */
-    public static function printHeaderTable(BDKPDF $pdf, $pdfIntroduction, $tableContent)
+    public static function printHeaderTable(Fpdi $pdf, $pdfIntroduction, $tableContent)
     {
         $title = str_replace("\n", '<br>', $pdfIntroduction);
         $pdf->SetY(35);
