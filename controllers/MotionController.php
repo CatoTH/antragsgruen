@@ -729,7 +729,7 @@ class MotionController extends Base
     /**
      * @param string $motionSlug
      * @return string
-     * @throws \app\models\exceptions\Internal
+     * @throws Internal
      */
     public function actionSaveProposalStatus($motionSlug)
     {

@@ -70,10 +70,6 @@ class Merge
 
         $newMotion->refresh();
 
-        foreach ($this->origMotion->tags as $tag) {
-            $newMotion->link('tags', $tag);
-        }
-
         return $newMotion;
     }
 
@@ -139,30 +135,38 @@ class Merge
         return $newMotion;
     }
 
-    public function confirm(Motion $newMotion)
+    /**
+     * @param Motion $newMotion
+     * @param int[] $amendmentStatuses
+     * @param string $resolutionMode
+     * @param string $resolutionBody
+     *
+     * @return Motion
+     */
+    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody)
     {
-        $oldMotion = $this->origMotion;
+        $oldMotion    = $this->origMotion;
+        $consultation = $oldMotion->getMyConsultation();
 
-        $invisible = $oldMotion->consultation->getInvisibleAmendmentStatuses();
+        $invisible = $consultation->getInvisibleAmendmentStatuses();
         foreach ($oldMotion->getVisibleAmendments() as $amendment) {
-            if (isset($amendStatuses[$amendment->id])) {
-                $newStatus = IntVal($amendStatuses[$amendment->id]);
-                if ($newStatus !== $amendment->status && !in_array($amendStatuses[$amendment->id], $invisible)) {
+            if (isset($amendmentStatuses[$amendment->id])) {
+                $newStatus = IntVal($amendmentStatuses[$amendment->id]);
+                if ($newStatus !== $amendment->status && !in_array($amendmentStatuses[$amendment->id], $invisible)) {
                     $amendment->status = $newStatus;
                     $amendment->save();
                 }
             }
         }
 
-        if ($newMotion->replacedMotion->slug) {
-            $newMotion->slug                 = $newMotion->replacedMotion->slug;
-            $newMotion->replacedMotion->slug = null;
-            $newMotion->replacedMotion->save();
-        }
+        $newMotion->slug = $oldMotion->slug;
+
+        $oldMotion->slug = null;
+        $oldMotion->save();
+
 
         $isResolution = false;
         if ($newMotion->canCreateResolution()) {
-            $resolutionMode = \Yii::$app->request->post('newStatus');
             if ($resolutionMode === 'resolution_final') {
                 $newMotion->status = IMotion::STATUS_RESOLUTION_FINAL;
                 $isResolution      = true;
@@ -170,26 +174,27 @@ class Merge
                 $newMotion->status = IMotion::STATUS_RESOLUTION_PRELIMINARY;
                 $isResolution      = true;
             } else {
-                $newMotion->status = $newMotion->replacedMotion->status;
+                $newMotion->status = $oldMotion->status;
             }
         } else {
-            $newMotion->status = $newMotion->replacedMotion->status;
+            $newMotion->status = $oldMotion->status;
         }
         if ($isResolution) {
             $resolutionDate            = \Yii::$app->request->post('dateResolution', '');
             $resolutionDate            = Tools::dateBootstrapdate2sql($resolutionDate);
             $newMotion->dateResolution = ($resolutionDate ? $resolutionDate : null);
+        } else {
+            $newMotion->dateResolution = null;
         }
         $newMotion->save();
 
         // For resolutions, the state of the original motion should not be changed
         if (!$isResolution && $newMotion->replacedMotion->status === Motion::STATUS_SUBMITTED_SCREENED) {
-            $newMotion->replacedMotion->status = Motion::STATUS_MODIFIED;
-            $newMotion->replacedMotion->save();
+            $oldMotion->status = Motion::STATUS_MODIFIED;
+            $oldMotion->save();
         }
 
         if ($isResolution) {
-            $resolutionBody = \Yii::$app->request->post('newInitiator', '');
             if (trim($resolutionBody) !== '') {
                 $body                 = new MotionSupporter();
                 $body->motionId       = $newMotion->id;
@@ -208,19 +213,25 @@ class Merge
             }
         }
 
+        foreach ($oldMotion->tags as $tag) {
+            $newMotion->link('tags', $tag);
+        }
+
         $mergingDraft = $oldMotion->getMergingDraft(false);
         if ($mergingDraft) {
             $mergingDraft->delete();
         }
 
         // If the old motion was the only / forced motion of the consultation, set the new one as the forced one.
-        if ($oldMotion->consultation->getSettings()->forceMotion === $oldMotion->id) {
-            $settings              = $oldMotion->consultation->getSettings();
+        if ($consultation->getSettings()->forceMotion === $oldMotion->id) {
+            $settings              = $consultation->getSettings();
             $settings->forceMotion = $newMotion->id;
-            $oldMotion->consultation->setSettings($settings);
-            $oldMotion->consultation->save();
+            $consultation->setSettings($settings);
+            $consultation->save();
         }
 
         $newMotion->trigger(Motion::EVENT_MERGED, new MotionEvent($newMotion));
+
+        return $newMotion;
     }
 }
