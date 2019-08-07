@@ -399,7 +399,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getVisibleAmendments($includeWithdrawn = true)
     {
-        $filtered   = $this->getMyConsultation()->getInvisibleAmendmentStatuses(!$includeWithdrawn);
+        $filtered   = $this->getMyConsultation()->getInvisibleAmendmentStatuses($includeWithdrawn);
         $amendments = [];
         foreach ($this->amendments as $amend) {
             if (!in_array($amend->status, $filtered)) {
@@ -614,7 +614,7 @@ class Motion extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->forceLogin) {
             return false;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
             return false;
         }
 
@@ -1104,7 +1104,7 @@ class Motion extends IMotion implements IRSSItem
         } elseif (count($this->tags) === 1) {
             $return[\Yii::t('export', 'TopicSingle')] = $this->tags[0]->title;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
             $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
         }
 

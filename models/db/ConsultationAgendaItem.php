@@ -282,14 +282,15 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param bool $includeWithdrawn
-     * @param bool $includeResolutions
+     * @param bool $withdrawnAreVisible
+     * @param bool $resolutionsAreVisible
+     *
      * @return Motion[]
      */
-    public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
+    public function getVisibleMotions($withdrawnAreVisible = true, $resolutionsAreVisible = true)
     {
-        $statuses = $this->getMyConsultation()->getInvisibleMotionStatuses(!$includeWithdrawn);
-        if (!$includeResolutions) {
+        $statuses = $this->getMyConsultation()->getInvisibleMotionStatuses($withdrawnAreVisible);
+        if (!$resolutionsAreVisible) {
             $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
         }
@@ -304,12 +305,13 @@ class ConsultationAgendaItem extends ActiveRecord
     }
 
     /**
-     * @param bool $includeWithdrawn
+     * @param bool $withdrawnAreVisible
+     *
      * @return Motion[]
      */
-    public function getVisibleMotionsSorted($includeWithdrawn = true)
+    public function getVisibleMotionsSorted($withdrawnAreVisible = true)
     {
-        $motions = $this->getVisibleMotions($includeWithdrawn);
+        $motions = $this->getVisibleMotions($withdrawnAreVisible);
         return MotionSorter::getSortedMotionsFlat($this->getMyConsultation(), $motions);
     }
 }
