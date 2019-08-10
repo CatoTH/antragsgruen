@@ -10,38 +10,34 @@ $I->dontSeeElement('.sidebarActions .mergeamendments');
 $I->wantTo('merge the amendments');
 $I->loginAsStdAdmin();
 $I->click('.sidebarActions .mergeamendments a');
-$I->checkOption('.toMergeAmendments #markAmendment1');
-$I->checkOption('.toMergeAmendments #markAmendment3');
-$I->checkOption('.toMergeAmendments #markAmendment270');
-$I->checkOption('.toMergeAmendments #markAmendment272');
-$I->checkOption('.toMergeAmendments #markAmendment273');
-$I->checkOption('.toMergeAmendments #markAmendment274');
-$I->checkOption('.toMergeAmendments #markAmendment276');
+$I->wait(0.5);
+$I->executeJS('$(".selectAll").click()');
+
 $I->see('Einpflegen beginnen');
 $I->click('.mergeAllRow .btn-primary');
+$I->wait(0.5);
 $I->see('annehmen oder ablehnen');
-$I->see('kollidierende Änderungsanträge');
 $I->see('Neuer Punkt', '.ice-ins');
 $I->see('Oamoi a Maß', '.ice-ins');
 $I->see('Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.', '.ice-del');
 
-$I->see('Woibbadinga damischa', '#section_holder_4 .ice-del');
-$I->see('Schooe', '#section_holder_4 .ice-ins');
+$I->see('Woibbadinga damischa', '#sections_4_0_wysiwyg .ice-del');
+$I->see('Schooe', '#sections_4_0_wysiwyg .ice-ins');
 
 $cid0 = $I->executeJS('return $("[data-cid=0]").length;');
 $cid1 = $I->executeJS('return $("[data-cid=1]").length;');
 $cid2 = $I->executeJS('return $("[data-cid=2]").length;');
 $cid3 = $I->executeJS('return $("[data-cid=3]").length;');
-if ($cid0 != 1 || $cid1 != 1 || $cid2 != 1 || $cid3 != 1) {
+if ($cid0 != 9 || $cid1 != 6 || $cid2 != 4 || $cid3 != 1) {
     $I->fail('wrong number of cid\'s: ' . $cid0 . ' / ' . $cid1 . ' / ' . $cid2 . ' / ' . $cid3);
 }
 
 // Neuer Punkt einfügen
-$I->executeJS('$("[data-cid=4] .appendHint").trigger("mouseover"); $("button.reject").click();');
+$I->executeJS('$("#sections_2_1_wysiwyg [data-cid=2] .appendHint").trigger("mouseover"); $("button.reject").click();');
 // Oamoi a Map einfügen
-$I->executeJS('$("[data-cid=6] .appendHint").trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("#sections_2_4_wysiwyg [data-cid=1] .appendHint").trigger("mouseover"); $("button.accept").click();');
 // Woibbadinga damischa raus, Schooe rein
-$I->executeJS('$("[data-cid=17].appendHint").first().trigger("mouseover"); $("button.accept").click();');
+$I->executeJS('$("#sections_4_0_wysiwyg [data-cid=1].appendHint").first().trigger("mouseover"); $("button.accept").click();');
 $I->wait(1);
 
 $I->dontSee('Neuer Punkt', '.ice-ins');
@@ -49,12 +45,12 @@ $I->dontSee('Oamoi a Maß', '.ice-ins');
 $I->dontSee('Neuer Punkt');
 $I->see('Oamoi a Maß');
 
-$I->dontSee('Woibbadinga damischa', '#section_holder_4 .ice-del');
-$I->dontSee('Schooe', '#section_holder_4 .ice-ins');
-$I->see('Schooe', '#section_holder_4');
+$I->dontSee('Woibbadinga damischa', '#sections_4_0_wysiwyg .ice-del');
+$I->dontSee('Schooe', '#sections_4_0_wysiwyg .ice-ins');
+$I->see('Schooe', '#sections_4_0_wysiwyg');
 
 $I->see('Something');
-$I->executeJS('$("#section_holder_2 .rejectAllChanges").click();');
+$I->executeJS('$("#section_holder_2_7").parents(".paragraphWrapper").find(".rejectAll").click();');
 $I->dontSee('Something');
 
 // @TODO Set amendment status

@@ -512,10 +512,6 @@ class MotionMergeAmendmentsTextarea {
         let $textarea = $holder.find(".texteditor");
         let edit = new AntragsgruenEditor($textarea.attr("id"));
         this.texteditor = edit.getEditor();
-        MotionMergeAmendments.addSubmitListener(() => {
-            $holder.find("textarea.raw").val(this.texteditor.getData());
-            $holder.find("textarea.consolidated").val(this.texteditor.getData());
-        });
 
         this.setText(this.texteditor.getData());
 
@@ -729,7 +725,8 @@ export class MotionMergeAmendments {
             this.paragraphs.push(new MotionMergeAmendmentsParagraph($para));
         });
 
-        MotionMergeAmendments.$form.on("submit", (ev) => {
+        MotionMergeAmendments.$form.on("submit", () => {
+            this.hasUnsavedChanges = true; // Enforce that the INPUT field is set
             this.saveDraft(true);
             $(window).off("beforeunload", MotionMergeAmendments.onLeavePage);
         });
@@ -740,10 +737,6 @@ export class MotionMergeAmendments {
 
     public static onLeavePage(): string {
         return __t("std", "leave_changed_page");
-    }
-
-    public static addSubmitListener(cb) {
-        this.$form.submit(cb);
     }
 
     private setDraftDate(date: Date) {
