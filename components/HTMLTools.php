@@ -338,7 +338,7 @@ class HTMLTools
      * @param bool $splitListItems
      * @param string $pre
      * @param string $post
-     * @return \string[]
+     * @return string[]
      * @throws Internal
      */
     private static function sectionSimpleHTMLInt(\DOMElement $element, $split, $splitListItems, $pre, $post)
@@ -467,13 +467,25 @@ class HTMLTools
      *
      * @param string $html
      * @param bool $splitListItems
-     * @return \string[]
+     * @return string[]
      * @throws Internal
      */
     public static function sectionSimpleHTML($html, $splitListItems = true)
     {
+        $cacheFunc = 'sectionSimpleHTML';
+        $cacheDeps = [$html, $splitListItems];
+
+        $cache = HashedStaticCache::getCache($cacheFunc, $cacheDeps);
+        if ($cache !== false) {
+            return $cache;
+        }
+
         $body = static::html2DOM($html);
-        return static::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
+        $result = static::sectionSimpleHTMLInt($body, true, $splitListItems, '', '');
+
+        HashedStaticCache::setCache($cacheFunc, $cacheDeps, $result);
+
+        return $result;
     }
 
     /**

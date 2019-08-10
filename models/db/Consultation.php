@@ -175,6 +175,10 @@ class Consultation extends ActiveRecord
         return $this->getMotion($this->getSettings()->forceMotion);
     }
 
+
+    /** @var Amendment[] */
+    private $amendmentCache = [];
+
     /**
      * @param int $amendmentId
      * @return Amendment|null
@@ -182,16 +186,21 @@ class Consultation extends ActiveRecord
     public function getAmendment($amendmentId)
     {
         $amendmentId = IntVal($amendmentId);
+        if (isset($this->amendmentCache[$amendmentId])) {
+            return $this->amendmentCache[$amendmentId];
+        }
         foreach ($this->motions as $motion) {
             if ($motion->status === Motion::STATUS_DELETED) {
                 continue;
             }
             foreach ($motion->amendments as $amendment) {
+                $this->amendmentCache[$amendment->id] = $amendment;
                 if ($amendment->id === $amendmentId && $amendment->status !== Amendment::STATUS_DELETED) {
                     return $amendment;
                 }
             }
         }
+        $this->amendmentCache[$amendmentId] = null;
         return null;
     }
 
