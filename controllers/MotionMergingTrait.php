@@ -329,7 +329,7 @@ trait MotionMergingTrait
                 $draft->save();
 
                 $form      = new Merge($motion);
-                $newMotion = $form->createNewMotion(\Yii::$app->request->post());
+                $newMotion = $form->createNewMotion($draft);
 
                 return $this->redirect(UrlHelper::createMotionUrl($newMotion, 'merge-amendments-confirm'));
             }

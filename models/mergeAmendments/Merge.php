@@ -16,10 +16,6 @@ class Merge
     /** @var Motion */
     public $origMotion;
 
-    /** @var array */
-    public $sections;
-    public $amendStatus;
-
     /** @var MotionSection[] */
     public $motionSections;
 
@@ -76,15 +72,15 @@ class Merge
     /**
      * @param MotionSection $section
      * @param MotionSection $origSection
-     * @param array $post
+     * @param Draft $draft
      *
      * @throws \app\models\exceptions\FormError
      */
-    private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, $post)
+    private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, Draft $draft)
     {
         $paragraphs = [];
         foreach ($origSection->getTextParagraphLines() as $paraNo => $para) {
-            $consolidated = $post['sections'][$section->sectionId][$paraNo]['consolidated'];
+            $consolidated = $draft->paragraphs[$section->sectionId . '_' . $paraNo]->text;
             $consolidated = str_replace('<li>&nbsp;</li>', '', $consolidated);
             $paragraphs[] = $consolidated;
         }
@@ -94,13 +90,13 @@ class Merge
     }
 
     /**
-     * @param array $post
+     * @param Draft $draft
      *
      * @return Motion
      * @throws Internal
      * @throws \app\models\exceptions\FormError
      */
-    public function createNewMotion($post)
+    public function createNewMotion(Draft $draft)
     {
         $newMotion = $this->createMotion();
 
@@ -114,9 +110,9 @@ class Merge
             $section->refresh();
 
             if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                $this->mergeSimpleTextSection($section, $origSection, $post);
-            } elseif (isset($this->sections[$section->sectionId])) {
-                $section->getSectionType()->setMotionData($this->sections[$section->sectionId]);
+                $this->mergeSimpleTextSection($section, $origSection, $draft);
+            } elseif (isset($draft->sections[$section->sectionId])) {
+                $section->getSectionType()->setMotionData($draft->sections[$section->sectionId]);
             } else {
                 // @TODO Images etc.
             }
