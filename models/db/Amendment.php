@@ -728,7 +728,7 @@ class Amendment extends IMotion implements IRSSItem
         if ($this->getMyConsultation()->getSettings()->forceLogin) {
             return false;
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
             return false;
         }
         return true;
@@ -1085,7 +1085,7 @@ class Amendment extends IMotion implements IRSSItem
             }
             $return[\Yii::t('export', 'InitiatorMulti')] = implode("\n", $initiators);
         }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(true))) {
+        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
             $return[\Yii::t('motion', 'status')] = IMotion::getStatusNames()[$this->status];
         }
 

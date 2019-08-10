@@ -18,7 +18,6 @@ $I->checkOption('.toMergeAmendments #markAmendment1');
 $I->click('.mergeAllRow .btn-primary');
 $I->wait(0.5);
 $I->see('Oamoi a Maß', '.ice-ins');
-$I->executeJS('CKEDITOR.instances.sections_3_wysiwyg.setData("");'); // Remove the reason
 
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
@@ -70,5 +69,5 @@ $I->dontSeeElement('.motionChangeView .section3');
 
 $I->gotoConsultationHome();
 $I->seeElement('.resolutionList');
-$I->seeElement('.resolutionList .motionLink' . AcceptanceTester::FIRST_FREE_MOTION_ID);
+$I->seeElement('.resolutionList .motionLink' . (AcceptanceTester::FIRST_FREE_MOTION_ID + 1));
 $I->seeElement('.motionListStd .motionLink2');

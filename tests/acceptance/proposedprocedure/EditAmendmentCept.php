@@ -153,7 +153,7 @@ $I->uncheckOption('.amendment280 .colCheck input');
 $I->submitForm('.mergeAllRow', []);
 $I->wait(1);
 
-$I->see('A really small replacement', '#section_holder_2 ins');
+$I->see('A really small replacement', '#sections_2_1_wysiwyg ins');
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
 $I->submitForm('.motionMergeForm', [], 'save');

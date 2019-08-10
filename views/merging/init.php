@@ -3,12 +3,13 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
+use app\models\mergeAmendments\Draft;
 use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Motion $motion
- * @var Motion|null $draft
+ * @var Draft|null $draft
  * @var Motion|null $unconfirmed
  * @var Amendment[] $amendments
  */
@@ -53,10 +54,10 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
         if ($draft) { ?>
             <div class="alert alert-info draftExistsAlert" role="alert">
                 <?php
-                $date = \app\components\Tools::formatMysqlDateTime($draft->dateCreation);
+                $date = \app\components\Tools::formatMysqlDateTime($draft->draftMotion->dateCreation);
                 echo str_replace('%DATE%', $date, Yii::t('amend', 'merge_init_draft_hint'));
 
-                $mergeContUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments', ['resume' => $draft->id]);
+                $mergeContUrl = UrlHelper::createMotionUrl($motion, 'merge-amendments', ['resume' => $draft->draftMotion->id]);
                 ?>
                 <div class="pull-right">
                     <a href="<?= Html::encode($mergeContUrl) ?>" class="btn btn-primary">

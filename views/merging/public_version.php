@@ -2,12 +2,13 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\models\mergeAmendments\Draft;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
  * @var Motion $motion
- * @var Motion $draft
+ * @var Draft $draft
  */
 
 /** @var \app\controllers\Base $controller */
@@ -38,7 +39,7 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
             </tr>
             <tr>
                 <th><?= \Yii::t('amend', 'merge_draft_date') ?></th>
-                <td class="mergeDraftDate"><?= \app\components\Tools::formatMysqlDateTime($draft->dateCreation) ?></td>
+                <td class="mergeDraftDate"><?= \app\components\Tools::formatMysqlDateTime($draft->time->format('Y-m-d H:i:s')) ?></td>
             </tr>
         </table>
     </div>

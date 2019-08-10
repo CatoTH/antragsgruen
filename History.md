@@ -1,5 +1,8 @@
 # Version history
 
+## Version 4.3 [not released yet]
+
+- The merging of amendments into motion has greatly been improved. Instead of generating one big, monolithic text with all changes and conflicts, the motion is now split into different paragraphs. For each paragraph, the amendments to be merged into the motion can be selected separately and on-the-fly while editing the new vesion of the text.
 - The inline amendment mode in the regular motion view (using the green bookmarks at the right) can now be used on devices with small screens as well.
 - Several styling improvements, especially for devices with small screens (e.g. smartphones).
 - The "My motions" and "My amendments" sections on the consultation overview now list all motions/amendments that one has created, ininiated or expressed (dis)like towards. Not only the ones ininiated as before. This makes it easier to check on motions/amendments that are for some reason not visible anymore on this site (withdrawn, merged, ...)

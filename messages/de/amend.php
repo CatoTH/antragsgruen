@@ -34,7 +34,7 @@ return [
     'ajax_diff_title'                   => 'Änderungen',
     'confirmed_visible'                 => 'Du hast den Änderungsantrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
-        'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
+                                           'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
     'confirmed_support_phase'           => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen.<br> 
 <br>
 Du kannst Interessierten folgenden Link schicken, damit sie deinen Änderungsantrag dort unterstützen können:',
@@ -44,17 +44,17 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
     'submitted_adminnoti_body'          => "Es wurde ein neuer Änderungsantrag eingereicht.\nAntrag: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email'         => "Hallo,\n\ndu hast soeben einen Änderungsantrag eingereicht.\n" .
-        "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
-        "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                           "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
+                                           "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
+                                           "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                           "Mit freundlichen Grüßen,\n" .
+                                           "  Das Antragsgrün-Team",
     'submitted_screening_email_subject' => 'Änderungsantrag eingereicht',
     'screened_hint'                     => 'Geprüft',
     'amend_for'                         => ' zu ',
     'create_explanation'                => 'Bitte ändere unten den ursprünglichen Antragstext so ab, wie du ihn gerne beschlossen haben möchtest.<br>' . "\n" .
-        'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
-        'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als "<strong>Redaktionelle Änderung</strong>" beifügen und entsprechend kennzeichnen.',
+                                           'Unter &quot;<strong>Begründung</strong>&quot; kannst du die Änderung begründen.<br>' . "\n" .
+                                           'Falls Du der Antragskommission über einen inhaltlichen  Änderungsantrag hinaus oder ausschließlich redaktionelle Hinweise zum Antrag geben möchtest, kannst du diese als "<strong>Redaktionelle Änderung</strong>" beifügen und entsprechend kennzeichnen.',
     'support_collect_explanation_title' => 'Einen Änderungsantrag gemeinschaftlich stellen',
     'support_collect_explanation'       => 'Änderungsanträge, die nicht von Gremien gestellt werden, müssen mindestens %MIN% Unterstützer*innen finden, um zugelassen zu werden. Um einen solchen Änderungsantrag einzureichen, gehe wie folgt vor:<br>
 <ol>
@@ -92,6 +92,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_amtable_text_prop'           => 'Verfahrensvorschlag',
     'merge_status_unchanged'            => 'unverändert',
     'merge_amend_statuses'              => 'Status der Änderungsanträge',
+    'merge_amend_show'                  => 'Anzeigen',
     'merge_bread'                       => 'Überarbeiten',
     'merge_title'                       => '%TITLE% überarbeiten',
     'merge_merge'                       => 'Einpflegen',
@@ -111,15 +112,18 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_submitted_str'               => 'Der Antrag wurde überarbeitet',
     'merge_submitted_to_motion'         => 'Zum neuen Antrag',
     'merge_colliding'                   => 'Kollidierender Änderungsantrag',
+    'merge_colliding_hint'              => 'Die folgenden Änderungen konnten nicht automatisch eingebettet werden. Bitte füge die Änderungen von Hand ein.',
+    'merge_all'                         => 'Alle Änderungen...',
     'merge_accept_all'                  => 'Alle Änderungen übernehmen',
     'merge_reject_all'                  => 'Alle Änderungen ablehnen',
+    'merge_changed'                     => 'Geändert',
     'merge_init_explanation'            => '<p>Hier kannst Du eine neue Version des Antrags erstellen, in dem einige oder alle beantragten Änderungen aufgegriffen werden.</p>
             <p>Man kann dabei entweder einen einzelnen Änderungsantrag einpflegen (unten), oder aber alle Änderungsanträge auf einmal (oben). Bei letzterem gibt es die Möglichkeit, einzelne Änderungsanträge auszunehmen, die abgelehnt wurden oder zu viele Konflikte mit anderen Änderungsanträgen verursachen.</p>
             <p>Der ursprüngliche Antrag sowie die Änderungsanträge bleiben dabei erhalten, wird aber als überholt gekennzeichnet.</p>',
     'merge_explanation'                 => 'Hier wird der Text mitsamt allen Änderungsanträgen im Text angezeigt. ' .
-        'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - fahre dafür einfach mit der Maus über die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
-        'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .
-        'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.',
+                                           'Du kannst bei jeder Änderung angeben, ob du sie <strong>annehmen oder ablehnen</strong> willst - fahre dafür einfach mit der Maus über die Änderung und wähle "Annehmen" oder "Ablehnen" aus.<br><br>' .
+                                           'Über das Annehmen und Ablehnen von Änderungsanträgen hinaus kannst du den Text auch <strong>frei bearbeiten</strong>, um dadurch redaktionelle Änderungen durchzuführen.<br>###COLLIDINGHINT###<br><br>' .
+                                           'Anschließend kannst du den neuen Status der Änderungsanträge auswählen und dann auf "Weiter" klicken. Dadurch wird ein <strong>neuer Antrag "###NEWPREFIX###"</strong> erzeugt. Der ursprüngliche Antrag sowie die Änderungsanträge bleiben zur Referenz erhalten, werden aber als "veraltet" markiert.',
     'merge_explanation_colliding'       => '<br><span class="glyphicon glyphicon-warning-sign" style="float: left; font-size: 2em; margin: 10px;"></span> Da es zu diesem Antrag mehrere Änderungsanträge gibt, die sich auf die selbe Textstelle beziehen - <strong>kollidierende Änderungsanträge</strong> - ist es notwendig, diese Änderungsanträge händisch einzupflegen. Lösche bitte anschließend den kollidierenden Änderungsantrag, indem du den Abschnitt zuerst markierst und mit der Del/Backspace-Taste anschließend löschst.',
     'merge_amend_by'                    => '%TITLE%, von %INITIATOR%',
     'merge_amend_editorials'            => 'Redaktionelle Änderungsanträge',
@@ -150,9 +154,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'confirm'                           => 'Bestätigen',
     'go_on'                             => 'Weiter',
     'published_email_body'              => "Hallo,\n\ndein Änderungsantrag zu %MOTION% wurde soeben auf Antragsgrün veröffentlicht. " .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                           "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                           "Mit freundlichen Grüßen,\n" .
+                                           "  Das Antragsgrün-Team",
     'published_email_title'             => 'Änderungsantrag veröffentlicht',
     'sidebar_adminedit'                 => 'Admin: bearbeiten',
     'sidebar_back'                      => 'Zurück zum Antrag',
@@ -303,20 +307,20 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'proposal_notified'          => 'Der/die Antragsteller*in wurde am %DATE% benachrichtigt.',
     'proposal_email_title'       => 'Änderungsantrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified'    => "Hallo %NAME_GIVEN%,\n\n" .
-        "die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                    "die Programmkommission hat über deinen Änderungsantrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
+                                    "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
+                                    "Mit freundlichen Grüßen,\n" .
+                                    "  Das Antragsgrün-Team",
     'proposal_email_accepted'    => "Hallo %NAME_GIVEN%,\n\n" .
-        "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Änderungsantrag zu übernehmen.\n\n" .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                    "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Änderungsantrag zu übernehmen.\n\n" .
+                                    "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                    "Mit freundlichen Grüßen,\n" .
+                                    "  Das Antragsgrün-Team",
     'proposal_email_other'       => "Hallo %NAME_GIVEN%,\n\n" .
-        "die Programmkommission einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                    "die Programmkommission einen Verfahrensvorschlag für deinen Änderungsantrag erarbeitet.\n\n" .
+                                    "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
+                                    "Mit freundlichen Grüßen,\n" .
+                                    "  Das Antragsgrün-Team",
     'proposal_user_agree'        => 'Ich stimme dem Verfahrensvorschlag zu',
     'proposal_user_agreed'       => 'Du hast dem Verfahrensvorschlag zugestimmt',
     'proposal_user_disagree_h'   => 'Wenn du dem Verfahrensvorschlag nicht zustimmst, wende dich bitte umgehend an die Antragskommission.',

@@ -30,7 +30,8 @@ ANTRAGSGRUEN_STRINGS = {
         "change_reject": "Reject",
         "colliding_title": "Colliding amendm.",
         "colliding_start": "Collisions start here",
-        "colliding_end": "Collisions end here"
+        "colliding_end": "Collisions end here",
+        "reloadParagraph": "If this selection is changed, manual changes to this paragraph are lost. Proceed?"
     },
     "admin": {
         "adminMayEditConfirm": "If this is deactivated, this cannot be undone for all motions created up to now.",

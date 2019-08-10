@@ -897,7 +897,7 @@ class TextSimple extends Text
 
         $paragraphCollisions = [];
         foreach (array_keys($paragraphs) as $paragraphNo) {
-            $paragraphCollisions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo, 10);
+            $paragraphCollisions[$paragraphNo] = $merger->getCollidingParagraphGroups($paragraphNo);
         }
 
         $out = '';

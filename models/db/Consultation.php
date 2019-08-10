@@ -412,14 +412,14 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $includeWithdrawn
+     * @param bool $withdrawnAreVisible
      * @param bool $includeResolutions
      * @return Motion[]
      */
-    public function getVisibleMotions($includeWithdrawn = true, $includeResolutions = true)
+    public function getVisibleMotions($withdrawnAreVisible = true, $includeResolutions = true)
     {
         $return            = [];
-        $invisibleStatuses = $this->getInvisibleMotionStatuses(!$includeWithdrawn);
+        $invisibleStatuses = $this->getInvisibleMotionStatuses($withdrawnAreVisible);
         if (!$includeResolutions) {
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $invisibleStatuses[] = IMotion::STATUS_RESOLUTION_FINAL;
@@ -499,10 +499,11 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnInvisible
+     * @param bool $withdrawnAreVisible
+     *
      * @return int[]
      */
-    public function getInvisibleMotionStatuses($withdrawnInvisible = false)
+    public function getInvisibleMotionStatuses($withdrawnAreVisible = true)
     {
         $invisible = [
             IMotion::STATUS_DELETED,
@@ -519,7 +520,7 @@ class Consultation extends ActiveRecord
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED;
             $invisible[] = IMotion::STATUS_SUBMITTED_UNSCREENED_CHECKED;
         }
-        if ($withdrawnInvisible) {
+        if (!$withdrawnAreVisible) {
             $invisible[] = IMotion::STATUS_WITHDRAWN;
             $invisible[] = IMotion::STATUS_MODIFIED;
             $invisible[] = IMotion::STATUS_MODIFIED_ACCEPTED;
@@ -543,12 +544,12 @@ class Consultation extends ActiveRecord
     }
 
     /**
-     * @param bool $withdrawnInvisible
+     * @param bool $withdrawnAreVisible
      * @return int[]
      */
-    public function getInvisibleAmendmentStatuses($withdrawnInvisible = false)
+    public function getInvisibleAmendmentStatuses($withdrawnAreVisible = true)
     {
-        return $this->getInvisibleMotionStatuses($withdrawnInvisible);
+        return $this->getInvisibleMotionStatuses($withdrawnAreVisible);
     }
 
     /**

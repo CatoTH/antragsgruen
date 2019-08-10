@@ -29,7 +29,8 @@ ANTRAGSGRUEN_STRINGS = {
         "change_reject": "Verwerfen",
         "colliding_title": "Kollidierender ÄA",
         "colliding_start": "Ab hier Kollisionen",
-        "colliding_end": "Bis hier Kollisionen"
+        "colliding_end": "Bis hier Kollisionen",
+        "reloadParagraph": "Wenn diese Auswahl geändert wird, gehen händische Änderungen in diesem Paragraph verloren. Weiter?"
     },
     "admin": {
         "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",

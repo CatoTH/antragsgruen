@@ -38,12 +38,11 @@ class Diff
      */
     public static function wrapWithInsert($str)
     {
-        if ($str == '') {
+        if ($str === '') {
             return '';
         } else {
             return DiffRenderer::INS_START . $str . DiffRenderer::INS_END;
         }
-
     }
 
     /**
@@ -52,7 +51,7 @@ class Diff
      */
     public static function wrapWithDelete($str)
     {
-        if ($str == '') {
+        if ($str === '') {
             return '';
         } else {
             return DiffRenderer::DEL_START . $str . DiffRenderer::DEL_END;
@@ -780,27 +779,26 @@ class Diff
         $matcher = new ArrayMatcher();
         $matcher->addIgnoredString('###LINENUMBER###');
         list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceParas, $newParas);
-        if (count($adjustedRef) != count($adjustedMatching)) {
+        if (count($adjustedRef) !== count($adjustedMatching)) {
             throw new Internal('compareSectionedHtml: number of sections does not match');
         }
 
         $diffSections  = [];
         $pendingInsert = '';
         for ($i = 0; $i < count($adjustedRef); $i++) {
-            if ($adjustedRef[$i] == '###EMPTYINSERTED###') {
+            if ($adjustedRef[$i] === '###EMPTYINSERTED###') {
                 $diffLine  = $this->computeLineDiff('', $adjustedMatching[$i]);
                 $wordArray = $this->convertToWordArray($diffLine, $amParams);
-                if (count($wordArray) != 1 || $wordArray[0]['word'] != '') {
+                if (count($wordArray) !== 1 || $wordArray[0]['word'] !== '') {
                     throw new Internal('Inserted Paragraph Incosistency');
                 }
-                if (count($diffSections) == 0) {
+                if (count($diffSections) === 0) {
                     $pendingInsert .= $wordArray[0]['diff'];
                 } else {
                     $last                                 = count($diffSections) - 1;
                     $lastEl                               = count($diffSections[$last]) - 1;
                     $diffSections[$last][$lastEl]['diff'] .= $wordArray[0]['diff'];
                     $diffSections[$last][$lastEl]         = array_merge($diffSections[$last][$lastEl], $amParams);
-
                 }
             } else {
                 $origLine    = $adjustedRef[$i];
@@ -809,7 +807,7 @@ class Diff
                 $wordArray   = $this->convertToWordArray($diffLine, $amParams);
 
                 $this->checkWordArrayConsistency($origLine, $wordArray);
-                if ($pendingInsert != '') {
+                if ($pendingInsert !== '') {
                     $wordArray[0]['diff'] = $pendingInsert . $wordArray[0]['diff'];
                     $wordArray[0]         = array_merge($wordArray[0], $amParams);
                     $pendingInsert        = '';

@@ -444,7 +444,7 @@ abstract class IMotion extends ActiveRecord
 
     /**
      * @param bool $withoutTitle
-     * @return IMotionSection[]
+     * @return MotionSection[]
      */
     public function getSortedSections($withoutTitle = false)
     {

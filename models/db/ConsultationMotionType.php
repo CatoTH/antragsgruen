@@ -448,14 +448,15 @@ class ConsultationMotionType extends ActiveRecord
     }
 
     /**
-     * @param bool $includeWithdrawn
+     * @param bool $withdrawnAreVisible
+     *
      * @return Motion[]
      */
-    public function getVisibleMotions($includeWithdrawn = true)
+    public function getVisibleMotions($withdrawnAreVisible = true)
     {
         $return = [];
         foreach ($this->motions as $motion) {
-            if (!in_array($motion->status, $this->getConsultation()->getInvisibleMotionStatuses(!$includeWithdrawn))) {
+            if (!in_array($motion->status, $this->getConsultation()->getInvisibleMotionStatuses($withdrawnAreVisible))) {
                 $return[] = $motion;
             }
         }

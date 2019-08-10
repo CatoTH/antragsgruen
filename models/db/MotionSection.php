@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\diff\AmendmentDiffMerger;
+use app\components\diff\amendmentMerger\SectionMerger;
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\LineSplitter;
@@ -106,12 +106,12 @@ class MotionSection extends IMotionSection
      */
     public function getAmendingSections($includeProposals = false, $onlyWithChanges = false, $allStatuses = false)
     {
-        $sections         = [];
-        $motion           = $this->getConsultation()->getMotion($this->motionId);
+        $sections = [];
+        $motion   = $this->getConsultation()->getMotion($this->motionId);
         if ($allStatuses) {
             $excludedStatuses = $this->getConsultation()->getUnreadableStatuses();
         } else {
-            $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses(true);
+            $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses();
             if ($includeProposals) {
                 $excludedStatuses = array_filter($excludedStatuses, function ($status) {
                     return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
@@ -158,12 +158,12 @@ class MotionSection extends IMotionSection
     }
 
     /**
-     * @return \string[][]
+     * @return string[][]
      * @throws Internal
      */
     public function getTextParagraphLines()
     {
-        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
 
@@ -328,30 +328,35 @@ class MotionSection extends IMotionSection
         throw new Internal('Did not find myself: Motion ' . $this->motionId . ' / Section ' . $this->sectionId);
     }
 
-    /** @var null|AmendmentDiffMerger */
-    private $amendmentDiffMerger = null;
+    /** @var null|SectionMerger[] */
+    private $mergers = [];
 
     /**
-     * @param int[] $toMergeAmendmentIds
+     * @param int[]|null $toMergeAmendmentIds
      *
-     * @return AmendmentDiffMerger
+     * @return SectionMerger
      */
     public function getAmendmentDiffMerger($toMergeAmendmentIds)
     {
-        if (is_null($this->amendmentDiffMerger)) {
+        if ($toMergeAmendmentIds === null) {
+            $key = '-';
+        } else {
+            sort($toMergeAmendmentIds);
+            $key = implode("-", $toMergeAmendmentIds);
+        }
+        if (!isset($this->mergers[$key])) {
             $sections = [];
-            foreach ($this->getAmendingSections(true, false, true) as $section) {
-                if (in_array($section->amendmentId, $toMergeAmendmentIds)) {
+            foreach ($this->getAmendingSections(true, false, false) as $section) {
+                if ($toMergeAmendmentIds === null || in_array($section->amendmentId, $toMergeAmendmentIds)) {
                     $sections[] = $section;
                 }
             }
 
-            $merger = new AmendmentDiffMerger();
+            $merger = new SectionMerger();
             $merger->initByMotionSection($this);
             $merger->addAmendingSections($sections);
-            $merger->mergeParagraphs();
-            $this->amendmentDiffMerger = $merger;
+            $this->mergers[$key] = $merger;
         }
-        return $this->amendmentDiffMerger;
+        return $this->mergers[$key];
     }
 }

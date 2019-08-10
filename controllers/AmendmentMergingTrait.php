@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\diff\AmendmentDiffMerger;
 use app\components\diff\AmendmentRewriter;
 use app\components\diff\SingleAmendmentMergeViewParagraphData;
 use app\components\HTMLTools;
@@ -115,7 +114,6 @@ trait AmendmentMergingTrait
      * @return string
      * @throws Internal
      * @throws NotFound
-     * @throws \yii\base\ExitException
      * @throws \app\models\exceptions\DB
      */
     public function actionMerge($motionSlug, $amendmentId)

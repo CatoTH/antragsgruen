@@ -2,24 +2,21 @@
 
 namespace unit;
 
-use app\components\diff\AmendmentDiffMerger;
+use app\components\diff\amendmentMerger\SectionMerger;
 use app\components\HTMLTools;
-use Codeception\Specify;
 
-class AmendmentDiffMergerTest extends TestBase
+class AmendmentSectionMergerTest extends TestBase
 {
     public function testInsertWithinDeletion()
     {
         $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
         $merger->addAmendingParagraphs(1, [0 => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore fnord et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>']);
         $merger->addAmendingParagraphs(2, [0 => '<p></p>']);
-
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             ['amendment' => 0, 'text' => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore '],
@@ -39,10 +36,9 @@ class AmendmentDiffMergerTest extends TestBase
         $new    = [
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. etza nix Gwiass woass ma ned owe.</p>'
         ];
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($orig);
         $merger->addAmendingParagraphs(1, $new);
-        $merger->mergeParagraphs();
         $groupedParaData = $merger->getGroupedParagraphData(0);
         $this->assertEquals([
             ['amendment' => 0, 'text' => '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch. '],
@@ -60,10 +56,9 @@ class AmendmentDiffMergerTest extends TestBase
             '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.</p>',
             '<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>',
         ];
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($orig);
         $merger->addAmendingParagraphs(1, $new);
-        $merger->mergeParagraphs();
         $groupedParaData = $merger->getGroupedParagraphData(0);
         $this->assertEquals([
             ['amendment' => 0, 'text' => '<p>Bavaria ipsum dolor sit amet Biazelt Auffisteign Schorsch.'],
@@ -78,12 +73,11 @@ class AmendmentDiffMergerTest extends TestBase
      */
     public function testInsertedParagraph()
     {
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs(['<p>Daher ist es nicht nur durch die bekannt gewordenen Vorfälle von sexueller Gewalt in der Kinder- und Jugendarbeit die Aufgabe des DBJR und aller Mitgliedsverbände, Präventionsarbeit zu diesem Thema zu leisten. Vielmehr liefert diese Arbeit auch einen Beitrag zu einer weniger gewaltvollen Gesellschaft.</p>']);
         $merger->addAmendingParagraphs(1, [0 => '<p>Der Kampf für Gleichberechtigung von Frauen und Männern stellt die Grundlage der präventiven Arbeit dar. Eine präventive Arbeit gegen sexualisierte Gewalt bedeutet eben auch sexistische Strukturen in der Gesellschaft aufzudecken und stetig dagegen anzugehen.</p>
 <p>Prävention sexualisierter Gewalt ist schon lange ein wichtiges Anliegen der Jugendverbände. Mit unseren Maßnahmen zur Prävention und Intervention gegen sexualisierte Gewalt leisten wir dabei einen wichtigen Beitrag.</p>
 <p>zu einer weniger gewaltvollen Gesellschaft.</p>']);
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             ['amendment' => 0, 'text' => ''],
@@ -99,10 +93,9 @@ class AmendmentDiffMergerTest extends TestBase
     {
         $this->markTestIncomplete('kommt noch');
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs(['<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust</li></ul>']);
         $merger->addAmendingParagraphs(1, [0 => '<p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert.</p><ul><li>Wir stellen uns immer wieder neu der Frage.</li></ul>']);
-        $merger->mergeParagraphs();
         $this->assertEquals([
             ['amendment' => 0, 'text' => ''],
             [
@@ -120,7 +113,7 @@ class AmendmentDiffMergerTest extends TestBase
 Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird.</p>';
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
         $merger->addAmendingParagraphs(1, [0 => '<p><strong>Demokratie und Freiheit </strong><br>
 Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die<br>
@@ -130,8 +123,6 @@ Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen<br>
 werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung<br>
 der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die<br>
 Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen.</p>']);
-
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -164,14 +155,13 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
 
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
         $merger->addAmendingParagraphs(1, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn Inserted ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
         $merger->addAmendingParagraphs(2, [0 => '<p>owe gwihss Sauwedda ded Hier was Neues Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim schena Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, und hier was Neues gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
         $merger->addAmendingParagraphs(3, [0 => '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>']);
 
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -236,12 +226,11 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
 
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
         $merger->addAmendingParagraphs(1, [0 => '<p>test1 test3 test5 test6 test7 test9 test11 test13 test15 test16.1 test17 test19 test21 test22 test23 test25</p>']);
         $merger->addAmendingParagraphs(2, [0 => '<p>test1 test3 test5 test7 test9 test10 test11 test13 test15 test16.2 test17 test19 test21 test23 test25 test26</p>']);
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -307,13 +296,11 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
 
         $paragraphs = HTMLTools::sectionSimpleHTML($origText);
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
 
         $merger->addAmendingParagraphs(1, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 1</li></ul>']);
         $merger->addAmendingParagraphs(2, [0 => '<ul><li>Hblas Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad.</li><li>Addition 2</li></ul>']);
-
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -353,10 +340,9 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             1 => "<ul><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>",
         ];
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
         $merger->addAmendingParagraphs(1, $affectedParagraphs);
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -387,10 +373,9 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             0 => "<p>Woaß wia Gams, damischa. A ganze Hoiwe Ohrwaschl Greichats iabaroi Prosd Engelgwand nix Reiwadatschi. Woibbadinga damischa owe gwihss Sauwedda Weibaleid ognudelt Ledahosn noch da Giasinga Heiwog</p>",
         ];
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
         $merger->addAmendingParagraphs(2, $affectedParagraphs);
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
@@ -422,10 +407,9 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
             1 => "<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd!</p>",
         ];
 
-        $merger = new AmendmentDiffMerger();
+        $merger = new SectionMerger();
         $merger->initByMotionParagraphs($paragraphs);
         $merger->addAmendingParagraphs(3, $affectedParagraphs);
-        $merger->mergeParagraphs();
 
         $this->assertEquals([
             [
