@@ -10,15 +10,7 @@ class HashedStaticCache
      */
     private static function hashDependencies($dep)
     {
-        if (is_array($dep)) {
-            $sum = '';
-            foreach ($dep as $d) {
-                $sum .= static::hashDependencies($d);
-            }
-            return md5($sum);
-        } else {
-            return md5($dep);
-        }
+        return md5(print_r($dep, true));
     }
 
     /**
