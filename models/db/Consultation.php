@@ -144,6 +144,9 @@ class Consultation extends ActiveRecord
         }
     }
 
+    /** @var Motion[] */
+    private $motionCache = [];
+
     /**
      * @param string|null $motionSlug
      * @return Motion|null
@@ -153,7 +156,14 @@ class Consultation extends ActiveRecord
         if (is_null($motionSlug)) {
             return null;
         }
+        if (isset($this->motionCache[$motionSlug])) {
+            return $this->motionCache[$motionSlug];
+        }
         foreach ($this->motions as $motion) {
+            $this->motionCache[$motion->id] = $motion;
+            if ($motion->slug) {
+                $this->motionCache[$motion->slug] = $motion;
+            }
             if (is_numeric($motionSlug) && $motion->id == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
                 return $motion;
             }
@@ -161,6 +171,7 @@ class Consultation extends ActiveRecord
                 return $motion;
             }
         }
+        $this->motionCache[$motionSlug] = null;
         return null;
     }
 
