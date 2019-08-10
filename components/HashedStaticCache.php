@@ -28,7 +28,7 @@ class HashedStaticCache
      */
     public static function getCache($function, $dependencies)
     {
-        if (YII_ENV == 'test') {
+        if (YII_ENV === 'test') {
             return false;
         }
         $key = md5($function . static::hashDependencies($dependencies));
@@ -42,7 +42,7 @@ class HashedStaticCache
      */
     public static function setCache($function, $dependencies, $data)
     {
-        if (YII_ENV == 'test') {
+        if (YII_ENV === 'test') {
             return;
         }
         $key = md5($function . static::hashDependencies($dependencies));
