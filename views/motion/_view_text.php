@@ -15,7 +15,7 @@ use yii\helpers\Html;
 
 echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
-$useCache = ($commentForm === null && count($openedComments) === 0 && false);
+$useCache = ($commentForm === null && count($openedComments) === 0);
 
 if ($useCache) {
     $cached = HashedStaticCache::getCache(LayoutHelper::getViewCacheKey($motion), null);
