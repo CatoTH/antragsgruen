@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\HashedStaticCache;
 use app\components\MotionSorter;
 use app\components\RSSExporter;
 use app\components\Tools;
@@ -104,6 +105,20 @@ class Motion extends IMotion implements IRSSItem
         $app = \Yii::$app->params;
 
         return $app->tablePrefix . 'motion';
+    }
+
+    /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     *
+     * @return bool
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $result = parent::save($runValidation, $attributeNames);
+        $this->flushViewCache();
+
+        return $result;
     }
 
     /**
@@ -980,6 +995,14 @@ class Motion extends IMotion implements IRSSItem
         foreach ($this->amendments as $amend) {
             $amend->flushCacheWithChildren();
         }
+        $this->flushViewCache();
+    }
+
+    /**
+     */
+    public function flushViewCache()
+    {
+        HashedStaticCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
     }
 
     /**

@@ -6,6 +6,7 @@ class HashedStaticCache
 {
     /**
      * @param mixed $dep
+     *
      * @return string
      */
     private static function hashDependencies($dep)
@@ -16,6 +17,7 @@ class HashedStaticCache
     /**
      * @param string $function
      * @param mixed $dependencies
+     *
      * @return mixed|false
      */
     public static function getCache($function, $dependencies)
@@ -24,6 +26,7 @@ class HashedStaticCache
             return false;
         }
         $key = md5($function . static::hashDependencies($dependencies));
+
         return \Yii::$app->cache->get($key);
     }
 
@@ -39,5 +42,18 @@ class HashedStaticCache
         }
         $key = md5($function . static::hashDependencies($dependencies));
         \Yii::$app->cache->set($key, $data);
+    }
+
+    /**
+     * @param string $function
+     * @param mixed $dependencies
+     */
+    public static function flushCache($function, $dependencies)
+    {
+        if (YII_ENV === 'test') {
+            return;
+        }
+        $key = md5($function . static::hashDependencies($dependencies));
+        \Yii::$app->cache->delete($key);
     }
 }

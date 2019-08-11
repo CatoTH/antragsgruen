@@ -96,6 +96,23 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @param bool $runValidation
+     * @param null $attributeNames
+     *
+     * @return bool
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $result = parent::save($runValidation, $attributeNames);
+
+        if ($this->getMyMotion()) {
+            $this->getMyMotion()->flushViewCache();
+        }
+
+        return $result;
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getComments()
