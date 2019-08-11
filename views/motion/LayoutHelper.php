@@ -78,6 +78,15 @@ class LayoutHelper
 
     /**
      * @param Motion $motion
+     *
+     * @return string
+     */
+    public static function getViewCacheKey(Motion $motion) {
+        return 'motion_view_' . $motion->id;
+    }
+
+    /**
+     * @param Motion $motion
      * @return Content
      * @throws \app\models\exceptions\Internal
      * @throws \Exception

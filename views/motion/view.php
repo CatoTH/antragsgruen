@@ -6,7 +6,6 @@ use app\models\db\Motion;
 use app\models\db\MotionComment;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
-use app\models\sectionTypes\ISectionType;
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\models\policies\Nobody;
@@ -71,18 +70,18 @@ if ($supportCollectingStatus) {
     $min  = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
     $curr = count($motion->getSupporters());
     if ($curr >= $min) {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_reached_hint'));
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
     } else {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], \Yii::t('motion', 'support_collection_hint'));
+        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_hint'));
 
         if ($motion->motionType->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
-            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => \yii::$app->request->url]);
+            $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
             echo '<div style="vertical-align: middle; line-height: 40px; margin-top: 20px;">';
             echo '<a href="' . Html::encode($loginUrl) . '" class="btn btn-default pull-right" rel="nofollow">' .
-                '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
-                \Yii::t('base', 'menu_login') . '</a>';
+                 '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span> ' .
+                 Yii::t('base', 'menu_login') . '</a>';
 
-            echo Html::encode(\Yii::t('structure', 'policy_logged_supp_denied'));
+            echo Html::encode(Yii::t('structure', 'policy_logged_supp_denied'));
             echo '</div>';
         }
     }
@@ -92,7 +91,7 @@ if ($motion->canFinishSupportCollection()) {
     echo Html::beginForm('', 'post', ['class' => 'motionSupportFinishForm']);
 
     echo '<button type="submit" name="motionSupportFinish" class="btn btn-success">';
-    echo \Yii::t('motion', 'support_finish_btn');
+    echo Yii::t('motion', 'support_finish_btn');
     echo '</button>';
 
     echo Html::endForm();
@@ -106,7 +105,7 @@ if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
     <div class="privateNoteOpener">
         <button class="btn btn-link btn-sm">
             <span class="glyphicon glyphicon-pushpin"></span>
-            <?= \Yii::t('motion', 'private_notes') ?>
+            <?= Yii::t('motion', 'private_notes') ?>
         </button>
     </div>
     <?php
@@ -118,7 +117,7 @@ if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
         <div class="proposedChangesOpener">
             <button class="btn btn-default btn-sm">
                 <span class="glyphicon glyphicon-chevron-down"></span>
-                <?= \Yii::t('amend', 'proposal_open') ?>
+                <?= Yii::t('amend', 'proposal_open') ?>
             </button>
         </div>
         <?php
@@ -130,69 +129,32 @@ if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
     }
 }
 
-echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
-$main = $right = '';
-foreach ($motion->getSortedSections(false) as $i => $section) {
-    /** @var \app\models\db\MotionSection $section */
-    $sectionType = $section->getSettings()->type;
-    if ($section->getSectionType()->isEmpty()) {
-        continue;
-    }
-    if ($motion->getTitleSection() && $motion->getTitleSection()->sectionId === $section->sectionId &&
-        count($section->getAmendingSections(false, true)) === 0) {
-        continue;
-    }
-    if ($section->isLayoutRight()) {
-        $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
-        $right .= $section->getSectionType()->getSimple(true);
-        $right .= '</section>';
-    } else {
-        $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type;
-        if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
-            $main .= ' smallFont';
-        }
-        $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($sectionType !== ISectionType::TYPE_PDF && $sectionType !== ISectionType::TYPE_IMAGE) {
-            $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
-        }
+echo $this->render('_view_text', [
+    'motion'         => $motion,
+    'commentForm'    => $commentForm,
+    'openedComments' => $openedComments,
+]);
 
-        $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);
-        $main   .= $section->getSectionType()->showMotionView($commentForm, $commOp);
-
-        $main .= '</section>';
-    }
-}
-
-
-if ($right === '') {
-    echo $main;
-} else {
-    echo '<div class="row" style="margin-top: 2px;"><div class="col-md-8 motionMainCol">';
-    echo $main;
-    echo '</div><div class="col-md-4 motionRightCol">';
-    echo $right;
-    echo '</div></div>';
-}
 
 ?>
     <form class="gotoLineNumerPanel form-inline">
         <div class="form-group">
             <label class="sr-only" for="gotoLineNumber">Line number</label>
             <div class="input-group">
-                <div class="input-group-addon"><?= \Yii::t('motion', 'goto_line') ?>:</div>
+                <div class="input-group-addon"><?= Yii::t('motion', 'goto_line') ?>:</div>
                 <input type="number" name="lineNumber" id="gotoLineNumber" class="form-control">
                 <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit"><?= \Yii::t('motion', 'goto_line_go') ?></button>
+                    <button class="btn btn-default" type="submit"><?= Yii::t('motion', 'goto_line_go') ?></button>
                 </span>
             </div>
         </div>
 
-        <span class="lineNumberNotFound hidden"><?= \Yii::t('motion', 'goto_line_err') ?></span>
+        <span class="lineNumberNotFound hidden"><?= Yii::t('motion', 'goto_line_err') ?></span>
     </form>
 <?php
 
-$currUserId    = (\Yii::$app->user->isGuest ? 0 : \Yii::$app->user->id);
+$currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);
 $supporters    = $motion->getSupporters();
 $supportType   = $motion->motionType->getMotionSupportTypeClass();
 $supportPolicy = $motion->motionType->getMotionSupportPolicy();
@@ -201,18 +163,18 @@ $supportPolicy = $motion->motionType->getMotionSupportPolicy();
 if (count($supporters) > 0 || $supportCollectingStatus ||
     ($supportPolicy->checkCurrUser(false) && !$motion->isResolution())) {
     echo '<section class="supporters" id="supporters">
-    <h2 class="green">' . \Yii::t('motion', 'supporters_heading') . '</h2>
+    <h2 class="green">' . Yii::t('motion', 'supporters_heading') . '</h2>
     <div class="content">';
 
     $iAmSupporting        = false;
-    $anonymouslySupported = \app\models\db\MotionSupporter::getMyAnonymousSupportIds();
+    $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
     if (count($supporters) > 0) {
         echo '<ul>';
         foreach ($supporters as $supp) {
             /** @var MotionSupporter $supp */
             echo '<li>';
             if (($currUserId && $supp->userId === $currUserId) || in_array($supp->id, $anonymouslySupported)) {
-                echo '<span class="label label-info">' . \Yii::t('motion', 'supporting_you') . '</span> ';
+                echo '<span class="label label-info">' . Yii::t('motion', 'supporting_you') . '</span> ';
                 $iAmSupporting = true;
             }
             echo Html::encode($supp->getNameWithOrga());
@@ -220,7 +182,7 @@ if (count($supporters) > 0 || $supportCollectingStatus ||
         }
         echo '</ul>';
     } else {
-        echo '<em>' . \Yii::t('motion', 'supporting_none') . '</em><br>';
+        echo '<em>' . Yii::t('motion', 'supporting_none') . '</em><br>';
     }
     echo '<br>';
     LayoutHelper::printSupportingSection($motion, $supportPolicy, $supportType, $iAmSupporting);
@@ -233,19 +195,20 @@ if (!$motion->isResolution()) {
 
 echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 
-$amendments = $motion->getVisibleAmendments();
+$amendments     = $motion->getVisibleAmendments();
 $nobodyCanAmend = ($motion->motionType->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
 if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
+    /** @noinspection PhpUnhandledExceptionInspection */
     if ($motion->isCurrentlyAmendable(false, true)) {
         echo '<div class="pull-right">';
         $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-        $title          .= \Yii::t('motion', 'amendment_create');
+        $title          .= Yii::t('motion', 'amendment_create');
         $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
         echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .
-            $title . '</a>';
+             $title . '</a>';
         echo '</div>';
     }
 
@@ -257,6 +220,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
         if (!$amend1->globalAlternative && $amend2->globalAlternative) {
             return 1;
         }
+
         return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
     });
 
@@ -265,7 +229,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
         foreach ($amendments as $amend) {
             echo '<li>';
             if ($amend->globalAlternative) {
-                echo '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
+                echo '<strong>' . Yii::t('amend', 'global_alternative') . ':</strong> ';
             }
             $aename = $amend->titlePrefix;
             if ($aename === '') {
@@ -279,7 +243,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
         }
         echo '</ul>';
     } else {
-        echo '<em>' . \Yii::t('motion', 'amends_none') . '</em>';
+        echo '<em>' . Yii::t('motion', 'amends_none') . '</em>';
     }
 
     echo '</div></section>';
@@ -288,11 +252,11 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
 $nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
 if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
-    echo '<h2 class="green">' . \Yii::t('motion', 'comments') . '</h2>';
+    echo '<h2 class="green">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 
-    $screening = \Yii::$app->session->getFlash('screening', null, true);
+    $screening = Yii::$app->session->getFlash('screening', null, true);
     if ($screening) {
         echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
@@ -315,9 +279,9 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
     if ($screeningQueue > 0) {
         echo '<div class="commentScreeningQueue">';
         if ($screeningQueue === 1) {
-            echo \Yii::t('motion', 'comment_screen_queue_1');
+            echo Yii::t('motion', 'comment_screen_queue_1');
         } else {
-            echo str_replace('%NUM%', $screeningQueue, \Yii::t('motion', 'comment_screen_queue_x'));
+            echo str_replace('%NUM%', $screeningQueue, Yii::t('motion', 'comment_screen_queue_x'));
         }
         echo '</div>';
     }

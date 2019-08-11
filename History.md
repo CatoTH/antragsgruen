@@ -6,6 +6,7 @@
 - Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens.
 - Long-broken references to OpenID-based login were removed.
 - The "Using Antragsgrün"-hint in the sidebar can now be disabled through the admin interface.
+- Several performance improvements for large installations with hundrets of amendments, especially in the motion view.
 
 ### Version 4.2.3 (2019-07-18)
 
