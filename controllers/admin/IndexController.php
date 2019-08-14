@@ -207,7 +207,7 @@ class IndexController extends AdminBase
         foreach ($consultation->tags as $tag) {
             if (!in_array($tag->id, $foundTags)) {
                 foreach ($tag->motions as $motion) {
-                    $motion->unlink('tags', $tag, false);
+                    $motion->unlink('tags', $tag, true);
                 }
                 $tag->delete();
             }
