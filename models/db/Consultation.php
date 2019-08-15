@@ -559,6 +559,7 @@ class Consultation extends ActiveRecord
             IMotion::STATUS_DRAFT,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
+            IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
         ];
         return $invisible;
     }

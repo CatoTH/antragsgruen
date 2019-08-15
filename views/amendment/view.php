@@ -126,6 +126,16 @@ if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
     }
 }
 
+if ($amendment->status === Amendment::STATUS_DRAFT) {
+    ?>
+    <div class="content">
+        <div class="alert alert-info alertDraft">
+            <p><?= Yii::t('motion', 'info_draft_admin') ?></p>
+        </div>
+    </div>
+    <?php
+}
+
 echo $this->render('_view_text', ['amendment' => $amendment]);
 
 $currUserId    = (Yii::$app->user->isGuest ? 0 : Yii::$app->user->id);

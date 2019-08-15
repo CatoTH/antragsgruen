@@ -63,7 +63,6 @@ if (!$minimalisticUi) {
 
 echo $controller->showErrors();
 
-
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
@@ -127,6 +126,16 @@ if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
     if ($motion->proposalFeedbackHasBeenRequested() && $motion->iAmInitiator()) {
         echo $this->render('_view_agree_to_proposal', ['motion' => $motion]);
     }
+}
+
+if ($motion->status === Motion::STATUS_DRAFT) {
+    ?>
+    <div class="content">
+        <div class="alert alert-info alertDraft">
+            <p><?= Yii::t('motion', 'info_draft_admin') ?></p>
+        </div>
+    </div>
+    <?php
 }
 
 

@@ -38,7 +38,7 @@ return [
     'screened_hint'             => 'Screened',
     'amend_for'                 => ' to ',
     'create_explanation'        => 'Please amend the motion as you like. Explain in the  &quot;Reason&quot; section below.<br>' . "\n" .
-        'Please note, you can request &quot;Editorial changes&quot;.',
+                                   'Please note, you can request &quot;Editorial changes&quot;.',
     'editorial_hint'            => 'Editorial hint',
     'global_alternative'        => 'Global alternative',
     'merge_init_title'          => 'Refactor "%NAME%"',
@@ -122,9 +122,9 @@ return [
     'confirm'                           => 'Confirm',
     'go_on'                             => 'Go on',
     'published_email_body'              => "Hi,\n\nyour amendment to %MOTION% has just been published on Antragsgrün. " .
-        "You can see it here: %LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                           "You can see it here: %LINK%\n\n" .
+                                           "Greetings,\n" .
+                                           "  The Antragsgrün-Team",
     'published_email_title'             => 'Your amendment has been published',
     'sidebar_adminedit'                 => 'Admin: edit',
     'sidebar_back'                      => 'Back to the motion',
@@ -141,8 +141,8 @@ return [
     'err_not_found'                     => 'The amendment was not found',
     'err_withdraw_forbidden'            => 'No permission to withdraw this amendment.',
     'err_edit_forbidden'                => 'Not allowed to edit this amendment.',
-    'err_not_visible_yet_title'         => 'Not visible yet',
-    'err_not_visible_yet'               => 'This amendment is not yet visible.',
+    'err_not_visible_title'             => 'Not accessible',
+    'err_not_visible'                   => 'This amendment is not a viewable entry.',
     'withdraw_done'                     => 'The amendment has been withdrawn.',
     'withdraw_bread'                    => 'Withdraw',
     'withdraw'                          => 'Withdraw',
@@ -173,9 +173,9 @@ return [
         <li><strong>Submit the motion:</strong> Once %MIN% people support the amendment, you will receive a notification by e-mail. Now you can officially submit it. Once submitted, the amendment can still receive support from people.</li>
         </ol>',
     'merge_explanation'                 => 'The text, including all amendments within the text, is shown here. ' .
-        'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
-        'In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>' .
-        'Then you can select the new amendment status and click “Continue”. A <strong>new motion "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
+                                           'For each change, you can specify whether you <strong>accept or reject</strong> it - simply by moving the mouse over it and then choosing either "Accept" or “Reject".<br><br>' .
+                                           'In addition, you can <strong>freely edit</strong> the text to make editorial changes.<br>###COLLIDINGHINT###<br><br>' .
+                                           'Then you can select the new amendment status and click “Continue”. A <strong>new motion "###NEWPREFIX###"</strong> is generated. The original motion, including the amendments, remain as a reference, but are marked as “obsolete”.',
     'merge_init_explanation'            => '<p>You can create a new version of this motion that includes the proposed amendments.</p>
             <p>You can either merge a single amendment, or all amendments at once. For the latter, you can also exclude some amendments that have been rejected or are causing too many conflicts with other amendments.</p>
             <p>The original motion and the amendments will still be available, but marked as obsolete.</p>',
@@ -276,20 +276,20 @@ return [
     'proposal_notified'          => 'The proposer has been notified at %DATE%.',
     'proposal_email_title'       => 'Amendment %PREFIX%: Proposed procedure',
     'proposal_email_modified'    => "Hi %NAME_GIVEN%,\n\n" .
-        "the administrators have discussed about your amendment and propose to accept it in a modified version.\n\n" .
-        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                    "the administrators have discussed about your amendment and propose to accept it in a modified version.\n\n" .
+                                    "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
+                                    "Greetings,\n" .
+                                    "  The Antragsgrün-Team",
     'proposal_email_accepted'    => "Hi %NAME_GIVEN%,\n\n" .
-        "for your information: the administrators will propose to accept your amendment.\n\n" .
-        "You can see the amendment at the following link: %LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                    "for your information: the administrators will propose to accept your amendment.\n\n" .
+                                    "You can see the amendment at the following link: %LINK%\n\n" .
+                                    "Greetings,\n" .
+                                    "  The Antragsgrün-Team",
     'proposal_email_other'       => "Hi %NAME_GIVEN%,\n\n" .
-        "the administrators have agreed on a proposed procedure regarding your amendment.\n\n" .
-        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                    "the administrators have agreed on a proposed procedure regarding your amendment.\n\n" .
+                                    "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
+                                    "Greetings,\n" .
+                                    "  The Antragsgrün-Team",
     'proposal_user_agree'        => 'I agree with the proposal',
     'proposal_user_agreed'       => 'You agreed to the proposal',
     'proposal_user_disagree_h'   => 'If you do not agree, please contact the organizators of this consultation.',

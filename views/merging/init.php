@@ -127,13 +127,13 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                             echo '<td class="colText hasAlternative">';
                             echo '<label class="textOriginal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="original"> ';
-                            echo Yii::t('amend', 'merge_amtable_text_orig');
+                            echo Yii::t('amend', 'merge_amtable_text_orig') . ' ';
                             echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
                             echo '</label>';
 
                             echo '<label class="textProposal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="proposal" checked>';
-                            echo ' ' . Yii::t('amend', 'merge_amtable_text_prop');
+                            echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
                             echo \app\components\HTMLTools::amendmentDiffTooltip($amend->proposalReference, 'bottom');
                             echo '</label>';
                             echo '</td>';

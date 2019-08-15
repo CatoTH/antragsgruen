@@ -84,9 +84,9 @@ return [
     'download_pdf'              => 'Version PDF',
     'motion_text'               => 'Text de la motion',
     'published_email_body'      => "Salut,\n\nta motion vient tout juste d'être publiée sur Antragsgrün. " .
-        "Tu peux la voir ici : %LINK%\n\n" .
-        "Bien à toi,\n" .
-        "  L'équipe Antragsgrün",
+                                   "Tu peux la voir ici : %LINK%\n\n" .
+                                   "Bien à toi,\n" .
+                                   "  L'équipe Antragsgrün",
     'published_email_title'     => 'Ta motion a été publiée',
     'back_to_motion'            => 'Retour',
     'edit_done'                 => 'Motion modifiée',
@@ -100,8 +100,8 @@ return [
     'err_edit_permission'       => 'Pas les droits requis pour modifier cette motion.',
     'err_withdraw_permission'   => 'Pas autorisé à retiré cette motion.',
     'err_not_found'             => 'Motion introuvable.',
-    'err_not_visible_yet_title' => 'Pas encore visible',
-    'err_not_visible_yet'       => 'Cette motion n\'est pas encore visible.',
+    'err_not_visible_title'     => 'Pas encore visible',
+    'err_not_visible'           => 'Cette motion n\'est pas encore visible.',
     'withdraw_done'             => 'La motion a été retirée.',
     'withdraw_bread'            => 'Retirer',
     'withdraw'                  => 'Retirer',
@@ -113,7 +113,7 @@ return [
     'max_len_hint'              => 'Maximum %LEN% signes (actuellement : %COUNT%)',
     'max_len_alert'             => 'Le texte est trop long !',
     'create_explanation'        => 'Tu peux ici créer une motion indépendante d\' une autre motion. ' .
-        'Si tu souhaites amender une motion déjà déposée, tu dois d\'abord ouvrir cette motion et cliquer sur "Créer un amendement" dans la barre latérale à droite.',
+                                   'Si tu souhaites amender une motion déjà déposée, tu dois d\'abord ouvrir cette motion et cliquer sur "Créer un amendement" dans la barre latérale à droite.',
     'create_explanation_title'  => 'Motion ou amendement ?',
 
     'support_collect_status' => 'Actuellement',

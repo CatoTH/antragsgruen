@@ -154,9 +154,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING) &&
-            $motion->getShowAlwaysToken() !== $showAlways
-        ) {
+        if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -183,7 +181,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -271,7 +269,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
 
@@ -295,7 +293,7 @@ class MotionController extends Base
     {
         $motion = $this->getMotionWithCheck($motionSlug);
 
-        if (!$motion->isReadable() && !User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
+        if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
@@ -419,9 +417,8 @@ class MotionController extends Base
     {
         $motion       = $this->getMotionWithCheck($motionSlug);
         $parentMotion = $motion->replacedMotion;
-        $iAmAdmin     = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
 
-        if (!$motion->isReadable() && !($motion->status == Motion::STATUS_DRAFT && $iAmAdmin)) {
+        if (!$motion->isReadable()) {
             return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
         }
         if (!$parentMotion || !$parentMotion->isReadable()) {

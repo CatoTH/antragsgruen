@@ -72,8 +72,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-        if (!$amendment->isReadable() && !$screeningPrivilege) {
+        if (!$amendment->isReadable()) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -138,7 +137,6 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
      */
     public function actionOdt($motionSlug, $amendmentId)
     {
@@ -147,8 +145,7 @@ class AmendmentController extends Base
             return '';
         }
 
-        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-        if (!$amendment->isReadable() && !$screeningPrivilege) {
+        if (!$amendment->isReadable()) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => false]);
         }
 
@@ -169,7 +166,6 @@ class AmendmentController extends Base
      * @param int $commentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
      */
     public function actionView($motionSlug, $amendmentId, $commentId = 0)
     {
@@ -186,8 +182,7 @@ class AmendmentController extends Base
             $adminEdit = null;
         }
 
-        $screeningPrivilege = User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING);
-        if (!$amendment->isReadable() && !$screeningPrivilege) {
+        if (!$amendment->isReadable()) {
             return $this->render('view_not_visible', ['amendment' => $amendment, 'adminEdit' => $adminEdit]);
         }
 
@@ -223,7 +218,6 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @return string
-     * @throws \yii\base\ExitException
      */
     public function actionAjaxDiff($motionSlug, $amendmentId)
     {

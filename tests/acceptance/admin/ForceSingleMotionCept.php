@@ -35,13 +35,13 @@ $I->submitForm('#motionUpdateForm', [], 'save');
 
 
 $I->click('.homeLinkLogo');
-$I->dontSee('A3: Textformatierungen', 'h1');
-$I->see('Dieser Antrag ist noch nicht sichtbar.');
+$I->see('A3: Textformatierungen', 'h1');
+$I->seeElement('.alertDraft');
 $I->seeElement('#sidebar .adminEdit');
 
 $I->logout();
 $I->dontSee('A3: Textformatierungen', 'h1');
-$I->see('Dieser Antrag ist noch nicht sichtbar.');
+$I->see('Dies ist kein regulär anzeigbarer Antrag.');
 $I->dontSeeElement('#sidebar li');
 
 

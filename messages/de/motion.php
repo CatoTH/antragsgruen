@@ -86,7 +86,7 @@ return [
     'replaced_by_hint'                   => 'Achtung: dies ist eine alte Fassung; die aktuelle Fassung gibt es hier:',
     'confirmed_visible'                  => 'Du hast den Antrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'                => 'Du hast den Antrag eingereicht. ' .
-        'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
+                                            'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
     'confirmed_support_phase'            => 'Du hast den Antrag erfolgreich angelegt.<br>
 Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen.<br> 
 <br>
@@ -97,15 +97,15 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'copy_to_clipboard'                  => 'Adresse in die Zwischenablage kopieren',
     'copy_to_clipboard_done'             => 'Die Adresse wurde in die Zwischenablage kopiert.',
     'submitted_screening_email'          => "Hallo,\n\ndu hast soeben einen Antrag eingereicht.\n" .
-        "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
-        "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                            "Der Antrag wird nun auf formale Richtigkeit geprüft und dann freigeschaltet. " .
+                                            "Du wirst dann gesondert darüber benachrichtigt.\n\n" .
+                                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                            "Mit freundlichen Grüßen,\n" .
+                                            "  Das Antragsgrün-Team",
     'submitted_screening_email_subject'  => 'Antrag eingereicht',
     'submitted_supp_phase_email'         => "Hallo %NAME_GIVEN%\n\nDu hast den Antrag nun angelegt.\n" .
-        "Um ihn offiziell einzureichen, benötigt er mindestens %MIN% Unterstützer*innen.\n\n" .
-        "Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:\n\n%LINK%\n",
+                                            "Um ihn offiziell einzureichen, benötigt er mindestens %MIN% Unterstützer*innen.\n\n" .
+                                            "Du kannst Interessierten folgenden Link schicken, damit sie den Antrag dort unterstützen können:\n\n%LINK%\n",
     'submitted_supp_phase_email_subject' => 'Antrag erfolgreich angelegt',
     'submitted_adminnoti_title'          => 'Neuer Antrag',
     'submitted_adminnoti_body'           => "Es wurde ein neuer Antrag eingereicht.\nTitel: %TITLE%\nAntragsteller*in: %INITIATOR%\nLink: %LINK%",
@@ -115,9 +115,9 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'motion_text'                        => 'Antragstext',
     'resolution_text'                    => 'Beschlusstext',
     'published_email_body'               => "Hallo,\n\ndein Antrag wurde soeben auf Antragsgrün veröffentlicht. " .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                            "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                            "Mit freundlichen Grüßen,\n" .
+                                            "  Das Antragsgrün-Team",
     'published_email_title'              => 'Antrag veröffentlicht',
     'back_to_motion'                     => 'Zurück zum Antrag',
     'edit_done'                          => 'Antrag bearbeitet',
@@ -131,9 +131,10 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'err_edit_permission'                => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',
     'err_withdraw_permission'            => 'Dieser Antrag kann nicht zurückgezogen werden.',
     'err_not_found'                      => 'Antrag nicht gefunden.',
-    'err_not_visible_yet_title'          => 'Noch nicht sichtbar',
-    'err_not_visible_yet'                => 'Dieser Antrag ist noch nicht sichtbar.',
+    'err_not_visible_title'              => 'Nicht sichtbar',
+    'err_not_visible'                    => 'Dies ist kein regulär anzeigbarer Antrag.',
     'err_draft_not_found'                => 'Es gibt keinen Bearbeitungs-Zwischenstand.',
+    'info_draft_admin'                   => 'Entwurf - nur für Admins sichtbar',
     'withdraw_done'                      => 'Der Antrag wurde zurückgezogen.',
     'withdraw_bread'                     => 'Zurückziehen',
     'withdraw'                           => 'Zurückziehen',
@@ -191,20 +192,20 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
 
     'proposal_email_title'    => 'Antrag %PREFIX%: Verfahrensvorschlag',
     'proposal_email_modified' => "Hallo %NAME_GIVEN%,\n\n" .
-        "die Programmkommission hat über deinen Antrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                 "die Programmkommission hat über deinen Antrag beraten und will vorschlagen, ihn modifiziert zu übernehmen.\n\n" .
+                                 "Bitte überprüfe unter folgendem Link, ob du mit der modifizierten Übernahme so einverstanden bist:\n%LINK%\n\n" .
+                                 "Mit freundlichen Grüßen,\n" .
+                                 "  Das Antragsgrün-Team",
     'proposal_email_accepted' => "Hallo %NAME_GIVEN%,\n\n" .
-        "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Antrag zu übernehmen.\n\n" .
-        "Du kannst ihn hier einsehen: %LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                 "zu Deiner Information: die Programmkommission wird vorschlagen, deinen Antrag zu übernehmen.\n\n" .
+                                 "Du kannst ihn hier einsehen: %LINK%\n\n" .
+                                 "Mit freundlichen Grüßen,\n" .
+                                 "  Das Antragsgrün-Team",
     'proposal_email_other'    => "Hallo %NAME_GIVEN%,\n\n" .
-        "die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.\n\n" .
-        "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
-        "Mit freundlichen Grüßen,\n" .
-        "  Das Antragsgrün-Team",
+                                 "die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.\n\n" .
+                                 "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
+                                 "Mit freundlichen Grüßen,\n" .
+                                 "  Das Antragsgrün-Team",
 
     'goto_line'     => 'Gehe zu Zeile',
     'goto_line_go'  => 'Los',

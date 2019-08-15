@@ -112,19 +112,15 @@ class MotionSection extends IMotionSection
             $excludedStatuses = $this->getConsultation()->getUnreadableStatuses();
         } else {
             $excludedStatuses = $this->getConsultation()->getInvisibleAmendmentStatuses();
-            if ($includeProposals) {
-                $excludedStatuses = array_filter($excludedStatuses, function ($status) {
-                    return ($status != Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
-                });
-            }
         }
         foreach ($motion->amendments as $amend) {
-            if (in_array($amend->status, $excludedStatuses)) {
+            $allowedProposedChange = ($includeProposals && $amend->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT);
+            if (in_array($amend->status, $excludedStatuses) && !$allowedProposedChange) {
                 continue;
             }
             foreach ($amend->sections as $section) {
-                if ($section->sectionId == $this->sectionId) {
-                    if (!$onlyWithChanges || $section->data != $this->data) {
+                if ($section->sectionId === $this->sectionId) {
+                    if (!$onlyWithChanges || $section->data !== $this->data) {
                         $sections[] = $section;
                     }
                 }

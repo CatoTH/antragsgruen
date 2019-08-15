@@ -94,9 +94,9 @@ return [
     'motion_text'               => 'Motion text',
     'resolution_text'           => 'Decided text',
     'published_email_body'      => "Hi,\n\nyour motion has just been published on Antragsgrün. " .
-        "You can see it here: %LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün Team",
+                                   "You can see it here: %LINK%\n\n" .
+                                   "Greetings,\n" .
+                                   "  The Antragsgrün Team",
     'published_email_title'     => 'Your motion has been published',
     'back_to_motion'            => 'Back',
     'edit_done'                 => 'Edited motion',
@@ -110,9 +110,10 @@ return [
     'err_edit_permission'       => 'No permission to edit this motion.',
     'err_withdraw_permission'   => 'Not allowed to withdraw this motion.',
     'err_not_found'             => 'Motion not found.',
-    'err_not_visible_yet_title' => 'Not visible yet',
-    'err_not_visible_yet'       => 'This motion is not yet visible.',
+    'err_not_visible_title'     => 'Not visible',
+    'err_not_visible'           => 'This amendment is not a viewable entry.',
     'err_draft_not_found'       => 'There is not work-in-progress draft.',
+    'info_draft_admin'          => 'Draft - only visible for admins',
     'withdraw_done'             => 'The motion has been withdrawn.',
     'withdraw_bread'            => 'Withdraw',
     'withdraw'                  => 'Withdraw',
@@ -129,7 +130,7 @@ return [
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .
-        'If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
+                                   'If you want to amend an existing motion instead, please open that motion first and choose "Create amendment" on the sidebar to the right',
     'create_explanation_title'  => 'Motion or amendment?',
 
     'support_collect_status' => 'Currently',
@@ -182,20 +183,20 @@ return [
 
     'proposal_email_title'    => 'Motion %PREFIX%: Proposed procedure',
     'proposal_email_modified' => "Hi %NAME_GIVEN%,\n\n" .
-        "the administrators have discussed about your motion and propose to accept it in a modified version.\n\n" .
-        "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                 "the administrators have discussed about your motion and propose to accept it in a modified version.\n\n" .
+                                 "Please check at the following link if you agree with the proposed modifications:\n%LINK%\n\n" .
+                                 "Greetings,\n" .
+                                 "  The Antragsgrün-Team",
     'proposal_email_accepted' => "Hi %NAME_GIVEN%,\n\n" .
-        "for your information: the administrators will propose to accept your motion.\n\n" .
-        "You can see the motion at the following link: %LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                 "for your information: the administrators will propose to accept your motion.\n\n" .
+                                 "You can see the motion at the following link: %LINK%\n\n" .
+                                 "Greetings,\n" .
+                                 "  The Antragsgrün-Team",
     'proposal_email_other'    => "Hi %NAME_GIVEN%,\n\n" .
-        "the administrators have agreed on a proposed procedure regarding your motion.\n\n" .
-        "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
-        "Greetings,\n" .
-        "  The Antragsgrün-Team",
+                                 "the administrators have agreed on a proposed procedure regarding your motion.\n\n" .
+                                 "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
+                                 "Greetings,\n" .
+                                 "  The Antragsgrün-Team",
 
     'goto_line'     => 'Go to line',
     'goto_line_go'  => 'Go',

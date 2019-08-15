@@ -19,14 +19,12 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($motion->motionType->titleSingular);
 }
 
-$this->title = \Yii::t('motion', 'err_not_visible_yet_title') . ' (' . $motion->getMyConsultation()->title . ')';
-
-include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
+$this->title = Yii::t('motion', 'err_not_visible_title') . ' (' . $motion->getMyConsultation()->title . ')';
 
 ?>
-<h1><?= Html::encode(\Yii::t('motion', 'err_not_visible_yet_title')) ?></h1>
+<h1><?= Html::encode(Yii::t('motion', 'err_not_visible_title')) ?></h1>
 <br><br>
 <div class="row">
-    <div class="alert alert-danger col-md-10 col-md-offset-1"><?= \Yii::t('motion', 'err_not_visible_yet') ?></div>
+    <div class="alert alert-danger col-md-10 col-md-offset-1"><?= Yii::t('motion', 'err_not_visible') ?></div>
 </div>
 <br><br>
