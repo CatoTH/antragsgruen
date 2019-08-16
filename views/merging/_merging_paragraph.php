@@ -87,7 +87,7 @@ if (count($allAmendingIds) > 0) {
                             <?php
                         }
                         ?>
-                        <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>
+                        <li role="separator" class="divider dividerLabeled" data-label="<?= Yii::t('amend', 'merge_status_set') ?>:"></li>
                         <?php
                         foreach ($statuses as $statusId => $statusName) {
                             echo '<li class="status' . $statusId . '">' .

@@ -90,6 +90,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_amtable_text'                => 'Änderungen',
     'merge_amtable_text_orig'           => 'Original-Änderungsantrag',
     'merge_amtable_text_prop'           => 'Verfahrensvorschlag',
+    'merge_status_set'                  => 'Status festlegen',
     'merge_status_unchanged'            => 'unverändert',
     'merge_amend_statuses'              => 'Status der Änderungsanträge',
     'merge_amend_show'                  => 'Anzeigen',
