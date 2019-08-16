@@ -1,6 +1,5 @@
 <?php
 
-use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\views\motion\LayoutHelper;
@@ -58,38 +57,7 @@ $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 <?php
 
 if ($newMotion->canCreateResolution()) {
-    $locale = Tools::getCurrentDateLocale();
-    $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
-
-    ?>
-    <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
-    <div class="content row">
-        <div class="col-md-6 newMotionStatus">
-            <label>
-                <input type="radio" name="newStatus" value="motion" checked>
-                <?= Yii::t('amend', 'merge_new_status_screened') ?>
-            </label>
-            <label>
-                <input type="radio" name="newStatus" value="resolution_final">
-                <?= Yii::t('amend', 'merge_new_status_res_f') ?>
-            </label>
-            <label>
-                <input type="radio" name="newStatus" value="resolution_preliminary">
-                <?= Yii::t('amend', 'merge_new_status_res_p') ?>
-            </label>
-        </div>
-        <div class="col-md-6 newMotionInitiator">
-            <label for="newInitiator"><?= Yii::t('amend', 'merge_new_orga') ?></label>
-            <input class="form-control" name="newInitiator" type="text" id="newInitiator">
-            <label for="dateResolution"><?= Yii::t('amend', 'merge_new_resolution_date') ?></label>
-            <div class="input-group date" id="dateResolutionHolder">
-                <input type="text" class="form-control" name="dateResolution" id="dateResolution"
-                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-            </div>
-        </div>
-    </div>
-    <?php
+    echo $this->render('_confirm_resolution_voting');
 }
 
 foreach ($newMotion->getSortedSections(true) as $section) {

@@ -67,7 +67,7 @@ class ConsultationMotionType extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app->tablePrefix . 'consultationMotionType';
     }
