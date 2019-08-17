@@ -293,7 +293,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return VotingData
      */
-    public function getSettingsObj()
+    public function getVotingData()
     {
         if (!is_object($this->votingDataObject)) {
             $this->votingDataObject = new VotingData($this->votingData);
@@ -304,7 +304,7 @@ abstract class IMotion extends ActiveRecord
     /**
      * @param VotingData $data
      */
-    public function setSettingsObj(VotingData $data)
+    public function setVotingData(VotingData $data)
     {
         $this->votingDataObject = $data;
         $this->votingData       = json_encode($data, JSON_PRETTY_PRINT);

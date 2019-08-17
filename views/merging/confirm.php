@@ -57,7 +57,7 @@ $odtLink = UrlHelper::createMotionUrl($newMotion, 'view-changes-odt');
 <?php
 
 if ($newMotion->canCreateResolution()) {
-    echo $this->render('_confirm_resolution_voting');
+    echo $this->render('_confirm_resolution_voting', ['motion' => $newMotion]);
 }
 
 foreach ($newMotion->getSortedSections(true) as $section) {
