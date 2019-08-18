@@ -1,8 +1,8 @@
 import "./MotionSupporterEdit";
-import {MotionSupporterEdit} from "./MotionSupporterEdit";
-import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+import { MotionSupporterEdit } from "./MotionSupporterEdit";
+import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
-import {AmendmentEditSinglePara} from "../shared/AmendmentEditSinglePara";
+import { AmendmentEditSinglePara } from "../shared/AmendmentEditSinglePara";
 
 export class AmendmentEdit {
     private lang: string;
@@ -19,7 +19,7 @@ export class AmendmentEdit {
 
             $textarea.parents("form").submit(function () {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
-                if (typeof(ckeditor.plugins.lite) != 'undefined') {
+                if (typeof (ckeditor.plugins.lite) != 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
                     $textarea.parent().find("textarea.consolidated").val(ckeditor.getData());
                 }
@@ -38,6 +38,22 @@ export class AmendmentEdit {
         $("#amendmentUpdateForm").append("<input type='hidden' name='edittext' value='1'>");
     };
 
+    private initVotingFunctions() {
+        const $closer = $(".votingResultCloser"),
+            $opener = $(".votingResultOpener"),
+            $inputRows = $(".contentVotingResult, .contentVotingResultComment");
+        $opener.click(() => {
+            $closer.removeClass("hidden");
+            $opener.addClass("hidden");
+            $inputRows.removeClass("hidden");
+        });
+        $closer.click(() => {
+            $closer.addClass("hidden");
+            $opener.removeClass("hidden");
+            $inputRows.addClass("hidden");
+        });
+    }
+
     constructor() {
         this.lang = $("html").attr("lang");
         this.$editTextCaller = $("#amendmentTextEditCaller");
@@ -53,7 +69,7 @@ export class AmendmentEdit {
         this.$editTextCaller.find("button").click(this.textEditCalled.bind(this));
 
         $(".amendmentDeleteForm").submit(function (ev, data) {
-            if (data && typeof(data.confirmed) && data.confirmed === true) {
+            if (data && typeof (data.confirmed) && data.confirmed === true) {
                 return;
             }
             let $form = $(this);
@@ -64,6 +80,8 @@ export class AmendmentEdit {
                 }
             });
         });
+
+        this.initVotingFunctions();
 
         new MotionSupporterEdit($("#motionSupporterHolder"));
     }

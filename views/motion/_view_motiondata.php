@@ -71,7 +71,7 @@ $motionData[] = [
 ];
 
 $votingData = $motion->getVotingData();
-if ($votingData->votesYes || $votingData->votesNo || $votingData->votesAbstention || $votingData->votesInvalid || $votingData->comment) {
+if ($votingData->hasAnyData()) {
     $part1 = [];
     if ($votingData->votesYes !== null) {
         $part1[] = Yii::t('motion', 'voting_yes') . ': ' . $votingData->votesYes;

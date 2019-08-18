@@ -159,21 +159,7 @@ class Merge
         $newMotion->slug = $oldMotion->slug;
 
         $votesData = $newMotion->getVotingData();
-        if (isset($votes['yes']) && is_numeric($votes['yes'])) {
-            $votesData->votesYes = IntVal($votes['yes']);
-        }
-        if (isset($votes['no']) && is_numeric($votes['no'])) {
-            $votesData->votesNo = IntVal($votes['no']);
-        }
-        if (isset($votes['abstention']) && is_numeric($votes['abstention'])) {
-            $votesData->votesAbstention = IntVal($votes['abstention']);
-        }
-        if (isset($votes['invalid']) && is_numeric($votes['invalid'])) {
-            $votesData->votesInvalid = IntVal($votes['invalid']);
-        }
-        if (isset($votes['comment'])) {
-            $votesData->comment = $votes['comment'];
-        }
+        $votesData->setFromPostData($votes);
         $newMotion->setVotingData($votesData);
 
         $oldMotion->slug = null;

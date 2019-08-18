@@ -10,7 +10,7 @@ $locale = Tools::getCurrentDateLocale();
 $date   = Tools::dateSql2bootstrapdate(date('Y-m-d'));
 
 $voting       = $motion->getVotingData();
-$votingOpened = ($voting->votesYes || $voting->votesNo || $voting->votesInvalid || $voting->votesAbstention || $voting->comment);
+$votingOpened = $voting->hasAnyData();
 ?>
 <h2 class="green"><?= Yii::t('amend', 'merge_new_status') ?></h2>
 <div class="content row contentMotionStatus">
