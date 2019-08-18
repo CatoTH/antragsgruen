@@ -115,6 +115,19 @@ $I->wait(1);
 $I->submitForm('.motionMergeForm', [], 'save');
 
 
+$I->wantTo('add a voting result');
+
+$I->dontSeeElement('.contentVotingResult');
+$I->dontSeeElement('.contentVotingResultComment');
+$I->click('.votingResultOpener');
+$I->seeElement('.contentVotingResult');
+$I->seeElement('.contentVotingResultComment');
+$I->fillField('#votesYes', '15');
+$I->fillField('#votesNo', '5');
+$I->fillField('#votesAbstention', '2');
+$I->fillField('#votesInvalid', '0');
+$I->fillField('#votesComment', 'Accepted by mayority');
+
 $I->wantTo('submit the new form');
 
 $I->submitForm('#motionConfirmForm', [], 'confirm');
@@ -133,6 +146,9 @@ $I->see('Alternatives Ende');
 $I->see('A2:', '.replacesMotion');
 $I->dontSee('mechad mim Spuiratz');
 $I->see('Oamoi a Maß und no a Maß');
+
+$I->see('Accepted by mayority', '.votingResultRow');
+$I->see('Ja: 15, Nein: 5, Enthaltungen: 2', '.votingResultRow');
 
 $I->click('.replacesMotion a');
 $I->see('Achtung: dies ist eine alte Fassung', '.motionReplayedBy.alert-danger');
