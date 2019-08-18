@@ -39,7 +39,25 @@ export class MotionEdit {
             this.onSubmitDeleteForm(ev, data);
         });
 
+        this.initVotingFunctions();
+
         new MotionSupporterEdit($("#motionSupporterHolder"));
+    }
+
+    private initVotingFunctions() {
+        const $closer = $(".votingResultCloser"),
+            $opener = $(".votingResultOpener"),
+            $inputRows = $(".contentVotingResult, .contentVotingResultComment");
+        $opener.click(() => {
+            $closer.removeClass("hidden");
+            $opener.addClass("hidden");
+            $inputRows.removeClass("hidden");
+        });
+        $closer.click(() => {
+            $closer.addClass("hidden");
+            $opener.removeClass("hidden");
+            $inputRows.addClass("hidden");
+        });
     }
 
     private onSubmitDeleteForm(ev, data) {

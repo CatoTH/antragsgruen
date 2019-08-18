@@ -31,7 +31,8 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `proposalUserStatus`    TINYINT(4)  NULL     DEFAULT NULL,
   `proposalExplanation`   TEXT,
   `votingStatus`          TINYINT(4)           DEFAULT NULL,
-  `votingBlockId`         INT(11)              DEFAULT NULL
+  `votingBlockId`         INT(11)              DEFAULT NULL,
+  `votingData`            TEXT                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -419,7 +420,8 @@ CREATE TABLE `###TABLE_PREFIX###motion` (
   `proposalUserStatus`   TINYINT(4)  NULL     DEFAULT NULL,
   `proposalExplanation`  TEXT,
   `votingStatus`         TINYINT(4)           DEFAULT NULL,
-  `votingBlockId`        INT(11)              DEFAULT NULL
+  `votingBlockId`        INT(11)              DEFAULT NULL,
+  `votingData`           TEXT                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

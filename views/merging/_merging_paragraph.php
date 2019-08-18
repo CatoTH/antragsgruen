@@ -26,6 +26,7 @@ $reloadUrl = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments
 
 echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') .
      '" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
+     'id="paragraphWrapper_' . $type->id . '_' . $paragraphNo . '" ' .
      'data-reload-url="' . Html::encode($reloadUrl) . '">';
 
 
@@ -50,10 +51,12 @@ if (count($allAmendingIds) > 0) {
                 $statusesAll                  = $amendment->getStatusNames();
                 $statuses[$amendment->status] = Yii::t('amend', 'merge_status_unchanged') . ': ' .
                                                 $statusesAll[$amendment->status];
-
+                $classes = ['btn', 'btn-xs', 'toggleAmendment'];
+                $classes[] = 'btn-' . ($active ? 'success' : 'default');
+                $classes[] = 'toggleAmendment' . $amendment->id;
                 ?>
                 <div class="btn-group amendmentStatus" data-amendment-id="<?= $amendment->id ?>">
-                    <button type="button" class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs toggleAmendment">
+                    <button type="button" class="<?= implode(" ", $classes) ?>">
                         <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
                                type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
                         <?= ($amendment->titlePrefix ? Html::encode($amendment->titlePrefix) : '-') ?>
@@ -87,7 +90,7 @@ if (count($allAmendingIds) > 0) {
                             <?php
                         }
                         ?>
-                        <li role="separator" class="divider dividerLabeled" data-label="Set status:"></li>
+                        <li role="separator" class="divider dividerLabeled" data-label="<?= Yii::t('amend', 'merge_status_set') ?>:"></li>
                         <?php
                         foreach ($statuses as $statusId => $statusName) {
                             echo '<li class="status' . $statusId . '">' .

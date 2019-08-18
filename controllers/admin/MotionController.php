@@ -447,6 +447,11 @@ class MotionController extends AdminBase
 
             try {
                 $form->setAttributes([$post, $_FILES]);
+
+                $votingData = $motion->getVotingData();
+                $votingData->setFromPostData($post['votes']);
+                $motion->setVotingData($votingData);
+
                 $form->saveMotion($motion);
                 if (isset($post['sections'])) {
                     $overrides = (isset($post['amendmentOverride']) ? $post['amendmentOverride'] : []);

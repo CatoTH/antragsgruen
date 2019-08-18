@@ -8,6 +8,7 @@ export class MotionMergeAmendmentsConfirm {
         $widget.find("input[name=diffStyle]").first().change();
 
         this.initResolutionFunctions();
+        this.initVotingFunctions();
     }
 
     private onChangeDiffStyle() {
@@ -33,6 +34,22 @@ export class MotionMergeAmendmentsConfirm {
         this.$widget.find("#dateResolutionHolder").datetimepicker({
             locale: $("html").attr('lang'),
             format: 'L'
+        });
+    }
+
+    private initVotingFunctions() {
+        const $closer = $(".votingResultCloser"),
+            $opener = $(".votingResultOpener"),
+            $inputRows = $(".contentVotingResult, .contentVotingResultComment");
+        $opener.click(() => {
+            $closer.removeClass("hidden");
+            $opener.addClass("hidden");
+            $inputRows.removeClass("hidden");
+        });
+        $closer.click(() => {
+            $closer.addClass("hidden");
+            $opener.removeClass("hidden");
+            $inputRows.addClass("hidden");
         });
     }
 }

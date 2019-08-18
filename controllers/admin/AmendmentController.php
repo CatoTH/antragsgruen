@@ -19,6 +19,7 @@ class AmendmentController extends AdminBase
     /**
      * @param bool $textCombined
      * @param int $withdrawn
+     *
      * @return string
      */
     public function actionOdslist($textCombined = false, $withdrawn = 0)
@@ -41,6 +42,7 @@ class AmendmentController extends AdminBase
      * @param int $textCombined
      * @param int $withdrawn
      * @param int $maxLen
+     *
      * @return string
      */
     public function actionOdslistShort($textCombined = 0, $withdrawn = 0, $maxLen = 2000)
@@ -64,16 +66,19 @@ class AmendmentController extends AdminBase
 
     /**
      * @param int $withdrawn
+     *
      * @return string
      */
     public function actionPdflist($withdrawn = 0)
     {
         $withdrawn = (IntVal($withdrawn) === 1);
+
         return $this->render('pdf_list', ['consultation' => $this->consultation, 'withdrawn' => $withdrawn]);
     }
 
     /**
      * @param int $withdrawn
+     *
      * @return string
      * @throws \Exception
      */
@@ -102,6 +107,7 @@ class AmendmentController extends AdminBase
 
     /**
      * @param int $withdrawn
+     *
      * @return string
      * @throws \Exception
      */
@@ -126,6 +132,7 @@ class AmendmentController extends AdminBase
 
     /**
      * @param Amendment $amendment
+     *
      * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -177,6 +184,7 @@ class AmendmentController extends AdminBase
 
     /**
      * @param int $amendmentId
+     *
      * @return string
      * @throws \Exception
      * @throws \Throwable
@@ -188,6 +196,7 @@ class AmendmentController extends AdminBase
     {
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+
             return false;
         }
 
@@ -221,6 +230,7 @@ class AmendmentController extends AdminBase
             $amendment->getMyMotion()->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+
             return '';
         }
 
@@ -229,6 +239,11 @@ class AmendmentController extends AdminBase
                 unset($post['sections']);
             }
             $form->setAttributes([$post, $_FILES]);
+
+            $votingData = $amendment->getVotingData();
+            $votingData->setFromPostData($post['votes']);
+            $amendment->setVotingData($votingData);
+
             try {
                 $form->saveAmendment($amendment);
             } catch (FormError $e) {

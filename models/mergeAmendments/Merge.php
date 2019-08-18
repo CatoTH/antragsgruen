@@ -136,10 +136,11 @@ class Merge
      * @param int[] $amendmentStatuses
      * @param string $resolutionMode
      * @param string $resolutionBody
+     * @param array $votes
      *
      * @return Motion
      */
-    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody)
+    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody, $votes)
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -156,6 +157,10 @@ class Merge
         }
 
         $newMotion->slug = $oldMotion->slug;
+
+        $votesData = $newMotion->getVotingData();
+        $votesData->setFromPostData($votes);
+        $newMotion->setVotingData($votesData);
 
         $oldMotion->slug = null;
         $oldMotion->save();

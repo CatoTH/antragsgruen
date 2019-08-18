@@ -19,9 +19,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitle();
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_amend'));
+$this->title = Yii::t('admin', 'amend_edit_title') . ': ' . $amendment->getTitle();
+$layout->addBreadcrumb(Yii::t('admin', 'bread_list'), UrlHelper::createUrl('admin/motion-list/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_amend'));
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -32,7 +32,7 @@ $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
-$html .= '<span class="icon glyphicon glyphicon-file"></span>' . \Yii::t('admin', 'amend_show') . '</a></li>';
+$html .= '<span class="icon glyphicon glyphicon-file"></span>' . Yii::t('admin', 'amend_show') . '</a></li>';
 
 $cloneUrl = Html::encode(UrlHelper::createUrl([
     'amendment/create',
@@ -41,12 +41,12 @@ $cloneUrl = Html::encode(UrlHelper::createUrl([
 ]));
 $html     .= '<li><a href="' . $cloneUrl . '" class="clone">';
 $html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
-    \Yii::t('admin', 'list_template_amendment') . '</a></li>';
+             Yii::t('admin', 'list_template_amendment') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
 $html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash"></span>'
-    . \Yii::t('admin', 'amend_del') . '</button>';
+         . Yii::t('admin', 'amend_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 
 $html                .= '</ul>';
@@ -69,7 +69,7 @@ if ($amendment->isInScreeningProcess()) {
     echo '<input type="hidden" name="titlePrefix" value="' . Html::encode($newRev) . '">';
 
     echo '<div style="text-align: center;"><button type="submit" class="btn btn-primary" name="screen">';
-    echo Html::encode(str_replace('%PREFIX%', $newRev, \Yii::t('admin', 'amend_screen_as_x')));
+    echo Html::encode(str_replace('%PREFIX%', $newRev, Yii::t('admin', 'amend_screen_as_x')));
     echo '</button></div>';
 
     echo Html::endForm();
@@ -88,99 +88,145 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content form-horizontal fuelux">';
 
 ?>
-<div class="form-group">
-    <label class="col-md-3 control-label" for="amendmentStatus">
-        <?= \Yii::t('admin', 'motion_status') ?>:
-    </label>
-    <div class="col-md-4">
-        <?php
-        $options  = ['id' => 'amendmentStatus'];
-        $statuses = Amendment::getStatusNamesVisibleForAdmins();
-        echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
-        ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="amendmentStatus">
+            <?= Yii::t('admin', 'motion_status') ?>:
+        </label>
+        <div class="col-md-4">
+            <?php
+            $options  = ['id' => 'amendmentStatus'];
+            $statuses = Amendment::getStatusNamesVisibleForAdmins();
+            echo HTMLTools::fueluxSelectbox('amendment[status]', $statuses, $amendment->status, $options, true);
+            ?>
+        </div>
+        <div class="col-md-5">
+            <?php
+            $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
+            echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
+            ?>
+        </div>
     </div>
-    <div class="col-md-5">
-        <?php
-        $options = ['class' => 'form-control', 'id' => 'amendmentStatusString', 'placeholder' => '...'];
-        echo Html::textInput('amendment[statusString]', $amendment->statusString, $options);
-        ?>
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="col-md-3 control-label" for="amendmentTitlePrefix">
-        <?= \Yii::t('amend', 'prefix') ?>:
-    </label>
-    <div class="col-md-4">
-        <?php
-        $options = [
-            'class'       => 'form-control',
-            'id'          => 'amendmentTitlePrefix',
-            'placeholder' => \Yii::t('admin', 'amend_prefix_placeholder'),
-        ];
-        echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
-        ?>
-        <small><?= \Yii::t('admin', 'amend_prefix_unique') ?></small>
-    </div>
-</div>
 
     <div class="form-group">
-    <label class="col-md-3 control-label" for="amendmentDateCreation">
-        <?= \Yii::t('admin', 'amend_created_at') ?>:
-    </label>
-    <div class="col-md-4">
-        <div class="input-group date" id="amendmentDateCreationHolder">
+        <label class="col-md-3 control-label" for="amendmentTitlePrefix">
+            <?= Yii::t('amend', 'prefix') ?>:
+        </label>
+        <div class="col-md-4">
             <?php
-            $locale = Tools::getCurrentDateLocale();
-            $date = Tools::dateSql2bootstraptime($amendment->dateCreation);
+            $options = [
+                'class'       => 'form-control',
+                'id'          => 'amendmentTitlePrefix',
+                'placeholder' => Yii::t('admin', 'amend_prefix_placeholder'),
+            ];
+            echo Html::textInput('amendment[titlePrefix]', $amendment->titlePrefix, $options);
             ?>
-            <input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
-                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            <small><?= Yii::t('admin', 'amend_prefix_unique') ?></small>
         </div>
     </div>
-</div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="amendmentDateResolution">
-        <?= \Yii::t('admin', 'amend_resoluted_on') ?>:
-    </label>
-    <div class="col-md-4">
-        <div class="input-group date" id="amendmentDateResolutionHolder">
-            <?php
-            $date = Tools::dateSql2bootstraptime($amendment->dateResolution);
-            ?>
-            <input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
-                   value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="amendmentDateCreation">
+            <?= Yii::t('admin', 'amend_created_at') ?>:
+        </label>
+        <div class="col-md-4">
+            <div class="input-group date" id="amendmentDateCreationHolder">
+                <?php
+                $locale = Tools::getCurrentDateLocale();
+                $date   = Tools::dateSql2bootstraptime($amendment->dateCreation);
+                ?>
+                <input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="globalAlternative">
-        <?= \Yii::t('admin', 'amend_globalalt') ?>:
-    </label>
-    <div class="col-md-4">
-        <?= Html::checkbox(
-            'amendment[globalAlternative]',
-            $amendment->globalAlternative,
-            ['id' => 'globalAlternative']
-        ) ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="amendmentDateResolution">
+            <?= Yii::t('admin', 'amend_resoluted_on') ?>:
+        </label>
+        <div class="col-md-4">
+            <div class="input-group date" id="amendmentDateResolutionHolder">
+                <?php
+                $date = Tools::dateSql2bootstraptime($amendment->dateResolution);
+                ?>
+                <input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
+                       value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-    <label class="col-md-3 control-label" for="amendmentNoteInternal">
-        <?= \Yii::t('admin', 'internal_note') ?>:
-    </label>
-    <div class="col-md-9">
-        <?php
-        $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
-        echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
-        ?>
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="globalAlternative">
+            <?= Yii::t('admin', 'amend_globalalt') ?>:
+        </label>
+        <div class="col-md-4">
+            <?= Html::checkbox(
+                'amendment[globalAlternative]',
+                $amendment->globalAlternative,
+                ['id' => 'globalAlternative']
+            ) ?>
+        </div>
     </div>
-</div>
+
+    <div class="form-group">
+        <label class="col-md-3 control-label" for="amendmentNoteInternal">
+            <?= Yii::t('admin', 'internal_note') ?>:
+        </label>
+        <div class="col-md-9">
+            <?php
+            $options = ['class' => 'form-control', 'id' => 'amendmentNoteInternal'];
+            echo Html::textarea('amendment[noteInternal]', $amendment->noteInternal, $options);
+            ?>
+        </div>
+    </div>
+
+<?php
+$voting       = $amendment->getVotingData();
+$votingOpened = $voting->hasAnyData();
+?>
+    <div class="contentVotingResultCaller">
+        <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
+            <span class="glyphicon glyphicon-chevron-down"></span>
+            <?= Yii::t('amend', 'merge_new_votes_enter') ?>
+        </button>
+        <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
+            <span class="glyphicon glyphicon-chevron-up"></span>
+            <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
+        </button>
+    </div>
+    <div class="form-group contentVotingResultComment <?= ($votingOpened ? '' : 'hidden') ?>">
+        <label class="col-md-3 control-label" for="votesComment">
+            <?= Yii::t('amend', 'merge_new_votes_comment') ?>
+        </label>
+        <div class="col-md-9">
+            <input class="form-control" name="votes[comment]" type="text" id="votesComment"
+                   value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
+        </div>
+    </div>
+    <div class="contentVotingResult row <?= ($votingOpened ? '' : 'hidden') ?>">
+        <div class="col-md-3">
+            <label for="votesYes"><?= Yii::t('amend', 'merge_new_votes_yes') ?></label>
+            <input class="form-control" name="votes[yes]" type="number" id="votesYes"
+                   value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+        </div>
+        <div class="col-md-3">
+            <label for="votesNo"><?= Yii::t('amend', 'merge_new_votes_no') ?></label>
+            <input class="form-control" name="votes[no]" type="number" id="votesNo"
+                   value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+        </div>
+        <div class="col-md-3">
+            <label for="votesAbstention"><?= Yii::t('amend', 'merge_new_votes_abstention') ?></label>
+            <input class="form-control" name="votes[abstention]" type="number" id="votesAbstention"
+                   value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+        </div>
+        <div class="col-md-3">
+            <label for="votesInvalid"><?= Yii::t('amend', 'merge_new_votes_invalid') ?></label>
+            <input class="form-control" name="votes[invalid]" type="number" id="votesInvalid"
+                   value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+        </div>
+    </div>
 
 <?php
 
@@ -196,7 +242,7 @@ foreach ($sections as $section) {
 if ($amendment->changeEditorial !== '') {
     ?>
     <section id="amendmentEditorialHint" class="motionTextHolder">
-        <h3 class="green"><?= \Yii::t('amend', 'editorial_hint') ?></h3>
+        <h3 class="green"><?= Yii::t('amend', 'editorial_hint') ?></h3>
         <div class="paragraph">
             <div class="text motionTextFormattings">
                 <?= $amendment->changeEditorial ?>
@@ -209,7 +255,7 @@ if ($amendment->changeEditorial !== '') {
 if ($amendment->changeExplanation !== '') {
     ?>
     <section id="amendmentExplanation" class="motionTextHolder">
-        <h3 class="green"><?= \Yii::t('amend', 'reason') ?></h3>
+        <h3 class="green"><?= Yii::t('amend', 'reason') ?></h3>
         <div class="paragraph">
             <div class="text motionTextFormattings">
                 <?= $amendment->changeExplanation ?>
@@ -222,9 +268,9 @@ if ($amendment->changeExplanation !== '') {
 $multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
 
 if (!$amendment->textFixed) {
-    echo '<h2 class="green">' . \Yii::t('admin', 'amend_edit_text_title') . '</h2>
+    echo '<h2 class="green">' . Yii::t('admin', 'amend_edit_text_title') . '</h2>
 <div class="content" id="amendmentTextEditCaller">
-    <button type="button" class="btn btn-default">' . \Yii::t('admin', 'amend_edit_text') . '</button>
+    <button type="button" class="btn btn-default">' . Yii::t('admin', 'amend_edit_text') . '</button>
 </div>
 <div class="content hidden" id="amendmentTextEditHolder"
      data-multiple-paragraphs="' . ($multipleParagraphs ? 1 : 0) . '">';
@@ -235,9 +281,9 @@ if (!$amendment->textFixed) {
 
     echo '<section class="editorialChange">
     <div class="form-group wysiwyg-textarea" id="sectionHolderEditorial" data-full-html="0" data-max-len="0">
-        <label for="sections_editorial">' . \Yii::t('amend', 'editorial_hint') . '</label>
+        <label for="sections_editorial">' . Yii::t('amend', 'editorial_hint') . '</label>
         <textarea name="amendmentEditorial" id="amendmentEditorial" class="raw">' .
-        Html::encode($form->editorial) . '</textarea>
+         Html::encode($form->editorial) . '</textarea>
         <div class="texteditor motionTextFormattings boxed" id="amendmentEditorial_wysiwyg">';
     echo $form->editorial;
     echo '</div></section>';
@@ -275,7 +321,7 @@ echo $this->render('../motion/_update_supporter', [
 
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
+<button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>
 </div>';
 
 echo Html::endForm();

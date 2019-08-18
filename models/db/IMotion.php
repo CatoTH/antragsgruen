@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\models\settings\AntragsgruenApp;
+use app\models\settings\VotingData;
 use app\models\siteSpecificBehavior\Permissions;
 use app\components\Tools;
 use app\components\UrlHelper;
@@ -33,6 +34,7 @@ use yii\helpers\Html;
  * @property int $proposalUserStatus
  * @property string $proposalExplanation
  * @property string|null $votingBlockId
+ * @property string|null $votingData
  * @property int $votingStatus
  */
 abstract class IMotion extends ActiveRecord
@@ -283,6 +285,29 @@ abstract class IMotion extends ActiveRecord
         $behavior  = $this->getMyConsultation()->site->getBehaviorClass();
         $className = $behavior->getPermissionsClass();
         return new $className();
+    }
+
+    /** @var null|VotingData */
+    private $votingDataObject = null;
+
+    /**
+     * @return VotingData
+     */
+    public function getVotingData()
+    {
+        if (!is_object($this->votingDataObject)) {
+            $this->votingDataObject = new VotingData($this->votingData);
+        }
+        return $this->votingDataObject;
+    }
+
+    /**
+     * @param VotingData $data
+     */
+    public function setVotingData(VotingData $data)
+    {
+        $this->votingDataObject = $data;
+        $this->votingData       = json_encode($data, JSON_PRETTY_PRINT);
     }
 
 

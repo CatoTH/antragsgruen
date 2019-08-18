@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\db\Motion;
 use app\models\exceptions\Inconsistency;
 use app\models\exceptions\Internal;
 use app\models\mergeAmendments\Draft;
@@ -285,7 +284,8 @@ trait MotionMergingTrait
                 $newMotion,
                 array_map('IntVal', \Yii::$app->request->post('amendStatus', [])),
                 \Yii::$app->request->post('newStatus'),
-                \Yii::$app->request->post('newInitiator', '')
+                \Yii::$app->request->post('newInitiator', ''),
+                \Yii::$app->request->post('votes', '')
             );
 
             return $this->render('@app/views/merging/done', [
