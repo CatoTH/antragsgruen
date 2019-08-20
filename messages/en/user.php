@@ -112,7 +112,7 @@ return [
 
     'confirm_title'     => 'Confirm your account',
     'confirm_username'  => 'E-mail-address / username',
-    'confirm_mail_sent' => 'An email was just sent to your address. Plase confirm receiving this mail by clicking on the link in the mail of by entering the given code on this page.',
+    'confirm_mail_sent' => 'An email was just sent to your address. Please confirm receiving this mail by clicking on the link in the mail or by entering the given code on this page.',
     'confirm_code'      => 'Confirmation code',
     'confirm_btn_do'    => 'Confirm',
 
