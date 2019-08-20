@@ -245,7 +245,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_accounts_title'   => 'User accounts',
     'siteacc_email_text_pre'   => 'Hi,
 
-we have just created an Antragsgün account for you. Now you can join the discussion on the  motions / drafts.
+we have just created an Antragsgrün account for you. Now you can join the discussion on the motions / drafts.
 Here is your login data:
 
 %LINK%
