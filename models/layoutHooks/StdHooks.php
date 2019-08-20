@@ -223,7 +223,12 @@ class StdHooks extends Hooks
                 );
                 $out  .= '<li>' . $link . '</li>';
 
-                $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => \yii::$app->request->url]);
+                if (get_class($controller) == UserController::class) {
+                    $backUrl = UrlHelper::createUrl('/consultation/index');
+                } else {
+                    $backUrl = \yii::$app->request->url;
+                }
+                $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');
                 $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
             }
