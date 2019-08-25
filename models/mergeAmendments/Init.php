@@ -60,6 +60,22 @@ class Init
         $form->toMergeMainIds     = [];
         $form->toMergeResolvedIds = [];
 
+        // If a new amendment was created after the draft was created,
+        // the status and text version arrays are missing the data about this new amendment.
+        // Thus we add it here. The amendmentToggles attributes of the paragraphs stay as they are,
+        //  as the new amendment is not embedded into the text automatically.
+        $unchangedDraft = static::fromInitForm($motion, [], []);
+        foreach ($unchangedDraft->draftData->amendmentStatuses as $amendmentId => $amendmentStatus) {
+            if (!isset($form->draftData->amendmentStatuses[$amendmentId])) {
+                $form->draftData->amendmentStatuses[$amendmentId] = $amendmentStatus;
+            }
+        }
+        foreach ($unchangedDraft->draftData->amendmentVersions as $amendmentId => $amendmentVersion) {
+            if (!isset($form->draftData->amendmentVersions[$amendmentId])) {
+                $form->draftData->amendmentVersions[$amendmentId] = $amendmentVersion;
+            }
+        }
+
         return $form;
     }
 
