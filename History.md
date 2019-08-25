@@ -7,7 +7,7 @@
 - Several styling improvements, especially for devices with small screens (e.g. smartphones).
 - The "My motions" and "My amendments" sections on the consultation overview now list all motions/amendments that one has created, ininiated or expressed (dis)like towards. Not only the ones ininiated as before. This makes it easier to check on motions/amendments that are for some reason not visible anymore on this site (withdrawn, merged, ...)
 - The "Using Antragsgrün"-hint in the sidebar can now be disabled through the admin interface.
-- Several performance improvements for large installations with hundrets of amendments, especially in the motion view.
+- Several performance improvements for large installations with hundreds of amendments, especially in the motion view.
 - It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resultion.
 - Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens.
 - Bugfix: Long-broken references to OpenID-based login were removed.

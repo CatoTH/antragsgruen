@@ -6,5 +6,5 @@ use app\tests\_pages\ManagerStartPage;
 
 $I = new FunctionalTester($scenario);
 $I->wantTo('ensure that ManagerStartPage works');
-ManagerStartPage::openBy($I);
+$I->amOnPage('http://antragsgruen-test.local/');
 $I->see('das grüne Antragstool', 'h1');
