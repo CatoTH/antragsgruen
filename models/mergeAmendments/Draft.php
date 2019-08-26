@@ -5,6 +5,7 @@ namespace app\models\mergeAmendments;
 use app\models\db\IMotion;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
+use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
 {
@@ -25,6 +26,9 @@ class Draft implements \JsonSerializable
     /** @var string[] */
     public $amendmentVersions;
 
+    /** @var VotingData[] */
+    public $amendmentVotingData;
+
     /** @var DraftParagraph[] */
     public $paragraphs;
 
@@ -34,10 +38,11 @@ class Draft implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'amendmentStatuses' => $this->amendmentStatuses,
-            'amendmentVersions' => $this->amendmentVersions,
-            'paragraphs'        => $this->paragraphs,
-            'sections'          => $this->sections,
+            'amendmentStatuses'   => $this->amendmentStatuses,
+            'amendmentVersions'   => $this->amendmentVersions,
+            'amendmentVotingData' => $this->amendmentVotingData,
+            'paragraphs'          => $this->paragraphs,
+            'sections'            => $this->sections,
         ];
     }
 
@@ -77,13 +82,14 @@ class Draft implements \JsonSerializable
         $draft = new Draft();
         $draft->init($origMotion);
 
-        $json                     = json_decode($data, true);
-        $draft->sections          = $json['sections'];
-        $draft->paragraphs        = DraftParagraph::fromJsonArr($json['paragraphs']);
-        $draft->amendmentVersions = $json['amendmentVersions'];
-        $draft->amendmentStatuses = $json['amendmentStatuses'];
-        $draft->public            = $public;
-        $draft->time              = $time;
+        $json                       = json_decode($data, true);
+        $draft->sections            = $json['sections'];
+        $draft->paragraphs          = DraftParagraph::fromJsonArr($json['paragraphs']);
+        $draft->amendmentVersions   = $json['amendmentVersions'];
+        $draft->amendmentStatuses   = $json['amendmentStatuses'];
+        $draft->amendmentVotingData = $json['amendmentVotingData'];
+        $draft->public              = $public;
+        $draft->time                = $time;
 
         return $draft;
     }
@@ -141,6 +147,8 @@ class Draft implements \JsonSerializable
             } else {
                 $draft->amendmentVersions[$amendment->id] = 'orig';
             }
+
+            $draft->amendmentVotingData[$amendment->id] = $amendment->getVotingData();
         }
 
         return $draft;

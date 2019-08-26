@@ -51,9 +51,11 @@ if (count($allAmendingIds) > 0) {
                 $statusesAll                  = $amendment->getStatusNames();
                 $statuses[$amendment->status] = Yii::t('amend', 'merge_status_unchanged') . ': ' .
                                                 $statusesAll[$amendment->status];
-                $classes = ['btn', 'btn-xs', 'toggleAmendment'];
+
+                $classes   = ['btn', 'btn-xs', 'toggleAmendment'];
                 $classes[] = 'btn-' . ($active ? 'success' : 'default');
                 $classes[] = 'toggleAmendment' . $amendment->id;
+                $idadd     = $type->id . '_' . $paragraphNo;
                 ?>
                 <div class="btn-group amendmentStatus" data-amendment-id="<?= $amendment->id ?>">
                     <button type="button" class="<?= implode(" ", $classes) ?>">
@@ -90,7 +92,7 @@ if (count($allAmendingIds) > 0) {
                             <?php
                         }
                         ?>
-                        <li role="separator" class="divider dividerLabeled" data-label="<?= Yii::t('amend', 'merge_status_set') ?>:"></li>
+                        <li role="separator" class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_status_set')) ?>:"></li>
                         <?php
                         foreach ($statuses as $statusId => $statusName) {
                             echo '<li class="status' . $statusId . '">' .
@@ -98,6 +100,33 @@ if (count($allAmendingIds) > 0) {
                                  Html::encode($statusName) . '</a></li>';
                         }
                         ?>
+                        <li role="separator" class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_voting_set')) ?>:"></li>
+                        <li>
+                            <div class="votingResult">
+                                <label for="votesComment<?= $idadd ?>"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
+                                <input class="form-control votesComment" type="text" id="votesComment<?= $idadd ?>" value="">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="votingData">
+                                <div>
+                                    <label for="votesYes<?= $idadd ?>"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
+                                    <input class="form-control votesYes" type="number" id="votesYes<?= $idadd ?>" value="">
+                                </div>
+                                <div>
+                                    <label for="votesNo<?= $idadd ?>"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
+                                    <input class="form-control votesNo" type="number" id="votesNo<?= $idadd ?>" value="">
+                                </div>
+                                <div>
+                                    <label for="votesAbstention<?= $idadd ?>"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
+                                    <input class="form-control votesAbstention" type="number" id="votesAbstention<?= $idadd ?>" value="">
+                                </div>
+                                <div>
+                                    <label for="votesInvalid<?= $idadd ?>"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
+                                    <input class="form-control votesInvalid" type="number" id="votesInvalid<?= $idadd ?>" value="">
+                                </div>
+                            </div>
+                        </li>
                     </ul>
                 </div>
                 <?php

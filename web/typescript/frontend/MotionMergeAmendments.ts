@@ -12,14 +12,28 @@ enum AMENDMENT_VERSION {
     PROPOSED_PROCEDURE = 'prop',
 }
 
+interface VotingData {
+    votesYes: number;
+    votesNo: number;
+    votesAbstention: number;
+    votesInvalid: number;
+    comment: string;
+}
+
 class AmendmentStatuses {
     private static statuses: { [amendmentId: number]: number };
     private static versions: { [amendmentId: number]: AMENDMENT_VERSION };
+    private static votingData: { [amendmentId: number]: VotingData };
     private static statusListeners: { [amendmentId: number]: MotionMergeAmendmentsParagraph[] } = {};
 
-    public static init(statuses: { [amendmentId: number]: number }, versions: { [amendmentId: number]: AMENDMENT_VERSION }) {
+    public static init(
+        statuses: { [amendmentId: number]: number },
+        versions: { [amendmentId: number]: AMENDMENT_VERSION },
+        votingData: { [amendmentId: number]: VotingData }
+    ) {
         AmendmentStatuses.statuses = statuses;
         AmendmentStatuses.versions = versions;
+        AmendmentStatuses.votingData = votingData;
 
         Object.keys(statuses).forEach(amendmentId => {
             AmendmentStatuses.statusListeners[amendmentId] = [];
@@ -32,6 +46,10 @@ class AmendmentStatuses {
 
     public static getAmendmentVersion(amendmentId: number): AMENDMENT_VERSION {
         return AmendmentStatuses.versions[amendmentId];
+    }
+
+    public static getAmendmentVotingData(amendmentId: number): VotingData {
+        return AmendmentStatuses.votingData[amendmentId];
     }
 
     public static registerParagraph(amendmentId: number, paragraph: MotionMergeAmendmentsParagraph) {
@@ -52,12 +70,36 @@ class AmendmentStatuses {
         });
     }
 
+    public static setVotesYes(amendmentId: number, votes: number) {
+        AmendmentStatuses.votingData[amendmentId].votesYes = votes;
+    }
+
+    public static setVotesNo(amendmentId: number, votes: number) {
+        AmendmentStatuses.votingData[amendmentId].votesNo = votes;
+    }
+
+    public static setVotesAbstention(amendmentId: number, votes: number) {
+        AmendmentStatuses.votingData[amendmentId].votesAbstention = votes;
+    }
+
+    public static setVotesInvalid(amendmentId: number, votes: number) {
+        AmendmentStatuses.votingData[amendmentId].votesInvalid = votes;
+    }
+
+    public static setVotesComment(amendmentId: number, comment: string) {
+        AmendmentStatuses.votingData[amendmentId].comment = comment;
+    }
+
     public static getAllStatuses(): { [amendmentId: number]: number } {
         return AmendmentStatuses.statuses;
     }
 
     public static getAllVersions(): { [amendmentId: number]: AMENDMENT_VERSION } {
         return AmendmentStatuses.versions;
+    }
+
+    public static getAllVotingData(): { [amendmentId: number]: VotingData } {
+        return AmendmentStatuses.votingData;
     }
 }
 
@@ -340,7 +382,7 @@ class MotionMergeAmendmentsTextarea {
     private texteditor: editor;
     private unchangedText: string = null;
     private hasChanged: boolean = false;
-    private changedListeners: {(): void}[] = [];
+    private changedListeners: { (): void }[] = [];
 
     private prepareText(html: string) {
         let $text: JQuery = $('<div>' + html + '</div>');
@@ -577,10 +619,16 @@ class MotionMergeAmendmentsParagraph {
             const amendmentId = parseInt($holder.data("amendment-id"));
             const currentStatus = AmendmentStatuses.getAmendmentStatus(amendmentId);
             const currentVersion = AmendmentStatuses.getAmendmentVersion(amendmentId);
+            const votingData = AmendmentStatuses.getAmendmentVotingData(amendmentId);
 
             $holder.find(".dropdown-menu .selected").removeClass("selected");
             $holder.find(".dropdown-menu .status" + currentStatus).addClass("selected");
             $holder.find(".dropdown-menu .version" + currentVersion).addClass("selected");
+            $holder.find(".votesYes").val(votingData.votesYes);
+            $holder.find(".votesNo").val(votingData.votesNo);
+            $holder.find(".votesAbstention").val(votingData.votesAbstention);
+            $holder.find(".votesInvalid").val(votingData.votesInvalid);
+            $holder.find(".votesComment").val(votingData.comment);
         };
 
         this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', ev => {
@@ -602,6 +650,41 @@ class MotionMergeAmendmentsParagraph {
             const amendmentId = parseInt($holder.data("amendment-id"));
             AmendmentStatuses.setVersion(amendmentId, $(ev.currentTarget).data("version"));
             initTooltip($holder);
+            this.hasUnsavedChanges = true;
+        });
+
+        this.$holder.find(".btn-group .votesYes").on("keyup change", ev => {
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVotesYes(amendmentId, $(ev.currentTarget).val());
+            this.hasUnsavedChanges = true;
+        });
+
+        this.$holder.find(".btn-group .votesNo").on("keyup change", ev => {
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVotesNo(amendmentId, $(ev.currentTarget).val());
+            this.hasUnsavedChanges = true;
+        });
+
+        this.$holder.find(".btn-group .votesAbstention").on("keyup change", ev => {
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVotesAbstention(amendmentId, $(ev.currentTarget).val());
+            this.hasUnsavedChanges = true;
+        });
+
+        this.$holder.find(".btn-group .votesInvalid").on("keyup change", ev => {
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVotesInvalid(amendmentId, $(ev.currentTarget).val());
+            this.hasUnsavedChanges = true;
+        });
+
+        this.$holder.find(".btn-group .votesComment").on("keyup change", ev => {
+            const $holder = $(ev.currentTarget).parents(".btn-group");
+            const amendmentId = parseInt($holder.data("amendment-id"));
+            AmendmentStatuses.setVotesComment(amendmentId, $(ev.currentTarget).val());
             this.hasUnsavedChanges = true;
         });
 
@@ -714,7 +797,7 @@ export class MotionMergeAmendments {
         MotionMergeAmendments.$form = $form;
 
         const draft = JSON.parse(document.getElementById('mergeDraft').getAttribute('value'));
-        AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions);
+        AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions, draft.amendmentVotingData);
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
@@ -762,6 +845,7 @@ export class MotionMergeAmendments {
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
             "amendmentVersions": AmendmentStatuses.getAllVersions(),
+            "amendmentVotingData": AmendmentStatuses.getAllVotingData(),
             "paragraphs": {},
             "sections": {},
         };

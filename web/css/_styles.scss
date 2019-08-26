@@ -526,6 +526,55 @@
         text-align: center;
       }
     }
+    .votingResult {
+      label {
+        font-weight: normal;
+        margin-bottom: 0;
+        font-size: 12px;
+      }
+      .form-control {
+        padding: 3px 6px;
+        font-size: 12px;
+        height: 24px;
+      }
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 8px;
+    }
+    .votingData {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+      }
+
+      input[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+      }
+      label {
+        font-weight: normal;
+        margin-bottom: 0;
+        font-size: 12px;
+      }
+      .form-control {
+        padding: 3px 6px;
+        font-size: 12px;
+        height: 24px;
+      }
+      > * {
+        flex: 0;
+        flex-basis: 25%;
+        padding-left: 8px;
+        &:last-child {
+          padding-right: 8px;
+        }
+      }
+    }
   }
 
   .hasCollisions {
