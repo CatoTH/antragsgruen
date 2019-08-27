@@ -1,13 +1,16 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\UrlHelper;
+use app\models\db\Amendment;
 use app\models\db\Motion;
-use app\views\motion\LayoutHelper;
+use app\models\mergeAmendments\Draft;
 use yii\helpers\Html;
 
 /**
  * @var Yii\web\View $this
  * @var Motion $newMotion
+ * @var Draft $mergingDraft
  * @var \app\models\MotionSectionChanges[] $changes
  */
 
@@ -18,7 +21,7 @@ $layout     = $controller->layoutParams;
 $layout->robotsNoindex = true;
 $layout->loadFuelux();
 $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
-$layout->addBreadcrumb(\Yii::t('amend', 'merge_confirm_title'));
+$layout->addBreadcrumb(Yii::t('amend', 'merge_confirm_title'));
 $layout->loadDatepicker();
 
 $title       = str_replace('%TITLE%', $newMotion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
@@ -82,9 +85,84 @@ foreach ($newMotion->getSortedSections(true) as $section) {
     echo '</section>';
 }
 if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
-    echo '<section class="newAmendments">';
-    LayoutHelper::printAmendmentStatusSetter($newMotion->replacedMotion->getVisibleAmendments(), $amendmentStatuses);
-    echo '</section>';
+    ?>
+    <section class="newAmendments fuelux">
+        <h2 class="green"><?= Yii::t('amend', 'merge_amend_statuses') ?></h2>
+        <div class="content form-horizontal">
+            <?php
+            foreach ($newMotion->replacedMotion->getVisibleAmendments() as $amendment) {
+                //$changeset = (isset($changesets[$amendment->id]) ? $changesets[$amendment->id] : []);
+                $changeset = [];
+                $data      = 'data-old-status="' . $amendment->status . '"';
+                $data      .= ' data-amendment-id="' . $amendment->id . '"';
+                $data      .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
+                $voting    = $mergingDraft->amendmentVotingData[$amendment->id];
+                ?>
+                <div class="form-group amendmentStatus" <?= $data ?>>
+                    <div class="col-md-2">
+                        <div class="amendmentName">
+                            <?= Html::encode($amendment->getShortTitle()) ?>
+                        </div>
+                        <div class="amendSubtitle"><?= Html::encode($amendment->getInitiatorsStr()) ?></div>
+                    </div>
+                    <div class="col-md-3 statusHolder">
+                        <?= HTMLTools::amendmentDiffTooltip($amendment) ?>
+                        <label for="amendmentStatus<?= $amendment->id ?>">Status:</label><br>
+                        <?php
+                        $statusesAll                  = $amendment->getStatusNames();
+                        $statuses                     = [
+                            Amendment::STATUS_PROCESSED         => $statusesAll[Amendment::STATUS_PROCESSED],
+                            Amendment::STATUS_ACCEPTED          => $statusesAll[Amendment::STATUS_ACCEPTED],
+                            Amendment::STATUS_REJECTED          => $statusesAll[Amendment::STATUS_REJECTED],
+                            Amendment::STATUS_MODIFIED_ACCEPTED => $statusesAll[Amendment::STATUS_MODIFIED_ACCEPTED],
+                        ];
+                        $statuses[$amendment->status] = $statusesAll[$amendment->status];
+                        if (isset($mergingDraft->amendmentStatuses[$amendment->id])) {
+                            $statusPre = $mergingDraft->amendmentStatuses[$amendment->id];
+                        } else {
+                            $statusPre = Amendment::STATUS_PROCESSED;
+                        }
+                        $opts = ['id' => 'amendmentStatus' . $amendment->id];
+                        echo HTMLTools::fueluxSelectbox('amendStatus[' . $amendment->id . ']', $statuses, $statusPre, $opts, true);
+                        ?>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="votesComment<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
+                        <input class="form-control" name="amendVotes[<?= $amendment->id ?>][comment]" type="text"
+                               id="votesComment<?= $amendment->id ?>"
+                               value="<?= Html::encode($voting->comment ? $voting->comment : '') ?>">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="votesYes<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
+                        <input class="form-control" name="amendVotes[<?= $amendment->id ?>][yes]" type="number"
+                               id="votesYes<?= $amendment->id ?>"
+                               value="<?= Html::encode($voting->votesYes ? $voting->votesYes : '') ?>">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="votesNo<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
+                        <input class="form-control" name="amendVotes[<?= $amendment->id ?>][no]" type="number"
+                               id="votesNo<?= $amendment->id ?>"
+                               value="<?= Html::encode($voting->votesNo ? $voting->votesNo : '') ?>">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="votesAbstention<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
+                        <input class="form-control" name="amendVotes[<?= $amendment->id ?>][abstention]" type="number"
+                               id="votesAbstention<?= $amendment->id ?>"
+                               value="<?= Html::encode($voting->votesAbstention ? $voting->votesAbstention : '') ?>">
+                    </div>
+                    <div class="col-md-1">
+                        <label for="votesInvalid<?= $amendment->id ?>"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
+                        <input class="form-control" name="amendVotes[<?= $amendment->id ?>][invalid]" type="number"
+                               id="votesInvalid<?= $amendment->id ?>"
+                               value="<?= Html::encode($voting->votesInvalid ? $voting->votesInvalid : '') ?>">
+                    </div>
+                </div>
+                <?php
+            }
+            ?>
+        </div>
+    </section>
+    <?php
 }
 
 ?>

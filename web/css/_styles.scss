@@ -359,6 +359,47 @@
   .motionTextHolder {
     padding-top: 22px;
   }
+  .newAmendments {
+    .col-md-3, .col-md-1, .col-md-2 {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+    .statusHolder.col-md-3 {
+      padding-left: 25px;
+    }
+    .amendmentAjaxTooltip {
+      float: left;
+      margin-left: -24px;
+      margin-top: 24px;
+    }
+    .amendmentName {
+      padding-top: 22px;
+      font-weight: bold;
+      text-align: right;
+    }
+    .amendSubtitle {
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    label {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+  }
 }
 
 .mergeConfirmToolbar {

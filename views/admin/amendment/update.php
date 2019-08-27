@@ -61,7 +61,7 @@ echo $controller->showErrors();
 if ($amendment->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'amendmentScreenForm']);
     $newRev = $amendment->titlePrefix;
-    if ($newRev == '') {
+    if ($newRev === '') {
         $numbering = $amendment->getMyConsultation()->getAmendmentNumbering();
         $newRev    = $numbering->getAmendmentNumber($amendment, $amendment->getMyMotion());
     }

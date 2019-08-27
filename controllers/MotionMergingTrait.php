@@ -302,9 +302,9 @@ trait MotionMergingTrait
         $mergingDraft = $oldMotion->getMergingDraft(false);
 
         return $this->render('@app/views/merging/confirm', [
-            'newMotion'         => $newMotion,
-            'amendmentStatuses' => $mergingDraft->amendmentStatuses,
-            'changes'           => $changes,
+            'newMotion'    => $newMotion,
+            'mergingDraft' => $mergingDraft,
+            'changes'      => $changes,
         ]);
     }
 

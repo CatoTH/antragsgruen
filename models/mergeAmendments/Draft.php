@@ -87,7 +87,9 @@ class Draft implements \JsonSerializable
         $draft->paragraphs          = DraftParagraph::fromJsonArr($json['paragraphs']);
         $draft->amendmentVersions   = $json['amendmentVersions'];
         $draft->amendmentStatuses   = $json['amendmentStatuses'];
-        $draft->amendmentVotingData = $json['amendmentVotingData'];
+        $draft->amendmentVotingData = array_map(function ($data) {
+            return new VotingData($data);
+        }, $json['amendmentVotingData']);
         $draft->public              = $public;
         $draft->time                = $time;
 

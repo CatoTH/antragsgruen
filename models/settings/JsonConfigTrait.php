@@ -21,12 +21,16 @@ trait JsonConfigTrait
      */
     protected function setPropertiesFromJSON($data)
     {
-        if ($data == '') {
+        if (!$data) {
             return;
         }
         $data    = str_replace("\r", "", $data);
         $data    = str_replace(chr(194) . chr(160), " ", $data);
-        $dataArr = json_decode($data, true);
+        if (is_array($data)) {
+            $dataArr = $data;
+        } else {
+            $dataArr = json_decode($data, true);
+        }
         if ($dataArr === null) {
             throw new ConfigurationError('Invalid JSON string: ' . $data);
         }
