@@ -10,6 +10,7 @@ use app\models\db\MotionSupporter;
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\VotingData;
 
 class Merge
 {
@@ -137,10 +138,11 @@ class Merge
      * @param string $resolutionMode
      * @param string $resolutionBody
      * @param array $votes
+     * @param array $amendmentVotes
      *
      * @return Motion
      */
-    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody, $votes)
+    public function confirm(Motion $newMotion, $amendmentStatuses, $resolutionMode, $resolutionBody, $votes, $amendmentVotes)
     {
         $oldMotion    = $this->origMotion;
         $consultation = $oldMotion->getMyConsultation();
@@ -149,11 +151,21 @@ class Merge
         foreach ($oldMotion->getVisibleAmendments() as $amendment) {
             if (isset($amendmentStatuses[$amendment->id])) {
                 $newStatus = IntVal($amendmentStatuses[$amendment->id]);
-                if ($newStatus !== $amendment->status && !in_array($amendmentStatuses[$amendment->id], $invisible)) {
+                if (!in_array($amendmentStatuses[$amendment->id], $invisible)) {
                     $amendment->status = $newStatus;
-                    $amendment->save();
                 }
             }
+            if (isset($amendmentVotes[$amendment->id])) {
+                $dat                        = $amendmentVotes[$amendment->id];
+                $votesData                  = new VotingData(null);
+                $votesData->votesYes        = (is_numeric($dat['yes']) ? IntVal($dat['yes']) : null);
+                $votesData->votesNo         = (is_numeric($dat['no']) ? IntVal($dat['no']) : null);
+                $votesData->votesAbstention = (is_numeric($dat['abstention']) ? IntVal($dat['abstention']) : null);
+                $votesData->votesInvalid    = (is_numeric($dat['invalid']) ? IntVal($dat['invalid']) : null);
+                $votesData->comment         = $dat['comment'];
+                $amendment->setVotingData($votesData);
+            }
+            $amendment->save();
         }
 
         $newMotion->slug = $oldMotion->slug;

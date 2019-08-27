@@ -285,7 +285,8 @@ trait MotionMergingTrait
                 array_map('IntVal', \Yii::$app->request->post('amendStatus', [])),
                 \Yii::$app->request->post('newStatus'),
                 \Yii::$app->request->post('newInitiator', ''),
-                \Yii::$app->request->post('votes', '')
+                \Yii::$app->request->post('votes', ''),
+                \Yii::$app->request->post('amendVotes', '')
             );
 
             return $this->render('@app/views/merging/done', [
