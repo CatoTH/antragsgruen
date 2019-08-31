@@ -275,6 +275,12 @@ trait MotionMergingTrait
         }
 
         if ($this->isPostSet('modify')) {
+            $merger = new Merge($oldMotion);
+            $merger->updateDraftOnBackToModify(
+                array_map('IntVal', \Yii::$app->request->post('amendStatus', [])),
+                \Yii::$app->request->post('amendVotes', '')
+            );
+
             return $this->redirect(UrlHelper::createMotionUrl($oldMotion, 'merge-amendments'));
         }
 

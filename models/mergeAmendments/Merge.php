@@ -247,4 +247,22 @@ class Merge
 
         return $newMotion;
     }
+
+    /**
+     * @param int[] $amendmentStatuses
+     * @param array $amendmentVotes
+     */
+    public function updateDraftOnBackToModify($amendmentStatuses, $amendmentVotes)
+    {
+        $draft = $this->origMotion->getMergingDraft(false);
+
+        $draft->amendmentStatuses = $amendmentStatuses;
+        foreach ($amendmentVotes as $amendmentId => $data) {
+            if (!isset($draft->amendmentVotingData[$amendmentId])) {
+                $draft->amendmentVotingData[$amendmentId] = new VotingData(null);
+            }
+            $draft->amendmentVotingData[$amendmentId]->setFromPostData($data);
+        }
+        $draft->save();
+    }
 }
