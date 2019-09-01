@@ -248,6 +248,13 @@ In multi-site-instances, there might be a need to share language variante betwee
 }
 ```
 
+### Updating PDF.JS
+
+* Download the [latest release](https://github.com/mozilla/pdf.js/releases)
+* `npm install`
+* `gulp dist-install`
+* Copy relevant files, redo changes in `viewer.html` and `viewer.css` (look for "Antragsgrün" in the comments)
+
 ## Plugins
 
 **The plugin system is still under heavy development.**
