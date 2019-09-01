@@ -75,7 +75,29 @@ $I->see('mechad mim Spuiratz', '#paragraphWrapper_2_4 .ice-del');
 $I->see('Oamoi a Maß und no a Maß', '#paragraphWrapper_2_4 .ice-ins');
 $I->executeJS('$("#paragraphWrapper_2_4").find(".acceptAll").click();');
 
-// @TODO Set amendment status
+
+$I->wantTo('Set the status of an amendment');
+$I->dontSeeElement('#paragraphWrapper_2_4 .amendmentStatus3 .dropdown-menu');
+$I->executeJS('$("#paragraphWrapper_2_4 .amendmentStatus3 button.dropdown-toggle").click()');
+$I->seeElement('#paragraphWrapper_2_4 .amendmentStatus3 .dropdown-menu');
+$I->fillField('#votesComment2_4_3', 'Accepted by a small margin');
+$I->fillField('#votesYes2_4_3', '12');
+$I->fillField('#votesNo2_4_3', '10');
+$I->fillField('#votesInvalid2_4_3', '1');
+
+$I->dontSeeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu');
+$I->executeJS('$("#paragraphWrapper_2_7 .amendmentStatus3 button.dropdown-toggle").click()');
+$I->seeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu');
+$I->seeInField('#votesComment2_7_3', 'Accepted by a small margin');
+$I->seeInField('#votesYes2_7_3', '12');
+$I->seeInField('#votesNo2_7_3', '10');
+$I->seeInField('#votesInvalid2_7_3', '1');
+
+$I->seeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu .status3.selected');
+$I->click('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu .status5 a'); // Setting to "declined". Is a nerror and will be corrected below
+
+
+$I->wantTo('Save the changes');
 
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
@@ -94,6 +116,21 @@ $I->dontSee('Neuer Punkt');
 $I->see('Alternatives Ende');
 
 
+$I->wantTo('change some amendment statuses');
+
+$I->seeInField('#votesComment3', 'Accepted by a small margin');
+$I->seeInField('#votesYes3', '12');
+$I->seeInField('#votesNo3', '10');
+$I->seeInField('#votesInvalid3', '1');
+
+$I->fillField('#votesComment3', 'Accepted by a great margin');
+$I->fillField('#votesYes3', '15');
+$I->fillField('#votesNo3', '4');
+
+$I->seeFueluxOptionIsSelected('#amendmentStatus3', 5);
+$I->selectFueluxOption('#amendmentStatus3', 4); // Correcting status to "Accepted"
+
+
 $I->wantTo('modify the text');
 
 $I->submitForm('#motionConfirmForm', [], 'modify');
@@ -107,6 +144,17 @@ $I->see('With an hand-written appendix.', '#paragraphWrapper_2_7');
 
 $I->dontSee('mechad mim Spuiratz', '#paragraphWrapper_2_4');
 $I->see('Oamoi a Maß und no a Maß', '#paragraphWrapper_2_4');
+
+
+$I->dontSeeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu');
+$I->executeJS('$("#paragraphWrapper_2_7 .amendmentStatus3 button.dropdown-toggle").click()');
+$I->seeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu');
+$I->seeInField('#votesComment2_7_3', 'Accepted by a great margin');
+$I->seeInField('#votesYes2_7_3', '15');
+$I->seeInField('#votesNo2_7_3', '4');
+$I->seeInField('#votesInvalid2_7_3', '1');
+$I->seeElement('#paragraphWrapper_2_7 .amendmentStatus3 .dropdown-menu .status4.selected');
+
 
 $I->executeJS('$(".none").remove();'); // for some reason necessary...
 $I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
@@ -127,6 +175,13 @@ $I->fillField('#votesNo', '5');
 $I->fillField('#votesAbstention', '2');
 $I->fillField('#votesInvalid', '0');
 $I->fillField('#votesComment', 'Accepted by mayority');
+
+
+$I->seeInField('#votesComment3', 'Accepted by a great margin');
+$I->seeInField('#votesYes3', '15');
+$I->seeInField('#votesNo3', '4');
+$I->seeInField('#votesInvalid3', '1');
+
 
 $I->wantTo('submit the new form');
 
@@ -154,3 +209,8 @@ $I->click('.replacesMotion a');
 $I->see('Achtung: dies ist eine alte Fassung', '.motionReplayedBy.alert-danger');
 $I->seeElement('.bookmarks .amendment276');
 $I->seeElement('.bookmarks .amendment3');
+
+$I->click('.amendment3 a');
+$I->see('Accepted by a great margin', '.votingResultRow');
+$I->see('Ja: 15, Nein: 4, Ungültig: 1', '.votingResultRow');
+$I->see('Angenommen', '.statusRow');

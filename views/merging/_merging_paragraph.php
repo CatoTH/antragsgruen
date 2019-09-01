@@ -55,9 +55,9 @@ if (count($allAmendingIds) > 0) {
                 $classes   = ['btn', 'btn-xs', 'toggleAmendment'];
                 $classes[] = 'btn-' . ($active ? 'success' : 'default');
                 $classes[] = 'toggleAmendment' . $amendment->id;
-                $idadd     = $type->id . '_' . $paragraphNo;
+                $idadd     = $type->id . '_' . $paragraphNo . '_' . $amendment->id;
                 ?>
-                <div class="btn-group amendmentStatus" data-amendment-id="<?= $amendment->id ?>">
+                <div class="btn-group amendmentStatus amendmentStatus<?= $amendment->id ?>" data-amendment-id="<?= $amendment->id ?>">
                     <button type="button" class="<?= implode(" ", $classes) ?>">
                         <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
                                type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">

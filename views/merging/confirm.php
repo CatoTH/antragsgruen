@@ -98,7 +98,7 @@ if (count($newMotion->replacedMotion->getVisibleAmendments()) > 0) {
                 $data      .= ' data-changesets="' . Html::encode(json_encode($changeset)) . '"';
                 $voting    = $mergingDraft->amendmentVotingData[$amendment->id];
                 ?>
-                <div class="form-group amendmentStatus" <?= $data ?>>
+                <div class="form-group amendmentStatus amendmentStatus<?= $amendment->id ?>" <?= $data ?>>
                     <div class="col-md-2">
                         <div class="amendmentName">
                             <?= Html::encode($amendment->getShortTitle()) ?>
