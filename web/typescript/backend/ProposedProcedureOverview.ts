@@ -14,7 +14,7 @@ export class ProposedProcedureOverview {
     private interval: number = null;
 
     constructor(private $widget: JQuery) {
-        this.csrf = this.$widget.find('input[name=_csrf]').val();
+        this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
         this.$widget.on('change', 'input[name=visible]', this.onVisibleChanged.bind(this));
         this.initComments();
         this.initUpdateWidget();

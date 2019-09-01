@@ -32,7 +32,7 @@ export class ChangeProposedProcedure {
         this.$openerBtn = $('.proposedChangesOpener button');
         this.context = this.$widget.data('context');
         this.saveUrl = this.$widget.attr('action');
-        this.csrf = this.$widget.find('input[name=_csrf]').val();
+        this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
     }
 
     private initOpener() {

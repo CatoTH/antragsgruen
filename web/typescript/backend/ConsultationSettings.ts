@@ -14,7 +14,7 @@ export class ConsultationSettings {
     }
 
     private initUrlPath() {
-        $('.urlPathHolder .shower a').click(function (ev) {
+        $('.urlPathHolder .shower a').on("click", (ev) => {
             ev.preventDefault();
             $('.urlPathHolder .shower').addClass('hidden');
             $('.urlPathHolder .holder').removeClass('hidden');
@@ -22,7 +22,7 @@ export class ConsultationSettings {
     }
 
     private initSingleMotionMode() {
-        $("#singleMotionMode").change(function () {
+        $("#singleMotionMode").on("change", function () {
             if ($(this).prop("checked")) {
                 $("#forceMotionRow").removeClass("hidden");
             } else {
@@ -34,7 +34,7 @@ export class ConsultationSettings {
     private initAdminMayEdit() {
         let $adminsMayEdit = $("#adminsMayEdit"),
             $iniatorsMayEdit = $("#iniatorsMayEdit").parents("label").first().parent();
-        $adminsMayEdit.change(function () {
+        $adminsMayEdit.on("change", function () {
             if ($(this).prop("checked")) {
                 $iniatorsMayEdit.removeClass("hidden");
             } else {
@@ -94,7 +94,7 @@ export class ConsultationSettings {
             $logoRow.find("input[type=file]").val('');
         });
         $logoRow.find("input[type=file]").change(() => {
-            const path = $logoRow.find("input[type=file]").val().split('\\');
+            const path = ($logoRow.find("input[type=file]").val() as string).split('\\');
             const filename = path[path.length - 1];
             $logoRow.find('input[name=consultationLogo]').val('');
             $logoRow.find(".logoPreview img").addClass('hidden');

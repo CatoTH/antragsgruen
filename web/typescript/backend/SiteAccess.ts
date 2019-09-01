@@ -29,7 +29,7 @@ class SiteAccess {
 
         $("#accountsCreateForm").submit((ev) => {
             if (!$(".addUsersByLogin.email").hasClass("hidden")) {
-                let text = $("#emailText").val();
+                let text = $("#emailText").val() as string;
                 if (text.indexOf("%ACCOUNT%") == -1) {
                     bootbox.alert(__t("admin", "emailMissingCode"));
                     ev.preventDefault();
@@ -39,8 +39,8 @@ class SiteAccess {
                     ev.preventDefault();
                 }
 
-                let emails = $("#emailAddresses").val().split("\n"),
-                    names = $("#names").val().split("\n");
+                let emails = ($("#emailAddresses").val() as string).split("\n"),
+                    names = ($("#names").val() as string).split("\n");
                 if (emails.length == 1 && emails[0] == "") {
                     ev.preventDefault();
                     bootbox.alert(__t("admin", "emailMissingTo"));
@@ -119,7 +119,7 @@ class SiteAccess {
     private initConPwd() {
         const $widget = $(".conpw"),
             $checkbox = $widget.find('.setter input[type=checkbox]');
-        $checkbox.change(() => {
+        $checkbox.on("change", () => {
             if ($checkbox.prop("checked")) {
                 $widget.addClass("checked");
             } else {

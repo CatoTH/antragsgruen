@@ -46,30 +46,38 @@ class SiteCreateWizard {
     };
 
     getWizardState(): WizardState {
+        const parseNullableNumber = (val: string): number => {
+            if (val === '' || val === null) {
+                return null;
+            } else {
+                return parseInt(val, 10);
+            }
+        };
+
         return {
             language: this.getRadioValue('language', null),
             wording: this.getRadioValue('wording', 1),
             singleMotion: this.getRadioValue('singleMotion', 0),
             motionsInitiatedBy: this.getRadioValue('motionWho', 1),
             motionsDeadlineExists: this.getRadioValue('motionDeadline', 0),
-            motionsDeadline: this.$root.find("fieldset.motionDeadline .date input").val(),
+            motionsDeadline: this.$root.find("fieldset.motionDeadline .date input").val() as string,
             motionScreening: this.getRadioValue('motionScreening', 1),
             needsSupporters: this.getRadioValue('needsSupporters', 0),
-            minSupporters: this.$root.find("input.minSupporters").val(),
+            minSupporters: parseNullableNumber(this.$root.find("input.minSupporters").val() as string),
             hasAmendments: this.getRadioValue('hasAmendments', 1),
             amendSinglePara: this.getRadioValue('amendSinglePara', 0),
             amendMerging: this.getRadioValue('amendMerging', 0),
             amendmentInitiatedBy: this.getRadioValue('amendmentWho', 1),
             amendmentDeadlineExists: this.getRadioValue('amendmentDeadline', 0),
-            amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val(),
+            amendmentDeadline: this.$root.find("fieldset.amendmentDeadline .date input").val() as string,
             amendScreening: this.getRadioValue('amendScreening', 1),
             hasComments: this.getRadioValue('hasComments', 1),
             hasAgenda: this.getRadioValue('hasAgenda', 0),
             openNow: this.getRadioValue('openNow', 0),
-            title: $("#siteTitle").val(),
-            organization: $("#siteOrganization").val(),
-            subdomain: $("#siteSubdomain").val(),
-            contact: $("#siteContact").val()
+            title: $("#siteTitle").val() as string,
+            organization: $("#siteOrganization").val() as string,
+            subdomain: $("#siteSubdomain").val() as string,
+            contact: $("#siteContact").val() as string
         };
     };
 
@@ -160,12 +168,12 @@ class SiteCreateWizard {
 
     subdomainChange(ev) {
         let $this = $(ev.currentTarget),
-            subdomain = $this.val(),
+            subdomain = $this.val() as string,
             $group = $this.parents(".subdomainRow").first(),
             requesturl = $this.data("query-url").replace(/SUBDOMAIN/, subdomain),
             $err = $group.find(".subdomainError");
 
-        if (subdomain == "") {
+        if (subdomain === "") {
             $err.addClass("hidden");
             $group.removeClass("has-error").removeClass("has-success");
             return;
@@ -201,17 +209,17 @@ class SiteCreateWizard {
         this.$activePanel = null;
         this.data = this.getWizardState();
 
-        $form.find("input").change(() => {
+        $form.find("input").on("change", () => {
             this.data = this.getWizardState();
         });
-        $form.find(".radio-label input").change(function () {
+        $form.find(".radio-label input").on("change", function () {
             let $fieldset = $(this).parents("fieldset").first();
             $fieldset.find(".radio-label").removeClass("active");
             let $active = $fieldset.find(".radio-label input:checked");
             $active.parents(".radio-label").first().addClass("active");
         }).trigger("change");
 
-        $form.find("fieldset.wording input").change(function () {
+        $form.find("fieldset.wording input").on("change", function () {
             let wording = $form.find("fieldset.wording input:checked").data("wording-name");
             $form.removeClass("wording_motion").removeClass("wording_manifesto").addClass("wording_" + wording);
         }).trigger("change");
@@ -228,19 +236,19 @@ class SiteCreateWizard {
         $form.find(".date.amendmentDeadline").on("dp.change", function () {
             $("input.amendDeadlineExists").prop("checked", true).change();
         });
-        $form.find("input.minSupporters").change(function () {
+        $form.find("input.minSupporters").on("change", () => {
             $("input.needsSupporters").prop("checked", true).change();
         });
         $form.find("#siteSubdomain").on("keyup change", this.subdomainChange.bind(this));
         $form.find("#siteTitle").on("keyup change", function () {
-            if ($(this).val().length >= 5) {
+            if (($(this).val() as string).length >= 5) {
                 $(this).parents(".form-group").first().addClass("has-success");
             } else {
                 $(this).parents(".form-group").first().removeClass("has-success");
             }
         });
         $form.find("#siteOrganization").on("keyup change", function () {
-            if ($(this).val().length >= 5) {
+            if (($(this).val() as string).length >= 5) {
                 $(this).parents(".form-group").first().addClass("has-success");
             } else {
                 $(this).parents(".form-group").first().removeClass("has-success");
@@ -255,20 +263,20 @@ class SiteCreateWizard {
         });
 
         $form.find("#panelLanguage input").on("change", function() {
-            const val = $form.find("#panelLanguage input:checked").val();
+            const val = $form.find("#panelLanguage input:checked").val() as string;
             const url = $form.find("#panelLanguage").data("url").replace(/LNG/, val);
             window.location.href = url;
         });
 
         let obj = this;
-        $form.find(".navigation .btn-next").click(function (ev) {
+        $form.find(".navigation .btn-next").on("click", function (ev) {
             if ($(this).attr("type") === "submit") {
                 return;
             }
             ev.preventDefault();
             obj.showPanel($(obj.getNextPanel()));
         });
-        $form.find(".navigation .btn-prev").click(function (ev) {
+        $form.find(".navigation .btn-prev").on("click", (ev) => {
             ev.preventDefault();
             if (window.location.hash != "") {
                 window.history.back();

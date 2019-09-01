@@ -61,8 +61,8 @@ class AgendaEdit {
         this.showSaver();
         let $li = $(ev.target).parents('li.agendaItem').first(),
             $form = $(ev.target),
-            newTitle = $form.find('input[name=title]').val(),
-            newCode = $form.find('input[name=code]').val();
+            newTitle = $form.find('input[name=title]').val() as string,
+            newCode = $form.find('input[name=code]').val() as string;
         $li.removeClass('editing');
         $li.data('code', newCode);
         $li.find('> div > h3 .code').text(newCode);
@@ -99,7 +99,7 @@ class AgendaEdit {
     agendaItemAdd(ev: Event) {
         ev.preventDefault();
         this.showSaver();
-        let $newElement = $($('#agendaNewElementTemplate').val()),
+        let $newElement = $($('#agendaNewElementTemplate').val() as string),
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
         this.prepareAgendaItem($newElement);

@@ -123,7 +123,7 @@ export class MotionMergeChangeActions {
     }
 
     public static reject(node: Element, onFinished: () => void = null) {
-        let $node = $(node);
+        let $node = $(node) as JQuery;
         if ($node.hasClass("ice-ins")) {
             MotionMergeChangeActions.insertReject($node, onFinished);
         }
@@ -155,7 +155,7 @@ export class MotionMergeChangeActions {
     }
 
     public static insertAccept(node: Element, onFinished: () => void = null) {
-        let $this: JQuery = $(node);
+        let $this = $(node) as JQuery;
         $this.removeClass("ice-cts ice-ins appendHint moved");
         $this.removeAttr("data-moving-partner data-moving-partner-id data-moving-partner-paragraph data-moving-msg");
         if (node.nodeName.toLowerCase() == 'ul' || node.nodeName.toLowerCase() == 'ol') {
@@ -190,9 +190,9 @@ export class MotionMergeChangeActions {
         let name = node.nodeName.toLowerCase(),
             $removeEl: JQuery;
         if (name == 'li') {
-            $removeEl = $(node).parent();
+            $removeEl = $(node).parent() as JQuery;
         } else {
-            $removeEl = $(node);
+            $removeEl = $(node) as JQuery;
         }
 
         if (name == 'ul' || name == 'ol' || name == 'li' || name == 'blockquote' || name == 'pre' || name == 'p') {
@@ -590,10 +590,10 @@ class MotionMergeAmendmentsParagraph {
     }
 
     private initButtons() {
-        this.$holder.find('.toggleAmendment').click((ev) => {
+        this.$holder.find('.toggleAmendment').on("click", (ev) => {
             const $input = $(ev.currentTarget).find(".amendmentActive");
             const doToggle = () => {
-                if (parseInt($input.val()) === 1) {
+                if (parseInt($input.val() as string, 10) === 1) {
                     $input.val("0");
                     $input.parents(".btn-group").find(".btn").addClass("btn-default").removeClass("btn-success");
                 } else {
@@ -632,7 +632,7 @@ class MotionMergeAmendmentsParagraph {
         };
 
         this.$holder.find('.btn-group.amendmentStatus').on('show.bs.dropdown', ev => {
-            initTooltip($(ev.currentTarget))
+            initTooltip($(ev.currentTarget) as JQuery)
         });
 
         this.$holder.find(".btn-group .setStatus").click(ev => {
@@ -656,35 +656,35 @@ class MotionMergeAmendmentsParagraph {
         this.$holder.find(".btn-group .votesYes").on("keyup change", ev => {
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
-            AmendmentStatuses.setVotesYes(amendmentId, $(ev.currentTarget).val());
+            AmendmentStatuses.setVotesYes(amendmentId, parseInt($(ev.currentTarget).val() as string, 10));
             this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".btn-group .votesNo").on("keyup change", ev => {
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
-            AmendmentStatuses.setVotesNo(amendmentId, $(ev.currentTarget).val());
+            AmendmentStatuses.setVotesNo(amendmentId, parseInt($(ev.currentTarget).val() as string, 10));
             this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".btn-group .votesAbstention").on("keyup change", ev => {
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
-            AmendmentStatuses.setVotesAbstention(amendmentId, $(ev.currentTarget).val());
+            AmendmentStatuses.setVotesAbstention(amendmentId, parseInt($(ev.currentTarget).val() as string, 10));
             this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".btn-group .votesInvalid").on("keyup change", ev => {
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
-            AmendmentStatuses.setVotesInvalid(amendmentId, $(ev.currentTarget).val());
+            AmendmentStatuses.setVotesInvalid(amendmentId, parseInt($(ev.currentTarget).val() as string, 10));
             this.hasUnsavedChanges = true;
         });
 
         this.$holder.find(".btn-group .votesComment").on("keyup change", ev => {
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
-            AmendmentStatuses.setVotesComment(amendmentId, $(ev.currentTarget).val());
+            AmendmentStatuses.setVotesComment(amendmentId, $(ev.currentTarget).val() as string);
             this.hasUnsavedChanges = true;
         });
 

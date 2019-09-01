@@ -29,7 +29,7 @@ class MotionTypeEdit {
     }
 
     private initDeadlines() {
-        $('#deadlineFormTypeComplex input').change((ev) => {
+        $('#deadlineFormTypeComplex input').on("change", (ev) => {
             if ($(ev.currentTarget).prop('checked')) {
                 $('.deadlineTypeSimple').addClass('hidden');
                 $('.deadlineTypeComplex').removeClass('hidden');
@@ -90,7 +90,7 @@ class MotionTypeEdit {
                     $deadlineHolder.find('.deadlineList').append($newRow);
                     initLinkedDeadlinePickers($newRow);
                 };
-            $deadlineHolder.find('.deadlineAdder').click(addDeadlineRow);
+            $deadlineHolder.find('.deadlineAdder').on("click", addDeadlineRow);
             $deadlineHolder.on('click', '.delRow', (ev) => {
                 $(ev.currentTarget).parents('.deadlineEntry').remove();
             });
@@ -103,7 +103,7 @@ class MotionTypeEdit {
     private initInitiatorForm() {
         const $initiatorCanBePerson = $("input[name=initiatorCanBePerson]");
         const $initiatorCanBeOrga = $("input[name=initiatorCanBeOrganization]");
-        $initiatorCanBePerson.change(() => {
+        $initiatorCanBePerson.on("change", () => {
             if ($initiatorCanBePerson.prop("checked")) {
                 $(".formGroupGender").removeClass("hidden");
             } else {
@@ -113,7 +113,7 @@ class MotionTypeEdit {
                 }
             }
         });
-        $initiatorCanBeOrga.change(() => {
+        $initiatorCanBeOrga.on("change", () => {
             if ($initiatorCanBeOrga.prop("checked")) {
                 $(".formGroupResolutionDate").removeClass("hidden");
             } else {
@@ -146,7 +146,7 @@ class MotionTypeEdit {
         });
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
-                val = parseInt($(this).val());
+                val = parseInt($(this).val() as string);
             $li.removeClass('title textHtml textSimple image tabularData');
             if (val === 0) {
                 $li.addClass('title');

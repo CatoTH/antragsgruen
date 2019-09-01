@@ -2,7 +2,7 @@ class AccountEdit {
     constructor() {
         let pwMinLen = $("#userPwd").data("min-len");
 
-        $('.accountDeleteForm input[name=accountDeleteConfirm]').change(function () {
+        $('.accountDeleteForm input[name=accountDeleteConfirm]').on("change", function () {
             if ($(this).prop("checked")) {
                 $(".accountDeleteForm button[name=accountDelete]").prop("disabled", false);
             } else {
@@ -14,7 +14,7 @@ class AccountEdit {
         if ($emailExisting.length == 1) {
             let $changeRow = $('.emailChangeRow');
             $changeRow.addClass('hidden');
-            $(".requestEmailChange").click(function (ev) {
+            $(".requestEmailChange").on("click", (ev) => {
                 ev.preventDefault();
                 $changeRow.removeClass("hidden");
                 $emailExisting.addClass("hidden");
@@ -23,8 +23,8 @@ class AccountEdit {
         }
 
         $('.userAccountForm').submit(function (ev) {
-            let pwd = $("#userPwd").val(),
-                pwd2 = $("#userPwd2").val();
+            let pwd = $("#userPwd").val() as string,
+                pwd2 = $("#userPwd2").val() as string;
             if (pwd != '' || pwd2 != '') {
                 if (pwd.length < pwMinLen) {
                     ev.preventDefault();

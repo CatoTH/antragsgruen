@@ -1,12 +1,12 @@
 class LoginForm {
     constructor() {
         let $form = $("#usernamePasswordForm"),
-            pwMinLen = $("#passwordInput").data("min-len");
-        $form.find("input[name=createAccount]").change(function () {
+            pwMinLen = parseInt($("#passwordInput").data("min-len") as string, 10);
+        $form.find("input[name=createAccount]").on("change", function () {
             if ($(this).prop("checked")) {
                 $("#pwdConfirm").removeClass('hidden');
                 $("#regName").removeClass('hidden').find("input").attr("required", "required");
-                $("#passwordInput").attr("placeholder", __t("std", "pw_min_x_chars").replace(/%NUM%/, pwMinLen));
+                $("#passwordInput").attr("placeholder", __t("std", "pw_min_x_chars").replace(/%NUM%/, pwMinLen.toString(10)));
                 $("#createStr").removeClass('hidden');
                 $("#loginStr").addClass('hidden');
                 $("#regConfirmation").removeClass('hidden');
@@ -24,10 +24,10 @@ class LoginForm {
             }
         }).trigger("change");
         $form.submit(function (ev) {
-            let pwd = $("#passwordInput").val();
+            let pwd = $("#passwordInput").val() as string;
             if (pwd.length < pwMinLen) {
                 ev.preventDefault();
-                bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen));
+                bootbox.alert(__t("std", "pw_x_chars").replace(/%NUM%/, pwMinLen.toString(10)));
             }
             if ($form.find("input[name=createAccount]").prop("checked")) {
                 if (pwd != $("#passwordConfirm").val()) {

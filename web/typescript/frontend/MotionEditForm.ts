@@ -57,7 +57,7 @@ export class MotionEditForm {
             $textarea = $holder.find(".texteditor"),
             editor = new AntragsgruenEditor($textarea.attr("id"));
 
-        $textarea.parents("form").submit(function () {
+        $textarea.parents("form").on("submit", () => {
             $textarea.parent().find("textarea").val(editor.getEditor().getData());
         });
         editor.getEditor().on('change', () => {
@@ -85,7 +85,7 @@ export class MotionEditForm {
             }
 
             $input.on('keyup change', () => {
-                let currLen = $input.val().length;
+                let currLen = ($input.val() as string).length;
                 $currCounter.text(currLen);
                 if (currLen > maxLen) {
                     $warning.removeClass('hidden');

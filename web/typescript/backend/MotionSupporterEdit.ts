@@ -8,7 +8,7 @@ export class MotionSupporterEdit {
             Sortable.create($sortable[0], {draggable: 'li'});
         }
 
-        $(".supporterRowAdder").click(function (ev) {
+        $(".supporterRowAdder").on("click", function (ev) {
             $sortable.append($(this).data("content"));
             ev.preventDefault();
         });
@@ -18,8 +18,8 @@ export class MotionSupporterEdit {
         });
 
         let $fullTextHolder = $("#fullTextHolder");
-        $supporterHolder.find(".fullTextAdd").click(() => {
-            let lines = $fullTextHolder.find('textarea').val().split(";"),
+        $supporterHolder.find(".fullTextAdd").on("click", () => {
+            let lines = ($fullTextHolder.find('textarea').val() as string).split(";"),
                 template = $(".supporterRowAdder").data("content"),
                 getNewElement = function () {
                     let $rows = $sortable.find("> li");
@@ -64,10 +64,10 @@ export class MotionSupporterEdit {
                     let $el = $(el),
                         parts = [];
                     if ($el.find(".supporterName").length) {
-                        parts.push($el.find(".supporterName").val().replace(/,/, ' ').replace(/;/, ' '));
+                        parts.push(($el.find(".supporterName").val() as string).replace(/,/, ' ').replace(/;/, ' '));
                     }
                     if ($el.find(".supporterOrga").length) {
-                        parts.push($el.find(".supporterOrga").val().replace(/,/, ' ').replace(/;/, ' '));
+                        parts.push(($el.find(".supporterOrga").val() as string).replace(/,/, ' ').replace(/;/, ' '));
                     }
                     if ($el.find(".colGender").length) {
                         let gender: any = $el.find(".colGender").first().children();

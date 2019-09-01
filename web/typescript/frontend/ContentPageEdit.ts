@@ -13,9 +13,9 @@ export class ContentPageEdit {
         this.$editCaller = $form.find('.editCaller');
         this.$contentSettings = $form.find('.contentSettingsToolbar');
 
-        this.$editCaller.click(this.editCalled.bind(this));
+        this.$editCaller.on("click", this.editCalled.bind(this));
         this.$textSaver.addClass('hidden');
-        this.$textSaver.find('button').click(this.save.bind(this));
+        this.$textSaver.find('button').on("click", this.save.bind(this));
 
         if (this.$contentSettings.length > 0) {
             this.initContentSettings();
@@ -60,7 +60,7 @@ export class ContentPageEdit {
     private initContentSettings() {
         this.$contentSettings.find('input[name=url]').on('keyup change keypress', (ev) => {
             let $input = $(ev.currentTarget);
-            $input.val($input.val().replace(/[^\w_\-,\.äöüß]/, ''));
+            $input.val(($input.val() as string).replace(/[^\w_\-,\.äöüß]/, ''));
         });
     }
 

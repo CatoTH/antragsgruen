@@ -47,19 +47,19 @@ export class InitiatorForm {
         this.settings = $widget.data('settings');
 
         this.$otherInitiator = $widget.find('input[name=otherInitiator]');
-        this.$otherInitiator.change(this.onChangeOtherInitiator.bind(this)).trigger('change');
+        this.$otherInitiator.on("change", this.onChangeOtherInitiator.bind(this)).trigger('change');
 
         $widget.find('#personTypeNatural, #personTypeOrga').on('click change', this.onChangePersonType.bind(this));
         this.onChangePersonType();
 
-        this.$initiatorAdderRow.find('a').click(this.initiatorAddRow.bind(this));
+        this.$initiatorAdderRow.find('a').on("click", this.initiatorAddRow.bind(this));
         this.$initiatorData.on('click', '.initiatorRow .rowDeleter', this.initiatorDelRow.bind(this));
-        this.$supporterAdderRow.find('a').click(this.supporterAddRow.bind(this));
+        this.$supporterAdderRow.find('a').on("click", this.supporterAddRow.bind(this));
         this.$supporterData.on('click', '.supporterRow .rowDeleter', this.supporterDelRow.bind(this));
         this.$supporterData.on('keydown', ' .supporterRow input[type=text]', this.onKeyOnTextfield.bind(this));
 
-        $('.fullTextAdder a').click(this.fullTextAdderOpen.bind(this));
-        $('.fullTextAdd').click(this.fullTextAdd.bind(this));
+        $('.fullTextAdder a').on("click", this.fullTextAdderOpen.bind(this));
+        $('.fullTextAdd').on("click", this.fullTextAdd.bind(this));
 
         if (this.$supporterData.length > 0 && this.$supporterData.data('min-supporters') > 0) {
             this.initMinSupporters();
@@ -167,7 +167,7 @@ export class InitiatorForm {
             }
             let found = 0;
             this.$supporterData.find('.supporterRow').each((i, el) => {
-                if ($(el).find('input.name').val().trim() != '') {
+                if (($(el).find('input.name').val() as string).trim() !== '') {
                     found++;
                 }
             });
@@ -185,7 +185,7 @@ export class InitiatorForm {
     }
 
     private fullTextAdd() {
-        let lines = this.$fullTextHolder.find('textarea').val().split(";"),
+        let lines = (this.$fullTextHolder.find('textarea').val() as string).split(";"),
             template = $('#newSupporterTemplate').data('html'),
             getNewElement = () => {
                 let $rows = this.$supporterData.find('.supporterRow');
