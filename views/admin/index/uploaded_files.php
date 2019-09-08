@@ -1,11 +1,10 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\settings\Stylesheet;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var array $files
  */
 
@@ -15,12 +14,12 @@ $consultation = $controller->consultation;
 $layout       = $controller->layoutParams;
 $layout->addCSS('css/backend.css');
 
-$this->title = \Yii::t('admin', 'files_title');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('/admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'), UrlHelper::createUrl('/admin/index/consultation'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_files'));
+$this->title = Yii::t('admin', 'files_title');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('/admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_consultation'), UrlHelper::createUrl('/admin/index/consultation'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_files'));
 
-echo '<h1>' . \Yii::t('admin', 'files_title') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'files_title') . '</h1>';
 ?>
 <div class="content uploadedFilesManage">
 
@@ -36,7 +35,7 @@ echo '<h1>' . \Yii::t('admin', 'files_title') . '</h1>';
                 <input type="hidden" name="id" value="<?= $file->id ?>">
                 <button type="submit" name="delete" class="btn btn-link">
                     <span class="glyphicon glyphicon-trash"></span>
-                    <?= \Yii::t('pages', 'images_delete') ?>
+                    <?= Yii::t('pages', 'images_delete') ?>
                 </button>
                 <?= Html::endForm() ?>
             </li>
@@ -47,7 +46,7 @@ echo '<h1>' . \Yii::t('admin', 'files_title') . '</h1>';
 
     <?php
     if (count($files) === 0) {
-        echo '<div class="noImages">' . \Yii::t('admin', 'files_none') . '</div>';
+        echo '<div class="noImages">' . Yii::t('admin', 'files_none') . '</div>';
     }
     ?>
 </div>
