@@ -135,7 +135,7 @@ class Base extends Controller
         }
 
         if (get_class($this) === ConsultationController::class && $action->id === 'home') {
-            if ($this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
+            if ($this->site && $this->site->getBehaviorClass()->siteHomeIsAlwaysPublic()) {
                 return true;
             }
         }
