@@ -15,6 +15,20 @@
   }
 }
 
+.contentPageWelcome {
+  overflow: auto;
+
+  .editCaller {
+    float: right;
+  }
+}
+
+.contentPageFeeds {
+  .editCaller {
+    float: right;
+  }
+}
+
 .contentSettingsToolbar {
   padding: 0;
   .textfield {

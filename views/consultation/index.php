@@ -44,7 +44,7 @@ echo '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
-echo '<div class="content contentPage contentPageWelcome" style="overflow: auto;">';
+echo '<div class="content contentPage contentPageWelcome">';
 
 if (count($consultation->motionTypes) === 1) {
     $deadline = $consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
@@ -62,7 +62,7 @@ if ($admin) {
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
     ]);
-    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
+    echo '<a href="#" class="editCaller">' . Yii::t('base', 'edit') . '</a><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

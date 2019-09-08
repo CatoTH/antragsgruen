@@ -37,12 +37,12 @@ class Layout
     public $alternateLanuages    = [];
     public $feeds                = [];
 
-    /** @var \app\models\db\Consultation|null */
+    /** @var Consultation|null */
     protected $consultation;
 
     /**
      * @param View|null $view
-     * @return string[]
+     * @return string[][]
      */
     public static function getCssLayouts($view = null)
     {

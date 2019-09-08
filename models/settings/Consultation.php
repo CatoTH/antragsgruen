@@ -27,7 +27,7 @@ class Consultation implements \JsonSerializable
     public $lineNumberingGlobal    = false;
     public $iniatorsMayEdit        = false;
     public $hideTitlePrefix        = false;
-    public $showFeeds              = true;
+    public $showFeeds              = true; // @TODO Obsolete since 2019-09. Remove sometimes in the future.
     public $commentNeedsEmail      = false;
     public $screeningComments      = false;
     public $initiatorConfirmEmails = false;

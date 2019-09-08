@@ -31,6 +31,7 @@ class ConsultationText extends ActiveRecord
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
+
         return $app->tablePrefix . 'consultationText';
     }
 
@@ -71,7 +72,12 @@ class ConsultationText extends ActiveRecord
         if ($this->consultationId) {
             $params['consultationPath'] = $this->consultation->urlPath;
         }
-        return UrlHelper::createUrl($params);
+
+        if ($this->textId === 'feeds') {
+            return UrlHelper::createUrl(['consultation/feeds']);
+        } else {
+            return UrlHelper::createUrl($params);
+        }
     }
 
     /**
@@ -86,6 +92,7 @@ class ConsultationText extends ActiveRecord
         if ($this->id) {
             $saveParams['pageId'] = $this->id;
         }
+
         return UrlHelper::createUrl($saveParams);
     }
 
@@ -101,6 +108,7 @@ class ConsultationText extends ActiveRecord
         } else {
             return null;
         }
+
         return UrlHelper::createUrl($saveParams);
     }
 
@@ -125,6 +133,7 @@ class ConsultationText extends ActiveRecord
             'welcome'     => \Yii::t('pages', 'content_welcome'),
             'login_pre'   => \Yii::t('pages', 'content_login_pre'),
             'login_post'  => \Yii::t('pages', 'content_login_post'),
+            'feeds'       => \Yii::t('pages', 'content_feeds_title'),
         ];
     }
 
@@ -148,6 +157,7 @@ class ConsultationText extends ActiveRecord
 
     /**
      * @param $pageKey
+     *
      * @return ConsultationText
      */
     public static function getDefaultPage($pageKey)
@@ -191,13 +201,20 @@ class ConsultationText extends ActiveRecord
                 $data->breadcrumb = \Yii::t('pages', 'content_login_post');
                 $data->text       = '';
                 break;
+            case 'feeds':
+                $data->title      = \Yii::t('pages', 'content_feeds_title');
+                $data->breadcrumb = \Yii::t('pages', 'content_feeds_title');
+                $data->text       = \Yii::t('pages', 'content_feeds_text');
+                break;
         }
+
         return $data;
     }
 
     /**
      * @param Site|null $site
      * @param Consultation|null $consultation
+     *
      * @return ConsultationText[]
      */
     public static function getMenuEntries($site, $consultation)
@@ -213,6 +230,7 @@ class ConsultationText extends ActiveRecord
             if ($page->textId === 'help' && $page->text === \Yii::t('pages', 'content_help_place')) {
                 return false;
             }
+
             return $page->menuPosition !== null;
         });
         usort($pages, function (ConsultationText $page1, ConsultationText $page2) {
@@ -224,6 +242,7 @@ class ConsultationText extends ActiveRecord
                 return 0;
             }
         });
+
         return $pages;
     }
 
@@ -231,6 +250,7 @@ class ConsultationText extends ActiveRecord
      * @param Site|null $site
      * @param Consultation|null $consultation
      * @param string $pageKey
+     *
      * @return ConsultationText
      */
     public static function getPageData($site, $consultation, $pageKey)
@@ -288,12 +308,14 @@ class ConsultationText extends ActiveRecord
                 $foundText->title = $defaultPage->title;
             }
         }
+
         return $foundText;
     }
 
     /**
      * @param Site $site
      * @param Consultation|null $consultation
+     *
      * @return ConsultationText[]
      */
     public static function getAllPages($site, $consultation)
@@ -309,6 +331,7 @@ class ConsultationText extends ActiveRecord
         usort($pages, function ($page1, $page2) {
             return strnatcasecmp($page1->title, $page2->title);
         });
+
         return $pages;
     }
 }

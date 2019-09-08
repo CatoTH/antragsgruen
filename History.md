@@ -10,6 +10,7 @@
 - The "Using Antragsgrün"-hint in the sidebar can now be disabled through the admin interface.
 - Several performance improvements for large installations with hundreds of amendments, especially in the motion view.
 - It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resultion.
+- RSS-Feeds have now a info page with some explanations about what RSS-Feeds actually are. The direct links in the sidebar are therefore replaced by a link to this info page.
 - Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens.
 - Bugfix: Long-broken references to OpenID-based login were removed.
 - Bugfix: Deleting tags form a consultation after a motion was assigned to this tag was not possible.

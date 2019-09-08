@@ -60,10 +60,12 @@ $I->dontSeeElementInDOM('#section_21_1 .motionComment .delLink');
 $I->wantTo('see the comment on the sidebar and the feed');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
 $I->see('My Name', '#sidebar .comments');
-$I->click('#sidebar .feedComments');
+$I->click('#sidebar .feeds a');
+$I->click('.feedComments');
 $I->seeInPageSource('My Name');
 $I->gotoConsultationHome(true, 'bdk', 'bdk');
-$I->click('#sidebar .feedAll');
+$I->click('#sidebar .feeds a');
+$I->click('.feedAll');
 $I->seeInPageSource('My Name');
 
 

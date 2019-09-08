@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Consultation $consultation
  * @var string $locale
  */
@@ -16,15 +16,15 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
 $layout->loadFuelux();
 
-$this->title = \Yii::t('admin', 'con_h1');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_consultation'));
+$this->title = Yii::t('admin', 'con_h1');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_consultation'));
 
 /**
  * @param \app\models\settings\Consultation $settings
@@ -40,7 +40,7 @@ $boolSettingRow = function ($settings, $field, &$handledSettings, $description) 
     echo '</label></div>';
 };
 
-?><h1><?= \Yii::t('admin', 'con_h1') ?></h1>
+?><h1><?= Yii::t('admin', 'con_h1') ?></h1>
 <?php
 echo Html::beginForm('', 'post', [
     'id'                       => 'consultationSettingsForm',
@@ -59,7 +59,7 @@ $handledSiteSettings = [];
 echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consultation);
 
 ?>
-    <h2 class="green"><?= \Yii::t('admin', 'con_title_general') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_title_general') ?></h2>
     <div class="content">
         <div>
             <label>
@@ -71,31 +71,31 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     ['id' => 'maintenanceMode']
                 );
                 ?>
-                <strong><?= \Yii::t('admin', 'con_maintenance') ?></strong>
-                <small><?= \Yii::t('admin', 'con_maintenance_hint') ?></small>
+                <strong><?= Yii::t('admin', 'con_maintenance') ?></strong>
+                <small><?= Yii::t('admin', 'con_maintenance_hint') ?></small>
             </label>
         </div>
 
 
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="consultationPath"><?= \Yii::t('admin', 'con_url_path') ?>
+            <label class="col-sm-3 control-label" for="consultationPath"><?= Yii::t('admin', 'con_url_path') ?>
                 :</label>
             <div class="col-sm-9 urlPathHolder">
                 <div class="shower">
                     <?= Html::encode($consultation->urlPath) ?>
-                    [<a href="#"><?= \Yii::t('admin', 'con_url_change') ?></a>]
+                    [<a href="#"><?= Yii::t('admin', 'con_url_change') ?></a>]
                 </div>
                 <div class="holder hidden">
                     <input type="text" required name="consultation[urlPath]"
                            value="<?= Html::encode($consultation->urlPath) ?>" class="form-control"
                            pattern="[\w_-]+" id="consultationPath">
-                    <small><?= \Yii::t('admin', 'con_url_path_hint') ?></small>
+                    <small><?= Yii::t('admin', 'con_url_path_hint') ?></small>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="consultationTitle"><?= \Yii::t('admin', 'con_title') ?>:</label>
+            <label class="col-sm-3 control-label" for="consultationTitle"><?= Yii::t('admin', 'con_title') ?>:</label>
             <div class="col-sm-9">
                 <input type="text" required name="consultation[title]" value="<?= Html::encode($consultation->title) ?>"
                        class="form-control" id="consultationTitle">
@@ -104,7 +104,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         <div class="form-group">
             <label class="col-sm-3 control-label"
-                   for="consultationTitleShort"><?= \Yii::t('admin', 'con_title_short') ?>:</label>
+                   for="consultationTitleShort"><?= Yii::t('admin', 'con_title_short') ?>:</label>
             <div class="col-sm-9">
                 <input type="text" required name="consultation[titleShort]"
                        maxlength="<?= Consultation::TITLE_SHORT_MAX_LEN ?>"
@@ -115,7 +115,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         <?php $handledSettings[] = 'lineLength'; ?>
         <fieldset class="form-group">
-            <label class="col-sm-3 control-label" for="lineLength"><?= \Yii::t('admin', 'con_line_len') ?>
+            <label class="col-sm-3 control-label" for="lineLength"><?= Yii::t('admin', 'con_line_len') ?>
                 :</label>
             <div class="col-sm-3">
                 <input type="number" required name="settings[lineLength]"
@@ -126,9 +126,9 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         <?php $handledSettings[] = 'robotsPolicy'; ?>
         <fieldset class="form-group">
             <div class="col-sm-3 control-label">
-                <?= \Yii::t('admin', 'con_robots') ?>:
+                <?= Yii::t('admin', 'con_robots') ?>:
                 <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
-                      data-original-title="<?= Html::encode(\Yii::t('admin', 'con_robots_hint')) ?>"></span>
+                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_robots_hint')) ?>"></span>
             </div>
             <div class="col-sm-9">
                 <?php
@@ -144,14 +144,14 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </fieldset>
 
     </div>
-    <h2 class="green"><?= \Yii::t('admin', 'con_appearance') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_appearance') ?></h2>
     <div class="content">
 
 
         <?php $handledSettings[] = 'startLayoutType'; ?>
         <div class="form-group">
             <label class="col-sm-3 control-label" for="startLayoutType">
-                <?= \Yii::t('admin', 'con_home_page_style') ?>:
+                <?= Yii::t('admin', 'con_home_page_style') ?>:
             </label>
             <div class="col-sm-9"><?php
                 echo HTMLTools::fueluxSelectbox(
@@ -165,7 +165,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </div>
 
         <fieldset class="form-group">
-            <div class="col-sm-3 control-label"><?= \Yii::t('admin', 'con_ci') ?>:</div>
+            <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_ci') ?>:</div>
             <div class="col-sm-9 thumbnailedLayoutSelector">
                 <?php
                 $layoutId              = $consultation->site->getSettings()->siteLayout;
@@ -191,12 +191,12 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                         $options['disabled'] = 'disabled';
                     }
                     echo Html::radio('siteSettings[siteLayout]', $isCustom, $options);
-                    echo ' ' . \Yii::t('admin', 'con_ci_custom');
+                    echo ' ' . Yii::t('admin', 'con_ci_custom');
                     ?>
                 </label>
                 <?= Html::a(
                     '<span class="glyphicon glyphicon-chevron-right"></span> ' .
-                    ($hasCustom ? \Yii::t('admin', 'con_ci_custom_edit') : \Yii::t('admin', 'con_ci_custom_create')),
+                    ($hasCustom ? Yii::t('admin', 'con_ci_custom_edit') : Yii::t('admin', 'con_ci_custom_create')),
                     UrlHelper::createUrl('/admin/index/theming'),
                     ['class' => 'editThemeLink']
                 ) ?>
@@ -204,7 +204,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </fieldset>
 
         <fieldset class="form-group logoRow">
-            <label class="col-sm-3 control-label" for="logoUrl"><?= \Yii::t('admin', 'con_logo_url') ?>:</label>
+            <label class="col-sm-3 control-label" for="logoUrl"><?= Yii::t('admin', 'con_logo_url') ?>:</label>
             <div class="col-sm-2 logoPreview">
                 <?php
                 if ($settings->logoUrl) {
@@ -218,8 +218,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     <input type="file" name="newLogo" class="form-control" id="logoUrl">
                     <label for="logoUrl">
                         <span class="glyphicon glyphicon-upload"></span>
-                        <span class="text" data-title="<?= Html::encode(\Yii::t('admin', 'con_logo_url_upload')) ?>">
-                            <?= \Yii::t('admin', 'con_logo_url_upload') ?>
+                        <span class="text" data-title="<?= Html::encode(Yii::t('admin', 'con_logo_url_upload')) ?>">
+                            <?= Yii::t('admin', 'con_logo_url_upload') ?>
                         </span>
                     </label>
                 </div>
@@ -231,7 +231,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     <div class="dropdown imageChooserDd">
                         <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <?= \Yii::t('admin', 'con_logo_url_choose') ?>
+                            <?= Yii::t('admin', 'con_logo_url_choose') ?>
                             <span class="caret"></span>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
@@ -245,7 +245,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                             </ul>
                             <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
                                 <span class="glyphicon glyphicon-chevron-right"></span>
-                                <?= Html::encode(\Yii::t('admin', 'con_logo_edit_images')) ?>
+                                <?= Html::encode(Yii::t('admin', 'con_logo_edit_images')) ?>
                             </a>
                         </div>
                     </div>
@@ -257,27 +257,25 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         <?php
 
-        $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, \Yii::t('admin', 'con_prefix_hide'));
-
-        $boolSettingRow($settings, 'showFeeds', $handledSettings, \Yii::t('admin', 'con_feeds_sidebar'));
+        $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, Yii::t('admin', 'con_prefix_hide'));
 
         $handledSiteSettings[] = 'showAntragsgruenAd';
         echo '<div><label>';
         echo Html::checkbox('siteSettings[showAntragsgruenAd]', $siteSettings->showAntragsgruenAd, ['id' => 'showAntragsgruenAd']) . ' ';
-        echo \Yii::t('admin', 'con_show_ad');
+        echo Yii::t('admin', 'con_show_ad');
         echo '</label></div>';
 
-        $propTitle = \Yii::t('admin', 'con_proposal_procedure');
+        $propTitle = Yii::t('admin', 'con_proposal_procedure');
         $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-            'title="" data-original-title="' . Html::encode(\Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+            'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
         $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
-        $boolSettingRow($settings, 'minimalisticUI', $handledSettings, \Yii::t('admin', 'con_minimalistic'));
+        $boolSettingRow($settings, 'minimalisticUI', $handledSettings, Yii::t('admin', 'con_minimalistic'));
 
         ?>
     </div>
 
-    <h2 class="green"><?= \Yii::t('admin', 'con_title_motions') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_title_motions') ?></h2>
     <div class="content">
 
         <div><label>
@@ -287,7 +285,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     ($settings->forceMotion !== null),
                     ['id' => 'singleMotionMode']
                 );
-                echo ' ' . \Yii::t('admin', 'con_single_motion_mode');
+                echo ' ' . Yii::t('admin', 'con_single_motion_mode');
                 ?>
             </label></div>
 
@@ -302,7 +300,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         }
         ?>
         <div class="form-group" id="forceMotionRow">
-            <label class="col-sm-3 control-label" for="startLayoutType"><?= \Yii::t('admin', 'con_force_motion') ?>
+            <label class="col-sm-3 control-label" for="startLayoutType"><?= Yii::t('admin', 'con_force_motion') ?>
                 :</label>
             <div class="col-sm-9"><?php
                 echo HTMLTools::fueluxSelectbox(
@@ -324,7 +322,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->lineNumberingGlobal,
                     ['id' => 'lineNumberingGlobal']
                 );
-                echo ' ' . \Yii::t('admin', 'con_line_number_global');
+                echo ' ' . Yii::t('admin', 'con_line_number_global');
                 ?>
             </label></div>
 
@@ -337,24 +335,24 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->screeningMotions,
                     ['id' => 'screeningMotions']
                 );
-                echo ' ' . \Yii::t('admin', 'con_motion_screening');
+                echo ' ' . Yii::t('admin', 'con_motion_screening');
                 ?>
             </label></div>
 
         <?php
-        $boolSettingRow($settings, 'adminsMayEdit', $handledSettings, \Yii::t('admin', 'con_admins_may_edit'));
+        $boolSettingRow($settings, 'adminsMayEdit', $handledSettings, Yii::t('admin', 'con_admins_may_edit'));
 
-        $boolSettingRow($settings, 'odtExportHasLineNumers', $handledSettings, \Yii::t('admin', 'con_odt_has_lines'));
+        $boolSettingRow($settings, 'odtExportHasLineNumers', $handledSettings, Yii::t('admin', 'con_odt_has_lines'));
 
-        $boolSettingRow($settings, 'iniatorsMayEdit', $handledSettings, \Yii::t('admin', 'con_initiators_may_edit'));
+        $boolSettingRow($settings, 'iniatorsMayEdit', $handledSettings, Yii::t('admin', 'con_initiators_may_edit'));
 
-        $boolSettingRow($settings, 'screeningMotionsShown', $handledSettings, \Yii::t('admin', 'con_show_screening'));
+        $boolSettingRow($settings, 'screeningMotionsShown', $handledSettings, Yii::t('admin', 'con_show_screening'));
 
 
         $tags = $consultation->getSortedTags();
         ?>
         <div class="form-group">
-            <div class="col-sm-3 control-label"><?= \Yii::t('admin', 'con_topics') ?>:</div>
+            <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_topics') ?>:</div>
             <div class="col-sm-9">
 
                 <div class="pillbox" data-initialize="pillbox" id="tagsList">
@@ -370,7 +368,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                         <li class="pillbox-input-wrap btn-group">
                             <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
                             <input type="text" class="form-control dropdown-toggle pillbox-add-item"
-                                   placeholder="<?= \Yii::t('admin', 'con_topic_add') ?>">
+                                   placeholder="<?= Yii::t('admin', 'con_topic_add') ?>">
                             <button type="button" class="dropdown-toggle sr-only">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
@@ -386,19 +384,19 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                         $settings->allowMultipleTags,
                         ['id' => 'allowMultipleTags']
                     );
-                    echo ' ' . \Yii::t('admin', 'con_multiple_topics');
+                    echo ' ' . Yii::t('admin', 'con_multiple_topics');
                     ?>
                 </label></div>
         </div>
 
 
     </div>
-    <h2 class="green"><?= \Yii::t('admin', 'con_title_amendments') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
     <div class="content">
 
         <div class="form-group">
             <label class="col-sm-3 control-label" for="amendmentNumbering">
-                <?= \Yii::t('admin', 'con_amend_number') ?>:
+                <?= Yii::t('admin', 'con_amend_number') ?>:
             </label>
             <div class="col-sm-9"><?php
                 echo HTMLTools::fueluxSelectbox(
@@ -420,7 +418,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->screeningAmendments,
                     ['id' => 'screeningAmendments']
                 );
-                echo ' ' . \Yii::t('admin', 'con_amend_screening');
+                echo ' ' . Yii::t('admin', 'con_amend_screening');
                 ?>
             </label></div>
 
@@ -432,7 +430,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->editorialAmendments,
                     ['id' => 'editorialAmendments']
                 );
-                echo ' ' . \Yii::t('admin', 'con_amend_editorial');
+                echo ' ' . Yii::t('admin', 'con_amend_editorial');
                 ?>
             </label></div>
 
@@ -444,12 +442,12 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->globalAlternatives,
                     ['id' => 'globalAlternatives']
                 );
-                echo ' ' . \Yii::t('admin', 'con_amend_globalalt');
+                echo ' ' . Yii::t('admin', 'con_amend_globalalt');
                 ?>
             </label></div>
     </div>
 
-    <h2 class="green"><?= \Yii::t('admin', 'con_title_comments') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_title_comments') ?></h2>
 
     <div class="content">
 
@@ -461,7 +459,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->screeningComments,
                     ['id' => 'screeningComments']
                 );
-                echo ' ' . \Yii::t('admin', 'con_comment_screening');
+                echo ' ' . Yii::t('admin', 'con_comment_screening');
                 ?>
             </label></div>
 
@@ -473,15 +471,15 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->commentNeedsEmail,
                     ['id' => 'commentNeedsEmail']
                 );
-                echo ' ' . \Yii::t('admin', 'con_comment_email');
+                echo ' ' . Yii::t('admin', 'con_comment_email');
                 ?>
             </label></div>
 
     </div>
-    <h2 class="green"><?= \Yii::t('admin', 'con_title_email') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'con_title_email') ?></h2>
     <div class="content">
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="adminEmail"><?= \Yii::t('admin', 'con_email_admins') ?>:</label>
+            <label class="col-sm-3 control-label" for="adminEmail"><?= Yii::t('admin', 'con_email_admins') ?>:</label>
             <div class="col-sm-9">
                 <input type="text" name="consultation[adminEmail]"
                        value="<?= Html::encode($consultation->adminEmail) ?>"
@@ -491,11 +489,11 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         <?php
         $handledSettings[] = 'emailFromName';
-        $placeholder       = str_replace('%NAME%', $params->mailFromName, \Yii::t('admin', 'con_email_from_place'));
+        $placeholder       = str_replace('%NAME%', $params->mailFromName, Yii::t('admin', 'con_email_from_place'));
         ?>
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="emailReplyTo">
-                <?= \Yii::t('admin', 'con_email_from') ?>:
+            <label class="col-sm-3 control-label" for="emailFromName">
+                <?= Yii::t('admin', 'con_email_from') ?>:
             </label>
             <div class="col-sm-9">
                 <input type="text" name="settings[emailFromName]" class="form-control" id="emailFromName"
@@ -509,7 +507,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             <label class="col-sm-3 control-label" for="emailReplyTo">Reply-To:</label>
             <div class="col-sm-9">
                 <input type="email" name="settings[emailReplyTo]" class="form-control" id="emailReplyTo"
-                       placeholder="<?= \Yii::t('admin', 'con_email_replyto_place') ?>"
+                       placeholder="<?= Yii::t('admin', 'con_email_replyto_place') ?>"
                        value="<?= Html::encode($settings->emailReplyTo) ?>">
             </div>
         </div>
@@ -523,14 +521,14 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     $settings->initiatorConfirmEmails,
                     ['id' => 'initiatorConfirmEmails']
                 );
-                echo ' ' . \Yii::t('admin', 'con_send_motion_email');
+                echo ' ' . Yii::t('admin', 'con_send_motion_email');
                 ?>
             </label>
         </div>
 
 
         <div class="saveholder">
-            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('admin', 'save') ?></button>
+            <button type="submit" name="save" class="btn btn-primary"><?= Yii::t('admin', 'save') ?></button>
         </div>
 
 

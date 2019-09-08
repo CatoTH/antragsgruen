@@ -21,7 +21,7 @@ export class ContentPageEdit {
             this.initContentSettings();
         }
 
-        $(".deletePageForm").submit(this.onSubmitDeleteForm.bind(this));
+        $(".deletePageForm").on("submit", this.onSubmitDeleteForm.bind(this));
     }
 
     private editCalled(ev) {
@@ -52,7 +52,7 @@ export class ContentPageEdit {
             evt.data['requestData']['_csrf'] = this.$form.find('> input[name=_csrf]').val();
         });
 
-        this.$textHolder.focus();
+        this.$textHolder.trigger("focus");
         this.$textSaver.removeClass('hidden');
         this.$contentSettings.removeClass('hidden');
     }

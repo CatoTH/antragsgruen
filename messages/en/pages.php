@@ -22,6 +22,20 @@ return [
     'content_maint_text'    => '<p>This consultation has not, yet, been made public.</p>',
     'content_login_pre'     => 'Login (above)',
     'content_login_post'    => 'Login (below)',
+    'content_feeds_title'   => 'RSS-Feeds',
+    'content_feeds_text'    => '<p>RSS-Feeds are a comfortable way to keep up to date with many different news sources.</p>
+        <p>You use a RSS-reader program to subscribe to all news sites, blogs, web-comics, or Antragsgrün-sites that are of interest to you.</p>
+        <p>From then on this program will show you an overwiev of all new articles on these sites.</p>
+        <p>A small selection of programs and web services to read RSS feeds:</p>
+        <ul>
+            <li><a href="http://www.rssowl.org/">RSSOwl</a> (Linux, macOS, Windows)</li>
+            <li><a href="https://ranchero.com/netnewswire/">NetNewsWire</a> (macOS)</li>
+            <li><a href="https://reederapp.com/">Reeder</a> (macOS, iOS)</li>
+            <li><a href="https://www.vienna-rss.com/">Vienna</a> (macOS)</li>
+            <li><a href="https://www.microsoft.com/en-us/p/newsflow/9nblggh58s5r">Newsflow</a> (Windows)</li>
+            <li><a href="https://feedly.com/">Feedly</a> (Web-Dienst)</li>
+            <li><a href="https://feedbin.com/">Feedbin</a> (Web-Dienst)</li>
+        </ul>',
 
     'images_browse_title' => 'Browse images uploaded for this consultation',
     'images_none'         => 'No image uploaded yet.',

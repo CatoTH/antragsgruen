@@ -104,6 +104,12 @@ $title = '<span class="glyphicon glyphicon-bell"></span>' . Yii::t('con', 'email
 $link  = UrlHelper::createUrl('consultation/notifications');
 $html  .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
 
+if ($consultation->getSettings()->showFeeds) {
+    $title = '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feeds');
+    $link  = UrlHelper::createUrl('consultation/feeds');
+    $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
+}
+
 $html                     .= '</ul></div>';
 $layout->menusHtml[]      = $html;
 $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
@@ -125,7 +131,7 @@ if ($hasMotions) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
     if (count($newestMotions) == 0) {
-        $html .= '<li><i>' . \Yii::t('con', 'sb_motions_none') . '</i></li>';
+        $html .= '<li><i>' . Yii::t('con', 'sb_motions_none') . '</i></li>';
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
@@ -142,7 +148,7 @@ if ($hasAmendments) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_amendments') . '</li>';
     if (count($newestAmendments) == 0) {
-        $html .= '<li><i>' . \Yii::t('con', 'sb_amends_none') . '</i></li>';
+        $html .= '<li><i>' . Yii::t('con', 'sb_amends_none') . '</i></li>';
     } else {
         foreach ($newestAmendments as $amendment) {
             $title = explode(' ', Html::encode($amendment->getShortTitle()));
@@ -162,9 +168,9 @@ if ($hasAmendments) {
 
 if ($hasComments) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list comments">' .
-        '<li class="nav-header">' . \Yii::t('con', 'new_comments') . '</li>';
+        '<li class="nav-header">' . Yii::t('con', 'new_comments') . '</li>';
     if (count($newestComments) == 0) {
-        $html .= '<li><i>' . \Yii::t('con', 'sb_comm_none') . '</i></li>';
+        $html .= '<li><i>' . Yii::t('con', 'sb_comm_none') . '</i></li>';
     } else {
         foreach ($newestComments as $comment) {
             $html .= '<li><a href="' . Html::encode($comment->getLink()) . '">';
@@ -173,11 +179,11 @@ if ($hasComments) {
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
                 /** @var \app\models\db\MotionComment $comment */
-                $html .= '<div>' . \Yii::t('con', 'sb_comm_to') . ' ' .
+                $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
                     Html::encode($comment->motion->titlePrefix) . '</div>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
                 /** @var \app\models\db\AmendmentComment $comment */
-                $html .= '<div>' . \Yii::t('con', 'sb_comm_to') . ' ' .
+                $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
                     Html::encode($comment->amendment->titlePrefix) . '</div>';
             }
             $html .= '</a></li>';
@@ -186,13 +192,12 @@ if ($hasComments) {
     $html                .= '</ul></div>';
     $layout->menusHtml[] = $html;
 }
-
 if ($consultation->getSettings()->showFeeds) {
     $feeds          = 0;
     $feedsHtml      = '';
     $feedsHtmlSmall = '<li class="dropdown">
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-      aria-expanded="false">' . \Yii::t('con', 'sb_feeds') . ' <span class="caret"></span></a>
+      aria-expanded="false">' . Yii::t('con', 'sb_feeds') . ' <span class="caret"></span></a>
                     <ul class="dropdown-menu">';
 
     if ($hasMotions) {
@@ -320,7 +325,7 @@ if ($hasPDF) {
     if ($hasAmendments) {
         $amendPdfLink = UrlHelper::createUrl([
             'amendment/pdfcollection',
-            'filename' => \Yii::t('con', 'feed_amendments') . '.pdf',
+            'filename' => Yii::t('con', 'feed_amendments') . '.pdf',
         ]);
         $linkTitle    = '<span class="glyphicon glyphicon-download-alt"></span>';
         $linkTitle    .= Yii::t('con', 'pdf_amendments');
