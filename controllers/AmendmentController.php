@@ -63,7 +63,6 @@ class AmendmentController extends Base
      * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
-     * @throws \yii\base\ExitException
      */
     public function actionPdf($motionSlug, $amendmentId)
     {
@@ -329,7 +328,9 @@ class AmendmentController extends Base
             try {
                 $form->saveAmendment($amendment);
 
-                ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
+                if ($amendment->isVisible()) {
+                    ConsultationLog::logCurrUser($this->consultation, ConsultationLog::AMENDMENT_CHANGE, $amendment->id);
+                }
 
                 if ($amendment->status == Amendment::STATUS_DRAFT) {
                     $nextUrl = [

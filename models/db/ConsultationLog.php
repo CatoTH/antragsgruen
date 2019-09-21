@@ -232,6 +232,12 @@ class ConsultationLog extends ActiveRecord
     public function getLink()
     {
         $this->setMotionData();
+        if ($this->motion && !$this->motion->isVisible()) {
+            return null;
+        }
+        if ($this->amendment && !$this->amendment->isVisible()) {
+            return null;
+        }
         switch ($this->actionType) {
             case static::MOTION_PUBLISH:
             case static::MOTION_CHANGE:
@@ -398,6 +404,12 @@ class ConsultationLog extends ActiveRecord
     public function formatLogEntry()
     {
         $this->setMotionData();
+        if ($this->motion && !$this->motion->isVisible()) {
+            return null;
+        }
+        if ($this->amendment && !$this->amendment->isVisible()) {
+            return null;
+        }
         switch ($this->actionType) {
             case static::MOTION_PUBLISH:
                 $str      = \Yii::t('structure', 'activity_MOTION_PUBLISH');
@@ -416,9 +428,13 @@ class ConsultationLog extends ActiveRecord
                 $prefix = static::motionId2Prefix($this->actionReferenceId);
                 $str    = str_replace('###MOTION###', $prefix, $str);
                 return $str;
+            case static::MOTION_CHANGE:
+                $str = \Yii::t('structure', 'activity_MOTION_CHANGE');
+                $str = $this->formatLogEntryUser($str, '');
+                return $str;
             case static::MOTION_WITHDRAW:
                 $str = \Yii::t('structure', 'activity_MOTION_WITHDRAW');
-                $str = $this->formatLogEntryAmendment($str);
+                $str = $this->formatLogEntryUser($str, '');
                 return $str;
             case static::MOTION_COMMENT:
                 if ($this->motionComment) {

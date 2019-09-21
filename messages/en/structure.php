@@ -177,6 +177,7 @@ return [
     'activity_MOTION_DELETE'              => '###USER### <strong>deleted the motion ###MOTION###</strong>',
     'activity_MOTION_DELETE_PUBLISHED'    => '###USER### <strong>deleted the motion ###MOTION###</strong>',
     'activity_MOTION_PUBLISH'             => '###USER### <strong>submitted the motion</strong>',
+    'activity_MOTION_CHANGE'              => '###USER###  <strong>edited the motion ###MOTION###</strong>',
     'activity_MOTION_WITHDRAW'            => 'The motion was <strong>withdrawn</strong>.',
     'activity_MOTION_COMMENT'             => '###USER### <strong>commented on the motion</strong>',
     'activity_MOTION_SCREEN'              => 'The <strong>motion was published</strong>',

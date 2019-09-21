@@ -12,18 +12,18 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
-$this->title  = \Yii::t('con', 'activity_bc');
+$this->title  = Yii::t('con', 'activity_bc');
 
 $layout = $controller->layoutParams;
-$layout->addBreadcrumb(\Yii::t('con', 'activity_bc'));
+$layout->addBreadcrumb(Yii::t('con', 'activity_bc'));
 
-echo '<h1>' . Html::encode(\Yii::t('con', 'activity_title')) . '</h1>';
+echo '<h1>' . Html::encode(Yii::t('con', 'activity_title')) . '</h1>';
 echo '<div class="content activityLogPage">';
 
 
 $entries = $form->getLogEntries();
 if (count($entries) === 0) {
-    echo '<div class="alert alert-info">' . \Yii::t('structure', 'activity_none') . '</div>';
+    echo '<div class="alert alert-info">' . Yii::t('structure', 'activity_none') . '</div>';
 } else {
     echo $form->getPagination('consultation/activitylog');
 

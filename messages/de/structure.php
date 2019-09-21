@@ -177,6 +177,7 @@ return [
     'activity_MOTION_DELETE'              => '###USER### hat einen <strong>Antrag ###MOTION### gelöscht</strong>',
     'activity_MOTION_DELETE_PUBLISHED'    => '###USER### hat den <strong>Antrag ###MOTION### nachträglich gelöscht</strong>',
     'activity_MOTION_PUBLISH'             => '###USER### hat den <strong>Antrag eingereicht</strong>',
+    'activity_MOTION_CHANGE'              => '###USER### hat den <strong>Antrag ###MOTION### überarbeitet</strong>',
     'activity_MOTION_WITHDRAW'            => 'Der Antrag wurde <strong>zurückgezogen</strong>.',
     'activity_MOTION_COMMENT'             => '###USER### hat den <strong>Antrag kommentiert</strong>',
     'activity_MOTION_SCREEN'              => 'Der <strong>Antrag</strong> wurde <strong>veröffentlicht</strong>',

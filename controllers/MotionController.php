@@ -531,7 +531,9 @@ class MotionController extends Base
                     $form->updateTextRewritingAmendments($motion, $post['sections']);
                 }
 
-                ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
+                if ($motion->isVisible()) {
+                    ConsultationLog::logCurrUser($this->consultation, ConsultationLog::MOTION_CHANGE, $motion->id);
+                }
 
                 if ($motion->status == Motion::STATUS_DRAFT) {
                     $nextUrl = UrlHelper::createMotionUrl($motion, 'createconfirm', ['fromMode' => $fromMode]);

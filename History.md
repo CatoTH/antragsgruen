@@ -15,6 +15,7 @@
 - Bugfix: Long-broken references to OpenID-based login were removed.
 - Bugfix: Deleting tags form a consultation after a motion was assigned to this tag was not possible.
 - Bugfix: In a few cases, the internal proposed modified amendment was linked instead of the main amendment. The page was not accessible.
+- Bugfix: In some cases, broken links were shown in the Activity log
 
 ### Version 4.2.3 (2019-07-18)
 
