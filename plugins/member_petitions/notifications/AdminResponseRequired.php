@@ -44,7 +44,7 @@ class AdminResponseRequired extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminTitle()
+    public function getEmailAdminSubject()
     {
         return "Mitgliederbegehren erfolgereich";
     }
