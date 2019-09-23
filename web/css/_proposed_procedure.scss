@@ -71,9 +71,14 @@
       font-weight: normal;
     }
     .setConfirmationStatus {
-      text-align: right;
+      overflow: auto;
     }
     .setConfirmation {
+      float: right;
+      font-weight: normal;
+    }
+    .sendAgain {
+      float: left;
       font-weight: normal;
     }
   }

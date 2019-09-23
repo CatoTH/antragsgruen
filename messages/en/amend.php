@@ -278,6 +278,8 @@ return [
     'proposal_notify_replyto'    => 'Reply-To-address',
     'proposal_notify_name'       => 'Sender-name',
     'proposal_no_feedback'       => 'No confirmation yet',
+    'proposal_send_again'        => 'Again',
+    'proposal_send_again_conf'   => 'Do you want to send the confirmation mail again?',
     'proposal_set_feedback'      => 'Set as confirmed',
     'proposal_set_feedback_conf' => 'Did the initiator confirm this proposal?',
     'proposal_notified'          => 'The proposer has been notified at %DATE%.',

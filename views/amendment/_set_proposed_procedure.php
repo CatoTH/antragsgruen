@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var \app\models\db\Amendment $amendment
  * @var string $context
  */
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
-$saveUrl = \app\components\UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
+$saveUrl = UrlHelper::createAmendmentUrl($amendment, 'save-proposal-status');
 echo Html::beginForm($saveUrl, 'POST', [
     'id'                       => 'proposedChanges',
     'data-antragsgruen-widget' => 'backend/ChangeProposedProcedure',
@@ -45,15 +45,15 @@ if (isset($msgAlert) && $msgAlert !== null) {
 $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
 ?>
     <h2>
-        <?= \Yii::t('amend', 'proposal_amend_title') ?>
+        <?= Yii::t('amend', 'proposal_amend_title') ?>
         <button class="pull-right btn-link closeBtn" type="button"
-                title="<?= Html::encode(\Yii::t('amend', 'proposal_close')) ?>">
+                title="<?= Html::encode(Yii::t('amend', 'proposal_close')) ?>">
             <span class="glyphicon glyphicon-chevron-up"></span>
         </button>
     </h2>
     <div class="holder">
         <section class="statusForm">
-            <h3><?= \Yii::t('amend', 'proposal_status_title') ?></h3>
+            <h3><?= Yii::t('amend', 'proposal_status_title') ?></h3>
 
             <?php
             $foundStatus = false;
@@ -72,77 +72,82 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             ?>
             <label>
                 <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0']) ?>
-                - <?= \Yii::t('amend', 'proposal_status_na') ?> -
+                - <?= Yii::t('amend', 'proposal_status_na') ?> -
             </label>
         </section>
         <div class="middleCol">
             <div class="visibilitySettings showIfStatusSet">
-                <h3><?= \Yii::t('amend', 'proposal_publicity') ?></h3>
+                <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
                 <label>
                     <?= Html::checkbox('proposalVisible', ($amendment->proposalVisibleFrom !== null)) ?>
-                    <?= \Yii::t('amend', 'proposal_visible') ?>
+                    <?= Yii::t('amend', 'proposal_visible') ?>
                 </label>
                 <label>
                     <?= Html::checkbox('setPublicExplanation', ($amendment->proposalExplanation !== null)) ?>
-                    <?= \Yii::t('amend', 'proposal_public_expl_set') ?>
+                    <?= Yii::t('amend', 'proposal_public_expl_set') ?>
                 </label>
             </div>
             <div class="votingBlockSettings showIfStatusSet">
-                <h3><?= \Yii::t('amend', 'proposal_voteblock') ?></h3>
+                <h3><?= Yii::t('amend', 'proposal_voteblock') ?></h3>
                 <?php
                 $options = ['-'];
                 foreach ($votingBlocks as $votingBlock) {
                     $options[$votingBlock->id] = $votingBlock->title;
                 }
-                $options['NEW'] = '- ' . \Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
+                $options['NEW'] = '- ' . Yii::t('amend', 'proposal_voteblock_newopt') . ' -';
                 $attrs          = ['id' => 'votingBlockId'];
                 echo HTMLTools::fueluxSelectbox('votingBlockId', $options, $amendment->votingBlockId, $attrs);
                 ?>
                 <div class="newBlock">
                     <label for="newBlockTitle" class="control-label">
-                        <?= \Yii::t('amend', 'proposal_voteblock_new') ?>:
+                        <?= Yii::t('amend', 'proposal_voteblock_new') ?>:
                     </label>
                     <input type="text" class="form-control" id="newBlockTitle" name="newBlockTitle">
                 </div>
             </div>
             <div class="notificationSettings showIfStatusSet">
-                <h3><?= \Yii::t('amend', 'proposal_noti') ?></h3>
+                <h3><?= Yii::t('amend', 'proposal_noti') ?></h3>
                 <div class="notificationStatus">
                     <?php
                     if ($amendment->proposalUserStatus !== null) {
                         if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
                             echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
-                            echo \Yii::t('amend', 'proposal_user_accepted');
+                            echo Yii::t('amend', 'proposal_user_accepted');
                         } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
                             echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
-                            echo \Yii::t('amend', 'proposal_user_rejected');
+                            echo Yii::t('amend', 'proposal_user_rejected');
                         } else {
                             echo 'Error: unknown response of the proposer';
                         }
                     } elseif ($amendment->proposalFeedbackHasBeenRequested()) {
-                        $msg  = \Yii::t('amend', 'proposal_notified');
+                        $msg  = Yii::t('amend', 'proposal_notified');
                         $date = Tools::formatMysqlDate($amendment->proposalNotification, null, false);
                         echo str_replace('%DATE%', $date, $msg);
-                        echo ' ' . \Yii::t('amend', 'proposal_no_feedback');
-
-                        echo '<div class="setConfirmationStatus">';
-                        echo '<button class="btn btn-xs btn-link setConfirmation" type="button"
-                                      data-msg="' . Html::encode(\Yii::t('amend', 'proposal_set_feedback_conf')) . '">';
-                        echo \Yii::t('amend', 'proposal_set_feedback');
-                        echo '</button>';
-                        echo '</div>';
+                        echo ' ' . Yii::t('amend', 'proposal_no_feedback');
+                        ?>
+                        <div class="setConfirmationStatus">
+                            <button class="btn btn-xs btn-link setConfirmation" type="button"
+                                    data-msg="<?= Html::encode(Yii::t('amend', 'proposal_set_feedback_conf')) ?>">
+                                <?= Yii::t('amend', 'proposal_set_feedback') ?>
+                            </button>
+                            <button class="btn btn-xs btn-link sendAgain" type="button"
+                                    data-msg="<?= Html::encode(Yii::t('amend', 'proposal_send_again_conf')) ?>">
+                                <?= Yii::t('amend', 'proposal_send_again') ?>
+                            </button>
+                        </div>
+                        <?php
                     } elseif ($amendment->proposalStatus !== null) {
                         if ($amendment->proposalAllowsUserFeedback()) {
-                            $msg = \Yii::t('amend', 'proposal_notify_w_feedback');
+                            $msg = Yii::t('amend', 'proposal_notify_w_feedback');
                         } else {
-                            $msg = \Yii::t('amend', 'proposal_notify_o_feedback');
+                            $msg = Yii::t('amend', 'proposal_notify_o_feedback');
                         }
                         ?>
                         <button class="notifyProposer hideIfChanged btn btn-xs btn-default" type="button">
                             <?= $msg ?>
                         </button>
                         <div class="showIfChanged notSavedHint">
-                            <?= \Yii::t('amend', 'proposal_notify_notsaved') ?>
+                            <?= Yii::t('amend', 'proposal_notify_notsaved') ?>
                         </div>
                         <?php
                     }
@@ -151,7 +156,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             </div>
         </div>
         <section class="proposalCommentForm">
-            <h3><?= \Yii::t('amend', 'proposal_comment_title') ?></h3>
+            <h3><?= Yii::t('amend', 'proposal_comment_title') ?></h3>
             <ol class="commentList">
                 <?php
                 $commentTypes = [IAdminComment::PROPOSED_PROCEDURE];
@@ -174,7 +179,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                         <div class="comment">
                             <?php
                             if ($adminComment->status == IAdminComment::PROPOSED_PROCEDURE) {
-                                echo '<div class="overv">' . \Yii::t('amend', 'proposal_comment_overview') . '</div>';
+                                echo '<div class="overv">' . Yii::t('amend', 'proposal_comment_overview') . '</div>';
                             }
                             ?>
                             <?= HTMLTools::textToHtmlWithLink($adminComment->text) ?>
@@ -185,13 +190,13 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 ?>
             </ol>
 
-            <textarea name="text" placeholder="<?= Html::encode(\Yii::t('amend', 'proposal_comment_placeh')) ?>"
+            <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
                       class="form-control" rows="1"></textarea>
-            <button class="btn btn-default btn-xs"><?= \Yii::t('amend', 'proposal_comment_write') ?></button>
+            <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>
     </div>
     <section class="statusDetails status_<?= Amendment::STATUS_OBSOLETED_BY ?>">
-        <label class="headingLabel"><?= \Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
+        <label class="headingLabel"><?= Yii::t('amend', 'proposal_obsoleted_by') ?>...</label>
         <?php
         $options = ['-'];
         foreach ($amendment->getMyMotion()->getVisibleAmendmentsSorted() as $otherAmend) {
@@ -212,18 +217,18 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         ?>
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_REFERRED ?>">
-        <label class="headingLabel" for="referredTo"><?= \Yii::t('amend', 'proposal_refer_to') ?>...</label>
+        <label class="headingLabel" for="referredTo"><?= Yii::t('amend', 'proposal_refer_to') ?>...</label>
         <input type="text" name="referredTo" id="referredTo" value="<?= Html::encode($preReferredTo) ?>"
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_CUSTOM_STRING ?>">
-        <label class="headingLabel" for="statusCustomStr"><?= \Yii::t('amend', 'proposal_custom_str') ?>:</label>
+        <label class="headingLabel" for="statusCustomStr"><?= Yii::t('amend', 'proposal_custom_str') ?>:</label>
         <input type="text" name="statusCustomStr" id="statusCustomStr" value="<?= Html::encode($preCustomStr) ?>"
                class="form-control">
     </section>
     <section class="statusDetails status_<?= Amendment::STATUS_VOTE ?>">
         <div class="votingStatus">
-            <h3><?= \Yii::t('amend', 'proposal_voting_status') ?></h3>
+            <h3><?= Yii::t('amend', 'proposal_voting_status') ?></h3>
             <?php
             foreach (Amendment::getVotingStatuses() as $statusId => $statusName) {
                 ?>
@@ -240,20 +245,20 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </div>
     </section>
     <section class="publicExplanation">
-        <h3><?= \Yii::t('amend', 'proposal_public_expl_title') ?></h3>
+        <h3><?= Yii::t('amend', 'proposal_public_expl_title') ?></h3>
         <?php
         echo Html::textarea(
             'proposalExplanation',
             $amendment->proposalExplanation,
             [
-                'title' => \Yii::t('amend', 'proposal_public_expl_title'),
+                'title' => Yii::t('amend', 'proposal_public_expl_title'),
                 'class' => 'form-control',
             ]
         );
         ?>
     </section>
     <section class="collisions <?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
-        <h3><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
+        <h3><?= Yii::t('amend', 'proposal_conflict_title') ?>:</h3>
         <ul>
             <?php
             foreach ($collidingAmendments as $collidingAmendment) {
@@ -261,7 +266,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                 echo '<li class="collision' . $collidingAmendment->id . '">' . Html::a($title, $url);
                 if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
-                    echo ' (' . \Yii::t('amend', 'proposal_voting') . ')';
+                    echo ' (' . Yii::t('amend', 'proposal_voting') . ')';
                 }
                 echo '</li>';
             }
@@ -269,22 +274,22 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         </ul>
     </section>
     <section class="notifyProposerSection hidden">
-        <h3><?= \Yii::t('amend', 'proposal_notify_text') ?></h3>
+        <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
         <div class="row proposalFrom">
             <?php
             $replyTo            = \app\components\mail\Tools::getDefaultReplyTo($amendment->getMyConsultation());
             $fromName           = \app\components\mail\Tools::getDefaultMailFromName($amendment->getMyConsultation());
-            $placeholderReplyTo = \Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
-            $placeholderName    = \Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
+            $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
+            $placeholderName    = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;
             ?>
             <div class="col-md-6">
                 <input type="text" name="proposalNotificationFrom" id="proposalNotificationFrom" class="form-control"
-                       title="<?= \Yii::t('amend', 'proposal_notify_name') ?>"
+                       title="<?= Yii::t('amend', 'proposal_notify_name') ?>"
                        placeholder="<?= Html::encode($placeholderName) ?>">
             </div>
             <div class="col-md-6">
                 <input type="text" name="proposalNotificationReply" id="proposalNotificationReply" class="form-control"
-                       title="<?= \Yii::t('amend', 'proposal_notify_replyto') ?>"
+                       title="<?= Yii::t('amend', 'proposal_notify_replyto') ?>"
                        placeholder="<?= Html::encode($placeholderReplyTo) ?>">
             </div>
         </div>
@@ -294,7 +299,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             'proposalNotificationText',
             $defaultText,
             [
-                'title' => \Yii::t('amend', 'proposal_notify_text'),
+                'title' => Yii::t('amend', 'proposal_notify_text'),
                 'class' => 'form-control',
                 'rows'  => 5,
             ]
@@ -304,9 +309,9 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             <button type="button" name="notificationSubmit" class="btn btn-success btn-sm">
                 <?php
                 if ($amendment->proposalAllowsUserFeedback()) {
-                    echo \Yii::t('amend', 'proposal_notify_w_feedback');
+                    echo Yii::t('amend', 'proposal_notify_w_feedback');
                 } else {
-                    echo \Yii::t('amend', 'proposal_notify_o_feedback');
+                    echo Yii::t('amend', 'proposal_notify_o_feedback');
                 }
                 ?>
             </button>
@@ -314,11 +319,11 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
     </section>
     <section class="saving showIfChanged">
         <button class="btn btn-default btn-sm">
-            <?= \Yii::t('amend', 'proposal_save_changes') ?>
+            <?= Yii::t('amend', 'proposal_save_changes') ?>
         </button>
     </section>
     <section class="saved">
-        <?= \Yii::t('base', 'saved') ?>
+        <?= Yii::t('base', 'saved') ?>
     </section>
 <?php
 if ($context !== 'edit') {
@@ -327,10 +332,10 @@ if ($context !== 'edit') {
     $classes[] = 'status_' . Amendment::STATUS_VOTE;
     ?>
     <section class="<?= implode(' ', $classes) ?>">
-        <h3><?= \Yii::t('amend', 'proposal_modified_accepted') ?></h3>
+        <h3><?= Yii::t('amend', 'proposal_modified_accepted') ?></h3>
         <?php
         echo Html::a(
-            \Yii::t('base', 'edit'),
+            Yii::t('base', 'edit'),
             UrlHelper::createAmendmentUrl($amendment, 'edit-proposed-change'),
             ['class' => 'editModification']
         );

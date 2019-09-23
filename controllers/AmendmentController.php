@@ -561,7 +561,7 @@ class AmendmentController extends Base
             $response['proposalStr'] = $amendment->getFormattedProposalStatus(true);
         }
 
-        if (\Yii::$app->request->post('notifyProposer')) {
+        if (\Yii::$app->request->post('notifyProposer') || \Yii::$app->request->post('sendAgain')) {
             try {
                 new AmendmentProposedProcedure(
                     $amendment,

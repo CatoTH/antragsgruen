@@ -806,7 +806,7 @@ class MotionController extends Base
             $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
         }
 
-        if (\Yii::$app->request->post('notifyProposer')) {
+        if (\Yii::$app->request->post('notifyProposer') || \Yii::$app->request->post('sendAgain')) {
             try {
                 new MotionProposedProcedure(
                     $motion,

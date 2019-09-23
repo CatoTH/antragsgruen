@@ -21,7 +21,7 @@ export class ChangeProposedProcedure {
         this.initCommentForm();
         this.initVotingBlock();
         this.initExplanation();
-        $widget.submit(ev => ev.preventDefault());
+        $widget.on("submit", ev => ev.preventDefault());
     }
 
     private initElements() {
@@ -116,6 +116,17 @@ export class ChangeProposedProcedure {
         });
     }
 
+    private sendAgain() {
+        const confirm = this.$widget.find('.sendAgain').data('msg');
+        bootbox.confirm(confirm, (result) => {
+            if (result) {
+                this.performCallWithReload({
+                    'sendAgain': '1',
+                });
+            }
+        });
+    }
+
     private saveStatus() {
         let newVal = this.$widget.find('.statusForm input[type=radio]:checked').val();
         let data = {
@@ -188,6 +199,7 @@ export class ChangeProposedProcedure {
             this.$widget.find('.notifyProposerSection').removeClass('hidden');
         });
         this.$widget.on('click', '.setConfirmation', this.setPropserHasAccepted.bind(this));
+        this.$widget.on('click', '.sendAgain', this.sendAgain.bind(this));
         this.$widget.on('click', 'button[name=notificationSubmit]', this.notifyProposer.bind(this));
     }
 
