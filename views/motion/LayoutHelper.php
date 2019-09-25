@@ -2,12 +2,10 @@
 
 namespace app\views\motion;
 
-use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
 use app\components\latex\Layout;
 use app\components\Tools;
-use app\models\db\Amendment;
 use app\models\db\Consultation;
 use app\models\db\IMotion;
 use app\models\db\ISupporter;

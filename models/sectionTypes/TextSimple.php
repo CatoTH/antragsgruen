@@ -644,9 +644,11 @@ class TextSimple extends Text
 
         if ($settings->printTitle) {
             $title = Exporter::encodePlainString($settings->title);
+            /*
             if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
                 $title = $section->getMotion()->title;
             }
+            */
             $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
         }
 
