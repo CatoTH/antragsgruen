@@ -14,11 +14,11 @@ use yii\helpers\Html;
 $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 ?>
-<h3><?= \Yii::t('admin', 'motion_type_initiator') ?></h3>
+<h3><?= Yii::t('admin', 'motion_type_initiator') ?></h3>
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typeSupportType">
-        <?= \Yii::t('admin', 'motion_type_supp_form') ?>
+        <?= Yii::t('admin', 'motion_type_supp_form') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -43,20 +43,20 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_person_type') ?>
+        <?= Yii::t('admin', 'motion_type_person_type') ?>
     </div>
     <div class="col-md-8 contactDetails personTypes">
         <div class="form-control">
             <label>
                 <?php
                 echo Html::checkbox('initiatorCanBePerson', $settings->initiatorCanBePerson);
-                echo \Yii::t('admin', 'motion_type_person_natural');
+                echo Yii::t('admin', 'motion_type_person_natural');
                 ?>
             </label>
             <label>
                 <?php
                 echo Html::checkbox('initiatorCanBeOrganization', $settings->initiatorCanBeOrganization);
-                echo \Yii::t('admin', 'motion_type_person_orga');
+                echo Yii::t('admin', 'motion_type_person_orga');
                 ?>
             </label>
         </div>
@@ -65,7 +65,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_contact_name') ?>
+        <?= Yii::t('admin', 'motion_type_contact_name') ?>
     </div>
     <div class="col-md-8 contactDetails contactName">
         <input type="hidden" name="initiatorSettingFields[]" value="contactName">
@@ -74,9 +74,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             'initiatorSettings[contactName]',
             $settings->contactName,
             [
-                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+                InitiatorForm::CONTACT_NONE     => Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => Yii::t('admin', 'motion_type_required'),
             ],
             ['class' => 'form-control']
         );
@@ -86,7 +86,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_email') ?>
+        <?= Yii::t('admin', 'motion_type_email') ?>
     </div>
     <div class="col-md-8 contactDetails contactEMail">
         <input type="hidden" name="initiatorSettingFields[]" value="contactEmail">
@@ -95,9 +95,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             'initiatorSettings[contactEmail]',
             $settings->contactEmail,
             [
-                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+                InitiatorForm::CONTACT_NONE     => Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => Yii::t('admin', 'motion_type_required'),
             ],
             ['class' => 'form-control']
         );
@@ -107,7 +107,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_phone') ?>
+        <?= Yii::t('admin', 'motion_type_phone') ?>
     </div>
     <div class="col-md-8 contactDetails contactPhone">
         <input type="hidden" name="initiatorSettingFields[]" value="contactPhone">
@@ -116,9 +116,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             'initiatorSettings[contactPhone]',
             $settings->contactPhone,
             [
-                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+                InitiatorForm::CONTACT_NONE     => Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => Yii::t('admin', 'motion_type_required'),
             ],
             ['class' => 'form-control']
         );
@@ -128,7 +128,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group formGroupResolutionDate">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_orga_resolution') ?>
+        <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
     </div>
     <div class="col-md-8 contactDetails contactResolutionDate">
         <input type="hidden" name="initiatorSettingFields[]" value="hasResolutionDate">
@@ -137,9 +137,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             'initiatorSettings[hasResolutionDate]',
             $settings->hasResolutionDate,
             [
-                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+                InitiatorForm::CONTACT_NONE     => Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => Yii::t('admin', 'motion_type_required'),
             ],
             ['class' => 'form-control']
         );
@@ -149,7 +149,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group formGroupGender">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_gender') ?>
+        <?= Yii::t('admin', 'motion_type_gender') ?>
     </div>
     <div class="col-md-8 contactDetails contactGender">
         <input type="hidden" name="initiatorSettingFields[]" value="contactGender">
@@ -158,9 +158,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             'initiatorSettings[contactGender]',
             $settings->contactGender,
             [
-                InitiatorForm::CONTACT_NONE     => \Yii::t('admin', 'motion_type_skip'),
-                InitiatorForm::CONTACT_OPTIONAL => \Yii::t('admin', 'motion_type_optional'),
-                InitiatorForm::CONTACT_REQUIRED => \Yii::t('admin', 'motion_type_required'),
+                InitiatorForm::CONTACT_NONE     => Yii::t('admin', 'motion_type_skip'),
+                InitiatorForm::CONTACT_OPTIONAL => Yii::t('admin', 'motion_type_optional'),
+                InitiatorForm::CONTACT_REQUIRED => Yii::t('admin', 'motion_type_required'),
             ],
             ['class' => 'form-control']
         );
@@ -170,7 +170,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 
 <div class="form-group" id="typeMinSupportersRow">
     <label class="col-md-4 control-label" for="typeMinSupporters">
-        <?= \Yii::t('admin', 'motion_type_supp_min') ?>
+        <?= Yii::t('admin', 'motion_type_supp_min') ?>
     </label>
     <div class="col-md-2">
         <input type="hidden" name="initiatorSettingFields[]" value="minSupporters">
@@ -185,7 +185,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         <?php
         echo HTMLTools::fueluxCheckbox(
             'initiatorSettings[allowMoreSupporters]',
-            \Yii::t('admin', 'motion_type_allow_more_supp'),
+            Yii::t('admin', 'motion_type_allow_more_supp'),
             $settings->allowMoreSupporters
         );
         ?>
@@ -198,7 +198,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         <?php
         echo HTMLTools::fueluxCheckbox(
             'initiatorSettings[hasOrganizations]',
-            \Yii::t('admin', 'motion_type_ask_orga'),
+            Yii::t('admin', 'motion_type_ask_orga'),
             $settings->hasOrganizations
         );
         ?>

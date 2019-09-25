@@ -14,6 +14,7 @@ class InitiatorForm implements \JsonSerializable
     public $initiatorCanBeOrganization = true;
 
     public $minSupporters       = 1;
+    public $maxPdfSupporters    = null;
     public $hasOrganizations    = true;
     public $allowMoreSupporters = true;
     public $hasResolutionDate   = 2;
@@ -25,4 +26,20 @@ class InitiatorForm implements \JsonSerializable
     public $contactPhone  = 1;
     public $contactEmail  = 2;
     public $contactGender = 0;
+
+    /**
+     * @param array $formdata
+     * @param array $affectedFields
+     *
+     * @throws \app\models\exceptions\FormError
+     */
+    public function saveFormTyped($formdata, $affectedFields)
+    {
+        if (isset($formdata['maxPdfSupporters']) && is_numeric($formdata['maxPdfSupporters']) && $formdata['maxPdfSupporters'] >= 0) {
+            $formdata['maxPdfSupporters'] = IntVal($formdata['maxPdfSupporters']);
+        } else {
+            $formdata['maxPdfSupporters'] = null;
+        }
+        $this->saveForm($formdata, $affectedFields);
+    }
 }

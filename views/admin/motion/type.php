@@ -8,7 +8,7 @@ use app\models\db\ConsultationSettingsMotionSection;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var ConsultationMotionType $motionType
  * @var string $supportCollPolicyWarning
  */
@@ -17,9 +17,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'motion_type_edit');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
+$this->title = Yii::t('admin', 'motion_type_edit');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_types'));
 
 $layout->addCSS('css/backend.css');
 $layout->loadSortable();
@@ -32,7 +32,7 @@ $myUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionTyp
 $locale = Tools::getCurrentDateLocale();
 
 
-echo '<h1>' . \Yii::t('admin', 'motion_type_edit') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'motion_type_edit') . '</h1>';
 
 if ($supportCollPolicyWarning) {
     ?>
@@ -44,7 +44,7 @@ if ($supportCollPolicyWarning) {
         <?= Yii::t('admin', 'support_coll_policy_warning') ?>
         <div class="saveholder">
             <button type="submit" name="supportCollPolicyFix" class="btn btn-primary">
-                <?= \Yii::t('admin', 'support_coll_policy_fix') ?>
+                <?= Yii::t('admin', 'support_coll_policy_fix') ?>
             </button>
         </div>
         <?= Html::endForm() ?>
@@ -59,16 +59,16 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 ?>
-    <h3><?= \Yii::t('admin', 'motion_type_names') ?></h3>
+    <h3><?= Yii::t('admin', 'motion_type_names') ?></h3>
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeTitleSingular">
-            <?= \Yii::t('admin', 'motion_type_singular') ?>
+            <?= Yii::t('admin', 'motion_type_singular') ?>
         </label>
         <div class="col-md-8"><?php
             $options = [
                 'class'       => 'form-control',
                 'id'          => 'typeTitleSingular',
-                'placeholder' => \Yii::t('admin', 'motion_type_singular_pl'),
+                'placeholder' => Yii::t('admin', 'motion_type_singular_pl'),
             ];
             echo Html::textInput('type[titleSingular]', $motionType->titleSingular, $options);
             ?></div>
@@ -76,14 +76,14 @@ echo $controller->showErrors();
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeTitlePlural">
-            <?= \Yii::t('admin', 'motion_type_plural') ?>
+            <?= Yii::t('admin', 'motion_type_plural') ?>
         </label>
         <div class="col-md-8">
             <?php
             $options = [
                 'class'       => 'form-control',
                 'id'          => 'typeTitlePlural',
-                'placeholder' => \Yii::t('admin', 'motion_type_plural_pl'),
+                'placeholder' => Yii::t('admin', 'motion_type_plural_pl'),
             ];
             echo Html::textInput('type[titlePlural]', $motionType->titlePlural, $options);
             ?>
@@ -92,14 +92,14 @@ echo $controller->showErrors();
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeCreateTitle">
-            <?= \Yii::t('admin', 'motion_type_create_title') ?>
+            <?= Yii::t('admin', 'motion_type_create_title') ?>
         </label>
         <div class="col-md-8">
             <?php
             $options = [
                 'class'       => 'form-control',
                 'id'          => 'typeCreateTitle',
-                'placeholder' => \Yii::t('admin', 'motion_type_create_placeh')
+                'placeholder' => Yii::t('admin', 'motion_type_create_placeh')
             ];
             echo HTMLTools::smallTextarea('type[createTitle]', $options, $motionType->createTitle);
             ?>
@@ -110,7 +110,7 @@ echo $controller->showErrors();
             <?php
             echo HTMLTools::fueluxCheckbox(
                 'type[sidebarCreateButton]',
-                \Yii::t('admin', 'motion_type_create_sidebar'),
+                Yii::t('admin', 'motion_type_create_sidebar'),
                 $motionType->sidebarCreateButton
             );
             ?>
@@ -119,7 +119,7 @@ echo $controller->showErrors();
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeMotionPrefix">
-            <?= \Yii::t('admin', 'motion_type_title_prefix') ?>
+            <?= Yii::t('admin', 'motion_type_title_prefix') ?>
         </label>
         <div class="col-md-2">
             <?php
@@ -131,7 +131,7 @@ echo $controller->showErrors();
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeMotionIntro">
-            <?= \Yii::t('admin', 'motion_type_title_intro') ?>
+            <?= Yii::t('admin', 'motion_type_title_intro') ?>
         </label>
         <div class="col-md-8">
             <?php
@@ -143,13 +143,13 @@ echo $controller->showErrors();
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeProposedProcedure">
-            <?= \Yii::t('admin', 'motion_type_proposed') ?>
+            <?= Yii::t('admin', 'motion_type_proposed') ?>
         </label>
         <div class="checkbox col-md-8">
             <?php
             echo HTMLTools::fueluxCheckbox(
                 'type[proposedProcedure]',
-                \Yii::t('admin', 'motion_type_proposed_label'),
+                Yii::t('admin', 'motion_type_proposed_label'),
                 $motionType->getSettingsObj()->hasProposedProcedure,
                 ['id' => 'typeProposedProcedure']
             );
@@ -163,19 +163,35 @@ echo $this->render('_type_policy', ['motionType' => $motionType]);
 echo $this->render('_type_deadlines', ['motionType' => $motionType, 'locale' => $locale]);
 echo $this->render('_type_initiator', ['motionType' => $motionType]);
 
+$supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 ?>
 
-
-    <h3><?= \Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
+    <h3><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
 
     <div class="form-group">
         <label class="col-sm-4 control-label" for="pdfIntroduction">
-            <?= \Yii::t('admin', 'con_pdf_intro') ?>:
+            <?= Yii::t('admin', 'con_pdf_intro') ?>:
         </label>
         <div class="col-sm-8">
         <textarea name="type[pdfIntroduction]" class="form-control" id="pdfIntroduction"
-                  placeholder="<?= Html::encode(\Yii::t('admin', 'con_pdf_intro_place')) ?>"
+                  placeholder="<?= Html::encode(Yii::t('admin', 'con_pdf_intro_place')) ?>"
         ><?= $motionType->getSettingsObj()->pdfIntroduction ?></textarea>
+        </div>
+    </div>
+
+
+    <div class="form-group" id="typeMaxPdfSupportersRow">
+        <label class="col-md-4 control-label" for="typeMaxPdfSupporters">
+            <?= Yii::t('admin', 'motion_type_supp_max_pdf') ?>
+        </label>
+        <div class="col-md-2">
+            <input type="hidden" name="initiatorSettingFields[]" value="maxPdfSupporters">
+            <input type="number" name="initiatorSettings[maxPdfSupporters]" class="form-control" id="typeMaxPdfSupporters"
+                   value="<?= Html::encode($supportSett->maxPdfSupporters !== null ? $supportSett->maxPdfSupporters : '') ?>">
+        </div>
+        <div class="col-m-1">
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                  title="<?=Html::encode(Yii::t('admin', 'motion_type_supp_max_pdfd'))?>"></span>
         </div>
     </div>
 
@@ -200,7 +216,7 @@ echo $this->render('_type_initiator', ['motionType' => $motionType]);
 
     <div class="submitRow">
         <button type="submit" name="save" class="btn btn-primary">
-            <?= \Yii::t('admin', 'save') ?>
+            <?= Yii::t('admin', 'save') ?>
         </button>
     </div>
 <?php
@@ -209,7 +225,7 @@ echo $this->render('_type_initiator', ['motionType' => $motionType]);
 echo '</div>';
 
 ?>
-    <h2 class="green"><?= \Yii::t('admin', 'motion_section_title') ?></h2>
+    <h2 class="green"><?= Yii::t('admin', 'motion_section_title') ?></h2>
     <div class="content">
 
         <ul id="sectionsList">
@@ -226,7 +242,7 @@ echo '</div>';
         </a>
 
         <div class="submitRow">
-            <button type="submit" name="save" class="btn btn-primary"><?= \Yii::t('base', 'save') ?></button>
+            <button type="submit" name="save" class="btn btn-primary"><?= Yii::t('base', 'save') ?></button>
         </div>
     </div>
 
@@ -240,7 +256,7 @@ echo '</div>';
     <div class="deleteTypeOpener content">
         <button class="btn btn-danger btn-link" type="button">
             <span class="glyphicon glyphicon-trash"></span>
-            <?= \Yii::t('admin', 'motion_type_del_caller') ?>
+            <?= Yii::t('admin', 'motion_type_del_caller') ?>
         </button>
     </div>
 
@@ -253,12 +269,12 @@ if ($motionType->isDeletable()) {
     <div class="submitRow">
         <button type="submit" name="delete" class="btn btn-danger">
             <span class="glyphicon glyphicon-trash"></span>
-            <?= \Yii::t('admin', 'motion_type_del_btn') ?>
+            <?= Yii::t('admin', 'motion_type_del_btn') ?>
         </button>
     </div>
     <?php
 } else {
-    echo '<p class="notDeletable">' . \Yii::t('admin', 'motion_type_not_deletable') . '</p>';
+    echo '<p class="notDeletable">' . Yii::t('admin', 'motion_type_not_deletable') . '</p>';
 }
 
 echo Html::endForm();

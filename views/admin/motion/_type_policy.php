@@ -7,7 +7,7 @@ use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var ConsultationMotionType $motionType
  */
 
@@ -17,13 +17,13 @@ foreach (IPolicy::getPolicies() as $policy) {
 }
 
 ?>
-<h3><?= \Yii::t('admin', 'motion_type_perm') ?></h3>
+<h3><?= Yii::t('admin', 'motion_type_perm') ?></h3>
 
 <!-- Policy for creating motions -->
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typePolicyMotions">
-        <?= \Yii::t('admin', 'motion_type_perm_motion') ?>
+        <?= Yii::t('admin', 'motion_type_perm_motion') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -43,7 +43,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typePolicySupportMotions">
-        <?= \Yii::t('admin', 'motion_type_perm_supp_mot') ?>
+        <?= Yii::t('admin', 'motion_type_perm_supp_mot') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -66,9 +66,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
-                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
-                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, Yii::t('admin', 'motion_type_like_like'), 'motionLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, Yii::t('admin', 'motion_type_like_dislike'), 'motionDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, Yii::t('admin', 'motion_type_like_support'), 'motionSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';
@@ -89,7 +89,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typePolicyAmendments">
-        <?= \Yii::t('admin', 'motion_type_perm_amend') ?>
+        <?= Yii::t('admin', 'motion_type_perm_amend') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -107,7 +107,7 @@ foreach (IPolicy::getPolicies() as $policy) {
         <?php
         echo HTMLTools::fueluxCheckbox(
             'type[amendSinglePara]',
-            \Yii::t('admin', 'motion_type_amend_singlep'),
+            Yii::t('admin', 'motion_type_amend_singlep'),
             !$motionType->amendmentMultipleParagraphs
         );
         ?>
@@ -119,7 +119,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typePolicySupportAmendments">
-        <?= \Yii::t('admin', 'motion_type_perm_supp_amend') ?>
+        <?= Yii::t('admin', 'motion_type_perm_supp_amend') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -142,9 +142,9 @@ foreach (IPolicy::getPolicies() as $policy) {
         <div class="form-control">
             <?php
             $checkboxes = [
-                [SupportBase::LIKEDISLIKE_LIKE, \Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
-                [SupportBase::LIKEDISLIKE_DISLIKE, \Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
-                [SupportBase::LIKEDISLIKE_SUPPORT, \Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
+                [SupportBase::LIKEDISLIKE_LIKE, Yii::t('admin', 'motion_type_like_like'), 'amendmentLike'],
+                [SupportBase::LIKEDISLIKE_DISLIKE, Yii::t('admin', 'motion_type_like_dislike'), 'amendmentDislike'],
+                [SupportBase::LIKEDISLIKE_SUPPORT, Yii::t('admin', 'motion_type_like_support'), 'amendmentSupport'],
             ];
             foreach ($checkboxes as $checkbox) {
                 echo '<label>';
@@ -165,7 +165,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <div class="form-group">
     <label class="col-md-4 control-label" for="typePolicyComments">
-        <?= \Yii::t('admin', 'motion_type_perm_comment') ?>
+        <?= Yii::t('admin', 'motion_type_perm_comment') ?>
     </label>
     <div class="col-md-8">
         <?php
@@ -183,7 +183,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <div class="form-group initiatorsCanMergeRow">
     <div class="col-md-4 control-label">
-        <?= \Yii::t('admin', 'motion_type_initiators_merge') ?>
+        <?= Yii::t('admin', 'motion_type_initiators_merge') ?>
     </div>
     <div class="col-md-8">
         <label><?php
@@ -195,7 +195,7 @@ foreach (IPolicy::getPolicies() as $policy) {
                     'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NEVER,
                 ]
             );
-            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_no') ?>
+            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_no') ?>
         </label>
         <label><?php
             echo Html::radio(
@@ -206,9 +206,9 @@ foreach (IPolicy::getPolicies() as $policy) {
                     'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_NO_COLLISION,
                 ]
             );
-            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
+            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
             <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  title="<?=addslashes(\Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint'))?>"></span>
+                  title="<?=Html::encode(Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint'))?>"></span>
         </label>
         <label><?php
             echo Html::radio(
@@ -219,9 +219,9 @@ foreach (IPolicy::getPolicies() as $policy) {
                     'id'    => 'initiatorsCanMerge' . ConsultationMotionType::INITIATORS_MERGE_WITH_COLLISION,
                 ]
             )
-            ?> <?= \Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
+            ?> <?= Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
             <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  title="<?=addslashes(\Yii::t('admin', 'motion_type_initiators_merge_yes_hint'))?>"></span>
+                  title="<?=Html::encode(Yii::t('admin', 'motion_type_initiators_merge_yes_hint'))?>"></span>
         </label>
     </div>
 </div>

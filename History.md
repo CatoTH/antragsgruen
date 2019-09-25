@@ -12,6 +12,7 @@
 - It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resultion.
 - RSS-Feeds have now a info page with some explanations about what RSS-Feeds actually are. The direct links in the sidebar are therefore replaced by a link to this info page.
 - In the proposed procedure, a second notification to the initiator of an amendment can be sent by mail, e.g. if the proposed procedure has been heavily modified.
+- To avoid exceeding use of paper when printing out motions with many supporters, it is now possible to set a upper limit for the number of printed supporters.
 - Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens.
 - Bugfix: Long-broken references to OpenID-based login were removed.
 - Bugfix: Deleting tags form a consultation after a motion was assigned to this tag was not possible.
