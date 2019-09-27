@@ -11,6 +11,7 @@ use app\models\db\IMotion;
 use app\models\db\ISupporter;
 use app\models\db\Motion;
 use app\models\db\User;
+use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
@@ -36,7 +37,7 @@ class LayoutHelper
             $name = \app\models\layoutHooks\Layout::getMotionDetailsInitiatorName($name, $supp);
 
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
-            if ($admin && ($supp->contactEmail != '' || $supp->contactPhone != '')) {
+            if ($admin && ($supp->contactEmail || $supp->contactPhone )) {
                 if (!$expanded) {
                     $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
                     $name .= \Yii::t('initiator', 'contact_show') . '</a>';
@@ -51,9 +52,9 @@ class LayoutHelper
                         $name .= Html::encode($supp->name) . ', ';
                     }
                 }
-                if ($supp->contactEmail != '') {
+                if ($supp->contactEmail) {
                     $name .= Html::a(Html::encode($supp->contactEmail), 'mailto:' . $supp->contactEmail);
-                    if ($supp->user && $supp->user->email == $supp->contactEmail && $supp->user->emailConfirmed) {
+                    if ($supp->user && $supp->user->email === $supp->contactEmail && $supp->user->emailConfirmed) {
                         $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
                             'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
                     } else {
@@ -61,10 +62,10 @@ class LayoutHelper
                             'title="' . \Yii::t('initiator', 'email_not_confirmed') . '"></span>';
                     }
                 }
-                if ($supp->contactEmail != '' && $supp->contactPhone != '') {
+                if ($supp->contactEmail && $supp->contactPhone) {
                     $name .= ', ';
                 }
-                if ($supp->contactPhone != '') {
+                if ($supp->contactPhone) {
                     $name .= \Yii::t('initiator', 'phone') . ': ' . Html::encode($supp->contactPhone);
                 }
                 $name .= '</div>';
@@ -136,15 +137,15 @@ class LayoutHelper
             $section->getSectionType()->printMotionTeX($isRight, $content, $motion->getMyConsultation());
         }
 
-        $supporters = $motion->getSupporters();
-        if (count($supporters) > 0) {
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
+        if (count($limitedSupporters->supporters) > 0) {
             $title             = Exporter::encodePlainString(\Yii::t('motion', 'supporters_heading'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps             = [];
-            foreach ($supporters as $supp) {
+            foreach ($limitedSupporters->supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
-            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>';
             $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 

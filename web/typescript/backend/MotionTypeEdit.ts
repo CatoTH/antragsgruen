@@ -8,11 +8,13 @@ class MotionTypeEdit {
             let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
 
             if (hasSupporters) {
-                $('#typeMinSupportersRow').removeClass("hidden");
-                $('#typeAllowMoreSupporters').removeClass("hidden");
+                $('#typeMinSupportersRow').removeClass('hidden');
+                $('#typeAllowMoreSupporters').removeClass('hidden');
+                $('#typeMaxPdfSupportersRow').removeClass('hidden');
             } else {
-                $('#typeMinSupportersRow').addClass("hidden");
-                $('#typeAllowMoreSupporters').addClass("hidden");
+                $('#typeMinSupportersRow').addClass('hidden');
+                $('#typeAllowMoreSupporters').addClass('hidden');
+                $('#typeMaxPdfSupportersRow').addClass('hidden');
             }
         }).trigger('changed.fu.selectlist');
 
@@ -201,7 +203,7 @@ class MotionTypeEdit {
             dataNewCounter = dataNewCounter + 1;
             $row.removeClass('no0').addClass('no' + $ul.children().length);
             $ul.append($row);
-            $row.find('input').focus();
+            $row.find('input').trigger('focus');
         });
 
         $list.on('click', '.tabularDataRow .delRow', function (ev) {

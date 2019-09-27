@@ -145,7 +145,7 @@ class MotionController extends AdminBase
             $motionType->setSettingsObj($settings);
 
             $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
-            $settings->saveForm(
+            $settings->saveFormTyped(
                 \Yii::$app->request->post('initiatorSettings', []),
                 \Yii::$app->request->post('initiatorSettingFields', [])
             );
