@@ -322,7 +322,7 @@ class Image extends ISectionType
      */
     public function getMotionPlainText()
     {
-        return '[IMAGE]';
+        return ($this->isEmpty() ? '' : '[IMAGE]');
     }
 
     /**
@@ -330,7 +330,7 @@ class Image extends ISectionType
      */
     public function getAmendmentPlainText()
     {
-        return '[IMAGE]';
+        return ($this->isEmpty() ? '' : '[IMAGE]');
     }
 
     /**
@@ -371,9 +371,9 @@ class Image extends ISectionType
     public function printAmendmentTeX($isRight, Content $content)
     {
         if ($isRight) {
-            $content->textRight .= '[IMAGE]';
+            $content->textRight .= ($this->isEmpty() ? '' : '[IMAGE]');
         } else {
-            $content->textMain .= '[IMAGE]';
+            $content->textMain .= ($this->isEmpty() ? '' : '[IMAGE]');
         }
     }
 
@@ -382,7 +382,7 @@ class Image extends ISectionType
      */
     public function getMotionODS()
     {
-        return '<p>[IMAGE]</p>';
+        return ($this->isEmpty() ? '' : '<p>[IMAGE]</p>');
     }
 
     /**
@@ -390,7 +390,7 @@ class Image extends ISectionType
      */
     public function getAmendmentODS()
     {
-        return '<p>[IMAGE]</p>';
+        return ($this->isEmpty() ? '' : '<p>[IMAGE]</p>');
     }
 
     /**
@@ -398,8 +398,10 @@ class Image extends ISectionType
      */
     public function printMotionToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[IMAGE]', false);
+        if (!$this->isEmpty()) {
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('[IMAGE]', false);
+        }
     }
 
     /**
@@ -407,8 +409,10 @@ class Image extends ISectionType
      */
     public function printAmendmentToODT(Text $odt)
     {
-        $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[IMAGE]', false);
+        if (!$this->isEmpty()) {
+            $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
+            $odt->addHtmlTextBlock('[IMAGE]', false);
+        }
     }
 
     /**

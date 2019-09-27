@@ -8,6 +8,7 @@ use app\components\latex\Layout;
 use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\TexTemplate;
+use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -18,6 +19,7 @@ class LayoutHelper
     /**
      * @param Amendment $amendment
      * @param TexTemplate $texTemplate
+     *
      * @return Content
      * @throws \app\models\exceptions\Internal
      */
@@ -60,7 +62,7 @@ class LayoutHelper
             $content->motionDataTable .= Exporter::encodePlainString($val) . '   \\\\';
         }
 
-        if ($amendment->changeEditorial != '') {
+        if ($amendment->changeEditorial !== '') {
             $title             = Exporter::encodePlainString(\Yii::t('amend', 'editorial_hint'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeEditorial]) . "\n";
@@ -76,15 +78,15 @@ class LayoutHelper
             $content->textMain .= Exporter::getMotionLinesToTeX([$amendment->changeExplanation]) . "\n";
         }
 
-        $supporters = $amendment->getSupporters();
-        if (count($supporters) > 0) {
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($amendment);
+        if (count($limitedSupporters->supporters) > 0) {
             $title             = Exporter::encodePlainString(\Yii::t('amend', 'supporters'));
             $content->textMain .= '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
             $supps             = [];
-            foreach ($supporters as $supp) {
+            foreach ($limitedSupporters->supporters as $supp) {
                 $supps[] = $supp->getNameWithOrga();
             }
-            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . '</p>';
+            $suppStr           = '<p>' . Html::encode(implode('; ', $supps)) . $limitedSupporters->truncatedToString(';') . '</p>';
             $content->textMain .= Exporter::encodeHTMLString($suppStr);
         }
 
@@ -95,6 +97,7 @@ class LayoutHelper
      * @param Fpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Amendment $amendment
+     *
      * @throws \app\models\exceptions\Internal
      */
     public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
@@ -103,7 +106,7 @@ class LayoutHelper
 
         $pdfLayout->printAmendmentHeader($amendment);
 
-        if ($amendment->changeEditorial != '') {
+        if ($amendment->changeEditorial !== '') {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'editorial_hint'));
             $pdf->writeHTMLCell(170, '', 27, '', $amendment->changeEditorial, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
@@ -113,27 +116,29 @@ class LayoutHelper
             $section->getSectionType()->printAmendmentToPDF($pdfLayout, $pdf);
         }
 
-        if ($amendment->changeExplanation != '') {
+        if ($amendment->changeExplanation !== '') {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'reason'));
             $pdf->Ln(0);
             $pdf->writeHTMLCell(0, '', '', '', $amendment->changeExplanation, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
 
-        $supporters = $amendment->getSupporters();
-        if (count($supporters) > 0) {
+        $limitedSupporters = LimitedSupporterList::createFromIMotion($amendment);
+        if (count($limitedSupporters->supporters) > 0) {
             $pdfLayout->printSectionHeading(\Yii::t('amend', 'supporters'));
             $supportersStr = [];
-            foreach ($supporters as $supp) {
+            foreach ($limitedSupporters->supporters as $supp) {
                 $supportersStr[] = Html::encode($supp->getNameWithOrga());
             }
-            $pdf->writeHTMLCell(170, '', 27, '', implode(', ', $supportersStr), 0, 1, 0, true, '', true);
+            $listStr = implode(', ', $supportersStr) . $limitedSupporters->truncatedToString(',');
+            $pdf->writeHTMLCell(170, '', 27, '', $listStr, 0, 1, 0, true, '', true);
             $pdf->Ln(7);
         }
     }
 
     /**
      * @param Amendment $amendment
+     *
      * @return string
      */
     public static function createPdfTcpdf(Amendment $amendment)
@@ -159,6 +164,7 @@ class LayoutHelper
 
     /**
      * @param Amendment $amendment
+     *
      * @return string
      * @throws \app\models\exceptions\Internal
      */
@@ -183,6 +189,7 @@ class LayoutHelper
         $content  = static::renderTeX($amendment, $texTemplate);
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($amendment->getPdfCacheKey(), $pdf);
+
         return $pdf;
     }
 }
