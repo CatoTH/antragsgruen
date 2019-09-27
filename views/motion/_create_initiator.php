@@ -7,7 +7,7 @@ use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var ISupporter $initiator
  * @var ISupporter[] $moreInitiators
  * @var ISupporter[] $supporters
@@ -43,7 +43,7 @@ echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget=
         'person_organization' => ($currentUser ? $currentUser->organization : ''),
     ])) . '">';
 
-echo '<legend class="green">' . \Yii::t('motion', 'initiators_head') . '</legend>';
+echo '<legend class="green">' . Yii::t('motion', 'initiators_head') . '</legend>';
 
 echo '<div class="initiatorData form-horizontal content">';
 
@@ -180,8 +180,8 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
 ?>
     <div class="form-group row contact-head">
         <div class="col-sm-9 col-sm-offset-3 contact-head">
-            <h3><?= \Yii::t('initiator', 'contactHead') ?></h3>
-            <div class="hint">(<?= \Yii::t('initiator', 'visibilityAdmins') ?>)</div>
+            <h3><?= Yii::t('initiator', 'contactHead') ?></h3>
+            <div class="hint">(<?= Yii::t('initiator', 'visibilityAdmins') ?>)</div>
         </div>
     </div>
 
@@ -331,7 +331,7 @@ if ($hasSupporters && !$adminMode) {
 
     if ($settings->allowMoreSupporters) {
         echo '<div class="adderRow"><a href="#"><span class="glyphicon glyphicon-plus"></span> ';
-        echo \Yii::t('initiator', 'addSupporter');
+        echo Yii::t('initiator', 'addSupporter');
         echo '</a></div>';
     }
 
@@ -341,7 +341,8 @@ if ($hasSupporters && !$adminMode) {
         <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
         <div class="form-group hidden" id="fullTextHolder">
             <div class="col-md-9">
-                <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"></textarea>
+                <textarea class="form-control" placeholder="<?= Html::encode($fullTextSyntax) ?>" rows="10"
+                          title="<?= Html::encode(Yii::t('initiator', 'fullTextField')) ?>"></textarea>
             </div>
             <div class="col-md-3">
                 <button type="button" class="btn btn-success fullTextAdd">

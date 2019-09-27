@@ -333,14 +333,14 @@ class LayoutHelper
 
         $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
-            if ($user && $supp->userId == $user->id) {
+            if ($user && $supp->userId === $user->id) {
                 return;
             }
         }
 
         $cantSupportMsg = $policy->getPermissionDeniedSupportMsg();
         $nobody         = \Yii::t('structure', 'policy_nobody_supp_denied');
-        if ($cantSupportMsg == $nobody && !$canSupport) {
+        if ($cantSupportMsg === $nobody && !$canSupport) {
             return;
         }
         if (!$motion->isSupportingPossibleAtThisStatus()) {
