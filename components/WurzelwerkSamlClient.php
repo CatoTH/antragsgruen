@@ -44,6 +44,16 @@ class WurzelwerkSamlClient implements ClientInterface
     }
 
     /**
+     * @param string $name
+     * @return string
+     */
+    private function formatKurzname($name)
+    {
+        // "Delmenhorst KV" => "KV Delmenhorst"
+        return preg_replace("/^(.*) KV$/siu", "KV $1", $name);
+    }
+
+    /**
      * @return User
      * @throws \Exception
      */
@@ -80,7 +90,7 @@ class WurzelwerkSamlClient implements ClientInterface
             foreach ($organizations as $organization) {
                 $orgaKv = substr($organization, 0, 6);
                 if (isset($orgas[$orgaKv])) {
-                    $user->organization = $orgas[$orgaKv]['kurzname'];
+                    $user->organization = $this->formatKurzname($orgas[$orgaKv]['kurzname']);
                 }
             }
         }
