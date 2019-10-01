@@ -108,6 +108,9 @@ class Draft implements \JsonSerializable
         $draft->init($form->motion);
 
         $draft->sections = []; // Empty = default values
+        $draft->amendmentStatuses = [];
+        $draft->amendmentVersions = [];
+        $draft->amendmentVotingData = [];
 
         $draft->paragraphs = [];
         foreach ($form->motion->getSortedSections(false) as $section) {
