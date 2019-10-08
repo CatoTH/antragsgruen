@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var string $mode
  * @var \app\models\forms\MotionEditForm $form
  * @var \app\models\db\Consultation $consultation
@@ -20,7 +20,7 @@ $layout     = $controller->layoutParams;
 if ($mode === 'create') {
     $this->title = $form->motionType->createTitle;
 } else {
-    $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, \Yii::t('motion', 'motion_edit'));
+    $this->title = str_replace('%TYPE%', $form->motionType->titleSingular, Yii::t('motion', 'motion_edit'));
 }
 $layout->robotsNoindex = true;
 
@@ -42,19 +42,19 @@ echo $controller->showErrors();
 $publicPolicies = [IPolicy::POLICY_ALL, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_WURZELWERK];
 if (in_array($form->motionType->policyAmendments, $publicPolicies)) {
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        \Yii::t('motion', 'create_explanation_title') . '</div>' .
-        str_replace('%HOME%', UrlHelper::homeUrl(), \Yii::t('motion', 'create_explanation')) .
+        Yii::t('motion', 'create_explanation_title') . '</div>' .
+        str_replace('%HOME%', UrlHelper::homeUrl(), Yii::t('motion', 'create_explanation')) .
         '<br><br>';
 }
 if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
     /** @var \app\models\supportTypes\CollectBeforePublish $supp */
     $supp = $form->motionType->getMotionSupportTypeClass();
-    $str = \Yii::t('motion', 'support_collect_explanation');
+    $str = Yii::t('motion', 'support_collect_explanation');
     $str = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
     $str = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
 
     echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        \Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
+        Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
         $str . '<br><br>';
 }
 
@@ -67,13 +67,13 @@ if (!in_array($motionPolicy::getPolicyID(), $publicPolicies)) {
     echo $motionPolicy->getOnCreateDescription();
 }
 
-if (\Yii::$app->user->isGuest) {
+if (Yii::$app->user->isGuest) {
     echo \app\components\AntiSpam::getJsProtectionHint($form->motionId);
 }
 
 echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
     data-motion-type="' . $form->motionType->id . '" data-motion-id="' . $form->motionId . '">' .
-    \Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
+    Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
 </div>';
 
 echo '</div>';
@@ -90,7 +90,7 @@ echo '<div class="content">';
 
 if (count($form->motionType->agendaItems) > 0) {
     echo '<div class="form-group">';
-    echo '<label class="legend">' . \Yii::t('motion', 'agenda_item') . '</label>';
+    echo '<label class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
     if ($form->agendaItem) {
         echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';
     } else {
@@ -118,7 +118,7 @@ if (count($tags) == 1) {
 } elseif (count($tags) > 0) {
     if ($consultation->getSettings()->allowMultipleTags) {
         echo '<div class="form-group multipleTagsGroup">';
-        echo '<label class="legend">' . \Yii::t('motion', 'tag_tags') . '</label>';
+        echo '<label class="legend">' . Yii::t('motion', 'tag_tags') . '</label>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
@@ -135,7 +135,7 @@ if (count($tags) == 1) {
             $tagOptions[$tag->id] = $tag->title;
         }
         echo '<div class="form-group">';
-        echo '<label>' . \Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
+        echo '<label>' . Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
         echo '</div>';
@@ -157,13 +157,13 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
     <div class="saveCol">
         <button type="submit" name="save" class="btn btn-primary">
             <span class="glyphicon glyphicon-chevron-right"></span>
-            <?= \Yii::t('motion', 'go_on') ?>
+            <?= Yii::t('motion', 'go_on') ?>
         </button>
     </div>
     <div class="cancelCol">
-        <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" name="cancel" class="btn">
+        <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" class="btn">
             <span class="glyphicon glyphicon-chevron-left"></span>
-            <?= \Yii::t('motion', 'back_start') ?>
+            <?= Yii::t('motion', 'back_start') ?>
         </a>
     </div>
 </section>
