@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Amendment $amendment
  */
 
@@ -27,9 +27,9 @@ if ($amendment->hasAlternativeProposaltext(true) && (
         $sections = $reference->getSortedSections(false);
         foreach ($sections as $section) {
             if ($referenceAmendment->id === $amendment->id) {
-                $prefix = \Yii::t('amend', 'pprocedure_title_own');
+                $prefix = Yii::t('amend', 'pprocedure_title_own');
             } else {
-                $prefix = \Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
+                $prefix = Yii::t('amend', 'pprocedure_title_other') . ' ' . $referenceAmendment->titlePrefix;
             }
             if (!$amendment->isProposalPublic()) {
                 $prefix = '[ADMIN] ' . $prefix;
@@ -44,7 +44,7 @@ if ($amendment->hasAlternativeProposaltext(true) && (
 
 if ($amendment->changeEditorial !== '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
+    echo '<h3 class="green">' . Yii::t('amend', 'editorial_hint') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeEditorial;
     echo '</div></div></section>';
@@ -52,7 +52,7 @@ if ($amendment->changeEditorial !== '') {
 
 /** @var AmendmentSection[] $sections */
 $sections = $amendment->getSortedSections(false);
-$prefix   = ($hasProposedChange ? \Yii::t('amend', 'original_title') : '');
+$prefix   = ($hasProposedChange ? Yii::t('amend', 'original_title') : '');
 foreach ($sections as $section) {
     echo $section->getSectionType()->getAmendmentFormatted($prefix);
 }
@@ -60,7 +60,7 @@ foreach ($sections as $section) {
 
 if ($amendment->changeExplanation !== '') {
     echo '<section id="amendmentExplanation" class="motionTextHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
+    echo '<h3 class="green">' . Yii::t('amend', 'reason') . '</h3>';
     echo '<div class="paragraph"><div class="text">';
     echo $amendment->changeExplanation;
     echo '</div></div>';

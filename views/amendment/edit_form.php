@@ -17,27 +17,27 @@ $layout     = $controller->layoutParams;
 
 $multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
 
-if ($form->motion->titlePrefix != '') {
+if ($form->motion->titlePrefix !== '') {
     if ($consultation->getSettings()->hideTitlePrefix) {
         $title = Yii::t(
             'amend',
-            $mode == 'create' ? 'amendment_create' : 'amendment_edit'
+            $mode === 'create' ? 'amendment_create' : 'amendment_edit'
         );
     } else {
         $title = Yii::t(
             'amend',
-            $mode == 'create' ? 'amendment_create_x' : 'amendment_edit_x'
+            $mode === 'create' ? 'amendment_create_x' : 'amendment_edit_x'
         );
     }
     $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
 } else {
-    $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit');
+    $this->title = Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit');
 }
 
 $layout->robotsNoindex = true;
 $layout->loadCKEditor();
 $layout->addBreadcrumb($form->motion->motionType->titleSingular, UrlHelper::createMotionUrl($form->motion));
-$layout->addBreadcrumb(Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendment_edit'));
+$layout->addBreadcrumb(Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>';
 
