@@ -171,7 +171,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                 $layoutId              = $consultation->site->getSettings()->siteLayout;
                 $handledSiteSettings[] = 'siteLayout';
                 foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
-                    echo '<label class="layout">';
+                    echo '<label class="layout ' . $lId . '">';
                     echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
                     echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
                         'alt="' . Html::encode($cssLayout['title']) . '" ' .

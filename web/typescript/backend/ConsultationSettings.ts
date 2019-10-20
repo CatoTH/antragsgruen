@@ -109,8 +109,11 @@ export class ConsultationSettings {
         const $editLink = this.$form.find(".editThemeLink");
         const editLinkDefault = $editLink.attr("href");
         const onChange = () => {
-            const selected: string = $inputs.filter(":checked").val() as string;
-            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, selected));
+            let $selected = $inputs.filter(":checked");
+            if ($selected.length === 0) {
+                $selected = $inputs.first();
+            }
+            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, $selected.val() as string));
         };
         $inputs.on("change", onChange);
         onChange();
