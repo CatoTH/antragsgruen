@@ -10,6 +10,7 @@
 - The "Using Antragsgrün"-hint in the sidebar can now be disabled through the admin interface.
 - Several performance improvements for large installations with hundreds of amendments, especially in the motion view.
 - It is now possible to set a detailed voting result for motions and amendments, either from the backend when editing the motion/amendment, or when merging amendments into a motion when confirming the new motion or resultion.
+- When creating a custom color theme, the values of the previously selected default theme will be taken as default values. Previously, always the default values of the green/magenta-theme were taken. When resetting the color values, you can now explicitly choose between the defaults.
 - RSS-Feeds have now a info page with some explanations about what RSS-Feeds actually are. The direct links in the sidebar are therefore replaced by a link to this info page.
 - In the proposed procedure, a second notification to the initiator of an amendment can be sent by mail, e.g. if the proposed procedure has been heavily modified.
 - The ODT-version of a motion / amendment now also shows the list of supporters.

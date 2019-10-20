@@ -250,7 +250,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_email_text_pre'     => 'Hallo,
 
 wir haben dir soeben Zugang zu unserer Antragsgrün-Seite eingerichtet, ' .
-        'auf der du über unseren Entwurf mitdiskutieren kannst.
+                                    'auf der du über unseren Entwurf mitdiskutieren kannst.
 Hier ist der Zugang:
 
 %LINK%
@@ -268,7 +268,7 @@ und an der Stelle von <strong>%ACCOUNT%</strong> erscheinen die Zugangsdaten
     'siteacc_acc_expl_nomail'    => '<h3>Erklärung:</h3>
 Um Benutzer*innen anzulegen, gib hier die E-Mail-Adressen, die Namen und die Passwörter der Mitglieder ein.
 Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>Passwörter</strong> hier selbst erzeugen, im Klartext eingeben und selbst an die Nutzer*innen schicken.<br><br>' .
-        'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
+                                    'Aus <strong>Datenschutzgründen</strong> wäre empfehlenswerter, zunächst den E-Mail-Versand einzurichten, damit Antragsgrün automatisch Passwörter erzeugen und direkt an die Nutzer*innen schicken kann.',
     'siteacc_existing_users'     => 'Bereits eingetragene Benutzer*innen',
     'siteacc_user_name'          => 'Name',
     'siteacc_user_login'         => 'Login',
@@ -291,11 +291,11 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_admin_del_done'     => 'Die Admin-Rechte wurden entzogen.',
     'siteacc_admin_del_notf'     => 'Es gibt keinen Zugang mit diesem Namen',
     'siteacc_mail_yourdata'      => "Du kannst dich mit folgenden Angaben einloggen:\nBenutzer*innenname: %EMAIL%\n" .
-        "Passwort: %PASSWORD%",
+                                    "Passwort: %PASSWORD%",
     'siteacc_mail_youracc'       => 'Du kannst dich mit deinem Benutzer*innenname %EMAIL% einloggen.',
     'sitacc_admmail_subj'        => 'Antragsgrün-Administration',
     'sitacc_admmail_body'        => "Hallo!\n\nDu hast eben Admin-Zugang zu folgender Antragsgrün-Seite bekommen: %LINK%\n\n" .
-        "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
+                                    "%ACCOUNT%\n\nLiebe Grüße,\n  Das Antragsgrün-Team",
     'siteacc_err_linenumber'     => 'Die Zahl der E-Mail-Adressen und der Namen stimmt nicht überein',
     'siteacc_err_occ'            => 'Es sind Fehler aufgetreten',
     'siteacc_user_had'           => 'Folgende Benutzer*innen hatten bereits Zugriff',
@@ -309,7 +309,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'siteacc_noscreen_users_btn' => 'Keinen Zugriff geben',
     'Translation / Wording'      => 'Sprache anpassen',
     'translating_hint'           => 'Auf dieser Seite können die Texte der Benutzeroberfläche von Antragsgrün angepasst werden. Falls du eine komplett neue Sprache anlegen und allen anderen Nutzer*innen von Antragsgrün bereit stellen willst, <a href="https://github.com/CatoTH">melde dich</a> einfach bei uns.<br><br>' .
-        '<strong>Hinweis:</strong> Änderungen hier wirken sich nur auf die aktuelle Veranstaltung aus - auf keine andere.',
+                                    '<strong>Hinweis:</strong> Änderungen hier wirken sich nur auf die aktuelle Veranstaltung aus - auf keine andere.',
     'translating_none'           => 'Keine Texte zu übersetzen',
     'translating_base'           => 'Basis-Sprachversion',
     'tabulardatatype_string'     => 'Text',
@@ -390,7 +390,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_del_caller'      => 'Antragstyp löschen',
     'motion_type_del_btn'         => 'Löschen',
     'motion_type_not_deletable'   => 'Dieser Antragstyp kann (noch) nicht gelöscht werden, da es noch Anträge gibt. ' .
-        'Bitte lösche zuerst alle Anträge dieses Typs, erst dann kann der Antragstyp gelöscht werden.',
+                                     'Bitte lösche zuerst alle Anträge dieses Typs, erst dann kann der Antragstyp gelöscht werden.',
     'motion_type_deleted_head'    => 'Antragstyp gelöscht',
     'motion_type_deleted_msg'     => 'Der Antragstyp wurde erfolgreich gelöscht.',
     'motion_type_pos'             => 'Position (im PDF)',
@@ -475,7 +475,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'cons_create_template'        => 'Einstellungen übernehmen von',
     'cons_create_submit'          => 'Veranstaltung anlegen',
     'support_coll_policy_warning' => 'Wenn es vor dem Einreichen eines Antrags eine Unterstützungsphase gibt, wird empfohlen, ' .
-        'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
+                                     'sowohl zum Stellen als auch Unterstützen eines Antrags ein Login zu erzwingen. Außerdem ist eine E-Mail-Bestätigung an die Antragsteller*in empfehlenswert.',
     'support_coll_policy_fix'     => 'Einstellungen so setzen',
 
     'users_head'       => 'Registrierte Benutzer*innen',
@@ -530,7 +530,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'theme_motionFixedFont'             => 'Text fester Zeichenbreite: Schriftart',
     'theme_motionStdFontSize'           => 'Text fester Zeichenbreite: Größe',
     'theme_reset_btn'                   => 'Farbschema zurücksetzen',
-    'theme_reset_confirm'               => 'Sollen alle Werte auf den jeweiligen Standard zurückgesetzt werden?',
+    'theme_reset_confirm_message'       => 'Auf welches Standard-Farbschema soll zurückgesetzt werden?',
+    'theme_reset_confirm_name_classic'  => 'Grün/Magenta',
+    'theme_reset_confirm_name_dbjr'     => 'Grau/Rot',
 
     'files_title' => 'Hochgeladene Dateien',
     'files_none'  => 'Keine Dateien hochgeladen',

@@ -12,7 +12,7 @@ class ImageChooser {
             $uploadLabel.text($uploadLabel.data('title'));
             $row.find("input[type=file]").val('');
         });
-        $row.find("input[type=file]").change(() => {
+        $row.find("input[type=file]").on("change", () => {
             const path = $row.find("input[type=file]").val().split('\\');
             const filename = path[path.length - 1];
             $row.find('input[type=hidden]').val('');
@@ -30,12 +30,31 @@ export class Theming {
 
         this.$form.on('click', '.btnResetTheme', (ev) => {
             ev.preventDefault();
-            bootbox.confirm($(ev.currentTarget).data("confirm"), (result) => {
-                if (result) {
-                    this.$form.append('<input type="hidden" name="resetTheme" value="1">');
-                    this.$form.submit();
+
+            const options = {
+                title: $(ev.currentTarget).data("confirm-title"),
+                message: $(ev.currentTarget).data("confirm-message"),
+                inputType: 'radio',
+                inputOptions: [
+                    {
+                        text: $(ev.currentTarget).data("name-classic"),
+                        value: 'layout-classic',
+                    },
+                    {
+                        text: $(ev.currentTarget).data("name-dbjr"),
+                        value: 'layout-dbjr',
+                    }
+                ],
+                callback: (result) => {
+                    if (result) {
+                        const $defaults = $('<input type="hidden" name="defaults" value="1">').attr("value", result);
+                        this.$form.append('<input type="hidden" name="resetTheme" value="1">');
+                        this.$form.append($defaults);
+                        this.$form.trigger("submit");
+                    }
                 }
-            });
+            } as BootboxPromptOptions; // Typings of Bootbox don't support "message"
+            bootbox.prompt(options);
         });
     }
 }

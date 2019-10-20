@@ -9,6 +9,7 @@ export class ConsultationSettings {
         this.initTags();
         this.initAdminMayEdit();
         this.initSingleMotionMode();
+        this.initLayoutChooser();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -28,7 +29,7 @@ export class ConsultationSettings {
             } else {
                 $("#forceMotionRow").addClass("hidden");
             }
-        }).change();
+        }).trigger("change");
     }
 
     private initAdminMayEdit() {
@@ -59,7 +60,7 @@ export class ConsultationSettings {
     }
 
     private initTags() {
-        this.$form.submit(() => {
+        this.$form.on("submit", () => {
             let items = $("#tagsList").pillbox('items'),
                 tags = [],
                 $node = $('<input type="hidden" name="tags">'),
@@ -93,12 +94,25 @@ export class ConsultationSettings {
             $uploadLabel.text($uploadLabel.data('title'));
             $logoRow.find("input[type=file]").val('');
         });
-        $logoRow.find("input[type=file]").change(() => {
+        $logoRow.find("input[type=file]").on("change", () => {
             const path = ($logoRow.find("input[type=file]").val() as string).split('\\');
             const filename = path[path.length - 1];
             $logoRow.find('input[name=consultationLogo]').val('');
             $logoRow.find(".logoPreview img").addClass('hidden');
             $uploadLabel.text(filename);
         });
+    }
+
+    private initLayoutChooser() {
+
+        const $inputs = this.$form.find(".thumbnailedLayoutSelector input");
+        const $editLink = this.$form.find(".editThemeLink");
+        const editLinkDefault = $editLink.attr("href");
+        const onChange = () => {
+            const selected: string = $inputs.filter(":checked").val() as string;
+            $editLink.attr("href", editLinkDefault.replace(/DEFAULT/, selected));
+        };
+        $inputs.on("change", onChange);
+        onChange();
     }
 }

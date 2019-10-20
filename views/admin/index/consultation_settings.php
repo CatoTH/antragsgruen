@@ -197,7 +197,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                 <?= Html::a(
                     '<span class="glyphicon glyphicon-chevron-right"></span> ' .
                     ($hasCustom ? Yii::t('admin', 'con_ci_custom_edit') : Yii::t('admin', 'con_ci_custom_create')),
-                    UrlHelper::createUrl('/admin/index/theming'),
+                    UrlHelper::createUrl(['/admin/index/theming', 'default' => 'DEFAULT']),
                     ['class' => 'editThemeLink']
                 ) ?>
             </div>

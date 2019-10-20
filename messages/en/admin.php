@@ -521,7 +521,9 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'theme_motionFixedFont'             => 'Fixed-width text font',
     'theme_motionStdFontSize'           => 'Fixed-width text size (px)',
     'theme_reset_btn'                   => 'Reset theme',
-    'theme_reset_confirm'               => 'Do you want to reset all values to their default?',
+    'theme_reset_confirm_message'       => 'Which default color theme do you want to set?',
+    'theme_reset_confirm_name_classic'  => 'Green/Magenta',
+    'theme_reset_confirm_name_dbjr'     => 'Grey/Red',
 
     'files_title' => 'Uploaded files',
     'files_none'  => 'No uploaded files',

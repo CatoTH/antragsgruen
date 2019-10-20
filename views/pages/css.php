@@ -13,8 +13,12 @@ $OpenSansPath: "../fonts/OpenSans/fonts";
 @import "../fonts/OpenSans/open-sans.scss";
 $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
+$firaSansFontPath: "../fonts/firasans/";
+@import "../fonts/firasans/firasans";
+$veraSansPath: "../fonts/BitstreamVeraSansMono";
+@import "../fonts/BitstreamVeraSansMono/verasans";
 
-' . $stylesheetSettings->toScssVariables() . '
+' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
 
 $table-border-color: $colorGreenLight;
 
@@ -76,6 +80,6 @@ $css .= '.logoImg {
 
 
 $scss = new \Leafo\ScssPhp\Compiler();
-$scss->addImportPath(\Yii::$app->basePath . '/web/css/');
+$scss->addImportPath(Yii::$app->basePath . '/web/css/');
 $scss->setFormatter(\Leafo\ScssPhp\Formatter\Compressed::class);
 echo $scss->compile($css);

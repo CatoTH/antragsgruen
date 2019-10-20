@@ -384,16 +384,18 @@ class IndexController extends AdminBase
     }
 
     /**
+     * @param string $default
+     *
      * @return string
      */
-    public function actionTheming()
+    public function actionTheming($default = 'layout-classic')
     {
         $siteSettings = $this->site->getSettings();
         $stylesheet   = $siteSettings->getStylesheet();
 
         if ($this->isPostSet('save')) {
             $settings = \Yii::$app->request->post('stylesheet', []);
-            foreach (Stylesheet::getAllSettings() as $key => $setting) {
+            foreach (Stylesheet::getAllSettings($default) as $key => $setting) {
                 switch ($setting['type']) {
                     case Stylesheet::TYPE_CHECKBOX:
                         $stylesheet->$key = isset($settings[$key]);
@@ -437,8 +439,9 @@ class IndexController extends AdminBase
         }
 
         if ($this->isPostSet('resetTheme')) {
+            $resetDefaults = \Yii::$app->request->post('defaults', $default);
             $data = [];
-            foreach (Stylesheet::getAllSettings() as $key => $setting) {
+            foreach (Stylesheet::getAllSettings($resetDefaults) as $key => $setting) {
                 $data[$key] = $setting['default'];
             }
             $stylesheet = new Stylesheet($data);
@@ -450,7 +453,7 @@ class IndexController extends AdminBase
             $this->layoutParams->setLayout($siteSettings->siteLayout);
         }
 
-        return $this->render('theming', ['stylesheet' => $stylesheet]);
+        return $this->render('theming', ['stylesheet' => $stylesheet, 'default' => $default]);
     }
 
     /**
