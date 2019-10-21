@@ -1,7 +1,8 @@
 # Version history
 
-## Version 4.3 [not released yet]
+## Version 4.3 (2019-10-21)
 
+- Hint: 4.3 will be the last version compatible with PHP versions below 7.1.
 - The merging of amendments into motion has greatly been improved. Instead of generating one big, monolithic text with all changes and conflicts, the motion is now split into different paragraphs. For each paragraph, the amendments to be merged into the motion can be selected separately and on-the-fly while editing the new vesion of the text.
 - Please note that previous merging drafts that were not completed, are not accessible anymore after upgrading to this release due to incompatibilities with this new merging system.
 - The inline amendment mode in the regular motion view (using the green bookmarks at the right) can now be used on devices with small screens as well.

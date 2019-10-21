@@ -493,6 +493,9 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'updates_error'        => 'Die Updates konnten nicht abgefragt werden',
     'updates_show_changes' => 'Änderungen anzeigen',
 
+    'php_version_hint_title' => '<strong>Warnung:</strong> Zu alte PHP-Version',
+    'php_version_hint_text'  => 'Auf diesem Server läuft noch PHP in der veralteten Version %CURR%. Zukünftige Versionen von Antragsgrün sind damit nicht mehr kompatibel. Bitte aktualisiere bald.',
+
     'theme_title'                       => 'Eigenes Farbschema',
     'theme_block_text'                  => 'Text',
     'theme_block_layout'                => 'Grundlayout',

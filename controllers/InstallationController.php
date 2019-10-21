@@ -22,14 +22,14 @@ class InstallationController extends Base
     {
         if (in_array($action->id, ['index', 'db-test'])) {
             // No cookieValidationKey is set in the beginning
-            \Yii::$app->request->enableCookieValidation = false;
+            Yii::$app->request->enableCookieValidation = false;
             $this->enableCsrfValidation                 = false;
             return parent::beforeAction($action);
         }
 
-        $currentHost = parse_url(\Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
+        $currentHost = parse_url(Yii::$app->request->getAbsoluteUrl(), PHP_URL_HOST);
         $managerHost = parse_url($this->getParams()->domainPlain, PHP_URL_HOST);
-        if ($currentHost != $managerHost) {
+        if ($currentHost !== $managerHost) {
             return $this->redirect($this->getParams()->domainPlain, 301);
         }
 
@@ -48,7 +48,7 @@ class InstallationController extends Base
     private function initDb($dbForm, $delInstallFileCmd, $makeEditabeCommand, $configDir, $editable)
     {
         if (!version_compare(PHP_VERSION, ANTRAGSGRUEN_MIN_PHP_VERSION, '>=')) {
-            $phpVersionWarning = str_replace('%VERSION%', phpversion(), \Yii::t('manager', 'err_php_version'));
+            $phpVersionWarning = str_replace('%VERSION%', phpversion(), Yii::t('manager', 'err_php_version'));
         } else {
             $phpVersionWarning = null;
         }
@@ -76,7 +76,7 @@ class InstallationController extends Base
 
         if ($this->isPostSet('create')) {
             try {
-                $post = \Yii::$app->request->post();
+                $post = Yii::$app->request->post();
                 $siteForm->setAttributes($post['SiteCreateForm']);
                 $siteForm->prettyUrls = isset($post['SiteCreateForm']['prettyUrls']);
 
@@ -98,7 +98,7 @@ class InstallationController extends Base
                     'consultationUrl'      => $consultationUrl,
                 ]);
             } catch (\Exception $e) {
-                \yii::$app->session->setFlash('error', $e->getMessage());
+                Yii::$app->session->setFlash('error', $e->getMessage());
             }
         }
         if (!$this->getParams()->multisiteMode) {
@@ -125,9 +125,9 @@ class InstallationController extends Base
         $configFile  = $configDir . DIRECTORY_SEPARATOR . 'config.json';
 
         if (!file_exists($installFile)) {
-            $msg = \Yii::t('manager', 'already_created_reinit') . '<br><br>';
+            $msg = Yii::t('manager', 'already_created_reinit') . '<br><br>';
             $url = Url::toRoute('manager/siteconfig');
-            $msg .= Html::a(\Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
+            $msg .= Html::a(Yii::t('manager', 'created_goon_std_config'), $url, ['class' => 'btn btn-primary']);
             $msg = str_replace('%FILE%', Html::encode($installFile), $msg);
             return $this->showErrorpage(403, $msg);
         }
@@ -160,11 +160,11 @@ class InstallationController extends Base
         }
         if (isset(MessageSource::getBaseLanguages()[$language])) {
             $dbForm->language    = $language;
-            \Yii::$app->language = $language;
+            Yii::$app->language = $language;
         }
 
 
-        $post = \Yii::$app->request->post();
+        $post = Yii::$app->request->post();
         if ($this->isPostSet('saveDb')) {
             $dbForm->setAttributes($post);
 
@@ -173,9 +173,9 @@ class InstallationController extends Base
 
                 if ($dbForm->sqlCreateTables && $dbForm->verifyDBConnection(false) && !$dbForm->tablesAreCreated()) {
                     $dbForm->createTables();
-                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_site_created'));
+                    yii::$app->session->setFlash('success', Yii::t('manager', 'msg_site_created'));
                 } else {
-                    \yii::$app->session->setFlash('success', \Yii::t('manager', 'msg_config_saved'));
+                    yii::$app->session->setFlash('success', Yii::t('manager', 'msg_config_saved'));
                 }
 
                 $dbForm->overwriteYiiConnection();
@@ -201,8 +201,8 @@ class InstallationController extends Base
      */
     public function actionDbTest()
     {
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
+        yii::$app->response->format = Response::FORMAT_RAW;
+        yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $configDir   = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config';
         $installFile = $configDir . DIRECTORY_SEPARATOR . 'INSTALLING';
@@ -212,7 +212,7 @@ class InstallationController extends Base
             throw new Internal('Installation mode not activated');
         }
 
-        $post = \Yii::$app->request->post();
+        $post = Yii::$app->request->post();
         $form = new AntragsgruenInitDb($configFile);
         $form->setAttributes($post);
         if (isset($post['sqlPassword']) && $post['sqlPassword'] != '') {

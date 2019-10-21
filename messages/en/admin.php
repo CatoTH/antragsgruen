@@ -484,6 +484,9 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'updates_error'        => 'Updates could not be loaded',
     'updates_show_changes' => 'Show changes',
 
+    'php_version_hint_title' => '<strong>Warning:</strong> Old PHP-Version',
+    'php_version_hint_text'  => 'This server runs the obsolete version %CURR% or PHP. Future versions of Antragsgrün will not be compatible with it. Please upgrade PHP soon.',
+
     'theme_title'                       => 'Custom theme',
     'theme_block_text'                  => 'Text',
     'theme_block_layout'                => 'Base layout',

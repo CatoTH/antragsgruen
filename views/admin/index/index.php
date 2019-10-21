@@ -16,12 +16,12 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'index_title');
+$this->title = Yii::t('admin', 'index_title');
 $layout->addCSS('css/backend.css');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'));
 $layout->addAMDModule('backend/AdminIndex');
 
-echo '<h1>' . \Yii::t('admin', 'index_settings') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'index_settings') . '</h1>';
 
 
 echo $controller->showErrors();
@@ -31,7 +31,7 @@ echo '<div class="content adminIndex"><div class="adminIndexHolder"><div>';
 echo '<ul class="adminMenuList"><li>';
 
 echo Html::a(
-    \Yii::t('admin', 'index_consultation_settings'),
+    Yii::t('admin', 'index_consultation_settings'),
     UrlHelper::createUrl('admin/index/consultation'),
     ['id' => 'consultationLink']
 );
@@ -52,7 +52,7 @@ echo Html::a(
 );
 echo '</li>';
 
-echo '<li>' . \Yii::t('admin', 'index_motion_types') . '<ul>';
+echo '<li>' . Yii::t('admin', 'index_motion_types') . '<ul>';
 foreach ($consultation->motionTypes as $motionType) {
     echo '<li>';
     $sectionsUrl = UrlHelper::createUrl(['admin/motion/type', 'motionTypeId' => $motionType->id]);
@@ -60,14 +60,14 @@ foreach ($consultation->motionTypes as $motionType) {
     echo '</li>';
 }
 echo '<li class="secondary motionTypeCreate">';
-echo Html::a(\Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['admin/motion/typecreate']));
+echo Html::a(Yii::t('admin', 'motion_type_create_caller'), UrlHelper::createUrl(['admin/motion/typecreate']));
 echo '</li>';
 echo '</ul></li>';
 
 if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
     echo '<li>';
     echo Html::a(
-        \Yii::t('admin', 'index_site_access'),
+        Yii::t('admin', 'index_site_access'),
         UrlHelper::createUrl('admin/index/siteaccess'),
         ['class' => 'siteAccessLink']
     );
@@ -75,7 +75,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
 
     echo '<li>';
     echo Html::a(
-        \Yii::t('admin', 'index_site_consultations'),
+        Yii::t('admin', 'index_site_consultations'),
         UrlHelper::createUrl('admin/index/siteconsultations'),
         ['class' => 'siteConsultationsLink']
     );
@@ -85,7 +85,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_SITE_ADMIN)) {
 if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) {
     echo '<li>';
     echo Html::a(
-        \Yii::t('admin', 'index_site_user_list'),
+        Yii::t('admin', 'index_site_user_list'),
         UrlHelper::createUrl('/manager/userlist'),
         ['class' => 'siteUserList']
     );
@@ -93,7 +93,7 @@ if (User::currentUserIsSuperuser() && !$controller->getParams()->multisiteMode) 
 
     echo '<li>';
     echo Html::a(
-        \Yii::t('admin', 'index_site_config'),
+        Yii::t('admin', 'index_site_config'),
         UrlHelper::createUrl('/manager/siteconfig'),
         ['class' => 'siteConfigLink']
     );
@@ -105,19 +105,27 @@ echo '</div><aside class="adminIndexSecondary">';
 
 echo \app\models\layoutHooks\Layout::getAdminIndexHint($consultation);
 
-if (User::currentUserIsSuperuser() && UpdateChecker::isUpdaterAvailable()) {
-    $url = UrlHelper::createUrl('admin/index/check-updates');
-    echo '<article class="adminCard adminCardUpdates">';
-    echo '<header><h2>' . \Yii::t('admin', 'updates_title') . '</h2></header>';
-    echo '<main data-src="' . Html::encode($url) . '">';
-    echo \Yii::t('admin', 'updates_loading');
-    echo '</main></article>';
-}
-
 if (User::currentUserIsSuperuser()) {
+    if (UpdateChecker::isUpdaterAvailable()) {
+        $url = UrlHelper::createUrl('admin/index/check-updates');
+        echo '<article class="adminCard adminCardUpdates">';
+        echo '<header><h2>' . Yii::t('admin', 'updates_title') . '</h2></header>';
+        echo '<main data-src="' . Html::encode($url) . '">';
+        echo Yii::t('admin', 'updates_loading');
+        echo '</main></article>';
+    }
+
+    if (version_compare(PHP_VERSION, ANTRAGSGRUEN_NEXT_PHP_VERSION, '<')) {
+        echo '<article class="adminCard">';
+        echo '<header><h2>' . Yii::t('admin', 'php_version_hint_title') . '</h2></header>';
+        echo '<main>';
+        echo str_replace('%CURR%', PHP_VERSION, Yii::t('admin', 'php_version_hint_text'));
+        echo '</main></article>';
+    }
+
     echo Html::beginForm('', 'post', ['class' => 'sysadminForm']);
     echo '<button type="submit" name="flushCaches" class="btn btn-small btn-default">' .
-        \Yii::t('admin', 'index_flush_caches') . '</button>';
+         Yii::t('admin', 'index_flush_caches') . '</button>';
     echo Html::endForm();
 }
 
@@ -128,8 +136,8 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
     if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .
-            '<span class="glyphicon glyphicon-trash"></span> ' . \Yii::t('admin', 'index_site_del') .
-            '</button>';
+             '<span class="glyphicon glyphicon-trash"></span> ' . Yii::t('admin', 'index_site_del') .
+             '</button>';
         echo Html::endForm();
     }
 }
