@@ -207,6 +207,7 @@ class ConsultationLog extends ActiveRecord
                 }
                 break;
             case static::MOTION_COMMENT:
+            case static::MOTION_COMMENT_SCREEN:
                 $this->motionComment = MotionComment::findOne($this->actionReferenceId);
                 if ($this->motionComment) {
                     $this->motion   = $this->motionComment->motion;
@@ -214,6 +215,7 @@ class ConsultationLog extends ActiveRecord
                 }
                 break;
             case static::AMENDMENT_COMMENT:
+            case static::AMENDMENT_COMMENT_SCREEN:
                 $this->amendmentComment = AmendmentComment::findOne($this->actionReferenceId);
                 if ($this->amendmentComment) {
                     $this->amendment   = $this->amendmentComment->amendment;
@@ -277,6 +279,7 @@ class ConsultationLog extends ActiveRecord
                 }
                 break;
             case static::MOTION_COMMENT:
+            case static::MOTION_COMMENT_SCREEN:
                 if ($this->motionComment && $this->motionComment->motion) {
                     return UrlHelper::createMotionCommentUrl($this->motionComment);
                 } else {
@@ -284,6 +287,7 @@ class ConsultationLog extends ActiveRecord
                 }
                 break;
             case static::AMENDMENT_COMMENT:
+            case static::AMENDMENT_COMMENT_SCREEN:
                 if ($this->amendmentComment && $this->amendmentComment->amendment &&
                     $this->amendmentComment->amendment->getMyMotion()) {
                     return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
@@ -437,6 +441,7 @@ class ConsultationLog extends ActiveRecord
                 $str = $this->formatLogEntryUser($str, '');
                 return $str;
             case static::MOTION_COMMENT:
+            case static::MOTION_COMMENT_SCREEN:
                 if ($this->motionComment) {
                     $abstract = $this->motionComment->getTextAbstract(190);
                     $str      = $this->formatLogEntryUser('###USER###', $this->motionComment->name) . ': ';
@@ -450,10 +455,6 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::MOTION_UNSCREEN:
                 return null;
-            case static::MOTION_COMMENT_SCREEN:
-                $str = \Yii::t('structure', 'activity_MOTION_COMMENT_SCREEN');
-                $str = $this->formatLogEntryUser($str, '');
-                return $str;
             case static::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
@@ -480,6 +481,7 @@ class ConsultationLog extends ActiveRecord
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
             case static::AMENDMENT_COMMENT:
+            case static::AMENDMENT_COMMENT_SCREEN:
                 if ($this->amendmentComment) {
                     $abstract = $this->amendmentComment->getTextAbstract(190);
                     $str      = $this->formatLogEntryUser('###USER###', $this->amendmentComment->name) . ': ';
@@ -494,10 +496,6 @@ class ConsultationLog extends ActiveRecord
                 return $str;
             case static::AMENDMENT_UNSCREEN:
                 return null;
-            case static::AMENDMENT_COMMENT_SCREEN:
-                $str = \Yii::t('structure', 'activity_AMENDMENT_COMMENT_SCREEN');
-                $str = $this->formatLogEntryAmendment($str);
-                return $str;
             default:
                 return $this->actionType;
         }

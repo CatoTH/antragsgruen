@@ -181,7 +181,6 @@ return [
     'activity_MOTION_WITHDRAW'            => 'Der Antrag wurde <strong>zurückgezogen</strong>.',
     'activity_MOTION_COMMENT'             => '###USER### hat den <strong>Antrag kommentiert</strong>',
     'activity_MOTION_SCREEN'              => 'Der <strong>Antrag</strong> wurde <strong>veröffentlicht</strong>',
-    'activity_MOTION_COMMENT_SCREEN'      => '###USER### hat den <strong>Antrag kommentiert</strong>',
     'activity_AMENDMENT_PUBLISH'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### eingereicht</strong>',
     'activity_AMENDMENT_CHANGE'           => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### überarbeitet</strong>',
     'activity_AMENDMENT_DELETE'           => '###USER### hat einen <strong>Änderungsantrag ###AMENDMENT### gelöscht</strong>',
@@ -189,7 +188,6 @@ return [
     'activity_AMENDMENT_WITHDRAW'         => 'Der <strong> Änderungsantrag ###AMENDMENT###</strong> wurde <strong>zurückgezogen</strong>.',
     'activity_AMENDMENT_COMMENT'          => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### kommentiert</strong>',
     'activity_AMENDMENT_SCREEN'           => 'Der <strong>Änderungsantrag ###AMENDMENT###</strong> wurde <strong>veröffentlicht</strong>',
-    'activity_AMENDMENT_COMMENT_SCREEN'   => '###USER### hat den <strong>Änderungsantrag ###AMENDMENT### kommentiert</strong>',
 
     'remaining_over'    => 'vorbei',
     'remaining_days'    => 'Tage',
