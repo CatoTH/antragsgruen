@@ -16,6 +16,7 @@
 - In the proposed procedure, a second notification to the initiator of an amendment can be sent by mail, e.g. if the proposed procedure has been heavily modified.
 - The ODT-version of a motion / amendment now also shows the list of supporters.
 - To avoid exceeding use of paper when printing out motions with many supporters, it is now possible to set a upper limit for the number of printed supporters.
+- Bugfix: When installed in subdirectories, using custom color themes lead to broken icons.
 - Bugfix: The proposed procedure overview for regular users was not accessible on devices with small screens.
 - Bugfix: Long-broken references to OpenID-based login were removed.
 - Bugfix: Deleting tags form a consultation after a motion was assigned to this tag was not possible.

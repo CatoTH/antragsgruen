@@ -9,14 +9,14 @@ $css = '
 
 @import "variables";
 
-$OpenSansPath: "../fonts/OpenSans/fonts";
-@import "../fonts/OpenSans/open-sans.scss";
-$veraSansPath: "../fonts/BitstreamVeraSansMono";
-@import "../fonts/BitstreamVeraSansMono/verasans";
-$firaSansFontPath: "../fonts/firasans/";
-@import "../fonts/firasans/firasans";
-$veraSansPath: "../fonts/BitstreamVeraSansMono";
-@import "../fonts/BitstreamVeraSansMono/verasans";
+$OpenSansPath: "./fonts/OpenSans/fonts";
+@import "./fonts/OpenSans/open-sans.scss";
+$veraSansPath: "./fonts/BitstreamVeraSansMono";
+@import "./fonts/BitstreamVeraSansMono/verasans";
+$firaSansFontPath: "./fonts/firasans/";
+@import "./fonts/firasans/firasans";
+$veraSansPath: "./fonts/BitstreamVeraSansMono";
+@import "./fonts/BitstreamVeraSansMono/verasans";
 
 ' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
 
@@ -27,6 +27,7 @@ $deadlineCircleFont: "Open Sans", sans-serif;
 $motionFixedWidth: 740px;
 $inlineAmendmentPreambleHeight: 30px;
 $inlineAmendmentPreambleColor: rgb(226, 0, 122);
+$icon-font-path: "./fonts/";
 
 @import "bootstrap";
 @import "fontello";
