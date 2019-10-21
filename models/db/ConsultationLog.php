@@ -448,6 +448,12 @@ class ConsultationLog extends ActiveRecord
             case static::MOTION_SCREEN:
                 $str = \Yii::t('structure', 'activity_MOTION_SCREEN');
                 return $str;
+            case static::MOTION_UNSCREEN:
+                return null;
+            case static::MOTION_COMMENT_SCREEN:
+                $str = \Yii::t('structure', 'activity_MOTION_COMMENT_SCREEN');
+                $str = $this->formatLogEntryUser($str, '');
+                return $str;
             case static::AMENDMENT_PUBLISH:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_PUBLISH');
                 $str = $this->formatLogEntryAmendment($str);
@@ -484,6 +490,12 @@ class ConsultationLog extends ActiveRecord
                 }
             case static::AMENDMENT_SCREEN:
                 $str = \Yii::t('structure', 'activity_AMENDMENT_SCREEN');
+                $str = $this->formatLogEntryAmendment($str);
+                return $str;
+            case static::AMENDMENT_UNSCREEN:
+                return null;
+            case static::AMENDMENT_COMMENT_SCREEN:
+                $str = \Yii::t('structure', 'activity_AMENDMENT_COMMENT_SCREEN');
                 $str = $this->formatLogEntryAmendment($str);
                 return $str;
             default:
