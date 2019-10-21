@@ -43,6 +43,7 @@ class PagesController extends Base
                 $page->text           = '';
                 $page->editDate       = date('Y-m-d H:i:s');
                 $page->save();
+
                 return \Yii::$app->response->redirect($page->getUrl());
             } catch (FormError $e) {
                 \Yii::$app->session->setFlash('error', $e->getMessage());
@@ -54,6 +55,7 @@ class PagesController extends Base
 
     /**
      * @param string $pageSlug
+     *
      * @return string
      */
     public function actionShowPage($pageSlug)
@@ -74,6 +76,7 @@ class PagesController extends Base
 
     /**
      * @param string $pageSlug
+     *
      * @return ConsultationText|null
      * @throws Access
      */
@@ -109,6 +112,7 @@ class PagesController extends Base
 
     /**
      * @param string $pageSlug
+     *
      * @return string
      * @throws Access
      */
@@ -189,6 +193,7 @@ class PagesController extends Base
 
     /**
      * @param string $pageSlug
+     *
      * @return \yii\console\Response|Response
      * @throws Access
      * @throws \Throwable
@@ -203,6 +208,7 @@ class PagesController extends Base
         }
 
         $textUrl = UrlHelper::createUrl('pages/list-pages');
+
         return \Yii::$app->response->redirect($textUrl);
     }
 
@@ -225,6 +231,7 @@ class PagesController extends Base
         if ($params->multisiteMode) {
             $admin      = User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT);
             $viewParams = ['pageKey' => 'legal', 'admin' => $admin];
+
             return $this->render('imprint_multisite', $viewParams);
         } else {
             return $this->renderContentPage('legal');
@@ -246,6 +253,7 @@ class PagesController extends Base
 
         try {
             $file = ConsultationFile::uploadImage($this->consultation, 'upload');
+
             return json_encode([
                 'uploaded' => 1,
                 'fileName' => $file->filename,
@@ -305,6 +313,7 @@ class PagesController extends Base
             if ($file1->consultationId !== $currentCon && $file1->consultationId === $currentCon) {
                 return 1;
             }
+
             return Tools::compareSqlTimes($file1->dateCreation, $file2->dateCreation);
         });
 
@@ -317,6 +326,7 @@ class PagesController extends Base
 
     /**
      * @param string $filename
+     *
      * @return string
      * @throws NotFoundHttpException
      */
@@ -352,11 +362,19 @@ class PagesController extends Base
         $stylesheetSettings = $this->site->getSettings()->getStylesheet();
         $file               = ConsultationFile::findStylesheetCache($this->site, $stylesheetSettings);
         if ($file) {
-            return $file->data;
+            $lines     = explode("\n", $file->data);
+            $firstLine = array_shift($lines);
+            if ($firstLine === ANTRAGSGRUEN_VERSION) {
+                return implode("\n", $lines);
+            } else {
+                $file->delete();
+            }
         }
 
-        $data = $this->renderPartial('css', ['stylesheetSettings' => $stylesheetSettings]);
-        ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $data);
+        $data       = $this->renderPartial('css', ['stylesheetSettings' => $stylesheetSettings]);
+        $toSaveData = ANTRAGSGRUEN_VERSION . "\n" . $data;
+        ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
+
         return $data;
     }
 }
