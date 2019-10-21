@@ -310,7 +310,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return Consultation
+     * @return Consultation|null
      */
     public function getMyConsultation()
     {
@@ -320,6 +320,9 @@ class Amendment extends IMotion implements IRSSItem
         } else {
             /** @var Motion $motion */
             $motion = Motion::findOne($this->motionId);
+            if (!$motion) {
+                return null;
+            }
             return Consultation::findOne($motion->consultationId);
         }
     }

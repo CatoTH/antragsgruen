@@ -316,6 +316,9 @@ abstract class IMotion extends ActiveRecord
      */
     public function isVisible()
     {
+        if (!$this->getMyConsultation()) {
+            return false;
+        }
         return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses());
     }
 
