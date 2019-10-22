@@ -31,7 +31,7 @@ Installation
 #### Requirements:
 
 - A MySQL-database
-- PHP >= 5.6. Recommended: 7.2+. Required packages for Debian Linux:
+- PHP >= 7.1. Recommended: 7.2+. Required packages for Debian Linux:
 
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
@@ -58,7 +58,7 @@ Install the sources and dependencies from the repository:
 git clone https://github.com/CatoTH/antragsgruen.git
 cd antragsgruen
 curl -sS https://getcomposer.org/installer | php
-./composer.phar global require "fxp/composer-asset-plugin:1.4.5"
+./composer.phar global require "fxp/composer-asset-plugin:1.4.6"
 ./composer.phar install --prefer-dist
 npm install
 npm run build
