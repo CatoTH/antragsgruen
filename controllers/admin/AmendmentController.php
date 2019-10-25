@@ -257,7 +257,7 @@ class AmendmentController extends AdminBase
             $amendment->status            = $amdat['status'];
             $amendment->globalAlternative = (isset($amdat['globalAlternative']) ? 1 : 0);
             $amendment->dateResolution    = '';
-            if ($amdat['dateResolution'] != '') {
+            if ($amdat['dateResolution'] !== '') {
                 $amendment->dateResolution = Tools::dateBootstraptime2sql($amdat['dateResolution']);
             }
 

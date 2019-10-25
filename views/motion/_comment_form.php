@@ -7,7 +7,7 @@ use app\models\db\IComment;
 use app\models\db\User;
 use app\models\db\UserNotification;
 use app\models\forms\CommentForm;
-use \Yii\Helpers\Html;
+use Yii\Helpers\Html;
 
 /**
  * @var int $paragraphNo
@@ -25,9 +25,9 @@ if ($user) {
 }
 
 $settingOptions = [
-    UserNotification::COMMENT_REPLIES             => \Yii::t('con', 'noti_comments_replies'),
-    UserNotification::COMMENT_SAME_MOTIONS        => \Yii::t('con', 'noti_comments_motions'),
-    UserNotification::COMMENT_ALL_IN_CONSULTATION => \Yii::t('con', 'noti_comments_con'),
+    UserNotification::COMMENT_REPLIES             => Yii::t('con', 'noti_comments_replies'),
+    UserNotification::COMMENT_SAME_MOTIONS        => Yii::t('con', 'noti_comments_motions'),
+    UserNotification::COMMENT_ALL_IN_CONSULTATION => Yii::t('con', 'noti_comments_con'),
 ];
 $setting        = UserNotification::$COMMENT_SETTINGS[0];
 if ($notiSettings) {
@@ -37,10 +37,10 @@ if ($notiSettings) {
 $classes = 'commentForm motionComment form-horizontal';
 if ($isReplyTo) {
     $classes   .= ' replyComment replyTo' . $isReplyTo->id . ' hidden';
-    $title     = \Yii::t('comment', 'comment_reply_title');
+    $title     = Yii::t('comment', 'comment_reply_title');
     $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo . '_' . $isReplyTo->id;
 } else {
-    $title     = \Yii::t('comment', 'comment_write_title');
+    $title     = Yii::t('comment', 'comment_write_title');
     $formIdPre = 'comment_' . $sectionId . '_' . $paragraphNo;
 }
 echo Html::beginForm('', 'post', ['class' => $classes, 'id' => $formIdPre . '_form']);
@@ -50,7 +50,7 @@ if ($user && $user->name) {
 }
 echo '<h3 class="commentHeader commentWriteHeader">' . $title . '</h3>';
 
-if (\Yii::$app->user->isGuest) {
+if (Yii::$app->user->isGuest) {
     echo AntiSpam::getJsProtectionHint($consultation->id);
 }
 
@@ -65,7 +65,7 @@ if ($isReplyTo) {
 if ($user && $user->name && $user->email) {
     ?>
     <div class="commentFullTextarea">
-        <textarea name="comment[text]" title="<?= Html::encode(\Yii::t('comment', 'text')) ?>" class="form-control"
+        <textarea name="comment[text]" title="<?= Html::encode(Yii::t('comment', 'text')) ?>" class="form-control"
                   rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
     </div>
     <?php
@@ -74,7 +74,7 @@ if ($user && $user->name && $user->email) {
         ?>
         <div class="form-group">
             <label for="<?= $formIdPre ?>_name" class="control-label col-sm-3">
-                <?= \Yii::t('comment', 'name') ?>:
+                <?= Yii::t('comment', 'name') ?>:
             </label>
             <div class="col-sm-9">
                 <input type="text" class="form-control col-sm-9" id="<?= $formIdPre ?>_name"
@@ -87,7 +87,7 @@ if ($user && $user->name && $user->email) {
         ?>
         <div class="form-group">
             <label for="<?= $formIdPre ?>_email" class="control-label col-sm-3">
-                <?= \Yii::t('comment', 'email') ?>:
+                <?= Yii::t('comment', 'email') ?>:
             </label>
             <div class="col-sm-9">
                 <input type="email" class="form-control" id="<?= $formIdPre ?>_email"
@@ -100,7 +100,7 @@ if ($user && $user->name && $user->email) {
     }
     ?>
     <div class="form-group">
-        <label for="<?= $formIdPre ?>_text" class="control-label col-sm-3"><?= \Yii::t('comment', 'text') ?>
+        <label for="<?= $formIdPre ?>_text" class="control-label col-sm-3"><?= Yii::t('comment', 'text') ?>
             :</label>
         <div class="col-sm-9">
             <textarea name="comment[text]" title="Text" class="form-control" rows="5"
@@ -115,7 +115,7 @@ if ($user) {
     <div class="commentNotifications">
         <label>
             <?= Html::checkbox('comment[notifications]', ($notiSettings !== null), ['class' => 'notisActive']) ?>
-            <?= \Yii::t('comment', 'set_notis') ?>
+            <?= Yii::t('comment', 'set_notis') ?>
         </label>
         <?= HTMLTools::fueluxSelectbox('comment[notificationsettings]', $settingOptions, $setting, [], false, 'xs') ?>
     </div>
@@ -125,7 +125,7 @@ if ($user) {
 
     <div class="submitrow">
         <button class="btn btn-success" name="writeComment" type="submit">
-            <?= \Yii::t('comment', 'submit_comment') ?>
+            <?= Yii::t('comment', 'submit_comment') ?>
         </button>
     </div>
 <?php

@@ -265,18 +265,21 @@ if ($amendment->changeExplanation !== '') {
     <?php
 }
 
-$multipleParagraphs = $form->motion->motionType->amendmentMultipleParagraphs;
-
 if (!$amendment->textFixed) {
     echo '<h2 class="green">' . Yii::t('admin', 'amend_edit_text_title') . '</h2>
 <div class="content" id="amendmentTextEditCaller">
     <button type="button" class="btn btn-default">' . Yii::t('admin', 'amend_edit_text') . '</button>
 </div>
 <div class="content hidden" id="amendmentTextEditHolder"
-     data-multiple-paragraphs="' . ($multipleParagraphs ? 1 : 0) . '">';
+     data-multiple-paragraphs="1">';
 
     foreach ($form->sections as $section) {
-        echo $section->getSectionType()->getAmendmentFormField();
+        $sectionType = $section->getSectionType();
+        if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+            /** @var \app\models\sectionTypes\TextSimple $sectionType */
+            $sectionType->forceMultipleParagraphMode(true);
+        }
+        echo $sectionType->getAmendmentFormField();
     }
 
     echo '<section class="editorialChange">
@@ -287,12 +290,6 @@ if (!$amendment->textFixed) {
         <div class="texteditor motionTextFormattings boxed" id="amendmentEditorial_wysiwyg">';
     echo $form->editorial;
     echo '</div></section>';
-
-    if (!$multipleParagraphs) {
-        echo '<input type="hidden" name="modifiedSectionId" value="">';
-        echo '<input type="hidden" name="modifiedParagraphNo" value="">';
-    }
-
 
     echo '<div class="form-group wysiwyg-textarea" data-maxLen="0" data-fullHtml="0" id="amendmentReasonHolder">';
     echo '<label for="amendmentReason">' . Yii::t('amend', 'reason') . '</label>';

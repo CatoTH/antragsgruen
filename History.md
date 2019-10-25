@@ -2,7 +2,8 @@
 
 ### Version 4.3.1 [not released yet]
 
-- Withdrawn amendments were under some circumstances shown in the bookmark list to the right side of the motion text.
+- When using the admin backend, admins can now always edit an amendment so that multiple paragraphs are amended, even if under normal circumstances only one paragraph may be changed per amendment.
+- Bugfix: Withdrawn amendments were under some circumstances shown in the bookmark list to the right side of the motion text.
 
 ## Version 4.3.0 (2019-10-21)
 
