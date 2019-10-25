@@ -232,7 +232,7 @@ class Tools
                 if ($motion->status === Motion::STATUS_INLINE_REPLY) {
                     continue;
                 }
-                if (count($motion->replacedByMotions) > 0) {
+                if (count($motion->getVisibleReplacedByMotions()) > 0) {
                     continue;
                 }
                 if ($motion->iAmInitiator() && $motion->isVisibleForAdmins()) {

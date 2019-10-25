@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.3.1 [not released yet]
+
+- Withdrawn amendments were under some circumstances shown in the bookmark list to the right side of the motion text.
+
 ## Version 4.3.0 (2019-10-21)
 
 - Hint: 4.3 will be the last version compatible with PHP versions below 7.1.

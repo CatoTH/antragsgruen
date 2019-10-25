@@ -223,7 +223,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data == $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->data) {
             return;
         }
         $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -276,7 +276,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data == $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->data) {
             return;
         }
         $odt->addHtmlTextBlock('<h2>' . \Yii::t('amend', 'title_new') . '</h2>', false);

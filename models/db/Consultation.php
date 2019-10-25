@@ -726,7 +726,7 @@ class Consultation extends ActiveRecord
         $result[] = null;
 
         foreach ($this->getVisibleMotions() as $motion) {
-            if (!(in_array($motion->id, $ids) || count($motion->replacedByMotions) > 0)) {
+            if (!(in_array($motion->id, $ids) || count($motion->getVisibleReplacedByMotions()) > 0)) {
                 $addMotion($motion);
             }
         }
