@@ -115,10 +115,36 @@ class HTMLNormalizeTest extends TestBase
 
     /**
      */
-    public function testMergingOls()
+    public function testMergingOls1()
     {
         $orig   = '<ol><li>List item 1</li></ol>' . "\n\t" . '<ol start="2"><li>List item 2</li></ol>';
         $expect = '<ol><li>List item 1</li>' . "\n" . '<li>List item 2</li>' . "\n" . '</ol>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    /**
+     * This is the kind of HTML that is produced by the paragraph-based merging of amendments into motions.
+     */
+    public function testMergingOls2()
+    {
+        $orig   = '<div class="paragraphHolder" data-paragraph-no="2">
+<ol start="1">
+	<li>Listenpunkt</li>
+</ol>
+</div>
+
+<div class="paragraphHolder" data-paragraph-no="3">
+<ol start="2">
+	<li>Listenpunkt (<em>kursiv</em>)<br />
+	Zeilenumbruch</li>
+</ol>
+</div>';
+        $expect = '<ol>
+<li>Listenpunkt</li>
+<li>Listenpunkt (<em>kursiv</em>)<br>
+Zeilenumbruch</li>
+</ol>';
         $out    = HTMLTools::cleanSimpleHtml($orig);
         $this->assertEquals($expect, $out);
     }

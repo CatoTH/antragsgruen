@@ -105,7 +105,8 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h1 h2 h3 h4;' +
-                'ul ol li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'ol[start];' +
+                'ul li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,paragraphHolder,hasCollisions,moved);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
@@ -159,7 +160,7 @@ export class AntragsgruenEditor {
             console.error("Already initialized: " + id);
             return;
         }
-        
+
         this.$el.data("ckeditor_initialized", "1");
         this.$el.attr("contenteditable", "true");
 
