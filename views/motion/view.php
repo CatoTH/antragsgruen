@@ -139,11 +139,21 @@ if ($motion->status === Motion::STATUS_DRAFT) {
 }
 
 
-echo $this->render('_view_text', [
+$viewText = $this->render('_view_text', [
     'motion'         => $motion,
     'commentForm'    => $commentForm,
     'openedComments' => $openedComments,
 ]);
+
+$viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragraphNo>\d+)-->/siu', function ($matches) use ($motion) {
+    return $this->render('_view_paragraph_private_note', [
+        'motion'      => $motion,
+        'sectionId'   => IntVal($matches['sectionId']),
+        'paragraphNo' => IntVal($matches['paragraphNo']),
+    ]);
+}, $viewText);
+
+echo $viewText;
 
 
 ?>

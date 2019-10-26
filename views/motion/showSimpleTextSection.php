@@ -5,7 +5,6 @@
  * @var null|CommentForm $commentForm
  */
 
-use app\components\HTMLTools;
 use app\components\UrlHelper;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\MotionComment;
@@ -91,43 +90,9 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
         echo $paragraph->origStr;
     }
 
-    $comment = $motion->getPrivateComment($section->sectionId, $paragraphNo);
-    ?>
-    <section class="privateParagraphNoteHolder">
-        <?php
-        if (!$comment) {
-            ?>
-            <div class="privateParagraphNoteOpener hidden">
-                <button class="btn btn-link btn-xs">
-                    <span class="glyphicon glyphicon-pushpin"></span>
-                    <?= Yii::t('motion', 'private_notes') ?>
-                </button>
-            </div>
-            <?php
-        }
-        if ($comment) {
-            ?>
-            <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="comm<?= $comment->id ?>">
-                <button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>
-                <?= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') ?>
-            </blockquote>
-            <?php
-        }
-        ?>
-        <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
-        <label>
-            <?= Yii::t('motion', 'private_notes') ?>
-            <textarea class="form-control" name="noteText"
-            ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
-        </label>
-        <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">
-        <input type="hidden" name="sectionId" value="<?= $section->sectionId ?>">
-        <button type="submit" name="savePrivateNote" class="btn btn-success">
-            <?= Yii::t('base', 'save') ?>
-        </button>
-        <?= Html::endForm() ?>
-    </section>
-    <?php
+    // Only static HTML should be returned from this view, so we can safely cache it.
+    echo '<!--PRIVATE_NOTE_' . $section->sectionId . '_' . $paragraphNo . '-->';
+
     echo '</div>';
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
