@@ -8,6 +8,8 @@ use app\models\db\Motion;
 use app\models\db\AmendmentSection;
 use app\models\db\AmendmentSupporter;
 use app\models\exceptions\FormError;
+use app\models\sectionTypes\ISectionType;
+use app\models\sectionTypes\TextSimple;
 use yii\base\Model;
 
 class AmendmentEditForm extends Model
@@ -155,6 +157,8 @@ class AmendmentEditForm extends Model
     /**
      * @param array $data
      * @param bool $safeOnly
+     *
+     * @throws FormError
      */
     public function setAttributes($data, $safeOnly = true)
     {
@@ -163,7 +167,12 @@ class AmendmentEditForm extends Model
 
         foreach ($this->sections as $section) {
             if (isset($values['sections'][$section->getSettings()->id])) {
-                $section->getSectionType()->setAmendmentData($values['sections'][$section->getSettings()->id]);
+                $sectionType = $section->getSectionType();
+                if ($this->adminMode && $section->getSettings() && $section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                    /** @var TextSimple $sectionType */
+                    $sectionType->forceMultipleParagraphMode(true);
+                }
+                $sectionType->setAmendmentData($values['sections'][$section->getSettings()->id]);
             }
             if (isset($files['sections']) && isset($files['sections']['tmp_name'])) {
                 if (!empty($files['sections']['tmp_name'][$section->getSettings()->id])) {
@@ -220,8 +229,10 @@ class AmendmentEditForm extends Model
     }
 
     /**
-     * @throws FormError
      * @return Amendment
+     * @throws FormError
+     * @throws \Throwable
+     * @throws \app\models\exceptions\NotAmendable
      */
     public function createAmendment()
     {
@@ -293,7 +304,10 @@ class AmendmentEditForm extends Model
 
     /**
      * @param Amendment $amendment
+     *
      * @throws FormError
+     * @throws \Throwable
+     * @throws \app\models\exceptions\NotAmendable
      */
     public function saveAmendment(Amendment $amendment)
     {

@@ -210,7 +210,7 @@ class HTMLTools
     public static function cleanSimpleHtml($htmlIn, $forbiddenFormattings = [])
     {
         $cacheKey = 'cleanSimpleHtml_' . implode(',', $forbiddenFormattings) . '_' . md5($htmlIn);
-        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
+        if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey) && false) {
             return \Yii::$app->getCache()->get($cacheKey);
         }
 
@@ -226,6 +226,7 @@ class HTMLTools
         // When editing amendments, list items are split into <ol start="2"> items.
         // After editing, it should be merged into one list again.
         $html = preg_replace('/<\/ol>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
+        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
 
         $allowedTags = [
             'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',

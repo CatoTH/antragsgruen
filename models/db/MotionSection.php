@@ -232,7 +232,7 @@ class MotionSection extends IMotionSection
 
             // If this motion is already replaced by a new one, we're in the "history mode"
             // So we also show the obsoleted amendments
-            $includeObsoleted = (count($motion->replacedByMotions) > 0);
+            $includeObsoleted = (count($motion->getVisibleReplacedByMotions()) > 0);
             foreach ($motion->getVisibleAmendments($includeObsoleted) as $amendment) {
                 if ($amendment->globalAlternative) {
                     continue;

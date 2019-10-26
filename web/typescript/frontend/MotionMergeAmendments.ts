@@ -272,19 +272,19 @@ class MotionMergeChangeTooltip {
         $el.find(".opener").attr("href", $myEl.data("link")).attr("title", __t("merge", "title_open_in_blank"));
         $el.find(".initiator").text(__t("merge", "initiated_by") + ": " + $myEl.data("username"));
         if ($myEl.hasClass("ice-ins")) {
-            $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
+            $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
+            $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
         } else if ($myEl.hasClass("ice-del")) {
-            $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
-            $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
+            $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
+            $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
         } else if ($myEl[0].nodeName.toLowerCase() == 'li') {
             let $list = $myEl.parent();
             if ($list.hasClass("ice-ins")) {
-                $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
+                $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
+                $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
             } else if ($list.hasClass("ice-del")) {
-                $el.find("button.accept").text(__t("merge", "change_accept")).click(this.accept.bind(this));
-                $el.find("button.reject").text(__t("merge", "change_reject")).click(this.reject.bind(this));
+                $el.find("button.accept").text(__t("merge", "change_accept")).on("click", this.accept.bind(this));
+                $el.find("button.reject").text(__t("merge", "change_reject")).on("click", this.reject.bind(this));
             } else {
                 console.log("unknown", $list);
             }
