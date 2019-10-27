@@ -157,6 +157,7 @@ class Permissions
                 Motion::STATUS_MODIFIED,
                 Motion::STATUS_RESOLUTION_PRELIMINARY,
                 Motion::STATUS_RESOLUTION_FINAL,
+                Motion::STATUS_MOVED,
             ];
             if (in_array($motion->status, $notAmendableStatuses)) {
                 if ($exceptions) {
