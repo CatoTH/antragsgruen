@@ -179,6 +179,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return MotionAdminComment[]
+     */
+    public function getAllAdminComments()
+    {
+        return MotionAdminComment::find()->where(['motionId' => $this->id])->all();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotionSupporters()

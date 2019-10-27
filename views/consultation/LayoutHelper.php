@@ -16,6 +16,7 @@ class LayoutHelper
     /**
      * @param Motion $motion
      * @param Consultation $consultation
+     *
      * @return string;
      */
     private static function getMotionLineContent(Motion $motion, Consultation $consultation)
@@ -38,16 +39,23 @@ class LayoutHelper
         $return .= '</a>';
 
         $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
-        if ($hasPDF) {
+        if ($hasPDF && $motion->status !== Motion::STATUS_MOVED) {
             $html   = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
             $return .= Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         $return .= "</p>\n";
         $return .= '<p class="info">';
         $return .= Html::encode($motion->getInitiatorsStr());
-        if ($motion->status === Motion::STATUS_WITHDRAWN) {
+        if ($motion->status === Motion::STATUS_WITHDRAWN || $motion->status === Motion::STATUS_MOVED) {
             $statusName = $motion->getStatusNames()[$motion->status];
-            $return     .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
+            $movedTos   = [];
+            foreach ($motion->getVisibleReplacedByMotions() as $newMotion) {
+                $movedTos[] = $newMotion->titlePrefix;
+            }
+            if (count($movedTos) > 0) {
+                $statusName .= ': ' . implode(', ', $movedTos);
+            }
+            $return .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
         }
         $return .= '</p>';
 
@@ -58,6 +66,7 @@ class LayoutHelper
 
     /**
      * @param Amendment $amendment
+     *
      * @return string
      */
     private static function getAmendmentLineContent(Amendment $amendment)
@@ -67,7 +76,7 @@ class LayoutHelper
 
         $title  = (trim($amendment->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amendment->titlePrefix);
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
-            'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
+                   'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
 
         $return .= '<span class="info">';
         $return .= Html::encode($amendment->getInitiatorsStr());
@@ -85,6 +94,7 @@ class LayoutHelper
     /**
      * @param Motion $motion
      * @param Consultation $consultation
+     *
      * @return string
      * @throws \app\models\exceptions\Internal
      */
@@ -92,38 +102,46 @@ class LayoutHelper
     {
         $return = '';
 
+        $isMovedWithVisibleCopy = ($motion->status === Motion::STATUS_MOVED && count($motion->getVisibleReplacedByMotions()) > 0);
+
         /** @var Motion $motion */
         $classes = ['motion', 'motionRow' . $motion->id];
         if ($motion->getMyMotionType()->getSettingsObj()->cssIcon) {
             $classes[] = $motion->getMyMotionType()->getSettingsObj()->cssIcon;
         }
 
-        if ($motion->status == Motion::STATUS_WITHDRAWN) {
+        if ($motion->status === Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
-        if ($motion->status == Motion::STATUS_MODIFIED) {
+        if ($isMovedWithVisibleCopy) {
+            $classes[] = 'moved';
+        }
+        if ($motion->status === Motion::STATUS_MODIFIED) {
             $classes[] = 'modified';
         }
         $return .= '<li class="' . implode(' ', $classes) . '">';
         $return .= static::getMotionLineContent($motion, $consultation);
         $return .= "<span class='clearfix'></span>\n";
 
-        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
-        if (count($amendments) > 0) {
-            $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
-            $return .= '<ul class="amendments">';
-            foreach ($amendments as $amend) {
-                $classes = ['amendmentRow' . $amend->id, 'amendment'];
-                if ($amend->status === Amendment::STATUS_WITHDRAWN) {
-                    $classes[] = 'withdrawn';
-                }
-                $return .= '<li class="' . implode(' ', $classes) . '">';
-                $return .= static::getAmendmentLineContent($amend);
+        if ($isMovedWithVisibleCopy) {
+        } else {
+            $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments());
+            if (count($amendments) > 0) {
+                $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
+                $return .= '<ul class="amendments">';
+                foreach ($amendments as $amend) {
+                    $classes = ['amendmentRow' . $amend->id, 'amendment'];
+                    if ($amend->status === Amendment::STATUS_WITHDRAWN) {
+                        $classes[] = 'withdrawn';
+                    }
+                    $return .= '<li class="' . implode(' ', $classes) . '">';
+                    $return .= static::getAmendmentLineContent($amend);
 
-                $return .= "<span class='clearfix'></span>\n";
-                $return .= '</li>' . "\n";
+                    $return .= "<span class='clearfix'></span>\n";
+                    $return .= '</li>' . "\n";
+                }
+                $return .= '</ul>';
             }
-            $return .= '</ul>';
         }
         $return .= '</li>' . "\n";
 
@@ -135,6 +153,7 @@ class LayoutHelper
      * @param Consultation $consultation
      * @param bool $admin
      * @param bool $showMotions
+     *
      * @return int[]
      */
     public static function showAgendaItem($agendaItem, $consultation, $admin, $showMotions)
@@ -199,6 +218,7 @@ class LayoutHelper
         $shownMotions           = array_merge($shownMotions, $agendaListShownMotions);
 
         echo '</li>';
+
         return $shownMotions;
     }
 
@@ -208,6 +228,7 @@ class LayoutHelper
      * @param bool $admin
      * @param bool $isRoot
      * @param bool $showMotions
+     *
      * @return int[]
      */
     public static function showAgendaList($items, $consultation, $admin, $isRoot = false, $showMotions = true)
@@ -220,6 +241,7 @@ class LayoutHelper
             $shownMotions = array_merge($shownMotions, $newShown);
         }
         echo '</ol>';
+
         return $shownMotions;
     }
 }

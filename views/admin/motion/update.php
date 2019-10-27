@@ -39,6 +39,11 @@ $html     .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
 $html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
              Yii::t('admin', 'motion_new_base_on_this') . '</a></li>';
 
+$moveUrl = UrlHelper::createUrl(['admin/motion/move', 'motionId' => $motion->id]);
+$html     .= '<li><a href="' . Html::encode($moveUrl) . '" class="move">';
+$html     .= '<span class="icon glyphicon glyphicon-arrow-right"></span>' .
+             Yii::t('admin', 'motion_move') . '</a></li>';
+
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
 $html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash"></span>'
@@ -57,7 +62,7 @@ echo $controller->showErrors();
 if ($motion->isInScreeningProcess()) {
     echo Html::beginForm('', 'post', ['class' => 'content', 'id' => 'motionScreenForm']);
     $newRev = $motion->titlePrefix;
-    if ($newRev == '') {
+    if ($newRev === '') {
         $newRev = $motion->getMyConsultation()->getNextMotionPrefix($motion->motionTypeId);
     }
 

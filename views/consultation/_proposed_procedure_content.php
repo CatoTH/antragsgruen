@@ -56,6 +56,9 @@ foreach ($proposedAgenda as $proposedItem) {
                         if ($item->status == \app\models\db\IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
+                        if ($item->status == \app\models\db\IMotion::STATUS_MOVED) {
+                            $classes[] = 'moved';
+                        }
                         ?>
                         <tr class="<?= implode(' ', $classes) ?>">
                             <td class="prefix">

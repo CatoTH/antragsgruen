@@ -89,7 +89,7 @@
       text-decoration: line-through;
     }
   }
-  .motion.modified, .motion.withdrawn {
+  .motion.modified, .motion.withdrawn, .motion.moved {
     > .title a * {
       opacity: 0.4;
     }
