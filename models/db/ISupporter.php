@@ -156,7 +156,9 @@ abstract class ISupporter extends ActiveRecord
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-        $this->setExtraDataEntry('gender', (isset($values['gender']) ? $values['gender'] : null));
+        if (!isset($values['extraData']) || $values['extraData'] === null) {
+            $this->setExtraDataEntry('gender', (isset($values['gender']) ? $values['gender'] : null));
+        }
         $this->personType = IntVal($this->personType);
         $this->position   = IntVal($this->position);
         $this->userId     = ($this->userId === null ? null : IntVal($this->userId));

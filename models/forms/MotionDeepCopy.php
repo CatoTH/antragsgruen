@@ -111,6 +111,11 @@ class MotionDeepCopy
             $newAmendment->id       = null;
             $newAmendment->motionId = $newMotion->id;
             $newAmendment->cache    = '';
+
+            $oldTitlePre               = $oldMotion->titlePrefix . '-';
+            $newTitlePre               = $newMotion->titlePrefix . '-';
+            $newAmendment->titlePrefix = str_replace($oldTitlePre, $newTitlePre, $amendment->titlePrefix);
+
             $newAmendment->save();
 
             static::copyAmendmentSections($amendment, $newAmendment);
@@ -126,7 +131,7 @@ class MotionDeepCopy
             $newSection = new AmendmentSection();
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->amendmentId = $newAmendment->id;
-            $newSection->cache    = '';
+            $newSection->cache       = '';
             $newSection->save();
         }
     }
@@ -136,7 +141,7 @@ class MotionDeepCopy
         foreach ($oldAmendment->amendmentSupporters as $supporter) {
             $newSupporter = new AmendmentSupporter();
             $newSupporter->setAttributes($supporter->getAttributes(), false);
-            $newSupporter->id       = null;
+            $newSupporter->id          = null;
             $newSupporter->amendmentId = $newAmendment->id;
             $newSupporter->save();
         }
@@ -158,7 +163,7 @@ class MotionDeepCopy
         foreach ($oldAmendment->getAllAdminComments() as $comment) {
             $newComment = new AmendmentAdminComment();
             $newComment->setAttributes($comment->getAttributes(), false);
-            $newComment->id       = null;
+            $newComment->id          = null;
             $newComment->amendmentId = $newAmendment->id;
             $newComment->save();
         }
