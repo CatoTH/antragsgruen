@@ -47,15 +47,15 @@ class LayoutHelper
         $return .= '<p class="info">';
         $return .= Html::encode($motion->getInitiatorsStr());
         if ($motion->status === Motion::STATUS_WITHDRAWN || $motion->status === Motion::STATUS_MOVED) {
-            $statusName = $motion->getStatusNames()[$motion->status];
+            $statusName = Html::encode($motion->getStatusNames()[$motion->status]);
             $movedTos   = [];
             foreach ($motion->getVisibleReplacedByMotions() as $newMotion) {
-                $movedTos[] = $newMotion->titlePrefix;
+                $movedTos[] = Html::a(Html::encode($newMotion->titlePrefix), UrlHelper::createMotionUrl($newMotion));
             }
             if (count($movedTos) > 0) {
                 $statusName .= ': ' . implode(', ', $movedTos);
             }
-            $return .= ' <span class="status">(' . Html::encode($statusName) . ')</span>';
+            $return .= ' <span class="status">(' . $statusName . ')</span>';
         }
         $return .= '</p>';
 
