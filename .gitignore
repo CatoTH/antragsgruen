@@ -9,6 +9,7 @@ config/config.json
 config/config_tests.json
 config/DEBUG
 config/update-private.key
+config/latex-replaces.php
 web/js/bower
 assets/local/
 tests/_output/*

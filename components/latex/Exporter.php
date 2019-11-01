@@ -474,6 +474,12 @@ class Exporter
         }
         $str = str_replace('%CONTENT%', $contentStr, $layoutStr);
 
+        // Sometimes there is just no other way than to add some specific per-PDF-patches
+        if (file_exists(__DIR__ . '/../../config/latex-replaces.php')) {
+            $replacer = require(__DIR__ . '/../../config/latex-replaces.php');
+            $str = $replacer($str);
+        }
+
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-pdf');
 
         $cmd = $this->app->xelatexPath;
