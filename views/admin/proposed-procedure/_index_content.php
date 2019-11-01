@@ -59,11 +59,11 @@ foreach ($proposedAgenda as $proposedItem) {
                     ?>
                     <thead>
                     <tr>
-                        <th class="prefix"><?= \Yii::t('con', 'proposal_table_motion') ?></th>
-                        <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
-                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
-                        <th class="visible"><?= \Yii::t('con', 'proposal_table_visible') ?></th>
-                        <th class="comments"><?= \Yii::t('con', 'proposal_table_comment') ?></th>
+                        <th class="prefix"><?= Yii::t('con', 'proposal_table_motion') ?></th>
+                        <th class="initiator"><?= Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
+                        <th class="visible"><?= Yii::t('con', 'proposal_table_visible') ?></th>
+                        <th class="comments"><?= Yii::t('con', 'proposal_table_comment') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -122,7 +122,7 @@ foreach ($proposedAgenda as $proposedItem) {
                                 ?></td>
                             <td class="visible">
                                 <input type="checkbox" name="visible"
-                                       title="<?= \Yii::t('con', 'proposal_table_visible') ?>"
+                                       title="<?= Yii::t('con', 'proposal_table_visible') ?>"
                                        data-save-url="<?= Html::encode($setVisibleUrl) ?>"
                                     <?= ($item->proposalVisibleFrom ? 'checked' : '') ?>>
                             </td>

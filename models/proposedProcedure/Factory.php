@@ -71,7 +71,7 @@ class Factory
                     $handledVotings[] = $votingBlock->id;
                 }
 
-                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+                foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
                     if (in_array($amendment->id, $handledAmends)) {
                         continue;
                     }
@@ -93,7 +93,8 @@ class Factory
                 }
                 $block->items[]   = $motion;
                 $handledMotions[] = $motion->id;
-                foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+
+                foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
                     $block->items[]  = $amendment;
                     $handledAmends[] = $amendment->id;
                 }
@@ -153,7 +154,7 @@ class Factory
                 $handledAmends[] = $votingBlock->id;
             }
 
-            foreach ($motion->getVisibleAmendments(true) as $amendment) {
+            foreach ($motion->getVisibleAmendments(true, false) as $amendment) {
                 if (in_array($amendment->id, $handledAmends)) {
                     continue;
                 }
@@ -173,7 +174,7 @@ class Factory
                 $handledMotions[] = $motion->id;
                 $block->items[] = $motion;
             }
-            foreach ($motion->getVisibleAmendmentsSorted(true) as $amendment) {
+            foreach ($motion->getVisibleAmendmentsSorted(true, false) as $amendment) {
                 if ($amendment->isProposalPublic() || $this->includeInvisible) {
                     $handledAmends[] = $amendment->id;
                     $block->items[]  = $amendment;

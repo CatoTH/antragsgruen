@@ -28,7 +28,7 @@ echo '<tr class="motion motion' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="motions[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td>' . \Yii::t('admin', 'list_motion_short') . '</td>';
+echo '<td>' . Yii::t('admin', 'list_motion_short') . '</td>';
 echo '<td class="prefixCol"><a href="' . Html::encode($viewUrl) . '">';
 echo Html::encode($entry->titlePrefix !== '' ? $entry->titlePrefix : '-') . '</a></td>';
 echo '<td class="titleCol"><span>';
@@ -52,7 +52,11 @@ if ($colProposals) {
     echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry]);
 
     $name = $entry->getFormattedProposalStatus();
-    echo Html::a(($name ? $name : '-'), UrlHelper::createMotionUrl($entry));
+    if ($entry->status === Motion::STATUS_MOVED) {
+        echo $name;
+    } else {
+        echo Html::a(($name ? $name : '-'), UrlHelper::createMotionUrl($entry));
+    }
     echo '</td>';
 }
 $initiators = [];
@@ -75,7 +79,7 @@ echo '<td class="exportCol">';
 if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLayout !== -1) {
     echo Html::a('PDF', UrlHelper::createMotionUrl($entry, 'pdf'), ['class' => 'pdf']) . ' / ';
     echo Html::a(
-        \Yii::t('admin', 'list_pdf_amend'),
+        Yii::t('admin', 'list_pdf_amend'),
         UrlHelper::createMotionUrl($entry, 'pdfamendcollection'),
         ['class' => 'pdfamend']
     ) . ' / ';
@@ -87,7 +91,7 @@ echo '</td>';
 if ($colAction) {
     echo '<td class="actionCol"><div class="btn-group">
   <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    ' . \Yii::t('admin', 'list_action') . '
+    ' . Yii::t('admin', 'list_action') . '
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">';
@@ -99,21 +103,21 @@ if ($colAction) {
     ];
     if (in_array($entry->status, $screenable)) {
         $link = Html::encode($search->getCurrentUrl($route, ['motionScreen' => $entry->id]));
-        $name = Html::encode(\Yii::t('admin', 'list_screen'));
+        $name = Html::encode(Yii::t('admin', 'list_screen'));
         echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
     } else {
         $link = Html::encode($search->getCurrentUrl($route, ['motionUnscreen' => $entry->id]));
-        $name = Html::encode(\Yii::t('admin', 'list_unscreen'));
+        $name = Html::encode(Yii::t('admin', 'list_unscreen'));
         echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
     }
     $link = Html::encode(UrlHelper::createUrl(['motion/create', 'cloneFrom' => $entry->id]));
-    $name = Html::encode(\Yii::t('admin', 'list_template_motion'));
+    $name = Html::encode(Yii::t('admin', 'list_template_motion'));
     echo '<li><a tabindex="-1" href="' . $link . '" class="asTemplate">' . $name . '</a>';
 
     $delLink = Html::encode($search->getCurrentUrl($route, ['motionDelete' => $entry->id]));
     echo '<li><a tabindex="-1" href="' . $delLink . '" class="delete" ' .
-        'onClick="return confirm(\'' . addslashes(\Yii::t('admin', 'list_confirm_del_motion')) . '\');">' .
-        \Yii::t('admin', 'list_delete') . '</a></li>';
+        'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_motion')) . '\');">' .
+        Yii::t('admin', 'list_delete') . '</a></li>';
     echo '</ul></div></td>';
 }
 echo '</tr>';

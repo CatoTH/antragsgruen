@@ -1,6 +1,8 @@
 <?php
 
 use app\models\db\Amendment;
+use app\models\db\IMotion;
+use app\models\db\Motion;
 use app\models\proposedProcedure\Agenda;
 use yii\helpers\Html;
 
@@ -33,9 +35,9 @@ foreach ($proposedAgenda as $proposedItem) {
                     ?>
                     <thead>
                     <tr>
-                        <th class="prefix"><?= \Yii::t('con', 'proposal_table_motion') ?></th>
-                        <th class="initiator"><?= \Yii::t('con', 'proposal_table_initiator') ?></th>
-                        <th class="procedure"><?= \Yii::t('con', 'proposal_table_proposal') ?></th>
+                        <th class="prefix"><?= Yii::t('con', 'proposal_table_motion') ?></th>
+                        <th class="initiator"><?= Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -53,10 +55,10 @@ foreach ($proposedAgenda as $proposedItem) {
                             $classes       = ['motion' . $item->id];
                             $currentMotion = $item->id;
                         }
-                        if ($item->status == \app\models\db\IMotion::STATUS_WITHDRAWN) {
+                        if ($item->status === IMotion::STATUS_WITHDRAWN) {
                             $classes[] = 'withdrawn';
                         }
-                        if ($item->status == \app\models\db\IMotion::STATUS_MOVED) {
+                        if ($item->status === IMotion::STATUS_MOVED) {
                             $classes[] = 'moved';
                         }
                         ?>
@@ -71,6 +73,9 @@ foreach ($proposedAgenda as $proposedItem) {
                                 <?php
                                 if ($item->isProposalPublic()) {
                                     echo Agenda::formatProposedProcedure($item, Agenda::FORMAT_HTML);
+                                } elseif ($item->status === IMotion::STATUS_MOVED && is_a($item, Motion::class)) {
+                                    /** @var Motion $item */
+                                    echo \app\views\consultation\LayoutHelper::getMotionMovedStatusHtml($item);
                                 }
                                 ?></td>
                         </tr>

@@ -97,7 +97,7 @@ return [
     'motion_move_prefix'          => 'Neuer Antragskürzel',
     'motion_move_op'              => 'Referenz erhalten',
     'motion_move_op_copy'         => 'Referenz an der aktuellen Position erhalten',
-    'motion_move_op_copyh'        => '(Eine Kopie des Antrags bleibt an der bisherigen Stelle, wird aber als "verschoben" bestehen und verlinkt auf den neuen)',
+    'motion_move_op_copyh'        => '(Eine Kopie des Antrags bleibt an der bisherigen Stelle, wird aber als „verschoben” gekennzeichnet und verlinkt auf den neuen)',
     'motion_move_op_move'         => 'Keine Referenz erhalten',
     'motion_move_op_moveh'        => '(Der Antrag wird an die neue Stelle verschoben, keine Kopie verbleibt an der aktuellen Position des Antrags)',
     'motion_move_target'          => 'Verschieben zu...',

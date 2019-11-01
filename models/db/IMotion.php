@@ -9,6 +9,7 @@ use app\components\Tools;
 use app\components\UrlHelper;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
+use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
@@ -612,8 +613,9 @@ abstract class IMotion extends ActiveRecord
         if ($this->status === static::STATUS_WITHDRAWN) {
             return '<span class="withdrawn">' . \Yii::t('structure', 'STATUS_WITHDRAWN') . '</span>';
         }
-        if ($this->status === static::STATUS_MOVED) {
-            return '<span class="moved">' . \Yii::t('structure', 'STATUS_MOVED') . '</span>';
+        if ($this->status === static::STATUS_MOVED && is_a($this, Motion::class)) {
+            /** @var Motion $this */
+            return '<span class="moved">' . LayoutHelper::getMotionMovedStatusHtml($this) . '</span>';
         }
         $explStr = '';
         if ($includeExplanation && $this->proposalExplanation) {
