@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.3.1 [not released yet]
+### Version 4.3.1 (2019-10-27)
 
 - When using the admin backend, admins can now always edit an amendment so that multiple paragraphs are amended, even if under normal circumstances only one paragraph may be changed per amendment.
 - Bugfix: Numbered lists were not split correctly into single items when merging amendments into the motions; the numbering was reset to 1 for each single item.
