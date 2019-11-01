@@ -163,10 +163,11 @@ return [
     'section_comment_motion'    => 'Abschnitt als ganzes kommentierbar',
     'section_comment_paragraph' => 'Einzelne Absätze sind kommentierbar',
 
-    'home_layout_std'         => 'Standard',
-    'home_layout_tags'        => 'Themen / Schlagworte',
-    'home_layout_agenda'      => 'Tagesordnung',
-    'home_layout_agenda_long' => 'Tagesordnung (viele Anträge)',
+    'home_layout_std'               => 'Keine Tagesordnung',
+    'home_layout_tags'              => 'Themen / Schlagworte',
+    'home_layout_agenda'            => 'Anträge innerhalb der Tagesordnung',
+    'home_layout_agenda_long'       => 'Anträge unter der Tagesordnung',
+    'home_layout_agenda_hide_amend' => 'Anträge unter der TO, ÄAs eingeklappt',
 
     'supp_only_initiators'    => 'Nur die Antragsteller*in',
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',

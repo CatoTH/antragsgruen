@@ -106,6 +106,26 @@
     }
   }
 
+  h4.amendments.amendmentsToggler {
+    margin-top: -5px;
+    button {
+      padding-left: 0;
+    }
+    &.closed {
+      .glyphicon-chevron-up {
+        display: none;
+      }
+    }
+    &.opened {
+      .glyphicon-chevron-down {
+        display: none;
+      }
+    }
+  }
+  ul.amendments.closed {
+    display: none;
+  }
+
   ul.amendments {
     list-style-type: none;
     margin: 10px 0 20px 0;

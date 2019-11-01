@@ -91,14 +91,7 @@ class LayoutHelper
         return $statusName;
     }
 
-    /**
-     * @param Motion $motion
-     * @param Consultation $consultation
-     *
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function showMotion(Motion $motion, Consultation $consultation): string
+    public static function showMotion(Motion $motion, Consultation $consultation, bool $hideAmendmendsByDefault): string
     {
         $return = '';
 
@@ -123,8 +116,20 @@ class LayoutHelper
 
         $amendments = MotionSorter::getSortedAmendments($consultation, $motion->getVisibleAmendments(true, false));
         if (count($amendments) > 0) {
-            $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
-            $return .= '<ul class="amendments">';
+            if ($hideAmendmendsByDefault) {
+                $return .= '<h4 class="amendments amendmentsToggler closed"><button class="btn-link">';
+                $return .= '<span class="glyphicon glyphicon-chevron-down"></span><span class="glyphicon glyphicon-chevron-up"></span> ';
+                if (count($amendments) === 1) {
+                    $return .= '1 ' . \Yii::t('amend', 'amendment');
+                } else {
+                    $return .= count($amendments) . ' ' . \Yii::t('amend', 'amendments');
+                }
+                $return .= '</button></h4>';
+                $return .= '<ul class="amendments closed">';
+            } else {
+                $return .= '<h4 class="amendments">' . \Yii::t('amend', 'amendments') . '</h4>';
+                $return .= '<ul class="amendments">';
+            }
             foreach ($amendments as $amend) {
                 $classes = ['amendmentRow' . $amend->id, 'amendment'];
                 if ($amend->status === Amendment::STATUS_WITHDRAWN) {
@@ -200,7 +205,7 @@ class LayoutHelper
             if (count($motions) > 0) {
                 echo '<ul class="motions">';
                 foreach ($motions as $motion) {
-                    echo static::showMotion($motion, $consultation);
+                    echo static::showMotion($motion, $consultation, false);
                     $shownMotions[] = $motion->id;
                 }
                 echo '</ul>';

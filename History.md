@@ -1,5 +1,10 @@
 # Version history
 
+## Version 4.4 [not released yet]
+
+- Motions can be moved to another agenda item, while retaining a reference to the new location in the old place.
+- A slightly new homepage layout variant is introduced, which first shows the agenda, then the motions, but by default hides the amendments below the motions, with the option to toggle the list. This is meant for consultation with hundreds of amendments where the sheer amount of amendments makes the list way too long.
+
 ### Version 4.3.1 (2019-10-27)
 
 - When using the admin backend, admins can now always edit an amendment so that multiple paragraphs are amended, even if under normal circumstances only one paragraph may be changed per amendment.

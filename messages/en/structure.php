@@ -162,10 +162,11 @@ return [
     'section_comment_motion'    => 'Comment the whole motion as one',
     'section_comment_paragraph' => 'Comment single paragraphs',
 
-    'home_layout_std'         => 'Standard',
-    'home_layout_tags'        => 'Tags',
-    'home_layout_agenda'      => 'Agenda',
-    'home_layout_agenda_long' => 'Agenda (many motions)',
+    'home_layout_std'               => 'No agenda',
+    'home_layout_tags'              => 'Tags / categories',
+    'home_layout_agenda'            => 'Motions inlined into the agenda',
+    'home_layout_agenda_long'       => 'Motions are below the agenda',
+    'home_layout_agenda_hide_amend' => 'Motions are below the agenda, amendments hidden',
 
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by proposer',

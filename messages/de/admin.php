@@ -187,7 +187,7 @@ return [
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
     'con_ci_custom_create'    => 'Eigenes Farbschema anlegen',
     'con_appearance'          => 'Aussehen',
-    'con_home_page_style'     => 'Startseiten-Design',
+    'con_home_page_style'     => 'Startseite / Tagesordnung',
     'con_line_len'            => 'Maximale Zeilenlänge',
     'con_robots'              => 'Sichtbar in Suchmaschinen',
     'con_robots_hint'         => 'Änderungen an dieser Einstellung wirken sich erst auf, wenn Suchmaschinen das nächste Mal diese Seite abrufen. Das kann einige Tage dauern.',

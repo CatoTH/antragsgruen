@@ -184,7 +184,7 @@ return [
     'con_ci_custom_edit'      => 'Edit custom theme',
     'con_ci_custom_create'    => 'Create custom theme',
     'con_appearance'          => 'Appearance',
-    'con_home_page_style'     => 'Homepage style',
+    'con_home_page_style'     => 'Homepage / Agenda',
     'con_line_len'            => 'Line length',
     'con_robots'              => 'Appears in search engines',
     'con_robots_hint'         => 'Changes to this settings take several days to become active, as it depends on search engines actively re-crawling this site.',

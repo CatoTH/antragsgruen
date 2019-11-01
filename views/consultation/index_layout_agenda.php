@@ -16,7 +16,11 @@ use \app\models\settings\Consultation as ConsultationSettings;
  * @var bool $admin
  */
 
-$longVersion = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_LONG);
+$longVersion = (in_array($consultation->getSettings()->startLayoutType, [
+    ConsultationSettings::START_LAYOUT_AGENDA_LONG,
+    ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND,
+]));
+$hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
 echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
@@ -63,7 +67,7 @@ if ($longVersion) {
                 if ($motion->isResolution()) {
                     continue;
                 }
-                echo LayoutHelper::showMotion($motion, $consultation);
+                echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
                 $shownMotions[] = $motion->id;
             }
             echo '</ul>';
@@ -83,7 +87,7 @@ if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . Yii::t('con', 'Other Motions') . '</h2>';
     echo '<ul class="motionList motionListStd motionListBelowAgenda">';
     foreach ($otherMotions as $motion) {
-        echo LayoutHelper::showMotion($motion, $consultation);
+        echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
     }
     echo '</ul>';
 }

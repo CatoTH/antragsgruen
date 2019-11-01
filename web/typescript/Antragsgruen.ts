@@ -104,6 +104,16 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         recalcAgendaNode($(this));
     }).trigger("antragsgruen:agenda-change");
 
+    $('.motionList .amendmentsToggler').each((i, el) => {
+        const $el = $(el);
+        $el.find("button").on("click", () => {
+            $el.toggleClass("closed");
+            $el.toggleClass("opened");
+            $el.next("ul.amendments").toggleClass("closed");
+        });
+    });
+
+
     window['__t'] = function (category, str) {
         if (typeof(ANTRAGSGRUEN_STRINGS) == "undefined") {
             return '@TRANSLATION STRINGS NOT LOADED';

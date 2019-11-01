@@ -8,59 +8,60 @@ class Consultation implements \JsonSerializable
 {
     use JsonConfigTrait;
 
-    const START_LAYOUT_STD         = 0;
-    const START_LAYOUT_TAGS        = 2;
-    const START_LAYOUT_AGENDA      = 3;
+    const START_LAYOUT_STD = 0;
+    const START_LAYOUT_TAGS = 2;
+    const START_LAYOUT_AGENDA = 3;
     const START_LAYOUT_AGENDA_LONG = 4;
+    const START_LAYOUT_AGENDA_HIDE_AMEND = 5;
 
-    const ROBOTS_NONE      = 0;
+    const ROBOTS_NONE = 0;
     const ROBOTS_ONLY_HOME = 1;
-    const ROBOTS_ALL       = 2;
+    const ROBOTS_ALL = 2;
 
 
     // SETTINGS WITH TEST CASES
 
     /** @var bool */
-    public $maintenanceMode        = false;
-    public $screeningMotions       = false;
-    public $screeningAmendments    = false;
-    public $lineNumberingGlobal    = false;
-    public $iniatorsMayEdit        = false;
-    public $hideTitlePrefix        = false;
-    public $showFeeds              = true; // @TODO Obsolete since 2019-09. Remove sometimes in the future.
-    public $commentNeedsEmail      = false;
-    public $screeningComments      = false;
+    public $maintenanceMode = false;
+    public $screeningMotions = false;
+    public $screeningAmendments = false;
+    public $lineNumberingGlobal = false;
+    public $iniatorsMayEdit = false;
+    public $hideTitlePrefix = false;
+    public $showFeeds = true; // @TODO Obsolete since 2019-09. Remove sometimes in the future.
+    public $commentNeedsEmail = false;
+    public $screeningComments = false;
     public $initiatorConfirmEmails = false;
-    public $adminsMayEdit          = true;
-    public $forceMotion            = null;
-    public $editorialAmendments    = true;
-    public $globalAlternatives     = true;
-    public $proposalProcedurePage  = false;
-    public $forceLogin             = false;
-    public $managedUserAccounts    = false;
-    public $accessPwd              = null;
+    public $adminsMayEdit = true;
+    public $forceMotion = null;
+    public $editorialAmendments = true;
+    public $globalAlternatives = true;
+    public $proposalProcedurePage = false;
+    public $forceLogin = false;
+    public $managedUserAccounts = false;
+    public $accessPwd = null;
 
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
-    public $minimalisticUI         = false;
-    public $commentsSupportable    = false;
-    public $screeningMotionsShown  = false;
-    public $initiatorsMayReject    = false;
-    public $allowMultipleTags      = false;
+    public $minimalisticUI = false;
+    public $commentsSupportable = false;
+    public $screeningMotionsShown = false;
+    public $initiatorsMayReject = false;
+    public $allowMultipleTags = false;
     public $odtExportHasLineNumers = true;
-    public $pProcedureExpandAll    = true; // If false: only show max. 1 section in the internal proposed procedure
+    public $pProcedureExpandAll = true; // If false: only show max. 1 section in the internal proposed procedure
 
     /** @var int */
-    public $lineLength      = 80;
+    public $lineLength = 80;
     public $startLayoutType = 0;
-    public $robotsPolicy    = 1;
+    public $robotsPolicy = 1;
 
     /** @var null|string */
-    public $logoUrl         = null;
+    public $logoUrl = null;
 
     /** @var null|string */
-    public $emailReplyTo  = null;
+    public $emailReplyTo = null;
     public $emailFromName = null;
 
     /**
@@ -69,10 +70,11 @@ class Consultation implements \JsonSerializable
     public static function getStartLayouts()
     {
         return [
-            static::START_LAYOUT_STD         => \Yii::t('structure', 'home_layout_std'),
-            static::START_LAYOUT_TAGS        => \Yii::t('structure', 'home_layout_tags'),
-            static::START_LAYOUT_AGENDA      => \Yii::t('structure', 'home_layout_agenda'),
-            static::START_LAYOUT_AGENDA_LONG => \Yii::t('structure', 'home_layout_agenda_long'),
+            static::START_LAYOUT_STD               => \Yii::t('structure', 'home_layout_std'),
+            static::START_LAYOUT_TAGS              => \Yii::t('structure', 'home_layout_tags'),
+            static::START_LAYOUT_AGENDA            => \Yii::t('structure', 'home_layout_agenda'),
+            static::START_LAYOUT_AGENDA_LONG       => \Yii::t('structure', 'home_layout_agenda_long'),
+            static::START_LAYOUT_AGENDA_HIDE_AMEND => \Yii::t('structure', 'home_layout_agenda_hide_amend'),
         ];
     }
 
@@ -102,6 +104,8 @@ class Consultation implements \JsonSerializable
             case Consultation::START_LAYOUT_AGENDA:
                 return 'index_layout_agenda';
             case Consultation::START_LAYOUT_AGENDA_LONG:
+                return 'index_layout_agenda';
+            case Consultation::START_LAYOUT_AGENDA_HIDE_AMEND:
                 return 'index_layout_agenda';
             default:
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);
