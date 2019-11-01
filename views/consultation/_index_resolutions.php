@@ -26,6 +26,9 @@ foreach ($resolutions as $resolution) {
     if ($resolution->status === Motion::STATUS_WITHDRAWN) {
         $classes[] = 'withdrawn';
     }
+    if ($resolution->status === Motion::STATUS_MOVED) {
+        $classes[] = 'moved';
+    }
     if ($resolution->status === Motion::STATUS_MODIFIED) {
         $classes[] = 'modified';
     }

@@ -163,6 +163,14 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
+     * @return MotionAdminComment[]
+     */
+    public function getAllAdminComments()
+    {
+        return AmendmentAdminComment::find()->where(['amendmentId' => $this->id])->all();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getAmendmentSupporters()

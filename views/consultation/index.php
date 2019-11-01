@@ -107,6 +107,9 @@ $getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISu
     if ($motion->status === Motion::STATUS_WITHDRAWN) {
         $class[] = 'withdrawn';
     }
+    if ($motion->status === Motion::STATUS_MOVED) {
+        $class[] = 'moved';
+    }
     return [implode(" ", $class), $title];
 };
 

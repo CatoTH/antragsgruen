@@ -16,6 +16,7 @@ use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
 use app\models\forms\DeadlineForm;
 use app\models\forms\MotionEditForm;
+use app\models\forms\MotionMover;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\InitiatorForm;
 use app\models\settings\MotionType;
@@ -34,6 +35,7 @@ class MotionController extends AdminBase
 
     /**
      * @param ConsultationMotionType $motionType
+     *
      * @throws FormError
      */
     private function sectionsSave(ConsultationMotionType $motionType)
@@ -87,6 +89,7 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionTypeId
+     *
      * @return string
      * @throws FormError
      * @throws \app\models\exceptions\Internal
@@ -103,6 +106,7 @@ class MotionController extends AdminBase
             if ($motionType->isDeletable()) {
                 $motionType->status = ConsultationMotionType::STATUS_DELETED;
                 $motionType->save();
+
                 return $this->render('type_deleted');
             } else {
                 \Yii::$app->session->setFlash('error', \Yii::t('admin', 'motion_type_not_deletable'));
@@ -226,6 +230,7 @@ class MotionController extends AdminBase
     /**
      * @return string
      * @throws \yii\base\ExitException
+     * @throws \Exception
      */
     public function actionTypecreate()
     {
@@ -308,13 +313,16 @@ class MotionController extends AdminBase
             }
 
             $url = UrlHelper::createUrl(['/admin/motion/type', 'motionTypeId' => $motionType->id, 'msg' => 'created']);
+
             return $this->redirect($url);
         }
+
         return $this->render('type_create');
     }
 
     /**
      * @param Motion $motion
+     *
      * @throws \Throwable
      */
     private function saveMotionSupporters(Motion $motion)
@@ -364,6 +372,7 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionId
+     *
      * @return string
      * @throws \app\models\exceptions\Internal
      */
@@ -386,6 +395,7 @@ class MotionController extends AdminBase
                 }
             }
         }
+
         return $this->renderPartial('@app/views/amendment/ajax_rewrite_collisions', [
             'amendments' => $amendments,
             'collisions' => $collisions,
@@ -394,6 +404,7 @@ class MotionController extends AdminBase
 
     /**
      * @param int $motionId
+     *
      * @return string
      * @throws \Exception
      * @throws \Throwable
@@ -434,6 +445,7 @@ class MotionController extends AdminBase
             $motion->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+
             return '';
         }
 
@@ -543,5 +555,26 @@ class MotionController extends AdminBase
         }
 
         return $this->render('update', ['motion' => $motion, 'form' => $form]);
+    }
+
+    public function actionMove($motionId)
+    {
+        /** @var Motion $motion */
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+        }
+        $this->checkConsistency($motion);
+
+
+        if ($this->isPostSet('move')) {
+            $form      = new MotionMover($this->consultation, $motion);
+            $newMotion = $form->move(\Yii::$app->request->post());
+            if ($newMotion) {
+                return $this->redirect(UrlHelper::createMotionUrl($newMotion));
+            }
+        }
+
+        return $this->render('move', ['motion' => $motion]);
     }
 }

@@ -179,6 +179,14 @@ class Motion extends IMotion implements IRSSItem
     }
 
     /**
+     * @return MotionAdminComment[]
+     */
+    public function getAllAdminComments()
+    {
+        return MotionAdminComment::find()->where(['motionId' => $this->id])->all();
+    }
+
+    /**
      * @return \yii\db\ActiveQuery
      */
     public function getMotionSupporters()
@@ -409,11 +417,16 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param bool $includeWithdrawn
+     * @param bool $ifMotionIsMoved
      *
      * @return Amendment[]
      */
-    public function getVisibleAmendments($includeWithdrawn = true)
+    public function getVisibleAmendments($includeWithdrawn = true, $ifMotionIsMoved = true)
     {
+        if (!$ifMotionIsMoved && $this->status === Motion::STATUS_MOVED) {
+            return [];
+        }
+
         $filtered   = $this->getMyConsultation()->getInvisibleAmendmentStatuses($includeWithdrawn);
         $amendments = [];
         foreach ($this->amendments as $amend) {
@@ -475,13 +488,13 @@ class Motion extends IMotion implements IRSSItem
 
     /**
      * @param bool $includeWithdrawn
+     * @param bool $ifMotionIsMoved
      *
      * @return Amendment[]
-     * @throws Internal
      */
-    public function getVisibleAmendmentsSorted($includeWithdrawn = true)
+    public function getVisibleAmendmentsSorted($includeWithdrawn = true, $ifMotionIsMoved = true)
     {
-        $amendments = $this->getVisibleAmendments($includeWithdrawn);
+        $amendments = $this->getVisibleAmendments($includeWithdrawn, $ifMotionIsMoved);
 
         return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }

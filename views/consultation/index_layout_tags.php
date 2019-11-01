@@ -90,6 +90,9 @@ foreach ($tagIds as $tagId) {
         if ($motion->status === Motion::STATUS_WITHDRAWN) {
             $classes[] = 'withdrawn';
         }
+        if ($motion->status === Motion::STATUS_MOVED) {
+            $classes[] = 'moved';
+        }
         if ($motion->isInScreeningProcess()) {
             $classes[] = 'unscreened';
         }

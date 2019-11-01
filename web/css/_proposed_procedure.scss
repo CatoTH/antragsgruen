@@ -369,6 +369,11 @@
       text-decoration: line-through;
     }
   }
+  tr.moved {
+    .prefix, .initiator, .procedure {
+      opacity: 0.4;
+    }
+  }
   tr.accepted {
     background-color: #ddffdd;
   }

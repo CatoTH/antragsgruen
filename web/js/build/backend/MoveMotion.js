@@ -1,0 +1,2 @@
+define(["require","exports"],function(e,n){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var t=function(){function e(e){this.$form=e,this.initTarget()}return e.prototype.initTarget=function(){var e=this,n=this.$form.find("input[name=target]");n.on("change",function(){"agenda"===n.filter(":checked").val()?e.$form.find(".moveToAgendaItem").removeClass("hidden"):e.$form.find(".moveToAgendaItem").addClass("hidden")}).trigger("change")},e}();n.MoveMotion=t});
+//# sourceMappingURL=MoveMotion.js.map

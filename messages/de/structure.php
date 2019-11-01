@@ -147,6 +147,7 @@ return [
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Einpflegen: Zwischenstand (unsichtbar)',
     'STATUS_RESOLUTION_PRELIMINARY'       => 'Beschluss (vorläufig)',
     'STATUS_RESOLUTION_FINAL'             => 'Beschluss',
+    'STATUS_MOVED'                        => 'Verschoben',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Angenommen',
     'PROPOSED_ACCEPTED_AMEND'     => 'Übernahme',
