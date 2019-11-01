@@ -37,6 +37,9 @@ use yii\helpers\Html;
  * @property string|null $votingBlockId
  * @property string|null $votingData
  * @property int $votingStatus
+ * @property int|null $responsibilityId
+ * @property string|null $responsibilityComment
+ * @property User $responsibilityUser
  */
 abstract class IMotion extends ActiveRecord
 {

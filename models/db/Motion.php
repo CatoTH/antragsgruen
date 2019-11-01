@@ -41,6 +41,8 @@ use yii\helpers\Html;
  * @property string $cache
  * @property int $textFixed
  * @property string $slug
+ * @property int|null $responsibilityId
+ * @property string|null $responsibilityComment
  *
  * @property ConsultationMotionType $motionType
  * @property Consultation $consultation
@@ -54,6 +56,7 @@ use yii\helpers\Html;
  * @property Motion $replacedMotion
  * @property Motion[] $replacedByMotions
  * @property VotingBlock $votingBlock
+ * @property User $responsibilityUser
  */
 class Motion extends IMotion implements IRSSItem
 {
@@ -277,6 +280,14 @@ class Motion extends IMotion implements IRSSItem
     public function getReplacedByMotions()
     {
         return $this->hasMany(Motion::class, ['parentMotionId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getResponsibilityUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
     /**
