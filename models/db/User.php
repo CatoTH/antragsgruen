@@ -98,7 +98,7 @@ class User extends ActiveRecord implements IdentityInterface
         if (!$user || !$currentUser) {
             return false;
         }
-        return $user->id == $currentUser->id;
+        return $user->id === $currentUser->id;
     }
 
     /**
@@ -135,7 +135,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app->tablePrefix . 'user';
     }

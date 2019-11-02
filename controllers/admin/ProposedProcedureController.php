@@ -5,6 +5,7 @@ namespace app\controllers\admin;
 use app\components\HTMLTools;
 use app\components\Tools;
 use app\models\db\AmendmentAdminComment;
+use app\models\db\IMotion;
 use app\models\db\MotionAdminComment;
 use app\models\db\User;
 use app\models\proposedProcedure\Factory;
@@ -245,6 +246,52 @@ class ProposedProcedureController extends AdminBase
         } else {
             $amendment->proposalVisibleFrom = null;
             $amendment->save();
+        }
+
+        return json_encode([
+            'success' => true
+        ]);
+    }
+
+    /**
+     * @param string $type
+     * @param string $id
+     *
+     * @return string
+     */
+    public function actionSaveResponsibility(string $type, string $id)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        /** @var null|IMotion $imotion */
+        $imotion = null;
+        switch ($type) {
+            case 'motion':
+                $imotion = $this->consultation->getMotion($id);
+                break;
+            case 'amendment':
+                $imotion = $this->consultation->getAmendment($id);
+                break;
+        }
+        if (!$imotion) {
+            return json_encode([
+                'success' => false,
+                'error'   => 'Could not open amendment',
+            ]);
+        }
+
+        if (\Yii::$app->request->post('comment') !== null) {
+            $imotion->responsibilityComment = \Yii::$app->request->post('comment');
+            $imotion->save();
+        }
+        if (\Yii::$app->request->post('user') !== null) {
+            if (\Yii::$app->request->post('user') === '0') {
+                $imotion->responsibilityId = null;
+            } else {
+                $imotion->responsibilityId = intval(\Yii::$app->request->post('user'));
+            }
+            $imotion->save();
         }
 
         return json_encode([

@@ -1,21 +1,24 @@
 /// <reference path="../typings/colresizable/index.d.ts" />
 
+import { ResponsibilitySetter } from './ResponsibilitySetter';
+
 export class MotionList {
     constructor() {
         this.initList();
         this.initExportRow();
+        new ResponsibilitySetter($(".adminMotionTable"));
     }
 
     private initList() {
-        $(".markAll").click(function (ev) {
+        $(".markAll").on("click", (ev) => {
             $(".adminMotionTable").find("input.selectbox").prop("checked", true);
             ev.preventDefault();
         });
-        $(".markNone").click(function (ev) {
+        $(".markNone").on("click", (ev) => {
             $(".adminMotionTable").find("input.selectbox").prop("checked", false);
             ev.preventDefault();
         });
-        $(".deleteMarkedBtn").click(this.onDeleteClicked.bind(this));
+        $(".deleteMarkedBtn").on("click", this.onDeleteClicked.bind(this));
 
         let $select = $("#initiatorSelect"),
             initiatorValues = $select.data("values"),
@@ -87,7 +90,7 @@ export class MotionList {
             if (result) {
                 let $input = $('<input type="hidden">').attr("name", $button.attr("name")).attr("value", $button.attr("value"));
                 $form.append($input);
-                $form.submit();
+                $form.trigger("submit");
             }
         });
     }

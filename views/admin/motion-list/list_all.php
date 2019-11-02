@@ -42,10 +42,10 @@ foreach ($controller->consultation->motionTypes as $motionType) {
     }
 }
 
-$colMark             = $privilegeProposals || $privilegeScreening;
-$colAction           = $privilegeScreening;
-$colProposals        = $privilegeProposals && $hasProposedProcedures;
-$colResponsibilities = $privilegeProposals && $hasResponsibilities;
+$colMark        = $privilegeProposals || $privilegeScreening;
+$colAction      = $privilegeScreening;
+$colProposals   = $privilegeProposals && $hasProposedProcedures;
+$colResponsible = $privilegeProposals && $hasResponsibilities;
 
 
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
@@ -81,30 +81,40 @@ if ($colMark) {
 echo '<th class="typeCol">';
 echo '<span>' . Yii::t('admin', 'list_type') . '</span>';
 echo '</th><th class="prefixCol">';
-if ($search->sort == AdminMotionFilterForm::SORT_TITLE_PREFIX) {
+if ($search->sort === AdminMotionFilterForm::SORT_TITLE_PREFIX) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_prefix') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
     echo Html::a(Yii::t('admin', 'list_prefix'), $url);
 }
 echo '</th><th class="titleCol">';
-if ($search->sort == AdminMotionFilterForm::SORT_TITLE) {
+if ($search->sort === AdminMotionFilterForm::SORT_TITLE) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_title') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE]);
     echo Html::a(Yii::t('admin', 'list_title'), $url);
 }
 echo '</th><th>';
-if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
+if ($search->sort === AdminMotionFilterForm::SORT_STATUS) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_status') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
     echo Html::a(Yii::t('admin', 'list_status'), $url);
 }
 echo '</th>';
+if ($colResponsible) {
+    echo '<th class="responsibilityCol">';
+    if ($search->sort === AdminMotionFilterForm::SORT_PROPOSAL) { // @TODO
+        echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_responsible') . '</span>';
+    } else {
+        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
+        echo Html::a(Yii::t('admin', 'list_responsible'), $url);
+    }
+    echo '</th>';
+}
 if ($colProposals) {
     echo '<th class="proposalCol">';
-    if ($search->sort == AdminMotionFilterForm::SORT_PROPOSAL) {
+    if ($search->sort === AdminMotionFilterForm::SORT_PROPOSAL) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_proposal') . '</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
@@ -113,7 +123,7 @@ if ($colProposals) {
     echo '</th>';
 }
 echo '<th>';
-if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
+if ($search->sort === AdminMotionFilterForm::SORT_INITIATOR) {
     echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_initiators') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
@@ -121,7 +131,7 @@ if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
 }
 if ($hasTags) {
     echo '</th><th>';
-    if ($search->sort == AdminMotionFilterForm::SORT_TAG) {
+    if ($search->sort === AdminMotionFilterForm::SORT_TAG) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_tag') . '</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
@@ -145,21 +155,23 @@ foreach ($entries as $entry) {
     if (is_a($entry, Motion::class)) {
         $lastMotion = $entry;
         echo $this->render('_list_all_item_motion', [
-            'entry'        => $entry,
-            'search'       => $search,
-            'colMark'      => $colMark,
-            'colAction'    => $colAction,
-            'colProposals' => $colProposals,
+            'entry'          => $entry,
+            'search'         => $search,
+            'colMark'        => $colMark,
+            'colAction'      => $colAction,
+            'colProposals'   => $colProposals,
+            'colResponsible' => $colResponsible,
         ]);
     }
     if (is_a($entry, Amendment::class)) {
         echo $this->render('_list_all_item_amendment', [
-            'entry'        => $entry,
-            'search'       => $search,
-            'lastMotion'   => $lastMotion,
-            'colMark'      => $colMark,
-            'colAction'    => $colAction,
-            'colProposals' => $colProposals,
+            'entry'          => $entry,
+            'search'         => $search,
+            'lastMotion'     => $lastMotion,
+            'colMark'        => $colMark,
+            'colAction'      => $colAction,
+            'colProposals'   => $colProposals,
+            'colResponsible' => $colResponsible,
         ]);
     }
 }

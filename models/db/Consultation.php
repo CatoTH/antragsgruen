@@ -164,10 +164,10 @@ class Consultation extends ActiveRecord
             if ($motion->slug) {
                 $this->motionCache[$motion->slug] = $motion;
             }
-            if (is_numeric($motionSlug) && $motion->id == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
+            if (is_numeric($motionSlug) && $motion->id === intval($motionSlug) && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
-            if (!is_numeric($motionSlug) && $motion->slug == $motionSlug && $motion->status != Motion::STATUS_DELETED) {
+            if (!is_numeric($motionSlug) && $motion->slug === $motionSlug && $motion->status !== Motion::STATUS_DELETED) {
                 return $motion;
             }
         }

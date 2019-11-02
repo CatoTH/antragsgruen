@@ -14,13 +14,13 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'users_head');
+$this->title = Yii::t('admin', 'users_head');
 $layout->addCSS('css/backend.css');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'users_bc'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'users_bc'));
 
 ?>
-    <h1><?= \Yii::t('admin', 'users_head') ?></h1>
+    <h1><?= Yii::t('admin', 'users_head') ?></h1>
 <?php
 echo Html::beginForm('', 'post', [
     'class'                    => 'content',
@@ -30,9 +30,9 @@ echo Html::beginForm('', 'post', [
     <table class="table siteAccountListTable">
         <thead>
         <tr>
-            <th><?= \Yii::t('admin', 'users_name') ?></th>
-            <th><?= \Yii::t('admin', 'users_auth') ?></th>
-            <th><?= \Yii::t('admin', 'users_registered') ?></th>
+            <th><?= Yii::t('admin', 'users_name') ?></th>
+            <th><?= Yii::t('admin', 'users_auth') ?></th>
+            <th><?= Yii::t('admin', 'users_registered') ?></th>
             <th></th>
         </tr>
         </thead>
@@ -46,11 +46,11 @@ echo Html::beginForm('', 'post', [
                 <td><?= Tools::formatMysqlDateTime($user->dateCreation) ?></td>
                 <td>
                     <?php
-                    if ($user->id !== \app\models\db\User::getCurrentUser()->id) {
+                    if ($user->id !== User::getCurrentUser()->id) {
                         ?>
                         <button type="button" data-id="<?= $user->id ?>" class="link deleteUser"
                                 data-name="<?= Html::encode($user->name . ' / ' . $user->getAuthName()) ?>"
-                                title="<?= \Yii::t('admin', 'siteacc_del_btn') ?>">
+                                title="<?= Yii::t('admin', 'siteacc_del_btn') ?>">
                             <span class="glyphicon glyphicon-trash"></span>
                         </button>
                         <?php

@@ -5,11 +5,13 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 /**
+ * @var yii\web\View $this
  * @var Motion $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
  * @var boolean $colProposals
  * @var boolean $colAction
+ * @var boolean $colResponsible
  */
 
 /** @var \app\controllers\Base $controller */
@@ -46,10 +48,17 @@ if ($entry->statusString !== null && $entry->statusString !== '') {
     echo ' <small>(' . Html::encode($entry->statusString) . ')</small>';
 }
 echo '</td>';
+if ($colResponsible) {
+    ?>
+    <td class="responsibilityCol">
+        <?= $this->render('_responsibility_dropdown', ['imotion' => $entry, 'type' => 'motion']) ?>
+    </td>
+    <?php
+}
 if ($colProposals) {
     echo '<td class="proposalCol">';
 
-    echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry]);
+    echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry, 'show_visibility' => true]);
 
     $name = $entry->getFormattedProposalStatus();
     if ($entry->status === Motion::STATUS_MOVED) {

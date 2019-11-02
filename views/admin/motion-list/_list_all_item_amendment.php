@@ -7,12 +7,13 @@ use app\models\db\User;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Amendment $entry
  * @var \app\models\forms\AdminMotionFilterForm $search
  * @var boolean $colMark
  * @var boolean $colProposals
  * @var boolean $colAction
+ * @var boolean $colResponsible
  */
 
 /** @var \app\controllers\Base $controller */
@@ -31,7 +32,7 @@ echo '<tr class="amendment amendment' . $entry->id . '">';
 if ($colMark) {
     echo '<td><input type="checkbox" name="amendments[]" value="' . $entry->id . '" class="selectbox"></td>';
 }
-echo '<td>' . \Yii::t('admin', 'list_amend_short') . '</td>';
+echo '<td>' . Yii::t('admin', 'list_amend_short') . '</td>';
 echo '<td class="prefixCol">';
 echo HTMLTools::amendmentDiffTooltip($entry, 'bottom');
 echo '<a href="' . Html::encode($viewUrl) . '">';
@@ -59,10 +60,17 @@ if ($entry->statusString !== null && $entry->statusString !== '') {
 }
 echo '</td>';
 
+if ($colResponsible) {
+    ?>
+    <td class="responsibilityCol">
+        <?= $this->render('_responsibility_dropdown', ['imotion' => $entry, 'type' => 'amendment']) ?>
+    </td>
+<?php
+}
 if ($colProposals) {
     echo '<td class="proposalCol">';
 
-    echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry]);
+    echo $this->render('../proposed-procedure/_status_icons', ['entry' => $entry, 'show_visibility' => true]);
 
     $name = $entry->getFormattedProposalStatus();
     echo Html::a(($name ? $name : '-'), UrlHelper::createAmendmentUrl($entry));
@@ -70,7 +78,7 @@ if ($colProposals) {
     if ($entry->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
         echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-            Html::a(\Yii::t('admin', 'amend_edit_text'), $url) . '</div>';
+            Html::a(Yii::t('admin', 'amend_edit_text'), $url) . '</div>';
     }
     echo '</td>';
 }
@@ -108,15 +116,15 @@ if ($colAction) {
         Amendment::STATUS_SUBMITTED_UNSCREENED_CHECKED,
     ];
     if (in_array($entry->status, $screenable)) {
-        $name = Html::encode(\Yii::t('admin', 'list_screen'));
+        $name = Html::encode(Yii::t('admin', 'list_screen'));
         $link = Html::encode($search->getCurrentUrl($route, ['amendmentScreen' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $link . '" class="screen">' . $name . '</a>';
     } else {
-        $name = Html::encode(\Yii::t('admin', 'list_unscreen'));
+        $name = Html::encode(Yii::t('admin', 'list_unscreen'));
         $link = Html::encode($search->getCurrentUrl($route, ['amendmentUnscreen' => $entry->id]));
         echo '<li><a tabindex="-1" href="' . $link . '" class="unscreen">' . $name . '</a>';
     }
-    $name = Html::encode(\Yii::t('admin', 'list_template_amendment'));
+    $name = Html::encode(Yii::t('admin', 'list_template_amendment'));
     $link = Html::encode(UrlHelper::createUrl([
         'amendment/create',
         'motionSlug' => $entry->getMyMotion()->getMotionSlug(),
@@ -126,8 +134,8 @@ if ($colAction) {
 
     $delLink = Html::encode($search->getCurrentUrl($route, ['amendmentDelete' => $entry->id]));
     echo '<li><a tabindex="-1" href="' . $delLink . '" ' .
-        'onClick="return confirm(\'' . addslashes(\Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
-        \Yii::t('admin', 'list_delete') . '</a></li>';
+        'onClick="return confirm(\'' . addslashes(Yii::t('admin', 'list_confirm_del_amend')) . '\');">' .
+        Yii::t('admin', 'list_delete') . '</a></li>';
     echo '</ul></div></td>';
 }
 echo '</tr>';
