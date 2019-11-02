@@ -109,8 +109,15 @@ class AdminMotionFilterForm extends Model
     public function setAttributes($values, $safeOnly = true)
     {
         parent::setAttributes($values, $safeOnly);
-
-        $this->status = (isset($values['status']) && $values['status'] != '' ? IntVal($values['status']) : null);
+        if (isset($values['sort'])) {
+            $this->sort = intval($values['sort']);
+        }
+        if (isset($values['status'])) {
+            $this->status = ($values['status'] === '' ? null : intval($values['status']));
+        }
+        if (isset($values['tag'])) {
+            $this->tag = ($values['tag'] === '' ? null : intval($values['tag']));
+        }
 
         if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
             $this->proposalStatus = $values['proposalStatus'];
@@ -197,7 +204,7 @@ class AdminMotionFilterForm extends Model
             $title2 = $motion2->getMyMotion()->title;
         }
         $cmp = strnatcasecmp($title1, $title2);
-        if ($cmp == 0) {
+        if ($cmp === 0) {
             return ($motion1->id < $motion2->id ? 1 : -1);
         } else {
             return $cmp;
@@ -241,7 +248,7 @@ class AdminMotionFilterForm extends Model
         $init1 = $motion1->getInitiatorsStr();
         $init2 = $motion2->getInitiatorsStr();
         $cmp   = strnatcasecmp($init1, $init2);
-        if ($cmp == 0) {
+        if ($cmp === 0) {
             return $this->sortTitlePrefix($motion1, $motion2);
         } else {
             return $cmp;
@@ -283,7 +290,7 @@ class AdminMotionFilterForm extends Model
             return -1;
         } else {
             $cmp = strnatcasecmp($tag1->title, $tag2->title);
-            if ($cmp == 0) {
+            if ($cmp === 0) {
                 return $this->sortTitlePrefix($motion1, $motion2);
             } else {
                 return $cmp;
@@ -325,7 +332,7 @@ class AdminMotionFilterForm extends Model
             $result[] = $entry;
             if (is_a($entry, Motion::class)) {
                 foreach ($movingAmendments as $amendment) {
-                    if ($amendment->motionId == $entry->id) {
+                    if ($amendment->motionId === $entry->id) {
                         $result[] = $amendment;
                     }
                 }
@@ -374,16 +381,16 @@ class AdminMotionFilterForm extends Model
      */
     private function motionMatchesInitiator(Motion $motion)
     {
-        if ($this->initiator === null || $this->initiator == '') {
+        if ($this->initiator === null || $this->initiator === '') {
             return true;
         }
         foreach ($motion->motionSupporters as $supp) {
-            if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
+            if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
                 $name = $supp->organization;
             } else {
                 $name = $supp->name;
             }
-            if ($supp->role == MotionSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
+            if ($supp->role === MotionSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
                 return true;
             }
         }
@@ -396,11 +403,11 @@ class AdminMotionFilterForm extends Model
      */
     private function motionMatchesTag(Motion $motion)
     {
-        if ($this->tag === null || $this->tag == 0) {
+        if ($this->tag === null || $this->tag === 0) {
             return true;
         }
         foreach ($motion->tags as $tag) {
-            if ($tag->id == $this->tag) {
+            if ($tag->id === $this->tag) {
                 return true;
             }
         }
@@ -413,10 +420,10 @@ class AdminMotionFilterForm extends Model
      */
     private function motionMatchesAgendaItem(Motion $motion)
     {
-        if ($this->agendaItem === null || $this->agendaItem == 0) {
+        if ($this->agendaItem === null || $this->agendaItem === 0) {
             return true;
         }
-        return ($motion->agendaItemId == $this->agendaItem);
+        return ($motion->agendaItemId === $this->agendaItem);
     }
 
     /**
@@ -428,7 +435,7 @@ class AdminMotionFilterForm extends Model
         foreach ($this->allMotions as $motion) {
             $matches = true;
 
-            if ($this->status !== null && $this->status !== '' && $motion->status != $this->status) {
+            if ($this->status !== null && $this->status !== '' && $motion->status !== $this->status) {
                 $matches = false;
             }
 
@@ -448,12 +455,12 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
-            if ($this->title !== null && $this->title != '' && mb_stripos($motion->title, $this->title) === false) {
+            if ($this->title !== null && $this->title !== '' && mb_stripos($motion->title, $this->title) === false) {
                 $matches = false;
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix != '' && mb_stripos($motion->titlePrefix, $prefix) === false) {
+            if ($prefix !== null && $prefix !== '' && mb_stripos($motion->titlePrefix, $prefix) === false) {
                 $matches = false;
             }
 
@@ -471,16 +478,16 @@ class AdminMotionFilterForm extends Model
      */
     private function amendmentMatchInitiator(Amendment $amendment)
     {
-        if ($this->initiator === null || $this->initiator == '') {
+        if ($this->initiator === null || $this->initiator === '') {
             return true;
         }
         foreach ($amendment->amendmentSupporters as $supp) {
-            if ($supp->personType == ISupporter::PERSON_ORGANIZATION) {
+            if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
                 $name = $supp->organization;
             } else {
                 $name = $supp->name;
             }
-            if ($supp->role == AmendmentSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
+            if ($supp->role === AmendmentSupporter::ROLE_INITIATOR && mb_stripos($name, $this->initiator) !== false) {
                 return true;
             }
         }
@@ -493,11 +500,11 @@ class AdminMotionFilterForm extends Model
      */
     private function amendmentMatchesTag(Amendment $amendment)
     {
-        if ($this->tag === null || $this->tag == 0) {
+        if ($this->tag === null || $this->tag === 0) {
             return true;
         }
         foreach ($amendment->getMyMotion()->tags as $tag) {
-            if ($tag->id == $this->tag) {
+            if ($tag->id === $this->tag) {
                 return true;
             }
         }
@@ -510,10 +517,10 @@ class AdminMotionFilterForm extends Model
      */
     private function amendmentMatchesAgendaItem(Amendment $amendment)
     {
-        if ($this->agendaItem === null || $this->agendaItem == 0) {
+        if ($this->agendaItem === null || $this->agendaItem === 0) {
             return true;
         }
-        return ($amendment->getMyMotion()->agendaItemId == $this->agendaItem);
+        return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
     }
 
     /**
@@ -525,7 +532,7 @@ class AdminMotionFilterForm extends Model
         foreach ($this->allAmendments as $amend) {
             $matches = true;
 
-            if ($this->status !== null && $this->status !== "" && $amend->status != $this->status) {
+            if ($this->status !== null && $this->status !== "" && $amend->status !== $this->status) {
                 $matches = false;
             }
 
@@ -535,9 +542,9 @@ class AdminMotionFilterForm extends Model
                         $amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
-                } elseif ($this->proposalStatus == 'accepted') {
+                } elseif ($this->proposalStatus === 'accepted') {
                     if ($amend->proposalNotification === null ||
-                        $amend->proposalUserStatus != Amendment::STATUS_ACCEPTED) {
+                        $amend->proposalUserStatus !== Amendment::STATUS_ACCEPTED) {
                         $matches = false;
                     }
                 } else {
@@ -560,12 +567,12 @@ class AdminMotionFilterForm extends Model
             }
 
             $title = $this->title;
-            if ($title !== null && $title != '' && mb_stripos($amend->getMyMotion()->title, $title) === false) {
+            if ($title !== null && $title !== '' && mb_stripos($amend->getMyMotion()->title, $title) === false) {
                 $matches = false;
             }
 
             $prefix = $this->prefix;
-            if ($prefix !== null && $prefix != '' && !mb_stripos($amend->titlePrefix, $prefix)) {
+            if ($prefix !== null && $prefix !== '' && !mb_stripos($amend->titlePrefix, $prefix)) {
                 $matches = false;
             }
 
@@ -601,7 +608,7 @@ class AdminMotionFilterForm extends Model
         $foundMyself = false;
         foreach ($this->getStatusList() as $statusId => $statusName) {
             $statuses[$statusId] = $statusName;
-            if ($this->status !== null && $this->status == $statusId) {
+            if ($this->status !== null && $this->status === $statusId) {
                 $foundMyself = true;
             }
         }
@@ -620,7 +627,7 @@ class AdminMotionFilterForm extends Model
         $foundMyself = false;
         foreach ($this->getProposalStatusList() as $statusId => $statusName) {
             $statuses[$statusId] = $statusName;
-            if ($this->proposalStatus !== null && $this->proposalStatus == $statusId) {
+            if ($this->proposalStatus !== null && $this->proposalStatus === $statusId) {
                 $foundMyself = true;
             }
         }
@@ -724,7 +731,7 @@ class AdminMotionFilterForm extends Model
             }
             $num[$amend->proposalStatus]++;
             if ($amend->proposalNotification) {
-                if ($amend->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
+                if ($amend->proposalUserStatus === Amendment::STATUS_ACCEPTED) {
                     $numAccepted++;
                 } else {
                     $numNotResponded++;
@@ -805,7 +812,7 @@ class AdminMotionFilterForm extends Model
                 if ($supp->role != MotionSupporter::ROLE_INITIATOR) {
                     continue;
                 }
-                if ($supp->personType == ISupporter::PERSON_NATURAL) {
+                if ($supp->personType === ISupporter::PERSON_NATURAL) {
                     $name = $supp->name;
                 } else {
                     $name = $supp->organization;
@@ -821,7 +828,7 @@ class AdminMotionFilterForm extends Model
                 if ($supp->role != AmendmentSupporter::ROLE_INITIATOR) {
                     continue;
                 }
-                if ($supp->personType == ISupporter::PERSON_NATURAL) {
+                if ($supp->personType === ISupporter::PERSON_NATURAL) {
                     $name = $supp->name;
                 } else {
                     $name = $supp->organization;

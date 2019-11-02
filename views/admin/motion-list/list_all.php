@@ -19,8 +19,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'list_head_title');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_list'));
+$this->title = Yii::t('admin', 'list_head_title');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_list'));
 $layout->loadTypeahead();
 $layout->loadFuelux();
 $layout->addJS('js/colResizable-1.6.min.js');
@@ -35,7 +35,7 @@ $colMark      = $privilegeProposals || $privilegeScreening;
 $colAction    = $privilegeScreening;
 $colProposals = $privilegeProposals;
 
-echo '<h1>' . \Yii::t('admin', 'list_head_title') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
 
 echo $this->render('_list_all_export');
 
@@ -48,7 +48,7 @@ echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) 
 echo $search->getFilterFormFields();
 
 echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">' .
-    \Yii::t('admin', 'list_search_do') . '</button></div>';
+    Yii::t('admin', 'list_search_do') . '</button></div>';
 
 echo '</form><br style="clear: both;">';
 
@@ -63,59 +63,59 @@ if ($colMark) {
     echo '<th class="markCol"></th>';
 }
 echo '<th class="typeCol">';
-echo '<span>' . \Yii::t('admin', 'list_type') . '</span>';
+echo '<span>' . Yii::t('admin', 'list_type') . '</span>';
 echo '</th><th class="prefixCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TITLE_PREFIX) {
-    echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_prefix') . '</span>';
+    echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_prefix') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
-    echo Html::a(\Yii::t('admin', 'list_prefix'), $url);
+    echo Html::a(Yii::t('admin', 'list_prefix'), $url);
 }
 echo '</th><th class="titleCol">';
 if ($search->sort == AdminMotionFilterForm::SORT_TITLE) {
-    echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_title') . '</span>';
+    echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_title') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TITLE]);
-    echo Html::a(\Yii::t('admin', 'list_title'), $url);
+    echo Html::a(Yii::t('admin', 'list_title'), $url);
 }
 echo '</th><th>';
 if ($search->sort == AdminMotionFilterForm::SORT_STATUS) {
-    echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_status') . '</span>';
+    echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_status') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_STATUS]);
-    echo Html::a(\Yii::t('admin', 'list_status'), $url);
+    echo Html::a(Yii::t('admin', 'list_status'), $url);
 }
 echo '</th>';
 if ($colProposals) {
     echo '<th class="proposalCol">';
     if ($search->sort == AdminMotionFilterForm::SORT_PROPOSAL) {
-        echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_proposal') . '</span>';
+        echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_proposal') . '</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
-        echo Html::a(\Yii::t('admin', 'list_proposal'), $url);
+        echo Html::a(Yii::t('admin', 'list_proposal'), $url);
     }
     echo '</th>';
 }
 echo '<th>';
 if ($search->sort == AdminMotionFilterForm::SORT_INITIATOR) {
-    echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_initiators') . '</span>';
+    echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_initiators') . '</span>';
 } else {
     $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_INITIATOR]);
-    echo Html::a(\Yii::t('admin', 'list_initiators'), $url);
+    echo Html::a(Yii::t('admin', 'list_initiators'), $url);
 }
 if ($hasTags) {
     echo '</th><th>';
     if ($search->sort == AdminMotionFilterForm::SORT_TAG) {
-        echo '<span style="text-decoration: underline;">' . \Yii::t('admin', 'list_tag') . '</span>';
+        echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_tag') . '</span>';
     } else {
         $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_TAG]);
-        echo Html::a(\Yii::t('admin', 'list_tag'), $url);
+        echo Html::a(Yii::t('admin', 'list_tag'), $url);
     }
 }
 echo '</th>
-    <th>' . \Yii::t('admin', 'list_export') . '</th>';
+    <th>' . Yii::t('admin', 'list_export') . '</th>';
 if ($colAction) {
-    echo '<th class="actionCol">' . \Yii::t('admin', 'list_action') . '</th>';
+    echo '<th class="actionCol">' . Yii::t('admin', 'list_action') . '</th>';
 }
 echo '</tr></thead>';
 
@@ -153,27 +153,27 @@ echo '</table>';
 ?>
     <section style="overflow: auto;">
         <div style="float: left; line-height: 40px; vertical-align: middle;">
-            <a href="#" class="markAll"><?= \Yii::t('admin', 'list_all') ?></a> &nbsp;
-            <a href="#" class="markNone"><?= \Yii::t('admin', 'list_none') ?></a> &nbsp;
+            <a href="#" class="markAll"><?= Yii::t('admin', 'list_all') ?></a> &nbsp;
+            <a href="#" class="markNone"><?= Yii::t('admin', 'list_none') ?></a> &nbsp;
         </div>
 
-        <div style="float: right;"><?= \Yii::t('admin', 'list_marked') ?>: &nbsp;
+        <div style="float: right;"><?= Yii::t('admin', 'list_marked') ?>: &nbsp;
             <?php
             if ($privilegeScreening) { ?>
                 <button type="submit" class="btn btn-danger deleteMarkedBtn" name="delete">
-                    <?= \Yii::t('admin', 'list_delete') ?>
+                    <?= Yii::t('admin', 'list_delete') ?>
                 </button> &nbsp;
                 <button type="submit" class="btn btn-info unscreenMarkedBtn" name="unscreen">
-                    <?= \Yii::t('admin', 'list_unscreen') ?>
+                    <?= Yii::t('admin', 'list_unscreen') ?>
                 </button> &nbsp;
                 <button type="submit" class="btn btn-success screenMarkedBtn" name="screen">
-                    <?= \Yii::t('admin', 'list_screen') ?>
+                    <?= Yii::t('admin', 'list_screen') ?>
                 </button> &nbsp;
                 <?php
             }
             if ($privilegeProposals) { ?>
                 <button type="submit" class="btn btn-success" name="proposalVisible">
-                    <?= \Yii::t('admin', 'list_proposal_visible') ?>
+                    <?= Yii::t('admin', 'list_proposal_visible') ?>
                 </button>
                 <?php
             }
