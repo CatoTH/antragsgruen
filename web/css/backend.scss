@@ -806,37 +806,6 @@ label.legend {
     overflow: visible;
   }
 
-  .responsibilityCol {
-    overflow: visible;
-
-    .dropdown-menu .selected a:before {
-      content: '✓';
-      display: block;
-      float: left;
-      margin-left: -15px;
-    }
-
-    .respCommentRow {
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-top: 10px;
-
-      .btn-default {
-        margin-left: -6px;
-      }
-    }
-
-    .respButton {
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .respUserNone {
-      font-style: italic;
-    }
-  }
-
-
   .proposalCol {
     .editModified {
       font-size: 0.8em;
@@ -886,6 +855,36 @@ label.legend {
   th {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+}
+
+.responsibilityCol {
+  overflow: visible;
+
+  .dropdown-menu .selected a:before {
+    content: '✓';
+    display: block;
+    float: left;
+    margin-left: -15px;
+  }
+
+  .respCommentRow {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+
+    .btn-default {
+      margin-left: -6px;
+    }
+  }
+
+  .respButton {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .respUserNone {
+    font-style: italic;
   }
 }
 

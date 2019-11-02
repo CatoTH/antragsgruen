@@ -15,6 +15,16 @@ use yii\helpers\Html;
  * @var null|string $expandId
  */
 
+/** @var \app\controllers\Base $controller */
+$controller = $this->context;
+
+$hasResponsibilities = false;
+foreach ($controller->consultation->motionTypes as $motionType) {
+    if ($motionType->getSettingsObj()->hasResponsibilities) {
+        $hasResponsibilities = true;
+    }
+}
+
 foreach ($proposedAgenda as $proposedItem) {
     if (count($proposedItem->votingBlocks) === 0) {
         continue;
@@ -61,6 +71,11 @@ foreach ($proposedAgenda as $proposedItem) {
                     <tr>
                         <th class="prefix"><?= Yii::t('con', 'proposal_table_motion') ?></th>
                         <th class="initiator"><?= Yii::t('con', 'proposal_table_initiator') ?></th>
+                        <?php
+                        if ($hasResponsibilities) {
+                            ?>
+                            <th class="responsibility"><?= Yii::t('con', 'proposal_table_response') ?></th>
+                        <?php } ?>
                         <th class="procedure"><?= Yii::t('con', 'proposal_table_proposal') ?></th>
                         <th class="visible"><?= Yii::t('con', 'proposal_table_visible') ?></th>
                         <th class="comments"><?= Yii::t('con', 'proposal_table_comment') ?></th>
@@ -72,8 +87,10 @@ foreach ($proposedAgenda as $proposedItem) {
                     foreach ($votingBlock->items as $item) {
                         if (is_a($item, Amendment::class)) {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-amendment-visible');
+                            $type          = 'amendment';
                         } else {
                             $setVisibleUrl = UrlHelper::createUrl('admin/proposed-procedure/save-motion-visible');
+                            $type          = 'motion';
                         }
 
                         $titlePre = '';
@@ -115,6 +132,16 @@ foreach ($proposedAgenda as $proposedItem) {
                                 echo LayoutHelper::formatInitiators($item->getInitiators(), $consultation, true, true);
                                 ?>
                             </td>
+                            <?php
+                            if ($hasResponsibilities) {
+                                echo '<td class="responsibilityCol">';
+                                echo $this->render('../motion-list/_responsibility_dropdown', [
+                                    'imotion' => $item,
+                                    'type'    => $type,
+                                ]);
+                                echo '</td>';
+                            }
+                            ?>
                             <td class="procedure">
                                 <?php
                                 echo $this->render('_status_icons', ['entry' => $item, 'show_visibility' => false]);

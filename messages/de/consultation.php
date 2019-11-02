@@ -75,6 +75,7 @@ return [
     'proposal_table_motion'    => 'Antrag',
     'proposal_table_voting'    => 'Abstimmung',
     'proposal_table_proposal'  => 'Verfahrensvorschlag',
+    'proposal_table_response'  => 'Zuständigkeit',
     'proposal_table_initiator' => 'Antragsteller*in',
     'proposal_table_others'    => 'Weitere Verfahrensvorschläge',
     'proposal_table_visible'   => 'Öfftl.',

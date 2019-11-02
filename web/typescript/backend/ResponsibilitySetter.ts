@@ -1,7 +1,7 @@
 export class ResponsibilitySetter {
     constructor(private $list: JQuery) {
-        $list.find(".respHolder .respUser").on("click", this.userSelected.bind(this));
-        $list.find(".respHolder .respCommentRow button").on("click", this.saveComment.bind(this));
+        $list.on("click", ".respHolder .respUser", this.userSelected.bind(this));
+        $list.on("click", ".respHolder .respCommentRow button", this.saveComment.bind(this));
     }
 
     private userSelected(ev: Event) {

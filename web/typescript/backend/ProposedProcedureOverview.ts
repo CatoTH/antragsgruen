@@ -1,3 +1,5 @@
+import { ResponsibilitySetter } from './ResponsibilitySetter';
+
 interface ReloadResult {
     success: boolean;
     error?: string;
@@ -19,6 +21,8 @@ export class ProposedProcedureOverview {
         this.initComments();
         this.initUpdateWidget();
         this.onContentUpdated();
+
+        new ResponsibilitySetter($('.proposedProcedureReloadHolder'));
 
         this.$widget.on('click', '.contactShow', (ev) => {
             ev.preventDefault();
@@ -107,7 +111,9 @@ export class ProposedProcedureOverview {
 
 
     private skipReload(): boolean {
-        if (this.$widget.find('.comment.writing').length > 0) {
+        if (this.$widget.find('.respHolder.dropdown.open').length > 0) {
+            return true;
+        } else if (this.$widget.find('.comment.writing').length > 0) {
             return true;
         } else {
             return false;
