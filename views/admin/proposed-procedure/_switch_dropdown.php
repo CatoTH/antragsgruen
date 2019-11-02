@@ -6,7 +6,7 @@ use yii\helpers\Html;
 
 /**
  * @var \app\controllers\Base $controller
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  */
 
 $controller   = $this->context;
@@ -17,33 +17,33 @@ $consultation = $controller->consultation;
      data-antragsgruen-widget="backend/ProposedProcedureExport">
     <button class="btn btn-default dropdown-toggle" type="button" id="exportProcedureBtn"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-        <?= \Yii::t('admin', 'index_export_procedure') ?>
+        <?= Yii::t('admin', 'index_export_procedure') ?>
         <span class="caret"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="exportProcedureBtn">
         <li class="exportLink">
             <?php
             $url = UrlHelper::createUrl('admin/proposed-procedure/index');
-            echo Html::a(\Yii::t('export', 'pp_admin_site'), $url);
+            echo Html::a(Yii::t('export', 'pp_admin_site'), $url);
             ?>
         </li>
         <li class="exportLink">
             <?php
             $url = UrlHelper::createUrl('consultation/proposed-procedure');
-            echo Html::a(\Yii::t('export', 'pp_public_site'), $url);
+            echo Html::a(Yii::t('export', 'pp_public_site'), $url);
             ?>
         </li>
         <li role="separator" class="divider"></li>
         <li class="checkbox">
             <label>
                 <input type="checkbox" class="c" name="comments">
-                <?= \Yii::t('export', 'pp_ods_comments') ?>
+                <?= Yii::t('export', 'pp_ods_comments') ?>
             </label>
         </li>
         <li class="checkbox">
             <label>
                 <input type="checkbox" class="c" name="onlypublic">
-                <?= \Yii::t('export', 'pp_ods_public') ?>
+                <?= Yii::t('export', 'pp_ods_public') ?>
             </label>
         </li>
         <li class="exportLink">

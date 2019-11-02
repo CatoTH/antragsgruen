@@ -23,6 +23,7 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionIndex($agendaItemId = 0, $expandId = null)
     {
+        $this->activateFunctions();
         $this->consultation->preloadAllMotionData();
 
         if ($agendaItemId) {

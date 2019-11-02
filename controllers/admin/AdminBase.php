@@ -14,7 +14,9 @@ class AdminBase extends Base
 
     /**
      * @param \yii\base\Action $action
+     *
      * @return bool
+     * @throws \yii\web\BadRequestHttpException
      */
     public function beforeAction($action)
     {
@@ -26,7 +28,7 @@ class AdminBase extends Base
                 'excellist', 'odslist', 'openslides', 'openslidesusers',
                 'motion-excellist', 'motion-odslist', 'motion-openslides', 'motion-yopenslidesusers',
             ])) {
-            // Donwloading files is done by curl, not by phantomjs.
+            // Donwloading files is done by curl, not by chrome/firefox.
             // Therefore the session is lost when downloading in the test environment
             return true;
         }
@@ -41,5 +43,33 @@ class AdminBase extends Base
             return false;
         }
         return true;
+    }
+
+    protected function activateFunctions(): void
+    {
+        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+            return;
+        }
+
+        if (\yii::$app->request->get('activate') === 'procedure') {
+            foreach ($this->consultation->motionTypes as $motionType) {
+                $settings                       = $motionType->getSettingsObj();
+                $settings->hasProposedProcedure = true;
+                $motionType->setSettingsObj($settings);
+                $motionType->save();
+            }
+
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated'));
+        }
+        if (\yii::$app->request->get('activate') === 'responsibilities') {
+            foreach ($this->consultation->motionTypes as $motionType) {
+                $settings                      = $motionType->getSettingsObj();
+                $settings->hasResponsibilities = true;
+                $motionType->setSettingsObj($settings);
+                $motionType->save();
+            }
+
+            \Yii::$app->session->setFlash('success', \Yii::t('admin', 'list_functions_activated'));
+        }
     }
 }

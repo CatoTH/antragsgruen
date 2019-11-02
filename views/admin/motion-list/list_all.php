@@ -31,13 +31,29 @@ $layout->fullScreen = true;
 $route   = 'admin/motion-list/index';
 $hasTags = (count($controller->consultation->tags) > 0);
 
-$colMark      = $privilegeProposals || $privilegeScreening;
-$colAction    = $privilegeScreening;
-$colProposals = $privilegeProposals;
+$hasResponsibilities   = false;
+$hasProposedProcedures = false;
+foreach ($controller->consultation->motionTypes as $motionType) {
+    if ($motionType->getSettingsObj()->hasResponsibilities) {
+        $hasResponsibilities = true;
+    }
+    if ($motionType->getSettingsObj()->hasProposedProcedure) {
+        $hasProposedProcedures = true;
+    }
+}
+
+$colMark             = $privilegeProposals || $privilegeScreening;
+$colAction           = $privilegeScreening;
+$colProposals        = $privilegeProposals && $hasProposedProcedures;
+$colResponsibilities = $privilegeProposals && $hasResponsibilities;
+
 
 echo '<h1>' . Yii::t('admin', 'list_head_title') . '</h1>';
 
-echo $this->render('_list_all_export');
+echo $this->render('_list_all_export', [
+    'hasProposedProcedures' => $hasProposedProcedures,
+    'hasResponsibilities'   => $hasResponsibilities,
+]);
 
 echo '<div class="content fuelux" data-antragsgruen-widget="backend/MotionList">';
 
@@ -48,7 +64,7 @@ echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) 
 echo $search->getFilterFormFields();
 
 echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">' .
-    Yii::t('admin', 'list_search_do') . '</button></div>';
+     Yii::t('admin', 'list_search_do') . '</button></div>';
 
 echo '</form><br style="clear: both;">';
 

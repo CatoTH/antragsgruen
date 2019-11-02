@@ -97,6 +97,12 @@ class MotionController extends AdminBase
      */
     public function actionType($motionTypeId)
     {
+        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+
+            return false;
+        }
+
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
@@ -146,6 +152,7 @@ class MotionController extends AdminBase
             $settings->pdfIntroduction      = $input['pdfIntroduction'];
             $settings->motionTitleIntro     = $input['typeMotionIntro'];
             $settings->hasProposedProcedure = isset($input['proposedProcedure']);
+            $settings->hasResponsibilities  = isset($input['responsibilities']);
             $motionType->setSettingsObj($settings);
 
             $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
@@ -234,6 +241,12 @@ class MotionController extends AdminBase
      */
     public function actionTypecreate()
     {
+        if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
+            $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
+
+            return false;
+        }
+
         if ($this->isPostSet('create')) {
             $type         = \Yii::$app->request->post('type');
             $sectionsFrom = null;

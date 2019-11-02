@@ -741,6 +741,13 @@ label.legend {
       display: inline-block;
     }
   }
+  > .new {
+    text-align: left;
+
+    > * {
+      display: inline-block;
+    }
+  }
 
   .title {
     line-height: 33px;
