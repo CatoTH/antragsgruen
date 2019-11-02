@@ -830,6 +830,10 @@ label.legend {
     .actionCol {
       overflow: visible;
     }
+
+    .responsibilityCol {
+      overflow: visible;
+    }
   }
 
   .dropdown-menu {
@@ -873,7 +877,7 @@ label.legend {
     padding-right: 20px;
     padding-top: 10px;
 
-    .btn-default {
+    .input-group-btn:last-child > .btn-default {
       margin-left: -6px;
     }
   }

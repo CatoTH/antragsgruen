@@ -305,9 +305,8 @@ class Tools
     /**
      * @param IMotion $motion
      * @return \DateTime|null
-     * @throws \Exception
      */
-    public static function getPetitionResponseDeadline(IMotion $motion)
+    public static function getPetitionResponseDeadline(IMotion $motion): ?\DateTime
     {
         $typePetition = Tools::getPetitionType($motion->getMyConsultation());
         if ($motion->getMyMotionType()->id !== $typePetition->id) {
@@ -319,12 +318,16 @@ class Tools
         if (!$motion->datePublication) {
             return null;
         }
-        $date = new \DateTime($motion->datePublication);
-        /** @var ConsultationSettings $settings */
-        $settings = $motion->getMyConsultation()->getSettings();
-        $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
+        try {
+            $date = new \DateTime($motion->datePublication);
+            /** @var ConsultationSettings $settings */
+            $settings = $motion->getMyConsultation()->getSettings();
+            $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
 
-        return $date;
+            return $date;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
@@ -344,9 +347,8 @@ class Tools
     /**
      * @param IMotion $motion
      * @return \DateTime|null
-     * @throws \Exception
      */
-    public static function getDiscussionUntil(IMotion $motion)
+    public static function getDiscussionUntil(IMotion $motion): ?\DateTime
     {
         $typeDiscussion = Tools::getDiscussionType($motion->getMyConsultation());
         if ($motion->getMyMotionType()->id !== $typeDiscussion->id) {
@@ -358,12 +360,16 @@ class Tools
         if (!$motion->datePublication) {
             return null;
         }
-        $date = new \DateTime($motion->datePublication);
-        /** @var ConsultationSettings $settings */
-        $settings = $motion->getMyConsultation()->getSettings();
-        $date->add(new \DateInterval('P' . $settings->minDiscussionTime . "D"));
+        try {
+            $date = new \DateTime($motion->datePublication);
+            /** @var ConsultationSettings $settings */
+            $settings = $motion->getMyConsultation()->getSettings();
+            $date->add(new \DateInterval('P' . $settings->minDiscussionTime . "D"));
 
-        return $date;
+            return $date;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     public static function isDiscussion(IMotion $motion)

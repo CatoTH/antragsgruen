@@ -1,7 +1,8 @@
 export class ResponsibilitySetter {
     constructor(private $list: JQuery) {
         $list.on("click", ".respHolder .respUser", this.userSelected.bind(this));
-        $list.on("click", ".respHolder .respCommentRow button", this.saveComment.bind(this));
+        $list.on("click", ".respHolder .respCommentRow button", this.onCommentSaveBtn.bind(this));
+        $list.on("keypress", ".respHolder .respCommentRow input[type=text]", this.onKeyPressed.bind(this));
     }
 
     private userSelected(ev: Event) {
@@ -25,10 +26,22 @@ export class ResponsibilitySetter {
         });
     }
 
-    private saveComment(ev: Event) {
+    private onCommentSaveBtn(ev: Event) {
         ev.preventDefault();
-        const $row = $(ev.currentTarget).parents(".respHolder").first();
+        const $row: JQuery = $(ev.currentTarget).parents(".respHolder").first() as JQuery;
+        this.saveComment($row);
+    }
 
+    private onKeyPressed(ev: KeyboardEvent) {
+        if (ev.keyCode == 13) { // Enter
+            ev.preventDefault();
+            ev.stopPropagation();
+            const $row: JQuery = $(ev.currentTarget).parents(".respHolder").first() as JQuery;
+            this.saveComment($row);
+        }
+    }
+
+    private saveComment($row: JQuery) {
         const comment = $row.find(".respCommentRow input[type=text]").val() as string;
         const url = $row.data("save-url");
 
@@ -38,6 +51,9 @@ export class ResponsibilitySetter {
         }, (ret) => {
             if (ret['success']) {
                 $row.find(".responsibilityComment").text(comment);
+                if ($row.hasClass('open')) {
+                    $row.find('.dropdown-toggle').dropdown("toggle");
+                }
             } else {
                 alert("An error occurred while saving")
             }

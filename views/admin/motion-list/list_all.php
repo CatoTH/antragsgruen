@@ -61,7 +61,7 @@ echo $controller->showErrors();
 
 echo '<form method="GET" action="' . Html::encode(UrlHelper::createUrl($route)) . '" class="motionListSearchForm">';
 
-echo $search->getFilterFormFields();
+echo $search->getFilterFormFields($hasResponsibilities);
 
 echo '<div style="float: left;"><br><button type="submit" class="btn btn-success">' .
      Yii::t('admin', 'list_search_do') . '</button></div>';
@@ -104,10 +104,10 @@ if ($search->sort === AdminMotionFilterForm::SORT_STATUS) {
 echo '</th>';
 if ($colResponsible) {
     echo '<th class="responsibilityCol">';
-    if ($search->sort === AdminMotionFilterForm::SORT_PROPOSAL) { // @TODO
+    if ($search->sort === AdminMotionFilterForm::SORT_RESPONSIBILITY) {
         echo '<span style="text-decoration: underline;">' . Yii::t('admin', 'list_responsible') . '</span>';
     } else {
-        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_PROPOSAL]);
+        $url = $search->getCurrentUrl($route, ['Search[sort]' => AdminMotionFilterForm::SORT_RESPONSIBILITY]);
         echo Html::a(Yii::t('admin', 'list_responsible'), $url);
     }
     echo '</th>';

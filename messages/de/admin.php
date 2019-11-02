@@ -166,6 +166,7 @@ return [
     'filter_initiator_name'       => 'Name',
     'filter_agenda_item'          => 'Tagesordnungspunkt',
     'filter_prefix'               => 'Antragsnr.',
+    'filter_responsibility'       => 'Zuständigkeit',
 
     'con_email_from'          => 'Absender-Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',

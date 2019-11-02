@@ -164,6 +164,7 @@ return [
     'filter_initiator_name'       => 'Name',
     'filter_agenda_item'          => 'Agenda item',
     'filter_prefix'               => 'Signature',
+    'filter_responsibility'       => 'Responsibility',
 
     'con_email_from'          => 'From Name',
     'con_email_from_place'    => 'Standard: "%NAME%"',

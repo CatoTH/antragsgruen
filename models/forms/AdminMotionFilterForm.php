@@ -16,25 +16,27 @@ use yii\helpers\Html;
 
 class AdminMotionFilterForm extends Model
 {
-    const SORT_STATUS          = 1;
-    const SORT_TITLE           = 2;
-    const SORT_TITLE_PREFIX    = 3;
-    const SORT_INITIATOR       = 4;
-    const SORT_TAG             = 5;
-    const SORT_PUBLICATION     = 6;
-    const SORT_PROPOSAL        = 7;
+    const SORT_STATUS = 1;
+    const SORT_TITLE = 2;
+    const SORT_TITLE_PREFIX = 3;
+    const SORT_INITIATOR = 4;
+    const SORT_TAG = 5;
+    const SORT_PUBLICATION = 6;
+    const SORT_PROPOSAL = 7;
     const SORT_PROPOSAL_STATUS = 8;
+    const SORT_RESPONSIBILITY = 9;
 
     /** @var int */
-    public $status         = null;
-    public $tag            = null;
-    public $agendaItem     = null;
+    public $status = null;
+    public $tag = null;
+    public $agendaItem = null;
     public $proposalStatus = null;
+    public $responsibility = null;
 
     /** @var string */
     public $initiator = null;
-    public $title     = null;
-    public $prefix    = null;
+    public $title = null;
+    public $prefix = null;
 
     /** @var Motion [] */
     public $allMotions;
@@ -78,11 +80,7 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    /**
-     * @param IMotion $entry
-     * @return bool
-     */
-    private function isVisible(IMotion $entry)
+    private function isVisible(IMotion $entry): bool
     {
         if ($this->showScreening) {
             return $entry->isVisibleForAdmins();
@@ -97,8 +95,8 @@ class AdminMotionFilterForm extends Model
     public function rules()
     {
         return [
-            [['status', 'tag', 'sort', 'agendaItem'], 'number'],
-            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'prefix'], 'safe'],
+            [['status', 'tag', 'sort', 'agendaItem', 'responsibility'], 'number'],
+            [['status', 'proposalStatus', 'tag', 'title', 'initiator', 'agendaItem', 'responsibility', 'prefix'], 'safe'],
         ];
     }
 
@@ -118,6 +116,9 @@ class AdminMotionFilterForm extends Model
         if (isset($values['tag'])) {
             $this->tag = ($values['tag'] === '' ? null : intval($values['tag']));
         }
+        if (isset($values['responsibility'])) {
+            $this->responsibility = ($values['responsibility'] === '' ? null : intval($values['responsibility']));
+        }
 
         if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
             $this->proposalStatus = $values['proposalStatus'];
@@ -126,12 +127,7 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortDefault($motion1, $motion2)
+    public function sortDefault(IMotion $motion1, IMotion $motion2): int
     {
         if (is_a($motion1, Motion::class) && is_a($motion2, Amendment::class)) {
             return -1;
@@ -145,15 +141,11 @@ class AdminMotionFilterForm extends Model
         if ($motion1->id > $motion2->id) {
             return 1;
         }
+
         return 0;
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortStatus($motion1, $motion2)
+    public function sortStatus(IMotion $motion1, IMotion $motion2): int
     {
         if ($motion1->status < $motion2->status) {
             return -1;
@@ -161,15 +153,11 @@ class AdminMotionFilterForm extends Model
         if ($motion1->status > $motion2->status) {
             return 1;
         }
+
         return 0;
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortProposalStatus($motion1, $motion2)
+    public function sortProposalStatus(IMotion $motion1, IMotion $motion2): int
     {
         $status1 = (is_a($motion1, Amendment::class) ? $motion1->proposalStatus : 0);
         $status2 = (is_a($motion2, Amendment::class) ? $motion2->proposalStatus : 0);
@@ -179,15 +167,44 @@ class AdminMotionFilterForm extends Model
         if ($status1 > $status2) {
             return 1;
         }
+
         return 0;
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortTitle($motion1, $motion2)
+    private function normalizeResponsibility(IMotion $motion): string
+    {
+        $parts = [];
+        if ($motion->responsibilityUser) {
+            if ($motion->responsibilityUser->name) {
+                $parts[] = trim($motion->responsibilityUser->name);
+            } else {
+                $parts[] = trim($motion->responsibilityUser->getAuthName());
+            }
+        }
+        if ($motion->responsibilityComment) {
+            $parts[] = trim($motion->responsibilityComment);
+        }
+
+        return trim(implode(' ', $parts));
+    }
+
+    public function sortResponsibility(IMotion $motion1, IMotion $motion2): int
+    {
+        $responsibility1 = $this->normalizeResponsibility($motion1);
+        $responsibility2 = $this->normalizeResponsibility($motion2);
+
+        if ($responsibility1 && $responsibility2) {
+            return strnatcasecmp($responsibility1, $responsibility2);
+        } elseif ($responsibility1) {
+            return -1;
+        } elseif ($responsibility2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    public function sortTitle(IMotion $motion1, IMotion $motion2): int
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
@@ -211,12 +228,7 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortTitlePrefix($motion1, $motion2)
+    public function sortTitlePrefix(IMotion $motion1, IMotion $motion2): int
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
@@ -224,7 +236,7 @@ class AdminMotionFilterForm extends Model
         } else {
             /** @var Amendment $motion1 */
             $rev1 = $motion1->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                ' ' . $motion1->getMyMotion()->titlePrefix;
+                    ' ' . $motion1->getMyMotion()->titlePrefix;
         }
         if (is_a($motion2, Motion::class)) {
             /** @var Motion $motion2 */
@@ -232,18 +244,13 @@ class AdminMotionFilterForm extends Model
         } else {
             /** @var Amendment $motion2 */
             $rev2 = $motion2->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
-                ' ' . $motion2->getMyMotion()->titlePrefix;
+                    ' ' . $motion2->getMyMotion()->titlePrefix;
         }
 
         return strnatcasecmp($rev1, $rev2);
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortInitiator($motion1, $motion2)
+    public function sortInitiator(IMotion $motion1, IMotion $motion2): int
     {
         $init1 = $motion1->getInitiatorsStr();
         $init2 = $motion2->getInitiatorsStr();
@@ -255,12 +262,7 @@ class AdminMotionFilterForm extends Model
         }
     }
 
-    /**
-     * @param IMotion $motion1
-     * @param IMotion $motion2
-     * @return int
-     */
-    public function sortTag($motion1, $motion2)
+    public function sortTag(IMotion $motion1, IMotion $motion2): int
     {
         if (is_a($motion1, Motion::class)) {
             /** @var Motion $motion1 */
@@ -300,6 +302,7 @@ class AdminMotionFilterForm extends Model
 
     /**
      * @param IMotion[] $entries
+     *
      * @return IMotion[]
      */
     public function moveAmendmentsToMotions($entries)
@@ -338,6 +341,7 @@ class AdminMotionFilterForm extends Model
                 }
             }
         }
+
         return $result;
     }
 
@@ -366,20 +370,20 @@ class AdminMotionFilterForm extends Model
             case static::SORT_PROPOSAL_STATUS:
                 usort($merge, [static::class, 'sortProposalStatus']);
                 break;
+            case static::SORT_RESPONSIBILITY:
+                usort($merge, [static::class, 'sortResponsibility']);
+                break;
             default:
                 usort($merge, [static::class, 'sortTitlePrefix']);
         }
         if (!in_array($this->sort, [static::SORT_STATUS, static::SORT_INITIATOR, static::SORT_TAG])) {
             $merge = $this->moveAmendmentsToMotions($merge);
         }
+
         return $merge;
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     */
-    private function motionMatchesInitiator(Motion $motion)
+    private function motionMatchesInitiator(Motion $motion): bool
     {
         if ($this->initiator === null || $this->initiator === '') {
             return true;
@@ -394,14 +398,11 @@ class AdminMotionFilterForm extends Model
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     */
-    private function motionMatchesTag(Motion $motion)
+    private function motionMatchesTag(Motion $motion): bool
     {
         if ($this->tag === null || $this->tag === 0) {
             return true;
@@ -411,19 +412,26 @@ class AdminMotionFilterForm extends Model
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     */
-    private function motionMatchesAgendaItem(Motion $motion)
+    private function motionMatchesAgendaItem(Motion $motion): bool
     {
         if ($this->agendaItem === null || $this->agendaItem === 0) {
             return true;
         }
+
         return ($motion->agendaItemId === $this->agendaItem);
+    }
+
+    private function motionMatchesResponsibility(Motion $motion): bool
+    {
+        if ($this->responsibility === null || $this->responsibility === 0) {
+            return true;
+        }
+
+        return ($motion->responsibilityId === $this->responsibility);
     }
 
     /**
@@ -455,6 +463,10 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
+            if (!$this->motionMatchesResponsibility($motion)) {
+                $matches = false;
+            }
+
             if ($this->title !== null && $this->title !== '' && mb_stripos($motion->title, $this->title) === false) {
                 $matches = false;
             }
@@ -468,15 +480,12 @@ class AdminMotionFilterForm extends Model
                 $out[] = $motion;
             }
         }
+
         return $out;
     }
 
 
-    /**
-     * @param Amendment $amendment
-     * @return bool
-     */
-    private function amendmentMatchInitiator(Amendment $amendment)
+    private function amendmentMatchInitiator(Amendment $amendment): bool
     {
         if ($this->initiator === null || $this->initiator === '') {
             return true;
@@ -491,14 +500,11 @@ class AdminMotionFilterForm extends Model
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @return bool
-     */
-    private function amendmentMatchesTag(Amendment $amendment)
+    private function amendmentMatchesTag(Amendment $amendment): bool
     {
         if ($this->tag === null || $this->tag === 0) {
             return true;
@@ -508,19 +514,26 @@ class AdminMotionFilterForm extends Model
                 return true;
             }
         }
+
         return false;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @return bool
-     */
-    private function amendmentMatchesAgendaItem(Amendment $amendment)
+    private function amendmentMatchesAgendaItem(Amendment $amendment): bool
     {
         if ($this->agendaItem === null || $this->agendaItem === 0) {
             return true;
         }
+
         return ($amendment->getMyMotion()->agendaItemId === $this->agendaItem);
+    }
+
+    private function amendmentMatchesResponsibility(Amendment $amendment): bool
+    {
+        if ($this->responsibility === null || $this->responsibility === 0) {
+            return true;
+        }
+
+        return ($amendment->responsibilityId === $this->responsibility);
     }
 
     /**
@@ -566,6 +579,10 @@ class AdminMotionFilterForm extends Model
                 $matches = false;
             }
 
+            if (!$this->amendmentMatchesResponsibility($amend)) {
+                $matches = false;
+            }
+
             $title = $this->title;
             if ($title !== null && $title !== '' && mb_stripos($amend->getMyMotion()->title, $title) === false) {
                 $matches = false;
@@ -580,13 +597,11 @@ class AdminMotionFilterForm extends Model
                 $out[] = $amend;
             }
         }
+
         return $out;
     }
 
-    /**
-     * @return string
-     */
-    public function getFilterFormFields()
+    public function getFilterFormFields(bool $responsibilities): string
     {
         $str = '';
 
@@ -669,11 +684,28 @@ class AdminMotionFilterForm extends Model
         }
 
 
+        // Responsibility
+
+        if ($responsibilities) {
+            $allResponsibilities = $this->getRespoinsibilityList();
+            if (count($allResponsibilities) > 0) {
+                $name  = \Yii::t('admin', 'filter_responsibility') . ':';
+                $str   .= '<label>' . $name . '<br>';
+                $items = ['' => \Yii::t('admin', 'filter_na')];
+                foreach ($allResponsibilities as $itemId => $itemName) {
+                    $items[$itemId] = $itemName;
+                }
+                $str .= HTMLTools::fueluxSelectbox('Search[responsibility]', $items, $this->responsibility, [], true);
+                $str .= '</label>';
+            }
+        }
+
+
         // Initiators
 
         $str .= '<div>';
         $str .= '<label for="initiatorSelect" style="margin-bottom: 0;">' .
-            \Yii::t('admin', 'filter_initiator') . ':</label><br>';
+                \Yii::t('admin', 'filter_initiator') . ':</label><br>';
 
         $values        = [];
         $initiatorList = $this->getInitiatorList();
@@ -691,10 +723,7 @@ class AdminMotionFilterForm extends Model
         return $str;
     }
 
-    /**
-     * @return array
-     */
-    public function getStatusList()
+    public function getStatusList(): array
     {
         $out = $num = [];
         foreach ($this->allMotions as $motion) {
@@ -715,13 +744,11 @@ class AdminMotionFilterForm extends Model
                 $out[$statusId] = $statusName . ' (' . $num[$statusId] . ')';
             }
         }
+
         return $out;
     }
 
-    /**
-     * @return array
-     */
-    public function getProposalStatusList()
+    public function getProposalStatusList(): array
     {
         $out         = $num = [];
         $numAccepted = $numNotResponded = 0;
@@ -750,14 +777,12 @@ class AdminMotionFilterForm extends Model
         if ($numNotResponded > 0) {
             $out['noresponse'] = \Yii::t('admin', 'filter_proposal_noresponse') . ' (' . $numNotResponded . ')';
         }
+
         return $out;
     }
 
 
-    /**
-     * @return array
-     */
-    public function getTagList()
+    public function getTagList(): array
     {
         $tags = $tagsNames = [];
         foreach ($this->allMotions as $motion) {
@@ -783,13 +808,11 @@ class AdminMotionFilterForm extends Model
             $out[$tagId] = $tagsNames[$tagId] . ' (' . $num . ')';
         }
         asort($out);
+
         return $out;
     }
 
-    /**
-     * @return array
-     */
-    public function getAgendaItemList()
+    public function getAgendaItemList(): array
     {
         $agendaItems = [];
         foreach ($this->consultation->agendaItems as $agendaItem) {
@@ -798,13 +821,39 @@ class AdminMotionFilterForm extends Model
                 $agendaItems[$agendaItem->id] = $agendaItem->title . ' (' . $num . ')';
             }
         }
+
         return $agendaItems;
     }
 
-    /**
-     * @return array
-     */
-    public function getInitiatorList()
+    public function getRespoinsibilityList(): array
+    {
+        $userNames = [];
+        $userNum   = [];
+        foreach (array_merge($this->allMotions, $this->allAmendments) as $imotion) {
+            /** @var IMotion $imotion */
+            if ($imotion->responsibilityUser) {
+                if ($imotion->responsibilityUser->name) {
+                    $name = $imotion->responsibilityUser->name;
+                } else {
+                    $name = $imotion->responsibilityUser->getAuthName();
+                }
+                $userNames[$imotion->responsibilityUser->id] = $name;
+                if (!isset($userNum[$imotion->responsibilityUser->id])) {
+                    $userNum[$imotion->responsibilityUser->id] = 0;
+                }
+                $userNum[$imotion->responsibilityUser->id]++;
+            }
+        }
+        $out = [];
+        foreach ($userNum as $userId => $num) {
+            $out[$userId] = $userNames[$userId] . ' (' . $num . ')';
+        }
+        asort($out);
+
+        return $out;
+    }
+
+    public function getInitiatorList(): array
     {
         $initiators = [];
         foreach ($this->allMotions as $motion) {
@@ -844,24 +893,21 @@ class AdminMotionFilterForm extends Model
             $out[$name] = $name . ' (' . $num . ')';
         }
         asort($out);
+
         return $out;
     }
 
-    /**
-     * @param string $baseUrl
-     * @param array $add
-     * @return string
-     */
-    public function getCurrentUrl($baseUrl, $add = [])
+    public function getCurrentUrl(string $baseUrl, array $add = []): string
     {
         return UrlHelper::createUrl(array_merge([$baseUrl], [
-            'Search[status]'     => $this->status,
-            'Search[tag]'        => $this->tag,
-            'Search[initiator]'  => $this->initiator,
-            'Search[title]'      => $this->title,
-            'Search[sort]'       => $this->sort,
-            'Search[agendaItem]' => $this->agendaItem,
-            'Search[prefix]'     => $this->prefix,
+            'Search[status]'         => $this->status,
+            'Search[tag]'            => $this->tag,
+            'Search[initiator]'      => $this->initiator,
+            'Search[title]'          => $this->title,
+            'Search[sort]'           => $this->sort,
+            'Search[agendaItem]'     => $this->agendaItem,
+            'Search[responsibility]' => $this->responsibility,
+            'Search[prefix]'         => $this->prefix,
         ], $add));
     }
 }
