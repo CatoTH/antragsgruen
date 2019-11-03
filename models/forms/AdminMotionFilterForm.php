@@ -690,7 +690,7 @@ class AdminMotionFilterForm extends Model
             $allResponsibilities = $this->getRespoinsibilityList();
             if (count($allResponsibilities) > 0) {
                 $name  = \Yii::t('admin', 'filter_responsibility') . ':';
-                $str   .= '<label>' . $name . '<br>';
+                $str   .= '<label class="filterResponsibility">' . $name . '<br>';
                 $items = ['' => \Yii::t('admin', 'filter_na')];
                 foreach ($allResponsibilities as $itemId => $itemName) {
                     $items[$itemId] = $itemName;

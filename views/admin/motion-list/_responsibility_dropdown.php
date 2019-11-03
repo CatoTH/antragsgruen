@@ -56,9 +56,9 @@ $saveUrl = UrlHelper::createUrl([
         <?php
         foreach ($users as $user) {
             if ($imotion->responsibilityId && $imotion->responsibilityId === $user->id) {
-                echo '<li class="respUser selected" data-user-id="' . $user->id . '">';
+                echo '<li class="respUser respUser' . $user->id . ' selected" data-user-id="' . $user->id . '">';
             } else {
-                echo '<li class="respUser" data-user-id="' . $user->id . '">';
+                echo '<li class="respUser respUser' . $user->id . '" data-user-id="' . $user->id . '">';
             }
             echo '<a href="" class="setResponsibility">';
             echo '<span class="name">' . Html::encode($user->name) . '</span> <small>(' . Html::encode($user->getAuthName()) . ')</small>';
