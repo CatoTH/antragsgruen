@@ -61,7 +61,7 @@ if ($longVersion) {
     foreach ($items as $agendaItem) {
         if (count($agendaItem->getVisibleMotions(true, false)) > 0) {
             echo '<h2 class="green">' . Html::encode($agendaItem->title) . '</h2>';
-            echo '<ul class="motionList motionListStd motionListBelowAgenda">';
+            echo '<ul class="motionList motionListStd motionListBelowAgenda agenda' . $agendaItem->id . '">';
             $motions = MotionSorter::getSortedMotionsFlat($consultation, $agendaItem->getVisibleMotions());
             foreach ($motions as $motion) {
                 if ($motion->isResolution()) {
@@ -85,7 +85,7 @@ foreach ($consultation->getVisibleMotions(true, false) as $motion) {
 $otherMotions = MotionSorter::getSortedMotionsFlat($consultation, $otherMotions);
 if (count($otherMotions) > 0) {
     echo '<h2 class="green">' . Yii::t('con', 'Other Motions') . '</h2>';
-    echo '<ul class="motionList motionListStd motionListBelowAgenda">';
+    echo '<ul class="motionList motionListStd motionListBelowAgenda agenda0">';
     foreach ($otherMotions as $motion) {
         echo LayoutHelper::showMotion($motion, $consultation, $hideAmendmendsByDefault);
     }
