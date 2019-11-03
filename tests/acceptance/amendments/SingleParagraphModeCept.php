@@ -113,7 +113,7 @@ $I->dontSee('Test 123');
 
 
 
-$I->wantTo('edit the amendment as admin');
+$I->wantTo('edit the amendment as admin - in full-text mode');
 
 $I->gotoMotionList()->gotoAmendmentEdit(AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 $I->wait(1);
@@ -122,20 +122,11 @@ $I->executeJS('$("#amendmentTextEditCaller button").click()');
 $I->wait(1);
 $I->seeElement('#amendmentTextEditHolder');
 
-$I->see('Test 789', '#sections_2_0_wysiwyg');
-$I->click('#section_holder_2_0 .modifiedActions .revert');
-$I->dontSee('Test 789', '#sections_2_0_wysiwyg');
-$I->seeElement('#section_holder_2_0.modifyable');
-$I->seeElement('#section_holder_2_1.modifyable');
-
-$I->click('#section_holder_2_1');
+$I->see('Test 789', '#sections_2_wysiwyg');
+$I->click('#sections_2_wysiwyg');
 $I->wait(1);
-$I->dontSeeElement('#section_holder_2_0.modifyable');
-$I->dontSeeElement('#section_holder_2_0.modified');
-$I->dontSeeElement('#section_holder_2_1.modifyable');
-$I->seeElement('#section_holder_2_1.modified');
 
-$I->executeJS('CKEDITOR.instances.sections_2_1_wysiwyg.setData("<p>Test 456</p>");');
+$I->executeJS('CKEDITOR.instances.sections_2_wysiwyg.setData("<p>Test 456</p>");');
 $I->see('Test 456');
 
 $I->submitForm('#amendmentUpdateForm', [], 'save');

@@ -6,8 +6,9 @@ $I->populateDBData1();
 
 $I->wantTo('test the motion feed');
 $I->gotoConsultationHome();
+$I->click('#sidebar .feeds a');
 
-$content = $I->downloadLink('#sidebar .feedMotions');
+$content = $I->downloadLink('.feedMotions');
 if (mb_strpos($content, 'O’zapft is!') === false) {
     $I->fail('I don\'t see "O’zapft is!" in Source');
 }
@@ -18,8 +19,9 @@ if (mb_strpos($content, 'Test') === false) {
 
 $I->wantTo('test the amendment feed');
 $I->gotoConsultationHome();
+$I->click('#sidebar .feeds a');
 
-$content = $I->downloadLink('#sidebar .feedAmendments');
+$content = $I->downloadLink('.feedAmendments');
 if (mb_strpos($content, 'Tester') === false) {
     $I->fail('I don\'t see "Tester" in Source');
 }
@@ -33,8 +35,9 @@ if (mb_strpos($content, 'Ä1') === false) {
 
 $I->wantTo('test the overall feed');
 $I->gotoConsultationHome();
+$I->click('#sidebar .feeds a');
 
-$content = $I->downloadLink('#sidebar .feedAll');
+$content = $I->downloadLink('.feedAll');
 $lookFor = [
     'O’zapft is!',
     'Test',
