@@ -172,8 +172,11 @@ class MotionListController extends AdminBase
         $privilegeProposals = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
         if (!($privilegeScreening || $privilegeProposals)) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_acccess'));
+
             return '';
         }
+
+        $this->activateFunctions();
 
         $consultation->preloadAllMotionData();
 
@@ -219,6 +222,7 @@ class MotionListController extends AdminBase
      * @param int $motionTypeId
      * @param bool $textCombined
      * @param int $withdrawn
+     *
      * @return string
      * @throws \yii\base\ExitException
      */
@@ -255,6 +259,7 @@ class MotionListController extends AdminBase
      * @param int $motionTypeId
      * @param bool $textCombined
      * @param int $withdrawn
+     *
      * @return string
      * @throws \yii\base\ExitException
      */
@@ -262,7 +267,7 @@ class MotionListController extends AdminBase
     {
         if (!AntragsgruenApp::hasPhpExcel()) {
             return $this->showErrorpage(500, 'The Excel package has not been installed. ' .
-                'To install it, execute "./composer.phar require phpoffice/phpexcel".');
+                                             'To install it, execute "./composer.phar require phpoffice/phpexcel".');
         }
 
         $withdrawn = ($withdrawn == 1);
@@ -300,6 +305,7 @@ class MotionListController extends AdminBase
     /**
      * @param int $motionTypeId
      * @param int $version
+     *
      * @return string
      * @throws \yii\base\ExitException
      */
@@ -338,6 +344,7 @@ class MotionListController extends AdminBase
     /**
      * @param int $motionTypeId
      * @param int $withdrawn
+     *
      * @return string
      * @throws \yii\base\ExitException
      * @throws \app\models\exceptions\Internal
@@ -380,6 +387,7 @@ class MotionListController extends AdminBase
     /**
      * @param int $motionTypeId
      * @param int $withdrawn
+     *
      * @return string
      * @throws \yii\base\ExitException
      */

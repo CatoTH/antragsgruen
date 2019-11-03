@@ -39,6 +39,8 @@ use yii\helpers\Html;
  * @property string $noteInternal
  * @property int $textFixed
  * @property int $globalAlternative
+ * @property int|null $responsibilityId
+ * @property string|null $responsibilityComment
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentComment[] $privateComments
@@ -47,6 +49,7 @@ use yii\helpers\Html;
  * @property Amendment $proposalReference
  * @property Amendment $proposalReferencedBy
  * @property VotingBlock $votingBlock
+ * @property User $responsibilityUser
  */
 class Amendment extends IMotion implements IRSSItem
 {
@@ -113,7 +116,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getComments()
     {
@@ -123,7 +126,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getPrivateComments()
     {
@@ -171,7 +174,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getAmendmentSupporters()
     {
@@ -179,7 +182,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getSections()
     {
@@ -220,11 +223,19 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getVotingBlock()
     {
         return $this->hasOne(VotingBlock::class, ['id' => 'votingBlockId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getResponsibilityUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'responsibilityId']);
     }
 
     /**
@@ -359,7 +370,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getMotionJoin()
     {

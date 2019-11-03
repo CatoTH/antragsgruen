@@ -72,6 +72,7 @@ return [
     'proposal_table_motion'    => 'Motion',
     'proposal_table_voting'    => 'Voting',
     'proposal_table_proposal'  => 'Proposed procedure',
+    'proposal_table_response'  => 'Responsibility',
     'proposal_table_initiator' => 'Proposer',
     'proposal_table_others'    => 'Further proposals',
     'proposal_table_visible'   => 'Public',

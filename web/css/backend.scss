@@ -742,6 +742,14 @@ label.legend {
     }
   }
 
+  > .new {
+    text-align: left;
+
+    > * {
+      display: inline-block;
+    }
+  }
+
   .title {
     line-height: 33px;
     vertical-align: middle;
@@ -822,6 +830,10 @@ label.legend {
     .actionCol {
       overflow: visible;
     }
+
+    .responsibilityCol {
+      overflow: visible;
+    }
   }
 
   .dropdown-menu {
@@ -850,6 +862,36 @@ label.legend {
   }
 }
 
+.responsibilityCol {
+  overflow: visible;
+
+  .dropdown-menu .selected a:before {
+    content: '✓';
+    display: block;
+    float: left;
+    margin-left: -15px;
+  }
+
+  .respCommentRow {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+
+    .input-group-btn:last-child > .btn-default {
+      margin-left: -6px;
+    }
+  }
+
+  .respButton {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .respUserNone {
+    font-style: italic;
+  }
+}
+
 #siteSettingsForm {
   .loginMethods {
     margin-top: 20px;
@@ -858,34 +900,41 @@ label.legend {
       margin-left: 15px;
     }
   }
+
   .conpw {
     .setPasswordHolder {
       padding: 10px 20px;
       display: none;
     }
+
     .setNewPassword {
       display: none;
     }
+
     &.checked.hasPassword {
       .setNewPassword {
         display: inline;
       }
     }
+
     &.checked.hasPassword.changePwd {
       .setNewPassword {
         display: none;
       }
     }
+
     &.checked.noPassword, &.checked.hasPassword.changePwd {
       .setPasswordHolder {
         display: block;
       }
     }
+
     @media screen and (min-width: 800px) {
       .setPasswordHolder input[type=password] {
         width: 40%;
       }
     }
+
     label.otherConsultations:first-of-type {
       padding-left: 0;
     }

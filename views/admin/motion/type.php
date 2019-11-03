@@ -156,6 +156,22 @@ echo $controller->showErrors();
             ?>
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="typeResponsibilities">
+            <?= Yii::t('admin', 'motion_type_respons') ?>
+        </label>
+        <div class="checkbox col-md-8">
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'type[responsibilities]',
+                Yii::t('admin', 'motion_type_respons_label'),
+                $motionType->getSettingsObj()->hasResponsibilities,
+                ['id' => 'typeResponsibilities']
+            );
+            ?>
+        </div>
+    </div>
 <?php
 
 

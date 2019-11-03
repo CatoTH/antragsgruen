@@ -13,4 +13,6 @@ class MotionType implements \JsonSerializable
 
     /** @var bool */
     public $hasProposedProcedure = false;
+    /** @var bool */
+    public $hasResponsibilities = false;
 }

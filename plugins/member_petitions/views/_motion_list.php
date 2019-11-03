@@ -13,7 +13,7 @@ use yii\helpers\Html;
  */
 
 if (count($motions) === 0) {
-    echo \Yii::t('member_petitions', 'none');
+    echo Yii::t('member_petitions', 'none');
     return;
 }
 
@@ -49,16 +49,16 @@ foreach ($motions as $motion) {
     $motionPhaseName = null;
     switch ($motionPhase) {
         case 1:
-            $motionPhaseName = \Yii::t('member_petitions', 'status_discussing');
+            $motionPhaseName = Yii::t('member_petitions', 'status_discussing');
             break;
         case 2:
-            $motionPhaseName = \Yii::t('member_petitions', 'status_collecting');
+            $motionPhaseName = Yii::t('member_petitions', 'status_collecting');
             break;
         case 3:
-            $motionPhaseName = \Yii::t('member_petitions', 'status_unanswered');
+            $motionPhaseName = Yii::t('member_petitions', 'status_unanswered');
             break;
         case 4:
-            $motionPhaseName = \Yii::t('member_petitions', 'status_answered');
+            $motionPhaseName = Yii::t('member_petitions', 'status_answered');
             break;
     }
 
@@ -125,18 +125,18 @@ foreach ($motions as $motion) {
 
     $deadline = Tools::getPetitionResponseDeadline($motion);
     if ($deadline) {
-        echo ', ' . \Yii::t('member_petitions', 'index_remaining') . ': ';
+        echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
         echo \app\components\Tools::formatRemainingTime($deadline);
     }
 
     $deadline = Tools::getDiscussionUntil($motion);
     if ($deadline) {
-        echo ', ' . \Yii::t('member_petitions', 'index_remaining') . ': ';
+        echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
         echo \app\components\Tools::formatRemainingTime($deadline);
     }
 
     if ($motion->status === Motion::STATUS_PAUSED) {
-        echo '<span class="timeOver">' . \Yii::t('member_petitions', 'status_paused') . '</span>';
+        echo '<span class="timeOver">' . Yii::t('member_petitions', 'status_paused') . '</span>';
     }
     echo '</p>';
     $abstract = null;

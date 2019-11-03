@@ -45,6 +45,7 @@ echo Html::beginForm('', 'post', [
         </div>
         <div class="right">
             <?= $this->render('_switch_dropdown') ?>
+            <?= $this->render('_functions_dropdown') ?>
             <div class="autoUpdateWidget">
                 <label class="sr-only" for="autoUpdateToggle"></label>
                 <input type="checkbox" id="autoUpdateToggle"
@@ -60,6 +61,7 @@ echo Html::beginForm('', 'post', [
         </div>
     </section>
     <div class="reloadContent">
+        <?= $controller->showErrors() ?>
         <?= $this->render('_index_content', [
             'proposedAgenda' => $proposedAgenda,
             'expandAll'      => $expandAll,

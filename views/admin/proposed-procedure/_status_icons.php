@@ -15,25 +15,25 @@ if ($entry->proposalUserStatus !== null || isset($amendmentStatusVerbs[$entry->p
     echo '<div class="statusIcons proposalStatusIcons">';
     if ($entry->proposalUserStatus !== null) {
         if ($entry->proposalUserStatus === \app\models\db\IMotion::STATUS_ACCEPTED) {
-            $title = \Yii::t('admin', 'list_prop_user_accepted');
+            $title = Yii::t('admin', 'list_prop_user_accepted');
             echo '<span class="glyphicon glyphicon-ok accepted" title="' . $title . '"></span>';
         } else {
             echo '???'; // Not yet supported
         }
     } elseif ($entry->proposalFeedbackHasBeenRequested()) {
-        $title = \Yii::t('admin', 'list_prop_user_asked');
+        $title = Yii::t('admin', 'list_prop_user_asked');
         echo '<span class="asked" title="' . $title . '">❓</span>';
     } else {
-        $title = \Yii::t('admin', 'list_prop_user_not_asked');
+        $title = Yii::t('admin', 'list_prop_user_not_asked');
         echo '<span class="not_asked" title="' . $title . '">❔</span>';
     }
 
     if ($show_visibility) {
         if ($entry->isProposalPublic()) {
-            $title = \Yii::t('admin', 'list_prop_visible');
+            $title = Yii::t('admin', 'list_prop_visible');
             echo '<span class="glyphicon glyphicon-eye-open visible" title="' . $title . '"></span>';
         } else {
-            $title = \Yii::t('admin', 'list_prop_invisible');
+            $title = Yii::t('admin', 'list_prop_invisible');
             echo '<span class="glyphicon glyphicon-eye-close notVisible" title="' . $title . '"></span>';
         }
     }

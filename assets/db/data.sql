@@ -62,7 +62,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m181101_161124_proposed_procedure_active', '1541091342'),
   ('m181027_174827_consultationFilesSite', '1544887273'),
   ('m190816_074556_votingData', '1565941741'),
-  ('m190901_065243_deleteOldMergingDrafts', '1565941741')
+  ('m190901_065243_deleteOldMergingDrafts', '1565941741'),
+  ('m191101_162351_motion_responsibility', '1572625790')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

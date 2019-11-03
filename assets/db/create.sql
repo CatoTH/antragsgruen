@@ -32,7 +32,9 @@ CREATE TABLE `###TABLE_PREFIX###amendment` (
   `proposalExplanation`   TEXT,
   `votingStatus`          TINYINT(4)           DEFAULT NULL,
   `votingBlockId`         INT(11)              DEFAULT NULL,
-  `votingData`            TEXT                 DEFAULT NULL
+  `votingData`            TEXT                 DEFAULT NULL,
+  `responsibilityId`      INT(11)              DEFAULT NULL,
+  `responsibilityComment` TEXT                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -395,33 +397,35 @@ CREATE TABLE `###TABLE_PREFIX###migration` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###motion` (
-  `id`                   INT(11)     NOT NULL,
-  `consultationId`       INT(11)     NOT NULL,
-  `motionTypeId`         INT(11)     NOT NULL,
-  `parentMotionId`       INT(11)              DEFAULT NULL,
-  `agendaItemId`         INT(11)              DEFAULT NULL,
-  `title`                TEXT        NOT NULL,
-  `titlePrefix`          VARCHAR(50) NOT NULL,
-  `dateCreation`         TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `datePublication`      TIMESTAMP   NULL     DEFAULT NULL,
-  `dateResolution`       TIMESTAMP   NULL     DEFAULT NULL,
-  `status`               TINYINT(4)  NOT NULL,
-  `statusString`         VARCHAR(55)          DEFAULT NULL,
-  `nonAmendable`         TINYINT(4)  NOT NULL DEFAULT '0',
-  `noteInternal`         TEXT,
-  `cache`                LONGTEXT    NOT NULL,
-  `textFixed`            TINYINT(4)           DEFAULT '0',
-  `slug`                 VARCHAR(100)         DEFAULT NULL,
-  `proposalStatus`       TINYINT(4)           DEFAULT NULL,
-  `proposalReferenceId`  INT(11)              DEFAULT NULL,
-  `proposalComment`      TEXT,
-  `proposalVisibleFrom`  TIMESTAMP   NULL     DEFAULT NULL,
-  `proposalNotification` TIMESTAMP   NULL     DEFAULT NULL,
-  `proposalUserStatus`   TINYINT(4)  NULL     DEFAULT NULL,
-  `proposalExplanation`  TEXT,
-  `votingStatus`         TINYINT(4)           DEFAULT NULL,
-  `votingBlockId`        INT(11)              DEFAULT NULL,
-  `votingData`           TEXT                 DEFAULT NULL
+  `id`                    INT(11)     NOT NULL,
+  `consultationId`        INT(11)     NOT NULL,
+  `motionTypeId`          INT(11)     NOT NULL,
+  `parentMotionId`        INT(11)              DEFAULT NULL,
+  `agendaItemId`          INT(11)              DEFAULT NULL,
+  `title`                 TEXT        NOT NULL,
+  `titlePrefix`           VARCHAR(50) NOT NULL,
+  `dateCreation`          TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `datePublication`       TIMESTAMP   NULL     DEFAULT NULL,
+  `dateResolution`        TIMESTAMP   NULL     DEFAULT NULL,
+  `status`                TINYINT(4)  NOT NULL,
+  `statusString`          VARCHAR(55)          DEFAULT NULL,
+  `nonAmendable`          TINYINT(4)  NOT NULL DEFAULT '0',
+  `noteInternal`          TEXT,
+  `cache`                 LONGTEXT    NOT NULL,
+  `textFixed`             TINYINT(4)           DEFAULT '0',
+  `slug`                  VARCHAR(100)         DEFAULT NULL,
+  `proposalStatus`        TINYINT(4)           DEFAULT NULL,
+  `proposalReferenceId`   INT(11)              DEFAULT NULL,
+  `proposalComment`       TEXT,
+  `proposalVisibleFrom`   TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalNotification`  TIMESTAMP   NULL     DEFAULT NULL,
+  `proposalUserStatus`    TINYINT(4)  NULL     DEFAULT NULL,
+  `proposalExplanation`   TEXT,
+  `votingStatus`          TINYINT(4)           DEFAULT NULL,
+  `votingBlockId`         INT(11)              DEFAULT NULL,
+  `votingData`            TEXT                 DEFAULT NULL,
+  `responsibilityId`      INT(11)              DEFAULT NULL,
+  `responsibilityComment` TEXT                 DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -676,7 +680,8 @@ ALTER TABLE `amendment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_motionIdx` (`motionId`),
   ADD KEY `amendment_reference_am` (`proposalReferenceId`),
-  ADD KEY `ix_amendment_voting_block` (`votingBlockId`);
+  ADD KEY `ix_amendment_voting_block` (`votingBlockId`),
+  ADD KEY `fk_amendment_responsibility` (`responsibilityId`);
 
 --
 -- Indexes for table `amendmentAdminComment`
@@ -820,7 +825,8 @@ ALTER TABLE `motion`
   ADD KEY `type` (`motionTypeId`),
   ADD KEY `motion_reference_am` (`proposalReferenceId`),
   ADD KEY `agendaItemId` (`agendaItemId`),
-  ADD KEY `ix_motion_voting_block` (`votingBlockId`);
+  ADD KEY `ix_motion_voting_block` (`votingBlockId`),
+  ADD KEY `fk_motion_responsibility` (`responsibilityId`);
 
 --
 -- Indexes for table `motionAdminComment`
@@ -1055,15 +1061,10 @@ ALTER TABLE `votingBlock`
 -- Constraints for table `amendment`
 --
 ALTER TABLE `amendment`
-  ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `amendment` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_amendment_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_amendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`)
-  ON DELETE SET NULL
-  ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_amendment_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `amendment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_amendment_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_amendment_responsibility` FOREIGN KEY (`responsibilityId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `fk_amendment_motion` FOREIGN KEY (`motionId`) REFERENCES `motion` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentAdminComment`
@@ -1077,12 +1078,8 @@ ALTER TABLE `amendmentAdminComment`
 --
 ALTER TABLE `amendmentComment`
   ADD CONSTRAINT `amendmentComment_ibfk_1` FOREIGN KEY (`amendmentId`) REFERENCES `amendment` (`id`),
-  ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `amendmentComment` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-  ON DELETE SET NULL
-  ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_amendment_comment_parents` FOREIGN KEY (`parentCommentId`) REFERENCES `amendmentComment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_amendment_comment_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `amendmentSection`
@@ -1200,22 +1197,13 @@ ALTER TABLE `emailLog`
 -- Constraints for table `motion`
 --
 ALTER TABLE `motion`
-  ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_motion_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `motion` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_motion_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`)
-  ON DELETE CASCADE
-  ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`)
-  ON DELETE NO ACTION
-  ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_motion_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_motion_reference_am` FOREIGN KEY (`proposalReferenceId`) REFERENCES `motion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_motion_responsibility` FOREIGN KEY (`responsibilityId`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `fk_motion_voting_block` FOREIGN KEY (`votingBlockId`) REFERENCES `votingBlock` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_site_parent` FOREIGN KEY (`parentMotionId`) REFERENCES `motion` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `motion_ibfk_1` FOREIGN KEY (`motionTypeId`) REFERENCES `consultationMotionType` (`id`),
-  ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`)
-  ON DELETE SET NULL
-  ON UPDATE NO ACTION;
+  ADD CONSTRAINT `motion_ibfk_2` FOREIGN KEY (`agendaItemId`) REFERENCES `consultationAgendaItem` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `motionAdminComment`
