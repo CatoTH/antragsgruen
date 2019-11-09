@@ -1,5 +1,6 @@
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
+import ClickEvent = JQuery.ClickEvent;
 
 const STATUS_ACCEPTED = 4;
 const STATUS_MODIFIED_ACCEPTED = 6;
@@ -401,11 +402,6 @@ class MotionMergeAmendmentsTextarea {
         $text.find(".moved .moved").removeClass('moved');
         $text.find(".moved").each(this.markupMovedParagraph.bind(this));
 
-        // Add hints about starting / ending collisions
-        $text.find(".hasCollisions")
-            .attr("data-collision-start-msg", __t('merge', 'colliding_start'))
-            .attr("data-collision-end-msg", __t('merge', 'colliding_end'));
-
         let newText = $text.html();
         this.texteditor.setData(newText);
         this.unchangedText = this.normalizeHtml(this.texteditor.getData());
@@ -571,10 +567,16 @@ class MotionMergeAmendmentsParagraph {
     public paragraphId: number;
     public textarea: MotionMergeAmendmentsTextarea;
     public hasUnsavedChanges = false;
+    public handledCollisions: number[] = [];
 
-    constructor(private $holder: JQuery) {
+    constructor(private $holder: JQuery, draft: any) {
         this.sectionId = parseInt($holder.data('sectionId'));
         this.paragraphId = parseInt($holder.data('paragraphId'));
+
+        const paragraphDraft = draft.paragraphs && draft.paragraphs[this.sectionId + "_" + this.paragraphId] ? draft.paragraphs[this.sectionId + "_" + this.paragraphId] : null;
+        if (paragraphDraft.handledCollisions) {
+            this.handledCollisions = paragraphDraft.handledCollisions;
+        }
 
         const $textarea = $holder.find(".wysiwyg-textarea");
         const $changed = $holder.find(".changedIndicator");
@@ -582,11 +584,27 @@ class MotionMergeAmendmentsParagraph {
         this.textarea = new MotionMergeAmendmentsTextarea($textarea, $changed, $mergeActionHolder);
 
         this.initButtons();
+        this.initSetCollisionsAsHandled();
         $holder.find(".amendmentStatus").each((i: number, element) => {
             AmendmentStatuses.registerParagraph($(element).data("amendment-id"), this);
         });
 
         this.textarea.addChangedListener(() => this.hasUnsavedChanges = true);
+    }
+
+
+    private initSetCollisionsAsHandled() {
+        this.$holder.on("click", "button.hideCollision", (ev: ClickEvent) => {
+            const $collision = $(ev.currentTarget).parents(".collidingParagraph").first();
+            const amendmentId = parseInt($collision.data("amendment-id"), 10);
+            const $collisionHolder = $collision.parent();
+            $collision.remove();
+            if ($collisionHolder.children().length === 0) {
+                this.$holder.removeClass("hasCollisions");
+            }
+            this.handledCollisions.push(amendmentId);
+            this.hasUnsavedChanges = true;
+        });
     }
 
     private initButtons() {
@@ -644,7 +662,7 @@ class MotionMergeAmendmentsParagraph {
             this.hasUnsavedChanges = true;
         });
 
-        this.$holder.find(".btn-group .setVersion").click(ev => {
+        this.$holder.find(".btn-group .setVersion").on("click", ev => {
             ev.preventDefault();
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
@@ -757,6 +775,7 @@ class MotionMergeAmendmentsParagraph {
             } else {
                 this.$holder.removeClass("hasCollisions");
             }
+            this.handledCollisions = [];
             this.hasUnsavedChanges = true;
         });
     }
@@ -773,6 +792,7 @@ class MotionMergeAmendmentsParagraph {
             amendmentToggles,
             text: this.textarea.getContent(),
             unchanged: this.textarea.getUnchangedContent(),
+            handledCollisions: this.handledCollisions,
         };
     }
 
@@ -805,7 +825,7 @@ export class MotionMergeAmendments {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            this.paragraphs.push(new MotionMergeAmendmentsParagraph($para));
+            this.paragraphs.push(new MotionMergeAmendmentsParagraph($para, draft));
         });
 
         MotionMergeAmendments.$form.on("submit", () => {
@@ -914,7 +934,7 @@ export class MotionMergeAmendments {
                 $toggle.prop('checked', (state == '1'));
             }
         }
-        $toggle.change(() => {
+        $toggle.on("change", () => {
             let active: boolean = $toggle.prop('checked');
             if (localStorage) {
                 localStorage.setItem('merging-draft-auto-save', (active ? '1' : '0'));
@@ -939,7 +959,7 @@ export class MotionMergeAmendments {
             this.setDraftDate(date);
         }
 
-        $(".sectionType0").change(() => this.hasUnsavedChanges = true);
+        $(".sectionType0").on("change", () => this.hasUnsavedChanges = true);
 
         $("#yii-debug-toolbar").remove();
     }

@@ -13,12 +13,16 @@ class DraftParagraph
     /** @var string */
     public $unchanged;
 
-    public static function fromJson($json)
+    /** @var int[] */
+    public $handledCollisions;
+
+    public static function fromJson($json): DraftParagraph
     {
-        $para                   = new static();
-        $para->amendmentToggles = $json['amendmentToggles'];
-        $para->text             = $json['text'];
-        $para->unchanged        = $json['unchanged'];
+        $para                    = new DraftParagraph();
+        $para->amendmentToggles  = $json['amendmentToggles'];
+        $para->text              = $json['text'];
+        $para->unchanged         = $json['unchanged'];
+        $para->handledCollisions = (isset($json['handledCollisions']) ? $json['handledCollisions'] : []);
 
         return $para;
     }
@@ -28,8 +32,9 @@ class DraftParagraph
      *
      * @return DraftParagraph[]
      */
-    public static function fromJsonArr($arr) {
-        return array_map(function($entry) {
+    public static function fromJsonArr($arr)
+    {
+        return array_map(function ($entry) {
             return static::fromJson($entry);
         }, $arr);
     }

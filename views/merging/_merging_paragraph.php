@@ -11,8 +11,14 @@ use app\models\db\Amendment;
 use app\models\db\MotionSection;
 use yii\helpers\Html;
 
-$paragraphCollisions = $form->getParagraphTextCollisions($section, $paragraphNo);
 $draftParagraph      = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
+$paragraphCollisions = array_filter(
+    $form->getParagraphTextCollisions($section, $paragraphNo),
+    function ($amendmentId) use ($draftParagraph) {
+        return !in_array($amendmentId, $draftParagraph->handledCollisions);
+    },
+    ARRAY_FILTER_USE_KEY
+);
 
 $type      = $section->getSettings();
 $nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';

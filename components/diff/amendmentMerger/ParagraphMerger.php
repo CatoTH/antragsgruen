@@ -514,8 +514,13 @@ class ParagraphMerger
             $paragraphText .= $text;
         }
 
-        $out = '<div class="collidingParagraph" data-link="' . Html::encode($amendmentUrl) . '"
+        $out = '<div class="collidingParagraph"
+                     data-link="' . Html::encode($amendmentUrl) . '"
+                     data-amendment-id="' . $amendment->id . '"
                      data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">
+                     <button class="btn btn-link pull-right btn-xs hideCollision" type="button">' .
+               \Yii::t('amend', 'merge_colliding_hide') . ' <span class="glyphicon glyphicon-minus-sign"></span>' .
+               '</button>
                      <p class="collidingParagraphHead"><strong>' .
             \Yii::t('amend', 'merge_colliding') . ': ' .
             Html::a(Html::encode($amendment->titlePrefix), $amendmentUrl) .

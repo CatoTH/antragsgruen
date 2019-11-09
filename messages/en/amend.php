@@ -102,6 +102,7 @@ return [
     'merge_submitted_to_motion'    => 'Go to the motion',
     'merge_colliding'              => 'Colliding amendment',
     'merge_colliding_hint'         => 'The following changes could not be merged automatically. Please merge them manually.',
+    'merge_colliding_hide'         => 'Resolved / Hide',
     'merge_title_changes'          => 'Title changes',
     'merge_all'                    => 'All changes...',
     'merge_accept_all'             => 'Accept all changes',
