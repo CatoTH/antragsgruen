@@ -514,7 +514,7 @@ class ParagraphMerger
             $paragraphText .= $text;
         }
 
-        $out = '<div class="collidingParagraph"
+        $out = '<div class="collidingParagraph collidingParagraph' . $amendment->id . '"
                      data-link="' . Html::encode($amendmentUrl) . '"
                      data-amendment-id="' . $amendment->id . '"
                      data-username="' . Html::encode($amendment->getInitiatorsStr()) . '">

@@ -107,9 +107,9 @@ class Draft implements \JsonSerializable
         $draft = new Draft();
         $draft->init($form->motion);
 
-        $draft->sections = []; // Empty = default values
-        $draft->amendmentStatuses = [];
-        $draft->amendmentVersions = [];
+        $draft->sections            = []; // Empty = default values
+        $draft->amendmentStatuses   = [];
+        $draft->amendmentVersions   = [];
         $draft->amendmentVotingData = [];
 
         $draft->paragraphs = [];
@@ -130,10 +130,11 @@ class Draft implements \JsonSerializable
                 $paragraphText  = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
                 list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
 
-                $draftPara                   = new DraftParagraph();
-                $draftPara->unchanged        = null;
-                $draftPara->text             = $paragraphText;
-                $draftPara->amendmentToggles = [];
+                $draftPara                    = new DraftParagraph();
+                $draftPara->unchanged         = null;
+                $draftPara->text              = $paragraphText;
+                $draftPara->amendmentToggles  = [];
+                $draftPara->handledCollisions = [];
                 foreach ($normalAmendments as $amendment) {
                     if ($form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo)) {
                         $draftPara->amendmentToggles[] = $amendment->id;
