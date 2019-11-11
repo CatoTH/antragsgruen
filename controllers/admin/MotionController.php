@@ -6,6 +6,7 @@ use app\components\DateTools;
 use app\components\HTMLTools;
 use app\components\Tools;
 use app\components\UrlHelper;
+use app\models\db\Consultation;
 use app\models\db\ConsultationSettingsMotionSection;
 use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
@@ -497,7 +498,7 @@ class MotionController extends AdminBase
                 try {
                     /** @var ConsultationMotionType $newType */
                     $newType = ConsultationMotionType::findOne($modat['motionType']);
-                    if (!$newType || $newType->consultationId != $motion->consultationId) {
+                    if (!$newType || $newType->consultationId !== $motion->consultationId) {
                         throw new FormError('The new motion type was not found');
                     }
                     $motion->setMotionType($newType);
@@ -579,15 +580,21 @@ class MotionController extends AdminBase
         }
         $this->checkConsistency($motion);
 
+        $form = new MotionMover($this->consultation, $motion, User::getCurrentUser());
 
         if ($this->isPostSet('move')) {
-            $form      = new MotionMover($this->consultation, $motion);
             $newMotion = $form->move(\Yii::$app->request->post());
             if ($newMotion) {
-                return $this->redirect(UrlHelper::createMotionUrl($newMotion));
+                if ($newMotion->consultationId === $this->consultation->id) {
+                    return $this->redirect(UrlHelper::createMotionUrl($newMotion));
+                } else {
+                    Consultation::getCurrent()->flushMotionCache();
+                    Consultation::getCurrent()->refresh();
+                    return $this->render('moved_other_consultation', ['newMotion' => $newMotion]);
+                }
             }
         }
 
-        return $this->render('move', ['motion' => $motion]);
+        return $this->render('move', ['form' => $form]);
     }
 }

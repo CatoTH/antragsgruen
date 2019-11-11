@@ -97,12 +97,19 @@ return [
     'motion_topics'               => 'Tags',
     'motion_note_internal'        => 'Internal remark',
     'motion_move_title'           => 'Move motion',
+    'motion_moved_title'          => 'Motion moved',
+    'motion_moved_text'           => 'The motion has beed moved to the new consultation. You can access the motion at the following URL: %URL%',
     'motion_move_prefix'          => 'New signature',
     'motion_move_target'          => 'Move to...',
     'list_head_title'             => 'List: motions, amendments',
     'motion_move_target_agenda'   => '...other agenda item',
+    'motion_move_target_con'      => '...other consultation',
     'motion_move_target_prefix'   => '...only rename',
     'motion_move_agenda_item'     => 'New agenda item',
+    'motion_move_agenda_none'     => 'There are no agenda items',
+    'motion_move_con'             => 'New consultation',
+    'motion_move_con_none'        => 'There is no consultation with a compatible motion type',
+    'motion_move_type'            => 'Motion type',
     'list_action'                 => 'Action',
     'list_export'                 => 'Export',
     'list_tag'                    => 'Tag',
@@ -278,7 +285,7 @@ The <strong>%ACCOUNT%</strong> in the e-mail text will be replaced by the user d
     'siteacc_acc_expl_nomail'  => '<h3>Explanation:</h3>
 To grant access to persons, enter their e-mail-addresses in the text field below.
 As there is <strong>no e-mail-delivery configured</strong>, it is necessary that you enter the passwords for the users here and send the passwords to them manually.<br><br>' .
-        'However, for <strong>privacy reasons</strong> it would be more advisible to configure the e-mail-delivery and let Antragsgrün create the passwords internally and send the passwords to the users automatically.',
+                                  'However, for <strong>privacy reasons</strong> it would be more advisible to configure the e-mail-delivery and let Antragsgrün create the passwords internally and send the passwords to the users automatically.',
 
     'siteacc_existing_users'      => 'Existing users',
     'siteacc_user_name'           => 'Name',
@@ -302,11 +309,11 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_admin_del_done'      => 'The admin permissions have been removed.',
     'siteacc_admin_del_notf'      => 'There is no account by this name',
     'siteacc_mail_yourdata'       => "You can log in using the following data:\nusername: %EMAIL%\n" .
-        "Password: %PASSWORD%",
+                                     "Password: %PASSWORD%",
     'siteacc_mail_youracc'        => 'You can log in using your username %EMAIL%.',
     'sitacc_admmail_subj'         => 'Antragsgrün administration',
     'sitacc_admmail_body'         => "Hi!\n\nYou just received admin permissions for the following Antragsgrün site: %LINK%\n\n" .
-        "%ACCOUNT%\n\nBye,\n Antragsgrün Team",
+                                     "%ACCOUNT%\n\nBye,\n Antragsgrün Team",
     'siteacc_err_linenumber'      => 'The number of e-mail addresses and names do not match',
     'siteacc_err_occ'             => 'An error occurred',
     'siteacc_user_had'            => 'The following users already have access',
@@ -320,7 +327,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_noscreen_users_btn'  => 'Don\' grant access',
     'Translation / Wording'       => 'Edit the language',
     'translating_hint'            => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.' .
-        '<strong>Hint:</strong> Changes here only affect this one consultation.',
+                                     '<strong>Hint:</strong> Changes here only affect this one consultation.',
     'translating_none'            => 'No strings to translate',
     'translating_base'            => 'Base language',
     'tabulardatatype_string'      => 'Text',
@@ -384,7 +391,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_del_caller'      => 'Delete motion type',
     'motion_type_del_btn'         => 'Delete',
     'motion_type_not_deletable'   => 'This motion type cannot be deleted (yet). ' .
-        'Please delete all motions of this type. Then you can delete the type itself.',
+                                     'Please delete all motions of this type. Then you can delete the type itself.',
     'motion_type_deleted_head'    => 'Motion type deleted',
     'motion_type_deleted_msg'     => 'The motion type has been successfully deleted.',
     'motion_type_supp_form'       => 'Form',

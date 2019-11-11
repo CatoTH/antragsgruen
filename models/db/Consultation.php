@@ -175,6 +175,11 @@ class Consultation extends ActiveRecord
         return null;
     }
 
+    public function flushMotionCache()
+    {
+        $this->motionCache = [];
+    }
+
     /**
      * @return Motion|null
      */
