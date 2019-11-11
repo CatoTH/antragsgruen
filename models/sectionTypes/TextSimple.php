@@ -9,8 +9,6 @@ use app\components\HashedStaticCache;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\components\latex\Exporter;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
 use app\models\db\AmendmentSection;
 use app\models\db\Consultation;
 use app\models\db\MotionSection;
@@ -220,20 +218,27 @@ class TextSimple extends Text
             $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
             $str .= '<p><strong>' . \Yii::t('amend', 'global_alternative') . '</strong></p>';
             $str .= $section->data;
+            return $str;
         } else {
-            $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
-            $formatter->setTextNew($section->data);
-            $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-            if (count($diffGroups) == 0) {
-                return '';
-            }
+            $cacheDeps = [$section->getOriginalMotionSection()->data, $section->data, $firstLine, $lineLength, $section->getSettings()->title];
+            $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
+            if (!$cached) {
+                $formatter = new AmendmentSectionFormatter();
+                $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+                $formatter->setTextNew($section->data);
+                $formatter->setFirstLineNo($firstLine);
+                $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
+                if (count($diffGroups) == 0) {
+                    return '';
+                }
 
-            $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
-            $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+                $str = '<h3>' . Html::encode($section->getSettings()->title) . '</h3>';
+                $str .= TextSimple::formatDiffGroup($diffGroups, '', '', $firstLine);
+                $cached = $str;
+                HashedStaticCache::setCache('getAmendmentPlainHtml', $cacheDeps, $cached);
+            }
+            return $cached;
         }
-        return $str;
     }
 
     /**
