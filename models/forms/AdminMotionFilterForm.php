@@ -119,6 +119,9 @@ class AdminMotionFilterForm extends Model
         if (isset($values['responsibility'])) {
             $this->responsibility = ($values['responsibility'] === '' ? null : intval($values['responsibility']));
         }
+        if (isset($values['agendaItem'])) {
+            $this->agendaItem = ($values['agendaItem'] === '' ? null : intval($values['agendaItem']));
+        }
 
         if (isset($values['proposalStatus']) && $values['proposalStatus'] != '') {
             $this->proposalStatus = $values['proposalStatus'];
