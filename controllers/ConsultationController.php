@@ -434,6 +434,13 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
+        $cacheFile = '/tmp/proposedprocedure.txt';
+        $mtime = file_exists($cacheFile) ? filemtime($cacheFile) : 0;
+        $age = time() - $mtime;
+        if ($age < 5 * 60 && User::getCurrentUser() === null) {
+            return file_get_contents($cacheFile);
+        }
+
         $this->consultation->preloadAllMotionData();
 
         $this->layout = 'column1';
@@ -441,9 +448,15 @@ class ConsultationController extends Base
 
         $proposalFactory = new Factory($this->consultation, false);
 
-        return $this->render('proposed_procedure', [
+        $content = $this->render('proposed_procedure', [
             'proposedAgenda' => $proposalFactory->create(),
         ]);
+
+        if (User::getCurrentUser() === null) {
+            file_put_contents($cacheFile, $content);
+        }
+
+        return $content;
     }
 
     /**

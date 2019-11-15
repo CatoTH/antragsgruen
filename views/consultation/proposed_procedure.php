@@ -37,6 +37,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
                     <span class="date"><?= date('H:i:s') ?></span>
                 </div>
             </div>
+            <!--
             <div class="right">
                 <?= $this->render('../admin/proposed-procedure/_switch_dropdown') ?>
                 <div class="autoUpdateWidget">
@@ -52,6 +53,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
                     </button>
                 </div>
             </div>
+            -->
         </section>
         <?php
     }
