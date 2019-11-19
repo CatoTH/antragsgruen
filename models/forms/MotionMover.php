@@ -118,10 +118,10 @@ class MotionMover
                     throw new Inconsistency('Motion type not found');
                 }
                 if ($post['operation'] === 'copy') {
-                    return $this->copyToConsultation($consultation, $motionType, $titlePrefix);
+                    return $this->copyToConsultation($motionType, $titlePrefix);
                 }
                 if ($post['operation'] === 'move') {
-                    return $this->moveToConsultation($consultation, $motionType, $titlePrefix);
+                    return $this->moveToConsultation($motionType, $titlePrefix);
                 }
                 break;
         }
@@ -131,7 +131,7 @@ class MotionMover
 
     private function copyToAgendaItem(ConsultationAgendaItem $agendaItem, string $titlePrefix): Motion
     {
-        $newMotion = MotionDeepCopy::copyMotion($this->motion, $agendaItem->getMyConsultation(), $agendaItem, $titlePrefix);
+        $newMotion = MotionDeepCopy::copyMotion($this->motion, $this->motion->getMyMotionType(), $agendaItem, $titlePrefix);
 
         $newMotion->parentMotionId = $this->motion->id;
         $newMotion->save();
@@ -152,21 +152,30 @@ class MotionMover
         return $this->motion;
     }
 
-    private function copyToConsultation(Consultation $consultation, ConsultationMotionType $motionType, string $titlePrefix): Motion
+    private function copyToConsultation(ConsultationMotionType $motionType, string $titlePrefix): Motion
     {
+        $newMotion = MotionDeepCopy::copyMotion($this->motion, $motionType, null, $titlePrefix);
 
+        $newMotion->parentMotionId = $this->motion->id;
+        $newMotion->save();
+
+        $this->motion->status = IMotion::STATUS_MOVED;
+        $this->motion->save();
+
+        return $newMotion;
     }
 
-    private function moveToConsultation(Consultation $consultation, ConsultationMotionType $motionType, string $titlePrefix): Motion
+    private function moveToConsultation(ConsultationMotionType $motionType, string $titlePrefix): Motion
     {
         $oldConsultation              = $this->motion->getMyConsultation();
+        $newConsultation              = $motionType->getMyConsultation();
         $this->motion->agendaItemId   = null;
         $this->motion->titlePrefix    = $titlePrefix;
-        $this->motion->consultationId = $consultation->id;
+        $this->motion->consultationId = $newConsultation->id;
         $this->motion->setMotionType($motionType);
 
         $oldConsultation->flushMotionCache();
-        $consultation->flushMotionCache();
+        $newConsultation->flushMotionCache();
 
         return $this->motion;
     }

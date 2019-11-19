@@ -7,24 +7,19 @@ use app\models\db\AmendmentAdminComment;
 use app\models\db\AmendmentComment;
 use app\models\db\AmendmentSection;
 use app\models\db\AmendmentSupporter;
-use app\models\db\Consultation;
 use app\models\db\ConsultationAgendaItem;
+use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionAdminComment;
 use app\models\db\MotionComment;
 use app\models\db\MotionSection;
 use app\models\db\MotionSupporter;
-use app\models\exceptions\Internal;
 
 class MotionDeepCopy
 {
-    public static function copyMotion(Motion $motion, Consultation $newConsultation, ?ConsultationAgendaItem $agendaItem, string $newPrefix): Motion
+    public static function copyMotion(Motion $motion, ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, string $newPrefix): Motion
     {
-        if ($newConsultation->id !== $motion->consultationId) {
-            throw new Internal('Not supported yet');
-            // Hint: the motion type needs to be rewritten
-        }
-
+        $newConsultation = $motionType->getMyConsultation();
         $slug = $motion->slug;
 
         if ($motion->consultationId === $newConsultation->id) {
@@ -48,6 +43,11 @@ class MotionDeepCopy
         static::copyMotionAdminComments($motion, $newMotion);
         static::copyMotionComments($motion, $newMotion);
         static::copyAmendments($motion, $newMotion);
+
+        if ($newMotion->motionTypeId !== $motionType->id) {
+            /** @noinspection PhpUnhandledExceptionInspection */
+            $newMotion->setMotionType($motionType);
+        }
 
         return $newMotion;
     }

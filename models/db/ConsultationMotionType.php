@@ -99,7 +99,7 @@ class ConsultationMotionType extends ActiveRecord
     public function getConsultation()
     {
         $current = Consultation::getCurrent();
-        if ($current && $current->id == $this->consultationId) {
+        if ($current && $current->id === $this->consultationId) {
             return $current;
         } else {
             return Consultation::findOne($this->consultationId);
