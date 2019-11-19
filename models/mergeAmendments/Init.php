@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\components\diff\amendmentMerger\ParagraphMerger;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\db\MotionSection;
@@ -9,6 +10,9 @@ use app\models\sectionTypes\ISectionType;
 
 class Init
 {
+    const TEXT_VERSION_ORIGINAL = 'orig';
+    const TEXT_VERSION_PROPOSAL = 'prop';
+
     /** @var Motion */
     public $motion;
 
@@ -18,14 +22,7 @@ class Init
     /** @var Draft */
     public $draftData;
 
-    /**
-     * @param Motion $motion
-     * @param array $postAmendIds
-     * @param array $textVersions
-     *
-     * @return Init
-     */
-    public static function fromInitForm(Motion $motion, $postAmendIds, $textVersions)
+    public static function fromInitForm(Motion $motion, array $postAmendIds, array $textVersions): Init
     {
         $form                     = new Init();
         $form->motion             = $motion;
@@ -36,7 +33,8 @@ class Init
                 $form->toMergeMainIds[] = $amendment->id;
             }
 
-            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
+            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
+                $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
                     $form->toMergeResolvedIds[] = $amendment->proposalReference->id;
                 }
@@ -79,12 +77,17 @@ class Init
         return $form;
     }
 
-    /**
-     * @param MotionSection $section
-     *
-     * @return MotionSection
-     */
-    public function getRegularSection(MotionSection $section)
+    public function resolveAmendmentToProposalId(int $amendmentId): ?int
+    {
+        foreach ($this->motion->getVisibleAmendments() as $amendment) {
+            if ($amendment->id === $amendmentId && $amendment->proposalReference) {
+                return $amendment->proposalReference->id;
+            }
+        }
+        return null;
+    }
+
+    public function getRegularSection(MotionSection $section): MotionSection
     {
         if ($this->draftData && isset($this->draftData->sections[$section->sectionId]) && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
             $clone = new MotionSection();
@@ -98,18 +101,13 @@ class Init
         }
     }
 
-    /**
-     * @param MotionSection $section
-     * @param int $paragraphNo
-     *
-     * @return \app\components\diff\amendmentMerger\ParagraphMerger
-     */
-    public function getMergerForParagraph(MotionSection $section, $paragraphNo)
+    public function getMergerForParagraph(MotionSection $section, int $paragraphNo): ParagraphMerger
     {
         if ($this->draftData) {
             $paragraphData = $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
+            $amendmentIds = $paragraphData->getActiveResolvedAmendmentIds($this->motion);
 
-            return $section->getAmendmentDiffMerger($paragraphData->amendmentToggles)->getParagraphMerger($paragraphNo);
+            return $section->getAmendmentDiffMerger($amendmentIds)->getParagraphMerger($paragraphNo);
         } else {
             return $section->getAmendmentDiffMerger($this->toMergeResolvedIds)->getParagraphMerger($paragraphNo);
         }
@@ -120,14 +118,7 @@ class Init
         return $section->getAmendmentDiffMerger(null)->getAffectingAmendmentIds($paragraphNo);
     }
 
-    /**
-     * @param $allAmendingIds
-     * @param $amendmentsById
-     * @param $paragraphNo
-     *
-     * @return array
-     */
-    public function getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo)
+    public function getAffectingAmendmentsForParagraph(array $allAmendingIds, array $amendmentsById, int $paragraphNo): array
     {
         $modUs = [];
         /** @var Amendment[] $normalAmendments */
@@ -152,13 +143,7 @@ class Init
         return [$normalAmendments, $modUs];
     }
 
-    /**
-     * @param MotionSection $section
-     * @param int $paragraphNo
-     *
-     * @return array
-     */
-    public function getParagraphTextCollisions(MotionSection $section, $paragraphNo)
+    public function getParagraphTextCollisions(MotionSection $section, int $paragraphNo): array
     {
         $paragraphMerger = $this->getMergerForParagraph($section, $paragraphNo);
 
@@ -172,7 +157,7 @@ class Init
      *
      * @return string
      */
-    public function getParagraphText(MotionSection $section, $paragraphNo, $amendmentsById)
+    public function getParagraphText(MotionSection $section, int $paragraphNo, $amendmentsById): string
     {
         if ($this->draftData) {
             return $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->text;
@@ -183,14 +168,7 @@ class Init
         }
     }
 
-    /**
-     * @param int $amendmentId
-     * @param MotionSection $section
-     * @param int $paragraphNo
-     *
-     * @return bool
-     */
-    public function isAmendmentActiveForParagraph($amendmentId, MotionSection $section, $paragraphNo)
+    public function isAmendmentActiveForParagraph(int $amendmentId, MotionSection $section, int $paragraphNo): bool
     {
         if ($this->draftData) {
             return in_array($amendmentId, $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo]->amendmentToggles);

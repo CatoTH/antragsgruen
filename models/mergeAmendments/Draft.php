@@ -112,6 +112,18 @@ class Draft implements \JsonSerializable
         $draft->amendmentVersions   = [];
         $draft->amendmentVotingData = [];
 
+        foreach ($form->motion->getVisibleAmendments() as $amendment) {
+            $draft->amendmentStatuses[$amendment->id] = $amendment->status;
+
+            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id])) {
+                $draft->amendmentVersions[$amendment->id] = $textVersions[$amendment->id];
+            } else {
+                $draft->amendmentVersions[$amendment->id] = Init::TEXT_VERSION_ORIGINAL;
+            }
+
+            $draft->amendmentVotingData[$amendment->id] = $amendment->getVotingData();
+        }
+
         $draft->paragraphs = [];
         foreach ($form->motion->getSortedSections(false) as $section) {
             if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
@@ -135,26 +147,16 @@ class Draft implements \JsonSerializable
                 $draftPara->text              = $paragraphText;
                 $draftPara->amendmentToggles  = [];
                 $draftPara->handledCollisions = [];
+                $draftPara->textVersions      = [];
                 foreach ($normalAmendments as $amendment) {
                     if ($form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo)) {
                         $draftPara->amendmentToggles[] = $amendment->id;
+                        $draftPara->textVersions[$amendment->id] = $draft->amendmentVersions[$amendment->id];
                     }
                 }
 
                 $draft->paragraphs[$section->sectionId . '_' . $paragraphNo] = $draftPara;
             }
-        }
-
-        foreach ($form->motion->getVisibleAmendments() as $amendment) {
-            $draft->amendmentStatuses[$amendment->id] = $amendment->status;
-
-            if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) && $textVersions[$amendment->id] === 'proposal') {
-                $draft->amendmentVersions[$amendment->id] = 'prop';
-            } else {
-                $draft->amendmentVersions[$amendment->id] = 'orig';
-            }
-
-            $draft->amendmentVotingData[$amendment->id] = $amendment->getVotingData();
         }
 
         return $draft;

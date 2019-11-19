@@ -639,6 +639,8 @@ class MotionMergeAmendmentsParagraph {
             const currentVersion = AmendmentStatuses.getAmendmentVersion(amendmentId);
             const votingData = AmendmentStatuses.getAmendmentVotingData(amendmentId);
 
+            console.log(currentVersion);
+
             $holder.find(".dropdown-menu .selected").removeClass("selected");
             $holder.find(".dropdown-menu .status" + currentStatus).addClass("selected");
             $holder.find(".dropdown-menu .version" + currentVersion).addClass("selected");

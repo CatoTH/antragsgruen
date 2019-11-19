@@ -4,6 +4,7 @@ use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\Motion;
 use app\models\mergeAmendments\Draft;
+use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
 /**
@@ -126,13 +127,13 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                         if ($amend->hasAlternativeProposaltext(false)) {
                             echo '<td class="colText hasAlternative">';
                             echo '<label class="textOriginal">';
-                            echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="original"> ';
+                            echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_ORIGINAL . '"> ';
                             echo Yii::t('amend', 'merge_amtable_text_orig') . ' ';
                             echo \app\components\HTMLTools::amendmentDiffTooltip($amend, 'bottom');
                             echo '</label>';
 
                             echo '<label class="textProposal">';
-                            echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="proposal" checked>';
+                            echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_PROPOSAL . '" checked>';
                             echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
                             echo \app\components\HTMLTools::amendmentDiffTooltip($amend->proposalReference, 'bottom');
                             echo '</label>';

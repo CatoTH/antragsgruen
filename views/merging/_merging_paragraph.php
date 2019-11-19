@@ -9,6 +9,7 @@
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\MotionSection;
+use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
 $draftParagraph      = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
@@ -86,12 +87,12 @@ if (count($allAmendingIds) > 0) {
                             ?>
                             <li role="separator" class="divider"></li>
                             <li class="versionorig">
-                                <a href="#" class="setVersion" data-version="orig">
+                                <a href="#" class="setVersion" data-version="<?= Init::TEXT_VERSION_ORIGINAL ?>">
                                     <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
                                 </a>
                             </li>
                             <li class="versionprop">
-                                <a href="#" class="setVersion" data-version="prop">
+                                <a href="#" class="setVersion" data-version="<?= Init::TEXT_VERSION_PROPOSAL ?>">
                                     <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
                                 </a>
                             </li>
