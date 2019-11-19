@@ -117,6 +117,16 @@ class MotionMover
                 if (!$motionType) {
                     throw new Inconsistency('Motion type not found');
                 }
+                foreach ($consultation->motions as $oMotion) {
+                    if (mb_strtolower($oMotion->titlePrefix) === mb_strtolower($titlePrefix)) {
+                        $oMotion->titlePrefix = $consultation->getNextMotionPrefix($motionType->id);
+                        $oMotion->save();
+                    }
+                    if (mb_strtolower($oMotion->slug) === mb_strtolower($this->motion->slug)) {
+                        $oMotion->slug = null;
+                        $oMotion->save();
+                    }
+                }
                 if ($post['operation'] === 'copy') {
                     return $this->copyToConsultation($motionType, $titlePrefix);
                 }
@@ -172,6 +182,7 @@ class MotionMover
         $this->motion->agendaItemId   = null;
         $this->motion->titlePrefix    = $titlePrefix;
         $this->motion->consultationId = $newConsultation->id;
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->motion->setMotionType($motionType);
 
         $oldConsultation->flushMotionCache();
