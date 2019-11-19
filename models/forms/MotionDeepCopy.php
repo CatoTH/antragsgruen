@@ -105,6 +105,9 @@ class MotionDeepCopy
 
     private static function copyAmendments(Motion $oldMotion, Motion $newMotion)
     {
+        $amendmentIdMapping = [];
+        $newAmendments      = [];
+
         foreach ($oldMotion->amendments as $amendment) {
             $newAmendment = new Amendment();
             $newAmendment->setAttributes($amendment->getAttributes(), false);
@@ -117,11 +120,20 @@ class MotionDeepCopy
             $newAmendment->titlePrefix = str_replace($oldTitlePre, $newTitlePre, $amendment->titlePrefix);
 
             $newAmendment->save();
+            $amendmentIdMapping[$amendment->id] = $newAmendment->id;
+            $newAmendments[]                    = $newAmendment;
 
             static::copyAmendmentSections($amendment, $newAmendment);
             static::copyAmendmentSupporters($amendment, $newAmendment);
             static::copyAmendmentComments($amendment, $newAmendment);
             static::copyAmendmentAdminComments($amendment, $newAmendment);
+        }
+
+        foreach ($newAmendments as $newAmendment) {
+            if ($newAmendment->proposalReferenceId && isset($amendmentIdMapping[$newAmendment->proposalReferenceId])) {
+                $newAmendment->proposalReferenceId = $amendmentIdMapping[$newAmendment->proposalReferenceId];
+                $newAmendment->save();
+            }
         }
     }
 
