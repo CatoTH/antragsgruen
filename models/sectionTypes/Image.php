@@ -358,6 +358,7 @@ class Image extends ISectionType
             $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
             $content->textMain .= '\includegraphics[width=10cm]{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
+            $content->textMain .= '\newline' . "\n" . '\newline' . "\n";
             $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 
