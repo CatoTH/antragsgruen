@@ -297,6 +297,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
+            "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
@@ -1414,16 +1415,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.29",
+            "version": "2.0.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "f972275551172a4b2e293979d77aa0c795ae36a2"
+                "reference": "dfeeaf4dbdd23c9cd29b9246921e8a9ca2dbabe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/f972275551172a4b2e293979d77aa0c795ae36a2",
-                "reference": "f972275551172a4b2e293979d77aa0c795ae36a2",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/dfeeaf4dbdd23c9cd29b9246921e8a9ca2dbabe4",
+                "reference": "dfeeaf4dbdd23c9cd29b9246921e8a9ca2dbabe4",
                 "shasum": ""
             },
             "require": {
@@ -1510,7 +1511,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2019-10-22T13:47:14+00:00"
+            "time": "2019-11-19T21:22:20+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -3758,20 +3759,20 @@
             "authors": [
                 {
                     "name": "Manuel Pichler",
-                    "role": "Project Founder",
                     "email": "github@manuel-pichler.de",
-                    "homepage": "https://github.com/manuelpichler"
+                    "homepage": "https://github.com/manuelpichler",
+                    "role": "Project Founder"
                 },
                 {
                     "name": "Marc Würth",
-                    "role": "Project Maintainer",
                     "email": "ravage@bluewin.ch",
-                    "homepage": "https://github.com/ravage84"
+                    "homepage": "https://github.com/ravage84",
+                    "role": "Project Maintainer"
                 },
                 {
                     "name": "Other contributors",
-                    "role": "Contributors",
-                    "homepage": "https://github.com/phpmd/phpmd/graphs/contributors"
+                    "homepage": "https://github.com/phpmd/phpmd/graphs/contributors",
+                    "role": "Contributors"
                 }
             ],
             "description": "PHPMD is a spin-off project of PHP Depend and aims to be a PHP equivalent of the well known Java tool PMD.",
