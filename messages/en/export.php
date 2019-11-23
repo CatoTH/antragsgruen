@@ -28,6 +28,7 @@ return [
     'agenda_item'           => 'Agenda',
     'prefix_short'          => 'Signature',
     'initiator'             => 'Proposer',
+    'responsibility'        => 'Responsibility',
     'text'                  => 'Text',
     'tags'                  => 'Tags',
     'contact'               => 'Contact',

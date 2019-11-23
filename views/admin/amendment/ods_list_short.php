@@ -20,8 +20,9 @@ $consultation = $controller->consultation;
 $DEBUG = false;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \yii::$app->params;
+$params = Yii::$app->params;
 
+/** @noinspection PhpUnhandledExceptionInspection */
 $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
     'trustHtml' => true,
@@ -35,11 +36,11 @@ $COL_CHANGE    = $currCol++;
 if (!$textCombined) {
     $COL_REASON = $currCol++;
 }
-$lastCol = $currCol - 1;
+$LAST_COL = $currCol - 1;
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amendments'));
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amendments'));
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -60,21 +61,21 @@ $isNonRelevantReason = function ($reason) {
 
 // Heading
 
-$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
-$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
+$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
-$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_change'));
+$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amend_change'));
 $doc->setColumnWidth($COL_CHANGE, 15);
 
 if (!$textCombined) {
-    $doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_reason'));
+    $doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amend_reason'));
     $doc->setColumnWidth($COL_REASON, 10);
 }
 
-$doc->drawBorder(1, $firstCol, 2, $lastCol, 1.5);
+$doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 
 
 // Amendments
@@ -94,7 +95,7 @@ foreach ($motions as $motion) {
     }
 
     $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
-    $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
+    $title .= ' (' . Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
     $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
 
@@ -102,7 +103,7 @@ foreach ($motions as $motion) {
     foreach ($amendments as $amendment) {
         $change = '';
         if ($amendment->changeEditorial !== '') {
-            $change .= '<h4>' . \Yii::t('amend', 'editorial_hint') . '</h4>';
+            $change .= '<h4>' . Yii::t('amend', 'editorial_hint') . '</h4>';
             $change .= $amendment->changeEditorial;
         }
         foreach ($amendment->getSortedSections(false) as $section) {
@@ -110,7 +111,7 @@ foreach ($motions as $motion) {
         }
         if ($textCombined && !$isNonRelevantReason($amendment->changeExplanation)) {
             $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
-            $change            .= '<h4>' . \Yii::t('amend', 'reason') . '</h4>';
+            $change            .= '<h4>' . Yii::t('amend', 'reason') . '</h4>';
             $change            .= $changeExplanation;
         }
         // If length exceeds $maxLen, don't show the text
@@ -146,17 +147,17 @@ foreach ($motions as $motion) {
         }
     }
 
-    $doc->drawBorder($firstMotionRow, $firstCol, $row, $lastCol, 1.5);
+    $doc->drawBorder($firstMotionRow, $firstCol, $row, $LAST_COL, 1.5);
     $row++;
 }
 
 try {
     echo $doc->finishAndGetDocument();
-} catch (\Exception $e) {
+} catch (Exception $e) {
     if (in_array(YII_ENV, ['dev', 'test'])) {
         var_dump($e);
     } else {
-        echo \Yii::t('base', 'err_unknown');
+        echo Yii::t('base', 'err_unknown');
     }
     die();
 }

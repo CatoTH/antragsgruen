@@ -20,8 +20,9 @@ $consultation = $controller->consultation;
 $DEBUG = false;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \yii::$app->params;
+$params = Yii::$app->params;
 
+/** @noinspection PhpUnhandledExceptionInspection */
 $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
     'trustHtml' => true,
@@ -30,9 +31,13 @@ $doc = new Spreadsheet([
 $currCol = $firstCol = 1;
 
 $hasAgendaItems = false;
+$hasResponsibilities = false;
 foreach ($motions as $motion) {
     if ($motion->agendaItem) {
         $hasAgendaItems = true;
+    }
+    if ($motion->responsibilityId || $motion->responsibilityComment) {
+        $hasResponsibilities = true;
     }
 }
 
@@ -47,11 +52,16 @@ $COL_CHANGE     = $currCol++;
 $COL_REASON     = $currCol++;
 $COL_CONTACT    = $currCol++;
 $COL_PROCEDURE  = $currCol++;
+$LAST_COL      = $COL_PROCEDURE;
+if ($hasResponsibilities) {
+    $COL_RESPONSIBILITY = $currCol++;
+    $LAST_COL           = $COL_RESPONSIBILITY;
+}
 
 
 // Title
 
-$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amendments'));
+$doc->setCell(1, $firstCol, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amendments'));
 $doc->setCellStyle(1, $firstCol, [], [
     'fo:font-size'   => '16pt',
     'fo:font-weight' => 'bold',
@@ -62,35 +72,40 @@ $doc->setMinRowHeight(1, 1.5);
 // Heading
 
 if ($hasAgendaItems) {
-    $doc->setCell(2, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'agenda_item'));
+    $doc->setCell(2, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, Yii::t('export', 'agenda_item'));
     $doc->setCellStyle(2, $COL_AGENDA_ITEM, [], ['fo:font-weight' => 'bold']);
 }
 
-$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCell(2, $COL_PREFIX, Spreadsheet::TYPE_TEXT, Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 
-$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
+$doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
-$doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'line'));
+$doc->setCell(2, $COL_FIRST_LINE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'line'));
 $doc->setColumnWidth($COL_FIRST_LINE, 3);
 
-$doc->setCell(2, $COL_STATUS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'status'));
+$doc->setCell(2, $COL_STATUS, Spreadsheet::TYPE_TEXT, Yii::t('export', 'status'));
 $doc->setColumnWidth($COL_STATUS, 3);
 
-$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_change'));
+$doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amend_change'));
 $doc->setColumnWidth($COL_CHANGE, 10);
 
-$doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'amend_reason'));
+$doc->setCell(2, $COL_REASON, Spreadsheet::TYPE_TEXT, Yii::t('export', 'amend_reason'));
 $doc->setColumnWidth($COL_REASON, 10);
 
-$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'contact'));
+$doc->setCell(2, $COL_CONTACT, Spreadsheet::TYPE_TEXT, Yii::t('export', 'contact'));
 $doc->setColumnWidth($COL_CONTACT, 6);
 
-$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
+$doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
 
-$doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
+if ($hasResponsibilities) {
+    $doc->setCell(2, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, Yii::t('export', 'responsibility'));
+    $doc->setColumnWidth($COL_RESPONSIBILITY, 6);
+}
+
+$doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 
 
 // Amendments
@@ -110,12 +125,24 @@ foreach ($motions as $motion) {
     }
 
     $title = '<strong>' . $motion->getTitleWithPrefix() . '</strong>';
-    $title .= ' (' . \Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
+    $title .= ' (' . Yii::t('export', 'motion_by') . ': ' . Html::encode(implode(', ', $initiatorNames)) . ')';
     if ($hasAgendaItems && $motion->agendaItem) {
         $doc->setCell($row, $COL_AGENDA_ITEM, Spreadsheet::TYPE_TEXT, $motion->agendaItem->getShownCode(true));
     }
     $title = HTMLTools::correctHtmlErrors($title);
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_HTML, $title, null, ['fo:wrap-option' => 'no-wrap']);
+
+    if ($hasResponsibilities) {
+        $responsibility = [];
+        if ($motion->responsibilityUser) {
+            $user = $motion->responsibilityUser;
+            $responsibility[] = $user->name ? $user->name : $user->getAuthName();
+        }
+        if ($motion->responsibilityComment) {
+            $responsibility[] = $motion->responsibilityComment;
+        }
+        $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
+    }
 
     $amendments = $motion->getVisibleAmendmentsSorted($withdrawn);
     foreach ($amendments as $amendment) {
@@ -147,7 +174,7 @@ foreach ($motions as $motion) {
 
         $change = '';
         if ($amendment->changeEditorial != '') {
-            $change .= '<h4>' . \Yii::t('amend', 'editorial_hint') . '</h4><br>';
+            $change .= '<h4>' . Yii::t('amend', 'editorial_hint') . '</h4><br>';
             $change .= $amendment->changeEditorial;
         }
         foreach ($amendment->getSortedSections(false) as $section) {
@@ -170,19 +197,31 @@ foreach ($motions as $motion) {
             }
         }
         $doc->setCell($row, $COL_PROCEDURE, Spreadsheet::TYPE_HTML, $proposal);
+
+        if ($hasResponsibilities) {
+            $responsibility = [];
+            if ($amendment->responsibilityUser) {
+                $user             = $amendment->responsibilityUser;
+                $responsibility[] = $user->name ? $user->name : $user->getAuthName();
+            }
+            if ($amendment->responsibilityComment) {
+                $responsibility[] = $amendment->responsibilityComment;
+            }
+            $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
+        }
     }
 
-    $doc->drawBorder($firstMotionRow, $firstCol, $row, $COL_PROCEDURE, 1.5);
+    $doc->drawBorder($firstMotionRow, $firstCol, $row, $LAST_COL, 1.5);
     $row++;
 }
 
 try {
     echo $doc->finishAndGetDocument();
-} catch (\Exception $e) {
+} catch (Exception $e) {
     if (in_array(YII_ENV, ['dev', 'test'])) {
         var_dump($e);
     } else {
-        echo \Yii::t('base', 'err_unknown');
+        echo Yii::t('base', 'err_unknown');
     }
     die();
 }

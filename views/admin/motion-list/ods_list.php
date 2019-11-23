@@ -21,6 +21,7 @@ $DEBUG = false;
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = Yii::$app->params;
 
+/** @noinspection PhpUnhandledExceptionInspection */
 $doc = new Spreadsheet([
     'tmpPath'   => $params->getTmpDir(),
     'trustHtml' => true,
@@ -29,13 +30,18 @@ $doc = new Spreadsheet([
 $currCol = $firstCol = 1;
 
 
-$hasTags        = ($consultation->tags > 0);
-$hasAgendaItems = false;
+$hasTags             = ($consultation->tags > 0);
+$hasAgendaItems      = false;
+$hasResponsibilities = false;
 foreach ($motions as $motion) {
     if ($motion->agendaItem) {
         $hasAgendaItems = true;
     }
+    if ($motion->responsibilityId || $motion->responsibilityComment) {
+        $hasResponsibilities = true;
+    }
 }
+
 
 if ($hasAgendaItems) {
     $COL_AGENDA_ITEM = $currCol++;
@@ -55,6 +61,11 @@ if ($hasTags) {
 }
 $COL_CONTACT   = $currCol++;
 $COL_PROCEDURE = $currCol++;
+$LAST_COL      = $COL_PROCEDURE;
+if ($hasResponsibilities) {
+    $COL_RESPONSIBILITY = $currCol++;
+    $LAST_COL           = $COL_RESPONSIBILITY;
+}
 
 
 // Title
@@ -98,7 +109,12 @@ $doc->setColumnWidth($COL_CONTACT, 6);
 $doc->setCell(2, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'procedure'));
 $doc->setColumnWidth($COL_PROCEDURE, 6);
 
-$doc->drawBorder(1, $firstCol, 2, $COL_PROCEDURE, 1.5);
+if ($hasResponsibilities) {
+    $doc->setCell(2, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, Yii::t('export', 'responsibility'));
+    $doc->setColumnWidth($COL_RESPONSIBILITY, 6);
+}
+
+$doc->drawBorder(1, $firstCol, 2, $LAST_COL, 1.5);
 
 
 // Motions
@@ -126,6 +142,19 @@ foreach ($motions as $motion) {
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $motion->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
     $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode("\n", $initiatorContacts));
+
+    if ($hasResponsibilities) {
+        $responsibility = [];
+        if ($motion->responsibilityUser) {
+            $user = $motion->responsibilityUser;
+            $responsibility[] = $user->name ? $user->name : $user->getAuthName();
+        }
+        if ($motion->responsibilityComment) {
+            $responsibility[] = $motion->responsibilityComment;
+        }
+        $doc->setCell($row, $COL_RESPONSIBILITY, Spreadsheet::TYPE_TEXT, implode(', ', $responsibility));
+    }
+
 
     if ($textCombined) {
         $text = '';

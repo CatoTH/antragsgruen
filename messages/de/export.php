@@ -28,6 +28,7 @@ return [
     'agenda_item'           => 'TOP',
     'prefix_short'          => 'Antragsnr.',
     'initiator'             => 'Antragsteller*in',
+    'responsibility'        => 'Zuständigkeit',
     'text'                  => 'Text',
     'tags'                  => 'Themen',
     'contact'               => 'Kontakt',
