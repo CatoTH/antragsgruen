@@ -107,16 +107,20 @@ class AffectedLinesFilter
         $currGroupedBlock     = null;
         $groupedBlocks = [];
         foreach ($blocks as $block) {
-            $needsNewBlock = ($currGroupedBlock === null);
-            if ($block['lineFrom'] > $currGroupedBlock['lineTo'] + 1) {
-                $needsNewBlock = true;
-            }
-            $lineNumberPos = mb_strpos(strip_tags($block['text']), '###LINENUMBER###');
-            if ($lineNumberPos === false || $lineNumberPos !== 0) {
-                // This block was inserted => there is another line with the same number before
-                if ($block['lineFrom'] > $currGroupedBlock['lineTo']) {
+            if ($currGroupedBlock) {
+                $needsNewBlock = false;
+                if ($block['lineFrom'] > $currGroupedBlock['lineTo'] + 1) {
                     $needsNewBlock = true;
                 }
+                $lineNumberPos = mb_strpos(strip_tags($block['text']), '###LINENUMBER###');
+                if ($lineNumberPos === false || $lineNumberPos !== 0) {
+                    // This block was inserted => there is another line with the same number before
+                    if ($block['lineFrom'] > $currGroupedBlock['lineTo']) {
+                        $needsNewBlock = true;
+                    }
+                }
+            } else {
+                $needsNewBlock = true;
             }
             if ($needsNewBlock) {
                 if ($currGroupedBlock !== null) {
