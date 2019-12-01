@@ -156,10 +156,11 @@ class MotionController extends AdminBase
             $settings->hasResponsibilities  = isset($input['responsibilities']);
             $motionType->setSettingsObj($settings);
 
+            // Motion Initiators / Supporters
             $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             $settings->saveFormTyped(
-                \Yii::$app->request->post('initiatorSettings', []),
-                \Yii::$app->request->post('initiatorSettingFields', [])
+                \Yii::$app->request->post('motionInitiatorSettings', []),
+                \Yii::$app->request->post('motionInitiatorSettingFields', [])
             );
             $settings->initiatorCanBeOrganization = $this->isPostSet('initiatorCanBeOrganization');
             $settings->initiatorCanBePerson       = $this->isPostSet('initiatorCanBePerson');
@@ -169,6 +170,25 @@ class MotionController extends AdminBase
                 $settings->initiatorCanBePerson       = true;
             }
             $motionType->supportTypeMotions = json_encode($settings, JSON_PRETTY_PRINT);
+
+            if ($this->isPostSet('sameInitiatorSettingsForAmendments')) {
+                $motionType->supportTypeAmendments = null;
+            } else {
+                // Amendment Initiators / Supporters
+                $settings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj();
+                $settings->saveFormTyped(
+                    \Yii::$app->request->post('amendmentInitiatorSettings', []),
+                    \Yii::$app->request->post('amendmentInitiatorSettingFields', [])
+                );
+                $settings->initiatorCanBeOrganization = $this->isPostSet('amendmentInitiatorCanBeOrganization');
+                $settings->initiatorCanBePerson       = $this->isPostSet('amendmentInitiatorCanBePerson');
+                if (!$settings->initiatorCanBePerson && !$settings->initiatorCanBeOrganization) {
+                    // Probably a mistake
+                    $settings->initiatorCanBeOrganization = true;
+                    $settings->initiatorCanBePerson       = true;
+                }
+                $motionType->supportTypeAmendments = json_encode($settings, JSON_PRETTY_PRINT);
+            }
 
             $motionType->save();
 

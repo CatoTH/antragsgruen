@@ -1,23 +1,10 @@
 declare var Sortable;
 
 class MotionTypeEdit {
+    private motionsHaveSupporters: boolean;
+    private amendmentsHaveSupporters: boolean;
+
     constructor() {
-        let $supportType = $('#typeSupportType');
-        $supportType.on('changed.fu.selectlist', () => {
-            let selected = $supportType.find('input').val();
-            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
-
-            if (hasSupporters) {
-                $('#typeMinSupportersRow').removeClass('hidden');
-                $('#typeAllowMoreSupporters').removeClass('hidden');
-                $('#typeMaxPdfSupportersRow').removeClass('hidden');
-            } else {
-                $('#typeMinSupportersRow').addClass('hidden');
-                $('#typeAllowMoreSupporters').addClass('hidden');
-                $('#typeMaxPdfSupportersRow').addClass('hidden');
-            }
-        }).trigger('changed.fu.selectlist');
-
         $('.deleteTypeOpener button').on('click', () => {
             $('.deleteTypeForm').removeClass('hidden');
             $('.deleteTypeOpener').addClass('hidden');
@@ -28,6 +15,63 @@ class MotionTypeEdit {
         this.initSectionList();
         this.initDeadlines();
         this.initInitiatorForm();
+        this.initMotionInitiatorForm();
+        this.initAmendmentInitiatorForm();
+    }
+
+    private initMotionInitiatorForm() {
+        let $supportType = $('#typeSupportType');
+        $supportType.on('changed.fu.selectlist', () => {
+            let selected = $supportType.find('input').val();
+            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+
+            if (hasSupporters) {
+                $('#typeMinSupportersRow').removeClass('hidden');
+                $('#typeAllowMoreSupporters').removeClass('hidden');
+                this.motionsHaveSupporters = true;
+            } else {
+                $('#typeMinSupportersRow').addClass('hidden');
+                $('#typeAllowMoreSupporters').addClass('hidden');
+                this.motionsHaveSupporters = false;
+            }
+            this.setMaxPdfSupporters();
+        }).trigger('changed.fu.selectlist');
+
+        const $sameSettings = $("#sameInitiatorSettingsForAmendments input");
+        $sameSettings.on("change", () => {
+            if ($sameSettings.prop("checked")) {
+                $('section.amendmentSupporters').addClass("hidden");
+            } else {
+                $('section.amendmentSupporters').removeClass("hidden");
+            }
+        }).trigger("change");
+    }
+
+    private initAmendmentInitiatorForm() {
+        let $supportType = $('#typeSupportTypeAmendment');
+        $supportType.on('changed.fu.selectlist', () => {
+            let selected = $supportType.find('input').val();
+            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+
+            if (hasSupporters) {
+                $('#typeMinSupportersRowAmendment').removeClass('hidden');
+                $('#typeAllowMoreSupportersAmendment').removeClass('hidden');
+                this.amendmentsHaveSupporters = true;
+            } else {
+                $('#typeMinSupportersRowAmendment').addClass('hidden');
+                $('#typeAllowMoreSupportersAmendment').addClass('hidden');
+                this.amendmentsHaveSupporters = false;
+            }
+            this.setMaxPdfSupporters();
+        }).trigger('changed.fu.selectlist');
+    }
+
+    private setMaxPdfSupporters() {
+        if (this.amendmentsHaveSupporters || this.motionsHaveSupporters) {
+            $('#typeMaxPdfSupportersRow').removeClass('hidden');
+        } else {
+            $('#typeMaxPdfSupportersRow').addClass('hidden');
+        }
     }
 
     private initDeadlines() {
@@ -111,7 +155,7 @@ class MotionTypeEdit {
             } else {
                 $(".formGroupGender").addClass("hidden");
                 if (!$initiatorCanBeOrga.prop("checked")) {
-                    $initiatorCanBeOrga.prop("checked", true).change();
+                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
                 }
             }
         });
@@ -121,7 +165,7 @@ class MotionTypeEdit {
             } else {
                 $(".formGroupResolutionDate").addClass("hidden");
                 if (!$initiatorCanBePerson.prop("checked")) {
-                    $initiatorCanBePerson.prop("checked", true).change();
+                    $initiatorCanBePerson.prop("checked", true).trigger("change");
                 }
             }
         });
@@ -161,7 +205,7 @@ class MotionTypeEdit {
             } else if (val === 4) {
                 $li.addClass('tabularData');
                 if ($li.find('.tabularDataRow ul > li').length == 0) {
-                    $li.find('.tabularDataRow .addRow').click().click().click();
+                    $li.find('.tabularDataRow .addRow').trigger("click").trigger("click").trigger("click");
                 }
             }
         });

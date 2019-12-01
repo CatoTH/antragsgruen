@@ -362,7 +362,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
 
     'motion_type_edit'            => 'Antragstyp bearbeiten',
     'motion_type_names'           => 'Bezeichnung',
-    'motion_type_initiator'       => 'Antragsteller*in / Unterstützer*innen',
+    'motion_type_initiator'       => 'Antragsteller*in / Unterstützer*innen: Anträge',
+    'motion_type_initiator_amend' => 'Antragsteller*in / Unterstützer*innen: Änderungsanträge',
     'motion_type_proposed'        => 'Verfahrensvorschläge',
     'motion_type_proposed_label'  => 'Admins können Verfahrensvorschläge für Anträge festlegen',
     'motion_type_respons'         => 'Zuständigkeiten',
@@ -415,6 +416,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_required'        => 'Benötigt',
     'motion_type_allow_more_supp' => 'Auch mehr Unterstützer*innen zulassen',
     'motion_type_ask_orga'        => 'Gremium/Organisation auch bei natürlichen Personen abfragen',
+    'motion_type_same_amendment'  => 'Die selben Einstellungen auch für Änderungsanträge',
     'motion_type_created_msg'     => 'Der Antragstyp wurde angelegt. Genauere Einstellungen kannst du nun auf dieser Seite vornehmen.',
     'motion_type_del_caller'      => 'Antragstyp löschen',
     'motion_type_del_btn'         => 'Löschen',
