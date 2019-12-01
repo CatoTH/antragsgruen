@@ -21,6 +21,7 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         <?= Yii::t('admin', 'motion_type_supp_form') ?>
     </label>
     <div class="col-md-8">
+        <input type="hidden" name="initiatorSettingFields[]" value="type">
         <?php
         $options = [];
         foreach (SupportBase::getImplementations() as $formId => $formClass) {
@@ -31,9 +32,9 @@ $settings = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             ];
         }
         echo HTMLTools::fueluxSelectbox(
-            'type[supportType]',
+            'initiatorSettings[type]',
             $options,
-            $motionType->supportType,
+            $motionType->getMotionSupporterSettings()->type,
             ['id' => 'typeSupportType'],
             true
         );

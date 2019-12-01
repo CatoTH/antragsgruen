@@ -22,6 +22,7 @@ use app\models\events\MotionEvent;
 use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\PDF;
+use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
 /**
@@ -584,6 +585,23 @@ class Motion extends IMotion implements IRSSItem
         $permissions = $this->getPermissionsObject();
 
         return $permissions->isCurrentlyAmendable($this, $allowAdmins, $assumeLoggedIn, $throwExceptions);
+    }
+
+    public function isSupportingPossibleAtThisStatus(): bool
+    {
+        if (!($this->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
+            return false;
+        }
+        if ($this->getMyMotionType()->getMotionSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
+            if ($this->status !== IMotion::STATUS_COLLECTING_SUPPORTERS) {
+                return false;
+            }
+        }
+        if ($this->isDeadlineOver()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

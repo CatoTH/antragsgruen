@@ -32,7 +32,6 @@ trait Motion
         $type->policySupportMotions         = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments      = IPolicy::POLICY_NOBODY;
         $type->initiatorsCanMergeAmendments = ConsultationMotionType::INITIATORS_MERGE_NEVER;
-        $type->supportType                  = SupportBase::ONLY_INITIATOR;
         $type->texTemplateId                = 1;
         $type->amendmentMultipleParagraphs  = 1;
         $type->motionLikesDislikes          = 0;
@@ -41,10 +40,14 @@ trait Motion
         $type->sidebarCreateButton          = 1;
 
         $initiatorSettings               = new InitiatorForm(null);
+        $initiatorSettings->type         = SupportBase::ONLY_INITIATOR;
         $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
         $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
         $initiatorSettings->contactEmail = InitiatorForm::CONTACT_REQUIRED;
-        $type->supportTypeSettings       = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeMotions        = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+        $type->supportTypeAmendments     = null;
+        $type->supportType               = 0; // @TODO Remove after database fields have been deleted
+        $type->supportTypeSettings       = ''; // @TODO Remove after database fields have been deleted
 
         $type->setSettingsObj(new MotionType(null));
 

@@ -168,7 +168,7 @@ class MotionController extends AdminBase
                 $settings->initiatorCanBeOrganization = true;
                 $settings->initiatorCanBePerson       = true;
             }
-            $motionType->supportTypeSettings = json_encode($settings, JSON_PRETTY_PRINT);
+            $motionType->supportTypeMotions = json_encode($settings, JSON_PRETTY_PRINT);
 
             $motionType->save();
 
@@ -182,7 +182,7 @@ class MotionController extends AdminBase
         }
 
         $supportCollPolicyWarning = false;
-        if ($motionType->supportType === SupportBase::COLLECTING_SUPPORTERS) {
+        if ($motionType->getMotionSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
             if ($this->isPostSet('supportCollPolicyFix')) {
                 if ($motionType->policyMotions === IPolicy::POLICY_ALL) {
                     $motionType->policyMotions = IPolicy::POLICY_LOGGED_IN;
@@ -283,15 +283,18 @@ class MotionController extends AdminBase
                     $motionType->amendmentLikesDislikes       = 0;
                     $motionType->amendmentMultipleParagraphs  = 1;
                     $motionType->position                     = 0;
-                    $motionType->supportType                  = SupportBase::ONLY_INITIATOR;
                     $motionType->status                       = 0;
                     $motionType->sidebarCreateButton          = 1;
 
-                    $initiatorSettings               = new InitiatorForm(null);
-                    $initiatorSettings->contactName  = InitiatorForm::CONTACT_NONE;
-                    $initiatorSettings->contactPhone = InitiatorForm::CONTACT_OPTIONAL;
-                    $initiatorSettings->contactEmail = InitiatorForm::CONTACT_OPTIONAL;
-                    $motionType->supportTypeSettings = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+                    $initiatorSettings                 = new InitiatorForm(null);
+                    $initiatorSettings->type           = SupportBase::ONLY_INITIATOR;
+                    $initiatorSettings->contactName    = InitiatorForm::CONTACT_NONE;
+                    $initiatorSettings->contactPhone   = InitiatorForm::CONTACT_OPTIONAL;
+                    $initiatorSettings->contactEmail   = InitiatorForm::CONTACT_OPTIONAL;
+                    $motionType->supportType           = 0; // @TODO Remove after database fields are deleted
+                    $motionType->supportTypeSettings   = ''; // @TODO Remove after database fields are deleted
+                    $motionType->supportTypeMotions    = json_encode($initiatorSettings, JSON_PRETTY_PRINT);
+                    $motionType->supportTypeAmendments = null;
 
                     $motionType->setSettingsObj(new MotionType(null));
 
@@ -590,6 +593,7 @@ class MotionController extends AdminBase
                 } else {
                     Consultation::getCurrent()->flushMotionCache();
                     Consultation::getCurrent()->refresh();
+
                     return $this->render('moved_other_consultation', ['newMotion' => $newMotion]);
                 }
             }

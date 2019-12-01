@@ -566,25 +566,7 @@ abstract class IMotion extends ActiveRecord
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isSupportingPossibleAtThisStatus()
-    {
-        if (!($this->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
-            return false;
-        }
-        if ($this->getMyMotionType()->supportType == SupportBase::COLLECTING_SUPPORTERS) {
-            if ($this->status != IMotion::STATUS_COLLECTING_SUPPORTERS) {
-                return false;
-            }
-        }
-        if ($this->isDeadlineOver()) {
-            return false;
-        }
-
-        return true;
-    }
+    abstract public function isSupportingPossibleAtThisStatus(): bool;
 
     /**
      * @return bool

@@ -233,11 +233,10 @@ CREATE TABLE `###TABLE_PREFIX###consultationMotionType` (
   `initiatorsCanMergeAmendments` tinyint(4)   NOT NULL DEFAULT '0',
   `motionLikesDislikes`          int(11)      NOT NULL,
   `amendmentLikesDislikes`       int(11)      NOT NULL,
-  `contactName`                  tinyint(4)   NOT NULL,
-  `contactEmail`                 tinyint(4)   NOT NULL,
-  `contactPhone`                 tinyint(4)   NOT NULL,
   `supportType`                  int(11)      NOT NULL,
   `supportTypeSettings`          text,
+  `supportTypeMotions`           text NULL DEFAULT NULL,
+  `supportTypeAmendments`        text NULL DEFAULT NULL,
   `amendmentMultipleParagraphs`  tinyint(1)            DEFAULT NULL,
   `status`                       smallint(6)  NOT NULL,
   `layoutTwoCols`                smallint(6)           DEFAULT '0'

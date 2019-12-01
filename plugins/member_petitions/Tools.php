@@ -54,7 +54,7 @@ class Tools
     public static function getDiscussionType(Consultation $consultation)
     {
         foreach ($consultation->motionTypes as $motionType) {
-            if ($motionType->supportType !== SupportBase::COLLECTING_SUPPORTERS) {
+            if ($motionType->getMotionSupporterSettings()->type !== SupportBase::COLLECTING_SUPPORTERS) {
                 return $motionType;
             }
         }
@@ -68,7 +68,7 @@ class Tools
     public static function getPetitionType(Consultation $consultation)
     {
         foreach ($consultation->motionTypes as $motionType) {
-            if ($motionType->supportType === SupportBase::COLLECTING_SUPPORTERS) {
+            if ($motionType->getMotionSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
                 return $motionType;
             }
         }
