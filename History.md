@@ -5,6 +5,7 @@
 - Motions can be moved to another agenda item, while retaining a reference to the new location in the old place.
 - Motions (including all amendments, comments and so on) can be moved to another consultation in the same site, optionally while retaining a reference to the new location in the old place.
 - Admins can now assign "responsibilities" to motions and amendments, i.e., other administrational users that are in charge of it. This functionality is not enabled by default and can be enabled either through the motion list ("Functions" at the top) or the motion type settings.
+- Amendments can now have initiator and supporter settings independent from the base motions.
 - A slightly new homepage layout variant is introduced, which first shows the agenda, then the motions, but by default hides the amendments below the motions, with the option to toggle the list. This is meant for consultation with hundreds of amendments where the sheer amount of amendments makes the list way too long.
 - When merging amendments into motions, conflicting text passages can now be marked as "handled" and therefore hidden.
 - Bugfix: When merging amendments with a modified version as proposed procedure, the paragraph's collision section was initially showing the collisions of the original amendment, not the proposed version.
