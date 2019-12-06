@@ -25,7 +25,7 @@ class EmailNotifications
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $motion->motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
+                $min        = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
                 $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
             } else {

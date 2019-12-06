@@ -105,8 +105,11 @@ class LayoutHooks extends Hooks
     public function getMotionDetailsInitiatorName($before, ISupporter $supporter)
     {
         $imotion         = $supporter->getIMotion();
-        $collectionPhase = $imotion->getMyMotionType()->getAmendmentSupportTypeClass()
-            ->collectSupportersBeforePublication();
+        if (is_a($imotion, Amendment::class)) {
+            $collectionPhase = $imotion->getMyMotionType()->getAmendmentSupportTypeClass()->collectSupportersBeforePublication();
+        } else {
+            $collectionPhase = $imotion->getMyMotionType()->getMotionSupportTypeClass()->collectSupportersBeforePublication();
+        }
         if (!$imotion->isInitiatedByOrganization() && $collectionPhase) {
             $persons = array_merge($imotion->getInitiators(), $imotion->getSupporters());
             $quota   = $this->getWomensQuota($persons);

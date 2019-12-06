@@ -31,8 +31,8 @@ abstract class SupportBase
     /** @var bool */
     protected $adminMode = false;
 
-    /** @var null|InitiatorForm */
-    protected $settingsObject = null;
+    /** @var InitiatorForm */
+    protected $settingsObject;
 
     /** @var ConsultationMotionType $motionType */
     protected $motionType;
@@ -50,20 +50,20 @@ abstract class SupportBase
     }
 
     /**
-     * @param int $formId
+     * @param InitiatorForm $settings
      * @param ConsultationMotionType $motionType
      * @return SupportBase
      * @throws Internal
      */
-    public static function getImplementation($formId, ConsultationMotionType $motionType)
+    public static function getImplementation(InitiatorForm $settings, ConsultationMotionType $motionType)
     {
-        switch ($formId) {
+        switch ($settings->type) {
             case static::ONLY_INITIATOR:
-                return new OnlyInitiator($motionType);
+                return new OnlyInitiator($motionType, $settings);
             case static::GIVEN_BY_INITIATOR:
-                return new GivenByInitiator($motionType);
+                return new GivenByInitiator($motionType, $settings);
             case static::COLLECTING_SUPPORTERS:
-                return new CollectBeforePublish($motionType);
+                return new CollectBeforePublish($motionType, $settings);
             default:
                 throw new Internal('Supporter form type not found');
         }
@@ -82,23 +82,15 @@ abstract class SupportBase
         ];
     }
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
-    public function __construct(ConsultationMotionType $motionType)
+    public function __construct(ConsultationMotionType $motionType, InitiatorForm $settings)
     {
         $this->motionType = $motionType;
+        $this->settingsObject = $settings;
+        $this->fixSettings();
     }
 
-    /**
-     * @return InitiatorForm
-     */
-    public function getSettingsObj()
+    public function getSettingsObj(): InitiatorForm
     {
-        if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new InitiatorForm($this->motionType->supportTypeSettings);
-            $this->fixSettings();
-        }
         return $this->settingsObject;
     }
 

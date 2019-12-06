@@ -20,6 +20,7 @@ use app\models\sectionTypes\Image;
 use app\models\sectionTypes\ISectionType;
 use app\models\sectionTypes\PDF;
 use app\models\sectionTypes\TextSimple;
+use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
 
@@ -590,7 +591,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($supp->role === AmendmentSupporter::ROLE_INITIATOR) {
                 $return[] = $supp;
             }
-        };
+        }
         return $return;
     }
 
@@ -604,7 +605,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($supp->role === AmendmentSupporter::ROLE_SUPPORTER) {
                 $return[] = $supp;
             }
-        };
+        }
         return $return;
     }
 
@@ -618,7 +619,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($supp->role === AmendmentSupporter::ROLE_LIKE) {
                 $return[] = $supp;
             }
-        };
+        }
         return $return;
     }
 
@@ -632,7 +633,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($supp->role === AmendmentSupporter::ROLE_DISLIKE) {
                 $return[] = $supp;
             }
-        };
+        }
         return $return;
     }
 
@@ -713,6 +714,23 @@ class Amendment extends IMotion implements IRSSItem
             return false;
         }
         return $this->iAmInitiator();
+    }
+
+    public function isSupportingPossibleAtThisStatus(): bool
+    {
+        if (!($this->getLikeDislikeSettings() & SupportBase::LIKEDISLIKE_SUPPORT)) {
+            return false;
+        }
+        if ($this->getMyMotionType()->getAmendmentSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
+            if ($this->status !== IMotion::STATUS_COLLECTING_SUPPORTERS) {
+                return false;
+            }
+        }
+        if ($this->isDeadlineOver()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
