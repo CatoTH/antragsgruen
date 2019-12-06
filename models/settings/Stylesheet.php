@@ -32,10 +32,13 @@ class Stylesheet implements \JsonSerializable
     public $headingFont;
     public $headingPrimaryText;
     public $headingPrimaryBackground;
+    public $headingPrimarySize;
     public $headingSecondaryText;
     public $headingSecondaryBackground;
+    public $headingSecondarySize;
     public $headingTertiaryText;
     public $headingTertiaryBackground;
+    public $headingTertiarySize;
     public $linkTextDecoration;
     public $useBoxShadow;
     public $contentBorderRadius;
@@ -58,10 +61,13 @@ class Stylesheet implements \JsonSerializable
         'headingFont'                 => '"Open Sans", sans-serif',
         'headingPrimaryText'          => '#ffffff',
         'headingPrimaryBackground'    => '#285f19',
+        'headingPrimarySize'          => 15,
         'headingSecondaryText'        => '#ffffff',
         'headingSecondaryBackground'  => '#afcb08',
+        'headingSecondarySize'        => 15,
         'headingTertiaryText'         => '#000000',
         'headingTertiaryBackground'   => '#1b4afb',
+        'headingTertiarySize'         => 15,
         'menuFont'                    => '"Open Sans", sans-serif',
         'menuLink'                    => '#6d7e00',
         'menuActive'                  => '#739b9b',
@@ -91,10 +97,13 @@ class Stylesheet implements \JsonSerializable
         'headingFont'                 => '"FiraSans", sans-serif',
         'headingPrimaryText'          => '#ffffff',
         'headingPrimaryBackground'    => '#404040',
+        'headingPrimarySize'          => 15,
         'headingSecondaryText'        => '#ffffff',
         'headingSecondaryBackground'  => '#a6a6a6',
+        'headingSecondarySize'        => 15,
         'headingTertiaryText'         => '#000000',
         'headingTertiaryBackground'   => '#c8c8c8',
+        'headingTertiarySize'         => 15,
         'menuFont'                    => '"FiraSans", sans-serif',
         'menuLink'                    => '#8d8d8d',
         'menuActive'                  => '#333333',
@@ -113,12 +122,7 @@ class Stylesheet implements \JsonSerializable
         'buttonFont'                  => '"FiraSans", sans-serif',
     ];
 
-    /**
-     * @param string $defaults
-     *
-     * @return array
-     */
-    public static function getAllSettings($defaults = 'layout-classic')
+    public static function getAllSettings(string $defaults = 'layout-classic'): array
     {
         $settings = [
             'useBoxShadow'                => [
@@ -171,6 +175,11 @@ class Stylesheet implements \JsonSerializable
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingPrimaryBackground',
             ],
+            'headingPrimarySize'          => [
+                'group'    => 'headings',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'headingPrimarySize',
+            ],
             'headingSecondaryText'        => [
                 'group'    => 'headings',
                 'type'     => static::TYPE_COLOR,
@@ -181,6 +190,11 @@ class Stylesheet implements \JsonSerializable
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingSecondaryBackground',
             ],
+            'headingSecondarySize'        => [
+                'group'    => 'headings',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'headingSecondarySize',
+            ],
             'headingTertiaryText'         => [
                 'group'    => 'headings',
                 'type'     => static::TYPE_COLOR,
@@ -190,6 +204,11 @@ class Stylesheet implements \JsonSerializable
                 'group'    => 'headings',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'headingTertiaryBackground',
+            ],
+            'headingTertiarySize'         => [
+                'group'    => 'headings',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'headingTertiarySize',
             ],
             'menuFont'                    => [
                 'group'    => 'layout',
@@ -281,12 +300,7 @@ class Stylesheet implements \JsonSerializable
         return $settings;
     }
 
-    /**
-     * Stylesheet constructor.
-     *
-     * @param array $data
-     */
-    public function __construct($data)
+    public function __construct(array $data)
     {
         foreach ($data as $key => $val) {
             if (property_exists($this, $key)) {
@@ -295,26 +309,16 @@ class Stylesheet implements \JsonSerializable
         }
     }
 
-    /**
-     * @param string $field
-     * @param string $defaults
-     *
-     * @return string
-     */
-    public function getValue($field, $defaults)
+    public function getValue(string $field, string $defaults): string
     {
         if ($this->$field !== null) {
-            return $this->$field;
+            return (string)$this->$field;
         } else {
-            return static::getAllSettings($defaults)[$field]['default'];
+            return (string)static::getAllSettings($defaults)[$field]['default'];
         }
     }
 
-    /**
-     * @param string $defaults
-     * @return string
-     */
-    public function toScssVariables($defaults)
+    public function toScssVariables(string $defaults): string
     {
         $scss = '';
         foreach (static::getAllSettings() as $key => $data) {
@@ -340,10 +344,7 @@ class Stylesheet implements \JsonSerializable
         return $scss;
     }
 
-    /**
-     * @return string
-     */
-    public function getSettingsHash()
+    public function getSettingsHash(): string
     {
         return sha1(json_encode($this));
     }

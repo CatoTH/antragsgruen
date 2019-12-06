@@ -37,7 +37,7 @@
     }
   }
   h1 {
-    @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
     margin: -1px;
     small {
       color: white;
@@ -53,7 +53,7 @@
     }
   }
   h2.green, h3.green, .nav-header, legend.green {
-    @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
+    @include stdHeading($headingSecondaryText, $headingSecondaryBackground, $headingSecondarySize);
     margin: -1px;
   }
   h2.lightgreen, h3.lightgreen {
@@ -72,7 +72,7 @@
     }
   }
   h2.darkgreen, h3.darkgreen {
-    @include stdHeading($headingPrimaryText, $headingPrimaryBackground);
+    @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
     margin: -1px;
   }
 

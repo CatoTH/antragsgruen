@@ -134,7 +134,7 @@ $headingTertiaryBackground: rgb(27, 74, 251);
 
 .motionList {
   li.green {
-    @include stdHeading($headingSecondaryText, $headingSecondaryBackground);
+    @include stdHeading($headingSecondaryText, $headingSecondaryBackground, 15px);
     margin-left: -21px;
     margin-right: -21px;
     margin-top: 50px;
