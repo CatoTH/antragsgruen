@@ -11,7 +11,7 @@ $controller = $this->context;
 $layout  = $controller->layoutParams;
 
 $rowClasses = ['row', 'antragsgruen-content'];
-$widthClass = ($layout->fullWidth ? 'col-md-12' : 'col-md-9');
+$widthClass = ($layout->fullWidth ? 'antragsgruen-width-full' : 'antragsgruen-width-main');
 
 echo '<div class="' . implode(' ', $rowClasses) . '">';
 echo '<main class="' . $widthClass . ' well">';

@@ -2,9 +2,6 @@
 
 $icon-font-path: "../../fonts/";
 $container-md: 1044px; // Should be enough space for 92 characters
-$screen-md-min: 1044px;
-$screen-md: 1044px;
-$container-desktop: 1044px;
 
 @import "../../../web/css/variables";
 
@@ -54,6 +51,12 @@ $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
 $homeAgendaTitlePrefixWidth: 110px;
+
+$sidebarWidth: 274px;
+$screen-md-min: $container-md !default;
+$mainContentWidth: $container-md - $sidebarWidth !default;
+$content-max-width: $mainContentWidth - 2px !default;
+$grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
 
 @import "../../../web/css/bootstrap";
 @import "../../../web/css/fontello";
@@ -219,6 +222,7 @@ body {
 .navwrap {
   margin-bottom: 2em;
   margin-left: -15px;
+
   margin-right: -15px;
 }
 
@@ -261,19 +265,16 @@ footer.footer {
   box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
 }
 
-@media (min-width: $screen-md-min) {
-  main.col-md-9 {
-    width: 770px;
-  }
-  aside.col-md-3 {
-    width: 274px;
+.antragsgruen-content {
+  #sidebar {
+    font-size: 16px;
+    padding-right: 0;
+    padding-left: 50px;
   }
 }
 
 #sidebar {
   font-size: 16px;
-  padding-right: 0;
-  padding-left: 50px;
 
   .form-search {
     margin-bottom: 2em;

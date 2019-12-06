@@ -20,6 +20,11 @@ $veraSansPath: "./fonts/BitstreamVeraSansMono";
 
 ' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
 
+$screen-md-min: $container-md !default;
+$mainContentWidth: $container-md - $sidebarWidth !default;
+$content-max-width: $mainContentWidth - 2px !default;
+$grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
+
 $table-border-color: $colorGreenLight;
 
 $sidebarActionFont: "Open Sans", sans-serif;

@@ -17,6 +17,7 @@ class Stylesheet implements \JsonSerializable
     const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
 
     public $bodyFont;
+    public $containerSize;
     public $colorLinks;
     public $colorLinksLight;
     public $colorDelLink;
@@ -24,6 +25,7 @@ class Stylesheet implements \JsonSerializable
     public $buttonFont;
     public $buttonSuccessBackground;
     public $textColor;
+    public $sidebarWidth;
     public $sidebarBackground;
     public $sidebarActionFont;
     public $createMotionBtnColor;
@@ -52,7 +54,9 @@ class Stylesheet implements \JsonSerializable
 
     public static $DEFAULTS_CLASSIC = [
         'useBoxShadow'                => true,
+        'containerSize'               => 1024,
         'contentBorderRadius'         => 10,
+        'sidebarWidth'                => 256,
         'sidebarBackground'           => '#e2007a',
         'sidebarActionFont'           => '"Open Sans", sans-serif',
         'createMotionBtnColor'        => '#e2007a',
@@ -88,7 +92,9 @@ class Stylesheet implements \JsonSerializable
 
     public static $DEFAULTS_DBJR = [
         'useBoxShadow'                => true,
+        'containerSize'               => 1024,
         'contentBorderRadius'         => 10,
+        'sidebarWidth'                => 256,
         'sidebarBackground'           => '#dd0b18',
         'sidebarActionFont'           => '"FiraSans", sans-serif',
         'createMotionBtnColor'        => '#dd0b18',
@@ -130,6 +136,11 @@ class Stylesheet implements \JsonSerializable
                 'type'     => static::TYPE_CHECKBOX,
                 'scssName' => 'use-box-shadow',
             ],
+            'containerSize'               => [
+                'group'    => 'layout',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'container-md',
+            ],
             'contentBorderRadius'         => [
                 'group'    => 'layout',
                 'type'     => static::TYPE_PIXEL,
@@ -139,6 +150,11 @@ class Stylesheet implements \JsonSerializable
                 'group'    => 'layout',
                 'type'     => static::TYPE_COLOR,
                 'scssName' => 'sidebarBackground',
+            ],
+            'sidebarWidth'                => [
+                'group'    => 'layout',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'sidebarWidth',
             ],
             'sidebarActionFont'           => [
                 'group'    => 'layout',

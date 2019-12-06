@@ -7,6 +7,11 @@ $firaSansFontPath: "../fonts/firasans/";
 $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
+$screen-md-min: $container-md !default;
+$mainContentWidth: $container-md - $sidebarWidth !default;
+$content-max-width: $mainContentWidth - 2px !default;
+$grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
+
 $colorDarkGrey: rgb(64, 64, 64);
 $colorMediumGrey: rgb(120, 120, 120);
 $colorLightGrey: rgb(166, 166, 166);

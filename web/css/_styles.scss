@@ -60,6 +60,8 @@
 }
 
 #mainmenu {
+  max-width: $container-md;
+
   .nav > li {
     display: inline-block;
   }

@@ -24,12 +24,10 @@ class StdHooks extends Hooks
     {
         $out = '<header id="mainmenu">';
         $out .= '<div class="navbar">
-        <div class="navbar-inner">
-            <div class="container">';
+        <div class="navbar-inner">';
         $out .= Layout::getStdNavbarHeader();
         $out .= '</div>
-        </div>
-    </div>';
+        </div>';
 
         $out .= '</header>';
 
@@ -289,7 +287,7 @@ class StdHooks extends Hooks
      */
     public function footerLine($before)
     {
-        $out = '<footer class="footer"><div class="container">';
+        $out = '<footer class="footer">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
@@ -311,7 +309,7 @@ class StdHooks extends Hooks
         }
         $out .= '</span>';
 
-        $out .= '</div></footer>';
+        $out .= '</footer>';
 
         return $out;
     }

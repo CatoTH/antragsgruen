@@ -46,6 +46,12 @@ $footer_line_height: 1.5em;
 
 body > footer {
   height: $footer_height;
+  max-width: $container-md;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: floor(($grid-gutter-width / 2));
+  padding-left: ceil(($grid-gutter-width / 2));
+
   p {
     height: $footer_height;
     line-height: $footer_line_height;
@@ -73,12 +79,36 @@ body > footer {
 }
 
 .antragsgruen-content {
+  // The children should behave similar to bootstrap's grids (hence the paddings&floats), but have a configurable width
+
   // Amendment-Markers at the side of a motion should be above the sidebar in case of a collision
   > main {
     z-index: 1;
   }
-  > aside {
+
+  > #sidebar {
+    max-width: $sidebarWidth;
+    float: left;
     z-index: 0;
+    padding-right: floor(($grid-gutter-width / 2));
+    padding-left: ceil(($grid-gutter-width / 2));
+  }
+
+  > .antragsgruen-width-main {
+    width: 100%;
+
+    max-width: $mainContentWidth;
+    float: left;
+  }
+
+  > .antragsgruen-width-full {
+    width: 100%;
+    float: left;
+  }
+
+  > * {
+    position: relative;
+    min-height: 2px;
   }
 }
 

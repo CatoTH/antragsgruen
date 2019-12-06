@@ -50,6 +50,11 @@ $inlineAmendmentPreambleHeight: 35px;
 $inlineAmendmentPreambleColor: $colorMagenta;
 $createMotionBtnColor: $colorMagenta;
 
+$screen-md-min: $container-md !default;
+$mainContentWidth: $container-md - $sidebarWidth !default;
+$content-max-width: $mainContentWidth - 2px !default;
+$grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
+
 @import "../../../web/css/bootstrap";
 @import "../../../web/css/fontello";
 @import "../../../web/css/wizard";

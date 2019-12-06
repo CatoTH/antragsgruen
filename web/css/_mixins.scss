@@ -42,7 +42,7 @@
   padding: 5px 20px 5px;
   font-family: $headingFont;
   font-size: $textSize;
-  line-height: $textSize * 2;
+  line-height: $textSize * 1.2;
   @if $headingTextShadow {
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
   }
