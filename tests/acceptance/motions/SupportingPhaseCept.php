@@ -18,7 +18,7 @@ $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase:
 $I->dontSeeElement('#typeMinSupporters');
 $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::COLLECTING_SUPPORTERS);
 $I->seeElement('#typeMinSupporters');
-$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='2']"); // Required
+$I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();
@@ -115,7 +115,7 @@ $I->see('Eingereicht (ungeprüft)', '.motionData');
 
 $I->wantTo('Disable gender support because somehow the test fails later on otherwise ;_;');
 $I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
-$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='0']");
+$I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='0']");
 $I->submitForm('.adminTypeForm', [], 'save');
 
 

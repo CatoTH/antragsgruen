@@ -16,8 +16,8 @@ $I->dontSeeElement('.genderRow');
 
 $I->wantTo('set the gender as required');
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->seeCheckboxIsChecked("//input[@name='initiatorSettings[contactGender]'][@value='0']"); // None
-$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='2']"); // Required
+$I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[contactGender]'][@value='0']"); // None
+$I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $page->saveForm();
 
 
@@ -52,8 +52,8 @@ $I->seeElement('#motionConfirmForm');
 
 $I->wantTo('make the selection optional');
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
-$I->seeCheckboxIsChecked("//input[@name='initiatorSettings[contactGender]'][@value='2']"); // Required
-$I->checkOption("//input[@name='initiatorSettings[contactGender]'][@value='1']"); // Optional
+$I->seeCheckboxIsChecked("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
+$I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='1']"); // Optional
 $page->saveForm();
 
 

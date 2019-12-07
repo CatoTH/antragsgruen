@@ -12,10 +12,10 @@ $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->dontSeeElement('#initiatorContactName');
 
 $form = $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->seeOptionIsSelected("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_NONE);
-$I->selectOption("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
+$I->seeOptionIsSelected("input[name=\"motionInitiatorSettings[contactName]\"]", InitiatorForm::CONTACT_NONE);
+$I->selectOption("input[name=\"motionInitiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
 $form->saveForm();
-$I->seeOptionIsSelected("input[name=\"initiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
+$I->seeOptionIsSelected("input[name=\"motionInitiatorSettings[contactName]\"]", InitiatorForm::CONTACT_REQUIRED);
 
 $form = $I->gotoConsultationHome()->gotoMotionCreatePage();
 $I->wait(1);

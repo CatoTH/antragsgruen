@@ -9,7 +9,7 @@ $I->click('.editThemeLink');
 
 $I->wantTo('confirm the default settings');
 $I->assertEquals('rgb(109, 126, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
-$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".col-md-9.well")[0])["border-top-left-radius"]'));
+$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('see that by default, the classic theme is activated');
 $I->seeInField('#stylesheet-menuLink', '6D7E00');
@@ -26,7 +26,7 @@ $I->executeJS('$("#stylesheet-menuLink").val("#FF0000");');
 $I->submitForm('.themingForm', [], 'save');
 
 $I->assertEquals('rgb(255, 0, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
-$I->assertEquals('5px', $I->executeJS('return getComputedStyle($(".col-md-9.well")[0])["border-top-left-radius"]'));
+$I->assertEquals('5px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('change to a regular theme again');
 $I->gotoStdAdminPage()->gotoConsultation();
@@ -36,7 +36,7 @@ $I->checkOption("//input[@name='siteSettings[siteLayout]'][@value='layout-classi
 $I->submitForm('#consultationSettingsForm', [], 'save');
 
 $I->assertEquals('rgb(109, 126, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
-$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".col-md-9.well")[0])["border-top-left-radius"]'));
+$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('reset custom theme to DBJR');
 $I->click('.editThemeLink');
@@ -50,7 +50,7 @@ $I->wait(1);
 $I->seeInField('#stylesheet-menuLink', '8D8D8D');
 $I->seeInField('#stylesheet-contentBorderRadius', '10');
 $I->assertEquals('rgb(141, 141, 141)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
-$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".col-md-9.well")[0])["border-top-left-radius"]'));
+$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('reset custom theme to classic');
 $I->executeJS('$(".btnResetTheme").click()');
@@ -63,4 +63,4 @@ $I->seeInField('#stylesheet-menuLink', '6D7E00');
 $I->seeInField('#stylesheet-contentBorderRadius', '10');
 
 $I->assertEquals('rgb(109, 126, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
-$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".col-md-9.well")[0])["border-top-left-radius"]'));
+$I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
