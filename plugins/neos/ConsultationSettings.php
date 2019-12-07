@@ -9,7 +9,7 @@ class ConsultationSettings extends Consultation
     /**
      * @return null|string|LayoutSettings
      */
-    public function getSpecializedLayoutClass()
+    public function getSpecializedLayoutClass(): ?string
     {
         return LayoutSettings::class;
     }

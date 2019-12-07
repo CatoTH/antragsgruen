@@ -80,6 +80,7 @@ class IndexController extends AdminBase
             $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
             $settings->saveForm($settingsInput, $post['settingsFields']);
+            $settings->setOrganisationsFromInput($post['organisations']);
 
             if (isset($post['consultationLogo']) && $post['consultationLogo']) {
                 $settings->logoUrl = $post['consultationLogo'];
