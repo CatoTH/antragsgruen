@@ -1,5 +1,6 @@
 <?php
 
+use app\components\HTMLTools;
 use app\components\Tools;
 use app\models\db\ISupporter;
 use app\models\settings\InitiatorForm;
@@ -24,7 +25,14 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->loadDatepicker();
-$locale = Tools::getCurrentDateLocale();
+$locale        = Tools::getCurrentDateLocale();
+$organisations = $controller->consultation->getSettings()->organisations;
+$selectOrganisations = [];
+if ($controller->consultation->getSettings()->organisations) {
+    foreach ($controller->consultation->getSettings()->organisations as $name) {
+        $selectOrganisations[$name] = $name;
+    }
+}
 
 if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
     $prePrimaryName = $initiator->organization;
@@ -37,6 +45,7 @@ $currentUser = \app\models\db\User::getCurrentUser();
 
 echo '<fieldset class="supporterForm supporterFormStd" data-antragsgruen-widget="frontend/InitiatorForm"
                 data-settings="' . Html::encode(json_encode($settings)) . '"
+                data-organisation-list="' . (count($selectOrganisations) > 0 ? "1" : "0") . '"
                 data-user-data="' . Html::encode(json_encode([
         'fixed'               => ($currentUser && $currentUser->fixedData),
         'person_name'         => ($currentUser ? $currentUser->name : ''),
@@ -52,9 +61,9 @@ if ($allowOther) {
         echo '<input type="hidden" name="otherInitiator" value="1">';
     } else {
         echo '<div class="checkbox"><label><input type="checkbox" name="otherInitiator" ' .
-            ($isForOther ? 'checked' : '') .
-            '> ' . Yii::t('initiator', 'createForOther') .
-            ' <small>(' . Yii::t('initiator', 'adminFunction') . ')</small>
+             ($isForOther ? 'checked' : '') .
+             '> ' . Yii::t('initiator', 'createForOther') .
+             ' <small>(' . Yii::t('initiator', 'adminFunction') . ')</small>
     </label></div>';
     }
 }
@@ -114,11 +123,17 @@ if ($adminMode) {
         <label class="col-sm-3 control-label" for="initiatorPrimaryName">
             <span class="only-person"><?= Yii::t('initiator', 'name') ?></span>
             <span class="only-organization"><?= Yii::t('initiator', 'nameOrga') ?></span>
-
         </label>
-        <div class="col-sm-4">
+        <div class="col-sm-4 fuelux">
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
                    value="<?= Html::encode($prePrimaryName) ?>" autocomplete="name" required>
+            <?php
+            if ($organisations && count($organisations) > 0) {
+                echo HTMLTools::fueluxSelectbox('Initiator[primaryOrgaName]', $selectOrganisations, $prePrimaryName, [
+                    'id' => 'initiatorPrimaryOrgaName',
+                ], true);
+            }
+            ?>
         </div>
     </div>
 <?php
@@ -126,13 +141,24 @@ if ($adminMode) {
 if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
     $preOrga = $initiator->organization;
     ?>
-    <div class="form-group organizationRow">
+    <div class="form-group organizationRow fuelux">
         <label class="col-sm-3 control-label" for="initiatorOrga">
             <?= Yii::t('initiator', 'orgaName') ?>
         </label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]"
+            <?php
+            if ($organisations && count($organisations) > 0) {
+                echo HTMLTools::fueluxSelectbox('Initiator[organization]', $selectOrganisations, $preOrga, [
+                    'id' => 'initiatorOrga',
+                ], true);
+            } else {
+                ?>
+                <input type="text" class="form-control" id="initiatorOrga" name="Initiator[organization]"
                    value="<?= Html::encode($preOrga) ?>">
+                <?php
+
+            }
+            ?>
         </div>
     </div>
     <?php
@@ -164,7 +190,7 @@ if ($settings->contactGender !== InitiatorForm::CONTACT_NONE && $settings->initi
         <label class="col-sm-3 control-label" for="initiatorGender"><?= Yii::t('initiator', 'gender') ?></label>
         <div class="col-sm-4">
             <?php
-            echo \app\components\HTMLTools::fueluxSelectbox(
+            echo HTMLTools::fueluxSelectbox(
                 'Initiator[gender]',
                 $genderChoices,
                 $initiator->getExtraDataEntry('gender'),
@@ -256,6 +282,7 @@ $getInitiatorRow = function (ISupporter $initiator, InitiatorForm $settings) {
     $str .= '</a></div>';
 
     $str .= '</div>';
+
     return $str;
 };
 
@@ -299,6 +326,7 @@ if ($hasSupporters && !$adminMode) {
         }
 
         $str .= '</div>';
+
         return $str;
     };
 

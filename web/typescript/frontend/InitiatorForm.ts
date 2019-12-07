@@ -29,7 +29,8 @@ export class InitiatorForm {
     private $editforms: JQuery;
 
     private $otherInitiator: JQuery;
-    private otherInitiator: boolean = false;
+    private otherInitiator = false;
+    private hasOrganisationList: boolean;
     private userData: UserData;
     private settings: InitiatorFormSettings;
 
@@ -45,6 +46,7 @@ export class InitiatorForm {
 
         this.userData = $widget.data('user-data');
         this.settings = $widget.data('settings');
+        this.hasOrganisationList = !!$widget.data("organisation-list");
 
         this.$otherInitiator = $widget.find('input[name=otherInitiator]');
         this.$otherInitiator.on("change", this.onChangeOtherInitiator.bind(this)).trigger('change');
@@ -61,16 +63,27 @@ export class InitiatorForm {
         $('.fullTextAdder a').on("click", this.fullTextAdderOpen.bind(this));
         $('.fullTextAdd').on("click", this.fullTextAdd.bind(this));
 
+        if (this.hasOrganisationList) {
+            this.$initiatorData.find("#initiatorPrimaryOrgaName").on('changed.fu.selectlist', () => {
+                this.setOrgaNameFromSelect();
+            }).trigger('changed.fu.selectlist');
+        }
+
         if (this.$supporterData.length > 0 && this.$supporterData.data('min-supporters') > 0) {
             this.initMinSupporters();
         }
 
-        this.$editforms.submit(this.submit.bind(this));
+        this.$editforms.on("submit", this.submit.bind(this));
     }
 
     private onChangeOtherInitiator() {
         this.otherInitiator = (this.$otherInitiator.val() == 1 || this.$otherInitiator.prop("checked"));
         this.onChangePersonType();
+    }
+    private setOrgaNameFromSelect() {
+        const $selectedOrga = this.$initiatorData.find("#initiatorPrimaryOrgaName") as any;
+        const selectedOrga = $selectedOrga.selectlist("getValue").value;
+        this.$initiatorData.find('#initiatorPrimaryName').val(selectedOrga);
     }
 
     private onChangePersonType() {
@@ -86,10 +99,19 @@ export class InitiatorForm {
             if (this.wasPerson) {
                 this.$initiatorData.find('#initiatorPrimaryName').val('');
             }
+            if (this.hasOrganisationList) {
+                this.$initiatorData.find('#initiatorPrimaryName').addClass('hidden');
+                this.$initiatorData.find('#initiatorPrimaryOrgaName').removeClass('hidden');
+                this.setOrgaNameFromSelect();
+            }
             this.wasPerson = false;
         } else {
             this.setFieldsVisibilityPerson();
             this.setFieldsReadonlyPerson();
+            if (this.hasOrganisationList) {
+                this.$initiatorData.find('#initiatorPrimaryName').removeClass('hidden');
+                this.$initiatorData.find('#initiatorPrimaryOrgaName').addClass('hidden');
+            }
             this.wasPerson = true;
         }
     }
