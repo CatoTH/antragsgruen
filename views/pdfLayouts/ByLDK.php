@@ -8,10 +8,7 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ByLDK extends IPDFLayout
 {
-    /**
-     * @param Motion $motion
-     */
-    public function printMotionHeader(Motion $motion)
+    public function printMotionHeader(Motion $motion): void
     {
         $pdf      = $this->pdf;
         $settings = $this->motionType->getConsultation()->getSettings();
@@ -21,7 +18,7 @@ class ByLDK extends IPDFLayout
         $pdf->startPageGroup();
         $pdf->AddPage();
 
-        $this->setHeaderLogo($motion->getMyConsultation(), 32);
+        $this->setHeaderLogo($motion->getMyConsultation(), 32, 50, 35);
         if ($this->headerlogo) {
             $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
@@ -30,6 +27,9 @@ class ByLDK extends IPDFLayout
 
         if (!$settings->hideTitlePrefix) {
             $revName = $motion->titlePrefix;
+            if (mb_strlen($revName) > 25) {
+                $revName = mb_substr($revName, 0, 24) . '…';
+            }
             if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');
                 $pdf->SetFont('helvetica', 'I', '25');
@@ -78,10 +78,9 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        if ($this->motionType->getSettingsObj()->pdfIntroduction) {
-            $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
-        } else {
-            $intro = \Yii::t('export', 'introduction');
+        $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
+        if ($intro === \Yii::t('export', 'introduction')) {  // The default setting is just a placeholder
+            $intro = null;
         }
         if ($intro) {
             $pdf->SetX(24);
@@ -89,7 +88,6 @@ class ByLDK extends IPDFLayout
             $pdf->MultiCell(160, 13, $intro, 0, 'C');
             $pdf->Ln(7);
         }
-
 
         $pdf->SetX(12);
 
@@ -120,10 +118,7 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(9);
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    public function printAmendmentHeader(Amendment $amendment)
+    public function printAmendmentHeader(Amendment $amendment): void
     {
         $pdf      = $this->pdf;
         $settings = $this->motionType->getConsultation()->getSettings();
@@ -188,10 +183,9 @@ class ByLDK extends IPDFLayout
         $pdf->Line((210 - $width) / 2, 78, (210 + $width) / 2, 78);
 
         $pdf->SetY(90);
-        if ($this->motionType->getSettingsObj()->pdfIntroduction) {
-            $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
-        } else {
-            $intro = \Yii::t('export', 'introduction');
+        $intro = $this->motionType->getSettingsObj()->pdfIntroduction;
+        if ($intro === \Yii::t('export', 'introduction')) {  // The default setting is just a placeholder
+            $intro = null;
         }
         if ($intro) {
             $pdf->SetX(24);
@@ -230,10 +224,7 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(9);
     }
 
-    /**
-     * @return Fpdi
-     */
-    public function createPDFClass()
+    public function createPDFClass(): Fpdi
     {
         $pdf = new ByLDKPDF($this);
 

@@ -12,10 +12,7 @@ class BDK extends IPDFLayout
     /** @var BDKPDF $pdf */
     protected $pdf;
 
-    /**
-     * @return Fpdi
-     */
-    public function createPDFClass()
+    public function createPDFClass(): Fpdi
     {
         $pdf = new BDKPDF();
 
@@ -43,18 +40,14 @@ class BDK extends IPDFLayout
         return $pdf;
     }
 
-    /**
-     * @param Fpdi $pdf
-     * @param string $pdfIntroduction
-     * @param string $tableContent
-     */
-    public static function printHeaderTable(Fpdi $pdf, $pdfIntroduction, $tableContent)
+    public static function printHeaderTable(Fpdi $pdf, ?string $pdfIntroduction, string $tableContent): void
     {
         $title = str_replace("\n", '<br>', $pdfIntroduction);
         $pdf->SetY(35);
-        $pdf->SetFont("helvetica", "", 13);
-        $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
-
+        if ($title) {
+            $pdf->SetFont("helvetica", "", 13);
+            $pdf->writeHTMLCell(185, 0, 10, 10, $title, 0, 1, 0, true, 'R');
+        }
 
         $pdf->SetFont("helvetica", "", 12);
 
@@ -65,10 +58,7 @@ class BDK extends IPDFLayout
         $pdf->setCellPaddings(0, 0, 0, 0);
     }
 
-    /**
-     * @param Motion $motion
-     */
-    public function printMotionHeader(Motion $motion)
+    public function printMotionHeader(Motion $motion): void
     {
         $pdf = $this->pdf;
 
@@ -82,6 +72,9 @@ class BDK extends IPDFLayout
         $pdf->setPrintFooter(true);
 
         $title = $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction;
+        if ($title === \Yii::t('export', 'Initiators')) { // The default setting is just a placeholder
+            $title = '';
+        }
 
         $motionData = '<span style="font-size: 20px; font-weight: bold">';
         $motionData .= Html::encode($motion->titlePrefix) . ' </span>';
@@ -100,10 +93,7 @@ class BDK extends IPDFLayout
         BDK::printHeaderTable($this->pdf, $title, $motionData);
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    public function printAmendmentHeader(Amendment $amendment)
+    public function printAmendmentHeader(Amendment $amendment): void
     {
         $pdf = $this->pdf;
 

@@ -9,11 +9,7 @@ use yii\helpers\Html;
 
 class DBJR extends IPDFLayout
 {
-    /**
-     * @param Motion $motion
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printMotionHeader(Motion $motion)
+    public function printMotionHeader(Motion $motion): void
     {
         $pdf = $this->pdf;
 
@@ -26,7 +22,7 @@ class DBJR extends IPDFLayout
         $abs      = 5;
         $fontsize = 30;
 
-        $this->setHeaderLogo($motion->getMyConsultation(), $abs);
+        $this->setHeaderLogo($motion->getMyConsultation(), $abs, 50, null);
         if ($this->headerlogo) {
             $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
@@ -66,11 +62,7 @@ class DBJR extends IPDFLayout
         $pdf->SetFont('helvetica', '', 12);
     }
 
-    /**
-     * @param Amendment $amendment
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printAmendmentHeader(Amendment $amendment)
+    public function printAmendmentHeader(Amendment $amendment): void
     {
         $pdf            = $this->pdf;
 
@@ -140,10 +132,7 @@ class DBJR extends IPDFLayout
         $pdf->ln(7);
     }
 
-    /**
-     * @return Fpdi
-     */
-    public function createPDFClass()
+    public function createPDFClass(): Fpdi
     {
         $pdf = new DBJRPDF($this);
 
