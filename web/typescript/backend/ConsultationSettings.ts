@@ -7,6 +7,7 @@ export class ConsultationSettings {
         this.initLogoUpload();
         this.initUrlPath();
         this.initTags();
+        this.initOrganisations();
         this.initAdminMayEdit();
         this.initSingleMotionMode();
         this.initLayoutChooser();
@@ -80,6 +81,22 @@ export class ConsultationSettings {
         Sortable.create(document.getElementById("tagsListUl"), {draggable: '.pill'});
     }
 
+    private initOrganisations() {
+        this.$form.on("submit", () => {
+            let items = $("#organisationList").pillbox('items'),
+                organisations = [],
+                $node = $('<input type="hidden" name="organisations">'),
+                i;
+            for (i = 0; i < items.length; i++) {
+                organisations.push(this.htmlEntityDecode(items[i].text));
+            }
+            $node.attr("value", JSON.stringify(organisations));
+            this.$form.append($node);
+        });
+
+        Sortable.create(document.getElementById("organisationListUl"), {draggable: '.pill'});
+    }
+
     private initLogoUpload() {
         const $logoRow = this.$form.find('.logoRow'),
             $uploadLabel = $logoRow.find('.uploadCol label .text');
@@ -104,7 +121,6 @@ export class ConsultationSettings {
     }
 
     private initLayoutChooser() {
-
         const $inputs = this.$form.find(".thumbnailedLayoutSelector input");
         const $editLink = this.$form.find(".editThemeLink");
         const editLinkDefault = $editLink.attr("href");

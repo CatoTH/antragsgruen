@@ -26,6 +26,7 @@ $layout->robotsNoindex = true;
 
 $layout->loadCKEditor();
 $layout->loadDatepicker();
+$layout->loadFuelux();
 
 $layout->addBreadcrumb($this->title);
 
@@ -94,7 +95,6 @@ if (count($form->motionType->agendaItems) > 0) {
     if ($form->agendaItem) {
         echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';
     } else {
-        $layout->loadFuelux();
         echo '<div style="position: relative;">';
         $agendaItems = [];
         foreach ($form->motionType->agendaItems as $agendaItem) {

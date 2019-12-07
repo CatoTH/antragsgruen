@@ -11,18 +11,12 @@ class ConsultationSettings extends Consultation
     public $minDiscussionTime = 21;
     public $maxOverallTime = 0;
 
-    /**
-     * @return string
-     */
-    public function getStartLayoutView()
+    public function getStartLayoutView(): string
     {
         return '@app/plugins/member_petitions/views/consultation';
     }
 
-    /**
-     * @return null|string
-     */
-    public function getConsultationSidebar()
+    public function getConsultationSidebar(): ?string
     {
         return '@app/plugins/member_petitions/views/consultation-sidebar';
     }
@@ -30,7 +24,7 @@ class ConsultationSettings extends Consultation
     /**
      * @return null|string|LayoutSettings
      */
-    public function getSpecializedLayoutClass()
+    public function getSpecializedLayoutClass(): ?string
     {
         return LayoutSettings::class;
     }

@@ -174,8 +174,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     echo '<label class="layout ' . $lId . '">';
                     echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
                     echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
-                        'alt="' . Html::encode($cssLayout['title']) . '" ' .
-                        'title="' . Html::encode($cssLayout['title']) . '"></span>';
+                         'alt="' . Html::encode($cssLayout['title']) . '" ' .
+                         'title="' . Html::encode($cssLayout['title']) . '"></span>';
                     echo '</label>';
                 }
                 ?>
@@ -267,7 +267,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
         $propTitle = Yii::t('admin', 'con_proposal_procedure');
         $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-            'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+                     'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
         $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
         $boolSettingRow($settings, 'minimalisticUI', $handledSettings, Yii::t('admin', 'con_minimalistic'));
@@ -386,11 +386,48 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     );
                     echo ' ' . Yii::t('admin', 'con_multiple_topics');
                     ?>
-                </label></div>
+                </label>
+            </div>
         </div>
 
-
+        <?php
+        $organisations = $consultation->getSettings()->organisations;
+        if ($organisations === null) {
+            $organisations = [];
+        }
+        ?>
+        <div class="form-group">
+            <div class="col-sm-3 control-label">
+                <?= Yii::t('admin', 'con_organisations') ?>:
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_organisations_hint')) ?>"></span>
+            </div>
+            <div class="col-sm-9">
+                <div class="pillbox" data-initialize="pillbox" id="organisationList">
+                    <ul class="clearfix pill-group" id="organisationListUl">
+                        <?php
+                        foreach ($organisations as $organisation) {
+                            echo '<li class="btn btn-default pill">
+        <span>' . Html::encode($organisation) . '</span>
+        <span class="glyphicon glyphicon-close"><span class="sr-only">Remove</span></span>
+    </li>';
+                        }
+                        ?>
+                        <li class="pillbox-input-wrap btn-group">
+                            <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
+                            <input type="text" class="form-control dropdown-toggle pillbox-add-item"
+                                   placeholder="<?= Yii::t('admin', 'con_organisation_add') ?>">
+                            <button type="button" class="dropdown-toggle sr-only">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
     <div class="content">
 

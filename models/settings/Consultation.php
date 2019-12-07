@@ -33,13 +33,20 @@ class Consultation implements \JsonSerializable
     public $screeningComments = false;
     public $initiatorConfirmEmails = false;
     public $adminsMayEdit = true;
-    public $forceMotion = null;
     public $editorialAmendments = true;
     public $globalAlternatives = true;
     public $proposalProcedurePage = false;
     public $forceLogin = false;
     public $managedUserAccounts = false;
+
+    /** @var null|int */
+    public $forceMotion = null;
+
+    /** @var null|string */
     public $accessPwd = null;
+
+    /** @var null|string[] */
+    public $organisations = null;
 
     // SETTINGS WITHOUT TEST CASES
 
@@ -67,7 +74,7 @@ class Consultation implements \JsonSerializable
     /**
      * @return string[]
      */
-    public static function getStartLayouts()
+    public static function getStartLayouts(): array
     {
         return [
             static::START_LAYOUT_STD               => \Yii::t('structure', 'home_layout_std'),
@@ -81,7 +88,7 @@ class Consultation implements \JsonSerializable
     /**
      * @return string[]
      */
-    public static function getRobotPolicies()
+    public static function getRobotPolicies(): array
     {
         return [
             static::ROBOTS_NONE      => \Yii::t('structure', 'robots_policy_none'),
@@ -90,11 +97,20 @@ class Consultation implements \JsonSerializable
         ];
     }
 
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function getStartLayoutView()
+    public function setOrganisationsFromInput(?string $organisationField): void
+    {
+        if ($organisationField) {
+            $arr = json_decode($organisationField, true);
+            $this->organisations = [];
+            foreach ($arr as $orga) {
+                $this->organisations[] = trim($orga);
+            }
+        } else {
+            $this->organisations = null;
+        }
+    }
+
+    public function getStartLayoutView(): string
     {
         switch ($this->startLayoutType) {
             case Consultation::START_LAYOUT_STD:
@@ -112,10 +128,7 @@ class Consultation implements \JsonSerializable
         }
     }
 
-    /**
-     * @return null|string
-     */
-    public function getConsultationSidebar()
+    public function getConsultationSidebar(): ?string
     {
         return '@app/views/consultation/sidebar';
     }
@@ -123,7 +136,7 @@ class Consultation implements \JsonSerializable
     /**
      * @return null|string|Layout
      */
-    public function getSpecializedLayoutClass()
+    public function getSpecializedLayoutClass(): ?string
     {
         return null;
     }
