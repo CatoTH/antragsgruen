@@ -133,13 +133,15 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
-    private static function getMimeType(string $data): string {
+    private static function getMimeType(string $data): string
+    {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
-        $file = $params->getTmpDir() . 'mime-' . uniqid();
+        $file   = $params->getTmpDir() . 'mime-' . uniqid();
         file_put_contents($file, $data);
         $mime = mime_content_type($file);
         unlink($file);
+
         return $mime;
     }
 
@@ -160,9 +162,20 @@ class ConsultationFile extends ActiveRecord
         $file->dateCreation     = date('Y-m-d H:i:s');
         $file->downloadPosition = $maxPosition + 1;
         $file->mimetype         = static::getMimeType($data);
-        $file->width            = null;
-        $file->height           = null;
-        $file->uploadedById     = $user->id;
+        if (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif'])) {
+            $info = getimagesizefromstring($data);
+            if ($info) {
+                $file->width  = $info[0];
+                $file->height = $info[1];
+            } else {
+                $file->width  = null;
+                $file->height = null;
+            }
+        } else {
+            $file->width  = null;
+            $file->height = null;
+        }
+        $file->uploadedById = $user->id;
         $file->setData($data);
         $file->save();
 

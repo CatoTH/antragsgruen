@@ -77,16 +77,49 @@ export class ContentPageEdit {
             const filename = path[path.length - 1];
             $uploadLabel.text(filename);
         });
+
+        this.$downloadableFiles.find(".fileList").on("click", ".deleteFile", (ev) => {
+            const id = $(ev.currentTarget).parents("li").first().data("id");
+            const delConfirm = this.$form.data("del-confirmation");
+
+            bootbox.confirm(delConfirm, result => {
+                if (result) {
+                    this.deleteDownloadableFile(id);
+                }
+            });
+        });
+    }
+
+    private deleteDownloadableFile(id: string) {
+        const deleteUrl = this.$form.data("file-delete-url");
+        const params = {
+
+            "id": id,
+            "_csrf": this.$form.find('> input[name=_csrf]').val(),
+        };
+
+        $.post(deleteUrl, params, (ret) => {
+            if (ret['success']) {
+                this.$downloadableFiles.find(".fileList li[data-id=" + id + "]").remove();
+
+                if (this.$downloadableFiles.find(".fileList").children().length === 0) {
+                    this.$downloadableFiles.find(".none").removeClass("hidden");
+                }
+            } else {
+                alert(ret['message']);
+            }
+        });
     }
 
     private addUploadedFileCb(data) {
-        const li = document.createElement('li'),
-            a = document.createElement('a');
-        li.appendChild(a);
-        a.setAttribute('href', data['url']);
-        a.innerText = data['title'];
-        this.$downloadableFiles.find("ul").append(li);
-        this.$downloadableFiles.find(".none").remove();
+        const $el = $('<li><a><span class="glyphicon glyphicon-download-alt"></span> <span class="title"></span></a>' +
+            '<button type="button" class="btn btn-link deleteFile"><span class="glyphicon glyphicon-trash"></span></button></li>');
+        $el.find("a").attr("href", data['url']);
+        $el.find("a .title").text(data['title']);
+        $el.attr("data-id", data['id']);
+
+        this.$downloadableFiles.find("ul").append($el);
+        this.$downloadableFiles.find(".none").addClass('hidden');
     }
 
     private hideDownloadableFiles() {
@@ -95,6 +128,9 @@ export class ContentPageEdit {
             this.$downloadableFiles.addClass('hidden');
         }
         this.$downloadableFiles.find('.downloadableFilesUpload').addClass('hidden');
+        this.$downloadableFiles.find('#downloadableFileNew').val("");
+        this.$downloadableFiles.find('#downloadableFileTitle').val("");
+        this.$downloadableFiles.find(".uploadCol .text").text(this.$downloadableFiles.find(".uploadCol .text").data("title"));
     }
 
     private showDownloadableFiles() {
@@ -115,7 +151,6 @@ export class ContentPageEdit {
                     resolve(null);
                 }
             };
-            console.log(input.files);
             if (input.files.length > 0) {
                 reader.readAsDataURL(input.files[0]);
             } else {

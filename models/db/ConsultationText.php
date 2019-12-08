@@ -63,10 +63,7 @@ class ConsultationText extends ActiveRecord
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         $params = ['/pages/show-page', 'pageSlug' => $this->textId];
         if ($this->consultationId) {
@@ -80,10 +77,7 @@ class ConsultationText extends ActiveRecord
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getSaveUrl()
+    public function getSaveUrl(): string
     {
         $saveParams = ['/pages/save-page', 'pageSlug' => $this->textId];
         if ($this->consultation) {
@@ -96,10 +90,7 @@ class ConsultationText extends ActiveRecord
         return UrlHelper::createUrl($saveParams);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getUploadUrl()
+    public function getUploadUrl(): ?string
     {
         if ($this->consultation) {
             $saveParams = ['/pages/upload', 'consultationPath' => $this->consultation->urlPath];
@@ -112,10 +103,20 @@ class ConsultationText extends ActiveRecord
         return UrlHelper::createUrl($saveParams);
     }
 
-    /**
-     * @return string
-     */
-    public function getImageBrowseUrl()
+    public function getFileDeleteUrl(): ?string
+    {
+        if ($this->consultation) {
+            $saveParams = ['/pages/delete-file', 'consultationPath' => $this->consultation->urlPath];
+        } elseif ($this->site) {
+            $saveParams = ['/pages/delete-file', 'consultationPath' => $this->site->currentConsultation->urlPath];
+        } else {
+            return null;
+        }
+
+        return UrlHelper::createUrl($saveParams);
+    }
+
+    public function getImageBrowseUrl(): string
     {
         return UrlHelper::createUrl(['/pages/browse-images']);
     }

@@ -50,8 +50,21 @@
     font-size: 1.2em;
   }
 
+  .deleteFile {
+    color: $colorDelLink;
+  }
+
   .fileList {
     list-style-type: none;
+
+    html.no-touchevents & {
+      li .deleteFile {
+        visibility: hidden;
+      }
+      li:hover .deleteFile {
+        visibility: visible;
+      }
+    }
   }
 
   .downloadableFilesUpload {

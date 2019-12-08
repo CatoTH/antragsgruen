@@ -12,6 +12,7 @@ use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\Response;
 
 class PagesController extends Base
@@ -210,10 +211,28 @@ class PagesController extends Base
             $result['uploadedFile'] = [
                 'title' => $file->title,
                 'url'   => $file->getUrl(),
+                'id'    => $file->id,
             ];
         }
 
         return $result;
+    }
+
+    public function actionDeleteFile()
+    {
+        $fileId = intval(\Yii::$app->request->post('id'));
+        foreach ($this->consultation->files as $file) {
+            if ($file->id === $fileId) {
+                $file->delete();
+            }
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode([
+            'success' => true,
+        ]);
     }
 
     /**

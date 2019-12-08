@@ -20,6 +20,8 @@ if ($admin) {
     echo Html::beginForm($saveUrl, 'post', [
         'data-upload-url'          => $pageData->getUploadUrl(),
         'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
+        'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
+        'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
         'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
     ]);
     echo '<a href="#" class="editCaller">' . Yii::t('base', 'edit') . '</a><br>';
@@ -33,15 +35,18 @@ $files = $consultation->getDownloadableFiles();
 ?>
     <div class="downloadableFiles <?= (count($files) === 0 ? 'hidden' : '') ?>">
         <h2><?= Yii::t('admin', 'files_download') ?></h2>
+        <em class="none <?= (count($files) > 0 ? 'hidden' : '') ?>"><?= Yii::t('admin', 'files_download_none') ?></em>
         <?php
-        if (count($files) === 0) {
-            echo '<em class="none">' . Yii::t('admin', 'files_download_none') . '</em>';
-        }
         echo '<ul class="fileList">';
         foreach ($files as $file) {
-            echo '<li>';
-            $title = '<span class="glyphicon glyphicon-download-alt"></span> ' . Html::encode($file->title);
+            echo '<li data-id="' . Html::encode($file->id) . '">';
+            $title = '<span class="glyphicon glyphicon-download-alt"></span> <span class="title">' . Html::encode($file->title) . '</span>';
             echo Html::a($title, $file->getUrl());
+            if ($admin) {
+                echo '<button type="button" class="btn btn-link deleteFile">';
+                echo '<span class="glyphicon glyphicon-trash"></span>';
+                echo '</button>';
+            }
             echo '</li>';
         }
         echo '</ul>';
