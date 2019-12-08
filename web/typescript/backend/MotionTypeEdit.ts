@@ -14,16 +14,17 @@ class MotionTypeEdit {
 
         this.initSectionList();
         this.initDeadlines();
-        this.initInitiatorForm();
         this.initMotionInitiatorForm();
         this.initAmendmentInitiatorForm();
     }
 
     private initMotionInitiatorForm() {
-        let $supportType = $('#typeSupportType');
+        const $initiatorGender = $(".motionSupporters .contactGender input");
+
+        const $supportType = $('#typeSupportType');
         $supportType.on('changed.fu.selectlist', () => {
-            let selected = $supportType.find('input').val();
-            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+            const selected = $supportType.find('input').val();
+            const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
 
             if (hasSupporters) {
                 $('#typeMinSupportersRow').removeClass('hidden');
@@ -34,6 +35,7 @@ class MotionTypeEdit {
                 $('#typeAllowMoreSupporters').addClass('hidden');
                 this.motionsHaveSupporters = false;
             }
+            $initiatorGender.trigger("change");
             this.setMaxPdfSupporters();
         }).trigger('changed.fu.selectlist');
 
@@ -45,13 +47,48 @@ class MotionTypeEdit {
                 $('section.amendmentSupporters').removeClass("hidden");
             }
         }).trigger("change");
+
+        const $initiatorCanBePerson = $(".motionSupporters input[name=initiatorCanBePerson]");
+        const $initiatorCanBeOrga = $(".motionSupporters input[name=initiatorCanBeOrganization]");
+        $initiatorCanBePerson.on("change", () => {
+            if ($initiatorCanBePerson.prop("checked")) {
+                $(".motionSupporters .formGroupGender").removeClass("hidden");
+            } else {
+                $(".motionSupporters .formGroupGender").addClass("hidden");
+                if (!$initiatorCanBeOrga.prop("checked")) {
+                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
+                }
+            }
+        });
+        $initiatorCanBeOrga.on("change", () => {
+            if ($initiatorCanBeOrga.prop("checked")) {
+                $(".motionSupporters .formGroupResolutionDate").removeClass("hidden");
+            } else {
+                $(".motionSupporters .formGroupResolutionDate").addClass("hidden");
+                if (!$initiatorCanBePerson.prop("checked")) {
+                    $initiatorCanBePerson.prop("checked", true).trigger("change");
+                }
+            }
+        });
+
+        $initiatorGender.on("change", () => {
+            const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
+            const supportType = parseInt($supportType.find('input').val() as string, 10);
+            if (selected === 0 || supportType === 0) {
+                $(".motionSupporters .formGroupMinFemale").addClass("hidden");
+            } else {
+                $(".motionSupporters .formGroupMinFemale").removeClass("hidden");
+            }
+        }).trigger("change");
     }
 
     private initAmendmentInitiatorForm() {
-        let $supportType = $('#typeSupportTypeAmendment');
+        const $supportType = $('#typeSupportTypeAmendment');
+        const $initiatorGender = $(".amendmentSupporters .contactGender input");
+
         $supportType.on('changed.fu.selectlist', () => {
-            let selected = $supportType.find('input').val();
-            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+            const selected = $supportType.find('input').val();
+            const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
 
             if (hasSupporters) {
                 $('#typeMinSupportersRowAmendment').removeClass('hidden');
@@ -63,7 +100,41 @@ class MotionTypeEdit {
                 this.amendmentsHaveSupporters = false;
             }
             this.setMaxPdfSupporters();
+            $initiatorGender.trigger("change");
         }).trigger('changed.fu.selectlist');
+
+        const $initiatorCanBePerson = $(".amendmentSupporters input[name=initiatorCanBePerson]");
+        const $initiatorCanBeOrga = $(".amendmentSupporters input[name=initiatorCanBeOrganization]");
+        $initiatorCanBePerson.on("change", () => {
+            if ($initiatorCanBePerson.prop("checked")) {
+                $(".amendmentSupporters .formGroupGender").removeClass("hidden");
+            } else {
+                $(".amendmentSupporters .formGroupGender").addClass("hidden");
+                if (!$initiatorCanBeOrga.prop("checked")) {
+                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
+                }
+            }
+        });
+        $initiatorCanBeOrga.on("change", () => {
+            if ($initiatorCanBeOrga.prop("checked")) {
+                $(".amendmentSupporters .formGroupResolutionDate").removeClass("hidden");
+            } else {
+                $(".amendmentSupporters .formGroupResolutionDate").addClass("hidden");
+                if (!$initiatorCanBePerson.prop("checked")) {
+                    $initiatorCanBePerson.prop("checked", true).trigger("change");
+                }
+            }
+        });
+
+        $initiatorGender.on("change", () => {
+            const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
+            const supportType = parseInt($supportType.find('input').val() as string, 10);
+            if (selected === 0 || supportType === 0) {
+                $(".amendmentSupporters .formGroupMinFemale").addClass("hidden");
+            } else {
+                $(".amendmentSupporters .formGroupMinFemale").removeClass("hidden");
+            }
+        }).trigger("change");
     }
 
     private setMaxPdfSupporters() {
@@ -142,31 +213,6 @@ class MotionTypeEdit {
             });
             if ($deadlineHolder.find('.deadlineList').children().length === 0) {
                 addDeadlineRow();
-            }
-        });
-    }
-
-    private initInitiatorForm() {
-        const $initiatorCanBePerson = $("input[name=initiatorCanBePerson]");
-        const $initiatorCanBeOrga = $("input[name=initiatorCanBeOrganization]");
-        $initiatorCanBePerson.on("change", () => {
-            if ($initiatorCanBePerson.prop("checked")) {
-                $(".formGroupGender").removeClass("hidden");
-            } else {
-                $(".formGroupGender").addClass("hidden");
-                if (!$initiatorCanBeOrga.prop("checked")) {
-                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
-                }
-            }
-        });
-        $initiatorCanBeOrga.on("change", () => {
-            if ($initiatorCanBeOrga.prop("checked")) {
-                $(".formGroupResolutionDate").removeClass("hidden");
-            } else {
-                $(".formGroupResolutionDate").addClass("hidden");
-                if (!$initiatorCanBePerson.prop("checked")) {
-                    $initiatorCanBePerson.prop("checked", true).trigger("change");
-                }
             }
         });
     }

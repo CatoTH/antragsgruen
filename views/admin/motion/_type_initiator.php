@@ -183,6 +183,17 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRow">
+        <label class="col-md-4 control-label" for="typeMinSupportersFemale">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+        </label>
+        <div class="col-md-2">
+            <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupportersFemale">
+            <input type="number" name="motionInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemale"
+                   value="<?= Html::encode($motionSettings->minSupportersFemale) ?>">
+        </div>
+    </div>
+
     <div class="form-group" id="typeAllowMoreSupporters">
         <div class="checkbox col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
@@ -388,6 +399,17 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupporters">
             <input type="number" name="amendmentInitiatorSettings[minSupporters]" class="form-control" id="typeMinSupportersAmendment"
                    value="<?= Html::encode($amendmentSettings->minSupporters) ?>">
+        </div>
+    </div>
+
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment">
+        <label class="col-md-4 control-label" for="typeMinSupportersFemaleAmendment">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+        </label>
+        <div class="col-md-2">
+            <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupportersFemale">
+            <input type="number" name="amendmentInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemaleAmendment"
+                   value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
         </div>
     </div>
 
