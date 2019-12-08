@@ -757,7 +757,11 @@ class Consultation extends ActiveRecord
      */
     public function getPdfLogoData()
     {
-        $file = ConsultationFile::findFileByUrl($this, $this->getSettings()->logoUrl);
+        if ($this->getSettings()->logoUrl) {
+            $file = ConsultationFile::findFileByUrl($this, $this->getSettings()->logoUrl);
+        } else {
+            $file = null;
+        }
         if ($file) {
             return [$file->mimetype, $file->data];
         } else {
