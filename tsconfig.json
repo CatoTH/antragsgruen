@@ -5,7 +5,13 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "removeComments": false,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "lib": [
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ]
   },
   "exclude": [
     "node_modules"

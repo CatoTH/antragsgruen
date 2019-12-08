@@ -562,6 +562,11 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'theme_reset_confirm_name_classic'  => 'Green/Magenta',
     'theme_reset_confirm_name_dbjr'     => 'Grey/Red',
 
-    'files_title' => 'Uploaded files',
-    'files_none'  => 'No uploaded files',
+    'files_title'          => 'Uploaded files',
+    'files_none'           => 'No uploaded files',
+    'files_download'       => 'Published files',
+    'files_download_none'  => 'None yet',
+    'files_download_new'   => 'Upload file',
+    'files_download_file'  => 'Choose file',
+    'files_download_title' => 'Title',
 ];

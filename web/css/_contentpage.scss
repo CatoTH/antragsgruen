@@ -44,3 +44,40 @@
     }
   }
 }
+
+.downloadableFiles {
+  h2 {
+    font-size: 1.2em;
+  }
+
+  .fileList {
+    list-style-type: none;
+  }
+
+  .downloadableFilesUpload {
+    display: flex;
+
+    > * {
+      flex: 0;
+    }
+
+    h3 {
+      margin: 8px 0 0 0;
+      flex-basis: 150px;
+      font-size: 1em;
+    }
+
+    label {
+      font-weight: normal;
+    }
+
+    .uploadCol {
+      flex-basis: 200px;
+    }
+
+    .titleCol {
+      flex: 1;
+      max-width: 300px;
+    }
+  }
+}

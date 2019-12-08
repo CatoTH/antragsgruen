@@ -776,6 +776,20 @@ class Consultation extends ActiveRecord
     }
 
     /**
+     * @return ConsultationFile[]
+     */
+    public function getDownloadableFiles(): array
+    {
+        $files = array_filter($this->files, function(ConsultationFile $file) {
+            return $file->downloadPosition !== null;
+        });
+        usort($files, function (ConsultationFile $file1, ConsultationFile $file2) {
+           return $file1 <=> $file2;
+        });
+        return $files;
+    }
+
+    /**
      * @return string[]
      */
     public function getAdminEmails()

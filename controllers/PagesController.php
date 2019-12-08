@@ -175,12 +175,7 @@ class PagesController extends Base
             $page->menuPosition = 1;
         }
 
-        $page->save();
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        return json_encode([
+        $result = [
             'success'          => true,
             'message'          => $message,
             'id'               => $page->id,
@@ -188,7 +183,37 @@ class PagesController extends Base
             'url'              => $page->textId,
             'allConsultations' => ($page->consultationId === null),
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
-        ]);
+        ];
+
+        $downloadableResult = $this->handleDownloadableFiles(\Yii::$app->request->post());
+        $result             = array_merge($result, $downloadableResult);
+
+        $page->save();
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode($result);
+    }
+
+    private function handleDownloadableFiles(array $post)
+    {
+        $result = [];
+        if (isset($post['uploadDownloadableFile']) && strlen($post['uploadDownloadableFile']) > 0) {
+            $file                   = ConsultationFile::createDownloadableFile(
+                $this->consultation,
+                User::getCurrentUser(),
+                base64_decode($post['uploadDownloadableFile']),
+                $post['uploadDownloadableFilename'],
+                $post['uploadDownloadableTitle']
+            );
+            $result['uploadedFile'] = [
+                'title' => $file->title,
+                'url'   => $file->getUrl(),
+            ];
+        }
+
+        return $result;
     }
 
     /**

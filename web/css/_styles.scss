@@ -1063,3 +1063,24 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
 .countries {
   border: none !important;
 }
+
+.uploadCol {
+  position: relative;
+  max-width: 200px;
+  display: inline-block;
+
+  label {
+    cursor: pointer;
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  input {
+    opacity: 0;
+    width: 100%;
+  }
+}

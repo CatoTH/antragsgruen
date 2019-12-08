@@ -177,6 +177,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
     `siteId`           int(11)               DEFAULT NULL,
     `downloadPosition` mediumint(9)          DEFAULT NULL,
     `filename`         varchar(250) NOT NULL,
+    `title`            text                  DEFAULT NULL,
     `filesize`         int(11)      NOT NULL,
     `mimetype`         varchar(250) NOT NULL,
     `width`            int(11)               DEFAULT NULL,

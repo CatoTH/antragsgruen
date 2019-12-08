@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\Stylesheet;
 use yii\db\ActiveRecord;
 
@@ -16,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property int $siteId
  * @property int|null $downloadPosition
  * @property string $filename
+ * @property string|null $title
  * @property int $filesize
  * @property string $mimetype
  * @property int $width
@@ -37,6 +39,7 @@ class ConsultationFile extends ActiveRecord
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
+
         return $app->tablePrefix . 'consultationFile';
     }
 
@@ -80,7 +83,7 @@ class ConsultationFile extends ActiveRecord
     {
         return [
             [['siteId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
-            [['mimetype', 'width', 'height', 'downloadPosition'], 'safe'],
+            [['mimetype', 'width', 'height', 'downloadPosition', 'title'], 'safe'],
             [['id', 'consultationId', 'uploadedById', 'downloadPosition', 'siteId', 'filesize', 'width', 'height'], 'number']
         ];
     }
@@ -104,6 +107,7 @@ class ConsultationFile extends ActiveRecord
         }
 
         $this->filename = $filename;
+        $this->title    = $suggestion;
     }
 
     public function setData(string $data): void
@@ -129,7 +133,43 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
-    public static function createStylesheetCache(Site $site, Stylesheet $stylesheet, string $data): ?ConsultationFile
+    private static function getMimeType(string $data): string {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $file = $params->getTmpDir() . 'mime-' . uniqid();
+        file_put_contents($file, $data);
+        $mime = mime_content_type($file);
+        unlink($file);
+        return $mime;
+    }
+
+    public static function createDownloadableFile(Consultation $consultation, User $user, string $data, string $filename, string $title): ConsultationFile
+    {
+        $maxPosition = 0;
+        foreach ($consultation->getDownloadableFiles() as $file) {
+            if ($file->downloadPosition > $maxPosition) {
+                $maxPosition = $file->downloadPosition;
+            }
+        }
+
+        $file                   = new ConsultationFile();
+        $file->siteId           = $consultation->siteId;
+        $file->consultationId   = $consultation->id;
+        $file->filename         = $filename;
+        $file->title            = ($title ? $title : $filename);
+        $file->dateCreation     = date('Y-m-d H:i:s');
+        $file->downloadPosition = $maxPosition + 1;
+        $file->mimetype         = static::getMimeType($data);
+        $file->width            = null;
+        $file->height           = null;
+        $file->uploadedById     = $user->id;
+        $file->setData($data);
+        $file->save();
+
+        return $file;
+    }
+
+    public static function createStylesheetCache(Site $site, Stylesheet $stylesheet, string $data): ConsultationFile
     {
         $file = ConsultationFile::findOne([
             'siteId'   => $site->id,
@@ -141,6 +181,7 @@ class ConsultationFile extends ActiveRecord
             $file->consultationId = null;
             $file->filename       = 'styles.css';
         }
+        $file->title            = null;
         $file->dateCreation     = date('Y-m-d H:i:s');
         $file->downloadPosition = null;
         $file->data             = $data;
@@ -179,6 +220,7 @@ class ConsultationFile extends ActiveRecord
             if (!$conFound) {
                 return null;
             }
+
             return static::findFileByName($conFound, urldecode($matches['filename']));
         } else {
             return null;
