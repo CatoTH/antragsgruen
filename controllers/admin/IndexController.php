@@ -86,7 +86,8 @@ class IndexController extends AdminBase
                 $settings->logoUrl = $post['consultationLogo'];
             } elseif (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
                 try {
-                    $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo');
+                    $user              = User::getCurrentUser();
+                    $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo', $user);
                     $settings->logoUrl = $file->getUrl();
                 } catch (FormError $e) {
                     \yii::$app->session->setFlash('error', $e->getMessage());
@@ -421,7 +422,8 @@ class IndexController extends AdminBase
                             $stylesheet->$key = $settings[$key];
                         } elseif (isset($_FILES['uploaded_' . $key]) && $_FILES['uploaded_' . $key]['tmp_name']) {
                             try {
-                                $file = ConsultationFile::uploadImage($this->consultation, 'uploaded_' . $key);
+                                $user = User::getCurrentUser();
+                                $file = ConsultationFile::uploadImage($this->consultation, 'uploaded_' . $key, $user);
 
                                 $stylesheet->$key = $file->getUrl();
                             } catch (FormError $e) {

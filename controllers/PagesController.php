@@ -252,7 +252,8 @@ class PagesController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
         try {
-            $file = ConsultationFile::uploadImage($this->consultation, 'upload');
+            $user = User::getCurrentUser();
+            $file = ConsultationFile::uploadImage($this->consultation, 'upload', $user);
 
             return json_encode([
                 'uploaded' => 1,
