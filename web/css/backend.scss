@@ -215,23 +215,6 @@ label.legend {
 .imageChooser {
   text-align: right;
 
-  .uploadCol {
-    position: relative;
-    max-width: 200px;
-    display: inline-block;
-
-    label {
-      cursor: pointer;
-      position: absolute;
-      top: 7px;
-      right: 10px;
-    }
-
-    input {
-      opacity: 0;
-    }
-  }
-
   .imageChooserDd {
     display: inline-block;
 

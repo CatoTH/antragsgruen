@@ -576,6 +576,12 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'theme_reset_confirm_name_classic'  => 'Grün/Magenta',
     'theme_reset_confirm_name_dbjr'     => 'Grau/Rot',
 
-    'files_title' => 'Hochgeladene Dateien',
-    'files_none'  => 'Keine Dateien hochgeladen',
+    'files_title'          => 'Hochgeladene Dateien',
+    'files_none'           => 'Keine Dateien hochgeladen',
+    'files_download'       => 'Veröffentlichte Dateien',
+    'files_download_none'  => 'Noch keine',
+    'files_download_new'   => 'Datei veröffentlichen',
+    'files_download_file'  => 'Datei auswählen',
+    'files_download_title' => 'Titel',
+    'files_download_del_c' => 'Soll diese Datei wirklich gelöscht werden?',
 ];

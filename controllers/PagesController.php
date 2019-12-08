@@ -12,6 +12,7 @@ use app\models\exceptions\Access;
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\Response;
 
 class PagesController extends Base
@@ -175,12 +176,7 @@ class PagesController extends Base
             $page->menuPosition = 1;
         }
 
-        $page->save();
-
-        \yii::$app->response->format = Response::FORMAT_RAW;
-        \yii::$app->response->headers->add('Content-Type', 'application/json');
-
-        return json_encode([
+        $result = [
             'success'          => true,
             'message'          => $message,
             'id'               => $page->id,
@@ -188,6 +184,54 @@ class PagesController extends Base
             'url'              => $page->textId,
             'allConsultations' => ($page->consultationId === null),
             'redirectTo'       => ($needsReload ? $page->getUrl() : null),
+        ];
+
+        $downloadableResult = $this->handleDownloadableFiles(\Yii::$app->request->post());
+        $result             = array_merge($result, $downloadableResult);
+
+        $page->save();
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode($result);
+    }
+
+    private function handleDownloadableFiles(array $post)
+    {
+        $result = [];
+        if (isset($post['uploadDownloadableFile']) && strlen($post['uploadDownloadableFile']) > 0) {
+            $file                   = ConsultationFile::createDownloadableFile(
+                $this->consultation,
+                User::getCurrentUser(),
+                base64_decode($post['uploadDownloadableFile']),
+                $post['uploadDownloadableFilename'],
+                $post['uploadDownloadableTitle']
+            );
+            $result['uploadedFile'] = [
+                'title' => $file->title,
+                'url'   => $file->getUrl(),
+                'id'    => $file->id,
+            ];
+        }
+
+        return $result;
+    }
+
+    public function actionDeleteFile()
+    {
+        $fileId = intval(\Yii::$app->request->post('id'));
+        foreach ($this->consultation->files as $file) {
+            if ($file->id === $fileId) {
+                $file->delete();
+            }
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode([
+            'success' => true,
         ]);
     }
 
@@ -252,7 +296,8 @@ class PagesController extends Base
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
         try {
-            $file = ConsultationFile::uploadImage($this->consultation, 'upload');
+            $user = User::getCurrentUser();
+            $file = ConsultationFile::uploadImage($this->consultation, 'upload', $user);
 
             return json_encode([
                 'uploaded' => 1,

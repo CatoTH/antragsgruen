@@ -5,6 +5,7 @@ export class ContentPageEdit {
     private $textHolder: JQuery;
     private $textSaver: JQuery;
     private $contentSettings: JQuery;
+    private $downloadableFiles: JQuery;
     private editor: editor;
 
     constructor(private $form: JQuery) {
@@ -12,6 +13,7 @@ export class ContentPageEdit {
         this.$textHolder = $form.find('.textHolder');
         this.$editCaller = $form.find('.editCaller');
         this.$contentSettings = $form.find('.contentSettingsToolbar');
+        this.$downloadableFiles = $form.find('.downloadableFiles');
 
         this.$editCaller.on("click", this.editCalled.bind(this));
         this.$textSaver.addClass('hidden');
@@ -19,6 +21,9 @@ export class ContentPageEdit {
 
         if (this.$contentSettings.length > 0) {
             this.initContentSettings();
+        }
+        if (this.$downloadableFiles.length > 0) {
+            this.initDownloadableFiles();
         }
 
         $(".deletePageForm").on("submit", this.onSubmitDeleteForm.bind(this));
@@ -55,6 +60,7 @@ export class ContentPageEdit {
         this.$textHolder.trigger("focus");
         this.$textSaver.removeClass('hidden');
         this.$contentSettings.removeClass('hidden');
+        this.showDownloadableFiles();
     }
 
     private initContentSettings() {
@@ -64,7 +70,96 @@ export class ContentPageEdit {
         });
     }
 
-    private save(ev) {
+    private initDownloadableFiles() {
+        const $uploadLabel = this.$downloadableFiles.find(".uploadCol .text");
+        this.$downloadableFiles.find("input[type=file]").on("change", () => {
+            const path = (this.$downloadableFiles.find("input[type=file]").val() as string).split('\\');
+            const filename = path[path.length - 1];
+            $uploadLabel.text(filename);
+        });
+
+        this.$downloadableFiles.find(".fileList").on("click", ".deleteFile", (ev) => {
+            const id = $(ev.currentTarget).parents("li").first().data("id");
+            const delConfirm = this.$form.data("del-confirmation");
+
+            bootbox.confirm(delConfirm, result => {
+                if (result) {
+                    this.deleteDownloadableFile(id);
+                }
+            });
+        });
+    }
+
+    private deleteDownloadableFile(id: string) {
+        const deleteUrl = this.$form.data("file-delete-url");
+        const params = {
+
+            "id": id,
+            "_csrf": this.$form.find('> input[name=_csrf]').val(),
+        };
+
+        $.post(deleteUrl, params, (ret) => {
+            if (ret['success']) {
+                this.$downloadableFiles.find(".fileList li[data-id=" + id + "]").remove();
+
+                if (this.$downloadableFiles.find(".fileList").children().length === 0) {
+                    this.$downloadableFiles.find(".none").removeClass("hidden");
+                }
+            } else {
+                alert(ret['message']);
+            }
+        });
+    }
+
+    private addUploadedFileCb(data) {
+        const $el = $('<li><a><span class="glyphicon glyphicon-download-alt"></span> <span class="title"></span></a>' +
+            '<button type="button" class="btn btn-link deleteFile"><span class="glyphicon glyphicon-trash"></span></button></li>');
+        $el.find("a").attr("href", data['url']);
+        $el.find("a .title").text(data['title']);
+        $el.attr("data-id", data['id']);
+
+        this.$downloadableFiles.find("ul").append($el);
+        this.$downloadableFiles.find(".none").addClass('hidden');
+    }
+
+    private hideDownloadableFiles() {
+        const hasFiles = (this.$downloadableFiles.find('ul li').length > 0);
+        if (!hasFiles) {
+            this.$downloadableFiles.addClass('hidden');
+        }
+        this.$downloadableFiles.find('.downloadableFilesUpload').addClass('hidden');
+        this.$downloadableFiles.find('#downloadableFileNew').val("");
+        this.$downloadableFiles.find('#downloadableFileTitle').val("");
+        this.$downloadableFiles.find(".uploadCol .text").text(this.$downloadableFiles.find(".uploadCol .text").data("title"));
+    }
+
+    private showDownloadableFiles() {
+        this.$downloadableFiles.removeClass('hidden');
+        this.$downloadableFiles.find('.downloadableFilesUpload').removeClass('hidden');
+    }
+
+    private async readUploadableFile(input: HTMLInputElement): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function () {
+                const data = reader.result as string;
+                const x = data.split(";base64,");
+                if (x.length === 2) {
+                    resolve(x[1]);
+                } else {
+                    alert("Could not read the given file");
+                    resolve(null);
+                }
+            };
+            if (input.files.length > 0) {
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                resolve(null);
+            }
+        });
+    }
+
+    private async save(ev) {
         ev.preventDefault();
         let data = {
             'data': this.editor.getData(),
@@ -75,6 +170,18 @@ export class ContentPageEdit {
             data['title'] = this.$contentSettings.find('input[name=title]').val();
             data['allConsultations'] = (this.$contentSettings.find('input[name=allConsultations]').prop('checked') ? 1 : 0);
             data['inMenu'] = (this.$contentSettings.find('input[name=inMenu]').prop('checked') ? 1 : 0);
+        }
+        if (this.$downloadableFiles.length > 0) {
+            const input = this.$downloadableFiles.find("input[type=file]")[0] as HTMLInputElement;
+            const uploadedFile = await this.readUploadableFile(input);
+
+            if (uploadedFile) {
+                const path = (this.$downloadableFiles.find("input[type=file]").val() as string).split('\\');
+                const filename = path[path.length - 1];
+                data['uploadDownloadableFile'] = uploadedFile;
+                data['uploadDownloadableTitle'] = this.$downloadableFiles.find("#downloadableFileTitle").val();
+                data['uploadDownloadableFilename'] = filename;
+            }
         }
 
         $.post(this.$form.attr('action'), data, (ret) => {
@@ -94,6 +201,11 @@ export class ContentPageEdit {
                     $(".breadcrumb").children().last().text(ret['title']);
                 }
 
+                if (ret['uploadedFile']) {
+                    this.addUploadedFileCb(ret['uploadedFile']);
+                }
+                this.hideDownloadableFiles();
+
                 if (ret['message']) {
                     alert(ret['message']);
                 }
@@ -108,7 +220,7 @@ export class ContentPageEdit {
     }
 
     private onSubmitDeleteForm(ev, data) {
-        if (data && typeof(data.confirmed) && data.confirmed === true) {
+        if (data && typeof (data.confirmed) && data.confirmed === true) {
             return;
         }
         ev.preventDefault();

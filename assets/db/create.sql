@@ -172,18 +172,19 @@ CREATE TABLE `###TABLE_PREFIX###consultationAgendaItem` (
 --
 
 CREATE TABLE `###TABLE_PREFIX###consultationFile` (
-  `id`             int(11)      NOT NULL,
-  `consultationId` int(11)               DEFAULT NULL,
-  `siteId`         int(11)               DEFAULT NULL,
-  `filename`       varchar(250) NOT NULL,
-  `filesize`       int(11)      NOT NULL,
-  `mimetype`       varchar(250) NOT NULL,
-  `width`          int(11)               DEFAULT NULL,
-  `height`         int(11)               DEFAULT NULL,
-  `data`           mediumblob   NOT NULL,
-  `dataHash`       varchar(40)  NOT NULL,
-  `dateCreation`   timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
-  ON UPDATE CURRENT_TIMESTAMP
+    `id`               int(11)      NOT NULL,
+    `consultationId`   int(11)               DEFAULT NULL,
+    `siteId`           int(11)               DEFAULT NULL,
+    `downloadPosition` mediumint(9)          DEFAULT NULL,
+    `filename`         varchar(250) NOT NULL,
+    `title`            text                  DEFAULT NULL,
+    `filesize`         int(11)      NOT NULL,
+    `mimetype`         varchar(250) NOT NULL,
+    `width`            int(11)               DEFAULT NULL,
+    `height`           int(11)               DEFAULT NULL,
+    `data`             mediumblob   NOT NULL,
+    `dataHash`         varchar(40)  NOT NULL,
+    `dateCreation`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
@@ -738,7 +739,8 @@ ALTER TABLE `consultationAgendaItem`
 ALTER TABLE `consultationFile`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_file_consultation` (`consultationId`),
-  ADD KEY `consultation_file_site` (`siteId`);
+  ADD KEY `consultation_file_site` (`siteId`),
+  ADD KEY `fk_file_uploaded_by` (`uploadedById`);
 
 --
 -- Indexes for table `consultationLog`
@@ -1125,7 +1127,8 @@ ALTER TABLE `consultationAgendaItem`
 --
 ALTER TABLE `consultationFile`
   ADD CONSTRAINT `fk_consultation_file_site` FOREIGN KEY (`siteId`) REFERENCES `site` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_file_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`);
+  ADD CONSTRAINT `fk_file_consultation` FOREIGN KEY (`consultationId`) REFERENCES `consultation` (`id`),
+  ADD CONSTRAINT `fk_file_uploaded_by` FOREIGN KEY (`uploadedById`) REFERENCES `user` (`id`);
 
 --
 -- Constraints for table `consultationLog`

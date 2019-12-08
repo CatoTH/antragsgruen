@@ -4,6 +4,7 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
+use app\models\settings\AntragsgruenApp;
 use app\models\settings\Stylesheet;
 use yii\db\ActiveRecord;
 
@@ -14,7 +15,9 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $consultationId
  * @property int $siteId
+ * @property int|null $downloadPosition
  * @property string $filename
+ * @property string|null $title
  * @property int $filesize
  * @property string $mimetype
  * @property int $width
@@ -22,8 +25,10 @@ use yii\db\ActiveRecord;
  * @property string $data
  * @property string $dataHash
  * @property string $dateCreation
+ * @property int|null $uploadedById
  *
  * @property Consultation $consultation
+ * @property User|null $uploadedBy
  */
 class ConsultationFile extends ActiveRecord
 {
@@ -34,6 +39,7 @@ class ConsultationFile extends ActiveRecord
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
+
         return $app->tablePrefix . 'consultationFile';
     }
 
@@ -46,9 +52,14 @@ class ConsultationFile extends ActiveRecord
     }
 
     /**
-     * @return Consultation|null
+     * @return \yii\db\ActiveQuery
      */
-    public function getMyConsultation()
+    public function getUploadedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'uploadedById']);
+    }
+
+    public function getMyConsultation(): ?Consultation
     {
         if (Consultation::getCurrent() && Consultation::getCurrent()->id === $this->consultationId) {
             return Consultation::getCurrent();
@@ -72,15 +83,12 @@ class ConsultationFile extends ActiveRecord
     {
         return [
             [['siteId', 'filename', 'filesize', 'mimetype', 'data', 'dataHash', 'dateCreation'], 'required'],
-            [['mimetype', 'width', 'height'], 'safe'],
-            [['id', 'consultationId', 'siteId', 'filesize', 'width', 'height'], 'number']
+            [['mimetype', 'width', 'height', 'downloadPosition', 'title'], 'safe'],
+            [['id', 'consultationId', 'uploadedById', 'downloadPosition', 'siteId', 'filesize', 'width', 'height'], 'number']
         ];
     }
 
-    /**
-     * @param string $suggestion
-     */
-    public function setFilename($suggestion)
+    public function setFilename(string $suggestion): void
     {
         $counter = 1;
         if (in_array($suggestion, ['upload', 'browse-images', 'delete'])) {
@@ -99,24 +107,17 @@ class ConsultationFile extends ActiveRecord
         }
 
         $this->filename = $filename;
+        $this->title    = $suggestion;
     }
 
-    /**
-     * @param string $data
-     */
-    public function setData($data)
+    public function setData(string $data): void
     {
         $this->data     = $data;
         $this->filesize = strlen($data);
         $this->dataHash = sha1($data);
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param string $content
-     * @return ConsultationFile|null
-     */
-    public static function findFileByContent(Consultation $consultation, $content)
+    public static function findFileByContent(Consultation $consultation, string $content): ?ConsultationFile
     {
         return ConsultationFile::findOne([
             'consultationId' => $consultation->id,
@@ -124,12 +125,7 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
-    /**
-     * @param Site $site
-     * @param Stylesheet $stylesheet
-     * @return ConsultationFile|null
-     */
-    public static function findStylesheetCache(Site $site, Stylesheet $stylesheet)
+    public static function findStylesheetCache(Site $site, Stylesheet $stylesheet): ?ConsultationFile
     {
         return ConsultationFile::findOne([
             'siteId'   => $site->id,
@@ -137,13 +133,56 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
-    /**
-     * @param Site $site
-     * @param Stylesheet $stylesheet
-     * @param string $data
-     * @return ConsultationFile|null
-     */
-    public static function createStylesheetCache(Site $site, Stylesheet $stylesheet, $data)
+    private static function getMimeType(string $data): string
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $file   = $params->getTmpDir() . 'mime-' . uniqid();
+        file_put_contents($file, $data);
+        $mime = mime_content_type($file);
+        unlink($file);
+
+        return $mime;
+    }
+
+    public static function createDownloadableFile(Consultation $consultation, User $user, string $data, string $filename, string $title): ConsultationFile
+    {
+        $maxPosition = 0;
+        foreach ($consultation->getDownloadableFiles() as $file) {
+            if ($file->downloadPosition > $maxPosition) {
+                $maxPosition = $file->downloadPosition;
+            }
+        }
+
+        $file                   = new ConsultationFile();
+        $file->siteId           = $consultation->siteId;
+        $file->consultationId   = $consultation->id;
+        $file->filename         = $filename;
+        $file->title            = ($title ? $title : $filename);
+        $file->dateCreation     = date('Y-m-d H:i:s');
+        $file->downloadPosition = $maxPosition + 1;
+        $file->mimetype         = static::getMimeType($data);
+        if (in_array($file->mimetype, ['image/png', 'image/jpeg', 'image/gif'])) {
+            $info = getimagesizefromstring($data);
+            if ($info) {
+                $file->width  = $info[0];
+                $file->height = $info[1];
+            } else {
+                $file->width  = null;
+                $file->height = null;
+            }
+        } else {
+            $file->width  = null;
+            $file->height = null;
+        }
+        $file->uploadedById = $user->id;
+        $file->setData($data);
+        $file->save();
+
+        return $file;
+    }
+
+    public static function createStylesheetCache(Site $site, Stylesheet $stylesheet, string $data): ConsultationFile
     {
         $file = ConsultationFile::findOne([
             'siteId'   => $site->id,
@@ -155,24 +194,22 @@ class ConsultationFile extends ActiveRecord
             $file->consultationId = null;
             $file->filename       = 'styles.css';
         }
-        $file->dateCreation = date('Y-m-d H:i:s');
-        $file->data         = $data;
-        $file->dataHash     = $stylesheet->getSettingsHash();
-        $file->filesize     = strlen($data);
-        $file->mimetype     = 'text/css';
-        $file->width        = null;
-        $file->height       = null;
+        $file->title            = null;
+        $file->dateCreation     = date('Y-m-d H:i:s');
+        $file->downloadPosition = null;
+        $file->data             = $data;
+        $file->dataHash         = $stylesheet->getSettingsHash();
+        $file->filesize         = strlen($data);
+        $file->mimetype         = 'text/css';
+        $file->width            = null;
+        $file->height           = null;
+        $file->uploadedById     = null;
         $file->save();
 
         return $file;
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param $filename
-     * @return ConsultationFile|null
-     */
-    public static function findFileByName(Consultation $consultation, $filename)
+    public static function findFileByName(Consultation $consultation, string $filename): ?ConsultationFile
     {
         return ConsultationFile::findOne([
             'consultationId' => $consultation->id,
@@ -180,12 +217,7 @@ class ConsultationFile extends ActiveRecord
         ]);
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param string $url
-     * @return ConsultationFile|null
-     */
-    public static function findFileByUrl(Consultation $consultation, $url)
+    public static function findFileByUrl(Consultation $consultation, string $url): ?ConsultationFile
     {
         if (preg_match('/^\/(?<consultation>[\w_-]+)\/page\/files\/(?<filename>.*)$/siu', $url, $matches)) {
             $conFound = null;
@@ -201,6 +233,7 @@ class ConsultationFile extends ActiveRecord
             if (!$conFound) {
                 return null;
             }
+
             return static::findFileByName($conFound, urldecode($matches['filename']));
         } else {
             return null;
@@ -211,10 +244,12 @@ class ConsultationFile extends ActiveRecord
     /**
      * @param Consultation $consultation
      * @param string $formName
+     * @param User|null $user
+     *
      * @return ConsultationFile
      * @throws FormError
      */
-    public static function uploadImage(Consultation $consultation, $formName)
+    public static function uploadImage(Consultation $consultation, string $formName, ?User $user): ConsultationFile
     {
         $width    = null;
         $height   = null;
@@ -241,13 +276,15 @@ class ConsultationFile extends ActiveRecord
             return $existingFile;
         }
 
-        $file                 = new ConsultationFile();
-        $file->consultationId = $consultation->id;
-        $file->siteId         = $consultation->siteId;
-        $file->mimetype       = $mime;
-        $file->width          = $width;
-        $file->height         = $height;
-        $file->dateCreation   = date('Y-m-d H:i:s');
+        $file                   = new ConsultationFile();
+        $file->consultationId   = $consultation->id;
+        $file->siteId           = $consultation->siteId;
+        $file->downloadPosition = null;
+        $file->mimetype         = $mime;
+        $file->width            = $width;
+        $file->height           = $height;
+        $file->dateCreation     = date('Y-m-d H:i:s');
+        $file->uploadedById     = ($user ? $user->id : null);
         $file->setFilename($filename);
         $file->setData($content);
         if (!$file->save()) {
@@ -257,10 +294,7 @@ class ConsultationFile extends ActiveRecord
         return $file;
     }
 
-    /**
-     * @return string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return UrlHelper::createUrl(['pages/file', 'filename' => $this->filename], $this->getMyConsultation());
     }

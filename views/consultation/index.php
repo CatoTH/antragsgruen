@@ -3,7 +3,6 @@
 use app\components\Tools;
 use app\models\db\Amendment;
 use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationMotionType;
 use app\models\db\Motion;
 use app\models\db\MotionSupporter;
 use yii\helpers\Html;
@@ -44,41 +43,7 @@ echo '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
-echo '<div class="content contentPage contentPageWelcome">';
-
-if (count($consultation->motionTypes) === 1) {
-    $deadline = $consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-    if ($deadline) {
-        echo '<p class="deadlineCircle">' . Yii::t('con', 'deadline_circle') . ': ';
-        echo Tools::formatMysqlDateTime($deadline) . "</p>\n";
-    }
-}
-
-$pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
-$saveUrl  = $pageData->getSaveUrl();
-if ($admin) {
-    echo Html::beginForm($saveUrl, 'post', [
-        'data-upload-url'          => $pageData->getUploadUrl(),
-        'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
-        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
-    ]);
-    echo '<a href="#" class="editCaller">' . Yii::t('base', 'edit') . '</a><br>';
-}
-
-echo '<article class="textHolder" id="stdTextHolder">';
-echo $pageData->text;
-echo '</article>';
-
-if ($admin) {
-    echo '<div class="textSaver hidden">';
-    echo '<button class="btn btn-primary" type="submit">';
-    echo Yii::t('base', 'save') . '</button></div>';
-
-    echo Html::endForm();
-}
-
-echo '</div>';
-
+echo $this->render('_index_welcome_content', ['consultation' => $consultation, 'admin' => $admin]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 echo $controller->showErrors();
