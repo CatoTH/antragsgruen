@@ -1,5 +1,15 @@
 declare var Sortable;
 
+const CONTACT_NONE = 0;
+const CONTACT_OPTIONAL = 1;
+const CONTACT_REQUIRED = 2;
+
+// noinspection JSUnusedGlobalSymbols
+const SUPPORTER_ONLY_INITIATOR = 0;
+// noinspection JSUnusedGlobalSymbols
+const SUPPORTER_GIVEN_BY_INITIATOR = 1;
+const SUPPORTER_COLLECTING_SUPPORTERS = 2;
+
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
     private amendmentsHaveSupporters: boolean;
@@ -14,30 +24,9 @@ class MotionTypeEdit {
 
         this.initSectionList();
         this.initDeadlines();
-        this.initMotionInitiatorForm();
-        this.initAmendmentInitiatorForm();
-    }
 
-    private initMotionInitiatorForm() {
-        const $initiatorGender = $(".motionSupporters .contactGender input");
-
-        const $supportType = $('#typeSupportType');
-        $supportType.on('changed.fu.selectlist', () => {
-            const selected = $supportType.find('input').val();
-            const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
-
-            if (hasSupporters) {
-                $('#typeMinSupportersRow').removeClass('hidden');
-                $('#typeAllowMoreSupporters').removeClass('hidden');
-                this.motionsHaveSupporters = true;
-            } else {
-                $('#typeMinSupportersRow').addClass('hidden');
-                $('#typeAllowMoreSupporters').addClass('hidden');
-                this.motionsHaveSupporters = false;
-            }
-            $initiatorGender.trigger("change");
-            this.setMaxPdfSupporters();
-        }).trigger('changed.fu.selectlist');
+        this.initInitiatorForm($("#motionSupportersForm"));
+        this.initInitiatorForm($("#amendmentSupportersForm"));
 
         const $sameSettings = $("#sameInitiatorSettingsForAmendments input");
         $sameSettings.on("change", () => {
@@ -47,69 +36,36 @@ class MotionTypeEdit {
                 $('section.amendmentSupporters').removeClass("hidden");
             }
         }).trigger("change");
-
-        const $initiatorCanBePerson = $(".motionSupporters input[name=initiatorCanBePerson]");
-        const $initiatorCanBeOrga = $(".motionSupporters input[name=initiatorCanBeOrganization]");
-        $initiatorCanBePerson.on("change", () => {
-            if ($initiatorCanBePerson.prop("checked")) {
-                $(".motionSupporters .formGroupGender").removeClass("hidden");
-            } else {
-                $(".motionSupporters .formGroupGender").addClass("hidden");
-                if (!$initiatorCanBeOrga.prop("checked")) {
-                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
-                }
-            }
-        });
-        $initiatorCanBeOrga.on("change", () => {
-            if ($initiatorCanBeOrga.prop("checked")) {
-                $(".motionSupporters .formGroupResolutionDate").removeClass("hidden");
-            } else {
-                $(".motionSupporters .formGroupResolutionDate").addClass("hidden");
-                if (!$initiatorCanBePerson.prop("checked")) {
-                    $initiatorCanBePerson.prop("checked", true).trigger("change");
-                }
-            }
-        });
-
-        $initiatorGender.on("change", () => {
-            const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
-            const supportType = parseInt($supportType.find('input').val() as string, 10);
-            if (selected === 0 || supportType === 0) {
-                $(".motionSupporters .formGroupMinFemale").addClass("hidden");
-            } else {
-                $(".motionSupporters .formGroupMinFemale").removeClass("hidden");
-            }
-        }).trigger("change");
     }
 
-    private initAmendmentInitiatorForm() {
-        const $supportType = $('#typeSupportTypeAmendment');
-        const $initiatorGender = $(".amendmentSupporters .contactGender input");
+    private initInitiatorForm($form: JQuery) {
+        const $initiatorGender = $form.find(".contactGender input");
 
+        const $supportType = $form.find(".supportType");
         $supportType.on('changed.fu.selectlist', () => {
             const selected = $supportType.find('input').val();
             const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
 
             if (hasSupporters) {
-                $('#typeMinSupportersRowAmendment').removeClass('hidden');
-                $('#typeAllowMoreSupportersAmendment').removeClass('hidden');
-                this.amendmentsHaveSupporters = true;
+                $form.find('.formGroupMinSupporters').removeClass('hidden');
+                $form.find('.formGroupAllowMore').removeClass('hidden');
+                this.motionsHaveSupporters = true;
             } else {
-                $('#typeMinSupportersRowAmendment').addClass('hidden');
-                $('#typeAllowMoreSupportersAmendment').addClass('hidden');
-                this.amendmentsHaveSupporters = false;
+                $form.find(".formGroupMinSupporters").addClass('hidden');
+                $form.find(".formGroupAllowMore").addClass('hidden');
+                this.motionsHaveSupporters = false;
             }
-            this.setMaxPdfSupporters();
             $initiatorGender.trigger("change");
+            this.setMaxPdfSupporters();
         }).trigger('changed.fu.selectlist');
 
-        const $initiatorCanBePerson = $(".amendmentSupporters input[name=initiatorCanBePerson]");
-        const $initiatorCanBeOrga = $(".amendmentSupporters input[name=initiatorCanBeOrganization]");
+        const $initiatorCanBePerson = $form.find("input[name=initiatorCanBePerson]");
+        const $initiatorCanBeOrga = $form.find("input[name=initiatorCanBeOrganization]");
         $initiatorCanBePerson.on("change", () => {
             if ($initiatorCanBePerson.prop("checked")) {
-                $(".amendmentSupporters .formGroupGender").removeClass("hidden");
+                $form.find(".formGroupGender").removeClass("hidden");
             } else {
-                $(".amendmentSupporters .formGroupGender").addClass("hidden");
+                $form.find(".formGroupGender").addClass("hidden");
                 if (!$initiatorCanBeOrga.prop("checked")) {
                     $initiatorCanBeOrga.prop("checked", true).trigger("change");
                 }
@@ -117,9 +73,9 @@ class MotionTypeEdit {
         });
         $initiatorCanBeOrga.on("change", () => {
             if ($initiatorCanBeOrga.prop("checked")) {
-                $(".amendmentSupporters .formGroupResolutionDate").removeClass("hidden");
+                $form.find(".formGroupResolutionDate").removeClass("hidden");
             } else {
-                $(".amendmentSupporters .formGroupResolutionDate").addClass("hidden");
+                $form.find(".formGroupResolutionDate").addClass("hidden");
                 if (!$initiatorCanBePerson.prop("checked")) {
                     $initiatorCanBePerson.prop("checked", true).trigger("change");
                 }
@@ -129,10 +85,10 @@ class MotionTypeEdit {
         $initiatorGender.on("change", () => {
             const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
             const supportType = parseInt($supportType.find('input').val() as string, 10);
-            if (selected === 0 || supportType === 0) {
-                $(".amendmentSupporters .formGroupMinFemale").addClass("hidden");
+            if (selected !== CONTACT_NONE && supportType === SUPPORTER_COLLECTING_SUPPORTERS) {
+                $form.find(".formGroupMinFemale").removeClass("hidden");
             } else {
-                $(".amendmentSupporters .formGroupMinFemale").removeClass("hidden");
+                $form.find(".formGroupMinFemale").addClass("hidden");
             }
         }).trigger("change");
     }

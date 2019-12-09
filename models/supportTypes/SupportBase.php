@@ -20,6 +20,7 @@ use yii\web\View;
 
 abstract class SupportBase
 {
+    // Also defined in Typescript
     const ONLY_INITIATOR        = 0;
     const GIVEN_BY_INITIATOR    = 1;
     const COLLECTING_SUPPORTERS = 2;
