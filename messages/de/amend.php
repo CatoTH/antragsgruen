@@ -35,10 +35,11 @@ return [
     'confirmed_visible'                 => 'Du hast den Änderungsantrag veröffentlicht. Er ist jetzt sofort sichtbar.',
     'confirmed_screening'               => 'Du hast den Änderungsantrag eingereicht. ' .
                                            'Er wird nun auf formale Richtigkeit geprüft und dann freigeschaltet.',
-    'confirmed_support_phase'           => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen.<br> 
+    'confirmed_support_phase'           => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer*innen%ADD_REQUIREMENT%.<br>
 <br>
 Du kannst Interessierten folgenden Link schicken, damit sie deinen Änderungsantrag dort unterstützen können:',
-    'confirmed_support_phase_ww'        => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Änderungsantrag stellen.<br> 
+    'confirmed_support_phase_addfemale' => ', darunter min. %MIN% Frauen',
+    'confirmed_support_phase_ww'        => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern unterstützt werden, die damit mit Dir gemeinsam den Änderungsantrag stellen.<br>
 <br>
 Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ihren Zugangsdaten für das Grüne Netz einloggen und darüber verifizieren müssen.',
     'submitted_adminnoti_title'         => 'Neuer Änderungsantrag',
@@ -210,6 +211,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'support_done'                    => 'Du unterstützt diesen Änderungsantrag nun.',
     'support_already'                 => 'Du unterstützt diesen Änderungsantrag bereits',
     'support_collection_hint'         => 'Dieser Änderungsantrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen (aktueller Stand: %CURR%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
+    'support_collection_hint_female'  => 'Dieser Änderungsantrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen, davon %MIN_F% Frauen (aktueller Stand: %CURR% / %CURR_F%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint' => 'Dieser Änderungsantrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
     'support_reached_email_subject'   => 'Dein Änderungsantrag: Unterstützer*innen-Anzahl erreicht',
     'support_reached_email_body'      => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht. <br><br>Viele Grüße,<br>  Das Antragsgrün-Team',

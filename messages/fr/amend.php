@@ -110,7 +110,7 @@ return [
     'comments_screening_queue_1'        => 'Un commentaire est en attente d\'examen',
     'comments_screening_queue_x'        => '%NUM% commentaires sont en attente d\'examen',
     'comments_please_log_in'            => 'Merci de te connecter pour poster un commentaire',
-    'confirmed_support_phase'           => "Vous avez créer un amendement.<br>\n Pour le déposer officiellement, il a besoin d'au moins <strong>%MIN% soutiens</strong>.<br>\n Partage le lien suivant pour recueillir des soutiens pour ton amendement:",
+    'confirmed_support_phase'           => "Vous avez créer un amendement.<br>\n Pour le déposer officiellement, il a besoin d'au moins <strong>%MIN% soutiens</strong>%ADD_REQUIREMENT%.<br>\n Partage le lien suivant pour recueillir des soutiens pour ton amendement:",
     'submitted_adminnoti_title'         => 'Nouvel amendement',
     'submitted_adminnoti_body'          => "Un nouvel amendement a été déposé.\nMotion: %TITLE%\nAuteur: %INITIATOR%\nLink: %LINK%",
     'submitted_screening_email'         => "Salut,\n\nTu viens tout juste de déposer un amendement. Il sera maintenant examiné et ensuite publié. Tu recevras une notification séparée une fois ton amendement publué.\n\nTu peux voire l'amendement ici : %LINK%",

@@ -12,7 +12,7 @@ return [
     'supporters_heading'              => 'weitere Antragsteller*innen',
     'supporting_no_orga_error'        => 'Achtung: dein Gremium konnte nicht ermittelt werden. Das ist zur Antragstellung aber notwendig. Bitte melde dich bei den Administrator*innen dieser Veranstaltung, um das Problem zu klären.',
     'confirmed_support_phase'         => 'Du hast den Antrag erfolgreich angelegt.<br>
-Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% weitere Antragssteller*innen.<br>
+Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% weitere Antragssteller*innen%ADD_REQUIREMENT%.<br>
 <br>
 Du kannst Interessierten folgenden Link schicken. Hier können sie erklären, den Antrag gemeinsam mit dir zu stellen:',
     'confirmed_support_phase_ww'      => 'Über diesen Link kann dein Antrag gelesen und von Parteimitgliedern erklärt werden, dass sie den Antrag gemeinsam mit Dir stellen.<br>

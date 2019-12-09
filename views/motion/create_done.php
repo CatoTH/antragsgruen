@@ -5,7 +5,7 @@ use app\models\db\Motion;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Motion $motion
  * @var string $mode
  * @var \app\controllers\Base $controller
@@ -18,26 +18,35 @@ $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUr
 
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     echo '<h1>' . Yii::t('motion', 'submitted_create') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_create'));
+    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_create'));
 } elseif ($motion->isInScreeningProcess()) {
     echo '<h1>' . Yii::t('motion', 'submitted_submit') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_submit'));
+    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_submit'));
 } else {
     echo '<h1>' . Yii::t('motion', 'submitted_publish') . '</h1>';
-    $controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'created_bread_publish'));
+    $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_publish'));
 }
 
 echo '<div class="content">';
 echo '<div class="alert alert-success" role="alert">';
 if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
-    echo \Yii::t('motion', 'confirmed_visible');
+    echo Yii::t('motion', 'confirmed_visible');
 }
 if ($motion->isInScreeningProcess()) {
-    echo \Yii::t('motion', 'confirmed_screening');
+    echo Yii::t('motion', 'confirmed_screening');
 }
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    $min = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-    echo str_replace('%MIN%', $min, \Yii::t('motion', 'confirmed_support_phase'));
+    $supportType   = $motion->motionType->getMotionSupportTypeClass();
+    $min           = $supportType->getSettingsObj()->minSupporters;
+    $msg           = str_replace('%MIN%', $min, Yii::t('motion', 'confirmed_support_phase'));
+    $requirement   = '';
+    $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
+    if ($missingFemale > 0) {
+        $requirement = str_replace('%MIN%', $missingFemale, Yii::t('motion', 'confirmed_support_phase_addfemale'));
+    }
+    $msg = str_replace('%ADD_REQUIREMENT%', $requirement, $msg);
+
+    echo $msg;
 }
 echo '</div>';
 
@@ -53,7 +62,7 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             <div class="input-group">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing"
-                            title="<?= \Yii::t('motion', 'copy_to_clipboard') ?>">
+                            title="<?= Yii::t('motion', 'copy_to_clipboard') ?>">
                         <span class="glyphicon glyphicon-copy"></span>
                     </button>
                 </span>
@@ -62,17 +71,17 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
             <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
         </div>
-        <div class="hidden clipboard-done"><?= \Yii::t('motion', 'copy_to_clipboard_done') ?></div>
+        <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
     if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {
         echo '<div class="alert alert-info" role="alert">';
-        echo \Yii::t('motion', 'confirmed_support_phase_ww');
+        echo Yii::t('motion', 'confirmed_support_phase_ww');
         echo '</div>';
     }
 }
 
 echo '<p class="btnRow"><button type="submit" class="btn btn-success">' .
-    \Yii::t('motion', 'back_start') . '</button></p>';
+     Yii::t('motion', 'back_start') . '</button></p>';
 echo Html::endForm();
 echo '</div>';

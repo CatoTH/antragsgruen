@@ -66,12 +66,24 @@ echo $controller->showErrors();
 if ($supportCollectingStatus) {
     echo '<div class="content" style="margin-top: 0;">';
     echo '<div class="alert alert-info supportCollectionHint" role="alert" style="margin-top: 0;">';
-    $min  = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-    $curr = count($motion->getSupporters());
-    if ($curr >= $min) {
+    $supportType  = $motion->motionType->getMotionSupportTypeClass();
+    $min          = $supportType->getSettingsObj()->minSupporters;
+    $curr         = count($motion->getSupporters());
+    $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
+    if ($curr >= $min && !$missingFemale) {
         echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_reached_hint'));
     } else {
-        echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_hint'));
+        $minFemale = $supportType->getSettingsObj()->minSupportersFemale;
+        if ($minFemale) {
+            $currFemale = $motion->getSupporterCountByGender('female');
+            echo str_replace(
+                ['%MIN%', '%CURR%', '%MIN_F%', '%CURR_F%'],
+                [$min, $curr, $minFemale, $currFemale],
+                Yii::t('motion', 'support_collection_hint_female')
+            );
+        } else {
+            echo str_replace(['%MIN%', '%CURR%'], [$min, $curr], Yii::t('motion', 'support_collection_hint'));
+        }
 
         if ($motion->motionType->policySupportMotions !== IPolicy::POLICY_ALL && !User::getCurrentUser()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);

@@ -192,6 +192,11 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             <input type="number" name="motionInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemale"
                    value="<?= Html::encode($motionSettings->minSupportersFemale) ?>">
         </div>
+
+        <div class="col-md-1">
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+        </div>
     </div>
 
     <div class="form-group formGroupAllowMore" id="typeAllowMoreSupporters">
@@ -410,6 +415,10 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupportersFemale">
             <input type="number" name="amendmentInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemaleAmendment"
                    value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
+        </div>
+        <div class="col-md-1">
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
         </div>
     </div>
 

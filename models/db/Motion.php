@@ -563,12 +563,11 @@ class Motion extends IMotion implements IRSSItem
         return User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT);
     }
 
-    /**
-     * @return bool
-     */
-    public function canFinishSupportCollection()
+    public function canFinishSupportCollection(): bool
     {
-        return $this->getPermissionsObject()->motionCanFinishSupportCollection($this);
+        $supportType = $this->getMyMotionType()->getMotionSupportTypeClass();
+
+        return $this->getPermissionsObject()->canFinishSupportCollection($this, $supportType);
     }
 
     /**
@@ -840,27 +839,11 @@ class Motion extends IMotion implements IRSSItem
         new MotionWithdrawnNotification($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function needsCollectionPhase()
+    public function needsCollectionPhase(): bool
     {
-        $needsCollectionPhase = false;
-        if ($this->motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication()) {
-            $isOrganization = false;
-            foreach ($this->getInitiators() as $initiator) {
-                if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
-                    $isOrganization = true;
-                }
-            }
-            $supporters    = count($this->getSupporters());
-            $minSupporters = $this->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-            if ($supporters < $minSupporters && !$isOrganization) {
-                $needsCollectionPhase = true;
-            }
-        }
+        $motionSupportType = $this->motionType->getMotionSupportTypeClass();
 
-        return $needsCollectionPhase;
+        return $this->iNeedsCollectionPhase($motionSupportType);
     }
 
     /**

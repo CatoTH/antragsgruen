@@ -60,7 +60,7 @@ Titel: %TITLE%
 Antragsteller_in: %INITIATOR%
 Link: %LINK%',
 	'confirmed_support_phase' => 'Du hast den Antrag erfolgreich angelegt.<br>
-Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer_innen.<br><br>
+Damit du den Antrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer_innen%ADD_REQUIREMENT%.<br><br>
 Du kannst Interessierten folgenden Link schicken, damit sie deinen Antrag dort unterstützen können:',
 	'submitted_supp_phase_email' => 'Hallo %NAME_GIVEN%
 

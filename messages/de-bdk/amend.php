@@ -11,7 +11,7 @@ return [
     'supporter'                       => 'weitere Antragsteller*in',
     'supporters'                      => 'weitere Antragsteller*innen',
     'supporters_title'                => 'weitere Antragsteller*innen',
-    'confirmed_support_phase'         => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% weitere Antragsteller*innen.<br>
+    'confirmed_support_phase'         => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% weitere Antragsteller*innen%ADD_REQUIREMENT%.<br>
 <br>
 Du kannst Interessierten folgenden Link schicken. Hier können sie erklären, den Änderungsantrag gemeinsam mit dir zu stellen:',
     'confirmed_support_phase_ww'      => 'Über diesen Link kann dein Änderungsantrag gelesen und von Parteimitgliedern erklärt werden, dass sie den Änderungsantrag gemeinsam mit Dir stellen.<br>

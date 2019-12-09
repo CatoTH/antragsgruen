@@ -3,6 +3,7 @@
 namespace app\models\siteSpecificBehavior;
 
 use app\models\db\ConsultationMotionType;
+use app\models\db\IMotion;
 use app\models\db\MotionSupporter;
 use app\models\db\User;
 use app\models\exceptions\Internal;
@@ -10,6 +11,7 @@ use app\models\exceptions\NotAmendable;
 use app\models\policies\All;
 use app\models\db\Motion;
 use app\models\policies\IPolicy;
+use app\models\supportTypes\SupportBase;
 
 class Permissions
 {
@@ -180,7 +182,7 @@ class Permissions
         if (!$allowed) {
             if ($exceptions) {
                 $msg    = $policy->getPermissionDeniedAmendmentMsg();
-                $public = ($msg != '' && $policy->getPolicyID() != IPolicy::POLICY_NOBODY);
+                $public = ($msg !== '' && $policy->getPolicyID() != IPolicy::POLICY_NOBODY);
                 throw new NotAmendable($msg, $public);
             } else {
                 return false;
@@ -189,24 +191,23 @@ class Permissions
         return true;
     }
 
-    /**
-     * @param Motion $motion
-     * @return bool
-     * @throws Internal
-     */
-    public function motionCanFinishSupportCollection($motion)
+    public function canFinishSupportCollection(IMotion $motion, SupportBase $supportType): bool
     {
         if (!$motion->iAmInitiator()) {
             return false;
         }
-        if ($motion->status != Motion::STATUS_COLLECTING_SUPPORTERS) {
+        if ($motion->status !== Motion::STATUS_COLLECTING_SUPPORTERS) {
             return false;
         }
         if ($motion->isDeadlineOver()) {
             return false;
         }
         $supporters    = count($motion->getSupporters());
-        $minSupporters = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-        return ($supporters >= $minSupporters);
+        $minSupporters = $supportType->getSettingsObj()->minSupporters;
+        if ($supporters >= $minSupporters && !$motion->getMissingSupporterCountByGender($supportType, 'female')) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
