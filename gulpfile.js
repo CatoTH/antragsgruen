@@ -13,95 +13,95 @@ const gulp = require('gulp'),
         "node_modules/intl/dist/Intl.min.js"
     ];
 
-const taskCopyFiles = gulp.series((done) => {
-    gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
-    gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
-    done();
-});
+async function taskCopyFiles() {
+    await gulp.src("node_modules/fuelux/dist/css/fuelux*").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/fuelux/dist/js/fuelux*").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/bootstrap-toggle/css/bootstrap-toggle.min.css").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/bootstrap-toggle/js/bootstrap-toggle.min.js").pipe(gulp.dest('./web/npm/'));
+    await gulp.src("node_modules/isotope-layout/dist/isotope.pkgd.min.js").pipe(gulp.dest('./web/npm/'));
+}
 
-const taskBuildTypescript = gulp.series((done) => {
-    let tsResult = gulp.src('web/typescript/**/*.ts')
+function taskBuildTypescript() {
+    return gulp.src('web/typescript/**/*.ts')
         .pipe(sourcemaps.init())
-        .pipe(tsProject());
-
-    tsResult.js
+        .pipe(tsProject())
+        .js
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/js/build/'));
-    done();
-});
-taskBuildTypescript.displayName = 'Building Typescript';
+}
 
-const taskBuildJs = gulp.series((done) => {
-    gulp.src(main_js_files)
+function taskBuildJsMain() {
+    return gulp.src(main_js_files)
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
+}
 
-    gulp.src(["web/js/antragsgruen-de.js"])
+function taskBuildJsDe() {
+    return gulp.src(["web/js/antragsgruen-de.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-de.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
+}
 
-    gulp.src(["web/js/antragsgruen-en.js"])
+function taskBuildJsEn() {
+    return gulp.src(["web/js/antragsgruen-en.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-en.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
+}
 
-    gulp.src(["web/js/antragsgruen-en-gb.js"])
+function taskBuildJsEnGb() {
+    return gulp.src(["web/js/antragsgruen-en-gb.js"])
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen-en-gb.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
-    done();
-});
+}
 
-const taskBuildCss = gulp.series((done) => {
-    gulp.src("web/css/*.scss")
+const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsEn, taskBuildJsEnGb);
+
+function taskBuildCss() {
+    return gulp.src("web/css/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(postcss([ autoprefixer() ]))
+        .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('web/css/'));
-    done();
-});
+}
 
-const taskBuildPluginCss = gulp.series((done) => {
-    gulp.src("plugins/**/*.scss")
+function taskBuildPluginCss() {
+    return gulp.src("plugins/**/*.scss")
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
-        .pipe(postcss([ autoprefixer() ]))
+        .pipe(postcss([autoprefixer()]))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('plugins/'));
-    done();
-});
+}
 
-const taskWatch = gulp.parallel((done) => {
+function taskWatch() {
     gulp.watch(main_js_files, taskBuildJs);
     gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], taskBuildJs);
     gulp.watch(["web/css/*.scss"], gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], taskBuildPluginCss);
     gulp.watch(['./web/typescript/**/*.ts'], taskBuildTypescript);
-    done();
-});
+}
 
 gulp.task('build-js', taskBuildJs);
 gulp.task('build-typescript', taskBuildTypescript);
