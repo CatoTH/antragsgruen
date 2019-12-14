@@ -9,6 +9,7 @@
 - Admins can now assign "responsibilities" to motions and amendments, i.e., other administrational users that are in charge of it. This functionality is not enabled by default and can be enabled either through the motion list ("Functions" at the top) or the motion type settings.
 - Amendments can now have initiator and supporter settings independent from the base motions.
 - Admins can now set a predefined list of organisations that initiators can choose from when creating a motion or amendment, instead of entering the organisation freely.
+- When it is necessary to collect supporters for a motion/amendment before submitting it, and the gender field is activated, it is now possible to not only set a minimum number of supporters, but also a minimum number of women supporting it.
 - A slightly new homepage layout variant is introduced, which first shows the agenda, then the motions, but by default hides the amendments below the motions, with the option to toggle the list. This is meant for consultation with hundreds of amendments where the sheer amount of amendments makes the list way too long.
 - When merging amendments into motions, conflicting text passages can now be marked as "handled" and therefore hidden.
 - Custom themes can now modify the font size of the headings and the width of the page container and sidebar.

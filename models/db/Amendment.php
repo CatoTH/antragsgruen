@@ -733,23 +733,10 @@ class Amendment extends IMotion implements IRSSItem
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public function canFinishSupportCollection()
+    public function canFinishSupportCollection(): bool
     {
-        if (!$this->iAmInitiator()) {
-            return false;
-        }
-        if ($this->status != Amendment::STATUS_COLLECTING_SUPPORTERS) {
-            return false;
-        }
-        if ($this->isDeadlineOver()) {
-            return false;
-        }
-        $supporters    = count($this->getSupporters());
-        $minSupporters = $this->getMyMotionType()->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
-        return ($supporters >= $minSupporters);
+        $supportType = $this->getMyMotionType()->getAmendmentSupportTypeClass();
+        return $this->getPermissionsObject()->canFinishSupportCollection($this, $supportType);
     }
 
     /**
@@ -867,27 +854,10 @@ class Amendment extends IMotion implements IRSSItem
         new AmendmentWithdrawnNotification($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function needsCollectionPhase()
+    public function needsCollectionPhase(): bool
     {
-        $needsCollectionPhase = false;
-        $motionType           = $this->getMyMotionType();
-        if ($motionType->getAmendmentSupportTypeClass()->collectSupportersBeforePublication()) {
-            $isOrganization = false;
-            foreach ($this->getInitiators() as $initiator) {
-                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
-                    $isOrganization = true;
-                }
-            }
-            $supporters    = count($this->getSupporters());
-            $minSupporters = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
-            if ($supporters < $minSupporters && !$isOrganization) {
-                $needsCollectionPhase = true;
-            }
-        }
-        return $needsCollectionPhase;
+        $supportType = $this->getMyMotionType()->getAmendmentSupportTypeClass();
+        return $this->iNeedsCollectionPhase($supportType);
     }
 
     /**

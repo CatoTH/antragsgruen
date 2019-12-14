@@ -16,7 +16,7 @@ $amendmentSettings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj
 
 $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_encode($amendmentSettings));
 ?>
-<section class="motionSupporters">
+<section class="motionSupporters" id="motionSupportersForm">
     <h3><?= Yii::t('admin', 'motion_type_initiator') ?></h3>
 
     <div class="form-group">
@@ -38,7 +38,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 'motionInitiatorSettings[type]',
                 $options,
                 $motionSettings->type,
-                ['id' => 'typeSupportType'],
+                ['id' => 'typeSupportType', 'class' => 'supportType'],
                 true
             );
             ?>
@@ -172,7 +172,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeMinSupportersRow">
+    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRow">
         <label class="col-md-4 control-label" for="typeMinSupporters">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>
         </label>
@@ -183,7 +183,23 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeAllowMoreSupporters">
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRow">
+        <label class="col-md-4 control-label" for="typeMinSupportersFemale">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+        </label>
+        <div class="col-md-2">
+            <input type="hidden" name="motionInitiatorSettingFields[]" value="minSupportersFemale">
+            <input type="number" name="motionInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemale"
+                   value="<?= Html::encode($motionSettings->minSupportersFemale) ?>">
+        </div>
+
+        <div class="col-md-1">
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+        </div>
+    </div>
+
+    <div class="form-group formGroupAllowMore" id="typeAllowMoreSupporters">
         <div class="checkbox col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
@@ -224,7 +240,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 </section>
 
 
-<section class="amendmentSupporters">
+<section class="amendmentSupporters" id="amendmentSupportersForm">
     <h3><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h3>
 
     <div class="form-group">
@@ -246,7 +262,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 'amendmentInitiatorSettings[type]',
                 $options,
                 $amendmentSettings->type,
-                ['id' => 'typeSupportTypeAmendment'],
+                ['id' => 'typeSupportTypeAmendment', 'class' => 'supportType'],
                 true
             );
             ?>
@@ -380,7 +396,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeMinSupportersRowAmendment">
+    <div class="form-group formGroupMinSupporters" id="typeMinSupportersRowAmendment">
         <label class="col-md-4 control-label" for="typeMinSupportersAmendment">
             <?= Yii::t('admin', 'motion_type_supp_min') ?>
         </label>
@@ -391,7 +407,22 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group" id="typeAllowMoreSupportersAmendment">
+    <div class="form-group formGroupMinFemale" id="typeMinSupportersFemaleRowAmendment">
+        <label class="col-md-4 control-label" for="typeMinSupportersFemaleAmendment">
+            <?= Yii::t('admin', 'motion_type_supp_female_min') ?>
+        </label>
+        <div class="col-md-2">
+            <input type="hidden" name="amendmentInitiatorSettingFields[]" value="minSupportersFemale">
+            <input type="number" name="amendmentInitiatorSettings[minSupportersFemale]" class="form-control" id="typeMinSupportersFemaleAmendment"
+                   value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
+        </div>
+        <div class="col-md-1">
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+        </div>
+    </div>
+
+    <div class="form-group formGroupAllowMore" id="typeAllowMoreSupportersAmendment">
         <div class="checkbox col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php

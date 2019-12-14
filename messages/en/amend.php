@@ -173,7 +173,8 @@ return [
     'comments_screening_queue_1'        => '1 comment is waiting for screening',
     'comments_screening_queue_x'        => '%NUM% comments are waiting for screening',
     'comments_please_log_in'            => 'Please log in to post a comment',
-    'confirmed_support_phase'           => "You created the amendment.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nSend the following link to gain support for your amendment:",
+    'confirmed_support_phase'           => "You created the amendment.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your amendment:",
+    'confirmed_support_phase_addfemale' => ', including %MIN% women',
     'confirmed_support_phase_ww'        => '', // Not relevant
     'submitted_adminnoti_title'         => 'New amendment',
     'submitted_adminnoti_body'          => "A new amendment was submitted.\nMotion: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
@@ -202,6 +203,7 @@ return [
     'support_done'                      => 'You are now supporting this amendment',
     'support_already'                   => 'You are already supporting this amendment',
     'support_collection_hint'           => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this amendment on this page.',
+    'support_collection_hint_female'    => 'This amendment is not yet officially submitted. <strong>At least %MIN% supporters, including %MIN_F% women (currently: %CURR% / %CURR_F%)</strong> need to support it. You can support this amendment on this page.',
     'support_collection_reached_hint'   => 'This amendment has the necessary number of supporters, but is not yet officially submitted. This is up to the amendment proposer.',
     'support_reached_email_subject'     => 'Your amendment has enough supporters',
     'support_reached_email_body'        => "Hi,<br><br>your amendment to \"%TITLE%\" has the necessary number of supporters. You can officially submit it here:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the amendment.",

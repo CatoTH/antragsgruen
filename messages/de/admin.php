@@ -436,6 +436,8 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_like_support'    => 'Offiziell unterstützen',
     'motion_type_supp_form'       => 'Formular',
     'motion_type_supp_min'        => 'Unterstützer*innen',
+    'motion_type_supp_female_min' => 'Min. Unterstützerinnen (weiblich)',
+    'motion_type_supp_female_h'   => 'Es zählen sowohl Unterstützerinnen als auch ggf. Antragstellerin. Wenn hier ein Wert gesetzt wird, sollte gleichzeitig "Auch mehr Unterstützer*innen zulassen" gesetzt werden.',
     'motion_type_supp_max_pdf'    => 'Max. Unterstützer*innen',
     'motion_type_supp_max_pdfd'   => 'Die ersten x Unterstützer*innen werden angezeigt. Sollte es mehr geben, erscheint ein Hinweis "...und weitere x". Leer lassen um unbegrenzt anzuzeigen.',
 

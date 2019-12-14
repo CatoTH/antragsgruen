@@ -714,6 +714,59 @@ abstract class IMotion extends ActiveRecord
         });
     }
 
+    abstract public function needsCollectionPhase(): bool;
+
+    protected function iNeedsCollectionPhase(SupportBase $supportBase): bool
+    {
+        $needsCollectionPhase = false;
+        if ($supportBase->collectSupportersBeforePublication()) {
+            $supporters = $this->getSupporters();
+            $initiators = $this->getInitiators();
+
+            $isOrganization = false;
+            foreach ($initiators as $initiator) {
+                if ($initiator->personType == ISupporter::PERSON_ORGANIZATION) {
+                    $isOrganization = true;
+                }
+            }
+            if (!$isOrganization) {
+                $minSupporters = $supportBase->getSettingsObj()->minSupporters;
+                if (count($supporters) < $minSupporters) {
+                    $needsCollectionPhase = true;
+                }
+
+                if ($this->getMissingSupporterCountByGender($supportBase, 'female') > 0) {
+                    $needsCollectionPhase = true;
+                }
+            }
+        }
+
+        return $needsCollectionPhase;
+    }
+
+    public function getSupporterCountByGender(string $gender): int
+    {
+        $allSupporters = array_merge($this->getSupporters(), $this->getInitiators());
+        $found   = 0;
+        foreach ($allSupporters as $supporter) {
+            /** @var ISupporter $supporter */
+            if ($supporter->getExtraDataEntry('gender') === $gender) {
+                $found++;
+            }
+        }
+        return $found;
+    }
+
+    public function getMissingSupporterCountByGender(SupportBase $base, string $gender): int
+    {
+        $minSupporters = $base->getSettingsObj()->minSupportersFemale;
+        if (!$minSupporters) {
+            return 0;
+        }
+        $found = $this->getSupporterCountByGender($gender);
+        return max($minSupporters - $found, 0);
+    }
+
     /**
      * @param int[] $types
      * @param string $sort

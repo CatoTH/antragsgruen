@@ -1,5 +1,15 @@
 declare var Sortable;
 
+const CONTACT_NONE = 0;
+const CONTACT_OPTIONAL = 1;
+const CONTACT_REQUIRED = 2;
+
+// noinspection JSUnusedGlobalSymbols
+const SUPPORTER_ONLY_INITIATOR = 0;
+// noinspection JSUnusedGlobalSymbols
+const SUPPORTER_GIVEN_BY_INITIATOR = 1;
+const SUPPORTER_COLLECTING_SUPPORTERS = 2;
+
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
     private amendmentsHaveSupporters: boolean;
@@ -14,28 +24,9 @@ class MotionTypeEdit {
 
         this.initSectionList();
         this.initDeadlines();
-        this.initInitiatorForm();
-        this.initMotionInitiatorForm();
-        this.initAmendmentInitiatorForm();
-    }
 
-    private initMotionInitiatorForm() {
-        let $supportType = $('#typeSupportType');
-        $supportType.on('changed.fu.selectlist', () => {
-            let selected = $supportType.find('input').val();
-            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
-
-            if (hasSupporters) {
-                $('#typeMinSupportersRow').removeClass('hidden');
-                $('#typeAllowMoreSupporters').removeClass('hidden');
-                this.motionsHaveSupporters = true;
-            } else {
-                $('#typeMinSupportersRow').addClass('hidden');
-                $('#typeAllowMoreSupporters').addClass('hidden');
-                this.motionsHaveSupporters = false;
-            }
-            this.setMaxPdfSupporters();
-        }).trigger('changed.fu.selectlist');
+        this.initInitiatorForm($("#motionSupportersForm"));
+        this.initInitiatorForm($("#amendmentSupportersForm"));
 
         const $sameSettings = $("#sameInitiatorSettingsForAmendments input");
         $sameSettings.on("change", () => {
@@ -47,23 +38,59 @@ class MotionTypeEdit {
         }).trigger("change");
     }
 
-    private initAmendmentInitiatorForm() {
-        let $supportType = $('#typeSupportTypeAmendment');
+    private initInitiatorForm($form: JQuery) {
+        const $initiatorGender = $form.find(".contactGender input");
+
+        const $supportType = $form.find(".supportType");
         $supportType.on('changed.fu.selectlist', () => {
-            let selected = $supportType.find('input').val();
-            let hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
+            const selected = $supportType.find('input').val();
+            const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
 
             if (hasSupporters) {
-                $('#typeMinSupportersRowAmendment').removeClass('hidden');
-                $('#typeAllowMoreSupportersAmendment').removeClass('hidden');
-                this.amendmentsHaveSupporters = true;
+                $form.find('.formGroupMinSupporters').removeClass('hidden');
+                $form.find('.formGroupAllowMore').removeClass('hidden');
+                this.motionsHaveSupporters = true;
             } else {
-                $('#typeMinSupportersRowAmendment').addClass('hidden');
-                $('#typeAllowMoreSupportersAmendment').addClass('hidden');
-                this.amendmentsHaveSupporters = false;
+                $form.find(".formGroupMinSupporters").addClass('hidden');
+                $form.find(".formGroupAllowMore").addClass('hidden');
+                this.motionsHaveSupporters = false;
             }
+            $initiatorGender.trigger("change");
             this.setMaxPdfSupporters();
         }).trigger('changed.fu.selectlist');
+
+        const $initiatorCanBePerson = $form.find("input[name=initiatorCanBePerson]");
+        const $initiatorCanBeOrga = $form.find("input[name=initiatorCanBeOrganization]");
+        $initiatorCanBePerson.on("change", () => {
+            if ($initiatorCanBePerson.prop("checked")) {
+                $form.find(".formGroupGender").removeClass("hidden");
+            } else {
+                $form.find(".formGroupGender").addClass("hidden");
+                if (!$initiatorCanBeOrga.prop("checked")) {
+                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
+                }
+            }
+        });
+        $initiatorCanBeOrga.on("change", () => {
+            if ($initiatorCanBeOrga.prop("checked")) {
+                $form.find(".formGroupResolutionDate").removeClass("hidden");
+            } else {
+                $form.find(".formGroupResolutionDate").addClass("hidden");
+                if (!$initiatorCanBePerson.prop("checked")) {
+                    $initiatorCanBePerson.prop("checked", true).trigger("change");
+                }
+            }
+        });
+
+        $initiatorGender.on("change", () => {
+            const selected = parseInt($initiatorGender.filter(":checked").val() as string, 10);
+            const supportType = parseInt($supportType.find('input').val() as string, 10);
+            if (selected !== CONTACT_NONE && supportType === SUPPORTER_COLLECTING_SUPPORTERS) {
+                $form.find(".formGroupMinFemale").removeClass("hidden");
+            } else {
+                $form.find(".formGroupMinFemale").addClass("hidden");
+            }
+        }).trigger("change");
     }
 
     private setMaxPdfSupporters() {
@@ -142,31 +169,6 @@ class MotionTypeEdit {
             });
             if ($deadlineHolder.find('.deadlineList').children().length === 0) {
                 addDeadlineRow();
-            }
-        });
-    }
-
-    private initInitiatorForm() {
-        const $initiatorCanBePerson = $("input[name=initiatorCanBePerson]");
-        const $initiatorCanBeOrga = $("input[name=initiatorCanBeOrganization]");
-        $initiatorCanBePerson.on("change", () => {
-            if ($initiatorCanBePerson.prop("checked")) {
-                $(".formGroupGender").removeClass("hidden");
-            } else {
-                $(".formGroupGender").addClass("hidden");
-                if (!$initiatorCanBeOrga.prop("checked")) {
-                    $initiatorCanBeOrga.prop("checked", true).trigger("change");
-                }
-            }
-        });
-        $initiatorCanBeOrga.on("change", () => {
-            if ($initiatorCanBeOrga.prop("checked")) {
-                $(".formGroupResolutionDate").removeClass("hidden");
-            } else {
-                $(".formGroupResolutionDate").addClass("hidden");
-                if (!$initiatorCanBePerson.prop("checked")) {
-                    $initiatorCanBePerson.prop("checked", true).trigger("change");
-                }
             }
         });
     }

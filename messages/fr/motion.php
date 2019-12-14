@@ -127,7 +127,7 @@ return [
     'support_orga'           => 'Organisation',
     'support_name'           => 'Nom',
 
-    'confirmed_support_phase'            => "Tu as crée la motion.<br>\nPour la déposer officiellement, il faut au moins <strong>%MIN% soutiens</strong>.<br>\nEnvoie le lien suivant pour collecter des soutiens pour ta motion :",
+    'confirmed_support_phase'            => "Tu as crée la motion.<br>\nPour la déposer officiellement, il faut au moins <strong>%MIN% soutiens</strong>%ADD_REQUIREMENT%.<br>\nEnvoie le lien suivant pour collecter des soutiens pour ta motion :",
     'submitted_screening_email'          => "Salut,\n\nTu viens de déposer une motion. Elle va maintenant être examinée puis publiée. Tu seras notifié quand elle l'aura été.\n\nTu peux voir la motion ici : %LINK%",
     'submitted_screening_email_subject'  => 'Motion déposée',
     'submitted_supp_phase_email'         => "Salut,\n\nTu as créé la motion.\nour la déposer officiellement, il faut au moins %MIN% soutiens.\n\nEnvoie le lien suivant pour collecter des soutiens pour ta motion : \n\n%LINK%\n",

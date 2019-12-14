@@ -16,6 +16,7 @@ class InitiatorForm implements \JsonSerializable
     public $initiatorCanBeOrganization = true;
 
     public $minSupporters       = 1;
+    public $minSupportersFemale = null;
     public $maxPdfSupporters    = null;
     public $hasOrganizations    = true;
     public $allowMoreSupporters = true;
@@ -38,9 +39,14 @@ class InitiatorForm implements \JsonSerializable
     public function saveFormTyped($formdata, $affectedFields)
     {
         if (isset($formdata['maxPdfSupporters']) && is_numeric($formdata['maxPdfSupporters']) && $formdata['maxPdfSupporters'] >= 0) {
-            $formdata['maxPdfSupporters'] = IntVal($formdata['maxPdfSupporters']);
+            $formdata['maxPdfSupporters'] = intval($formdata['maxPdfSupporters']);
         } else {
             $formdata['maxPdfSupporters'] = null;
+        }
+        if (isset($formdata['minSupportersFemale']) && is_numeric($formdata['minSupportersFemale']) && $formdata['minSupportersFemale'] >= 0) {
+            $formdata['minSupportersFemale'] = intval($formdata['minSupportersFemale']);
+        } else {
+            $formdata['minSupportersFemale'] = null;
         }
         $this->saveForm($formdata, $affectedFields);
     }

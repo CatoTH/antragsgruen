@@ -127,8 +127,6 @@ return [
     'withdraw_yes'              => 'Yes, withdraw',
     'withdrawn_adminnoti_title' => 'A motion has meen withdrawn',
     'withdrawn_adminnoti_body'  => "The following motion has been withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
-    'submitted_adminnoti_title' => 'Motion withdrawn',
-    'submitted_adminnoti_body'  => "A motion was withdrawn.\nTitle: %TITLE%\nProposer: %INITIATOR%\nLink: %LINK%",
     'field_optional'            => 'optional',
     'field_required'            => 'required',
     'max_size_hint'             => 'Max. %MB% MB',
@@ -149,7 +147,8 @@ return [
     'support_orga'           => 'Organization',
     'support_name'           => 'Name',
 
-    'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>.<br>\nSend the following link to gain support for your motion:",
+    'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your motion:",
+    'confirmed_support_phase_addfemale'  => ', including %MIN% women',
     'confirmed_support_phase_ww'         => '', // Not relevant
     'submitted_screening_email'          => "Hi,\n\nYou just submitted a motion. It will now be screened and then published. You will be notified separately, once this happens.\n\nYou can see the motion here: %LINK%",
     'submitted_screening_email_subject'  => 'Motion submitted',
@@ -168,6 +167,7 @@ return [
     'support'                            => 'Support',
     'support_done'                       => 'You are now supporting this motion.',
     'support_collection_hint'            => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters (currently: %CURR%)</strong> need to support it. You can support this motion on this page.',
+    'support_collection_hint_female'     => 'This motion is not yet officially submitted. <strong>At least %MIN% supporters, including %MIN_F% women (currently: %CURR% / %CURR_F%)</strong> need to support it. You can support this amendment on this page.',
     'support_collection_reached_hint'    => 'This motion has the necessary number of supporters, but is not yet officially submitted. This is up to the motion proposer.',
     'support_reached_email_subject'      => 'Your motion has enough supporters',
     'support_reached_email_body'         => "Hi,<br><br>Your motion \"%TITLE%\" has the necessary number of supporters. You can officially submit it here now:<br><br><strong>%LINK%</strong><br><br>Please note that this step is mandatory to submit the motion.",

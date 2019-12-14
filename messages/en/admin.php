@@ -402,6 +402,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_amend_deadline'  => 'Amendments',
     'motion_type_deadline_mot'    => 'Motions',
     'motion_type_supp_min'        => 'Supporters',
+    'motion_type_supp_female_min' => 'Min. supporters (female)',
+    'motion_type_supp_female_h'   => 'Both initiators and supporters count here. If you enter a limit here, you should also set the option "Allow more supporters than required" to avoid complications.',
     'motion_type_supp_max_pdf'    => 'Max. supporters',
     'motion_type_supp_max_pdfd'   => 'The first x supporters are shown. If there are more, an hint "...and x more" is shown. Leave empty to have no limit.',
 

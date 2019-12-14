@@ -64,7 +64,7 @@ Antrag: %TITLE%
 Antragsteller_in: %INITIATOR%
 
 Link: %LINK%',
-	'confirmed_support_phase' => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer_innen.<br><br>
+	'confirmed_support_phase' => 'Du hast den Änderungsantrag erfolgreich angelegt. Damit du den Änderungsantrag offiziell einreichen kannst, benötigt dieser mindestens %MIN% Unterstützer_innen%ADD_REQUIREMENT%.<br><br>
 Du kannst Interessierten folgenden Link schicken, damit sie deinen Änderungsantrag dort unterstützen können:',
 	'submitted_adminnoti_body' => 'Es wurde ein neuer Änderungsantrag eingereicht.
 Antrag: %TITLE%
