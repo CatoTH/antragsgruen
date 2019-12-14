@@ -184,6 +184,7 @@ CREATE TABLE `###TABLE_PREFIX###consultationFile` (
     `height`           int(11)               DEFAULT NULL,
     `data`             mediumblob   NOT NULL,
     `dataHash`         varchar(40)  NOT NULL,
+    `uploadedById`     int(11)               DEFAULT NULL,
     `dateCreation`     timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
   ENGINE = InnoDB
