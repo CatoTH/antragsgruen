@@ -2,31 +2,18 @@
 
 namespace app\controllers\admin;
 
-use app\components\DateTools;
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
-use app\models\db\TexTemplate;
-use app\models\db\User;
+use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
+use app\models\db\{Consultation, ConsultationSettingsMotionSection, ConsultationMotionType, Motion, MotionSupporter, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\exceptions\FormError;
-use app\models\forms\DeadlineForm;
-use app\models\forms\MotionEditForm;
-use app\models\forms\MotionMover;
+use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\InitiatorForm;
-use app\models\settings\MotionType;
+use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
-use app\models\motionTypeTemplates\Application as ApplicationTemplate;
-use app\models\motionTypeTemplates\Motion as MotionTemplate;
-use app\models\motionTypeTemplates\PDFApplication as PDFApplicationTemplate;
+use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
+use yii\web\Response;
 
 class MotionController extends AdminBase
 {
@@ -620,5 +607,43 @@ class MotionController extends AdminBase
         }
 
         return $this->render('move', ['form' => $form]);
+    }
+
+    public function actionMoveCheck($motionId, $checkType)
+    {
+        /** @var Motion $motion */
+        $motion = $this->consultation->getMotion($motionId);
+        if (!$motion) {
+            $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
+        }
+        $this->checkConsistency($motion);
+
+        $result = null;
+        if ($checkType === 'prefix') {
+            // Returns true, if the provided motion prefix does not exist in the specified consultation yet
+            if (\Yii::$app->request->get('newConsultationId')) {
+                $consultationId = intval(\Yii::$app->request->get('newConsultationId'));
+            } else {
+                $consultationId = $this->consultation->id;
+            }
+
+            $newMotionPrefix = \Yii::$app->request->get('newMotionPrefix');
+            /** @var Consultation $newConsultation */
+            $newConsultation = array_values(array_filter($this->site->consultations, function(Consultation $con) use ($consultationId) {
+                return ($con->id === $consultationId);
+            }))[0];
+            $existingMotion = array_filter($newConsultation->motions, function(Motion $cmpMotion) use ($newMotionPrefix, $motion) {
+                return (
+                    mb_strtolower($cmpMotion->titlePrefix) === mb_strtolower($newMotionPrefix) &&
+                    $cmpMotion->id !== $motion->id
+                );
+            });
+            $result = (count($existingMotion) === 0);
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        return json_encode($result);
     }
 }

@@ -2,7 +2,7 @@
 
 ## Version 4.4.0 [not released yet]
 
-- Version 4.4 is the first version of Antragsgrün compatible with PHP 7.4, with a new minimum requirement of PHP 7.1.
+- WARNING: if you are using a PHP version older than 7.1, then update to PHP 7.2 or newer first before installing this update! Version 4.4 is the first version of Antragsgrün compatible with PHP 7.4, with a new minimum requirement of PHP 7.1.
 - Admins can now publish a list of arbitrary files to the home page of each consultation, e.g. PDFs with information about this event. The upload functionality can be found when editing the "Welcome"-message.
 - Motions can be moved to another agenda item, while retaining a reference to the new location in the old place.
 - Motions (including all amendments, comments and so on) can be moved to another consultation in the same site, optionally while retaining a reference to the new location in the old place.

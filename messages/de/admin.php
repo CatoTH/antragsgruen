@@ -95,7 +95,7 @@ return [
     'motion_note_internal'        => 'Interne Notiz',
     'motion_move_title'           => 'Antrag verschieben',
     'motion_moved_title'          => 'Antrag verschoben',
-    'motion_move_prefix'          => 'Neuer Antragskürzel',
+    'motion_move_prefix'          => 'Neues Antragskürzel',
     'motion_move_op'              => 'Referenz erhalten',
     'motion_move_op_copy'         => 'Referenz an der aktuellen Position erhalten',
     'motion_move_op_copyh'        => '(Eine Kopie des Antrags bleibt an der bisherigen Stelle, wird aber als „verschoben” gekennzeichnet und verlinkt auf den neuen)',

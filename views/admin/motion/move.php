@@ -30,6 +30,7 @@ echo '<h1>' . Yii::t('admin', 'motion_move_title') . '</h1>';
 $myUrl = UrlHelper::createUrl(['admin/motion/move', 'motionId' => $motion->id]);
 echo Html::beginForm($myUrl, 'post', [
     'data-antragsgruen-widget' => 'backend/MoveMotion',
+    'data-check-backend'       => UrlHelper::createUrl(['/admin/motion/move-check', 'motionId' => $motion->id]),
     'class'                    => 'adminMoveForm form-horizontal fuelux',
 ]);
 
@@ -137,6 +138,9 @@ $targetConsultations = $form->getConsultationTargets();
                 ]);
                 ?>
                 <small><?= Yii::t('admin', 'motion_prefix_unique') ?></small>
+            </div>
+            <div class="col-md-5">
+                <span class="prefixAlreadyTaken hidden"><?= Yii::t('admin', 'motion_prefix_collision') ?></span>
             </div>
         </div>
     </div>
