@@ -15,6 +15,7 @@
 - Custom themes can now modify the font size of the headings and the width of the page container and sidebar.
 - If an uploaded PDF is part of a motion (e.g. an application PDF or a financial report) and the PDF-version of the overall motion is generated, the embedded PDF is now also embedded for the LaTeX-based mechanism. To enable this, LuaLaTeX is used instead of XeLaTeX.
 - Bugfix: When merging amendments with a modified version as proposed procedure, the paragraph's collision section was initially showing the collisions of the original amendment, not the proposed version.
+- Bugfix: If a motion assigned to a tag was deleted, that tag could not be removed from the consultation anymore.
 
 ### Version 4.3.1 (2019-10-27)
 

@@ -2,21 +2,11 @@
 
 namespace app\controllers\admin;
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\updater\UpdateChecker;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\ConsultationFile;
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\ConsultationText;
-use app\models\db\ISupporter;
+use app\components\{HTMLTools, Tools, updater\UpdateChecker, UrlHelper};
+use app\models\db\{Consultation, ConsultationFile, ConsultationSettingsTag, ConsultationText, ISupporter, Site, User};
 use app\models\AdminTodoItem;
-use app\models\db\Site;
-use app\models\db\User;
 use app\models\exceptions\FormError;
-use app\models\forms\AntragsgruenUpdateModeForm;
-use app\models\forms\ConsultationCreateForm;
+use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
 use yii\web\Response;
 
@@ -208,9 +198,7 @@ class IndexController extends AdminBase
 
         foreach ($consultation->tags as $tag) {
             if (!in_array($tag->id, $foundTags)) {
-                foreach ($tag->motions as $motion) {
-                    $motion->unlink('tags', $tag, true);
-                }
+                \Yii::$app->db->createCommand('DELETE FROM `motionTag` WHERE `tagId` = ' . intval($tag->id))->execute();
                 $tag->delete();
             }
         }
