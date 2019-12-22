@@ -446,7 +446,7 @@ class Exporter
      */
     public function createPDF($contents)
     {
-        if (!$this->app->xelatexPath) {
+        if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
         $layoutStr   = static::createLayoutString($this->layout);
@@ -455,6 +455,8 @@ class Exporter
         $count       = 0;
         $imageFiles  = [];
         $imageHashes = [];
+        $pdfFiles    = [];
+        $pdfHashes   = [];
         foreach ($contents as $content) {
             if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
@@ -469,6 +471,18 @@ class Exporter
 
                 $imageFiles[] = $this->app->getTmpDir() . $fileName;
             }
+            foreach ($content->attachedPdfs as $fileName => $attachedPdf) {
+                if (!preg_match('/^[a-z0-9_-]+\.pdf$/siu', $fileName)) {
+                    throw new Internal('Invalid pdf filename');
+                }
+                $absoluteFilename = $this->app->getTmpDir() . $fileName;
+                file_put_contents($absoluteFilename, $attachedPdf);
+                $pdfHashes[$absoluteFilename] = md5($attachedPdf);
+
+                $pdfFiles[] = $absoluteFilename;
+
+                $contentStr .= "\n" . '\includepdf[pages=-]{' . $absoluteFilename . '}' . "\n";
+            }
             $cacheDepend .= $content->lineLength . '.';
             $count++;
         }
@@ -482,16 +496,26 @@ class Exporter
 
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-pdf');
 
-        $cmd = $this->app->xelatexPath;
-        $cmd .= ' -interaction=batchmode';
-        $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
-        if ($this->app->xdvipdfmx) {
-            $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
+        if ($this->app->lualatexPath) {
+            $cmd = 'PATH=/usr/ TEXMFCACHE=' . escapeshellarg($this->app->getTmpDir()) . ' ';
+            $cmd .= $this->app->lualatexPath;
+            $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
+            $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
+        } else {
+            $cmd = $this->app->xelatexPath;
+            $cmd .= ' -interaction=batchmode';
+            $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
+            if ($this->app->xdvipdfmx) {
+                $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
+            }
+            $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
         }
-        $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
 
         $cacheDepend .= $str;
         foreach ($imageHashes as $file => $hash) {
+            $cacheDepend = str_replace($file, $hash, $cacheDepend);
+        }
+        foreach ($pdfHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
         $cached = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
@@ -505,6 +529,9 @@ class Exporter
 
         if ($cached) {
             foreach ($imageFiles as $file) {
+                unlink($file);
+            }
+            foreach ($pdfFiles as $file) {
                 unlink($file);
             }
             return $cached;
@@ -526,6 +553,9 @@ class Exporter
         unlink($filenameBase . '.out');
 
         foreach ($imageFiles as $file) {
+            unlink($file);
+        }
+        foreach ($pdfFiles as $file) {
             unlink($file);
         }
 

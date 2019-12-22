@@ -83,7 +83,8 @@ class AmendmentController extends Base
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        if ($this->getParams()->xelatexPath && $amendment->getMyMotionType()->texTemplateId) {
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
             return LayoutHelper::createPdfLatex($amendment);
         } else {
             return LayoutHelper::createPdfTcpdf($amendment);
@@ -121,7 +122,8 @@ class AmendmentController extends Base
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        if ($this->getParams()->xelatexPath && $texTemplate) {
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $texTemplate) {
             return $this->renderPartial('pdf_collection_tex', [
                 'amendments'  => $amendments,
                 'texTemplate' => $texTemplate,

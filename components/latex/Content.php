@@ -16,6 +16,7 @@ class Content
     public $textMain          = '';
     public $textRight         = '';
     public $imageData         = [];
+    public $attachedPdfs      = [];
     public $lineLength;
     public $agendaItemName    = '';
     public $publicationDate   = '';

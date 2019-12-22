@@ -127,12 +127,12 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
                     $title = Yii::t('admin', 'index_export_ods');
                     echo $getExportLinkLi($title, ['admin/motion-list/motion-odslist'], $motionType->id, 'motionODS');
 
-                    if ($controller->getParams()->xelatexPath) {
+                    if ($controller->getParams()->xelatexPath || $controller->getParams()->lualatexPath) {
                         $title = Yii::t('admin', 'index_pdf_collection');
                         echo $getExportLinkLi($title, ['motion/pdfcollection'], $motionType->id, 'motionPDF');
                     }
 
-                    if ($controller->getParams()->xelatexPath) {
+                    if ($controller->getParams()->xelatexPath || $controller->getParams()->lualatexPath) {
                         $title = Yii::t('admin', 'index_pdf_zip_list');
                         $path  = ['admin/motion-list/motion-pdfziplist'];
                         echo $getExportLinkLi($title, $path, $motionType->id, 'motionZIP');
@@ -185,7 +185,7 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
                 $title = Yii::t('admin', 'index_pdf_list');
                 echo $getExportLinkLi($title, ['admin/amendment/pdflist'], null, 'amendmentPdfList');
 
-                if ($controller->getParams()->xelatexPath) {
+                if ($controller->getParams()->xelatexPath || $controller->getParams()->lualatexPath) {
                     $title = Yii::t('admin', 'index_pdf_zip_list');
                     echo $getExportLinkLi($title, ['admin/amendment/pdfziplist'], null, 'amendmentPdfZipList');
                 }

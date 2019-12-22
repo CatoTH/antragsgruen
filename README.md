@@ -123,7 +123,7 @@ Necessary packets on Linux (Debian):
 ```bash
 apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended \
                 texlive-latex-extra texlive-humanities texlive-fonts-recommended \
-                texlive-xetex poppler-utils
+                texlive-xetex texlive-luatex poppler-utils
 ```
 
 Necessary packets on Mac OS X:
@@ -134,8 +134,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 
 ```json
 {
-    "xelatexPath": "/usr/bin/xelatex",
-    "xdvipdfmx": "/usr/bin/xdvipdfmx",
+    "lualatexPath": "/usr/bin/lualatexPath",
     "pdfunitePath": "/usr/bin/pdfunite"
 }
 ```

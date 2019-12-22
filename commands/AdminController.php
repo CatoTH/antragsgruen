@@ -101,7 +101,7 @@ class AdminController extends Controller
             echo '- Motion ' . $motion->id . "\n";
             $motion->getNumberOfCountableLines();
             $motion->getFirstLineNumber();
-            if ($params->xelatexPath) {
+            if ($params->xelatexPath || $params->lualatexPath) {
                 \app\views\motion\LayoutHelper::createPdfLatex($motion);
             }
             foreach ($motion->amendments as $amendment) {
@@ -110,12 +110,12 @@ class AdminController extends Controller
                 }
                 echo '  - Amendment ' . $amendment->id . "\n";
                 $amendment->getFirstDiffLine();
-                if ($params->xelatexPath) {
+                if ($params->xelatexPath || $params->lualatexPath) {
                     \app\views\amendment\LayoutHelper::createPdfLatex($amendment);
                 }
             }
         }
-        if ($params->xelatexPath) {
+        if ($params->xelatexPath || $params->lualatexPath) {
             $this->stdout(
                 'Please remember to ensure the runtime/cache-directory and all files are still writable ' .
                 'by the web process if the current process is being run with a different user.' . "\n"

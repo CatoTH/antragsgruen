@@ -330,7 +330,12 @@ class PDF extends ISectionType
      */
     public function printMotionTeX($isRight, Content $content, Consultation $consultation)
     {
-        // @TODO
+        if ($this->isEmpty()) {
+            return;
+        }
+
+        $filenameBase                         = uniqid('motion-pdf-attachment') . '.pdf';
+        $content->attachedPdfs[$filenameBase] = base64_decode($this->section->data);
     }
 
     /**
