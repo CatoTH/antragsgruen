@@ -446,7 +446,7 @@ class Exporter
      */
     public function createPDF($contents)
     {
-        if (!$this->app->xelatexPath) {
+        if (!$this->app->xelatexPath && !$this->app->lualatexPath) {
             throw new Internal('LaTeX/XeTeX-Export is not enabled');
         }
         $layoutStr   = static::createLayoutString($this->layout);
@@ -482,13 +482,20 @@ class Exporter
 
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-pdf');
 
-        $cmd = $this->app->xelatexPath;
-        $cmd .= ' -interaction=batchmode';
-        $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
-        if ($this->app->xdvipdfmx) {
-            $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
+        if ($this->app->lualatexPath) {
+            $cmd = $this->app->lualatexPath;
+            $cmd .= ' -interaction=batchmode';
+            $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
+            $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
+        } else {
+            $cmd = $this->app->xelatexPath;
+            $cmd .= ' -interaction=batchmode';
+            $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
+            if ($this->app->xdvipdfmx) {
+                $cmd .= ' -output-driver=' . escapeshellarg($this->app->xdvipdfmx);
+            }
+            $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
         }
-        $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
 
         $cacheDepend .= $str;
         foreach ($imageHashes as $file => $hash) {

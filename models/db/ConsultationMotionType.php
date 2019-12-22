@@ -255,7 +255,7 @@ class ConsultationMotionType extends ActiveRecord
         foreach (IPDFLayout::getClasses($params) as $id => $data) {
             $return['php' . $id] = $data;
         }
-        if ($params->xelatexPath) {
+        if ($params->xelatexPath || $params->lualatexPath) {
             /** @var TexTemplate[] $texLayouts */
             $texLayouts = TexTemplate::find()->all();
             foreach ($texLayouts as $layout) {

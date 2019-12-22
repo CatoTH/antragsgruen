@@ -86,9 +86,10 @@ class AmendmentController extends AdminBase
     {
         $withdrawn = (IntVal($withdrawn) === 1);
         $zip       = new ZipWriter();
+        $hasLaTeX  = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($this->consultation->getVisibleMotions($withdrawn) as $motion) {
             foreach ($motion->getVisibleAmendments($withdrawn) as $amendment) {
-                if ($this->getParams()->xelatexPath && $amendment->getMyMotionType()->texTemplateId) {
+                if ($hasLaTeX && $amendment->getMyMotionType()->texTemplateId) {
                     $file = LayoutHelper::createPdfLatex($amendment);
                 } else {
                     $file = LayoutHelper::createPdfTcpdf($amendment);

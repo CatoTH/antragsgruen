@@ -362,7 +362,7 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
+        $type->texTemplateId               = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = 1;
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;
@@ -481,7 +481,7 @@ class SiteCreateForm extends Model
         }
         $type->policySupportMotions        = IPolicy::POLICY_NOBODY;
         $type->policySupportAmendments     = IPolicy::POLICY_NOBODY;
-        $type->texTemplateId               = ($config->xelatexPath ? 1 : null);
+        $type->texTemplateId               = ($config->xelatexPath || $config->lualatexPath ? 1 : null);
         $type->amendmentMultipleParagraphs = ($this->amendSinglePara ? 0 : 1);
         $type->motionLikesDislikes         = 0;
         $type->amendmentLikesDislikes      = 0;

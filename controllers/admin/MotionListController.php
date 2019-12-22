@@ -366,9 +366,10 @@ class MotionListController extends AdminBase
             return $this->showErrorpage(404, $e->getMessage());
         }
 
-        $zip = new ZipWriter();
+        $zip      = new ZipWriter();
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
         foreach ($motions as $motion) {
-            if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
+            if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
                 $file = LayoutHelper::createPdfLatex($motion);
             } else {
                 $file = LayoutHelper::createPdfTcpdf($motion);

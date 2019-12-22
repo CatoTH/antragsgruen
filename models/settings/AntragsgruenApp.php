@@ -32,8 +32,9 @@ class AntragsgruenApp implements \JsonSerializable
     public $authClientCollection  = [];
     public $blockedSubdomains     = ['www'];
     public $autoLoginDuration     = 31536000; // 1 Year
-    public $xelatexPath           = null;
-    public $xdvipdfmx             = null;
+    public $xelatexPath           = null; // @TODO OBSOLETE
+    public $xdvipdfmx             = null; // @TODO OBSOLETE
+    public $lualatexPath          = null;
     public $pdfunitePath          = null;
     public $pdfExportConcat       = true;
     public $pdfExportIntegFrame   = false;

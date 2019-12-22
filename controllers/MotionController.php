@@ -166,7 +166,8 @@ class MotionController extends Base
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
             return LayoutHelper::createPdfLatex($motion);
         } else {
             return LayoutHelper::createPdfTcpdf($motion);
@@ -195,7 +196,8 @@ class MotionController extends Base
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        if ($this->getParams()->xelatexPath && $motion->getMyMotionType()->texTemplateId) {
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $motion->getMyMotionType()->texTemplateId) {
             return $this->renderPartial('pdf_amend_collection_tex', [
                 'motion' => $motion, 'amendments' => $amendments, 'texTemplate' => $motion->motionType->texTemplate
             ]);
@@ -254,7 +256,8 @@ class MotionController extends Base
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         }
 
-        if ($this->getParams()->xelatexPath && $texTemplate) {
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $texTemplate) {
             return $this->renderPartial('pdf_collection_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
         } else {
             return $this->renderPartial('pdf_collection_tcpdf', ['motions' => $motions]);
