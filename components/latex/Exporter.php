@@ -497,8 +497,8 @@ class Exporter
         $filenameBase = $this->app->getTmpDir() . uniqid('motion-pdf');
 
         if ($this->app->lualatexPath) {
-            $cmd = $this->app->lualatexPath;
-            $cmd .= ' -interaction=batchmode';
+            $cmd = 'PATH=/usr/ TEXMFCACHE=' . escapeshellarg($this->app->getTmpDir()) . ' ';
+            $cmd .= $this->app->lualatexPath;
             $cmd .= ' -output-directory=' . escapeshellarg($this->app->getTmpDir());
             $cmd .= ' ' . escapeshellarg($filenameBase . '.tex');
         } else {
@@ -529,6 +529,9 @@ class Exporter
 
         if ($cached) {
             foreach ($imageFiles as $file) {
+                unlink($file);
+            }
+            foreach ($pdfFiles as $file) {
                 unlink($file);
             }
             return $cached;

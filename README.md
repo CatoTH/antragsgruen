@@ -123,7 +123,7 @@ Necessary packets on Linux (Debian):
 ```bash
 apt-get install texlive-lang-german texlive-latex-base texlive-latex-recommended \
                 texlive-latex-extra texlive-humanities texlive-fonts-recommended \
-                texlive-xetex poppler-utils
+                texlive-xetex texlive-luatex poppler-utils
 ```
 
 Necessary packets on Mac OS X:
