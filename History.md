@@ -13,6 +13,7 @@
 - A slightly new homepage layout variant is introduced, which first shows the agenda, then the motions, but by default hides the amendments below the motions, with the option to toggle the list. This is meant for consultation with hundreds of amendments where the sheer amount of amendments makes the list way too long.
 - When merging amendments into motions, conflicting text passages can now be marked as "handled" and therefore hidden.
 - Custom themes can now modify the font size of the headings and the width of the page container and sidebar.
+- If an uploaded PDF is part of a motion (e.g. an application PDF or a financial report) and the PDF-version of the overall motion is generated, the embedded PDF is now also embedded for the LaTeX-based mechanism. To enable this, LuaLaTeX is used instead of XeLaTeX.
 - Bugfix: When merging amendments with a modified version as proposed procedure, the paragraph's collision section was initially showing the collisions of the original amendment, not the proposed version.
 
 ### Version 4.3.1 (2019-10-27)

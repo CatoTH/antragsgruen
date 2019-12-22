@@ -134,8 +134,7 @@ Add the following settings to your config.json (and adapt them to your needs):
 
 ```json
 {
-    "xelatexPath": "/usr/bin/xelatex",
-    "xdvipdfmx": "/usr/bin/xdvipdfmx",
+    "lualatexPath": "/usr/bin/lualatexPath",
     "pdfunitePath": "/usr/bin/pdfunite"
 }
 ```

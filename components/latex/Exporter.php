@@ -455,6 +455,8 @@ class Exporter
         $count       = 0;
         $imageFiles  = [];
         $imageHashes = [];
+        $pdfFiles    = [];
+        $pdfHashes   = [];
         foreach ($contents as $content) {
             if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
@@ -468,6 +470,18 @@ class Exporter
                 $imageHashes[$this->app->getTmpDir() . $fileName] = md5($fileData);
 
                 $imageFiles[] = $this->app->getTmpDir() . $fileName;
+            }
+            foreach ($content->attachedPdfs as $fileName => $attachedPdf) {
+                if (!preg_match('/^[a-z0-9_-]+\.pdf$/siu', $fileName)) {
+                    throw new Internal('Invalid pdf filename');
+                }
+                $absoluteFilename = $this->app->getTmpDir() . $fileName;
+                file_put_contents($absoluteFilename, $attachedPdf);
+                $pdfHashes[$absoluteFilename] = md5($attachedPdf);
+
+                $pdfFiles[] = $absoluteFilename;
+
+                $contentStr .= "\n" . '\includepdf[pages=-]{' . $absoluteFilename . '}' . "\n";
             }
             $cacheDepend .= $content->lineLength . '.';
             $count++;
@@ -499,6 +513,9 @@ class Exporter
 
         $cacheDepend .= $str;
         foreach ($imageHashes as $file => $hash) {
+            $cacheDepend = str_replace($file, $hash, $cacheDepend);
+        }
+        foreach ($pdfHashes as $file => $hash) {
             $cacheDepend = str_replace($file, $hash, $cacheDepend);
         }
         $cached = HashedStaticCache::getCache('latexCreatePDF', $cacheDepend);
@@ -533,6 +550,9 @@ class Exporter
         unlink($filenameBase . '.out');
 
         foreach ($imageFiles as $file) {
+            unlink($file);
+        }
+        foreach ($pdfFiles as $file) {
             unlink($file);
         }
 
