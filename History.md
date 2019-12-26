@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.4.0 [not released yet]
+## Version 4.4.0 (2019-12-26)
 
 - WARNING: if you are using a PHP version older than 7.1, then update to PHP 7.2 or newer first before installing this update! Version 4.4 is the first version of Antragsgrün compatible with PHP 7.4, with a new minimum requirement of PHP 7.1.
 - Admins can now publish a list of arbitrary files to the home page of each consultation, e.g. PDFs with information about this event. The upload functionality can be found when editing the "Welcome"-message.
