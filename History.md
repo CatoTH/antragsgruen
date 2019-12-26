@@ -11,6 +11,7 @@
 - Admins can now set a predefined list of organisations that initiators can choose from when creating a motion or amendment, instead of entering the organisation freely.
 - When it is necessary to collect supporters for a motion/amendment before submitting it, and the gender field is activated, it is now possible to not only set a minimum number of supporters, but also a minimum number of women supporting it.
 - A slightly new homepage layout variant is introduced, which first shows the agenda, then the motions, but by default hides the amendments below the motions, with the option to toggle the list. This is meant for consultation with hundreds of amendments where the sheer amount of amendments makes the list way too long.
+- Sub-agenda-items on the home page are now shown with the full agenda item code, i.e. "2.3." if the parent agenda item has the code "2." and the sub-agenda-item "3.".
 - When merging amendments into motions, conflicting text passages can now be marked as "handled" and therefore hidden.
 - Custom themes can now modify the font size of the headings and the width of the page container and sidebar.
 - If an uploaded PDF is part of a motion (e.g. an application PDF or a financial report) and the PDF-version of the overall motion is generated, the embedded PDF is now also embedded for the LaTeX-based mechanism. To enable this, LuaLaTeX is used instead of XeLaTeX.

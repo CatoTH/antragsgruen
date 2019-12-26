@@ -188,7 +188,7 @@ class ConsultationAgendaItem extends ActiveRecord
         $getSubItems = function ($consultation, $item, $fullCodePrefix, $recFunc) use ($calcNewShownCode, $separator) {
             /** @var Consultation $consultation $items */
             /** @var ConsultationAgendaItem $item */
-            if ($fullCodePrefix == '') {
+            if ($fullCodePrefix === '') {
                 $fullCodePrefix = '0' . $separator;
             }
             $items         = [];
@@ -254,26 +254,18 @@ class ConsultationAgendaItem extends ActiveRecord
     private $shownCode     = null;
     private $shownCodeFull = null;
 
-    /**
-     * @param string $code
-     * @param string $codeFull
-     */
-    protected function setShownCode($code, $codeFull)
+    protected function setShownCode(string $code, string $codeFull)
     {
         $this->shownCode     = $code;
         $this->shownCodeFull = $codeFull;
     }
 
-    /**
-     * @param bool $full
-     * @return string
-     */
-    public function getShownCode($full)
+    public function getShownCode(bool $full): string
     {
         if ($this->shownCode === null) {
             $items = static::getSortedFromConsultation($this->getMyConsultation());
             foreach ($items as $item) {
-                if ($item->id == $this->id) {
+                if ($item->id === $this->id) {
                     $this->shownCode     = $item->getShownCode(false);
                     $this->shownCodeFull = $item->getShownCode(true);
                 }
