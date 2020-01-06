@@ -155,7 +155,7 @@ class TabularData extends ISectionType
             $y     = $pdf->getY();
             $text1 = '<strong>' . Html::encode($rows[$rowId]->title) . ':</strong>';
             $text2 = Exporter::encodeHTMLString($rows[$rowId]->formatRow($rowData));
-            
+
             $pdf->writeHTMLCell(45, '', 25, $y, $text1, 0, 0, 0, true, '', true);
             $pdf->writeHTMLCell(111, '', 75, '', $text2, 0, 1, 0, true, '', true);
             $pdf->Ln(3);
@@ -280,7 +280,7 @@ class TabularData extends ISectionType
         $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
         if ($isRight) {
-            $content->textRight .= '\vspace{-0.3cm}\newline';
+            $content->textRight .= '\vspace{-0.3cm}';
         }
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
