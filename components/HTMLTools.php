@@ -5,7 +5,6 @@ namespace app\components;
 use app\models\db\Amendment;
 use app\models\exceptions\Internal;
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
 
 class HTMLTools
 {
@@ -31,6 +30,14 @@ class HTMLTools
         @require_once $dir2 . 'Exception.php';
         @require_once $dir2 . 'Exception' . DIRECTORY_SEPARATOR . 'Nameprep.php';
         @require_once $dir . 'IDNA2.php';
+    }
+
+    public static function purify(\HTMLPurifier_Config $config, string $html): string {
+        $purifier = \HTMLPurifier::instance($config);
+        $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
+        $purifier->config->set('Cache.SerializerPermissions', 0775);
+
+        return $purifier->purify($html);
     }
 
     /**
@@ -86,33 +93,29 @@ class HTMLTools
         }
 
         static::loadNetIdna2();
-        $str = HtmlPurifier::process(
-            $htmlIn,
-            function ($config) use ($linkify) {
-                /** @var \HTMLPurifier_Config $config */
-                $conf = [
-                    'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                    'HTML.AllowedElements'                    => null,
-                    'Attr.AllowedClasses'                     => null,
-                    'CSS.AllowedProperties'                   => null,
-                    'AutoFormat.Linkify'                      => $linkify,
-                    'AutoFormat.AutoParagraph'                => false,
-                    'AutoFormat.RemoveSpansWithoutAttributes' => false,
-                    'AutoFormat.RemoveEmpty'                  => false,
-                    'Core.NormalizeNewlines'                  => false,
-                    'Core.AllowHostnameUnderscore'            => true,
-                    'Core.EnableIDNA'                         => true,
-                    'Output.SortAttr'                         => true,
-                    'Output.Newline'                          => "\n"
-                ];
-                foreach ($conf as $key => $val) {
-                    $config->set($key, $val);
-                }
-                $def                                                    = $config->getHTMLDefinition(true);
-                $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
-                $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
-            }
-        );
+        $configInstance = \HTMLPurifier_Config::create([
+            'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+            'HTML.AllowedElements'                    => null,
+            'Attr.AllowedClasses'                     => null,
+            'CSS.AllowedProperties'                   => null,
+            'AutoFormat.Linkify'                      => $linkify,
+            'AutoFormat.AutoParagraph'                => false,
+            'AutoFormat.RemoveSpansWithoutAttributes' => false,
+            'AutoFormat.RemoveEmpty'                  => false,
+            'Core.NormalizeNewlines'                  => false,
+            'Core.AllowHostnameUnderscore'            => true,
+            'Core.EnableIDNA'                         => true,
+            'Output.SortAttr'                         => true,
+            'Output.Newline'                          => "\n"
+        ]);
+        $configInstance->autoFinalize = false;
+
+        $def                                                    = $configInstance->getHTMLDefinition(true);
+        $def->info_global_attr['data-moving-partner-id']        = new \HTMLPurifier_AttrDef_Text();
+        $def->info_global_attr['data-moving-partner-paragraph'] = new \HTMLPurifier_AttrDef_Text();
+
+        $str = static::purify($configInstance, $htmlIn);
+
         $str = static::cleanMessedUpHtmlCharacters($str);
         if (static::isStringCachable($htmlIn)) {
             \Yii::$app->getCache()->set($cacheKey, $str);
@@ -240,33 +243,27 @@ class HTMLTools
 
         $allowedAttributes = ['style', 'href', 'class'];
 
-        static::loadNetIdna2();
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
-        $html = HtmlPurifier::process(
-            $html,
-            function ($config) use ($allowedTags, $allowedClasses, $allowedAttributes) {
-                /** @var \HTMLPurifier_Config $config */
-                $conf = [
-                    'HTML.Doctype'                            => 'HTML 4.01 Transitional',
-                    'HTML.AllowedElements'                    => implode(',', $allowedTags),
-                    'HTML.AllowedAttributes'                  => implode(',', $allowedAttributes),
-                    'Attr.AllowedClasses'                     => implode(',', $allowedClasses),
-                    'CSS.AllowedProperties'                   => '',
-                    'AutoFormat.Linkify'                      => true,
-                    'AutoFormat.AutoParagraph'                => false,
-                    'AutoFormat.RemoveSpansWithoutAttributes' => true,
-                    'AutoFormat.RemoveEmpty'                  => true,
-                    'Core.NormalizeNewlines'                  => true,
-                    'Core.AllowHostnameUnderscore'            => true,
-                    'Core.EnableIDNA'                         => true,
-                    'Output.SortAttr'                         => true,
-                    'Output.Newline'                          => "\n"
-                ];
-                foreach ($conf as $key => $val) {
-                    $config->set($key, $val);
-                }
-            }
-        );
+
+        static::loadNetIdna2();
+        $configInstance = \HTMLPurifier_Config::create([
+            'HTML.Doctype'                            => 'HTML 4.01 Transitional',
+            'HTML.AllowedElements'                    => implode(',', $allowedTags),
+            'HTML.AllowedAttributes'                  => implode(',', $allowedAttributes),
+            'Attr.AllowedClasses'                     => implode(',', $allowedClasses),
+            'CSS.AllowedProperties'                   => '',
+            'AutoFormat.Linkify'                      => true,
+            'AutoFormat.AutoParagraph'                => false,
+            'AutoFormat.RemoveSpansWithoutAttributes' => true,
+            'AutoFormat.RemoveEmpty'                  => true,
+            'Core.NormalizeNewlines'                  => true,
+            'Core.AllowHostnameUnderscore'            => true,
+            'Core.EnableIDNA'                         => true,
+            'Output.SortAttr'                         => true,
+            'Output.Newline'                          => "\n"
+        ]);
+        $configInstance->autoFinalize = false;
+        $html = static::purify($configInstance, $html);
 
         $html = str_replace('<p>###EMPTY###</p>', '<p></p>', $html);
 
@@ -453,6 +450,7 @@ class HTMLTools
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head><body>' . $html . "</body></html>");
         $bodies = $src_doc->getElementsByTagName('body');
+        /** @var \DOMElement $str */
         $str    = $bodies->item(0);
 
         return $str;
