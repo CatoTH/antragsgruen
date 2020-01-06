@@ -543,6 +543,9 @@
   }
 
   .paragraphWrapper {
+    position: relative;
+    clear: both;
+
     .paragraphHolder {
       margin-bottom: 0;
 
@@ -553,22 +556,36 @@
     .texteditor > * {
       margin-bottom: 0;
     }
-  }
 
-  .changeToolbar {
-    display: flex;
-    flex-direction: row;
-  }
-  .statuses {
-    flex: 1;
+    .changeToolbar {
+      float: right;
+      width: 0;
+      padding-top: 3px;
+      margin-right: -25px;
+
+      .btn-group {
+        white-space: nowrap;
+        font-size: 0; // Prevent white space
+        margin-bottom: 5px;
+      }
+      .btn {
+        float: none;
+      }
+      .dropdown-toggle {
+        border-radius: 0;
+      }
+      .toggleAmendment {
+        border-bottom-right-radius: 3px !important;
+        border-top-right-radius: 3px !important;
+      }
+    }
   }
   .actions {
-    flex: 0;
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
     vertical-align: top;
     > * {
-      display: inline-block;
+      display: block;
       vertical-align: top;
     }
   }
@@ -648,15 +665,6 @@
   }
 
   .hasCollisions {
-    .form-group {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .texteditorBox {
-      border: 0;
-      border-bottom: 1px solid #ccc;
-      border-radius: 0;
-    }
     .paragraphHolder {
       position: relative;
 
@@ -725,6 +733,13 @@
       margin-top: -3px;
       padding-top: 0;
     }
+  }
+
+  .sectionHolder {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    padding: 3px;
   }
 
   .titleChanges {

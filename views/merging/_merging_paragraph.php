@@ -1,16 +1,17 @@
 <?php
-/**
- * @var MotionSection $section
- * @var \app\models\mergeAmendments\Init $form
- * @var Amendment[] $amendmentsById
- * @var int $paragraphNo
- */
 
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use app\models\db\MotionSection;
 use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
+
+/**
+ * @var MotionSection $section
+ * @var Init $form
+ * @var Amendment[] $amendmentsById
+ * @var int $paragraphNo
+ */
 
 $draftParagraph      = $form->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
 $paragraphCollisions = array_filter(
@@ -59,21 +60,21 @@ if (count($allAmendingIds) > 0) {
                 $statuses[$amendment->status] = Yii::t('amend', 'merge_status_unchanged') . ': ' .
                                                 $statusesAll[$amendment->status];
 
-                $classes   = ['btn', 'btn-xs', 'toggleAmendment'];
+                $classes   = ['btn', 'btn-sm', 'toggleAmendment'];
                 $classes[] = 'btn-' . ($active ? 'success' : 'default');
                 $classes[] = 'toggleAmendment' . $amendment->id;
                 $idadd     = $type->id . '_' . $paragraphNo . '_' . $amendment->id;
                 ?>
                 <div class="btn-group amendmentStatus amendmentStatus<?= $amendment->id ?>" data-amendment-id="<?= $amendment->id ?>">
+                    <button class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-sm dropdown-toggle"
+                            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
                     <button type="button" class="<?= implode(" ", $classes) ?>">
                         <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
                                type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
                         <?= ($amendment->titlePrefix ? Html::encode($amendment->titlePrefix) : '-') ?>
-                    </button>
-                    <button class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-xs dropdown-toggle"
-                            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <ul class="dropdown-menu">
                         <li>
@@ -144,7 +145,7 @@ if (count($allAmendingIds) > 0) {
             <div class="changedIndicator unchanged"><?= Yii::t('amend', 'merge_changed') ?></div>
             <div class="mergeActionHolder hidden">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown"
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <?= Yii::t('amend', 'merge_all') ?>
                         <span class="caret"></span>
@@ -169,7 +170,7 @@ if (count($allAmendingIds) > 0) {
             <!--suppress HtmlFormInputWithoutLabel -->
             <textarea name="<?= $nameBase ?>[consolidated]" class="consolidated"
                       title="<?= Html::encode($type->title) ?>"></textarea>
-            <div class="texteditor motionTextFormattings boxed ICE-Tracking<?php
+            <div class="texteditor motionTextFormattings ICE-Tracking<?php
             if ($section->getSettings()->fixedWidth) {
                 echo ' fixedWidthFont';
             }
