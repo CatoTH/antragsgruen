@@ -279,9 +279,12 @@ class TabularData extends ISectionType
         }
         $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
+        /*
         if ($isRight) {
-            $content->textRight .= '\vspace{-0.3cm}';
+            // This breaks the LaTeX, if there is no preceding content for the newline. Without the newline, however, the second line gets moved up.
+            $content->textRight .= '\vspace{-0.3cm}\newline';
         }
+        */
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
                 continue;
