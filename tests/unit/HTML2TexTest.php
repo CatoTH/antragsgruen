@@ -190,7 +190,7 @@ class HTML2TexTest extends TestBase
         ];
         $expect = '\begin{enumerate}[label=\arabic*.]
 \setcounter{enumi}{1}
-\item Test 2
+\item Test 2\linebreak
 
 \begin{enumerate}[label=\arabic*.]
 \item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak

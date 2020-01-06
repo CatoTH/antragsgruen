@@ -158,7 +158,7 @@ return [
     'list_functions'              => 'Functionalities',
     'list_functions_procedure'    => 'Activate proposed procedures',
     'list_functions_responsib'    => 'Activate responsibilities',
-    'list_functions_activated'    => 'The function has been activated and is visible in the list below. If you want to deactivate it again, you can do so at Settings -> Motion Types.',
+    'list_functions_activated'    => 'The function has been activated and is visible in the list below. If you want to deactivate it again, you can do so at Settings -&gt; Motion Types.',
     'list_pdf_amend'              => 'PDF + Amends',
     'filter_na'                   => '- all -',
     'filter_title'                => 'Title',
