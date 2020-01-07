@@ -10,6 +10,13 @@ const SUPPORTER_ONLY_INITIATOR = 0;
 const SUPPORTER_GIVEN_BY_INITIATOR = 1;
 const SUPPORTER_COLLECTING_SUPPORTERS = 2;
 
+const TYPE_TITLE = 0;
+const TYPE_TEXT_SIMPLE = 1;
+const TYPE_TEXT_HTML = 2;
+const TYPE_IMAGE = 3;
+const TYPE_TABULAR = 4;
+const TYPE_PDF = 5;
+
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
     private amendmentsHaveSupporters: boolean;
@@ -196,19 +203,21 @@ class MotionTypeEdit {
             let $li = $(this).parents('li').first(),
                 val = parseInt($(this).val() as string);
             $li.removeClass('title textHtml textSimple image tabularData');
-            if (val === 0) {
+            if (val === TYPE_TITLE) {
                 $li.addClass('title');
-            } else if (val === 1) {
+            } else if (val === TYPE_TEXT_SIMPLE) {
                 $li.addClass('textSimple');
-            } else if (val === 2) {
+            } else if (val === TYPE_TEXT_HTML) {
                 $li.addClass('textHtml');
-            } else if (val === 3) {
+            } else if (val === TYPE_IMAGE) {
                 $li.addClass('image');
-            } else if (val === 4) {
+            } else if (val === TYPE_TABULAR) {
                 $li.addClass('tabularData');
                 if ($li.find('.tabularDataRow ul > li').length == 0) {
                     $li.find('.tabularDataRow .addRow').trigger("click").trigger("click").trigger("click");
                 }
+            } else if (val === TYPE_PDF) {
+                $li.addClass('pdf');
             }
         });
         $list.find('.sectionType').trigger('change');

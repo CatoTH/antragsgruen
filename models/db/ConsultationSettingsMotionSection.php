@@ -24,6 +24,7 @@ use yii\db\ActiveRecord;
  * @property int $hasAmendments
  * @property int $positionRight
  * @property int $printTitle
+ * @property string|null $settings
  *
  * @property MotionSection[] $sections
  * @property ConsultationMotionType $motionType
@@ -37,10 +38,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     const STATUS_VISIBLE = 0;
     const STATUS_DELETED = -1;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -50,7 +48,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     /**
      * @return string[]
      */
-    public static function getCommentTypes()
+    public static function getCommentTypes(): array
     {
         return [
             static::COMMENTS_NONE       => \Yii::t('structure', 'section_comment_none'),
@@ -59,26 +57,34 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSections()
+    public function getSections(): \yii\db\ActiveQuery
     {
         return $this->hasMany(MotionSection::class, ['sectionId' => 'id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMotionType()
+    public function getMotionType(): \yii\db\ActiveQuery
     {
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
-    /**
-     * @param array $data
-     */
-    public function setAdminAttributes($data)
+    /** @var null|\app\models\settings\MotionSection */
+    private $settingsObject = null;
+
+    public function getSettingsObj(): \app\models\settings\MotionSection
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new \app\models\settings\MotionSection($this->settings);
+        }
+        return $this->settingsObject;
+    }
+
+    public function setSettingsObj(\app\models\settings\MotionSection $settings): void
+    {
+        $this->settingsObject = $settings;
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+    }
+
+    public function setAdminAttributes(array $data): void
     {
         $this->setAttributes($data);
 
@@ -86,8 +92,8 @@ class ConsultationSettingsMotionSection extends ActiveRecord
         $this->fixedWidth    = (isset($data['fixedWidth']) ? 1 : 0);
         $this->lineNumbers   = (isset($data['lineNumbers']) ? 1 : 0);
         $this->hasAmendments = (isset($data['hasAmendments']) ? 1 : 0);
-        $this->positionRight = (isset($data['positionRight']) && IntVal($data['positionRight']) === 1 ? 1 : 0);
-        $this->printTitle    = (isset($data['printTitle']) && IntVal($data['printTitle']) === 1 ? 1 : 0);
+        $this->positionRight = (isset($data['positionRight']) && intval($data['positionRight']) === 1 ? 1 : 0);
+        $this->printTitle    = (isset($data['printTitle']) && intval($data['printTitle']) === 1 ? 1 : 0);
         if (isset($data['maxLenSet'])) {
             $this->maxLen = $data['maxLenVal'];
             if (isset($data['maxLenSoft'])) {
@@ -97,17 +103,23 @@ class ConsultationSettingsMotionSection extends ActiveRecord
             $this->maxLen = 0;
         }
 
-        if (IntVal($this->type) === ISectionType::TYPE_TABULAR) {
+        if (intval($this->type) === ISectionType::TYPE_TABULAR) {
             $this->data = TabularData::saveTabularDataSettingsFromPost($this->data, $data);
         } else {
             $this->data = null;
         }
+
+        $settings = $this->getSettingsObj();
+        if (isset($data['imgMaxWidth']) && $data['imgMaxWidth'] > 0) {
+            $settings->imgMaxWidth = floatval($data['imgMaxWidth']);
+        }
+        if (isset($data['imgMaxHeight']) && $data['imgMaxHeight'] > 0) {
+            $settings->imgMaxHeight = floatval($data['imgMaxHeight']);
+        }
+        $this->setSettingsObj($settings);
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['motionTypeId', 'title', 'type', 'position', 'status', 'required'], 'required'],
@@ -120,7 +132,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     /**
      * @return int[]
      */
-    public function getAvailableCommentTypes()
+    public function getAvailableCommentTypes(): array
     {
         if ($this->type === ISectionType::TYPE_TEXT_SIMPLE) {
             return [static::COMMENTS_NONE, static::COMMENTS_MOTION, static::COMMENTS_PARAGRAPHS];
@@ -134,7 +146,7 @@ class ConsultationSettingsMotionSection extends ActiveRecord
     /**
      * @return string[]
      */
-    public function getForbiddenMotionFormattings()
+    public function getForbiddenMotionFormattings(): array
     {
         $forbidden = [];
         if ($this->hasAmendments) {
