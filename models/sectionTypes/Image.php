@@ -284,11 +284,22 @@ class Image extends ISectionType
         $pdf->Ln(7);
 
         $metadata = json_decode($this->section->metadata, true);
-        $size     = $this->scaleSize($metadata['width'], $metadata['height'], 80, 60);
         $fileExt  = static::getFileExtensionFromMimeType($metadata['mime']);
+
+        $extraSettings = $this->section->getSettings()->getSettingsObj();
+        if ($extraSettings->imgMaxHeight > 0 && $extraSettings->imgMaxWidth > 0) {
+            $maxHeight = $extraSettings->imgMaxHeight * 10;
+            $maxWidth = $extraSettings->imgMaxWidth * 10;
+        } else {
+            $maxHeight = ($extraSettings->imgMaxHeight > 0 ? $extraSettings->imgMaxHeight * 10 : 60);
+            $maxWidth  = ($extraSettings->imgMaxWidth > 0 ? $extraSettings->imgMaxWidth * 10 : 80);
+        }
+
         if ($this->section->isLayoutRight()) {
+            $size     = $this->scaleSize($metadata['width'], $metadata['height'], $maxWidth, $maxHeight);
             $imageData = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
+            $size     = $this->scaleSize($metadata['width'], $metadata['height'], $maxWidth, $maxHeight);
             $imageData = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
 
@@ -352,12 +363,19 @@ class Image extends ISectionType
         $fileExt      = static::getFileExtensionFromMimeType($metadata['mime']);
         $filenameBase = uniqid('motion-pdf-image') . '.' . $fileExt;
 
+        $extraSettings = $this->section->getSettings()->getSettingsObj();
+        $maxHeight     = ($extraSettings->imgMaxHeight > 0 ? $extraSettings->imgMaxHeight : null);
+
         if ($isRight) {
-            $content->textRight .= '\includegraphics[width=4.9cm]{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
+            $maxWidth           = ($extraSettings->imgMaxWidth > 0 ? $extraSettings->imgMaxWidth : 4.9);
+            $maxStr             = ($maxHeight ? 'max width=' . $maxWidth . 'cm,max height=' . $maxHeight . 'cm' : 'width=' . $maxWidth . 'cm');
+            $content->textRight .= '\includegraphics[' . $maxStr . ']{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
             $content->textRight .= '\newline' . "\n" . '\newline' . "\n";
             $imageData          = $this->resizeIfMassivelyTooBig(500, 1000, $fileExt);
         } else {
-            $content->textMain .= '\includegraphics[width=10cm]{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
+            $maxWidth          = ($extraSettings->imgMaxWidth > 0 ? $extraSettings->imgMaxWidth : 10);
+            $maxStr            = ($maxHeight ? 'max width=' . $maxWidth . 'cm,max height=' . $maxHeight . 'cm' : 'width=' . $maxWidth . 'cm');
+            $content->textMain .= '\includegraphics[' . $maxStr . ']{' . $params->getTmpDir() . $filenameBase . '}' . "\n";
             $content->textMain .= '\newline' . "\n" . '\newline' . "\n";
             $imageData         = $this->resizeIfMassivelyTooBig(1500, 3000, $fileExt);
         }
