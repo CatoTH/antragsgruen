@@ -2,14 +2,10 @@
 
 namespace app\models\motionTypeTemplates;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\settings\InitiatorForm;
-use app\models\settings\MotionType;
+use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
+use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TabularDataType;
+use app\models\sectionTypes\{ISectionType, TabularDataType};
 use app\models\supportTypes\SupportBase;
 
 trait Application
@@ -76,6 +72,7 @@ trait Application
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -91,6 +88,7 @@ trait Application
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 1;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -106,6 +104,7 @@ trait Application
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 1;
+        $section->settings      = null;
         $section->data          = json_encode(
             [
                 'maxRowId' => 2,
@@ -149,6 +148,7 @@ trait Application
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -164,6 +164,10 @@ trait Application
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
+        $settings = $section->getSettingsObj();
+        $settings->imgMaxWidth  = 5;
+        $settings->imgMaxHeight = 3;
+        $section->setSettingsObj($settings);
         $section->save();
     }
 }
