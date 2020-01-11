@@ -3,21 +3,19 @@
 namespace app\models\forms;
 
 use app\components\Tools;
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\ConsultationText;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Consultation,
+    ConsultationAgendaItem,
+    ConsultationMotionType,
+    ConsultationSettingsMotionSection,
+    ConsultationText,
+    Motion,
+    MotionSupporter,
+    Site,
+    User};
 use app\models\exceptions\FormError;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\InitiatorForm;
-use app\models\settings\MotionType;
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
 use app\models\supportTypes\SupportBase;
 use yii\base\Model;
 use yii\helpers\Html;
@@ -415,6 +413,7 @@ class SiteCreateForm extends Model
         $section->hasComments   = 0;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -430,6 +429,7 @@ class SiteCreateForm extends Model
         $section->hasComments   = 1;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
     }
 
@@ -534,6 +534,7 @@ class SiteCreateForm extends Model
         $section->hasComments   = 0;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -549,6 +550,7 @@ class SiteCreateForm extends Model
         $section->hasComments   = 1;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -564,6 +566,7 @@ class SiteCreateForm extends Model
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
     }
 

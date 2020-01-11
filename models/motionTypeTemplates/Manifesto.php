@@ -2,11 +2,8 @@
 
 namespace app\models\motionTypeTemplates;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\settings\InitiatorForm;
-use app\models\settings\MotionType;
+use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
+use app\models\settings\{InitiatorForm, MotionType};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -74,6 +71,7 @@ trait Manifesto
         $section->hasComments   = 0;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
 
         $section                = new ConsultationSettingsMotionSection();
@@ -89,6 +87,7 @@ trait Manifesto
         $section->hasComments   = 1;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
+        $section->settings      = null;
         $section->save();
     }
 }

@@ -10,8 +10,9 @@ use yii\helpers\Html;
  * @var ConsultationSettingsMotionSection $section
  */
 
-$sectionId = IntVal($section->id);
-if ($sectionId == 0) {
+$settings = $section->getSettingsObj();
+$sectionId = intval($section->id);
+if ($sectionId === 0) {
     $sectionId = '#NEW#';
 }
 $sName = 'sections[' . $sectionId . ']';
@@ -22,7 +23,7 @@ $sName = 'sections[' . $sectionId . ']';
     <div class="sectionContent">
         <div class="toprow">
 
-            <a href="#" class="remover" title="<?= Html::encode(\Yii::t('admin', 'motion_section_del')) ?>">
+            <a href="#" class="remover" title="<?= Html::encode(Yii::t('admin', 'motion_section_del')) ?>">
                 <span class="glyphicon glyphicon-remove-circle"></span>
             </a>
             <?php
@@ -46,19 +47,19 @@ $sName = 'sections[' . $sectionId . ']';
         </div>
         <div class="bottomrow">
             <div class="positionRow">
-                <div><?= \Yii::t('admin', 'motion_type_pos') ?></div>
+                <div><?= Yii::t('admin', 'motion_type_pos') ?></div>
                 <label class="positionSection">
                     <?= Html::radio($sName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
-                    <?= \Yii::t('admin', 'motion_type_pos_left') ?>
+                    <?= Yii::t('admin', 'motion_type_pos_left') ?>
                 </label><br>
                 <label class="positionSection">
                     <?= Html::radio($sName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
-                    <?= \Yii::t('admin', 'motion_type_pos_right') ?>
+                    <?= Yii::t('admin', 'motion_type_pos_right') ?>
                 </label><br>
 
                 <label class="printTitleSection">
                     <?= Html::checkbox($sName . '[printTitle]', $section->printTitle, ['class' => 'fixedWidth']) ?>
-                    <?= \Yii::t('admin', 'motion_type_print_title') ?>
+                    <?= Yii::t('admin', 'motion_type_print_title') ?>
                 </label>
             </div>
             <div class="optionsRow">
@@ -79,16 +80,29 @@ $sName = 'sections[' . $sectionId . ']';
                 </label>
 
                 <label class="lineLength">
-                    <?= Html::checkbox($sName . '[maxLenSet]', ($section->maxLen != 0), ['class' => 'maxLenSet']) ?>
-                    <?= Yii::t('admin', 'motion_section_limit') ?></label>
+                    <?= Html::checkbox($sName . '[maxLenSet]', ($section->maxLen !== 0), ['class' => 'maxLenSet']) ?>
+                    <?= Yii::t('admin', 'motion_section_limit') ?>
+                </label>
+
+                <div class="imageMaxSize">
+                    <div>Maximale Druckgröße</div>
+                    <div>
+                        <input type="number" name="<?= $sName ?>[imgMaxWidth]" value="<?= $settings->imgMaxWidth > 0 ? $settings->imgMaxWidth : '' ?>"
+                               title="Width in cm" size="4" class="form-control">
+                        x
+                        <input type="number" name="<?= $sName ?>[imgMaxHeight]" value="<?= $settings->imgMaxHeight > 0 ? $settings->imgMaxHeight : '' ?>"
+                               title="Height in cm" size="4" class="form-control">
+                        cm
+                    </div>
+                </div>
 
                 <?php
                 $value = '';
                 if ($section->maxLen > 0) {
-                    $value = IntVal($section->maxLen);
+                    $value = intval($section->maxLen);
                 }
                 if ($section->maxLen < 0) {
-                    $value = -1 * IntVal($section->maxLen);
+                    $value = -1 * intval($section->maxLen);
                 }
                 ?>
                 <label class="maxLenInput">
@@ -109,7 +123,7 @@ $sName = 'sections[' . $sectionId . ']';
                     <label class="commentNone">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_NONE;
-                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val])
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments === $val), ['value' => $val])
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_none') ?>
                     </label>
@@ -117,7 +131,7 @@ $sName = 'sections[' . $sectionId . ']';
                     <label class="commentSection">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_MOTION;
-                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments === $val), ['value' => $val]);
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_whole') ?>
                     </label>
@@ -125,7 +139,7 @@ $sName = 'sections[' . $sectionId . ']';
                     <label class="commentParagraph">
                         <?php
                         $val = ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS;
-                        echo Html::radio($sName . '[hasComments]', ($section->hasComments == $val), ['value' => $val]);
+                        echo Html::radio($sName . '[hasComments]', ($section->hasComments === $val), ['value' => $val]);
                         ?>
                         <?= Yii::t('admin', 'motion_section_comm_para') ?>
                     </label>
@@ -135,7 +149,7 @@ $sName = 'sections[' . $sectionId . ']';
                 <label class="amendmentRow">
                     <?= Html::checkbox(
                         $sName . '[hasAmendments]',
-                        ($section->hasAmendments == 1),
+                        ($section->hasAmendments === 1),
                         ['class' => 'hasAmendments']
                     ) ?>
                     <?= Yii::t('admin', 'motion_section_amendable') ?>

@@ -505,6 +505,16 @@ label.legend {
       border-left: 1px solid #afa;
     }
 
+    .imageMaxSize {
+      display: none;
+      margin-top: 10px;
+
+      .form-control {
+        display: inline-block;
+        width: 75px;
+      }
+    }
+
     .commentRow {
       margin-bottom: 10px;
     }
@@ -574,6 +584,10 @@ label.legend {
     }
 
     &.image {
+      .imageMaxSize {
+        display: block;
+      }
+
       .commentrow {
         display: none;
       }

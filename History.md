@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.5.0 [not released yet]
+
+- Images can now have a maximum size for the PDF version. Signatures in applications, for example, now have a maximum size of 5x3cm.
+
 ## Version 4.4.0 (2019-12-26)
 
 - WARNING: if you are using a PHP version older than 7.1, then update to PHP 7.2 or newer first before installing this update! Version 4.4 is the first version of Antragsgrün compatible with PHP 7.4, with a new minimum requirement of PHP 7.1.
