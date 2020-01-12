@@ -90,6 +90,7 @@ body {
   width: 377px;
   height: 55px;
   background-image: url("../img/logo.png");
+  background-repeat: no-repeat;
   @media screen and (max-width: 479px) {
     width: 300px;
     height: 44px;
