@@ -81,10 +81,15 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getCurrentUser()
     {
-        if (\Yii::$app->user->getIsGuest()) {
+        try {
+            if (\Yii::$app->user->getIsGuest()) {
+                return null;
+            } else {
+                return \Yii::$app->user->identity;
+            }
+        } catch (\yii\base\UnknownPropertyException $e) {
+            // Can happen with console commands
             return null;
-        } else {
-            return \Yii::$app->user->identity;
         }
     }
 
