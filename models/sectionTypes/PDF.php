@@ -55,16 +55,16 @@ class PDF extends ISectionType
     {
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
-        $str  = '';
         $url  = $this->getPdfUrl();
+        $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF . '">';
+        $str .= '<div class="form-group">';
+        $str .= $this->getFormLabel();
+
         if ($url) {
-            $str      .= '<a href="' . Html::encode($this->getPdfUrl()) . '">Current PDF</a>';
             $required = false;
         } else {
             $required = ($type->required ? 'required' : '');
         }
-        $str .= '<div class="form-group" style="overflow: auto;">';
-        $str .= $this->getFormLabel();
 
         $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
         $str     .= '<div class="maxLenHint"><span class="icon glyphicon glyphicon-info-sign"></span> ';
@@ -72,11 +72,19 @@ class PDF extends ISectionType
         $str     .= '</div>';
 
         $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
-            ' name="sections[' . $type->id . ']">
-        </div>';
+            ' name="sections[' . $type->id . ']">';
+
         if ($url) {
-            $str .= '<br style="clear: both;">';
+            $str .= '<a href="' . Html::encode($this->getPdfUrl()) . '" class="currentPdf">';
+            $str .= \Yii::t('motion', 'pdf_current') . '</a>';
         }
+        if ($url && !$type->required) {
+            $str .= '<label class="deletePdf"><input type="checkbox" name="sectionDelete[' . $type->id . ']">';
+            $str .= \Yii::t('motion', 'pdf_delete');
+            $str .= '</label>';
+        }
+        $str .= '</div>';
+        $str .= '</section>';
         return $str;
     }
 
@@ -106,6 +114,12 @@ class PDF extends ISectionType
         ];
         $this->section->data     = base64_encode(file_get_contents($data['tmp_name']));
         $this->section->metadata = json_encode($metadata);
+    }
+
+    public function deleteMotionData()
+    {
+        $this->section->data     = '';
+        $this->section->metadata = '';
     }
 
     /**

@@ -97,6 +97,8 @@ abstract class ISectionType
      */
     abstract public function setMotionData($data);
 
+    abstract public function deleteMotionData();
+
     /**
      * @param array $data
      * @throws FormError

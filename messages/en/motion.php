@@ -130,6 +130,9 @@ return [
     'field_optional'            => 'optional',
     'field_required'            => 'required',
     'max_size_hint'             => 'Max. %MB% MB',
+    'img_delete'                => 'Delete image',
+    'pdf_delete'                => 'Delete PDF',
+    'pdf_current'               => 'Current PDF',
     'max_len_hint'              => 'Max. %LEN% characters (currently: %COUNT%)',
     'max_len_alert'             => 'The text is too long!',
     'create_explanation'        => 'Here you can create a motion with no reference to another motion. ' .

@@ -75,15 +75,14 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
         $url  = $this->getImageUrl();
-        $str  = '';
+        $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_IMAGE . '">';
         if ($url) {
-            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image"
-            style="float: right; max-width: 100px; max-height: 100px; margin-left: 20px;">';
+            $str      .= '<img src="' . Html::encode($this->getImageUrl()) . '" alt="Current Image" class="currentImage">';
             $required = false;
         } else {
             $required = ($type->required ? 'required' : '');
         }
-        $str .= '<div class="form-group" style="overflow: auto;">';
+        $str .= '<div class="form-group">';
         $str .= $this->getFormLabel();
 
         $maxSize = floor(Tools::getMaxUploadSize() / 1024 / 1024);
@@ -92,11 +91,14 @@ class Image extends ISectionType
         $str     .= '</div>';
 
         $str .= '<input type="file" class="form-control" id="sections_' . $type->id . '" ' . $required .
-            ' name="sections[' . $type->id . ']">
-        </div>';
-        if ($url) {
-            $str .= '<br style="clear: both;">';
+            ' name="sections[' . $type->id . ']">';
+        if ($url && !$type->required) {
+            $str .= '<label class="deleteImage"><input type="checkbox" name="sectionDelete[' . $type->id . ']">';
+            $str .= \Yii::t('motion', 'img_delete');
+            $str .= '</label>';
         }
+        $str .= '</div>';
+        $str .= '</section>';
         return $str;
     }
 
@@ -202,6 +204,12 @@ class Image extends ISectionType
         ];
         $this->section->data     = base64_encode($optimized);
         $this->section->metadata = json_encode($metadata);
+    }
+
+    public function deleteMotionData()
+    {
+        $this->section->data     = '';
+        $this->section->metadata = '';
     }
 
     /**

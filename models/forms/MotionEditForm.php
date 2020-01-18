@@ -160,8 +160,13 @@ class MotionEditForm extends Model
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
-            if ($section->getSettings()->type == ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
+            if ($section->getSettings()->type === ISectionType::TYPE_TITLE && isset($values['motion']['title'])) {
                 $section->getSectionType()->setMotionData($values['motion']['title']);
+            }
+            if (isset($values['sectionDelete']) && isset($values['sectionDelete'][$section->sectionId])) {
+                if (!$section->getSettings()->required) {
+                    $section->getSectionType()->deleteMotionData();
+                }
             }
             if (isset($values['sections'][$section->sectionId])) {
                 $section->getSectionType()->setMotionData($values['sections'][$section->sectionId]);
@@ -178,7 +183,7 @@ class MotionEditForm extends Model
                 }
                 if (!empty($files['sections']['error'][$section->sectionId])) {
                     $error = $files['sections']['error'][$section->sectionId];
-                    if ($error === UPLOAD_ERR_INI_SIZE || $error == UPLOAD_ERR_FORM_SIZE) {
+                    if ($error === UPLOAD_ERR_INI_SIZE || $error === UPLOAD_ERR_FORM_SIZE) {
                         $this->fileUploadErrors[] = $section->getSettings()->title . ': Uploaded file is too big';
                     }
                 }

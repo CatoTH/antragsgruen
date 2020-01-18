@@ -140,6 +140,12 @@ class TextSimple extends Text
         $this->section->data    = HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings());
     }
 
+    public function deleteMotionData()
+    {
+        $this->section->data    = null;
+        $this->section->dataRaw = null;
+    }
+
     /**
      * @param array $data
      * @throws \app\models\exceptions\Internal

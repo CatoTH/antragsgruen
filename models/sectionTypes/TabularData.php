@@ -70,6 +70,11 @@ class TabularData extends ISectionType
         $this->section->data = json_encode($dataOut);
     }
 
+    public function deleteMotionData()
+    {
+        $this->section->data = '';
+    }
+
     /**
      * @param array $data
      */

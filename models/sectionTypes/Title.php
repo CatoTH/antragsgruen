@@ -67,6 +67,11 @@ class Title extends ISectionType
         $this->section->data = $data;
     }
 
+    public function deleteMotionData()
+    {
+        $this->section->data = '';
+    }
+
     /**
      * @param string $data
      */

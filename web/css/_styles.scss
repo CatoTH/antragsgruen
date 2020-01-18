@@ -258,6 +258,33 @@
       }
     }
   }
+  .type3 { // Images
+    overflow: auto;
+    .currentImage {
+      float: right;
+      max-width: 100px;
+      max-height: 100px;
+      margin-left: 20px;
+    }
+    .form-group {
+      overflow: auto;
+    }
+    .deleteImage {
+      font-weight: normal;
+    }
+  }
+  .type5 { // PDFs
+    overflow: auto;
+    .currentPdf {
+      float: right;
+    }
+    .form-group {
+      overflow: auto;
+    }
+    .deletePdf {
+      font-weight: normal;
+    }
+  }
 }
 
 .supporterFormStd {

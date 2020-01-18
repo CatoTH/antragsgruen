@@ -80,6 +80,7 @@ if ($motion->isInScreeningProcess()) {
 
 echo Html::beginForm('', 'post', [
     'id'                       => 'motionUpdateForm',
+    'class'                    => 'motionEditForm',
     'enctype'                  => 'multipart/form-data',
     'data-antragsgruen-widget' => 'backend/MotionEdit',
 ]);

@@ -43,6 +43,11 @@ class TextHTML extends Text
         $this->section->data    = HTMLTools::correctHtmlErrors($data);
     }
 
+    public function deleteMotionData()
+    {
+        $this->section->data    = '';
+        $this->section->dataRaw = '';
+    }
 
     /**
      * @param array $data

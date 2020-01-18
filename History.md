@@ -3,6 +3,7 @@
 ### Version 4.5.0 [not released yet]
 
 - Images can now have a maximum size for the PDF version. Signatures in applications, for example, now have a maximum size of 5x3cm.
+- If an image or a PDF in a motion or application is optional, it is now possible to delete an already uploaded one without uploading a replacement.
 
 ## Version 4.4.0 (2019-12-26)
 
