@@ -718,7 +718,7 @@ class TextSimple extends Text
             $section->getAmendment()->globalAlternative
         ];
         $tex       = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
-
+echo "!";
         if (!$tex) {
             if ($section->getAmendment()->globalAlternative) {
                 $title = Exporter::encodePlainString($section->getSettings()->title);
@@ -744,7 +744,8 @@ class TextSimple extends Text
                     }
 
                     $tex  .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
-                    $html = TextSimple::formatDiffGroup($diffGroups, '', '<br><br>');
+                    $html = TextSimple::formatDiffGroup($diffGroups, '', '<p></p>');
+
                     $tex  .= Exporter::encodeHTMLString($html);
                 }
             }
