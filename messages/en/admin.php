@@ -263,6 +263,7 @@ If this site should only be <em>visible</em> to users included below, select the
     'siteacc_admins_proposals' => 'Edit proposed procedure',
     'siteacc_add_ww'           => 'Wurzelwerk name',
     'siteacc_add_email'        => 'E-mail address',
+    'siteacc_add_email_btn'    => 'By e-mail',
     'siteacc_add_name_title'   => 'Wurzelwerk username / E-mail address',
     'siteacc_add_name_place'   => 'Name',
     'siteacc_add_btn'          => 'Add',
