@@ -453,7 +453,7 @@ class Tools
         if ($motion->getMyMotionType()->id === Tools::getDiscussionType($motion->getMyConsultation())->id) {
             return 1; // In Discussion
         } elseif ($motion->getMyMotionType()->id === Tools::getPetitionType($motion->getMyConsultation())->id) {
-            if ($motion->status === IMotion::STATUS_COLLECTING_SUPPORTERS) {
+            if ($motion->status === IMotion::STATUS_COLLECTING_SUPPORTERS || $motion->status === IMotion::STATUS_PAUSED) {
                 return 2; // Collecting
             } elseif ($motion->status === IMotion::STATUS_PROCESSED) {
                 return 4; // Answered
