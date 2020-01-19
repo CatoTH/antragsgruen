@@ -649,7 +649,7 @@ class AmendmentController extends Base
 
 
         if (\Yii::$app->request->post('reset', null) !== null) {
-            $reference = $amendment->proposalReference;
+            $reference = $amendment->getMyProposalReference();
             if ($reference && $reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 foreach ($reference->sections as $section) {
                     $section->delete();

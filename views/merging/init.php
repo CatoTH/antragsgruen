@@ -79,7 +79,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                 if ($amend->proposalStatus !== null) {
                     $hasProposals = true;
                 }
-                if ($amend->proposalReference) {
+                if ($amend->getMyProposalReference()) {
                     $hasProposalText = true;
                 }
             }
@@ -135,7 +135,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
                             echo '<label class="textProposal">';
                             echo '<input type="radio" name="textVersion[' . $amend->id . ']" value="' . Init::TEXT_VERSION_PROPOSAL . '" checked>';
                             echo ' ' . Yii::t('amend', 'merge_amtable_text_prop') . ' ';
-                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend->proposalReference, 'bottom');
+                            echo \app\components\HTMLTools::amendmentDiffTooltip($amend->getMyProposalReference(), 'bottom');
                             echo '</label>';
                             echo '</td>';
                         } else {

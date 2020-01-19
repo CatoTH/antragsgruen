@@ -90,7 +90,7 @@ class Agenda
         }
 
         $proposal  = '';
-        $reference = $amendment->proposalReference;
+        $reference = $amendment->getMyProposalReference();
         /** @var AmendmentSection[] $sections */
         $sections = $reference->getSortedSections(false);
         foreach ($sections as $section) {

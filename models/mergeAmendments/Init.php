@@ -36,7 +36,7 @@ class Init
             if ($amendment->hasAlternativeProposaltext(false) && isset($textVersions[$amendment->id]) &&
                 $textVersions[$amendment->id] === static::TEXT_VERSION_PROPOSAL) {
                 if (isset($postAmendIds[$amendment->id])) {
-                    $form->toMergeResolvedIds[] = $amendment->proposalReference->id;
+                    $form->toMergeResolvedIds[] = $amendment->getMyProposalReference()->id;
                 }
             } else {
                 if (isset($postAmendIds[$amendment->id])) {
@@ -80,8 +80,8 @@ class Init
     public function resolveAmendmentToProposalId(int $amendmentId): ?int
     {
         foreach ($this->motion->getVisibleAmendments() as $amendment) {
-            if ($amendment->id === $amendmentId && $amendment->proposalReference) {
-                return $amendment->proposalReference->id;
+            if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
+                return $amendment->getMyProposalReference()->id;
             }
         }
         return null;

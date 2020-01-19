@@ -138,7 +138,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
         }
 
         if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->proposalReference;
+            $reference = $amendment->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
             $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {

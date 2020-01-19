@@ -2,24 +2,15 @@
 
 namespace app\models\db;
 
-use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\DiffRenderer;
-use app\components\HashedStaticCache;
-use app\components\RSSExporter;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedStaticCache, RSSExporter, Tools, UrlHelper};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
-use app\models\notifications\AmendmentPublished as AmendmentPublishedNotification;
-use app\models\notifications\AmendmentSubmitted as AmendmentSubmittedNotification;
-use app\models\notifications\AmendmentWithdrawn as AmendmentWithdrawnNotification;
-use app\models\policies\All;
-use app\models\policies\IPolicy;
-use app\models\sectionTypes\Image;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\PDF;
-use app\models\sectionTypes\TextSimple;
+use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
+    AmendmentSubmitted as AmendmentSubmittedNotification,
+    AmendmentWithdrawn as AmendmentWithdrawnNotification};
+use app\models\policies\{All, IPolicy};
+use app\models\sectionTypes\{Image, ISectionType, PDF, TextSimple};
 use app\models\supportTypes\SupportBase;
 use yii\db\ActiveQuery;
 use yii\helpers\Html;
@@ -47,7 +38,6 @@ use yii\helpers\Html;
  * @property AmendmentComment[] $privateComments
  * @property AmendmentSupporter[] $amendmentSupporters
  * @property AmendmentSection[] $sections
- * @property Amendment $proposalReference
  * @property Amendment $proposalReferencedBy
  * @property VotingBlock $votingBlock
  * @property User $responsibilityUser
@@ -207,12 +197,13 @@ class Amendment extends IMotion implements IRSSItem
         return $sections;
     }
 
-    /**
-     * @return ActiveQuery
-     */
-    public function getProposalReference()
+    public function getMyProposalReference(): ?Amendment
     {
-        return $this->hasOne(Amendment::class, ['id' => 'proposalReferenceId']);
+        if ($this->proposalReferenceId) {
+            return $this->getMyConsultation()->getAmendment($this->proposalReferenceId);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1176,7 +1167,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReferenceId && $this->proposalReference) {
+            $this->proposalReferenceId && $this->getMyConsultation()->getAmendment($this->proposalReferenceId)) {
             return true;
         }
 
@@ -1202,10 +1193,10 @@ class Amendment extends IMotion implements IRSSItem
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReference) {
+            $this->getMyProposalReference()) {
             return [
                 'amendment'    => $this,
-                'modification' => $this->proposalReference,
+                'modification' => $this->getMyProposalReference(),
             ];
         }
 
@@ -1292,8 +1283,8 @@ class Amendment extends IMotion implements IRSSItem
     {
         $collidesWith = [];
 
-        if ($this->proposalReference) {
-            $sections = $this->proposalReference->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        if ($this->getMyProposalReference()) {
+            $sections = $this->getMyProposalReference()->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
         } else {
             $sections = $this->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
         }

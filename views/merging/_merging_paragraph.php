@@ -83,7 +83,7 @@ if (count($allAmendingIds) > 0) {
                             </a>
                         </li>
                         <?php
-                        if ($amendment->proposalReference) {
+                        if ($amendment->getMyProposalReference()) {
                             ?>
                             <li role="separator" class="divider"></li>
                             <li class="versionorig">

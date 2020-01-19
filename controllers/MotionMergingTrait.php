@@ -104,7 +104,7 @@ trait MotionMergingTrait
         $amendmentIds = [];
         foreach ($amendments as $amendment) {
             if ($amendment['version'] === 'prop') {
-                $amendmentIds[] = $this->consultation->getAmendment($amendment['id'])->proposalReference->id;
+                $amendmentIds[] = $this->consultation->getAmendment($amendment['id'])->getMyProposalReference()->id;
             } else {
                 $amendmentIds[] = $amendment['id'];
             }

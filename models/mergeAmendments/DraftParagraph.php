@@ -57,8 +57,8 @@ class DraftParagraph
             $resolved = false;
             if (isset($this->textVersions[$amendmentId]) && $this->textVersions[$amendmentId] === Init::TEXT_VERSION_PROPOSAL) {
                 foreach ($motion->amendments as $amendment) {
-                    if ($amendment->id === $amendmentId && $amendment->proposalReference) {
-                        $resolvedIds[] = $amendment->proposalReference->id;
+                    if ($amendment->id === $amendmentId && $amendment->getMyProposalReference()) {
+                        $resolvedIds[] = $amendment->getMyProposalReference()->id;
                         $resolved = true;
                     }
                 }

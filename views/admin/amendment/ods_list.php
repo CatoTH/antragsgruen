@@ -185,9 +185,9 @@ foreach ($motions as $motion) {
 
         $proposal = $amendment->getFormattedProposalStatus();
         if ($amendment->hasAlternativeProposaltext()) {
-            $reference = $amendment->proposalReference;
+            $reference = $amendment->getMyProposalReference();
             /** @var AmendmentSection[] $sections */
-            $sections = $amendment->proposalReference->getSortedSections(false);
+            $sections = $reference->getSortedSections(false);
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;

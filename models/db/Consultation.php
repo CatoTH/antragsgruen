@@ -199,7 +199,7 @@ class Consultation extends ActiveRecord
      * @param int $amendmentId
      * @return Amendment|null
      */
-    public function getAmendment($amendmentId)
+    public function getAmendment($amendmentId): ?Amendment
     {
         $amendmentId = IntVal($amendmentId);
         if (isset($this->amendmentCache[$amendmentId])) {

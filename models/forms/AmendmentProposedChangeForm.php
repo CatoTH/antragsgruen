@@ -29,9 +29,9 @@ class AmendmentProposedChangeForm
      */
     protected function initProposal()
     {
-        if ($this->amendment->proposalReference) {
-            if ($this->amendment->proposalReference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
-                $this->proposalSections = $this->amendment->proposalReference->getActiveSections();
+        if ($this->amendment->getMyProposalReference()) {
+            if ($this->amendment->getMyProposalReference()->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+                $this->proposalSections = $this->amendment->getMyProposalReference()->getActiveSections();
                 return;
             }
         }
@@ -88,7 +88,7 @@ class AmendmentProposedChangeForm
      */
     private function getProposalAmendmentObject()
     {
-        $reference = $this->amendment->proposalReference;
+        $reference = $this->amendment->getMyProposalReference();
         if ($reference) {
             if ($reference->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
                 return $reference;
