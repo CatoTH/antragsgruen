@@ -421,10 +421,9 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
-        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         $this->layout = 'column1';
-        $this->consultationSidebar($this->consultation);
 
         $proposalFactory = new Factory($this->consultation, false);
 
