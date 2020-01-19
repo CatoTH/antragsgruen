@@ -3,6 +3,7 @@
 namespace app\controllers\admin;
 
 use app\components\ZipWriter;
+use app\models\db\Consultation;
 use app\models\db\User;
 use app\models\exceptions\ExceptionBase;
 use app\models\forms\AdminMotionFilterForm;
@@ -178,7 +179,7 @@ class MotionListController extends AdminBase
 
         $this->activateFunctions();
 
-        $consultation->preloadAllMotionData();
+        $consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         if ($privilegeScreening) {
             $this->actionListallScreeningMotions();

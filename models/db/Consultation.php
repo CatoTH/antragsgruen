@@ -100,16 +100,15 @@ class Consultation extends ActiveRecord
         return $this->hasOne(Site::class, ['id' => 'siteId']);
     }
 
-    private $preloadedAllMotionData = false;
+    const PRELOAD_ONLY_AMENDMENTS = 'amendments';
+    const PRELOAD_ALL = 'all';
+    private $preloadedAllMotionData = '';
     private $preloadedAmendmentIds  = null;
     private $preloadedMotionIds     = null;
 
-    /**
-     * Loads Motions, amendments, initiators and tags
-     */
-    public function preloadAllMotionData()
+    public function preloadAllMotionData(string $preloadType)
     {
-        $this->preloadedAllMotionData = true;
+        $this->preloadedAllMotionData = $preloadType;
         foreach ($this->motions as $motion) {
             $this->preloadedMotionIds[] = $motion->id;
             foreach ($motion->amendments as $amendment) {
@@ -118,10 +117,7 @@ class Consultation extends ActiveRecord
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function hasPreloadedMotionData()
+    public function hasPreloadedMotionData(): string
     {
         return $this->preloadedAllMotionData;
     }
@@ -131,12 +127,16 @@ class Consultation extends ActiveRecord
      */
     public function getMotions()
     {
-        if ($this->preloadedAllMotionData) {
+        if ($this->preloadedAllMotionData === static::PRELOAD_ALL) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
                 ->with(
                     'amendments', 'motionSupporters', 'amendments.amendmentSupporters',
                     'tags', 'motionSupporters.user', 'amendments.amendmentSupporters.user'
                 )
+                ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+        } elseif ($this->preloadedAllMotionData === static::PRELOAD_ONLY_AMENDMENTS) {
+            return $this->hasMany(Motion::class, ['consultationId' => 'id'])
+                ->with('amendments')
                 ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
         } else {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
@@ -226,7 +226,7 @@ class Consultation extends ActiveRecord
      */
     public function isMyAmendment($amendmentId)
     {
-        if ($this->preloadedAllMotionData) {
+        if ($this->preloadedAllMotionData !== '') {
             return in_array($amendmentId, $this->preloadedAmendmentIds);
         } else {
             $amendment = $this->getAmendment($amendmentId);

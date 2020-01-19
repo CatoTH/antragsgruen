@@ -2,22 +2,9 @@
 
 namespace app\controllers;
 
-use app\components\DateTools;
-use app\components\RSSExporter;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentComment;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\IComment;
-use app\models\db\IRSSItem;
-use app\models\db\Motion;
-use app\models\db\Consultation;
-use app\models\db\MotionComment;
-use app\models\db\User;
-use app\models\db\UserNotification;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentComment, ConsultationAgendaItem, IComment, IRSSItem, Motion, Consultation, MotionComment, User, UserNotification};
+use app\models\exceptions\{FormError, Internal};
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -383,7 +370,7 @@ class ConsultationController extends Base
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
-        $this->consultation->preloadAllMotionData();
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
@@ -434,7 +421,7 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
-        $this->consultation->preloadAllMotionData();
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         $this->layout = 'column1';
         $this->consultationSidebar($this->consultation);

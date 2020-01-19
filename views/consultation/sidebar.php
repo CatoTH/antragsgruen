@@ -60,7 +60,7 @@ $layout->menusHtml[] = \app\models\layoutHooks\Layout::getSearchForm();
 $showCreate = true;
 if ($consultation->getSettings()->getStartLayoutView() === 'index_layout_agenda') {
     foreach ($consultation->agendaItems as $item) {
-        if ($item->motionTypeId > 0 && $item->motionType) {
+        if ($item->getMyMotionType()) {
             $showCreate = false;
         }
     }

@@ -82,6 +82,22 @@ class ConsultationAgendaItem extends ActiveRecord
         return $this->hasOne(ConsultationMotionType::class, ['id' => 'motionTypeId']);
     }
 
+    public function getMyMotionType(): ?ConsultationMotionType
+    {
+        if (!$this->motionTypeId) {
+            return null;
+        }
+        $current = Consultation::getCurrent();
+        if ($current) {
+            foreach ($current->motionTypes as $motionType) {
+                if ($motionType->id === $this->motionTypeId) {
+                    return $motionType;
+                }
+            }
+        }
+        return $this->motionType;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -96,7 +112,7 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getMyMotions()
     {
-        if ($this->getMyConsultation()->hasPreloadedMotionData()) {
+        if ($this->getMyConsultation()->hasPreloadedMotionData() !== '') {
             $motions = [];
             foreach ($this->getMyConsultation()->motions as $motion) {
                 if ($motion->agendaItemId === $this->id) {

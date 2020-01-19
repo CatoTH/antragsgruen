@@ -1176,7 +1176,7 @@ class Amendment extends IMotion implements IRSSItem
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
-            $this->proposalReference) {
+            $this->proposalReferenceId && $this->proposalReference) {
             return true;
         }
 

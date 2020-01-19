@@ -634,7 +634,7 @@ abstract class IMotion extends ActiveRecord
                 $str = static::getProposedStatusNames()[$this->proposalStatus];
                 if (is_a($this, Amendment::class)) {
                     /** @var Amendment $this */
-                    if ($this->proposalReference) {
+                    if ($this->proposalReferenceId && $this->proposalReference) {
                         $str .= ' (' . \Yii::t('structure', 'PROPOSED_MODIFIED_ACCEPTED') . ')';
                     }
                 }

@@ -2,12 +2,8 @@
 
 namespace app\controllers\admin;
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\models\db\AmendmentAdminComment;
-use app\models\db\IMotion;
-use app\models\db\MotionAdminComment;
-use app\models\db\User;
+use app\components\{HTMLTools, Tools};
+use app\models\db\{AmendmentAdminComment, Consultation, IMotion, MotionAdminComment, User};
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
@@ -25,7 +21,7 @@ class ProposedProcedureController extends AdminBase
     public function actionIndex($agendaItemId = 0, $expandId = null)
     {
         $this->activateFunctions();
-        $this->consultation->preloadAllMotionData();
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
@@ -51,7 +47,7 @@ class ProposedProcedureController extends AdminBase
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $this->consultation->preloadAllMotionData();
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         if ($agendaItemId) {
             $agendaItem      = $this->consultation->getAgendaItem($agendaItemId);
@@ -81,7 +77,7 @@ class ProposedProcedureController extends AdminBase
      */
     public function actionOds($agendaItemId = 0, $comments = 0, $onlypublic = 0)
     {
-        $this->consultation->preloadAllMotionData();
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
 
         $comments   = (IntVal($comments) === 1);
         $onlypublic = (IntVal($onlypublic) === 1);

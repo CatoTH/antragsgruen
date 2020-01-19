@@ -43,7 +43,7 @@ class MotionSection extends IMotionSection
     {
         $motion = $this->getMotion();
         if ($motion) {
-            foreach ($motion->motionType->motionSections as $section) {
+            foreach ($motion->getMyMotionType()->motionSections as $section) {
                 if ($section->id === $this->sectionId) {
                     return $section;
                 }
