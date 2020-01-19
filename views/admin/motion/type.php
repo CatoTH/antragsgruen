@@ -265,7 +265,11 @@ echo '</div>';
 <?= Html::endForm(); // adminTypeForm     ?>
 
     <ul style="display: none;" id="sectionTemplate">
-        <?= $this->render('_type_sections', ['section' => new ConsultationSettingsMotionSection()]) ?>
+        <?php
+        $template              = new ConsultationSettingsMotionSection();
+        $template->hasComments = ConsultationSettingsMotionSection::COMMENTS_NONE;
+        echo $this->render('_type_sections', ['section' => $template])
+        ?>
     </ul>
 
     <br><br>
