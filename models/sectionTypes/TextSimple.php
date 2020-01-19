@@ -724,7 +724,7 @@ class TextSimple extends Text
             $section->getAmendment()->globalAlternative
         ];
         $tex       = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
-echo "!";
+
         if (!$tex) {
             if ($section->getAmendment()->globalAlternative) {
                 $title = Exporter::encodePlainString($section->getSettings()->title);

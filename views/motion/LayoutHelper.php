@@ -2,15 +2,9 @@
 
 namespace app\views\motion;
 
-use app\components\latex\Content;
-use app\components\latex\Exporter;
-use app\components\latex\Layout;
+use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\Consultation;
-use app\models\db\IMotion;
-use app\models\db\ISupporter;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Consultation, IMotion, ISupporter, Motion, User};
 use app\models\LimitedSupporterList;
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
@@ -139,7 +133,7 @@ class LayoutHelper
         if ($content->textRight) {
             // If there is a figure to the right, and the text of the main part is centered, then \newline\linebreak (BR) leads to
             // broken text formatting. Therefore, we convert it into new paragraphs (P), where this problem does not appear.
-            $content->textMain = preg_replace('/([\S])\\\\newline\n\\\\linebreak\n([\S])/siu', '$1' . "\n\n" . '$2', $content->textMain);
+            $content->textMain = preg_replace('/([\S])\\\\newline\n(\\\\newline\n)*\\\\linebreak\n([\S])/siu', '$1' . "\n\n" . '$3', $content->textMain);
         }
 
         $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
