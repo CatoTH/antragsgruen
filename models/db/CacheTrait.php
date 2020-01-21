@@ -23,10 +23,11 @@ trait CacheTrait
                 $this->cacheObj = unserialize($this->cache);
             }
         }
+
         return $this->cacheObj;
     }
 
-    public function flushCache(bool $save = true)
+    public function flushCache(bool $save = true): void
     {
         $this->cache    = '';
         $this->cacheObj = null;
@@ -35,8 +36,26 @@ trait CacheTrait
         }
     }
 
+    public function flushCacheItems(array $items): void
+    {
+        $data    = $this->getCacheObj();
+        $changed = false;
+        foreach ($items as $item) {
+            if (isset($data[$item])) {
+                $changed = true;
+                unset($data[$item]);
+            }
+        }
+        if ($changed) {
+            $this->cacheObj = $data;
+            $this->cache    = serialize($this->cacheObj);
+            $this->save();
+        }
+    }
+
     /**
      * @param string $key
+     *
      * @return mixed
      */
     public function getCacheItem(string $key)
@@ -45,6 +64,7 @@ trait CacheTrait
         if (!isset($data[$key])) {
             return null;
         }
+
         return $data[$key];
     }
 
@@ -60,9 +80,11 @@ trait CacheTrait
         $this->cacheObj = $data;
         $this->cache    = serialize($this->cacheObj);
         if ($save) {
+            /*
             if (defined('YII_DEBUG') && YII_DEBUG) {
                 return;
             }
+            */
             $this->save();
         }
     }

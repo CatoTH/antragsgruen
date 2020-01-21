@@ -27,6 +27,17 @@ namespace app\models\db;
 class AmendmentSupporter extends ISupporter
 {
     /**
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
+        $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
+        $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
+    }
+
+    /**
      * @return string
      */
     public static function tableName()
@@ -132,5 +143,10 @@ class AmendmentSupporter extends ISupporter
         } else {
             return $this->amendment;
         }
+    }
+
+    public function onSaved(): void
+    {
+        $this->getIMotion()->onSupportersChanged();
     }
 }

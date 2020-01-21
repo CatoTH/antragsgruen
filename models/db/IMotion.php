@@ -388,24 +388,45 @@ abstract class IMotion extends ActiveRecord
 
     public function isInitiatedByOrganization(): bool
     {
+        $cached = $this->getCacheItem('isInitiatedByOrganization');
+        if ($cached !== null) {
+            return $cached;
+        }
+
+        $orgaInitiated = false;
         foreach ($this->getInitiators() as $initiator) {
             if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
-                return true;
+                $orgaInitiated = true;
             }
         }
 
-        return false;
+        $this->setCacheItem('isInitiatedByOrganization', $orgaInitiated);
+
+        return $orgaInitiated;
     }
 
     public function getInitiatorsStr(): string
     {
+        $cached = $this->getCacheItem('getInitiatorsStr');
+        if ($cached !== null) {
+            return $cached;
+        }
+
         $inits = $this->getInitiators();
         $str   = [];
         foreach ($inits as $init) {
             $str[] = $init->getNameWithResolutionDate(false);
         }
 
-        return implode(', ', $str);
+        $initiatorsStr = implode(', ', $str);
+        $this->setCacheItem('getInitiatorsStr', $initiatorsStr);
+
+        return $initiatorsStr; // Hint: the returned string is NOT yet HTML-encoded
+    }
+
+    public function onSupportersChanged(): void
+    {
+        $this->flushCacheItems(['getInitiatorsStr', 'isInitiatedByOrganization']);
     }
 
     /**
