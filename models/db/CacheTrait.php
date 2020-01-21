@@ -14,10 +14,10 @@ trait CacheTrait
     /**
      * @return array
      */
-    protected function getCacheObj()
+    protected function getCacheObj(): array
     {
         if ($this->cacheObj === null) {
-            if ($this->cache === null || $this->cache == '') {
+            if ($this->cache === null || $this->cache === '') {
                 $this->cacheObj = [];
             } else {
                 $this->cacheObj = unserialize($this->cache);
@@ -26,10 +26,7 @@ trait CacheTrait
         return $this->cacheObj;
     }
 
-    /**
-     * @param bool $save
-     */
-    public function flushCache($save = true)
+    public function flushCache(bool $save = true)
     {
         $this->cache    = '';
         $this->cacheObj = null;
@@ -42,7 +39,7 @@ trait CacheTrait
      * @param string $key
      * @return mixed
      */
-    public function getCacheItem($key)
+    public function getCacheItem(string $key)
     {
         $data = $this->getCacheObj();
         if (!isset($data[$key])) {
@@ -56,7 +53,7 @@ trait CacheTrait
      * @param mixed $value
      * @param bool $save
      */
-    public function setCacheItem($key, $value, $save = true)
+    public function setCacheItem(string $key, $value, bool $save = true)
     {
         $data           = $this->getCacheObj();
         $data[$key]     = $value;

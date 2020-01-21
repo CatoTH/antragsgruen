@@ -44,8 +44,6 @@ use yii\helpers\Html;
  */
 class Amendment extends IMotion implements IRSSItem
 {
-    use CacheTrait;
-
     const EVENT_SUBMITTED       = 'submitted';
     const EVENT_PUBLISHED       = 'published';
     const EVENT_PUBLISHED_FIRST = 'published_first';
@@ -285,10 +283,7 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getTitleWithPrefix()
+    public function getTitleWithPrefix(): string
     {
         return $this->getTitle();
     }
@@ -922,19 +917,14 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_PUBLISH_PROPOSAL, $this->id);
     }
 
-    /**
-     */
-    public function setDeleted()
+    public function setDeleted(): void
     {
         $this->status = Amendment::STATUS_DELETED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_DELETE, $this->id);
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         if ($this->status === Amendment::STATUS_DELETED) {
             return true;

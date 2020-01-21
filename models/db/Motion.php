@@ -61,8 +61,6 @@ use yii\helpers\Html;
  */
 class Motion extends IMotion implements IRSSItem
 {
-    use CacheTrait;
-
     const EVENT_SUBMITTED = 'submitted';
     const EVENT_PUBLISHED = 'published';
     const EVENT_PUBLISHED_FIRST = 'published_first';
@@ -388,10 +386,7 @@ class Motion extends IMotion implements IRSSItem
         return $intro . $this->title;
     }
 
-    /**
-     * @return string ("A1: Application: John <Doe>")
-     */
-    public function getTitleWithPrefix()
+    public function getTitleWithPrefix(): string
     {
         if ($this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->getTitleWithIntro();
@@ -403,12 +398,9 @@ class Motion extends IMotion implements IRSSItem
         }
         $name .= ' ' . $this->getTitleWithIntro();
 
-        return $name;
+        return $name; // unencoded string, e.g. "A1: Application: John <Doe>"
     }
 
-    /**
-     * @return string ("A1: Application: John &lt;Doe&gt;")
-     */
     public function getEncodedTitleWithPrefix()
     {
         $title = $this->getTitleWithPrefix();
@@ -416,7 +408,7 @@ class Motion extends IMotion implements IRSSItem
         $title = str_replace(" - \n", "<br>", $title);
         $title = str_replace("\n", "<br>", $title);
 
-        return $title;
+        return $title; // encoded string, e.g. "A1: Application: John &lt;Doe&gt;"
     }
 
     /**
@@ -822,9 +814,7 @@ class Motion extends IMotion implements IRSSItem
         return $return;
     }
 
-    /**
-     */
-    public function withdraw()
+    public function withdraw(): void
     {
         if ($this->status === Motion::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
@@ -846,10 +836,7 @@ class Motion extends IMotion implements IRSSItem
         return $this->iNeedsCollectionPhase($motionSupportType);
     }
 
-    /**
-     * @return string
-     */
-    public function getSubmitButtonLabel()
+    public function getSubmitButtonLabel(): string
     {
         if ($this->needsCollectionPhase()) {
             return \Yii::t('motion', 'button_submit_create');
@@ -860,9 +847,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     */
-    public function setInitialSubmitted()
+    public function setInitialSubmitted(): void
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Motion::STATUS_COLLECTING_SUPPORTERS;
@@ -880,9 +865,7 @@ class Motion extends IMotion implements IRSSItem
         new MotionSubmittedNotification($this);
     }
 
-    /**
-     */
-    public function setScreened()
+    public function setScreened(): void
     {
         $this->status = Motion::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '') {
@@ -893,18 +876,14 @@ class Motion extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_SCREEN, $this->id);
     }
 
-    /**
-     */
-    public function setUnscreened()
+    public function setUnscreened(): void
     {
         $this->status = Motion::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_UNSCREEN, $this->id);
     }
 
-    /**
-     */
-    public function setProposalPublished()
+    public function setProposalPublished(): void
     {
         if ($this->proposalVisibleFrom) {
             return;
@@ -916,19 +895,14 @@ class Motion extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($consultation, ConsultationLog::MOTION_PUBLISH_PROPOSAL, $this->id);
     }
 
-    /**
-     */
-    public function setDeleted()
+    public function setDeleted(): void
     {
         $this->status = Motion::STATUS_DELETED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_DELETE, $this->id);
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         if ($this->status === Motion::STATUS_DELETED) {
             return true;

@@ -43,6 +43,8 @@ use yii\helpers\Html;
  */
 abstract class IMotion extends ActiveRecord
 {
+    use CacheTrait;
+
     // The motion has been deleted and is not visible anymore. Only admins can delete a motion.
     const STATUS_DELETED = -2;
 
@@ -309,10 +311,7 @@ abstract class IMotion extends ActiveRecord
     /** @var null|VotingData */
     private $votingDataObject = null;
 
-    /**
-     * @return VotingData
-     */
-    public function getVotingData()
+    public function getVotingData(): VotingData
     {
         if (!is_object($this->votingDataObject)) {
             $this->votingDataObject = new VotingData($this->votingData);
@@ -321,9 +320,6 @@ abstract class IMotion extends ActiveRecord
         return $this->votingDataObject;
     }
 
-    /**
-     * @param VotingData $data
-     */
     public function setVotingData(VotingData $data)
     {
         $this->votingDataObject = $data;
@@ -331,10 +327,7 @@ abstract class IMotion extends ActiveRecord
     }
 
 
-    /**
-     * @return bool
-     */
-    public function isVisible()
+    public function isVisible(): bool
     {
         if (!$this->getMyConsultation()) {
             return false;
@@ -343,18 +336,12 @@ abstract class IMotion extends ActiveRecord
         return !in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses());
     }
 
-    /**
-     * @return bool
-     */
-    public function isVisibleForAdmins()
+    public function isVisibleForAdmins(): bool
     {
         return !in_array($this->status, static::getStatusesInvisibleForAdmins());
     }
 
-    /**
-     * @return bool
-     */
-    public function isVisibleForProposalAdmins()
+    public function isVisibleForProposalAdmins(): bool
     {
         return (
             $this->isVisibleForAdmins() &&
@@ -365,10 +352,7 @@ abstract class IMotion extends ActiveRecord
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function isProposalPublic()
+    public function isProposalPublic(): bool
     {
         if (!$this->proposalVisibleFrom) {
             return false;
@@ -378,10 +362,7 @@ abstract class IMotion extends ActiveRecord
         return ($visibleFromTs <= time());
     }
 
-    /**
-     * @return bool
-     */
-    public function isReadable()
+    public function isReadable(): bool
     {
         $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT);
         if ($iAmAdmin && $this->status === static::STATUS_DRAFT) {
@@ -391,14 +372,9 @@ abstract class IMotion extends ActiveRecord
         return !in_array($this->status, $this->getMyConsultation()->getUnreadableStatuses());
     }
 
-    /**
-     */
-    abstract public function setDeleted();
+    abstract public function setDeleted(): void;
 
-    /**
-     * @return bool
-     */
-    abstract public function isDeleted();
+    abstract public function isDeleted(): bool;
 
     /**
      * @return ISupporter[]
@@ -408,12 +384,9 @@ abstract class IMotion extends ActiveRecord
     /**
      * @return string
      */
-    abstract public function getTitleWithPrefix();
+    abstract public function getTitleWithPrefix(): string;
 
-    /**
-     * @return bool
-     */
-    public function isInitiatedByOrganization()
+    public function isInitiatedByOrganization(): bool
     {
         foreach ($this->getInitiators() as $initiator) {
             if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
@@ -424,12 +397,7 @@ abstract class IMotion extends ActiveRecord
         return false;
     }
 
-    /**
-     * Hint: the returned string is NOT yet HTML-encoded
-     *
-     * @return string
-     */
-    public function getInitiatorsStr()
+    public function getInitiatorsStr(): string
     {
         $inits = $this->getInitiators();
         $str   = [];
