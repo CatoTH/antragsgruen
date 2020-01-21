@@ -180,11 +180,11 @@ if ($hasComments) {
             if (is_a($comment, \app\models\db\MotionComment::class)) {
                 /** @var \app\models\db\MotionComment $comment */
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->motion->titlePrefix) . '</div>';
+                    Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
             } elseif (is_a($comment, \app\models\db\AmendmentComment::class)) {
                 /** @var \app\models\db\AmendmentComment $comment */
                 $html .= '<div>' . Yii::t('con', 'sb_comm_to') . ' ' .
-                    Html::encode($comment->amendment->titlePrefix) . '</div>';
+                    Html::encode($comment->getIMotion()->titlePrefix) . '</div>';
             }
             $html .= '</a></li>';
         }

@@ -38,14 +38,19 @@ class AdminTodoItem
         $this->description = $description;
     }
 
+    private static $todoCache = [];
     /**
      * @param Consultation|null $consultation
      * @return AdminTodoItem[]
      */
-    public static function getConsultationTodos($consultation)
+    public static function getConsultationTodos(?Consultation $consultation)
     {
         if (!$consultation) {
             return [];
+        }
+
+        if (isset(static::$todoCache[$consultation->id])) {
+            return static::$todoCache[$consultation->id];
         }
 
         $todo = [];
@@ -79,7 +84,7 @@ class AdminTodoItem
             $description = \Yii::t('admin', 'todo_from') . ': ' . $comment->name;
             $todo[]      = new AdminTodoItem(
                 'motionCommentScreen' . $comment->id,
-                \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->motion->getTitleWithPrefix(),
+                \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->getIMotion()->getTitleWithPrefix(),
                 \Yii::t('admin', 'todo_comment_screen'),
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
@@ -91,7 +96,7 @@ class AdminTodoItem
             $description = 'Von: ' . $comment->name;
             $todo[]      = new AdminTodoItem(
                 'amendmentCommentScreen' . $comment->id,
-                \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->amendment->getTitle(),
+                \Yii::t('admin', 'todo_comment_to') . ': ' . $comment->getIMotion()->getTitle(),
                 \Yii::t('admin', 'todo_comment_screen'),
                 $comment->getLink(),
                 Tools::dateSql2timestamp($comment->dateCreation),
@@ -108,6 +113,8 @@ class AdminTodoItem
             }
             return 0;
         });
+
+        static::$todoCache[$consultation->id] = $todo;
 
         return $todo;
     }

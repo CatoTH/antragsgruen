@@ -2,11 +2,9 @@
 
 namespace app\models\db;
 
-use app\components\MotionSorter;
-use app\components\UrlHelper;
+use app\components\{MotionSorter, UrlHelper};
 use app\models\amendmentNumbering\IAmendmentNumbering;
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotFound;
+use app\models\exceptions\{Internal, NotFound};
 use app\models\SearchResult;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
@@ -74,7 +72,7 @@ class Consultation extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app->tablePrefix . 'consultation';
     }
@@ -623,8 +621,8 @@ class Consultation extends ActiveRecord
     /**
      * @param string $text
      * @param array $backParams
-     * @return \app\models\SearchResult[]
-     * @throws \app\models\exceptions\Internal
+     * @return SearchResult[]
+     * @throws Internal
      */
     public function fulltextSearch($text, $backParams)
     {

@@ -163,7 +163,8 @@ class MotionComment extends IComment
      */
     public function getConsultation()
     {
-        return $this->motion->getMyConsultation();
+        $motion = $this->getIMotion();
+        return $motion->getMyConsultation();
     }
 
     /**
@@ -171,7 +172,8 @@ class MotionComment extends IComment
      */
     public function getMotionTitle()
     {
-        return $this->motion->getTitleWithPrefix();
+        $motion = $this->getIMotion();
+        return $motion->getTitleWithPrefix();
     }
 
     /**
@@ -246,8 +248,8 @@ class MotionComment extends IComment
     public function getUserdataExportObject()
     {
         return [
-            'motion_title'  => $this->motion->getTitleWithPrefix(),
-            'motion_link'   => $this->motion->getLink(true),
+            'motion_title'  => $this->getIMotion()->getTitleWithPrefix(),
+            'motion_link'   => $this->getIMotion()->getLink(true),
             'text'          => $this->text,
             'name'          => $this->name,
             'email'         => $this->contactEmail,

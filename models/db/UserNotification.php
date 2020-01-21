@@ -146,7 +146,7 @@ class UserNotification extends ActiveRecord
     public static function getNotification(User $user, Consultation $consultation, $type, $refId = null)
     {
         $key = $user->id . '-' . $consultation->id . '-' . $type . '-' . $refId;
-        if (!isset(static::$noticache[$key])) {
+        if (!array_key_exists($key, static::$noticache)) {
             static::$noticache[$key] = static::findOne([
                 'userId'                  => $user->id,
                 'consultationId'          => $consultation->id,

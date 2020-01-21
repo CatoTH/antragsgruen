@@ -113,7 +113,8 @@ class AmendmentComment extends IComment
      */
     public function getConsultation()
     {
-        return $this->amendment->getMyConsultation();
+        $amendment = $this->getIMotion();
+        return $amendment->getMyConsultation();
     }
 
     /**
@@ -148,13 +149,10 @@ class AmendmentComment extends IComment
             ->offset(0)->limit($limit)->all();
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionTitle()
+    public function getMotionTitle(): string
     {
-        return $this->amendment->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') .
-            ' ' . $this->amendment->getMyMotion()->getTitleWithPrefix();
+        $amendment = $this->getIMotion();
+        return $amendment->titlePrefix . ' ' . \Yii::t('amend', 'amend_for_motion') . ' ' . $amendment->getMyMotion()->getTitleWithPrefix();
     }
 
     /**
@@ -239,9 +237,10 @@ class AmendmentComment extends IComment
      */
     public function getUserdataExportObject()
     {
+        $amendment = $this->getIMotion();
         return [
-            'amendment_title' => $this->amendment->getTitle(),
-            'amendment_link'  => $this->amendment->getLink(true),
+            'amendment_title' => $amendment->getTitle(),
+            'amendment_link'  => $amendment->getLink(true),
             'text'            => $this->text,
             'name'            => $this->name,
             'email'           => $this->contactEmail,

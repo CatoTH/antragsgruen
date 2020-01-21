@@ -112,17 +112,14 @@ class ConsultationAgendaItem extends ActiveRecord
      */
     public function getMyMotions()
     {
-        if ($this->getMyConsultation()->hasPreloadedMotionData() !== '') {
-            $motions = [];
-            foreach ($this->getMyConsultation()->motions as $motion) {
-                if ($motion->agendaItemId === $this->id) {
-                    $motions[] = $motion;
-                }
+        $motions = [];
+        foreach ($this->getMyConsultation()->motions as $motion) {
+            if ($motion->agendaItemId === $this->id) {
+                $motions[] = $motion;
             }
-            return $motions;
-        } else {
-            return $this->motions;
         }
+
+        return $motions;
     }
 
     /**

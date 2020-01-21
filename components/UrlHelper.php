@@ -286,11 +286,11 @@ class UrlHelper
     {
         $params = [
             '/motion/view',
-            'motionSlug' => $motionComment->motion->getMotionSlug(),
+            'motionSlug' => $motionComment->getIMotion()->getMotionSlug(),
             'commentId'  => $motionComment->id,
             '#'          => 'comm' . $motionComment->id
         ];
-        return static::createUrl($params, $motionComment->motion->getMyConsultation());
+        return static::createUrl($params, $motionComment->getIMotion()->getMyConsultation());
     }
 
     /**
@@ -320,12 +320,12 @@ class UrlHelper
     {
         $params = [
             '/amendment/view',
-            'motionSlug'  => $amendmentComment->amendment->getMyMotion()->getMotionSlug(),
+            'motionSlug'  => $amendmentComment->getIMotion()->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendmentComment->amendmentId,
             'commentId'   => $amendmentComment->id,
             '#'           => 'comm' . $amendmentComment->id
         ];
-        return static::createUrl($params, $amendmentComment->amendment->getMyConsultation());
+        return static::createUrl($params, $amendmentComment->getIMotion()->getMyConsultation());
     }
 
     /**

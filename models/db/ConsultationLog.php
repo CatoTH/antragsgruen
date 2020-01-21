@@ -210,7 +210,7 @@ class ConsultationLog extends ActiveRecord
             case static::MOTION_COMMENT_SCREEN:
                 $this->motionComment = MotionComment::findOne($this->actionReferenceId);
                 if ($this->motionComment) {
-                    $this->motion   = $this->motionComment->motion;
+                    $this->motion   = $this->motionComment->getIMotion();
                     $this->motionId = $this->motionComment->motionId;
                 }
                 break;
@@ -218,7 +218,7 @@ class ConsultationLog extends ActiveRecord
             case static::AMENDMENT_COMMENT_SCREEN:
                 $this->amendmentComment = AmendmentComment::findOne($this->actionReferenceId);
                 if ($this->amendmentComment) {
-                    $this->amendment   = $this->amendmentComment->amendment;
+                    $this->amendment   = $this->amendmentComment->getIMotion();
                     $this->amendmentId = $this->amendmentComment->amendmentId;
                     if ($this->amendment) {
                         $this->motion   = $this->amendment->getMyMotion();
@@ -280,7 +280,7 @@ class ConsultationLog extends ActiveRecord
                 break;
             case static::MOTION_COMMENT:
             case static::MOTION_COMMENT_SCREEN:
-                if ($this->motionComment && $this->motionComment->motion) {
+                if ($this->motionComment && $this->motionComment->getIMotion()) {
                     return UrlHelper::createMotionCommentUrl($this->motionComment);
                 } else {
                     return null;
@@ -288,8 +288,8 @@ class ConsultationLog extends ActiveRecord
                 break;
             case static::AMENDMENT_COMMENT:
             case static::AMENDMENT_COMMENT_SCREEN:
-                if ($this->amendmentComment && $this->amendmentComment->amendment &&
-                    $this->amendmentComment->amendment->getMyMotion()) {
+                if ($this->amendmentComment && $this->amendmentComment->getIMotion() &&
+                    $this->amendmentComment->getIMotion()->getMyMotion()) {
                     return UrlHelper::createAmendmentCommentUrl($this->amendmentComment);
                 } else {
                     return null;

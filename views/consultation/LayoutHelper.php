@@ -164,7 +164,7 @@ class LayoutHelper
         echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
 
-        if ($agendaItem->motionType && $agendaItem->motionType->getMotionPolicy()->checkCurrUserMotion(false, true)) {
+        if ($agendaItem->getMyMotionType() && $agendaItem->getMyMotionType()->getMotionPolicy()->checkCurrUserMotion(false, true)) {
             $motionCreateLink = UrlHelper::createUrl(['motion/create', 'agendaItemId' => $agendaItem->id]);
             echo '<a href="' . Html::encode($motionCreateLink) . '" class="motionCreateLink btn btn-default btn-xs"';
             echo ' title="' . Html::encode($agendaItem->title . ': ' . $agendaItem->motionType->createTitle) . '"';

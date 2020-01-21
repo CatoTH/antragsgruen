@@ -93,7 +93,7 @@ class LayoutHooks extends Hooks
     <input type="text" class="query" name="query"
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
-        
+
     <button type="submit" class="button-submit">
                 <span class="fa fa-search"></span> <span class="text">Suchen</span>
             </button>';

@@ -555,14 +555,14 @@ class UserController extends Base
         }
 
         foreach ($user->motionComments as $comment) {
-            if (!$comment->motion || $comment->motion->isDeleted()) {
+            if (!$comment->getIMotion() || $comment->getIMotion()->isDeleted()) {
                 continue;
             }
             $data['comments'][] = $comment->getUserdataExportObject();
         }
 
         foreach ($user->amendmentComments as $comment) {
-            if (!$comment->amendment || $comment->amendment->isDeleted()) {
+            if (!$comment->getIMotion() || $comment->getIMotion()->isDeleted()) {
                 continue;
             }
             $data['comments'][] = $comment->getUserdataExportObject();
