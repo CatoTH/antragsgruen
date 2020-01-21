@@ -71,8 +71,13 @@ class LayoutHooks extends Hooks
         $motionType = $motion->getMyMotionType();
         $collectionPhase = $motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication();
         if (!$motion->isInitiatedByOrganization() && $collectionPhase) {
-            $persons = array_merge($motion->getInitiators(), $motion->getSupporters());
-            $quota   = $this->getWomensQuota($persons);
+            $quota = $motion->getCacheItem('supporters.womanQuota');
+            if ($quota === null) {
+                $persons = array_merge($motion->getInitiators(), $motion->getSupporters());
+                $quota   = $this->getWomensQuota($persons);
+                $motion->setCacheItem('supporters.womanQuota', $quota);
+            }
+
             $before  = $this->formatWomenQuotaCol($quota, $before);
         }
 
@@ -89,8 +94,13 @@ class LayoutHooks extends Hooks
         $collectionPhase = $amendment->getMyMotionType()->getAmendmentSupportTypeClass()
             ->collectSupportersBeforePublication();
         if (!$amendment->isInitiatedByOrganization() && $collectionPhase) {
-            $persons = array_merge($amendment->getInitiators(), $amendment->getSupporters());
-            $quota   = $this->getWomensQuota($persons);
+            $quota = $amendment->getCacheItem('supporters.womanQuota');
+            if ($quota === null) {
+                $persons = array_merge($amendment->getInitiators(), $amendment->getSupporters());
+                $quota   = $this->getWomensQuota($persons);
+                $amendment->setCacheItem('supporters.womanQuota', $quota);
+            }
+
             $before  = $this->formatWomenQuotaCol($quota, $before);
         }
 

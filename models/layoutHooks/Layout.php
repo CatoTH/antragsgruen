@@ -14,10 +14,7 @@ class Layout
     /** @var Hooks[] */
     private static $hooks = [];
 
-    /**
-     * @param Hooks $hook
-     */
-    public static function addHook(Hooks $hook)
+    public static function addHook(Hooks $hook): void
     {
         if (!in_array($hook, static::$hooks)) {
             static::$hooks[] = $hook;
@@ -40,90 +37,57 @@ class Layout
         return $out;
     }
 
-    /**
-     * @return string
-     */
-    public static function beforePage()
+    public static function beforePage(): string
     {
         return static::callHook('beforePage');
     }
 
-    /**
-     * @return string
-     */
-    public static function beginPage()
+    public static function beginPage(): string
     {
         return static::callHook('beginPage');
     }
 
-    /**
-     * @return string
-     */
-    public static function favicons()
+    public static function favicons(): string
     {
         return static::callHook('favicons');
     }
 
-    /**
-     * @return string
-     */
-    public static function logoRow()
+    public static function logoRow(): string
     {
         return static::callHook('logoRow');
     }
 
-    /**
-     * @return string
-     */
-    public static function beforeContent()
+    public static function beforeContent(): string
     {
         return static::callHook('beforeContent');
     }
 
-    /**
-     * @return string
-     */
-    public static function afterContent()
+    public static function afterContent(): string
     {
         return static::callHook('afterContent');
     }
 
-    /**
-     * @return string
-     */
-    public static function beginContent()
+    public static function beginContent(): string
     {
         return static::callHook('beginContent');
     }
 
-    /**
-     * @return string
-     */
-    public static function endPage()
+    public static function endPage(): string
     {
         return static::callHook('endPage');
     }
 
-    /**
-     * @return string
-     */
-    public static function renderSidebar()
+    public static function renderSidebar(): string
     {
         return static::callHook('renderSidebar');
     }
 
-    /**
-     * @return string
-     */
-    public static function getSearchForm()
+    public static function getSearchForm(): string
     {
         return static::callHook('getSearchForm');
     }
 
-    /**
-     * @return string
-     */
-    public static function getAntragsgruenAd()
+    public static function getAntragsgruenAd(): string
     {
         return static::callHook('getAntragsgruenAd');
     }
@@ -132,118 +96,67 @@ class Layout
      * @param ConsultationMotionType[] $motionTypes
      * @return string
      */
-    public static function setSidebarCreateMotionButton($motionTypes)
+    public static function setSidebarCreateMotionButton($motionTypes): string
     {
         return static::callHook('setSidebarCreateMotionButton', [$motionTypes]);
     }
 
-    /**
-     * @return string
-     */
-    public static function getStdNavbarHeader()
+    public static function getStdNavbarHeader(): string
     {
         return static::callHook('getStdNavbarHeader');
     }
 
-    /**
-     * @return string
-     */
-    public static function footerLine()
+    public static function footerLine(): string
     {
         return static::callHook('footerLine');
     }
 
-    /**
-     * @return string
-     */
-    public static function breadcrumbs()
+    public static function breadcrumbs(): string
     {
         return static::callHook('breadcrumbs');
     }
 
-    /**
-     * @param Motion $motion
-     * @return string
-     */
-    public static function beforeMotionView(Motion $motion)
+    public static function beforeMotionView(Motion $motion): string
     {
         return static::callHook('beforeMotionView', [$motion]);
     }
 
-    /**
-     * @param Motion $motion
-     * @return string
-     */
-    public static function afterMotionView(Motion $motion)
+    public static function afterMotionView(Motion $motion): string
     {
         return static::callHook('afterMotionView', [$motion]);
     }
 
-    /**
-     * @param array $motionData
-     * @param Motion $motion
-     * @return array
-     */
-    public static function getMotionViewData($motionData, Motion $motion)
+    public static function getMotionViewData(array $motionData, Motion $motion): array
     {
         return static::callHook('getMotionViewData', [$motion], $motionData);
     }
 
-    /**
-     * @param string $origStatus
-     * @param Motion $motion
-     * @return string
-     */
-    public static function getFormattedMotionStatus($origStatus, Motion $motion)
+    public static function getFormattedMotionStatus(string $origStatus, Motion $motion): string
     {
         return static::callHook('getFormattedMotionStatus', [$motion], $origStatus);
     }
 
-    /**
-     * @param string $origStatus
-     * @param Amendment $amendment
-     * @return string
-     */
-    public static function getFormattedAmendmentStatus($origStatus, Amendment $amendment)
+    public static function getFormattedAmendmentStatus(string $origStatus, Amendment $amendment): string
     {
         return static::callHook('getFormattedAmendmentStatus', [$amendment], $origStatus);
     }
 
-    /**
-     * @param string $origLine
-     * @param Motion $motion
-     * @return string
-     */
-    public static function getConsultationMotionLineContent($origLine, Motion $motion)
+    public static function getConsultationMotionLineContent(string $origLine, Motion $motion): string
     {
         return static::callHook('getConsultationMotionLineContent', [$motion], $origLine);
     }
 
-    /**
-     * @param string $origLine
-     * @param Amendment $amendment
-     * @return string
-     */
-    public static function getConsultationAmendmentLineContent($origLine, Amendment $amendment)
+    public static function getConsultationAmendmentLineContent(string $origLine, Amendment $amendment): string
     {
         return static::callHook('getConsultationAmendmentLineContent', [$amendment], $origLine);
     }
 
-    /**
-     * @param string $origLine
-     * @param ISupporter $supporter
-     * @return string
-     */
-    public static function getMotionDetailsInitiatorName($origLine, ISupporter $supporter)
+    public static function getMotionDetailsInitiatorName(string $origLine, ISupporter $supporter): string
     {
         return static::callHook('getMotionDetailsInitiatorName', [$supporter], $origLine);
     }
 
-    /**
-     * @param Consultation $consultation
-     * @return string
-     */
-    public static function getAdminIndexHint(Consultation $consultation)
+    public static function getAdminIndexHint(Consultation $consultation): string
     {
         return static::callHook('getAdminIndexHint', [$consultation]);
     }

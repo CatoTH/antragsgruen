@@ -388,7 +388,7 @@ abstract class IMotion extends ActiveRecord
 
     public function isInitiatedByOrganization(): bool
     {
-        $cached = $this->getCacheItem('isInitiatedByOrganization');
+        $cached = $this->getCacheItem('supporters.initiatedByOrga');
         if ($cached !== null) {
             return $cached;
         }
@@ -400,14 +400,14 @@ abstract class IMotion extends ActiveRecord
             }
         }
 
-        $this->setCacheItem('isInitiatedByOrganization', $orgaInitiated);
+        $this->setCacheItem('supporters.initiatedByOrga', $orgaInitiated);
 
         return $orgaInitiated;
     }
 
     public function getInitiatorsStr(): string
     {
-        $cached = $this->getCacheItem('getInitiatorsStr');
+        $cached = $this->getCacheItem('supporters.initiatorStr');
         if ($cached !== null) {
             return $cached;
         }
@@ -419,14 +419,14 @@ abstract class IMotion extends ActiveRecord
         }
 
         $initiatorsStr = implode(', ', $str);
-        $this->setCacheItem('getInitiatorsStr', $initiatorsStr);
+        $this->setCacheItem('supporters.initiatorStr', $initiatorsStr);
 
         return $initiatorsStr; // Hint: the returned string is NOT yet HTML-encoded
     }
 
     public function onSupportersChanged(): void
     {
-        $this->flushCacheItems(['getInitiatorsStr', 'isInitiatedByOrganization']);
+        $this->flushCacheItems(['supporters']);
     }
 
     /**

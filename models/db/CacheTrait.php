@@ -40,12 +40,18 @@ trait CacheTrait
     {
         $data    = $this->getCacheObj();
         $changed = false;
-        foreach ($items as $item) {
-            if (isset($data[$item])) {
-                $changed = true;
-                unset($data[$item]);
+
+        // Delete all cache entries with a key that starts with any of the items;
+        // item "motion" deletes cache keys like "motion", "motionSupporter"
+        foreach (array_keys($data) as $existingKey) {
+            foreach ($items as $toDeleteKey) {
+                if (strpos($existingKey, $toDeleteKey) === 0) {
+                    $changed = true;
+                    unset($data[$existingKey]);
+                }
             }
         }
+
         if ($changed) {
             $this->cacheObj = $data;
             $this->cache    = serialize($this->cacheObj);

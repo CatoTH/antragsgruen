@@ -84,7 +84,8 @@ if ($myself) {
         echo '<div class="content myImotionList myMotionList"><ul>';
 
         foreach ($myMotions as $motionSupport) {
-            $motion = $motionSupport->motion;
+            /** @var Motion $motion */
+            $motion = $motionSupport->getIMotion();
             list($class, $title) = $getMyMotionAttrs($motion, $motionSupport);
             echo '<li class="' . $class . '"><div class="firstLine">';
             $motionLink = \app\components\UrlHelper::createMotionUrl($motion);
@@ -108,7 +109,8 @@ if ($myself) {
         echo '<h3 class="green">' . Yii::t('con', 'My Amendments') . '</h3>';
         echo '<div class="content myImotionList myAmendmentList"><ul>';
         foreach ($myAmendments as $amendmentSupport) {
-            $amendment = $amendmentSupport->amendment;
+            /** @var Amendment $amendment */
+            $amendment = $amendmentSupport->getIMotion();
             list($class, $title) = $getMyMotionAttrs($amendment, $amendmentSupport);
             echo '<li class="' . $class . '"><div class="firstLine">';
             $amendmentUrl = \app\components\UrlHelper::createAmendmentUrl($amendment);
