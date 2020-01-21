@@ -49,7 +49,7 @@ class LayoutHelper
                 if ($supp->contactEmail) {
                     $name .= Html::a(Html::encode($supp->contactEmail), 'mailto:' . $supp->contactEmail);
                     $user = $supp->getMyUser();
-                    if ($user && $user->email === $supp->contactEmail && $supp->user->emailConfirmed) {
+                    if ($user && $user->email === $supp->contactEmail && $user->emailConfirmed) {
                         $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
                             'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
                     } else {
@@ -221,7 +221,7 @@ class LayoutHelper
 
         $canSupport = $policy->checkCurrUser();
         foreach ($motion->getInitiators() as $supp) {
-            if ($user && $supp->userId == $user->id) {
+            if ($user && $supp->userId === $user->id) {
                 $canSupport = false;
             }
         }
@@ -259,7 +259,7 @@ class LayoutHelper
             echo '<ul>';
             foreach ($dislikes as $supp) {
                 echo '<li>';
-                if ($user && $supp->userId == $user->id) {
+                if ($user && $supp->userId === $user->id) {
                     echo '<span class="label label-info">' . \Yii::t('motion', 'dislikes_you') . '</span> ';
                 }
                 echo Html::encode($supp->getNameWithOrga());
