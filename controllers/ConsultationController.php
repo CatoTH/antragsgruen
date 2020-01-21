@@ -370,7 +370,7 @@ class ConsultationController extends Base
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
 
-        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
@@ -421,7 +421,7 @@ class ConsultationController extends Base
      */
     public function actionProposedProcedure()
     {
-        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         $this->layout = 'column1';
 

@@ -129,11 +129,11 @@ class Consultation extends ActiveRecord
     {
         if ($this->preloadedAllMotionData === static::PRELOAD_ALL) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
-                ->with('amendments', 'tags')
+                ->with('amendments', 'tags', 'motionSupporters', 'amendments.amendmentSupporters')
                 ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
         } elseif ($this->preloadedAllMotionData === static::PRELOAD_ONLY_AMENDMENTS) {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])
-                ->with('amendments')
+                ->with('amendments', 'tags')
                 ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
         } else {
             return $this->hasMany(Motion::class, ['consultationId' => 'id'])

@@ -48,7 +48,7 @@ class LayoutHelper
                 }
                 if ($supp->contactEmail) {
                     $name .= Html::a(Html::encode($supp->contactEmail), 'mailto:' . $supp->contactEmail);
-                    if ($supp->user && $supp->user->email === $supp->contactEmail && $supp->user->emailConfirmed) {
+                    if ($supp->userId && $supp->user && $supp->user->email === $supp->contactEmail && $supp->user->emailConfirmed) {
                         $name .= ' <span class="glyphicon glyphicon-ok-sign" style="color: gray;" ' .
                             'title="' . \Yii::t('initiator', 'email_confirmed') . '"></span>';
                     } else {

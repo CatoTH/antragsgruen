@@ -6,11 +6,8 @@
  * @var string $context
  */
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\IAdminComment;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, IAdminComment};
 use yii\helpers\Html;
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
@@ -22,17 +19,17 @@ echo Html::beginForm($saveUrl, 'POST', [
     'data-context'             => $context,
     'class'                    => 'fuelux',
 ]);
-if ($amendment->proposalStatus == Amendment::STATUS_REFERRED) {
+if ($amendment->proposalStatus === Amendment::STATUS_REFERRED) {
     $preReferredTo = $amendment->proposalComment;
 } else {
     $preReferredTo = '';
 }
-if ($amendment->proposalStatus == Amendment::STATUS_OBSOLETED_BY) {
+if ($amendment->proposalStatus === Amendment::STATUS_OBSOLETED_BY) {
     $preObsoletedBy = $amendment->proposalComment;
 } else {
     $preObsoletedBy = '';
 }
-if ($amendment->proposalStatus == Amendment::STATUS_CUSTOM_STRING) {
+if ($amendment->proposalStatus === Amendment::STATUS_CUSTOM_STRING) {
     $preCustomStr = $amendment->proposalComment;
 } else {
     $preCustomStr = '';
@@ -161,13 +158,13 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                 <?php
                 $commentTypes = [IAdminComment::PROPOSED_PROCEDURE];
                 foreach ($amendment->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
-                    $user = $adminComment->user;
+                    $user = $adminComment->getMyUser();
                     ?>
                     <li class="comment" data-id="<?= $adminComment->id ?>">
                         <div class="header">
                             <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                             <?php
-                            if (\app\models\db\User::isCurrentUser($adminComment->user)) {
+                            if (\app\models\db\User::isCurrentUser($user)) {
                                 $url = UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment');
                                 echo '<button type="button" data-url="' . Html::encode($url) . '" ';
                                 echo 'class="btn-link delComment">';
@@ -191,6 +188,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
             </ol>
 
             <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
+                      title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
                       class="form-control" rows="1"></textarea>
             <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
         </section>

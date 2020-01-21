@@ -5,11 +5,8 @@
  * @var \app\models\db\Motion $motion
  */
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\IAdminComment;
-use app\models\db\Motion;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{IAdminComment, Motion};
 use yii\helpers\Html;
 
 $saveUrl = UrlHelper::createMotionUrl($motion, 'save-proposal-status');
@@ -158,13 +155,13 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             <?php
             $commentTypes = [IAdminComment::PROPOSED_PROCEDURE];
             foreach ($motion->getAdminComments($commentTypes, IAdminComment::SORT_ASC) as $adminComment) {
-                $user = $adminComment->user;
+                $user = $adminComment->getMyUser();
                 ?>
                 <li class="comment" data-id="<?= $adminComment->id ?>">
                     <div class="header">
                         <div class="date"><?= Tools::formatMysqlDateTime($adminComment->dateCreation) ?></div>
                         <?php
-                        if (\app\models\db\User::isCurrentUser($adminComment->user)) {
+                        if (\app\models\db\User::isCurrentUser($user)) {
                             $url = UrlHelper::createMotionUrl($motion, 'del-proposal-comment');
                             echo '<button type="button" data-url="' . Html::encode($url) . '" ';
                             echo 'class="btn-link delComment">';
@@ -188,6 +185,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
         </ol>
 
         <textarea name="text" placeholder="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
+                  title="<?= Html::encode(Yii::t('amend', 'proposal_comment_placeh')) ?>"
                   class="form-control" rows="1"></textarea>
         <button class="btn btn-default btn-xs"><?= Yii::t('amend', 'proposal_comment_write') ?></button>
     </section>

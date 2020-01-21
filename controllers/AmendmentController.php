@@ -617,7 +617,7 @@ class AmendmentController extends Base
 
             $response['success'] = true;
             $response['comment'] = [
-                'username'      => $adminComment->user->name,
+                'username'      => $adminComment->getMyUser()->name,
                 'id'            => $adminComment->id,
                 'text'          => $adminComment->text,
                 'delLink'       => UrlHelper::createAmendmentUrl($amendment, 'del-proposal-comment'),

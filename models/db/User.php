@@ -2,16 +2,11 @@
 
 namespace app\models\db;
 
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\WurzelwerkSamlClient;
+use app\components\{Tools, UrlHelper, WurzelwerkSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
-use app\models\exceptions\FormError;
-use app\models\exceptions\MailNotSent;
+use app\models\exceptions\{FormError, MailNotSent};
 use app\models\settings\AntragsgruenApp;
-use \app\components\mail\Tools as MailTools;
-use yii\db\ActiveRecord;
-use yii\db\Expression;
+use yii\db\{ActiveRecord, Expression};
 use yii\web\IdentityInterface;
 
 /**
@@ -93,11 +88,16 @@ class User extends ActiveRecord implements IdentityInterface
         }
     }
 
-    /**
-     * @param User|null $user
-     * @return bool
-     */
-    public static function isCurrentUser($user)
+    private static $userCache = [];
+    public static function getCachedUser(int $userId): ?User
+    {
+        if (!isset(static::$userCache[$userId])) {
+            static::$userCache[$userId] = static::find()->where(['id' => $userId])->andWhere('status != ' . User::STATUS_DELETED)->one();
+        }
+        return static::$userCache[$userId];
+    }
+
+    public static function isCurrentUser(?User $user): bool
     {
         $currentUser = static::getCurrentUser();
         if (!$user || !$currentUser) {

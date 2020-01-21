@@ -139,7 +139,7 @@ class ProposedProcedureController extends AdminBase
             ]);
         }
 
-        $user = $comment->user;
+        $user = $comment->getMyUser();
         return json_encode([
             'success'  => true,
             'date_str' => Tools::formatMysqlDateTime($comment->dateCreation),
@@ -180,7 +180,7 @@ class ProposedProcedureController extends AdminBase
             ]);
         }
 
-        $user = $comment->user;
+        $user = $comment->getMyUser();
         return json_encode([
             'success'  => true,
             'date_str' => Tools::formatMysqlDateTime($comment->dateCreation),

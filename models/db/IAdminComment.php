@@ -31,4 +31,14 @@ abstract class IAdminComment extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'userId'])
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
+
+
+    public function getMyUser(): ?User
+    {
+        if ($this->userId) {
+            return User::getCachedUser($this->userId);
+        } else {
+            return null;
+        }
+    }
 }

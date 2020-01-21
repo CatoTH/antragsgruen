@@ -430,7 +430,7 @@ trait AmendmentActionsTrait
 
         $commentId = \Yii::$app->request->post('id');
         $comment   = AmendmentAdminComment::findOne(['id' => $commentId, 'amendmentId' => $amendment->id]);
-        if ($comment && User::isCurrentUser($comment->user)) {
+        if ($comment && User::isCurrentUser($comment->getMyUser())) {
             $comment->delete();
             return json_encode(['success' => true]);
         } else {

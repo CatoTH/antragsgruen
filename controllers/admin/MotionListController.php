@@ -179,7 +179,7 @@ class MotionListController extends AdminBase
 
         $this->activateFunctions();
 
-        $consultation->preloadAllMotionData(Consultation::PRELOAD_ALL);
+        $consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         if ($privilegeScreening) {
             $this->actionListallScreeningMotions();

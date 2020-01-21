@@ -481,7 +481,7 @@ trait MotionActionsTrait
 
         $commentId = \Yii::$app->request->post('id');
         $comment   = MotionAdminComment::findOne(['id' => $commentId, 'motionId' => $motion->id]);
-        if ($comment && User::isCurrentUser($comment->user)) {
+        if ($comment && User::isCurrentUser($comment->getMyUser())) {
             $comment->delete();
             return json_encode(['success' => true]);
         } else {
