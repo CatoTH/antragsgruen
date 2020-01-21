@@ -56,13 +56,21 @@ abstract class ISupporter extends ActiveRecord
             ->andWhere(User::tableName() . '.status != ' . User::STATUS_DELETED);
     }
 
+    public function getMyUser(): ?User
+    {
+        if ($this->userId) {
+            return User::getCachedUser($this->userId);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * @return boolean
      */
     public function isDataFixed()
     {
-        $user = $this->user;
-        return ($user && $user->fixedData == 1);
+        return ($this->getMyUser() && $this->getMyUser()->fixedData == 1);
     }
 
     /**
@@ -72,8 +80,8 @@ abstract class ISupporter extends ActiveRecord
     {
         if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
             $name = $this->name;
-            if ($name == '' && $this->user) {
-                $name = $this->user->name;
+            if ($name == '' && $this->getMyUser()) {
+                $name = $this->getMyUser()->name;
             }
             if ($this->organization != '') {
                 $name .= ' (' . trim($this->organization, " \t\n\r\0\x0B()") . ')';
@@ -93,8 +101,8 @@ abstract class ISupporter extends ActiveRecord
         if ($html) {
             $name = Html::encode($this->name);
             $orga = Html::encode(trim($this->organization, " \t\n\r\0\x0B()"));
-            if ($name == '' && $this->user) {
-                $name = Html::encode($this->user->name);
+            if ($name == '' && $this->getMyUser()) {
+                $name = Html::encode($this->getMyUser()->name);
             }
             if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
                 if ($orga != '') {
@@ -115,8 +123,8 @@ abstract class ISupporter extends ActiveRecord
         } else {
             $name = $this->name;
             $orga = trim($this->organization, " \t\n\r\0\x0B()");
-            if ($name == '' && $this->user) {
-                $name = $this->user->name;
+            if ($name == '' && $this->getMyUser()) {
+                $name = $this->getMyUser()->name;
             }
             if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
                 if ($orga !== '') {
@@ -138,9 +146,9 @@ abstract class ISupporter extends ActiveRecord
      */
     public function getGivenNameOrFull()
     {
-        if ($this->user && $this->personType === static::PERSON_NATURAL || $this->personType === null) {
-            if ($this->user->nameGiven) {
-                return $this->user->nameGiven;
+        if ($this->getMyUser() && $this->personType === static::PERSON_NATURAL || $this->personType === null) {
+            if ($this->getMyUser()->nameGiven) {
+                return $this->getMyUser()->nameGiven;
             } else {
                 return $this->name;
             }
