@@ -1321,16 +1321,16 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "64acec7e0d67125e9f4656c68d4a38a42ab5a0b7"
+                "reference": "a167b1860995b926d279f9bb538f873e3bfa3465"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/64acec7e0d67125e9f4656c68d4a38a42ab5a0b7",
-                "reference": "64acec7e0d67125e9f4656c68d4a38a42ab5a0b7",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/a167b1860995b926d279f9bb538f873e3bfa3465",
+                "reference": "a167b1860995b926d279f9bb538f873e3bfa3465",
                 "shasum": ""
             },
             "require": {
@@ -1370,7 +1370,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2019-10-12T00:35:04+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1590,16 +1590,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.31",
+            "version": "2.0.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "0329b2db8bbf9719b1add17d6defd2d6045b4f09"
+                "reference": "a4aca1a2154098844a039d21112cafd31d70b8fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/0329b2db8bbf9719b1add17d6defd2d6045b4f09",
-                "reference": "0329b2db8bbf9719b1add17d6defd2d6045b4f09",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/a4aca1a2154098844a039d21112cafd31d70b8fd",
+                "reference": "a4aca1a2154098844a039d21112cafd31d70b8fd",
                 "shasum": ""
             },
             "require": {
@@ -1686,7 +1686,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2019-12-18T12:52:03+00:00"
+            "time": "2020-01-21T22:29:38+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
@@ -4642,16 +4642,16 @@
         },
         {
             "name": "symfony/config",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "6911d432edd5b50822986604fd5a5be3af856d30"
+                "reference": "4d3979f54472637169080f802dc82197e21fdcce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/6911d432edd5b50822986604fd5a5be3af856d30",
-                "reference": "6911d432edd5b50822986604fd5a5be3af856d30",
+                "url": "https://api.github.com/repos/symfony/config/zipball/4d3979f54472637169080f802dc82197e21fdcce",
+                "reference": "4d3979f54472637169080f802dc82197e21fdcce",
                 "shasum": ""
             },
             "require": {
@@ -4702,20 +4702,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-18T12:00:29+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "82437719dab1e6bdd28726af14cb345c2ec816d0"
+                "reference": "e9ee09d087e2c88eaf6e5fc0f5c574f64d100e4f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/82437719dab1e6bdd28726af14cb345c2ec816d0",
-                "reference": "82437719dab1e6bdd28726af14cb345c2ec816d0",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e9ee09d087e2c88eaf6e5fc0f5c574f64d100e4f",
+                "reference": "e9ee09d087e2c88eaf6e5fc0f5c574f64d100e4f",
                 "shasum": ""
             },
             "require": {
@@ -4778,20 +4778,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-17T10:32:23+00:00"
+            "time": "2020-01-10T21:54:01+00:00"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "79b0358207a3571cc3af02a57d0321927921f539"
+                "reference": "6faf589e1f6af78692aed3ab6b3c336c58d5d83c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/79b0358207a3571cc3af02a57d0321927921f539",
-                "reference": "79b0358207a3571cc3af02a57d0321927921f539",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/6faf589e1f6af78692aed3ab6b3c336c58d5d83c",
+                "reference": "6faf589e1f6af78692aed3ab6b3c336c58d5d83c",
                 "shasum": ""
             },
             "require": {
@@ -4851,20 +4851,20 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-19T16:00:02+00:00"
+            "time": "2020-01-21T07:39:36+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "b3c3068a72623287550fe20b84a2b01dcba2686f"
+                "reference": "9e3de195e5bc301704dd6915df55892f6dfc208b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/b3c3068a72623287550fe20b84a2b01dcba2686f",
-                "reference": "b3c3068a72623287550fe20b84a2b01dcba2686f",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/9e3de195e5bc301704dd6915df55892f6dfc208b",
+                "reference": "9e3de195e5bc301704dd6915df55892f6dfc208b",
                 "shasum": ""
             },
             "require": {
@@ -4921,7 +4921,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-28T13:33:56+00:00"
+            "time": "2020-01-10T21:54:01+00:00"
         },
         {
             "name": "symfony/event-dispatcher-contracts",
@@ -4983,16 +4983,16 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "40c2606131d56eff6f193b6e2ceb92414653b591"
+                "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/40c2606131d56eff6f193b6e2ceb92414653b591",
-                "reference": "40c2606131d56eff6f193b6e2ceb92414653b591",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/266c9540b475f26122b61ef8b23dd9198f5d1cfd",
+                "reference": "266c9540b475f26122b61ef8b23dd9198f5d1cfd",
                 "shasum": ""
             },
             "require": {
@@ -5029,20 +5029,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-26T23:16:41+00:00"
+            "time": "2020-01-21T08:20:44+00:00"
         },
         {
             "name": "symfony/finder",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e"
+                "reference": "3a50be43515590faf812fbd7708200aabc327ec3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/ce8743441da64c41e2a667b8eb66070444ed911e",
-                "reference": "ce8743441da64c41e2a667b8eb66070444ed911e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/3a50be43515590faf812fbd7708200aabc327ec3",
+                "reference": "3a50be43515590faf812fbd7708200aabc327ec3",
                 "shasum": ""
             },
             "require": {
@@ -5078,7 +5078,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2019-11-17T21:56:56+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -5253,16 +5253,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "b84501ad50adb72a94fb460a5b5c91f693e99c9b"
+                "reference": "f5697ab4cb14a5deed7473819e63141bf5352c36"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/b84501ad50adb72a94fb460a5b5c91f693e99c9b",
-                "reference": "b84501ad50adb72a94fb460a5b5c91f693e99c9b",
+                "url": "https://api.github.com/repos/symfony/process/zipball/f5697ab4cb14a5deed7473819e63141bf5352c36",
+                "reference": "f5697ab4cb14a5deed7473819e63141bf5352c36",
                 "shasum": ""
             },
             "require": {
@@ -5298,7 +5298,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-06T10:06:46+00:00"
+            "time": "2020-01-09T09:50:08+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -5360,16 +5360,16 @@
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "be330f919bdb395d1e0c3f2bfb8948512d6bdd99"
+                "reference": "7cfa470bc3b1887a7b2a47c0a702a84ad614fa92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/be330f919bdb395d1e0c3f2bfb8948512d6bdd99",
-                "reference": "be330f919bdb395d1e0c3f2bfb8948512d6bdd99",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/7cfa470bc3b1887a7b2a47c0a702a84ad614fa92",
+                "reference": "7cfa470bc3b1887a7b2a47c0a702a84ad614fa92",
                 "shasum": ""
             },
             "require": {
@@ -5432,20 +5432,20 @@
                 "debug",
                 "dump"
             ],
-            "time": "2019-12-18T13:41:29+00:00"
+            "time": "2020-01-04T13:00:46+00:00"
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.2",
+            "version": "v4.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "a08832b974dd5fafe3085a66d41fe4c84bb2628c"
+                "reference": "cd014e425b3668220adb865f53bff64b3ad21767"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/a08832b974dd5fafe3085a66d41fe4c84bb2628c",
-                "reference": "a08832b974dd5fafe3085a66d41fe4c84bb2628c",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/cd014e425b3668220adb865f53bff64b3ad21767",
+                "reference": "cd014e425b3668220adb865f53bff64b3ad21767",
                 "shasum": ""
             },
             "require": {
@@ -5491,7 +5491,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2019-12-10T10:33:21+00:00"
+            "time": "2020-01-21T11:12:16+00:00"
         },
         {
             "name": "theseer/tokenizer",

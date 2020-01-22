@@ -19,10 +19,10 @@
         "@types/clipboard": "^2.0.1",
         "@types/eonasdan-bootstrap-datetimepicker": "^4.17.26",
         "@types/jquery": "^3.3.31",
-        "@types/sortablejs": "^1.7.3",
+        "@types/sortablejs": "^1.10.2",
         "@types/typeahead": "^0.11.32",
-        "autoprefixer": "^9.6.5",
-        "bootbox": "^5.3.2",
+        "autoprefixer": "^9.7.4",
+        "bootbox": "^5.4.0",
         "bootstrap": "^3.4.1",
         "bootstrap-toggle": "*",
         "clipboard": "^2.0.4",
@@ -39,8 +39,8 @@
         "jquery": "^3.4.1",
         "pa11y": "^5.3.0",
         "requirejs": "^2.3.6",
-        "sortablejs": "^1.10.1",
-        "typescript": "^3.6.4"
+        "sortablejs": "^1.10.2",
+        "typescript": "^3.7.5"
     },
     "directories": {
         "bin": "./bin/"
@@ -48,7 +48,7 @@
     "dependencies": {
         "clone-buffer": "^1.0.0",
         "cloneable-readable": "^2.0.1",
-        "corejs-typeahead": "^1.2.1",
+        "corejs-typeahead": "^1.3.0",
         "eonasdan-bootstrap-datetimepicker": "^4.17.47",
         "isotope-layout": "^3.0.6",
         "moment": "^2.24.0",
