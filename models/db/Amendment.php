@@ -441,7 +441,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getFirstDiffLine()
     {
-        $cached = $this->getCacheItem('getFirstDiffLine');
+        $cached = $this->getCacheItem('lines.getFirstDiffLine');
         if ($cached !== null) {
             return $cached;
         }
@@ -450,7 +450,7 @@ class Amendment extends IMotion implements IRSSItem
         $original   = $new = [];
 
         foreach ($this->getActiveSections() as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $original[] = $section->getOriginalMotionSection()->data;
@@ -459,7 +459,7 @@ class Amendment extends IMotion implements IRSSItem
 
         $firstLine = static::calcFirstDiffLineCached($firstLine, $lineLength, $original, $new);
 
-        $this->setCacheItem('getFirstDiffLine', $firstLine);
+        $this->setCacheItem('lines.getFirstDiffLine', $firstLine);
         return $firstLine;
     }
 
@@ -826,7 +826,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function withdraw()
     {
-        if ($this->status == Amendment::STATUS_DRAFT) {
+        if ($this->status === Amendment::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
         } elseif (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
             $this->status = static::STATUS_WITHDRAWN_INVISIBLE;
@@ -834,7 +834,7 @@ class Amendment extends IMotion implements IRSSItem
             $this->status = static::STATUS_WITHDRAWN;
         }
         $this->save();
-        $this->getMyMotion()->flushCacheStart();
+        $this->flushCache(true);
 
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_WITHDRAW, $this->id);
         new AmendmentWithdrawnNotification($this);
@@ -885,7 +885,7 @@ class Amendment extends IMotion implements IRSSItem
     public function setScreened()
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
-        if ($this->titlePrefix == '') {
+        if ($this->titlePrefix === '') {
             $numbering         = $this->getMyConsultation()->getAmendmentNumbering();
             $this->titlePrefix = $numbering->getAmendmentNumber($this, $this->getMyMotion());
         }
@@ -942,7 +942,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->flushCacheWithChildren();
+        $this->flushCacheWithChildren(null);
         $this->setTextFixedIfNecessary();
 
         $init   = $this->getInitiators();
@@ -964,10 +964,7 @@ class Amendment extends IMotion implements IRSSItem
         new AmendmentPublishedNotification($this);
     }
 
-    /**
-     * @param bool $save
-     */
-    public function setTextFixedIfNecessary($save = true)
+    public function setTextFixedIfNecessary(bool $save = true): void
     {
         if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
@@ -981,31 +978,22 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     *
-     */
-    public function flushCacheWithChildren()
+    public function flushCacheWithChildren(?array $items): void
     {
-        $this->flushCache();
-        \Yii::$app->cache->delete($this->getPdfCacheKey());
-        foreach ($this->sections as $section) {
-            $section->flushCache();
+        if ($items) {
+            $this->flushCacheItems($items);
+        } else {
+            $this->flushCache();
         }
+        \Yii::$app->cache->delete($this->getPdfCacheKey());
     }
 
-    /**
-     * @return string
-     */
-    public function getPdfCacheKey()
+    public function getPdfCacheKey(): string
     {
         return 'amendment-pdf-' . $this->id;
     }
 
-    /**
-     * @param bool
-     * @return string
-     */
-    public function getFilenameBase($noUmlaut)
+    public function getFilenameBase(bool $noUmlaut): string
     {
         $motionTitle  = $this->getMyMotion()->title;
         $motionPrefix = $this->getMyMotion()->titlePrefix;

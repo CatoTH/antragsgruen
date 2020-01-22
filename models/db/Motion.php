@@ -686,7 +686,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getNumberOfCountableLines()
     {
-        $cached = $this->getCacheItem('getNumberOfCountableLines');
+        $cached = $this->getCacheItem('lines.getNumberOfCountableLines');
         if ($cached !== null) {
             return $cached;
         }
@@ -697,7 +697,7 @@ class Motion extends IMotion implements IRSSItem
             $num += $section->getNumberOfCountableLines();
         }
 
-        $this->setCacheItem('getNumberOfCountableLines', $num);
+        $this->setCacheItem('lines.getNumberOfCountableLines', $num);
 
         return $num;
     }
@@ -707,7 +707,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function getFirstLineNumber()
     {
-        $cached = $this->getCacheItem('getFirstLineNumber');
+        $cached = $this->getCacheItem('lines.getFirstLineNumber');
         if ($cached !== null) {
             return $cached;
         }
@@ -720,7 +720,7 @@ class Motion extends IMotion implements IRSSItem
                 foreach ($motions as $motion) {
                     /** @var Motion $motion */
                     if ($motion->id === $this->id) {
-                        $this->setCacheItem('getFirstLineNumber', $lineNo);
+                        $this->setCacheItem('lines.getFirstLineNumber', $lineNo);
 
                         return $lineNo;
                     } else {
@@ -732,7 +732,7 @@ class Motion extends IMotion implements IRSSItem
             // This is a invisible motion. The final line numbers are therefore not determined yet
             return 1;
         } else {
-            $this->setCacheItem('getFirstLineNumber', 1);
+            $this->setCacheItem('lines.getFirstLineNumber', 1);
 
             return 1;
         }
@@ -824,7 +824,7 @@ class Motion extends IMotion implements IRSSItem
             $this->status = static::STATUS_WITHDRAWN;
         }
         $this->save();
-        $this->flushCacheStart();
+        $this->flushCacheStart(['lines']);
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_WITHDRAW, $this->id);
         new MotionWithdrawnNotification($this);
     }
@@ -931,7 +931,7 @@ class Motion extends IMotion implements IRSSItem
      */
     public function onPublish()
     {
-        $this->flushCacheWithChildren();
+        $this->flushCache(true);
         $this->setTextFixedIfNecessary();
 
         $init   = $this->getInitiators();
@@ -971,28 +971,25 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     */
-    public function flushCacheStart()
+    public function flushCacheStart(?array $items): void
     {
         if ($this->getMyConsultation()->cacheOneMotionAffectsOthers()) {
-            $this->getMyConsultation()->flushCacheWithChildren();
+            $this->getMyConsultation()->flushCacheWithChildren($items);
         } else {
-            $this->flushCacheWithChildren();
+            $this->flushCacheWithChildren($items);
         }
     }
 
-    /**
-     */
-    public function flushCacheWithChildren()
+    public function flushCacheWithChildren(?array $items): void
     {
-        $this->flushCache();
-        \Yii::$app->cache->delete($this->getPdfCacheKey());
-        foreach ($this->sections as $section) {
-            $section->flushCache();
+        if ($items) {
+            $this->flushCacheItems($items);
+        } else {
+            $this->flushCache();
         }
+        \Yii::$app->cache->delete($this->getPdfCacheKey());
         foreach ($this->amendments as $amend) {
-            $amend->flushCacheWithChildren();
+            $amend->flushCacheWithChildren($items);
         }
         $this->flushViewCache();
     }

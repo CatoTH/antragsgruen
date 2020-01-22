@@ -341,7 +341,9 @@ class ConsultationController extends Base
             }
         }
 
-        $this->consultation->flushCacheWithChildren();
+        if ($this->consultation->cacheOneMotionAffectsOthers()) {
+            $this->consultation->flushCacheWithChildren(['lines']);
+        }
         $this->consultation->refresh();
 
         \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));

@@ -325,7 +325,7 @@ class AmendmentController extends Base
         $form     = new AmendmentEditForm($amendment->getMyMotion(), $amendment);
 
         if ($this->isPostSet('save')) {
-            $amendment->flushCacheWithChildren();
+            $amendment->flushCacheWithChildren(null);
             $form->setAttributes([\Yii::$app->request->post(), $_FILES]);
             try {
                 $form->saveAmendment($amendment);

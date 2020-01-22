@@ -127,7 +127,7 @@ class BugfixController extends Controller
                 }
             }
         }
-        $con->flushCacheWithChildren();
+        $con->flushCacheWithChildren(null);
 
         $this->stdout('Finished' . "\n");
     }

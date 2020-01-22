@@ -526,7 +526,7 @@ class MotionController extends Base
 
         if ($this->isPostSet('save')) {
             $post = \Yii::$app->request->post();
-            $motion->flushCacheWithChildren();
+            $motion->flushCache(true);
             $form->setAttributes([$post, $_FILES]);
             try {
                 $form->saveMotion($motion);

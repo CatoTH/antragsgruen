@@ -2,20 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\UrlHelper;
-use app\models\db\ConsultationLog;
-use app\models\db\IComment;
-use app\models\db\Motion;
-use app\models\db\MotionAdminComment;
-use app\models\db\MotionComment;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
-use app\models\db\Consultation;
-use app\models\exceptions\DB;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\components\{UrlHelper, EmailNotifications};
+use app\models\db\{ConsultationLog, IComment, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation};
+use app\models\exceptions\{DB, FormError, Internal};
 use app\models\forms\CommentForm;
-use app\components\EmailNotifications;
 use app\models\events\MotionEvent;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
@@ -231,7 +221,7 @@ trait MotionActionsTrait
                 return;
             }
         }
-        $supportType = $motion->motionType->getMotionSupportTypeClass();
+        $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
         $role        = MotionSupporter::ROLE_SUPPORTER;
         $user        = User::getCurrentUser();
         $gender      = \Yii::$app->request->post('motionSupportGender', '');

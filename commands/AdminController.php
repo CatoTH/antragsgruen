@@ -70,7 +70,7 @@ class AdminController extends Controller
             return;
         }
         /** @var Consultation $con */
-        $con->flushCacheWithChildren();
+        $con->flushCacheWithChildren(null);
         $this->stdout('All caches of this consultation have been flushed' . "\n");
     }
 

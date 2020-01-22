@@ -2,18 +2,12 @@
 
 namespace app\components\mail;
 
-use app\models\db\Consultation;
-use app\models\db\EMailLog;
-use app\models\exceptions\MailNotSent;
-use app\models\exceptions\ServerConfiguration;
+use app\models\db\{Consultation, EMailLog};
+use app\models\exceptions\{MailNotSent, ServerConfiguration};
 
 class Tools
 {
-    /**
-     * @param null|Consultation $consultation
-     * @return string
-     */
-    public static function getDefaultMailFromName($consultation = null)
+    public static function getDefaultMailFromName(?Consultation $consultation = null): string
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -24,11 +18,7 @@ class Tools
         return $name;
     }
 
-    /**
-     * @param null|Consultation $consultation
-     * @return string|null
-     */
-    public static function getDefaultReplyTo($consultation = null)
+    public static function getDefaultReplyTo(?Consultation $consultation = null): ?string
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -147,7 +137,7 @@ class Tools
             throw new MailNotSent($exception->getMessage());
         }
 
-        if (YII_ENV == 'test') {
+        if (YII_ENV === 'test') {
             $pre = \yii::$app->session->getFlash('email', '');
             \yii::$app->session->setFlash('email', $pre . 'E-Mail sent to: ' . $toEmail . "\n");
         }

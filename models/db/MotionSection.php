@@ -24,8 +24,6 @@ use app\models\exceptions\Internal;
  */
 class MotionSection extends IMotionSection
 {
-    use CacheTrait;
-
     /**
      * @return string
      */
@@ -278,21 +276,13 @@ class MotionSection extends IMotionSection
         return $return;
     }
 
-    /**
-     * @return int
-     */
-    public function getNumberOfCountableLines()
+    public function getNumberOfCountableLines(): int
     {
-        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             return 0;
         }
         if (!$this->getSettings()->lineNumbers) {
             return 0;
-        }
-
-        $cached = $this->getCacheItem('getNumberOfCountableLines');
-        if ($cached !== null) {
-            return $cached;
         }
 
         $num   = 0;
@@ -300,7 +290,7 @@ class MotionSection extends IMotionSection
         foreach ($paras as $para) {
             $num += count($para);
         }
-        $this->setCacheItem('getNumberOfCountableLines', $num);
+
         return $num;
     }
 
@@ -315,7 +305,7 @@ class MotionSection extends IMotionSection
         $sections = $motion->getSortedSections();
         foreach ($sections as $section) {
             /** @var MotionSection $section */
-            if ($section->sectionId == $this->sectionId) {
+            if ($section->sectionId === $this->sectionId) {
                 return $lineNo;
             } else {
                 $lineNo += $section->getNumberOfCountableLines();

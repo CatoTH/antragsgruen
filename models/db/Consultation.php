@@ -607,13 +607,10 @@ class Consultation extends ActiveRecord
         return $prefix . ($max_rev + 1);
     }
 
-    /**
-     *
-     */
-    public function flushCacheWithChildren()
+    public function flushCacheWithChildren(?array $items): void
     {
         foreach ($this->motions as $motion) {
-            $motion->flushCacheWithChildren();
+            $motion->flushCacheWithChildren($items);
         }
     }
 

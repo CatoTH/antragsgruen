@@ -2,10 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\diff\AmendmentRewriter;
-use app\components\diff\ArrayMatcher;
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
+use app\components\diff\{AmendmentRewriter, ArrayMatcher, Diff, DiffRenderer};
 use app\components\HTMLTools;
 use app\components\LineSplitter;
 use app\models\exceptions\Internal;
@@ -25,8 +22,6 @@ use app\models\sectionTypes\ISectionType;
  */
 class AmendmentSection extends IMotionSection
 {
-    use CacheTrait;
-
     /** @var null|MotionSection */
     private $originalMotionSection = null;
 
@@ -155,16 +150,10 @@ class AmendmentSection extends IMotionSection
      */
     public function getFirstLineNumber()
     {
-        $cached = $this->getCacheItem('getFirstLineNumber');
-        if ($cached !== null) {
-            return $cached;
-        }
-
         $first = $this->getMotion()->getFirstLineNumber();
         foreach ($this->getAmendment()->getSortedSections() as $section) {
             /** @var AmendmentSection $section */
-            if ($section->sectionId == $this->sectionId) {
-                $this->setCacheItem('getFirstLineNumber', $first);
+            if ($section->sectionId === $this->sectionId) {
                 return $first;
             }
             if (!$section || !$section->getOriginalMotionSection()) {
@@ -206,10 +195,12 @@ class AmendmentSection extends IMotionSection
      */
     public function diffDataToOrigParagraphs($origParagraphs, $splitListItems = true)
     {
+        /*
         $cached = $this->getCacheItem('diffDataToOrigParagraphs');
         if ($cached !== null && false) {
             return $cached;
         }
+        */
 
         $firstLine  = $this->getFirstLineNumber();
         $lineLength = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
@@ -239,8 +230,9 @@ class AmendmentSection extends IMotionSection
                 $firstLine += LineSplitter::countMotionParaLines($origParagraphs[$paraNo], $lineLength);
             }
         }
-
+        /*
         $this->setCacheItem('diffDataToOrigParagraphs', $amParagraphs);
+        */
         return $amParagraphs;
     }
 

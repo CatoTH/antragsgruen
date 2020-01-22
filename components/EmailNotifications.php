@@ -3,9 +3,7 @@
 namespace app\components;
 
 use app\components\mail\Tools as MailTools;
-use app\models\db\Amendment;
-use app\models\db\EMailLog;
-use app\models\db\Motion;
+use app\models\db\{Amendment, EMailLog, Motion};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
 
@@ -22,10 +20,10 @@ class EmailNotifications
         }
 
         $initiator = $motion->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            if ($motion->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+        if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
+            if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
-                $min        = $motion->motionType->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+                $min        = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);
                 $emailTitle = \Yii::t('motion', 'submitted_supp_phase_email_subject');
             } else {
@@ -34,7 +32,7 @@ class EmailNotifications
             }
             $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
             $plain      = $emailText;
-            $motionHtml = '<h1>' . Html::encode($motion->motionType->titleSingular) . ': ';
+            $motionHtml = '<h1>' . Html::encode($motion->getMyMotionType()->titleSingular) . ': ';
             $motionHtml .= Html::encode($motion->title);
             $motionHtml .= '</h1>';
 
@@ -88,7 +86,7 @@ class EmailNotifications
         $plain      = \Yii::t('motion', 'published_email_body');
         $plain      = str_replace('%LINK%', $motionLink, $plain);
         $plain      = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
-        $title      = $motion->motionType->titleSingular . ': ' . $motion->title;
+        $title      = $motion->getMyMotionType()->titleSingular . ': ' . $motion->title;
         $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
         $sections   = $motion->getSortedSections(true);
 
@@ -127,7 +125,7 @@ class EmailNotifications
     public static function sendMotionSupporterMinimumReached(Motion $motion)
     {
         $initiator = $motion->getInitiators();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+        if (count($initiator) > 0 && trim($initiator[0]->contactEmail) !== '') {
             $emailText  = \Yii::t('motion', 'support_reached_email_body');
             $emailTitle = \Yii::t('motion', 'support_reached_email_subject');
 
@@ -166,9 +164,9 @@ class EmailNotifications
         }
 
         $initiator  = $amendment->getInitiators();
-        $motionType = $amendment->getMyMotion()->motionType;
+        $motionType = $amendment->getMyMotion()->getMyMotionType();
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            if ($amendment->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+            if ($amendment->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
                 $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
                 $emailText  = str_replace('%MIN%', $min, $emailText);

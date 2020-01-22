@@ -157,8 +157,6 @@ class AmendmentEditForm extends Model
     /**
      * @param array $data
      * @param bool $safeOnly
-     *
-     * @throws FormError
      */
     public function setAttributes($data, $safeOnly = true)
     {
@@ -305,7 +303,6 @@ class AmendmentEditForm extends Model
     /**
      * @param Amendment $amendment
      *
-     * @throws FormError
      * @throws \Throwable
      * @throws \app\models\exceptions\NotAmendable
      */

@@ -228,7 +228,6 @@ class AmendmentController extends AdminBase
         if ($this->isPostSet('delete')) {
             $amendment->status = Amendment::STATUS_DELETED;
             $amendment->save();
-            $amendment->getMyMotion()->flushCacheStart();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'amend_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));
 
@@ -271,7 +270,7 @@ class AmendmentController extends AdminBase
 
             $this->saveAmendmentSupporters($amendment);
 
-            $amendment->getMyMotion()->flushCacheWithChildren();
+            $amendment->flushCache(true);
             $amendment->refresh();
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
         }

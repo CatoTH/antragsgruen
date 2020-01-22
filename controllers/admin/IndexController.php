@@ -29,7 +29,7 @@ class IndexController extends AdminBase
     public function actionIndex()
     {
         if ($this->isPostSet('flushCaches') && User::currentUserIsSuperuser()) {
-            $this->consultation->flushCacheWithChildren();
+            $this->consultation->flushCacheWithChildren(null);
             \Yii::$app->session->setFlash('success', \Yii::t('admin', 'index_flushed_cached'));
         }
 
@@ -113,7 +113,7 @@ class IndexController extends AdminBase
                 $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
                 $this->layoutParams->setLayout($siteSettings->siteLayout);
 
-                $model->flushCacheWithChildren();
+                $model->flushCacheWithChildren(['lines']);
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
                 \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
