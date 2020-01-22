@@ -35,8 +35,8 @@ Installation
 
 ```bash
 # Using PHP7-packages from [deb.sury.org](https://deb.sury.org/):
-apt-get install php7.3 php7.3-cli php7.3-fpm php7.3-intl php7.3-json php7.3-gd \
-                php7.3-mysql php7.3-opcache php7.3-curl php7.3-xml php7.3-mbstring php7.3-zip
+apt-get install php7.4 php7.4-cli php7.4-fpm php7.4-intl php7.4-json php7.4-gd \
+                php7.4-mysql php7.4-opcache php7.4-curl php7.4-xml php7.4-mbstring php7.4-zip
 ```
 
 - Apache or nginx. Example files are provided here:
