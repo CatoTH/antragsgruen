@@ -1,11 +1,12 @@
 <?php
 return [
-    'section_title'   => 'Titel',
-    'section_text'    => 'Text',
-    'section_html'    => 'Text (erweitert)',
-    'section_image'   => 'Bild',
-    'section_tabular' => 'Tabellarische Angaben',
-    'section_pdf'     => 'PDF-Datei',
+    'section_title'           => 'Titel',
+    'section_text'            => 'Text',
+    'section_html'            => 'Text (erweitert)',
+    'section_image'           => 'Bild',
+    'section_tabular'         => 'Tabellarische Angaben',
+    'section_pdf_attachment'  => 'PDF-Anhang',
+    'section_pdf_alternative' => 'PDF-Alternative',
 
     'amend_number_permotion' => 'Ä1 zu A1 (Zählung pro Antrag)',
     'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',

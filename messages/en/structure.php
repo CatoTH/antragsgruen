@@ -1,11 +1,12 @@
 <?php
 return [
-    'section_title'   => 'Title',
-    'section_text'    => 'Text',
-    'section_html'    => 'Text (enhanced)',
-    'section_image'   => 'Image',
-    'section_tabular' => 'Tabular data',
-    'section_pdf'     => 'PDF file',
+    'section_title'           => 'Title',
+    'section_text'            => 'Text',
+    'section_html'            => 'Text (enhanced)',
+    'section_image'           => 'Image',
+    'section_tabular'         => 'Tabular data',
+    'section_pdf_attachment'  => 'PDF attachment',
+    'section_pdf_alternative' => 'PDF alternative',
 
     'amend_number_permotion' => 'Ä1 for A1 (Numbering per motion)',
     'amend_number_global'    => 'Ä1 for A1 (Global numbering)',

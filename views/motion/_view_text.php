@@ -47,7 +47,7 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($sectionType !== ISectionType::TYPE_PDF && $sectionType !== ISectionType::TYPE_IMAGE) {
+        if ($sectionType !== ISectionType::TYPE_PDF_ATTACHMENT && $sectionType !== ISectionType::TYPE_IMAGE) {
             $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 

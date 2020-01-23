@@ -2,8 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\latex\Content;
-use app\components\latex\Exporter;
+use app\components\latex\{Content, Exporter};
 use app\models\db\Consultation;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -12,11 +11,7 @@ use \CatoTH\HTML2OpenDocument\Text;
 
 class TabularData extends ISectionType
 {
-
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         $type = $this->section->getSettings();
 
@@ -41,10 +36,7 @@ class TabularData extends ISectionType
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         return $this->getMotionFormField();
     }
@@ -121,10 +113,7 @@ class TabularData extends ISectionType
         return ''; // @TODO
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         if ($this->section->data == '') {
             return true;

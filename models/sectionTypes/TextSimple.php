@@ -2,16 +2,11 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
+use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
 use app\components\HashedStaticCache;
 use app\components\HTMLTools;
-use app\components\latex\Content;
-use app\components\latex\Exporter;
-use app\models\db\AmendmentSection;
-use app\models\db\Consultation;
-use app\models\db\MotionSection;
+use app\components\latex\{Content, Exporter};
+use app\models\db\{AmendmentSection, Consultation, MotionSection};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -31,19 +26,12 @@ class TextSimple extends Text
         $this->forceMultipleParagraphs = $active;
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         return $this->getTextMotionFormField(false, $this->section->getSettings()->fixedWidth);
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
@@ -501,12 +489,9 @@ class TextSimple extends Text
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
-        return ($this->section->data == '');
+        return ($this->section->data === '');
     }
 
     /**

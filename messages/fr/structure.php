@@ -1,11 +1,11 @@
 <?php
 return [
-    'section_title'   => 'Titre',
-    'section_text'    => 'Texte',
-    'section_html'    => 'Texte (amélioré)',
-    'section_image'   => 'Image',
-    'section_tabular' => 'données tabulaires',
-    'section_pdf'     => 'Fichier PDF',
+    'section_title'          => 'Titre',
+    'section_text'           => 'Texte',
+    'section_html'           => 'Texte (amélioré)',
+    'section_image'          => 'Image',
+    'section_tabular'        => 'données tabulaires',
+    'section_pdf_attachment' => 'Fichier PDF',
 
     'policy_deadline_over'    => 'La date-limite est passée',
     'policy_ww_title'         => 'Wurzelwerk-Users',
@@ -117,10 +117,10 @@ return [
     'STATUS_DRAFT_ADMIN'                  => 'Brouillon (Admin)',
     'STATUS_SUBMITTED_UNSCREENED_CHECKED' => 'Déposé (examiné, pas encore publié)',
 
-    'PROPOSED_ACCEPTED'                     => 'Accepté',
-    'PROPOSED_REJECTED'                     => 'Rejeté',
-    'PROPOSED_REFERRED'                     => 'Reféré',
-    'PROPOSED_VOTE'                         => 'Vote',
+    'PROPOSED_ACCEPTED' => 'Accepté',
+    'PROPOSED_REJECTED' => 'Rejeté',
+    'PROPOSED_REFERRED' => 'Reféré',
+    'PROPOSED_VOTE'     => 'Vote',
 
     'section_comment_none'      => 'Pas de commentaires',
     'section_comment_motion'    => 'Commenter l\'ensemble de la motion',

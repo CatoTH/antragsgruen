@@ -59,8 +59,8 @@ foreach ($motion->getSortedSections(true) as $section) {
         $right .= '</section>';
     } else {
         $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type . '">';
-        if ($section->getSettings()->type !== \app\models\sectionTypes\PDF::TYPE_PDF &&
-            $section->getSettings()->type !== \app\models\sectionTypes\PDF::TYPE_IMAGE
+        if ($section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_PDF_ATTACHMENT &&
+            $section->getSettings()->type !== \app\models\sectionTypes\ISectionType::TYPE_IMAGE
         ) {
             $main .= '<h3 class="green">' . Html::encode($section->getSettings()->title) . '</h3>';
         }

@@ -1341,7 +1341,8 @@ class Amendment extends IMotion implements IRSSItem
         }
 
         foreach ($this->getSortedSections(false) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_IMAGE) {
+            $type = $section->getSettings()->type;
+            if ($type === ISectionType::TYPE_IMAGE) {
                 /** @var Image $type */
                 $type                       = $section->getSectionType();
                 $data['changed_sections'][] = [
@@ -1350,7 +1351,7 @@ class Amendment extends IMotion implements IRSSItem
                     'download_url'  => $type->getImageUrl(true),
                     'metadata'      => $section->metadata,
                 ];
-            } elseif ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+            } elseif ($type === ISectionType::TYPE_PDF_ATTACHMENT || $type === ISectionType::TYPE_PDF_ALTERNATIVE) {
                 /** @var PDF $type */
                 $type                       = $section->getSectionType();
                 $data['changed_sections'][] = [

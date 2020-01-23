@@ -2,11 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentSection;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\IMotion;
-use app\models\db\VotingBlock;
+use app\models\db\{Amendment, AmendmentSection, ConsultationAgendaItem, IMotion, VotingBlock};
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\TextSimple;
 use yii\helpers\Html;
@@ -85,6 +81,7 @@ class Agenda
      */
     public static function formatProposedAmendmentProcedure(Amendment $amendment, $format)
     {
+        // @TODO Caching
         if (!$amendment->hasAlternativeProposaltext()) {
             return '';
         }

@@ -2,12 +2,8 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\latex\Content;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\VarStream;
-use app\models\db\Consultation;
-use app\models\db\MotionSection;
+use app\components\{latex\Content, Tools, UrlHelper, VarStream};
+use app\models\db\{Consultation, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
@@ -48,15 +44,12 @@ class PDF extends ISectionType
         return $url;
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
         $url  = $this->getPdfUrl();
-        $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF . '">';
+        $str  = '<section class="section' . $this->section->sectionId . ' type' . static::TYPE_PDF_ATTACHMENT . '">';
         $str .= '<div class="form-group">';
         $str .= $this->getFormLabel();
 
@@ -88,10 +81,7 @@ class PDF extends ISectionType
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         return $this->getMotionFormField();
     }
@@ -166,10 +156,7 @@ class PDF extends ISectionType
         return $str;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return ($this->section->data === '');
     }

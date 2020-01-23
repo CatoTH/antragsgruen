@@ -167,7 +167,7 @@ class LayoutHelper
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
                 $pdfAttachments[] = $section;
             } else {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);

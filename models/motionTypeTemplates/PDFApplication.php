@@ -75,7 +75,7 @@ trait PDFApplication
 
         $section                = new ConsultationSettingsMotionSection();
         $section->motionTypeId  = $motionType->id;
-        $section->type          = ISectionType::TYPE_PDF;
+        $section->type          = ISectionType::TYPE_PDF_ALTERNATIVE;
         $section->position      = 1;
         $section->status        = ConsultationSettingsMotionSection::STATUS_VISIBLE;
         $section->title         = \Yii::t('structure', 'preset_app_pdf');
