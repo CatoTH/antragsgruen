@@ -55,9 +55,10 @@ class AmendmentPublished
             return;
         }
         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
+        $motionTitle   = $this->amendment->getMyMotion()->getTitleWithPrefix();
         $plain         = str_replace(
             ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
-            [$amendmentLink, $this->amendment->getMyMotion()->titlePrefix, $initiator[0]->getGivenNameOrFull()],
+            [$amendmentLink, $motionTitle, $initiator[0]->getGivenNameOrFull()],
             \Yii::t('amend', 'published_email_body')
         );
 

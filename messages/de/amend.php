@@ -168,7 +168,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'button_correct'                  => 'Korrigieren',
     'confirm'                         => 'Bestätigen',
     'go_on'                           => 'Weiter',
-    'published_email_body'            => "Hallo,\n\ndein Änderungsantrag zu %MOTION% wurde soeben auf Antragsgrün veröffentlicht. " .
+    'published_email_body'            => "Hallo,\n\ndein Änderungsantrag zu „%MOTION%“ wurde soeben auf Antragsgrün veröffentlicht. " .
                                          "Du kannst ihn hier einsehen: %LINK%\n\n" .
                                          "Mit freundlichen Grüßen,\n" .
                                          "  Das Antragsgrün-Team",
@@ -214,7 +214,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'support_collection_hint_female'  => 'Dieser Änderungsantrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen, davon %MIN_F% Frauen (aktueller Stand: %CURR% / %CURR_F%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint' => 'Dieser Änderungsantrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen.',
     'support_reached_email_subject'   => 'Dein Änderungsantrag: Unterstützer*innen-Anzahl erreicht',
-    'support_reached_email_body'      => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht. <br><br>Viele Grüße,<br>  Das Antragsgrün-Team',
+    'support_reached_email_body'      => 'Hallo %NAME_GIVEN%,<br><br>Gute Nachrichten! Dein Änderungsantrag „%TITLE%“ hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht. <br><br>Viele Grüße,<br>  Das Antragsgrün-Team',
     'support_finish_btn'              => 'Änderungsantrag offiziell einreichen',
     'support_finish_err'              => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'             => 'Der Änderungsantrag ist nun offiziell eingereicht',

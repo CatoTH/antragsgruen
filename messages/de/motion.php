@@ -131,7 +131,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'edit_bread'                         => 'Bearbeiten',
     'edit_mail_title'                    => 'Antrag überarbeitet',
     'edit_type'                          => '%TYPE% bearbeiten',
-    'edit_mail_body'                     => 'Der Antrag "%TITLE%" wurde überarbeitet.' . "\n" . 'Link: %LINK%',
+    'edit_mail_body'                     => 'Der Antrag „%TITLE%“ wurde überarbeitet.' . "\n" . 'Link: %LINK%',
     'err_create_permission'              => 'Keine Berechtigung zum Anlegen von Anträgen.',
     'err_create'                         => 'Ein Fehler beim Anlegen ist aufgetreten',
     'err_edit_permission'                => 'Keine Berechtigung zum Bearbeiten dieses Antrags.',
@@ -184,7 +184,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'support_collection_hint_female'     => 'Dieser Antrag ist noch nicht eingereicht. Nötig sind <strong>mindestens %MIN% Unterstützer*innen, davon %MIN_F% Frauen (aktueller Stand: %CURR% / %CURR_F%)</strong>. Wenn du ihn unterstützen willst, kannst du das unten auf dieser Seite tun.',
     'support_collection_reached_hint'    => 'Dieser Antrag ist noch nicht eingereicht. <strong>Die Mindestzahl an Unterstützer*innen (%MIN%) wurde erreicht</strong>, nun muss nur noch die/der Antragsteller*in die Einreichung bestätigen. Eine Unterstützung des Antrags ist weiterhin möglich. ',
     'support_reached_email_subject'      => 'Dein Antrag: Unterstützer*innen-Anzahl erreicht',
-    'support_reached_email_body'         => 'Hallo,<br><br>Gute Nachrichten! Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht.<br><br>Viele Grüße,<br>  Das Antragsgrün-Team',
+    'support_reached_email_body'         => 'Hallo,<br><br>Gute Nachrichten! Dein Antrag „%TITLE%“ hat die Mindestzahl an Unterstützer*innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsgrün unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung im Antragsgrün veröffentlicht.<br><br>Viele Grüße,<br>  Das Antragsgrün-Team',
     'support_finish_btn'                 => 'Antrag offiziell einreichen',
     'support_finish_err'                 => 'Das ist derzeit (noch) nicht möglich',
     'support_finish_done'                => 'Der Antrag ist nun offiziell eingereicht',
