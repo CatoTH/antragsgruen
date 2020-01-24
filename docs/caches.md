@@ -15,6 +15,7 @@ Motion:
 
 Amendment:
 - lines.getFirstDiffLine
+- procedure.formatted
 - supporters.initiatorStr
 - supporters.initiatedByOrga
 - [supporters.womanQuota]

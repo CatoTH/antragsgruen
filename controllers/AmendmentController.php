@@ -553,6 +553,7 @@ class AmendmentController extends Base
             if ($amendment->save()) {
                 $response['success'] = true;
             }
+            $amendment->flushCacheItems(['procedure']);
 
             $this->consultation->refresh();
             $response['html']        = $this->renderPartial('_set_proposed_procedure', [
@@ -573,6 +574,7 @@ class AmendmentController extends Base
                 );
                 $amendment->proposalNotification = date('Y-m-d H:i:s');
                 $amendment->save();
+                $amendment->flushCacheItems(['procedure']);
                 $response['success'] = true;
                 $response['html']    = $this->renderPartial('_set_proposed_procedure', [
                     'amendment' => $amendment,
@@ -588,6 +590,7 @@ class AmendmentController extends Base
         if (\Yii::$app->request->post('setProposerHasAccepted')) {
             $amendment->proposalUserStatus = Amendment::STATUS_ACCEPTED;
             $amendment->save();
+            $amendment->flushCacheItems(['procedure']);
             ConsultationLog::log(
                 $amendment->getMyConsultation(),
                 User::getCurrentUser()->id,
@@ -614,6 +617,7 @@ class AmendmentController extends Base
                 $response['success']             = false;
                 return json_encode($response);
             }
+            $amendment->flushCacheItems(['procedure']);
 
             $response['success'] = true;
             $response['comment'] = [
@@ -660,6 +664,7 @@ class AmendmentController extends Base
 
                 $reference->delete();
             }
+            $amendment->flushCacheItems(['procedure']);
         }
 
         $form = new AmendmentProposedChangeForm($amendment);
@@ -676,6 +681,7 @@ class AmendmentController extends Base
             }
             $amendment->proposalUserStatus = null;
             $amendment->save();
+            $amendment->flushCacheItems(['procedure']);
         }
 
         return $this->render('edit_proposed_change', [
