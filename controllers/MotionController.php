@@ -2,34 +2,27 @@
 
 namespace app\controllers;
 
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\EmailNotifications;
-use app\models\db\Amendment;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationLog;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\MotionAdminComment;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
-use app\models\db\UserNotification;
-use app\models\db\VotingBlock;
-use app\models\exceptions\ExceptionBase;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Inconsistency;
-use app\models\exceptions\Internal;
-use app\models\exceptions\MailNotSent;
+use app\components\{Tools, UrlHelper, EmailNotifications};
+use app\models\db\{Amendment,
+    ConsultationAgendaItem,
+    ConsultationLog,
+    ConsultationMotionType,
+    ConsultationSettingsMotionSection,
+    IMotion,
+    Motion,
+    MotionAdminComment,
+    MotionSupporter,
+    User,
+    UserNotification,
+    VotingBlock};
+use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal, MailNotSent};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
 use app\models\MotionSectionChanges;
 use app\models\notifications\MotionProposedProcedure;
 use app\models\events\MotionEvent;
 use app\views\motion\LayoutHelper;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use yii\web\{NotFoundHttpException, Response};
 
 class MotionController extends Base
 {
@@ -164,6 +157,10 @@ class MotionController extends Base
         \yii::$app->response->headers->add('Content-disposition', 'filename="' . addslashes($filename) . '"');
         if (!$this->layoutParams->isRobotsIndex($this->action)) {
             \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
+        if ($motion->getAlternativePdfSection()) {
+            return base64_decode($motion->getAlternativePdfSection()->data);
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);

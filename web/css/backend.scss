@@ -444,7 +444,7 @@ label.legend {
       padding: 0 10px 10px;
     }
 
-    &.title, &.image {
+    &.title, &.image, &.pdfAlternative {
       .drag-handle {
         margin-top: 33px;
       }
@@ -488,20 +488,20 @@ label.legend {
       height: 57px;
     }
 
-    .optionsRow {
+    .optionsCol {
       > label {
         display: block;
       }
     }
 
-    .positionRow, .optionsRow, .commAmendRow {
+    .leftCol, .optionsCol, .commAmendCol {
       display: table-cell;
       padding: 10px;
       vertical-align: top;
       width: 210px;
     }
 
-    .commentrow, .optionsRow {
+    .commAmendCol, .optionsCol {
       border-left: 1px solid #afa;
     }
 
@@ -515,11 +515,15 @@ label.legend {
       }
     }
 
+    .showInHtml {
+      display: none;
+    }
+
     .commentRow {
       margin-bottom: 10px;
     }
 
-    .commAmendRow {
+    .commAmendCol {
       label {
         margin-bottom: 0;
       }
@@ -588,7 +592,7 @@ label.legend {
         display: block;
       }
 
-      .commentrow {
+      .commentRow {
         display: none;
       }
 
@@ -602,7 +606,19 @@ label.legend {
         display: none;
       }
 
-      .commentrow {
+      .showInHtml {
+        display: block;
+      }
+
+      .commentRow {
+        display: none;
+      }
+
+      .positionRow {
+        display: none;
+      }
+
+      .printTitleSection {
         display: none;
       }
     }
@@ -628,6 +644,46 @@ label.legend {
 
       .tabularDataRow {
         display: block;
+      }
+    }
+
+    &.pdfAlternative {
+      .amendmentRow {
+        display: none;
+      }
+      .commentRow {
+        display: none;
+      }
+      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
+        display: none;
+      }
+      .positionRow {
+        display: none;
+      }
+      .printTitleSection {
+        display: none;
+      }
+      .showInHtml {
+        display: block;
+      }
+      .maxLenInput, .lineLengthSoft {
+        display: none;
+      }
+    }
+
+    &.pdfAttachment {
+      .amendmentRow {
+        display: none;
+      }
+      .commentRow {
+        display: none;
+      }
+
+      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
+        display: none;
+      }
+      .maxLenInput, .lineLengthSoft {
+        display: none;
       }
     }
   }

@@ -6,7 +6,7 @@ return [
     'section_image'           => 'Bild',
     'section_tabular'         => 'Tabellarische Angaben',
     'section_pdf_attachment'  => 'PDF-Anhang',
-    'section_pdf_alternative' => 'PDF-Alternative',
+    'section_pdf_alternative' => 'Alternatives PDF',
 
     'amend_number_permotion' => 'Ä1 zu A1 (Zählung pro Antrag)',
     'amend_number_global'    => 'Ä1 zu A1 (Globale Zählung)',

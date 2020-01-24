@@ -3,7 +3,7 @@
 namespace app\models\motionTypeTemplates;
 
 use app\models\db\{Consultation, ConsultationMotionType, ConsultationSettingsMotionSection};
-use app\models\settings\{InitiatorForm, MotionType};
+use app\models\settings\{InitiatorForm, MotionSection, MotionType};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
@@ -86,7 +86,10 @@ trait PDFApplication
         $section->hasComments   = 0;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
-        $section->settings      = null;
+
+        $settings = new MotionSection(null);
+        $settings->showInHtml = true;
+        $section->setSettingsObj($settings);
         $section->save();
     }
 }

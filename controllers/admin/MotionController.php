@@ -54,9 +54,6 @@ class MotionController extends AdminBase
         }
     }
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
     private function sectionsDelete(ConsultationMotionType $motionType)
     {
         if (!$this->isPostSet('sectionsTodelete')) {
@@ -186,6 +183,10 @@ class MotionController extends AdminBase
 
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'saved'));
             $motionType->refresh();
+
+            foreach ($this->consultation->getMotionsOfType($motionType) as $motion) {
+                $motion->flushCacheStart(null);
+            }
         }
 
         $supportCollPolicyWarning = false;

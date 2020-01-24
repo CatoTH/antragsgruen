@@ -18,7 +18,7 @@ $this->title = Yii::t('motion', $mode === 'create' ? 'Start a Motion' : 'Edit Mo
 
 $controller->layoutParams->robotsNoindex = true;
 $controller->layoutParams->addBreadcrumb($this->title);
-$controller->layoutParams->addBreadcrumb(\Yii::t('motion', 'confirm_bread'));
+$controller->layoutParams->addBreadcrumb(Yii::t('motion', 'confirm_bread'));
 $controller->layoutParams->bodyCssClasses[] = 'createConfirmPage';
 
 echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->getTitleWithIntro()) . '</h1>';
@@ -29,11 +29,11 @@ echo '<h1>' . Yii::t('motion', 'Confirm Motion') . ': ' . Html::encode($motion->
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn btn-default active">
                     <input type="radio" name="viewMode" value="web" autocomplete="off" checked>
-                    <?= \Yii::t('motion', 'confirm_view_web') ?>
+                    <?= Yii::t('motion', 'confirm_view_web') ?>
                 </label>
                 <label class="btn btn-default">
                     <input type="radio" name="viewMode" value="pdf" autocomplete="off">
-                    <?= \Yii::t('motion', 'confirm_view_pdf') ?>
+                    <?= Yii::t('motion', 'confirm_view_pdf') ?>
                 </label>
             </div>
         </div>
@@ -89,7 +89,7 @@ if ($right === '') {
 }
 ?>
     <div class="webVersion motionTextHolder">
-        <h3 class="green"><?= \Yii::t('motion', 'initiators_head') ?></h3>
+        <h3 class="green"><?= Yii::t('motion', 'initiators_head') ?></h3>
         <div class="content">
             <ul>
                 <?php
@@ -116,7 +116,7 @@ if ($right === '') {
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
                 <span class="glyphicon glyphicon-remove-sign"></span>
-                <?= \Yii::t('motion', 'button_correct') ?>
+                <?= Yii::t('motion', 'button_correct') ?>
             </button>
         </div>
     </div>

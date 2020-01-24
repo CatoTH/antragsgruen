@@ -76,7 +76,7 @@ class LayoutHelper
      * @return string
      */
     public static function getViewCacheKey(Motion $motion) {
-        return 'motion_view2_' . $motion->id;
+        return 'motion_view3_' . $motion->id;
     }
 
     /**

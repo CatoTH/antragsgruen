@@ -482,6 +482,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_pos_left'        => 'Left',
     'motion_type_pos_right'       => 'Right',
     'motion_type_print_title'     => 'Print title in PDF',
+    'motion_type_show_in_html'    => 'Also display as a regular motion section',
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',

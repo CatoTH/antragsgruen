@@ -26,6 +26,7 @@ if ($useCache) {
 }
 
 
+$titleSection = $motion->getTitleSection();
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
     /** @var \app\models\db\MotionSection $section */
@@ -33,21 +34,30 @@ foreach ($motion->getSortedSections(false) as $i => $section) {
     if ($section->getSectionType()->isEmpty()) {
         continue;
     }
-    if ($motion->getTitleSection() && $motion->getTitleSection()->sectionId === $section->sectionId &&
-        count($section->getAmendingSections(false, true)) === 0) {
+
+    // Show title only as a separate section if there are amendments, or if explicitly requested
+    if ($titleSection && $titleSection->sectionId === $section->sectionId) {
+        if (count($section->getAmendingSections(false, true)) === 0 && !$section->getSettings()->getSettingsObj()->showInHtml) {
+            continue;
+        }
+    }
+
+    // Show PDF alternatives only if explicitly requested
+    if ($sectionType === ISectionType::TYPE_PDF_ALTERNATIVE && !$section->getSettings()->getSettingsObj()->showInHtml) {
         continue;
     }
+
     if ($section->isLayoutRight()) {
-        $right .= '<section class="sectionType' . $section->getSettings()->type . '">';
+        $right .= '<section class="sectionType' . $sectionType . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
-        $main .= '<section class="motionTextHolder sectionType' . $section->getSettings()->type;
+        $main .= '<section class="motionTextHolder sectionType' . $sectionType;
         if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
             $main .= ' smallFont';
         }
         $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
-        if ($sectionType !== ISectionType::TYPE_PDF_ATTACHMENT && $sectionType !== ISectionType::TYPE_IMAGE) {
+        if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
             $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
