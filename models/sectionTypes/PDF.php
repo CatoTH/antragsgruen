@@ -336,7 +336,12 @@ class PDF extends ISectionType
         }
 
         $filenameBase                         = uniqid('motion-pdf-attachment') . '.pdf';
-        $content->attachedPdfs[$filenameBase] = base64_decode($this->section->data);
+        if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
+            $content->attachedPdfs[$filenameBase] = base64_decode($this->section->data);
+        }
+        if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
+            $content->replacingPdf = base64_decode($this->section->data);
+        }
     }
 
     /**

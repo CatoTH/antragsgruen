@@ -22,4 +22,5 @@ class Content
     public $publicationDate   = '';
     public $typeName          = '';
     public $logoData          = null;
+    public $replacingPdf      = null;
 }

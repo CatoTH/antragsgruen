@@ -162,6 +162,13 @@ class LayoutHelper
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
+        foreach ($motion->getSortedSections(true) as $section) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
+                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+                return;
+            }
+        }
+
         $pdfLayout->printMotionHeader($motion);
 
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
