@@ -2,13 +2,9 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\latex\Content;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\MotionSection;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\components\{latex\Content, Tools, UrlHelper};
+use app\models\db\{Consultation, MotionSection};
+use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -67,10 +63,7 @@ class Image extends ISectionType
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
@@ -102,10 +95,7 @@ class Image extends ISectionType
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         return $this->getMotionFormField();
     }
@@ -251,10 +241,7 @@ class Image extends ISectionType
         return $str;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return ($this->section->data === '');
     }

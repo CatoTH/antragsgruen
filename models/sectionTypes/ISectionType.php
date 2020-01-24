@@ -3,9 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\latex\Content;
-use app\models\db\Consultation;
-use app\models\db\IMotionSection;
-use app\models\db\MotionSection;
+use app\models\db\{Consultation, IMotionSection, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
@@ -15,21 +13,19 @@ use yii\helpers\Html;
 
 abstract class ISectionType
 {
-    const TYPE_TITLE       = 0;
-    const TYPE_TEXT_SIMPLE = 1;
-    const TYPE_TEXT_HTML   = 2;
-    const TYPE_IMAGE       = 3;
-    const TYPE_TABULAR     = 4;
-    const TYPE_PDF         = 5;
+    const TYPE_TITLE           = 0;
+    const TYPE_TEXT_SIMPLE     = 1;
+    const TYPE_TEXT_HTML       = 2;
+    const TYPE_IMAGE           = 3;
+    const TYPE_TABULAR         = 4;
+    const TYPE_PDF_ATTACHMENT  = 5;
+    const TYPE_PDF_ALTERNATIVE = 6;
 
     /** @var IMotionSection */
     protected $section;
 
     protected $absolutizeLinks = false;
 
-    /**
-     * @param IMotionSection $section
-     */
     public function __construct(IMotionSection $section)
     {
         $this->section = $section;
@@ -41,28 +37,23 @@ abstract class ISectionType
     public static function getTypes()
     {
         return [
-            static::TYPE_TITLE       => \yii::t('structure', 'section_title'),
-            static::TYPE_TEXT_SIMPLE => \yii::t('structure', 'section_text'),
-            static::TYPE_TEXT_HTML   => \yii::t('structure', 'section_html'),
-            static::TYPE_IMAGE       => \yii::t('structure', 'section_image'),
-            static::TYPE_TABULAR     => \yii::t('structure', 'section_tabular'),
-            static::TYPE_PDF         => \yii::t('structure', 'section_pdf'),
+            static::TYPE_TITLE           => \yii::t('structure', 'section_title'),
+            static::TYPE_TEXT_SIMPLE     => \yii::t('structure', 'section_text'),
+            static::TYPE_TEXT_HTML       => \yii::t('structure', 'section_html'),
+            static::TYPE_IMAGE           => \yii::t('structure', 'section_image'),
+            static::TYPE_TABULAR         => \yii::t('structure', 'section_tabular'),
+            static::TYPE_PDF_ATTACHMENT  => \yii::t('structure', 'section_pdf_attachment'),
+            static::TYPE_PDF_ALTERNATIVE => \yii::t('structure', 'section_pdf_alternative'),
         ];
     }
 
-    /**
-     * @param boolean $absolutize
-     */
-    public function setAbsolutizeLinks($absolutize)
+    public function setAbsolutizeLinks(bool $absolutize)
     {
         $this->absolutizeLinks = $absolutize;
     }
 
 
-    /**
-     * @return string
-     */
-    protected function getFormLabel()
+    protected function getFormLabel(): string
     {
         /** @var MotionSection $section */
         $type = $this->section->getSettings();
@@ -76,20 +67,11 @@ abstract class ISectionType
         return $str;
     }
 
-    /**
-     * @return bool
-     */
-    abstract public function isEmpty();
+    abstract public function isEmpty(): bool;
 
-    /**
-     * @return string
-     */
-    abstract public function getMotionFormField();
+    abstract public function getMotionFormField(): string;
 
-    /**
-     * @return string
-     */
-    abstract public function getAmendmentFormField();
+    abstract public function getAmendmentFormField(): string;
 
     /**
      * @param $data

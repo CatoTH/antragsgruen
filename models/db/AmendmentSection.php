@@ -25,20 +25,14 @@ class AmendmentSection extends IMotionSection
     /** @var null|MotionSection */
     private $originalMotionSection = null;
 
-    /**
-     * @return string
-     */
-    public static function tableName()
+    public static function tableName(): string
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app->tablePrefix . 'amendmentSection';
     }
 
-    /**
-     * @return ConsultationSettingsMotionSection|null
-     */
-    public function getSettings()
+    public function getSettings(): ?ConsultationSettingsMotionSection
     {
         $section = $this->getOriginalMotionSection();
         if ($section) {
@@ -49,18 +43,12 @@ class AmendmentSection extends IMotionSection
         }
     }
 
-    /**
-     * @return Amendment|null
-     */
-    public function getAmendment()
+    public function getAmendment(): ?Amendment
     {
         return $this->getCachedConsultation()->getAmendment($this->amendmentId);
     }
 
-    /**
-     * @return Motion|null
-     */
-    public function getMotion()
+    public function getMotion(): ?Motion
     {
         if ($this->originalMotionSection) {
             return $this->originalMotionSection->getMotion();
@@ -71,10 +59,7 @@ class AmendmentSection extends IMotionSection
         return $this->getCachedConsultation()->getMotion($this->getAmendment()->motionId);
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public function getCachedConsultation()
+    public function getCachedConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();
         if ($current) {
@@ -105,7 +90,7 @@ class AmendmentSection extends IMotionSection
     }
 
     /**
-     * @return \string[]
+     * @return string[]
      * @throws Internal
      */
     public function getTextParagraphs()
@@ -116,10 +101,7 @@ class AmendmentSection extends IMotionSection
         return HTMLTools::sectionSimpleHTML($this->data);
     }
 
-    /**
-     * @return MotionSection|null
-     */
-    public function getOriginalMotionSection()
+    public function getOriginalMotionSection(): ?MotionSection
     {
         if ($this->originalMotionSection === null) {
             $motion = $this->getMotion();
@@ -136,19 +118,12 @@ class AmendmentSection extends IMotionSection
         return $this->originalMotionSection;
     }
 
-    /**
-     * @param MotionSection $motionSection
-     */
-    public function setOriginalMotionSection(MotionSection $motionSection)
+    public function setOriginalMotionSection(MotionSection $motionSection): void
     {
         $this->originalMotionSection = $motionSection;
     }
 
-    /**
-     * @return int
-     * @throws Internal
-     */
-    public function getFirstLineNumber()
+    public function getFirstLineNumber(): int
     {
         $first = $this->getMotion()->getFirstLineNumber();
         foreach ($this->getAmendment()->getSortedSections() as $section) {
@@ -260,7 +235,7 @@ class AmendmentSection extends IMotionSection
 
     /**
      * @param bool $splitListItems
-     * @return \string[]
+     * @return string[]
      */
     public function getParagraphsRelativeToOriginal($splitListItems = true)
     {
@@ -275,23 +250,16 @@ class AmendmentSection extends IMotionSection
      * @return bool
      * @throws Internal
      */
-    public function canRewrite($newMotionHtml, $overrides = [])
+    public function canRewrite(string $newMotionHtml, array $overrides = []): bool
     {
-        if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+        if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');
         }
         $oldMotionHtml = $this->getOriginalMotionSection()->data;
         return AmendmentRewriter::canRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
     }
 
-    /**
-     * @param string $newMotionHtml
-     * @param bool $asDiff
-     * @param bool $debug
-     * @return array
-     * @throws Internal
-     */
-    public function getRewriteCollisions($newMotionHtml, $asDiff = false, $debug = false)
+    public function getRewriteCollisions(string $newMotionHtml, bool $asDiff = false, bool $debug = false): array
     {
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');

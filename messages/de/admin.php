@@ -431,6 +431,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_pos_left'        => 'Links',
     'motion_type_pos_right'       => 'Rechts',
     'motion_type_print_title'     => 'Titel im PDF anzeigen',
+    'motion_type_show_in_html'    => 'Auch als regulären Antrags-Abschnitt anzeigen',
     'motion_type_like_like'       => 'Zustimmung',
     'motion_type_like_dislike'    => 'Ablehnung',
     'motion_type_like_support'    => 'Offiziell unterstützen',

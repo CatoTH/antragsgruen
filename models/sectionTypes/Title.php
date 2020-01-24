@@ -2,24 +2,18 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\latex\Content;
-use app\components\latex\Exporter;
-use app\models\db\AmendmentSection;
-use app\models\db\Consultation;
+use app\components\latex\{Content, Exporter};
+use app\models\db\{AmendmentSection, Consultation};
 use app\models\forms\CommentForm;
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
-use \CatoTH\HTML2OpenDocument\Text;
+use CatoTH\HTML2OpenDocument\Text;
 use yii\web\View;
 
 class Title extends ISectionType
 {
-
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         $type = $this->section->getSettings();
         $str  = '<div class="form-group plain-text" data-max-len="' . $type->maxLen . '">';
@@ -50,10 +44,7 @@ class Title extends ISectionType
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         return $this->getMotionFormField();
@@ -118,10 +109,7 @@ class Title extends ISectionType
         return $str;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return ($this->section->data === '');
     }

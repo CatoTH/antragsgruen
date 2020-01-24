@@ -461,6 +461,19 @@ class Exporter
             if ($count > 0) {
                 $contentStr .= "\n\\newpage\n";
             }
+
+            if ($content->replacingPdf) {
+                $fileName = uniqid('motion-pdf-alternative') . '.pdf';
+                $absoluteFilename = $this->app->getTmpDir() . $fileName;
+                file_put_contents($absoluteFilename, $content->replacingPdf);
+                $pdfHashes[$absoluteFilename] = md5($content->replacingPdf);
+                $pdfFiles[] = $absoluteFilename;
+
+                $contentStr .= "\n" . '\includepdf[pages=-]{' . $absoluteFilename . '}' . "\n";
+                $count++;
+                continue;
+            }
+
             $contentStr .= static::createContentString($content);
             foreach ($content->imageData as $fileName => $fileData) {
                 if (!preg_match('/^[a-z0-9_-]+(\.[a-z0-9_-]+)?$/siu', $fileName)) {

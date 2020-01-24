@@ -46,24 +46,30 @@ $sName = 'sections[' . $sectionId . ']';
 
         </div>
         <div class="bottomrow">
-            <div class="positionRow">
-                <div><?= Yii::t('admin', 'motion_type_pos') ?></div>
-                <label class="positionSection">
-                    <?= Html::radio($sName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
-                    <?= Yii::t('admin', 'motion_type_pos_left') ?>
-                </label><br>
-                <label class="positionSection">
-                    <?= Html::radio($sName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
-                    <?= Yii::t('admin', 'motion_type_pos_right') ?>
-                </label><br>
+            <div class="leftCol">
+                <div class="positionRow">
+                    <div><?= Yii::t('admin', 'motion_type_pos') ?></div>
+                    <label class="positionSection">
+                        <?= Html::radio($sName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
+                        <?= Yii::t('admin', 'motion_type_pos_left') ?>
+                    </label><br>
+                    <label class="positionSection">
+                        <?= Html::radio($sName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
+                        <?= Yii::t('admin', 'motion_type_pos_right') ?>
+                    </label><br>
+                </div>
 
                 <label class="printTitleSection">
-                    <?= Html::checkbox($sName . '[printTitle]', $section->printTitle, ['class' => 'fixedWidth']) ?>
+                    <?= Html::checkbox($sName . '[printTitle]', $section->printTitle) ?>
                     <?= Yii::t('admin', 'motion_type_print_title') ?>
                 </label>
-            </div>
-            <div class="optionsRow">
 
+                <label class="showInHtml">
+                    <?= Html::checkbox($sName . '[showInHtml]', $settings->showInHtml) ?>
+                    <?= Yii::t('admin', 'motion_type_show_in_html') ?>
+                </label>
+            </div>
+            <div class="optionsCol">
                 <label class="fixedWidthLabel">
                     <?= Html::checkbox($sName . '[fixedWidth]', $section->fixedWidth, ['class' => 'fixedWidth']) ?>
                     <?= Yii::t('admin', 'motion_section_fixed_width') ?>
@@ -115,8 +121,7 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Yii::t('admin', 'motion_section_limit_soft') ?>
                 </label>
             </div>
-            <div class="commAmendRow">
-
+            <div class="commAmendCol">
                 <div class="commentRow">
                     <div><?= Yii::t('admin', 'motion_section_comm') ?>:</div>
 

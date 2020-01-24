@@ -76,7 +76,7 @@ class LayoutHelper
      * @return string
      */
     public static function getViewCacheKey(Motion $motion) {
-        return 'motion_view2_' . $motion->id;
+        return 'motion_view3_' . $motion->id;
     }
 
     /**
@@ -162,12 +162,19 @@ class LayoutHelper
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
+        foreach ($motion->getSortedSections(true) as $section) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
+                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+                return;
+            }
+        }
+
         $pdfLayout->printMotionHeader($motion);
 
         // PDFs should be attached at the end, to prevent collision with other parts of the motion text; see #242
         $pdfAttachments = [];
         foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
                 $pdfAttachments[] = $section;
             } else {
                 $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);

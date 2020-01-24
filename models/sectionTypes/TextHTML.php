@@ -4,8 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\HTMLTools;
 use app\components\latex\Content;
-use app\models\db\AmendmentSection;
-use app\models\db\Consultation;
+use app\models\db\{AmendmentSection, Consultation};
 use app\views\pdfLayouts\IPDFLayout;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
@@ -13,19 +12,12 @@ use \CatoTH\HTML2OpenDocument\Text as ODTText;
 
 class TextHTML extends Text
 {
-
-    /**
-     * @return string
-     */
-    public function getMotionFormField()
+    public function getMotionFormField(): string
     {
         return $this->getTextMotionFormField(true, $this->section->getSettings()->fixedWidth);
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentFormField()
+    public function getAmendmentFormField(): string
     {
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
@@ -81,10 +73,7 @@ class TextHTML extends Text
         return ''; // @TODO
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return ($this->section->data == '');
     }

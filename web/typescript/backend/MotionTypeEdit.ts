@@ -15,7 +15,8 @@ const TYPE_TEXT_SIMPLE = 1;
 const TYPE_TEXT_HTML = 2;
 const TYPE_IMAGE = 3;
 const TYPE_TABULAR = 4;
-const TYPE_PDF = 5;
+const TYPE_PDF_ATTACHMENT = 5;
+const TYPE_PDF_ALTERNATIVE = 6;
 
 class MotionTypeEdit {
     private motionsHaveSupporters: boolean;
@@ -202,7 +203,7 @@ class MotionTypeEdit {
         $list.on('change', '.sectionType', function () {
             let $li = $(this).parents('li').first(),
                 val = parseInt($(this).val() as string);
-            $li.removeClass('title textHtml textSimple image tabularData');
+            $li.removeClass('title textHtml textSimple image tabularData pdfAlternative pdfAttachment');
             if (val === TYPE_TITLE) {
                 $li.addClass('title');
             } else if (val === TYPE_TEXT_SIMPLE) {
@@ -216,8 +217,10 @@ class MotionTypeEdit {
                 if ($li.find('.tabularDataRow ul > li').length == 0) {
                     $li.find('.tabularDataRow .addRow').trigger("click").trigger("click").trigger("click");
                 }
-            } else if (val === TYPE_PDF) {
-                $li.addClass('pdf');
+            } else if (val === TYPE_PDF_ATTACHMENT) {
+                $li.addClass('pdfAttachment');
+            } else if (val === TYPE_PDF_ALTERNATIVE) {
+                $li.addClass('pdfAlternative');
             }
         });
         $list.find('.sectionType').trigger('change');

@@ -2,16 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\HashedStaticCache;
-use app\components\MotionSorter;
-use app\components\RSSExporter;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\EmailNotifications;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotAmendable;
-use app\models\exceptions\NotFound;
+use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper, EmailNotifications};
+use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
 use app\models\notifications\MotionSubmitted as MotionSubmittedNotification;
@@ -19,9 +11,7 @@ use app\models\notifications\MotionWithdrawn as MotionWithdrawnNotification;
 use app\models\notifications\MotionEdited as MotionEditedNotification;
 use app\models\policies\IPolicy;
 use app\models\events\MotionEvent;
-use app\models\sectionTypes\Image;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\PDF;
+use app\models\sectionTypes\{Image, ISectionType, PDF};
 use app\models\supportTypes\SupportBase;
 use yii\helpers\Html;
 
@@ -232,13 +222,19 @@ class Motion extends IMotion implements IRSSItem
         $sections = [];
         foreach ($this->sections as $section) {
             if ($section->getSettings()) {
-                if ($filer_type === null || $section->getSettings()->type == $filer_type) {
+                if ($filer_type === null || $section->getSettings()->type === $filer_type) {
                     $sections[] = $section;
                 }
             }
         }
 
         return $sections;
+    }
+
+    public function getAlternativePdfSection(): ?MotionSection
+    {
+        $section = $this->getActiveSections(ISectionType::TYPE_PDF_ALTERNATIVE);
+        return (count($section) > 0 ? $section[0] : null);
     }
 
     /**
@@ -1285,7 +1281,8 @@ class Motion extends IMotion implements IRSSItem
         }
 
         foreach ($this->getSortedSections(false) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_IMAGE) {
+            $type = $section->getSettings()->type;
+            if ($type === ISectionType::TYPE_IMAGE) {
                 /** @var Image $type */
                 $type               = $section->getSectionType();
                 $data['sections'][] = [
@@ -1294,7 +1291,7 @@ class Motion extends IMotion implements IRSSItem
                     'download_url'  => $type->getImageUrl(true),
                     'metadata'      => $section->metadata,
                 ];
-            } elseif ($section->getSettings()->type === ISectionType::TYPE_PDF) {
+            } elseif ($type === ISectionType::TYPE_PDF_ATTACHMENT || $type === ISectionType::TYPE_PDF_ALTERNATIVE) {
                 /** @var PDF $type */
                 $type               = $section->getSectionType();
                 $data['sections'][] = [

@@ -139,6 +139,23 @@ class Consultation extends ActiveRecord
         }
     }
 
+    /**
+     * @param ConsultationMotionType $type
+     *
+     * @return Motion[]
+     */
+    public function getMotionsOfType(ConsultationMotionType $type): array
+    {
+        $motions = [];
+        foreach ($this->motions as $motion) {
+            if ($motion->motionTypeId === $type->id) {
+                $motions[] = $motion;
+            }
+        }
+
+        return $motions;
+    }
+
     /** @var Motion[] */
     private $motionCache = [];
 
