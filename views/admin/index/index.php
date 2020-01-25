@@ -38,6 +38,13 @@ echo Html::a(
 
 echo '</li><li class="secondary">';
 echo Html::a(
+    Yii::t('admin', 'index_appearance'),
+    UrlHelper::createUrl('admin/index/appearance'),
+    ['id' => 'appearanceLink']
+);
+
+echo '</li><li class="secondary">';
+echo Html::a(
     Yii::t('admin', 'Translation / Wording'),
     UrlHelper::createUrl('admin/index/translation'),
     ['id' => 'translationLink']

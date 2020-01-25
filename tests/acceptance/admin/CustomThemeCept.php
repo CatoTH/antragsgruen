@@ -4,7 +4,7 @@
 $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$I->loginAndGotoStdAdminPage()->gotoAppearance();
 $I->click('.editThemeLink');
 
 $I->wantTo('confirm the default settings');
@@ -15,7 +15,7 @@ $I->wantTo('see that by default, the classic theme is activated');
 $I->seeInField('#stylesheet-menuLink', '6D7E00');
 
 $I->wantTo('see that DBJR-theme is preselected if necessary');
-$I->gotoStdAdminPage()->gotoConsultation();
+$I->gotoStdAdminPage()->gotoAppearance();
 $I->executeJS('$(".thumbnailedLayoutSelector .layout.layout-dbjr").click();');
 $I->click('.editThemeLink');
 $I->seeInField('#stylesheet-menuLink', '8D8D8D');
@@ -29,11 +29,11 @@ $I->assertEquals('rgb(255, 0, 0)', $I->executeJS('return getComputedStyle($("#mo
 $I->assertEquals('5px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));
 
 $I->wantTo('change to a regular theme again');
-$I->gotoStdAdminPage()->gotoConsultation();
+$page = $I->gotoStdAdminPage()->gotoAppearance();
 $I->seeCheckboxIsChecked('.customThemeSelector input');
 $I->executeJS('$("input[value=layout-classic").parents("label").click()');
 $I->checkOption("//input[@name='siteSettings[siteLayout]'][@value='layout-classic']");
-$I->submitForm('#consultationSettingsForm', [], 'save');
+$page->saveForm();
 
 $I->assertEquals('rgb(109, 126, 0)', $I->executeJS('return getComputedStyle($("#motionListLink")[0])["color"]'));
 $I->assertEquals('10px', $I->executeJS('return getComputedStyle($(".antragsgruen-width-main.well")[0])["border-top-left-radius"]'));

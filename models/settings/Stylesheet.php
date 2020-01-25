@@ -17,6 +17,7 @@ class Stylesheet implements \JsonSerializable
     const DEFAULTS_LAYOUT_DBJR = 'layout-dbjr';
 
     public $bodyFont;
+    public $bodyFontSize;
     public $containerSize;
     public $colorLinks;
     public $colorLinksLight;
@@ -77,6 +78,7 @@ class Stylesheet implements \JsonSerializable
         'menuActive'                  => '#739b9b',
         'backgroundImage'             => '',
         'bodyFont'                    => '"Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'bodyFontSize'                => 14,
         'textColor'                   => '#484649',
         'colorLinks'                  => '#6d7e00',
         'colorLinksLight'             => '#6d7e00',
@@ -115,6 +117,7 @@ class Stylesheet implements \JsonSerializable
         'menuActive'                  => '#333333',
         'backgroundImage'             => '',
         'bodyFont'                    => '"FiraSans", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+        'bodyFontSize'                => 14,
         'textColor'                   => '#484649',
         'colorLinks'                  => '#dd0b18',
         'colorLinksLight'             => '#dd0b18',
@@ -250,6 +253,11 @@ class Stylesheet implements \JsonSerializable
                 'group'    => 'text',
                 'type'     => static::TYPE_FONT,
                 'scssName' => 'bodyFont',
+            ],
+            'bodyFontSize'                => [
+                'group'    => 'text',
+                'type'     => static::TYPE_PIXEL,
+                'scssName' => 'font-size-base',
             ],
             'textColor'                   => [
                 'group'    => 'text',

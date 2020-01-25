@@ -18,7 +18,7 @@ $I->fillField('#comment_-1_-1_text', 'An amendment comment');
 $I->submitForm('#comment_-1_-1_form', [], 'writeComment');
 $I->see('An amendment comment');
 
-$page = $I->gotoStdAdminPage()->gotoConsultation();
+$page = $I->gotoStdAdminPage()->gotoAppearance();
 $I->selectFueluxOption('#startLayoutType', '4');
 $page->saveForm();
 

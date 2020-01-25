@@ -10,10 +10,6 @@ use app\models\forms\{AntragsgruenUpdateModeForm, ConsultationCreateForm};
 use app\models\settings\Stylesheet;
 use yii\web\Response;
 
-/**
- * Class IndexController
- * @package app\controllers\admin
- */
 class IndexController extends AdminBase
 {
     use SiteAccessTrait;
@@ -72,17 +68,6 @@ class IndexController extends AdminBase
             $settings->saveForm($settingsInput, $post['settingsFields']);
             $settings->setOrganisationsFromInput($post['organisations']);
 
-            if (isset($post['consultationLogo']) && $post['consultationLogo']) {
-                $settings->logoUrl = $post['consultationLogo'];
-            } elseif (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
-                try {
-                    $user              = User::getCurrentUser();
-                    $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo', $user);
-                    $settings->logoUrl = $file->getUrl();
-                } catch (FormError $e) {
-                    \yii::$app->session->setFlash('error', $e->getMessage());
-                }
-            }
             $model->setSettings($settings);
 
             if (preg_match('/^[\w_-]+$/i', $data['urlPath'])) {
@@ -92,11 +77,7 @@ class IndexController extends AdminBase
             }
 
             if ($model->save()) {
-                $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
-                $siteSettings  = $model->site->getSettings();
-                $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
-                $model->site->setSettings($siteSettings);
-                if ($model->site->currentConsultationId == $model->id) {
+                if ($model->site->currentConsultationId === $model->id) {
                     $model->site->status = ($settings->maintenanceMode ? Site::STATUS_INACTIVE : Site::STATUS_ACTIVE);
                 }
                 $model->site->save();
@@ -110,9 +91,6 @@ class IndexController extends AdminBase
                     }
                 }
 
-                $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
-                $this->layoutParams->setLayout($siteSettings->siteLayout);
-
                 $model->flushCacheWithChildren(['lines']);
                 \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
             } else {
@@ -121,6 +99,56 @@ class IndexController extends AdminBase
         }
 
         return $this->render('consultation_settings', ['consultation' => $this->consultation, 'locale' => $locale]);
+    }
+
+    /**
+     * @return string
+     * @throws FormError
+     * @throws \Exception
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionAppearance()
+    {
+        $model = $this->consultation;
+
+        if ($this->isPostSet('save')) {
+            $post = \Yii::$app->request->post();
+
+            $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
+            $settings      = $model->getSettings();
+            $settings->saveForm($settingsInput, $post['settingsFields']);
+
+            if (isset($post['consultationLogo']) && $post['consultationLogo']) {
+                $settings->logoUrl = $post['consultationLogo'];
+            } elseif (isset($_FILES['newLogo']) && $_FILES['newLogo']['tmp_name']) {
+                try {
+                    $user              = User::getCurrentUser();
+                    $file              = ConsultationFile::uploadImage($this->consultation, 'newLogo', $user);
+                    $settings->logoUrl = $file->getUrl();
+                } catch (FormError $e) {
+                    \yii::$app->session->setFlash('error', $e->getMessage());
+                }
+            }
+            $model->setSettings($settings);
+
+
+            if ($model->save()) {
+                $settingsInput = (isset($post['siteSettings']) ? $post['siteSettings'] : []);
+                $siteSettings  = $model->site->getSettings();
+                $siteSettings->saveForm($settingsInput, $post['siteSettingsFields']);
+                $model->site->setSettings($siteSettings);
+                $model->site->save();
+
+                $this->site->getSettings()->siteLayout = $siteSettings->siteLayout;
+                $this->layoutParams->setLayout($siteSettings->siteLayout);
+
+                \yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+            } else {
+                \yii::$app->session->setFlash('error', Tools::formatModelValidationErrors($model->getErrors()));
+            }
+        }
+
+        return $this->render('appearance', ['consultation' => $this->consultation]);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 return [
     'bread_settings'              => 'Settings',
+    'bread_appearance'            => 'Appearance',
     'bread_admin'                 => 'Administration',
     'bread_list'                  => 'Motion list',
     'bread_amend'                 => 'Amendment',
@@ -37,6 +38,7 @@ return [
     'index_pdf_zip_list'          => 'ZIP archive of all PDFs',
     'index_odt_zip_list'          => 'ZIP archive of all ODTs',
     'index_settings'              => 'Settings',
+    'index_appearance'            => 'Change the appearance of this site',
     'index_consultation_settings' => 'This consultation',
     'index_motion_types'          => 'Edit motion types',
     'index_site_access'           => 'Login / users / admins',
@@ -198,6 +200,7 @@ return [
     'con_ci_custom'           => 'Custom theme',
     'con_ci_custom_edit'      => 'Edit custom theme',
     'con_ci_custom_create'    => 'Create custom theme',
+    'con_appearance_content'  => 'Components of the site',
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage / Agenda',
     'con_line_len'            => 'Line length',
@@ -527,6 +530,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'theme_block_headings'              => 'Headings',
     'theme_img_upload'                  => 'Upload new image',
     'theme_bodyFont'                    => 'Base font',
+    'theme_bodyFontSize'                => 'Base font size',
     'theme_containerSize'               => 'Maximal page with',
     'theme_colorLinks'                  => 'Color of links (normal)',
     'theme_colorLinksLight'             => 'Color of links (light)',

@@ -35,6 +35,15 @@ class AdminIndexPage extends BasePage
     }
 
     /**
+     * @return AdminAppearancePage
+     */
+    public function gotoAppearance()
+    {
+        $this->actor->click('#appearanceLink');
+        return new AdminAppearancePage($this->actor);
+    }
+
+    /**
      * @return AdminSiteAccessPage
      */
     public function gotoSiteAccessPage()

@@ -2,6 +2,7 @@
 
 return [
     'bread_settings'              => 'Einstellungen',
+    'bread_appearance'            => 'Aussehen',
     'bread_admin'                 => 'Administration',
     'bread_list'                  => 'Antragsliste',
     'bread_amend'                 => 'Änderungsantrag',
@@ -38,6 +39,7 @@ return [
     'index_odt_zip_list'          => 'ZIP-Archiv aller ODTs',
     'index_settings'              => 'Einstellungen',
     'index_consultation_settings' => 'Diese Veranstaltung / Programmdiskussion',
+    'index_appearance'            => 'Aussehen der Seite anpassen',
     'index_motion_types'          => 'Antragstypen bearbeiten',
     'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',
@@ -200,6 +202,7 @@ return [
     'con_ci_custom'           => 'Eigenes Farbschema',
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
     'con_ci_custom_create'    => 'Eigenes Farbschema anlegen',
+    'con_appearance_content'  => 'Einzelne Bestandteile der Seite',
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseite / Tagesordnung',
     'con_line_len'            => 'Maximale Zeilenlänge',
@@ -540,6 +543,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'theme_block_buttons'               => 'Buttons',
     'theme_img_upload'                  => 'Neues Bild hochladen',
     'theme_bodyFont'                    => 'Grund-Schriftart',
+    'theme_bodyFontSize'                => 'Grund-Schriftgröße',
     'theme_containerSize'               => 'Maximale Seitenbreite',
     'theme_colorLinks'                  => 'Farbe der Links (normal)',
     'theme_colorLinksLight'             => 'Farbe der Links (hell)',
