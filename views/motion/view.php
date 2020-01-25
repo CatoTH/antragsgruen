@@ -43,7 +43,6 @@ if ($motion->isResolution()) {
 
 $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
-$minimalisticUi          = $motion->getMyConsultation()->getSettings()->minimalisticUI;
 $minHeight               = max($sidebarRows * 40 - 100, 0);
 $supportCollectingStatus = ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS && !$motion->isDeadlineOver());
 
@@ -57,9 +56,7 @@ echo $layout->getMiniMenu('motionSidebarSmall');
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
 
-if (!$minimalisticUi) {
-    include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
-}
+include(__DIR__ . DIRECTORY_SEPARATOR . '_view_motiondata.php');
 
 echo $controller->showErrors();
 

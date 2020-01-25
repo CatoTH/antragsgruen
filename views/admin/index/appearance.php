@@ -109,7 +109,6 @@ $handledSiteSettings = [];
             </div>
         </fieldset>
 
-        <?php $handledSettings[] = 'startLayoutType'; ?>
         <fieldset class="form-group">
             <div class="thumbnailedLayoutSelector">
                 <?php
@@ -149,16 +148,33 @@ $handledSiteSettings = [];
     </div>
     <h2 class="green"><?= Yii::t('admin', 'con_appearance_content') ?></h2>
     <div class="content">
-        <div class="form-group">
+        <div class="form-group selectRow">
+            <?php $handledSettings[] = 'startLayoutType'; ?>
             <label class="control-label" for="startLayoutType">
                 <?= Yii::t('admin', 'con_home_page_style') ?>:
             </label>
-            <div><?php
+            <div class="selectHolder"><?php
                 echo HTMLTools::fueluxSelectbox(
                     'settings[startLayoutType]',
                     $consultation->getSettings()->getStartLayouts(),
                     $consultation->getSettings()->startLayoutType,
                     ['id' => 'startLayoutType'],
+                    true
+                );
+                ?></div>
+        </div>
+
+        <div class="form-group selectRow">
+            <?php $handledSettings[] = 'motiondataMode'; ?>
+            <label class="control-label" for="motiondataMode">
+                <?= Yii::t('admin', 'con_motion_data') ?>:
+            </label>
+            <div class="selectHolder"><?php
+                echo HTMLTools::fueluxSelectbox(
+                    'settings[motiondataMode]',
+                    $consultation->getSettings()->getMotiondataModes(),
+                    $consultation->getSettings()->motiondataMode,
+                    ['id' => 'motiondataMode'],
                     true
                 );
                 ?></div>
@@ -186,9 +202,8 @@ $handledSiteSettings = [];
                      'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
         $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
-        $boolSettingRow($settings, 'minimalisticUI', $handledSettings, Yii::t('admin', 'con_minimalistic'));
-
         ?>
+        <br>
         <div class="saveholder">
             <button type="submit" name="save" class="btn btn-primary"><?= Yii::t('admin', 'save') ?></button>
         </div>

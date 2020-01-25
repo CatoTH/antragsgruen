@@ -15,6 +15,11 @@ use app\views\motion\LayoutHelper as MotionLayoutHelper;
  * @var \app\controllers\Base $controller
  */
 
+$motionDataMode = $motion->getMyConsultation()->getSettings()->motiondataMode;
+if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_NONE) {
+    return;
+}
+
 echo '<div class="content">';
 
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
@@ -39,10 +44,13 @@ if (count($replacedByMotions) > 0) {
 }
 
 $motionData   = [];
-$motionData[] = [
-    'title'   => Yii::t('motion', 'consultation'),
-    'content' => Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')),
-];
+
+if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
+    $motionData[] = [
+        'title'   => Yii::t('motion', 'consultation'),
+        'content' => Html::a(Html::encode($motion->getMyConsultation()->title), UrlHelper::createUrl('consultation/index')),
+    ];
+}
 
 if ($motion->agendaItem) {
     $motionData[] = [
@@ -60,11 +68,13 @@ if (count($initiators) > 0 && !$motion->isResolution()) {
     ];
 }
 
-$motionData[] = [
-    'rowClass' => 'statusRow',
-    'title'    => Yii::t('motion', 'status'),
-    'content'  => $motion->getFormattedStatus(),
-];
+if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL || $motion->status !== Motion::STATUS_SUBMITTED_SCREENED) {
+    $motionData[] = [
+        'rowClass' => 'statusRow',
+        'title'    => Yii::t('motion', 'status'),
+        'content'  => $motion->getFormattedStatus(),
+    ];
+}
 
 $votingData = $motion->getVotingData();
 if ($votingData->hasAnyData()) {
@@ -127,7 +137,7 @@ if ($motion->dateResolution) {
     ];
 }
 
-if (!$motion->isResolution()) {
+if (!$motion->isResolution() && \app\models\settings\Consultation::MOTIONDATA_ALL) {
     $motionData[] = [
         'title'   => Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
         'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),

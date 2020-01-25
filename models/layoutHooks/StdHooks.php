@@ -168,7 +168,6 @@ class StdHooks extends Hooks
     {
         /** @var Base $controller */
         $controller   = \Yii::$app->controller;
-        $minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
 
         $out = '<ul class="nav navbar-nav">';
 
@@ -198,7 +197,7 @@ class StdHooks extends Hooks
                 }
             }
 
-            if (!User::getCurrentUser() && !$minimalistic) {
+            if (!User::getCurrentUser()) {
                 if (get_class($controller) == UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {

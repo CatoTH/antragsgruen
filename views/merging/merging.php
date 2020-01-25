@@ -38,9 +38,7 @@ echo '<h1 class="stickyHeader">' . $motion->getEncodedTitleWithPrefix() . '</h1>
 
 echo '<div class="motionData">';
 
-if (!$motion->getMyConsultation()->getSettings()->minimalisticUI) {
-    include(__DIR__ . '/../motion/_view_motiondata.php');
-}
+include(__DIR__ . '/../motion/_view_motiondata.php');
 
 if (count($amendments) > 0) {
     $explanation = Yii::t('amend', 'merge_explanation');

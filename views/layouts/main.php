@@ -37,8 +37,6 @@ if ($layout->fullScreen) {
 
 $title = $layout->formatTitle(isset($this->title) ? $this->title : '');
 
-$minimalistic = ($controller->consultation && $controller->consultation->getSettings()->minimalisticUI);
-
 $this->beginPage();
 
 
@@ -51,7 +49,7 @@ echo '>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="' . Html::encode(\Yii::t('base', 'html_meta')) . '">' . "\n";
+    <meta name="description" content="' . Html::encode(Yii::t('base', 'html_meta')) . '">' . "\n";
 echo '<title>' . Html::encode($title) . '</title>' . "\n";
 echo Html::csrfMetaTags();
 
@@ -94,7 +92,7 @@ if (defined('YII_ENV') && YII_ENV == 'test') {
 
 echo '<body ' . (count($bodyClasses) > 0 ? 'class="' . implode(' ', $bodyClasses) . '"' : '') . '>';
 
-$modernizr = file_get_contents(\Yii::$app->basePath . '/web/js/modernizr.js');
+$modernizr = file_get_contents(Yii::$app->basePath . '/web/js/modernizr.js');
 echo '<script>' . $modernizr . '</script>' . "\n";
 
 $this->beginBody();
@@ -133,7 +131,7 @@ echo $layout->getAMDClasses();
 echo $layout->getAMDLoader();
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params = \Yii::$app->params;
+$params = Yii::$app->params;
 
 $this->endBody();
 echo '
@@ -149,7 +147,7 @@ echo '
 {
   "@context" : "http://schema.org",
   "@type" : "Organization",
-  "name" : "' . \Yii::t('export', 'default_creator') . '",
+  "name" : "' . Yii::t('export', 'default_creator') . '",
   "url" : "' . Html::encode($params->domainPlain) . '",
   "sameAs" : [
     "https://www.facebook.com/Antragsgruen",

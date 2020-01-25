@@ -153,8 +153,6 @@ return [
     'con_line_len'            => 'Longueur de ligne',
     'con_title_motions'       => 'Motions',
     'con_feeds_sidebar'       => 'Montrer les flux dans la barre latérale',
-    'con_minimalistic'        => '<strong>Interface minimaliste</strong><br>
-<small class="conPrefixHide">Le bouton de login dans le menu seront cachés.</small>',
     'con_single_motion_mode'  => 'Une <strong>seule motion</strong> est débattue, aucun page d\'aperçu des motions ne sera montrée.',
     'con_force_motion'        => 'La motion suivante',
     'con_line_number_global'  => '<strong>Numérotation des lignes globale</strong> à travers l\'ensemble de la consultation',

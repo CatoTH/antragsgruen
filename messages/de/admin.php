@@ -205,6 +205,7 @@ return [
     'con_appearance_content'  => 'Einzelne Bestandteile der Seite',
     'con_appearance'          => 'Aussehen',
     'con_home_page_style'     => 'Startseite / Tagesordnung',
+    'con_motion_data'         => 'Antragsdaten über dem Antragstext',
     'con_line_len'            => 'Maximale Zeilenlänge',
     'con_robots'              => 'Sichtbar in Suchmaschinen',
     'con_robots_hint'         => 'Änderungen an dieser Einstellung wirken sich erst auf, wenn Suchmaschinen das nächste Mal diese Seite abrufen. Das kann einige Tage dauern.',
@@ -212,8 +213,6 @@ return [
     'con_feeds_sidebar'       => 'Feeds in der Sidebar anzeigen',
     'con_show_ad'             => '„Dein Antragsgrün“ in der Sidebar anzeigen',
     'con_show_breadcrumbs'    => 'Breadcrumbs über dem Seiteninhalt anzeigen',
-    'con_minimalistic'        => '<strong>Minimalistische Ansicht</strong><br>
-<small style="margin-left: 20px;">Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>',
     'con_single_motion_mode'  => 'Es wird nur <strong>ein einziger Antrag</strong> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',
     'con_force_motion'        => 'Dieser Antrag ist',
     'con_line_number_global'  => '<strong>Zeilennummerierung</strong> durchgehend für die ganze Veranstaltung',

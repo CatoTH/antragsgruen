@@ -18,6 +18,9 @@ class Consultation implements \JsonSerializable
     const ROBOTS_ONLY_HOME = 1;
     const ROBOTS_ALL = 2;
 
+    const MOTIONDATA_ALL = 0;
+    const MOTIONDATA_MINI = 1;
+    const MOTIONDATA_NONE = 2;
 
     // SETTINGS WITH TEST CASES
 
@@ -51,7 +54,7 @@ class Consultation implements \JsonSerializable
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
-    public $minimalisticUI = false;
+    public $minimalisticUI = false; // @TODO Obsolete since 2020-01
     public $commentsSupportable = false;
     public $screeningMotionsShown = false;
     public $initiatorsMayReject = false;
@@ -63,6 +66,7 @@ class Consultation implements \JsonSerializable
     public $lineLength = 80;
     public $startLayoutType = 0;
     public $robotsPolicy = 1;
+    public $motiondataMode = 0;
 
     /** @var null|string */
     public $logoUrl = null;
@@ -88,6 +92,18 @@ class Consultation implements \JsonSerializable
     /**
      * @return string[]
      */
+    public static function getMotiondataModes(): array
+    {
+        return [
+            static::MOTIONDATA_ALL  => \Yii::t('structure', 'motiondata_all'),
+            static::MOTIONDATA_MINI => \Yii::t('structure', 'motiondata_mini'),
+            static::MOTIONDATA_NONE => \Yii::t('structure', 'motiondata_none'),
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
     public static function getRobotPolicies(): array
     {
         return [
@@ -100,7 +116,7 @@ class Consultation implements \JsonSerializable
     public function setOrganisationsFromInput(?string $organisationField): void
     {
         if ($organisationField) {
-            $arr = json_decode($organisationField, true);
+            $arr                 = json_decode($organisationField, true);
             $this->organisations = [];
             foreach ($arr as $orga) {
                 $this->organisations[] = trim($orga);

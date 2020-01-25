@@ -203,6 +203,7 @@ return [
     'con_appearance_content'  => 'Components of the site',
     'con_appearance'          => 'Appearance',
     'con_home_page_style'     => 'Homepage / Agenda',
+    'con_motion_data'         => 'Motion data above the motion text',
     'con_line_len'            => 'Line length',
     'con_robots'              => 'Appears in search engines',
     'con_robots_hint'         => 'Changes to this settings take several days to become active, as it depends on search engines actively re-crawling this site.',
@@ -210,8 +211,6 @@ return [
     'con_feeds_sidebar'       => 'Show feeds in the sidebar',
     'con_show_ad'             => 'Show &quot;Using Antragsgrün&quot; in the sidebar',
     'con_show_breadcrumbs'    => 'Show Breadcrumbs above the site content',
-    'con_minimalistic'        => '<strong>Minimalistic UI</strong><br>
-<small class="conPrefixHide">The login button and the menu will be hidden.</small>',
     'con_single_motion_mode'  => 'Only a <strong>single motion</strong> is being discussed, no motion overview page will be shown.',
     'con_force_motion'        => 'The following motion',
     'con_line_number_global'  => '<strong>Global line numbering</strong> throughout the whole consultation',

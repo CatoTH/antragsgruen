@@ -206,6 +206,14 @@ label.legend {
       text-align: right;
     }
   }
+  .selectRow {
+    label {
+      display: block;
+    }
+    .selectHolder {
+      max-width: 400px;
+    }
+  }
 }
 #consultationSettingsForm {
   .pillbox-add-item {

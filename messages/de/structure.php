@@ -170,6 +170,10 @@ return [
     'home_layout_agenda_long'       => 'Anträge unter der Tagesordnung',
     'home_layout_agenda_hide_amend' => 'Anträge unter der TO, ÄAs eingeklappt',
 
+    'motiondata_all'  => 'Alle anzeigen (inkl. Datum, Status, Veranstaltung)',
+    'motiondata_mini' => 'Kurzfassung (nur Antragsteller*in, Thema etc.)',
+    'motiondata_none' => 'Nicht anzeigen',
+
     'supp_only_initiators'    => 'Nur die Antragsteller*in',
     'supp_given_by_initiator' => 'Von der Antragsteller*in angegeben',
     'supp_collect_before'     => 'Unterstützungs-Phase vor Veröffentlichung (außer bei Gremien)',

@@ -169,6 +169,10 @@ return [
     'home_layout_agenda_long'       => 'Motions are below the agenda',
     'home_layout_agenda_hide_amend' => 'Motions are below the agenda, amendments hidden',
 
+    'motiondata_all'  => 'Show all (incl. date, status ans consultation)',
+    'motiondata_mini' => 'Short version (only proposer, topic etc.)',
+    'motiondata_none' => 'Don\'t show',
+
     'supp_only_initiators'    => 'Only proposer',
     'supp_given_by_initiator' => 'Supporters given by proposer',
     'supp_collect_before'     => 'Collecting phase before publication (not for organizations)',
