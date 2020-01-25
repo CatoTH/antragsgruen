@@ -2,6 +2,7 @@
 
 ### Version 4.5.0 [not released yet]
 
+- The paragraph-based editing mode for merging amendments into motion, introduced in version 4.3.0, was visually improved to closer resemble the regular motion view, with the amendment toggles to the right of each paragraph. This improves the legibility of the motion text.
 - Images can now have a maximum size for the PDF version. Signatures in applications, for example, now have a maximum size of 5x3cm.
 - If an image or a PDF in a motion or application is optional, it is now possible to delete an already uploaded one without uploading a replacement.
 - For PDF-based applications, the mostly empty cover page in front of the generated PDF is removed; the generated PDF is now exactly identical to the uploaded one.

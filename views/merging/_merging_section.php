@@ -9,7 +9,8 @@
 use app\models\db\MotionSection;
 
 echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
-echo '<div class="content sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
+echo '<div class="content boxed sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
+echo '<div class="sectionHolder">';
 
 $amendmentsById = [];
 foreach ($section->getAmendingSections(true, false, true) as $sect) {
@@ -27,4 +28,4 @@ foreach (array_keys($paragraphs) as $paragraphNo) {
     ]);
 }
 
-echo '</div>';
+echo '</div></div>';

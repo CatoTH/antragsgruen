@@ -543,6 +543,9 @@
   }
 
   .paragraphWrapper {
+    position: relative;
+    clear: both;
+
     .paragraphHolder {
       margin-bottom: 0;
 
@@ -553,22 +556,71 @@
     .texteditor > * {
       margin-bottom: 0;
     }
-  }
 
-  .changeToolbar {
-    display: flex;
-    flex-direction: row;
-  }
-  .statuses {
-    flex: 1;
+    .leftToolbar {
+      float: left;
+      width: 0;
+      padding-top: 3px;
+      margin-left: -25px;
+    }
+    .changeToolbar {
+      float: right;
+      width: 0;
+      padding-top: 3px;
+      margin-right: -24px;
+
+      .btn-group {
+        white-space: nowrap;
+        font-size: 0; // Prevent white space
+        margin-bottom: 5px;
+      }
+      .btn {
+        float: none;
+      }
+      .dropdownAll {
+        border-radius: 0;
+        border-left: none;
+        border-bottom-right-radius: 5px !important;
+        border-top-right-radius: 5px !important;
+        font-weight: normal;
+      }
+      .dropdownAmendment {
+        border: none;
+        border-left: solid 1px white;
+        border-radius: 0;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          background: $bookmarkAmendmentBackground;
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
+      }
+      .toggleAmendment {
+        border: none;
+        border-bottom-right-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
+          border-left: solid 1px lighten($bookmarkAmendmentBackground, 3.5%);
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
+      }
+    }
   }
   .actions {
-    flex: 0;
-    text-align: right;
+    text-align: left;
     white-space: nowrap;
     vertical-align: top;
     > * {
-      display: inline-block;
+      display: block;
       vertical-align: top;
     }
   }
@@ -648,15 +700,6 @@
   }
 
   .hasCollisions {
-    .form-group {
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .texteditorBox {
-      border: 0;
-      border-bottom: 1px solid #ccc;
-      border-radius: 0;
-    }
     .paragraphHolder {
       position: relative;
 
@@ -725,6 +768,13 @@
       margin-top: -3px;
       padding-top: 0;
     }
+  }
+
+  .sectionHolder {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    padding: 3px;
   }
 
   .titleChanges {

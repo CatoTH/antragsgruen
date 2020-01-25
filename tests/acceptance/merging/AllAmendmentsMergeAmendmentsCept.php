@@ -26,7 +26,7 @@ $I->see('Schooe', '#sections_4_0_wysiwyg .ice-ins');
 
 $I->see('Kollidierender Änderungsantrag', '#paragraphWrapper_2_7 .collisionsHolder');
 $I->see('Alternatives Ende', '#paragraphWrapper_2_7 .collidingParagraph');
-$I->seeElement('#paragraphWrapper_2_7 .toggleAmendment3.btn-success');
+$I->seeElement('#paragraphWrapper_2_7 .toggleAmendment3.toggleActive');
 $I->dontSee('Alternatives Ende', '#section_holder_2_7');
 
 $cid0 = $I->executeJS('return $("[data-cid=0]").length;');
@@ -59,7 +59,7 @@ $I->dontSee('Kollidierender Änderungsantrag', '#paragraphWrapper_2_7 .collision
 $I->dontSee('Alternatives Ende', '#paragraphWrapper_2_7 .collidingParagraph');
 $I->see('Alternatives Ende', '#section_holder_2_7');
 $I->seeElement('#paragraphWrapper_2_7 .toggleAmendment3.btn-default');
-$I->dontSeeElement('#paragraphWrapper_2_7 .toggleAmendment3.btn-success');
+$I->dontSeeElement('#paragraphWrapper_2_7 .toggleAmendment3.toggleActive');
 
 $I->wantTo('make some changes by hand');
 
@@ -139,7 +139,7 @@ $I->dontSee('Kollidierender Änderungsantrag', '#paragraphWrapper_2_7 .collision
 $I->dontSee('Alternatives Ende', '#paragraphWrapper_2_7 .collidingParagraph');
 $I->see('Alternatives Ende', '#section_holder_2_7');
 $I->seeElement('#paragraphWrapper_2_7 .toggleAmendment3.btn-default');
-$I->dontSeeElement('#paragraphWrapper_2_7 .toggleAmendment3.btn-success');
+$I->dontSeeElement('#paragraphWrapper_2_7 .toggleAmendment3.toggleActive');
 $I->see('With an hand-written appendix.', '#paragraphWrapper_2_7');
 
 $I->dontSee('mechad mim Spuiratz', '#paragraphWrapper_2_4');

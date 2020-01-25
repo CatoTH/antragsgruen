@@ -613,10 +613,10 @@ class MotionMergeAmendmentsParagraph {
             const doToggle = () => {
                 if (parseInt($input.val() as string, 10) === 1) {
                     $input.val("0");
-                    $input.parents(".btn-group").find(".btn").addClass("btn-default").removeClass("btn-success");
+                    $input.parents(".btn-group").find(".btn").addClass("btn-default").removeClass("toggleActive");
                 } else {
                     $input.val("1");
-                    $input.parents(".btn-group").find(".btn").removeClass("btn-default").addClass("btn-success");
+                    $input.parents(".btn-group").find(".btn").removeClass("btn-default").addClass("toggleActive");
                 }
                 this.reloadText();
                 this.hasUnsavedChanges = true;
@@ -655,7 +655,7 @@ class MotionMergeAmendmentsParagraph {
             initTooltip($(ev.currentTarget) as JQuery)
         });
 
-        this.$holder.find(".btn-group .setStatus").click(ev => {
+        this.$holder.find(".btn-group .setStatus").on("click", ev => {
             ev.preventDefault();
             const $holder = $(ev.currentTarget).parents(".btn-group");
             const amendmentId = parseInt($holder.data("amendment-id"));
@@ -708,13 +708,13 @@ class MotionMergeAmendmentsParagraph {
             this.hasUnsavedChanges = true;
         });
 
-        this.$holder.find(".mergeActionHolder .acceptAll").click(ev => {
+        this.$holder.find(".mergeActionHolder .acceptAll").on("click", ev => {
             ev.preventDefault();
             this.textarea.acceptAll();
             this.hasUnsavedChanges = true;
         });
 
-        this.$holder.find(".mergeActionHolder .rejectAll").click(ev => {
+        this.$holder.find(".mergeActionHolder .rejectAll").on("click", ev => {
             ev.preventDefault();
             this.textarea.rejectAll();
             this.hasUnsavedChanges = true;
@@ -745,10 +745,10 @@ class MotionMergeAmendmentsParagraph {
             STATUS_COMPLETED
         ].indexOf(status) !== -1) {
             $input.val("1");
-            $btn.removeClass("btn-default").addClass("btn-success");
+            $btn.removeClass("btn-default").addClass("toggleActive");
         } else {
             $input.val("0");
-            $btn.addClass("btn-default").removeClass("btn-success");
+            $btn.addClass("btn-default").removeClass("toggleActive");
         }
         this.reloadText();
     }
@@ -786,7 +786,7 @@ class MotionMergeAmendmentsParagraph {
         const amendmentToggles = [];
         this.$holder.find(".amendmentStatus").each((id, el) => {
             const $el = $(el);
-            if ($el.find(".btn-success").length > 0) {
+            if ($el.find(".toggleActive").length > 0) {
                 amendmentToggles.push($el.data("amendment-id"));
             }
         });
