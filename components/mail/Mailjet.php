@@ -2,6 +2,7 @@
 
 namespace app\components\mail;
 
+use app\models\db\Consultation;
 use app\models\db\EMailBlacklist;
 use app\models\db\EMailLog;
 use app\models\exceptions\ServerConfiguration;
@@ -33,10 +34,13 @@ class Mailjet extends Base
      * @param string $fromEmail
      * @param string $replyTo
      * @param string $messageId
+     * @param Consultation|null $consultation
      * @return array
      */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId)
+    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId, $consultation)
     {
+        $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
+
         $message = [
             'From'     => [
                 'Email' => $fromEmail,

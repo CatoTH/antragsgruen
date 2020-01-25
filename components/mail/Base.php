@@ -2,8 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\EMailBlacklist;
-use app\models\db\EMailLog;
+use app\models\db\{Consultation, EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
 use Zend\Mail\Header\ContentType;
@@ -12,6 +11,7 @@ abstract class Base
 {
     /**
      * @param null|array $params
+     *
      * @return Base|null
      * @throws ServerConfiguration
      */
@@ -49,6 +49,7 @@ abstract class Base
 
     /**
      * @param int $type
+     *
      * @return \Zend\Mail\Message
      */
     abstract protected function getMessageClass($type);
@@ -57,6 +58,19 @@ abstract class Base
      * @return \Zend\Mail\Transport\TransportInterface|null
      */
     abstract protected function getTransport();
+
+    protected function createHtmlPart(string $subject, string $plain, ?string $html, ?Consultation $consultation): string
+    {
+        if (!$html) {
+            $html = '<p>' . Html::encode($plain) . '</p>';
+        }
+
+        return \Yii::$app->controller->renderPartial('@app/views/layouts/email', [
+            'title'  => $subject,
+            'html'   => $html,
+            'styles' => ($consultation ? $consultation->site->getSettings()->getStylesheet() : null),
+        ]);
+    }
 
     /**
      * @param int $type
@@ -67,9 +81,11 @@ abstract class Base
      * @param string $fromEmail
      * @param string|null $replyTo
      * @param string $messageId
+     * @param Consultation|null
+     *
      * @return \Zend\Mail\Message|array
      */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId)
+    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId, $consultation)
     {
         $mail = $this->getMessageClass($type);
         $mail->setFrom($fromEmail, $fromName);
@@ -80,35 +96,30 @@ abstract class Base
         $mId->setId($messageId);
         $mail->getHeaders()->addHeader($mId);
 
-        if ($html === '') {
-            $mail->setBody($plain);
-            $content = new ContentType();
-            $content->setType('text/plain');
-            $content->addParameter('charset', 'UTF-8');
-            $mail->getHeaders()->addHeader($content);
-        } else {
-            $html = '<!DOCTYPE html><html>
-            <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
-            </head><body>' . $html . '</body></html>';
-            
-            $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
-            $contentHtml = $converter->convert($html);
-            $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
+        $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
+        /*
+        $html = '<!DOCTYPE html><html>
+        <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
+        </head><body>' . $html . '</body></html>';
 
-            $textPart          = new \Zend\Mime\Part($plain);
-            $textPart->type    = 'text/plain';
-            $textPart->charset = 'UTF-8';
-            $htmlPart          = new \Zend\Mime\Part($contentHtml);
-            $htmlPart->type    = 'text/html';
-            $htmlPart->charset = 'UTF-8';
-            $mimem             = new \Zend\Mime\Message();
-            $mimem->setParts([$textPart, $htmlPart]);
+        $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
+        $contentHtml = $converter->convert($html);
+        $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
+        */
 
-            $mail->setBody($mimem);
-            /** @var ContentType $contentType */
-            $contentType = $mail->getHeaders()->get('content-type');
-            $contentType->setType('multipart/alternative');
-        }
+        $textPart          = new \Zend\Mime\Part($plain);
+        $textPart->type    = 'text/plain';
+        $textPart->charset = 'UTF-8';
+        $htmlPart          = new \Zend\Mime\Part($html);
+        $htmlPart->type    = 'text/html';
+        $htmlPart->charset = 'UTF-8';
+        $mimem             = new \Zend\Mime\Message();
+        $mimem->setParts([$textPart, $htmlPart]);
+
+        $mail->setBody($mimem);
+        /** @var ContentType $contentType */
+        $contentType = $mail->getHeaders()->get('content-type');
+        $contentType->setType('multipart/alternative');
 
         if ($replyTo) {
             $reply_to_head = new \Zend\Mail\Header\ReplyTo();
@@ -125,6 +136,7 @@ abstract class Base
     /**
      * @param \Zend\Mail\Message|array $message
      * @param string $toEmail
+     *
      * @return string
      */
     public function send($message, $toEmail)

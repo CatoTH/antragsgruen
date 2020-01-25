@@ -5,6 +5,7 @@ namespace app\commands;
 use app\components\HTMLTools;
 use app\components\yii\MessageSource;
 use app\models\db\Amendment;
+use app\models\db\Consultation;
 use app\models\db\EMailLog;
 use app\models\db\Motion;
 use app\models\db\Site;
@@ -184,9 +185,10 @@ class BugfixController extends Controller
     public function actionTestEmail($email_to)
     {
         try {
+            $consultation = Consultation::findOne(['urlPath' => 'std-parteitag']);
             \app\components\mail\Tools::sendWithLog(
                 EMailLog::TYPE_DEBUG,
-                null,
+                $consultation,
                 $email_to,
                 null,
                 'Test-E-Mail',

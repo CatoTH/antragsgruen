@@ -106,7 +106,8 @@ class Tools
                 $fromName,
                 $fromEmail,
                 $replyTo,
-                $messageId
+                $messageId,
+                $fromConsultation
             );
             $status  = $mailer->send($message, $toEmail);
         } catch (\Exception $e) {
