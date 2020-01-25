@@ -1,8 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\MotionSection;
+use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
@@ -41,6 +40,9 @@ echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' 
 $allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
 if (count($allAmendingIds) > 0) {
     ?>
+    <div class="leftToolbar">
+        <div class="changedIndicator unchanged"><span class="glyphicon glyphicon-edit" title="<?= Yii::t('amend', 'merge_changed') ?>"></span></div>
+    </div>
     <div class="changeToolbar">
         <div class="statuses">
             <?php
@@ -61,12 +63,12 @@ if (count($allAmendingIds) > 0) {
                                                 $statusesAll[$amendment->status];
 
                 $classes   = ['btn', 'btn-sm', 'toggleAmendment'];
-                $classes[] = 'btn-' . ($active ? 'success' : 'default');
+                $classes[] = ($active ? 'toggleActive' : 'btn-default');
                 $classes[] = 'toggleAmendment' . $amendment->id;
                 $idadd     = $type->id . '_' . $paragraphNo . '_' . $amendment->id;
                 ?>
                 <div class="btn-group amendmentStatus amendmentStatus<?= $amendment->id ?>" data-amendment-id="<?= $amendment->id ?>">
-                    <button class="btn btn-<?= ($active ? 'success' : 'default') ?> btn-sm dropdown-toggle"
+                    <button class="btn <?= ($active ? 'toggleActive' : 'btn-default') ?> btn-sm dropdown-toggle dropdownAmendment"
                             type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
@@ -76,7 +78,7 @@ if (count($allAmendingIds) > 0) {
                                type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
                         <?= ($amendment->titlePrefix ? Html::encode($amendment->titlePrefix) : '-') ?>
                     </button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-right">
                         <li>
                             <a href="<?= Html::encode($amendmentUrl) ?>" class="amendmentLink" target="_blank">
                                 <span class="glyphicon glyphicon-new-window"></span>
@@ -142,10 +144,9 @@ if (count($allAmendingIds) > 0) {
             ?>
         </div>
         <div class="actions">
-            <div class="changedIndicator unchanged"><?= Yii::t('amend', 'merge_changed') ?></div>
             <div class="mergeActionHolder hidden">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"
+                    <button type="button" class="btn btn-sm btn-default dropdown-toggle dropdownAll" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <?= Yii::t('amend', 'merge_all') ?>
                         <span class="caret"></span>

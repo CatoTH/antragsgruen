@@ -557,11 +557,17 @@
       margin-bottom: 0;
     }
 
+    .leftToolbar {
+      float: left;
+      width: 0;
+      padding-top: 3px;
+      margin-left: -25px;
+    }
     .changeToolbar {
       float: right;
       width: 0;
       padding-top: 3px;
-      margin-right: -25px;
+      margin-right: -24px;
 
       .btn-group {
         white-space: nowrap;
@@ -571,12 +577,41 @@
       .btn {
         float: none;
       }
-      .dropdown-toggle {
+      .dropdownAll {
         border-radius: 0;
+        border-left: none;
+        border-bottom-right-radius: 5px !important;
+        border-top-right-radius: 5px !important;
+        font-weight: normal;
+      }
+      .dropdownAmendment {
+        border: none;
+        border-left: solid 1px white;
+        border-radius: 0;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          background: $bookmarkAmendmentBackground;
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
       }
       .toggleAmendment {
-        border-bottom-right-radius: 3px !important;
-        border-top-right-radius: 3px !important;
+        border: none;
+        border-bottom-right-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
+          border-left: solid 1px lighten($bookmarkAmendmentBackground, 3.5%);
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
       }
     }
   }
