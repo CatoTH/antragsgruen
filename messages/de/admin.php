@@ -210,7 +210,8 @@ return [
     'con_robots_hint'         => 'Änderungen an dieser Einstellung wirken sich erst auf, wenn Suchmaschinen das nächste Mal diese Seite abrufen. Das kann einige Tage dauern.',
     'con_title_motions'       => 'Anträge',
     'con_feeds_sidebar'       => 'Feeds in der Sidebar anzeigen',
-    'con_show_ad'             => '&quot;Dein Antragsgrün&quot; in der Sidebar anzeigen',
+    'con_show_ad'             => '„Dein Antragsgrün“ in der Sidebar anzeigen',
+    'con_show_breadcrumbs'    => 'Breadcrumbs über dem Seiteninhalt anzeigen',
     'con_minimalistic'        => '<strong>Minimalistische Ansicht</strong><br>
 <small style="margin-left: 20px;">Der Login-Button und der Info-Header über den Anträgen werden versteckt.</small>',
     'con_single_motion_mode'  => 'Es wird nur <strong>ein einziger Antrag</strong> diskutiert, auf eine einleitende Übersichts-Startseite wird verzichtet',

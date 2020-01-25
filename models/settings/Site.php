@@ -11,6 +11,7 @@ class Site implements \JsonSerializable
 
     /** @var bool */
     public $showAntragsgruenAd = true;
+    public $showBreadcrumbs = true;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];
@@ -25,18 +26,12 @@ class Site implements \JsonSerializable
 
     public static $SITE_MANAGER_LOGIN_METHODS = [0, 1, 3];
 
-    /**
-     * @return Stylesheet
-     */
-    public function getStylesheet()
+    public function getStylesheet(): Stylesheet
     {
         return new Stylesheet($this->stylesheetSettings);
     }
 
-    /**
-     * @param Stylesheet $stylesheet
-     */
-    public function setStylesheet(Stylesheet $stylesheet)
+    public function setStylesheet(Stylesheet $stylesheet): void
     {
         $this->stylesheetSettings = $stylesheet->jsonSerialize();
     }

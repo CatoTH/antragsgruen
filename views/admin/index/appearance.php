@@ -175,6 +175,12 @@ $handledSiteSettings = [];
         echo Yii::t('admin', 'con_show_ad');
         echo '</label></div>';
 
+        $handledSiteSettings[] = 'showBreadcrumbs';
+        echo '<div><label>';
+        echo Html::checkbox('siteSettings[showBreadcrumbs]', $siteSettings->showBreadcrumbs, ['id' => 'showBreadcrumbs']) . ' ';
+        echo Yii::t('admin', 'con_show_breadcrumbs');
+        echo '</label></div>';
+
         $propTitle = Yii::t('admin', 'con_proposal_procedure');
         $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
                      'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';

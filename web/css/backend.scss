@@ -196,7 +196,7 @@ label.legend {
   }
 }
 
-#consultationSettingsForm {
+#consultationAppearanceForm {
   .logoRow {
     .logoPreview img {
       max-width: 100%;
@@ -206,6 +206,8 @@ label.legend {
       text-align: right;
     }
   }
+}
+#consultationSettingsForm {
   .pillbox-add-item {
     min-width: 130px;
   }

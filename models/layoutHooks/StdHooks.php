@@ -3,13 +3,9 @@
 namespace app\models\layoutHooks;
 
 use app\components\UrlHelper;
-use app\controllers\admin\IndexController;
-use app\controllers\Base;
-use app\controllers\UserController;
+use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationText;
-use app\models\db\User;
+use app\models\db\{ConsultationMotionType, ConsultationText, User};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -94,7 +90,7 @@ class StdHooks extends Hooks
     public function breadcrumbs($before)
     {
         $out = '';
-        if (is_array($this->layout->breadcrumbs)) {
+        if (is_array($this->layout->breadcrumbs) && $this->consultation->site->getSettings()->showBreadcrumbs) {
             $out .= '<ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
                 if ($link === '' || is_numeric($link)) {

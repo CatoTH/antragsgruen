@@ -209,6 +209,7 @@ return [
     'con_title_motions'       => 'Motions',
     'con_feeds_sidebar'       => 'Show feeds in the sidebar',
     'con_show_ad'             => 'Show &quot;Using Antragsgrün&quot; in the sidebar',
+    'con_show_breadcrumbs'    => 'Show Breadcrumbs above the site content',
     'con_minimalistic'        => '<strong>Minimalistic UI</strong><br>
 <small class="conPrefixHide">The login button and the menu will be hidden.</small>',
     'con_single_motion_mode'  => 'Only a <strong>single motion</strong> is being discussed, no motion overview page will be shown.',
