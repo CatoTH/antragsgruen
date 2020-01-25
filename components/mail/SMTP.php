@@ -7,13 +7,15 @@ use app\models\exceptions\ServerConfiguration;
 class SMTP extends Base
 {
     private $host;
-    private $port             = 25;
-    private $name             = 'localhost';
-    private $connectionClass  = null;
-    private $connectionConfig = null;
+    private $port = 25;
+    private $name = 'localhost';
+    private $authenticator = null;
+    private $username = null;
+    private $password = null;
 
     /**
      * @param array $params
+     *
      * @throws ServerConfiguration
      */
     public function __construct($params)
@@ -24,7 +26,7 @@ class SMTP extends Base
         $this->host = $params['host'];
 
         if (isset($params['port'])) {
-            $this->port = IntVal($params['port']);
+            $this->port = intval($params['port']);
         }
         if (isset($params['name'])) {
             $this->name = $params['name'];
@@ -38,53 +40,44 @@ class SMTP extends Base
                 break;
             case 'plain':
             case 'login':
+                $this->authenticator = 'LOGIN';
+                $this->username      = $params['username'];
+                $this->password      = $params['password'];
+                break;
             case 'crammd5':
-                $this->connectionClass  = $params['authType'];
-                $this->connectionConfig = [
-                    'username' => $params['username'],
-                    'password' => $params['password'],
-                ];
+                $this->authenticator = 'CRAM-MD5';
+                $this->username      = $params['username'];
+                $this->password      = $params['password'];
                 break;
             case 'plain_tls':
-                $this->connectionClass  = 'plain';
-                $this->connectionConfig = [
-                    'username' => $params['username'],
-                    'password' => $params['password'],
-                    'ssl'      => 'tls',
-                ];
+                $this->authenticator = 'PLAIN';
+                $this->username      = $params['username'];
+                $this->password      = $params['password'];
                 break;
             default:
                 throw new ServerConfiguration('Unknown authType: ' . $params['authType']);
         }
     }
 
-    /**
-     * @param int $type
-     * @return \Zend\Mail\Message
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
     protected function getMessageClass($type)
     {
-        return new \Zend\Mail\Message();
+        return new \Swift_Message();
     }
 
     /**
-     * @return \Zend\Mail\Transport\TransportInterface
+     * @return \Swift_Mailer
      */
     protected function getTransport()
     {
-        $options = [
-            'name' => $this->name,
-            'host' => $this->host,
-            'port' => $this->port,
-        ];
-        if ($this->connectionClass !== null) {
-            $options['connection_class']  = $this->connectionClass;
-            $options['connection_config'] = $this->connectionConfig;
+        $encrypted = ($this->port !== 25);
+        $transport = new \Swift_SmtpTransport($this->host, $this->port, ($encrypted ? 'ssl' : null));
+        if ($this->username) {
+            $transport->setUsername($this->username);
         }
-        $smtpOpts = new \Zend\Mail\Transport\SmtpOptions($options);
-        $transport = new \Zend\Mail\Transport\Smtp();
-        $transport->setOptions($smtpOpts);
-        return $transport;
+        if ($this->password) {
+            $transport->setPassword($this->password);
+        }
+
+        return new \Swift_Mailer($transport);
     }
 }

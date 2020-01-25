@@ -6,19 +6,22 @@ class Sendmail extends Base
 {
     /**
      * @param int $type
-     * @return \Zend\Mail\Message
+     *
+     * @return \Swift_Message
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function getMessageClass($type)
     {
-        return new \Zend\Mail\Message();
+        return new \Swift_Message();
     }
 
     /**
-     * @return \Zend\Mail\Transport\TransportInterface
+     * @return \Swift_Mailer
      */
     protected function getTransport()
     {
-        return new \Zend\Mail\Transport\Sendmail();
+        $transport = new \Swift_SendmailTransport();
+
+        return new \Swift_Mailer($transport);
     }
 }

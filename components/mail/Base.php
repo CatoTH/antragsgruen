@@ -2,11 +2,9 @@
 
 namespace app\components\mail;
 
-use app\models\db\EMailBlacklist;
-use app\models\db\EMailLog;
+use app\models\db\{EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
-use Zend\Mail\Header\ContentType;
 
 abstract class Base
 {
@@ -49,12 +47,12 @@ abstract class Base
 
     /**
      * @param int $type
-     * @return \Zend\Mail\Message
+     * @return \Swift_Message
      */
     abstract protected function getMessageClass($type);
 
     /**
-     * @return \Zend\Mail\Transport\TransportInterface|null
+     * @return \Swift_Mailer|null
      */
     abstract protected function getTransport();
 
@@ -67,63 +65,42 @@ abstract class Base
      * @param string $fromEmail
      * @param string|null $replyTo
      * @param string $messageId
-     * @return \Zend\Mail\Message|array
+     * @return \Swift_Message|array
      */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId)
+    public function createMessage(int $type, string $subject, string $plain, string $html, string $fromName, string $fromEmail, ?string $replyTo, $messageId)
     {
         $mail = $this->getMessageClass($type);
-        $mail->setFrom($fromEmail, $fromName);
+        $mail->setFrom([$fromEmail => $fromName]);
         $mail->setSubject($subject);
-        $mail->setEncoding('UTF-8');
-
-        $mId = new \Zend\Mail\Header\MessageId();
-        $mId->setId($messageId);
-        $mail->getHeaders()->addHeader($mId);
 
         if ($html === '') {
             $mail->setBody($plain);
-            $content = new ContentType();
-            $content->setType('text/plain');
-            $content->addParameter('charset', 'UTF-8');
-            $mail->getHeaders()->addHeader($content);
         } else {
             $html = '<!DOCTYPE html><html>
             <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
             </head><body>' . $html . '</body></html>';
-            
+
             $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
             $contentHtml = $converter->convert($html);
             $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
 
-            $textPart          = new \Zend\Mime\Part($plain);
-            $textPart->type    = 'text/plain';
-            $textPart->charset = 'UTF-8';
-            $htmlPart          = new \Zend\Mime\Part($contentHtml);
-            $htmlPart->type    = 'text/html';
-            $htmlPart->charset = 'UTF-8';
-            $mimem             = new \Zend\Mime\Message();
-            $mimem->setParts([$textPart, $htmlPart]);
+            $mail->setBody($contentHtml, 'text/html');
+            $mail->addPart($plain, 'text/plain');
 
-            $mail->setBody($mimem);
-            /** @var ContentType $contentType */
-            $contentType = $mail->getHeaders()->get('content-type');
-            $contentType->setType('multipart/alternative');
         }
 
         if ($replyTo) {
-            $reply_to_head = new \Zend\Mail\Header\ReplyTo();
-            $reply_to_addr = new \Zend\Mail\AddressList();
-            $reply_to_addr->add($replyTo);
-            $reply_to_head->setAddressList($reply_to_addr);
-            $mail->getHeaders()->addHeader($reply_to_head);
+            $mail->setReplyTo($replyTo);
         }
-
+        if ($messageId) {
+            $mail->setId($messageId);
+        }
 
         return $mail;
     }
 
     /**
-     * @param \Zend\Mail\Message|array $message
+     * @param \Swift_Message|array $message
      * @param string $toEmail
      * @return string
      */

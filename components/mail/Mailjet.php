@@ -2,8 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\EMailBlacklist;
-use app\models\db\EMailLog;
+use app\models\db\{EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 
 class Mailjet extends Base
@@ -24,18 +23,7 @@ class Mailjet extends Base
         $this->secret = $params['mailjetApiSecret'];
     }
 
-    /**
-     * @param int $type
-     * @param string $subject
-     * @param string $plain
-     * @param string $html
-     * @param string $fromName
-     * @param string $fromEmail
-     * @param string $replyTo
-     * @param string $messageId
-     * @return array
-     */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId)
+    public function createMessage(int $type, string $subject, string $plain, string $html, string $fromName, string $fromEmail, ?string $replyTo, $messageId)
     {
         $message = [
             'From'     => [
@@ -62,7 +50,7 @@ class Mailjet extends Base
     }
 
     /**
-     * @param array|\Zend\Mail\Message $message
+     * @param array $message
      * @param string $toEmail
      * @return string
      */
