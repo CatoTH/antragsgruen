@@ -1,7 +1,6 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
+use app\components\{HTMLTools, Tools};
 use app\models\db\ISupporter;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;
@@ -26,10 +25,11 @@ $layout     = $controller->layoutParams;
 
 $layout->loadDatepicker();
 $locale        = Tools::getCurrentDateLocale();
-$organisations = $controller->consultation->getSettings()->organisations;
 $selectOrganisations = [];
 if ($controller->consultation->getSettings()->organisations) {
-    foreach ($controller->consultation->getSettings()->organisations as $name) {
+    $sorted = $controller->consultation->getSettings()->organisations;
+    usort($sorted, 'strnatcasecmp');
+    foreach ($sorted as $name) {
         $selectOrganisations[$name] = $name;
     }
 }
@@ -128,7 +128,7 @@ if ($adminMode) {
             <input type="text" class="form-control" id="initiatorPrimaryName" name="Initiator[primaryName]"
                    value="<?= Html::encode($prePrimaryName) ?>" autocomplete="name" required>
             <?php
-            if ($organisations && count($organisations) > 0) {
+            if (count($selectOrganisations) > 0) {
                 echo HTMLTools::fueluxSelectbox('Initiator[primaryOrgaName]', $selectOrganisations, $prePrimaryName, [
                     'id' => 'initiatorPrimaryOrgaName',
                 ], true);
@@ -147,7 +147,7 @@ if ($settings->hasOrganizations && $settings->initiatorCanBePerson) {
         </label>
         <div class="col-sm-4">
             <?php
-            if ($organisations && count($organisations) > 0) {
+            if (count($selectOrganisations) > 0) {
                 echo HTMLTools::fueluxSelectbox('Initiator[organization]', $selectOrganisations, $preOrga, [
                     'id' => 'initiatorOrga',
                 ], true);
