@@ -738,7 +738,7 @@ class MotionController extends Base
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->response->statusCode = 404;
-            return 'Amendment not found';
+            return 'Motion not found';
         }
         if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
             \Yii::$app->response->statusCode = 403;

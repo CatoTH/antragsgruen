@@ -137,7 +137,7 @@ if ($motion->dateResolution) {
     ];
 }
 
-if (!$motion->isResolution() && \app\models\settings\Consultation::MOTIONDATA_ALL) {
+if (!$motion->isResolution() && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
     $motionData[] = [
         'title'   => Yii::t('motion', ($motion->isSubmitted() ? 'submitted_on' : 'created_on')),
         'content' => Tools::formatMysqlDateTime($motion->dateCreation, null, false),
