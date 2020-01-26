@@ -27,8 +27,8 @@ $type           = $section->getSettings();
 $lineNo         = $section->getFirstLineNumber();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphNos   = array_keys($paragraphs);
-$paragraphFirst = $paragraphNos[0];
-$paragraphLast  = $paragraphNos[count($paragraphNos) - 1];
+$paragraphFirst = (count($paragraphNos) > 0 ? $paragraphNos[0] : null);
+$paragraphLast  = (count($paragraphNos) > 0 ? $paragraphNos[count($paragraphNos) - 1] : null);
 
 foreach ($paragraphNos as $paragraphNo) {
     if ($twoCols) {

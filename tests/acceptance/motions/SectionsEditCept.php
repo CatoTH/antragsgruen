@@ -42,6 +42,8 @@ $I->click('.sectionAdder');
 $I->wait(1);
 $I->seeElement('.sectionnew0');
 $I->dontSee($motionTypePage::$tabularLabel, '.sectionnew0 .tabularDataRow');
+$I->dontSee($motionTypePage::$commentsLabel, '.sectionnew0 .commentRow');
+$I->selectOption('.sectionnew0 select.sectionType', ISectionType::TYPE_TEXT_SIMPLE);
 $I->see($motionTypePage::$commentsLabel, '.sectionnew0 .commentRow');
 
 $I->selectOption('.sectionnew0 select.sectionType', ISectionType::TYPE_TABULAR);
