@@ -2,23 +2,13 @@
 
 namespace app\controllers;
 
-use app\components\diff\AmendmentRewriter;
-use app\components\diff\SingleAmendmentMergeViewParagraphData;
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\User;
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotFound;
+use app\components\{diff\AmendmentRewriter, diff\SingleAmendmentMergeViewParagraphData, HTMLTools, UrlHelper};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, User};
+use app\models\exceptions\{Internal, NotFound};
 use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
 
 /**
- * Trait AmendmentMergingTrait
- * @package app\controllers
- *
  * @method Amendment getAmendmentWithCheck($motionSlug, $amendmentId)
  * @method redirect($uri)
  * @property Consultation $consultation

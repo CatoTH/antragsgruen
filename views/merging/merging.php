@@ -1,7 +1,6 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Motion;
 use app\models\db\MotionSection;
 use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
@@ -9,6 +8,7 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var Init $form
+ * @var bool $twoCols
  */
 
 /** @var \app\controllers\Base $controller */
@@ -21,6 +21,10 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
 $layout->loadCKEditor();
+if ($twoCols) {
+    $layout->fullWidth = true;
+    //$layout->fullScreen = true;
+}
 
 $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
@@ -104,29 +108,12 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
         <?php
         foreach ($motion->getSortedSections(false) as $section) {
             $type = $section->getSettings();
-            if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                echo $this->render('_merging_section', ['form' => $form, 'section' => $section]);
+            if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
+                echo $this->render('_merging_section_title', ['form' => $form, 'section' => $section, 'twoCols' => $twoCols]);
+            } elseif ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                echo $this->render('_merging_section', ['form' => $form, 'section' => $section, 'twoCols' => $twoCols]);
             } else {
-                echo '<div class="content sectionType' . $type->type . '" data-section-id="' . $section->sectionId . '">';
-                echo $form->getRegularSection($section)->getSectionType()->getMotionFormField();
-
-                if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-                    $changes = $section->getAmendingSections(false, true, true);
-                    /** @var \app\models\db\AmendmentSection[] $changes */
-                    if (count($changes) > 0) {
-                        echo '<div class="titleChanges">';
-                        echo '<div class="title">' . Yii::t('amend', 'merge_title_changes') . '</div>';
-                        foreach ($changes as $amendingSection) {
-                            $titlePrefix = $amendingSection->getAmendment()->titlePrefix;
-                            echo '<div class="change">';
-                            echo '<div class="prefix">' . Html::encode($titlePrefix) . '</div>';
-                            echo '<div class="text">' . Html::encode($amendingSection->data) . '</div>';
-                            echo '</div>';
-                        }
-                        echo '</div>';
-                    }
-                }
-                echo '</div>';
+                echo $this->render('_merging_section_other', ['form' => $form, 'section' => $section, 'twoCols' => $twoCols]);
             }
         }
         ?>

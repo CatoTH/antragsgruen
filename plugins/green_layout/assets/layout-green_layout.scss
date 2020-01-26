@@ -67,6 +67,7 @@ $grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
 @import "../../../web/css/motions";
 @import "../../../web/css/proposed_procedure";
 @import "../../../web/css/styles";
+@import "../../../web/css/merging";
 @import "../../../web/css/user_pages";
 
 body {

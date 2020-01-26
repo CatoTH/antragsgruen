@@ -1,0 +1,619 @@
+.motionMergeConfirmForm {
+  .newMotionStatus, .newMotionInitiator {
+    label {
+      font-weight: normal;
+      display: block;
+    }
+  }
+  .contentMotionStatus {
+    padding-bottom: 0;
+  }
+  .contentVotingResult, .contentVotingResultComment {
+    padding-bottom: 0;
+    padding-top: 10px;
+  }
+  .contentVotingResultCaller {
+    padding-bottom: 0;
+    button {
+      padding-left: 0;
+    }
+  }
+  .motionTextHolder {
+    padding-top: 22px;
+  }
+  .newAmendments {
+    .col-md-3, .col-md-1, .col-md-2 {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+    .statusHolder.col-md-3 {
+      padding-left: 25px;
+    }
+    .amendmentAjaxTooltip {
+      float: left;
+      margin-left: -24px;
+      margin-top: 24px;
+    }
+    .amendmentName {
+      padding-top: 22px;
+      font-weight: bold;
+      text-align: right;
+    }
+    .amendSubtitle {
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+    label {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield; /* Firefox */
+    }
+  }
+}
+
+.mergeConfirmToolbar {
+  margin-bottom: 30px;
+
+  > .export {
+    text-align: right;
+    > * {
+      display: inline-block;
+    }
+  }
+}
+
+.motionMergeInit {
+  h2.green {
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+  .explanation {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .alert-info {
+    a.btn {
+      margin-top: -7px;
+    }
+  }
+  .draftExistsAlert {
+    margin-bottom: 50px;
+  }
+  .mergeTable {
+    width: 100%;
+    margin-bottom: 20px;
+    tr {
+      border-bottom: solid 1px #afcb08;
+    }
+    tfoot tr {
+      border-bottom: none;
+    }
+    th {
+      font-size: 0.80em;
+      line-height: 2.5em;
+      font-weight: 600;
+    }
+    td {
+      padding: 0.75em 0em 0.75em 0em;
+    }
+    .colCheck {
+      text-align: center;
+      width: 100px;
+    }
+    td.colText {
+      padding: 0;
+      label {
+        display: block;
+        font-size: 0.8em;
+      }
+    }
+    label {
+      padding: 0;
+    }
+  }
+  label {
+    font-weight: normal;
+  }
+  .mergeSingle {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      clear: both;
+      margin: 15px 0;
+      padding: 0;
+      .title {
+        font-weight: bold;
+      }
+      .initiator {
+        font-size: 0.8em;
+        color: gray;
+      }
+    }
+    .amendmentAjaxTooltip {
+      float: left;
+      margin-right: 10px;
+    }
+  }
+  .exportHolder {
+    margin: 5px 0 0 42px;
+  }
+}
+
+.motionMergeStyles {
+  .ICE-Tracking .ice-del, .ICE-Tracking .ice-del p {
+    text-decoration: line-through;
+    color: #880000;
+    background-color: rgba(255, 100, 100, 0.2);
+  }
+  .ICE-Tracking .ice-del.hover, .ICE-Tracking .ice-del.hover p {
+    background-color: darken(rgba(255, 100, 100, 0.5), 10%);
+  }
+  .ICE-Tracking .ice-ins, .ICE-Tracking .ice-ins p {
+    text-decoration: underline;
+    color: #008800;
+    background-color: rgba(100, 255, 100, 0.2);
+  }
+  .ICE-Tracking .ice-ins.hover, .ICE-Tracking .ice-ins.hover p {
+    background-color: darken(rgba(100, 255, 100, 0.6), 10%);
+  }
+
+  .texteditorBox {
+    min-height: 15px;
+  }
+
+  .paragraphWrapper {
+    position: relative;
+    clear: both;
+
+    .paragraphHolder {
+      margin-bottom: 0;
+
+      p, ul, ol {
+        margin-bottom: 0;
+      }
+    }
+    .texteditor > * {
+      margin-bottom: 0;
+    }
+
+    .leftToolbar {
+      float: left;
+      width: 0;
+      padding-top: 3px;
+      margin-left: -25px;
+    }
+    .changeToolbar {
+      float: right;
+      width: 0;
+      padding-top: 3px;
+      margin-right: -24px;
+
+      .btn-group {
+        white-space: nowrap;
+        font-size: 0; // Prevent white space
+        margin-bottom: 5px;
+      }
+      .btn {
+        float: none;
+      }
+      .dropdownAll {
+        border-radius: 0;
+        border-left: none;
+        border-bottom-right-radius: 5px !important;
+        border-top-right-radius: 5px !important;
+        font-weight: normal;
+      }
+      .dropdownAmendment {
+        border: none;
+        border-left: solid 1px white;
+        border-radius: 0;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          background: $bookmarkAmendmentBackground;
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
+      }
+      .toggleAmendment {
+        border: none;
+        border-bottom-right-radius: 10px !important;
+        border-top-right-radius: 10px !important;
+        &.toggleActive {
+          padding: 10px;
+          color: $bookmarkAmendmentText;
+          @include linear-gradient(90deg, $bookmarkAmendmentBackground, lighten($bookmarkAmendmentBackground, 3.5%));
+          border-left: solid 1px lighten($bookmarkAmendmentBackground, 3.5%);
+        }
+        &.btn-default {
+          padding: 9px;
+          border: solid 1px #ccc;
+        }
+      }
+    }
+  }
+  .actions {
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: top;
+    > * {
+      display: block;
+      vertical-align: top;
+    }
+  }
+
+  .changedIndicator {
+    color: gray;
+    margin-right: 10px;
+    font-size: 0.8em;
+    margin-top: 2px;
+    font-weight: bold;
+    visibility: visible;
+    &.unchanged {
+      visibility: hidden;
+    }
+  }
+
+  .amendmentStatus {
+    .selected {
+      a:before {
+        content: '✓';
+        display: block;
+        float: left;
+        width: 16px;
+        margin-left: -16px;
+        text-align: center;
+      }
+    }
+    .votingResult {
+      label {
+        font-weight: normal;
+        margin-bottom: 0;
+        font-size: 12px;
+      }
+      .form-control {
+        padding: 3px 6px;
+        font-size: 12px;
+        height: 24px;
+      }
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 8px;
+    }
+    .votingData {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+      }
+
+      input[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+      }
+      label {
+        font-weight: normal;
+        margin-bottom: 0;
+        font-size: 12px;
+      }
+      .form-control {
+        padding: 3px 6px;
+        font-size: 12px;
+        height: 24px;
+      }
+      > * {
+        flex: 0;
+        flex-basis: 25%;
+        padding-left: 8px;
+        &:last-child {
+          padding-right: 8px;
+        }
+      }
+    }
+  }
+
+  .hasCollisions {
+    .paragraphHolder {
+      position: relative;
+
+      &:before {
+        content: attr(data-collision-start-msg);
+        position: absolute;
+        top: -13px;
+        text-align: center;
+        font-size: 0.7em;
+        color: gray;
+        width: 100%;
+      }
+    }
+
+    .collisionsHolder {
+      padding-bottom: 5px;
+      padding-top: 5px;
+      padding-left: 10px;
+      background-color: #f5f5f5;
+    }
+
+    .hideCollision {
+      font-weight: normal;
+    }
+
+    + .hasCollisions {
+      margin-top: 45px;
+    }
+  }
+  .moved {
+    margin-top: 15px;
+    position: relative;
+    &:before {
+      display: block;
+      content: attr(data-moving-msg);
+      // Absolute positioning is necessary, otherwise we can't cancel the text-decoration propert
+      position: absolute;
+      top: -15px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.8em;
+      color: gray;
+    }
+  }
+  .appendHint:after {
+    content: attr(data-append-hint);
+    display: inline-block;
+    font-size: 0.75em;
+    bottom: -3px;
+    position: relative;
+  }
+}
+
+.motionMergeForm {
+  .twoColsHolder {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    .twoColsLeft {
+      flex-basis: 50%;
+      flex-grow: 0;
+    }
+    .twoColsRight {
+      flex-basis: 50%;
+      flex-grow: 0;
+    }
+  }
+  .sectionType1 {
+    .twoColsLeft {
+      padding-left: calc(#{$fixedWidthTextStdPadding} - 25px);
+      padding-right: 10px;
+      padding-top: 5px;
+    }
+    .twoColsRight {
+      padding-left: 10px;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #ccc;
+      &.first {
+        border-top: 1px solid #ccc;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+      }
+      &.last {
+        border-bottom: 1px solid #ccc;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+    }
+  }
+
+  .submitHolder {
+    text-align: right;
+  }
+  .newAmendments {
+    .amendSubtitle {
+      font-weight: normal;
+      font-size: 0.9em;
+    }
+    .control-label {
+      margin-top: -3px;
+      padding-top: 0;
+    }
+  }
+
+  .sectionHolder {
+    padding: 3px;
+  }
+  .boxed {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  }
+
+  .titleChanges {
+    .title {
+      font-weight: bold;
+    }
+    .change {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: 11px;
+      &:last-child {
+        margin-bottom: 25px;
+      }
+    }
+    .prefix {
+      font-weight: bold;
+    }
+    .text {
+      font-family: $motionFixedFont;
+      //letter-spacing: -0.5px;
+      color: $motionFixedFontColor;
+    }
+  }
+  .editorialAmendments {
+    h3 {
+      font-size: 1em;
+      font-weight: bold;
+    }
+    .content {
+      border-bottom: solid 1px $headingSecondaryBackground;
+      &:first-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .dividerLabeled {
+    position: relative;
+    overflow: visible;
+    &:after {
+      content: attr(data-label);
+      position: absolute;
+      display: block;
+      top: -8px;
+      left: 20px;
+      background-color: white;
+      font-size: 0.8em;
+      padding-left: 0;
+      padding-right: 10px;
+      color: gray;
+    }
+  }
+
+  .amendmentLink {
+    color: $link-color;
+  }
+
+  #draftSavingPanel {
+    position: fixed;
+    bottom: 0;
+    right: 30px;
+    width: 250px;
+    z-index: 10;
+    padding: 0;
+    background: white;
+    border: solid 1px #ccc;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom: none;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+
+    label {
+      font-weight: normal;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      padding: 5px;
+      background-color: #eee;
+    }
+    .pdfLink {
+      float: right;
+      font-size: 12px;
+    }
+    .public {
+      padding: 5px;
+    }
+    .autosave {
+      padding: 5px;
+    }
+    .publicLink {
+      float: right;
+      margin-right: 5px;
+    }
+    .savingError {
+      padding: 5px;
+      margin-top: -5px;
+      border-bottom: solid 1px #ccc;
+      background-color: #ff4444;
+      color: black;
+    }
+    .save {
+      padding: 5px;
+      overflow: auto;
+      .lastSaved {
+        float: left;
+      }
+      .saveDraft {
+        float: right;
+      }
+      .none {
+        font-size: 0.9em;
+        color: gray;
+        font-style: italic;
+      }
+    }
+    @media screen and (min-width: 1101px) {
+      h2 {
+        border-bottom: solid 1px #ccc;
+      }
+      .save {
+        padding: 0 5px 5px 5px;
+      }
+      .public {
+        display: block;
+        padding-bottom: 0;
+      }
+      .autosave {
+        border-bottom: solid 1px #ccc;
+        display: block;
+        padding-top: 0;
+      }
+      .lastSaved {
+        margin-top: 2px;
+      }
+    }
+    @media screen and (max-width: 1100px) {
+      right: 0;
+      left: 0;
+      width: 100%;
+      display: table;
+      .hideSmall {
+        display: none;
+      }
+      > * {
+        display: table-cell;
+        vertical-align: middle;
+        line-height: 25px;
+      }
+      > h2 {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      > .public {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      .autosave {
+        width: 20%;
+        border-right: solid 1px #ccc;
+      }
+      > .save {
+        width: 40%;
+      }
+    }
+  }
+}
+

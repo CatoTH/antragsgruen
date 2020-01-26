@@ -46,6 +46,7 @@ $icon-font-path: "./fonts/";
 @import "motions";
 @import "proposed_procedure";
 @import "styles";
+@import "merging";
 @import "sidebar";
 @import "user_pages";
 

@@ -4,11 +4,8 @@ namespace app\controllers;
 
 use app\components\UrlHelper;
 use app\models\db\Consultation;
-use app\models\exceptions\Inconsistency;
-use app\models\exceptions\Internal;
-use app\models\mergeAmendments\Draft;
-use app\models\mergeAmendments\Merge;
-use app\models\mergeAmendments\Init;
+use app\models\exceptions\{Inconsistency, Internal};
+use app\models\mergeAmendments\{Draft, Merge, Init};
 use app\models\MotionSectionChanges;
 use yii\web\Response;
 
@@ -353,7 +350,9 @@ trait MotionMergingTrait
             );
         }
 
-        return $this->render('@app/views/merging/merging', ['form' => $form]);
+        $twoCols = $motion->getMyMotionType()->getSettingsObj()->twoColMerging;
+
+        return $this->render('@app/views/merging/merging', ['form' => $form, 'twoCols' => $twoCols]);
     }
 
     /**
