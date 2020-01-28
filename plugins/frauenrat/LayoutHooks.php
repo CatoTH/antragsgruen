@@ -150,4 +150,18 @@ class LayoutHooks extends Hooks
 
         return $motionData;
     }
+    /**
+     * @param string $before
+     * @param Motion $motion
+     * @return string
+     */
+    public function beforeMotionView($before, Motion $motion)
+    {
+        $before .= '<div class="content" style="padding-top: 0; margin-top: -10px;"><div class="motionDataTable">';
+        $before .= '<strong>Titel:</strong><br><br>';
+        $before .= '<h2 style="margin: 0; font-size: 22px;">' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
+        $before .= '</div></div>';
+
+        return $before;
+    }
 }

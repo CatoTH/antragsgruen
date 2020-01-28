@@ -147,6 +147,7 @@ if ($motion->status === Motion::STATUS_DRAFT) {
     <?php
 }
 
+echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
 
 $viewText = $this->render('_view_text', [
     'motion'         => $motion,
@@ -163,7 +164,6 @@ $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragr
 }, $viewText);
 
 echo $viewText;
-
 
 ?>
     <form class="gotoLineNumerPanel form-inline">

@@ -13,8 +13,6 @@ use yii\helpers\Html;
  * @var int[] $openedComments
  */
 
-echo \app\models\layoutHooks\Layout::beforeMotionView($motion);
-
 $useCache = ($commentForm === null && count($openedComments) === 0);
 
 if ($useCache) {
