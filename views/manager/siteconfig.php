@@ -95,8 +95,8 @@ echo HTMLTools::fueluxSelectbox(
         'sendmail' => yii::t('manager', 'email_sendmail'),
         'smtp'     => yii::t('manager', 'email_smtp'),
         'mailjet'  => yii::t('manager', 'email_mailjet'),
-        'mailgun'  => yii::t('manager', 'email_mailgun'),
-        'mandrill' => yii::t('manager', 'email_mandrill'),
+        //'mailgun'  => yii::t('manager', 'email_mailgun'),
+        //'mandrill' => yii::t('manager', 'email_mandrill'),
         'none'     => yii::t('manager', 'email_none'),
     ],
     $currTransport,
@@ -117,6 +117,7 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
 
 ?>
     <!-- Mandrill -->
+    <!--
     <div class="form-group emailOption mandrillApiKey">
         <label class="col-sm-4 control-label" for="mandrillApiKey"><?= yii::t('manager', 'mandrill_api') ?>:</label>
         <div class="col-sm-8">
@@ -124,6 +125,7 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
                    value="<?= Html::encode($currApiKey) ?>" class="form-control" id="mandrillApiKey">
         </div>
     </div>
+    -->
 
     <!-- Mailjet -->
     <div class="form-group emailOption mailjetApiKey">
@@ -143,6 +145,7 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
     </div>
 
     <!-- Mailgun -->
+    <!--
     <div class="form-group emailOption mailgunApiKey">
         <label class="col-sm-4 control-label" for="mailgunApiKey"><?= yii::t('manager', 'mailgun_api') ?>:</label>
         <div class="col-sm-8">
@@ -157,6 +160,7 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
                    value="<?= Html::encode($currDomain) ?>" class="form-control" id="mailgunDomain">
         </div>
     </div>
+    -->
 
     <!-- SMTP -->
     <div class="form-group emailOption smtpHost">

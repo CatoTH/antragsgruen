@@ -8,6 +8,7 @@
 - For PDF-based applications, the mostly empty cover page in front of the generated PDF is removed; the generated PDF is now exactly identical to the uploaded one.
 - The change mentioned above also allows attaching a pre-layouted PDF-version of a motion, replacing the automatically generated PDF.
 - Notification e-mails now use a very simple responsive e-mail template.
+- Mailgun and Mandrill are not supported anymore, for now.
 - The appearance settings of a site are now moved to a separate page.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
 

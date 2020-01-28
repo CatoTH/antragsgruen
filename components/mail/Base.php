@@ -5,7 +5,6 @@ namespace app\components\mail;
 use app\models\db\{Consultation, EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
-use Zend\Mail\Header\ContentType;
 
 abstract class Base
 {
@@ -24,12 +23,14 @@ abstract class Base
             throw new ServerConfiguration('Invalid E-Mail configuration');
         }
         switch ($params['transport']) {
+            /*
             case 'mailgun':
                 return new Mailgun($params);
                 break;
             case 'mandrill':
                 return new Mandrill($params);
                 break;
+            */
             case 'sendmail':
                 return new Sendmail();
                 break;
@@ -50,19 +51,19 @@ abstract class Base
     /**
      * @param int $type
      *
-     * @return \Zend\Mail\Message
+     * @return \Swift_Message
      */
     abstract protected function getMessageClass($type);
 
     /**
-     * @return \Zend\Mail\Transport\TransportInterface|null
+     * @return \Swift_Mailer|null
      */
     abstract protected function getTransport();
 
     protected function createHtmlPart(string $subject, string $plain, ?string $html, ?Consultation $consultation): string
     {
         if (!$html) {
-            $html = '<p>' . Html::encode($plain) . '</p>';
+            $html = '<p>' . nl2br(Html::encode($plain)) . '</p>';
         }
 
         return \Yii::$app->controller->renderPartial('@app/views/layouts/email', [
@@ -72,69 +73,46 @@ abstract class Base
         ]);
     }
 
-    /**
-     * @param int $type
-     * @param string $subject
-     * @param string $plain
-     * @param string $html
-     * @param string $fromName
-     * @param string $fromEmail
-     * @param string|null $replyTo
-     * @param string $messageId
-     * @param Consultation|null
-     *
-     * @return \Zend\Mail\Message|array
-     */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId, $consultation)
-    {
+    public function createMessage(
+        int $type,
+        string $subject,
+        string $plain,
+        string $html,
+        string $fromName,
+        string $fromEmail,
+        ?string $replyTo,
+        string $messageId,
+        ?Consultation $consultation
+    ) {
         $mail = $this->getMessageClass($type);
-        $mail->setFrom($fromEmail, $fromName);
+        $mail->setFrom([$fromEmail => $fromName]);
         $mail->setSubject($subject);
-        $mail->setEncoding('UTF-8');
-
-        $mId = new \Zend\Mail\Header\MessageId();
-        $mId->setId($messageId);
-        $mail->getHeaders()->addHeader($mId);
 
         $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
-        /*
-        $html = '<!DOCTYPE html><html>
-        <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
-        </head><body>' . $html . '</body></html>';
 
-        $converter = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
+        $html = '<!DOCTYPE html><html>
+            <head><meta charset="utf-8"><title>' . Html::encode($subject) . '</title>
+            </head><body>' . $html . '</body></html>';
+
+        $converter   = new \TijsVerkoyen\CssToInlineStyles\CssToInlineStyles();
         $contentHtml = $converter->convert($html);
         $contentHtml = preg_replace("/ data\-[a-z0-9_-]+=\"[^\"]*\"/siu", "", $contentHtml);
-        */
 
-        $textPart          = new \Zend\Mime\Part($plain);
-        $textPart->type    = 'text/plain';
-        $textPart->charset = 'UTF-8';
-        $htmlPart          = new \Zend\Mime\Part($html);
-        $htmlPart->type    = 'text/html';
-        $htmlPart->charset = 'UTF-8';
-        $mimem             = new \Zend\Mime\Message();
-        $mimem->setParts([$textPart, $htmlPart]);
-
-        $mail->setBody($mimem);
-        /** @var ContentType $contentType */
-        $contentType = $mail->getHeaders()->get('content-type');
-        $contentType->setType('multipart/alternative');
+        $mail->setBody($contentHtml, 'text/html');
+        $mail->addPart($plain, 'text/plain');
 
         if ($replyTo) {
-            $reply_to_head = new \Zend\Mail\Header\ReplyTo();
-            $reply_to_addr = new \Zend\Mail\AddressList();
-            $reply_to_addr->add($replyTo);
-            $reply_to_head->setAddressList($reply_to_addr);
-            $mail->getHeaders()->addHeader($reply_to_head);
+            $mail->setReplyTo($replyTo);
         }
-
+        if ($messageId) {
+            $mail->setId($messageId);
+        }
 
         return $mail;
     }
 
     /**
-     * @param \Zend\Mail\Message|array $message
+     * @param \Swift_Message|array $message
      * @param string $toEmail
      *
      * @return string

@@ -109,7 +109,7 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
             <div class="content" style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 580px; padding: 10px;">
                 <?php if (isset($introduction) && $introduction) { ?>
                 <span class="preheader"
-                      style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;"><?= Html::encode($introduction) ?>></span>
+                      style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;"><?= Html::encode($introduction) ?></span>
                 <?php } ?>
                 <table class="main"
                        style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;">

@@ -2,9 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\Consultation;
-use app\models\db\EMailBlacklist;
-use app\models\db\EMailLog;
+use app\models\db\{Consultation, EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 
 class Mailjet extends Base
@@ -14,6 +12,7 @@ class Mailjet extends Base
 
     /**
      * @param array $params
+     *
      * @throws ServerConfiguration
      */
     public function __construct($params)
@@ -25,20 +24,17 @@ class Mailjet extends Base
         $this->secret = $params['mailjetApiSecret'];
     }
 
-    /**
-     * @param int $type
-     * @param string $subject
-     * @param string $plain
-     * @param string $html
-     * @param string $fromName
-     * @param string $fromEmail
-     * @param string $replyTo
-     * @param string $messageId
-     * @param Consultation|null $consultation
-     * @return array
-     */
-    public function createMessage($type, $subject, $plain, $html, $fromName, $fromEmail, $replyTo, $messageId, $consultation)
-    {
+    public function createMessage(
+        int $type,
+        string $subject,
+        string $plain,
+        string $html,
+        string $fromName,
+        string $fromEmail,
+        ?string $replyTo,
+        string $messageId,
+        ?Consultation $consultation
+    ) {
         $html = $this->createHtmlPart($subject, $plain, $html, $consultation);
 
         $message = [
@@ -62,33 +58,38 @@ class Mailjet extends Base
         if ($messageId) {
             $message['CustomID'] = $messageId;
         }
+
         return $message;
     }
 
     /**
-     * @param array|\Zend\Mail\Message $message
+     * @param array $message
      * @param string $toEmail
+     *
      * @return string
      */
     public function send($message, $toEmail)
     {
-        if (YII_ENV == 'test' || mb_strpos($toEmail, '@example.org') !== false) {
+        if (YII_ENV === 'test' || mb_strpos($toEmail, '@example.org') !== false) {
             return EMailLog::STATUS_SKIPPED_OTHER;
         }
         if (EMailBlacklist::isBlacklisted($toEmail)) {
             return EMailLog::STATUS_SKIPPED_BLACKLIST;
         }
 
-        $message['To'] = [[
-            'Email' => $toEmail,
-            'Name'  => $toEmail,
-        ]];
+        $message['To'] = [
+            [
+                'Email' => $toEmail,
+                'Name'  => $toEmail,
+            ]
+        ];
         $mailjet       = new \Mailjet\Client($this->apiKey, $this->secret, true, ['version' => 'v3.1']);
         $response      = $mailjet->post(\Mailjet\Resources::$Email, ['body' => ['Messages' => [$message]]]);
         if ($response->success()) {
             return EMailLog::STATUS_SENT;
         } else {
             var_dump($response->getBody()['Messages'][0]['Errors']);
+
             return EMailLog::STATUS_DELIVERY_ERROR;
         }
     }
@@ -96,6 +97,7 @@ class Mailjet extends Base
 
     /**
      * @param int $type
+     *
      * @return null
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
