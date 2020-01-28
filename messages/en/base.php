@@ -39,6 +39,10 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
+    'email_footer'          => [
+        'title' => 'E-Mail-Signature for automatically sent e-mails',
+        'text'  => '',
+    ],
 
     'debug_deadline_head' => 'Simulate time',
     'debug_deadline_hint' => 'Only for this browser',

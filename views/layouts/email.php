@@ -152,9 +152,24 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
                             </table>
                         </td>
                     </tr>
-
                 </table>
-
+                <?php
+                if (Yii::t('base', 'email_footer') !== '') {
+                    ?>
+                    <div class="footer" style="clear: both; Margin-top: 10px; text-align: center; width: 100%;">
+                        <table border="0" cellpadding="0" cellspacing="0"
+                               style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
+                            <tr>
+                                <td class="content-block"
+                                    style="font-family: <?= $bodyFont ?>; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
+                                    <?= Yii::t('base', 'email_footer') ?>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
         </td>
         <td style="font-family: <?= $bodyFont ?>; font-size: 14px; vertical-align: top;">&nbsp;</td>

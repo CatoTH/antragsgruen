@@ -6,9 +6,7 @@
  * @var string $category
  */
 
-use app\components\HTMLTools;
-use app\components\yii\MessageSource;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, yii\MessageSource, UrlHelper};
 use app\models\db\Consultation;
 use yii\helpers\Html;
 use yii\i18n\I18N;
@@ -19,15 +17,15 @@ $layout     = $controller->layoutParams;
 
 $layout->addCSS('css/backend.css');
 
-$this->title = \Yii::t('admin', 'Translation / Wording');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_language'));
+$this->title = Yii::t('admin', 'Translation / Wording');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_language'));
 $layout->bodyCssClasses[] = 'adminTranslationForm';
 
-echo '<h1>' . \Yii::t('admin', 'Translation / Wording') . '</h1>
+echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
 
-<div class="alert alert-info" role="alert">' . \Yii::t('admin', 'translating_hint') . '</div>';
+<div class="alert alert-info" role="alert">' . Yii::t('admin', 'translating_hint') . '</div>';
 
 
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);
@@ -48,7 +46,7 @@ echo Html::dropDownList(
 echo '</div></fieldset>';
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
+<button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>
 </div>';
 
 echo Html::endForm();
@@ -90,7 +88,11 @@ foreach ($strings as $string) {
     $encKey = Html::encode(urlencode($string['id']));
     $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : '');
     echo '<div class="form-group"><label class="col-sm-6 control-label" for="consultationPath">';
-    echo nl2br(Html::encode($string['text']));
+    if (isset($string['title']) && $string['title'] !== '') {
+        echo Html::encode($string['title']);
+    } else {
+        echo nl2br(Html::encode($string['text']));
+    }
     if (isset($string['description']) && $string['description'] !== '') {
         echo '<br><span class="description">' . Html::encode($string['description']) . '</span>';
     }
@@ -108,7 +110,7 @@ if (count($strings) === 0) {
 
 
 echo '<div class="saveholder">
-<button type="submit" name="save" class="btn btn-primary">' . \Yii::t('base', 'save') . '</button>
+<button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>
 </div>';
 
 
