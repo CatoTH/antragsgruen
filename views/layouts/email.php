@@ -17,7 +17,7 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
 <head>
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title><?= Html::encode($title) ?>></title>
+    <title><?= Html::encode($title) ?></title>
     <style>
         @media only screen and (max-width: 620px) {
             table[class=body] h1 {
@@ -117,16 +117,16 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
                     <tr>
                         <td class="wrapper" style="font-family: <?= $bodyFont ?>; font-size: 14px; vertical-align: top; box-sizing: border-box; padding: 20px;">
                             <table border="0" cellpadding="0" cellspacing="0"
-                                   style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
+                                   style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; table-layout: fixed;">
                                 <tr>
-                                    <td style="font-family: <?= $bodyFont ?>; font-size: 14px; vertical-align: top;">
+                                    <td style="font-family: <?= $bodyFont ?>; font-size: 14px; vertical-align: top; overflow-wrap: break-word;">
                                         <?php
                                         $html = str_replace('<p>', '<p style="font-family: ' . $bodyFont . '; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">', $html);
                                         echo $html;
                                         ?>
                                         <?php if (isset($btnLink) && $btnLink && isset($btnText) && $btnText) { ?>
                                             <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary"
-                                                   style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
+                                                   style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box; table-layout: fixed;">
                                                 <tbody>
                                                 <tr>
                                                     <td align="left"
@@ -136,7 +136,7 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
                                                             <tbody>
                                                             <tr>
                                                                 <td style="font-family: <?= $bodyFont ?>; font-size: 14px; vertical-align: top; background-color: #3498db; border-radius: 5px; text-align: center;">
-                                                                    <a href="<?= Html::encode($btnLink) ?>>" target="_blank"
+                                                                    <a href="<?= Html::encode($btnLink) ?>" target="_blank"
                                                                        style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;"><?= Html::encode($btnText) ?></a>
                                                                 </td>
                                                             </tr>

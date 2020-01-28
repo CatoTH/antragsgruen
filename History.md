@@ -11,6 +11,7 @@
 - Mailgun and Mandrill are not supported anymore, for now.
 - The appearance settings of a site are now moved to a separate page.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
+- Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 
 ## Version 4.4.0 (2019-12-26)
 

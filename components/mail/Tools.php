@@ -125,7 +125,7 @@ class Tools
         $obj->toEmail   = $toEmail;
         $obj->type      = $mailType;
         $obj->fromEmail = mb_encode_mimeheader($fromName) . ' <' . $fromEmail . '>';
-        $obj->subject   = $subject;
+        $obj->subject   = mb_substr($subject, 0, 190);
         $obj->text      = $textPlain;
         $obj->dateSent  = date('Y-m-d H:i:s');
         $obj->status    = $status;

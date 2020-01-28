@@ -39,6 +39,7 @@
   h1 {
     @include stdHeading($headingPrimaryText, $headingPrimaryBackground, $headingPrimarySize);
     margin: -1px;
+    overflow-wrap: break-word;
     small {
       color: white;
       font-size: 12px;

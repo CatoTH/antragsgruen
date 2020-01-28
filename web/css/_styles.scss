@@ -114,6 +114,9 @@
 
 .motionDataTable {
   width: 100%;
+  overflow-wrap: break-word;
+  table-layout: fixed;
+
   > tbody > tr > th {
     width: 30%;
     vertical-align: top;

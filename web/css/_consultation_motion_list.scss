@@ -3,6 +3,7 @@
 @import "variables";
 
 .consultationIndex {
+  overflow-wrap: break-word;
   .myImotionList {
     .widthdrawn .firstLine {
       text-decoration: line-through;
@@ -17,6 +18,8 @@
   .motion {
     position: relative;
     width: 100%;
+    overflow-wrap: break-word;
+
     &:last-child {
       padding-bottom: 0;
     }

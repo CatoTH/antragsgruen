@@ -274,10 +274,10 @@
 
     .text {
       @media screen and (min-width: 800px) {
-        padding: 15px 10px 15px $fixedWidthTextStdPadding;
+        padding: 15px $fixedWidthTextStdPadding 15px $fixedWidthTextStdPadding;
       }
       @media screen and (max-width: 799px) {
-        padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
+        padding: 15px $fixedWidthTextStdPaddingSmall 15px $fixedWidthTextStdPaddingSmall;
       }
 
       &.collidingAmendment {
@@ -287,6 +287,15 @@
           font-size: 1.2em;
           margin-top: 0;
         }
+      }
+    }
+
+    &.lineNumbers .text {
+      @media screen and (min-width: 800px) {
+        padding: 15px 10px 15px $fixedWidthTextStdPadding;
+      }
+      @media screen and (max-width: 799px) {
+        padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
       }
     }
 
