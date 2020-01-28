@@ -1,8 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\User;
+use app\models\db\{Amendment, User};
 use app\models\forms\CommentForm;
 use app\models\policies\IPolicy;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;

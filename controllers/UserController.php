@@ -21,7 +21,6 @@ use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;
 use yii\helpers\Html;
-use yii\web\Cookie;
 use yii\web\Response;
 
 class UserController extends Base

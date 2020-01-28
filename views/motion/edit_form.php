@@ -7,8 +7,8 @@
  * @var \app\models\db\Consultation $consultation
  * @var bool $forceTag
  */
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\ConsultationSettingsTag;
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
@@ -87,7 +87,7 @@ echo Html::beginForm('', 'post', [
     'data-antragsgruen-widget' => 'frontend/MotionEditForm'
 ]);
 
-echo '<div class="content">';
+echo '<div class="content fuelux">';
 
 if (count($form->motionType->agendaItems) > 0) {
     echo '<div class="form-group">';

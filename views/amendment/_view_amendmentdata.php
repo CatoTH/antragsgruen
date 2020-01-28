@@ -1,10 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\User;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, User};
 use yii\helpers\Html;
 use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
