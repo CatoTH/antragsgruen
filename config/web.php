@@ -31,6 +31,14 @@ if (YII_DEBUG === false) {
 
 $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
+$csrfCookie = [
+    'httpOnly' => true,
+    'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null
+];
+if ((isset($_SERVER['REQUEST_SCHEME']) && strtolower($_SERVER['REQUEST_SCHEME']) === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
+    $csrfCookie['secure'] = true;
+}
+
 $config = yii\helpers\ArrayHelper::merge(
     $common,
     [
@@ -49,6 +57,7 @@ $config = yii\helpers\ArrayHelper::merge(
             ],
             'request'              => [
                 'cookieValidationKey' => $params->randomSeed,
+                'csrfCookie'          => $csrfCookie,
 
                 // Trust proxies from reverse proxies on local networks - necessary for getIsSecureConnection()
                 'trustedHosts' => [
@@ -68,6 +77,7 @@ if ($params->cookieDomain) {
         'cookieParams' => [
             'httponly' => true,
             'domain'   => $params->cookieDomain,
+            'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
         ]
     ];
 } elseif ($params->domainPlain) {
@@ -75,6 +85,7 @@ if ($params->cookieDomain) {
         'cookieParams' => [
             'httponly' => true,
             'domain'   => '.' . parse_url($params->domainPlain, PHP_URL_HOST),
+            'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
         ]
     ];
 }
