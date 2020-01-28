@@ -55,20 +55,22 @@ rm -R web/js/src
 rm -R web/js/bower
 rm -R web/typescript
 rm -R vendor/tecnickcom/tcpdf/examples
-rm -R vendor/phpoffice/phpexcel/unitTests/
-rm -R vendor/phpoffice/phpexcel/Examples/
+rm -R vendor/phpoffice/phpexcel/unitTests
+rm -R vendor/phpoffice/phpexcel/Examples
+rm -R vendor/swiftmailer/swiftmailer/tests
+rm -R vendor/doctrine/lexer/tests
+rm -R vendor/ezyang/htmlpurifier/tests
+rm -R vendor/yiisoft/yii2/test
+rm -R vendor/mailjet/mailjet-apiv3-php/test
 rm -R vendor/fzaninotto/faker/
 rm -R vendor/fxp/composer-asset-plugin/Tests
 rm -R vendor/symfony/css-selector/Tests
-rm -R vendor/zendframework/zend-servicemanager/bin
-rm -R vendor/zendframework/zend-validator/bin
 rm -R vendor/leafo/scssphp/bin
 rm -R vendor/cebe/markdown/bin
 rm -R vendor/slm/mail/tests
 rm -R vendor/yiisoft/yii2/i18n/migrations
 rm -R vendor/yiisoft/yii2/log/migrations
 find vendor -type l -exec rm {} \;
-find vendor/zendframework -name "doc" -exec rm -R {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/
 find . -name ".DS_Store" -exec rm {} \;
