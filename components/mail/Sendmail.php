@@ -20,7 +20,7 @@ class Sendmail extends Base
      */
     protected function getTransport()
     {
-        $transport = new \Swift_SendmailTransport();
+        $transport = new \Swift_SendmailTransport('/usr/sbin/sendmail -t');
 
         return new \Swift_Mailer($transport);
     }
