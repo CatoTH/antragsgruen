@@ -95,9 +95,9 @@ $I->see('Der/die Antragsteller*in wurde am');
 $I->wantTo('make the proposal page visible');
 $I->gotoConsultationHome();
 $I->logout();
-$I->loginAndGotoStdAdminPage()->gotoConsultation();
+$page = $I->loginAndGotoStdAdminPage()->gotoAppearance();
 $I->checkOption('#proposalProcedurePage');
-$I->submitForm('#consultationSettingsForm', [], 'save');
+$page->saveForm();
 
 $I->wantTo('see the proposal page');
 $I->gotoConsultationHome();

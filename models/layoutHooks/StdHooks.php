@@ -90,7 +90,8 @@ class StdHooks extends Hooks
     public function breadcrumbs($before)
     {
         $out = '';
-        if (is_array($this->layout->breadcrumbs) && $this->consultation->site->getSettings()->showBreadcrumbs) {
+        $showBreadcrumbs = (!$this->consultation || !$this->consultation->site || $this->consultation->site->getSettings()->showBreadcrumbs);
+        if (is_array($this->layout->breadcrumbs) && $showBreadcrumbs) {
             $out .= '<ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
                 if ($link === '' || is_numeric($link)) {

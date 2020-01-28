@@ -137,7 +137,11 @@ class MotionSupporter extends ISupporter
      */
     public function getIMotion()
     {
-        $motion = Consultation::getCurrent()->getMotion($this->motionId);
+        if (Consultation::getCurrent()) {
+            $motion = Consultation::getCurrent()->getMotion($this->motionId);
+        } else {
+            $motion = null;
+        }
         if ($motion) {
             return $motion;
         } else {
