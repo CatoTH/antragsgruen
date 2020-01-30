@@ -332,6 +332,21 @@
     padding-left: 35px;
     margin-bottom: 0;
     margin-top: -4px;
+    display: flex;
+    flex-direction: row;
+    .addEntry {
+      flex: 0;
+      flex-basis: 25%;
+    }
+    .addDate {
+      flex: 1;
+      flex-basis: 50%;
+    }
+    .showTimes {
+      flex: 0;
+      flex-basis: 25%;
+      font-weight: normal;
+    }
   }
   html.no-touchevents & .agendaItemAdder {
     visibility: hidden;
@@ -388,29 +403,6 @@
         }
       }
 
-      .agendaItemEditForm {
-        display: none;
-
-        input.code {
-          width: 80px;
-          margin-right: 10px;
-        }
-        input.title {
-          margin-right: 10px;
-        }
-        .agendaMotionsRow {
-          padding-top: 5px;
-          font-size: 0.8em;
-          color: gray;
-        }
-        select.motionType {
-          max-width: 170px;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          padding-right: 0;
-        }
-      }
-
       .motionCreateLink {
         float: right;
         text-align: left;
@@ -445,19 +437,6 @@
         font-size: 16px;
       }
     }
-
-    input.title {
-      width: 400px;
-    }
-    li.agendaItem input.title {
-      width: 350px;
-    }
-    li.agendaItem li.agendaItem input.title {
-      width: 300px;
-    }
-    li.agendaItem li.agendaItem li.agendaItem input.title {
-      width: 250px;
-    }
   }
 
   &.agendaListEditing {
@@ -471,6 +450,81 @@
       }
     }
   }
+
+  .agendaItemEditForm {
+    display: none;
+
+    input.code {
+      margin-right: 10px;
+    }
+
+    input.time {
+      margin-right: 10px;
+    }
+
+    input.title {
+      margin-right: 10px;
+    }
+
+    .agendaMotionsRow {
+      padding-top: 5px;
+      font-size: 0.8em;
+      color: gray;
+    }
+
+    select.motionType {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 0;
+    }
+  }
+  &.noShowTimes .agendaItemEditForm {
+    input.title {
+      width: 400px;
+    }
+    li.agendaItem input.title {
+      width: 350px;
+    }
+    li.agendaItem li.agendaItem input.title {
+      width: 300px;
+    }
+    li.agendaItem li.agendaItem li.agendaItem input.title {
+      width: 250px;
+    }
+    input.time {
+      display: none;
+    }
+    input.code {
+      width: 80px;
+    }
+    select.motionType {
+      max-width: 170px;
+    }
+  }
+  &.showTimes .agendaItemEditForm {
+    input.title {
+      width: 350px;
+    }
+    li.agendaItem input.title {
+      width: 300px;
+    }
+    li.agendaItem li.agendaItem input.title {
+      width: 250px;
+    }
+    li.agendaItem li.agendaItem li.agendaItem input.title {
+      width: 200px;
+    }
+    input.time {
+      width: 70px;
+    }
+    input.code {
+      width: 60px;
+    }
+    select.motionType {
+      max-width: 150px;
+    }
+  }
+
   h2, h3 {
     margin: 0 0 5px;
     font-size: 18px;

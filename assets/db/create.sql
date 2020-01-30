@@ -156,11 +156,13 @@ CREATE TABLE `###TABLE_PREFIX###consultationAgendaItem` (
   `consultationId` INT(11)      NOT NULL,
   `parentItemId`   INT(11)           DEFAULT NULL,
   `position`       INT(11)      NOT NULL,
+  `time`           VARCHAR(20)  NULL DEFAULT NULL,
   `code`           VARCHAR(20)  NOT NULL,
   `title`          VARCHAR(250) NOT NULL,
   `description`    TEXT,
   `motionTypeId`   INT(11)           DEFAULT NULL,
-  `deadline`       TIMESTAMP    NULL DEFAULT NULL
+  `deadline`       TIMESTAMP    NULL DEFAULT NULL,
+  `settings`       TEXT         NULL DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

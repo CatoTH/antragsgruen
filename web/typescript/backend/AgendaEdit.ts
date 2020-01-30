@@ -3,15 +3,16 @@
 class AgendaEdit {
     private hasChanged: boolean = false;
     private $agendaform: JQuery;
+    private readonly $agenda: JQuery;
 
     private delAgendaItemStr = '<a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>';
 
     constructor() {
         this.$agendaform = $('#agendaEditSavingHolder');
-        let $agenda = $('.motionListWithinAgenda');
+        this.$agenda = $('.motionListWithinAgenda');
 
-        $agenda.addClass('agendaListEditing');
-        $agenda.nestedSortable({
+        this.$agenda.addClass('agendaListEditing');
+        this.$agenda.nestedSortable({
             handle: '.moveHandle',
             items: 'li.agendaItem',
             toleranceElement: '> div',
@@ -25,19 +26,21 @@ class AgendaEdit {
                 $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
             }
         });
-        $agenda.find('.agendaItem').each((i, el) => {
+        this.$agenda.find('.agendaItem').each((i, el) => {
             this.prepareAgendaItem($(el));
         });
-        this.prepareAgendaList($agenda);
-        $agenda.find('ol.agenda').each((i, el) => {
-            this.prepareAgendaList($(el));
+        this.prepareAgendaList(this.$agenda, true);
+        this.$agenda.find('ol.agenda').each((i, el) => {
+            this.prepareAgendaList($(el), false);
         });
 
-        $agenda.on('click', '.agendaItemAdder a', this.agendaItemAdd.bind(this));
-        $agenda.on('click', '.delAgendaItem', this.delAgendaItem.bind(this));
-        $agenda.on('click', '.editAgendaItem', this.editAgendaItem.bind(this));
-        $agenda.on('submit', '.agendaItemEditForm', this.submitSingleItemForm.bind(this));
-        this.$agendaform.submit(this.submitCompleteForm.bind(this));
+        this.$agenda.on('click', '.agendaItemAdder .addEntry', this.agendaItemAdd.bind(this));
+        this.$agenda.on('click', '.agendaItemAdder .addDate', this.agendaDateAdd.bind(this));
+        this.$agenda.on('change', '.agendaItemAdder .showTimes', this.showTimesChanges.bind(this));
+        this.$agenda.on('click', '.delAgendaItem', this.delAgendaItem.bind(this));
+        this.$agenda.on('click', '.editAgendaItem', this.editAgendaItem.bind(this));
+        this.$agenda.on('submit', '.agendaItemEditForm', this.submitSingleItemForm.bind(this));
+        this.$agendaform.on("submit", this.submitCompleteForm.bind(this));
     }
 
     buildAgendaStruct($ol) {
@@ -93,7 +96,7 @@ class AgendaEdit {
         this.showSaver();
         let $li = $(ev.target).parents('li.agendaItem').first();
         $li.addClass('editing');
-        $li.find('> div > .agendaItemEditForm input[name=code]').focus().select();
+        $li.find('> div > .agendaItemEditForm input[name=code]').trigger("focus").trigger("select");
     }
 
     agendaItemAdd(ev: Event) {
@@ -103,9 +106,30 @@ class AgendaEdit {
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
         this.prepareAgendaItem($newElement);
-        this.prepareAgendaList($newElement.find('ol.agenda'));
+        this.prepareAgendaList($newElement.find('ol.agenda'), false);
         $newElement.find('.editAgendaItem').trigger('click');
-        $newElement.find('.agendaItemEditForm input.code').focus();
+        $newElement.find('.agendaItemEditForm input.code').trigger("focus");
+    }
+
+    agendaDateAdd(ev: Event) {
+        ev.preventDefault();
+        this.showSaver();
+        // @TODO
+        let $newElement = $($('#agendaNewElementTemplate').val() as string),
+            $adder = $(ev.target).parents('.agendaItemAdder').first();
+        $adder.before($newElement);
+        this.prepareAgendaItem($newElement);
+        this.prepareAgendaList($newElement.find('ol.agenda'), false);
+        $newElement.find('.editAgendaItem').trigger('click');
+        $newElement.find('.agendaItemEditForm input.code').trigger("focus");
+    }
+
+    showTimesChanges() {
+        if (this.$agenda.find('.agendaItemAdder .showTimes input').prop("checked")) {
+            this.$agenda.addClass('showTimes').removeClass('noShowTimes');
+        } else {
+            this.$agenda.removeClass('showTimes').addClass('noShowTimes');
+        }
     }
 
     prepareAgendaItem($item) {
@@ -114,12 +138,15 @@ class AgendaEdit {
         $item.find('> div > h3').append(this.delAgendaItemStr);
     }
 
-    prepareAgendaList($list) {
-        $list.append(
-            '<li class="agendaItemAdder mjs-nestedSortable-no-nesting mjs-nestedSortable-disabled">' +
-            '<a href="#"><span class="glyphicon glyphicon-plus-sign"></span> ' +
-            __t('admin', 'agendaAddEntry') + '</a></li>'
-        );
+    prepareAgendaList($list, full: boolean) {
+        let str = '<li class="agendaItemAdder mjs-nestedSortable-no-nesting mjs-nestedSortable-disabled">' +
+            '<a href="#" class="addEntry"><span class="glyphicon glyphicon-plus-sign"></span> ' + __t('admin', 'agendaAddEntry') + '</a>';
+        if (full) {
+            str += '<a href="#" class="addDate"><span class="glyphicon glyphicon-plus-sign"></span> ' + __t('admin', 'agendaAddDate') + '</a>' +
+            '<label class="showTimes"><input type="checkbox" class="showTimes"> ' + __t('admin', 'agendaShowTimes') + '</label>';
+        }
+        str += '</li>';
+        $list.append(str);
     }
 
     showSaver() {

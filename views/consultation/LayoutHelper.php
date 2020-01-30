@@ -180,8 +180,11 @@ class LayoutHelper
                 $motionTypes[$motionType->id] = $motionType->titlePlural;
             }
             $typeId = $agendaItem->motionTypeId;
+            $time   = $agendaItem->getTime() ?? '';
 
             echo '<form class="agendaItemEditForm form-inline">
+                <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="Uhrzeit"
+                class="form-control time">
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
@@ -223,6 +226,44 @@ class LayoutHelper
     }
 
     /**
+     * @param ConsultationAgendaItem $agendaItem
+     * @param Consultation $consultation
+     * @param bool $admin
+     * @param bool $showMotions
+     *
+     * @return int[]
+     */
+    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin, bool $showMotions): array
+    {
+        echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '">';
+        echo '<div><h3>';
+        echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
+        echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
+        echo '</h3>';
+
+        if ($admin) {
+            $date = '';
+            echo '<form class="agendaItemEditForm form-inline">
+                <input type="text" name="date" value="' . Html::encode($date) . '"
+                class="form-control time">
+                <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
+                 class="form-control title" placeholder="Titel">';
+            echo '<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
+            <a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>
+            </form>';
+        }
+
+        echo '</div>';
+
+        $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false, $showMotions);
+
+        echo '</li>';
+
+        return $agendaListShownMotions;
+    }
+
+    /**
      * @param ConsultationAgendaItem[] $items
      * @param Consultation $consultation
      * @param bool $admin
@@ -233,11 +274,22 @@ class LayoutHelper
      */
     public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false, bool $showMotions = true): array
     {
+        $timesClass = 'noShowTimes ';
+        foreach ($consultation->agendaItems as $agendaItem) {
+            if ($agendaItem->getTime()) {
+                $timesClass = 'showTimes ';
+            }
+        }
+
         $items = ConsultationAgendaItem::sortItems($items);
-        echo '<ol class="agenda ' . ($isRoot ? 'motionList motionListWithinAgenda' : 'agendaSub') . '">';
+        echo '<ol class="agenda ' . $timesClass . ($isRoot ? 'motionList motionListWithinAgenda' : 'agendaSub') . '">';
         $shownMotions = [];
         foreach ($items as $item) {
-            $newShown     = static::showAgendaItem($item, $consultation, $admin, $showMotions);
+            if ($item->isDateSeparator()) {
+                $newShown = static::showDateAgendaItem($item, $consultation, $admin, $showMotions);
+            } else {
+                $newShown = static::showAgendaItem($item, $consultation, $admin, $showMotions);
+            }
             $shownMotions = array_merge($shownMotions, $newShown);
         }
         echo '</ol>';

@@ -1,13 +1,10 @@
 <?php
 
 use app\components\MotionSorter;
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\Motion;
-use app\models\settings\Layout;
+use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
+use app\models\settings\{Layout, Consultation as ConsultationSettings};
 use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
-use \app\models\settings\Consultation as ConsultationSettings;
 
 /**
  * @var yii\web\View $this
@@ -23,6 +20,7 @@ $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
 $hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
 echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
+echo '<div class="agendaHolder">';
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
 
@@ -49,6 +47,7 @@ if ($admin) {
 
     $layout->addAMDModule('backend/AgendaEdit');
 }
+echo '</div>';
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {

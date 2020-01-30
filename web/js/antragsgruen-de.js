@@ -36,6 +36,8 @@ ANTRAGSGRUEN_STRINGS = {
         "adminMayEditConfirm": "Wenn dies deaktiviert wird, wirkt sich das auch auf alle bisherigen Anträge aus und kann für bisherige Anträge nicht rückgängig gemacht werden. Wirklich setzen?",
         "deleteDataConfirm": "Diese Angabe wirklich löschen?",
         "agendaAddEntry": "Eintrag hinzufügen",
+        "agendaAddDate": "Datum hinzufügen",
+        "agendaShowTimes": "Genaue Zeiten festlegen",
         "agendaDelEntryConfirm": "Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?",
         "removeAdminConfirm": "Diesem Zugang wirklich die Admin-Rechte entziehen?",
         "removeUserConfirm": "%NAME% wirklich von DIESER Veranstaltung entfernen? Eingereichte Anträge etc. bleiben erhalten und müssen explizit gelöscht werden.",
