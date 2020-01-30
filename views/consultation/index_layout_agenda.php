@@ -31,11 +31,18 @@ if ($admin) {
     $templateItem->id    = -1;
     $templateItem->title = Yii::t('con', 'new_item');
     $templateItem->code  = '#';
+    $templateItem->time  = null;
+
     ob_start();
     LayoutHelper::showAgendaItem($templateItem, $consultation, $admin, !$longVersion);
     $newElementTemplate = ob_get_clean();
-
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
+
+    ob_start();
+    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin, !$longVersion);
+    $newElementTemplate = ob_get_clean();
+    echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
+
     echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder', 'class' => 'hidden']);
     echo '<input type="hidden" name="data" value="">';
     echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . Yii::t('base', 'save') . '</button>';

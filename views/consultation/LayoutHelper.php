@@ -183,8 +183,11 @@ class LayoutHelper
             $time   = $agendaItem->getTime() ?? '';
 
             echo '<form class="agendaItemEditForm form-inline">
-                <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="Uhrzeit"
-                class="form-control time">
+                <div class="input-group time datetimepicker">
+                    <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="Zeit"
+                    class="form-control">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"

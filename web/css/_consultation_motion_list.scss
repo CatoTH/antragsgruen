@@ -458,8 +458,18 @@
       margin-right: 10px;
     }
 
-    input.time {
+    .time {
+      input {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .input-group-addon {
+        cursor: pointer;
+        padding-left: 7px;
+        padding-right: 7px;
+      }
       margin-right: 10px;
+
     }
 
     input.title {
@@ -491,7 +501,7 @@
     li.agendaItem li.agendaItem li.agendaItem input.title {
       width: 250px;
     }
-    input.time {
+    .time {
       display: none;
     }
     input.code {
@@ -503,25 +513,25 @@
   }
   &.showTimes .agendaItemEditForm {
     input.title {
-      width: 350px;
+      width: 340px;
     }
     li.agendaItem input.title {
-      width: 300px;
+      width: 290px;
     }
     li.agendaItem li.agendaItem input.title {
-      width: 250px;
+      width: 240px;
     }
     li.agendaItem li.agendaItem li.agendaItem input.title {
-      width: 200px;
+      width: 190px;
     }
-    input.time {
-      width: 70px;
+    .time {
+      width: 80px;
     }
     input.code {
-      width: 60px;
+      width: 50px;
     }
     select.motionType {
-      max-width: 150px;
+      max-width: 140px;
     }
   }
 

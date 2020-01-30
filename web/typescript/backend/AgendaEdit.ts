@@ -34,6 +34,12 @@ class AgendaEdit {
             this.prepareAgendaList($(el), false);
         });
 
+        this.$agenda.find(".input-group.time").datetimepicker({
+            locale: $("html").attr('lang'),
+            format: 'LT'
+        });
+
+
         this.$agenda.on('click', '.agendaItemAdder .addEntry', this.agendaItemAdd.bind(this));
         this.$agenda.on('click', '.agendaItemAdder .addDate', this.agendaDateAdd.bind(this));
         this.$agenda.on('change', '.agendaItemAdder .showTimes', this.showTimesChanges.bind(this));
@@ -114,14 +120,13 @@ class AgendaEdit {
     agendaDateAdd(ev: Event) {
         ev.preventDefault();
         this.showSaver();
-        // @TODO
-        let $newElement = $($('#agendaNewElementTemplate').val() as string),
+        let $newElement = $($('#agendaNewDateTemplate').val() as string),
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
         this.prepareAgendaItem($newElement);
         this.prepareAgendaList($newElement.find('ol.agenda'), false);
         $newElement.find('.editAgendaItem').trigger('click');
-        $newElement.find('.agendaItemEditForm input.code').trigger("focus");
+        $newElement.find('.agendaItemEditForm input.title').trigger("focus");
     }
 
     showTimesChanges() {
