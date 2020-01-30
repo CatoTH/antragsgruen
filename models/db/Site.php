@@ -170,6 +170,15 @@ class Site extends ActiveRecord
         return ($site === null);
     }
 
+    public function getBaseUrl(): string
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        $domain = str_replace('<subdomain:[\w_-]+>', $this->subdomain, $params->domainSubdomain);
+
+        return trim(explode("//", $domain)[1], '/');
+    }
+
     /**
      * @return Site[]
      */
