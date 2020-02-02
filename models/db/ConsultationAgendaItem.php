@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use app\components\MotionSorter;
+use app\components\Tools;
 use yii\db\ActiveRecord;
 
 /**
@@ -349,5 +350,21 @@ class ConsultationAgendaItem extends ActiveRecord
         } else {
             return null;
         }
+    }
+
+    public function getFormattedDate(): string
+    {
+        if (intval($this->time) === 0) {
+            return '';
+        }
+        $date = Tools::dateSql2Datetime($this->time);
+        if (!$date) {
+            return '';
+        }
+        // @TODO support other languages
+        $dow   = \Yii::t('structure', 'days_' . $date->format('N'));
+        $month = \Yii::t('structure', 'months_' . $date->format('n'));
+
+        return $dow . ', ' . $date->format('j') . '. ' . $month . ' ' . $date->format('Y');
     }
 }

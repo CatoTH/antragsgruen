@@ -42,10 +42,18 @@ export class AgendaEdit {
             locale: this.locale,
             format: 'LT'
         });
-        this.$agenda.find(".input-group.date").datetimepicker({
-            locale: this.locale,
-            format: 'dddd, Do MMMM YYYY'
+        this.$agenda.find(".input-group.date").each((i, el) => {
+            let preDate = null;
+            if ($(el).data("date")) {
+                preDate = moment($(el).data("date"), "YYYY-MM-DD", this.locale);
+            }
+            $(el).datetimepicker({
+                locale: this.locale,
+                format: 'dddd, Do MMMM YYYY',
+                defaultDate: preDate
+            });
         });
+
 
         this.$agenda.on('click', '.agendaItemAdder .addEntry', this.agendaItemAdd.bind(this));
         this.$agenda.on('click', '.agendaItemAdder .addDate', this.agendaDateAdd.bind(this));
@@ -129,8 +137,6 @@ export class AgendaEdit {
 
     submitCompleteForm() {
         let data = this.buildAgendaStruct($('.motionListWithinAgenda'));
-        console.log(data);
-        return;
         this.$agendaform.find('input[name=data]').val(JSON.stringify(data));
         $(window).off("beforeunload", AgendaEdit.onLeavePage);
     }

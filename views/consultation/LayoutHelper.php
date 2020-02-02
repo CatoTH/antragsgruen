@@ -238,15 +238,26 @@ class LayoutHelper
      */
     public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin, bool $showMotions): array
     {
+        $fullTitle = '';
+        if ($agendaItem->time && $agendaItem->time !== '0000-00-00') {
+            $fullTitle = $agendaItem->getFormattedDate();
+            if ($agendaItem->title) {
+                $fullTitle .= ': ';
+            }
+        }
+        if ($agendaItem->title) {
+            $fullTitle .= $agendaItem->title;
+        }
+
         echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '">';
         echo '<div><h3>';
-        echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
+        echo '<span class="title">' . Html::encode($fullTitle) . '</span>';
         echo '</h3>';
 
         if ($admin) {
             $date = '';
             echo '<form class="agendaDateEditForm form-inline">
-                <div class="input-group date datetimepicker">
+                <div class="input-group date datetimepicker" data-date="' . Html::encode($agendaItem->time) . '">
                     <input type="text" name="date" value="' . Html::encode($date) . '" placeholder="' . \Yii::t('con', 'agenda_date') . '"
                     class="form-control">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
