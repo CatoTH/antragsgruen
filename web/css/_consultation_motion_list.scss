@@ -339,8 +339,11 @@
       flex-basis: 25%;
     }
     .addDate {
+      flex: 0;
+      flex-basis: 25%;
+    }
+    .spacer {
       flex: 1;
-      flex-basis: 50%;
     }
     .showTimes {
       flex: 0;
@@ -418,6 +421,9 @@
         display: none;
       }
       > div > .agendaItemEditForm {
+        display: block;
+      }
+      > div > .agendaDateEditForm {
         display: block;
       }
       > ol > .agendaItemAdder {
@@ -532,6 +538,22 @@
     }
     select.motionType {
       max-width: 140px;
+    }
+  }
+  .agendaDateEditForm {
+    display: none;
+
+    .date {
+      width: 285px;
+      margin-right: 10px;
+      .input-group-addon {
+        cursor: pointer;
+      }
+    }
+
+    .title {
+      width: 340px;
+      margin-right: 10px;
     }
   }
 

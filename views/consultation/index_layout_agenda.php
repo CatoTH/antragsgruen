@@ -19,12 +19,13 @@ $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
 ]));
 $hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
-echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
-echo '<div class="agendaHolder">';
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
-$shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
+
 
 if ($admin) {
+    echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
     $templateItem                 = new ConsultationAgendaItem();
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
@@ -39,6 +40,7 @@ if ($admin) {
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
     ob_start();
+    $templateItem->title = '';
     LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin, !$longVersion);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
@@ -51,10 +53,12 @@ if ($admin) {
     $layout->addJS('js/jquery-ui-1.11.4.custom/jquery-ui.js');
     $layout->addJS('js/jquery.ui.touch-punch.js');
     $layout->addJS('js/jquery.mjs.nestedSortable.js');
-
-    $layout->addAMDModule('backend/AgendaEdit');
+    echo '</div>';
+} else {
+    echo '<div class="agendaHolder">';
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+    echo '</div>';
 }
-echo '</div>';
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {

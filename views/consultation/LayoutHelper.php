@@ -184,14 +184,14 @@ class LayoutHelper
 
             echo '<form class="agendaItemEditForm form-inline">
                 <div class="input-group time datetimepicker">
-                    <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="Zeit"
+                    <input type="text" name="time" value="' . Html::encode($time) . '" placeholder="' . \Yii::t('con', 'agenda_time') . '"
                     class="form-control">
                     <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                 </div>
                 <input type="text" name="code" value="' . Html::encode($agendaItem->code) . '"
                 class="form-control code">
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
-                 class="form-control title" placeholder="Titel">';
+                 class="form-control title" placeholder="' . \Yii::t('con', 'agenda_title') . '">';
             $opts = ['class' => 'form-control motionType'];
             echo Html::dropDownList('motionType', ($typeId > 0 ? $typeId : 0), $motionTypes, $opts);
             echo '<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
@@ -240,17 +240,19 @@ class LayoutHelper
     {
         echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '">';
         echo '<div><h3>';
-        echo '<span class="code">' . Html::encode($agendaItem->code) . '</span> ';
         echo '<span class="title">' . Html::encode($agendaItem->title) . '</span>';
         echo '</h3>';
 
         if ($admin) {
             $date = '';
-            echo '<form class="agendaItemEditForm form-inline">
-                <input type="text" name="date" value="' . Html::encode($date) . '"
-                class="form-control time">
+            echo '<form class="agendaDateEditForm form-inline">
+                <div class="input-group date datetimepicker">
+                    <input type="text" name="date" value="' . Html::encode($date) . '" placeholder="' . \Yii::t('con', 'agenda_date') . '"
+                    class="form-control">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                </div>
                 <input type="text" name="title" value="' . Html::encode($agendaItem->title) . '"
-                 class="form-control title" placeholder="Titel">';
+                 class="form-control title" placeholder="' . \Yii::t('con', 'agenda_comment') . '">';
             echo '<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
             <a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>
             </form>';
