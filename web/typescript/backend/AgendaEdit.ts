@@ -40,7 +40,8 @@ export class AgendaEdit {
         this.locale = $("html").attr('lang');
         this.$agenda.find(".input-group.time").datetimepicker({
             locale: this.locale,
-            format: 'LT'
+            format: 'LT',
+            stepping: 5
         });
         this.$agenda.find(".input-group.date").each((i, el) => {
             let preDate = null;
@@ -127,11 +128,21 @@ export class AgendaEdit {
         let $li = $(ev.target).parents('li.agendaItem').first(),
             $form = $(ev.target),
             newTitle = $form.find('input[name=title]').val() as string,
-            newCode = $form.find('input[name=code]').val() as string;
+            newCode = $form.find('input[name=code]').val() as string,
+            newTime = $form.find('input[name=time]').val() as string;
         $li.removeClass('editing');
         $li.data('code', newCode);
         $li.find('> div > h3 .code').text(newCode);
         $li.find('> div > h3 .title').text(newTitle);
+        if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked") && newTime) {
+            if ($li.find('> div > h3 .time').length === 0) {
+                console.log("prepend");
+                $li.find('> div > h3').prepend('<span class="time"></span>');
+            }
+            $li.find('> div > h3 .time').text(newTime);
+        } else {
+            $li.find('> div > h3 .time').remove();
+        }
         $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
     }
 
@@ -215,7 +226,11 @@ export class AgendaEdit {
             '<label class="showTimes"><input type="checkbox" class="showTimes"> ' + __t('admin', 'agendaShowTimes') + '</label>';
         }
         str += '</li>';
-        $list.append(str);
+        const $el = $(str);
+        if (this.$agenda.hasClass('showTimes')) {
+            $el.find(".showTimes input").prop("checked", true);
+        }
+        $list.append($el);
     }
 
     showSaver() {

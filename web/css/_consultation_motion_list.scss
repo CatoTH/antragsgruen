@@ -292,6 +292,7 @@
   font-style: italic;
 }
 
+$agendaMarginPerLevel: 50px;
 .motionListWithinAgenda {
   list-style-type: none;
   margin: 15px 0 0;
@@ -387,8 +388,9 @@
       }
 
       > h3 {
-        overflow: auto;
+        overflow: visible; // Times
         padding: 3px;
+        font-weight: normal;
         html.no-touchevents & .delAgendaItem {
           visibility: hidden;
         }
@@ -423,10 +425,10 @@
         display: none;
       }
       > div > .agendaItemEditForm {
-        display: block;
+        display: flex;
       }
       > div > .agendaDateEditForm {
-        display: block;
+        display: flex;
       }
       > ol > .agendaItemAdder {
         visibility: hidden !important;
@@ -446,13 +448,14 @@
       }
     }
   }
-  .agendaItemDate {
+  li.agendaItem.agendaItemDate {
     > div {
-      padding-top: 10px;
+      padding-top: 30px;
     }
     h3 {
       text-decoration: underline;
       margin-bottom: 8px;
+      font-weight: bold;
     }
   }
 
@@ -465,18 +468,29 @@
         padding-bottom: 0;
         padding-top: 0;
       }
+      &.agendaItemDate > div {
+        padding-top: 30px;
+      }
     }
   }
 
   .agendaItemEditForm {
     display: none;
+    /* display: flex */
+    width: calc(100% - 30px);
+    flex-direction: row;
     padding-bottom: 6px;
 
-    input.code {
+    .code {
       margin-right: 10px;
+      flex-grow: 0;
     }
 
     .time {
+      margin-right: 10px;
+      flex-grow: 0;
+      flex-basis: 80px;
+      width: 80px;
       input {
         padding-left: 7px;
         padding-right: 7px;
@@ -486,12 +500,11 @@
         padding-left: 7px;
         padding-right: 7px;
       }
-      margin-right: 10px;
-
     }
 
     .title {
       margin-right: 10px;
+      flex-grow: 1;
     }
 
     .agendaMotionsRow {
@@ -500,94 +513,81 @@
       color: gray;
     }
 
-    select.motionType {
+    .motionType {
       white-space: nowrap;
       text-overflow: ellipsis;
       padding-right: 0;
     }
   }
   &.noShowTimes {
-    .title {
-      width: 400px;
+    h3 .time {
+      display: none;
     }
     .agendaItemEditForm {
       .time {
         display: none;
       }
 
-      input.code {
+      .code {
         width: 80px;
+        flex-basis: 80px;
       }
 
-      select.motionType {
+      .motionType {
         max-width: 170px;
+        flex-basis: 170px;
       }
-    }
-    li.agendaItem .title {
-      width: 350px;
-    }
-    li.agendaItem li.agendaItem .title {
-      width: 300px;
-    }
-    li.agendaItem li.agendaItem li.agendaItem .title {
-      width: 250px;
     }
   }
   &.showTimes {
-    .title {
-      width: 340px;
+    > li {
+      padding-left: 50px; // Place for the time
+    }
+    h3 .time {
+      float: left;
+      color: gray;
+      font-size: 0.8em;
+      padding-top: 3px;
+    }
+    li.agendaItem h3 .time {
+      margin-left: -50px;
+    }
+    li.agendaItem li.agendaItem h3 .time {
+      margin-left: -50px - $agendaMarginPerLevel;
+    }
+    li.agendaItem li.agendaItem li.agendaItem h3 .time {
+      margin-left: -50px - $agendaMarginPerLevel * 2;
     }
     .agendaItemEditForm {
-      .time {
-        width: 80px;
+      .code {
+        flex-basis: 50px;
       }
 
-      input.code {
-        width: 50px;
+      .motionType {
+        flex-basis: 140px;
       }
-
-      select.motionType {
-        max-width: 140px;
-      }
-    }
-
-    li.agendaItem .title {
-      width: 290px;
-    }
-
-    li.agendaItem li.agendaItem .title {
-      width: 240px;
-    }
-
-    li.agendaItem li.agendaItem li.agendaItem .title {
-      width: 190px;
     }
   }
   .agendaDateEditForm {
     display: none;
+    /* display: flex */
+    width: calc(100% - 30px);
+    flex-direction: row;
 
     .date {
       width: 285px;
+      flex-basis: 285px;
+      flex-grow: 0;
       margin-right: 10px;
+
       .input-group-addon {
         cursor: pointer;
       }
     }
 
     .title {
-      width: 340px;
+      flex-grow: 1;
       margin-right: 10px;
-    }
-    li.agendaItem .title {
-      width: 290px;
-    }
-
-    li.agendaItem li.agendaItem .title {
-      width: 240px;
-    }
-
-    li.agendaItem li.agendaItem li.agendaItem .title {
-      width: 190px;
     }
   }
 
@@ -601,6 +601,9 @@
     color: lightgrey;
     margin-left: -27px;
     cursor: move;
+  }
+  &.showTimes > li > div .moveHandle { // Only move the top-level handlers to the side
+    margin-left: -67px;
   }
   html.no-touchevents & li.agendaItem > div > .moveHandle {
     display: none;
