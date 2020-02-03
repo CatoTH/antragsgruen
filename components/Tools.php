@@ -130,8 +130,11 @@ class Tools
         }
     }
 
-    public static function dateBootstrapdate2sql(string $date, ?string $locale = null): string
+    public static function dateBootstrapdate2sql(?string $date, ?string $locale = null): string
     {
+        if ($date === null) {
+            return '';
+        }
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }

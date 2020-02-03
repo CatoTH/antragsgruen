@@ -6,7 +6,7 @@ $I = new AcceptanceTester($scenario);
 $I->populateDBData1();
 
 $I->gotoConsultationHome();
-$page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoConsultation();
+$page = $I->loginAsStdAdmin()->gotoStdAdminPage()->gotoAppearance();
 $I->selectFueluxOption('#startLayoutType', '5');
 $page->saveForm();
 
