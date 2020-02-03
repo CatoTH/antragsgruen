@@ -7,11 +7,7 @@ use app\models\exceptions\Internal;
 
 class Tools
 {
-    /**
-     * @param string $input
-     * @return int
-     */
-    public static function dateSql2timestamp($input)
+    public static function dateSql2timestamp(string $input): int
     {
         $parts = explode(' ', $input);
         $date  = array_map('IntVal', explode('-', $parts[0]));
@@ -25,28 +21,25 @@ class Tools
         return mktime($time[0], $time[1], $time[2], $date[1], $date[2], $date[0]);
     }
 
+    public static function dateSql2Datetime(string $input): ?\DateTime
+    {
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $input . ' 00:00:00');
+    }
 
-    /**
-     * @return string
-     */
-    public static function getCurrentDateLocale()
+    public static function getCurrentDateLocale(): string
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
         if (is_a($controller, Base::class) && $controller->consultation) {
             $locale = explode('-', $controller->consultation->wordingBase);
+
             return $locale[0];
         }
+
         return \Yii::$app->language;
     }
 
-    /**
-     * @param string $time
-     * @param string|null $locale
-     * @return string
-     * @throws Internal
-     */
-    public static function dateBootstraptime2sql($time, $locale = null)
+    public static function dateBootstraptime2sql(string $time, ?string $locale = null): string
     {
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
@@ -54,7 +47,7 @@ class Tools
 
         if ($locale === 'de') {
             $pattern = '/^(?<day>\\d{1,2})\.(?<month>\\d{1,2})\.(?<year>\\d{4}) ' .
-                '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
+                       '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches)) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
@@ -67,7 +60,7 @@ class Tools
             }
         } elseif ($locale === 'fr') {
             $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4}) ' .
-                '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
+                       '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches)) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
@@ -80,9 +73,10 @@ class Tools
             }
         } elseif ($locale === 'en') {
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
-                '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
+                       '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
             if (preg_match($pattern, $time, $matches)) {
                 $hours = (strtolower($matches['ampm']) == 'pm' ? $matches['hour'] + 12 : $matches['hour']);
+
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
                     $matches['year'],
@@ -94,7 +88,7 @@ class Tools
             }
 
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
-                '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
+                       '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
             if (preg_match($pattern, $time, $matches)) {
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
@@ -108,17 +102,15 @@ class Tools
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
+
         return '';
     }
 
-    /**
-     * @param string $date
-     * @param string $locale
-     * @return string
-     * @throws Internal
-     */
-    public static function dateSql2bootstrapdate($date, $locale = null)
+    public static function dateSql2bootstrapdate(?string $date, ?string $locale = null): string
     {
+        if ($date === null) {
+            return '';
+        }
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
@@ -138,13 +130,7 @@ class Tools
         }
     }
 
-    /**
-     * @param string $date
-     * @param string|null $locale
-     * @return string
-     * @throws Internal
-     */
-    public static function dateBootstrapdate2sql($date, $locale = null)
+    public static function dateBootstrapdate2sql(string $date, ?string $locale = null): string
     {
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
@@ -168,23 +154,21 @@ class Tools
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
+
         return '';
     }
 
-    /**
-     * @param string $time
-     * @param string|null $locale
-     * @return string
-     * @throws Internal
-     */
-    public static function dateSql2bootstraptime($time, $locale = null)
+    public static function dateSql2bootstraptime(?string $time, ?string $locale = null): string
     {
+        if ($time === null) {
+            return '';
+        }
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
 
         $pattern = '/^(?<year>\\d{4})\-(?<month>\\d{2})\-(?<day>\\d{2}) ' .
-            '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
+                   '(?<hour>\\d{2})\:(?<minute>\\d{2})\:(?<second>\\d{2})$/';
         if (!preg_match($pattern, $time, $matches)) {
             return '';
         }
@@ -192,27 +176,24 @@ class Tools
         if ($locale === 'de') {
             $date = $matches['day'] . '.' . $matches['month'] . '.' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
+
             return $date;
         } elseif ($locale === 'fr') {
             $date = $matches['day'] . '/' . $matches['month'] . '/' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
+
             return $date;
         } elseif ($locale === 'en') {
             $date = $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'] . ' ';
             $date .= $matches['hour'] . ':' . $matches['minute'];
+
             return $date;
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
     }
 
-    /**
-     * @param \DateTime|null $time
-     * @param string|null $locale
-     * @return string
-     * @throws Internal
-     */
-    public static function date2bootstraptime($time, $locale = null)
+    public static function date2bootstraptime(?\DateTime $time, ?string $locale = null): string
     {
         if ($time === null) {
             return '';
@@ -234,10 +215,7 @@ class Tools
 
     private static $last_time = 0;
 
-    /**
-     * @param string $name
-     */
-    public static function debugTime($name)
+    public static function debugTime(string $name): void
     {
         list($usec, $sec) = explode(' ', microtime());
         $time = sprintf('%14.0f', $sec * 10000 + $usec * 10000);
@@ -248,15 +226,7 @@ class Tools
     }
 
 
-    /**
-     * @static
-     * @param string $mysqldate
-     * @param string|null $locale
-     * @param bool $allowRelativeDates
-     * @return string
-     * @throws Internal
-     */
-    public static function formatMysqlDate($mysqldate, $locale = null, $allowRelativeDates = true)
+    public static function formatMysqlDate(string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
     {
         $currentTs = DateTools::getCurrentTimestamp();
 
@@ -274,27 +244,22 @@ class Tools
 
         if ($locale === 'de') {
             $date = explode('-', substr($mysqldate, 0, 10));
+
             return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
         } elseif ($locale === 'fr') {
             $date = explode('-', substr($mysqldate, 0, 10));
+
             return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
         } elseif ($locale === 'en') {
             $date = explode('-', substr($mysqldate, 0, 10));
+
             return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
     }
 
-    /**
-     * @static
-     * @param string $mysqlDate
-     * @param string|null $locale
-     * @param bool $allowRelativeDates
-     * @return string
-     * @throws Internal
-     */
-    public static function formatMysqlDateTime($mysqlDate, $locale = null, $allowRelativeDates = true)
+    public static function formatMysqlDateTime(string $mysqlDate, ?string $locale = null, bool $allowRelativeDates = true): string
     {
         if (strlen($mysqlDate) == 0) {
             return '-';
@@ -310,11 +275,7 @@ class Tools
         return self::formatMysqlDate($mysqlDate, $locale, $allowRelativeDates) . ", " . substr($mysqlDate, 11, 5);
     }
 
-    /**
-     * @param \Datetime|null $deadline
-     * @return string
-     */
-    public static function formatRemainingTime($deadline)
+    public static function formatRemainingTime(?\DateTime $deadline): string
     {
         if (!$deadline) {
             return '?';
@@ -325,24 +286,22 @@ class Tools
         }
         if ($seconds >= 3600 * 24) {
             $days = (int)floor($seconds / (3600 * 24));
+
             return $days . ' ' . \Yii::t('structure', $days === 1 ? 'remaining_day' : 'remaining_days');
         } elseif ($seconds >= 3600) {
             $hours = (int)floor($seconds / 3600);
+
             return $hours . ' ' . \Yii::t('structure', $hours === 1 ? 'remaining_hour' : 'remaining_hours');
         } elseif ($seconds >= 60) {
             $minutes = (int)floor($seconds / 60);
+
             return $minutes . ' ' . \Yii::t('structure', $minutes === 1 ? 'remaining_minute' : 'remaining_minutes');
         } else {
             return $seconds . ' ' . \Yii::t('structure', $seconds === 1 ? 'remaining_second' : 'remaining_seconds');
         }
     }
 
-    /**
-     * @param string $dateTime1
-     * @param string $dateTime2
-     * @return int
-     */
-    public static function compareSqlTimes($dateTime1, $dateTime2)
+    public static function compareSqlTimes(string $dateTime1, string $dateTime2): int
     {
         $ts1 = ($dateTime1 ? static::dateSql2timestamp($dateTime1) : 0);
         $ts2 = ($dateTime2 ? static::dateSql2timestamp($dateTime2) : 0);
@@ -355,12 +314,7 @@ class Tools
         }
     }
 
-    /**
-     * @param string $filename
-     * @param bool $noUmlaut
-     * @return string
-     */
-    public static function sanitizeFilename($filename, $noUmlaut)
+    public static function sanitizeFilename(string $filename, bool $noUmlaut): string
     {
         $filename = str_replace(' ', '_', $filename);
         $filename = str_replace('/', '-', $filename);
@@ -373,14 +327,11 @@ class Tools
                 $filename
             );
         }
+
         return $filename;
     }
 
-    /**
-     * @param array $errors
-     * @return string
-     */
-    public static function formatModelValidationErrors($errors)
+    public static function formatModelValidationErrors(array $errors): string
     {
         $errorStrs = [];
         foreach ($errors as $field => $error) {
@@ -388,14 +339,11 @@ class Tools
                 $errorStrs[] = $field . ': ' . $err;
             }
         }
+
         return implode("\n", $errorStrs);
     }
 
-    /**
-     * @param string $size
-     * @return int
-     */
-    private static function parsePhpSize($size)
+    private static function parsePhpSize(string $size): int
     {
         if (is_numeric($size)) {
             return $size;
@@ -414,14 +362,12 @@ class Tools
                     $qty *= 1073741824;
                     break;
             }
+
             return $qty;
         }
     }
 
-    /**
-     * @return int
-     */
-    public static function getMaxUploadSize()
+    public static function getMaxUploadSize(): int
     {
         $post_max_size = static::parsePhpSize(ini_get('post_max_size'));
         $upload_size   = static::parsePhpSize(ini_get('upload_max_filesize'));

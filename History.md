@@ -1,8 +1,9 @@
 # Version history
 
-### Version 4.5.0 [not released yet]
+## Version 4.5.0 [not released yet]
 
 - The paragraph-based editing mode for merging amendments into motion, introduced in version 4.3.0, was visually improved to closer resemble the regular motion view, with the amendment toggles to the right of each paragraph. This improves the legibility of the motion text.
+- The agenda of a consultation can now have date deparators, and the individual agenda items can have explicit times.
 - Images can now have a maximum size for the PDF version. Signatures in applications, for example, now have a maximum size of 5x3cm.
 - If an image or a PDF in a motion or application is optional, it is now possible to delete an already uploaded one without uploading a replacement.
 - For PDF-based applications, the mostly empty cover page in front of the generated PDF is removed; the generated PDF is now exactly identical to the uploaded one.
@@ -541,7 +542,7 @@ This release was mainly sponsored by the [German Green Party](https://www.gruene
 - Add a two-column PDF template designed for applications
 - In the motion/amendment-list for admins, amendments are shown right next to their motions
 - All ODTs of motions and amendments can be downloaded as a bundled ZIP-file
- 
+
 This release was mainly sponsored by the [German Federal Youth Council](http://www.dbjr.de/)
 
 ## Version 3.0 (2015-11-16)

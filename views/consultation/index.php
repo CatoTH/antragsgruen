@@ -1,10 +1,7 @@
 <?php
 
 use app\components\Tools;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
+use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter};
 use yii\helpers\Html;
 
 /**
@@ -26,6 +23,7 @@ $this->title              = $consultation->title;
 
 if ($admin) {
     $layout->loadCKEditor();
+    $layout->loadDatepicker();
 }
 
 echo '<h1>';

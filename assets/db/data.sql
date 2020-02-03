@@ -67,7 +67,9 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m191201_080255_motion_support_types', '1575188572'),
   ('m191208_065712_file_downloads', '1575791718'),
   ('m191222_135810_lualatex', '1577023546'),
-  ('m200107_113326_motionSectionSettings', '1578396899')
+  ('m200107_113326_motionSectionSettings', '1578396899'),
+  ('m200125_124424_minimalistic_ui', '1580379395'),
+  ('m200130_100306_agenda_extension', '1580379395')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

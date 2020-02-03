@@ -332,6 +332,26 @@
     padding-left: 35px;
     margin-bottom: 0;
     margin-top: -4px;
+    display: flex;
+    flex-direction: row;
+    height: 20px; // to prevent invalid height of placeholder while dragging
+    overflow: hidden;
+    .addEntry {
+      flex: 0;
+      flex-basis: 25%;
+    }
+    .addDate {
+      flex: 0;
+      flex-basis: 25%;
+    }
+    .spacer {
+      flex: 1;
+    }
+    .showTimes {
+      flex: 0;
+      flex-basis: 25%;
+      font-weight: normal;
+    }
   }
   html.no-touchevents & .agendaItemAdder {
     visibility: hidden;
@@ -388,29 +408,6 @@
         }
       }
 
-      .agendaItemEditForm {
-        display: none;
-
-        input.code {
-          width: 80px;
-          margin-right: 10px;
-        }
-        input.title {
-          margin-right: 10px;
-        }
-        .agendaMotionsRow {
-          padding-top: 5px;
-          font-size: 0.8em;
-          color: gray;
-        }
-        select.motionType {
-          max-width: 170px;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          padding-right: 0;
-        }
-      }
-
       .motionCreateLink {
         float: right;
         text-align: left;
@@ -426,6 +423,9 @@
         display: none;
       }
       > div > .agendaItemEditForm {
+        display: block;
+      }
+      > div > .agendaDateEditForm {
         display: block;
       }
       > ol > .agendaItemAdder {
@@ -445,18 +445,14 @@
         font-size: 16px;
       }
     }
-
-    input.title {
-      width: 400px;
+  }
+  .agendaItemDate {
+    > div {
+      padding-top: 10px;
     }
-    li.agendaItem input.title {
-      width: 350px;
-    }
-    li.agendaItem li.agendaItem input.title {
-      width: 300px;
-    }
-    li.agendaItem li.agendaItem li.agendaItem input.title {
-      width: 250px;
+    h3 {
+      text-decoration: underline;
+      margin-bottom: 8px;
     }
   }
 
@@ -471,6 +467,130 @@
       }
     }
   }
+
+  .agendaItemEditForm {
+    display: none;
+    padding-bottom: 6px;
+
+    input.code {
+      margin-right: 10px;
+    }
+
+    .time {
+      input {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .input-group-addon {
+        cursor: pointer;
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+      margin-right: 10px;
+
+    }
+
+    .title {
+      margin-right: 10px;
+    }
+
+    .agendaMotionsRow {
+      padding-top: 5px;
+      font-size: 0.8em;
+      color: gray;
+    }
+
+    select.motionType {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      padding-right: 0;
+    }
+  }
+  &.noShowTimes {
+    .title {
+      width: 400px;
+    }
+    .agendaItemEditForm {
+      .time {
+        display: none;
+      }
+
+      input.code {
+        width: 80px;
+      }
+
+      select.motionType {
+        max-width: 170px;
+      }
+    }
+    li.agendaItem .title {
+      width: 350px;
+    }
+    li.agendaItem li.agendaItem .title {
+      width: 300px;
+    }
+    li.agendaItem li.agendaItem li.agendaItem .title {
+      width: 250px;
+    }
+  }
+  &.showTimes {
+    .title {
+      width: 340px;
+    }
+    .agendaItemEditForm {
+      .time {
+        width: 80px;
+      }
+
+      input.code {
+        width: 50px;
+      }
+
+      select.motionType {
+        max-width: 140px;
+      }
+    }
+
+    li.agendaItem .title {
+      width: 290px;
+    }
+
+    li.agendaItem li.agendaItem .title {
+      width: 240px;
+    }
+
+    li.agendaItem li.agendaItem li.agendaItem .title {
+      width: 190px;
+    }
+  }
+  .agendaDateEditForm {
+    display: none;
+
+    .date {
+      width: 285px;
+      margin-right: 10px;
+      .input-group-addon {
+        cursor: pointer;
+      }
+    }
+
+    .title {
+      width: 340px;
+      margin-right: 10px;
+    }
+    li.agendaItem .title {
+      width: 290px;
+    }
+
+    li.agendaItem li.agendaItem .title {
+      width: 240px;
+    }
+
+    li.agendaItem li.agendaItem li.agendaItem .title {
+      width: 190px;
+    }
+  }
+
   h2, h3 {
     margin: 0 0 5px;
     font-size: 18px;

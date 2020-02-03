@@ -2,16 +2,11 @@
 
 namespace app\components;
 
-use app\models\db\Consultation;
-use app\models\db\User;
+use app\models\db\{Consultation, User};
 
 class DateTools
 {
-    /**
-     * @param Consultation|null $consultation
-     * @return boolean
-     */
-    public static function isDeadlineDebugModeActive($consultation = null)
+    public static function isDeadlineDebugModeActive(?Consultation $consultation = null): bool
     {
         if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return false;
@@ -19,11 +14,7 @@ class DateTools
         return (\Yii::$app->session->get('deadline_debug_mode', null) === '1');
     }
 
-    /**
-     * @param Consultation|null $consultation
-     * @param boolean $active
-     */
-    public static function setDeadlineDebugMode($consultation, $active)
+    public static function setDeadlineDebugMode(?Consultation $consultation, bool $active): void
     {
         if ($consultation && User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($active) {
@@ -35,11 +26,7 @@ class DateTools
         }
     }
 
-    /**
-     * @param Consultation|null $consultation
-     * @param string|null $time
-     */
-    public static function setDeadlineTime($consultation, $time)
+    public static function setDeadlineTime(?Consultation $consultation, ?string $time): void
     {
         if ($consultation && User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
             if ($time) {
@@ -50,12 +37,7 @@ class DateTools
         }
     }
 
-    /**
-     * @param array $deadline
-     * @param bool $allowRelativeDates
-     * @return string
-     */
-    public static function formatDeadlineRange($deadline, $allowRelativeDates = true)
+    public static function formatDeadlineRange(array $deadline, bool $allowRelativeDates = true): string
     {
         if ($deadline['start'] && $deadline['end']) {
             $start = Tools::formatMysqlDateTime($deadline['start'], null, $allowRelativeDates);
@@ -72,12 +54,7 @@ class DateTools
         }
     }
 
-    /**
-     * @param array $deadlines
-     * @param bool $allowRelativeDates
-     * @return string
-     */
-    public static function formatDeadlineRanges($deadlines, $allowRelativeDates = true)
+    public static function formatDeadlineRanges(array $deadlines, bool $allowRelativeDates = true): string
     {
         $formatted = [];
         foreach ($deadlines as $deadline) {
@@ -86,11 +63,7 @@ class DateTools
         return implode(', ', $formatted);
     }
 
-    /**
-     * @param Consultation|null $consultation
-     * @return string|null
-     */
-    public static function getSimulatedTime($consultation)
+    public static function getSimulatedTime(?Consultation $consultation): ?string
     {
         if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return null;
@@ -99,10 +72,7 @@ class DateTools
         return ($time ? $time : null);
     }
 
-    /**
-     * @return int
-     */
-    public static function getCurrentTimestamp()
+    public static function getCurrentTimestamp(): int
     {
         $consultation = UrlHelper::getCurrentConsultation();
         if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {

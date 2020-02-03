@@ -78,28 +78,32 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
             $lis = $ol.find('> li.agendaItem');
         $lis.each(function () {
             let $li = $(this),
-                code = $li.data('code'),
                 currStr,
                 $subitems = $li.find('> ol');
-            if (code == '#') {
-                let parts = currNumber.split(separator);
-                if (parts[0].match(/^[a-y]$/i)) { // Single alphabetical characters
-                    parts[0] = String.fromCharCode(parts[0].charCodeAt(0) + 1);
-                } else { // Numbers or mixtures of alphabetical characters and numbers
-                    let matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
-                        nonNumeric = (typeof(matches[1]) == 'undefined' ? '' : matches[1]),
-                        numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
-                    parts[0] = nonNumeric + ++numeric;
-                }
-                currNumber = currStr = parts.join(separator);
+            if ($li.hasClass('agendaItemDate')) {
+                currStr = prefix;
             } else {
-                currStr = currNumber = code + ''; // currNumber needs to be a string, always.
-            }
-            if (currStr !== '') {
-                currStr = prevCode + currStr;
-            }
+                const code = $li.data('code');
+                if (code == '#') {
+                    let parts = currNumber.split(separator);
+                    if (parts[0].match(/^[a-y]$/i)) { // Single alphabetical characters
+                        parts[0] = String.fromCharCode(parts[0].charCodeAt(0) + 1);
+                    } else { // Numbers or mixtures of alphabetical characters and numbers
+                        let matches = parts[0].match(/^(.*[^0-9])?([0-9]*)$/),
+                            nonNumeric = (typeof (matches[1]) == 'undefined' ? '' : matches[1]),
+                            numeric = parseInt(matches[2] == '' ? '1' : matches[2]);
+                        parts[0] = nonNumeric + ++numeric;
+                    }
+                    currNumber = currStr = parts.join(separator);
+                } else {
+                    currStr = currNumber = code + ''; // currNumber needs to be a string, always.
+                }
+                if (currStr !== '') {
+                    currStr = prevCode + currStr;
+                }
 
-            $li.find('> div > h3 .code').text(currStr);
+                $li.find('> div > h3 .code').text(currStr);
+            }
             if ($subitems.length > 0) {
                 recalcAgendaNode($subitems, currStr);
             }

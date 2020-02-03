@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\MotionSorter;
+use app\components\{MotionSorter, Tools};
 use yii\db\ActiveRecord;
 
 /**
@@ -14,10 +14,12 @@ use yii\db\ActiveRecord;
  * @property int $parentItemId
  * @property int $position
  * @property string $code
- * @property string $title
- * @property string $description
- * @property int $motionTypeId
- * @property string $deadline
+ * @property string $time
+ * @property string|null $title
+ * @property string|null $description
+ * @property int|null $motionTypeId
+ * @property string|null $deadline
+ * @property string|null $settings
  *
  * @property Consultation $consultation
  * @property ConsultationAgendaItem $parentItem
@@ -34,6 +36,7 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
+
         return $app->tablePrefix . 'consultationAgendaItem';
     }
 
@@ -95,6 +98,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 }
             }
         }
+
         return $this->motionType;
     }
 
@@ -104,7 +108,7 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getMotions()
     {
         return $this->hasMany(Motion::class, ['agendaItemId' => 'id'])
-            ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
+                    ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
     /**
@@ -141,6 +145,7 @@ class ConsultationAgendaItem extends ActiveRecord
             }
             $return[] = $motion;
         }
+
         return $return;
     }
 
@@ -159,6 +164,7 @@ class ConsultationAgendaItem extends ActiveRecord
     /**
      * @param Consultation $consultation
      * @param int|null $parentItemId
+     *
      * @return ConsultationAgendaItem[]
      */
     public static function getItemsByParent(Consultation $consultation, $parentItemId)
@@ -169,11 +175,13 @@ class ConsultationAgendaItem extends ActiveRecord
                 $return[] = $item;
             }
         }
+
         return $return;
     }
 
     /**
      * @param Consultation $consultation
+     *
      * @return ConsultationAgendaItem[]
      */
     public static function getSortedFromConsultation(Consultation $consultation)
@@ -192,6 +200,7 @@ class ConsultationAgendaItem extends ActiveRecord
                     $numeric      = ($matches['numeric'] === '' ? 1 : $matches['numeric']);
                     $currParts[0] = $nonNumeric . ++$numeric;
                 }
+
                 return implode($separator, $currParts);
             } else {
                 return $newInternalCode;
@@ -218,6 +227,7 @@ class ConsultationAgendaItem extends ActiveRecord
                     $recFunc($consultation, $child, $prevCode . $currShownCode, $recFunc)
                 );
             }
+
             return $items;
         };
 
@@ -242,6 +252,7 @@ class ConsultationAgendaItem extends ActiveRecord
 
     /**
      * @param ConsultationAgendaItem[] $items
+     *
      * @return ConsultationAgendaItem[]
      */
     public static function sortItems($items)
@@ -257,14 +268,16 @@ class ConsultationAgendaItem extends ActiveRecord
                 if ($it1->position > $it2->position) {
                     return 1;
                 }
+
                 return 0;
             }
         );
+
         return $items;
     }
 
     /** @var string|null */
-    private $shownCode     = null;
+    private $shownCode = null;
     private $shownCodeFull = null;
 
     protected function setShownCode(string $code, string $codeFull)
@@ -284,6 +297,7 @@ class ConsultationAgendaItem extends ActiveRecord
                 }
             }
         }
+
         return ($full ? $this->shownCodeFull : $this->shownCode);
     }
 
@@ -300,7 +314,7 @@ class ConsultationAgendaItem extends ActiveRecord
             $statuses[] = IMotion::STATUS_RESOLUTION_PRELIMINARY;
             $statuses[] = IMotion::STATUS_RESOLUTION_FINAL;
         }
-        $return   = [];
+        $return = [];
         foreach ($this->getMyMotions() as $motion) {
             if (!in_array($motion->status, $statuses)) {
                 $return[] = $motion;
@@ -318,6 +332,38 @@ class ConsultationAgendaItem extends ActiveRecord
     public function getVisibleMotionsSorted($withdrawnAreVisible = true)
     {
         $motions = $this->getVisibleMotions($withdrawnAreVisible);
+
         return MotionSorter::getSortedMotionsFlat($this->getMyConsultation(), $motions);
+    }
+
+
+    public function isDateSeparator(): bool
+    {
+        return ($this->time && preg_match('/^\d{4}\-\d{2}\-\d{2}$/', $this->time));
+    }
+
+    public function getTime(): ?string
+    {
+        if ($this->time && preg_match('/^\d{2}:\d{2}$/', $this->time)) {
+            return $this->time;
+        } else {
+            return null;
+        }
+    }
+
+    public function getFormattedDate(): string
+    {
+        if (intval($this->time) === 0) {
+            return '';
+        }
+        $date = Tools::dateSql2Datetime($this->time);
+        if (!$date) {
+            return '';
+        }
+        // @TODO support other languages
+        $dow   = \Yii::t('structure', 'days_' . $date->format('N'));
+        $month = \Yii::t('structure', 'months_' . $date->format('n'));
+
+        return $dow . ', ' . $date->format('j') . '. ' . $month . ' ' . $date->format('Y');
     }
 }
