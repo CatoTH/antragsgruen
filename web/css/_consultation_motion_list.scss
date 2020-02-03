@@ -377,6 +377,9 @@ $agendaMarginPerLevel: 50px;
       top: 5px;
       right: 10px;
     }
+    &.agendaItemDate .delAgendaItem {
+      top: 30px;
+    }
 
     > div {
       margin-bottom: 5px;
@@ -477,7 +480,7 @@ $agendaMarginPerLevel: 50px;
   .agendaItemEditForm {
     display: none;
     /* display: flex */
-    width: calc(100% - 30px);
+    width: 100%;
     flex-direction: row;
     padding-bottom: 6px;
 
@@ -505,6 +508,11 @@ $agendaMarginPerLevel: 50px;
     .title {
       margin-right: 10px;
       flex-grow: 1;
+    }
+
+    .delete {
+      flex-basis: 30px;
+      flex-grow: 0;
     }
 
     .agendaMotionsRow {
@@ -571,7 +579,7 @@ $agendaMarginPerLevel: 50px;
   .agendaDateEditForm {
     display: none;
     /* display: flex */
-    width: calc(100% - 30px);
+    width: 100%;
     flex-direction: row;
 
     .date {
@@ -588,6 +596,11 @@ $agendaMarginPerLevel: 50px;
     .title {
       flex-grow: 1;
       margin-right: 10px;
+    }
+
+    .delete {
+      flex-basis: 30px;
+      flex-grow: 0;
     }
   }
 
