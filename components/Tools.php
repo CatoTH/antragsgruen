@@ -23,9 +23,7 @@ class Tools
 
     public static function dateSql2Datetime(string $input): ?\DateTime
     {
-        $timestamp = static::dateSql2timestamp($input);
-
-        return \DateTime::createFromFormat('U', $timestamp);
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $input . ' 00:00:00');
     }
 
     public static function getCurrentDateLocale(): string

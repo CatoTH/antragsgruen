@@ -50,7 +50,7 @@ if ($admin) {
     echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . Yii::t('base', 'save') . '</button>';
     echo Html::endForm();
 
-    $layout->addJS('js/jquery-ui-1.11.4.custom/jquery-ui.js');
+    $layout->addJS('js/jquery-ui.min.js');
     $layout->addJS('js/jquery.ui.touch-punch.js');
     $layout->addJS('js/jquery.mjs.nestedSortable.js');
     echo '</div>';

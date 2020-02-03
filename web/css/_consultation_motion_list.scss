@@ -334,6 +334,8 @@
     margin-top: -4px;
     display: flex;
     flex-direction: row;
+    height: 20px; // to prevent invalid height of placeholder while dragging
+    overflow: hidden;
     .addEntry {
       flex: 0;
       flex-basis: 25%;
@@ -444,6 +446,15 @@
       }
     }
   }
+  .agendaItemDate {
+    > div {
+      padding-top: 10px;
+    }
+    h3 {
+      text-decoration: underline;
+      margin-bottom: 8px;
+    }
+  }
 
   &.agendaListEditing {
     padding-top: 20px;
@@ -459,6 +470,7 @@
 
   .agendaItemEditForm {
     display: none;
+    padding-bottom: 6px;
 
     input.code {
       margin-right: 10px;
@@ -478,7 +490,7 @@
 
     }
 
-    input.title {
+    .title {
       margin-right: 10px;
     }
 
@@ -494,50 +506,61 @@
       padding-right: 0;
     }
   }
-  &.noShowTimes .agendaItemEditForm {
-    input.title {
+  &.noShowTimes {
+    .title {
       width: 400px;
     }
-    li.agendaItem input.title {
+    .agendaItemEditForm {
+      .time {
+        display: none;
+      }
+
+      input.code {
+        width: 80px;
+      }
+
+      select.motionType {
+        max-width: 170px;
+      }
+    }
+    li.agendaItem .title {
       width: 350px;
     }
-    li.agendaItem li.agendaItem input.title {
+    li.agendaItem li.agendaItem .title {
       width: 300px;
     }
-    li.agendaItem li.agendaItem li.agendaItem input.title {
+    li.agendaItem li.agendaItem li.agendaItem .title {
       width: 250px;
     }
-    .time {
-      display: none;
-    }
-    input.code {
-      width: 80px;
-    }
-    select.motionType {
-      max-width: 170px;
-    }
   }
-  &.showTimes .agendaItemEditForm {
-    input.title {
+  &.showTimes {
+    .title {
       width: 340px;
     }
-    li.agendaItem input.title {
+    .agendaItemEditForm {
+      .time {
+        width: 80px;
+      }
+
+      input.code {
+        width: 50px;
+      }
+
+      select.motionType {
+        max-width: 140px;
+      }
+    }
+
+    li.agendaItem .title {
       width: 290px;
     }
-    li.agendaItem li.agendaItem input.title {
+
+    li.agendaItem li.agendaItem .title {
       width: 240px;
     }
-    li.agendaItem li.agendaItem li.agendaItem input.title {
+
+    li.agendaItem li.agendaItem li.agendaItem .title {
       width: 190px;
-    }
-    .time {
-      width: 80px;
-    }
-    input.code {
-      width: 50px;
-    }
-    select.motionType {
-      max-width: 140px;
     }
   }
   .agendaDateEditForm {
@@ -554,6 +577,17 @@
     .title {
       width: 340px;
       margin-right: 10px;
+    }
+    li.agendaItem .title {
+      width: 290px;
+    }
+
+    li.agendaItem li.agendaItem .title {
+      width: 240px;
+    }
+
+    li.agendaItem li.agendaItem li.agendaItem .title {
+      width: 190px;
     }
   }
 

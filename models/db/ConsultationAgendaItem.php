@@ -2,8 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\MotionSorter;
-use app\components\Tools;
+use app\components\{MotionSorter, Tools};
 use yii\db\ActiveRecord;
 
 /**
