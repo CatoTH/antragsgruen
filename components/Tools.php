@@ -106,8 +106,11 @@ class Tools
         return '';
     }
 
-    public static function dateSql2bootstrapdate(string $date, ?string $locale = null): string
+    public static function dateSql2bootstrapdate(?string $date, ?string $locale = null): string
     {
+        if ($date === null) {
+            return '';
+        }
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
@@ -155,8 +158,11 @@ class Tools
         return '';
     }
 
-    public static function dateSql2bootstraptime(string $time, ?string $locale = null): string
+    public static function dateSql2bootstraptime(?string $time, ?string $locale = null): string
     {
+        if ($time === null) {
+            return '';
+        }
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }

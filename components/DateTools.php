@@ -63,7 +63,7 @@ class DateTools
         return implode(', ', $formatted);
     }
 
-    public static function getSimulatedTime(?Consultation $consultation): string
+    public static function getSimulatedTime(?Consultation $consultation): ?string
     {
         if (!$consultation || !User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
             return null;
