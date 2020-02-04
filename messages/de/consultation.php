@@ -93,4 +93,17 @@ return [
     'agenda_time'    => 'Zeit',
     'agenda_comment' => 'Kommentar',
     'agenda_date'    => 'Datum',
+
+    'discuss_comments_title'  => 'Aktuell diskutiert',
+    'discuss_comment_link'    => 'weiter',
+    'discuss_comment_to'      => 'Zu',
+    'discuss_comments_more'   => 'Weitere aktuelle Aktivitäten',
+    'discuss_comments_expand' => 'Weitere anzeigen',
+    'discuss_filter_all'      => 'Alle',
+    'discuss_sort_prefix'     => 'Nummer',
+    'discuss_sort_title'      => 'Titel',
+    'discuss_sort_newest'     => 'Neueste',
+    'discuss_sort_oldest'     => 'Älteste',
+    'discuss_sort_amend'      => 'Anzahl Änderungsanträge',
+    'discuss_sort_comment'    => 'Anzahl Kommentare',
 ];

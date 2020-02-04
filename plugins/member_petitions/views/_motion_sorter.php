@@ -2,7 +2,7 @@
 
 use app\components\UrlHelper;
 use app\components\Tools as DateTools;
-use app\models\db\Motion;
+use app\models\db\{ConsultationSettingsTag, Motion};
 use app\plugins\member_petitions\Tools;
 use yii\helpers\Html;
 
@@ -27,9 +27,9 @@ $showArchived = isset($_REQUEST['showArchived']);
             return !$isArchived;
         }
     }));
-    $tags     = Tools::getMostPopularTags($motions);
+    $tags     = ConsultationSettingsTag::getMostPopularTags($motions);
     $tagsTop3 = array_splice($tags, 0, 3);
-    $allTags  = Tools::getMostPopularTags($motions);
+    $allTags  = ConsultationSettingsTag::getMostPopularTags($motions);
     usort($allTags, function ($tag1, $tag2) {
         if (strpos($tag1['title'], 'Cluster') !== false && strpos($tag2['title'], 'Cluster') === false) {
             return -1;
@@ -134,7 +134,7 @@ $showArchived = isset($_REQUEST['showArchived']);
     </div>
 
     <?php
-    $comments = Tools::getNewestCommentsForConsultations($myConsultations, 10);
+    $comments = \app\models\db\IComment::getNewestForConsultations($myConsultations, 10);
     ?>
     <div class="mostRecentComments <?= (count($comments) > 4 ? 'shortened' : '') ?>">
         <h2 class="green">Aktuell diskutiert</h2>

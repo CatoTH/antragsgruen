@@ -1,7 +1,6 @@
 <?php
 
-use app\components\MotionSorter;
-use app\components\UrlHelper;
+use app\components\{MotionSorter, UrlHelper};
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -11,7 +10,7 @@ use yii\helpers\Html;
  * @var Motion[] $resolutions
  */
 
-echo '<h2 class="green">' . \Yii::t('con', 'resolutions') . '</h2>';
+echo '<h2 class="green">' . Yii::t('con', 'resolutions') . '</h2>';
 
 echo '<ul class="motionList motionListStd motionListWithoutAgenda resolutionList">';
 $resolutions = MotionSorter::getSortedMotionsFlat($consultation, $resolutions);

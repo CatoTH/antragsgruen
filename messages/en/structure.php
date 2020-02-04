@@ -168,6 +168,7 @@ return [
     'home_layout_agenda'            => 'Motions inlined into the agenda',
     'home_layout_agenda_long'       => 'Motions are below the agenda',
     'home_layout_agenda_hide_amend' => 'Motions are below the agenda, amendments hidden',
+    'home_layout_discussion_tags'   => 'Comments above motion list, tags / categories with filter',
 
     'motiondata_all'  => 'Show all (incl. date, status ans consultation)',
     'motiondata_mini' => 'Short version (only proposer, topic etc.)',

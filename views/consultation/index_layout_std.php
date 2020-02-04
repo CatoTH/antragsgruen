@@ -11,7 +11,7 @@ use app\views\consultation\LayoutHelper;
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+    echo $this->render('_index_resolutions', ['consultation' => $consultation]);
 }
 
 echo '<h2 class="green">' . Yii::t('con', 'All Motions') . '</h2>';

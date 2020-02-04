@@ -1,10 +1,7 @@
 <?php
 
-use app\components\MotionSorter;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\Motion;
+use app\components\{MotionSorter, UrlHelper};
+use app\models\db\{Amendment, Consultation, Motion};
 use yii\helpers\Html;
 
 /**
@@ -17,7 +14,7 @@ $hasNoTagMotions = false;
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+    echo $this->render('_index_resolutions', ['consultation' => $consultation]);
 }
 
 foreach ($motions as $motion) {
@@ -27,7 +24,7 @@ foreach ($motions as $motion) {
     if (count($motion->tags) === 0) {
         $hasNoTagMotions = true;
         if (!isset($tags[0])) {
-            $tags[0] = ['name' => \Yii::t('motion', 'tag_none'), 'motions' => []];
+            $tags[0] = ['name' => Yii::t('motion', 'tag_none'), 'motions' => []];
         }
         $tags[0]['motions'][] = $motion;
     } else {
@@ -51,8 +48,8 @@ if ($hasNoTagMotions) {
 
 echo '<section class="motionListTags">';
 
-if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, \Yii::t('motion', 'agenda_filter')) === false) {
-    echo '<h3 class="green">' . \Yii::t('motion', 'tags_head') . '</h3>';
+if (count($sortedTags) > 0 && mb_stripos($sortedTags[0]->title, Yii::t('motion', 'agenda_filter')) === false) {
+    echo '<h3 class="green">' . Yii::t('motion', 'tags_head') . '</h3>';
     echo '<ul id="tagList" class="content">';
 
     foreach ($tagIds as $tagId) {
@@ -75,11 +72,11 @@ foreach ($tagIds as $tagId) {
     <table class="motionTable">
         <thead><tr>';
     if (!$consultation->getSettings()->hideTitlePrefix) {
-        echo '<th class="prefixCol">' . \Yii::t('motion', 'Prefix') . '</th>';
+        echo '<th class="prefixCol">' . Yii::t('motion', 'Prefix') . '</th>';
     }
     echo '
-            <th class="titleCol">' . \Yii::t('motion', 'Title') . '</th>
-            <th class="initiatorCol">' . \Yii::t('motion', 'Initiator') . '</th>
+            <th class="titleCol">' . Yii::t('motion', 'Title') . '</th>
+            <th class="initiatorCol">' . Yii::t('motion', 'Initiator') . '</th>
         </tr></thead>';
     foreach ($tag['motions'] as $motion) {
         /** @var Motion $motion */
@@ -110,7 +107,7 @@ foreach ($tagIds as $tagId) {
         echo '</div><div class="pdflink">';
         if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
             echo Html::a(
-                \Yii::t('motion', 'as_pdf'),
+                Yii::t('motion', 'as_pdf'),
                 UrlHelper::createMotionUrl($motion, 'pdf'),
                 ['class' => 'pdfLink']
             );
@@ -141,7 +138,7 @@ foreach ($tagIds as $tagId) {
                 echo '<td class="prefixCol">' . Html::encode($amend->titlePrefix) . '</td>';
             }
             echo '<td class="titleCol"><div class="titleLink">';
-            $title = \Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
+            $title = Yii::t('amend', 'amendment_for') . ' ' . Html::encode($motion->titlePrefix);
             echo Html::a($title, UrlHelper::createAmendmentUrl($amend), ['class' => 'amendment' . $amend->id]);
             if ($amend->status === Amendment::STATUS_WITHDRAWN) {
                 echo ' <span class="status">(' . Html::encode($amend->getStatusNames()[$amend->status]) . ')</span>';

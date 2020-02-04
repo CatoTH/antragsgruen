@@ -13,6 +13,7 @@ class Consultation implements \JsonSerializable
     const START_LAYOUT_AGENDA = 3;
     const START_LAYOUT_AGENDA_LONG = 4;
     const START_LAYOUT_AGENDA_HIDE_AMEND = 5;
+    const START_LAYOUT_DISCUSSION_TAGS = 6;
 
     const ROBOTS_NONE = 0;
     const ROBOTS_ONLY_HOME = 1;
@@ -86,6 +87,7 @@ class Consultation implements \JsonSerializable
             static::START_LAYOUT_AGENDA            => \Yii::t('structure', 'home_layout_agenda'),
             static::START_LAYOUT_AGENDA_LONG       => \Yii::t('structure', 'home_layout_agenda_long'),
             static::START_LAYOUT_AGENDA_HIDE_AMEND => \Yii::t('structure', 'home_layout_agenda_hide_amend'),
+            static::START_LAYOUT_DISCUSSION_TAGS   => \Yii::t('structure', 'home_layout_discussion_tags'),
         ];
     }
 
@@ -139,6 +141,8 @@ class Consultation implements \JsonSerializable
                 return 'index_layout_agenda';
             case Consultation::START_LAYOUT_AGENDA_HIDE_AMEND:
                 return 'index_layout_agenda';
+            case Consultation::START_LAYOUT_DISCUSSION_TAGS:
+                return 'index_layout_discussion_tags';
             default:
                 throw new Internal('Unknown layout: ' . $this->startLayoutType);
         }

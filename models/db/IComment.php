@@ -4,8 +4,7 @@ namespace app\models\db;
 
 use app\components\Tools;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQueryInterface;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQueryInterface, ActiveRecord};
 
 /**
  * @property integer $id
@@ -243,4 +242,43 @@ abstract class IComment extends ActiveRecord implements IRSSItem
      * @return array
      */
     abstract public function getUserdataExportObject();
+
+    /**
+     * @param Consultation[] $consultations
+     * @param int $limit
+     * @return IComment[]
+     */
+    public static function getNewestForConsultations(array $consultations, int $limit): array
+    {
+        /** @var IComment[] $comments */
+        $comments = [];
+        foreach ($consultations as $consultation) {
+            $comments = array_merge(
+                MotionComment::getNewestByConsultation($consultation, $limit * 5),
+                AmendmentComment::getNewestByConsultation($consultation, $limit * 5)
+            );
+        }
+
+        usort($comments, function (IComment $comm1, IComment $comm2) {
+            return -1 * Tools::compareSqlTimes($comm1->getDate(), $comm2->getDate());
+        });
+
+        $filtered = [];
+        $foundIds = [];
+        foreach ($comments as $comment) {
+            $id = null;
+            if (is_a($comment, MotionComment::class)) {
+                $id = 'motion.' . $comment->motionId;
+            }
+            if (is_a($comment, AmendmentComment::class)) {
+                $id = 'amendment.' . $comment->amendmentId;
+            }
+            if (!in_array($id, $foundIds) && count($filtered) < $limit) {
+                $foundIds[] = $id;
+                $filtered[] = $comment;
+            }
+        }
+
+        return array_slice($filtered, 0, $limit);
+    }
 }

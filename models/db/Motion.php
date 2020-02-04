@@ -1241,6 +1241,17 @@ class Motion extends IMotion implements IRSSItem
         return $url;
     }
 
+    public function getTimestamp(): int
+    {
+        if ($this->datePublication) {
+            return Tools::dateSql2timestamp($this->datePublication);
+        } elseif ($this->dateCreation) {
+            return Tools::dateSql2timestamp($this->dateCreation);
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * @return array
      */

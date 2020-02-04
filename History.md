@@ -3,14 +3,15 @@
 ## Version 4.5.0 [not released yet]
 
 - The paragraph-based editing mode for merging amendments into motion, introduced in version 4.3.0, was visually improved to closer resemble the regular motion view, with the amendment toggles to the right of each paragraph. This improves the legibility of the motion text.
-- The agenda of a consultation can now have date deparators, and the individual agenda items can have explicit times.
+- The appearance settings of a site are now moved to a separate page.
+- There is a new consultation home page layout, targeted towards idea-collecting set-ups. The most recent comments are shown at the top, with a short abstract of the comment, to stress the discussion aspect. Below, the list of motions / ideas is shown, with a list of tags / topics, handlers to sort the motions by different criteria and filter them by tags / topics. The new layout can be set up on the "Appearance"-page.
+- The agenda of a consultation can now have date separators, and the individual agenda items can have explicit times.
 - Images can now have a maximum size for the PDF version. Signatures in applications, for example, now have a maximum size of 5x3cm.
 - If an image or a PDF in a motion or application is optional, it is now possible to delete an already uploaded one without uploading a replacement.
 - For PDF-based applications, the mostly empty cover page in front of the generated PDF is removed; the generated PDF is now exactly identical to the uploaded one.
 - The change mentioned above also allows attaching a pre-layouted PDF-version of a motion, replacing the automatically generated PDF.
 - Notification e-mails now use a very simple responsive e-mail template.
 - Mailgun and Mandrill are not supported anymore, for now.
-- The appearance settings of a site are now moved to a separate page.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 

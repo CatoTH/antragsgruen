@@ -165,10 +165,11 @@ return [
     'section_comment_paragraph' => 'Einzelne Absätze sind kommentierbar',
 
     'home_layout_std'               => 'Keine Tagesordnung',
-    'home_layout_tags'              => 'Themen / Schlagworte',
     'home_layout_agenda'            => 'Anträge innerhalb der Tagesordnung',
     'home_layout_agenda_long'       => 'Anträge unter der Tagesordnung',
     'home_layout_agenda_hide_amend' => 'Anträge unter der TO, ÄAs eingeklappt',
+    'home_layout_tags'              => 'Themen / Schlagworte als Liste',
+    'home_layout_discussion_tags'   => 'Kommentare über Antragsliste, Themen / Schlagworte mit Filter',
 
     'motiondata_all'  => 'Alle anzeigen (inkl. Datum, Status, Veranstaltung)',
     'motiondata_mini' => 'Kurzfassung (nur Antragsteller*in, Thema etc.)',

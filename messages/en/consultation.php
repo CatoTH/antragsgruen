@@ -85,4 +85,17 @@ return [
     'aad_title' => 'Using Antragsgrün',
     'aad_text'  => 'Do you want to use Antragsgrün / motion.tools for your own assembly?',
     'aad_btn'   => 'Information about using Antragsgrün',
+
+    'discuss_comments_title'  => 'Discussed recently',
+    'discuss_comment_link'    => 'more',
+    'discuss_comment_to'      => 'In reply to',
+    'discuss_comments_more'   => 'More recent activities',
+    'discuss_comments_expand' => 'Show more',
+    'discuss_filter_all'      => 'All',
+    'discuss_sort_prefix'     => 'Signature',
+    'discuss_sort_title'      => 'Title',
+    'discuss_sort_newest'     => 'Newest',
+    'discuss_sort_oldest'     => 'Oldest',
+    'discuss_sort_amend'      => 'Number of amendments',
+    'discuss_sort_comment'    => 'Number of comments',
 ];

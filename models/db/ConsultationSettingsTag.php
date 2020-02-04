@@ -44,14 +44,43 @@ class ConsultationSettingsTag extends ActiveRecord
             ->andWhere(Motion::tableName() . '.status != ' . Motion::STATUS_DELETED);
     }
 
-    /**
-     * @return string
-     */
-    public function getCSSIconClass()
+    public function getCSSIconClass(): string
     {
         switch ($this->cssicon) {
             default:
                 return 'glyphicon glyphicon-file';
         }
+    }
+
+    /**
+     * @param Motion[] $motions
+     * @return array
+     */
+    public static function getMostPopularTags($motions)
+    {
+        $tags = [];
+        foreach ($motions as $motion) {
+            foreach ($motion->tags as $tag) {
+                if (!isset($tags[$tag->id])) {
+                    $tags[$tag->id] = [
+                        'id'    => $tag->id,
+                        'title' => $tag->title,
+                        'num'   => 0,
+                    ];
+                }
+                $tags[$tag->id]['num']++;
+            }
+        }
+        $tags = array_values($tags);
+        usort($tags, function ($tag1, $tag2) {
+            if ($tag1['num'] > $tag2['num']) {
+                return -1;
+            }
+            if ($tag1['num'] < $tag2['num']) {
+                return 1;
+            }
+            return 0;
+        });
+        return $tags;
     }
 }
