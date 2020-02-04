@@ -229,11 +229,11 @@ class Tools
     }
 
 
-    public static function formatMysqlDate(string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
+    public static function formatMysqlDate(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
     {
         $currentTs = DateTools::getCurrentTimestamp();
 
-        if (strlen($mysqldate) === 0) {
+        if ($mysqldate === null || strlen($mysqldate) === 0) {
             return '-';
         } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs) && $allowRelativeDates) {
             return \yii::t('base', 'Today');
