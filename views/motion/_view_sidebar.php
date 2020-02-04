@@ -110,13 +110,6 @@ if (!$motion->getMyConsultation()->getForcedMotion()) {
 
 $html .= '</ul>';
 
-if ($motion->isSocialSharable() && count($replacedByMotions) == 0) {
-    $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-    $dataTitle      = $motion->getTitleWithPrefix();
-    $html .= '</div><div class="hidden-xs">' . LayoutHelper::getShareButtons($myUrl, $dataTitle);
-    $sidebarRows++;
-}
-
 
 if ($sidebarRows > 0) {
     $layout->menusHtml[] = $html;

@@ -750,20 +750,6 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return bool
-     */
-    public function isSocialSharable()
-    {
-        if ($this->getMyConsultation()->getSettings()->forceLogin) {
-            return false;
-        }
-        if (in_array($this->status, $this->getMyConsultation()->getInvisibleMotionStatuses(false))) {
-            return false;
-        }
-        return true;
-    }
-
     /** @var null|MotionSectionParagraphAmendment[] */
     private $changedParagraphCache = null;
 

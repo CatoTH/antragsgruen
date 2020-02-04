@@ -59,12 +59,6 @@ $sidebarRows++;
 
 $html .= '</ul>';
 
-if ($amendment->isSocialSharable()) {
-    $myUrl          = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-    $dataTitle      = $amendment->getTitle();
-    $html .= '</div><div class="hidden-xs">' . MotionLayoutHelper::getShareButtons($myUrl, $dataTitle) . '</div>';
-}
-
 
 $layout->menusHtml[] = $html;
 

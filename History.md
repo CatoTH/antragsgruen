@@ -12,6 +12,7 @@
 - The change mentioned above also allows attaching a pre-layouted PDF-version of a motion, replacing the automatically generated PDF.
 - Notification e-mails now use a very simple responsive e-mail template.
 - Mailgun and Mandrill are not supported anymore, for now.
+- The social sharing buttons in the motion and amendment views were removed, as they were practically never used and visually unpleasing.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 
