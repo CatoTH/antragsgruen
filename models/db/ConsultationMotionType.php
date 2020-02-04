@@ -75,6 +75,14 @@ class ConsultationMotionType extends ActiveRecord
         return $app->tablePrefix . 'consultationMotionType';
     }
 
+    public function setAttributes($values, $safeOnly = true)
+    {
+        parent::setAttributes($values, $safeOnly);
+        if (strlen($this->motionPrefix) > 0) {
+            $this->motionPrefix = substr($this->motionPrefix, 0, 10);
+        }
+    }
+
     /**
      * @return Consultation
      */

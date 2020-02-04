@@ -313,7 +313,7 @@ class MotionController extends AdminBase
             $motionType->titleSingular = $type['titleSingular'];
             $motionType->titlePlural   = $type['titlePlural'];
             $motionType->createTitle   = $type['createTitle'];
-            $motionType->motionPrefix  = $type['motionPrefix'];
+            $motionType->motionPrefix  = substr($type['motionPrefix'], 0, 10);
 
             if (strpos($type['pdfLayout'], 'php') === 0) {
                 $motionType->pdfLayout     = IntVal(str_replace('php', '', $type['pdfLayout']));
