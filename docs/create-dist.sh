@@ -68,6 +68,10 @@ rm -R vendor/yiisoft/yii2/log/migrations
 find vendor -type l -exec rm {} \;
 rm -R vendor/cebe/markdown/tests
 rm -R tests/
+rm migrations/m15*
+rm migrations/m16*
+rm migrations/m17*
+rm migrations/m18*
 find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
 find . -name ".gitignore" -exec rm {} \;
