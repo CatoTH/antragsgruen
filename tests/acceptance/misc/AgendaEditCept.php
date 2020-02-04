@@ -33,8 +33,8 @@ $I->see('1. Sonstiges', '.motionListWithinAgenda');
 $I->executeJS('$(".agendaListEditing").find("> li").eq(2).find("> ol").children().last().find("a").click();');
 $I->seeElement('.agendaItemEditForm');
 $I->seeElement('#agendaitem_-1 .agendaItemEditForm .code');
-$I->fillField('#agendaitem_-1 .agendaItemEditForm .title', 'More motions');
-$I->selectOption('#agendaitem_-1 .agendaItemEditForm .motionType', '5');
+$I->fillField('#agendaitem_-1 .agendaItemEditForm .title input', 'More motions');
+$I->selectOption('#agendaitem_-1 .agendaItemEditForm .motionType select', '5');
 $I->seeElement('#agendaEditSavingHolder');
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
@@ -43,8 +43,8 @@ $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 $I->wantTo('check if my chenges are saved');
 $I->dontSeeElement('.agendaItemEditForm');
 $I->dontSeeElement('#agendaEditSavingHolder');
-$I->see('1.4. More Motions', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
-$I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
+$I->see('1.4. More Motions', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3');
+$I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3');
 
 
 $I->wantTo('further change the agenda a bit');
@@ -56,14 +56,14 @@ $I->see('1.3. More Motions', '.motionListWithinAgenda');
 $I->see('2. Anträge', '.motionListWithinAgenda');
 
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click();');
-$I->fillField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
-$I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType', '0');
+$I->fillField('#agendaitem_5 .agendaItemEditForm .title input', 'Sonstwas');
+$I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType select', '0');
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 $I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
-$I->seeInField('#agendaitem_5 .agendaItemEditForm .title', 'Sonstwas');
-$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType', 'Keine Anträge');
+$I->seeInField('#agendaitem_5 .agendaItemEditForm .title input', 'Sonstwas');
+$I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType select', 'Keine Anträge');
 $I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
 
 
@@ -76,7 +76,7 @@ $I->see('Sonntag, 2. Februar 2020', '#agendaitem_-1 h3');
 $I->executeJS('$(".agendaListEditing").find("> li.agendaItem").last().prependTo(".agendaListEditing");');
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
-$I->see('Sonntag, 2. Februar 2020', '#agendaitem_-1 h3');
+$I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
 $I->dontSeeElement('#agendaitem_-1');
 
 $I->wantTo('add a time');
@@ -92,7 +92,7 @@ $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > form 
 $I->see('17:30', '#agendaitem_7 .time');
 
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
-$I->see('Sonntag, 2. Februar 2020', '#agendaitem_-1 h3');
+$I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
 $I->see('17:30', '#agendaitem_7 .time');
 
 $I->wantTo('delete the two modified items');
@@ -103,8 +103,8 @@ $I->moveMouseOver('#agendaitem_5 > div > h3');
 $I->click('#agendaitem_5 > div > h3 .delAgendaItem');
 $I->seeBootboxDialog('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?');
 $I->acceptBootboxConfirm();
-$I->moveMouseOver('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3');
-$I->click('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID. ' > div > h3 .delAgendaItem');
+$I->moveMouseOver('#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3');
+$I->executeJS('$("#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3 .delAgendaItem").trigger("click")');
 $I->seeBootboxDialog('Diesen Tagesordnungspunkt mitsamit Unterpunkten löschen?');
 $I->acceptBootboxConfirm();
 $I->dontSee('Sonstwas');
