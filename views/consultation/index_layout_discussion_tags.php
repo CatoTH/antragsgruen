@@ -85,7 +85,7 @@ if (count($comments) > 0) {
                 <?php
                 foreach ($tags as $tag) {
                     $btn = 'btn-default';
-                    echo '<a href="#" data-filter=".tag' . $tag['id'] . '" class="btn ' . $btn . ' btn-xs">';
+                    echo '<a href="#" data-filter=".tag' . $tag['id'] . '" class="btn ' . $btn . ' btn-xs tag' . $tag['id'] . '">';
                     echo Html::encode($tag['title']) . ' <span class="num">(' . $tag['num'] . ')</span></a>';
                 }
                 ?>
