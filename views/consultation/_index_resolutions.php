@@ -13,8 +13,8 @@ use yii\helpers\Html;
 echo '<h2 class="green">' . Yii::t('con', 'resolutions') . '</h2>';
 
 echo '<ul class="motionList motionListStd motionListWithoutAgenda resolutionList">';
-$resolutions = MotionSorter::getSortedMotionsFlat($consultation, $resolutions);
-foreach ($resolutions as $resolution) {
+$sortedResolutions = MotionSorter::getSortedMotionsFlat($consultation, $resolutions);
+foreach ($sortedResolutions as $resolution) {
     $hasPDF = ($resolution->getMyMotionType()->getPDFLayoutClass() !== null);
 
     $classes = ['motion', 'motionRow' . $resolution->id];

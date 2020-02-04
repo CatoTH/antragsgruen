@@ -14,7 +14,7 @@ $hasNoTagMotions = false;
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation]);
+    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
 
 foreach ($motions as $motion) {

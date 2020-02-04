@@ -15,7 +15,7 @@ $showPrefix = !$consultation->getSettings()->hideTitlePrefix;
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation]);
+    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
 if (!$showPrefix) {
     usort($motions, function (Motion $motion1, Motion $motion2) {
