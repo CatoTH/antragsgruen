@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
-use app\views\motion\LayoutHelper;
 use yii\helpers\Html;
 
 /**
@@ -28,9 +27,9 @@ try {
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
     $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
-    $title .= \Yii::t('motion', 'amendment_create');
+    $title .= Yii::t('motion', 'amendment_create');
     if (!$motion->isCurrentlyAmendable(false, true)) {
-        $title .= ' <span class="onlyAdmins">(' . \Yii::t('motion', 'amendment_create_admin') . ')</span>';
+        $title .= ' <span class="onlyAdmins">(' . Yii::t('motion', 'amendment_create_admin') . ')</span>';
     }
     $html .= Html::a($title, $amendCreateUrl, ['rel' => 'nofollow']) . '</li>';
     $layout->menusSmallAttachment = '<a class="navbar-brand" href="' . Html::encode($amendCreateUrl) . '" ' .
@@ -54,7 +53,7 @@ try {
 if ($motion->motionType->getPDFLayoutClass() !== null && $motion->isVisible()) {
     $pdfLi = '<li class="download">';
     $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
-        \Yii::t('motion', 'pdf_version');
+        Yii::t('motion', 'pdf_version');
     $pdfLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'pdf')) . '</li>';
     $html .= $pdfLi;
     $layout->menusHtmlSmall[] = $pdfLi;
@@ -75,7 +74,7 @@ if ($motion->canMergeAmendments()) {
 if ($motion->canEdit()) {
     $editLi = '<li class="edit">';
     $title  = '<span class="icon glyphicon glyphicon-edit"></span>' .
-        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), \Yii::t('motion', 'motion_edit'));
+        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), Yii::t('motion', 'motion_edit'));
     $editLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'edit')) . '</li>';
     $html .= $editLi;
     $layout->menusHtmlSmall[] = $editLi;
@@ -85,7 +84,7 @@ if ($motion->canEdit()) {
 if ($motion->canWithdraw()) {
     $withdrawLi = '<li class="withdraw">';
     $title      = '<span class="icon glyphicon glyphicon-remove"></span>' .
-        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), \Yii::t('motion', 'motion_withdraw'));
+        str_replace('%TYPE%', Html::encode($motion->motionType->titleSingular), Yii::t('motion', 'motion_withdraw'));
     $withdrawLi .= Html::a($title, UrlHelper::createMotionUrl($motion, 'withdraw')) . '</li>';
     $html .= $withdrawLi;
     $layout->menusHtmlSmall[] = $withdrawLi;
@@ -94,7 +93,7 @@ if ($motion->canWithdraw()) {
 
 if ($adminEdit) {
     $adminLi = '<li class="adminEdit">';
-    $title   = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('motion', 'motion_admin_edit');
+    $title   = '<span class="icon glyphicon glyphicon-wrench"></span>' . Yii::t('motion', 'motion_admin_edit');
     $adminLi .= Html::a($title, $adminEdit) . '</li>';
     $html .= $adminLi;
     $layout->menusHtmlSmall[] = $adminLi;
@@ -103,7 +102,7 @@ if ($adminEdit) {
 
 if (!$motion->getMyConsultation()->getForcedMotion()) {
     $html .= '<li class="back">';
-    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('motion', 'back_start');
+    $title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . Yii::t('motion', 'back_start');
     $html .= Html::a($title, UrlHelper::homeUrl()) . '</li>';
     $sidebarRows++;
 }

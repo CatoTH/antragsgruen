@@ -12,8 +12,8 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = str_replace('%QUERY%', $query, \Yii::t('con', 'search_results_title'));
-$layout->addBreadcrumb(\Yii::t('con', 'search_results_bc'));
+$this->title = str_replace('%QUERY%', $query, Yii::t('con', 'search_results_title'));
+$layout->addBreadcrumb(Yii::t('con', 'search_results_bc'));
 
 echo '<h1>' . Html::encode($this->title) . '</h1>
 
@@ -23,14 +23,14 @@ if (count($results) == 0) {
     echo '<div class="alert alert-danger" role="alert">
   <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
   <span class="sr-only">Error:</span>
-  ' . \Yii::t('con', 'search_results_none') . '</div>';
+  ' . Yii::t('con', 'search_results_none') . '</div>';
 
 } else {
     echo '<h3 class="resultCount">';
-    if (count($results) == 1) {
-        echo \Yii::t('con', 'search_results_1');
+    if (count($results) === 1) {
+        echo Yii::t('con', 'search_results_1');
     } else {
-        echo str_replace('%NUM%', count($results), \Yii::t('con', 'search_results_x'));
+        echo str_replace('%NUM%', count($results), Yii::t('con', 'search_results_x'));
     }
     echo ':</h3>';
 

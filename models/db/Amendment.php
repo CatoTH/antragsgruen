@@ -766,13 +766,13 @@ class Amendment extends IMotion implements IRSSItem
         }
         $paragraphs = [];
         foreach ($motionSections as $section) {
-            if ($section->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
             $paras = $section->getTextParagraphObjects($lineNumbers, true, true);
             foreach ($paras as $para) {
                 foreach ($para->amendmentSections as $amSec) {
-                    if ($amSec->amendmentId == $this->id) {
+                    if ($amSec->amendmentId === $this->id) {
                         $paragraphs[] = $amSec;
                     }
                 }

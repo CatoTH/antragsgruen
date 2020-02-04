@@ -1,11 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, ConsultationMotionType, Motion};
 use app\models\policies\IPolicy;
 use yii\helpers\Html;
 

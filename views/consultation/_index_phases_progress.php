@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $namedPhases = [];
 
 foreach ($consultation->motionTypes as $motionType) {
-    foreach (\app\models\db\ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
+    foreach (ConsultationMotionType::$DEADLINE_TYPES as $deadlineType) {
         foreach ($motionType->getDeadlinesByType($deadlineType) as $deadline) {
             if (!$deadline['title']) {
                 continue;
@@ -33,8 +33,8 @@ usort($namedPhases, function ($phase1, $phase2) {
     if ($phase1['start'] !== '' && $phase2 === '') {
         return 1;
     }
-    $start1 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase1['start']);
-    $start2 = \DateTime::createFromFormat('Y-m-d H:i:s', $phase2['start']);
+    $start1 = DateTime::createFromFormat('Y-m-d H:i:s', $phase1['start']);
+    $start2 = DateTime::createFromFormat('Y-m-d H:i:s', $phase2['start']);
     if ($start1 < $start2) {
         return -1;
     } elseif ($start1 > $start2) {
@@ -51,13 +51,13 @@ foreach ($consultation->motionTypes as $motionType) {
                 $deadlineName = $motionType->createTitle;
                 break;
             case ConsultationMotionType::DEADLINE_AMENDMENTS:
-                $deadlineName = \Yii::t('admin', 'motion_type_perm_amend');
+                $deadlineName = Yii::t('admin', 'motion_type_perm_amend');
                 break;
             case ConsultationMotionType::DEADLINE_COMMENTS:
-                $deadlineName = \Yii::t('admin', 'motion_type_perm_comment');
+                $deadlineName = Yii::t('admin', 'motion_type_perm_comment');
                 break;
             case ConsultationMotionType::DEADLINE_MERGING:
-                $deadlineName = \Yii::t('admin', 'motion_type_perm_merge');
+                $deadlineName = Yii::t('admin', 'motion_type_perm_merge');
                 break;
             default:
                 $deadlineName = '';
@@ -89,7 +89,7 @@ usort($namedPhases, function ($phase1, $phase2) {
 
 if (count($namedPhases) === 1) {
     echo '<div class="alert alert-info">';
-    echo \Yii::t('con', 'current_phase') . ': ' . Html::encode($namedPhases[0]['title']);
+    echo Yii::t('con', 'current_phase') . ': ' . Html::encode($namedPhases[0]['title']);
     echo '</div>';
 } elseif (count($namedPhases) > 1) {
     ?>

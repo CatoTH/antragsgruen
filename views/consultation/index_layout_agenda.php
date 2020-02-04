@@ -62,7 +62,7 @@ if ($admin) {
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+    echo $this->render('_index_resolutions', ['consultation' => $consultation]);
 }
 
 

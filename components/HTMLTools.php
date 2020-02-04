@@ -551,12 +551,7 @@ class HTMLTools
     private static $LINKS;
     private static $LINK_CACHE;
 
-    /**
-     * @param string $html
-     * @param bool $linksAtEnd
-     * @return string
-     */
-    public static function toPlainText($html, $linksAtEnd = false)
+    public static function toPlainText(string $html, bool $linksAtEnd = false): string
     {
         $html = str_replace("\n", "", $html);
         $html = str_replace("\r", "", $html);
@@ -602,20 +597,19 @@ class HTMLTools
 
 
         $text = preg_replace_callback("/<i>(.*)<\/i>/siU", function ($matches) {
-            $text = "/" . $matches[1] . "/";
-            return $text;
+            return "/" . $matches[1] . "/";
         }, $text);
 
         $text = preg_replace_callback("/<ins[^>]*>(.*)<\/ins>/siU", function ($matches) {
             $ins  = \Yii::t('diff', 'plain_text_ins');
-            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
-            return $text;
+
+            return '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
         }, $text);
 
         $text = preg_replace_callback("/<del[^>]*>(.*)<\/del>/siU", function ($matches) {
             $ins  = \Yii::t('diff', 'plain_text_del');
-            $text = '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
-            return $text;
+
+            return '[' . $ins . ']' . $matches[1] . '[/' . $ins . ']';
         }, $text);
 
         $text = str_ireplace("</tr>", "\n", $text);
@@ -743,14 +737,9 @@ class HTMLTools
         return $str;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param string $direction [top, bottom, right, left]
-     * @param string $tooltipExtraClass
-     * @return string
-     */
-    public static function amendmentDiffTooltip(Amendment $amendment, $direction = '', $tooltipExtraClass = '')
+    public static function amendmentDiffTooltip(Amendment $amendment, string $direction = '', string $tooltipExtraClass = ''): string
     {
+        // $direction values: [top, bottom, right, left]
         $url = UrlHelper::createAmendmentUrl($amendment, 'ajax-diff');
         return '<button tabindex="0" type="button" data-toggle="popover" ' .
             'class="amendmentAjaxTooltip link" data-initialized="0" ' .
@@ -760,13 +749,7 @@ class HTMLTools
             '<span class="glyphicon glyphicon-eye-open"></span></button>';
     }
 
-    /**
-     * @param string $formName
-     * @param array $options
-     * @param string $value
-     * @return string
-     */
-    public static function smallTextarea($formName, $options, $value = '')
+    public static function smallTextarea(string $formName, array $options, string $value = ''): string
     {
         $rows = count(explode("\n", $value));
         if (isset($options['placeholder'])) {
@@ -783,12 +766,7 @@ class HTMLTools
         return $str;
     }
 
-    /**
-     * @param \DOMNode $node
-     * @param bool $skipBody
-     * @return string
-     */
-    public static function renderDomToHtml(\DOMNode $node, $skipBody = false)
+    public static function renderDomToHtml(\DOMNode $node, bool $skipBody = false): string
     {
         if (is_a($node, \DOMElement::class)) {
             if ($node->nodeName === 'br') {
@@ -842,11 +820,7 @@ class HTMLTools
         }
     }
 
-    /**
-     * @param $text
-     * @return string
-     */
-    public static function textToHtmlWithLink($text)
+    public static function textToHtmlWithLink(string $text): string
     {
         $html = nl2br(Html::encode($text), false);
 
@@ -881,11 +855,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function encodeAddShy($str)
+    public static function encodeAddShy(string $str): string
     {
         $str       = Html::encode($str);
         $shyAfters = ['itglieder', 'enden', 'voll', 'undex', 'gierten', 'wahl', 'andes'];
@@ -954,11 +924,7 @@ class HTMLTools
         return [$node];
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function stripInsDelMarkers($html)
+    public static function stripInsDelMarkers(string $html): string
     {
         $body         = static::html2DOM($html);
         $strippedBody = static::stripInsDelMarkersInt($body);

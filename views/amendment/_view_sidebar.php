@@ -2,7 +2,6 @@
 
 use app\components\UrlHelper;
 use yii\helpers\Html;
-use app\views\motion\LayoutHelper as MotionLayoutHelper;
 
 /**
  * @var \app\models\db\Amendment $amendment
@@ -39,7 +38,7 @@ if ($amendment->canWithdraw()) {
 
 if ($amendment->canMergeIntoMotion(true)) {
     $html .= '<li class="mergeIntoMotion">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('amend', 'sidebar_mergeintomotion');
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . Yii::t('amend', 'sidebar_mergeintomotion');
     $url = UrlHelper::createAmendmentUrl($amendment, 'merge');
     $html .= Html::a($title, $url) . '</li>';
     $sidebarRows++;
@@ -47,13 +46,13 @@ if ($amendment->canMergeIntoMotion(true)) {
 
 if ($adminEdit) {
     $html .= '<li class="adminEdit">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . \Yii::t('amend', 'sidebar_adminedit');
+    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . Yii::t('amend', 'sidebar_adminedit');
     $html .= Html::a($title, $adminEdit) . '</li>';
     $sidebarRows++;
 }
 
 $html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . \Yii::t('amend', 'sidebar_back');
+$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . Yii::t('amend', 'sidebar_back');
 $html .= Html::a($title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</li>';
 $sidebarRows++;
 

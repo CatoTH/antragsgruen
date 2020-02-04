@@ -167,8 +167,9 @@ if (count($comments) > 0) {
                 echo '</p>';
                 $abstract = null;
                 foreach ($motion->getSortedSections(true) as $section) {
-                    if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-                        $abstract = $section->data;
+                    if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE &&
+                        $section->getSettings()->maxLen !== 0) {
+                        $abstract = \app\components\HTMLTools::toPlainText($section->data, true);
                     }
                 }
                 if ($abstract) {

@@ -1,8 +1,6 @@
 <?php
 
-use app\models\db\Amendment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{Amendment, IMotion, Motion};
 use app\models\proposedProcedure\Agenda;
 use yii\helpers\Html;
 
