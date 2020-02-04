@@ -155,7 +155,7 @@ class ConsultationAgendaItem extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'consultationId'], 'required'],
+            [['consultationId'], 'required'],
             [['title', 'code', 'description', 'deadline', 'position'], 'safe'],
             [['id', 'consultationId', 'parentItemId', 'position', 'motionTypeId'], 'number'],
         ];
