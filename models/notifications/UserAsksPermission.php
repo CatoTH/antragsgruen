@@ -3,19 +3,15 @@
 namespace app\models\notifications;
 
 use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\User;
+use app\models\db\{Consultation, User};
 
 class UserAsksPermission extends Base implements IEmailAdmin
 {
+    /** @var User */
     protected $user;
+    /** @var Consultation */
     protected $consultation;
 
-    /**
-     * UserAsksPermission constructor.
-     * @param User $user
-     * @param Consultation $consultation
-     */
     public function __construct(User $user, Consultation $consultation)
     {
         $this->user         = $user;
@@ -24,10 +20,7 @@ class UserAsksPermission extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         $actionlink = UrlHelper::absolutizeLink(UrlHelper::createUrl('/admin/index/siteaccess'))
             . '#accountsScreenForm';
@@ -39,10 +32,7 @@ class UserAsksPermission extends Base implements IEmailAdmin
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return \Yii::t('user', \Yii::t('user', 'acc_request_noti_subject'));
     }

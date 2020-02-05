@@ -23,10 +23,7 @@ class AdminResponseRequired extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         $text = 'Hallo,<br><br>Das folgende Mitgliederbegehren ist erfolgreich und sollte nun behandelt werden:<br><br>%LINK%<br><br>';
 
@@ -44,7 +41,7 @@ class AdminResponseRequired extends Base implements IEmailAdmin
     /**
      * @return string
      */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return "Mitgliederbegehren erfolgereich";
     }

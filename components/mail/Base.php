@@ -2,6 +2,7 @@
 
 namespace app\components\mail;
 
+use app\components\HTMLTools;
 use app\models\db\{Consultation, EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
@@ -63,7 +64,7 @@ abstract class Base
     protected function createHtmlPart(string $subject, string $plain, ?string $html, ?Consultation $consultation): string
     {
         if (!$html) {
-            $html = '<p>' . nl2br(Html::encode($plain)) . '</p>';
+            $html = '<p>' . HTMLTools::plainToHtml($plain) . '</p>';
         }
 
         return \Yii::$app->controller->renderPartial('@app/views/layouts/email', [

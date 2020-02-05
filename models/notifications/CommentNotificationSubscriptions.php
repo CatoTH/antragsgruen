@@ -3,9 +3,7 @@
 namespace app\models\notifications;
 
 use app\components\UrlHelper;
-use app\models\db\EMailLog;
-use app\models\db\IComment;
-use app\models\db\User;
+use app\models\db\{EMailLog, IComment, User};
 
 class CommentNotificationSubscriptions extends Base implements IEmailUser
 {
@@ -15,11 +13,6 @@ class CommentNotificationSubscriptions extends Base implements IEmailUser
     /** @var IComment */
     private $comment;
 
-    /**
-     * CommentNotification constructor.
-     * @param User $user
-     * @param IComment $comment
-     */
     public function __construct(User $user, IComment $comment)
     {
         $this->user         = $user;
@@ -29,18 +22,12 @@ class CommentNotificationSubscriptions extends Base implements IEmailUser
         parent::__construct();
     }
 
-    /**
-     * @return User
-     */
-    public function getEmailUser()
+    public function getEmailUser(): string
     {
         return $this->user;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailUserText()
+    public function getEmailUserText(): string
     {
         return str_replace(
             ['%TITLE%', '%LINK%'],
@@ -49,19 +36,13 @@ class CommentNotificationSubscriptions extends Base implements IEmailUser
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailUserSubject()
+    public function getEmailUserSubject(): string
     {
         $motionTitle = $this->comment->getMotionTitle();
         return str_replace('%TITLE%', $motionTitle, \Yii::t('user', 'noti_new_comment_title'));
     }
 
-    /**
-     * @return int
-     */
-    public function getEmailUserType()
+    public function getEmailUserType(): int
     {
         return EMailLog::TYPE_COMMENT_NOTIFICATION_USER;
     }

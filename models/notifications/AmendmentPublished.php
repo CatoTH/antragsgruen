@@ -5,11 +5,7 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\components\HTMLTools;
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\EMailLog;
-use app\models\db\UserNotification;
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, UserNotification};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
 
@@ -24,10 +20,6 @@ class AmendmentPublished
     /** @var string[] */
     protected $alreadyNotified = [];
 
-    /**
-     * MotionInitiallySubmitted constructor.
-     * @param Amendment $amendment
-     */
     public function __construct(Amendment $amendment)
     {
         $this->amendment    = $amendment;

@@ -145,6 +145,10 @@ class PDF extends ISectionType
 
     public function getMotionEmailHtml(): string
     {
+        if ($this->isEmpty()) {
+            return '';
+        }
+
         $url = $this->getPdfUrl(true);
         return '<a href="' . Html::encode($url) . '">' . \Yii::t('motion', 'pdf_current') . '</a>';
     }

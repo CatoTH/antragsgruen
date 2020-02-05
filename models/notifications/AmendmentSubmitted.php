@@ -22,10 +22,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         // @TODO Use different texts depending on the status
 
@@ -37,10 +34,7 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return \Yii::t('amend', 'submitted_adminnoti_title');
     }

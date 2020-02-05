@@ -22,10 +22,7 @@ class AmendmentWithdrawn extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
         return str_replace(
@@ -35,10 +32,7 @@ class AmendmentWithdrawn extends Base implements IEmailAdmin
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return \Yii::t('amend', 'withdrawn_adminnoti_title');
     }

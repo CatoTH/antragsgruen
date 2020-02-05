@@ -9,10 +9,6 @@ class MotionWithdrawn extends Base implements IEmailAdmin
 {
     protected $motion;
 
-    /**
-     * MotionWithdrawn constructor.
-     * @param Motion $motion
-     */
     public function __construct(Motion $motion)
     {
         $this->motion       = $motion;
@@ -21,10 +17,7 @@ class MotionWithdrawn extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
         return str_replace(
@@ -34,10 +27,7 @@ class MotionWithdrawn extends Base implements IEmailAdmin
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return \Yii::t('motion', 'withdrawn_adminnoti_title');
     }

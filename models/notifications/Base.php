@@ -20,9 +20,7 @@ abstract class Base
         $this->send();
     }
 
-    /**
-     */
-    private function sendEmailAdmin()
+    private function sendEmailAdmin(): void
     {
         $consultation = $this->consultation;
         $mails        = $consultation->getAdminEmails();
@@ -46,9 +44,7 @@ abstract class Base
         }
     }
 
-    /**
-     */
-    private function sendEmailUser()
+    private function sendEmailUser(): void
     {
         /** @var IEmailUser $maildata */
         $maildata = $this;
@@ -61,9 +57,7 @@ abstract class Base
         );
     }
 
-    /**
-     */
-    public function send()
+    public function send(): void
     {
         $implements = class_implements($this);
         if (in_array(IEmailAdmin::class, $implements)) {

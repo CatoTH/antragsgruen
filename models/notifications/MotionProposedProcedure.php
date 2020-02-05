@@ -4,8 +4,7 @@ namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
-use app\models\db\EMailLog;
-use app\models\db\Motion;
+use app\models\db\{EMailLog, Motion};
 use app\models\exceptions\MailNotSent;
 
 class MotionProposedProcedure

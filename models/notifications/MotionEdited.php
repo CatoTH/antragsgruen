@@ -21,20 +21,14 @@ class MotionEdited extends Base implements IEmailAdmin
         parent::__construct();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminText()
+    public function getEmailAdminText(): string
     {
         $mailText = \Yii::t('motion', 'edit_mail_body');
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($this->motion));
         return str_replace(['%TITLE%', '%LINK%'], [$this->motion->getTitleWithIntro(), $motionLink], $mailText);
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailAdminSubject()
+    public function getEmailAdminSubject(): string
     {
         return \Yii::t('motion', 'edit_mail_title');
     }

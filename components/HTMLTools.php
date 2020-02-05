@@ -547,6 +547,45 @@ class HTMLTools
         return static::renderDomToHtml($body, true);
     }
 
+    public static function plainToHtml(string $text, bool $insertLinks = true): string
+    {
+        $html = nl2br(htmlentities($text, ENT_COMPAT, 'UTF-8'));
+        if ($insertLinks) {
+            $url_maxlen       = 250;
+            $url_maxlen_end   = 50;
+            $url_maxlen_host  = 150;
+            $url_patter_host  = "[-a-zäöüß0-9\_\.]";
+            $url_pattern      = "([-a-zäöüß0-9\_\$\.\:;\/?=\+\~@,%#!\'\[\]\|]|\&(?!amp\;|lt\;|gt\;|quot\;)|\&amp\;)";
+            $url_pattern_ende = "([-a-zäöüß0-9\_\$\:\/=\+\~@%#\|]|\&(?!amp\;|lt\;|gt\;|quot\;)|\&amp\;)";
+
+            $end_pattern      = "($url_pattern_ende|($url_pattern*\($url_pattern{0,$url_maxlen_end}\)){1,3})";
+            $host_url_pattern = "$url_patter_host{1,$url_maxlen_host}(\/?($url_pattern{0,$url_maxlen}$end_pattern)?)?";
+
+            $urlsearch[]  = "/([({\[\|>\s])((https?):\/\/|mailto:)($host_url_pattern)/siu";
+            $urlreplace[] = "\\1<a rel=\"nofollow\" target=\"_blank\" href=\"\\2\\4\">\\2\\4</a>";
+
+            $urlsearch[]  = "/^((https?):\/\/|mailto:)($host_url_pattern)/siu";
+            $urlreplace[] = "<a rel=\"nofollow\" target=\"_blank\" href=\"\\1\\3\">\\1\\3</a>";
+
+            $wwwsearch[]  = "/([({\[\|>\s])((?<![\/\/])www\.)($host_url_pattern)/siu";
+            $wwwreplace[] = "\\1<a rel=\"nofollow\" target=\"_blank\" href=\"https://\\2\\3\">\\2\\3</a>";
+
+            $wwwsearch[]  = "/^((?<![\/\/])www\.)($host_url_pattern)/siu";
+            $wwwreplace[] = "<a rel=\"nofollow\" target=\"_blank\" href=\"https://\\1\\2\">\\1\\2</a>"; #
+
+            $emailsearch[]  = "/([\s])([_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,}))/si";
+            $emailreplace[] = "\\1<a href=\"mailto:\\2\">\\2</a>";
+            $emailsearch[]  = "/^([_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,}))/si";
+            $emailreplace[] = "<a href=\"mailto:\\0\">\\0</a>";
+
+            $html = preg_replace($wwwsearch, $wwwreplace, $html);
+            $html = preg_replace($urlsearch, $urlreplace, $html);
+            $html = preg_replace($emailsearch, $emailreplace, $html);
+        }
+
+        return $html;
+    }
+
 
     private static $LINKS;
     private static $LINK_CACHE;

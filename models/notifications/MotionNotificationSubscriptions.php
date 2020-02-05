@@ -12,11 +12,6 @@ class MotionNotificationSubscriptions extends Base implements IEmailUser
     /** @var User */
     private $user;
 
-    /**
-     * MotionNotification constructor.
-     * @param Motion $motion
-     * @param User $user
-     */
     public function __construct(Motion $motion, User $user)
     {
         $this->motion       = $motion;
@@ -26,26 +21,17 @@ class MotionNotificationSubscriptions extends Base implements IEmailUser
         parent::__construct();
     }
 
-    /**
-     * @return User
-     */
-    public function getEmailUser()
+    public function getEmailUser(): User
     {
         return $this->user;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailUserSubject()
+    public function getEmailUserSubject(): string
     {
         return \Yii::t('user', 'noti_new_motion_title') . ' ' . $this->motion->getTitleWithPrefix();
     }
 
-    /**
-     * @return string
-     */
-    public function getEmailUserText()
+    public function getEmailUserText(): string
     {
         $link      = $this->motion->getLink(true);
         $initiator = $this->motion->getInitiatorsStr();
@@ -56,10 +42,7 @@ class MotionNotificationSubscriptions extends Base implements IEmailUser
         );
     }
 
-    /**
-     * @return int
-     */
-    public function getEmailUserType()
+    public function getEmailUserType(): int
     {
         return EMailLog::TYPE_MOTION_NOTIFICATION_USER;
     }

@@ -4,8 +4,7 @@ namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\EMailLog;
+use app\models\db\{Amendment, EMailLog};
 use app\models\exceptions\MailNotSent;
 
 class AmendmentProposedProcedure
@@ -44,11 +43,7 @@ class AmendmentProposedProcedure
         );
     }
 
-    /**
-     * @param Amendment $amendment
-     * @return string
-     */
-    public static function getDefaultText(Amendment $amendment)
+    public static function getDefaultText(Amendment $amendment): string
     {
         $initiator = $amendment->getInitiators();
 

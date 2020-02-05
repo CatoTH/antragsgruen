@@ -11,6 +11,7 @@ class EmailNotifications
 {
     /**
      * @param Motion $motion
+     *
      * @throws \app\models\exceptions\Internal
      */
     public static function sendMotionSubmissionConfirm(Motion $motion)
@@ -72,6 +73,7 @@ class EmailNotifications
 
     /**
      * @param Motion $motion
+     *
      * @throws \app\models\exceptions\Internal
      */
     public static function sendMotionOnPublish(Motion $motion)
@@ -84,8 +86,6 @@ class EmailNotifications
 
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
         $plain      = \Yii::t('motion', 'published_email_body');
-        $plain      = str_replace('%LINK%', $motionLink, $plain);
-        $plain      = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
         $title      = $motion->getMyMotionType()->titleSingular . ': ' . $motion->title;
         $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
         $sections   = $motion->getSortedSections(true);
@@ -98,7 +98,12 @@ class EmailNotifications
             $motionHtml .= $typedSection->getMotionEmailHtml();
             $motionHtml .= '</div>';
         }
-        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
+        $html = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
+        $html = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
+
+        $plain = str_replace('%LINK%', $motionLink, $plain);
+        $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
         $plain .= HTMLTools::toPlainText($html);
 
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
@@ -155,6 +160,7 @@ class EmailNotifications
 
     /**
      * @param Amendment $amendment
+     *
      * @throws \app\models\exceptions\Internal
      */
     public static function sendAmendmentSubmissionConfirm(Amendment $amendment)
@@ -165,7 +171,7 @@ class EmailNotifications
 
         $initiator  = $amendment->getInitiators();
         $motionType = $amendment->getMyMotion()->getMyMotionType();
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
+        if (count($initiator) > 0 && $initiator[0]->contactEmail) {
             if ($amendment->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 $emailText  = \Yii::t('motion', 'submitted_supp_phase_email');
                 $min        = $motionType->getAmendmentSupportTypeClass()->getSettingsObj()->minSupporters;
