@@ -154,7 +154,7 @@ $bodyFont = Html::encode($styles ? $styles->getValue('bodyFont', \app\models\set
                     </tr>
                 </table>
                 <?php
-                if (Yii::t('base', 'email_footer') !== '') {
+                if (Yii::t('base', 'email_footer') !== '' && Yii::t('base', 'email_footer') !== 'email_footer') {
                     ?>
                     <div class="footer" style="clear: both; Margin-top: 10px; text-align: center; width: 100%;">
                         <table border="0" cellpadding="0" cellspacing="0"
