@@ -2075,16 +2075,16 @@
         },
         {
             "name": "codeception/module-webdriver",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-webdriver.git",
-                "reference": "51f95403af8a5d29f5e5a163491f8000b012c88e"
+                "reference": "a41fae6220cd6b1e9da1c4a0662f9ed854f60412"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-webdriver/zipball/51f95403af8a5d29f5e5a163491f8000b012c88e",
-                "reference": "51f95403af8a5d29f5e5a163491f8000b012c88e",
+                "url": "https://api.github.com/repos/Codeception/module-webdriver/zipball/a41fae6220cd6b1e9da1c4a0662f9ed854f60412",
+                "reference": "a41fae6220cd6b1e9da1c4a0662f9ed854f60412",
                 "shasum": ""
             },
             "require": {
@@ -2126,7 +2126,7 @@
                 "browser-testing",
                 "codeception"
             ],
-            "time": "2020-01-20T07:57:02+00:00"
+            "time": "2020-02-04T17:23:57+00:00"
         },
         {
             "name": "codeception/phpunit-wrapper",
@@ -4837,7 +4837,7 @@
         },
         {
             "name": "symfony/process",
-            "version": "v4.4.3",
+            "version": "v4.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
