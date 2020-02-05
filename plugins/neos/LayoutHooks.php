@@ -9,12 +9,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    /**
-     * @param string $before
-     * @param Motion $motion
-     * @return string
-     */
-    public function beforeMotionView($before, Motion $motion)
+    public function beforeMotionView(string $before, Motion $motion): string
     {
         if ($motion->canMergeAmendments()) {
             $classes = 'content neosMotionMerge';
@@ -37,12 +32,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function footerLine($before)
+    public function footerLine(string $before): string
     {
         $out         = '<footer class="footer"><div class="container">';
         $legalLink   = UrlHelper::createUrl(['pages/show-page', 'pageSlug' => 'legal']);
@@ -58,12 +48,7 @@ class LayoutHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function favicons($before)
+    public function favicons(string $before): string
     {
         $baseUrl = Html::encode(Assets::$myBaseUrl);
 

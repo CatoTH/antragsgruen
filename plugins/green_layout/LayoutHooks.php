@@ -3,29 +3,17 @@
 namespace app\plugins\green_layout;
 
 use app\components\UrlHelper;
-use app\models\layoutHooks\Hooks;
-use app\models\layoutHooks\Layout;
-use app\plugins\green_manager\SiteSettings;
+use app\models\layoutHooks\{Hooks, Layout};
 use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function beginPage($before)
+    public function beginPage(string $before): string
     {
         return '';
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function renderSidebar($before)
+    public function renderSidebar(string $before): string
     {
         $str = $this->layout->preSidebarHtml;
         if (count($this->layout->menusHtml) > 0) {
@@ -38,12 +26,7 @@ class LayoutHooks extends Hooks
         return $str;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function logoRow($before)
+    public function logoRow(string $before): string
     {
         $out = '<header class="row logo" role="banner">' .
             '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo" title="' .
@@ -63,12 +46,7 @@ class LayoutHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function beforeContent($before)
+    public function beforeContent(string $before): string
     {
         $out = '<section class="navwrap">' .
             '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">' .
@@ -91,12 +69,7 @@ class LayoutHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSearchForm($before)
+    public function getSearchForm(string $before): string
     {
         $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
         $html .= '<h6 class="invisible">' . \Yii::t('con', 'sb_search_form') . '</h6>';
@@ -104,7 +77,7 @@ class LayoutHooks extends Hooks
     <input type="text" class="query" name="query"
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
-        
+
     <button type="submit" class="button-submit hidden">
                 <span class="fa fa-search"></span> <span class="text">Search</span>
             </button>';
@@ -112,12 +85,7 @@ class LayoutHooks extends Hooks
         return $html;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function footerLine($before)
+    public function footerLine(string $before): string
     {
         $out = '<footer class="footer"><div class="container">';
 

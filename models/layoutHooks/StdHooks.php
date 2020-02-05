@@ -11,12 +11,7 @@ use yii\helpers\Html;
 
 class StdHooks extends Hooks
 {
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function beginPage($before)
+    public function beginPage(string $before): string
     {
         $out = '<header id="mainmenu">';
         $out .= '<div class="navbar">
@@ -30,12 +25,7 @@ class StdHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function logoRow($before)
+    public function logoRow(string $before): string
     {
         $out = '<div class="row logo">
 <a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
@@ -45,12 +35,7 @@ class StdHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function favicons($before)
+    public function favicons(string $before): string
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
@@ -72,22 +57,12 @@ class StdHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function beforeContent($before)
+    public function beforeContent(string $before): string
     {
         return Layout::breadcrumbs();
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function breadcrumbs($before)
+    public function breadcrumbs(string $before): string
     {
         $out = '';
         $showBreadcrumbs = (!$this->consultation || !$this->consultation->site || $this->consultation->site->getSettings()->showBreadcrumbs);
@@ -106,21 +81,12 @@ class StdHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     */
-    public function endPage($before)
+    public function endPage(string $before): string
     {
         return $before . Layout::footerLine();
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSearchForm($before)
+    public function getSearchForm(string $before): string
     {
         $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
         $html .= '<div class="nav-list"><div class="nav-header">' . \Yii::t('con', 'sb_search') . '</div>
@@ -142,11 +108,7 @@ class StdHooks extends Hooks
         return $html;
     }
 
-    /**
-     * @param $before
-     * @return string
-     */
-    public function renderSidebar($before)
+    public function renderSidebar(string $before): string
     {
         $str = $before . $this->layout->preSidebarHtml;
         if (count($this->layout->menusHtml) > 0) {
@@ -159,13 +121,7 @@ class StdHooks extends Hooks
         return $str;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getStdNavbarHeader($before)
+    public function getStdNavbarHeader(string $before): string
     {
         /** @var Base $controller */
         $controller   = \Yii::$app->controller;
@@ -250,12 +206,7 @@ class StdHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAntragsgruenAd($before)
+    public function getAntragsgruenAd(string $before): string
     {
         if (\Yii::$app->language == 'de') {
             $url = 'https://antragsgruen.de/';
@@ -276,12 +227,7 @@ class StdHooks extends Hooks
     </div>';
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function footerLine($before)
+    public function footerLine(string $before): string
     {
         $out = '<footer class="footer">';
 

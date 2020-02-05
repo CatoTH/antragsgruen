@@ -47,6 +47,11 @@ class Layout
         return static::callHook('favicons');
     }
 
+    public static function endOfHead(?Consultation $consultation): string
+    {
+        return static::callHook('endOfHead', [$consultation]);
+    }
+
     public static function logoRow(): string
     {
         return static::callHook('logoRow');

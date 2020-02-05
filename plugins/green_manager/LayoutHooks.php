@@ -4,19 +4,13 @@ namespace app\plugins\green_manager;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\Consultation;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Consultation, Site, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    /**
-     * @param $before
-     * @return string
-     */
-    public function getStdNavbarHeader($before)
+    public function getStdNavbarHeader(string $before): string
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
@@ -59,12 +53,7 @@ class LayoutHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param string $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function footerLine($before)
+    public function footerLine(string $before): string
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;
@@ -109,13 +98,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @param Consultation $consultation
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAdminIndexHint($before, Consultation $consultation)
+    public function getAdminIndexHint(string $before, Consultation $consultation): string
     {
         return $before . '<article class="adminCard adminCardSupport">
         <header>
@@ -128,12 +111,7 @@ class LayoutHooks extends Hooks
     </article>';
     }
 
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAntragsgruenAd($before)
+    public function getAntragsgruenAd(string $before): string
     {
             return '<div class="antragsgruenAd well">
         <div class="nav-header">Using Discuss.green</div>

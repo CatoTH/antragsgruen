@@ -2,16 +2,12 @@
 
 namespace app\plugins;
 
-use app\models\db\Consultation;
-use app\models\db\Site;
+use app\models\db\{Consultation, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
-use yii\base\Action;
-use yii\base\Module;
-use yii\web\AssetBundle;
-use yii\web\Controller;
-use yii\web\View;
+use yii\base\{Action, Module};
+use yii\web\{AssetBundle, Controller, View};
 
 class ModuleBase extends Module
 {

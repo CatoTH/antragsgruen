@@ -84,6 +84,7 @@ echo \app\models\layoutHooks\Layout::favicons();
 
 echo $this->head();
 
+echo \app\models\layoutHooks\Layout::endOfHead($controller->consultation);
 echo '</head>';
 
 if (defined('YII_ENV') && YII_ENV == 'test') {

@@ -9,12 +9,7 @@ use yii\helpers\Html;
 
 class LayoutHooks extends Hooks
 {
-    /**
-     * @param $before
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function logoRow($before)
+    public function logoRow(string $before): string
     {
         $out = '<header class="row logo" role="banner">' .
             '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo" title="' .
@@ -36,12 +31,7 @@ class LayoutHooks extends Hooks
         return $out;
     }
 
-    /**
-     * @param string $before
-     * @param Motion $motion
-     * @return string
-     */
-    public function beforeMotionView($before, Motion $motion)
+    public function beforeMotionView(string $before, Motion $motion): string
     {
         if (Tools::canRespondToPetition($motion)) {
             $before .= '<div class="content"><div class="alert alert-info">';
@@ -63,12 +53,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @param Motion $motion
-     * @return string
-     */
-    public function afterMotionView($before, Motion $motion)
+    public function afterMotionView(string $before, Motion $motion): string
     {
         if (Tools::canRespondToPetition($motion)) {
             $this->layout->loadCKEditor();
@@ -88,14 +73,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param array $motionData
-     * @param Motion $motion
-     * @return array
-     * @throws \app\models\exceptions\Internal
-     * @throws \Exception
-     */
-    public function getMotionViewData($motionData, Motion $motion)
+    public function getMotionViewData(array $motionData, Motion $motion): array
     {
         $deadline = Tools::getPetitionResponseDeadline($motion);
         if ($deadline) {
@@ -119,12 +97,7 @@ class LayoutHooks extends Hooks
         return $motionData;
     }
 
-    /**
-     * @param string $before
-     * @param Motion $motion
-     * @return string
-     */
-    public function getFormattedMotionStatus($before, Motion $motion)
+    public function getFormattedMotionStatus(string $before, Motion $motion): string
     {
         if ($motion->motionTypeId === Tools::getDiscussionType($motion->getMyConsultation())->id) {
             switch ($motion->status) {

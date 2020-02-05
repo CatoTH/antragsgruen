@@ -103,14 +103,7 @@ class LayoutHooks extends Hooks
         return $form;
     }
 
-    /**
-     * @param array $motionData
-     * @param Motion $motion
-     *
-     * @return array
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getMotionViewData($motionData, Motion $motion)
+    public function getMotionViewData(array $motionData, Motion $motion): array
     {
         $motionData = array_values(array_filter($motionData, function ($data) use ($motion) {
             if (in_array($data['title'], [
@@ -156,13 +149,7 @@ class LayoutHooks extends Hooks
         return $motionData;
     }
 
-    /**
-     * @param string $before
-     * @param Motion $motion
-     *
-     * @return string
-     */
-    public function beforeMotionView($before, Motion $motion)
+    public function beforeMotionView(string $before, Motion $motion): string
     {
         $before .= '<div class="content" style="padding-top: 0; margin-top: -10px;"><div class="motionDataTable">';
         $before .= '<strong>Titel:</strong><br><br>';

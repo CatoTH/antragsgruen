@@ -2,9 +2,7 @@
 
 namespace app\plugins\gruen_gender;
 
-use app\models\db\Amendment;
-use app\models\db\ISupporter;
-use app\models\db\Motion;
+use app\models\db\{Amendment, ISupporter, Motion};
 use app\models\layoutHooks\Hooks;
 
 /**
@@ -61,12 +59,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @param Motion $motion
-     * @return string
-     */
-    public function getConsultationMotionLineContent($before, Motion $motion)
+    public function getConsultationMotionLineContent(string $before, Motion $motion): string
     {
         $motionType = $motion->getMyMotionType();
         $collectionPhase = $motionType->getMotionSupportTypeClass()->collectSupportersBeforePublication();
@@ -84,12 +77,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @param Amendment $amendment
-     * @return string
-     */
-    public function getConsultationAmendmentLineContent($before, Amendment $amendment)
+    public function getConsultationAmendmentLineContent(string $before, Amendment $amendment): string
     {
         $collectionPhase = $amendment->getMyMotionType()->getAmendmentSupportTypeClass()
             ->collectSupportersBeforePublication();
@@ -107,12 +95,7 @@ class LayoutHooks extends Hooks
         return $before;
     }
 
-    /**
-     * @param string $before
-     * @param ISupporter $supporter
-     * @return string
-     */
-    public function getMotionDetailsInitiatorName($before, ISupporter $supporter)
+    public function getMotionDetailsInitiatorName(string $before, ISupporter $supporter): string
     {
         $imotion         = $supporter->getIMotion();
         if (is_a($imotion, Amendment::class)) {
