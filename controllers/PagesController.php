@@ -2,18 +2,11 @@
 
 namespace app\controllers;
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\ConsultationFile;
-use app\models\db\ConsultationText;
-use app\models\db\User;
-use app\models\exceptions\Access;
-use app\models\exceptions\FormError;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{ConsultationFile, ConsultationText, User};
+use app\models\exceptions\{Access, FormError};
 use app\models\settings\AntragsgruenApp;
-use yii\web\NotFoundHttpException;
-use yii\web\Request;
-use yii\web\Response;
+use yii\web\{NotFoundHttpException, Response};
 
 class PagesController extends Base
 {

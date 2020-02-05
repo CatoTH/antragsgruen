@@ -2,12 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ISupporter;
-use app\models\db\Motion;
-use app\models\db\Site;
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, Site};
 
 class Layout
 {

@@ -86,7 +86,7 @@ $css .= '.logoImg {
 ';
 
 
-$scss = new \Leafo\ScssPhp\Compiler();
+$scss = new \ScssPhp\ScssPhp\Compiler();
 $scss->addImportPath(Yii::$app->basePath . '/web/css/');
-$scss->setFormatter(\Leafo\ScssPhp\Formatter\Compressed::class);
+$scss->setFormatter(\ScssPhp\ScssPhp\Formatter\Compressed::class);
 echo $scss->compile($css);
