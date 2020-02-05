@@ -87,7 +87,7 @@ echo '<br><br>';
 foreach ($strings as $string) {
     $encKey = Html::encode(urlencode($string['id']));
     $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : '');
-    echo '<div class="form-group"><label class="col-sm-6 control-label" for="consultationPath">';
+    echo '<div class="form-group"><label class="col-sm-6 control-label">';
     if (isset($string['title']) && $string['title'] !== '') {
         echo Html::encode($string['title']);
     } else {
@@ -96,6 +96,7 @@ foreach ($strings as $string) {
     if (isset($string['description']) && $string['description'] !== '') {
         echo '<br><span class="description">' . Html::encode($string['description']) . '</span>';
     }
+    echo '<span class="identifier">' . Html::encode($string['id']) . '</span>';
     echo '</label><div class="col-sm-6">';
 
     echo HTMLTools::smallTextarea('string[' . $encKey . ']', ['class' => 'form-control'], $value);
