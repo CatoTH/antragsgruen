@@ -98,7 +98,7 @@ return [
     'download_pdf'              => 'PDF version',
     'motion_text'               => 'Motion text',
     'resolution_text'           => 'Decided text',
-    'published_email_body'      => "Hi,\n\nyour motion has just been published on Antragsgrün. " .
+    'published_email_body'      => "Hi,\n\nyour motion \"%TITLE%\" has just been published on Antragsgrün. " .
                                    "You can see it here: %LINK%\n\n" .
                                    "Greetings,\n" .
                                    "  The Antragsgrün Team",

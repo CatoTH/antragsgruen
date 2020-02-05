@@ -85,11 +85,10 @@ class EmailNotifications
         $initiator = $motion->getInitiators();
 
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-        $plain      = \Yii::t('motion', 'published_email_body');
+
         $title      = $motion->getMyMotionType()->titleSingular . ': ' . $motion->title;
         $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
         $sections   = $motion->getSortedSections(true);
-
         foreach ($sections as $section) {
             $motionHtml   .= '<div>';
             $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
@@ -98,13 +97,15 @@ class EmailNotifications
             $motionHtml .= $typedSection->getMotionEmailHtml();
             $motionHtml .= '</div>';
         }
-        $html = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;
-        $html = str_replace('%LINK%', Html::a(Html::encode($motionLink), $motionLink), $html);
-        $html = str_replace('%NAME_GIVEN%', Html::encode($initiator[0]->getGivenNameOrFull()), $html);
 
-        $plain = str_replace('%LINK%', $motionLink, $plain);
-        $plain = str_replace('%NAME_GIVEN%', $initiator[0]->getGivenNameOrFull(), $plain);
-        $plain .= HTMLTools::toPlainText($html);
+        $plainBase = str_replace(
+            ['%LINK%', '%NAME_GIVEN%', '%TITLE%'],
+            [$motionLink, $initiator[0]->getGivenNameOrFull(), $motion->getTitleWithPrefix()],
+            \Yii::t('motion', 'published_email_body')
+        );
+
+        $html = HTMLTools::plainToHtml($plainBase) . '<br><br>' . $motionHtml;
+        $plain = $plainBase . "\n\n" . HTMLTools::toPlainText($motionHtml);
 
         if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
             try {
