@@ -67,36 +67,38 @@ class LayoutHooks extends Hooks
         foreach ($motion->getMyConsultation()->tags as $tag) {
             $allTags[$tag->id] = $tag->title;
         }
-        $form .= HTMLTools::fueluxSelectbox('newTag', $allTags, $preTagId);
-        $form .= '<button class="btn btn-default" type="submit">Speichern</button>';
+        $form .= HTMLTools::fueluxSelectbox('newTag', $allTags, $preTagId, [], false, 'xs');
+        $form .= '<button class="btn btn-xs btn-default" type="submit">Speichern</button>';
         $form .= Html::endForm();
 
         return $form;
     }
 
-    private function getProposalSavingForm(Motion $motion): string
+    private function getMotionProposalString(Motion $motion): string
     {
-        $saveUrl = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
-        $form    = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux']);
         switch ($motion->proposalStatus) {
             case Motion::STATUS_ACCEPTED:
-                $preselect = 'accept';
-                break;
+                return 'accept';
             case Motion::STATUS_REJECTED:
-                $preselect = 'accept';
-                break;
+                return 'accept';
             case Motion::STATUS_MODIFIED_ACCEPTED:
-                $preselect = 'modified';
-                break;
+                return 'modified';
             case Motion::STATUS_VOTE:
-                $preselect = 'voting';
-                break;
+                return 'voting';
             default:
-                $preselect = $motion->proposalComment;
+                return $motion->proposalComment;
         }
-        $form .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect);
-        $form .= '<button class="btn btn-default" type="submit">Speichern</button>';
-        $form .= Html::endForm();
+    }
+
+    private function getProposalSavingForm(Motion $motion): string
+    {
+        $saveUrl   = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
+        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux']);
+        $preselect = $this->getMotionProposalString($motion);
+        $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
+        $form      .= '<button class="btn btn-xs btn-default" type="submit">Speichern</button>';
+        $form      .= Html::endForm();
+        $form      .= '<br>';
 
         return $form;
     }
@@ -139,7 +141,10 @@ class LayoutHooks extends Hooks
                 if ($proposalAdmin) {
                     $motionData[$i]['content'] = $this->getProposalSavingForm($motion);
                 } elseif ($motion->isProposalPublic() && $motion->proposalStatus) {
-                    $motionData[$i]['content'] = $motion->getFormattedProposalStatus(true);
+                    $proposal = $this->getMotionProposalString($motion);
+                    if ($proposal && isset(static::$PROPOSALS[$proposal])) {
+                        $motionData[$i]['content'] = Html::encode(static::$PROPOSALS[$proposal]);
+                    }
                     $motionData[$i]['content'] .= '<br><br>';
                 }
             }
@@ -150,9 +155,11 @@ class LayoutHooks extends Hooks
 
         return $motionData;
     }
+
     /**
      * @param string $before
      * @param Motion $motion
+     *
      * @return string
      */
     public function beforeMotionView($before, Motion $motion)
