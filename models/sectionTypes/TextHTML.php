@@ -52,23 +52,12 @@ class TextHTML extends Text
         $section->dataRaw = $data['raw'];
     }
 
-    /**
-     * @param bool $isRight
-     * @param bool $showAlways
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showAlways = false)
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         return $this->section->data;
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -78,12 +67,7 @@ class TextHTML extends Text
         return ($this->section->data == '');
     }
 
-
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -107,38 +91,22 @@ class TextHTML extends Text
         $pdf->writeHTML($html);
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         return HTMLTools::toPlainText($this->section->data);
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return HTMLTools::toPlainText($this->section->data);
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
         if ($isRight) {
             $content->textRight .= '[TEST HTML]'; // @TODO
@@ -147,11 +115,7 @@ class TextHTML extends Text
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         if ($isRight) {
             $content->textRight .= '[TEST HTML]'; // @TODO
@@ -160,35 +124,23 @@ class TextHTML extends Text
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return '<p>Full HTML is not convertable to Spreadsheets</p>';
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         return '<p>Full HTML is not convertable to Spreadsheets</p>';
     }
 
-    /**
-     * @param ODTText $odt
-     */
-    public function printMotionToODT(ODTText $odt)
+    public function printMotionToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
     }
 
-    /**
-     * @param ODTText $odt
-     */
-    public function printAmendmentToODT(ODTText $odt)
+    public function printAmendmentToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO

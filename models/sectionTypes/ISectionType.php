@@ -87,96 +87,44 @@ abstract class ISectionType
      */
     abstract public function setAmendmentData($data);
 
-    /**
-     * @param bool $isRight
-     * @param bool $showAlways
-     * @return string
-     */
-    abstract public function getSimple($isRight, $showAlways = false);
+    abstract public function getSimple(bool $isRight, bool $showAlways = false): string;
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainHtml()
+    public function getMotionPlainHtml(): string
     {
         return $this->getSimple(false);
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainHtml()
+    public function getMotionEmailHtml(): string
     {
         return $this->getSimple(false);
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     */
-    abstract public function getAmendmentFormatted($sectionTitlePrefix = '');
-
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf);
-
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf);
-
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     */
-    abstract public function printMotionTeX($isRight, Content $content, Consultation $consultation);
-
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     */
-    abstract public function printAmendmentTeX($isRight, Content $content);
-
-    /**
-     */
-    public function cleanupAmendmentText()
+    public function getAmendmentPlainHtml(): string
     {
-        return;
+        return $this->getSimple(false);
     }
 
-    /**
-     * @return string
-     */
-    abstract public function getMotionODS();
+    abstract public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string;
 
-    /**
-     * @return string
-     */
-    abstract public function getAmendmentODS();
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void;
 
-    /**
-     * @param Text $odt
-     */
-    abstract public function printMotionToODT(Text $odt);
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void;
 
-    /**
-     * @param Text $odt
-     */
-    abstract public function printAmendmentToODT(Text $odt);
+    abstract public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void;
 
-    /**
-     * @return string
-     */
-    abstract public function getMotionPlainText();
+    abstract public function printAmendmentTeX(bool $isRight, Content $content): void;
 
-    /**
-     * @return string
-     */
-    abstract public function getAmendmentPlainText();
+    abstract public function getMotionODS(): string;
+
+    abstract public function getAmendmentODS(): string;
+
+    abstract public function printMotionToODT(Text $odt): void;
+
+    abstract public function printAmendmentToODT(Text $odt): void;
+
+    abstract public function getMotionPlainText(): string;
+
+    abstract public function getAmendmentPlainText(): string;
 
     /**
      * @param CommentForm|null $commentForm

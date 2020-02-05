@@ -75,13 +75,7 @@ class TabularData extends ISectionType
         $this->setMotionData($data);
     }
 
-    /**
-     * @param bool $isRight
-     * @param bool $showToken
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showToken = false)
+    public function getSimple(bool $isRight, bool $showToken = false): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -100,15 +94,11 @@ class TabularData extends ISectionType
             $str .= '</dd>';
         }
         $str .= '</dl>';
+
         return $str;
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         return ''; // @TODO
     }
@@ -122,11 +112,7 @@ class TabularData extends ISectionType
         return !(isset($data['rows']) && count($data['rows']) > 0);
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -157,11 +143,7 @@ class TabularData extends ISectionType
         $pdf->Ln(4);
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         $this->printAmendmentToPDF($pdfLayout, $pdf);
     }
@@ -230,10 +212,7 @@ class TabularData extends ISectionType
         return json_encode($newData);
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         $data   = json_decode($this->section->data, true);
         $type = $this->section->getSettings();
@@ -251,21 +230,12 @@ class TabularData extends ISectionType
         return $return;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return '@TODO'; // @TODO
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
         $data = json_decode($this->section->data, true);
         if (!isset($data['rows'])) {
@@ -301,11 +271,7 @@ class TabularData extends ISectionType
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         if ($isRight) {
             $content->textRight .= '[TEST DATA]'; // @TODO
@@ -314,35 +280,23 @@ class TabularData extends ISectionType
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return 'Test'; //  @TODO
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         return 'Test'; //  @TODO
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(Text $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(Text $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[TABELLE]', false); // @TODO

@@ -211,23 +211,12 @@ class Image extends ISectionType
         $this->setMotionData($data);
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         return ''; // @TODO
     }
 
-    /**
-     * @param bool $isRight
-     * @param bool $showAlways
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showAlways = false)
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -237,8 +226,8 @@ class Image extends ISectionType
         $section = $this->section;
         $type    = $section->getSettings();
         $url     = $this->getImageUrl($this->absolutizeLinks, $showAlways);
-        $str     = '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
-        return $str;
+
+        return '<img src="' . Html::encode($url) . '" alt="' . Html::encode($type->title) . '">';
     }
 
     public function isEmpty(): bool
@@ -261,11 +250,7 @@ class Image extends ISectionType
         return [$scale * $width, $scale * $height];
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -314,38 +299,22 @@ class Image extends ISectionType
         $pdf->Ln($size[1] + 7);
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         return ($this->isEmpty() ? '' : '[IMAGE]');
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return ($this->isEmpty() ? '' : '[IMAGE]');
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -378,11 +347,7 @@ class Image extends ISectionType
         $content->imageData[$filenameBase] = $imageData;
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         if ($isRight) {
             $content->textRight .= ($this->isEmpty() ? '' : '[IMAGE]');
@@ -391,26 +356,17 @@ class Image extends ISectionType
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return ($this->isEmpty() ? '' : '<p>[IMAGE]</p>');
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         return ($this->isEmpty() ? '' : '<p>[IMAGE]</p>');
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(Text $odt): void
     {
         if (!$this->isEmpty()) {
             $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
@@ -418,10 +374,7 @@ class Image extends ISectionType
         }
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(Text $odt): void
     {
         if (!$this->isEmpty()) {
             $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);

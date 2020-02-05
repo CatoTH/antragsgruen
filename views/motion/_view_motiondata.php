@@ -52,7 +52,7 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
     ];
 }
 
-if ($motion->agendaItem) {
+if ($motion->agendaItem && $motionDataMode === \app\models\settings\Consultation::MOTIONDATA_ALL) {
     $motionData[] = [
         'title'   => Yii::t('motion', 'agenda_item'),
         'content' => Html::encode($motion->agendaItem->getShownCode(true) . ' ' . $motion->agendaItem->title),

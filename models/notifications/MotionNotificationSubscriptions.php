@@ -2,9 +2,7 @@
 
 namespace app\models\notifications;
 
-use app\models\db\EMailLog;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{EMailLog, Motion, User};
 
 class MotionNotificationSubscriptions extends Base implements IEmailUser
 {

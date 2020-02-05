@@ -42,7 +42,7 @@ class EmailNotifications
                 $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
                 $typedSection = $section->getSectionType();
                 $typedSection->setAbsolutizeLinks(true);
-                $motionHtml .= $typedSection->getMotionPlainHtml();
+                $motionHtml .= $typedSection->getMotionEmailHtml();
                 $motionHtml .= '</div>';
             }
 
@@ -95,7 +95,7 @@ class EmailNotifications
             $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
             $typedSection = $section->getSectionType();
             $typedSection->setAbsolutizeLinks(true);
-            $motionHtml .= $typedSection->getMotionPlainHtml();
+            $motionHtml .= $typedSection->getMotionEmailHtml();
             $motionHtml .= '</div>';
         }
         $html  = nl2br(Html::encode($plain)) . '<br><br>' . $motionHtml;

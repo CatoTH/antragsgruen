@@ -121,23 +121,12 @@ class PDF extends ISectionType
         $this->setMotionData($data);
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         return ''; // @TODO
     }
 
-    /**
-     * @param bool $isRight
-     * @param $showAlways
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showAlways = false)
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         if ($this->isEmpty()) {
             return '';
@@ -151,9 +140,13 @@ class PDF extends ISectionType
         $pdfUrl    = $this->getPdfUrl(false, $showAlways);
         $iframeUrl = UrlHelper::createMotionUrl($section->getMotion(), 'embeddedpdf', ['file' => $pdfUrl]);
 
-        $str = '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+        return '<iframe class="pdfViewer" src="' . Html::encode($iframeUrl) . '"></iframe>';
+    }
 
-        return $str;
+    public function getMotionEmailHtml(): string
+    {
+        $url = $this->getPdfUrl(true);
+        return '<a href="' . Html::encode($url) . '">' . \Yii::t('motion', 'pdf_current') . '</a>';
     }
 
     public function isEmpty(): bool
@@ -161,13 +154,7 @@ class PDF extends ISectionType
         return ($this->section->data === '');
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     * @throws \Exception
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -297,39 +284,22 @@ class PDF extends ISectionType
         }
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     * @throws \Exception
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         return '[PDF]';
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return '[PDF]';
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -344,47 +314,28 @@ class PDF extends ISectionType
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         // @TODO
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return '<p>[PDF]</p>';
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         return '<p>[PDF]</p>';
     }
 
-    /**
-     * @param Text $odt
-     * @return void
-     */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(Text $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[PDF]', false);
     }
 
-    /**
-     * @param Text $odt
-     * @return void
-     */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(Text $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
         $odt->addHtmlTextBlock('[PDF]', false);

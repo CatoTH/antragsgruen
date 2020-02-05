@@ -71,22 +71,12 @@ class Title extends ISectionType
         $this->setMotionData($data);
     }
 
-    /**
-     * @param bool $isRight
-     * @param bool $showAlways
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showAlways = false)
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         return Html::encode($this->getMotionPlainText());
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -114,21 +104,12 @@ class Title extends ISectionType
         return ($this->section->data === '');
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         // TODO: Implement printMotionToPDF() method.
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -167,10 +148,7 @@ class Title extends ISectionType
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         try {
             $intro = $this->section->getSettings()->motionType->getSettingsObj()->motionTitleIntro;
@@ -184,21 +162,12 @@ class Title extends ISectionType
         return $intro . $this->section->data;
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return $this->section->data;
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
 
         if ($isRight) {
@@ -208,11 +177,7 @@ class Title extends ISectionType
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -231,19 +196,12 @@ class Title extends ISectionType
         }
     }
 
-
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return '<p>' . Html::encode($this->getMotionPlainText()) . '</p>';
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -254,18 +212,12 @@ class Title extends ISectionType
         Html::encode($section->data) . '<br><br>';
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printMotionToODT(Text $odt)
+    public function printMotionToODT(Text $odt): void
     {
         $odt->addHtmlTextBlock('<h1>' . Html::encode($this->getMotionPlainText()) . '</h1>', false);
     }
 
-    /**
-     * @param Text $odt
-     */
-    public function printAmendmentToODT(Text $odt)
+    public function printAmendmentToODT(Text $odt): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

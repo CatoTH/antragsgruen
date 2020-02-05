@@ -466,7 +466,7 @@ class MotionController extends Base
     public function actionCreateconfirm($motionSlug, $fromMode)
     {
         $motion = $this->consultation->getMotion($motionSlug);
-        if (!$motion || $motion->status != Motion::STATUS_DRAFT) {
+        if (!$motion || $motion->status !== Motion::STATUS_DRAFT) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
             return $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -478,7 +478,7 @@ class MotionController extends Base
         if ($this->isPostSet('confirm')) {
             $motion->trigger(Motion::EVENT_SUBMITTED, new MotionEvent($motion));
 
-            if ($motion->status == Motion::STATUS_SUBMITTED_SCREENED) {
+            if ($motion->status === Motion::STATUS_SUBMITTED_SCREENED) {
                 $motion->trigger(Motion::EVENT_PUBLISHED, new MotionEvent($motion));
             } else {
                 EmailNotifications::sendMotionSubmissionConfirm($motion);

@@ -74,7 +74,7 @@ class LayoutHooks extends Hooks
         return $form;
     }
 
-    private function getMotionProposalString(Motion $motion): string
+    private function getMotionProposalString(Motion $motion): ?string
     {
         switch ($motion->proposalStatus) {
             case Motion::STATUS_ACCEPTED:

@@ -166,13 +166,7 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param bool $showAlways
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getSimple($isRight, $showAlways = false)
+    public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         $sections = HTMLTools::sectionSimpleHTML($this->section->data);
         $str      = '';
@@ -186,10 +180,7 @@ class TextSimple extends Text
         return $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainHtml()
+    public function getMotionPlainHtml(): string
     {
         $html = $this->section->data;
         $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
@@ -197,11 +188,7 @@ class TextSimple extends Text
         return $html;
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentPlainHtml()
+    public function getAmendmentPlainHtml(): string
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
@@ -263,12 +250,7 @@ class TextSimple extends Text
         return $str;
     }
 
-    /**
-     * @param string $sectionTitlePrefix
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentFormatted($sectionTitlePrefix = '')
+    public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -333,12 +315,7 @@ class TextSimple extends Text
         return $linesArr;
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -419,12 +396,7 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param IPDFLayout $pdfLayout
-     * @param Fpdi $pdf
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf)
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -600,29 +572,17 @@ class TextSimple extends Text
         return $out;
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionPlainText()
+    public function getMotionPlainText(): string
     {
         return HTMLTools::toPlainText($this->section->data);
     }
 
-    /**
-     * @return string
-     */
-    public function getAmendmentPlainText()
+    public function getAmendmentPlainText(): string
     {
         return HTMLTools::toPlainText($this->section->data);
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @param Consultation $consultation
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printMotionTeX($isRight, Content $content, Consultation $consultation)
+    public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
         if ($this->isEmpty()) {
             return;
@@ -692,12 +652,7 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param bool $isRight
-     * @param Content $content
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printAmendmentTeX($isRight, Content $content)
+    public function printAmendmentTeX(bool $isRight, Content $content): void
     {
         /** @var AmendmentSection $section */
         $section    = $this->section;
@@ -751,19 +706,12 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionODS()
+    public function getMotionODS(): string
     {
         return $this->section->data;
     }
 
-    /**
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentODS()
+    public function getAmendmentODS(): string
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
@@ -778,12 +726,7 @@ class TextSimple extends Text
         return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
     }
 
-    /**
-     * @param ODTText $odt
-     * @return void
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printMotionToODT(ODTText $odt)
+    public function printMotionToODT(ODTText $odt): void
     {
         if ($this->isEmpty()) {
             return;
@@ -822,12 +765,7 @@ class TextSimple extends Text
         }
     }
 
-    /**
-     * @param ODTText $odt
-     * @return void
-     * @throws \app\models\exceptions\Internal
-     */
-    public function printAmendmentToODT(ODTText $odt)
+    public function printAmendmentToODT(ODTText $odt): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
