@@ -47,6 +47,9 @@ class MotionController extends Base
                 ) {
                     return $this->render('view_not_visible', ['motion' => $motion, 'adminEdit' => false]);
                 }
+                if ($section->getSectionType()->isEmpty()) {
+                    return $this->showErrorpage(404, 'Image not found');
+                }
 
                 $metadata                    = json_decode($section->metadata, true);
                 \yii::$app->response->format = Response::FORMAT_RAW;
@@ -57,7 +60,7 @@ class MotionController extends Base
                 return base64_decode($section->data);
             }
         }
-        return '';
+        return $this->showErrorpage(404, 'Image not found');
     }
 
     /**
