@@ -10,8 +10,10 @@ class MoveBinaryContentToFileController extends Controller
     private function moveSingleFile(int $motionId, int $sectionId)
     {
         $section = MotionSection::findOne(['motionId' => $motionId, 'sectionId' => $sectionId]);
-        $section->setData(base64_decode($section->data));
-        $section->save();
+        if ($section->data && $section->getSettings()) {
+            $section->setData(base64_decode($section->data));
+            $section->save();
+        }
     }
 
     public function actionDo()

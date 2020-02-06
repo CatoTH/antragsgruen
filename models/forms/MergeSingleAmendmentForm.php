@@ -99,10 +99,10 @@ class MergeSingleAmendmentForm extends Model
     }
 
     /**
-     * @param string $previousSlug
+     * @param string|null $previousSlug
      * @throws DB
      */
-    private function createNewMotion(string $previousSlug): void
+    private function createNewMotion(?string $previousSlug): void
     {
         $this->newMotion                  = new Motion();
         $this->newMotion->consultationId  = $this->oldMotion->consultationId;
