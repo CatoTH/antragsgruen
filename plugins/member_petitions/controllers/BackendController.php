@@ -2,14 +2,10 @@
 
 namespace app\plugins\member_petitions\controllers;
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\controllers\Base;
 use app\plugins\member_petitions\notifications\MotionResponded;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
+use app\models\db\{Motion, MotionSection, MotionSupporter, User};
 use app\models\exceptions\DB;
 use app\plugins\member_petitions\Tools;
 
@@ -73,10 +69,10 @@ class BackendController extends Base
                     $forbidden           = $section->getSettings()->getForbiddenMotionFormattings();
                     $dataRaw             = $postSections[$newSection->sectionId];
                     $newSection->dataRaw = $dataRaw;
-                    $newSection->data    = HTMLTools::cleanSimpleHtml($dataRaw, $forbidden);
+                    $newSection->setData(HTMLTools::cleanSimpleHtml($dataRaw, $forbidden));
                 } else {
                     $newSection->dataRaw = $section->dataRaw;
-                    $newSection->data    = $section->data;
+                    $newSection->setData($section->getData());
                 }
                 if (!$newSection->save()) {
                     throw new DB($newSection->getErrors());

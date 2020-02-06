@@ -56,8 +56,6 @@ class Motion extends IMotion implements IRSSItem
     const EVENT_PUBLISHED_FIRST = 'published_first';
     const EVENT_MERGED = 'merged'; // Called on the newly created motion
 
-    /**
-     */
     public function init()
     {
         parent::init();
@@ -325,7 +323,7 @@ class Motion extends IMotion implements IRSSItem
         $this->refresh();
         $section = $this->getTitleSection();
         if ($section) {
-            $this->title = $section->data;
+            $this->title = $section->getData();
         } else {
             $this->title = '';
         }
@@ -1300,7 +1298,7 @@ class Motion extends IMotion implements IRSSItem
                 $data['sections'][] = [
                     'section_title' => $section->getSettings()->title,
                     'section_type'  => $section->getSettings()->type,
-                    'data'          => $section->data,
+                    'data'          => $section->getData(),
                     'metadata'      => $section->metadata,
                 ];
             }

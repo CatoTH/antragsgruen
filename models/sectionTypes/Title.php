@@ -31,7 +31,7 @@ class Title extends ISectionType
         }
 
         $str .= '<input type="text" class="form-control" id="sections_' . $type->id . '"' .
-            ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->data) . '">';
+            ' name="sections[' . $type->id . ']" value="' . Html::encode($this->section->getData()) . '">';
 
         if ($type->maxLen != 0) {
             $str .= '<div class="alert alert-danger maxLenTooLong hidden" role="alert">';
@@ -55,12 +55,12 @@ class Title extends ISectionType
      */
     public function setMotionData($data)
     {
-        $this->section->data = $data;
+        $this->section->setData($data);
     }
 
     public function deleteMotionData()
     {
-        $this->section->data = '';
+        $this->section->setData('');
     }
 
     /**
@@ -83,7 +83,7 @@ class Title extends ISectionType
         if (!$section->getOriginalMotionSection()) {
             return '';
         }
-        if ($this->isEmpty() || $section->data === $section->getOriginalMotionSection()->data) {
+        if ($this->isEmpty() || $section->data === $section->getOriginalMotionSection()->getData()) {
             return '';
         }
         if ($sectionTitlePrefix) {
@@ -101,7 +101,7 @@ class Title extends ISectionType
 
     public function isEmpty(): bool
     {
-        return ($this->section->data === '');
+        return ($this->section->getData() === '');
     }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
@@ -113,7 +113,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data === $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->getData()) {
             return;
         }
 
@@ -159,12 +159,12 @@ class Title extends ISectionType
             $intro .= ' ';
         }
 
-        return $intro . $this->section->data;
+        return $intro . $this->section->getData();
     }
 
     public function getAmendmentPlainText(): string
     {
-        return $this->section->data;
+        return $this->section->getData();
     }
 
     public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
@@ -181,13 +181,13 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data === $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->getData()) {
             return;
         }
         $title = Exporter::encodePlainString($section->getSettings()->title);
         $tex   = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
         $html  = '<p><strong>' . \Yii::t('amend', 'title_amend_to') . ':</strong><br>' .
-            Html::encode($this->section->data) . '</p>';
+            Html::encode($this->section->getData()) . '</p>';
         $tex .= Exporter::encodeHTMLString($html);
         if ($isRight) {
             $content->textRight .= $tex;
@@ -205,7 +205,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data == $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->getData()) {
             return '';
         }
         return '<strong>' . \Yii::t('amend', 'title_new') . ':</strong><br>' .
@@ -221,7 +221,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data === $section->getOriginalMotionSection()->data) {
+        if ($section->data === $section->getOriginalMotionSection()->getData()) {
             return;
         }
         $odt->addHtmlTextBlock('<h2>' . \Yii::t('amend', 'title_new') . '</h2>', false);
@@ -234,6 +234,6 @@ class Title extends ISectionType
      */
     public function matchesFulltextSearch($text)
     {
-        return (mb_stripos($this->section->data, $text) !== false);
+        return (mb_stripos($this->section->getData(), $text) !== false);
     }
 }

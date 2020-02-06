@@ -23,7 +23,7 @@ class Image extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $motion  = $section->getMotion();
-        if (!$motion || !$section->data) {
+        if (!$motion || !$section->getData()) {
             return null;
         }
 
@@ -140,20 +140,20 @@ class Image extends ISectionType
     {
         $metadata = json_decode($this->section->metadata, true);
         if ($metadata['width'] < $width * 2 && $metadata['height'] < $height * 2) {
-            return base64_decode($this->section->data);
+            return base64_decode($this->section->getData());
         }
 
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         if ($app->imageMagickPath === null) {
-            return base64_decode($this->section->data);
+            return base64_decode($this->section->getData());
         } elseif (!file_exists($app->imageMagickPath)) {
             throw new Internal('ImageMagick not correctly set up');
         }
 
         $tmpfile1 = $app->getTmpDir() . uniqid('image-conv-') . "." . $fileExtension;
         $tmpfile2 = $app->getTmpDir() . uniqid('image-conv-') . "." . $fileExtension;
-        file_put_contents($tmpfile1, base64_decode($this->section->data));
+        file_put_contents($tmpfile1, base64_decode($this->section->getData()));
 
         exec($app->imageMagickPath . ' -strip -geometry ' . IntVal($width) . 'x' . IntVal($height) . ' '
             . escapeshellarg($tmpfile1) . ' ' . escapeshellarg($tmpfile2));
@@ -192,13 +192,13 @@ class Image extends ISectionType
             'filesize' => strlen($optimized),
             'mime'     => $mime
         ];
-        $this->section->data     = base64_encode($optimized);
+        $this->section->setData(base64_encode($optimized));
         $this->section->metadata = json_encode($metadata);
     }
 
     public function deleteMotionData()
     {
-        $this->section->data     = '';
+        $this->section->setData('');
         $this->section->metadata = '';
     }
 
@@ -232,7 +232,7 @@ class Image extends ISectionType
 
     public function isEmpty(): bool
     {
-        return ($this->section->data === '');
+        return ($this->section->getData() === '');
     }
 
     /**

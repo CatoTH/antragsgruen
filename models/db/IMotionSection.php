@@ -3,13 +3,7 @@
 namespace app\models\db;
 
 use app\models\exceptions\Internal;
-use app\models\sectionTypes\Image;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TabularData;
-use app\models\sectionTypes\TextHTML;
-use app\models\sectionTypes\TextSimple;
-use app\models\sectionTypes\Title;
-use app\models\sectionTypes\PDF;
+use app\models\sectionTypes\{Image, ISectionType, TabularData, TextHTML, TextSimple, Title, PDF};
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -81,6 +75,10 @@ abstract class IMotionSection extends ActiveRecord
      */
     public function getShowAlwaysToken()
     {
-        return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->data);
+        return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->getData());
     }
+
+    abstract public function getData(): string;
+
+    abstract public function setData(string $data);
 }

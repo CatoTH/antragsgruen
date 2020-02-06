@@ -48,7 +48,7 @@ trait AmendmentMergingTrait
         $newSections     = [];
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
             $newSections[$section->sectionId] = AmendmentRewriter::calcNewSectionTextWithOverwrites(
-                $section->getOriginalMotionSection()->data,
+                $section->getOriginalMotionSection()->getData(),
                 $section->data,
                 (isset($newSectionParas[$section->sectionId]) ? $newSectionParas[$section->sectionId] : [])
             );
@@ -160,7 +160,7 @@ trait AmendmentMergingTrait
             } else {
                 $newParas = [];
                 foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-                    $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+                    $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->getData());
                     $amendParas      = HTMLTools::sectionSimpleHTML($section->data);
                     $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendParas, false);
 

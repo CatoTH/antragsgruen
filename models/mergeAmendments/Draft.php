@@ -2,9 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
+use app\models\db\{IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -69,15 +67,7 @@ class Draft implements \JsonSerializable
     }
 
 
-    /**
-     * @param Motion $origMotion
-     * @param boolean $public
-     * @param \DateTime|null $time
-     * @param string $data
-     *
-     * @return Draft
-     */
-    public static function initFromJson(Motion $origMotion, $public, $time, $data)
+    public static function initFromJson(Motion $origMotion, bool $public, ?\DateTime $time, string $data): Draft
     {
         $draft = new Draft();
         $draft->init($origMotion);
@@ -96,13 +86,7 @@ class Draft implements \JsonSerializable
         return $draft;
     }
 
-    /**
-     * @param Init $form
-     * @param array $textVersions
-     *
-     * @return Draft
-     */
-    public static function initFromForm(Init $form, $textVersions)
+    public static function initFromForm(Init $form, array $textVersions): Draft
     {
         $draft = new Draft();
         $draft->init($form->motion);
@@ -162,9 +146,7 @@ class Draft implements \JsonSerializable
         return $draft;
     }
 
-    /**
-     */
-    public function save()
+    public function save(): void
     {
         if ($this->public) {
             $this->draftMotion->status = Motion::STATUS_MERGING_DRAFT_PUBLIC;
@@ -183,7 +165,7 @@ class Draft implements \JsonSerializable
             $section->motionId = $this->draftMotion->id;
         }
         $section->dataRaw = json_encode($this);
-        $section->data    = '';
+        $section->setData('');
         $section->save();
 
         foreach ($this->draftMotion->sections as $oldSection) {
@@ -198,7 +180,7 @@ class Draft implements \JsonSerializable
         }
     }
 
-    public function delete()
+    public function delete(): void
     {
         $this->draftMotion->status = IMotion::STATUS_DELETED;
         $this->draftMotion->save();

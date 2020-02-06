@@ -2,9 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\diff\{AmendmentRewriter, ArrayMatcher, Diff, DiffRenderer};
-use app\components\HTMLTools;
-use app\components\LineSplitter;
+use app\components\{diff\AmendmentRewriter, diff\ArrayMatcher, diff\Diff, diff\DiffRenderer, HTMLTools, LineSplitter};
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
 
@@ -148,7 +146,7 @@ class AmendmentSection extends IMotionSection
      */
     public function getParagraphLineNumberHelper()
     {
-        $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data);
+        $motionParas     = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData());
         $lineLength      = $this->getMotion()->getMyConsultation()->getSettings()->lineLength;
         $lineNumber      = $this->getFirstLineNumber();
         $paraLineNumbers = [];
@@ -240,7 +238,7 @@ class AmendmentSection extends IMotionSection
     public function getParagraphsRelativeToOriginal($splitListItems = true)
     {
         $newSections = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
-        $oldSections = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->data, $splitListItems);
+        $oldSections = HTMLTools::sectionSimpleHTML($this->getOriginalMotionSection()->getData(), $splitListItems);
         return ArrayMatcher::computeMatchingAffectedParagraphs($oldSections, $newSections);
     }
 
@@ -255,7 +253,7 @@ class AmendmentSection extends IMotionSection
         if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');
         }
-        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        $oldMotionHtml = $this->getOriginalMotionSection()->getData();
         return AmendmentRewriter::canRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
     }
 
@@ -264,7 +262,7 @@ class AmendmentSection extends IMotionSection
         if ($this->getSettings()->type != ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Rewriting is only possible for simple text');
         }
-        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        $oldMotionHtml = $this->getOriginalMotionSection()->getData();
         return AmendmentRewriter::getCollidingParagraphs(
             $oldMotionHtml,
             $newMotionHtml,
@@ -281,7 +279,17 @@ class AmendmentSection extends IMotionSection
      */
     public function performRewrite($newMotionHtml, $overrides = [])
     {
-        $oldMotionHtml = $this->getOriginalMotionSection()->data;
+        $oldMotionHtml = $this->getOriginalMotionSection()->getData();
         $this->data    = AmendmentRewriter::performRewrite($oldMotionHtml, $newMotionHtml, $this->data, $overrides);
+    }
+
+    public function getData(): string
+    {
+        return $this->data;
+    }
+
+    public function setData(string $data)
+    {
+        $this->data = $data;
     }
 }

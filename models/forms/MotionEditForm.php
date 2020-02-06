@@ -2,12 +2,7 @@
 
 namespace app\models\forms;
 
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsTag;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
+use app\models\db\{ConsultationAgendaItem, ConsultationMotionType, ConsultationSettingsTag, Motion, MotionSection, MotionSupporter};
 use app\models\exceptions\FormError;
 use app\models\sectionTypes\ISectionType;
 use yii\base\Model;
@@ -37,12 +32,7 @@ class MotionEditForm extends Model
 
     private $adminMode = false;
 
-    /**
-     * @param ConsultationMotionType $motionType
-     * @param null|ConsultationAgendaItem
-     * @param null|Motion $motion
-     */
-    public function __construct(ConsultationMotionType $motionType, $agendaItem, $motion)
+    public function __construct(ConsultationMotionType $motionType, ?ConsultationAgendaItem $agendaItem, ?Motion $motion)
     {
         parent::__construct();
         $this->motionType = $motionType;
@@ -51,10 +41,7 @@ class MotionEditForm extends Model
     }
 
 
-    /**
-     * @param Motion|null $motion
-     */
-    private function setSection($motion)
+    private function setSection(?Motion $motion): void
     {
         $motionSections = [];
         if ($motion) {
@@ -74,7 +61,7 @@ class MotionEditForm extends Model
             } else {
                 $section            = new MotionSection();
                 $section->sectionId = $sectionType->id;
-                $section->data      = '';
+                $section->setData('');
                 $section->dataRaw   = '';
                 $section->cache     = '';
                 $section->refresh();
@@ -129,7 +116,7 @@ class MotionEditForm extends Model
         }
         foreach ($this->sections as $section) {
             if (isset($byId[$section->sectionId])) {
-                $section->data    = $byId[$section->sectionId]->data;
+                $section->setData($byId[$section->sectionId]->getData());
                 $section->dataRaw = $byId[$section->sectionId]->dataRaw;
             }
         }
@@ -200,7 +187,7 @@ class MotionEditForm extends Model
 
         foreach ($this->sections as $section) {
             $type = $section->getSettings();
-            if ($section->data == '' && $type->required) {
+            if ($section->getData() === '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {
@@ -256,7 +243,7 @@ class MotionEditForm extends Model
         }
 
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $section->data = $newHtmls[$section->sectionId];
+            $section->setData($newHtmls[$section->sectionId]);
             $section->save();
         }
 
@@ -272,7 +259,7 @@ class MotionEditForm extends Model
     public function setSectionTextWithoutSaving(Motion $motion, $newHtmls)
     {
         foreach ($motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $section->data = $newHtmls[$section->sectionId];
+            $section->setData($newHtmls[$section->sectionId]);
         }
     }
 
@@ -345,7 +332,7 @@ class MotionEditForm extends Model
                 // Updating the text is done separately, including amendment rewriting
                 continue;
             }
-            if ($section->data == '' && $type->required) {
+            if ($section->getData() === '' && $type->required) {
                 $errors[] = str_replace('%FIELD%', $type->title, \Yii::t('base', 'err_no_data_given'));
             }
             if (!$section->checkLength()) {

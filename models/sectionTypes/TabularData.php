@@ -16,7 +16,7 @@ class TabularData extends ISectionType
         $type = $this->section->getSettings();
 
         $rows = static::getTabularDataRowsFromData($type->data);
-        $data = json_decode($this->section->data, true);
+        $data = json_decode($this->section->getData(), true);
 
         $str = '<div class="form-horizontal tabularData">';
         $str .= '<div class="label">' . Html::encode($type->title) . '</div>';
@@ -59,12 +59,12 @@ class TabularData extends ISectionType
             $dataOut['rows'][$row->rowId] = $row->parseFormInput($dat);
         }
 
-        $this->section->data = json_encode($dataOut);
+        $this->section->setData(json_encode($dataOut));
     }
 
     public function deleteMotionData()
     {
-        $this->section->data = '';
+        $this->section->setData('');
     }
 
     /**
@@ -81,7 +81,7 @@ class TabularData extends ISectionType
             return '';
         }
         $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
-        $data = json_decode($this->section->data, true);
+        $data = json_decode($this->section->getData(), true);
         $str  = '<dl class="tabularData table' . (!$isRight ? ' dl-horizontal' : '') . '">';
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
@@ -105,10 +105,10 @@ class TabularData extends ISectionType
 
     public function isEmpty(): bool
     {
-        if ($this->section->data == '') {
+        if ($this->section->getData() === '') {
             return true;
         }
-        $data = json_decode($this->section->data, true);
+        $data = json_decode($this->section->getData(), true);
         return !(isset($data['rows']) && count($data['rows']) > 0);
     }
 
@@ -126,7 +126,7 @@ class TabularData extends ISectionType
         $pdf->Ln(7);
 
         $rows = static::getTabularDataRowsFromData($this->section->getSettings()->data);
-        $data = json_decode($this->section->data, true);
+        $data = json_decode($this->section->getData(), true);
 
         foreach ($data['rows'] as $rowId => $rowData) {
             if (!isset($rows[$rowId])) {
@@ -214,7 +214,7 @@ class TabularData extends ISectionType
 
     public function getMotionPlainText(): string
     {
-        $data   = json_decode($this->section->data, true);
+        $data   = json_decode($this->section->getData(), true);
         $type = $this->section->getSettings();
         $rows = static::getTabularDataRowsFromData($type->data);
 
@@ -237,7 +237,7 @@ class TabularData extends ISectionType
 
     public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
-        $data = json_decode($this->section->data, true);
+        $data = json_decode($this->section->getData(), true);
         if (!isset($data['rows'])) {
             return;
         }
@@ -310,7 +310,7 @@ class TabularData extends ISectionType
     public function matchesFulltextSearch($text)
     {
         $type   = $this->section->getSettings();
-        $data   = json_decode($this->section->data, true);
+        $data   = json_decode($this->section->getData(), true);
         $rows   = static::getTabularDataRowsFromData($type->data);
         $return = '';
         foreach ($data['rows'] as $rowId => $rowData) {

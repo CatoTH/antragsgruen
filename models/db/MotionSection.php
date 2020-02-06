@@ -2,10 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\diff\amendmentMerger\SectionMerger;
-use app\components\HashedStaticCache;
-use app\components\HTMLTools;
-use app\components\LineSplitter;
+use app\models\settings\AntragsgruenApp;
+use app\components\{diff\amendmentMerger\SectionMerger, HashedStaticCache, HTMLTools, LineSplitter};
 use app\models\sectionTypes\ISectionType;
 use app\models\exceptions\Internal;
 
@@ -24,20 +22,70 @@ use app\models\exceptions\Internal;
  */
 class MotionSection extends IMotionSection
 {
+    public function init()
+    {
+        parent::init();
+
+        $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
+        $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
+        $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
+    }
+
     /**
      * @return string
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app->tablePrefix . 'motionSection';
     }
 
-    /**
-     * @return ConsultationSettingsMotionSection|null
-     */
-    public function getSettings()
+    private function hasExternallySavedData(): bool
+    {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        if ($app->binaryFilePath === null || trim($app->binaryFilePath) === '') {
+            return false;
+        }
+
+        return in_array($this->getSettings()->type, [
+            ISectionType::TYPE_PDF_ALTERNATIVE,
+            ISectionType::TYPE_PDF_ATTACHMENT,
+            ISectionType::TYPE_IMAGE
+        ]);
+    }
+
+    private function getExternallySavedFile(): string
+    {
+        /** @var AntragsgruenApp $app */
+        $app = \Yii::$app->params;
+        $path = $app->binaryFilePath;
+        if (substr($path, -1, 1) !== '/') {
+            $path .= '/';
+        }
+        $path .= ($this->sectionId % 100);
+        if (!file_exists($path)) {
+            mkdir($path, 0700, true);
+        }
+        $path .= '/';
+        $path .= 'motion-section-' . intval($this->motionId) . '-' . intval($this->sectionId);
+
+        return $path;
+    }
+
+    /** @var null|string */
+    private $toSaveDataSpool = null;
+
+    public function onSaved(): void
+    {
+        if ($this->hasExternallySavedData() && $this->toSaveDataSpool !== null) {
+            $filepath = $this->getExternallySavedFile();
+            file_put_contents($filepath, $this->toSaveDataSpool);
+        }
+    }
+
+    public function getSettings(): ?ConsultationSettingsMotionSection
     {
         $motion = $this->getMotion();
         if ($motion) {
@@ -118,7 +166,7 @@ class MotionSection extends IMotionSection
             }
             foreach ($amend->sections as $section) {
                 if ($section->sectionId === $this->sectionId) {
-                    if (!$onlyWithChanges || $section->data !== $this->data) {
+                    if (!$onlyWithChanges || $section->data !== $this->getData()) {
                         $sections[] = $section;
                     }
                 }
@@ -139,10 +187,34 @@ class MotionSection extends IMotionSection
         ];
     }
 
-    /**
-     * @return string
-     */
-    public function getSectionTitle()
+    public function getData(): string
+    {
+        if ($this->hasExternallySavedData()) {
+            if ($this->toSaveDataSpool !== null) {
+                return $this->toSaveDataSpool;
+            }
+            $filepath = $this->getExternallySavedFile();
+            if (file_exists($filepath)) {
+                return file_get_contents($filepath);
+            } else {
+                return '';
+            }
+        } else {
+            return $this->data;
+        }
+    }
+
+    public function setData(string $data): void
+    {
+        if ($this->hasExternallySavedData()) {
+            $this->data            = '';
+            $this->toSaveDataSpool = $data;
+        } else {
+            $this->data = $data;
+        }
+    }
+
+    public function getSectionTitle(): string
     {
         $title = $this->getSettings()->title;
         if ($title === \Yii::t('motion', 'motion_text') && $this->getMotion()->isResolution()) {
@@ -162,13 +234,13 @@ class MotionSection extends IMotionSection
         }
 
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
-        $cacheDeps  = [$lineLength, $this->data];
+        $cacheDeps  = [$lineLength, $this->getData()];
         $cache      = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
         if ($cache) {
             return $cache;
         }
 
-        $paragraphs      = HTMLTools::sectionSimpleHTML($this->data);
+        $paragraphs      = HTMLTools::sectionSimpleHTML($this->getData());
         $paragraphsLines = [];
         foreach ($paragraphs as $paraNo => $paragraph) {
             $lines                    = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
@@ -244,7 +316,7 @@ class MotionSection extends IMotionSection
                 if (!$amSec) {
                     continue;
                 }
-                $paragraphs   = HTMLTools::sectionSimpleHTML($this->data);
+                $paragraphs   = HTMLTools::sectionSimpleHTML($this->getData());
                 $amParagraphs = $amSec->diffDataToOrigParagraphs($paragraphs);
                 foreach ($amParagraphs as $amParagraph) {
                     $return[$amParagraph->origParagraphNo]->amendmentSections[] = $amParagraph;
@@ -261,11 +333,7 @@ class MotionSection extends IMotionSection
         return $return;
     }
 
-    /**
-     * @return string
-     * @throws Internal
-     */
-    public function getTextWithLineNumberPlaceholders()
+    public function getTextWithLineNumberPlaceholders(): string
     {
         $return = '';
         $paras  = $this->getTextParagraphLines();

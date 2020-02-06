@@ -58,7 +58,7 @@ class AmendmentEditForm extends Model
             $this->globalAlternative = ($amendment->globalAlternative == 1);
             foreach ($amendment->getActiveSections() as $section) {
                 $amendmentSections[$section->sectionId] = $section;
-                if ($section->data == '' && isset($motionSections[$section->sectionId])) {
+                if ($section->getData() === '' && isset($motionSections[$section->sectionId])) {
                     $data                                            = $motionSections[$section->sectionId]->data;
                     $amendmentSections[$section->sectionId]->data    = $data;
                     $amendmentSections[$section->sectionId]->dataRaw = $data;

@@ -2,11 +2,9 @@
 
 namespace unit;
 
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
+use app\components\diff\{Diff, DiffRenderer};
 use app\components\HTMLTools;
-use app\models\db\AmendmentSection;
-use app\models\db\MotionSection;
+use app\models\db\{AmendmentSection, MotionSection};
 
 class AmendmentAffectedParagraphsTest extends DBTestBase
 {
@@ -21,7 +19,7 @@ class AmendmentAffectedParagraphsTest extends DBTestBase
         /** @var AmendmentSection $section */
         $section   = AmendmentSection::findOne(['amendmentId' => $amendmentId, 'sectionId' => $sectionId]);
         $orig      = $section->getOriginalMotionSection();
-        $origParas = HTMLTools::sectionSimpleHTML($orig->data);
+        $origParas = HTMLTools::sectionSimpleHTML($orig->getData());
         $newParas  = HTMLTools::sectionSimpleHTML($section->data);
 
         return Diff::computeAffectedParagraphs($origParas, $newParas, DiffRenderer::FORMATTING_CLASSES);

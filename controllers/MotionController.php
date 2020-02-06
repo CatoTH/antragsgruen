@@ -57,7 +57,7 @@ class MotionController extends Base
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
                     \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }
-                return base64_decode($section->data);
+                return base64_decode($section->getData());
             }
         }
         return $this->showErrorpage(404, 'Image not found');
@@ -73,7 +73,7 @@ class MotionController extends Base
     public function actionViewpdf($motionSlug, $sectionId, $showAlways = null)
     {
         $motion    = $this->getMotionWithCheck($motionSlug);
-        $sectionId = IntVal($sectionId);
+        $sectionId = intval($sectionId);
 
         foreach ($motion->getActiveSections() as $section) {
             if ($section->sectionId === $sectionId) {
@@ -88,7 +88,7 @@ class MotionController extends Base
                 if (!$this->layoutParams->isRobotsIndex($this->action)) {
                     \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
                 }
-                return base64_decode($section->data);
+                return base64_decode($section->getData());
             }
         }
 
@@ -163,7 +163,7 @@ class MotionController extends Base
         }
 
         if ($motion->getAlternativePdfSection()) {
-            return base64_decode($motion->getAlternativePdfSection()->data);
+            return base64_decode($motion->getAlternativePdfSection()->getData());
         }
 
         $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);

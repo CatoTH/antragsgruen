@@ -26,8 +26,6 @@ namespace app\models\db;
  */
 class MotionSupporter extends ISupporter
 {
-    /**
-     */
     public function init()
     {
         parent::init();

@@ -3,10 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\components\Tools;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
+use app\models\db\{IMotion, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\ISectionType;
@@ -20,18 +17,12 @@ class Merge
     /** @var MotionSection[] */
     public $motionSections;
 
-    /**
-     * @param Motion $origMotion
-     */
     public function __construct(Motion $origMotion)
     {
         $this->origMotion = $origMotion;
     }
 
-    /**
-     * @return Motion|null
-     */
-    public function getMergedMotionDraft()
+    public function getMergedMotionDraft(): ?Motion
     {
         $newTitlePrefix = $this->origMotion->getNewTitlePrefix();
         $newMotion      = Motion::find()
@@ -42,10 +33,7 @@ class Merge
         return $newMotion;
     }
 
-    /**
-     * @return Motion
-     */
-    private function createMotion()
+    private function createMotion(): Motion
     {
         $newMotion = $this->getMergedMotionDraft();
         if (!$newMotion) {
@@ -70,14 +58,7 @@ class Merge
         return $newMotion;
     }
 
-    /**
-     * @param MotionSection $section
-     * @param MotionSection $origSection
-     * @param Draft $draft
-     *
-     * @throws \app\models\exceptions\FormError
-     */
-    private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, Draft $draft)
+    private function mergeSimpleTextSection(MotionSection $section, MotionSection $origSection, Draft $draft): void
     {
         $paragraphs = [];
         foreach ($origSection->getTextParagraphLines() as $paraNo => $para) {
@@ -90,14 +71,7 @@ class Merge
         $section->dataRaw = $html;
     }
 
-    /**
-     * @param Draft $draft
-     *
-     * @return Motion
-     * @throws Internal
-     * @throws \app\models\exceptions\FormError
-     */
-    public function createNewMotion(Draft $draft)
+    public function createNewMotion(Draft $draft): Motion
     {
         $newMotion = $this->createMotion();
 
@@ -106,7 +80,7 @@ class Merge
             $section->sectionId = $origSection->sectionId;
             $section->motionId  = $newMotion->id;
             $section->cache     = '';
-            $section->data      = '';
+            $section->setData('');
             $section->dataRaw   = '';
             $section->refresh();
 

@@ -2,29 +2,17 @@
 
 namespace app\models;
 
-use app\components\diff\AmendmentSectionFormatter;
-use app\components\diff\DiffRenderer;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\exceptions\Inconsistency;
-use app\models\exceptions\Internal;
+use app\components\diff\{AmendmentSectionFormatter, DiffRenderer};
+use app\models\db\{Motion, MotionSection};
+use app\models\exceptions\{Inconsistency, Internal};
 use app\models\sectionTypes\ISectionType;
 
-/**
- * Class MotionSectionChanges
- * @package models
- */
 class MotionSectionChanges
 {
     public $oldSection;
     public $newSection;
 
-    /**
-     * MotionSectionChanges constructor.
-     * @param MotionSection|null $oldSection
-     * @param MotionSection|null $newSection
-     */
-    public function __construct($oldSection, $newSection)
+    public function __construct(?MotionSection $oldSection, ?MotionSection $newSection)
     {
         $this->newSection = $newSection;
         $this->oldSection = $oldSection;
@@ -62,21 +50,15 @@ class MotionSectionChanges
         return $changes;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasChanges()
+    public function hasChanges(): bool
     {
         if (!$this->oldSection || !$this->newSection) {
             return false;
         }
-        return ($this->oldSection->data !== $this->newSection->data);
+        return ($this->oldSection->getData() !== $this->newSection->getData());
     }
 
-    /**
-     * @return MotionSection
-     */
-    private function getAnySection()
+    private function getAnySection(): MotionSection
     {
         if ($this->newSection) {
             return $this->newSection;
@@ -85,35 +67,22 @@ class MotionSectionChanges
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getSectionId()
+    public function getSectionId(): int
     {
         return $this->getAnySection()->sectionId;
     }
 
-    /**
-     * @return string
-     */
-    public function getSectionTitle()
+    public function getSectionTitle(): string
     {
         return $this->getAnySection()->getSettings()->title;
     }
 
-    /**
-     * @return int
-     */
-    public function getSectionTypeId()
+    public function getSectionTypeId(): int
     {
         return $this->getAnySection()->getSettings()->type;
     }
 
-    /**
-     * @return int
-     * @throws Internal
-     */
-    public function getFirstLineNumber()
+    public function getFirstLineNumber(): int
     {
         return $this->getAnySection()->getFirstLineNumber();
     }
@@ -121,17 +90,12 @@ class MotionSectionChanges
     /**
      * @return int
      */
-    public function isFixedWithFont()
+    public function isFixedWithFont(): int
     {
         return $this->getAnySection()->getSettings()->fixedWidth;
     }
 
-    /**
-     * @param int $diffFormatting
-     * @return array
-     * @throws Internal
-     */
-    public function getSimpleTextDiffGroups($diffFormatting = DiffRenderer::FORMATTING_CLASSES)
+    public function getSimpleTextDiffGroups(int $diffFormatting = DiffRenderer::FORMATTING_CLASSES): array
     {
         if (!$this->oldSection || !$this->newSection || $this->getSectionTypeId() !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Impossible to calculate diff');
@@ -141,11 +105,10 @@ class MotionSectionChanges
         $firstLine  = $this->oldSection->getFirstLineNumber();
 
         $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($this->oldSection->data);
-        $formatter->setTextNew($this->newSection->data);
+        $formatter->setTextOriginal($this->oldSection->getData());
+        $formatter->setTextNew($this->newSection->getData());
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, $diffFormatting);
 
-        return $diffGroups;
+        return $formatter->getDiffGroupsWithNumbers($lineLength, $diffFormatting);
     }
 }

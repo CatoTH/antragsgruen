@@ -24,7 +24,7 @@ class PDF extends ISectionType
         /** @var MotionSection $section */
         $section = $this->section;
         $motion  = $section->getMotion();
-        if (!$motion || !$section->data) {
+        if (!$motion || !$section->getData()) {
             return null;
         }
 
@@ -102,13 +102,13 @@ class PDF extends ISectionType
         $metadata                = [
             'filesize' => filesize($data['tmp_name']),
         ];
-        $this->section->data     = base64_encode(file_get_contents($data['tmp_name']));
+        $this->section->setData(base64_encode(file_get_contents($data['tmp_name'])));
         $this->section->metadata = json_encode($metadata);
     }
 
     public function deleteMotionData()
     {
-        $this->section->data     = '';
+        $this->section->setData('');
         $this->section->metadata = '';
     }
 
@@ -155,7 +155,7 @@ class PDF extends ISectionType
 
     public function isEmpty(): bool
     {
-        return ($this->section->data === '');
+        return ($this->section->getData() === '');
     }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
@@ -176,7 +176,7 @@ class PDF extends ISectionType
         }
         $pdf->writeHTML('<h3>' . $title . '</h3>');
 
-        $data = base64_decode($this->section->data);
+        $data = base64_decode($this->section->getData());
 
         try {
             $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
@@ -311,10 +311,10 @@ class PDF extends ISectionType
 
         $filenameBase                         = uniqid('motion-pdf-attachment') . '.pdf';
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
-            $content->attachedPdfs[$filenameBase] = base64_decode($this->section->data);
+            $content->attachedPdfs[$filenameBase] = base64_decode($this->section->getData());
         }
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
-            $content->replacingPdf = base64_decode($this->section->data);
+            $content->replacingPdf = base64_decode($this->section->getData());
         }
     }
 

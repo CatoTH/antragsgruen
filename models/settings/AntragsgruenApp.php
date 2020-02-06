@@ -41,6 +41,7 @@ class AntragsgruenApp implements \JsonSerializable
     public $localMessages         = [];
     public $imageMagickPath       = null;
     public $sitePurgeAfterDays    = null;
+    public $binaryFilePath        = null;
     public $mode                  = 'production'; // [production | sandbox]
     public $updateKey             = null;
 
@@ -53,20 +54,14 @@ class AntragsgruenApp implements \JsonSerializable
     /** @var null|array */
     public $mailService = ['transport' => 'sendmail'];
 
-    /**
-     * @return AntragsgruenApp
-     */
-    public static function getInstance()
+    public static function getInstance(): AntragsgruenApp
     {
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         return $app;
     }
 
-    /**
-     * @return bool
-     */
-    private function isHttps()
+    private function isHttps(): bool
     {
         // Needs to be equal to Yii2's web/Request.php
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1) ||
@@ -92,7 +87,7 @@ class AntragsgruenApp implements \JsonSerializable
     /**
      * @throws \yii\db\Exception
      */
-    public static function flushAllCaches()
+    public static function flushAllCaches(): void
     {
         $tables = ['amendment', 'amendmentSection', 'motion', 'motionSection'];
         foreach ($tables as $table) {
@@ -104,18 +99,12 @@ class AntragsgruenApp implements \JsonSerializable
         \Yii::$app->cache->flush();
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasPhpExcel()
+    public static function hasPhpExcel(): bool
     {
         return class_exists('\PHPExcel', true);
     }
 
-    /**
-     * @return bool
-     */
-    public function isSamlActive()
+    public function isSamlActive(): bool
     {
         return ($this->hasSaml && class_exists('\SimpleSAML\Auth\Simple'));
     }
@@ -165,10 +154,7 @@ class AntragsgruenApp implements \JsonSerializable
         return array_keys(static::getActivePlugins());
     }
 
-    /**
-     * @return string
-     */
-    public function getAbsoluteResourceBase()
+    public function getAbsoluteResourceBase(): string
     {
         $url = $this->domainPlain;
         if ($url && $url[strlen($url) - 1] === '/' && $this->resourceBase[0] === '/') {
@@ -179,10 +165,7 @@ class AntragsgruenApp implements \JsonSerializable
         return $url;
     }
 
-    /**
-     * @return string
-     */
-    public function getTmpDir()
+    public function getTmpDir(): string
     {
         $dir = \Yii::$app->runtimePath . '/tmp';
         if (!file_exists($dir)) {

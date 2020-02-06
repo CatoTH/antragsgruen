@@ -3,9 +3,7 @@
 namespace app\models\mergeAmendments;
 
 use app\components\diff\amendmentMerger\ParagraphMerger;
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
+use app\models\db\{Amendment, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
 
 class Init
@@ -92,7 +90,7 @@ class Init
         if ($this->draftData && isset($this->draftData->sections[$section->sectionId]) && $section->getSettings()->type === ISectionType::TYPE_TITLE) {
             $clone = new MotionSection();
             $clone->setAttributes($section->getAttributes(), false);
-            $clone->data    = $this->draftData->sections[$section->sectionId];
+            $clone->setData($this->draftData->sections[$section->sectionId]);
             $clone->dataRaw = $this->draftData->sections[$section->sectionId];
 
             return $clone;

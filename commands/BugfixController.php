@@ -35,11 +35,11 @@ class BugfixController extends Controller
                 if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                     continue;
                 }
-                $newText = HTMLTools::cleanSimpleHtml($section->data);
+                $newText = HTMLTools::cleanSimpleHtml($section->getData());
                 $newText = HTMLTools::removeSectioningFragments($newText);
-                if ($newText !== $section->data) {
+                if ($newText !== $section->getData()) {
                     $changedCount++;
-                    $section->data = $newText;
+                    $section->setData($newText);
                     $section->save();
                 }
             } catch (\Exception $e) {

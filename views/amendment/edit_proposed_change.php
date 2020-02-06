@@ -1,9 +1,6 @@
 <?php
 
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{diff\Diff, diff\DiffRenderer, HTMLTools, UrlHelper};
 use app\models\db\Amendment;
 use app\models\sectionTypes\ISectionType;
 use yii\helpers\Html;
@@ -116,7 +113,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                             echo '<div class="paragraph">';
                             echo '<div class="text motionTextFormattings textOrig fixedWidthFont">';
                             echo implode("\n", $diff->compareHtmlParagraphs(
-                                HTMLTools::sectionSimpleHTML($amendSection->getOriginalMotionSection()->data),
+                                HTMLTools::sectionSimpleHTML($amendSection->getOriginalMotionSection()->getData()),
                                 HTMLTools::sectionSimpleHTML($amendSection->data),
                                 DiffRenderer::FORMATTING_ICE
                             ));

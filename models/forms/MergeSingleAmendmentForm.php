@@ -2,10 +2,7 @@
 
 namespace app\models\forms;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
+use app\models\db\{Amendment, Motion, MotionSection, MotionSupporter};
 use app\models\events\MotionEvent;
 use app\models\exceptions\DB;
 use app\models\sectionTypes\ISectionType;
@@ -59,10 +56,7 @@ class MergeSingleAmendmentForm extends Model
         $this->otherAmendOverrides = $otherAmendOverrides;
     }
 
-    /**
-     * @return array
-     */
-    private function getNewHtmlParas()
+    private function getNewHtmlParas(): array
     {
         $newSections = [];
         foreach ($this->mergeAmendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
@@ -77,11 +71,7 @@ class MergeSingleAmendmentForm extends Model
         return $newSections;
     }
 
-    /**
-     * @return bool
-     * @throws \app\models\exceptions\Internal
-     */
-    public function checkConsistency()
+    public function checkConsistency(): bool
     {
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
@@ -112,7 +102,7 @@ class MergeSingleAmendmentForm extends Model
      * @param string $previousSlug
      * @throws DB
      */
-    private function createNewMotion($previousSlug)
+    private function createNewMotion(string $previousSlug): void
     {
         $this->newMotion                  = new Motion();
         $this->newMotion->consultationId  = $this->oldMotion->consultationId;
@@ -149,7 +139,7 @@ class MergeSingleAmendmentForm extends Model
     /**
      * @throws DB
      */
-    private function createNewMotionSections()
+    private function createNewMotionSections(): void
     {
         $newSections = $this->getNewHtmlParas();
 
@@ -158,9 +148,9 @@ class MergeSingleAmendmentForm extends Model
             $newSection->setAttributes($section->getAttributes(), false);
             $newSection->motionId = $this->newMotion->id;
             $newSection->cache    = '';
-            if ($section->getSettings()->type == ISectionType::TYPE_TEXT_SIMPLE) {
+            if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
                 if (isset($newSections[$section->sectionId])) {
-                    $newSection->data    = $newSections[$section->sectionId];
+                    $newSection->setData($newSections[$section->sectionId]);
                     $newSection->dataRaw = '';
                 }
             }
@@ -173,7 +163,7 @@ class MergeSingleAmendmentForm extends Model
     /**
      * @throws DB
      */
-    private function rewriteOtherAmendments()
+    private function rewriteOtherAmendments(): void
     {
         $newSections = $this->getNewHtmlParas();
         $overrides   = $this->otherAmendOverrides;
@@ -208,8 +198,9 @@ class MergeSingleAmendmentForm extends Model
     }
 
     /**
+     * @throws DB
      */
-    private function setDoneAmendmentsStatuses()
+    private function setDoneAmendmentsStatuses(): void
     {
         foreach ($this->oldMotion->getAmendmentsRelevantForCollisionDetection([$this->mergeAmendment]) as $amendment) {
             if (!isset($this->otherAmendStatuses[$amendment->id])) {
@@ -229,7 +220,7 @@ class MergeSingleAmendmentForm extends Model
      * @return Motion
      * @throws DB
      */
-    public function performRewrite()
+    public function performRewrite(): Motion
     {
         $previousSlug          = $this->oldMotion->slug;
         $this->oldMotion->slug = null;

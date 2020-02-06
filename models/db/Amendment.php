@@ -453,7 +453,7 @@ class Amendment extends IMotion implements IRSSItem
             if ($section->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
                 continue;
             }
-            $original[] = $section->getOriginalMotionSection()->data;
+            $original[] = $section->getOriginalMotionSection()->getData();
             $new[]      = $section->data;
         }
 
@@ -1011,7 +1011,7 @@ class Amendment extends IMotion implements IRSSItem
             }
 
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
@@ -1350,7 +1350,7 @@ class Amendment extends IMotion implements IRSSItem
                 $data['changed_sections'][] = [
                     'section_title' => $section->getSettings()->title,
                     'section_type'  => $section->getSettings()->type,
-                    'data'          => $section->data,
+                    'data'          => $section->getData(),
                     'metadata'      => $section->metadata,
                 ];
             }

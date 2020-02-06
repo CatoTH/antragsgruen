@@ -169,7 +169,7 @@ if (count($comments) > 0) {
                 foreach ($motion->getSortedSections(true) as $section) {
                     if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE &&
                         $section->getSettings()->maxLen !== 0) {
-                        $abstract = \app\components\HTMLTools::toPlainText($section->data, true);
+                        $abstract = \app\components\HTMLTools::toPlainText($section->getData(), true);
                     }
                 }
                 if ($abstract) {

@@ -1,8 +1,6 @@
 <?php
 
-use app\models\db\AmendmentSection;
-use app\models\db\Consultation;
-use app\models\db\IAdminComment;
+use app\models\db\{AmendmentSection, Consultation, IAdminComment};
 use app\models\proposedProcedure\Agenda;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
@@ -82,7 +80,7 @@ foreach ($titleRows as $titleRow) {
 }
 */
 
-$doc->setCell(7, $firstCol, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'pp_title'));
+$doc->setCell(7, $firstCol, Spreadsheet::TYPE_TEXT, Yii::t('export', 'pp_title'));
 $doc->setMinRowHeight(7, 1.8);
 $doc->setCellStyle(7, $firstCol, [], [
     'fo:font-family' => 'Arvo Gruen',
@@ -94,20 +92,20 @@ $doc->setCellStyle(7, $firstCol, [], [
 // Heading
 
 $headerStyle = ['fo:font-family' => 'PT Sans', 'fo:font-size' => '11pt', 'fo:font-weight' => 'bold'];
-$doc->setCell(9, $COL_PREFIX, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'prefix_short'));
+$doc->setCell(9, $COL_PREFIX, Spreadsheet::TYPE_TEXT, Yii::t('export', 'prefix_short'));
 $doc->setCellStyle(9, $COL_PREFIX, [], $headerStyle);
 $doc->setColumnWidth($COL_PREFIX, 2);
 
-$doc->setCell(9, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'initiator'));
+$doc->setCell(9, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setCellStyle(9, $COL_INITIATOR, [], $headerStyle);
 $doc->setColumnWidth($COL_INITIATOR, 5);
 
-$doc->setCell(9, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'procedure'));
+$doc->setCell(9, $COL_PROCEDURE, Spreadsheet::TYPE_TEXT, Yii::t('export', 'procedure'));
 $doc->setCellStyle(9, $COL_PROCEDURE, [], $headerStyle);
 $doc->setColumnWidth($COL_PROCEDURE, 20);
 
 if ($comments) {
-    $doc->setCell(9, $COL_COMMENTS, Spreadsheet::TYPE_TEXT, \Yii::t('export', 'comments'));
+    $doc->setCell(9, $COL_COMMENTS, Spreadsheet::TYPE_TEXT, Yii::t('export', 'comments'));
     $doc->setCellStyle(9, $COL_COMMENTS, [], $headerStyle);
     $doc->setColumnWidth($COL_COMMENTS, 7);
 }
@@ -144,7 +142,7 @@ use ($COL_PREFIX, $COL_INITIATOR, $COL_PROCEDURE, $COL_COMMENTS, $comments, $for
             foreach ($sections as $section) {
                 $firstLine    = $section->getFirstLineNumber();
                 $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-                $originalData = $section->getOriginalMotionSection()->data;
+                $originalData = $section->getOriginalMotionSection()->getData();
                 $newData      = $section->data;
                 $proposal     .= TextSimple::formatAmendmentForOds($originalData, $newData, $firstLine, $lineLength);
                 $minHeight    += 1;
@@ -249,11 +247,11 @@ foreach ($proposedAgenda as $proposedItem) {
 
 try {
     echo $doc->finishAndGetDocument();
-} catch (\Exception $e) {
+} catch (Exception $e) {
     if (in_array(YII_ENV, ['dev', 'test'])) {
         var_dump($e);
     } else {
-        echo \Yii::t('base', 'err_unknown');
+        echo Yii::t('base', 'err_unknown');
     }
     die();
 }

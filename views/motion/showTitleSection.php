@@ -42,7 +42,7 @@ if ($hasLineNumbers) {
     /** @var int $lineNo */
     $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
 }
-echo Html::encode($section->data);
+echo Html::encode($section->getData());
 echo '</div>';
 
 foreach ($amendingSections as $amendmentSection) {

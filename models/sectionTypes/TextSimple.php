@@ -46,7 +46,7 @@ class TextSimple extends Text
             $section = $this->section;
             $diff    = new Diff();
             if ($section->getOriginalMotionSection()) {
-                $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+                $origParas = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->getData());
             } else {
                 $origParas = [];
             }
@@ -70,7 +70,7 @@ class TextSimple extends Text
         /** @var AmendmentSection $amSection */
         $amSection = $this->section;
         $moSection = $amSection->getOriginalMotionSection();
-        $moParas   = HTMLTools::sectionSimpleHTML($moSection->data, false);
+        $moParas   = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
 
         $amParas          = $moParas;
         $changedParagraph = -1;
@@ -125,12 +125,12 @@ class TextSimple extends Text
     {
         $type                   = $this->section->getSettings();
         $this->section->dataRaw = $data;
-        $this->section->data    = HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings());
+        $this->section->setData(HTMLTools::cleanSimpleHtml($data, $type->getForbiddenMotionFormattings()));
     }
 
     public function deleteMotionData()
     {
-        $this->section->data    = null;
+        $this->section->setData(null);
         $this->section->dataRaw = null;
     }
 
@@ -154,7 +154,7 @@ class TextSimple extends Text
             $section->dataRaw = $data['raw'];
         } else {
             $moSection = $section->getOriginalMotionSection();
-            $paras     = HTMLTools::sectionSimpleHTML($moSection->data, false);
+            $paras     = HTMLTools::sectionSimpleHTML($moSection->getData(), false);
             $parasRaw  = $paras;
             if ($post['modifiedParagraphNo'] !== '' && $post['modifiedSectionId'] == $section->sectionId) {
                 $paraNo            = IntVal($post['modifiedParagraphNo']);
@@ -168,7 +168,7 @@ class TextSimple extends Text
 
     public function getSimple(bool $isRight, bool $showAlways = false): string
     {
-        $sections = HTMLTools::sectionSimpleHTML($this->section->data);
+        $sections = HTMLTools::sectionSimpleHTML($this->section->getData());
         $str      = '';
         foreach ($sections as $section) {
             $str .= '<div class="paragraph"><div class="text motionTextFormattings';
@@ -182,7 +182,7 @@ class TextSimple extends Text
 
     public function getMotionPlainHtml(): string
     {
-        $html = $this->section->data;
+        $html = $this->section->getData();
         $html = str_replace('<span class="underline">', '<span style="text-decoration: underline;">', $html);
         $html = str_replace('<span class="strike">', '<span style="text-decoration: line-through;">', $html);
         return $html;
@@ -201,11 +201,11 @@ class TextSimple extends Text
             $str .= $section->data;
             return $str;
         } else {
-            $cacheDeps = [$section->getOriginalMotionSection()->data, $section->data, $firstLine, $lineLength, $section->getSettings()->title];
+            $cacheDeps = [$section->getOriginalMotionSection()->getData(), $section->data, $firstLine, $lineLength, $section->getSettings()->title];
             $cached    = HashedStaticCache::getCache('getAmendmentPlainHtml', $cacheDeps);
             if (!$cached) {
                 $formatter = new AmendmentSectionFormatter();
-                $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+                $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
                 $formatter->setTextNew($section->data);
                 $formatter->setFirstLineNo($firstLine);
                 $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
@@ -262,7 +262,7 @@ class TextSimple extends Text
         $firstLine  = $section->getFirstLineNumber();
 
         $formatter = new AmendmentSectionFormatter();
-        $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+        $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
         $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
@@ -412,7 +412,7 @@ class TextSimple extends Text
             $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
@@ -463,7 +463,7 @@ class TextSimple extends Text
 
     public function isEmpty(): bool
     {
-        return ($this->section->data === '');
+        return ($this->section->getData() === '');
     }
 
     /**
@@ -574,12 +574,12 @@ class TextSimple extends Text
 
     public function getMotionPlainText(): string
     {
-        return HTMLTools::toPlainText($this->section->data);
+        return HTMLTools::toPlainText($this->section->getData());
     }
 
     public function getAmendmentPlainText(): string
     {
-        return HTMLTools::toPlainText($this->section->data);
+        return HTMLTools::toPlainText($this->section->getData());
     }
 
     public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
@@ -608,7 +608,7 @@ class TextSimple extends Text
             $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
         }
 
-        $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->data];
+        $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->getData()];
         $tex2      = HashedStaticCache::getCache('printMotionTeX', $cacheDeps);
 
         if (!$tex2) {
@@ -660,7 +660,7 @@ class TextSimple extends Text
         $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
         $cacheDeps = [
-            $firstLine, $lineLength, $section->getOriginalMotionSection()->data, $section->data,
+            $firstLine, $lineLength, $section->getOriginalMotionSection()->getData(), $section->data,
             $section->getAmendment()->globalAlternative
         ];
         $tex       = HashedStaticCache::getCache('printAmendmentTeX', $cacheDeps);
@@ -677,7 +677,7 @@ class TextSimple extends Text
                 $tex .= Exporter::encodeHTMLString($section->data);
             } else {
                 $formatter = new AmendmentSectionFormatter();
-                $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+                $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
                 $formatter->setTextNew($section->data);
                 $formatter->setFirstLineNo($firstLine);
                 $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
@@ -708,7 +708,7 @@ class TextSimple extends Text
 
     public function getMotionODS(): string
     {
-        return $this->section->data;
+        return $this->section->getData();
     }
 
     public function getAmendmentODS(): string
@@ -722,7 +722,7 @@ class TextSimple extends Text
 
         $firstLine    = $section->getFirstLineNumber();
         $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
-        $originalData = $section->getOriginalMotionSection()->data;
+        $originalData = $section->getOriginalMotionSection()->getData();
         return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
     }
 
@@ -780,7 +780,7 @@ class TextSimple extends Text
             $lineLength = $section->getCachedConsultation()->getSettings()->lineLength;
 
             $formatter = new AmendmentSectionFormatter();
-            $formatter->setTextOriginal($section->getOriginalMotionSection()->data);
+            $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
             $formatter->setTextNew($section->data);
             $formatter->setFirstLineNo($firstLine);
             $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
@@ -806,7 +806,7 @@ class TextSimple extends Text
      */
     public function matchesFulltextSearch($text)
     {
-        $data = strip_tags($this->section->data);
+        $data = strip_tags($this->section->getData());
         return (mb_stripos($data, $text) !== false);
     }
 

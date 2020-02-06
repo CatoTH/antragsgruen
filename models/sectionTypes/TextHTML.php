@@ -22,7 +22,7 @@ class TextHTML extends Text
         $this->section->getSettings()->maxLen = 0; // @TODO Dirty Hack
         $fixedWidth                           = $this->section->getSettings()->fixedWidth;
 
-        $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->data);
+        $pre = ($this->section->dataRaw ? $this->section->dataRaw : $this->section->getData());
         return $this->getTextAmendmentFormField(true, $pre, $fixedWidth);
     }
 
@@ -32,12 +32,12 @@ class TextHTML extends Text
     public function setMotionData($data)
     {
         $this->section->dataRaw = $data;
-        $this->section->data    = HTMLTools::correctHtmlErrors($data);
+        $this->section->setData(HTMLTools::correctHtmlErrors($data));
     }
 
     public function deleteMotionData()
     {
-        $this->section->data    = '';
+        $this->section->setData('');
         $this->section->dataRaw = '';
     }
 
@@ -54,7 +54,7 @@ class TextHTML extends Text
 
     public function getSimple(bool $isRight, bool $showAlways = false): string
     {
-        return $this->section->data;
+        return $this->section->getData();
     }
 
     public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string
@@ -64,7 +64,7 @@ class TextHTML extends Text
 
     public function isEmpty(): bool
     {
-        return ($this->section->data == '');
+        return ($this->section->getData() === '');
     }
 
     public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
@@ -77,7 +77,7 @@ class TextHTML extends Text
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
 
-        $html = $this->section->data;
+        $html = $this->section->getData();
         // instead of <span class="strike"></span> TCPDF can only handle <s></s>
         // for striking through text
         $pattern = '/<span class="strike">(.*)<\/span>/iUs';
@@ -98,12 +98,12 @@ class TextHTML extends Text
 
     public function getMotionPlainText(): string
     {
-        return HTMLTools::toPlainText($this->section->data);
+        return HTMLTools::toPlainText($this->section->getData());
     }
 
     public function getAmendmentPlainText(): string
     {
-        return HTMLTools::toPlainText($this->section->data);
+        return HTMLTools::toPlainText($this->section->getData());
     }
 
     public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
@@ -153,7 +153,7 @@ class TextHTML extends Text
      */
     public function matchesFulltextSearch($text)
     {
-        $data = strip_tags($this->section->data);
+        $data = strip_tags($this->section->getData());
         return (mb_stripos($data, $text) !== false);
     }
 }

@@ -59,7 +59,7 @@ class SingleAmendmentMergeViewParagraphData
         }
 
         foreach ($amendment->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE) as $section) {
-            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->data);
+            $motionParas     = HTMLTools::sectionSimpleHTML($section->getOriginalMotionSection()->getData());
             $amendmentParas  = HTMLTools::sectionSimpleHTML($section->data);
             $paragraphsDiff  = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, true);
             $paragraphsPlain = AmendmentRewriter::computeAffectedParagraphs($motionParas, $amendmentParas, false);

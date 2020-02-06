@@ -38,7 +38,7 @@ abstract class Text extends ISectionType
 
         $str .= '<textarea name="sections[' . $formId . ']"  id="sections_' . $formId . '" ';
         $str .= 'title="' . Html::encode($type->title) . '">';
-        $str .= Html::encode($this->section->data) . '</textarea>';
+        $str .= Html::encode($this->section->getData()) . '</textarea>';
         $str .= '<div class="texteditor motionTextFormattings boxed';
         if ($fixedWidth) {
             $str .= ' fixedWidthFont';
@@ -48,7 +48,7 @@ abstract class Text extends ISectionType
             $str .= 'data-no-strike="1" ';
         }
         $str .= 'title="' . Html::encode($type->title) . '">';
-        $str .= $this->section->data;
+        $str .= $this->section->getData();
         $str .= '</div>';
 
         if ($type->maxLen != 0) {
@@ -76,7 +76,7 @@ abstract class Text extends ISectionType
         $type         = $section->getSettings();
         $nameBase     = 'sections[' . $type->id . ']';
         $htmlId       = 'sections_' . $type->id;
-        $originalHtml = ($section->getOriginalMotionSection() ? $section->getOriginalMotionSection()->data : '');
+        $originalHtml = ($section->getOriginalMotionSection() ? $section->getOriginalMotionSection()->getData() : '');
 
         $str = '<div class="form-group wysiwyg-textarea" id="section_holder_' . $type->id . '"';
         $str .= ' data-max-len="' . $type->maxLen . '"';

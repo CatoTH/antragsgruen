@@ -1,8 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{IMotion, Motion};
 use app\plugins\member_petitions\Tools;
 use yii\helpers\Html;
 
@@ -142,7 +141,7 @@ foreach ($motions as $motion) {
     $abstract = null;
     foreach ($motion->getSortedSections(true) as $section) {
         if ($section->getSettings()->type === \app\models\sectionTypes\ISectionType::TYPE_TITLE) {
-            $abstract = $section->data;
+            $abstract = $section->getData();
         }
     }
     if ($abstract) {

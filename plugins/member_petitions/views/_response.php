@@ -28,7 +28,7 @@ use yii\helpers\Html;
 <?php
 $main = '';
 foreach ($response->getSortedSections(true) as $i => $section) {
-    if (trim($section->data) === '') {
+    if (trim($section->getData()) === '') {
         continue;
     }
     $sectionType = $section->getSettings()->type;
