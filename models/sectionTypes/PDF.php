@@ -102,7 +102,7 @@ class PDF extends ISectionType
         $metadata                = [
             'filesize' => filesize($data['tmp_name']),
         ];
-        $this->section->setData(base64_encode(file_get_contents($data['tmp_name'])));
+        $this->section->setData(file_get_contents($data['tmp_name']));
         $this->section->metadata = json_encode($metadata);
     }
 
@@ -176,7 +176,7 @@ class PDF extends ISectionType
         }
         $pdf->writeHTML('<h3>' . $title . '</h3>');
 
-        $data = base64_decode($this->section->getData());
+        $data = $this->section->getData();
 
         try {
             $pageCount = $pdf->setSourceFile(VarStream::createReference($data));
@@ -311,10 +311,10 @@ class PDF extends ISectionType
 
         $filenameBase                         = uniqid('motion-pdf-attachment') . '.pdf';
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
-            $content->attachedPdfs[$filenameBase] = base64_decode($this->section->getData());
+            $content->attachedPdfs[$filenameBase] = $this->section->getData();
         }
         if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
-            $content->replacingPdf = base64_decode($this->section->getData());
+            $content->replacingPdf = $this->section->getData();
         }
     }
 

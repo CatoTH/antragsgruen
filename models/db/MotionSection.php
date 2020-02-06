@@ -200,7 +200,15 @@ class MotionSection extends IMotionSection
                 return '';
             }
         } else {
-            return $this->data;
+            if (in_array($this->getSettings()->type, [
+                ISectionType::TYPE_PDF_ALTERNATIVE,
+                ISectionType::TYPE_PDF_ATTACHMENT,
+                ISectionType::TYPE_IMAGE
+            ])) {
+                return base64_decode($this->data);
+            } else {
+                return $this->data;
+            }
         }
     }
 
@@ -210,7 +218,15 @@ class MotionSection extends IMotionSection
             $this->data            = '';
             $this->toSaveDataSpool = $data;
         } else {
-            $this->data = $data;
+            if (in_array($this->getSettings()->type, [
+                ISectionType::TYPE_PDF_ALTERNATIVE,
+                ISectionType::TYPE_PDF_ATTACHMENT,
+                ISectionType::TYPE_IMAGE
+            ])) {
+                $this->data = base64_encode($data);
+            } else {
+                $this->data = $data;
+            }
         }
     }
 
