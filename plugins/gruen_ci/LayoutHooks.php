@@ -35,7 +35,7 @@ class LayoutHooks extends Hooks
             '</a></p>' .
             '<div class="hgroup">' .
             '<div id="site-title"><span>' .
-            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Antragsgrün</a>' .
+            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">' . \Yii::t('gruen_ci', 'antragsgruen') . '</a>' .
             '</span></div>';
         if ($this->consultation) {
             $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';
@@ -69,7 +69,7 @@ class LayoutHooks extends Hooks
         title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
 
     <button type="submit" class="button-submit">
-                <span class="fa fa-search"></span> <span class="text">Suchen</span>
+                <span class="fa fa-search"></span> <span class="text">' . \Yii::t('gruen_ci', 'search') . '</span>
             </button>';
         $html .= Html::endForm();
         return $html;
