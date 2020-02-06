@@ -3,18 +3,10 @@
 namespace app\commands;
 
 use app\components\SitePurger;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
-/**
- * Antragsgrün Administration
- * @package app\commands
- */
 class AdminController extends Controller
 {
     /**
