@@ -22,7 +22,7 @@ class CommentNotificationSubscriptions extends Base implements IEmailUser
         parent::__construct();
     }
 
-    public function getEmailUser(): string
+    public function getEmailUser(): User
     {
         return $this->user;
     }

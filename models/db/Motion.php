@@ -727,7 +727,7 @@ class Motion extends IMotion implements IRSSItem
             if ($supp->role === MotionSupporter::ROLE_INITIATOR) {
                 $return[] = $supp;
             }
-        };
+        }
 
         return $return;
     }
@@ -742,7 +742,7 @@ class Motion extends IMotion implements IRSSItem
             if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
                 $return[] = $supp;
             }
-        };
+        }
         usort($return, function (MotionSupporter $supp1, MotionSupporter $supp2) {
             if ($supp1->position > $supp2->position) {
                 return 1;
@@ -773,7 +773,7 @@ class Motion extends IMotion implements IRSSItem
             if ($supp->role === MotionSupporter::ROLE_LIKE) {
                 $return[] = $supp;
             }
-        };
+        }
 
         return $return;
     }
@@ -788,7 +788,7 @@ class Motion extends IMotion implements IRSSItem
             if ($supp->role === MotionSupporter::ROLE_DISLIKE) {
                 $return[] = $supp;
             }
-        };
+        }
 
         return $return;
     }

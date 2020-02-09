@@ -4,7 +4,7 @@ namespace app\models\exceptions;
 
 class FormError extends ExceptionBase
 {
-    /** @var \string[] */
+    /** @var string[] */
     protected $messages;
 
     /**

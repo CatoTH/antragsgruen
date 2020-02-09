@@ -4,14 +4,10 @@ namespace app\models\db;
 
 use app\components\UrlHelper;
 use app\models\exceptions\FormError;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Stylesheet;
+use app\models\settings\{AntragsgruenApp, Stylesheet};
 use yii\db\ActiveRecord;
 
 /**
- * Class ConsultationFile
- * @package app\models\db
- *
  * @property int $id
  * @property int $consultationId
  * @property int $siteId
@@ -37,7 +33,7 @@ class ConsultationFile extends ActiveRecord
      */
     public static function tableName()
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
+        /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
 
         return $app->tablePrefix . 'consultationFile';
