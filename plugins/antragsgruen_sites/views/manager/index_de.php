@@ -114,7 +114,7 @@ $params = \Yii::$app->params;
         anlegen, die für drei Tage verfügbar ist.
     </p>
     <p style="text-align: right;">
-        <a href="http://sandbox.motion.tools/createsite?language=de" class="btn btn-default">Test-Version anlegen</a>
+        <a href="https://sandbox.motion.tools/createsite?language=de" class="btn btn-default">Test-Version anlegen</a>
     </p>
 
     <p style="margin-bottom: 40px;">
