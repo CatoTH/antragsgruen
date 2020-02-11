@@ -67,7 +67,7 @@ button.link {
   border: none;
   align-items: normal;
   cursor: pointer;
-  display: inline;
+  display: inline-block;
   font: inherit;
   height: auto;
   padding: 0;
@@ -78,6 +78,7 @@ button.link {
   -moz-appearance: none;
   -webkit-logical-height: 1em;
   -webkit-logical-width: auto;
+  box-sizing: content-box; // Otherwise the text of the delete button gets invisible on Safari
 }
 @supports (-moz-appearance:none) {
   button.link::-moz-focus-inner {
