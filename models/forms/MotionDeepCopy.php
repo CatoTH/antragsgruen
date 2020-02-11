@@ -2,18 +2,18 @@
 
 namespace app\models\forms;
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentAdminComment;
-use app\models\db\AmendmentComment;
-use app\models\db\AmendmentSection;
-use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
-use app\models\db\MotionAdminComment;
-use app\models\db\MotionComment;
-use app\models\db\MotionSection;
-use app\models\db\MotionSupporter;
+use app\models\db\{Amendment,
+    AmendmentAdminComment,
+    AmendmentComment,
+    AmendmentSection,
+    AmendmentSupporter,
+    ConsultationAgendaItem,
+    ConsultationMotionType,
+    Motion,
+    MotionAdminComment,
+    MotionComment,
+    MotionSection,
+    MotionSupporter};
 
 class MotionDeepCopy
 {
@@ -45,7 +45,6 @@ class MotionDeepCopy
         static::copyAmendments($motion, $newMotion);
 
         if ($newMotion->motionTypeId !== $motionType->id) {
-            /** @noinspection PhpUnhandledExceptionInspection */
             $newMotion->setMotionType($motionType);
         }
 
@@ -64,6 +63,7 @@ class MotionDeepCopy
         foreach ($oldMotion->sections as $section) {
             $newSection = new MotionSection();
             $newSection->setAttributes($section->getAttributes(), false);
+            $newSection->setData($section->getData());
             $newSection->motionId = $newMotion->id;
             $newSection->cache    = '';
             $newSection->save();
