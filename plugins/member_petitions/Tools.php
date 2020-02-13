@@ -2,7 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\{AmendmentComment, Consultation, IComment, IMotion, Motion, MotionComment, MotionSupporter, Site, User};
+use app\models\db\{Consultation, IMotion, Motion, MotionSupporter, Site, User};
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
 use app\plugins\member_petitions\notifications\{DiscussionSubmitted, PetitionSubmitted};
@@ -306,11 +306,10 @@ class Tools
         if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return null;
         }
-        if (!$motion->datePublication) {
-            return null;
-        }
+
+        $dateStr = ($motion->datePublication ? $motion->datePublication : $motion->dateCreation);
         try {
-            $date = new \DateTime($motion->datePublication);
+            $date = new \DateTime($dateStr);
             /** @var ConsultationSettings $settings */
             $settings = $motion->getMyConsultation()->getSettings();
             $date->add(new \DateInterval('P' . $settings->replyDeadline . "D"));
@@ -348,11 +347,9 @@ class Tools
         if (!$motion->isVisible() || $motion->status !== IMotion::STATUS_SUBMITTED_SCREENED) {
             return null;
         }
-        if (!$motion->datePublication) {
-            return null;
-        }
+        $dateStr = ($motion->datePublication ? $motion->datePublication : $motion->dateCreation);
         try {
-            $date = new \DateTime($motion->datePublication);
+            $date = new \DateTime($dateStr);
             /** @var ConsultationSettings $settings */
             $settings = $motion->getMyConsultation()->getSettings();
             $date->add(new \DateInterval('P' . $settings->minDiscussionTime . "D"));
@@ -412,10 +409,8 @@ class Tools
             $recLimit--;
         }
 
-        if (!$baseMotion->datePublication) {
-            return null;
-        }
-        $date = new \DateTime($baseMotion->datePublication);
+        $dateStr = ($baseMotion->datePublication ? $baseMotion->datePublication : $baseMotion->dateCreation);
+        $date    = new \DateTime($dateStr);
         $date->add(new \DateInterval('P' . $settings->maxOverallTime . "D"));
 
         return $date;
