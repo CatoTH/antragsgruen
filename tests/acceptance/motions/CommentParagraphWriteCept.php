@@ -83,7 +83,8 @@ $I->see('Kommentar schreiben', '#section_21_1');
 
 $I->seeElementInDOM('#section_21_1 .motionComment .delLink');
 
-$I->submitForm('#section_21_1 .motionComment .delLink', [], '');
+$I->executeJS('$("#section_21_1 #comment1 .delLink button").trigger("click");');
+$I->wait(0.5);
 $I->seeBootboxDialog('Wirklich löschen');
 $I->acceptBootboxConfirm();
 

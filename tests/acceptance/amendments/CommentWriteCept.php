@@ -69,8 +69,7 @@ $I->gotoAmendment();
 
 
 $I->see('Kommentar schreiben', 'section.comments');
-$I->seeElementInDOM('section.comments .motionComment .delLink');
-$I->submitForm('section.comments .motionComment .delLink', [], '');
+$I->executeJS('$("section.comments #comment1 .delLink button").trigger("click");');
 $I->seeBootboxDialog('Wirklich löschen', '.bootbox');
 $I->acceptBootboxConfirm();
 
