@@ -1672,16 +1672,16 @@
         },
         {
             "name": "yiisoft/yii2-authclient",
-            "version": "2.2.6",
+            "version": "2.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-authclient.git",
-                "reference": "62762993727295126642c71993af55a204d936cb"
+                "reference": "c8b643dce1c1966942aa0fd4047c8db05379a38f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/62762993727295126642c71993af55a204d936cb",
-                "reference": "62762993727295126642c71993af55a204d936cb",
+                "url": "https://api.github.com/repos/yiisoft/yii2-authclient/zipball/c8b643dce1c1966942aa0fd4047c8db05379a38f",
+                "reference": "c8b643dce1c1966942aa0fd4047c8db05379a38f",
                 "shasum": ""
             },
             "require": {
@@ -1729,7 +1729,7 @@
                 "oauth",
                 "yii2"
             ],
-            "time": "2019-11-19T20:02:16+00:00"
+            "time": "2020-02-12T22:53:08+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
