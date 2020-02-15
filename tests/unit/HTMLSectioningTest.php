@@ -3,15 +3,12 @@
 namespace unit;
 
 use app\components\HTMLTools;
-use Yii;
 use Codeception\Specify;
 
 class HTMLSectioningTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testSectioning()
     {
         $orig   = '<p>Test1</p><p>Test <strong>2</strong> Test</p>
@@ -55,8 +52,6 @@ Line 2, part 2</li></ul>',
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testNestedLists()
     {
         $orig   = '<ul>
@@ -83,9 +78,9 @@ Line 2, part 2</li></ul>',
             '<ul><li>Normal item</li></ul>',
             '<ul><li><ol><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ol></li></ul>',
             '<ul><li>Normal again</li></ul>',
-            '<ol start="1"><li>Normal item</li></ol>',
-            '<ol start="2"><li><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
-            '<ol start="3"><li>Normal again</li></ol>',
+            '<ol><li value="1">Normal item</li></ol>',
+            '<ol><li value="2"><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
+            '<ol><li value="3">Normal again</li></ol>',
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
@@ -93,8 +88,34 @@ Line 2, part 2</li></ul>',
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
+    public function testNonStandardOl1()
+    {
+        $orig = '<ol><li>Item 1</li><li value="3">Item 2</li><li>Item 3</li></ol>';
+        $expect = [
+            '<ol><li value="1">Item 1</li></ol>',
+            '<ol><li value="3">Item 2</li></ol>',
+            '<ol><li value="4">Item 3</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testNonStandardOl2()
+    {
+        $orig = '<ol><li>Item 1</li><li value="3b">Item 2</li><li>Item 3</li></ol>';
+        $expect = [
+            '<ol><li value="1">Item 1</li></ol>',
+            '<ol><li value="3b">Item 2</li></ol>',
+            '<ol><li value="3">Item 3</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     public function testNoSplitLists()
     {
         $orig   = '<p>Test1</p><p>Test <strong>2</strong> Test</p>
@@ -124,8 +145,6 @@ Line 2, part 2</li><li>Line 3<strong>Strong</strong></li></ul>',
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testLiPSomething()
     {
         // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
@@ -140,8 +159,6 @@ Line 2, part 2</li><li>Line 3<strong>Strong</strong></li></ul>',
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testPre()
     {
         $orig   = '<pre>llkj
@@ -197,8 +214,6 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testRemoveSplitFragments1()
     {
         $orig   = '<p>Test</p><ul><li>Item 1</li></ul><ul><li>Item 2</li></ul><ul><li>Item 3</li></ul><p>Test 2</p><ul><li>Item 1</li></ul>';
@@ -207,8 +222,6 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testRemoveSplitFragments2()
     {
         $orig   = "<p>Test</p>\n<ul>\n <li>Item 1</li></ul> \n <ul><li>Item 2</li></ul>\n<ul><li>Item 3</li></ul><p>Test 2</p><ul><li>Item 1</li></ul>";
@@ -217,8 +230,6 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testRemoveSplitFragments3()
     {
         $orig   = '<p>Test</p><ol><li>Item 1</li></ol><ol><li>Item 2</li></ol><ol><li>Item 3</li></ol><p>Test 2</p><ol><li>Item 1</li></ol>';
@@ -227,8 +238,6 @@ oii</pre><p>More</p><pre>PRE</pre></li></ul>'
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testRemoveSplitFragments4()
     {
         $orig   = '<p>Test</p><ol><li>Item 1</li></ol><ol start="3"><li>Item 2</li></ol><ol start="4"><li>Item 3</li></ol><p>Test 2</p><ol><li>Item 1</li></ol>';

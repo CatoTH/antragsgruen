@@ -379,7 +379,7 @@ class HTMLTools
                             } else {
                                 $newPre = '<a href="' . Html::encode($href) . '">';
                             }
-                        } elseif ($child->nodeName == 'span' && $child->hasAttribute('class')) {
+                        } elseif ($child->nodeName === 'span' && $child->hasAttribute('class')) {
                             $newPre = '<' . $child->nodeName . ' ' .
                                 'class="' . Html::encode($child->getAttribute('class')) . '">';
                         } else {
@@ -398,14 +398,26 @@ class HTMLTools
                             $return[]      = $pre . $pendingInline . $post;
                             $pendingInline = null;
                         }
-                        if ($child->nodeName == 'ol') {
-                            $newPre  = $pre . '<' . $child->nodeName . ' start="#LINO#">';
+                        if ($child->nodeName === 'ol') {
+                            $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName == 'li') {
                             $lino++;
-                            $newPre  = str_replace('#LINO#', $lino, $pre) . '<' . $child->nodeName . '>';
+                            $value = $child->getAttribute('value');
+                            if ($value) {
+                                if (is_numeric($value)) {
+                                    $lino = $value;
+                                }
+                            } else {
+                                $value = $lino;
+                            }
+                            if ($child->parentNode->nodeName === 'ol') {
+                                $newPre = $pre . '<' . $child->nodeName . ' value="' . $value . '">';
+                            } else {
+                                $newPre = $pre . '<' . $child->nodeName . '>';
+                            }
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
