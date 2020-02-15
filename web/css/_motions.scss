@@ -51,6 +51,33 @@
     font-size: 1.2em;
   }
 
+  ol {
+    counter-reset: antragsgruen-counter;
+    list-style: none;
+
+    li {
+      counter-increment: antragsgruen-counter;
+      position: relative;
+
+      &::before {
+        content: counter(antragsgruen-counter) ".";
+        position: absolute;
+        left: -30px;
+        top: 0;
+      }
+
+      &[value]::before {
+        content: attr(value) ".";
+      }
+
+      @for $i from 1 through 100 {
+        &[value="#{$i}"] {
+          counter-reset: antragsgruen-counter #{$i - 1};
+        }
+      }
+    }
+  }
+
   .amendmentRef {
     font-size: 0.8em;
     opacity: 0.7;

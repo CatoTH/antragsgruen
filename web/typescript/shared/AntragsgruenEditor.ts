@@ -92,7 +92,7 @@ export class AntragsgruenEditor {
                 {name: 'others'}
             ],
             removePlugins: 'stylescombo,save,showblocks,specialchar,about,preview,pastetext,magicline,liststyle',
-            extraPlugins: 'tabletools',
+            extraPlugins: 'tabletools,listitemstyle',
             scayt_sLang: 'de_DE',
             title: title,
             enterMode: enterMode
@@ -105,8 +105,9 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h1 h2 h3 h4;' +
-                'ol[start];' +
-                'ul li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'div [data-*](collidingParagraph,hasCollisions,moved);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
@@ -115,7 +116,9 @@ export class AntragsgruenEditor {
                 'br ins del[data-*](ice-ins,ice-del,ice-cts,appendHint);';
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
-                'ul ol li;' +
+                'ul;' +
+                'ol[start];' +
+                'li[value];' +
                 'h2 h3 h4;' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
                 'p blockquote {border,margin,padding};' +

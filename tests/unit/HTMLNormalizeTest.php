@@ -142,6 +142,14 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
+    public function testOlsWithValues()
+    {
+        $orig   = '<ol><li value="2">List item 1</li><li value="3b">List item 2</li></ol>';
+        $expect = '<ol><li value="2">List item 1</li>' . "\n" . '<li value="3b">List item 2</li>' . "\n" . '</ol>';
+        $out    = HTMLTools::cleanSimpleHtml($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     /**
      */
     public function testPrepareForCKEditor1()

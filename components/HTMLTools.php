@@ -33,7 +33,15 @@ class HTMLTools
     }
 
     public static function purify(\HTMLPurifier_Config $config, string $html): string {
-        $purifier = \HTMLPurifier::instance($config);
+        /** @var \HTMLPurifier_HTMLDefinition $def */
+        $def = $config->getHTMLDefinition(true);
+
+        // Overwriting standard LI implementation, allowing non-integer values
+        $li = $def->addBlankElement('li');
+        $li->attr['value'] = new \HTMLPurifier_AttrDef_Text();
+        $li->attr['type'] = 'Enum#s:1,i,I,a,A,disc,square,circle';
+
+        $purifier = new \HTMLPurifier($config);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
 
@@ -241,7 +249,7 @@ class HTMLTools
             $allowedClasses[] = 'strike';
         }
 
-        $allowedAttributes = ['style', 'href', 'class'];
+        $allowedAttributes = ['style', 'href', 'class', 'li.value'];
 
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
 
