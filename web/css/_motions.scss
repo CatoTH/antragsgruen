@@ -61,7 +61,7 @@
       }
     }
 
-    li {
+    > li {
       counter-increment: antragsgruen-counter;
       position: relative;
 
@@ -109,7 +109,7 @@
       &[value="Z"] { counter-reset: antragsgruen-counter 25; }
     }
     &.decimalCircle {
-      li {
+      > li {
         &::before {
           content: "(" counter(antragsgruen-counter) ")";
         }
@@ -120,7 +120,7 @@
       }
     }
     &.lowerAlpha {
-      li {
+      > li {
         &::before {
           content: counter(antragsgruen-counter, lower-alpha) ".";
         }
@@ -131,7 +131,7 @@
       }
     }
     &.upperAlpha {
-      li {
+      > li {
         &::before {
           content: counter(antragsgruen-counter, upper-alpha) ".";
         }
