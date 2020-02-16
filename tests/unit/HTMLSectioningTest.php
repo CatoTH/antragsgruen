@@ -78,9 +78,9 @@ Line 2, part 2</li></ul>',
             '<ul><li>Normal item</li></ul>',
             '<ul><li><ol><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ol></li></ul>',
             '<ul><li>Normal again</li></ul>',
-            '<ol><li value="1">Normal item</li></ol>',
-            '<ol><li value="2"><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
-            '<ol><li value="3">Normal again</li></ol>',
+            '<ol start="1"><li>Normal item</li></ol>',
+            '<ol start="2"><li><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
+            '<ol start="3"><li>Normal again</li></ol>',
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
@@ -92,9 +92,9 @@ Line 2, part 2</li></ul>',
     {
         $orig = '<ol><li>Item 1</li><li value="3">Item 2</li><li>Item 3</li></ol>';
         $expect = [
-            '<ol><li value="1">Item 1</li></ol>',
-            '<ol><li value="3">Item 2</li></ol>',
-            '<ol><li value="4">Item 3</li></ol>',
+            '<ol start="1"><li>Item 1</li></ol>',
+            '<ol start="3"><li value="3">Item 2</li></ol>',
+            '<ol start="4"><li>Item 3</li></ol>',
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
@@ -106,9 +106,37 @@ Line 2, part 2</li></ul>',
     {
         $orig = '<ol><li>Item 1</li><li value="3b">Item 2</li><li>Item 3</li></ol>';
         $expect = [
-            '<ol><li value="1">Item 1</li></ol>',
-            '<ol><li value="3b">Item 2</li></ol>',
-            '<ol><li value="3">Item 3</li></ol>',
+            '<ol start="1"><li>Item 1</li></ol>',
+            '<ol start="2"><li value="3b">Item 2</li></ol>',
+            '<ol start="3"><li>Item 3</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testNonStandardOl3()
+    {
+        $orig = '<ol><li>Item 1</li><li value="E">Item 2</li><li>Item 3</li></ol>';
+        $expect = [
+            '<ol start="1"><li>Item 1</li></ol>',
+            '<ol start="5"><li value="E">Item 2</li></ol>',
+            '<ol start="6"><li>Item 3</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testOlsWithClassess()
+    {
+        $orig = '<ol class="lowerAlpha"><li>Item 1</li><li>Item 2</li><li>Item 3</li></ol>';
+        $expect = [
+            '<ol class="lowerAlpha" start="1"><li>Item 1</li></ol>',
+            '<ol class="lowerAlpha" start="2"><li>Item 2</li></ol>',
+            '<ol class="lowerAlpha" start="3"><li>Item 3</li></ol>',
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);

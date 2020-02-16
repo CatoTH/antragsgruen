@@ -11,6 +11,8 @@ class HTMLTools
     public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section',
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
+    public static $KNOWN_OL_CLASSES = ['decimalDot', 'decimalCircle', 'lowerAlpha', 'upperAlpha'];
+
     /**
      * @param string $str
      * @return bool
@@ -244,7 +246,8 @@ class HTMLTools
             'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
         ];
 
-        $allowedClasses = ['underline', 'subscript', 'superscript'];
+        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], static::$KNOWN_OL_CLASSES);
+
         if (!in_array('strike', $forbiddenFormattings)) {
             $allowedClasses[] = 'strike';
         }
@@ -398,32 +401,51 @@ class HTMLTools
                             $return[]      = $pre . $pendingInline . $post;
                             $pendingInline = null;
                         }
+
+                        /*
+                         * Hints about numbering of ordered lists:
+                         * - Each OL gets a "start" attribute, with the numeric value
+                         * - LIs are receiving a "value" if it explicitly set by the user. this value overrides the natural order
+                         * - Unlike in standard HTML, non-numeric values are allowed as LI[value]
+                         * - If a strictly numeric number (1-100) is encountered as LI[value], this affects the counter of the OL,
+                         *   both of the current OL parent item and of the parent OL of each subsequent LI
+                         * - The same happens with a single-letter character; A is treated equally as 1, B as 2, and so on
+                         * - If a non-strictly-numbered LI[value] is encontered (like "3b"), the counter of the OL is unaffected
+                         */
                         if ($child->nodeName === 'ol') {
-                            $newPre  = $pre . '<' . $child->nodeName . '>';
+                            $classes = $child->getAttribute('class');
+                            $newPre = $pre . '<' . $child->nodeName;
+                            if ($classes) {
+                                $newPre .= ' class="' . Html::encode($classes) . '"';
+                            }
+                            $newPre .= ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif ($child->nodeName == 'li') {
+                        } elseif ($child->nodeName === 'li') {
                             $lino++;
                             $value = $child->getAttribute('value');
                             if ($value) {
                                 if (is_numeric($value)) {
                                     $lino = $value;
                                 }
-                            } else {
-                                $value = $lino;
+                                if (strlen($value) === 1) {
+                                    $ord = ord(strtolower($value));
+                                    if ($ord >= 97 && $ord <= 122) {
+                                        $lino = $ord - 96;
+                                    }
+                                }
                             }
-                            if ($child->parentNode->nodeName === 'ol') {
-                                $newPre = $pre . '<' . $child->nodeName . ' value="' . $value . '">';
+                            $newPre  = str_replace('#LINO#', $lino, $pre);
+                            if ($value) {
+                                $newPre .= '<' . $child->nodeName . ' value="' . $value . '">';
                             } else {
-                                $newPre = $pre . '<' . $child->nodeName . '>';
+                                $newPre .= '<' . $child->nodeName . '>';
                             }
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif (in_array($child->nodeName,
-                            ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-                        ) {
+                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);

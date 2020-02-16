@@ -105,7 +105,7 @@ export class AntragsgruenEditor {
         if (trackChanged || allowDiffFormattings) {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'h1 h2 h3 h4;' +
-                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
+                'ol[start,data-*](ice-ins,ice-del,ice-cts,appendHint,moved,decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
                 'li[value,data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 'ul[data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
@@ -117,7 +117,7 @@ export class AntragsgruenEditor {
         } else {
             allowedContent = 'strong' + strikeEl + ' em u sub sup;' +
                 'ul;' +
-                'ol[start];' +
+                'ol[start](decimalDot,decimalCircle,lowerAlpha,upperAlpha);' +
                 'li[value];' +
                 'h2 h3 h4;' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
