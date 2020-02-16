@@ -4,22 +4,16 @@ namespace app\components\diff\amendmentMerger;
 
 class ParagraphDiff
 {
-    /** @var integer */
+    /** @var int */
     public $firstDiff;
 
-    /** @var integer */
+    /** @var int */
     public $amendment;
 
     /** @var array */
     public $diff;
 
-    /**
-     * ParagraphDiff constructor.
-     * @param int $amendment
-     * @param int $firstDiff
-     * @param array $diff
-     */
-    public function __construct($amendment, $firstDiff, array $diff)
+    public function __construct(int $amendment, int $firstDiff, array $diff)
     {
         $this->firstDiff = $firstDiff;
         $this->amendment = $amendment;

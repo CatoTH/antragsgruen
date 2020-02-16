@@ -236,10 +236,10 @@ class HTMLTools
         // Remove <a>...</a>
         $html = preg_replace('/<a>(.*)<\/a>/siuU', '$1', $html);
 
-        // When editing amendments, list items are split into <ol start="2"> items.
+        // When editing amendments, list items are split into <ol start="2" class="upperAlpha"> items.
         // After editing, it should be merged into one list again.
-        $html = preg_replace('/<\/ol>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
-        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
+        $html = preg_replace('/<\/ol>\s*<ol( [^>]*)?>/siu', '', $html);
+        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( [^>]*)?>/siu', '', $html);
 
         $allowedTags = [
             'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',

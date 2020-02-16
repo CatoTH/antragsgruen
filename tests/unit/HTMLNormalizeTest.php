@@ -125,15 +125,15 @@ class HTMLNormalizeTest extends TestBase
 
     public function testMergingOls2()
     {
-        $orig   = '<ol start="1">
+        $orig   = '<ol start="1" class="upperAlpha">
 	<li>Listenpunkt</li>
 </ol>
 
-<ol start="2">
+<ol start="2" class="upperAlpha">
 	<li>Listenpunkt (<em>kursiv</em>)<br />
 	Zeilenumbruch</li>
 </ol>';
-        $expect = '<ol>
+        $expect = '<ol class="upperAlpha">
 <li>Listenpunkt</li>
 <li>Listenpunkt (<em>kursiv</em>)<br>
 Zeilenumbruch</li>

@@ -2,8 +2,7 @@
 
 namespace app\components\diff\amendmentMerger;
 
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
+use app\components\diff\{Diff, DiffRenderer};
 use app\components\UrlHelper;
 use app\models\db\Amendment;
 use yii\helpers\Html;
@@ -18,11 +17,7 @@ class ParagraphMerger
 
     private $merged = false;
 
-    /**
-     * ParagraphMerger constructor.
-     * @param string $paragraphStr
-     */
-    public function __construct($paragraphStr)
+    public function __construct(string $paragraphStr)
     {
         $origTokenized = Diff::tokenizeLine($paragraphStr);
         $words         = [];
@@ -37,11 +32,7 @@ class ParagraphMerger
         $this->diffs    = [];
     }
 
-    /**
-     * @param integer $amendmentId
-     * @param array $wordArr
-     */
-    public function addAmendmentParagraph($amendmentId, $wordArr)
+    public function addAmendmentParagraph(int $amendmentId, array $wordArr): void
     {
         $hasChanges = false;
         $firstDiff  = null;
@@ -59,12 +50,12 @@ class ParagraphMerger
         }
     }
 
-    /**
+    /*
      * Sort the amendment paragraphs by the last affected line/word.
      * This is an attempt to minimize the number of collisions when merging the paragraphs later on,
      * as amendments changing a lot and therefore colliding more frequently tend to start at earlier lines.
      */
-    private function sortDiffParagraphs()
+    private function sortDiffParagraphs(): void
     {
         usort($this->diffs, function (ParagraphDiff $val1, ParagraphDiff $val2) {
             if ($val1->firstDiff < $val2->firstDiff) {
@@ -77,12 +68,7 @@ class ParagraphMerger
         });
     }
 
-    /**
-     * @param int $amendingNo
-     * @param int $wordNo
-     * @param string $insert
-     */
-    private function moveInsertIntoOwnWord($amendingNo, $wordNo, $insert)
+    private function moveInsertIntoOwnWord(int $amendingNo, int $wordNo, string $insert): void
     {
         $insertArr = function ($arr, $pos, $insertedEl) {
             return array_merge(array_slice($arr, 0, $pos + 1), [$insertedEl], array_slice($arr, $pos + 1));
@@ -104,7 +90,7 @@ class ParagraphMerger
                     return null;
                 }
                 $wordNo--;
-            };
+            }
 
             return null;
         };
@@ -138,7 +124,7 @@ class ParagraphMerger
         }
     }
 
-    /**
+    /*
      * Inserting new words / paragraphs is stored like "</p>###INS_START###...###INS_END###,
      * being assigned to the "</p>" token. This makes multiple insertions after </p> colliding with each other.
      * This workaround splits this up by inserting empty tokens in the original word array
@@ -151,7 +137,7 @@ class ParagraphMerger
      *
      * AmendmentRewriter::moveInsertsIntoTheirOwnWords does about the same and should behave similarily
      */
-    private function moveInsertsIntoTheirOwnWords()
+    private function moveInsertsIntoTheirOwnWords(): void
     {
         foreach ($this->diffs as $changeSetNo => $changeSet) {
             $changeSet = $this->diffs[$changeSetNo];
@@ -170,13 +156,10 @@ class ParagraphMerger
     }
 
 
-    /**
+    /*
      * Identify adjacent tokens that are about to be changed and check if any of the changes leads to a collision.
-     *
-     * @param ParagraphDiff $changeSet
-     * @return array
      */
-    private function groupChangeSet(ParagraphDiff $changeSet)
+    private function groupChangeSet(ParagraphDiff $changeSet): array
     {
         $foundGroups = [];
 
@@ -214,10 +197,7 @@ class ParagraphMerger
         return $foundGroups;
     }
 
-    /**
-     * @param ParagraphDiff $changeSet
-     */
-    public function mergeParagraph(ParagraphDiff $changeSet)
+    public function mergeParagraph(ParagraphDiff $changeSet): void
     {
         $words = $this->paraData->words;
 
@@ -249,9 +229,7 @@ class ParagraphMerger
         }
     }
 
-    /**
-     */
-    private function merge()
+    private function merge(): void
     {
         if ($this->merged) {
             return;
@@ -267,12 +245,7 @@ class ParagraphMerger
         $this->merged = true;
     }
 
-    /**
-     * @param array $words
-     * @param int $maxDistance
-     * @return array
-     */
-    public static function stripDistantUnchangedWords($words, $maxDistance)
+    public static function stripDistantUnchangedWords(array $words, int $maxDistance): array
     {
         $distance = null;
         $numWords = count($words);
@@ -322,11 +295,7 @@ class ParagraphMerger
         return $words;
     }
 
-    /**
-     * @param array $words
-     * @return array
-     */
-    private static function groupParagraphData($words)
+    private static function groupParagraphData(array $words): array
     {
         $groupedParaData  = [];
         $pending          = '';
@@ -366,12 +335,7 @@ class ParagraphMerger
         return $groupedParaData;
     }
 
-    /**
-     * @param null|integer $stripDistantUnchangedWords
-     *
-     * @return array
-     */
-    public function getGroupedParagraphData($stripDistantUnchangedWords = null)
+    public function getGroupedParagraphData(?int $stripDistantUnchangedWords = null): array
     {
         $this->merge();
 
@@ -388,7 +352,7 @@ class ParagraphMerger
      * @param null|integer $stripDistantUnchangedWords
      * @return string
      */
-    public function getFormattedDiffText($amendmentsById, $stripDistantUnchangedWords = null)
+    public function getFormattedDiffText(array $amendmentsById, ?int $stripDistantUnchangedWords = null): string
     {
         $CHANGESET_COUNTER = 0;
         $changeset         = [];
@@ -418,15 +382,12 @@ class ParagraphMerger
     }
 
 
-    /**
+    /*
      * Somewhat special case: if two amendments are inserting a bullet point at the same place,
      * they are colliding. We cannot change this fact right now, so at least
      * let's try not to print the previous line that wasn't actually changed twice.
-     *
-     * @param string $str
-     * @return string
      */
-    private static function stripUnchangedLiFromColliding($str)
+    private static function stripUnchangedLiFromColliding(string $str): string
     {
         if (mb_substr($str, 0, 8) !== '<ul><li>' && mb_substr($str, 0, 8) !== '<ol><li>') {
             return $str;
@@ -440,17 +401,13 @@ class ParagraphMerger
     /**
      * @return ParagraphDiff[]
      */
-    public function getCollidingParagraphs()
+    public function getCollidingParagraphs(): array
     {
         $this->merge();
         return $this->paraData->collidingParagraphs;
     }
 
-    /**
-     * @param int|null $stripDistantUnchangedWords
-     * @return array
-     */
-    public function getCollidingParagraphGroups($stripDistantUnchangedWords = null)
+    public function getCollidingParagraphGroups(?int $stripDistantUnchangedWords = null): array
     {
         $this->merge();
 
@@ -487,13 +444,7 @@ class ParagraphMerger
         return $grouped;
     }
 
-    /**
-     * @param array $paraData
-     * @param Amendment $amendment
-     * @param $amendmentsById
-     * @return string
-     */
-    public static function getFormattedCollision($paraData, Amendment $amendment, $amendmentsById)
+    public static function getFormattedCollision(array $paraData, Amendment $amendment, array $amendmentsById): string
     {
         $amendmentUrl      = UrlHelper::createAmendmentUrl($amendment);
         $paragraphText     = '';
@@ -536,7 +487,7 @@ class ParagraphMerger
     /**
      * @return int[]
      */
-    public function getAffectingAmendmentIds()
+    public function getAffectingAmendmentIds(): array
     {
         return array_map(function (ParagraphDiff $diff) {
             return $diff->amendment;
