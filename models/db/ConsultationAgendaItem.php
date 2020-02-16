@@ -203,7 +203,7 @@ class ConsultationAgendaItem extends ActiveRecord
 
                 return implode($separator, $currParts);
             } else {
-                return $newInternalCode;
+                return trim($newInternalCode);
             }
         };
 

@@ -96,7 +96,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
                     }
                     currNumber = currStr = parts.join(separator);
                 } else {
-                    currStr = currNumber = code + ''; // currNumber needs to be a string, always.
+                    currStr = currNumber = (code + '').trim(); // currNumber needs to be a string, always.
                 }
                 if (currStr !== '') {
                     currStr = prevCode + currStr;
