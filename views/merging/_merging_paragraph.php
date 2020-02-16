@@ -176,9 +176,7 @@ if (count($allAmendingIds) > 0) {
                 echo ' fixedWidthFont';
             }
             ?>" data-allow-diff-formattings="1" id="<?= $htmlId ?>_wysiwyg" title="">
-                <div class="paragraphHolder" data-paragraph-no="<?= $paragraphNo ?>">
-                    <?= $draftParagraph->text ?>
-                </div>
+                <?= $draftParagraph->text ?>
             </div>
         </div>
         <div class="collisionsHolder">

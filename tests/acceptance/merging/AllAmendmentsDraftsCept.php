@@ -49,12 +49,12 @@ $I->dontSee('Neuer Punkt', '.ice-ins');
 
 $I->wantTo('see the info windows');
 $I->dontSeeElement('.popover-amendment-ajax');
-$I->click("//*[@id=\"sections_2\"]/div[2]/ul[2]/li"); // Neue Zeile, Ä3
+$I->click("//*[@id=\"sections_2\"]/ul[2]/li"); // Neue Zeile, Ä3
 $I->wait(1);
 $I->seeElement('.popover-amendment-ajax');
 $I->see('Tester', '.popover-amendment-ajax');
 
-$I->click("//*[@id=\"sections_2\"]/div[8]/p/ins"); // Woibbadinga damischa, Ä2
+$I->click("//*[@id=\"sections_2\"]/p[3]/ins"); // Woibbadinga damischa, Ä2
 $I->wait(1);
 $I->seeElement('.popover-amendment-ajax');
 $I->see('Testadmin', '.popover-amendment-ajax');

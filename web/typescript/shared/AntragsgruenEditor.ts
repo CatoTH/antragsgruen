@@ -108,7 +108,7 @@ export class AntragsgruenEditor {
                 'ol[start];' +
                 'ul li [data-*](ice-ins,ice-del,ice-cts,appendHint,moved);' +
                 //'table tr td th tbody thead caption [border] {margin,padding,width,height,border,border-spacing,border-collapse,align,cellspacing,cellpadding};' +
-                'div [data-*](collidingParagraph,paragraphHolder,hasCollisions,moved);' +
+                'div [data-*](collidingParagraph,hasCollisions,moved);' +
                 'p blockquote [data-*](ice-ins,ice-del,ice-cts,appendHint,collidingParagraphHead,moved){border,margin,padding};' +
                 'span[data-*](ice-ins,ice-del,ice-cts,appendHint,underline' + strikeClass + ',subscript,superscript);' +
                 'a[href,data-*](ice-ins,ice-del,ice-cts,appendHint);' +

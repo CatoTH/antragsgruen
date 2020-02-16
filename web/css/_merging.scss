@@ -179,13 +179,10 @@
     position: relative;
     clear: both;
 
-    .paragraphHolder {
+    p, ul, ol {
       margin-bottom: 0;
-
-      p, ul, ol {
-        margin-bottom: 0;
-      }
     }
+
     .texteditor > * {
       margin-bottom: 0;
     }
@@ -333,7 +330,7 @@
   }
 
   .hasCollisions {
-    .paragraphHolder {
+    .texteditor {
       position: relative;
 
       &:before {

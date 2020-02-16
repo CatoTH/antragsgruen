@@ -106,7 +106,7 @@ class AmendmentStatuses {
 
 export class MotionMergeChangeActions {
     public static removeEmptyParagraphs() {
-        $('.paragraphHolder').each((i, el) => {
+        $('.texteditor').each((i, el) => {
             if (el.childNodes.length == 0) {
                 $(el).remove();
             }

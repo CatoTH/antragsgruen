@@ -123,23 +123,16 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     * This is the kind of HTML that is produced by the paragraph-based merging of amendments into motions.
-     */
     public function testMergingOls2()
     {
-        $orig   = '<div class="paragraphHolder" data-paragraph-no="2">
-<ol start="1">
+        $orig   = '<ol start="1">
 	<li>Listenpunkt</li>
 </ol>
-</div>
 
-<div class="paragraphHolder" data-paragraph-no="3">
 <ol start="2">
 	<li>Listenpunkt (<em>kursiv</em>)<br />
 	Zeilenumbruch</li>
-</ol>
-</div>';
+</ol>';
         $expect = '<ol>
 <li>Listenpunkt</li>
 <li>Listenpunkt (<em>kursiv</em>)<br>
