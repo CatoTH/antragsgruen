@@ -56,7 +56,7 @@ class LayoutHooks extends Hooks
     private function getTagsSavingForm(Motion $motion): string
     {
         $saveUrl  = UrlHelper::createUrl(['/frauenrat/motion/save-tag', 'motionSlug' => $motion->getMotionSlug()]);
-        $form     = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux']);
+        $form     = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
         $preTagId = null;
         foreach ($motion->tags as $tag) {
             $preTagId = $tag->id;
@@ -68,7 +68,7 @@ class LayoutHooks extends Hooks
             $allTags[$tag->id] = $tag->title;
         }
         $form .= HTMLTools::fueluxSelectbox('newTag', $allTags, $preTagId, [], false, 'xs');
-        $form .= '<button class="btn btn-xs btn-default" type="submit">Speichern</button>';
+        $form .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form .= Html::endForm();
 
         return $form;
@@ -93,12 +93,11 @@ class LayoutHooks extends Hooks
     private function getProposalSavingForm(Motion $motion): string
     {
         $saveUrl   = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
-        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux']);
+        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
         $preselect = $this->getMotionProposalString($motion);
         $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
-        $form      .= '<button class="btn btn-xs btn-default" type="submit">Speichern</button>';
+        $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
-        $form      .= '<br>';
 
         return $form;
     }
@@ -127,7 +126,6 @@ class LayoutHooks extends Hooks
                 foreach ($initiators as $supp) {
                     $motionData[$i]['content'] .= $this->formatInitiator($supp);
                 }
-                $motionData[$i]['content'] .= '<br>';
             }
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
                 $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
@@ -156,6 +154,24 @@ class LayoutHooks extends Hooks
         $before .= '<h2 style="margin: 0; font-size: 22px;">' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         $before .= '</div></div>';
 
+        return $before;
+    }
+
+    public function endOfHead(string $before): string
+    {
+        $before .= '<style>
+.motionDataTable th, .motionDataTable td { padding-bottom: 20px; }
+.motionDatTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 14px; margin-left: -5px; }
+#sidebar .back { display: none; }
+</style>
+<script>
+$(function() {
+    $(".frauenratSelect .selectlist").on("changed.fu.selectlist", function() {
+        $(this).parents(".frauenratSelect").find("button.hidden").removeClass("hidden");
+    });
+});
+</script>
+';
         return $before;
     }
 }
