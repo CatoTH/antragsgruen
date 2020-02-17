@@ -1461,16 +1461,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.3.4",
+            "version": "6.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "510070b5e068e10d97b8cb0e25295e54755ec09d"
+                "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/510070b5e068e10d97b8cb0e25295e54755ec09d",
-                "reference": "510070b5e068e10d97b8cb0e25295e54755ec09d",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/19a535eaa7fb1c1cac499109deeb1a7a201b4549",
+                "reference": "19a535eaa7fb1c1cac499109deeb1a7a201b4549",
                 "shasum": ""
             },
             "require": {
@@ -1519,7 +1519,7 @@
                 "pdf417",
                 "qrcode"
             ],
-            "time": "2020-02-12T13:26:24+00:00"
+            "time": "2020-02-14T14:20:12+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
