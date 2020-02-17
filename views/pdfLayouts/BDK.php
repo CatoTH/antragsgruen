@@ -2,8 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Motion};
 use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
@@ -16,8 +15,8 @@ class BDK extends IPDFLayout
     {
         $pdf = new BDKPDF();
 
-        // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->setCellHeightRatio(1.5);
 
         $pdf->SetMargins(25, 27, 25);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);

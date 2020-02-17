@@ -2,8 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Motion};
 use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
@@ -136,8 +135,8 @@ class DBJR extends IPDFLayout
     {
         $pdf = new DBJRPDF($this);
 
-        // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->setCellHeightRatio(1.5);
 
         $pdf->SetMargins(23, 40, 23);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);

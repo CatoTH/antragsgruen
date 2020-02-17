@@ -2,8 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Motion};
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ByLDK extends IPDFLayout
@@ -135,7 +134,7 @@ class ByLDK extends IPDFLayout
 
         if (!$settings->hideTitlePrefix) {
             $revName = $amendment->titlePrefix;
-            if ($revName == '') {
+            if ($revName === '') {
                 $revName = \Yii::t('export', 'draft');
                 $pdf->SetFont('helvetica', 'I', '25');
                 $width = $pdf->GetStringWidth($revName, 'helvetica', 'I', '25') + 3.1;
@@ -228,8 +227,8 @@ class ByLDK extends IPDFLayout
     {
         $pdf = new ByLDKPDF($this);
 
-        // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+        $pdf->setCellHeightRatio(1.5);
 
         $pdf->SetMargins(25, 40, 25);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
