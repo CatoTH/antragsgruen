@@ -245,17 +245,15 @@ class Tools
             $locale = Tools::getCurrentDateLocale();
         }
 
+        $date = explode('-', substr($mysqldate, 0, 10));
+        if (count($date) !== 3) {
+            return '-';
+        }
         if ($locale === 'de') {
-            $date = explode('-', substr($mysqldate, 0, 10));
-
             return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
         } elseif ($locale === 'fr') {
-            $date = explode('-', substr($mysqldate, 0, 10));
-
             return sprintf('%02d/%02d/%04d', $date[2], $date[1], $date[0]);
         } elseif ($locale === 'en') {
-            $date = explode('-', substr($mysqldate, 0, 10));
-
             return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
