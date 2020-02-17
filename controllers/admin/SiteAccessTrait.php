@@ -2,17 +2,10 @@
 
 namespace app\controllers\admin;
 
-use app\components\ConsultationAccessPassword;
-use app\components\UrlHelper;
-use app\models\db\ConsultationUserPrivilege;
-use app\models\db\EMailLog;
-use app\models\db\Site;
-use app\models\db\Consultation;
-use app\models\db\User;
-use app\models\exceptions\AlreadyExists;
-use app\models\exceptions\MailNotSent;
+use app\components\{ConsultationAccessPassword, UrlHelper, mail\Tools as MailTools};
+use app\models\db\{ConsultationUserPrivilege, EMailLog, Site, Consultation, User};
+use app\models\exceptions\{AlreadyExists, MailNotSent};
 use app\models\policies\IPolicy;
-use \app\components\mail\Tools as MailTools;
 use app\models\settings\AntragsgruenApp;
 use yii\db\IntegrityException;
 

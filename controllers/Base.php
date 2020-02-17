@@ -2,17 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\ConsultationAccessPassword;
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{ConsultationAccessPassword, HTMLTools, UrlHelper};
 use app\models\exceptions\Internal;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\Layout;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\settings\{AntragsgruenApp, Layout};
+use app\models\db\{Amendment, Consultation, Motion, Site, User};
 use Yii;
 use yii\base\Module;
 use yii\helpers\Html;

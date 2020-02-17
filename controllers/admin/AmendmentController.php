@@ -2,12 +2,8 @@
 
 namespace app\controllers\admin;
 
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\ZipWriter;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\User;
+use app\components\{Tools, UrlHelper, ZipWriter};
+use app\models\db\{Amendment, AmendmentSupporter, User};
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\forms\AmendmentEditForm;

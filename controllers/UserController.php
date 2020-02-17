@@ -2,21 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\ConsultationAccessPassword;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\components\WurzelwerkSamlClient;
-use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationUserPrivilege;
-use app\models\db\EMailBlacklist;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
-use app\models\db\UserNotification;
+use app\components\{ConsultationAccessPassword, Tools, UrlHelper, WurzelwerkSamlClient};
+use app\models\db\{AmendmentSupporter, ConsultationUserPrivilege, EMailBlacklist, MotionSupporter, User, UserNotification};
 use app\models\events\UserEvent;
-use app\models\exceptions\ExceptionBase;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Login;
-use app\models\exceptions\MailNotSent;
+use app\models\exceptions\{ExceptionBase, FormError, Login, MailNotSent};
 use app\models\forms\LoginUsernamePasswordForm;
 use app\models\settings\AntragsgruenApp;
 use Yii;

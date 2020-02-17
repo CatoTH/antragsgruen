@@ -2,28 +2,16 @@
 
 namespace app\controllers;
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentAdminComment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationLog;
-use app\models\db\IMotion;
-use app\models\db\User;
-use app\models\db\VotingBlock;
+use app\components\{HTMLTools, Tools, UrlHelper, EmailNotifications};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentSupporter, ConsultationLog, IMotion, User, VotingBlock};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\FormError;
-use app\models\exceptions\MailNotSent;
-use app\models\forms\AmendmentEditForm;
-use app\components\EmailNotifications;
-use app\models\forms\AmendmentProposedChangeForm;
+use app\models\exceptions\{FormError, MailNotSent};
+use app\models\forms\{AmendmentEditForm, AmendmentProposedChangeForm};
 use app\models\notifications\AmendmentProposedProcedure;
 use app\models\sectionTypes\ISectionType;
 use app\views\amendment\LayoutHelper;
 use yii\helpers\Html;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use yii\web\{NotFoundHttpException, Response};
 
 /**
  * Class AmendmentController

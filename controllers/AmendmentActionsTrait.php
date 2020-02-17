@@ -2,20 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\EmailNotifications;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentAdminComment;
-use app\models\db\AmendmentComment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\ConsultationLog;
-use app\models\db\IComment;
-use app\models\db\Consultation;
-use app\models\db\User;
+use app\components\{EmailNotifications, UrlHelper};
+use app\models\db\{Amendment, AmendmentAdminComment, AmendmentComment, AmendmentSupporter, ConsultationLog, IComment, Consultation, User};
 use app\models\events\AmendmentEvent;
-use app\models\exceptions\DB;
-use app\models\exceptions\FormError;
-use app\models\exceptions\Internal;
+use app\models\exceptions\{DB, FormError, Internal};
 use app\models\forms\CommentForm;
 use app\models\settings\InitiatorForm;
 use app\models\supportTypes\SupportBase;

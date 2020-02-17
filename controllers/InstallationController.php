@@ -6,11 +6,9 @@ use app\components\yii\MessageSource;
 use app\components\UrlHelper;
 use app\models\db\User;
 use app\models\exceptions\Internal;
-use app\models\forms\AntragsgruenInitDb;
-use app\models\forms\AntragsgruenInitSite;
+use app\models\forms\{AntragsgruenInitDb, AntragsgruenInitSite};
 use Yii;
-use yii\helpers\Html;
-use yii\helpers\Url;
+use yii\helpers\{Html, Url};
 use yii\web\Response;
 
 class InstallationController extends Base
