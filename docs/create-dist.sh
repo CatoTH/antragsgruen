@@ -39,6 +39,7 @@ curl -sS https://getcomposer.org/installer | php
 rm -R local dist updates docker-vagrant .DS_Store .idea tsconfig.json package.json gulpfile.js
 rm config/DEBUG config/config.template.json
 rm composer.phar composer.lock codeception.yml phpci.yml .gitignore .travis.yml .editorconfig
+rm package-lock.json composer.json
 rm config/TEST_DOMAIN
 mv web/index-production.php web/index.php
 rm docs/create-dist.sh docs/create-update.php
