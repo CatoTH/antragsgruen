@@ -332,10 +332,12 @@ class TextSimple extends Text
         $linenr     = $section->getFirstLineNumber();
         $textSize   = ($lineLength > 70 ? 10 : 11);
         if ($section->getSettings()->fixedWidth) {
-            $pdf->SetFont('dejavusansmono', '', $textSize);
+            $fontName = 'dejavusansmono';
         } else {
-            $pdf->SetFont('helvetica', '', $textSize);
+            $fontName = 'helvetica';
         }
+
+        $pdf->SetFont($fontName, '', $textSize);
         $pdf->Ln(7);
 
         $hasLineNumbers = $section->getSettings()->lineNumbers;
@@ -367,7 +369,14 @@ class TextSimple extends Text
                 }
 
                 $y = $pdf->getY();
+                $pdf->SetFont($fontName, '', $textSize * 2 / 3);
+                $pdf->SetTextColor(100, 100, 100);
+                $pdf->setCellHeightRatio(2.23);
                 $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
+
+                $pdf->SetFont($fontName, '', $textSize);
+                $pdf->SetTextColor(0, 0, 0);
+                $pdf->setCellHeightRatio(1.5);
                 $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
                 $text1    = implode('<br>', $linesArr);
 
