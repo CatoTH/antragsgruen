@@ -129,6 +129,7 @@ if ($adminMode) {
                    value="<?= Html::encode($prePrimaryName) ?>" autocomplete="name" required>
             <?php
             if (count($selectOrganisations) > 0) {
+                $selectOrganisations = array_merge(['' => ''], $selectOrganisations);
                 echo HTMLTools::fueluxSelectbox('Initiator[primaryOrgaName]', $selectOrganisations, $prePrimaryName, [
                     'id' => 'initiatorPrimaryOrgaName',
                 ], true);
