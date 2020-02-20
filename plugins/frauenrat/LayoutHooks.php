@@ -161,7 +161,7 @@ class LayoutHooks extends Hooks
     {
         $before .= '<style>
 .motionDataTable th, .motionDataTable td { padding-bottom: 20px; }
-.motionDatTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 14px; margin-left: -5px; }
+.motionDataTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 18px; margin-left: -5px; }
 #sidebar .back { display: none; }
 </style>
 <script>
