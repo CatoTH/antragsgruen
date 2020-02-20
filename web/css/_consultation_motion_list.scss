@@ -54,6 +54,12 @@
 
       a {
         color: $colorLinks;
+        &:hover, &:focus {
+          color: darken($colorLinks, 20%);
+        }
+      }
+
+      a, .motionLink {
         font-weight: bold;
         text-indent: 0;
         font-size: 16px;
@@ -62,10 +68,6 @@
         -moz-hyphens: auto;
         -ms-hyphens: auto;
         hyphens: auto;
-
-        &:hover, &:focus {
-          color: darken($colorLinks, 20%);
-        }
       }
 
       .pdfLink {

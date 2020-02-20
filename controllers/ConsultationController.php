@@ -456,6 +456,18 @@ class ConsultationController extends Base
         ]);
     }
 
+    public function actionCollecting()
+    {
+        if (!$this->consultation->getSettings()->collectingPage) {
+            return $this->showErrorpage(404, 'This site is not available');
+        }
+
+        $this->layout = 'column2';
+        $this->consultationSidebar($this->consultation);
+
+        return $this->render('collecting');
+    }
+
     /**
      * @return string
      */

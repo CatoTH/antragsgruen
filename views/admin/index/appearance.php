@@ -202,6 +202,14 @@ $handledSiteSettings = [];
                      'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
         $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
+        $propTitle = Yii::t('admin', 'con_collecting');
+        $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
+                     'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
+        $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
+
+        $propTitle = Yii::t('admin', 'con_new_motions');
+        $boolSettingRow($settings, 'sidebarNewMotions', $handledSettings, $propTitle);
+
         ?>
         <br>
         <div class="saveholder">

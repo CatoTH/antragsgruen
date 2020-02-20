@@ -41,11 +41,18 @@ return [
     'sb_comm_none'         => 'keine',
     'sb_comm_to'           => 'Zu',
     'sb_feeds'             => 'Feeds',
+    'sb_collecting'        => 'Sammelnde Anträge',
     'search_no_query'      => 'Kein Suchbegriff eingegeben',
     'new_item'             => 'Tagesordnungspunkt',
 
     'activity_bc'    => 'Aktivitäten',
     'activity_title' => 'Aktivitäts-Protokoll',
+
+    'collecting_bc'     => 'Unterstützung sammeln',
+    'collecting_title'  => 'Unterstützung sammeln',
+    'collecting_intro'  => 'Die folgenden Anträge und / oder Änderungsanträge sind auf der Suche nach Unterstützer*innen:',
+    'collecting_motion' => 'Antrag von %INITIATOR%. Aktueller Stand: %CURR%',
+    'collecting_amend'  => 'Änderungsantrag von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
 
     'noti_title'            => 'Benachrichtigungen',
     'noti_bc'               => 'Benachrichtigungen',

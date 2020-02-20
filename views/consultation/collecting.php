@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * @var yii\web\View $this
+ * @var \app\models\forms\ConsultationActivityFilterForm $form
+ */
+
+use app\components\Tools;
+use app\models\db\{Amendment, Motion};
+use app\components\UrlHelper;
+use app\views\consultation\LayoutHelper;
+use yii\helpers\Html;
+
+/** @var \app\controllers\ConsultationController $controller */
+$controller = $this->context;
+
+$consultation = \app\components\UrlHelper::getCurrentConsultation();
+$this->title  = Yii::t('con', 'collecting_bc');
+
+$layout = $controller->layoutParams;
+$layout->addBreadcrumb(Yii::t('con', 'collecting_bc'));
+
+$motions = [];
+foreach ($consultation->motions as $motion) {
+    if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
+        $motions[] = $motion;
+    }
+}
+
+?>
+
+    <h1><?= Html::encode(Yii::t('con', 'collecting_title')) ?></h1>
+    <div class="content collectingPage"><?= Yii::t('con', 'collecting_intro') ?></div>
+
+<?php
+if (count($motions) > 0) {
+    echo '<h2 class="green">Sammelnde Anträge</h2>';
+    echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
+    foreach ($motions as $motion) {
+        echo '<li class="motion motion' . $motion->id . '">';
+        echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+
+        echo '<p class="title">';
+        echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
+        $motionUrl = UrlHelper::createMotionUrl($motion);
+        echo '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
+        $title = (trim($motion->title) === '' ? '-' : $motion->title);
+        echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';
+        echo '</a></p>';
+
+        echo '<p class="info">';
+        $max   = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+        $curr  = count($motion->getSupporters());
+        echo str_replace(
+            ['%INITIATOR%', '%CURR%'],
+            [$motion->getInitiatorsStr(), $curr . ' / ' . $max],
+            Yii::t('con', 'collecting_motion')
+        );
+
+        echo '</p>';
+
+        echo '</li>';
+    }
+    echo '</ul>';
+}
+
+$motionsWithAmendments = [];
+foreach ($consultation->getVisibleMotions(false, false) as $motion) {
+    foreach ($motion->amendments as $amendment) {
+        if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
+            $motionsWithAmendments[] = $motion;
+        }
+    }
+}
+if (count($motionsWithAmendments) > 0) {
+    echo '<h2 class="green">Sammelnde Änderungsanträge</h2>';
+    echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
+    foreach ($motionsWithAmendments as $motion) {
+        echo '<li class="motion motion' . $motion->id . '">';
+        echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
+
+        echo '<p class="title">';
+        echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
+        echo '<span class="motionLink motionLink' . $motion->id . '">';
+        if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
+            echo '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
+        }
+        $title = (trim($motion->title) === '' ? '-' : $motion->title);
+        echo ' <span class="motionTitle">' . Html::encode($title) . '</span>';
+        echo '</span></p>';
+
+        echo "<span class='clearfix'></span>";
+        echo '<h4 class="amendments">' . Yii::t('amend', 'amendments') . '</h4>';
+        echo '<ul class="amendments">';
+
+        foreach ($motion->amendments as $amendment) {
+            if ($amendment->status !== Amendment::STATUS_COLLECTING_SUPPORTERS) {
+                continue;
+            }
+
+            echo '<li class="amendment amendmentRow' . $amendment->id . '">';
+            echo '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
+
+            $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
+            $curr = count($motion->getSupporters());
+            $title = str_replace(
+                ['%INITIATOR%', '%LINE%', '%CURR%'],
+                [$amendment->getInitiatorsStr(), $amendment->getFirstDiffLine(), $curr . ' / ' . $max],
+                Yii::t('con', 'collecting_amend')
+            );
+            echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
+                       'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
+
+            echo '</li>';
+        }
+
+        echo '</ul>';
+
+        echo '</li>';
+    }
+    echo '</ul>';
+}

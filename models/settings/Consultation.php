@@ -40,6 +40,8 @@ class Consultation implements \JsonSerializable
     public $editorialAmendments = true;
     public $globalAlternatives = true;
     public $proposalProcedurePage = false;
+    public $collectingPage = false;
+    public $sidebarNewMotions = true;
     public $forceLogin = false;
     public $managedUserAccounts = false;
 

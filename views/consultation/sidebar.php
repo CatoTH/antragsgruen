@@ -106,6 +106,12 @@ if ($consultation->getSettings()->showFeeds) {
     $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
 }
 
+if ($consultation->getSettings()->collectingPage) {
+    $title = '<span class="glyphicon glyphicon-file"></span>' . Yii::t('con', 'sb_collecting');
+    $link  = UrlHelper::createUrl('consultation/collecting');
+    $html  .= '<li class="collecting">' . Html::a($title, $link) . '</li>';
+}
+
 $html                     .= '</ul></div>';
 $layout->menusHtml[]      = $html;
 $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</li>';
@@ -123,7 +129,7 @@ if ($consultation->getSettings()->proposalProcedurePage) {
     $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'proposed_procedure'), $url) . '</li>';
 }
 
-if ($hasMotions) {
+if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
     if (count($newestMotions) == 0) {
@@ -140,7 +146,7 @@ if ($hasMotions) {
     $layout->menusHtml[] = $html;
 }
 
-if ($hasAmendments) {
+if ($hasAmendments && $consultation->getSettings()->sidebarNewMotions) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list amendments">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_amendments') . '</li>';
     if (count($newestAmendments) == 0) {

@@ -11,6 +11,7 @@
 - For PDF-based applications, the mostly empty cover page in front of the generated PDF is removed; the generated PDF is now exactly identical to the uploaded one.
 - The change mentioned above also allows attaching a pre-layouted PDF-version of a motion, replacing the automatically generated PDF.
 - If final resolutions are shown on the home page, preliminary resolutions replaced by final ones are now not shown anymore.
+- If there is a supporting phase for submitting new motions or amendments, it is now possible to publish a page listing all motions and amendments currently looking for supporters. This page is disabled by default and can be activated in the Appearcance settings. It will be linked to at the sidebar of the consultation home page.
 - Notification e-mails now use a very simple responsive e-mail template.
 - Mailgun and Mandrill are not supported anymore, for now.
 - The social sharing buttons in the motion and amendment views were removed, as they were practically never used and visually unpleasing.

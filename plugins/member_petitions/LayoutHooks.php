@@ -110,6 +110,9 @@ class LayoutHooks extends Hooks
 
     public function getFormattedMotionStatus(string $before, Motion $motion): string
     {
+        if (!Tools::isPetitionsActive($motion->getMyConsultation())) {
+            return $before;
+        }
         if ($motion->motionTypeId === Tools::getDiscussionType($motion->getMyConsultation())->id) {
             switch ($motion->status) {
                 case Motion::STATUS_SUBMITTED_SCREENED:

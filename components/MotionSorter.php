@@ -158,7 +158,7 @@ class MotionSorter
                 }
                 $key = $motion->titlePrefix;
 
-                if ($key == '') {
+                if ($key === '') {
                     $motionsNoPrefix[$typeName][] = $motion;
                 } else {
                     $motionsSorted[$typeName][$key] = $motion;

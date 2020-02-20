@@ -41,11 +41,18 @@ return [
     'sb_comm_none'         => 'none',
     'sb_comm_to'           => 'To',
     'sb_feeds'             => 'Feeds',
+    'sb_collecting'        => 'Collecting motions',
     'search_no_query'      => 'To search term entered',
     'new_item'             => 'New item',
 
     'activity_bc'    => 'Activities',
     'activity_title' => 'Activity log',
+
+    'collecting_bc'    => 'Collecting support',
+    'collecting_title' => 'Collecting support',
+    'collecting_intro' => 'The following motions and / or amendments are looking for supporters:',
+    'collecting_motion' => 'Motion by %INITIATOR%. Current status: %CURR%',
+    'collecting_amend'  => 'Amendment by %INITIATOR%, starting line %LINE%. Current status: %CURR%',
 
     'noti_title'                => 'Notifications',
     'noti_bc'                   => 'Notifications',
