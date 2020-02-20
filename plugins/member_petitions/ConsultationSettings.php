@@ -10,15 +10,24 @@ class ConsultationSettings extends Consultation
     public $replyDeadline = 14;
     public $minDiscussionTime = 21;
     public $maxOverallTime = 0;
+    public $petitionPage = true;
 
     public function getStartLayoutView(): string
     {
-        return '@app/plugins/member_petitions/views/consultation';
+        if ($this->petitionPage) {
+            return '@app/plugins/member_petitions/views/consultation';
+        } else {
+            return '@app/views/consultation/index_layout_std';
+        }
     }
 
     public function getConsultationSidebar(): ?string
     {
-        return '@app/plugins/member_petitions/views/consultation-sidebar';
+        if ($this->petitionPage) {
+            return '@app/plugins/member_petitions/views/consultation-sidebar';
+        } else {
+            return '@app/views/consultation/sidebar';
+        }
     }
 
     /**

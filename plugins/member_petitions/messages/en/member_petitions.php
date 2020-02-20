@@ -17,6 +17,7 @@ return [
     'sett_minDiscussionTime' => 'Min. discussion days',
     'sett_maxOverallTime'    => 'Max. overall time (days)',
     'sett_maxOverallTimeD'   => '(Discussion + petition; 0 = ∞)',
+    'sett_petitions_active'  => 'Activate phase system',
 
     'status_collecting'   => 'Collecting supporters',
     'status_unanswered'   => 'Not answered yet',

@@ -2,7 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\{Consultation, IMotion, Motion, MotionSupporter, Site, User};
+use app\models\db\{Consultation, ConsultationMotionType, IMotion, Motion, MotionSupporter, Site, User};
 use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
 use app\plugins\member_petitions\notifications\{DiscussionSubmitted, PetitionSubmitted};
@@ -10,12 +10,20 @@ use app\components\Tools as DateTools;
 
 class Tools
 {
+    public static function isPetitionsActive(Consultation $consultation): bool
+    {
+        /** @var ConsultationSettings $settings */
+        $settings = $consultation->getSettings();
+
+        return $settings->petitionPage;
+    }
+
     /**
      * @param Site $site
      * @param User $user
      * @return Consultation[]
      */
-    public static function getUserConsultations($site, $user)
+    public static function getUserConsultations(Site $site,  ?User $user)
     {
         if (!$user) {
             return [];
@@ -38,11 +46,7 @@ class Tools
         return $consultations;
     }
 
-    /**
-     * @param Consultation $consultation
-     * @return \app\models\db\ConsultationMotionType|null
-     */
-    public static function getDiscussionType(Consultation $consultation)
+    public static function getDiscussionType(Consultation $consultation): ?ConsultationMotionType
     {
         foreach ($consultation->motionTypes as $motionType) {
             if ($motionType->getMotionSupporterSettings()->type !== SupportBase::COLLECTING_SUPPORTERS) {
@@ -52,11 +56,7 @@ class Tools
         return null;
     }
 
-    /**
-     * @param Consultation $consultation
-     * @return \app\models\db\ConsultationMotionType|null
-     */
-    public static function getPetitionType(Consultation $consultation)
+    public static function getPetitionType(Consultation $consultation): ?ConsultationMotionType
     {
         foreach ($consultation->motionTypes as $motionType) {
             if ($motionType->getMotionSupporterSettings()->type === SupportBase::COLLECTING_SUPPORTERS) {
@@ -66,11 +66,7 @@ class Tools
         return null;
     }
 
-    /**
-     * @param Consultation $consultation
-     * @return bool
-     */
-    public static function isConsultationFullyConfigured(Consultation $consultation)
+    public static function isConsultationFullyConfigured(Consultation $consultation): bool
     {
         return (static::getPetitionType($consultation) !== null && static::getDiscussionType($consultation) !== null);
     }
@@ -219,6 +215,9 @@ class Tools
         }
 
         foreach ($site->consultations as $consultation) {
+            if (!static::isPetitionsActive($consultation)) {
+                continue;
+            }
             foreach ($consultation->motions as $motion) {
                 if ($motion->status === Motion::STATUS_INLINE_REPLY) {
                     continue;
@@ -278,11 +277,7 @@ class Tools
         return ($user && $user->hasPrivilege($motion->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT));
     }
 
-    /**
-     * @param Motion $motion
-     * @return null|Motion
-     */
-    public static function getMotionResponse(Motion $motion)
+    public static function getMotionResponse(Motion $motion): ?Motion
     {
         if ($motion->status !== IMotion::STATUS_PROCESSED) {
             return null;
@@ -502,11 +497,13 @@ class Tools
     public static function onPublishedFirst(MotionEvent $event)
     {
         $motion = $event->motion;
-        if ($motion->motionTypeId === static::getDiscussionType($motion->getMyConsultation())->id) {
-            new DiscussionSubmitted($motion);
-        }
-        if ($motion->motionTypeId === static::getPetitionType($motion->getMyConsultation())->id) {
-            new PetitionSubmitted($motion);
+        if (static::isPetitionsActive($motion->getMyConsultation())) {
+            if ($motion->motionTypeId === static::getDiscussionType($motion->getMyConsultation())->id) {
+                new DiscussionSubmitted($motion);
+            }
+            if ($motion->motionTypeId === static::getPetitionType($motion->getMyConsultation())->id) {
+                new PetitionSubmitted($motion);
+            }
         }
     }
 

@@ -33,6 +33,10 @@ class LayoutHooks extends Hooks
 
     public function beforeMotionView(string $before, Motion $motion): string
     {
+        if (!Tools::isPetitionsActive($motion->getMyConsultation())) {
+            return $before;
+        }
+
         if (Tools::canRespondToPetition($motion)) {
             $before .= '<div class="content"><div class="alert alert-info">';
             $before .= \Yii::t('member_petitions', 'answer_hint');
@@ -55,6 +59,10 @@ class LayoutHooks extends Hooks
 
     public function afterMotionView(string $before, Motion $motion): string
     {
+        if (!Tools::isPetitionsActive($motion->getMyConsultation())) {
+            return $before;
+        }
+
         if (Tools::canRespondToPetition($motion)) {
             $this->layout->loadCKEditor();
             $before .= \Yii::$app->controller->renderPartial('@app/plugins/member_petitions/views/_respond', [
@@ -75,6 +83,9 @@ class LayoutHooks extends Hooks
 
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
+        if (!Tools::isPetitionsActive($motion->getMyConsultation())) {
+            return $motionData;
+        }
         $deadline = Tools::getPetitionResponseDeadline($motion);
         if ($deadline) {
             $deadlineStr = \app\components\Tools::formatMysqlDate($deadline->format('Y-m-d'));

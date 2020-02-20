@@ -207,6 +207,8 @@ $headingTertiaryBackground: rgb(27, 74, 251);
 
 .motionListStd, .motionListPetitions {
   margin: 0;
+  padding: 0;
+  list-style-type: none;
 
   .sortitem.motion {
     margin-bottom: 20px;

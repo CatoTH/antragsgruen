@@ -17,6 +17,7 @@ return [
     'sett_minDiscussionTime' => 'Min. Diskussionszeit (Tage)',
     'sett_maxOverallTime'    => 'Max. Gesamtzeit (Tage)',
     'sett_maxOverallTimeD'   => '(Diskussion + Begehren; 0 = ∞)',
+    'sett_petitions_active'  => 'Phasen-System',
 
     'status_collecting'   => 'Unterstützer*innen sammeln',
     'status_unanswered'   => 'Noch nicht beantwortet',
