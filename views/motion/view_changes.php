@@ -1,7 +1,6 @@
 <?php
 
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{Tools, UrlHelper};
 use app\models\db\Motion;
 use yii\helpers\Html;
 
@@ -18,12 +17,12 @@ $layout     = $controller->layoutParams;
 if (!$newMotion->getMyConsultation()->getForcedMotion()) {
     $layout->addBreadcrumb($newMotion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($newMotion));
 }
-$layout->addBreadcrumb(\Yii::t('motion', 'diff_bc'));
+$layout->addBreadcrumb(Yii::t('motion', 'diff_bc'));
 
 $this->title = str_replace(
     ['%FROM%', '%TO%'],
     [$oldMotion->titlePrefix, $newMotion->titlePrefix],
-    \Yii::t('motion', 'diff_title')
+    Yii::t('motion', 'diff_title')
 );
 ?>
     <h1><?= Html::encode($this->title) ?></h1>
@@ -35,30 +34,30 @@ $this->title = str_replace(
         ?>
         <table class="motionDataTable">
             <tr>
-                <th><?= \Yii::t('motion', 'diff_old_version') ?>:</th>
+                <th><?= Yii::t('motion', 'diff_old_version') ?>:</th>
                 <td><?= Html::a(Html::encode($oldMotion->titlePrefix), $oldLink) ?></td>
             </tr>
             <tr>
-                <th><?= \Yii::t('motion', 'status') ?>:</th>
+                <th><?= Yii::t('motion', 'status') ?>:</th>
                 <td><?= $oldMotion->getFormattedStatus() ?></td>
             </tr>
             <tr>
-                <th><?= \Yii::t('motion', ($oldMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
+                <th><?= Yii::t('motion', ($oldMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
                 <td><?= Tools::formatMysqlDateTime($oldMotion->dateCreation, null, false) ?></td>
             </tr>
         </table>
 
         <table class="motionDataTable">
             <tr>
-                <th><?= \Yii::t('motion', 'diff_new_version') ?>:</th>
+                <th><?= Yii::t('motion', 'diff_new_version') ?>:</th>
                 <td><?= Html::a(Html::encode($newMotion->titlePrefix), $newLink) ?></td>
             </tr>
             <tr>
-                <th><?= \Yii::t('motion', 'status') ?>:</th>
+                <th><?= Yii::t('motion', 'status') ?>:</th>
                 <td><?= $newMotion->getFormattedStatus() ?></td>
             </tr>
             <tr>
-                <th><?= \Yii::t('motion', ($newMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
+                <th><?= Yii::t('motion', ($newMotion->isSubmitted() ? 'submitted_on' : 'created_on')) ?>:</th>
                 <td><?= Tools::formatMysqlDateTime($newMotion->dateCreation, null, false) ?></td>
             </tr>
         </table>

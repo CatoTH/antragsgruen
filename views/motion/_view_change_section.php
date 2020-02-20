@@ -1,7 +1,6 @@
 <?php
 
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\{ISectionType, TextSimple};
 
 /**
  * @var \app\models\MotionSectionChanges $change
@@ -9,7 +8,7 @@ use app\models\sectionTypes\TextSimple;
 
 if (!$change->hasChanges()) {
     echo '<div class="content noChanges">';
-    echo \Yii::t('motion', 'diff_no_change');
+    echo Yii::t('motion', 'diff_no_change');
     echo '</div>';
     return;
 }
@@ -32,6 +31,6 @@ switch ($change->getSectionTypeId()) {
         break;
     default:
         echo '<div class="content notDisplayable">';
-        echo \Yii::t('motion', 'diff_err_display');
+        echo Yii::t('motion', 'diff_err_display');
         echo '</div>';
 }

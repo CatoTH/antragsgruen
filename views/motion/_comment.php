@@ -1,10 +1,7 @@
 <?php
 
-use app\components\Tools;
-use app\components\HTMLTools;
-use app\models\db\IComment;
-use app\models\db\MotionComment;
-use app\models\db\User;
+use app\components\{Tools, HTMLTools};
+use app\models\db\{IComment, MotionComment, User};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
@@ -25,7 +22,7 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
     <h3 class="commentHeader"><?= Html::encode($comment->name) ?>:
         <?php
         if ($screening) {
-            echo ' <span class="screeningHint">(' . \Yii::t('comment', 'not_screened_yet') . ')</span>';
+            echo ' <span class="screeningHint">(' . Yii::t('comment', 'not_screened_yet') . ')</span>';
         }
         ?>
     </h3>
@@ -40,12 +37,12 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
         ?>
         <div>
             <button type="submit" class="btn btn-success" name="commentScreeningAccept">
-                <span class="glyphicon glyphicon-thumbs-up"></span> <?= \Yii::t('comment', 'screen_yes') ?>
+                <span class="glyphicon glyphicon-thumbs-up"></span> <?= Yii::t('comment', 'screen_yes') ?>
             </button>
         </div>
         <div>
             <button type="submit" class="btn btn-danger" name="commentScreeningReject">
-                <span class="glyphicon glyphicon-thumbs-down"></span> <?= \Yii::t('comment', 'screen_no') ?>
+                <span class="glyphicon glyphicon-thumbs-down"></span> <?= Yii::t('comment', 'screen_no') ?>
             </button>
         </div>
         <?php
@@ -64,13 +61,13 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
         }
 
         $link     = '<span class="glyphicon glyphicon-link"></span>';
-        $linkOpts = ['class' => 'entry link', 'title' => \Yii::t('comment', 'link_comment')];
+        $linkOpts = ['class' => 'entry link', 'title' => Yii::t('comment', 'link_comment')];
         echo Html::a($link, $comment->getLink(), $linkOpts);
 
         if ($canReply) {
             $replyToId = ($comment->parentCommentId ? $comment->parentCommentId : $comment->id);
             echo '<button type="button" class="entry btn btn-link replyButton" data-reply-to="' . $replyToId . '">';
-            echo '<span class="glyphicon glyphicon-pencil"></span> ' . \Yii::t('comment', 'reply_btn') . '</button>';
+            echo '<span class="glyphicon glyphicon-pencil"></span> ' . Yii::t('comment', 'reply_btn') . '</button>';
         }
         ?>
     </div>

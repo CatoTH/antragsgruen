@@ -10,13 +10,13 @@
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('user', 'deleted_title');
+$this->title = Yii::t('user', 'deleted_title');
 ?>
-<h1><?= \Yii::t('user', 'deleted_title') ?></h1>
+<h1><?= Yii::t('user', 'deleted_title') ?></h1>
 <div class="content">
     <div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
         <span class="sr-only">Success:</span>
-        <?= \Yii::t('user', 'deleted_msg') ?>
+        <?= Yii::t('user', 'deleted_msg') ?>
     </div>
 </div>

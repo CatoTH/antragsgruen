@@ -14,11 +14,11 @@ use yii\helpers\Html;
 $controller = $this->context;
 
 $consultation = \app\components\UrlHelper::getCurrentConsultation();
-$pageData     = \app\models\db\ConsultationText::getPageData(null, null, $pageKey);
+$pageData     = ConsultationText::getPageData(null, null, $pageKey);
 $this->title  = $pageData->title;
 
 /** @var \app\models\settings\AntragsgruenApp $params */
-$params   = \Yii::$app->params;
+$params   = Yii::$app->params;
 $url      = parse_url(str_replace('<subdomain:[\w_-]+>', $consultation->site->subdomain, $params->domainSubdomain));
 $currHost = $url['host'];
 
@@ -39,14 +39,14 @@ echo Html::beginForm($saveUrl, 'post', [
     'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
 ]);
 
-echo '<div class="content">' . \Yii::t('base', 'legal_multisite_hint') . '</div>';
+echo '<div class="content">' . Yii::t('base', 'legal_multisite_hint') . '</div>';
 
 
-echo '<h2 class="green">' . str_replace('%SITE%', $currHost, \Yii::t('base', 'legal_site_title')) . '</h2>';
+echo '<h2 class="green">' . str_replace('%SITE%', $currHost, Yii::t('base', 'legal_site_title')) . '</h2>';
 echo '<div class="content contentPage">';
 
 if ($admin) {
-    echo '<a href="#" class="editCaller" style="float: right;">' . \Yii::t('base', 'edit') . '</a><br>';
+    echo '<a href="#" class="editCaller" style="float: right;">' . Yii::t('base', 'edit') . '</a><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';
@@ -56,16 +56,16 @@ echo '</article>';
 if ($admin) {
     echo '<div class="textSaver hidden">';
     echo '<button class="btn btn-primary" type="submit">';
-    echo \Yii::t('base', 'save') . '</button></div>';
+    echo Yii::t('base', 'save') . '</button></div>';
 }
 
 echo '</div>';
 
 echo Html::endForm();
 
-echo '<h2 class="green">' . \Yii::t('base', 'legal_base_title') . '</h2>
+echo '<h2 class="green">' . Yii::t('base', 'legal_base_title') . '</h2>
     <div class="content contentPage">';
-echo \Yii::t('base', 'legal_base_intro') . '<br><br>';
+echo Yii::t('base', 'legal_base_intro') . '<br><br>';
 /** @var ConsultationText $text */
 $text = ConsultationText::findOne(['consultationId' => null, 'textId' => 'legal']);
 if ($text) {

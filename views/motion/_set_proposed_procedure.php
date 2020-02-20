@@ -2,7 +2,7 @@
 
 /**
  * @var Yii\web\View $this
- * @var \app\models\db\Motion $motion
+ * @var Motion $motion
  */
 
 use app\components\{HTMLTools, Tools, UrlHelper};

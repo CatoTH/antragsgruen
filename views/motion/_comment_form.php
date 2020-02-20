@@ -1,11 +1,7 @@
 <?php
 
-use app\components\AntiSpam;
-use app\components\HTMLTools;
-use app\models\db\Consultation;
-use app\models\db\IComment;
-use app\models\db\User;
-use app\models\db\UserNotification;
+use app\components\{AntiSpam, HTMLTools};
+use app\models\db\{Consultation, IComment, User, UserNotification};
 use app\models\forms\CommentForm;
 use Yii\Helpers\Html;
 

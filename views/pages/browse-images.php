@@ -9,7 +9,7 @@ use yii\helpers\Html;
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><?= \Yii::t('pages', 'images_browse_title') ?></title>
+    <title><?= Yii::t('pages', 'images_browse_title') ?></title>
     <style>
         .files {
             display: block;
@@ -90,7 +90,7 @@ if ($msgSuccess) {
         echo '</a>';
         echo Html::beginForm('', 'post', ['class' => 'deleteForm']);
         echo '<input type="hidden" name="id" value="' . $file->id . '">';
-        echo '<button type="submit" name="delete">' . \Yii::t('pages', 'images_delete') . '</button>';
+        echo '<button type="submit" name="delete">' . Yii::t('pages', 'images_delete') . '</button>';
         echo Html::endForm();
         echo '</li>';
     }
@@ -99,7 +99,7 @@ if ($msgSuccess) {
 
 <?php
 if (count($files) === 0) {
-    echo '<div class="noImages">' . \Yii::t('pages', 'images_none') . '</div>';
+    echo '<div class="noImages">' . Yii::t('pages', 'images_none') . '</div>';
 }
 ?>
 

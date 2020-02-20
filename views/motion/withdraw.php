@@ -14,19 +14,19 @@ $controller = $this->context;
 $layout     = $controller->layoutParams;
 
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb(\Yii::t('motion', 'withdraw_bread'));
+$layout->addBreadcrumb(Yii::t('motion', 'withdraw_bread'));
 
-$this->title = \Yii::t('motion', 'withdraw') . ': ' . $motion->getTitleWithPrefix();
+$this->title = Yii::t('motion', 'withdraw') . ': ' . $motion->getTitleWithPrefix();
 
-echo '<h1>' . \Yii::t('motion', 'withdraw') . ': ' . $motion->getEncodedTitleWithPrefix() . '</h1>';
+echo '<h1>' . Yii::t('motion', 'withdraw') . ': ' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'content withdrawForm']);
 
-echo '<div class="ask">' . \Yii::t('motion', 'withdraw_confirm') . '</div>';
+echo '<div class="ask">' . Yii::t('motion', 'withdraw_confirm') . '</div>';
 echo '<div class="row">';
 echo '<div class="cancel col-md-6"><button class="btn" name="cancel">' .
-    \Yii::t('motion', 'withdraw_no') . '</button></div>';
+    Yii::t('motion', 'withdraw_no') . '</button></div>';
 echo '<div class="withdraw col-md-6"><button class="btn btn-danger" name="withdraw">' .
-    \Yii::t('motion', 'withdraw_yes') . '</button></div>';
+    Yii::t('motion', 'withdraw_yes') . '</button></div>';
 echo '</div></div>';
 
 echo Html::endForm();

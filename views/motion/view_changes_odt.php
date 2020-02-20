@@ -2,8 +2,7 @@
 
 use app\components\HTMLTools;
 use app\models\db\ISupporter;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TextSimple;
+use app\models\sectionTypes\{ISectionType, TextSimple};
 use CatoTH\HTML2OpenDocument\Text;
 use yii\helpers\Html;
 
@@ -39,9 +38,9 @@ foreach ($oldMotion->motionSupporters as $supp) {
     }
 }
 if (count($initiators) === 1) {
-    $initiatorStr = \Yii::t('export', 'InitiatorSingle');
+    $initiatorStr = Yii::t('export', 'InitiatorSingle');
 } else {
-    $initiatorStr = \Yii::t('export', 'InitiatorMulti');
+    $initiatorStr = Yii::t('export', 'InitiatorMulti');
 }
 $initiatorStr .= ': ' . implode(', ', $initiators);
 $doc->addReplace('/\{\{ANTRAGSGRUEN:ITEM\}\}/siu', $oldMotion->agendaItem ? $oldMotion->agendaItem->title : '');
@@ -52,7 +51,7 @@ $doc->addReplace('/\{\{ANTRAGSGRUEN:INITIATORS\}\}/siu', $initiatorStr);
 foreach ($changes as $change) {
     $doc->addHtmlTextBlock('<h2>' . Html::encode($change->getSectionTitle()) . '</h2>', false);
     if (!$change->hasChanges()) {
-        $doc->addHtmlTextBlock('<p>' . \Yii::t('motion', 'diff_no_change') . '</p>', false);
+        $doc->addHtmlTextBlock('<p>' . Yii::t('motion', 'diff_no_change') . '</p>', false);
         continue;
     }
 
@@ -68,7 +67,7 @@ foreach ($changes as $change) {
             $doc->addHtmlTextBlock(HTMLTools::correctHtmlErrors($html), false);
             break;
         default:
-            $doc->addHtmlTextBlock('<p>' . \Yii::t('motion', 'diff_err_display') . '</p>', false);
+            $doc->addHtmlTextBlock('<p>' . Yii::t('motion', 'diff_err_display') . '</p>', false);
     }
 }
 

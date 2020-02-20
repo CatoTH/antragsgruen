@@ -19,8 +19,8 @@ $pdfLayout = $motions[0]->motionType->getPDFLayoutClass();
 $pdf       = $pdfLayout->createPDFClass();
 
 // set document information
-$pdf->SetCreator(\Yii::t('export', 'default_creator'));
-$pdf->SetAuthor(\Yii::t('export', 'default_creator'));
+$pdf->SetCreator(Yii::t('export', 'default_creator'));
+$pdf->SetAuthor(Yii::t('export', 'default_creator'));
 $pdf->SetTitle(Yii::t('export', 'all_motions_title'));
 $pdf->SetSubject(Yii::t('export', 'all_motions_title'));
 
@@ -29,7 +29,7 @@ try {
     foreach ($motions as $motion) {
         \app\views\motion\LayoutHelper::printToPDF($pdf, $pdfLayout, $motion);
     }
-} catch (\Exception $e) {
+} catch (Exception $e) {
     echo 'Error: ' . Html::encode($e);
     die();
 }
