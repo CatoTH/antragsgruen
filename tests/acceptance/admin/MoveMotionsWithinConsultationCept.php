@@ -24,12 +24,12 @@ $page->saveForm();
 
 $I->gotoConsultationHome();
 
-$I->executeJS('$(".agendaItemAdder").last().find("a").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title").val("Earth");');
-$I->executeJS('$(".agendaItemAdder").last().find("a").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title").val("Mars");');
-$I->executeJS('$(".agendaItemAdder").last().find("a").click()');
-$I->executeJS('$(".agendaItemEditForm").last().find(".title").val("venus");');
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Earth");');
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("Mars");');
+$I->executeJS('$(".agendaItemAdder").last().find("a.addEntry").click()');
+$I->executeJS('$(".agendaItemEditForm").last().find(".title input").val("venus");');
 $I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
 
 $earth = AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID;
