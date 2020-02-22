@@ -80,7 +80,6 @@ if (count($motionsWithAmendments) > 0) {
         echo '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
 
         echo '<p class="title">';
-        echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
         echo '<span class="motionLink motionLink' . $motion->id . '">';
         if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
             echo '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
@@ -109,7 +108,9 @@ if (count($motionsWithAmendments) > 0) {
                 Yii::t('con', 'collecting_amend')
             );
             echo '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
-                       'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
+                       'class="amendmentTitle amendment' . $amendment->id . '">';
+            echo '<span class="glyphicon glyphicon-file motionIcon"></span>';
+            echo Html::encode($title) . '</a>';
 
             echo '</li>';
         }

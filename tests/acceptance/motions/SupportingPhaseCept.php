@@ -10,8 +10,10 @@ $motionUrl = \app\tests\_pages\MotionPage::getPageUrl($I, [
     'motionSlug'       => 116,
 ]);
 
+$I->gotoConsultationHome('supporter', 'supporter');
+$I->dontSeeElementInDOM('#sidebar .collecting');
 
-$I->wantTo('check the admin settings and enable gender support');
+$I->wantTo('check the admin settings and enable gender support and the supporting page');
 $I->loginAndGotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
 $I->seeInField('#typeMinSupporters', 1);
 $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::ONLY_INITIATOR);
@@ -20,6 +22,18 @@ $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase:
 $I->seeElement('#typeMinSupporters');
 $I->checkOption("//input[@name='motionInitiatorSettings[contactGender]'][@value='2']"); // Required
 $I->submitForm('.adminTypeForm', [], 'save');
+
+$page = $I->gotoStdAdminPage('supporter', 'supporter')->gotoAppearance();
+$I->checkOption('#collectingPage');
+$page->saveForm();
+
+
+$I->wantTo('see the collecting page');
+$I->gotoConsultationHome(true, 'supporter', 'supporter');
+$I->click('#sidebar .collecting a');
+
+$I->see('Support me!', '.motionList');
+$I->see('Aktueller Stand: 0 / 1', '.motion116');
 
 $I->logout();
 

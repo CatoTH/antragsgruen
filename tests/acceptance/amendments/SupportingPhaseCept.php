@@ -11,8 +11,11 @@ $amendmentUrl = \app\tests\_pages\AmendmentPage::getPageUrl($I, [
     'amendmentId'      => AcceptanceTester::FIRST_FREE_AMENDMENT_ID,
 ]);
 
-$I->wantTo('publish the amendment');
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
+$I->dontSeeElementInDOM('#sidebar .collecting');
+
+
+$I->wantTo('publish the amendment');
 $I->openPage(\app\tests\_pages\MotionPage::class,  [
     'subdomain'        => 'supporter',
     'consultationPath' => 'supporter',
@@ -24,6 +27,12 @@ $I->seeElement("#sidebar .amendmentCreate a");
 $I->click('#sidebar .adminEdit a');
 $I->selectFueluxOption('#motionStatus', \app\models\db\Motion::STATUS_SUBMITTED_SCREENED);
 $I->submitForm('#motionUpdateForm', [], 'save');
+
+$I->wantTo('activate the collecting page');
+$page = $I->gotoStdAdminPage('supporter', 'supporter')->gotoAppearance();
+$I->checkOption('#collectingPage');
+$page->saveForm();
+
 $I->logout();
 
 
@@ -48,6 +57,11 @@ $I->see('benötigt dieser mindestens 1 Unterstützer*innen.');
 $I->gotoConsultationHome(false, 'supporter', 'supporter');
 $I->see('Unterstützer*innen sammeln', '.myAmendmentList');
 $I->dontSee('Eingereicht (ungeprüft)', '.myAmendmentList');
+
+$I->click('#sidebar .collecting a');
+
+$I->see('Änderungsantrag von Testuser, ab Zeile 1', '.motionList');
+$I->see('Aktueller Stand: 0 / 1', '.amendment' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID);
 
 
 $I->wantTo('check that amendments created as organizations are not in supporting phase');

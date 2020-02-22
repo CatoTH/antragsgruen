@@ -139,6 +139,11 @@
     > li {
       margin-bottom: 3px;
       position: relative;
+
+      .motionIcon {
+        margin-right: 10px;
+      }
+
       > a {
         font-weight: bold;
         margin-right: 5px;
