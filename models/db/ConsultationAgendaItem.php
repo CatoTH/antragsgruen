@@ -171,7 +171,7 @@ class ConsultationAgendaItem extends ActiveRecord
         return $this->settingsObject;
     }
 
-    public function setSettingsObj(AgendaItem $settings)
+    public function setSettingsObj(AgendaItem $settings): void
     {
         $this->settingsObject = $settings;
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);

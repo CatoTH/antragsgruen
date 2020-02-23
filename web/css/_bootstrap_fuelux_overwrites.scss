@@ -239,3 +239,12 @@
 .fueluxSelectHolder {
   position: relative; // fuelux
 }
+
+.dropdown-menu {
+  li.checkbox {
+    label {
+      font-weight: normal;
+      padding: 0 0 0 30px;
+    }
+  }
+}

@@ -81,6 +81,7 @@ export class AgendaEdit {
                     'children': this.buildAgendaStruct($li.find('> ol'))
                 });
             } else {
+                const $form = $li.find('> div > .agendaItemEditForm');
                 let time = null;
                 if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked")) {
                     time = $li.find('> div > .agendaItemEditForm input[name=time]').val();
@@ -89,9 +90,10 @@ export class AgendaEdit {
                     'type': 'std',
                     'id': id[1],
                     'time': time,
-                    'code': $li.find('> div > .agendaItemEditForm input[name=code]').val(),
-                    'title': $li.find('> div > .agendaItemEditForm input[name=title]').val(),
-                    'motionTypeId': $li.find('> div > .agendaItemEditForm select[name=motionType]').val(),
+                    'code': $form.find('input[name=code]').val(),
+                    'title': $form.find('input[name=title]').val(),
+                    'motionTypeId': $form.find('select[name=motionType]').val(),
+                    'inProposedProcedures': $form.find('.extraSettings input[name=inProposedProcedures]').prop('checked'),
                     'children': this.buildAgendaStruct($li.find('> ol'))
                 });
             }
@@ -215,6 +217,9 @@ export class AgendaEdit {
         $item.find('> div').prepend('<span class="glyphicon glyphicon-resize-vertical moveHandle"></span>');
         $item.find('> div > h3').append('<a href="#" class="editAgendaItem"><span class="glyphicon glyphicon-pencil"></span></a>');
         $item.find('> div > h3').append(this.delAgendaItemStr);
+        $item.find('li.checkbox').on('click', (ev) => {
+            ev.stopPropagation();
+        });
     }
 
     prepareAgendaList($list, full: boolean) {

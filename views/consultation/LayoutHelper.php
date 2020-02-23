@@ -177,8 +177,9 @@ class LayoutHelper
             foreach ($consultation->motionTypes as $motionType) {
                 $motionTypes[$motionType->id] = $motionType->titlePlural;
             }
-            $typeId = $agendaItem->motionTypeId;
-            $time   = $agendaItem->getTime() ?? '';
+            $typeId   = $agendaItem->motionTypeId;
+            $time     = $agendaItem->getTime() ?? '';
+            $settings = $agendaItem->getSettingsObj();
 
             echo '<form class="agendaItemEditForm">
                 <div class="input-group time datetimepicker">
@@ -196,6 +197,20 @@ class LayoutHelper
             $opts = ['class' => 'form-control'];
             echo Html::dropDownList('motionType', ($typeId > 0 ? $typeId : 0), $motionTypes, $opts);
             echo '</div>
+                <div class="dropdown extraSettings">
+                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li class="checkbox">
+                            <label>
+                                ' . Html::checkbox('inProposedProcedures', $settings->inProposedProcedures) . '
+                                ' . \Yii::t('con', 'agenda_pp') . '
+                            </label>
+                        </li>
+                    </ul>
+                </div>
                 <div class="ok">
                     <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-ok"></span></button>
                 </div>
