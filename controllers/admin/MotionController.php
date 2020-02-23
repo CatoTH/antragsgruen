@@ -465,8 +465,7 @@ class MotionController extends AdminBase
         }
 
         if ($this->isPostSet('delete')) {
-            $motion->status = Motion::STATUS_DELETED;
-            $motion->save();
+            $motion->setDeleted();
             $motion->flushCacheStart(['lines']);
             \yii::$app->session->setFlash('success', \Yii::t('admin', 'motion_deleted'));
             $this->redirect(UrlHelper::createUrl('admin/motion-list/index'));

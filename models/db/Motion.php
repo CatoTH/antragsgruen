@@ -877,6 +877,7 @@ class Motion extends IMotion implements IRSSItem
     public function setDeleted(): void
     {
         $this->status = Motion::STATUS_DELETED;
+        $this->slug   = null;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::MOTION_DELETE, $this->id);
     }

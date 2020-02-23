@@ -4,12 +4,9 @@ namespace app\commands;
 
 use app\components\HTMLTools;
 use app\components\yii\MessageSource;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\EMailLog;
-use app\models\db\Motion;
-use app\models\db\Site;
+use app\models\db\{Amendment, Consultation, EMailLog, Motion, Site};
 use app\models\sectionTypes\ISectionType;
+use app\models\settings\AntragsgruenApp;
 use yii\console\Controller;
 
 /**
@@ -175,6 +172,18 @@ class BugfixController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * Removes all slugs from deleted motions
+     */
+    public function actionSetDeletedSlugsToNull()
+    {
+        $app = AntragsgruenApp::getInstance();
+        $sql = 'UPDATE `' . $app->tablePrefix . 'motion` SET `slug` = NULL WHERE `status` = ' . Motion::STATUS_DELETED;
+        $command      = \Yii::$app->db->createCommand($sql);
+        $result = $command->execute();
+        echo "Affected motions: " . $result . "\n";
     }
 
     /**
