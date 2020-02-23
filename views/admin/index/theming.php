@@ -19,7 +19,7 @@ $layout->addJS('js/jscolor.js');
 
 $this->title = Yii::t('admin', 'theme_title');
 $layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('/admin/index'));
-$layout->addBreadcrumb(Yii::t('admin', 'bread_consultation'), UrlHelper::createUrl('/admin/index/consultation'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_appearance'), UrlHelper::createUrl('/admin/index/appearance'));
 $layout->addBreadcrumb(Yii::t('admin', 'bread_theming'));
 
 $settingsByBlock = [];
