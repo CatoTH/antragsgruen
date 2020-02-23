@@ -894,9 +894,7 @@ class Motion extends IMotion implements IRSSItem
         return false;
     }
 
-    /**
-     */
-    public function onMerged()
+    public function onMerged(): void
     {
         if ($this->datePublication === null && $this->status === Motion::STATUS_SUBMITTED_SCREENED) {
             $this->datePublication = date('Y-m-d H:i:s');
@@ -906,10 +904,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     *
-     */
-    public function onPublish()
+    public function onPublish(): void
     {
         $this->flushCache(true);
         $this->setTextFixedIfNecessary();
@@ -925,10 +920,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @throws Internal
-     */
-    public function onPublishFirst()
+    public function onPublishFirst(): void
     {
         UserNotification::notifyNewMotion($this);
         EmailNotifications::sendMotionOnPublish($this);
@@ -974,27 +966,17 @@ class Motion extends IMotion implements IRSSItem
         $this->flushViewCache();
     }
 
-    /**
-     */
-    public function flushViewCache()
+    public function flushViewCache(): void
     {
         HashedStaticCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
     }
 
-    /**
-     * @return string
-     */
-    public function getPdfCacheKey()
+    public function getPdfCacheKey(): string
     {
         return 'motion-pdf-' . $this->id;
     }
 
-    /**
-     * @param bool
-     *
-     * @return string
-     */
-    public function getFilenameBase($noUmlaut)
+    public function getFilenameBase(bool $noUmlaut): string
     {
         $motionTitle = (mb_strlen($this->title) > 100 ? mb_substr($this->title, 0, 100) : $this->title);
         $title       = $this->titlePrefix . ' ' . $motionTitle;
@@ -1002,37 +984,28 @@ class Motion extends IMotion implements IRSSItem
         return Tools::sanitizeFilename($title, $noUmlaut);
     }
 
-    /**
-     * @return string
-     * @throws \yii\base\Exception
-     */
-    public function createSlug()
+    public function createSlug(): string
     {
         $motionTitle = (mb_strlen($this->title) > 70 ? mb_substr($this->title, 0, 70) : $this->title);
         $title       = Tools::sanitizeFilename($motionTitle, true);
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         $random = \Yii::$app->getSecurity()->generateRandomKey(2);
         $random = ord($random[0]) + ord($random[1]) * 256;
 
         return $title . '-' . $random;
     }
 
-    /**
-     * @return string
-     */
-    public function getMotionSlug()
+    public function getMotionSlug(): string
     {
-        if ($this->slug != '') {
+        if ($this->slug !== '') {
             return $this->slug;
         } else {
-            return $this->id;
+            return (string)$this->id;
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getBreadcrumbTitle()
+    public function getBreadcrumbTitle(): string
     {
         if ($this->titlePrefix && !$this->getMyConsultation()->getSettings()->hideTitlePrefix) {
             return $this->titlePrefix;
@@ -1041,12 +1014,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @param RSSExporter $feed
-     *
-     * @throws Internal
-     */
-    public function addToFeed(RSSExporter $feed)
+    public function addToFeed(RSSExporter $feed): void
     {
         // @TODO Inline styling
         $content = '';
@@ -1063,11 +1031,7 @@ class Motion extends IMotion implements IRSSItem
         );
     }
 
-    /**
-     * @return array
-     * @throws Internal
-     */
-    public function getDataTable()
+    public function getDataTable(): array
     {
         $return = [];
 
@@ -1166,10 +1130,7 @@ class Motion extends IMotion implements IRSSItem
         $this->refresh();
     }
 
-    /**
-     * @return string
-     */
-    public function getFormattedStatus()
+    public function getFormattedStatus(): string
     {
         $status = '';
 
@@ -1193,28 +1154,17 @@ class Motion extends IMotion implements IRSSItem
         return Layout::getFormattedMotionStatus($status, $this);
     }
 
-    /**
-     * @return int
-     */
-    public function getLikeDislikeSettings()
+    public function getLikeDislikeSettings(): int
     {
         return $this->motionType->motionLikesDislikes;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isDeadlineOver()
+    public function isDeadlineOver(): bool
     {
         return !$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
     }
 
-    /**
-     * @param bool $absolute
-     *
-     * @return string
-     */
-    public function getLink($absolute = false)
+    public function getLink(bool $absolute = false): string
     {
         $url = UrlHelper::createMotionUrl($this);
         if ($absolute) {
@@ -1235,10 +1185,7 @@ class Motion extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         $data = [
             'title'            => $this->title,

@@ -2,17 +2,14 @@
 
 namespace app\models\db;
 
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\VotingData;
+use app\models\settings\{AntragsgruenApp, VotingData};
 use app\models\siteSpecificBehavior\Permissions;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{Tools, UrlHelper};
 use app\models\sectionTypes\ISectionType;
 use app\models\supportTypes\SupportBase;
 use app\views\consultation\LayoutHelper;
 use yii\base\InvalidConfigException;
-use yii\db\ActiveQueryInterface;
-use yii\db\ActiveRecord;
+use yii\db\{ActiveQueryInterface, ActiveRecord};
 use yii\helpers\Html;
 
 /**
@@ -528,12 +525,7 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function isDeadlineOver();
 
-    /**
-     * @param boolean $absolute
-     *
-     * @return string
-     */
-    abstract public function getLink($absolute = false);
+    abstract public function getLink(bool $absolute = false): string;
 
     /**
      * @return string

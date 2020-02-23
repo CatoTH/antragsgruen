@@ -623,11 +623,7 @@ class Amendment extends IMotion implements IRSSItem
         return $return;
     }
 
-
-    /**
-     * @return bool
-     */
-    public function iAmInitiator()
+    public function iAmInitiator(): bool
     {
         $user = \Yii::$app->user;
         if ($user->isGuest) {
@@ -643,12 +639,9 @@ class Amendment extends IMotion implements IRSSItem
     }
 
 
-    /**
-     * @return bool
-     */
-    public function canEdit()
+    public function canEdit(): bool
     {
-        if ($this->status == static::STATUS_DRAFT) {
+        if ($this->status === static::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($this->amendmentSupporters as $supp) {
                 $currUser = User::getCurrentUser();
@@ -686,10 +679,7 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function canWithdraw()
+    public function canWithdraw(): bool
     {
         if (!in_array($this->status, [
             Amendment::STATUS_SUBMITTED_SCREENED,
@@ -808,9 +798,7 @@ class Amendment extends IMotion implements IRSSItem
         return $colliding;
     }
 
-    /**
-     */
-    public function withdraw()
+    public function withdraw(): void
     {
         if ($this->status === Amendment::STATUS_DRAFT) {
             $this->status = static::STATUS_DELETED;
@@ -832,10 +820,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->iNeedsCollectionPhase($supportType);
     }
 
-    /**
-     * @return string
-     */
-    public function getSubmitButtonLabel()
+    public function getSubmitButtonLabel(): string
     {
         if ($this->needsCollectionPhase()) {
             return \Yii::t('amend', 'button_submit_create');
@@ -846,9 +831,7 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     */
-    public function setInitialSubmitted()
+    public function setInitialSubmitted(): void
     {
         if ($this->needsCollectionPhase()) {
             $this->status = Amendment::STATUS_COLLECTING_SUPPORTERS;
@@ -866,9 +849,7 @@ class Amendment extends IMotion implements IRSSItem
         new AmendmentSubmittedNotification($this);
     }
 
-    /**
-     */
-    public function setScreened()
+    public function setScreened(): void
     {
         $this->status = Amendment::STATUS_SUBMITTED_SCREENED;
         if ($this->titlePrefix === '') {
@@ -880,18 +861,14 @@ class Amendment extends IMotion implements IRSSItem
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_SCREEN, $this->id);
     }
 
-    /**
-     */
-    public function setUnscreened()
+    public function setUnscreened(): void
     {
         $this->status = Amendment::STATUS_SUBMITTED_UNSCREENED;
         $this->save();
         ConsultationLog::logCurrUser($this->getMyConsultation(), ConsultationLog::AMENDMENT_UNSCREEN, $this->id);
     }
 
-    /**
-     */
-    public function setProposalPublished()
+    public function setProposalPublished(): void
     {
         if ($this->proposalVisibleFrom) {
             return;
@@ -924,9 +901,7 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    /**
-     */
-    public function onPublish()
+    public function onPublish(): void
     {
         $this->flushCacheWithChildren(null);
         $this->setTextFixedIfNecessary();
@@ -943,9 +918,7 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     */
-    public function onPublishFirst()
+    public function onPublishFirst(): void
     {
         new AmendmentPublishedNotification($this);
     }
@@ -993,11 +966,7 @@ class Amendment extends IMotion implements IRSSItem
         return $filename;
     }
 
-    /**
-     * @param RSSExporter $feed
-     * @throws \app\models\exceptions\Internal
-     */
-    public function addToFeed(RSSExporter $feed)
+    public function addToFeed(RSSExporter $feed): void
     {
         // @TODO Inline styling
         $content = '';
@@ -1041,20 +1010,16 @@ class Amendment extends IMotion implements IRSSItem
         );
     }
 
-    /**
-     * @return array
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getDataTable()
+    public function getDataTable(): array
     {
         $return = [];
 
         $inits = $this->getInitiators();
-        if (count($inits) == 1) {
+        if (count($inits) === 1) {
             $first         = $inits[0];
             $keyResolution = \Yii::t('export', 'ResolutionDate');
             $keySingle     = \Yii::t('export', 'InitiatorSingle');
-            if ($first->personType == MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
+            if ($first->personType === MotionSupporter::PERSON_ORGANIZATION && $first->resolutionDate > 0) {
                 $return[$keySingle]     = $first->organization;
                 $return[$keyResolution] = Tools::formatMysqlDate($first->resolutionDate, null, false);
             } else {
@@ -1074,10 +1039,7 @@ class Amendment extends IMotion implements IRSSItem
         return $return;
     }
 
-    /**
-     * @return ConsultationMotionType
-     */
-    public function getMyMotionType()
+    public function getMyMotionType(): ConsultationMotionType
     {
         return $this->getMyMotion()->getMyMotionType();
     }
@@ -1106,28 +1068,17 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getLikeDislikeSettings()
+    public function getLikeDislikeSettings(): int
     {
         return $this->getMyMotionType()->amendmentLikesDislikes;
     }
 
-    /**
-     * @return boolean
-     */
-    public function isDeadlineOver()
+    public function isDeadlineOver(): bool
     {
         return !$this->getMyMotionType()->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS);
     }
 
-    /**
-     * @param bool $includeOtherAmendments
-     * @param int $internalNestingLevel
-     * @return bool
-     */
-    public function hasAlternativeProposaltext($includeOtherAmendments = false, $internalNestingLevel = 0)
+    public function hasAlternativeProposaltext(bool $includeOtherAmendments = false, int $internalNestingLevel = 0): bool
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
@@ -1146,14 +1097,11 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    /**
+    /*
      * Returns the modification proposed and the amendment to which the modification was directly proposed
      * (which has not to be this very amendment, in case this amendment is obsoleted by another amendment)
-     *
-     * @param int $internalNestingLevel
-     * @return array|null
      */
-    public function getAlternativeProposaltextReference($internalNestingLevel = 0)
+    public function getAlternativeProposaltextReference(int $internalNestingLevel = 0): ?array
     {
         // This amendment has a direct modification proposal
         if (in_array($this->proposalStatus, [Amendment::STATUS_MODIFIED_ACCEPTED, Amendment::STATUS_VOTE]) &&
@@ -1175,17 +1123,13 @@ class Amendment extends IMotion implements IRSSItem
         return null;
     }
 
-    /**
+    /*
      * If no proposed procedure is set, the checkbox in merge_amendments_init should always be preselected,
      * except for global alternatives.
      * If there is one, it depends if either the amendment, the proposed procedure or the vote was set as accepted,
      * or is set as "modified accepted".
-     *
-     * @param boolean $hasProposals
-     *
-     * @return bool
      */
-    public function markForMergingByDefault($hasProposals)
+    public function markForMergingByDefault(bool $hasProposals): bool
     {
         if ($this->globalAlternative) {
             return false;
@@ -1208,10 +1152,7 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getFormattedStatus()
+    public function getFormattedStatus(): string
     {
         $statusNames = Amendment::getStatusNames();
         $status      = '';
@@ -1271,11 +1212,7 @@ class Amendment extends IMotion implements IRSSItem
         return $collidesWith;
     }
 
-    /**
-     * @param bool $absolute
-     * @return string
-     */
-    public function getLink($absolute = false)
+    public function getLink(bool $absolute = false): string
     {
         $url = UrlHelper::createAmendmentUrl($this);
         if ($absolute) {
@@ -1284,10 +1221,7 @@ class Amendment extends IMotion implements IRSSItem
         return $url;
     }
 
-    /**
-     * @return array
-     */
-    public function getUserdataExportObject()
+    public function getUserdataExportObject(): array
     {
         $data = [
             'title'            => $this->getTitle(),
