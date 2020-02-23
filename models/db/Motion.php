@@ -998,7 +998,7 @@ class Motion extends IMotion implements IRSSItem
 
     public function getMotionSlug(): string
     {
-        if ($this->slug !== '') {
+        if ($this->slug) {
             return $this->slug;
         } else {
             return (string)$this->id;
