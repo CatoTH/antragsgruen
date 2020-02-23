@@ -2,11 +2,8 @@
 
 namespace app\models\db;
 
-use app\components\DateTools;
-use app\components\Tools;
-use app\models\settings\AntragsgruenApp;
-use app\models\settings\InitiatorForm;
-use app\models\settings\Layout;
+use app\components\{DateTools, Tools};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, Layout, MotionType};
 use app\models\policies\IPolicy;
 use app\models\supportTypes\SupportBase;
 use app\views\pdfLayouts\IPDFLayout;
@@ -132,38 +129,22 @@ class ConsultationMotionType extends ActiveRecord
     }
 
 
-    /**
-     * @return IPolicy
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getMotionPolicy()
+    public function getMotionPolicy(): IPolicy
     {
         return IPolicy::getInstanceByID($this->policyMotions, $this);
     }
 
-    /**
-     * @return IPolicy
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentPolicy()
+    public function getAmendmentPolicy(): IPolicy
     {
         return IPolicy::getInstanceByID($this->policyAmendments, $this);
     }
 
-    /**
-     * @return IPolicy
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getCommentPolicy()
+    public function getCommentPolicy(): IPolicy
     {
         return IPolicy::getInstanceByID($this->policyComments, $this);
     }
 
-    /**
-     * @return IPolicy
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getMotionSupportPolicy()
+    public function getMotionSupportPolicy(): IPolicy
     {
         return IPolicy::getInstanceByID($this->policySupportMotions, $this);
     }
@@ -182,39 +163,24 @@ class ConsultationMotionType extends ActiveRecord
         return new InitiatorForm($this->supportTypeMotions);
     }
 
-    /**
-     * @return IPolicy
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentSupportPolicy()
+    public function getAmendmentSupportPolicy(): IPolicy
     {
         return IPolicy::getInstanceByID($this->policySupportAmendments, $this);
     }
 
-    /**
-     * @return SupportBase
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getMotionSupportTypeClass()
+    public function getMotionSupportTypeClass(): SupportBase
     {
         $settings = $this->getMotionSupporterSettings();
         return SupportBase::getImplementation($settings, $this);
     }
 
-    /**
-     * @return SupportBase
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getAmendmentSupportTypeClass()
+    public function getAmendmentSupportTypeClass(): SupportBase
     {
         $settings = $this->getAmendmentSupporterSettings();
         return SupportBase::getImplementation($settings, $this);
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getMyConsultation()
+    public function getMyConsultation(): Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->id === $this->consultationId) {
@@ -224,11 +190,7 @@ class ConsultationMotionType extends ActiveRecord
         }
     }
 
-    /**
-     * @return IPDFLayout|null
-     * @throws \app\models\exceptions\Internal
-     */
-    public function getPDFLayoutClass()
+    public function getPDFLayoutClass(): ?IPDFLayout
     {
         $class = IPDFLayout::getClassById($this->pdfLayout);
         if ($class === null) {
@@ -237,10 +199,7 @@ class ConsultationMotionType extends ActiveRecord
         return new $class($this);
     }
 
-    /**
-     * @return string
-     */
-    public function getOdtTemplateFile()
+    public function getOdtTemplateFile(): string
     {
         $layout    = $this->getConsultation()->site->getSettings()->siteLayout;
         $layoutDef = Layout::getLayoutPluginDef($layout);
@@ -281,11 +240,7 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-    /**
-     * @param string $type
-     * @return array
-     */
-    public function getDeadlinesByType($type)
+    public function getDeadlinesByType(string $type): array
     {
         if ($this->deadlinesObject === null) {
             $this->deadlinesObject = json_decode($this->deadlines, true);
@@ -293,20 +248,13 @@ class ConsultationMotionType extends ActiveRecord
         return (isset($this->deadlinesObject[$type]) ? $this->deadlinesObject[$type] : []);
     }
 
-    /**
-     * @param array $deadlines
-     */
-    public function setAllDeadlines($deadlines)
+    public function setAllDeadlines(array $deadlines): void
     {
         $this->deadlines       = json_encode($deadlines);
         $this->deadlinesObject = null;
     }
 
-    /**
-     * @param string|null $deadlineMotions
-     * @param string|null $deadlineAmendments
-     */
-    public function setSimpleDeadlines($deadlineMotions, $deadlineAmendments)
+    public function setSimpleDeadlines(?string $deadlineMotions, ?string $deadlineAmendments): void
     {
         $this->setAllDeadlines([
             static::DEADLINE_MOTIONS    => [['start' => null, 'end' => $deadlineMotions, 'title' => null]],
@@ -314,12 +262,7 @@ class ConsultationMotionType extends ActiveRecord
         ]);
     }
 
-    /**
-     * @param array $deadline
-     * @param null|int $timestamp
-     * @return bool
-     */
-    public static function isInDeadlineRange($deadline, $timestamp = null)
+    public static function isInDeadlineRange(array $deadline, ?int $timestamp = null): bool
     {
         if ($timestamp === null) {
             $timestamp = DateTools::getCurrentTimestamp();
@@ -339,11 +282,7 @@ class ConsultationMotionType extends ActiveRecord
         return true;
     }
 
-    /**
-     * @param string $type
-     * @return \DateTime|null
-     */
-    public function getUpcomingDeadline($type)
+    public function getUpcomingDeadline(string $type): ?\DateTime
     {
         $deadlines = $this->getDeadlinesByType($type);
         foreach ($deadlines as $deadline) {
@@ -354,11 +293,7 @@ class ConsultationMotionType extends ActiveRecord
         return null;
     }
 
-    /**
-     * @param string $type
-     * @return bool
-     */
-    public function isInDeadline($type)
+    public function isInDeadline(string $type): bool
     {
         $deadlines = $this->getDeadlinesByType($type);
         if (count($deadlines) === 0) {
@@ -372,11 +307,7 @@ class ConsultationMotionType extends ActiveRecord
         return false;
     }
 
-    /**
-     * @param bool $onlyNamed
-     * @return array
-     */
-    public function getAllCurrentDeadlines($onlyNamed = false)
+    public function getAllCurrentDeadlines(bool $onlyNamed = false): array
     {
         $found = [];
         foreach (static::$DEADLINE_TYPES as $type) {
@@ -393,10 +324,7 @@ class ConsultationMotionType extends ActiveRecord
         return $found;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         foreach ($this->motions as $motion) {
             if ($motion->status !== Motion::STATUS_DELETED) {
@@ -430,24 +358,18 @@ class ConsultationMotionType extends ActiveRecord
         ];
     }
 
-    /** @var null|\app\models\settings\MotionType */
+    /** @var null|MotionType */
     private $settingsObject = null;
 
-    /**
-     * @return \app\models\settings\MotionType
-     */
-    public function getSettingsObj()
+    public function getSettingsObj(): MotionType
     {
         if (!is_object($this->settingsObject)) {
-            $this->settingsObject = new \app\models\settings\MotionType($this->settings);
+            $this->settingsObject = new MotionType($this->settings);
         }
         return $this->settingsObject;
     }
 
-    /**
-     * @param \app\models\settings\MotionType $settings
-     */
-    public function setSettingsObj($settings)
+    public function setSettingsObj(MotionType $settings)
     {
         $this->settingsObject = $settings;
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
@@ -469,11 +391,7 @@ class ConsultationMotionType extends ActiveRecord
         return $return;
     }
 
-    /**
-     * @param ConsultationMotionType $cmpMotionType
-     * @return boolean
-     */
-    public function isCompatibleTo(ConsultationMotionType $cmpMotionType)
+    public function isCompatibleTo(ConsultationMotionType $cmpMotionType): bool
     {
         $mySections  = $this->motionSections;
         $cmpSections = $cmpMotionType->motionSections;
@@ -489,11 +407,7 @@ class ConsultationMotionType extends ActiveRecord
         return true;
     }
 
-    /**
-     * @param ConsultationMotionType $cmpMotionType
-     * @return array
-     */
-    public function getSectionCompatibilityMapping(ConsultationMotionType $cmpMotionType)
+    public function getSectionCompatibilityMapping(ConsultationMotionType $cmpMotionType): array
     {
         $mapping = [];
         for ($i = 0; $i < count($this->motionSections); $i++) {
