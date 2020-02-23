@@ -43,13 +43,17 @@ class MotionSection extends IMotionSection
 
     private function hasExternallySavedData(): bool
     {
+        // getSettings() is a bit more error-prone when moving motions to other consultations
+        // therefore, to ensure that test cases cover this scenario, we call it earlier
+        $type = $this->getSettings()->type;
+
         /** @var AntragsgruenApp $app */
         $app = \Yii::$app->params;
         if ($app->binaryFilePath === null || trim($app->binaryFilePath) === '') {
             return false;
         }
 
-        return in_array($this->getSettings()->type, [
+        return in_array($type, [
             ISectionType::TYPE_PDF_ALTERNATIVE,
             ISectionType::TYPE_PDF_ATTACHMENT,
             ISectionType::TYPE_IMAGE
@@ -85,8 +89,16 @@ class MotionSection extends IMotionSection
         }
     }
 
+    /** @var ConsultationSettingsMotionSection|null */
+    private $fixedSectionType = null;
+
     public function getSettings(): ?ConsultationSettingsMotionSection
     {
+        // This is only used when rewriting the motion type right now
+        if ($this->fixedSectionType) {
+            return $this->fixedSectionType;
+        }
+
         $motion = $this->getMotion();
         if ($motion) {
             foreach ($motion->getMyMotionType()->motionSections as $section) {
@@ -428,5 +440,12 @@ class MotionSection extends IMotionSection
             $this->mergers[$key] = $merger;
         }
         return $this->mergers[$key];
+    }
+
+    public function overrideSectionId(ConsultationSettingsMotionSection $section): bool
+    {
+        $this->fixedSectionType = $section;
+        $this->sectionId        = $section->id;
+        return $this->save();
     }
 }

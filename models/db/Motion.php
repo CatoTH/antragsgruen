@@ -1155,8 +1155,7 @@ class Motion extends IMotion implements IRSSItem
 
         $mySections = $this->getSortedSections(false);
         for ($i = 0; $i < count($mySections); $i++) {
-            $mySections[$i]->sectionId = $motionType->motionSections[$i]->id;
-            if (!$mySections[$i]->save()) {
+            if (!$mySections[$i]->overrideSectionId($motionType->motionSections[$i])) {
                 $err = print_r($mySections[$i]->getErrors(), true);
                 throw new FormError('Something terrible happened while changing the motion type: ' . $err);
             }
