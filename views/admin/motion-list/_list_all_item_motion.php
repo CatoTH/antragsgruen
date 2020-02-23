@@ -1,7 +1,6 @@
 <?php
 use app\components\UrlHelper;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Motion, User};
 use yii\helpers\Html;
 
 /**
@@ -68,15 +67,7 @@ if ($colProposals) {
     }
     echo '</td>';
 }
-$initiators = [];
-foreach ($entry->getInitiators() as $initiator) {
-    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
-        $initiators[] = $initiator->organization;
-    } else {
-        $initiators[] = $initiator->name;
-    }
-}
-echo '<td>' . Html::encode(implode(', ', $initiators)) . '</td>';
+echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
 if ($hasTags) {
     $tags = [];
     foreach ($entry->tags as $tag) {

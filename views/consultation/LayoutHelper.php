@@ -2,13 +2,8 @@
 
 namespace app\views\consultation;
 
-use app\components\MotionSorter;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\Motion;
+use app\components\{MotionSorter, Tools, UrlHelper};
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, Motion};
 use yii\helpers\Html;
 
 class LayoutHelper

@@ -2,15 +2,8 @@
 
 namespace app\models\forms;
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSupporter;
-use app\models\db\Consultation;
-use app\models\db\IMotion;
-use app\models\db\ISupporter;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
+use app\components\{HTMLTools, UrlHelper};
+use app\models\db\{Amendment, AmendmentSupporter, Consultation, IMotion, ISupporter, Motion, MotionSupporter};
 use yii\base\Model;
 use yii\helpers\Html;
 
@@ -711,7 +704,12 @@ class AdminMotionFilterForm extends Model
                 \Yii::t('admin', 'filter_initiator') . ':</label><br>';
 
         $values        = [];
-        $initiatorList = $this->getInitiatorList();
+        if ((count($this->allMotions) + count($this->allAmendments)) > 250) {
+            // The list getting too long and is getting too heavy on the database if we have a full list
+            $initiatorList = [];
+        } else {
+            $initiatorList = $this->getInitiatorList();
+        }
         foreach (array_keys($initiatorList) as $initiatorName) {
             $values[] = $initiatorName;
         }
@@ -861,7 +859,7 @@ class AdminMotionFilterForm extends Model
         $initiators = [];
         foreach ($this->allMotions as $motion) {
             foreach ($motion->motionSupporters as $supp) {
-                if ($supp->role != MotionSupporter::ROLE_INITIATOR) {
+                if ($supp->role !== MotionSupporter::ROLE_INITIATOR) {
                     continue;
                 }
                 if ($supp->personType === ISupporter::PERSON_NATURAL) {

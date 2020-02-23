@@ -1,9 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\User;
+use app\components\{HTMLTools, UrlHelper};
+use app\models\db\{Amendment, User};
 use yii\helpers\Html;
 
 /**
@@ -83,15 +81,7 @@ if ($colProposals) {
     echo '</td>';
 }
 
-$initiators = [];
-foreach ($entry->getInitiators() as $initiator) {
-    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
-        $initiators[] = $initiator->organization;
-    } else {
-        $initiators[] = $initiator->name;
-    }
-}
-echo '<td>' . Html::encode(implode(', ', $initiators)) . '</td>';
+echo '<td>' . Html::encode($entry->getInitiatorsStr()) . '</td>';
 if ($hasTags) {
     echo '<td></td>';
 }
