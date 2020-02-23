@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\settings\AgendaItem;
 use app\components\{MotionSorter, Tools};
 use yii\db\ActiveRecord;
 
@@ -16,9 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $code
  * @property string $time
  * @property string|null $title
- * @property string|null $description
  * @property int|null $motionTypeId
- * @property string|null $deadline
  * @property string|null $settings
  *
  * @property Consultation $consultation
@@ -156,9 +155,26 @@ class ConsultationAgendaItem extends ActiveRecord
     {
         return [
             [['consultationId'], 'required'],
-            [['title', 'code', 'description', 'deadline', 'position'], 'safe'],
+            [['title', 'code', 'position'], 'safe'],
             [['id', 'consultationId', 'parentItemId', 'position', 'motionTypeId'], 'number'],
         ];
+    }
+
+    /** @var null|AgendaItem */
+    private $settingsObject = null;
+
+    public function getSettingsObj(): AgendaItem
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new AgendaItem($this->settings);
+        }
+        return $this->settingsObject;
+    }
+
+    public function setSettingsObj(AgendaItem $settings)
+    {
+        $this->settingsObject = $settings;
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     /**
@@ -167,7 +183,7 @@ class ConsultationAgendaItem extends ActiveRecord
      *
      * @return ConsultationAgendaItem[]
      */
-    public static function getItemsByParent(Consultation $consultation, $parentItemId)
+    public static function getItemsByParent(Consultation $consultation, ?int $parentItemId)
     {
         $return = [];
         foreach ($consultation->agendaItems as $item) {
