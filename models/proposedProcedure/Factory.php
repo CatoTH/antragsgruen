@@ -2,15 +2,9 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\Motion;
+use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
 use app\models\settings\Consultation as ConsultationSettings;
 
-/**
- * Class Factory
- * @package app\models\proposedProcedure
- */
 class Factory
 {
     /** @var Consultation */
@@ -22,13 +16,7 @@ class Factory
     /** @var bool */
     public $includeInvisible = false;
 
-    /**
-     * ProposedProcedureFactory constructor.
-     * @param Consultation $consultation
-     * @param bool $includeInvisible
-     * @param null|ConsultationAgendaItem $agendaItem
-     */
-    public function __construct(Consultation $consultation, $includeInvisible, $agendaItem = null)
+    public function __construct(Consultation $consultation, bool $includeInvisible, ?ConsultationAgendaItem $agendaItem = null)
     {
         $this->consultation     = $consultation;
         $this->agendaItem       = $agendaItem;
@@ -200,6 +188,7 @@ class Factory
         switch ($this->consultation->getSettings()->startLayoutType) {
             case ConsultationSettings::START_LAYOUT_AGENDA:
             case ConsultationSettings::START_LAYOUT_AGENDA_LONG:
+            case ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND:
                 return $this->createFromAgenda();
                 break;
 

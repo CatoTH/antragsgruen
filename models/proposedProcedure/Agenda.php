@@ -24,26 +24,14 @@ class Agenda
     /** @var ConsultationAgendaItem|null */
     public $agendaItem;
 
-    /**
-     * ProposedProcedureAgenda constructor.
-     * @param int $blockId
-     * @param string $title
-     * @param ConsultationAgendaItem|null $agendaItem
-     */
-    public function __construct($blockId, $title, $agendaItem = null)
+    public function __construct(int $blockId, string $title, ?ConsultationAgendaItem $agendaItem = null)
     {
         $this->blockId    = $blockId;
         $this->title      = $title;
         $this->agendaItem = $agendaItem;
     }
 
-    /**
-     * @param VotingBlock $votingBlock
-     * @param bool $includeInvisible
-     * @param array $handledMotions
-     * @param array $handledAmends
-     */
-    public function addVotingBlock($votingBlock, $includeInvisible, &$handledMotions, &$handledAmends)
+    public function addVotingBlock(VotingBlock $votingBlock, bool $includeInvisible, array &$handledMotions, array &$handledAmends)
     {
         $title = \Yii::t('con', 'proposal_table_voting') . ': ' . $votingBlock->title;
         $block = new AgendaVoting($title, $votingBlock);

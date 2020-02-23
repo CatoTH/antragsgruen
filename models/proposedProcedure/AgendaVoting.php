@@ -2,10 +2,7 @@
 
 namespace app\models\proposedProcedure;
 
-use app\models\db\Amendment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
-use app\models\db\VotingBlock;
+use app\models\db\{Amendment, IMotion, Motion, VotingBlock};
 
 class AgendaVoting
 {
@@ -18,22 +15,13 @@ class AgendaVoting
     /** @var IMotion[] */
     public $items = [];
 
-    /**
-     * ProposedProcedureAgendaVoting constructor.
-     *
-     * @param string $title
-     * @param VotingBlock|null $voting
-     */
-    public function __construct($title, $voting)
+    public function __construct(string $title, ?VotingBlock $voting)
     {
         $this->title  = $title;
         $this->voting = $voting;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         if ($this->voting) {
             return $this->voting->id;
@@ -42,10 +30,7 @@ class AgendaVoting
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getHandledMotionIds()
+    public function getHandledMotionIds(): array
     {
         $ids = [];
         foreach ($this->items as $item) {
@@ -56,10 +41,7 @@ class AgendaVoting
         return $ids;
     }
 
-    /**
-     * @return array
-     */
-    public function getHandledAmendmentIds()
+    public function getHandledAmendmentIds(): array
     {
         $ids = [];
         foreach ($this->items as $item) {
