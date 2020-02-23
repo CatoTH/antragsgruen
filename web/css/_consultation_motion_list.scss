@@ -62,8 +62,10 @@
       a, .motionLink {
         font-weight: bold;
         text-indent: 0;
-        font-size: 16px;
-        line-height: 18px;
+        @if ($font-size-base < 16) {
+          font-size: 16px;
+          line-height: 18px;
+        }
         -webkit-hyphens: auto;
         -moz-hyphens: auto;
         -ms-hyphens: auto;
@@ -282,7 +284,12 @@
     margin-top: 10px;
     margin-bottom: 5px;
     font-family: $headingFont;
-    font-size: 14px;
+    @if ($font-size-base < 16) {
+      font-size: 14px;
+    } @else {
+      font-size: inherit;
+      line-height: inherit;
+    }
     font-weight: bold;
     color: $motionListAmendmentColor;
   }
@@ -306,11 +313,13 @@ $agendaMarginPerLevel: 50px;
   padding: 0;
   position: relative;
 
-  .motion {
-    > .title {
-      a {
-        font-size: 14px;
-        line-height: 16px;
+  @if ($font-size-base < 16) {
+    .motion {
+      > .title {
+        a {
+          font-size: 14px;
+          line-height: 16px;
+        }
       }
     }
   }
@@ -454,7 +463,12 @@ $agendaMarginPerLevel: 50px;
         margin-right: 75px;
       }
       h4.amendments {
-        font-size: 16px;
+        @if ($font-size-base < 16) {
+          font-size: 16px;
+        } @else {
+          font-size: inherit;
+          line-height: inherit;
+        }
       }
     }
   }

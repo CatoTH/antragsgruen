@@ -39,7 +39,7 @@ return [
     'index_odt_zip_list'          => 'ZIP-Archiv aller ODTs',
     'index_settings'              => 'Einstellungen',
     'index_consultation_settings' => 'Diese Veranstaltung / Programmdiskussion',
-    'index_appearance'            => 'Aussehen der Seite anpassen',
+    'index_appearance'            => 'Aussehen und Bestandteile der Seite',
     'index_motion_types'          => 'Antragstypen bearbeiten',
     'index_site_access'           => 'Login / Benutzer*innen / Admins',
     'index_site_consultations'    => 'Weitere Veranstaltungen anlegen / verwalten',

@@ -38,7 +38,7 @@ return [
     'index_pdf_zip_list'          => 'ZIP archive of all PDFs',
     'index_odt_zip_list'          => 'ZIP archive of all ODTs',
     'index_settings'              => 'Settings',
-    'index_appearance'            => 'Change the appearance of this site',
+    'index_appearance'            => 'Appearance and components of this site',
     'index_consultation_settings' => 'This consultation',
     'index_motion_types'          => 'Edit motion types',
     'index_site_access'           => 'Login / users / admins',
