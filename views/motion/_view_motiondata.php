@@ -24,7 +24,7 @@ echo '<div class="content">';
 
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
 if (count($replacedByMotions) > 0) {
-    echo '<div class="alert alert-danger motionReplayedBy" role="alert">';
+    echo '<div class="alert alert-danger motionReplacedBy" role="alert">';
     echo Yii::t('motion', 'replaced_by_hint');
     if (count($replacedByMotions) > 1) {
         echo '<ul>';

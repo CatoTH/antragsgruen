@@ -25,12 +25,12 @@ $I->click('.adminMotionTable .motion48 .actionCol .dropdown-toggle');
 $I->click('.adminMotionTable .motion48 .actionCol .asTemplate');
 $I->see('Antrag stellen', 'h1');
 
-$I->seeInField('#initiatorPrimaryName', 'Omid Nouripour');
+$I->seeInField('#initiatorPrimaryName', 'Axel Wolbring');
 $I->dontSeeElement('#resolutionDate');
 $I->seeCheckboxIsChecked('#personTypeNatural');
 $I->seeCheckboxIsChecked('input[name=otherInitiator]');
 $name1 = $I->executeJS('return $(".supporterData .supporterRow").eq(0).find("input.name").val()');
 $name2 = $I->executeJS('return $(".supporterData .supporterRow").eq(1).find("input.name").val()');
-if ($name1 != 'Felix Deist' || $name2 != 'Tarek Al-Wazir') {
+if ($name1 !== 'Wilma Daßler' || $name2 !== 'Oliver Ende') {
     $I->fail('supporter data not present');
 }

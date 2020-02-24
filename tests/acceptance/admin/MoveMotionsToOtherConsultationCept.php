@@ -65,7 +65,7 @@ $I->gotoConsultationHome(true, 'stdparteitag', 'test3');
 
 $I->seeElement('.motionRow118.moved');
 $I->click('.motionLink118');
-$I->click('.motionReplayedBy a');
+$I->click('.motionReplacedBy a');
 $I->see('A8.1: Testing proposed changes');
 
 $I->click('#sidebar .mergeamendments a');
