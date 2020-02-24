@@ -252,17 +252,18 @@ class MotionSection extends IMotionSection
     }
 
     /**
+     * @param bool $minOnePara
      * @return string[][]
      * @throws Internal
      */
-    public function getTextParagraphLines()
+    public function getTextParagraphLines(bool $minOnePara = false)
     {
         if ($this->getSettings()->type !== ISectionType::TYPE_TEXT_SIMPLE) {
             throw new Internal('Paragraphs are only available for simple text sections.');
         }
 
         $lineLength = $this->getConsultation()->getSettings()->lineLength;
-        $cacheDeps  = [$lineLength, $this->getData()];
+        $cacheDeps  = [$lineLength, $minOnePara, $this->getData()];
         $cache      = HashedStaticCache::getCache('getTextParagraphLines', $cacheDeps);
         if ($cache) {
             return $cache;
@@ -273,6 +274,9 @@ class MotionSection extends IMotionSection
         foreach ($paragraphs as $paraNo => $paragraph) {
             $lines                    = LineSplitter::splitHtmlToLines($paragraph, $lineLength, '###LINENUMBER###');
             $paragraphsLines[$paraNo] = $lines;
+        }
+        if ($minOnePara && count($paragraphsLines) === 0) {
+            $paragraphsLines[0] = [];
         }
 
         HashedStaticCache::setCache('getTextParagraphLines', $cacheDeps, $paragraphsLines);
@@ -290,10 +294,11 @@ class MotionSection extends IMotionSection
      * @param bool $lineNumbers
      * @param bool $includeComments
      * @param bool $includeAmendment
+     * @param bool $minOnePara
      * @return MotionSectionParagraph[]
      * @throws Internal
      */
-    public function getTextParagraphObjects($lineNumbers, $includeComments = false, $includeAmendment = false)
+    public function getTextParagraphObjects(bool $lineNumbers, bool $includeComments = false, bool $includeAmendment = false, bool $minOnePara = false)
     {
         if ($lineNumbers && $this->paragraphObjectCacheWithLines !== null) {
             return $this->paragraphObjectCacheWithLines;
@@ -324,6 +329,13 @@ class MotionSection extends IMotionSection
             }
 
             $return[$paraNo] = $paragraph;
+        }
+        if ($minOnePara && count($return) === 0) {
+            $para              = new MotionSectionParagraph();
+            $para->paragraphNo = 0;
+            $para->lines       = [];
+            $para->origStr     = '';
+            $return[0]         = $para;
         }
         if ($includeAmendment) {
             $motion = $this->getConsultation()->getMotion($this->motionId);

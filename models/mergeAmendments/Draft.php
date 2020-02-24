@@ -2,7 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\models\db\{IMotion, Motion, MotionSection};
+use app\models\db\{IMotion, Motion, MotionSection, MotionSectionParagraph};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable
@@ -126,7 +126,7 @@ class Draft implements \JsonSerializable
             }
 
 
-            $paragraphs = $section->getTextParagraphObjects(false, false, false);
+            $paragraphs = $section->getTextParagraphObjects(false, false, false, true);
             foreach (array_keys($paragraphs) as $paragraphNo) {
                 $allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
                 $paragraphText  = $form->getParagraphText($section, $paragraphNo, $amendmentsById);

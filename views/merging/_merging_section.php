@@ -15,7 +15,7 @@ foreach ($section->getAmendingSections(true, false, true) as $sect) {
     $amendmentsById[$sect->amendmentId] = $sect->getAmendment();
 }
 
-$paragraphs     = $section->getTextParagraphObjects(false, false, false);
+$paragraphs     = $section->getTextParagraphObjects(false, false, false, true);
 $type           = $section->getSettings();
 $lineNo         = $section->getFirstLineNumber();
 $hasLineNumbers = $section->getSettings()->lineNumbers;

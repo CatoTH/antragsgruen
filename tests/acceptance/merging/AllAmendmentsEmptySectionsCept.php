@@ -60,4 +60,41 @@ $I->submitForm('.motionMergeForm', [], 'save');
 $I->dontSee('I-Düpferl-Reita');
 $I->dontSee('Replaced Text');
 
-$I->submitForm('#motionConfirmForm', [], 'save');
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+
+
+$I->executeJS('$("#motionConfirmedForm button").trigger("click");');
+
+$I->dontSee('I-Düpferl-Reita');
+$I->dontSee('Replaced Text');
+$I->dontSeeElementInDOM('#section_3_0');
+
+
+$I->wantTo('add a reason');
+
+$I->click('.sidebarActions .mergeamendments a');
+sleep(1);
+// No Init-site, as we don't have any amendments
+$I->seeElement('#paragraphWrapper_2_0');
+$I->seeElement('#sections_3_0_wysiwyg');
+$data = $I->executeJS('return CKEDITOR.instances.sections_3_0_wysiwyg.getData();');
+$I->assertEquals('', $data);
+
+$I->executeJS('CKEDITOR.instances.sections_3_0_wysiwyg.setData("<p>Hi there!</p>");');
+
+$I->see('Hi there!', '#sections_3_0_wysiwyg');
+
+// Save
+$I->executeJS('$(".none").remove();'); // for some reason necessary...
+$I->executeJS('$("#draftSavingPanel").remove();'); // for some reason necessary...
+$I->wait(1);
+
+$I->submitForm('.motionMergeForm', [], 'save');
+
+$I->see('Hi there!');
+
+$I->submitForm('#motionConfirmForm', [], 'confirm');
+
+$I->executeJS('$("#motionConfirmedForm button").trigger("click");');
+
+$I->see('Hi there!', '#section_3_0');

@@ -38,8 +38,12 @@ class SectionMerger
         $this->paragraphStrings = $paras;
 
         $this->paragraphs = [];
-        foreach ($paras as $paraNo => $paraStr) {
-            $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr);
+        if (count($paras) > 0) {
+            foreach ($paras as $paraNo => $paraStr) {
+                $this->paragraphs[$paraNo] = new ParagraphMerger($paraStr);
+            }
+        } else {
+            $this->paragraphs[0] = new ParagraphMerger('<p></p>');
         }
     }
 
