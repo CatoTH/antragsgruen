@@ -595,9 +595,9 @@ class Motion extends IMotion implements IRSSItem
     public function getVisibleReplacedByMotions()
     {
         $replacedByMotions = [];
-        foreach ($this->getMyConsultation()->getVisibleMotions() as $motion) {
-            if ($motion->parentMotionId === $this->id) {
-                $replacedByMotions[] = $motion;
+        foreach ($this->replacedByMotions as $replMotion) {
+            if (!in_array($replMotion->status, $this->getMyConsultation()->getInvisibleMotionStatuses())) {
+                $replacedByMotions[] = $replMotion;
             }
         }
 

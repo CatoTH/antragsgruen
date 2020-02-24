@@ -289,7 +289,7 @@ class MotionSorter
         $resolutions = [];
         foreach ($allMotions as $mot) {
             if ($mot->isResolution()) {
-                if (count($mot->getVisibleReplacedByMotions()) === 0) {
+                if (count($mot->replacedByMotions) === 0) {
                     $resolutions[] = $mot;
                 }
             } else {
