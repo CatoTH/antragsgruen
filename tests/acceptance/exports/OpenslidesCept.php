@@ -9,11 +9,11 @@ $I->loginAndGotoMotionList();
 $I->click('#exportOpenslidesBtn');
 $I->seeElement('.exportOpenslidesDd .users');
 $file = $I->downloadLink('.exportOpenslidesDd .users');
-if (strlen($file) == 0) {
+if (strlen($file) === 0) {
     $I->fail('File has no content');
 }
-if (mb_strpos($file, 'Hößl') === false) {
-    $I->fail('User file has not all content');
+if (mb_strpos($file, 'Lischke') === false) {
+    $I->fail('User file has not all content: ' . $file);
 }
 
 $file = $I->downloadLink('.exportOpenslidesDd .slidesMotionType1');
