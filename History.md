@@ -16,6 +16,7 @@
 - Mailgun and Mandrill are not supported anymore, for now.
 - The social sharing buttons in the motion and amendment views were removed, as they were practically never used and visually unpleasing.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
+- Agenda items, including their motions, can be hidden from the proposed procedure.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 
 ## Version 4.4.0 (2019-12-26)
