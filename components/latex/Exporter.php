@@ -2,8 +2,7 @@
 
 namespace app\components\latex;
 
-use app\components\HashedStaticCache;
-use app\components\HTMLTools;
+use app\components\{HashedStaticCache, HTMLTools};
 use app\models\exceptions\Internal;
 use app\models\sectionTypes\Image;
 use app\models\settings\AntragsgruenApp;
@@ -16,21 +15,13 @@ class Exporter
     /** @var  AntragsgruenApp */
     private $app;
 
-    /**
-     * @param Layout $layout
-     * @param AntragsgruenApp $app
-     */
     public function __construct(Layout $layout, AntragsgruenApp $app)
     {
         $this->layout = $layout;
         $this->app    = $app;
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function encodePlainString($str)
+    public static function encodePlainString(string $str): string
     {
         $replaces = [
             '\\'                     => '\textbackslash{}',
@@ -76,11 +67,7 @@ class Exporter
         return $str;
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function encodePREString($str)
+    public static function encodePREString(string $str): string
     {
         $out   = "\n" . '\nolinenumbers' . "\n\n" . '\texttt{';
         $lines = explode("\n", $str);
@@ -269,7 +256,9 @@ class Exporter
                     return '\item ' . $content . "\n";
                 case 'a':
                     if ($node->hasAttribute('href')) {
-                        $content = '\href{' . $node->getAttribute('href') . '}{' . $content . '}';
+                        $link    = $node->getAttribute('href');
+                        $link    = explode('#', $link); // Hash-parts of URLs break LaTeX
+                        $content = '\href{' . $link[0] . '}{' . $content . '}';
                     }
                     return $content;
                 case 'span':
@@ -318,11 +307,7 @@ class Exporter
         }
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    public static function encodeHTMLString($str)
+    public static function encodeHTMLString(string $str): string
     {
         $str     = HTMLTools::correctHtmlErrors($str);
         $str     = preg_replace('/(<p[^>]*>)(<\/p>)/siu', '$1 $2', $str);
@@ -348,11 +333,7 @@ class Exporter
         return $out;
     }
 
-    /**
-     * @param Layout $layout
-     * @return string
-     */
-    public static function createLayoutString(Layout $layout)
+    public static function createLayoutString(Layout $layout): string
     {
         $template                 = $layout->template;
         $template                 = str_replace("\r", "", $template);
@@ -366,12 +347,7 @@ class Exporter
         return $template;
     }
 
-    /**
-     * @param string $textMain
-     * @param string $textRight
-     * @return string
-     */
-    public static function createTextWithRightString($textMain, $textRight)
+    public static function createTextWithRightString(string $textMain, string $textRight): string
     {
         if ($textRight === '') {
             return "\\vspace{1cm}\\raggedright\n" . $textMain;
@@ -391,11 +367,7 @@ class Exporter
 ' . $textMain;
     }
 
-    /**
-     * @param Content $content
-     * @return string
-     */
-    public static function createContentString(Content $content)
+    public static function createContentString(Content $content): string
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
