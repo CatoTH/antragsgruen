@@ -282,7 +282,7 @@ class ConsultationMotionType extends ActiveRecord
         return true;
     }
 
-    public function getUpcomingDeadline(string $type): ?\DateTime
+    public function getUpcomingDeadline(string $type): ?string
     {
         $deadlines = $this->getDeadlinesByType($type);
         foreach ($deadlines as $deadline) {
