@@ -23,8 +23,8 @@ $paragraphNos   = array_keys($paragraphs);
 $paragraphFirst = (count($paragraphNos) > 0 ? $paragraphNos[0] : null);
 $paragraphLast  = (count($paragraphNos) > 0 ? $paragraphNos[count($paragraphNos) - 1] : null);
 
-echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
-echo '<div class="content section sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
+echo '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
+echo '<div class="content section section' . $section->sectionId . ' sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
 
 if (!$type->hasAmendments) {
     echo '<label class="removeSection">';

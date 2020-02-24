@@ -17,6 +17,7 @@
 - The social sharing buttons in the motion and amendment views were removed, as they were practically never used and visually unpleasing.
 - It is now possible to deactivate the breadcrumb links in the appearance settings.
 - Agenda items, including their motions, can be hidden from the proposed procedure.
+- When creating a resolution using the "merge amendments"-functionality, there is now a "remove text"-checkbox above the motion reason to exclude the reason from the final resolution more easily.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
 
 ## Version 4.4.0 (2019-12-26)
