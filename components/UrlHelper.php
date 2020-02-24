@@ -2,12 +2,7 @@
 
 namespace app\components;
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentComment;
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\MotionComment;
-use app\models\db\Site;
+use app\models\db\{Amendment, AmendmentComment, Consultation, Motion, MotionComment, Site};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
 use Yii;
@@ -21,46 +16,30 @@ class UrlHelper
     /** @var null|Consultation */
     private static $currentConsultation = null;
 
-    /**
-     * @param Site|null $site
-     */
-    public static function setCurrentSite($site)
+    public static function setCurrentSite(?Site $site): void
     {
         static::$currentSite = $site;
     }
 
-    /**
-     * @return Site|null
-     */
-    public static function getCurrentSite()
+    public static function getCurrentSite(): ?Site
     {
         return static::$currentSite;
     }
 
-    /**
-     * @param Consultation|null $consultation
-     */
-    public static function setCurrentConsultation($consultation)
+    public static function setCurrentConsultation(?Consultation $consultation): void
     {
         static::$currentConsultation = $consultation;
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public static function getCurrentConsultation()
+    public static function getCurrentConsultation(): ?Consultation
     {
         return static::$currentConsultation;
     }
 
-
-    /**
-     * @return \app\models\settings\AntragsgruenApp
-     */
-    private static function getParams()
+    private static function getParams(): AntragsgruenApp
     {
-        /** @var \app\models\settings\AntragsgruenApp $app */
-        $app = \Yii::$app->params;
+        /** @var AntragsgruenApp $app */
+        $app = Yii::$app->params;
         return $app;
     }
 
@@ -92,11 +71,7 @@ class UrlHelper
         }
     }
 
-    /**
-     * @param array $route
-     * @return string
-     */
-    protected static function createSiteUrl($route)
+    protected static function createSiteUrl(array $route): string
     {
         $site         = static::$currentSite;
         $consultation = static::$currentConsultation;
@@ -134,7 +109,7 @@ class UrlHelper
      * @param null|Consultation $forceConsultation
      * @return string
      */
-    public static function createUrl($route, $forceConsultation = null)
+    public static function createUrl($route, ?Consultation $forceConsultation = null): string
     {
         if (!is_array($route)) {
             $route = [$route];
@@ -161,7 +136,7 @@ class UrlHelper
      * @param string|array $route
      * @return string
      */
-    public static function createLoginUrl($route)
+    public static function createLoginUrl($route): string
     {
         $target_url = static::createUrl($route);
         if (Yii::$app->user->isGuest) {
@@ -171,10 +146,7 @@ class UrlHelper
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function homeUrl()
+    public static function homeUrl(): string
     {
         if (static::$currentConsultation) {
             $consultation       = static::$currentConsultation;
@@ -209,11 +181,7 @@ class UrlHelper
         }
     }
 
-    /**
-     * @param string $url
-     * @return string
-     */
-    public static function absolutizeLink($url)
+    public static function absolutizeLink(string $url): string
     {
         if (strpos($url, 'http') === 0) {
             return $url;
@@ -244,13 +212,9 @@ class UrlHelper
         }
     }
 
-    /**
-     * @param string $route
-     * @return string
-     */
-    public static function createWurzelwerkLoginUrl($route)
+    public static function createWurzelwerkLoginUrl(string $route): string
     {
-        /** @var \app\models\settings\AntragsgruenApp $params */
+        /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
         $target_url = Url::toRoute($route);
@@ -266,23 +230,13 @@ class UrlHelper
         }
     }
 
-    /**
-     * @param Motion $motion
-     * @param string $mode
-     * @param array $addParams
-     * @return string
-     */
-    public static function createMotionUrl(Motion $motion, $mode = 'view', $addParams = [])
+    public static function createMotionUrl(Motion $motion, string $mode = 'view', array $addParams = []): string
     {
         $params = array_merge(['/motion/' . $mode, 'motionSlug' => $motion->getMotionSlug()], $addParams);
         return static::createUrl($params, $motion->getMyConsultation());
     }
 
-    /**
-     * @param MotionComment $motionComment
-     * @return string
-     */
-    public static function createMotionCommentUrl(MotionComment $motionComment)
+    public static function createMotionCommentUrl(MotionComment $motionComment): string
     {
         $params = [
             '/motion/view',
@@ -293,13 +247,7 @@ class UrlHelper
         return static::createUrl($params, $motionComment->getIMotion()->getMyConsultation());
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param string $mode
-     * @param array $addParams
-     * @return string
-     */
-    public static function createAmendmentUrl(Amendment $amendment, $mode = 'view', $addParams = [])
+    public static function createAmendmentUrl(Amendment $amendment, string $mode = 'view', array $addParams = []): string
     {
         if ($amendment->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT && $amendment->getMyProposalReference()) {
             $amendment = $amendment->getMyProposalReference();
@@ -312,11 +260,7 @@ class UrlHelper
         return static::createUrl($params, $amendment->getMyConsultation());
     }
 
-    /**
-     * @param AmendmentComment $amendmentComment
-     * @return string
-     */
-    public static function createAmendmentCommentUrl(AmendmentComment $amendmentComment)
+    public static function createAmendmentCommentUrl(AmendmentComment $amendmentComment): string
     {
         $params = [
             '/amendment/view',
@@ -328,15 +272,11 @@ class UrlHelper
         return static::createUrl($params, $amendmentComment->getIMotion()->getMyConsultation());
     }
 
-    /**
+    /*
      * Returns the subdomain or null, if this is the main domain
      * Throws an error if the given URL does not belong to the current system (hacking attempt?)
-     *
-     * @param string $url
-     * @return string|null
-     * @throws FormError
      */
-    public static function getSubdomain($url)
+    public static function getSubdomain(string $url): ?string
     {
         /** @var AntragsgruenApp $params */
         $params = Yii::$app->params;
