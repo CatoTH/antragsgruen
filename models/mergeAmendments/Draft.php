@@ -33,6 +33,9 @@ class Draft implements \JsonSerializable
     /** @var string[] */
     public $sections;
 
+    /** @var int[] */
+    public $removedSections;
+
     public function jsonSerialize()
     {
         return [
@@ -41,6 +44,7 @@ class Draft implements \JsonSerializable
             'amendmentVotingData' => $this->amendmentVotingData,
             'paragraphs'          => $this->paragraphs,
             'sections'            => $this->sections,
+            'removedSections'     => $this->removedSections,
         ];
     }
 
@@ -74,6 +78,7 @@ class Draft implements \JsonSerializable
 
         $json                       = json_decode($data, true);
         $draft->sections            = $json['sections'];
+        $draft->removedSections     = (isset($json['removedSections']) ? $json['removedSections'] : []);
         $draft->paragraphs          = DraftParagraph::fromJsonArr($json['paragraphs']);
         $draft->amendmentVersions   = $json['amendmentVersions'];
         $draft->amendmentStatuses   = $json['amendmentStatuses'];
@@ -92,6 +97,7 @@ class Draft implements \JsonSerializable
         $draft->init($form->motion);
 
         $draft->sections            = []; // Empty = default values
+        $draft->removedSections     = [];
         $draft->amendmentStatuses   = [];
         $draft->amendmentVersions   = [];
         $draft->amendmentVotingData = [];

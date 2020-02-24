@@ -8,14 +8,7 @@
  */
 
 use app\models\db\MotionSection;
-
-echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
-echo '<div class="content sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
-if ($twoCols) {
-    echo '<div class="sectionHolder">';
-} else {
-    echo '<div class="sectionHolder boxed">';
-}
+use yii\helpers\Html;
 
 $amendmentsById = [];
 foreach ($section->getAmendingSections(true, false, true) as $sect) {
@@ -29,6 +22,23 @@ $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphNos   = array_keys($paragraphs);
 $paragraphFirst = (count($paragraphNos) > 0 ? $paragraphNos[0] : null);
 $paragraphLast  = (count($paragraphNos) > 0 ? $paragraphNos[count($paragraphNos) - 1] : null);
+
+echo '<h3 class="green">' . \yii\helpers\Html::encode($section->getSectionTitle()) . '</h3>';
+echo '<div class="content section sectionType' . \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE . '">';
+
+if (!$type->hasAmendments) {
+    echo '<label class="removeSection">';
+    echo Html::checkbox('removeSections[]', in_array($type->id, $form->draftData->removedSections), ['value' => $type->id]);
+    echo Yii::t('amend', 'merge_remove_text');
+    echo '</label>';
+}
+
+if ($twoCols) {
+    echo '<div class="sectionHolder">';
+} else {
+    echo '<div class="sectionHolder boxed">';
+}
+
 
 foreach ($paragraphNos as $paragraphNo) {
     if ($twoCols) {

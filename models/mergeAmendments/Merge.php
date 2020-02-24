@@ -79,17 +79,20 @@ class Merge
             $section            = new MotionSection();
             $section->sectionId = $origSection->sectionId;
             $section->motionId  = $newMotion->id;
+            $section->refresh();
+
             $section->cache     = '';
             $section->setData('');
             $section->dataRaw   = '';
-            $section->refresh();
 
-            if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
-                $this->mergeSimpleTextSection($section, $origSection, $draft);
-            } elseif (isset($draft->sections[$section->sectionId])) {
-                $section->getSectionType()->setMotionData($draft->sections[$section->sectionId]);
-            } else {
-                // @TODO Images etc.
+            if (!in_array($origSection->sectionId, $draft->removedSections)) {
+                if ($section->getSettings()->type === ISectionType::TYPE_TEXT_SIMPLE) {
+                    $this->mergeSimpleTextSection($section, $origSection, $draft);
+                } elseif (isset($draft->sections[$section->sectionId])) {
+                    $section->getSectionType()->setMotionData($draft->sections[$section->sectionId]);
+                } else {
+                    // @TODO Images etc.
+                }
             }
 
             if (!$section->save()) {
@@ -98,7 +101,6 @@ class Merge
             }
             $this->motionSections[] = $section;
         }
-
 
         $newMotion->refreshTitle();
         $newMotion->save();

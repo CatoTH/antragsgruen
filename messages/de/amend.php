@@ -83,6 +83,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Änderungsantrags mit ih
     'merge_draft_auto_save'             => 'Automatisch<span class="hideSmall"> speichern</span>',
     'merge_draft_updated'               => 'Aktualisiert',
     'merge_draft_err_saving'            => 'Fehler beim Speichern<br><small>Vielleicht besteht keine Internetverbindung?</small>',
+    'merge_remove_text'                 => 'Text entfernen <small>(z.B. für Beschlüsse)</small>',
     'merge_amtable_all'                 => 'Alle',
     'merge_amtable_merge'               => 'Einpflegen',
     'merge_amtable_title'               => 'Titel',

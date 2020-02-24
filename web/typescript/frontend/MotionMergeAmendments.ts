@@ -838,6 +838,7 @@ export class MotionMergeAmendments {
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
 
         this.initDraftSaving();
+        this.initRemovingSectionTexts();
     }
 
     public static onLeavePage(): string {
@@ -858,6 +859,18 @@ export class MotionMergeAmendments {
         this.$draftSavingPanel.find(".lastSaved .value").text(formatted);
     }
 
+    private initRemovingSectionTexts() {
+        MotionMergeAmendments.$form.find(".removeSection input[type=checkbox]").on("change", ev => {
+            const $checkbox = $(ev.currentTarget);
+            const $section = $checkbox.parents(".section").first();
+            if ($checkbox.prop("checked")) {
+                $section.find(".sectionHolder").addClass("hidden");
+            } else {
+                $section.find(".sectionHolder").removeClass("hidden");
+            }
+        }).trigger("change");
+    }
+
     private saveDraft(onlyInput = false) {
         if (this.paragraphs.filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
             console.log("Has no unsaved changes");
@@ -870,11 +883,15 @@ export class MotionMergeAmendments {
             "amendmentVotingData": AmendmentStatuses.getAllVotingData(),
             "paragraphs": {},
             "sections": {},
+            "removedSections": [],
         };
         $(".sectionType0").each((i, el) => {
             const $section = $(el),
                 sectionId = $section.data("section-id");
             data.sections[sectionId] = $section.find(".form-control").val();
+        });
+        MotionMergeAmendments.$form.find(".removeSection input[type=checkbox]:checked").each((i, el) => {
+            data.removedSections.push(parseInt($(el).val() as string));
         });
 
         this.paragraphs.forEach(para => {

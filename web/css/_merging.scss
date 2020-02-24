@@ -421,6 +421,13 @@
       }
     }
   }
+  .removeSection {
+    font-weight: normal;
+    margin-bottom: 15px;
+    input {
+      margin-right: 5px;
+    }
+  }
 
   .submitHolder {
     text-align: right;
