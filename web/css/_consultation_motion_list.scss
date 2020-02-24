@@ -531,6 +531,24 @@ $agendaMarginPerLevel: 50px;
       flex-grow: 1;
     }
 
+    .extraSettings {
+      .dropdown-toggle {
+        margin-right: 10px;
+
+        .glyphicon-wrench {
+          position: absolute;
+          top: 6px;
+          left: 10px;
+        }
+        .caret {
+          margin-top: 13px;
+        }
+      }
+      .dropdown-menu {
+        min-width: 240px;
+      }
+    }
+
     .delete {
       flex-basis: 30px;
       flex-grow: 0;

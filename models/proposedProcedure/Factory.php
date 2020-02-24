@@ -91,7 +91,9 @@ class Factory
                 $item->votingBlocks[] = $block;
             }
 
-            $items[] = $item;
+            if ($agendaItem->getSettingsObj()->inProposedProcedures) {
+                $items[] = $item;
+            }
         }
 
         if ($this->agendaItem === null) {

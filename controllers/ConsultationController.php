@@ -324,6 +324,10 @@ class ConsultationController extends Base
             $item->parentItemId = $parentId;
             $item->position     = $i;
 
+            $settings                       = $item->getSettingsObj();
+            $settings->inProposedProcedures = (!isset($jsitem['inProposedProcedures']) || $jsitem['inProposedProcedures']);
+            $item->setSettingsObj($settings);
+
             $item->save();
             $items[] = $item->id;
 

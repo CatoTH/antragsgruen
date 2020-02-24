@@ -93,6 +93,12 @@ return [
     'aad_text'  => 'Do you want to use Antragsgrün / motion.tools for your own assembly?',
     'aad_btn'   => 'Information about using Antragsgrün',
 
+    'agenda_title'   => 'Title',
+    'agenda_time'    => 'Time',
+    'agenda_comment' => 'Comment',
+    'agenda_date'    => 'Date',
+    'agenda_pp'      => 'In proposed procedure',
+
     'discuss_comments_title'  => 'Discussed recently',
     'discuss_comment_link'    => 'more',
     'discuss_comment_to'      => 'In reply to',
