@@ -137,10 +137,10 @@ abstract class ISupporter extends ActiveRecord
             if ($this->getMyUser()->nameGiven) {
                 return $this->getMyUser()->nameGiven;
             } else {
-                return $this->name;
+                return $this->name ?? '';
             }
         } else {
-            return $this->name;
+            return $this->name ?? '';
         }
     }
 

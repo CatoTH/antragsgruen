@@ -78,6 +78,7 @@ $getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISu
 
 if ($myself) {
     if (count($myMotions)) {
+        echo '<section class="sectionMyMotions">';
         echo '<h3 class="green">' . Yii::t('con', 'My Motions') . '</h3>';
         echo '<div class="content myImotionList myMotionList"><ul>';
 
@@ -101,9 +102,11 @@ if ($myself) {
             echo "</li>\n";
         }
         echo '</ul></div>';
+        echo '</section>';
     }
 
     if (count($myAmendments) > 0) {
+        echo '<section class="sectionMyAmendments">';
         echo '<h3 class="green">' . Yii::t('con', 'My Amendments') . '</h3>';
         echo '<div class="content myImotionList myAmendmentList"><ul>';
         foreach ($myAmendments as $amendmentSupport) {
@@ -126,6 +129,7 @@ if ($myself) {
             echo '</li>';
         }
         echo '</ul></div>';
+        echo '</section>';
     }
 }
 

@@ -22,7 +22,7 @@ $hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === Co
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
 
-
+echo '<section class="sectionAgenda">';
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';
     $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
@@ -59,6 +59,8 @@ if ($admin) {
     $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
     echo '</div>';
 }
+echo '</section>';
+
 
 list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
 if (count($resolutions) > 0) {

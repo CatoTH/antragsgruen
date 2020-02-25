@@ -2,8 +2,7 @@
 
 namespace app\plugins\frauenrat;
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{ISupporter, Motion, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
@@ -136,7 +135,6 @@ class LayoutHooks extends Hooks
                     if ($proposal && isset(static::$PROPOSALS[$proposal])) {
                         $motionData[$i]['content'] = Html::encode(static::$PROPOSALS[$proposal]);
                     }
-                    $motionData[$i]['content'] .= '<br><br>';
                 }
             }
             if ($motionData[$i]['title'] === \Yii::t('motion', 'tag_tags') && User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
@@ -161,8 +159,10 @@ class LayoutHooks extends Hooks
     {
         $before .= '<style>
 .motionDataTable th, .motionDataTable td { padding-bottom: 20px; }
+.motionDataTable tr:last-child th, .motionDataTable tr:last-child td { padding-bottom: 0; }
 .motionDataTable .selectlist .btn { border: none; font-family: Calibri, Candara, Segoe, Segoe UI, Optima, Arial, sans-serif; font-size: 18px; margin-left: -5px; }
 #sidebar .back { display: none; }
+.sectionMyMotions, .sectionMyAmendments, .sectionResolutions, .sectionAgenda { display: none; }
 </style>
 <script>
 $(function() {

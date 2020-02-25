@@ -10,6 +10,7 @@ use yii\helpers\Html;
  * @var Motion[] $resolutions
  */
 
+echo '<section class="sectionResolutions">';
 echo '<h2 class="green">' . Yii::t('con', 'resolutions') . '</h2>';
 
 echo '<ul class="motionList motionListStd motionListWithoutAgenda resolutionList">';
@@ -69,3 +70,4 @@ foreach ($sortedResolutions as $resolution) {
     echo '</li>';
 }
 echo '</ul>';
+echo '</section>';
