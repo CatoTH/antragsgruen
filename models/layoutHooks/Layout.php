@@ -131,6 +131,11 @@ class Layout
         return static::callHook('getMotionViewData', [$motion], $motionData);
     }
 
+    public static function getConsultationPreWelcome(): string
+    {
+        return static::callHook('getConsultationPreWelcome', [], '');
+    }
+
     public static function getFormattedMotionStatus(string $origStatus, Motion $motion): string
     {
         return static::callHook('getFormattedMotionStatus', [$motion], $origStatus);

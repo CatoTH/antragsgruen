@@ -6,13 +6,7 @@ use yii\helpers\Html;
 
 echo '<div class="content contentPage contentPageWelcome">';
 
-if (count($consultation->motionTypes) === 1) {
-    $deadline = $consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-    if ($deadline) {
-        echo '<p class="deadlineCircle">' . Yii::t('con', 'deadline_circle') . ': ';
-        echo Tools::formatMysqlDateTime($deadline) . "</p>\n";
-    }
-}
+echo \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 
 $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 $saveUrl  = $pageData->getSaveUrl();

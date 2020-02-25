@@ -212,4 +212,15 @@ $(function() {
             return null;
         }
     }
+
+    public function renderSidebar(string $before): string
+    {
+        return '';
+    }
+
+    public function getConsultationPreWelcome(string $before): string
+    {
+        return '<a href="" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
+               '<span class="glyphicon glyphicon-download-alt"></span> Antragsbuch herunterladen</a>';
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace app\models\layoutHooks;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
@@ -285,5 +286,18 @@ class StdHooks extends Hooks
         $this->layout->menusSmallAttachment = $htmlSmall;
 
         return '';
+    }
+
+    public function getConsultationPreWelcome(string $before): string
+    {
+        $str = '';
+        if (count($this->consultation->motionTypes) === 1) {
+            $deadline = $this->consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
+            if ($deadline) {
+                $str = '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
+                $str .= Tools::formatMysqlDateTime($deadline) . "</p>\n";
+            }
+        }
+        return $str;
     }
 }
