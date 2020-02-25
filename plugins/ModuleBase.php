@@ -112,12 +112,12 @@ class ModuleBase extends Module
         return null;
     }
 
-    public static function getRobotsIndexOverride(Consultation $consultation, Action $action, bool $default): ?bool
+    public static function getRobotsIndexOverride(?Consultation $consultation, Action $action, bool $default): ?bool
     {
         return null;
     }
 
-    public static function getDefaultLogo(): array
+    public static function getDefaultLogo(): ?array
     {
         return null;
     }

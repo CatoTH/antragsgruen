@@ -71,7 +71,7 @@ class Module extends ModuleBase
         ];
     }
 
-    public static function getDefaultLogo(): array
+    public static function getDefaultLogo(): ?array
     {
         return [
             'image/png',
