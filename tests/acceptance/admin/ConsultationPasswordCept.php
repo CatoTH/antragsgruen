@@ -50,7 +50,16 @@ $I->wantTo('change the password for one consultation');
 $I->resetCookie('consultationPwd');
 $I->gotoConsultationHome(false, 'stdparteitag', 'test3');
 $I->see('Login', 'h1');
-$I->loginAsStdAdmin();
+
+// The login form is hidden by default
+$I->dontSeeElement('.loginUsername');
+$I->seeElement('.usernameLoginOpener');
+$I->executeJS('$(".usernameLoginOpener a").trigger("click");');
+$I->seeElement('.loginUsername');
+$I->fillField('#username', 'testadmin@example.org');
+$I->fillField('#passwordInput', 'testadmin');
+$I->submitForm('#usernamePasswordForm', [], 'loginusernamepassword');
+
 $I->gotoStdAdminPage('stdparteitag', 'test3')->gotoSiteAccessPage();
 $I->seeElement('.setNewPassword');
 $I->executeJS('$(".setNewPassword").click()');

@@ -39,9 +39,11 @@ if ($loginText && trim($loginText->text) !== '') {
     echo '</div>';
 }
 
+$shownAccessPwdForm = false;
 if ($controller->consultation && $controller->consultation->getSettings()->accessPwd) {
     $conPwd = new \app\components\ConsultationAccessPassword($controller->consultation);
     if (!$conPwd->isCookieLoggedIn()) {
+        $shownAccessPwdForm = true;
         ?>
         <section class="loginConPwd">
             <h2 class="green"><?= Yii::t('user', 'login_con_pwd_title') ?></h2>
@@ -78,6 +80,15 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                     </div>
                 </div>
             </div>
+            <?php
+            if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
+                echo '<div class="usernameLoginOpener" style="padding-left: 20px;">
+                    <a href="#" onClick="$(\'.loginUsername\').toggleClass(\'hidden\'); $(\'#username\').trigger(\'focus\').scrollintoview({top_offset: 100}); return false;">' .
+                     Yii::t('user', 'login_username_title') .
+                     '</a>
+                </div>';
+            }
+            ?>
             <?= Html::endForm() ?>
         </section>
         <?php
@@ -87,7 +98,12 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
 
-    echo '<section class="loginUsername">
+    $classes = ['loginUsername'];
+    if ($shownAccessPwdForm) {
+        $classes[] = 'hidden';
+    }
+
+    echo '<section class="' . implode(' ', $classes) . '">
     <h2 class="green">' . Yii::t('user', 'login_username_title') . '</h2>
     <div class="content row">';
 
