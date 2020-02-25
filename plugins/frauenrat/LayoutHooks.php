@@ -177,7 +177,7 @@ class LayoutHooks extends Hooks
     {
         $before .= '<div class="content" style="padding-top: 0; margin-top: -10px;"><div class="motionDataTable">';
         $before .= '<strong>Titel:</strong><br><br>';
-        $before .= '<h2 style="margin: 0; font-size: 22px;">' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
+        $before .= '<h2 style="margin: 0; font-size: 22px;" class="motionTitle">' . Html::encode($motion->getTitleWithPrefix()) . '</h2>';
         $before .= '</div></div>';
 
         return $before;

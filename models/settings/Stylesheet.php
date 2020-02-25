@@ -52,6 +52,7 @@ class Stylesheet implements \JsonSerializable
     public $motionFixedFontColor;
     public $motionFixedFont;
     public $motionStdFontSize;
+    public $uppercaseTitles;
 
     public static $DEFAULTS_CLASSIC = [
         'useBoxShadow'                => true,
@@ -90,6 +91,7 @@ class Stylesheet implements \JsonSerializable
         'brandPrimary'                => '#e2007a',
         'buttonSuccessBackground'     => '#2c882c',
         'buttonFont'                  => '"Open Sans", sans-serif',
+        'uppercaseTitles'             => false,
     ];
 
     public static $DEFAULTS_DBJR = [
@@ -129,6 +131,7 @@ class Stylesheet implements \JsonSerializable
         'brandPrimary'                => '#dd0b18',
         'buttonSuccessBackground'     => '#dd0b18',
         'buttonFont'                  => '"FiraSans", sans-serif',
+        'uppercaseTitles'             => false,
     ];
 
     public static function getAllSettings(string $defaults = 'layout-classic'): array
@@ -228,6 +231,11 @@ class Stylesheet implements \JsonSerializable
                 'group'    => 'headings',
                 'type'     => static::TYPE_PIXEL,
                 'scssName' => 'headingTertiarySize',
+            ],
+            'uppercaseTitles'             => [
+                'group'    => 'headings',
+                'type'     => static::TYPE_CHECKBOX,
+                'scssName' => 'uppercaseTitles',
             ],
             'menuFont'                    => [
                 'group'    => 'layout',

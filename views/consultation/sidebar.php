@@ -132,14 +132,14 @@ if ($consultation->getSettings()->proposalProcedurePage) {
 if ($hasMotions && $consultation->getSettings()->sidebarNewMotions) {
     $html = '<div class="sidebar-box"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header">' . Yii::t('con', 'new_motions') . '</li>';
-    if (count($newestMotions) == 0) {
+    if (count($newestMotions) === 0) {
         $html .= '<li><i>' . Yii::t('con', 'sb_motions_none') . '</i></li>';
     } else {
         foreach ($newestMotions as $motion) {
             $motionLink = UrlHelper::createMotionUrl($motion);
             $name       = '<span class="' . Html::encode($motion->getIconCSSClass()) . '"></span>' .
                 HTMLTools::encodeAddShy($motion->title ? $motion->title : '-');
-            $html       .= '<li>' . Html::a($name, $motionLink) . "</li>\n";
+            $html       .= '<li class="motionTitle">' . Html::a($name, $motionLink) . "</li>\n";
         }
     }
     $html                .= "</ul></div>";

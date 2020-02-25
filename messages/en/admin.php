@@ -568,6 +568,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'theme_motionFixedFontColor'        => 'Fixed-width text color',
     'theme_motionFixedFont'             => 'Fixed-width text font',
     'theme_motionStdFontSize'           => 'Fixed-width text size (px)',
+    'theme_uppercaseTitles'             => 'Upper-case motion titles',
     'theme_reset_btn'                   => 'Reset theme',
     'theme_reset_confirm_message'       => 'Which default color theme do you want to set?',
     'theme_reset_confirm_name_classic'  => 'Green/Magenta',

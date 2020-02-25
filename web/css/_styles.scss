@@ -583,3 +583,9 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
     width: 100%;
   }
 }
+
+@if ($uppercaseTitles) {
+  .motionTitle {
+    text-transform: uppercase;
+  }
+}
