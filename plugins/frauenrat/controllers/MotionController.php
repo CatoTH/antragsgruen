@@ -4,8 +4,7 @@ namespace app\plugins\frauenrat\controllers;
 
 use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Motion, User};
 
 class MotionController extends Base
 {
@@ -28,7 +27,7 @@ class MotionController extends Base
         }
 
         foreach ($motion->tags as $tag) {
-            $motion->unlink('tags', $tag);
+            $motion->unlink('tags', $tag, true);
         }
         foreach ($this->consultation->tags as $tag) {
             if ($tag->id === intval(\Yii::$app->request->post('newTag'))) {

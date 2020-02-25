@@ -65,18 +65,12 @@ abstract class ISupporter extends ActiveRecord
         }
     }
 
-    /**
-     * @return boolean
-     */
-    public function isDataFixed()
+    public function isDataFixed(): bool
     {
         return ($this->getMyUser() && $this->getMyUser()->fixedData == 1);
     }
 
-    /**
-     * @return string
-     */
-    public function getNameWithOrga()
+    public function getNameWithOrga(): string
     {
         if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
             $name = $this->name;
@@ -92,15 +86,11 @@ abstract class ISupporter extends ActiveRecord
         }
     }
 
-    /**
-     * @param bool $html
-     * @return string
-     */
-    public function getNameWithResolutionDate($html = true)
+    public function getNameWithResolutionDate(bool $html = true): string
     {
         if ($html) {
             $name = Html::encode($this->name);
-            $orga = Html::encode(trim($this->organization, " \t\n\r\0\x0B()"));
+            $orga = Html::encode(trim($this->organization, " \t\n\r\0\x0B"));
             if ($name == '' && $this->getMyUser()) {
                 $name = Html::encode($this->getMyUser()->name);
             }
@@ -122,7 +112,7 @@ abstract class ISupporter extends ActiveRecord
             }
         } else {
             $name = $this->name;
-            $orga = trim($this->organization, " \t\n\r\0\x0B()");
+            $orga = trim($this->organization, " \t\n\r\0\x0B");
             if ($name == '' && $this->getMyUser()) {
                 $name = $this->getMyUser()->name;
             }
@@ -141,10 +131,7 @@ abstract class ISupporter extends ActiveRecord
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getGivenNameOrFull()
+    public function getGivenNameOrFull(): string
     {
         if ($this->getMyUser() && $this->personType === static::PERSON_NATURAL || $this->personType === null) {
             if ($this->getMyUser()->nameGiven) {
@@ -177,7 +164,7 @@ abstract class ISupporter extends ActiveRecord
      * @param null|mixed $default
      * @return mixed
      */
-    public function getExtraDataEntry($name, $default = null)
+    public function getExtraDataEntry(string $name, $default = null)
     {
         $arr = json_decode($this->extraData, true);
         if ($arr && isset($arr[$name])) {
@@ -191,7 +178,7 @@ abstract class ISupporter extends ActiveRecord
      * @param string $name
      * @param mixed $value
      */
-    public function setExtraDataEntry($name, $value)
+    public function setExtraDataEntry(string $name, $value)
     {
         $arr = json_decode($this->extraData, true);
         if (!$arr) {

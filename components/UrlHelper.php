@@ -146,7 +146,7 @@ class UrlHelper
         }
     }
 
-    public static function homeUrl(): string
+    public static function homeUrl(): ?string
     {
         if (static::$currentConsultation) {
             $consultation       = static::$currentConsultation;

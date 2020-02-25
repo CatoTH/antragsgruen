@@ -2,12 +2,9 @@
 
 namespace app\views\amendment;
 
-use app\components\latex\Content;
-use app\components\latex\Exporter;
-use app\components\latex\Layout;
+use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
-use app\models\db\Amendment;
-use app\models\db\TexTemplate;
+use app\models\db\{Amendment, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\IPDFLayout;
@@ -16,14 +13,7 @@ use yii\helpers\Html;
 
 class LayoutHelper
 {
-    /**
-     * @param Amendment $amendment
-     * @param TexTemplate $texTemplate
-     *
-     * @return Content
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate)
+    public static function renderTeX(Amendment $amendment, TexTemplate $texTemplate): Content
     {
         $content             = new Content();
         $content->template   = $texTemplate->texContent;
@@ -93,14 +83,7 @@ class LayoutHelper
         return $content;
     }
 
-    /**
-     * @param Fpdi $pdf
-     * @param IPDFLayout $pdfLayout
-     * @param Amendment $amendment
-     *
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment)
+    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment): void
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
@@ -136,12 +119,7 @@ class LayoutHelper
         }
     }
 
-    /**
-     * @param Amendment $amendment
-     *
-     * @return string
-     */
-    public static function createPdfTcpdf(Amendment $amendment)
+    public static function createPdfTcpdf(Amendment $amendment): string
     {
         $pdfLayout = $amendment->getMyMotion()->motionType->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
@@ -162,13 +140,7 @@ class LayoutHelper
         return $pdf->Output('', 'S');
     }
 
-    /**
-     * @param Amendment $amendment
-     *
-     * @return string
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function createPdfLatex(Amendment $amendment)
+    public static function createPdfLatex(Amendment $amendment): string
     {
         $cache = \Yii::$app->cache->get($amendment->getPdfCacheKey());
         if ($cache) {

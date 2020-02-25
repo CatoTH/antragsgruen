@@ -20,6 +20,7 @@
 - When creating a resolution using the "merge amendments"-functionality, there is now a "remove text"-checkbox above the motion reason to exclude the reason from the final resolution more easily.
 - Bugfix: if a motion section was empty (e.g. a motion that did not have a reason), that section could not be edited when merging amendments.
 - Bugfix: too long motion titles are now breaking the layout and some functionality less than before.
+- When entering a organisation name when creating a motion/amendment, using brackets at the end of the name was not possible.
 
 ## Version 4.4.0 (2019-12-26)
 
