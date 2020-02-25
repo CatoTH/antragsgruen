@@ -2,9 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\Consultation;
-use app\models\db\Motion;
-use app\models\db\Site;
+use app\models\db\{Consultation, Motion, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -14,9 +12,7 @@ use yii\web\Controller;
 
 class Module extends ModuleBase
 {
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -29,16 +25,14 @@ class Module extends ModuleBase
      * @return \yii\web\AssetBundle[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getActiveAssetBundles($controller)
+    public static function getActiveAssetBundles(Controller $controller)
     {
         return [
             Assets::class
         ];
     }
 
-    /**
-     */
-    protected static function getMotionUrlRoutes()
+    protected static function getMotionUrlRoutes(): array
     {
         return [
             'write-petition-response' => 'member_petitions/backend/write-response',
@@ -50,7 +44,7 @@ class Module extends ModuleBase
      * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior($site)
+    public static function getSiteSpecificBehavior(Site $site)
     {
         return SiteSpecificBehavior::class;
     }

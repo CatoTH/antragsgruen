@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
 
 class Hooks
 {
@@ -154,6 +154,11 @@ class Hooks
      * @return string[]
      */
     public function getSitewidePublicWarnings($before, Site $site)
+    {
+        return $before;
+    }
+
+    public function renderMotionSection(?string $before, MotionSection $section, Motion $motion): ?string
     {
         return $before;
     }

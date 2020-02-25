@@ -27,6 +27,12 @@ if ($useCache) {
 $titleSection = $motion->getTitleSection();
 $main = $right = '';
 foreach ($motion->getSortedSections(false) as $i => $section) {
+    $renderedText = \app\models\layoutHooks\Layout::renderMotionSection($section, $motion);
+    if ($renderedText !== null) {
+        $main .= $renderedText;
+        continue;
+    }
+
     /** @var \app\models\db\MotionSection $section */
     $sectionType = $section->getSettings()->type;
     if ($section->getSectionType()->isEmpty()) {

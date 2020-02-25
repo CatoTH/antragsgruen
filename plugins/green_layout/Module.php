@@ -7,11 +7,7 @@ use yii\web\View;
 
 class Module extends ModuleBase
 {
-    /**
-     * @param View|null $view
-     * @return array
-     */
-    public static function getProvidedLayouts($view = null)
+    public static function getProvidedLayouts(?View $view = null): array
     {
         if ($view) {
             $asset = ThumbnailAssets::register($view);

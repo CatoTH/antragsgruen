@@ -9,11 +9,7 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
-    /**
-     * @param string $domainPlain
-     * @return array
-     */
-    public static function getManagerUrlRoutes($domainPlain)
+    public static function getManagerUrlRoutes(string $domainPlain): array
     {
         $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy';
         return [
@@ -22,10 +18,7 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @return string
-     */
-    public static function getDefaultRouteOverride()
+    public static function getDefaultRouteOverride(): string
     {
         return '/antragsgruen_sites/manager/index';
     }
@@ -34,7 +27,7 @@ class Module extends ModuleBase
      * @param \yii\web\Controller $controller
      * @return \yii\web\AssetBundle[]
      */
-    public static function getActiveAssetBundles($controller)
+    public static function getActiveAssetBundles(\Yii\web\Controller $controller)
     {
         if (strpos($controller->route, 'antragsgruen_sites') === 0) {
             return [

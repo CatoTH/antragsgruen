@@ -2,8 +2,7 @@
 
 namespace app\plugins\neos;
 
-use app\models\db\Consultation;
-use app\models\db\Site;
+use app\models\db\{Consultation, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -12,18 +11,12 @@ use yii\web\View;
 
 class Module extends ModuleBase
 {
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
     }
 
-    /**
-     * @param View|null $view
-     * @return array
-     */
-    public static function getProvidedLayouts($view = null)
+    public static function getProvidedLayouts(?View $view = null): array
     {
         if ($view) {
             $asset     = ThumbnailAssets::register($view);
@@ -41,10 +34,7 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @return null|string
-     */
-    public static function overridesDefaultLayout()
+    public static function overridesDefaultLayout(): ?string
     {
         return 'layout-plugin-neos-std';
     }
@@ -54,7 +44,7 @@ class Module extends ModuleBase
      * @return string|ConsultationSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getConsultationSettingsClass($consultation)
+    public static function getConsultationSettingsClass(Consultation $consultation)
     {
         return ConsultationSettings::class;
     }
@@ -64,7 +54,7 @@ class Module extends ModuleBase
      * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior($site)
+    public static function getSiteSpecificBehavior(Site $site)
     {
         return SiteSpecificBehavior::class;
     }
@@ -81,10 +71,7 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public static function getDefaultLogo()
+    public static function getDefaultLogo(): array
     {
         return [
             'image/png',

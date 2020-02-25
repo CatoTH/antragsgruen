@@ -9,9 +9,7 @@ use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
 {
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
     }
@@ -29,9 +27,7 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     */
-    protected static function getMotionUrlRoutes()
+    protected static function getMotionUrlRoutes(): array
     {
         return [
             'save-proposal' => 'frauenrat/motion/save-proposal',

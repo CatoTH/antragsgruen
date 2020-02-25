@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
 
 class Layout
 {
@@ -168,5 +168,10 @@ class Layout
     public static function getSitewidePublicWarnings(Site $site)
     {
         return static::callHook('getSitewidePublicWarnings', [$site], []);
+    }
+
+    public static function renderMotionSection(MotionSection $section, Motion $motion): ?string
+    {
+        return static::callHook('renderMotionSection', [$section, $motion], null);
     }
 }

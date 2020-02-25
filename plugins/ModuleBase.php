@@ -2,7 +2,7 @@
 
 namespace app\plugins;
 
-use app\models\db\{Consultation, Site};
+use app\models\db\{Consultation, Motion, MotionSection, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -11,9 +11,7 @@ use yii\web\{AssetBundle, Controller, View};
 
 class ModuleBase extends Module
 {
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -28,42 +26,27 @@ class ModuleBase extends Module
      * @return AssetBundle[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getActiveAssetBundles($controller)
+    public static function getActiveAssetBundles(Controller $controller)
     {
         return [];
     }
 
-    /**
-     */
-    protected static function getMotionUrlRoutes()
+    protected static function getMotionUrlRoutes(): array
     {
         return [];
     }
 
-    /**
-     * @param string $domainPlain
-     * @return array
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getManagerUrlRoutes($domainPlain)
+    public static function getManagerUrlRoutes(string $domainPlain): array
     {
         return [];
     }
 
-    /**
-     * @return string
-     */
-    public static function getDefaultRouteOverride()
+    public static function getDefaultRouteOverride(): ?string
     {
         return null;
     }
 
-    /**
-     * @param string $dommotion
-     * @param string $dommotionOld
-     * @return array
-     */
-    public static function getAllUrlRoutes($dommotion, $dommotionOld)
+    public static function getAllUrlRoutes(string $dommotion, string $dommotionOld): array
     {
         $urls = [];
         foreach (static::getMotionUrlRoutes() as $url => $route) {
@@ -78,7 +61,7 @@ class ModuleBase extends Module
      * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSpecificBehavior($site)
+    public static function getSiteSpecificBehavior(Site $site)
     {
         return null;
     }
@@ -88,7 +71,7 @@ class ModuleBase extends Module
      * @return string|\app\models\settings\Consultation
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getConsultationSettingsClass($consultation)
+    public static function getConsultationSettingsClass(Consultation $consultation)
     {
         return null;
     }
@@ -98,25 +81,17 @@ class ModuleBase extends Module
      * @return string|\app\models\settings\Site
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSettingsClass($site)
+    public static function getSiteSettingsClass(Site $site)
     {
         return null;
     }
 
-    /**
-     * @param View|null $view
-     * @return array
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getProvidedLayouts($view = null)
+    public static function getProvidedLayouts(?View $view = null): array
     {
         return [];
     }
 
-    /**
-     * @return null|string
-     */
-    public static function overridesDefaultLayout()
+    public static function overridesDefaultLayout(): ?string
     {
         return null;
     }
@@ -132,30 +107,17 @@ class ModuleBase extends Module
         return [];
     }
 
-    /**
-     * @return string;
-     */
-    public static function getCustomSiteCreateView()
+    public static function getCustomSiteCreateView(): ?string
     {
         return null;
     }
 
-    /**
-     * @param Consultation $consultation
-     * @param Action $action
-     * @param boolean $default
-     * @return null|boolean
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public static function getRobotsIndexOverride($consultation, $action, $default)
+    public static function getRobotsIndexOverride(Consultation $consultation, Action $action, bool $default): ?bool
     {
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public static function getDefaultLogo()
+    public static function getDefaultLogo(): array
     {
         return null;
     }

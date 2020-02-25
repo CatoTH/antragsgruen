@@ -2,31 +2,24 @@
 
 namespace app\plugins\green_manager;
 
-use app\models\db\Consultation;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Consultation, Site, User};
 use app\models\events\UserEvent;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use yii\base\Event;
+use yii\web\Controller;
 
 class Module extends ModuleBase
 {
-    /**
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
         Event::on(User::class, User::EVENT_ACCOUNT_CONFIRMED, [Module::class, 'onAccountConfirmed']);
     }
 
-    /**
-     * @param string $domainPlain
-     * @return array
-     */
-    public static function getManagerUrlRoutes($domainPlain)
+    public static function getManagerUrlRoutes(string $domainPlain): array
     {
         $domPlainPaths = 'help|password|createsite|check-subdomain|legal|privacy|free-hosting';
         return [
@@ -35,19 +28,16 @@ class Module extends ModuleBase
         ];
     }
 
-    /**
-     * @return string
-     */
-    public static function getDefaultRouteOverride()
+    public static function getDefaultRouteOverride(): string
     {
         return '/green_manager/manager/index';
     }
 
     /**
-     * @param \yii\web\Controller $controller
+     * @param Controller $controller
      * @return \yii\web\AssetBundle[]
      */
-    public static function getActiveAssetBundles($controller)
+    public static function getActiveAssetBundles(Controller $controller)
     {
         if (strpos($controller->route, 'green_manager') === 0) {
             return [
@@ -75,23 +65,17 @@ class Module extends ModuleBase
      * @return string|SiteSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getSiteSettingsClass($site)
+    public static function getSiteSettingsClass(Site $site)
     {
         return SiteSettings::class;
     }
 
-    /**
-     * @return null|string
-     */
-    public static function overridesDefaultLayout()
+    public static function overridesDefaultLayout(): ?string
     {
         return 'layout-plugin-green_layout-std';
     }
 
-    /**
-     * @return string;
-     */
-    public static function getCustomSiteCreateView()
+    public static function getCustomSiteCreateView(): string
     {
         return "@app/plugins/green_manager/views/sitedata_subdomain";
     }

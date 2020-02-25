@@ -20,9 +20,10 @@ $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
 $hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND);
 
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
-echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
 
 echo '<section class="sectionAgenda">';
+echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
+
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';
     $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);

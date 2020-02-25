@@ -3,7 +3,7 @@
 namespace app\plugins\frauenrat;
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{ISupporter, Motion, User};
+use app\models\db\{ISupporter, Motion, MotionSection, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
@@ -25,14 +25,16 @@ class LayoutHooks extends Hooks
 
     private function formatInitiator(ISupporter $supporter): string
     {
-        $name = $supporter->getNameWithResolutionDate(true);
-        $name = \app\models\layoutHooks\Layout::getMotionDetailsInitiatorName($name, $supporter);
-
-        $line = '<div>' . $name . '</div>';
+        $line = '';
 
         $admin = User::havePrivilege($this->consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
-        if ($admin && ($supporter->contactEmail || $supporter->contactPhone)) {
+        if ($admin && ($supporter->contactEmail || $supporter->contactPhone || $supporter->contactName)) {
             $line .= '<table>';
+            if ($supporter->contactName) {
+                $line .= '<tr><th style="font-weight: normal; padding: 3px;">Name:</th><td style=" padding: 3px;">';
+                $line .= Html::encode($supporter->contactName);
+                $line .= '</td></tr>';
+            }
             if ($supporter->contactEmail) {
                 $line .= '<tr><th style="font-weight: normal; padding: 3px;">E-Mail:</th><td style=" padding: 3px;">';
                 $line .= Html::a(Html::encode($supporter->contactEmail), 'mailto:' . $supporter->contactEmail);
@@ -44,6 +46,11 @@ class LayoutHooks extends Hooks
                     $line .= ' <span class="glyphicon glyphicon-question-sign" style="color: gray;" ' .
                              'title="' . \Yii::t('initiator', 'email_not_confirmed') . '"></span>';
                 }
+                $line .= '</td></tr>';
+            }
+            if ($supporter->contactPhone) {
+                $line .= '<tr><th style="font-weight: normal; padding: 3px;">Telefon:</th><td style=" padding: 3px;">';
+                $line .= Html::encode($supporter->contactPhone);
                 $line .= '</td></tr>';
             }
             $line .= '</table>';
@@ -108,6 +115,7 @@ class LayoutHooks extends Hooks
                 \Yii::t('motion', 'consultation'),
                 \Yii::t('motion', 'submitted_on'),
                 \Yii::t('motion', 'created_on'),
+                \Yii::t('motion', 'agenda_item'),
             ])) {
                 return false;
             }
@@ -118,11 +126,16 @@ class LayoutHooks extends Hooks
             return true;
         }));
 
+        $organisation = null;
         foreach ($motionData as $i => $data) {
             if ($motionData[$i]['title'] === \Yii::t('motion', 'initiators_1') || $motionData[$i]['title'] === \Yii::t('motion', 'initiators_x')) {
+                $motionData[$i]['title']   = 'Ansprechpartner*in';
                 $initiators                = $motion->getInitiators();
                 $motionData[$i]['content'] = '';
                 foreach ($initiators as $supp) {
+                    if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
+                        $organisation = $supp->organization;
+                    }
                     $motionData[$i]['content'] .= $this->formatInitiator($supp);
                 }
             }
@@ -139,6 +152,21 @@ class LayoutHooks extends Hooks
             }
             if ($motionData[$i]['title'] === \Yii::t('motion', 'tag_tags') && User::havePrivilege($this->consultation, User::PRIVILEGE_SCREENING)) {
                 $motionData[$i]['content'] = $this->getTagsSavingForm($motion);
+            }
+        }
+        if ($organisation) {
+            array_unshift($motionData, [
+                'title'   => \Yii::t('motion', 'initiators_1'),
+                'content' => $organisation,
+            ]);
+        }
+
+        foreach ($motion->getActiveSections() as $section) {
+            if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+                $motionData[] = [
+                    'title'   => 'Konkrete Adressat*innen',
+                    'content' => Html::encode($section->data),
+                ];
             }
         }
 
@@ -172,6 +200,16 @@ $(function() {
 });
 </script>
 ';
+
         return $before;
+    }
+
+    public function renderMotionSection(?string $before, MotionSection $section, Motion $motion): ?string
+    {
+        if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+            return '';
+        } else {
+            return null;
+        }
     }
 }
