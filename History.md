@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.5.0 [not released yet]
+## Version 4.5.0 (2020-02-26)
 
 - The paragraph-based editing mode for merging amendments into motion, introduced in version 4.3.0, was visually improved to closer resemble the regular motion view, with the amendment toggles to the right of each paragraph. This improves the legibility of the motion text.
 - The appearance settings of a site are now moved to a separate page.

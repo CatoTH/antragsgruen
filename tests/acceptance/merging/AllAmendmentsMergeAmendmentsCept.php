@@ -206,7 +206,7 @@ $I->see('Accepted by mayority', '.votingResultRow');
 $I->see('Ja: 15, Nein: 5, Enthaltungen: 2', '.votingResultRow');
 
 $I->click('.replacesMotion a');
-$I->see('Achtung: dies ist eine alte Fassung', '.motionReplayedBy.alert-danger');
+$I->see('Achtung: dies ist eine alte Fassung', '.motionReplacedBy.alert-danger');
 $I->seeElement('.bookmarks .amendment276');
 $I->seeElement('.bookmarks .amendment3');
 

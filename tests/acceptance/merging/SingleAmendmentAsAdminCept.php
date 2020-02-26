@@ -37,7 +37,7 @@ $I->dontSee('Ä1');
 $I->dontSee('Ä6');
 
 $I->gotoMotion(false, 2);
-$I->seeElement('.alert-danger.motionReplayedBy');
+$I->seeElement('.alert-danger.motionReplacedBy');
 
 
 $I->wantTo('try to merge another amendment');
