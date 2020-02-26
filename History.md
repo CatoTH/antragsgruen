@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.5.1 [not released yet]
+
+- When editing an amendment as admin, the date picker was missing for the resolution date of the initiator organisation.
+
 ## Version 4.5.0 (2020-02-26)
 
 - The paragraph-based editing mode for merging amendments into motion, introduced in version 4.3.0, was visually improved to closer resemble the regular motion view, with the amendment toggles to the right of each paragraph. This improves the legibility of the motion text.
