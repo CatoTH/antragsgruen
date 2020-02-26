@@ -117,6 +117,11 @@ class Base extends Controller
             return true;
         }
 
+        // If re-installing while being logged in in the old installation, the testConsultationPwd below would break the site
+        if ($inInstaller) {
+            return true;
+        }
+
         if (get_class($this) === PagesController::class && in_array($action->id, ['show-page', 'css'])) {
             return true;
         }

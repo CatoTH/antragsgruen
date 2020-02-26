@@ -52,6 +52,7 @@ chmod 775 runtime
 chmod 775 web/assets
 
 find ./web/ -name "*\.map" -exec rm {} \;
+chmod -R u+rwx web/js/bower/yii2-pjax/.git
 rm -R web/js/src
 rm -R web/js/bower
 rm -R web/typescript
@@ -75,7 +76,7 @@ rm migrations/m17*
 rm migrations/m18*
 find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
-find . -name ".github" -exec rm {} \;
+find . -name ".github" -exec rm -rf {} \;
 find . -name ".gitignore" -exec rm {} \;
 find . -name ".gitattributes" -exec rm {} \;
 find . -name ".travis" -exec rm {} \;
