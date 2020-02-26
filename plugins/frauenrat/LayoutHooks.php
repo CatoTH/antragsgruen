@@ -112,7 +112,7 @@ class LayoutHooks extends Hooks
     {
         $saveUrl   = UrlHelper::createUrl([
             '/frauenrat/amendment/save-proposal',
-            'motionSlug' => $amendment->getMyMotion()->getMotionSlug(),
+            'motionSlug'  => $amendment->getMyMotion()->getMotionSlug(),
             'amendmentId' => $amendment->id
         ]);
         $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
@@ -231,10 +231,12 @@ class LayoutHooks extends Hooks
             }
         }
         if ($organisation) {
-            array_splice($amendmentData, 1, 0, [[
-                'title'   => \Yii::t('motion', 'initiators_1'),
-                'content' => $organisation,
-            ]]);
+            array_splice($amendmentData, 1, 0, [
+                [
+                    'title'   => \Yii::t('motion', 'initiators_1'),
+                    'content' => $organisation,
+                ]
+            ]);
         }
 
         return $amendmentData;
@@ -291,7 +293,14 @@ $(function() {
 
     public function getConsultationPreWelcome(string $before): string
     {
-        return '<a href="" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
+        $motionTypeIds = [1];
+        $pdfLink       = UrlHelper::createUrl([
+            '/motion/fullpdf',
+            'motionTypeId' => implode(",", $motionTypeIds),
+            'filename'     => 'Motions-with-amendments.pdf',
+        ]);
+
+        return '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
                '<span class="glyphicon glyphicon-download-alt"></span> Antragsbuch herunterladen</a>';
     }
 }

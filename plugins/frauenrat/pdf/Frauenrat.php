@@ -203,8 +203,9 @@ class Frauenrat extends IPDFLayout
         /** @var FrauenratPdf $pdf */
         $pdf = $this->pdf;
 
-        $pdf->SetFont($pdf->calibriBold, '', 12);
+        $pdf->SetFont($pdf->calibriBold, 'b', 12);
         $pdf->ln(2);
         $pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
+        $pdf->SetFont($pdf->calibri, '', 12);
     }
 }

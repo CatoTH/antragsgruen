@@ -2,13 +2,12 @@
 
 namespace app\views\amendment;
 
+use app\views\pdfLayouts\{IPdfWriter, IPDFLayout};
 use app\components\latex\{Content, Exporter, Layout};
 use app\components\Tools;
 use app\models\db\{Amendment, TexTemplate};
 use app\models\LimitedSupporterList;
 use app\models\settings\AntragsgruenApp;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -83,7 +82,7 @@ class LayoutHelper
         return $content;
     }
 
-    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Amendment $amendment): void
+    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Amendment $amendment): void
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 

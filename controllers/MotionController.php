@@ -12,6 +12,7 @@ use app\models\db\{Amendment,
     Motion,
     MotionAdminComment,
     MotionSupporter,
+    TexTemplate,
     User,
     UserNotification,
     VotingBlock};
@@ -208,6 +209,64 @@ class MotionController extends Base
         }
     }
 
+    private function getMotionsAndTemplate(string $motionTypeId, bool $withdrawn, bool $resolutions)
+    {
+        /** @var TexTemplate $texTemplate */
+        $texTemplate = null;
+        $motions     = $this->consultation->getVisibleMotionsSorted($withdrawn);
+        if ($motionTypeId !== '' && $motionTypeId !== '0') {
+            $motionTypeIds = explode(',', $motionTypeId);
+            $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {
+                return in_array($motion->motionTypeId, $motionTypeIds);
+            });
+        }
+
+        $motionsFiltered = [];
+        foreach ($motions as $motion) {
+            $resolutionStates = [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY];
+            if ($resolutions && !in_array($motion->status, $resolutionStates)) {
+                continue;
+            }
+            if ($texTemplate === null) {
+                $texTemplate       = $motion->motionType->texTemplate;
+                $motionsFiltered[] = $motion;
+            } elseif ($motion->motionType->texTemplate && $motion->motionType->texTemplate->id === $texTemplate->id) {
+                $motionsFiltered[] = $motion;
+            }
+        }
+        $motions = $motionsFiltered;
+
+        return [$motions, $texTemplate];
+    }
+
+    public function actionFullpdf($motionTypeId = '', $withdrawn = 0, $resolutions = 0)
+    {
+        $withdrawn   = (IntVal($withdrawn) === 1);
+        $resolutions = (IntVal($resolutions) === 1);
+
+        try {
+            list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
+            if (count($motions) === 0) {
+                return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
+            }
+        } catch (ExceptionBase $e) {
+            return $this->showErrorpage(404, $e->getMessage());
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/pdf');
+        if (!$this->layoutParams->isRobotsIndex($this->action)) {
+            \yii::$app->response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        }
+
+        $hasLaTeX = ($this->getParams()->xelatexPath || $this->getParams()->lualatexPath);
+        if ($hasLaTeX && $texTemplate) {
+            return $this->renderPartial('pdf_full_tex', ['motions' => $motions, 'texTemplate' => $texTemplate]);
+        } else {
+            return $this->renderPartial('pdf_full_tcpdf', ['motions' => $motions]);
+        }
+    }
+
     /**
      * @param string $motionTypeId
      * @param int $withdrawn
@@ -218,31 +277,9 @@ class MotionController extends Base
     {
         $withdrawn   = (IntVal($withdrawn) === 1);
         $resolutions = (IntVal($resolutions) === 1);
-        $texTemplate = null;
+
         try {
-            $motions = $this->consultation->getVisibleMotionsSorted($withdrawn);
-            if ($motionTypeId != '' && $motionTypeId != '0') {
-                $motionTypeIds = explode(',', $motionTypeId);
-                $motions       = array_filter($motions, function (Motion $motion) use ($motionTypeIds) {
-                    return in_array($motion->motionTypeId, $motionTypeIds);
-                });
-            }
-
-            $motionsFiltered = [];
-            foreach ($motions as $motion) {
-                $resolutionStates = [Motion::STATUS_RESOLUTION_FINAL, Motion::STATUS_RESOLUTION_PRELIMINARY];
-                if ($resolutions && !in_array($motion->status, $resolutionStates)) {
-                    continue;
-                }
-                if ($texTemplate === null) {
-                    $texTemplate       = $motion->motionType->texTemplate;
-                    $motionsFiltered[] = $motion;
-                } elseif ($motion->motionType->texTemplate == $texTemplate) {
-                    $motionsFiltered[] = $motion;
-                }
-            }
-            $motions = $motionsFiltered;
-
+            list($motions, $texTemplate) = $this->getMotionsAndTemplate($motionTypeId, $withdrawn, $resolutions);
             if (count($motions) === 0) {
                 return $this->showErrorpage(404, \Yii::t('motion', 'none_yet'));
             }

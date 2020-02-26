@@ -18,7 +18,7 @@ $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting';
-$consultationPaths    .= '|amendmentpdfs|feeds|feedall|feedmotions|feedamendments|feedcomments';
+$consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
 $motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
@@ -70,6 +70,7 @@ $urlRules = [
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
+    $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
     $domv . 'amendment/pdfcollection/<filename:.*>'                 => 'amendment/pdfcollection',
 
     $domv . '<_a:(' . $consultationPaths . ')>'    => 'consultation/<_a>',

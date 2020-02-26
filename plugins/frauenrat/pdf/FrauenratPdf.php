@@ -65,7 +65,7 @@ class FrauenratPdf extends IPdfWriter
         // Set font
         $this->SetFont($this->calibri, '', 8);
         // Page number
-        $this->Cell(0, 10, $this->getGroupPageNo(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        $this->Cell(0, 10, $this->getPage(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
     }
     // @codingStandardsIgnoreEnd
 }

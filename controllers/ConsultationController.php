@@ -212,9 +212,6 @@ class ConsultationController extends Base
         return $feed->getFeed();
     }
 
-    /**
-     *
-     */
     public function actionNotifications()
     {
         $this->forceLogin();
