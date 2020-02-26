@@ -62,7 +62,7 @@ rm -R vendor/ezyang/htmlpurifier/tests
 rm -R vendor/yiisoft/yii2/test
 rm -R vendor/mailjet/mailjet-apiv3-php/test
 rm -R vendor/fxp/composer-asset-plugin/Tests
-rm -R vendor/leafo/scssphp/bin
+rm -R vendor/scssphp/scssphp/bin
 rm -R vendor/cebe/markdown/bin
 rm -R vendor/yiisoft/yii2/i18n/migrations
 rm -R vendor/yiisoft/yii2/log/migrations
@@ -75,9 +75,13 @@ rm migrations/m17*
 rm migrations/m18*
 find . -name ".DS_Store" -exec rm {} \;
 find . -name ".git" -exec rm -rf {} \;
+find . -name ".github" -exec rm {} \;
 find . -name ".gitignore" -exec rm {} \;
 find . -name ".gitattributes" -exec rm {} \;
 find . -name ".travis" -exec rm {} \;
+find . -name ".travis.yml" -exec rm {} \;
+find . -name ".scrutinizer.yml" -exec rm {} \;
+find . -name ".php_cs.dist" -exec rm {} \;
 rm config/config.json
 rm config/config_tests.json
 touch config/INSTALLING
