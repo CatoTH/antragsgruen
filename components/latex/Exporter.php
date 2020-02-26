@@ -38,6 +38,13 @@ class Exporter
             '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
             "\n"                     => '\\linebreak' . "\n",
+            "ä"                      => "\\\"a",
+            "ö"                      => "\\\"o",
+            "ü"                      => "\\\"u",
+            "Ä"                      => "\\\"A",
+            "Ö"                      => "\\\"O",
+            "Ü"                      => "\\\"U",
+            "ß"                      => "\\ss",
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }

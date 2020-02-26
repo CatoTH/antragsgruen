@@ -508,13 +508,7 @@ class TextSimple extends Text
         $firstLine      = $section->getFirstLineNumber();
 
         if ($settings->printTitle) {
-            $title = Exporter::encodePlainString($settings->title);
-            /*
-            if ($title == \Yii::t('motion', 'motion_text') && $section->getMotion()->agendaItem) {
-                $title = $section->getMotion()->title;
-            }
-            */
-            $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($title) . '}' . "\n";
+            $tex .= '\subsection*{\AntragsgruenSection ' . Exporter::encodePlainString($settings->title) . '}' . "\n";
         }
 
         $cacheDeps = [$hasLineNumbers, $lineLength, $firstLine, $fixedWidth, $section->getData()];
