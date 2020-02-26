@@ -108,27 +108,12 @@ class Frauenrat extends IPDFLayout
         $title1Fontsize = 15;
         $title2Fontsize = 25;
 
-        $dim = $pdf->getPageDimensions();
-
-        $logo = $amendment->getMyConsultation()->getAbsolutePdfLogo();
-        if ($logo) {
-            if (empty($this->headerlogo)) {
-                //$this->headerlogo['dim']   = getimagesize($site->getAbsolutePdfLogo());
-                $this->headerlogo['w']     = 50;
-                $this->headerlogo['scale'] = $this->headerlogo['w'] / $logo->width;
-                $this->headerlogo['h']     = $logo->height * $this->headerlogo['scale'];
-                $this->headerlogo['x']     = $dim['wk'] - $dim['rm'] - $this->headerlogo['w'];
-                if ($this->headerlogo['h'] + $abs < $dim['tm'] / 2) {
-                    $this->headerlogo['y'] = $dim['tm'] - $this->headerlogo['h'] - $abs;
-                } else {
-                    $this->headerlogo['y'] = $dim['tm'];
-                }
-            }
-
-            $headerlogo = $this->headerlogo;
+        $this->setHeaderLogo($amendment->getMyConsultation(), $abs, 30, null);
+        if ($this->headerlogo) {
+            $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
-            $pdf->Image('@' . $logo->data, $headerlogo['x'], $headerlogo['y'], $headerlogo['w'], $headerlogo['h']);
-            $pdf->setY($headerlogo['y'] + $headerlogo['h'] + $abs);
+            $pdf->Image('@' . $logo['data'], $logo['x'], $logo['y'], $logo['w'], $logo['h']);
+            $pdf->setY($logo['y'] + $abs);
         }
 
         $pdf->SetTextColor(100, 100, 100, 100);
@@ -151,13 +136,34 @@ class Frauenrat extends IPDFLayout
 
         $pdf->SetX($left);
         $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetFont($pdf->calibriItalic, 'I', 11);
-        $data = $amendment->getDataTable();
+        $pdf->SetFont($pdf->calibri, '', 11);
+
+        $initiatorName = null;
+        $contact = [];
+        foreach ($amendment->getInitiators() as $initiator) {
+            $initiatorName = $initiator->organization;
+            if ($initiator->contactName) {
+                $contact[] = 'Ansprechpartner*in: ' . $initiator->contactName;
+            }
+            if ($initiator->contactEmail) {
+                $contact[] = 'E-Mail: ' . $initiator->contactEmail;
+            }
+            if ($initiator->contactPhone) {
+                $contact[] = 'Telefon: ' . $initiator->contactPhone;
+            }
+        }
+
+        $data = [
+            'Antragsteller*in'   => $initiatorName,
+            'Ansprechpartner*in' => implode("\n", $contact),
+        ];
+
+
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
             $pdf->MultiCell(42, 0, $key . ':', 0, 'L', false, 0);
             $pdf->MultiCell(120, 0, $val, 0, 'L');
-            $pdf->Ln(5);
+            $pdf->Ln(2);
         }
 
         $pdf->SetFont($pdf->calibri, '', 12);

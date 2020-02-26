@@ -58,8 +58,6 @@ class FrauenratPdf extends IPdfWriter
 
     // @codingStandardsIgnoreStart
 
-    /**
-     */
     public function Footer()
     {
         // Position at 15 mm from bottom
