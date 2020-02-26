@@ -17,7 +17,7 @@ export class AmendmentEdit {
             let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
                 ckeditor: editor = editor.getEditor();
 
-            $textarea.parents("form").submit(function () {
+            $textarea.parents("form").on("submit", function () {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
                 if (typeof (ckeditor.plugins.lite) != 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
@@ -42,12 +42,12 @@ export class AmendmentEdit {
         const $closer = $(".votingResultCloser"),
             $opener = $(".votingResultOpener"),
             $inputRows = $(".contentVotingResult, .contentVotingResultComment");
-        $opener.click(() => {
+        $opener.on("click", () => {
             $closer.removeClass("hidden");
             $opener.addClass("hidden");
             $inputRows.removeClass("hidden");
         });
-        $closer.click(() => {
+        $closer.on("click", () => {
             $closer.addClass("hidden");
             $opener.removeClass("hidden");
             $inputRows.addClass("hidden");
@@ -64,11 +64,14 @@ export class AmendmentEdit {
         $("#amendmentDateResolutionHolder").datetimepicker({
             locale: this.lang
         });
+        $('#resolutionDateHolder').datetimepicker({
+            locale: $('#resolutionDate').data('locale'),
+            format: 'L'
+        });
 
+        this.$editTextCaller.find("button").on("click", this.textEditCalled.bind(this));
 
-        this.$editTextCaller.find("button").click(this.textEditCalled.bind(this));
-
-        $(".amendmentDeleteForm").submit(function (ev, data) {
+        $(".amendmentDeleteForm").on("submit", function (ev, data) {
             if (data && typeof (data.confirmed) && data.confirmed === true) {
                 return;
             }
