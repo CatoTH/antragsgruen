@@ -3,7 +3,6 @@
 namespace app\views\pdfLayouts;
 
 use app\models\db\{Amendment, Motion};
-use setasign\Fpdi\Tcpdf\Fpdi;
 
 class ByLDK extends IPDFLayout
 {
@@ -223,7 +222,7 @@ class ByLDK extends IPDFLayout
         $pdf->Ln(9);
     }
 
-    public function createPDFClass(): Fpdi
+    public function createPDFClass(): IPdfWriter
     {
         $pdf = new ByLDKPDF($this);
 

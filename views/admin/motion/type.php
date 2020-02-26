@@ -1,10 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\ConsultationMotionType;
-use app\models\db\ConsultationSettingsMotionSection;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{ConsultationMotionType, ConsultationSettingsMotionSection};
 use yii\helpers\Html;
 
 /**
@@ -214,7 +211,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     <div class="thumbnailedLayoutSelector">
         <?php
         $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
-        foreach (ConsultationMotionType::getAvailablePDFTemplates() as $lId => $layout) {
+        foreach (\app\views\pdfLayouts\IPDFLayout::getAvailableClassesWithLatex() as $lId => $layout) {
             echo '<label class="layout ' . $lId . '">';
             echo Html::radio('pdfTemplate', $lId === $currValue, ['value' => $lId]);
             echo '<span>';

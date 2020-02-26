@@ -2,17 +2,11 @@
 
 namespace app\views\pdfLayouts;
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use Yii;
-
-class ByLDKPDF extends Fpdi
+class ByLDKPDF extends IPdfWriter
 {
     /** @var IPDFLayout */
     private $layout;
 
-    /**
-     * @param IPDFLayout $layout
-     */
     public function __construct(IPDFLayout $layout)
     {
         $this->layout  = $layout;
@@ -51,7 +45,7 @@ class ByLDKPDF extends Fpdi
         $this->Cell(
             0,
             10,
-            Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
+            \Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
             0,
             false,
             'C',

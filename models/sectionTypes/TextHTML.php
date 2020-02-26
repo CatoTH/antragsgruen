@@ -5,8 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\HTMLTools;
 use app\components\latex\Content;
 use app\models\db\{AmendmentSection, Consultation};
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text as ODTText;
 
@@ -67,7 +66,7 @@ class TextHTML extends Text
         return ($this->section->getData() === '');
     }
 
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -91,7 +90,7 @@ class TextHTML extends Text
         $pdf->writeHTML($html);
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

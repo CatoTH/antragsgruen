@@ -5,6 +5,7 @@ namespace app\plugins\frauenrat;
 use app\models\db\Consultation;
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
+use app\plugins\frauenrat\pdf\Frauenrat;
 use app\plugins\ModuleBase;
 
 class Module extends ModuleBase
@@ -33,5 +34,17 @@ class Module extends ModuleBase
             'save-proposal' => 'frauenrat/motion/save-proposal',
             'save-tag'      => 'frauenrat/motion/save-tag',
         ];
+    }
+
+    public static function getProvidedPdfLayouts(array $default): array
+    {
+        $default[] = [
+            'id'        => 100,
+            'title'     => 'Deutscher Frauenrat',
+            'preview'   => null,
+            'className' => Frauenrat::class,
+        ];
+
+        return $default;
     }
 }

@@ -3,13 +3,11 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
-use app\components\HashedStaticCache;
-use app\components\HTMLTools;
+use app\components\{HashedStaticCache, HTMLTools};
 use app\components\latex\{Content, Exporter};
 use app\models\db\{AmendmentSection, Consultation, MotionSection};
 use app\models\forms\CommentForm;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use yii\web\View;
 use CatoTH\HTML2OpenDocument\Text as ODTText;
@@ -291,31 +289,7 @@ class TextSimple extends Text
         return $str;
     }
 
-    /**
-     * This adds <br>-tags where necessary.
-     * Test cases are collected in the "Listen-Test"-motion.
-     * Check in the TCPDF-generated PDF that line numbers match the lines.
-     *
-     * @param string[] $linesArr
-     * @return string[]
-     */
-    private function printMotionToPDFAddLinebreaks($linesArr)
-    {
-        for ($i = 1; $i < count($linesArr); $i++) {
-            // Does this line start with an ol/ul/li?
-            if (!preg_match('/^<(ol|ul|li)/siu', $linesArr[$i])) {
-                continue;
-            }
-            // Does the previous line end a block element? If not, we need the extra BR
-            if (!preg_match('/<\/(div|p|blockquote|ul|ol|h1|h2|h3|h4|h5|h6)>$/siu', $linesArr[$i - 1])) {
-                $linesArr[$i] = '<br>' . $linesArr[$i];
-            }
-        }
-
-        return $linesArr;
-    }
-
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -325,87 +299,13 @@ class TextSimple extends Text
         $section = $this->section;
 
         if ($section->getSettings()->printTitle) {
-            $pdfLayout->printSectionHeading($this->section->getSettings()->title);
+            $pdfLayout->printSectionHeading($section->getSettings()->title);
         }
 
-        $lineLength = $section->getConsultation()->getSettings()->lineLength;
-        $linenr     = $section->getFirstLineNumber();
-        $textSize   = ($lineLength > 70 ? 10 : 11);
-        if ($section->getSettings()->fixedWidth) {
-            $fontName = 'dejavusansmono';
-        } else {
-            $fontName = 'helvetica';
-        }
-
-        $pdf->SetFont($fontName, '', $textSize);
-        $pdf->Ln(7);
-
-        $hasLineNumbers = $section->getSettings()->lineNumbers;
-        if ($section->getSettings()->fixedWidth || $hasLineNumbers) {
-            $paragraphs = $section->getTextParagraphObjects($hasLineNumbers);
-            foreach ($paragraphs as $paragraph) {
-                $linesArr = [];
-                foreach ($paragraph->lines as $line) {
-                    $line       = str_replace('###LINENUMBER###', '', $line);
-                    $line       = preg_replace('/<br>\s*$/siu', '', $line);
-                    $linesArr[] = $line . '';
-                }
-
-                // Hint about <li>s: The spacing between list items is created by </li><br><li>-markup.
-                // This obviously is incorrect according to HTML, but is rendered correctly neverless.
-                // We just have to take care about additional spacing for the line numbers in these cases.
-
-                if ($hasLineNumbers) {
-                    $lineNos = [];
-                    for ($i = 0; $i < count($paragraph->lines); $i++) {
-                        if (preg_match('/^<(ul|ol|li)/siu', $linesArr[$i])) {
-                            $lineNos[] = ''; // Just for having an additional <br>
-                        }
-                        $lineNos[] = $linenr++;
-                    }
-                    $text2 = implode('<br>', $lineNos);
-                } else {
-                    $text2 = '';
-                }
-
-                $y = $pdf->getY();
-                $pdf->SetFont($fontName, '', $textSize * 2 / 3);
-                $pdf->SetTextColor(100, 100, 100);
-                $pdf->setCellHeightRatio(2.23);
-                $pdf->writeHTMLCell(12, '', 12, $y, $text2, 0, 0, 0, true, '', true);
-
-                $pdf->SetFont($fontName, '', $textSize);
-                $pdf->SetTextColor(0, 0, 0);
-                $pdf->setCellHeightRatio(1.5);
-                $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
-                $text1    = implode('<br>', $linesArr);
-
-                // instead of <span class="strike"></span> TCPDF can only handle <s></s>
-                // for striking through text
-                $text1   = preg_replace('/<span class="strike">(.*)<\/span>/iUs', '<s>${1}</s>', $text1);
-
-                // instead of <span class="underline"></span> TCPDF can only handle <u></u>
-                // for underlined text
-                $text1   = preg_replace('/<span class="underline">(.*)<\/span>/iUs', '<u>${1}</u>', $text1);
-
-                $pdf->writeHTMLCell(173, '', 24, $y, $text1, 0, 1, 0, true, '', true);
-
-                $pdf->Ln(7);
-            }
-        } else {
-            $paras = $section->getTextParagraphLines();
-            foreach ($paras as $para) {
-                $html = str_replace('###LINENUMBER###', '', implode('', $para));
-                $y    = $pdf->getY();
-                $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
-                $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
-
-                $pdf->Ln(7);
-            }
-        }
+        $pdf->printMotionSection($section);
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

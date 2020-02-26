@@ -1,14 +1,16 @@
 <?php
 
-namespace app\views\pdfLayouts;
+namespace app\plugins\frauenrat\pdf;
 
 use app\models\db\{Amendment, Motion};
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 
-class DBJR extends IPDFLayout
+class Frauenrat extends IPDFLayout
 {
     public function printMotionHeader(Motion $motion): void
     {
+        /** @var FrauenratPdf $pdf */
         $pdf = $this->pdf;
 
         $pdf->setPrintHeader(false);
@@ -20,15 +22,15 @@ class DBJR extends IPDFLayout
         $abs      = 5;
         $fontsize = 30;
 
-        $this->setHeaderLogo($motion->getMyConsultation(), $abs, 50, null);
+        $this->setHeaderLogo($motion->getMyConsultation(), $abs, 30, null);
         if ($this->headerlogo) {
             $logo = $this->headerlogo;
             $pdf->setJPEGQuality(100);
             $pdf->Image('@' . $logo['data'], $logo['x'], $logo['y'], $logo['w'], $logo['h']);
-            $pdf->setY($logo['y'] + $logo['h'] + $abs);
+            $pdf->setY($logo['y'] + $abs);
         }
 
-        $pdf->SetFont('helvetica', 'B', $fontsize);
+        $pdf->SetFont($pdf->calibriBold, 'B', $fontsize);
         $pdf->SetTextColor(40, 40, 40, 40);
         //$pdf->SetXY($left, $wraptop);
         $pdf->Write(0, mb_strtoupper($motion->motionType->titleSingular, 'UTF-8') . "\n");
@@ -37,32 +39,64 @@ class DBJR extends IPDFLayout
         $wraptop = $pdf->getY() + $abs;
         $pdf->SetXY($left, $wraptop);
 
-        $pdf->SetFont('helvetica', 'I', 11);
+        $pdf->SetFont($pdf->calibri, '', 11);
         $intro = $motion->getMyMotionType()->getSettingsObj()->pdfIntroduction;
         if ($intro) {
             $pdf->MultiCell(160, 0, $intro, 0, 'L');
             $pdf->Ln(3);
         }
 
-        $data = $motion->getDataTable();
+        $initiatorName = $addressedTo = null;
+        $contact = $topic = [];
+        foreach ($motion->getInitiators() as $initiator) {
+            $initiatorName = $initiator->organization;
+            if ($initiator->contactName) {
+                $contact[] = 'Ansprechpartner*in: ' . $initiator->contactName;
+            }
+            if ($initiator->contactEmail) {
+                $contact[] = 'E-Mail: ' . $initiator->contactEmail;
+            }
+            if ($initiator->contactPhone) {
+                $contact[] = 'Telefon: ' . $initiator->contactPhone;
+            }
+        }
+        foreach ($motion->tags as $tag) {
+            $topic[] = $tag->title;
+        }
+        foreach ($motion->getActiveSections() as $section) {
+            if (strpos($section->getSettings()->title, 'Adressat') !== false) {
+                $addressedTo = $section->getData();
+            }
+        }
+
+        $data = [
+            'Antragsteller*in'   => $initiatorName,
+            'Ansprechpartner*in' => implode("\n", $contact),
+            'Themenbereich'      => implode(", ", $topic),
+            'Adressat*in'        => $addressedTo,
+        ];
+
+
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
             $pdf->MultiCell(42, 0, $key . ':', 0, 'L', false, 0);
             $pdf->MultiCell(120, 0, $val, 0, 'L');
-            $pdf->Ln(5);
+            $pdf->Ln(2);
         }
 
         $pdf->Ln(9);
 
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->writeHTML('<h3>' . Html::encode($motion->getTitleWithPrefix()) . '</h3>');
+        $pdf->SetX($left);
+        $pdf->SetFont($pdf->calibriBold, 'B', 12);
+        $pdf->writeHTML('<h3> &nbsp;' . Html::encode(mb_strtoupper($motion->getTitleWithPrefix(), 'UTF-8')) . '</h3>');
 
-        $pdf->SetFont('helvetica', '', 12);
+        $pdf->SetFont($pdf->calibri, '', 12);
     }
 
     public function printAmendmentHeader(Amendment $amendment): void
     {
-        $pdf            = $this->pdf;
+        /** @var FrauenratPdf $pdf */
+        $pdf = $this->pdf;
 
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(true);
@@ -98,7 +132,7 @@ class DBJR extends IPDFLayout
         }
 
         $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetFont('helvetica', 'I', 11);
+        $pdf->SetFont($pdf->calibriItalic, 'I', 11);
         $pdf->SetXY($left, $pdf->getY());
         $pdf->Ln(3);
         $intro = $amendment->getMyMotionType()->getSettingsObj()->pdfIntroduction;
@@ -108,16 +142,16 @@ class DBJR extends IPDFLayout
         }
 
         $pdf->SetTextColor(40, 40, 40, 40);
-        $pdf->SetFont('helvetica', 'B', $title1Fontsize);
+        $pdf->SetFont($pdf->calibriBold, 'B', $title1Fontsize);
         $pdf->MultiCell(0, 0, trim($amendment->getMyMotion()->getTitleWithPrefix()), 0, 'L');
         $pdf->Ln(3);
-        $pdf->SetFont('helvetica', 'B', $title2Fontsize);
+        $pdf->SetFont($pdf->calibriBold, 'B', $title2Fontsize);
         $pdf->Write(0, mb_strtoupper(\Yii::t('amend', 'amendment') . ' ' . $amendment->titlePrefix, 'UTF-8') . "\n");
         $pdf->Ln(3);
 
         $pdf->SetX($left);
         $pdf->SetTextColor(100, 100, 100, 100);
-        $pdf->SetFont('helvetica', 'I', 11);
+        $pdf->SetFont($pdf->calibriItalic, 'I', 11);
         $data = $amendment->getDataTable();
         foreach ($data as $key => $val) {
             $pdf->SetX($left);
@@ -126,23 +160,23 @@ class DBJR extends IPDFLayout
             $pdf->Ln(5);
         }
 
-        $pdf->SetFont('helvetica', '', 12);
+        $pdf->SetFont($pdf->calibri, '', 12);
         $pdf->ln(7);
     }
 
     public function createPDFClass(): IPdfWriter
     {
-        $pdf = new DBJRPDF($this);
+        $pdf = new FrauenratPdf($this);
 
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
         $pdf->setCellHeightRatio(1.5);
 
-        $pdf->SetMargins(23, 40, 23);
+        $pdf->SetMargins(23, 23, 23);
         $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM - 5);
 
         //set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetFont('dejavusans', '', 10);
+        $pdf->SetFont($pdf->calibri, '', 10);
 
         $pdf->setHtmlVSpace([
             'ul'         => [['h' => 0, 'n' => 0], ['h' => 0, 'n' => 0]],
@@ -156,5 +190,15 @@ class DBJR extends IPDFLayout
         $this->pdf = $pdf;
 
         return $pdf;
+    }
+
+    public function printSectionHeading(string $text)
+    {
+        /** @var FrauenratPdf $pdf */
+        $pdf = $this->pdf;
+
+        $pdf->SetFont($pdf->calibriBold, '', 12);
+        $pdf->ln(2);
+        $pdf->MultiCell(0, 0, '<h4>' . $text . '</h4>', 0, 'L', false, 1, '', '', true, 0, true);
     }
 }

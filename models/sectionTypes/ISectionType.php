@@ -6,9 +6,8 @@ use app\components\latex\Content;
 use app\models\db\{Consultation, IMotionSection, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\forms\CommentForm;
-use app\views\pdfLayouts\IPDFLayout;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use CatoTH\HTML2OpenDocument\Text;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 abstract class ISectionType
@@ -106,9 +105,9 @@ abstract class ISectionType
 
     abstract public function getAmendmentFormatted(string $sectionTitlePrefix = ''): string;
 
-    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void;
+    abstract public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 
-    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void;
+    abstract public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void;
 
     abstract public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void;
 

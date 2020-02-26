@@ -1,8 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\ConsultationMotionType;
+use app\components\{HTMLTools, UrlHelper};
+use app\views\pdfLayouts\IPDFLayout;
 use yii\helpers\Html;
 
 /**
@@ -13,9 +12,9 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('admin', 'motion_type_create_head');
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_types'));
+$this->title = Yii::t('admin', 'motion_type_create_head');
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_types'));
 $layout->loadFuelux();
 $layout->addCSS('css/backend.css');
 
@@ -28,7 +27,7 @@ echo Html::beginForm('', 'post', [
 ?>
 <div class="form-group">
     <label class="col-md-3 control-label">
-        <?= \Yii::t('admin', 'motion_type_templ') ?>:
+        <?= Yii::t('admin', 'motion_type_templ') ?>:
     </label>
     <div class="col-md-9 typePresetList">
         <?php
@@ -45,35 +44,35 @@ echo Html::beginForm('', 'post', [
         ?>
 
         <label class="typePreset"
-               data-label-single="<?= \Yii::t('admin', 'motion_type_templ_motsingle') ?>"
-               data-label-plural="<?= \Yii::t('admin', 'motion_type_templ_motplural') ?>"
-               data-label-cta="<?= \Yii::t('admin', 'motion_type_templ_motcta') ?>">
+               data-label-single="<?= Yii::t('admin', 'motion_type_templ_motsingle') ?>"
+               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_motplural') ?>"
+               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_motcta') ?>">
             <input type="radio" name="type[preset]" value="motion" class="presetMotion">
-            <span><?= \Yii::t('admin', 'motion_type_templ_motion') ?></span>
+            <span><?= Yii::t('admin', 'motion_type_templ_motion') ?></span>
         </label>
-        <div class="typePresetInfo"><?= \Yii::t('admin', 'motion_type_templ_motionh') ?></div>
+        <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_motionh') ?></div>
 
         <label class="typePreset"
-               data-label-single="<?= \Yii::t('admin', 'motion_type_templ_appsingle') ?>"
-               data-label-plural="<?= \Yii::t('admin', 'motion_type_templ_appplural') ?>"
-               data-label-cta="<?= \Yii::t('admin', 'motion_type_templ_appcta') ?>">
+               data-label-single="<?= Yii::t('admin', 'motion_type_templ_appsingle') ?>"
+               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_appplural') ?>"
+               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_appcta') ?>">
             <input type="radio" name="type[preset]" value="application" class="presetApplication">
-            <span><?= \Yii::t('admin', 'motion_type_templ_appl') ?></span>
+            <span><?= Yii::t('admin', 'motion_type_templ_appl') ?></span>
         </label>
-        <div class="typePresetInfo"><?= \Yii::t('admin', 'motion_type_templ_applh') ?></div>
+        <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_applh') ?></div>
 
         <label class="typePreset"
-               data-label-single="<?= \Yii::t('admin', 'motion_type_templ_appsingle') ?>"
-               data-label-plural="<?= \Yii::t('admin', 'motion_type_templ_appplural') ?>"
-               data-label-cta="<?= \Yii::t('admin', 'motion_type_templ_appcta') ?>">
+               data-label-single="<?= Yii::t('admin', 'motion_type_templ_appsingle') ?>"
+               data-label-plural="<?= Yii::t('admin', 'motion_type_templ_appplural') ?>"
+               data-label-cta="<?= Yii::t('admin', 'motion_type_templ_appcta') ?>">
             <input type="radio" name="type[preset]" value="pdfapplication" class="presetPdfApplication">
-            <span><?= \Yii::t('admin', 'motion_type_templ_pdfappl') ?></span>
+            <span><?= Yii::t('admin', 'motion_type_templ_pdfappl') ?></span>
         </label>
-        <div class="typePresetInfo"><?= \Yii::t('admin', 'motion_type_templ_pdfapplh') ?></div>
+        <div class="typePresetInfo"><?= Yii::t('admin', 'motion_type_templ_pdfapplh') ?></div>
 
         <label class="typePreset">
             <input type="radio" name="type[preset]" value="none" class="presetNone">
-            <span><?= \Yii::t('admin', 'motion_type_templ_none') ?></span>
+            <span><?= Yii::t('admin', 'motion_type_templ_none') ?></span>
         </label>
         <div class="typePresetInfo"></div>
     </div>
@@ -82,7 +81,7 @@ echo Html::beginForm('', 'post', [
 
 <div class="form-group">
     <label class="col-md-3 control-label" for="typeTitleSingular">
-        <?= \Yii::t('admin', 'motion_type_singular') ?>
+        <?= Yii::t('admin', 'motion_type_singular') ?>
     </label>
     <div class="col-md-9"><?php
         $options = [
@@ -97,7 +96,7 @@ echo Html::beginForm('', 'post', [
 
 <div class="form-group">
     <label class="col-md-3 control-label" for="typeTitlePlural">
-        <?= \Yii::t('admin', 'motion_type_plural') ?>
+        <?= Yii::t('admin', 'motion_type_plural') ?>
     </label>
     <div class="col-md-9"><?php
         $options = [
@@ -112,7 +111,7 @@ echo Html::beginForm('', 'post', [
 
 <div class="form-group">
     <label class="col-md-3 control-label" for="typeCreateTitle">
-        <?= \Yii::t('admin', 'motion_type_create_title') ?>
+        <?= Yii::t('admin', 'motion_type_create_title') ?>
     </label>
     <div class="col-md-9"><?php
         $options = [
@@ -127,7 +126,7 @@ echo Html::beginForm('', 'post', [
 
 <div class="form-group">
     <label class="col-md-3 control-label" for="typeMotionPrefix">
-        <?= \Yii::t('admin', 'motion_type_title_prefix') ?>
+        <?= Yii::t('admin', 'motion_type_title_prefix') ?>
     </label>
     <div class="col-md-2">
         <?php
@@ -139,12 +138,13 @@ echo Html::beginForm('', 'post', [
 
 <div class="form-group">
     <label class="col-md-3 control-label" for="pdfLayout">
-        <?= \Yii::t('admin', 'motion_type_pdf_layout') ?>
+        <?= Yii::t('admin', 'motion_type_pdf_layout') ?>
     </label>
     <div class="col-md-9 thumbnailedLayoutSelector">
         <?php
-        $hasTex = isset(ConsultationMotionType::getAvailablePDFTemplates()[1]);
-        foreach (ConsultationMotionType::getAvailablePDFTemplates() as $lId => $layout) {
+        $pdfTemplates = IPDFLayout::getAvailableClassesWithLatex();
+        $hasTex = isset($pdfTemplates[1]);
+        foreach ($pdfTemplates as $lId => $layout) {
             if ($hasTex) {
                 $checked = ($lId === 1);
             } else {
@@ -168,7 +168,7 @@ echo Html::beginForm('', 'post', [
 
 <div class="saveholder">
     <button type="submit" name="create" class="btn btn-primary">
-        <?= \Yii::t('admin', 'motion_type_create_submit') ?>
+        <?= Yii::t('admin', 'motion_type_create_submit') ?>
     </button>
 </div>
 

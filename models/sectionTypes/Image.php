@@ -6,8 +6,7 @@ use app\components\{latex\Content, Tools, UrlHelper};
 use app\models\db\{Consultation, MotionSection};
 use app\models\exceptions\{FormError, Internal};
 use app\models\settings\AntragsgruenApp;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -250,7 +249,7 @@ class Image extends ISectionType
         return [$scale * $width, $scale * $height];
     }
 
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -299,7 +298,7 @@ class Image extends ISectionType
         $pdf->Ln($size[1] + 7);
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }

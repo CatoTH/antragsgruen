@@ -5,8 +5,7 @@ namespace app\models\sectionTypes;
 use app\components\latex\{Content, Exporter};
 use app\models\db\{AmendmentSection, Consultation};
 use app\models\forms\CommentForm;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 use yii\web\View;
@@ -104,12 +103,11 @@ class Title extends ISectionType
         return ($this->section->getData() === '');
     }
 
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
-        // TODO: Implement printMotionToPDF() method.
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         /** @var AmendmentSection $section */
         $section = $this->section;

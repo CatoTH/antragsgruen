@@ -211,35 +211,6 @@ class ConsultationMotionType extends ActiveRecord
         }
     }
 
-    /**
-     * @return string[]
-     */
-    public static function getAvailablePDFTemplates()
-    {
-        /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
-        $return = [];
-        foreach (IPDFLayout::getClasses($params) as $id => $data) {
-            $return['php' . $id] = $data;
-        }
-        if ($params->xelatexPath || $params->lualatexPath) {
-            /** @var TexTemplate[] $texLayouts */
-            $texLayouts = TexTemplate::find()->all();
-            foreach ($texLayouts as $layout) {
-                if ($layout->id === 1) {
-                    $preview = $params->resourceBase . 'img/pdf_preview_latex_bdk.png';
-                } else {
-                    $preview = null;
-                }
-                $return[$layout->id] = [
-                    'title'   => $layout->title,
-                    'preview' => $preview,
-                ];
-            }
-        }
-        return $return;
-    }
-
     public function getDeadlinesByType(string $type): array
     {
         if ($this->deadlinesObject === null) {

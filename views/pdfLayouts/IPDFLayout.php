@@ -2,10 +2,7 @@
 
 namespace app\views\pdfLayouts;
 
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationMotionType;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, Motion, TexTemplate};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 use setasign\Fpdi\Tcpdf\Fpdi;
@@ -13,51 +10,88 @@ use TCPDF;
 
 abstract class IPDFLayout
 {
-    /**
-     * @param AntragsgruenApp $params
-     * @return string[]
-     */
-    public static function getClasses(AntragsgruenApp $params): array
+    public static function getAvailableTcpdfClasses(): array
     {
-        return [
-            -1 => [
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+
+        $pdfClasses = [
+            [
+                'id'      => -1,
                 'title'   => '- ' . \Yii::t('admin', 'pdf_templ_none') . ' -',
                 'preview' => null,
             ],
-            0  => [
+            [
+                'id'      => 0,
                 'title'   => 'LDK Bayern',
                 'preview' => $params->resourceBase . 'img/pdf_preview_byldk.png',
+                'className'   => ByLDK::class,
             ],
-            1  => [
+            [
+                'id'      => 1,
                 'title'   => 'BDK',
                 'preview' => $params->resourceBase . 'img/pdf_preview_bdk.png',
+                'className'   => BDK::class,
             ],
-            2  => [
+            [
+                'id'      => 2,
                 'title'   => 'DBJR',
                 'preview' => $params->resourceBase . 'img/pdf_preview_dbjr.png',
+                'className'   => DBJR::class,
             ],
         ];
+        foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+            $pdfClasses = $plugin::getProvidedPdfLayouts($pdfClasses);
+        }
+
+        return $pdfClasses;
+    }
+
+    public static function getAvailableClassesWithLatex(): array
+    {
+        $return = [];
+        foreach (static::getAvailableTcpdfClasses() as $data) {
+            $return['php' . $data['id']] = $data;
+        }
+
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        if ($params->xelatexPath || $params->lualatexPath) {
+            /** @var TexTemplate[] $texLayouts */
+            $texLayouts = TexTemplate::find()->all();
+            foreach ($texLayouts as $layout) {
+                if ($layout->id === 1) {
+                    $preview = $params->resourceBase . 'img/pdf_preview_latex_bdk.png';
+                } else {
+                    $preview = null;
+                }
+                $return[$layout->id] = [
+                    'title'   => $layout->title,
+                    'preview' => $preview,
+                ];
+            }
+        }
+
+        return $return;
     }
 
     /**
      * @param int $classId
+     *
      * @return IPDFLayout|string|null
      * @throws Internal
      */
-    public static function getClassById($classId)
+    public static function getClassById(int $classId): ?string
     {
-        switch ($classId) {
-            case -1:
-                return null;
-            case 0:
-                return ByLDK::class;
-            case 1:
-                return BDK::class;
-            case 2:
-                return DBJR::class;
-            default:
-                throw new Internal('Unknown PDF Layout');
+        if ($classId === -1) {
+            return null;
         }
+        foreach (static::getAvailableClassesWithLatex() as $data) {
+            if (isset($data['id']) && $data['id'] === $classId) {
+                return $data['className'];
+            }
+        }
+        throw new Internal('Unknown PDF Layout');
     }
 
     /** @var ConsultationMotionType */
@@ -111,7 +145,7 @@ abstract class IPDFLayout
         }
     }
 
-    abstract public function createPDFClass(): Fpdi;
+    abstract public function createPDFClass(): IPdfWriter;
 
     abstract public function printMotionHeader(Motion $motion): void;
 

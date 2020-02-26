@@ -11,7 +11,7 @@ class BDK extends IPDFLayout
     /** @var BDKPDF $pdf */
     protected $pdf;
 
-    public function createPDFClass(): Fpdi
+    public function createPDFClass(): IPdfWriter
     {
         $pdf = new BDKPDF();
 

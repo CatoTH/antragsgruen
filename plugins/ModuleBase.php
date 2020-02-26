@@ -96,6 +96,11 @@ class ModuleBase extends Module
         return null;
     }
 
+    public static function getProvidedPdfLayouts(array $default): array
+    {
+        return $default;
+    }
+
     /**
      * @param Layout $layoutSettings
      * @param Consultation $consultation

@@ -2,17 +2,13 @@
 
 namespace app\views\pdfLayouts;
 
-use setasign\Fpdi\Tcpdf\Fpdi;
 use Yii;
 
-class DBJRPDF extends Fpdi
+class DBJRPDF extends IPdfWriter
 {
     /** @var IPDFLayout */
     private $layout;
 
-    /**
-     * @param IPDFLayout $layout
-     */
     public function __construct(IPDFLayout $layout)
     {
         $this->layout  = $layout;

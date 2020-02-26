@@ -4,8 +4,7 @@ namespace app\models\sectionTypes;
 
 use app\components\latex\{Content, Exporter};
 use app\models\db\Consultation;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text;
 
@@ -112,7 +111,7 @@ class TabularData extends ISectionType
         return !(isset($data['rows']) && count($data['rows']) > 0);
     }
 
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -143,7 +142,7 @@ class TabularData extends ISectionType
         $pdf->Ln(4);
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         $this->printAmendmentToPDF($pdfLayout, $pdf);
     }

@@ -2,17 +2,13 @@
 
 namespace app\views\pdfLayouts;
 
-use setasign\Fpdi\Tcpdf\Fpdi;
-use Yii;
 use yii\helpers\Html;
 
-class BDKPDF extends Fpdi
+class BDKPDF extends IPdfWriter
 {
     private $headerTitle;
     private $headerPrefix;
 
-    /**
-     */
     public function __construct()
     {
         parent::__construct(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -49,8 +45,6 @@ class BDKPDF extends Fpdi
 
     // @codingStandardsIgnoreStart
 
-    /**
-     */
     public function Header()
     {
         $this->SetFont('helvetica', '', 10);
@@ -70,8 +64,6 @@ class BDKPDF extends Fpdi
         );
     }
 
-    /**
-     */
     public function Footer()
     {
         $this->SetY(-15);
@@ -79,7 +71,7 @@ class BDKPDF extends Fpdi
         $this->Cell(
             185,
             10,
-            Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
+            \Yii::t('export', 'Page') . ' ' . $this->getGroupPageNo() . ' / ' . $this->getPageGroupAlias(),
             0,
             false,
             'R',

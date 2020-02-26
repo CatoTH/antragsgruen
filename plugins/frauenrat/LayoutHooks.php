@@ -215,7 +215,11 @@ $(function() {
 
     public function renderSidebar(string $before): string
     {
-        return '';
+        if (strpos($before, 'Suche') !== false) {
+            return '';
+        } else {
+            return $before;
+        }
     }
 
     public function getConsultationPreWelcome(string $before): string

@@ -6,9 +6,8 @@ use app\components\{latex\Content, Tools, UrlHelper, VarStream};
 use app\models\db\{Consultation, MotionSection};
 use app\models\exceptions\FormError;
 use app\models\settings\AntragsgruenApp;
-use app\views\pdfLayouts\IPDFLayout;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use setasign\Fpdi\PdfParser\CrossReference\CrossReferenceException;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 use CatoTH\HTML2OpenDocument\Text;
 
@@ -158,7 +157,7 @@ class PDF extends ISectionType
         return ($this->section->getData() === '');
     }
 
-    public function printMotionToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printMotionToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         if ($this->isEmpty()) {
             return;
@@ -288,7 +287,7 @@ class PDF extends ISectionType
         }
     }
 
-    public function printAmendmentToPDF(IPDFLayout $pdfLayout, Fpdi $pdf): void
+    public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
     {
         $this->printMotionToPDF($pdfLayout, $pdf);
     }
