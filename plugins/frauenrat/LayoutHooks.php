@@ -3,7 +3,7 @@
 namespace app\plugins\frauenrat;
 
 use app\components\{HTMLTools, UrlHelper};
-use app\models\db\{ISupporter, Motion, MotionSection, User};
+use app\models\db\{Amendment, IMotion, ISupporter, Motion, MotionSection, User};
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
@@ -80,7 +80,7 @@ class LayoutHooks extends Hooks
         return $form;
     }
 
-    private function getMotionProposalString(Motion $motion): ?string
+    private function getMotionProposalString(IMotion $motion): ?string
     {
         switch ($motion->proposalStatus) {
             case Motion::STATUS_ACCEPTED:
@@ -96,11 +96,27 @@ class LayoutHooks extends Hooks
         }
     }
 
-    private function getProposalSavingForm(Motion $motion): string
+    private function getMotionProposalSavingForm(Motion $motion): string
     {
         $saveUrl   = UrlHelper::createUrl(['/frauenrat/motion/save-proposal', 'motionSlug' => $motion->getMotionSlug()]);
         $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
         $preselect = $this->getMotionProposalString($motion);
+        $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
+        $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
+        $form      .= Html::endForm();
+
+        return $form;
+    }
+
+    private function getAmendmentProposalSavingForm(Amendment $amendment): string
+    {
+        $saveUrl   = UrlHelper::createUrl([
+            '/frauenrat/amendment/save-proposal',
+            'motionSlug' => $amendment->getMyMotion()->getMotionSlug(),
+            'amendmentId' => $amendment->id
+        ]);
+        $form      = Html::beginForm($saveUrl, 'post', ['class' => 'fuelux frauenratSelect']);
+        $preselect = $this->getMotionProposalString($amendment);
         $form      .= HTMLTools::fueluxSelectbox('newProposal', static::$PROPOSALS, $preselect, [], false, 'xs');
         $form      .= '<button class="hidden btn btn-xs btn-default" type="submit">Speichern</button>';
         $form      .= Html::endForm();
@@ -142,7 +158,7 @@ class LayoutHooks extends Hooks
             if ($motionData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
                 $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
                 if ($proposalAdmin) {
-                    $motionData[$i]['content'] = $this->getProposalSavingForm($motion);
+                    $motionData[$i]['content'] = $this->getMotionProposalSavingForm($motion);
                 } elseif ($motion->isProposalPublic() && $motion->proposalStatus) {
                     $proposal = $this->getMotionProposalString($motion);
                     if ($proposal && isset(static::$PROPOSALS[$proposal])) {
@@ -171,6 +187,57 @@ class LayoutHooks extends Hooks
         }
 
         return $motionData;
+    }
+
+    public function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
+    {
+        $amendmentData = array_values(array_filter($amendmentData, function ($data) use ($amendment) {
+            if (in_array($data['title'], [
+                \Yii::t('amend', 'submitted_on'),
+                \Yii::t('amend', 'created_on'),
+            ])) {
+                return false;
+            }
+            if ($data['title'] === \Yii::t('amend', 'status') && $amendment->status === Motion::STATUS_SUBMITTED_SCREENED) {
+                return false;
+            }
+
+            return true;
+        }));
+
+        $organisation = null;
+        foreach ($amendmentData as $i => $data) {
+            if ($amendmentData[$i]['title'] === \Yii::t('amend', 'initiator')) {
+                $amendmentData[$i]['title']   = 'Ansprechpartner*in';
+                $initiators                   = $amendment->getInitiators();
+                $amendmentData[$i]['content'] = '';
+                foreach ($initiators as $supp) {
+                    if ($supp->personType === ISupporter::PERSON_ORGANIZATION) {
+                        $organisation = $supp->organization;
+                    }
+                    $amendmentData[$i]['content'] .= $this->formatInitiator($supp);
+                }
+            }
+            if ($amendmentData[$i]['title'] === \Yii::t('amend', 'proposed_status')) {
+                $proposalAdmin = User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+                if ($proposalAdmin) {
+                    $amendmentData[$i]['content'] = $this->getAmendmentProposalSavingForm($amendment);
+                } elseif ($amendment->isProposalPublic() && $amendment->proposalStatus) {
+                    $proposal = $this->getMotionProposalString($amendment);
+                    if ($proposal && isset(static::$PROPOSALS[$proposal])) {
+                        $amendmentData[$i]['content'] = Html::encode(static::$PROPOSALS[$proposal]);
+                    }
+                }
+            }
+        }
+        if ($organisation) {
+            array_splice($amendmentData, 1, 0, [[
+                'title'   => \Yii::t('motion', 'initiators_1'),
+                'content' => $organisation,
+            ]]);
+        }
+
+        return $amendmentData;
     }
 
     public function beforeMotionView(string $before, Motion $motion): string

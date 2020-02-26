@@ -31,8 +31,9 @@ class Module extends ModuleBase
     protected static function getMotionUrlRoutes(): array
     {
         return [
-            'save-proposal' => 'frauenrat/motion/save-proposal',
-            'save-tag'      => 'frauenrat/motion/save-tag',
+            'save-motion-proposal'    => 'frauenrat/motion/save-proposal',
+            'save-motion-tag'         => 'frauenrat/motion/save-tag',
+            'save-amendment-proposal' => 'frauenrat/amendment/save-proposal',
         ];
     }
 

@@ -14,7 +14,7 @@ class Hooks
 
     public function __construct(\app\models\settings\Layout $layout, ?Consultation $consultation)
     {
-        $this->layout = $layout;
+        $this->layout       = $layout;
         $this->consultation = $consultation;
     }
 
@@ -81,6 +81,7 @@ class Hooks
     /**
      * @param string $before
      * @param ConsultationMotionType[] $motionTypes
+     *
      * @return string
      */
     public function setSidebarCreateMotionButton($before, $motionTypes)
@@ -116,6 +117,11 @@ class Hooks
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
         return $motionData;
+    }
+
+    public function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
+    {
+        return $amendmentData;
     }
 
     public function getFormattedMotionStatus(string $before, Motion $motion): string
@@ -156,6 +162,7 @@ class Hooks
     /**
      * @param string[] $before
      * @param Site $site
+     *
      * @return string[]
      */
     public function getSitewidePublicWarnings($before, Site $site)
