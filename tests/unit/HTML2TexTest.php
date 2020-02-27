@@ -4,15 +4,12 @@ namespace unit;
 
 use app\components\latex\Exporter;
 use app\components\LineSplitter;
-use app\models\sectionTypes\TextSimple;
 use Codeception\Specify;
 
 class HTML2TexTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testEmptyLine()
     {
         $orig   = "<p> </p>";
@@ -26,8 +23,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testLineBreaks()
     {
         $orig   = [
@@ -44,9 +39,9 @@ class HTML2TexTest extends TestBase
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
         $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
-            "halbseidener, Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
+            "halbseidener, Aufm\\\"upfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
             "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, \\linebreak\n" .
-            "greißlicha Uhu, oida Daddara!\n";
+            "grei\\sslicha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $out   = Exporter::getMotionLinesToTeX($lines);
@@ -59,8 +54,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
         }
 
-    /**
-     */
     public function testBold()
     {
         $orig   = '<p>Normaler Text <strong>fett</strong></p>';
@@ -69,8 +62,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testItalic()
     {
         $orig   = '<p>Normaler Text <em>kursiv</em></p>';
@@ -79,8 +70,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUnderlines()
     {
         $orig   = '<p>Normaler Text <span class="underline">unterstrichen</span></p>';
@@ -94,8 +83,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStrike()
     {
         $orig   = '<p>Normaler Text <span class="strike">durchgestrichen</span></p>';
@@ -109,8 +96,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testBlockquote()
     {
         $orig   = '<p>Normaler Text</p><blockquote>Zitat</blockquote><p>Weiter</p>';
@@ -121,8 +106,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUnnumbered()
     {
         $orig   = '<ul><li>Punkt 1</li><li>Punkt 2</li></ul>';
@@ -135,19 +118,15 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testLinks()
     {
         $orig   = 'Test <a href="https://www.antragsgruen.de/">Antragsgrün</a> Ende';
-        $expect = 'Test \href{https://www.antragsgruen.de/}{Antragsgrün} Ende';
+        $expect = 'Test \href{https://www.antragsgruen.de/}{Antragsgr\"un} Ende';
 
         $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testBrokenHtml()
     {
         $orig   = "<p>Test <em>kursiv</em> <ins>Neu</ins> </strong></p>";
@@ -156,8 +135,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testInserted()
     {
         $orig   = "<p class='inserted'>Neu <em>Neu2</em></p>";
@@ -166,8 +143,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testDeleted()
     {
         $orig   = "<p class='deleted'>Neu Neu2</p>";
@@ -176,8 +151,6 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testNestedLists()
     {
         // Yes, this looks pretty broken, and it kind of is. But for some reason, it seems possible to make things

@@ -2,8 +2,7 @@
 
 namespace unit;
 
-use app\models\db\Consultation;
-use app\models\db\IMotion;
+use app\models\db\{Consultation, IMotion};
 use app\models\forms\AdminMotionFilterForm;
 use Codeception\Specify;
 
@@ -19,7 +18,6 @@ class AdminMotionFilterFormTest extends DBTestBase
     {
         $out = [];
         foreach ($motions as $motion) {
-            var_dump($motion->titlePrefix);
             $out[] = $motion->titlePrefix;
         }
         return $out;
@@ -69,7 +67,7 @@ class AdminMotionFilterFormTest extends DBTestBase
         $form->setAttributes(['title' => 'zeit', 'sort' => AdminMotionFilterForm::SORT_INITIATOR]);
         $entries = $this->serializeMotions($form->getSorted());
         $first   = array_slice($entries, 0, 5);
-        $this->assertEquals(['Z-01-194-2', '', 'U-07', 'U-10', 'Z-01'], $first);
+        $this->assertEquals([null, 'U-07', 'U-10', 'Z-01', 'Z-01-233-1'], $first);
 
         $form = new AdminMotionFilterForm($consultation, $consultation->motions, true, true);
         $form->setAttributes(['sort' => AdminMotionFilterForm::SORT_TITLE_PREFIX]);
