@@ -136,6 +136,11 @@ class Layout
         return static::callHook('getAmendmentViewData', [$amendment], $amendmentData);
     }
 
+    public static function getAmendmentBookmarkName(Amendment $amendment): string
+    {
+        return static::callHook('getAmendmentBookmarkName', [$amendment], '');
+    }
+
     public static function getConsultationPreWelcome(): string
     {
         return static::callHook('getConsultationPreWelcome', [], '');

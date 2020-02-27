@@ -2,6 +2,7 @@
 
 ## Version 4.6.0 [not released yet]
 
+- There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
 - If a motion or amendment is submitted as an organisation, the confirmation page now also shows the contact person.
 
 ### Version 4.5.1 [not released yet]

@@ -2,11 +2,10 @@
 
 namespace app\models\layoutHooks;
 
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{ConsultationMotionType, ConsultationText, User};
+use app\models\db\{Amendment, ConsultationMotionType, ConsultationText, ISupporter, User};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -120,6 +119,22 @@ class StdHooks extends Hooks
         $str .= $this->layout->postSidebarHtml;
 
         return $str;
+    }
+
+    public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
+    {
+        if (!$this->consultation->getSettings()->amendmentBookmarksWithNames) {
+            return '';
+        }
+        if (count($amendment->getInitiators()) === 0) {
+            return '';
+        }
+        $initiator = $amendment->getInitiators()[0];
+        if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
+            return ' <small>' . $initiator->organization . '</small>';
+        } else {
+            return ' <small>' . $initiator->name . '</small>';
+        }
     }
 
     public function getStdNavbarHeader(string $before): string

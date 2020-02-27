@@ -127,10 +127,7 @@ class MotionSection extends IMotionSection
             ->where('status != ' . IntVal(IComment::STATUS_DELETED));
     }
 
-    /**
-     * @return Consultation
-     */
-    public function getConsultation()
+    public function getConsultation(): Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->getMotion($this->motionId)) {
@@ -148,10 +145,7 @@ class MotionSection extends IMotionSection
         }
     }
 
-    /**
-     * @return Motion
-     */
-    public function getMotion()
+    public function getMotion(): Motion
     {
         return $this->getConsultation()->getMotion($this->motionId);
     }
