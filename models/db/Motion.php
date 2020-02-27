@@ -969,6 +969,7 @@ class Motion extends IMotion implements IRSSItem
     public function flushViewCache(): void
     {
         HashedStaticCache::flushCache(\app\views\motion\LayoutHelper::getViewCacheKey($this), null);
+         \Yii::$app->cache->delete($this->getPdfCacheKey());
     }
 
     public function getPdfCacheKey(): string
