@@ -8,12 +8,7 @@ use app\models\sectionTypes\TextSimple;
 
 class AmendmentLineNumberingTest extends DBTestBase
 {
-    /**
-     * @param int $amendmentId
-     * @param int $sectionId
-     * @return array
-     */
-    private function getSectionDiff($amendmentId, $sectionId)
+    private function getSectionDiff(int $amendmentId, int $sectionId): array
     {
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne($amendmentId);
@@ -29,15 +24,10 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
+        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
     }
 
-    /**
-     * @param int $amendmentId
-     * @param int $sectionId
-     * @return array
-     */
-    private function getSectionDiffBlocks($amendmentId, $sectionId)
+    private function getSectionDiffBlocks(int $amendmentId, int $sectionId): array
     {
         /** @var Amendment $amendment */
         $amendment = Amendment::findOne($amendmentId);
@@ -52,11 +42,9 @@ class AmendmentLineNumberingTest extends DBTestBase
         $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($section->getFirstLineNumber());
-        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES);
+        return $formatter->getDiffGroupsWithNumbers(80, DiffRenderer::FORMATTING_CLASSES, 0);
     }
 
-    /**
-     */
     public function testFirstAffectedLine()
     {
         /** @var Amendment $amendment */
@@ -71,10 +59,11 @@ class AmendmentLineNumberingTest extends DBTestBase
         $amendment = Amendment::findOne(3);
         $this->assertEquals(9, $amendment->getFirstDiffLine());
 
+        /** @var Amendment $amendment */
+        $amendment = Amendment::findOne(281);
+        $this->assertEquals(24, $amendment->getFirstDiffLine());
     }
 
-    /**
-     */
     public function testTwoChangesPerLine()
     {
         $diff = $this->getSectionDiffBlocks(270, 2);
@@ -87,8 +76,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals($text, $diff[0]['text']);
     }
 
-    /**
-     */
     public function testSection1()
     {
         $diff = $this->getSectionDiff(3, 2);
@@ -102,8 +89,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals(35, $diff[3]['lineTo']);
     }
 
-    /**
-     */
     public function testSection1Wording()
     {
         $diff = $this->getSectionDiff(3, 2);
@@ -114,8 +99,6 @@ class AmendmentLineNumberingTest extends DBTestBase
     }
 
 
-    /**
-     */
     public function testSection2()
     {
         $diff = $this->getSectionDiff(3, 4);
@@ -127,8 +110,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertEquals(53, $diff[2]['lineTo']);
     }
 
-    /**
-     */
     public function testSection2Wording()
     {
         $diff = $this->getSectionDiff(3, 4);
@@ -137,8 +118,6 @@ class AmendmentLineNumberingTest extends DBTestBase
         $this->assertContains('Von Zeile 49 bis 53 löschen:', TextSimple::formatDiffGroup([$diff[2]], '', '', 36));
     }
 
-    /**
-     */
     public function testInvisibleSpaces()
     {
         $in     = [
@@ -169,8 +148,6 @@ class AmendmentLineNumberingTest extends DBTestBase
     }
 
 
-    /**
-     */
     public function testComplicatedParagraphReplace()
     {
         return; // @TODO

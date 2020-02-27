@@ -254,10 +254,7 @@ class Amendment extends IMotion implements IRSSItem
     }
 
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         $motion = $this->getMyMotion();
         if ($motion->titlePrefix !== '') {
@@ -288,12 +285,7 @@ class Amendment extends IMotion implements IRSSItem
         return $this->getTitle();
     }
 
-    /**
-     * @param bool $includeMotionPrefix
-     *
-     * @return string
-     */
-    public function getShortTitle($includeMotionPrefix = true)
+    public function getShortTitle(bool $includeMotionPrefix = true): string
     {
         if ($this->getMyMotion()->titlePrefix !== '' && $includeMotionPrefix) {
             $showMotionPrefix = (mb_stripos($this->titlePrefix, $this->getMyMotion()->titlePrefix) === false);
@@ -315,10 +307,7 @@ class Amendment extends IMotion implements IRSSItem
         }
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public function getMyConsultation()
+    public function getMyConsultation(): ?Consultation
     {
         $current = Consultation::getCurrent();
         if ($current && $current->isMyAmendment($this->id)) {
@@ -335,10 +324,7 @@ class Amendment extends IMotion implements IRSSItem
 
     private $myMotion = null;
 
-    /**
-     * @return Motion
-     */
-    public function getMyMotion()
+    public function getMyMotion(): Motion
     {
         if (!$this->myMotion) {
             $current = Consultation::getCurrent();
@@ -379,7 +365,7 @@ class Amendment extends IMotion implements IRSSItem
      */
     public function getInlineChangeData($changeId)
     {
-        if ($this->status == Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
+        if ($this->status === Amendment::STATUS_PROPOSED_MODIFIED_AMENDMENT) {
             return $this->proposalReferencedBy->getInlineChangeData($changeId);
         }
         $time = Tools::dateSql2timestamp($this->dateCreation) * 1000;
@@ -421,7 +407,7 @@ class Amendment extends IMotion implements IRSSItem
             $formatter->setTextOriginal($original[$i]);
             $formatter->setTextNew($new[$i]);
             $formatter->setFirstLineNo($firstLine);
-            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+            $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES, 0);
 
             if (count($diffGroups) > 0) {
                 $firstLine = $diffGroups[0]['lineFrom'];
