@@ -124,6 +124,11 @@ class Hooks
         return $amendmentData;
     }
 
+    public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
+    {
+        return $before;
+    }
+
     public function getFormattedMotionStatus(string $before, Motion $motion): string
     {
         return $before;

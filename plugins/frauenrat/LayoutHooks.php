@@ -303,4 +303,24 @@ $(function() {
         return '<a href="' . Html::encode($pdfLink) . '" class="btn btn-success btn-sm pull-right" style="margin-left: 20px;">' .
                '<span class="glyphicon glyphicon-download-alt"></span> Antragsbuch herunterladen</a>';
     }
+
+    public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
+    {
+        if (!$this->consultation->getSettings()->amendmentBookmarksWithNames) {
+            return '';
+        }
+        if (count($amendment->getInitiators()) === 0) {
+            return '';
+        }
+        $initiator = $amendment->getInitiators()[0];
+        if ($initiator->personType === ISupporter::PERSON_ORGANIZATION) {
+            if (preg_match('/\((?<orga>.*)\)\s*/siu', $initiator->organization, $matches)) {
+                return ' <small>' . $matches['orga'] . '</small>';
+            } else {
+                return ' <small>' . $initiator->organization . '</small>';
+            }
+        } else {
+            return ' <small>' . $initiator->name . '</small>';
+        }
+    }
 }

@@ -10,6 +10,7 @@ use app\models\db\{ConsultationSettingsMotionSection, MotionComment, User};
 use app\models\forms\CommentForm;
 use yii\helpers\Html;
 
+$consultation   = $section->getConsultation();
 $motion         = $section->getMotion();
 $hasLineNumbers = $section->getSettings()->lineNumbers;
 $paragraphs     = $section->getTextParagraphObjects($hasLineNumbers, true, true);
@@ -55,12 +56,14 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     }
 
     foreach ($paragraph->amendmentSections as $amendmentSection) {
-        $amendment = \app\models\db\Consultation::getCurrent()->getAmendment($amendmentSection->amendmentId);
+        $amendment = $consultation->getAmendment($amendmentSection->amendmentId);
         $amLink    = UrlHelper::createAmendmentUrl($amendment);
         $firstline = $amendmentSection->firstAffectedLine;
         echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
         echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
-        echo Html::encode($amendment->titlePrefix) . "</a></li>\n";
+        echo Html::encode($amendment->titlePrefix);
+        echo \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment);
+        echo "</a></li>\n";
     }
 
     echo '</ul>';

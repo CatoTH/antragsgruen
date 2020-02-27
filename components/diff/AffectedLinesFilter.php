@@ -3,17 +3,17 @@
 namespace app\components\diff;
 
 use app\components\HTMLTools;
-use app\models\exceptions\Internal;
 use yii\helpers\Html;
 
 class AffectedLinesFilter
 {
 
     /**
-     * @internal
      * @param string $string
      * @param int $firstLine
+     *
      * @return string[]
+     * @internal
      */
     public static function splitToLines($string, $firstLine)
     {
@@ -43,34 +43,29 @@ class AffectedLinesFilter
         return $out;
     }
 
-
-    /**
-     * @internal
-     * @param array $blocks
-     * @return array
-     * @throws Internal
-     */
-    public static function filterAffectedBlocks($blocks)
+    public static function filterAffectedBlocks(array $blocks, int $context = 0): array
     {
-        $inIns                 = $inDel = false;
-        $affectedBlocks        = [];
-        $middleUnchangedBlocks = [];
+        $inIns          = $inDel = false;
+        $affectedBlocks = [];
+
+        $unchangedBeforeNextSpool = [];
+        $unchangedAfterLastSpool  = [];
 
         foreach ($blocks as $blockNo => $block) {
-            if ($block['text'] == '') {
+            if ($block['text'] === '') {
                 continue;
             }
             $hadDiff = false;
             if (preg_match_all('/<(\/?)(ins|del)( [^>]*)?>/siu', $block['text'], $matches)) {
                 $hadDiff = true;
                 for ($i = 0; $i < count($matches[0]); $i++) {
-                    if ($matches[1][$i] == '' && $matches[2][$i] == 'ins') {
+                    if ($matches[1][$i] === '' && $matches[2][$i] === 'ins') {
                         $inIns = true;
-                    } elseif ($matches[1][$i] == '/' && $matches[2][$i] == 'ins') {
+                    } elseif ($matches[1][$i] === '/' && $matches[2][$i] === 'ins') {
                         $inIns = false;
-                    } elseif ($matches[1][$i] == '' && $matches[2][$i] == 'del') {
+                    } elseif ($matches[1][$i] === '' && $matches[2][$i] === 'del') {
                         $inDel = true;
-                    } elseif ($matches[1][$i] == '/' && $matches[2][$i] == 'del') {
+                    } elseif ($matches[1][$i] === '/' && $matches[2][$i] === 'del') {
                         $inDel = false;
                     }
                 }
@@ -85,27 +80,36 @@ class AffectedLinesFilter
                 $addBlock = true;
             }
             if ($addBlock) {
-                if (count($middleUnchangedBlocks) == 1 && $blockNo > 1) {
-                    $affectedBlocks[] = $middleUnchangedBlocks[0];
-                }
-                $affectedBlocks[]      = $block;
-                $middleUnchangedBlocks = [];
+                $affectedBlocks   = array_merge($affectedBlocks, $unchangedAfterLastSpool);
+                $affectedBlocks   = array_merge($affectedBlocks, $unchangedBeforeNextSpool);
+                $affectedBlocks[] = $block;
+
+                $unchangedAfterLastSpool  = [];
+                $unchangedBeforeNextSpool = [];
             } else {
-                $middleUnchangedBlocks[] = $block;
+                if (count($unchangedAfterLastSpool) < $context && count($affectedBlocks) > 0) {
+                    // unchangedAfterLastSpool will immediatelly be filled after a change (but only after the first change)
+                    // and always be appended
+                    $unchangedAfterLastSpool[] = $block;
+                } else {
+                    // unchangedBeforeNextSpool always holds the last $context lines
+                    $unchangedBeforeNextSpool[] = $block;
+                    while (count($unchangedBeforeNextSpool) > $context) {
+                        array_shift($unchangedBeforeNextSpool);
+                    }
+                }
             }
         }
+
+        $affectedBlocks = array_merge($affectedBlocks, $unchangedAfterLastSpool);
+
         return $affectedBlocks;
     }
 
-    /**
-     * @internal
-     * @param array $blocks
-     * @return array
-     */
-    public static function groupAffectedDiffBlocks($blocks)
+    public static function groupAffectedDiffBlocks(array $blocks): array
     {
-        $currGroupedBlock     = null;
-        $groupedBlocks = [];
+        $currGroupedBlock = null;
+        $groupedBlocks    = [];
         foreach ($blocks as $block) {
             if ($currGroupedBlock) {
                 $needsNewBlock = false;
@@ -143,24 +147,20 @@ class AffectedLinesFilter
         if ($currGroupedBlock) {
             $groupedBlocks[] = $currGroupedBlock;
         }
+
         return $groupedBlocks;
     }
 
 
-    /**
-     * @param \DOMElement $node
-     * @param int $firstLine
-     * @return array
-     */
-    private static function splitToAffectedLinesInt(\DOMElement $node, $firstLine)
+    private static function splitToAffectedLinesInt(\DOMElement $node, int $firstLine, int $context): array
     {
         $out             = [];
         $inlineTextSpool = '';
         $currLine        = $firstLine;
 
-        $addToOut = function ($inlineHtml, $currLine) use (&$out) {
+        $addToOut = function ($inlineHtml, $currLine) use (&$out, $context) {
             $lines    = static::splitToLines($inlineHtml, $currLine);
-            $affected = static::filterAffectedBlocks($lines);
+            $affected = static::filterAffectedBlocks($lines, $context);
             $grouped  = static::groupAffectedDiffBlocks($affected);
 
             for ($i = 0; $i < count($grouped); $i++) {
@@ -176,7 +176,7 @@ class AffectedLinesFilter
             } else {
                 /** @var \DOMElement $child */
                 if (in_array($child->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
-                    if ($inlineTextSpool != '') {
+                    if ($inlineTextSpool !== '') {
                         $addToOut($inlineTextSpool, $currLine);
                         $inlineTextSpool = '';
                     }
@@ -189,7 +189,7 @@ class AffectedLinesFilter
                         $grouped    = static::groupAffectedDiffBlocks($lines);
                         $out        = array_merge($out, $grouped);
                     } else {
-                        $arr = static::splitToAffectedLinesInt($child, $currLine);
+                        $arr = static::splitToAffectedLinesInt($child, $currLine, $context);
                         foreach ($arr as $newEl) {
                             $out[] = $newEl;
                         }
@@ -201,14 +201,14 @@ class AffectedLinesFilter
             }
         }
 
-        if ($inlineTextSpool != '') {
+        if ($inlineTextSpool !== '') {
             $addToOut($inlineTextSpool, $currLine);
         }
 
-        if ($node->nodeName != 'body') {
+        if ($node->nodeName !== 'body') {
             $open = '<' . $node->nodeName;
             foreach ($node->attributes as $key => $val) {
-                $val = $node->getAttribute($key);
+                $val  = $node->getAttribute($key);
                 $open .= ' ' . $key . '="' . Html::encode($val) . '"';
             }
             $open .= '>';
@@ -220,12 +220,7 @@ class AffectedLinesFilter
         return $out;
     }
 
-    /**
-     * @param string $html
-     * @param int $firstLine
-     * @return array
-     */
-    public static function splitToAffectedLines($html, $firstLine)
+    public static function splitToAffectedLines(string $html, int $firstLine, int $context = 0): array
     {
         // <del>###LINENUMBER### would mark the previous line as affected as well
         $html = str_replace('<del>###LINENUMBER###', '###LINENUMBER###<del>', $html);
@@ -235,8 +230,8 @@ class AffectedLinesFilter
             return [];
         }
         /** @var \DOMElement $dom */
-        $lines = static::splitToAffectedLinesInt($dom, $firstLine);
-        $grouped = static::groupAffectedDiffBlocks($lines);
-        return $grouped;
+        $lines = static::splitToAffectedLinesInt($dom, $firstLine, $context);
+
+        return static::groupAffectedDiffBlocks($lines);
     }
 }

@@ -235,6 +235,7 @@ return [
     'con_collecting'          => 'Show motions / amendments <strong>collecting supporters</strong> on a separate page',
     'con_collecting_tt'       => 'Relevant if there are motions with a collecting phase before publication',
     'con_new_motions'         => 'Show <strong>new motions</strong> in the sidebar',
+    'con_am_bookmark_names'   => 'Show the names of initiators in the amendment-bookmarks',
     'con_title_comments'      => 'Comments',
     'con_comment_screening'   => '<strong>Screening</strong> of comments',
     'con_comment_email'       => 'Enforce entering the <strong>e-mail address</strong>',

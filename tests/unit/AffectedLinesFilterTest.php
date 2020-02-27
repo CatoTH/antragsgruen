@@ -7,9 +7,29 @@ use app\models\sectionTypes\TextSimple;
 
 class AffectedLinesFilterTest extends TestBase
 {
+    public function testFilterWithContext1()
+    {
+        $diffParas = [
+            '<ul><li>###LINENUMBER###Test 1 ' .
+            '###LINENUMBER###Test 2.</li></ul>',
 
-    /**
-     */
+            '<ul><li><del>###LINENUMBER###Test 3</del> ' .
+            '###LINENUMBER###Test 4 ' .
+            '###LINENUMBER###Test 5</li></ul>',
+        ];
+        $expected  = [
+            [
+                'text' => '<ul><li>###LINENUMBER###<del>Test 3</del> ###LINENUMBER###Test 4 </li></ul>',
+                'lineFrom' => 3,
+                'lineTo' => 4
+            ],
+        ];
+        $diff      = implode('', $diffParas);
+        $lines     = AffectedLinesFilter::splitToAffectedLines($diff, 1, 1);
+
+        $this->assertEquals($expected, $lines);
+    }
+
     public function testLiSplitIntoTwo()
     {
         $diffParas = [
@@ -30,8 +50,7 @@ class AffectedLinesFilterTest extends TestBase
 
         $this->assertEquals($expected, $lines);
     }
-    /**
-     */
+
     public function testBasic()
     {
         /*
@@ -60,8 +79,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expected, $lines);
     }
 
-    /**
-     */
     public function testUlLiInserted()
     {
 
@@ -76,8 +93,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUlLiWithLineBreaks()
     {
         // 'Line breaks within lists'
@@ -99,8 +114,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUlLiInlineFormatted()
     {
         $in     = '<div style="color:#FF0000; margin: 0; padding: 0;"><ul class="deleted"><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul></div>';
@@ -116,8 +129,6 @@ class AffectedLinesFilterTest extends TestBase
     }
 
 
-    /**
-     */
     public function testMultilineParagraph()
     {
         $diff           = '<p class="deleted">###LINENUMBER###Leonhardifahrt ma da middn. Greichats an naa do. Af Schuabladdla Leonhardifahrt ###LINENUMBER###Marei, des um Godds wujn Biakriagal! Hallelujah sog i, luja schüds nei koa des ###LINENUMBER###is schee jedza hogg di hera dringma aweng Spezi nia Musi. Wurschtsolod jo mei is ###LINENUMBER###des schee gor Ramasuri ozapfa no gfreit mi i hob di liab auffi, Schbozal. Hogg ###LINENUMBER###di hera nia need Biakriagal so schee, Schdarmbeaga See.</p>';
@@ -132,8 +143,6 @@ class AffectedLinesFilterTest extends TestBase
     }
 
 
-    /**
-     */
     public function testInsertedLi()
     {
         $htmlDiff       = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul><ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>';
@@ -146,9 +155,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expected, $affectedBlocks);
     }
 
-
-    /**
-     */
     public function testFilterAffected()
     {
         $lines    = [
@@ -176,9 +182,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expected, $filtered);
     }
 
-
-    /**
-     */
     public function testGroupAffectedLines()
     {
         $orig   = [
@@ -210,8 +213,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expect, $filtered);
     }
 
-    /**
-     */
     public function testGroupedWordings()
     {
         $orig     = [
@@ -239,8 +240,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertContains('In Zeile 20 löschen', TextSimple::formatDiffGroup($filtered));
     }
 
-    /**
-     */
     public function testNestedLists()
     {
         $diffParas = [
@@ -260,10 +259,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expected, $lines);
     }
 
-
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testFilterAffectedBlocks1()
     {
         $in       = [
@@ -312,13 +307,10 @@ class AffectedLinesFilterTest extends TestBase
                 'newLine'  => false,
             ],
         ];
-        $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in, 0);
         $this->assertEquals($expect, $filtered);
     }
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testFilterAffectedBlocks2()
     {
         $in       = [
@@ -361,10 +353,6 @@ class AffectedLinesFilterTest extends TestBase
         $this->assertEquals($expect, $filtered);
     }
 
-
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testFilterAffectedBlocks3()
     {
         $in       = [
@@ -412,55 +400,177 @@ class AffectedLinesFilterTest extends TestBase
                 'lineTo'   => 18,
                 'newLine'  => false,
             ], [
-                'text'     => 'Bla 2.',
-                'lineFrom' => 19,
-                'lineTo'   => 19,
-                'newLine'  => false,
-            ], [
                 'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
                 'lineFrom' => 20,
                 'lineTo'   => 20,
                 'newLine'  => false,
             ],
         ];
-        $filtered = AffectedLinesFilter::filterAffectedBlocks($in);
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in, 0);
         $this->assertEquals($expect, $filtered);
     }
 
-    /**
-     */
+    public function testFilterAffectedBlocks4()
+    {
+        $in       = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 1.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 3.',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 21,
+                'lineTo'   => 21,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 1.',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 3.',
+                'lineFrom' => 18,
+                'lineTo'   => 18,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 19,
+                'lineTo'   => 19,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Bla 2.',
+                'lineFrom' => 20,
+                'lineTo'   => 20,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Test1 <del>Test2</del> Test3 <ins>Test4</ins> <del>Test2</del> Test3 <ins>Test4</ins>',
+                'lineFrom' => 21,
+                'lineTo'   => 21,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in, 1);
+        $this->assertEquals($expect, $filtered);
+    }
+
+    public function testFilterAffectedBlocks5()
+    {
+        $in       = [
+            [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 14,
+                'lineTo'   => 14,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del>',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Marei, des um Godds wujn Biakriagal!',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ], [
+                'text'     => 'is schee jedza hogg di hera dringma aweng Spezi nia Musi.',
+                'lineFrom' => 18,
+                'lineTo'   => 1,
+                'newLine'  => false,
+            ],
+        ];
+        $expect   = [
+            [
+                'text'     => 'Gipfe Servas des wiad a Mordsgaudi',
+                'lineFrom' => 15,
+                'lineTo'   => 15,
+                'newLine'  => false,
+            ], [
+                'text'     => '<del>Leonhardifahrt ma da middn. Greichats an naa do.</del>',
+                'lineFrom' => 16,
+                'lineTo'   => 16,
+                'newLine'  => false,
+            ], [
+                'text'     => 'Marei, des um Godds wujn Biakriagal!',
+                'lineFrom' => 17,
+                'lineTo'   => 17,
+                'newLine'  => false,
+            ],
+        ];
+        $filtered = AffectedLinesFilter::filterAffectedBlocks($in, 1);
+        $this->assertEquals($expect, $filtered);
+    }
+
     public function testComplex()
     {
-        $in = '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist ' .
-            '<ins>unmodern, denn viele Menschen wollen heute eine geschlechtergerechte Rollenverteilung in ihrer Partnerschaft. Das Ehegattensplitting steuert in die andere Richtung und bringt Familien dazu, in traditionelle Rollenmuster zu fallen, in die sie nicht hineinwollen. Es ist </ins>' .
-            'ungerecht, denn es erlaubt nur ' .
+        $in = '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist <ins>unmodern, denn viele Menschen wollen heute .... Es ist </ins>ungerecht, denn es erlaubt nur ' .
             '###LINENUMBER###einem Teil der Familien, Lebensphasen abzufedern, in denen eine Person weniger oder nichts ' .
-            '###LINENUMBER###verdient<del>. Das Ehegattensplitting ist nicht nachhaltig</del>. Alleinerziehende oder Paare, die sich ' .
-            '###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon' .
-            '<ins>. Vom Ehegattensplitting profitieren Ehen und eingetragene Lebenspartnerschaften, völlig unabhängig davon, ob Kinder in diesen Ehen oder Lebensgemeinschaften leben. Kinder, die bei Eltern in nichtehelichen Lebensgemeinschaften aufwachsen, werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu' .
+            '###LINENUMBER###verdient. Das Ehegattensplitting ist nicht nachhaltig. Alleinerziehende oder Paare, die sich ' .
+            '###LINENUMBER###verdient2. Das2 Ehegattensplitting ist nicht nachhaltig. Alleinerziehende oder Paare, die sich ' .
+            '###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon<ins>. Vom Ehegattensplitting profitieren.... , werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu' .
             '###LINENUMBER###kommt, dass die mit dem Ehegattensplitting geförderte Arbeitsteilung vor allem für Frauen ' .
-            '###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich in Kombination mit Minijobs, mit fehlender Betreuungsinfrastruktur und ungleichen Löhnen negativ aus, da es Anreize für Frauen setzt, keiner Erwerbsarbeit nachzugehen. Aufgrund der geringeren Erwerbstätigkeit von Frauen verringern sich somit langfristig ihre Chancen auf dem Arbeitsmarkt und senken ihr Einkommen über die gesamte Erwerbsbiographie. Der vermeintlich positive Effekt des Splittings auf das Haushaltseinkommen verkehrt sich im Lebensverlauf ins Gegenteil</ins>. Eine ' .
+            '###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich ... Lebensverlauf ins Gegenteil</ins>. Eine ' .
             '###LINENUMBER###Frau, die keiner oder nur einer geringfügigen Erwerbsarbeit nachgeht und in dieser Zeit ' .
             '###LINENUMBER###zusammen mit ihrem Partner vom Splitting profitiert, steht nach der Scheidung oder Verlust ' .
-            '###LINENUMBER###des Partners oft ohne eigene Alterssicherung da. Aus diesen Gründen wollen <ins>wir </ins>zur individuellen ' .
+            '###LINENUMBER###des Partners oft ohne eigene Alterssicherung da. Aus diesen Gründen wollen wir zur individuellen ' .
             '###LINENUMBER###Besteuerung übergehen und das Ehegattensplitting durch eine <strong>gezielte Förderung von Familien ' .
             '###LINENUMBER###mit Kindern und <del>Alleinerziehenden</del></strong><ins>Alleinerziehenden</ins> ersetzen.</p>';
 
         $expect = [[
-            'text'     => '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist <ins>unmodern, denn viele Menschen wollen heute eine geschlechtergerechte Rollenverteilung in ihrer Partnerschaft. Das Ehegattensplitting steuert in die andere Richtung und bringt Familien dazu, in traditionelle Rollenmuster zu fallen, in die sie nicht hineinwollen. Es ist </ins>ungerecht, denn es erlaubt nur ###LINENUMBER###einem Teil der Familien, Lebensphasen abzufedern, in denen eine Person weniger oder nichts ###LINENUMBER###verdient<del>. Das Ehegattensplitting ist nicht nachhaltig</del>. Alleinerziehende oder Paare, die sich ###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon<ins>. Vom Ehegattensplitting profitieren Ehen und eingetragene Lebenspartnerschaften, völlig unabhängig davon, ob Kinder in diesen Ehen oder Lebensgemeinschaften leben. Kinder, die bei Eltern in nichtehelichen Lebensgemeinschaften aufwachsen, werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu###LINENUMBER###kommt, dass die mit dem Ehegattensplitting geförderte Arbeitsteilung vor allem für Frauen ###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich in Kombination mit Minijobs, mit fehlender Betreuungsinfrastruktur und ungleichen Löhnen negativ aus, da es Anreize für Frauen setzt, keiner Erwerbsarbeit nachzugehen. Aufgrund der geringeren Erwerbstätigkeit von Frauen verringern sich somit langfristig ihre Chancen auf dem Arbeitsmarkt und senken ihr Einkommen über die gesamte Erwerbsbiographie. Der vermeintlich positive Effekt des Splittings auf das Haushaltseinkommen verkehrt sich im Lebensverlauf ins Gegenteil</ins>. Eine </p>',
+            'text'     => '<p>###LINENUMBER###Das Ehegattensplitting steht diesen Zielen im Weg. Es ist <ins>unmodern, denn viele Menschen wollen heute .... Es ist </ins>ungerecht, denn es erlaubt nur ###LINENUMBER###einem Teil der Familien, Lebensphasen abzufedern, in denen eine Person weniger oder nichts </p>',
             'lineFrom' => 1,
-            'lineTo'   => 6,
+            'lineTo'   => 2,
         ], [
-            'text'     => '<p>###LINENUMBER###des Partners oft ohne eigene Alterssicherung da. Aus diesen Gründen wollen <ins>wir </ins>zur individuellen ###LINENUMBER###Besteuerung übergehen und das Ehegattensplitting durch eine <strong>gezielte Förderung von Familien ###LINENUMBER###mit Kindern und <del>Alleinerziehenden</del></strong><ins>Alleinerziehenden</ins> ersetzen.</p>',
-            'lineFrom' => 9,
-            'lineTo'   => 11,
+            'text'     => '<p>###LINENUMBER###verdient2. Das2 Ehegattensplitting ist nicht nachhaltig. Alleinerziehende oder Paare, die sich ###LINENUMBER###den Verzicht auf ein zweites Einkommen nicht leisten können, haben nichts davon<ins>. Vom Ehegattensplitting profitieren.... , werden vom Ehegattensplitting nicht erreicht</ins>. Hinzu###LINENUMBER###kommt, dass die mit dem Ehegattensplitting geförderte Arbeitsteilung vor allem für Frauen ###LINENUMBER###erhebliche Armutsrisiken birgt und langfristig alles andere als eine Absicherung ist<ins>. Denn das Splitting wirkt sich ... Lebensverlauf ins Gegenteil</ins>. Eine ###LINENUMBER###Frau, die keiner oder nur einer geringfügigen Erwerbsarbeit nachgeht und in dieser Zeit </p>',
+            'lineFrom' => 4,
+            'lineTo'   => 8,
+        ], [
+            'text'     => '<p>###LINENUMBER###Besteuerung übergehen und das Ehegattensplitting durch eine <strong>gezielte Förderung von Familien ###LINENUMBER###mit Kindern und <del>Alleinerziehenden</del></strong><ins>Alleinerziehenden</ins> ersetzen.</p>',
+            'lineFrom' => 11,
+            'lineTo'   => 12,
         ]];
-        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1);
+        $out    = AffectedLinesFilter::splitToAffectedLines($in, 1, 1);
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testInsertBr()
     {
         $in     = '<ul><li>###LINENUMBER###ausreichende Angebote der Erwachsenenbildung in der ' .

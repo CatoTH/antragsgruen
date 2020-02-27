@@ -210,6 +210,8 @@ $handledSiteSettings = [];
         $propTitle = Yii::t('admin', 'con_new_motions');
         $boolSettingRow($settings, 'sidebarNewMotions', $handledSettings, $propTitle);
 
+        $propTitle = Yii::t('admin', 'con_am_bookmark_names');
+        $boolSettingRow($settings, 'amendmentBookmarksWithNames', $handledSettings, $propTitle);
         ?>
         <br>
         <div class="saveholder">

@@ -77,6 +77,7 @@ if (count($allAmendingIds) > 0) {
                         <input name="<?= $nameBase ?>[<?= $amendment->id ?>]" value="<?= ($active ? '1' : '0') ?>"
                                type="hidden" class="amendmentActive" data-amendment-id="<?= $amendment->id ?>">
                         <?= ($amendment->titlePrefix ? Html::encode($amendment->titlePrefix) : '-') ?>
+                        <?= \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment) ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>

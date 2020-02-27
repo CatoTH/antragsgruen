@@ -161,13 +161,11 @@ class AmendmentSectionFormatter
     }
 
 
-    /**
-     * @param int $lineLength
-     * @param int $diffFormatting
-     * @return array[]
-     */
-    public function getDiffGroupsWithNumbers($lineLength, $diffFormatting)
+    public function getDiffGroupsWithNumbers(int $lineLength, int $diffFormatting, ?int $context = null): array
     {
+        if ($context === null) {
+            $context = 1;
+        }
         try {
             $originals     = [];
             $newParagraphs = [];
@@ -188,7 +186,7 @@ class AmendmentSectionFormatter
             $diffSections = static::groupConsecutiveChangeBlocks($diffSections);
             $htmlDiff     = implode("\n", $diffSections);
 
-            $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, $this->firstLine);
+            $affectedBlocks = AffectedLinesFilter::splitToAffectedLines($htmlDiff, $this->firstLine, $context);
         } catch (Internal $e) {
             var_dump($e);
             die();
