@@ -145,7 +145,7 @@ class MotionSection extends IMotionSection
         }
     }
 
-    public function getMotion(): Motion
+    public function getMotion(): ?Motion
     {
         return $this->getConsultation()->getMotion($this->motionId);
     }

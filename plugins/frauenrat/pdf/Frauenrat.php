@@ -51,7 +51,7 @@ class Frauenrat extends IPDFLayout
         foreach ($motion->getInitiators() as $initiator) {
             $initiatorName = $initiator->organization;
             if ($initiator->contactName) {
-                $contact[] = 'Ansprechpartner*in: ' . $initiator->contactName;
+                $contact[] = 'Name: ' . $initiator->contactName;
             }
             if ($initiator->contactEmail) {
                 $contact[] = 'E-Mail: ' . $initiator->contactEmail;
@@ -143,7 +143,7 @@ class Frauenrat extends IPDFLayout
         foreach ($amendment->getInitiators() as $initiator) {
             $initiatorName = $initiator->organization;
             if ($initiator->contactName) {
-                $contact[] = 'Ansprechpartner*in: ' . $initiator->contactName;
+                $contact[] = 'Name: ' . $initiator->contactName;
             }
             if ($initiator->contactEmail) {
                 $contact[] = 'E-Mail: ' . $initiator->contactEmail;

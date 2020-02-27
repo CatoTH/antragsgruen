@@ -14,7 +14,7 @@ class MotionController extends Base
      * @return string
      * @throws \yii\base\ExitException
      */
-    public function actionMotionSaveTag($motionSlug)
+    public function actionSaveTag($motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
@@ -44,7 +44,7 @@ class MotionController extends Base
      * @return string
      * @throws \yii\base\ExitException
      */
-    public function actionMotionSaveProposal($motionSlug)
+    public function actionSaveProposal($motionSlug)
     {
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
