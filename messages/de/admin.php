@@ -237,6 +237,7 @@ return [
     'con_collecting'          => '(Änderungs-)Anträge, die <strong>Unterstützer*innen sammeln</strong>, auf einer separaten Seite anzeigen',
     'con_collecting_tt'       => 'Relevant wenn es Anträge mit einer Unterstützungs-Phase vor Veröffentlichung gibt',
     'con_new_motions'         => '<strong>Neue Anträge</strong> in der Sidebar anzeigen',
+    'con_am_bookmark_names'   => 'In den Änderungsantrags-Lesezeichen auch den Namen der Initiator*in anzeigen',
     'con_title_comments'      => 'Kommentare',
     'con_comment_screening'   => '<strong>Freischaltung</strong> von Kommentaren',
     'con_comment_email'       => 'Angabe der <strong>E-Mail-Adresse</strong> erzwingen',

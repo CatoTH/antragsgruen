@@ -44,6 +44,7 @@ class Consultation implements \JsonSerializable
     public $sidebarNewMotions = true;
     public $forceLogin = false;
     public $managedUserAccounts = false;
+    public $amendmentBookmarksWithNames = false;
 
     /** @var null|int */
     public $forceMotion = null;
@@ -57,7 +58,6 @@ class Consultation implements \JsonSerializable
     // SETTINGS WITHOUT TEST CASES
 
     /** @var bool */
-    public $minimalisticUI = false; // @TODO Obsolete since 2020-01
     public $commentsSupportable = false;
     public $screeningMotionsShown = false;
     public $initiatorsMayReject = false;
