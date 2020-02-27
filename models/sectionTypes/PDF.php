@@ -170,11 +170,13 @@ class PDF extends ISectionType
         $abs = 5;
         $pdf->setY($pdf->getY() + $abs);
 
-        $title = $this->section->getSettings()->title;
-        if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
-            $title .= ' [PDF]';
+        if ($this->section->getSettings()->type === ISectionType::TYPE_PDF_ATTACHMENT) {
+            $title = $this->section->getSettings()->title;
+            if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
+                $title .= ' [PDF]';
+            }
+            $pdf->writeHTML('<h3>' . $title . '</h3>');
         }
-        $pdf->writeHTML('<h3>' . $title . '</h3>');
 
         $data = $this->section->getData();
 
