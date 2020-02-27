@@ -5,6 +5,7 @@
 - Bugfix: When editing an amendment as admin, the date picker was missing for the resolution date of the initiator organisation.
 - Bugfix: When changing a motion text, the PDF was not regenerated in some cases.
 - Bugfix: When using PHP-based PDF-rendering and alternative PDFs for motions, the heading of this section ("Alternative PDF") was appended to the previous page.
+- Bugfix: When setting up alternative PDFs optionally, and then not uploading one for a motion, then the regular PDF was not generated for this motion.
 
 ## Version 4.5.0 (2020-02-26)
 

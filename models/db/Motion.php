@@ -232,7 +232,7 @@ class Motion extends IMotion implements IRSSItem
     public function getAlternativePdfSection(): ?MotionSection
     {
         $section = $this->getActiveSections(ISectionType::TYPE_PDF_ALTERNATIVE);
-        return (count($section) > 0 ? $section[0] : null);
+        return (count($section) > 0 && $section[0]->getData() !== '' ? $section[0] : null);
     }
 
     /**
