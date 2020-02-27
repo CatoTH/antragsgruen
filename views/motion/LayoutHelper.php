@@ -10,8 +10,7 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\SupportBase;
-use app\views\pdfLayouts\IPDFLayout;
-use setasign\Fpdi\Tcpdf\Fpdi;
+use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -153,20 +152,19 @@ class LayoutHelper
     }
 
     /**
-     * @param Fpdi $pdf
+     * @param IPdfWriter $pdf
      * @param IPDFLayout $pdfLayout
      * @param Motion $motion
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
-        foreach ($motion->getSortedSections(true) as $section) {
-            if ($section->getSettings()->type === ISectionType::TYPE_PDF_ALTERNATIVE) {
-                $section->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
-                return;
-            }
+        $alternatveSection = $motion->getAlternativePdfSection();
+        if ($alternatveSection) {
+            $alternatveSection->getSectionType()->printMotionToPDF($pdfLayout, $pdf);
+            return;
         }
 
         $pdfLayout->printMotionHeader($motion);
