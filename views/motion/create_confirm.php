@@ -91,10 +91,28 @@ if ($right === '') {
     <div class="webVersion motionTextHolder">
         <h3 class="green"><?= Yii::t('motion', 'initiators_head') ?></h3>
         <div class="content">
-            <ul>
+            <ul <?= (count($motion->getSupporters()) + count($motion->getInitiators()) <= 1 ? 'style="list-style-type: none;"' : '') ?>>
                 <?php
-                foreach ($motion->getInitiators() as $unt) {
-                    echo '<li style="font-weight: bold;">' . $unt->getNameWithResolutionDate(true) . '</li>';
+                foreach ($motion->getInitiators() as $initiator) {
+                    echo '<li>';
+                    echo '<strong>' . $initiator->getNameWithResolutionDate(true) . '</strong>';
+                    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+                        $data = [];
+                        if ($initiator->contactName) {
+                            $data[] = Html::encode($initiator->contactName);
+                        }
+                        if ($initiator->contactEmail) {
+                            $data[] = Html::encode($initiator->contactEmail);
+                        }
+                        if ($initiator->contactPhone) {
+                            $data[] = Html::encode($initiator->contactPhone);
+                        }
+                        if (count($data) > 0) {
+                            echo '<br><br>' . Yii::t('initiator', 'orgaContactName') . ':<br>';
+                            echo implode("<br>", $data);
+                        }
+                    }
+                    echo '</li>';
                 }
 
                 foreach ($motion->getSupporters() as $unt) {

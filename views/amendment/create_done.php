@@ -54,7 +54,7 @@ echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($amendment->getMyMotion()), 'post', ['id' => 'motionConfirmedForm']);
 
-if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
+if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
     ?><br>
@@ -75,7 +75,7 @@ if ($amendment->status == Amendment::STATUS_COLLECTING_SUPPORTERS) {
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
-    if ($motion->motionType->policySupportMotions == \app\models\policies\IPolicy::POLICY_WURZELWERK) {
+    if ($motion->motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_WURZELWERK) {
         echo '<div class="alert alert-info" role="alert">';
         echo Yii::t('amend', 'confirmed_support_phase_ww');
         echo '</div>';

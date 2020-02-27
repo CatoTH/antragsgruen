@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.6.0 [not released yet]
+
+- If a motion or amendment is submitted as an organisation, the confirmation page now also shows the contact person.
+
 ### Version 4.5.1 [not released yet]
 
 - When editing an amendment as admin, the date picker was missing for the resolution date of the initiator organisation.

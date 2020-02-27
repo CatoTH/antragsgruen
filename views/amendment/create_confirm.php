@@ -1,12 +1,11 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSection;
+use app\models\db\{Amendment, AmendmentSection};
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Amendment $amendment
  * @var string $mode
  * @var \app\controllers\Base $controller
@@ -21,14 +20,14 @@ $this->title = Yii::t('amend', $mode == 'create' ? 'amendment_create' : 'amendme
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
-$layout->addBreadcrumb(\Yii::t('amend', 'confirm'));
+$layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment, 'edit'));
+$layout->addBreadcrumb(Yii::t('amend', 'confirm'));
 
 echo '<h1>' . Yii::t('amend', 'confirm_amendment') . '</h1>';
 
-if ($amendment->changeEditorial != '') {
+if ($amendment->changeEditorial !== '') {
     echo '<section id="section_editorial" class="motionTextHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'editorial_hint') . '</h3>';
+    echo '<h3 class="green">' . Yii::t('amend', 'editorial_hint') . '</h3>';
     echo '<div class="paragraph"><div class="text motionTextFormattings">';
     echo $amendment->changeEditorial;
     echo '</div></div></section>';
@@ -41,9 +40,9 @@ foreach ($sections as $section) {
 }
 
 
-if ($amendment->changeExplanation != '') {
+if ($amendment->changeExplanation !== '') {
     echo '<div class="motionTextHolder amendmentReasonHolder">';
-    echo '<h3 class="green">' . \Yii::t('amend', 'reason') . '</h3>';
+    echo '<h3 class="green">' . Yii::t('amend', 'reason') . '</h3>';
     echo '<div class="content">';
     echo $amendment->changeExplanation;
     echo '</div>';
@@ -52,13 +51,35 @@ if ($amendment->changeExplanation != '') {
 
 
 echo '<div class="motionTextHolder">
-        <h3 class="green">' . \Yii::t('amend', 'initiators_title') . '</h3>
+        <h3 class="green">' . Yii::t('amend', 'initiators_title') . '</h3>
 
-        <div class="content">
-            <ul>';
+        <div class="content">';
 
-foreach ($amendment->getInitiators() as $unt) {
-    echo '<li style="font-weight: bold;">' . $unt->getNameWithResolutionDate(true) . '</li>';
+if (count($amendment->getSupporters()) + count($amendment->getInitiators()) > 1) {
+    echo '<ul>';
+} else {
+    echo '<ul style="list-style-type: none;">';
+}
+foreach ($amendment->getInitiators() as $initiator) {
+    echo '<li>';
+    echo '<strong>' . $initiator->getNameWithResolutionDate(true) . '</strong>';
+    if ($initiator->personType === \app\models\db\ISupporter::PERSON_ORGANIZATION) {
+        $data = [];
+        if ($initiator->contactName) {
+            $data[] = Html::encode($initiator->contactName);
+        }
+        if ($initiator->contactEmail) {
+            $data[] = Html::encode($initiator->contactEmail);
+        }
+        if ($initiator->contactPhone) {
+            $data[] = Html::encode($initiator->contactPhone);
+        }
+        if (count($data) > 0) {
+            echo '<br><br>' . Yii::t('initiator', 'orgaContactName') . ':<br>';
+            echo implode("<br>", $data);
+        }
+    }
+    echo '</li>';
 }
 
 foreach ($amendment->getSupporters() as $unt) {
@@ -79,7 +100,7 @@ echo '<div class="content">
         </div>
         <div style="float: left;">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('amend', 'button_correct') . '
+                <span class="glyphicon glyphicon-remove-sign"></span> ' . Yii::t('amend', 'button_correct') . '
             </button>
         </div>
     </div>';
