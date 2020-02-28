@@ -374,20 +374,39 @@ class HTMLTools
                         }
                         $pendingInline .= '<br>';
                     } elseif (in_array($child->nodeName, $inlineElements) || !$split) {
-                        if ($child->nodeName == 'a') {
-                            $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
-                            if ($child->hasAttribute('class')) {
-                                $newPre = '<a href="' . Html::encode($href) . '" ' .
-                                    'class="' . Html::encode($child->getAttribute('class')) . '">';
-                            } else {
-                                $newPre = '<a href="' . Html::encode($href) . '">';
-                            }
-                        } elseif ($child->nodeName === 'span' && $child->hasAttribute('class')) {
-                            $newPre = '<' . $child->nodeName . ' ' .
-                                'class="' . Html::encode($child->getAttribute('class')) . '">';
-                        } else {
-                            $newPre = '<' . $child->nodeName . '>';
+                        $attributes = [];
+                        switch ($child->nodeName) {
+                            case 'a':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                $attributes['href'] = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
+                                break;
+                            case 'span':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                break;
+                            case 'ul':
+                            case 'ol':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                if ($child->hasAttribute('start')) {
+                                    $attributes['start'] = $child->getAttribute('start');
+                                }
+                                break;
+                            case 'li':
+                                if ($child->hasAttribute('value')) {
+                                    $attributes['value'] = $child->getAttribute('value');
+                                }
+                                break;
                         }
+                        $newPre = '<' . $child->nodeName;
+                        foreach ($attributes as $key => $val) {
+                            $newPre .= ' ' . $key . '="' . Html::encode($val) . '"';
+                        }
+                        $newPre .= '>';
                         $newPost = '</' . $child->nodeName . '>';
                         $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                         if ($pendingInline === null) {

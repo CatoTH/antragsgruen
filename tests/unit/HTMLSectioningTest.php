@@ -40,8 +40,6 @@ Line 2, part 2</li></ul>',
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testLinkAttributeEncoding()
     {
         $orig   = '<p><a href="http://www.example.org?datum=20150724&amp;ausgabe=an-d">Test</a></p>';
@@ -57,14 +55,14 @@ Line 2, part 2</li></ul>',
         $orig   = '<ul>
     <li>Normal item</li>
     <li>
-        <ol>
+        <ol class="lowerAlpha">
             <li>Nested 1</li>
             <li>Nested 2<br>Line 3</li>
         </ol>
     </li>
     <li>Normal again</li>
 </ul>
-<ol>
+<ol class="decimalCircle">
     <li>Normal item</li>
     <li>
         <ul>
@@ -76,11 +74,11 @@ Line 2, part 2</li></ul>',
 </ol>';
         $expect = [
             '<ul><li>Normal item</li></ul>',
-            '<ul><li><ol><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ol></li></ul>',
+            '<ul><li><ol class="lowerAlpha"><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ol></li></ul>',
             '<ul><li>Normal again</li></ul>',
-            '<ol start="1"><li>Normal item</li></ol>',
-            '<ol start="2"><li><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
-            '<ol start="3"><li>Normal again</li></ol>',
+            '<ol class="decimalCircle" start="1"><li>Normal item</li></ol>',
+            '<ol class="decimalCircle" start="2"><li><ul><li>Nested 1</li><li>Nested 2<br>' . "\n" . 'Line 3</li></ul></li></ol>',
+            '<ol class="decimalCircle" start="3"><li>Normal again</li></ol>',
         ];
 
         $orig = HTMLTools::cleanSimpleHtml($orig);
