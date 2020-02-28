@@ -1,7 +1,7 @@
 <?php
 
 use app\components\HashedStaticCache;
-use app\models\db\Motion;
+use app\models\db\{ConsultationSettingsMotionSection, Motion};
 use app\models\forms\CommentForm;
 use app\models\sectionTypes\ISectionType;
 use app\views\motion\LayoutHelper;
@@ -13,7 +13,14 @@ use yii\helpers\Html;
  * @var int[] $openedComments
  */
 
+$sections  = $motion->getSortedSections(false);
 $useCache = ($commentForm === null && count($openedComments) === 0);
+foreach ($sections as $section) {
+    // Paragraph-based comments have inlined forms, which break the caching mechanism
+    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
+        $useCache = false;
+    }
+}
 
 if ($useCache) {
     $cached = HashedStaticCache::getCache(LayoutHelper::getViewCacheKey($motion), null);
@@ -26,7 +33,7 @@ if ($useCache) {
 
 $titleSection = $motion->getTitleSection();
 $main = $right = '';
-foreach ($motion->getSortedSections(false) as $i => $section) {
+foreach ($sections as $i => $section) {
     $renderedText = \app\models\layoutHooks\Layout::renderMotionSection($section, $motion);
     if ($renderedText !== null) {
         $main .= $renderedText;
