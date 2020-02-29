@@ -18,11 +18,7 @@ use yii\db\IntegrityException;
  */
 trait SiteAccessTrait
 {
-    /**
-     * @param User $user
-     * @param string $username
-     */
-    private function linkConsultationAdmin(User $user, $username)
+    private function linkConsultationAdmin(User $user, string $username): void
     {
         try {
             $privilege = $this->consultation->getUserPrivilege($user);
@@ -50,10 +46,7 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     * @param User $user
-     */
-    private function unlinkConsultationAdmin(User $user)
+    private function unlinkConsultationAdmin(User $user): void
     {
         $privilege = $this->consultation->getUserPrivilege($user);
 
@@ -64,9 +57,7 @@ trait SiteAccessTrait
         $privilege->save();
     }
 
-    /**
-     */
-    private function saveAdmins()
+    private function saveAdmins(): void
     {
         $permissions = \Yii::$app->request->post('adminTypes');
         foreach ($permissions as $userId => $types) {
@@ -112,10 +103,7 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     * @param string $username
-     */
-    private function addAdminWurzelwerk($username)
+    private function addAdminWurzelwerk(string $username): void
     {
         $newUser = User::findOne(['auth' => User::wurzelwerkId2Auth($username)]);
         if (!$newUser) {
@@ -172,8 +160,6 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     */
     private function addUsersSamlWw()
     {
         $usernames = explode("\n", \Yii::$app->request->post('samlWW', ''));
@@ -216,8 +202,6 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     */
     private function addUsersEmail()
     {
         $params   = $this->getParams();
@@ -277,8 +261,6 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     */
     private function saveUsers()
     {
         $postAccess = \Yii::$app->request->post('access');
@@ -295,8 +277,6 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     */
     private function restrictToUsers()
     {
         $allowed = [IPolicy::POLICY_NOBODY, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_LOGGED_IN];
@@ -320,13 +300,25 @@ trait SiteAccessTrait
         }
     }
 
-    /**
-     * @return bool
+    /*
+     * This checks if there are regular users manually registered for this consultation,
+     * but no restriction like "only registered users may create motions" or "force login to view the page" is set up.
+     * If so, a warning should be shown.
      */
-    private function needsPolicyWarning()
+    private function needsPolicyWarning(): bool
     {
         $policyWarning = false;
-        if (!$this->consultation->getSettings()->forceLogin && count($this->consultation->userPrivileges) > 0) {
+
+        $usersWithReadWriteAccess = false;
+        foreach ($this->consultation->userPrivileges as $privilege) {
+            if (($privilege->privilegeCreate || $privilege->privilegeView) && !(
+                $privilege->adminContentEdit || $privilege->adminProposals || $privilege->adminScreen || $privilege->adminSuper
+                )) {
+                $usersWithReadWriteAccess = true;
+            }
+        }
+
+        if (!$this->consultation->getSettings()->forceLogin && $usersWithReadWriteAccess) {
             $allowed = [IPolicy::POLICY_NOBODY, IPolicy::POLICY_LOGGED_IN, IPolicy::POLICY_LOGGED_IN];
             foreach ($this->consultation->motionTypes as $type) {
                 if (!in_array($type->policyMotions, $allowed)) {
