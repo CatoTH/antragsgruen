@@ -48,4 +48,9 @@ class Module extends ModuleBase
 
         return $default;
     }
+
+    public static function getCustomEmailTemplate(): ?string
+    {
+        return '@app/plugins/frauenrat/views/email';
+    }
 }

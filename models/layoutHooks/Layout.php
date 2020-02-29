@@ -189,4 +189,14 @@ class Layout
     {
         return static::callHook('renderMotionSection', [$section, $motion], null);
     }
+
+    public static function getMotionPublishedInitiatorEmail(Motion $motion): ?array
+    {
+        return static::callHook('getMotionPublishedInitiatorEmail', [$motion], null);
+    }
+
+    public static function getAmendmentPublishedInitiatorEmail(Amendment $amendment): ?array
+    {
+        return static::callHook('getAmendmentPublishedInitiatorEmail', [$amendment], null);
+    }
 }

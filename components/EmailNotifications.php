@@ -73,60 +73,6 @@ class EmailNotifications
 
     /**
      * @param Motion $motion
-     *
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function sendMotionOnPublish(Motion $motion)
-    {
-        if (!$motion->getMyConsultation()->getSettings()->initiatorConfirmEmails) {
-            return;
-        }
-
-        $initiator = $motion->getInitiators();
-
-        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-
-        $title      = $motion->getMyMotionType()->titleSingular . ': ' . $motion->title;
-        $motionHtml = '<h1>' . Html::encode($title) . '</h1>';
-        $sections   = $motion->getSortedSections(true);
-        foreach ($sections as $section) {
-            $motionHtml   .= '<div>';
-            $motionHtml   .= '<h2>' . Html::encode($section->getSettings()->title) . '</h2>';
-            $typedSection = $section->getSectionType();
-            $typedSection->setAbsolutizeLinks(true);
-            $motionHtml .= $typedSection->getMotionEmailHtml();
-            $motionHtml .= '</div>';
-        }
-
-        $plainBase = str_replace(
-            ['%LINK%', '%NAME_GIVEN%', '%TITLE%'],
-            [$motionLink, $initiator[0]->getGivenNameOrFull(), $motion->getTitleWithPrefix()],
-            \Yii::t('motion', 'published_email_body')
-        );
-
-        $html = HTMLTools::plainToHtml($plainBase) . '<br><br>' . $motionHtml;
-        $plain = $plainBase . "\n\n" . HTMLTools::toPlainText($motionHtml);
-
-        if (count($initiator) > 0 && $initiator[0]->contactEmail != '') {
-            try {
-                MailTools::sendWithLog(
-                    EMailLog::TYPE_MOTION_SUBMIT_CONFIRM,
-                    $motion->getMyConsultation(),
-                    trim($initiator[0]->contactEmail),
-                    null,
-                    \Yii::t('motion', 'published_email_title'),
-                    $plain,
-                    $html
-                );
-            } catch (MailNotSent $e) {
-                $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
-                \yii::$app->session->setFlash('error', $errMsg);
-            }
-        }
-    }
-
-    /**
-     * @param Motion $motion
      */
     public static function sendMotionSupporterMinimumReached(Motion $motion)
     {

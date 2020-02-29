@@ -3,6 +3,7 @@
 namespace app\components\mail;
 
 use app\components\HTMLTools;
+use app\models\settings\AntragsgruenApp;
 use app\models\db\{Consultation, EMailBlacklist, EMailLog};
 use app\models\exceptions\ServerConfiguration;
 use yii\helpers\Html;
@@ -67,7 +68,14 @@ abstract class Base
             $html = '<p>' . HTMLTools::plainToHtml($plain) . '</p>';
         }
 
-        return \Yii::$app->controller->renderPartial('@app/views/layouts/email', [
+        $template = '@app/views/layouts/email';
+        foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $pluginClass) {
+            if ($pluginClass::getCustomEmailTemplate()) {
+                $template = $pluginClass::getCustomEmailTemplate();
+            }
+        }
+
+        return \Yii::$app->controller->renderPartial($template, [
             'title'  => $subject,
             'html'   => $html,
             'styles' => ($consultation ? $consultation->site->getSettings()->getStylesheet() : null),

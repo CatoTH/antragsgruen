@@ -9,10 +9,6 @@ class MotionSubmitted extends Base implements IEmailAdmin
 {
     protected $motion;
 
-    /**
-     * MotionSubmitted constructor.
-     * @param Motion $motion
-     */
     public function __construct(Motion $motion)
     {
         $this->motion       = $motion;

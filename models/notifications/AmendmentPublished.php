@@ -3,8 +3,9 @@
 namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+use app\models\exceptions\ServerConfiguration;
+use app\models\layoutHooks\Layout;
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, EMailLog, UserNotification};
 use app\models\exceptions\MailNotSent;
 use yii\helpers\Html;
@@ -43,28 +44,35 @@ class AmendmentPublished
             return;
         }
         $initiator = $this->amendment->getInitiators();
-        if (count($initiator) == 0 || $initiator[0]->contactEmail == '') {
+        if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
             return;
         }
-        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
-        $motionTitle   = $this->amendment->getMyMotion()->getTitleWithPrefix();
-        $plain         = str_replace(
-            ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
-            [$amendmentLink, $motionTitle, $initiator[0]->getGivenNameOrFull()],
-            \Yii::t('amend', 'published_email_body')
-        );
 
-        $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
+        $pluginEmail = Layout::getAmendmentPublishedInitiatorEmail($this->amendment);
+        if ($pluginEmail) {
+            $html  = $pluginEmail['html'];
+            $plain = $pluginEmail['plain'];
+        } else {
+            $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($this->amendment));
+            $motionTitle   = $this->amendment->getMyMotion()->getTitleWithPrefix();
+            $plain         = str_replace(
+                ['%LINK%', '%MOTION%', '%NAME_GIVEN%'],
+                [$amendmentLink, $motionTitle, $initiator[0]->getGivenNameOrFull()],
+                \Yii::t('amend', 'published_email_body')
+            );
 
-        $sections = $this->amendment->getSortedSections(true);
-        foreach ($sections as $section) {
-            $amendmentHtml .= '<div>';
-            $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
-            $amendmentHtml .= '</div>';
+            $amendmentHtml = '<h2>' . Html::encode(\Yii::t('amend', 'amendment')) . '</h2>';
+
+            $sections = $this->amendment->getSortedSections(true);
+            foreach ($sections as $section) {
+                $amendmentHtml .= '<div>';
+                $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
+                $amendmentHtml .= '</div>';
+            }
+
+            $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
+            $plain = HTMLTools::toPlainText($html);
         }
-
-        $html  = nl2br(Html::encode($plain)) . '<br><br>' . $amendmentHtml;
-        $plain = HTMLTools::toPlainText($html);
 
         try {
             MailTools::sendWithLog(
@@ -80,6 +88,9 @@ class AmendmentPublished
         } catch (MailNotSent $e) {
             $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
             \yii::$app->session->setFlash('error', $errMsg);
+        } catch (ServerConfiguration $e) {
+            $errMsg = \Yii::t('base', 'err_email_not_sent') . ': ' . $e->getMessage();
+            \yii::$app->session->setFlash('error', $errMsg);
         }
     }
 
@@ -91,7 +102,7 @@ class AmendmentPublished
     {
         $motion    = $this->amendment->getMyMotion();
         $initiator = $motion->getInitiators();
-        if (count($initiator) == 0 || !$initiator[0]->user) {
+        if (count($initiator) === 0 || !$initiator[0]->user) {
             return;
         }
 
@@ -137,9 +148,7 @@ class AmendmentPublished
         $noti->save();
     }
 
-    /**
-     */
-    private function notifyAllUsers()
+    private function notifyAllUsers(): void
     {
         foreach ($this->consultation->getUserNotificationsType(UserNotification::NOTIFICATION_NEW_AMENDMENT) as $noti) {
             if (in_array(strtolower($noti->user->email), $this->alreadyNotified)) {

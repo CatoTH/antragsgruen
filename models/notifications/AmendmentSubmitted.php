@@ -10,10 +10,6 @@ class AmendmentSubmitted extends Base implements IEmailAdmin
     /** @var Amendment */
     protected $amendment;
 
-    /**
-     * MotionInitiallySubmitted constructor.
-     * @param Amendment $amendment
-     */
     public function __construct(Amendment $amendment)
     {
         $this->amendment       = $amendment;

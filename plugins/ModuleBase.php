@@ -2,7 +2,7 @@
 
 namespace app\plugins;
 
-use app\models\db\{Consultation, Motion, MotionSection, Site};
+use app\models\db\{Consultation, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -113,6 +113,11 @@ class ModuleBase extends Module
     }
 
     public static function getCustomSiteCreateView(): ?string
+    {
+        return null;
+    }
+
+    public static function getCustomEmailTemplate(): ?string
     {
         return null;
     }

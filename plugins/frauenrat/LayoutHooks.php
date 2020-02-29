@@ -323,4 +323,54 @@ $(function() {
             return ' <small>' . $initiator->name . '</small>';
         }
     }
+
+    public function getAmendmentPublishedInitiatorEmail(?array $before, Amendment $amendment): ?array
+    {
+        $initiators     = $amendment->getInitiators();
+        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
+        $amendmentHtml = '<h2>Ihr Änderungsantrag</h2>
+        <p>Herzlichen Dank für die fristgerechte Einreichung. Die erfolgreiche Übermittlung wird hiermit bestätigt.
+            Dies ist eine automatische Antwort, eine weitere Bestätigung erfolgt nicht.</p>
+        <p>Sie können den Änderungsantrag weiterhin unter folgender Adresse einsehen:<br>
+        <a href="' . Html::encode($amendmentLink) . '">' . Html::encode($amendmentLink) . '</a>
+        </p>
+        <p><span style="color:rgb(0,113,166); font-size:20px;">////////////////////////////////////////////////////////////</span><br></p>';
+        if (count($initiators) > 0) {
+            $initiator = $initiators[0];
+            $amendmentHtml .= '<p><strong>Ihre Daten</strong></p>
+        <table border="0">
+        <tbody>
+        <tr>
+        <th align="left" valign="top">Mitglied</th>
+        <td>' . Html::encode($initiator->organization) . '</td>
+        </tr>
+        <tr>
+        <th align="left" valign="top">Name</th>
+        <td>' . Html::encode($initiator->contactName) . '</td>
+        </tr>
+        <tr>
+        <th align="left" valign="top">Telefon</th>
+        <td>' . Html::encode($initiator->contactPhone) . '</td>
+        </tr>
+        <tr>
+        <th align="left" valign="top">Mail</th>
+        <td>' . Html::encode($initiator->contactEmail) . '</td>
+        </tr>
+        </tbody>
+        </table>';
+        }
+
+        $sections = $amendment->getSortedSections(true);
+        foreach ($sections as $section) {
+            $amendmentHtml .= '<div>';
+            $amendmentHtml .= $section->getSectionType()->getAmendmentPlainHtml();
+            $amendmentHtml .= '</div>';
+        }
+        $amendmentHtml .= '<br><br>';
+
+        return [
+            'html'  => $amendmentHtml,
+            'plain' => HTMLTools::toPlainText($amendmentHtml)
+        ];
+    }
 }

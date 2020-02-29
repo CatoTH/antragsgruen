@@ -179,4 +179,14 @@ class Hooks
     {
         return $before;
     }
+
+    public function getMotionPublishedInitiatorEmail(?array $before, Motion $motion): ?array
+    {
+        return $before;
+    }
+
+    public function getAmendmentPublishedInitiatorEmail(?array $before, Amendment $amendment): ?array
+    {
+        return $before;
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\notifications\MotionPublished;
 use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper, EmailNotifications};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
@@ -923,13 +924,10 @@ class Motion extends IMotion implements IRSSItem
     public function onPublishFirst(): void
     {
         UserNotification::notifyNewMotion($this);
-        EmailNotifications::sendMotionOnPublish($this);
+        new MotionPublished($this);
     }
 
-    /**
-     * @param bool $save
-     */
-    public function setTextFixedIfNecessary($save = true)
+    public function setTextFixedIfNecessary(bool $save = true): void
     {
         if ($this->getMyConsultation()->getSettings()->adminsMayEdit) {
             return;
