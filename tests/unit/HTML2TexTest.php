@@ -153,25 +153,26 @@ class HTML2TexTest extends TestBase
 
     public function testNestedLists()
     {
-        // Yes, this looks pretty broken, and it kind of is. But for some reason, it seems possible to make things
-        // work anyway, therefore let's do so.
         $orig = [
             '<ol start="2"><li>###LINENUMBER###Test 2' . "\n",
-            '<ol><li>###LINENUMBER###Nummer 2.1 123456789 123456789 123456789 123456789 123456789 ',
-            '###LINENUMBER###123456789 123456789 123456789 123456789 123456789</li>',
-            '<li>###LINENUMBER###Nummer 2.2<br></li></ol></li></ol>',
+            '<ol class="decimalCircle"><li>###LINENUMBER###Test a</li>',
+            '<li value="g">###LINENUMBER###Test c</li>',
+            '<li>###LINENUMBER###Test d</li>',
+            '<li value="i/">###LINENUMBER###Test e</li></ol></li></ol>',
         ];
-        $expect = '\begin{enumerate}[label=\arabic*.]
+        /*
+         \begin{enumerate}[label=\arabic*.]
 \setcounter{enumi}{1}
-\item Test 2\linebreak{}
-
-\begin{enumerate}[label=\arabic*.]
-\item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak{}
-123456789 123456789 123456789 123456789 123456789
-\item Nummer 2.2
+\item Test 2
+\begin{enumerate}[label=\alph*.]
+\item Test a
+\item[(bla)] Test cd
+\setcounter{enumii}{3}
+\item Test d
 \end{enumerate}
 \end{enumerate}
-';
+         */
+        $expect = '@TODO';
         $out    = Exporter::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
     }
