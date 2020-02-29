@@ -44,7 +44,7 @@ class Exporter
             "Ä"                      => "\\\"A",
             "Ö"                      => "\\\"O",
             "Ü"                      => "\\\"U",
-            "ß"                      => "\\ss",
+            "ß"                      => "\\ss{}",
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
@@ -139,7 +139,7 @@ class Exporter
      */
     private static function encodeHTMLNode(\DOMNode $node, $extraStyles = [])
     {
-        if ($node->nodeType == XML_TEXT_NODE) {
+        if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
             $str = static::encodePlainString($node->data);
             if (in_array('underlined', $extraStyles) || in_array('strike', $extraStyles)) {
@@ -177,15 +177,15 @@ class Exporter
                 if (in_array('del', $classes) || in_array('deleted', $classes)) {
                     $extraStyles[] = 'del';
                 }
-            } elseif ($node->nodeName == 'u') {
+            } elseif ($node->nodeName === 'u') {
                 $childStyles[] = 'underlined';
-            } elseif ($node->nodeName == 'ins') {
+            } elseif ($node->nodeName === 'ins') {
                 $childStyles[] = 'underlined';
-            } elseif ($node->nodeName == 's') {
+            } elseif ($node->nodeName === 's') {
                 $childStyles[] = 'strike';
-            } elseif ($node->nodeName == 'del') {
+            } elseif ($node->nodeName === 'del') {
                 $childStyles[] = 'strike';
-            } elseif ($node->nodeName == 'span') {
+            } elseif ($node->nodeName === 'span') {
                 if (in_array('underline', $classes)) {
                     $childStyles[] = 'underlined';
                 }
