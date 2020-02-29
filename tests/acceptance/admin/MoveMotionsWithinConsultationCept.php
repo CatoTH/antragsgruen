@@ -46,6 +46,7 @@ $I->seeElement('.agenda' . $earth . ' .motionRow118');
 $I->wantTo('finally move it, without reference');
 $I->gotoMotionList()->gotoMotionEdit(118);
 $I->click('.sidebarActions .move');
+usleep(500000);
 $I->dontSeeElement('.moveToAgendaItem');
 $I->checkOption("//input[@name='operation'][@value='move']");
 $I->seeCheckboxIsChecked("//input[@name='operation'][@value='move']");
@@ -86,7 +87,7 @@ $I->see('A8M', '.motionRow' . AcceptanceTester::FIRST_FREE_MOTION_ID);
 $I->click('.motionRow' . AcceptanceTester::FIRST_FREE_MOTION_ID . ' .amendmentRow' . AcceptanceTester::FIRST_FREE_AMENDMENT_ID . ' .amendmentTitle');
 
 $I->see('A small replacement', 'ins');
-$I->see('Von Zeile 7 bis 8:');
+$I->see('Von Zeile 7 bis 9:');
 $I->see('An amendment comment');
 
 

@@ -31,8 +31,9 @@ $amendmentData[] = [
 ];
 
 $amendmentData[] = [
-    'title'   => Yii::t('amend', 'status'),
-    'content' => $amendment->getFormattedStatus(),
+    'rowClass' => 'statusRow',
+    'title'    => Yii::t('amend', 'status'),
+    'content'  => $amendment->getFormattedStatus(),
 ];
 
 $votingData = $amendment->getVotingData();
@@ -60,8 +61,9 @@ if ($votingData->hasAnyData()) {
     }
 
     $amendmentData[] = [
-        'title'   => Yii::t('motion', 'voting_result'),
-        'content' => $str,
+        'rowClass' => 'votingResultRow',
+        'title'    => Yii::t('motion', 'voting_result'),
+        'content'  => $str,
     ];
 }
 
