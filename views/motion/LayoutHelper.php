@@ -10,7 +10,8 @@ use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\AntragsgruenApp;
 use app\models\supportTypes\SupportBase;
-use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
+use app\views\pdfLayouts\IPDFLayout;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -152,12 +153,12 @@ class LayoutHelper
     }
 
     /**
-     * @param IPdfWriter $pdf
+     * @param Fpdi $pdf
      * @param IPDFLayout $pdfLayout
      * @param Motion $motion
      * @throws \app\models\exceptions\Internal
      */
-    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(Fpdi $pdf, IPDFLayout $pdfLayout, Motion $motion)
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
