@@ -12,6 +12,10 @@ class HTMLTools
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
     public static $KNOWN_OL_CLASSES = ['decimalDot', 'decimalCircle', 'lowerAlpha', 'upperAlpha'];
+    const OL_DECIMAL_DOT = 'decimalDot';
+    const OL_DECIMAL_CIRCLE = 'decimalCircle';
+    const OL_LOWER_ALPHA = 'lowerAlpha';
+    const OL_UPPER_ALPHA = 'upperAlpha';
 
     /**
      * @param string $str
