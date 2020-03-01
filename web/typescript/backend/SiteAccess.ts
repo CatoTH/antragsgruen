@@ -11,7 +11,7 @@ class SiteAccess {
     }
 
     private initSite() {
-        $(".managedUserAccounts input").change(function () {
+        $(".managedUserAccounts input").on("change", function () {
             if ($(this).prop("checked")) {
                 $(".showManagedUsers").removeClass('hidden');
             } else {
@@ -21,13 +21,13 @@ class SiteAccess {
     }
 
     private initAddUsers() {
-        $(".addUsersOpener").click((ev) => {
+        $(".addUsersOpener").on("click", (ev) => {
             const type = $(ev.currentTarget).data("type");
             $(".addUsersByLogin").addClass("hidden");
             $(".addUsersByLogin." + type).removeClass("hidden");
         });
 
-        $("#accountsCreateForm").submit((ev) => {
+        $("#accountsCreateForm").on("submit", (ev) => {
             if (!$(".addUsersByLogin.email").hasClass("hidden")) {
                 let text = $("#emailText").val() as string;
                 if (text.indexOf("%ACCOUNT%") == -1) {
@@ -70,19 +70,19 @@ class SiteAccess {
                 if (result) {
                     let id = $button.data("id");
                     $form.append('<input type="hidden" name="deleteUser" value="' + id + '">');
-                    $form.submit();
+                    $form.trigger("submit");
                 }
             });
         });
     }
 
     private initUserList() {
-        $('.accountListTable .accessViewCol input[type=checkbox]').change(function () {
+        $('.accountListTable .accessViewCol input[type=checkbox]').on("change", function () {
             if (!$(this).prop("checked")) {
                 $(this).parents('tr').first().find('.accessCreateCol input[type=checkbox]').prop('checked', false);
             }
         });
-        $('.accountListTable .accessCreateCol input[type=checkbox]').change(function () {
+        $('.accountListTable .accessCreateCol input[type=checkbox]').on("change", function () {
             if ($(this).prop("checked")) {
                 $(this).parents('tr').first().find('.accessViewCol input[type=checkbox]').prop('checked', true);
             }
@@ -100,7 +100,7 @@ class SiteAccess {
                 if (result) {
                     let id = $button.data("id");
                     $form.append('<input type="hidden" name="removeAdmin" value="' + id + '">');
-                    $form.submit();
+                    $form.trigger("submit");
                 }
             });
         });
@@ -114,6 +114,11 @@ class SiteAccess {
             }
         });
         this.$adminForm.find('.adminCard .typeSite input').trigger('change');
+
+        this.$adminForm.find(".ppReplyToOpener").on("click", (ev) => {
+            $(ev.currentTarget).parents(".adminCard").find(".ppReplyTo").removeClass("hidden").find("input").trigger("focus");
+            $(ev.currentTarget).addClass("hidden");
+        });
     }
 
     private initConPwd() {
@@ -127,7 +132,7 @@ class SiteAccess {
             }
         }).trigger("change");
 
-        $widget.find('.setNewPassword').click(ev => {
+        $widget.find('.setNewPassword').on("click", ev => {
             ev.preventDefault();
             ev.stopPropagation();
             $widget.addClass('changePwd');

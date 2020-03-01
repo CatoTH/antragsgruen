@@ -1,9 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{Amendment, IMotion, Motion};
 use app\models\forms\AdminMotionFilterForm;
 use yii\helpers\Html;
 
@@ -32,13 +30,10 @@ $route   = 'admin/motion-list/index';
 $hasTags = (count($controller->consultation->tags) > 0);
 
 $hasResponsibilities   = false;
-$hasProposedProcedures = false;
+$hasProposedProcedures = $controller->consultation->hasProposedProcedures();
 foreach ($controller->consultation->motionTypes as $motionType) {
     if ($motionType->getSettingsObj()->hasResponsibilities) {
         $hasResponsibilities = true;
-    }
-    if ($motionType->getSettingsObj()->hasProposedProcedure) {
-        $hasProposedProcedures = true;
     }
 }
 

@@ -633,7 +633,8 @@ CREATE TABLE `###TABLE_PREFIX###user` (
   `recoveryToken`   VARCHAR(100)         DEFAULT NULL,
   `recoveryAt`      TIMESTAMP   NULL     DEFAULT NULL,
   `emailChange`     VARCHAR(255)         DEFAULT NULL,
-  `emailChangeAt`   TIMESTAMP   NULL     DEFAULT NULL
+  `emailChangeAt`   TIMESTAMP   NULL     DEFAULT NULL,
+  `settings`        TEXT        NULL     DEFAULT NULL
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;

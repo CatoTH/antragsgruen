@@ -411,10 +411,7 @@ class Consultation extends ActiveRecord
     /** @var null|\app\models\settings\Consultation */
     private $settingsObject = null;
 
-    /**
-     * @return \app\models\settings\Consultation
-     */
-    public function getSettings()
+    public function getSettings(): \app\models\settings\Consultation
     {
         if (!is_object($this->settingsObject)) {
             $settingsClass = \app\models\settings\Consultation::class;
@@ -430,19 +427,13 @@ class Consultation extends ActiveRecord
         return $this->settingsObject;
     }
 
-    /**
-     * @param \app\models\settings\Consultation $settings
-     */
-    public function setSettings($settings)
+    public function setSettings(?\app\models\settings\Consultation $settings)
     {
         $this->settingsObject = $settings;
         $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
-    /**
-     * @return IAmendmentNumbering
-     */
-    public function getAmendmentNumbering()
+    public function getAmendmentNumbering(): IAmendmentNumbering
     {
         $numberings = IAmendmentNumbering::getNumberings();
         return new $numberings[$this->amendmentNumbering]();
@@ -591,11 +582,7 @@ class Consultation extends ActiveRecord
         return $this->getInvisibleMotionStatuses($withdrawnAreVisible);
     }
 
-    /**
-     * @param int $motionTypeId
-     * @return string
-     */
-    public function getNextMotionPrefix($motionTypeId)
+    public function getNextMotionPrefix(int $motionTypeId): string
     {
         $max_rev = 0;
         /** @var ConsultationMotionType $motionType */
@@ -684,10 +671,7 @@ class Consultation extends ActiveRecord
         return $results;
     }
 
-    /**
-     * @return bool
-     */
-    public function cacheOneMotionAffectsOthers()
+    public function cacheOneMotionAffectsOthers(): bool
     {
         if ($this->getSettings()->lineNumberingGlobal) {
             return true;
@@ -695,12 +679,7 @@ class Consultation extends ActiveRecord
         return false;
     }
 
-    /**
-     * @param string $prefix
-     * @param null|Motion $ignore
-     * @return null|Motion
-     */
-    public function findMotionWithPrefix($prefix, $ignore = null)
+    public function findMotionWithPrefix(string $prefix, ?Motion $ignore = null): ?Motion
     {
         $prefixNorm = trim(mb_strtoupper($prefix));
         foreach ($this->motions as $mot) {
@@ -714,10 +693,7 @@ class Consultation extends ActiveRecord
         return null;
     }
 
-    /**
-     * @return array
-     */
-    public function getAgendaWithMotions()
+    public function getAgendaWithMotions(): array
     {
         $ids    = [];
         $result = [];
@@ -748,10 +724,7 @@ class Consultation extends ActiveRecord
         return $result;
     }
 
-    /**
-     * @return null|ConsultationFile
-     */
-    public function getAbsolutePdfLogo()
+    public function getAbsolutePdfLogo(): ?ConsultationFile
     {
         $logoUrl = $this->getSettings()->logoUrl;
         if ($logoUrl === '' || $logoUrl === null || $logoUrl[0] !== '/') {
@@ -760,11 +733,7 @@ class Consultation extends ActiveRecord
         return ConsultationFile::findFileByName($this, urldecode(basename($logoUrl)));
     }
 
-
-    /**
-     * @return array
-     */
-    public function getPdfLogoData()
+    public function getPdfLogoData(): array
     {
         if ($this->getSettings()->logoUrl) {
             $file = ConsultationFile::findFileByUrl($this, $this->getSettings()->logoUrl);
@@ -817,12 +786,20 @@ class Consultation extends ActiveRecord
         return $filtered;
     }
 
-    /**
-     */
-    public function setDeleted()
+    public function setDeleted(): void
     {
         $this->urlPath      = null;
         $this->dateDeletion = date('Y-m-d H:i:s');
         $this->save(false);
+    }
+
+    public function hasProposedProcedures(): bool
+    {
+        foreach ($this->motionTypes as $motionType) {
+            if ($motionType->getSettingsObj()->hasProposedProcedure) {
+                return true;
+            }
+        }
+        return false;
     }
 }

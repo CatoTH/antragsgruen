@@ -30,6 +30,7 @@ use yii\web\IdentityInterface;
  * @property string $recoveryAt
  * @property string $emailChange
  * @property string $emailChangeAt
+ * @property string|null $settings
  *
  * @property null|AmendmentComment[] $amendmentComments
  * @property null|AmendmentSupporter[] $amendmentSupports
@@ -354,6 +355,22 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
+    /** @var null|\app\models\settings\User */
+    private $settingsObject = null;
+
+    public function getSettingsObj(): \app\models\settings\User
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new \app\models\settings\User($this->settings);
+        }
+        return $this->settingsObject;
+    }
+
+    public function setSettingsObj(\app\models\settings\User $settings): void
+    {
+        $this->settingsObject = $settings;
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
+    }
 
     /**
      * @return string

@@ -59,6 +59,19 @@ trait SiteAccessTrait
 
     private function saveAdmins(): void
     {
+        $replyTos    = \Yii::$app->request->post('ppReplyTo', []);
+        foreach ($replyTos as $userId => $replyTo) {
+            $user                = User::findOne($userId);
+            $settings            = $user->getSettingsObj();
+            if (filter_var($replyTo, FILTER_VALIDATE_EMAIL)) {
+                $settings->ppReplyTo = $replyTos[$userId];
+            } else {
+                $settings->ppReplyTo = '';
+            }
+            $user->setSettingsObj($settings);
+            $user->save();
+        }
+
         $permissions = \Yii::$app->request->post('adminTypes');
         foreach ($permissions as $userId => $types) {
             if ($userId === User::getCurrentUser()->id) {

@@ -274,6 +274,7 @@ Die Benutzer*innenverwaltung unten kommt erst dann voll zur Geltung, wenn die Le
     'siteacc_admins_all_cons'    => 'Administrator*in',
     'siteacc_admins_one_con'     => 'Diese Veranstaltung verwalten',
     'siteacc_admins_proposals'   => 'Verfahrensvorschlag bearbeiten',
+    'siteacc_admins_pp_replyto'  => 'Reply-To bei Verfahrensvorschlags-E-Mails',
     'siteacc_add_ww_btn'         => 'Per Grünes Netz',
     'siteacc_add_ww'             => 'Grünes-Netz-Name',
     'siteacc_add_email_btn'      => 'Per E-Mail',
