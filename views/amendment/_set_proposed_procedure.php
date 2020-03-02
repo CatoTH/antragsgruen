@@ -275,7 +275,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         <h3><?= Yii::t('amend', 'proposal_notify_text') ?></h3>
         <div class="row proposalFrom">
             <?php
-            $replyTo            = \app\components\mail\Tools::getDefaultReplyTo($amendment->getMyConsultation());
+            $replyTo            = \app\components\mail\Tools::getDefaultReplyTo($amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
             $fromName           = \app\components\mail\Tools::getDefaultMailFromName($amendment->getMyConsultation());
             $placeholderReplyTo = Yii::t('amend', 'proposal_notify_replyto') . ': ' . ($replyTo ? $replyTo : '-');
             $placeholderName    = Yii::t('amend', 'proposal_notify_name') . ': ' . $fromName;

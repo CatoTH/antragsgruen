@@ -44,6 +44,7 @@ return [
     'emailchange_requested'     => 'E-Mail-Adresse beantragt (noch nicht bestätigt)',
     'emailchange_call'          => 'ändern',
     'emailchange_resend'        => 'Neue Bestätigungs-Mail',
+    'email_pp_replyto'          => 'Reply-To bei Verfahrensvorschlägen (vom Admin eingestellt)',
     'del_title'                 => 'Zugang löschen',
     'del_explanation'           => 'Hier kannst du diesen Zugang von Antragsgrün löschen. Du erhältst keine E-Mail-Benachrichtigungen mehr,
         ein Login ist auch nicht mehr möglich. Deine E-Mail-Adresse, Name, Passwort usw. werden damit aus unserem

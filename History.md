@@ -5,6 +5,7 @@
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
 - If an amendment affects only one specific line of a motion paragraph, one line before and after the affected one are now also shown in the amendment (confirmation) view, to give more context when reading it.
 - If a motion or amendment is submitted as an organisation, the confirmation page now also shows the contact person.
+- If proposed procedures are used, it is now possible for the admin of a consultation to set a default Reply-To e-mail-address for each motion committee member.
 
 ### Version 4.5.1 [not released yet]
 

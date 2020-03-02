@@ -5,30 +5,24 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, EMailLog};
-use app\models\exceptions\MailNotSent;
 
 class AmendmentProposedProcedure
 {
-    /**
-     * AmendmentProposedProcedure constructor.
-     *
-     * @param Amendment $amendment
-     * @param string $text
-     * @param null|string $fromName
-     * @param null|string $replyTo
-     * @throws MailNotSent
-     */
-    public function __construct(Amendment $amendment, $text = '', $fromName = null, $replyTo = null)
+    public function __construct(Amendment $amendment, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $amendment->getInitiators();
         if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
             return;
         }
 
-        if (trim($text) === '') {
+        if ($text === null || trim($text) === '') {
             $text = static::getDefaultText($amendment);
         }
+        if ($replyTo === null || trim($replyTo) === '') {
+            $replyTo = MailTools::getDefaultReplyTo($amendment->getMyConsultation(), \app\models\db\User::getCurrentUser());
+        }
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
             $amendment->getMyConsultation(),
@@ -60,12 +54,11 @@ class AmendmentProposedProcedure
         }
 
         $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
-        $plain         = str_replace(
+
+        return str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
             [$amendmentLink, $amendment->getShortTitle(), $initiator[0]->getGivenNameOrFull()],
             $body
         );
-
-        return $plain;
     }
 }

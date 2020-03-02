@@ -2,7 +2,7 @@
 
 namespace app\components\mail;
 
-use app\models\db\{Consultation, EMailLog};
+use app\models\db\{Consultation, EMailLog, User};
 use app\models\exceptions\{MailNotSent, ServerConfiguration};
 
 class Tools
@@ -18,10 +18,14 @@ class Tools
         return $name;
     }
 
-    public static function getDefaultReplyTo(?Consultation $consultation = null): ?string
+    public static function getDefaultReplyTo(?Consultation $consultation = null, ?User $user = null): ?string
     {
         /** @var \app\models\settings\AntragsgruenApp $params */
         $params = \Yii::$app->params;
+
+        if ($user && $user->getSettingsObj()->ppReplyTo) {
+            return $user->getSettingsObj()->ppReplyTo;
+        }
 
         $replyTo = null;
         if ($consultation) {

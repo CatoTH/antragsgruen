@@ -40,6 +40,7 @@ return [
     'emailchange_requested'     => 'E-mail address requested (not confirmed yet)',
     'emailchange_call'          => 'change',
     'emailchange_resend'        => 'New confirmation mail',
+    'email_pp_replyto'          => 'Reply-To when sending proposed procedures (set by the admin)',
     'del_title'                 => 'Delete account',
     'del_explanation'           => 'Here you can delete this account. You will not receive any more e-mails, no login will be possible after this.
         Your e-mail address, name and contact data will be deleted.<br>

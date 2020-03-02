@@ -5,30 +5,24 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
 use app\models\db\{EMailLog, Motion};
-use app\models\exceptions\MailNotSent;
 
 class MotionProposedProcedure
 {
-    /**
-     * MotionProposedProcedure constructor.
-     *
-     * @param Motion $motion
-     * @param string $text
-     * @param null|string $fromName
-     * @param null|string $replyTo
-     * @throws MailNotSent
-     */
-    public function __construct(Motion $motion, $text = '', $fromName = null, $replyTo = null)
+    public function __construct(Motion $motion, ?string $text = '', ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $motion->getInitiators();
         if (count($initiator) === 0 || $initiator[0]->contactEmail === '') {
             return;
         }
 
-        if (trim($text) === '') {
+        if ($text === null || trim($text) === '') {
             $text = static::getDefaultText($motion);
         }
+        if ($replyTo === null || trim($replyTo) === '') {
+            $replyTo = MailTools::getDefaultReplyTo($motion->getMyConsultation(), \app\models\db\User::getCurrentUser());
+        }
 
+        /** @noinspection PhpUnhandledExceptionInspection */
         MailTools::sendWithLog(
             EMailLog::TYPE_AMENDMENT_PROPOSED_PROCEDURE,
             $motion->getMyConsultation(),
@@ -45,6 +39,7 @@ class MotionProposedProcedure
 
     /**
      * @param Motion $motion
+     *
      * @return string
      */
     public static function getDefaultText(Motion $motion)
@@ -65,11 +60,11 @@ class MotionProposedProcedure
         }
 
         $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
-        $plain      = str_replace(
+
+        return str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],
             [$motionLink, $motion->getTitleWithPrefix(), $initiatorName],
             $body
         );
-        return $plain;
     }
 }
