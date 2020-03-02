@@ -6,6 +6,7 @@
 - If an amendment affects only one specific line of a motion paragraph, one line before and after the affected one are now also shown in the amendment (confirmation) view, to give more context when reading it.
 - If a motion or amendment is submitted as an organisation, the confirmation page now also shows the contact person.
 - If proposed procedures are used, it is now possible for the admin of a consultation to set a default Reply-To e-mail-address for each motion committee member.
+- If a motion is moved to another agenda item or consultation and a reference stays at the old place, then there now also is a reference from the new place to the original place to indicate where this motion originally came from.
 
 ### Version 4.5.1 [not released yet]
 

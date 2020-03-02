@@ -85,6 +85,8 @@ return [
     'tag_new'                       => 'New',
     'tag_del'                       => 'del',
     'tags_head'                     => 'Tags',
+    'moved_to'                      => 'Moved to',
+    'moved_from'                    => 'Moved from',
     'merging_draft_th'              => 'Revision',
     'merging_draft_td'              => 'The motion is being revised.<br><a href="%URL%"><span class="glyphicon glyphicon-chevron-right"></span> Show work-in-progress draft</a>',
     'merging_draft_warning'         => 'This is not an actual motion, but a work-in-progress draft!',

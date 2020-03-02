@@ -3,7 +3,7 @@
 namespace app\models\db;
 
 use app\models\notifications\MotionPublished;
-use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper, EmailNotifications};
+use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
 use app\models\layoutHooks\Layout;
 use app\models\mergeAmendments\Draft;
@@ -498,10 +498,7 @@ class Motion extends IMotion implements IRSSItem
         return MotionSorter::getSortedAmendments($this->getMyConsultation(), $amendments);
     }
 
-    /**
-     * @return bool
-     */
-    public function iAmInitiator()
+    public function iAmInitiator(): bool
     {
         $user = \Yii::$app->user;
         if ($user->isGuest) {
@@ -518,34 +515,22 @@ class Motion extends IMotion implements IRSSItem
     }
 
 
-    /**
-     * @return bool
-     */
-    public function canEdit()
+    public function canEdit(): bool
     {
         return $this->getPermissionsObject()->motionCanEdit($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function canWithdraw()
+    public function canWithdraw(): bool
     {
         return $this->getPermissionsObject()->motionCanWithdraw($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function canMergeAmendments()
+    public function canMergeAmendments(): bool
     {
         return $this->getPermissionsObject()->motionCanMergeAmendments($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function canCreateResolution()
+    public function canCreateResolution(): bool
     {
         return User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT);
     }
@@ -1137,16 +1122,16 @@ class Motion extends IMotion implements IRSSItem
         $statusNames           = Motion::getStatusNames();
         if ($this->isInScreeningProcess()) {
             $status .= '<span class="unscreened">' . Html::encode($statusNames[$this->status]) . '</span>';
-        } elseif ($this->status == Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
+        } elseif ($this->status === Motion::STATUS_SUBMITTED_SCREENED && $screeningMotionsShown) {
             $status .= '<span class="screened">' . \Yii::t('motion', 'screened_hint') . '</span>';
-        } elseif ($this->status == Motion::STATUS_COLLECTING_SUPPORTERS) {
+        } elseif ($this->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
             $status .= Html::encode($statusNames[$this->status]);
             $status .= ' <small>(' . \Yii::t('motion', 'supporting_permitted') . ': ';
             $status .= IPolicy::getPolicyNames()[$this->motionType->policySupportMotions] . ')</small>';
         } else {
             $status .= Html::encode($statusNames[$this->status]);
         }
-        if (trim($this->statusString) != '') {
+        if (trim($this->statusString) !== '') {
             $status .= ' <small>(' . Html::encode($this->statusString) . ')</string>';
         }
 

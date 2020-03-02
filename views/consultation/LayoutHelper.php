@@ -43,6 +43,11 @@ class LayoutHelper
             $statusName = LayoutHelper::getMotionMovedStatusHtml($motion);
             $return     .= ' <span class="status">(' . $statusName . ')</span>';
         }
+        if ($motion->parentMotionId && $motion->replacedMotion && $motion->replacedMotion->status === Motion::STATUS_MOVED) {
+            $statusName = \Yii::t('motion', 'moved_from') . ': ';
+            $statusName .= Html::a(Html::encode($motion->replacedMotion->titlePrefix), UrlHelper::createMotionUrl($motion->replacedMotion));
+            $return     .= ' <span class="status">(' . $statusName . ')</span>';
+        }
         $return .= '</p>';
 
         $return = \app\models\layoutHooks\Layout::getConsultationMotionLineContent($return, $motion);
@@ -74,7 +79,7 @@ class LayoutHelper
 
     public static function getMotionMovedStatusHtml(Motion $motion): string
     {
-        $statusName = Html::encode($motion->getStatusNames()[$motion->status]);
+        $statusName = \Yii::t('motion', 'moved_to');
         $movedTos   = [];
         foreach ($motion->getVisibleReplacedByMotions() as $newMotion) {
             $movedTos[] = Html::a(Html::encode($newMotion->titlePrefix), UrlHelper::createMotionUrl($newMotion));
