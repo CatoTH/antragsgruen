@@ -214,7 +214,10 @@ class UserController extends Base
             if ($currSubdomain) {
                 // First step on the subdomain: logout and redirect to the main domain
                 Yii::$app->user->logout();
-                $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                $backParts = parse_url($backUrl);
+                if (!isset($backParts['host'])) {
+                    $backUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $backUrl;
+                }
                 $this->redirect($params->domainPlain . 'user/logout?backUrl=' . urlencode($backUrl));
             } elseif ($backSubdomain) {
                 // Second step: we are on the main domain. Logout and redirect to the subdomain
