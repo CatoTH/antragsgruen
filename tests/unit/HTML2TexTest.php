@@ -29,7 +29,7 @@ class HTML2TexTest extends TestBase
             '<p>###LINENUMBER###Normaler Text <strong>fett und <em>kursiv</em></strong><br>',
             '###LINENUMBER###Zeilenumbruch <span class="underline">unterstrichen</span></p>',
         ];
-        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak' . "\n" .
+        $expect = 'Normaler Text \textbf{fett und \emph{kursiv}}\linebreak{}' . "\n" .
             'Zeilenumbruch \uline{unterstrichen}' . "\n";
         $out    = Exporter::getMotionLinesToTeX($orig);
         $this->assertEquals($expect, $out);
@@ -38,9 +38,9 @@ class HTML2TexTest extends TestBase
             'Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.<br>' .
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
-        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak\n" .
-            "halbseidener, Aufm\\\"upfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak\n" .
-            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, \\linebreak\n" .
+        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak{}\n" .
+            "halbseidener, Aufm\\\"upfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak{}\n" .
+            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, \\linebreak{}\n" .
             "grei\\ss{}licha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
@@ -163,10 +163,10 @@ class HTML2TexTest extends TestBase
         ];
         $expect = '\begin{enumerate}[label=\arabic*.]
 \setcounter{enumi}{1}
-\item Test 2\linebreak
+\item Test 2\linebreak{}
 
 \begin{enumerate}[label=\arabic*.]
-\item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak
+\item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak{}
 123456789 123456789 123456789 123456789 123456789
 \item Nummer 2.2
 \end{enumerate}
