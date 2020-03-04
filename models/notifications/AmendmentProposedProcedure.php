@@ -5,9 +5,20 @@ namespace app\models\notifications;
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
 use app\models\db\{Amendment, EMailLog};
+use app\models\settings\AntragsgruenApp;
 
 class AmendmentProposedProcedure
 {
+    public static function getPpOpenAcceptToken(Amendment $amendment): string
+    {
+        /** @var AntragsgruenApp $app */
+        $app  = \Yii::$app->params;
+        $base = 'getPpOpenAcceptToken' . $app->randomSeed . $amendment->motionId . '-' . $amendment->id;
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return substr(preg_replace('/[^\w]/siu', '', base64_encode(sodium_crypto_generichash($base))), 0, 20);
+    }
+
     public function __construct(Amendment $amendment, ?string $text = null, ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $amendment->getInitiators();
@@ -53,7 +64,8 @@ class AmendmentProposedProcedure
                 break;
         }
 
-        $amendmentLink = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment));
+        $procedureToken = static::getPpOpenAcceptToken($amendment);
+        $amendmentLink  = UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment, 'view', ['procedureToken' => $procedureToken]));
 
         return str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],

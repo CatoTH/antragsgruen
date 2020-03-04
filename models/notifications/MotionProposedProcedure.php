@@ -4,10 +4,21 @@ namespace app\models\notifications;
 
 use app\components\mail\Tools as MailTools;
 use app\components\UrlHelper;
+use app\models\settings\AntragsgruenApp;
 use app\models\db\{EMailLog, Motion};
 
 class MotionProposedProcedure
 {
+    public static function getPpOpenAcceptToken(Motion $motion): string
+    {
+        /** @var AntragsgruenApp $app */
+        $app  = \Yii::$app->params;
+        $base = 'getPpOpenAcceptToken' . $app->randomSeed . $motion->id;
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        return substr(preg_replace('/[^\w]/siu', '', base64_encode(sodium_crypto_generichash($base))), 0, 20);
+    }
+
     public function __construct(Motion $motion, ?string $text = '', ?string $fromName = null, ?string $replyTo = null)
     {
         $initiator = $motion->getInitiators();
@@ -37,12 +48,7 @@ class MotionProposedProcedure
         );
     }
 
-    /**
-     * @param Motion $motion
-     *
-     * @return string
-     */
-    public static function getDefaultText(Motion $motion)
+    public static function getDefaultText(Motion $motion): string
     {
         $initiator     = $motion->getInitiators();
         $initiatorName = (count($initiator) > 0 ? $initiator[0]->getGivenNameOrFull() : null);
@@ -59,7 +65,8 @@ class MotionProposedProcedure
                 break;
         }
 
-        $motionLink = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion));
+        $procedureToken = static::getPpOpenAcceptToken($motion);
+        $motionLink     = UrlHelper::absolutizeLink(UrlHelper::createMotionUrl($motion, 'view', ['procedureToken' => $procedureToken]));
 
         return str_replace(
             ['%LINK%', '%NAME%', '%NAME_GIVEN%'],

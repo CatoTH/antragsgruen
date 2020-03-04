@@ -306,6 +306,7 @@ return [
     'proposal_email_other'       => "Hi %NAME_GIVEN%,\n\n" .
                                     "the administrators have agreed on a proposed procedure regarding your amendment.\n\n" .
                                     "Please have a look at the proposal at the following link and confirm, if you agree with it or not:\n%LINK%\n\n" .
+                                    "Hint: if you forward the link mentioned just now, the receiving person will be able to see and accept the proposal.\n\n" .
                                     "Greetings,\n" .
                                     "  The Antragsgrün-Team",
     'proposal_user_agree'        => 'I agree with the proposal',

@@ -10,9 +10,7 @@ use app\models\exceptions\Internal;
 use app\models\layoutHooks\StdHooks;
 use yii\base\Action;
 use yii\helpers\Html;
-use yii\web\AssetBundle;
-use yii\web\Controller;
-use yii\web\View;
+use yii\web\{AssetBundle, Controller, View};
 
 class Layout
 {
@@ -74,11 +72,7 @@ class Layout
         ], $pluginLayouts);
     }
 
-    /**
-     * @param string $layout
-     * @return array|null
-     */
-    public static function getLayoutPluginDef($layout)
+    public static function getLayoutPluginDef(string $layout): ?array
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginId => $plugin) {
             foreach ($plugin::getProvidedLayouts(null) as $layoutId => $layoutDef) {
@@ -90,10 +84,7 @@ class Layout
         return null;
     }
 
-    /**
-     * @param string $layout
-     */
-    public function setLayout($layout)
+    public function setLayout(string $layout): void
     {
         $this->mainCssFile = $layout;
         \app\models\layoutHooks\Layout::addHook(new StdHooks($this, $this->consultation));
@@ -111,10 +102,7 @@ class Layout
         }
     }
 
-    /**
-     * @return string
-     */
-    public static function getDefaultLayout()
+    public static function getDefaultLayout(): string
     {
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
             if ($plugin::overridesDefaultLayout()) {
@@ -124,20 +112,14 @@ class Layout
         return 'layout-classic';
     }
 
-    /**
-     */
-    public function setFallbackLayoutIfNotInitializedYet()
+    public function setFallbackLayoutIfNotInitializedYet(): void
     {
         if ($this->mainCssFile === null) {
             $this->setLayout(Layout::getDefaultLayout());
         }
     }
 
-    /**
-     * @param View $view
-     * @throws Internal
-     */
-    public function setPluginLayout($view)
+    public function setPluginLayout(View $view): void
     {
         $parts = explode('-', $this->mainCssFile);
         if (count($parts) !== 4) {
@@ -158,10 +140,7 @@ class Layout
         $bundle::register($view);
     }
 
-    /**
-     * @param Consultation $consultation
-     */
-    public function setConsultation(Consultation $consultation)
+    public function setConsultation(Consultation $consultation): void
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) === 0) {
@@ -179,11 +158,7 @@ class Layout
         }
     }
 
-    /**
-     * @param string $file
-     * @return $this;
-     */
-    public function addCSS($file)
+    public function addCSS(string $file): self
     {
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
         $file   = $webAdd . $file;
@@ -194,21 +169,13 @@ class Layout
         return $this;
     }
 
-    /**
-     * @param string $execJs
-     * @return $this;
-     */
-    public function addOnLoadJS($execJs)
+    public function addOnLoadJS(string $execJs): self
     {
         $this->onloadJs[] = $execJs;
         return $this;
     }
 
-    /**
-     * @param string $file
-     * @return $this;
-     */
-    public function addJS($file)
+    public function addJS(string $file): self
     {
         $webAdd = (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true ? 'web/' : '');
         $file   = $webAdd . $file;
@@ -219,10 +186,7 @@ class Layout
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getHTMLLanguageCode()
+    public function getHTMLLanguageCode(): string
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
@@ -243,10 +207,7 @@ class Layout
         }
     }
 
-    /**
-     * @return string
-     */
-    public function getJSLanguageCode()
+    public function getJSLanguageCode(): string
     {
         if (!$this->consultation) {
             /** @var AntragsgruenApp $params */
@@ -283,12 +244,7 @@ class Layout
         return $files;
     }
 
-    /**
-     * @param string $name
-     * @param null|string $path
-     * @return $this
-     */
-    public function addBreadcrumb($name, $path = null)
+    public function addBreadcrumb(string $name, ?string $path = null): self
     {
         if ($path) {
             $this->breadcrumbs[$path] = $name;
@@ -298,57 +254,41 @@ class Layout
         return $this;
     }
 
-    /**
-     */
-    public function loadDatepicker()
+    public function loadDatepicker(): void
     {
         $this->addJS('npm/moment-with-locales.min.js');
         $this->addJS('npm/bootstrap-datetimepicker.min.js');
         $this->addCSS('npm/bootstrap-datetimepicker.min.css');
     }
 
-    /**
-     */
-    public function loadCKEditor()
+    public function loadCKEditor(): void
     {
         $this->addJS('js/ckeditor/ckeditor.js');
     }
 
-    /**
-     */
-    public function loadFuelux()
+    public function loadFuelux(): void
     {
         $this->addJS('npm/fuelux.min.js');
         $this->addCSS('npm/fuelux.min.css');
     }
 
-    /**
-     */
-    public function loadBootstrapToggle()
+    public function loadBootstrapToggle(): void
     {
         $this->addJS('npm/bootstrap-toggle.min.js');
         $this->addCSS('npm/bootstrap-toggle.min.css');
     }
 
-    /**
-     */
-    public function loadSortable()
+    public function loadSortable(): void
     {
         $this->addJS('npm/Sortable.min.js');
     }
 
-    /**
-     */
-    public function loadTypeahead()
+    public function loadTypeahead(): void
     {
         $this->addJs('npm/typeahead.bundle.min.js');
     }
 
-    /**
-     * @param View $view
-     * @param Controller $controller
-     */
-    public function registerPluginAssets($view, $controller)
+    public function registerPluginAssets(View $view, Controller $controller): void
     {
         foreach (AntragsgruenApp::getActivePlugins() as $pluginClass) {
             foreach ($pluginClass::getActiveAssetBundles($controller) as $assetBundle) {
@@ -357,11 +297,7 @@ class Layout
         }
     }
 
-    /**
-     * @param string $htmlId
-     * @return string
-     */
-    public function getMiniMenu($htmlId)
+    public function getMiniMenu(string $htmlId): string
     {
         $dropdownHtml = '';
         foreach ($this->menusHtmlSmall as $menu) {
@@ -390,11 +326,7 @@ class Layout
         return $out;
     }
 
-    /**
-     * @param string $url
-     * @return string
-     */
-    public static function resourceUrl($url)
+    public static function resourceUrl(string $url): string
     {
         /** @var AntragsgruenApp $params */
         $params   = \yii::$app->params;
@@ -410,18 +342,12 @@ class Layout
         return Html::encode($newUrl);
     }
 
-    /**
-     * @param string $module
-     */
-    public function addAMDModule($module)
+    public function addAMDModule(string $module): void
     {
         $this->mainAMDModules[] = $module;
     }
 
-    /**
-     * @return string
-     */
-    public function getAMDLoader()
+    public function getAMDLoader(): string
     {
         /** @var AntragsgruenApp $params */
         $params       = \yii::$app->params;
@@ -433,10 +359,7 @@ class Layout
             'data-resource-base="' . Html::encode($resourceBase) . '"></script>';
     }
 
-    /**
-     * @return string
-     */
-    public function getAMDClasses()
+    public function getAMDClasses(): string
     {
         $out = '';
         foreach ($this->mainAMDModules as $module) {
@@ -445,11 +368,7 @@ class Layout
         return $out;
     }
 
-    /**
-     * @param string $title
-     * @return string
-     */
-    public function formatTitle($title)
+    public function formatTitle(string $title): string
     {
         if (stripos($title, 'Antragsgrün') === false) {
             if ($title === '') {
@@ -463,10 +382,7 @@ class Layout
         return $title;
     }
 
-    /**
-     * @return string
-     */
-    public function getLogoStr()
+    public function getLogoStr(): string
     {
         /** @var Base $controller */
         $controller   = \Yii::$app->controller;
@@ -491,11 +407,7 @@ class Layout
         }
     }
 
-    /**
-     * @param Action $action
-     * @return bool
-     */
-    protected function isRobotsIndexDefault($action)
+    protected function isRobotsIndexDefault(Action $action): bool
     {
         if (AntragsgruenApp::getInstance()->mode === 'sandbox') {
             return false;
@@ -527,11 +439,7 @@ class Layout
         }
     }
 
-    /**
-     * @param Action $action
-     * @return bool
-     */
-    public function isRobotsIndex($action)
+    public function isRobotsIndex(Action $action): bool
     {
         $visible = $this->isRobotsIndexDefault($action);
         foreach (AntragsgruenApp::getActivePlugins() as $plugin) {

@@ -216,6 +216,7 @@ Bitte beachte, dass sich die Unterstützer*innen deines Antrags mit ihren Zugang
     'proposal_email_other'    => "Hallo %NAME_GIVEN%,\n\n" .
                                  "die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.\n\n" .
                                  "Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:\n%LINK%\n\n" .
+                                 "Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.\n\n" .
                                  "Mit freundlichen Grüßen,\n" .
                                  "  Das Antragsgrün-Team",
 

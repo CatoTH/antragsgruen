@@ -14,6 +14,7 @@ use yii\helpers\Html;
  * @var string|null $adminEdit
  * @var null|string $supportStatus
  * @var null|CommentForm $commentForm
+ * @var string|null $procedureToken
  */
 
 /** @var \app\controllers\Base $controller */
@@ -132,8 +133,8 @@ if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
             'msgAlert'  => null,
         ]);
     }
-    if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->iAmInitiator()) {
-        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment]);
+    if ($amendment->proposalFeedbackHasBeenRequested() && $amendment->canSeeProposedProcedure($procedureToken)) {
+        echo $this->render('_view_agree_to_proposal', ['amendment' => $amendment, 'procedureToken' => $procedureToken]);
     }
 }
 

@@ -2,9 +2,10 @@
 
 namespace app\controllers;
 
-use app\components\{UrlHelper, EmailNotifications};
-use app\models\db\{ConsultationLog, IComment, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation};
-use app\models\exceptions\{DB, FormError, Internal};
+use app\models\notifications\MotionProposedProcedure;
+use app\components\{Tools, UrlHelper, EmailNotifications};
+use app\models\db\{ConsultationLog, IComment, IMotion, Motion, MotionAdminComment, MotionComment, MotionSupporter, User, Consultation, VotingBlock};
+use app\models\exceptions\{DB, FormError, Internal, MailNotSent};
 use app\models\forms\CommentForm;
 use app\models\events\MotionEvent;
 use app\models\settings\InitiatorForm;
@@ -344,18 +345,16 @@ trait MotionActionsTrait
             throw new Internal(\Yii::t('comment', 'err_no_screening'));
         }
         foreach ($motion->getMyConsultation()->tags as $tag) {
-            if ($tag->id == \Yii::$app->request->post('tagId')) {
+            if ($tag->id === intval(\Yii::$app->request->post('tagId'))) {
                 $motion->unlink('tags', $tag, true);
             }
         }
     }
 
-    /**
-     * @param Motion $motion
-     */
-    private function setProposalAgree(Motion $motion)
+    private function setProposalAgree(Motion $motion): void
     {
-        if (!$motion->iAmInitiator() || !$motion->proposalFeedbackHasBeenRequested()) {
+        $procedureToken = \Yii::$app->request->get('procedureToken');
+        if (!$motion->canSeeProposedProcedure($procedureToken) || !$motion->proposalFeedbackHasBeenRequested()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
             return;
         }
@@ -477,5 +476,150 @@ trait MotionActionsTrait
         } else {
             return json_encode(['success' => false, 'error' => 'No permission to delete this comment']);
         }
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     * @throws Internal
+     */
+    public function actionSaveProposalStatus($motionSlug)
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->response->statusCode = 404;
+            return 'Motion not found';
+        }
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CHANGE_PROPOSALS)) {
+            \Yii::$app->response->statusCode = 403;
+            return 'Not permitted to change the status';
+        }
+
+        $response = [];
+        $msgAlert = null;
+
+        if (\Yii::$app->request->post('setStatus', null) !== null) {
+            $setStatus = IntVal(\Yii::$app->request->post('setStatus'));
+            if ($motion->proposalStatus !== $setStatus) {
+                if ($motion->proposalUserStatus !== null) {
+                    $msgAlert = \Yii::t('amend', 'proposal_user_change_reset');
+                }
+                $motion->proposalUserStatus = null;
+            }
+            $motion->proposalStatus  = $setStatus;
+            $motion->proposalComment = \Yii::$app->request->post('proposalComment', '');
+            $motion->votingStatus    = \Yii::$app->request->post('votingStatus', '');
+            if (\Yii::$app->request->post('proposalExplanation', null) !== null) {
+                if (trim(\Yii::$app->request->post('proposalExplanation', '') === '')) {
+                    $motion->proposalExplanation = null;
+                } else {
+                    $motion->proposalExplanation = \Yii::$app->request->post('proposalExplanation', '');
+                }
+            } else {
+                $motion->proposalExplanation = null;
+            }
+            if (\Yii::$app->request->post('visible', 0)) {
+                $motion->setProposalPublished();
+            } else {
+                $motion->proposalVisibleFrom = null;
+            }
+            $votingBlockId         = \Yii::$app->request->post('votingBlockId', null);
+            $motion->votingBlockId = null;
+            if ($votingBlockId === 'NEW') {
+                $title = trim(\Yii::$app->request->post('votingBlockTitle', ''));
+                if ($title !== '') {
+                    $votingBlock                 = new VotingBlock();
+                    $votingBlock->consultationId = $this->consultation->id;
+                    $votingBlock->title          = $title;
+                    $votingBlock->votingStatus   = IMotion::STATUS_VOTE;
+                    $votingBlock->save();
+
+                    $motion->votingBlockId = $votingBlock->id;
+                }
+            } elseif ($votingBlockId > 0) {
+                $votingBlock = $this->consultation->getVotingBlock($votingBlockId);
+                if ($votingBlock) {
+                    $motion->votingBlockId = $votingBlock->id;
+                }
+            }
+
+            $response['success'] = false;
+            if ($motion->save()) {
+                $response['success'] = true;
+            }
+
+            $this->consultation->refresh();
+            $response['html']        = $this->renderPartial('_set_proposed_procedure', [
+                'motion'   => $motion,
+                'msgAlert' => $msgAlert,
+            ]);
+            $response['proposalStr'] = $motion->getFormattedProposalStatus(true);
+        }
+
+        if (\Yii::$app->request->post('notifyProposer') || \Yii::$app->request->post('sendAgain')) {
+            try {
+                new MotionProposedProcedure(
+                    $motion,
+                    \Yii::$app->request->post('text'),
+                    \Yii::$app->request->post('fromName'),
+                    \Yii::$app->request->post('replyTo')
+                );
+                $motion->proposalNotification = date('Y-m-d H:i:s');
+                $motion->save();
+                $response['success'] = true;
+                $response['html']    = $this->renderPartial('_set_proposed_procedure', [
+                    'motion'   => $motion,
+                    'msgAlert' => $msgAlert,
+                    'context'  => \Yii::$app->request->post('context', 'view'),
+                ]);
+            } catch (MailNotSent $e) {
+                $response['success'] = false;
+                $response['error']   = 'The mail could not be sent: ' . $e->getMessage();
+            }
+        }
+
+        if (\Yii::$app->request->post('setProposerHasAccepted')) {
+            $motion->proposalUserStatus = Motion::STATUS_ACCEPTED;
+            $motion->save();
+            ConsultationLog::log(
+                $motion->getMyConsultation(),
+                User::getCurrentUser()->id,
+                ConsultationLog::MOTION_ACCEPT_PROPOSAL,
+                $motion->id
+            );
+            $response['success'] = true;
+            $response['html']    = $this->renderPartial('_set_proposed_procedure', [
+                'motion'   => $motion,
+                'msgAlert' => $msgAlert,
+            ]);
+        }
+
+        if (\Yii::$app->request->post('writeComment')) {
+            $adminComment               = new MotionAdminComment();
+            $adminComment->userId       = User::getCurrentUser()->id;
+            $adminComment->text         = \Yii::$app->request->post('writeComment');
+            $adminComment->status       = MotionAdminComment::PROPOSED_PROCEDURE;
+            $adminComment->dateCreation = date('Y-m-d H:i:s');
+            $adminComment->motionId     = $motion->id;
+            if (!$adminComment->save()) {
+                \Yii::$app->response->statusCode = 500;
+                $response['success']             = false;
+                return json_encode($response);
+            }
+
+            $response['success'] = true;
+            $response['comment'] = [
+                'username'      => $adminComment->getMyUser()->name,
+                'id'            => $adminComment->id,
+                'text'          => $adminComment->text,
+                'delLink'       => UrlHelper::createMotionUrl($motion, 'del-proposal-comment'),
+                'dateFormatted' => Tools::formatMysqlDateTime($adminComment->dateCreation),
+            ];
+        }
+
+        return json_encode($response);
     }
 }

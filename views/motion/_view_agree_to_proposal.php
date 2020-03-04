@@ -5,10 +5,11 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var \app\models\db\Motion $motion
+ * @var string|null $procedureToken
  */
 
 echo Html::beginForm('', 'post', ['class' => 'agreeToProposal']);
-$agreed = ($motion->proposalUserStatus == \app\models\db\Motion::STATUS_ACCEPTED);
+$agreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_ACCEPTED);
 ?>
     <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
     <div class="holder">
@@ -44,7 +45,6 @@ $agreed = ($motion->proposalUserStatus == \app\models\db\Motion::STATUS_ACCEPTED
     <div class="hint">
         <?= Yii::t('amend', 'proposal_user_disagree_h') ?>
     </div>
-
+    <input type="hidden" name="procedureToken" value="<?= Html::encode($procedureToken) ?>">
 <?php
 echo Html::endForm();
-

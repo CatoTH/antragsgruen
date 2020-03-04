@@ -6,7 +6,8 @@ use app\components\{diff\AmendmentSectionFormatter, diff\DiffRenderer, HashedSta
 use app\models\events\AmendmentEvent;
 use app\models\exceptions\FormError;
 use app\models\layoutHooks\Layout;
-use app\models\notifications\{AmendmentPublished as AmendmentPublishedNotification,
+use app\models\notifications\{AmendmentProposedProcedure,
+    AmendmentPublished as AmendmentPublishedNotification,
     AmendmentSubmitted as AmendmentSubmittedNotification,
     AmendmentWithdrawn as AmendmentWithdrawnNotification};
 use app\models\policies\{All, IPolicy};
@@ -624,6 +625,13 @@ class Amendment extends IMotion implements IRSSItem
         return false;
     }
 
+    public function canSeeProposedProcedure(?string $procedureToken): bool
+    {
+        if ($procedureToken && AmendmentProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
+            return true;
+        }
+        return $this->iAmInitiator();
+    }
 
     public function canEdit(): bool
     {

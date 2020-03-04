@@ -311,12 +311,10 @@ trait AmendmentActionsTrait
         \Yii::$app->session->setFlash('success', \Yii::t('amend', 'support_finish_done'));
     }
 
-    /**
-     * @param Amendment $amendment
-     */
-    private function setProposalAgree(Amendment $amendment)
+    private function setProposalAgree(Amendment $amendment): void
     {
-        if (!$amendment->iAmInitiator() || !$amendment->proposalFeedbackHasBeenRequested()) {
+        $procedureToken = \Yii::$app->request->get('procedureToken');
+        if (!$amendment->canSeeProposedProcedure($procedureToken) || !$amendment->proposalFeedbackHasBeenRequested()) {
             \Yii::$app->session->setFlash('error', 'Not allowed to perform this action');
             return;
         }

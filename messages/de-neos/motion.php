@@ -41,6 +41,8 @@ die Programmkommission einen Verfahrensvorschlag für deinen Antrag erarbeitet.
 Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:
 %LINK%
 
+Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.
+
 Mit freundlichen Grüßen,
 Das Antragsschmiede-Team',
 	'support_reached_email_body' => 'Hallo,<br><br>Gute Nachrichten! Dein Antrag "%TITLE%" hat die Mindestzahl an Unterstützer_innen erreicht.<br><br>Jetzt bist du noch einmal am Zug. Bitte reiche deinen Antrag nun offiziell bei der Antragskommission ein. Dies kannst du über Antragsschmiede unter dem folgenden Link machen:<br><br><strong>%LINK%</strong><br><br>Der Antrag wird zeitnah nach einer formalen Prüfung in der Antragsschmiede veröffentlicht.<br><br>Viele Grüße,<br> Das Antragsschmiede-Team',

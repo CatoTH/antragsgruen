@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\notifications\MotionProposedProcedure;
 use app\models\notifications\MotionPublished;
 use app\components\{HashedStaticCache, MotionSorter, RSSExporter, Tools, UrlHelper};
 use app\models\exceptions\{FormError, Internal, NotAmendable, NotFound};
@@ -514,6 +515,13 @@ class Motion extends IMotion implements IRSSItem
         return false;
     }
 
+    public function canSeeProposedProcedure(?string $procedureToken): bool
+    {
+        if ($procedureToken && MotionProposedProcedure::getPpOpenAcceptToken($this) === $procedureToken) {
+            return true;
+        }
+        return $this->iAmInitiator();
+    }
 
     public function canEdit(): bool
     {

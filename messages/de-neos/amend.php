@@ -44,6 +44,8 @@ die Programmkommission hat einen Verfahrensvorschlag für deinen Änderungsantra
 Bitte überprüfe unter folgendem Link, ob du damit einverstanden bist:
 %LINK%
 
+Hinweis: wenn du den eben genannten Link weiterleitest, kann die empfangende Person den Vorschlag damit ebenfalls einsehen und ggf. bestätigen.
+
 Mit freundlichen Grüßen,
 Das Antragsschmiede-Team',
 	'initiator' => 'Antragsteller_in',

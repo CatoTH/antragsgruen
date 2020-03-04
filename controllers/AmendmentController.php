@@ -153,10 +153,11 @@ class AmendmentController extends Base
      * @param string $motionSlug
      * @param int $amendmentId
      * @param int $commentId
+     * @param string|null $procedureToken
      * @return string
      * @throws \app\models\exceptions\Internal
      */
-    public function actionView($motionSlug, $amendmentId, $commentId = 0)
+    public function actionView($motionSlug, $amendmentId, $commentId = 0, ?string $procedureToken = null)
     {
         $this->layout = 'column2';
 
@@ -181,6 +182,7 @@ class AmendmentController extends Base
             'openedComments' => $openedComments,
             'adminEdit'      => $adminEdit,
             'commentForm'    => null,
+            'procedureToken' => $procedureToken,
         ];
 
         try {
