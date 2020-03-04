@@ -37,7 +37,7 @@ class Exporter
             '^'                      => '\^{}',
             '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
-            "\n"                     => '\\linebreak' . "\n",
+            "\n"                     => '\\linebreak{}' . "\n", // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "["
         ];
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
@@ -57,12 +57,12 @@ class Exporter
 
         $str = static::encodeHTMLString($str);
         $str = str_replace('###LINENUMBER###', '', $str);
-        $str = str_replace('###LINEBREAK###', "\\linebreak\n", $str);
+        $str = str_replace('###LINEBREAK###', "\\linebreak{}\n", $str);
 
         // Some edge cases that occur in nested enumerated lists
-        $str = str_replace('\linebreak' . "\n\n" . '\item', "\n" . '\item', $str);
+        $str = str_replace('\linebreak{}' . "\n\n" . '\item', "\n" . '\item', $str);
         $str = str_replace('\newline' . "\n" . '\end{enumerate}', "\n" . '\end{enumerate}', $str);
-        $str = str_replace('\linebreak' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
+        $str = str_replace('\linebreak{}' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
 
         return $str;
     }
@@ -77,7 +77,7 @@ class Exporter
                 $line = substr($line, 1);
             }
             $out .= str_replace(' ', '\ ', static::encodePlainString($line));
-            $out .= '\linebreak' . "\n";
+            $out .= '\linebreak{}' . "\n";
         }
         $out .= '}' . "\n\n" . '\linenumbers';
         return $out;
