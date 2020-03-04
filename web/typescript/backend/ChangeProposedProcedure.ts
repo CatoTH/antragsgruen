@@ -139,7 +139,11 @@ export class ChangeProposedProcedure {
             data['proposalComment'] = this.$widget.find('input[name=referredTo]').val();
         }
         if (newVal == STATUS_OBSOLETED_BY) {
-            data['proposalComment'] = this.$widget.find('input[name=obsoletedByAmendment]').val();
+            if (this.$widget.find('input[name=obsoletedByAmendment]').length > 0) {
+                data['proposalComment'] = this.$widget.find('input[name=obsoletedByAmendment]').val();
+            } else {
+                data['proposalComment'] = this.$widget.find('input[name=obsoletedByMotion]').val();
+            }
         }
         if (newVal == STATUS_CUSTOM_STRING) {
             data['proposalComment'] = this.$widget.find('input[name=statusCustomStr]').val();
@@ -216,7 +220,7 @@ export class ChangeProposedProcedure {
     }
 
     private initExplanation() {
-        this.$widget.find('input[name=setPublicExplanation]').change((ev) => {
+        this.$widget.find('input[name=setPublicExplanation]').on('change', (ev) => {
             if ($(ev.target).prop('checked')) {
                 this.$widget.find('section.publicExplanation').removeClass('hidden');
             } else {
