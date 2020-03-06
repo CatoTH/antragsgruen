@@ -40,7 +40,7 @@
 
 			editor.addMenuItems( {
 				numberedlist: {
-					label: editor.lang.liststyle.numberedTitle,
+					label: editor.lang.listitemstyle.numberedTitle,
 					group: 'list',
 					command: 'numberedListStyle'
 				},
