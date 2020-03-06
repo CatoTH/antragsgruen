@@ -98,6 +98,7 @@ class IPdfWriter extends Fpdi
                 $this->setCellHeightRatio(1.5);
                 $linesArr = $this->printMotionToPDFAddLinebreaks($linesArr);
                 $text1    = implode('<br>', $linesArr);
+                $text1    = str_replace('</li><br><br><li', '</li><br><li', $text1);
 
                 // instead of <span class="strike"></span> TCPDF can only handle <s></s>
                 // for striking through text

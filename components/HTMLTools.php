@@ -17,19 +17,15 @@ class HTMLTools
     const OL_LOWER_ALPHA = 'lowerAlpha';
     const OL_UPPER_ALPHA = 'upperAlpha';
 
-    /**
-     * @param string $str
-     * @return bool
-     */
-    public static function isStringCachable($str)
+    public static function isStringCachable(string $str): bool
     {
         return strlen($str) > 1000;
     }
 
-    /**
+    /*
      * Required by HTML Purifier to handle Umlaut domains
      */
-    public static function loadNetIdna2()
+    public static function loadNetIdna2(): void
     {
         $dir  = __DIR__ . DIRECTORY_SEPARATOR . 'Net_IDNA2-0.1.1' . DIRECTORY_SEPARATOR . 'Net' . DIRECTORY_SEPARATOR;
         $dir2 = $dir . 'IDNA2' . DIRECTORY_SEPARATOR;
@@ -54,11 +50,7 @@ class HTMLTools
         return $purifier->purify($html);
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function cleanMessedUpHtmlCharacters($html)
+    public static function cleanMessedUpHtmlCharacters(string $html): string
     {
         if (function_exists('normalizer_normalize')) {
             $html = normalizer_normalize($html);
@@ -82,11 +74,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function cleanTrustedHtml($html)
+    public static function cleanTrustedHtml(string $html): string
     {
         $html = static::cleanMessedUpHtmlCharacters($html);
         $html = str_replace("\r", '', $html);
@@ -94,12 +82,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $htmlIn
-     * @param bool $linkify
-     * @return string
-     */
-    public static function correctHtmlErrors($htmlIn, $linkify = false)
+    public static function correctHtmlErrors(string $htmlIn, bool $linkify = false): string
     {
         $cacheKey = 'correctHtmlErrors_' . md5($htmlIn);
         if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
@@ -160,11 +143,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function wrapOrphanedTextWithP($html)
+    public static function wrapOrphanedTextWithP(string $html): string
     {
         $dom = static::html2DOM($html);
 
@@ -312,11 +291,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function stripEmptyBlockParagraphs($html)
+    public static function stripEmptyBlockParagraphs(string $html): string
     {
         do {
             $htmlPre = $html;
@@ -329,11 +304,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function prepareHTMLForCkeditor($html)
+    public static function prepareHTMLForCkeditor(string $html): string
     {
         // When editing amendments, list items are split into <ol start="2"> items
         // (it's possible to edit only one list item)
