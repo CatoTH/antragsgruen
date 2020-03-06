@@ -5,7 +5,6 @@ namespace app\views\pdfLayouts;
 use app\models\db\{Amendment, Consultation, ConsultationMotionType, Motion, TexTemplate};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 
 abstract class IPDFLayout
