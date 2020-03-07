@@ -315,12 +315,7 @@ class Diff
             $this->wrapWithInsert($preChars . $restInsC . $postChars) . $postWords;
     }
 
-    /**
-     * @param $lineOldArr
-     * @param $lineNewArr
-     * @return boolean
-     */
-    public function htmlParagraphTypeChanges($lineOldArr, $lineNewArr)
+    public function htmlParagraphTypeChanges(array $lineOldArr, array $lineNewArr): bool
     {
         if (count($lineOldArr) === 0 || count($lineNewArr) === 0) {
             return false;
@@ -335,16 +330,10 @@ class Diff
         } else {
             $nodeType2 = $matches['nodeType'];
         }
-        return ($nodeType1 != $nodeType2);
+        return ($nodeType1 !== $nodeType2);
     }
 
-    /**
-     * @param string $lineOld
-     * @param string $lineNew
-     * @return string
-     * @throws Internal
-     */
-    public function computeLineDiff($lineOld, $lineNew)
+    public function computeLineDiff(string $lineOld, string $lineNew): string
     {
         $computedStrs = [];
         $lineOld      = static::normalizeForDiff($lineOld);

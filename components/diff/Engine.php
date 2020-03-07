@@ -27,34 +27,38 @@ class Engine
     private $IGNORE_STR = '';
 
 
-    /**
-     * @param string $str
-     */
-    public function setIgnoreStr($str)
+    public function setIgnoreStr(string $str): void
     {
         $this->IGNORE_STR = $str;
     }
 
-    /**
-     * @return string
-     */
-    public function getIgnoreStr()
+    public function getIgnoreStr(): string
     {
         return $this->IGNORE_STR;
     }
 
 
-    /**
-     * @param string $str1
-     * @param string $str2
-     * @return bool
-     */
-    private function strCmp($str1, $str2)
+    private function strCmp(string $str1, string $str2): bool
     {
-        if ($this->IGNORE_STR != '') {
+        if ($this->IGNORE_STR !== '') {
             $str1 = str_replace($this->IGNORE_STR, '', $str1);
             $str2 = str_replace($this->IGNORE_STR, '', $str2);
         }
+
+        // Ignoring some changes in pure HTML tags
+        if ($str1[0] === '<' && $str2[0] === '<' && preg_match('/^<[^>]+>$/', $str1) && preg_match('/^<[^>]+>$/', $str2)) {
+            // Changing attributes of list items is not supported by the diff, as this would get too messy (ol start=2 => ol start=3)
+            if (stripos($str1, '<ol') === 0 && stripos($str2, '<ol') === 0) {
+                return true;
+            }
+            if (stripos($str1, '<ul') === 0 && stripos($str2, '<ul') === 0) {
+                return true;
+            }
+            if (stripos($str1, '<li') === 0 && stripos($str2, '<li') === 0) {
+                return true;
+            }
+        }
+
         return ($str1 === $str2);
     }
 

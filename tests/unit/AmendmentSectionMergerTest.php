@@ -7,6 +7,25 @@ use app\components\HTMLTools;
 
 class AmendmentSectionMergerTest extends TestBase
 {
+    public function testChangedList()
+    {
+        $merger = new SectionMerger();
+
+        $paragraphsOrig = HTMLTools::sectionSimpleHTML('<ol class="lowerAlpha"><li>Holeri</li><li>dödldi</li></ol>');
+        $merger->initByMotionParagraphs($paragraphsOrig);
+        $paragraphsNew = HTMLTools::sectionSimpleHTML('<ol class="lowerAlpha"><li>Holeri</li><li>du</li><li>dödldi</li></ol>');
+        $merger->addAmendingParagraphs(1, $paragraphsNew);
+
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<ol class="lowerAlpha" start="1"><li>Holeri</li></ol>'],
+            ['amendment' => 1, 'text' => '###INS_START###<ol class="lowerAlpha" start="2"><li>du</li></ol>###INS_END###'],
+        ], $merger->getGroupedParagraphData(0));
+
+        $this->assertEquals([
+            ['amendment' => 0, 'text' => '<ol class="lowerAlpha" start="2"><li>dödldi</li></ol>'],
+        ], $merger->getGroupedParagraphData(1));
+    }
+
     public function testInsertWithinDeletion()
     {
         $origText = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>';
@@ -69,8 +88,6 @@ class AmendmentSectionMergerTest extends TestBase
         ], $groupedParaData);
     }
 
-    /**
-     */
     public function testInsertedParagraph()
     {
         $merger = new SectionMerger();
@@ -87,8 +104,6 @@ class AmendmentSectionMergerTest extends TestBase
         );
     }
 
-    /**
-     */
     public function testPrependPToChangedList()
     {
         $this->markTestIncomplete('kommt noch');
@@ -105,8 +120,6 @@ class AmendmentSectionMergerTest extends TestBase
         ], $merger->getGroupedParagraphData(0));
     }
 
-    /**
-     */
     public function testChangeWholeParagraph()
     {
         $origText   = '<p><strong>Demokratie und Freiheit </strong><br>
@@ -147,8 +160,6 @@ Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vert
         ], $merger->getGroupedParagraphData(0));
     }
 
-    /**
-     */
     public function testMergeWithComplication1()
     {
         $origText = '<p>Woibbadinga damischa owe gwihss Sauwedda ded Charivari dei heid gfoids ma sagrisch guad. Maßkruag wo hi mim Radl foahn Landla Leonhardifahrt, Radler. Ohrwaschl und glei wirds no fui lustiga Spotzerl Fünferl, so auf gehds beim Schichtl do legst di nieda ned Biawambn Breihaus. I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>';
