@@ -600,7 +600,7 @@ class Diff
         $renderer->setFormatting($diffFormatting);
 
         list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceParas, $newParas);
-        if (count($adjustedRef) != count($adjustedMatching)) {
+        if (count($adjustedRef) !== count($adjustedMatching)) {
             throw new Internal('compareSectionedHtml: number of sections does not match');
         }
         $diffSections = [];
@@ -831,7 +831,7 @@ class Diff
         $diffParas     = $diff->compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting);
         $affectedParas = [];
         foreach ($diffParas as $paraNo => $para) {
-            if (DiffRenderer::paragraphContainsDiff($para) !== false) {
+            if (DiffRenderer::paragraphContainsDiff($para) !== null) {
                 $affectedParas[$paraNo] = $para;
             }
         }

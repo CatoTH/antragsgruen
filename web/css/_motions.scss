@@ -178,6 +178,7 @@
     font-family: $motionFixedFont;
     //letter-spacing: -0.5px;
     color: $motionFixedFontColor;
+    hyphens: none; // Otherwise, hovered inline amendments have different line breaks than the original motion
   }
 
   @media screen and (min-width: 800px) {

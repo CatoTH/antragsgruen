@@ -2,9 +2,7 @@
 
 namespace unit;
 
-use app\components\diff\Diff;
-use app\components\diff\DiffRenderer;
-use app\components\diff\Engine;
+use app\components\diff\{Diff, DiffRenderer, Engine};
 use app\components\HTMLTools;
 use app\models\exceptions\Internal;
 use Codeception\Specify;
@@ -13,8 +11,6 @@ class DiffTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testShortLineWithManyChanges()
     {
         $orig     = '<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>';
@@ -25,8 +21,6 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     */
     public function testNoDiffInLink()
     {
         $orig     = '<p>[1] Der Vorschlag, ein Datenschutz-Grundrecht in das Grundgesetz einzufügen, fand bisher nicht die erforderliche Mehrheit. Personenbezogene Daten sind jedoch nach Art. 8 der EU-Grundrechtecharta geschützt. (<a href="https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung">https://de.wikipedia.org/wiki/Informationelle_Selbstbestimmung</a>)]</p>';
@@ -37,8 +31,6 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     */
     public function testNoGroupingBeyondLists()
     {
         $orig     = '<ul><li><ul><li><p>Der große Oxmox riet ihr davon ab, da es dort wimmele von bösen Kommata, wilden Fragezeichen und hinterhältigen Semikoli, doch das Blindtextchen ließ sich nicht beirren.</p></li></ul></li></ul>';
@@ -49,8 +41,6 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     */
     public function testNoChangingParagraphTypes()
     {
         $orig     = '<p>###LINENUMBER###3) Eine Bekämpfung von Fluchtursachen und nicht der Geflüchteten</p>';
@@ -61,8 +51,6 @@ class DiffTest extends TestBase
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     */
     public function testBreakListpintIntoTwo()
     {
         $this->markTestIncomplete('Does not work yet');
@@ -82,8 +70,6 @@ class DiffTest extends TestBase
         $this->assertEquals($expect, $arr);
     }
 
-    /**
-     */
     public function testInlineDiffToWordBased()
     {
         $orig = ['<ul><li>Test1</li></ul>', '<ul><li>Test3</li></ul>'];
@@ -188,8 +174,10 @@ class DiffTest extends TestBase
         ], $words[0]);
 
 
-        $orig = ['<p>Normaler Text wieder<sup>Hochgestellt</sup>.<br>
-Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
+        $orig = [
+            '<p>Normaler Text wieder<sup>Hochgestellt</sup>.<br>
+Neue Zeile<sub>Tiefgestellt</sub>.</p>'
+        ];
         $new  = ['<p>Normaler Text wieder.</p>'];
         $diff = new Diff();
         try {
@@ -217,7 +205,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
                 ['word' => '.', 'diff' => '.###DEL_END###', 'amendmentId' => 1], $arr[0][21]
             );
             $this->assertEquals(
-                ['word' => '</p>', 'diff' => '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###', 'amendmentId' => 1], $arr[0][22]
+                ['word'        => '</p>',
+                 'diff'        => '</p>###INS_START###<p>Griasd eich midnand etza nix Gwiass woass ma ned owe.</p>###INS_END###',
+                 'amendmentId' => 1
+                ], $arr[0][22]
             );
         } catch (Internal $e) {
             echo $e->getMessage();
@@ -227,8 +218,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testGroupOperations()
     {
         $src     = [
@@ -269,8 +258,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testWordDiff()
     {
         $diff     = new Diff();
@@ -314,11 +301,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $orig = '###LINENUMBER###Bildungsbereich. Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.';
         $new  = 'Bildungsbereich.';
         $out  = $renderer->renderHtmlWithPlaceholders($diff->computeWordDiff($orig, $new));
-        $this->assertEquals('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>', $out);
+        $this->assertEquals('###LINENUMBER###Bildungsbereich.<del> Der Bund muss sie unterstützen. Hier darf das Kooperationsverbot nicht im ###LINENUMBER###Wege stehen.</del>',
+            $out);
     }
 
-    /**
-     */
     public function testLinenumberForcelinebreak()
     {
         // Unrealistic test case - $new would be two paragraphs
@@ -332,8 +318,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testDeleteMultipleParagraphs()
     {
         $this->markTestIncomplete('kommt noch');
@@ -375,8 +359,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expectedDiff, $out);
     }
 
-    /**
-     */
     public function testInsertWithSameBeginningWord()
     {
         $orig     = ['<ul><li>Wir sind Nummer 1</li></ul>'];
@@ -387,8 +369,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expected, $out);
     }
 
-    /**
-     */
     public function testSwitchAndInsertListItems()
     {
         $this->markTestIncomplete('kommt noch');
@@ -415,22 +395,25 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diff = new Diff();
         $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $this->assertEquals('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>', $out[0]);
-        $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>', $out[1]);
-        $this->assertEquals('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>', $out[2]);
-        $this->assertEquals('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>', $out[3]);
-        $this->assertEquals('<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>', $out[4]);
+        $this->assertEquals('<p class="deleted">Die Stärkung einer europäischen Identität – ohne die Verwischung historischer Verantwortung und politischer Kontinuitäten – ist für eine zukünftige Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
+            $out[0]);
+        $this->assertEquals('<p><del>Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>',
+            $out[1]);
+        $this->assertEquals('<ul class="deleted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+            $out[2]);
+        $this->assertEquals('<ul><li>Wir Jugendverbände sehen uns in der Verantwortung, das Gedenken an den Holocaust und die nationalsozialistischen Verbrechen, die von Deutschland ausgingen, wach zu halten und gemeinsam Sorge dafür zu tragen, „dass Auschwitz nie wieder sei!“.</li></ul><ul class="inserted"><li>Wir stellen uns immer wieder neu der Frage, wie Jugendverbände der zunehmenden kulturellen Vielfalt in ihrer verbandlichen Erinnerungskultur und ihrer Erinnerungsarbeit gerecht werden und gleichzeitig die jeweils eigene, auch kulturelle Identität, die den Verband und seine Attraktivität ausmacht, wahren können.</li></ul>',
+            $out[3]);
+        $this->assertEquals('<ul><li>Wir sehen die Notwendigkeit eines stetigen Austarierens und Diskurses, um sich angemessen mit anderen historischen Ereignissen auseinanderzusetzen, die aufgrund der Herkunftsgeschichte vieler Mitglieder relevant werden, ohne dabei den Holocaust in irgendeiner Weise zu relativieren.</li></ul>',
+            $out[4]);
     }
 
 
-    /**
-     */
     public function testReplaceListByP()
     {
         $orig           = '<ul><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li>' .
-            '<li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li>' .
-            '<li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li>' .
-            '<li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
+                          '<li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li>' .
+                          '<li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li>' .
+                          '<li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
         $new            = '<p>Test 456</p>';
         $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
@@ -438,7 +421,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $diff      = new Diff();
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $expected = ['<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
+        $expected = [
+            '<ul class="deleted"><li>Auffi Gamsbart nimma de Sepp Ledahosn Ohrwaschl um Godds wujn Wiesn Deandlgwand Mongdratzal! Jo leck mi Mamalad i daad mechad?</li></ul>',
             '<ul class="deleted"><li>Do nackata Wurscht i hob di narrisch gean, Diandldrahn Deandlgwand vui huift vui woaß?</li></ul>',
             '<ul class="deleted"><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.</li></ul><p class="inserted">Test 456</p>',
             '<ul class="deleted"><li>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>',
@@ -447,33 +431,31 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testReplaceParagraph()
     {
         $diff = new Diff();
 
         $str1           = '<p>Unchanging line</p>
 <p>Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, ' .
-            'entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in ' .
-            'gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft ' .
-            'an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. ' .
-            'Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und ' .
-            'Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</p>';
+                          'entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in ' .
+                          'gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft ' .
+                          'an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. ' .
+                          'Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und ' .
+                          'Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</p>';
         $str2           = '<p>Unchanging line</p>
 <p>Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete ' .
-            'patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf ' .
-            'Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie ' .
-            'festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis ' .
-            'akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>';
+                          'patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf ' .
+                          'Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie ' .
+                          'festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis ' .
+                          'akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>';
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
 
         $expect = [
             '<p>Unchanging line</p>',
             '<p class="deleted">Das wollen wir mit unserer Zeitpolitik ermöglichen. Doch wie die Aufgaben innerhalb der Familie verteilt werden, entscheidet sich heute oft in ernüchternder Weise: Selbst wenn Paare gleichberechtigt und in gegenseitigem Einvernehmen die Rollenverteilung miteinander ausmachen wollen, scheitern sie zu oft an der Realität – und leben plötzlich Rollenbilder, die sie eigentlich so nie wollten. Verkrustete Strukturen und Fehlanreize regieren in ihr Leben hinein; sie verhindern, dass Frauen und Männer selbstbestimmt und auf Augenhöhe ihre Entscheidungen treffen können.</p>' .
-            '<p class="inserted">Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>'];
+            '<p class="inserted">Diesen Wunsch der Paare in die Realität umzusetzen ist das Ziel unserer Zeitpolitik. Hierfür sind verkrustete patriarchalische Strukturen und Fehlanreize abzubauen, jedoch ohne dass neuer sozialer Druck auf Familien entsteht. Damit Paare selbstbestimmt und auf Augenhöhe die Rollenverteilung in ihrer Familie festlegen können, muss die Gesellschaft die Entscheidungen der Familien unabhängig von ihrem Ergebnis akzeptieren und darf keine Lebensmodelle stigmatisieren.</p>'
+        ];
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
@@ -482,8 +464,10 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $str1           = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende. Und noch etwas am Ende</p>';
         $str2           = '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende. Und noch etwas am Ende</p>';
-        $expect         = ['<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. <del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende.</del>' .
-            '<ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende.</ins> Und noch etwas am Ende</p>'];
+        $expect         = [
+            '<p>Demokratie und Freiheit gehören untrennbar zusammen. Wir haben einen partizipativen Freiheitsbegriff. Demokratie ist der Rahmen für die Freiheit sich zu beteiligen, mitzugestalten und zu entscheiden. Erweiterte demokratische Mitwirkungsmöglichkeiten von BürgerInnen in einer vitalen Demokratie bedeuten einen Zugewinn an Freiheit. Demokratie lebt von den Beiträgen und dem ständigen Abwägungsprozess einer lebendigen Zivilgesellschaft. Immer wieder wird es demokratische Entscheidungen geben, die uns nicht gefallen. Freiheit ist aber immer und vor allem die Freiheit der Andersdenkenden. Wir setzen uns für mehr direkte Demokratie und gegen die negativen Auswirkungen wirtschaftlicher Macht und intransparenter Entscheidungsprozesse auf Freiheit ein. So kann eine aktive und selbstbestimmte BürgerInnengesellschaft eigene Entscheidungen treffen. <del>Auch werden wir demokratische Strukturen und Entscheidungsmechanismen verteidigen. Gerade in Zeiten der Globalisierung ist ein besseres Europa die Antwort auf die Sicherung von Freiheit. Die EU kann das Primat der Politik sichern, wenn sie den aus dem Ruder gelaufenen Wirtschaftsliberalismus einhegt und nicht über Geheimverträge wie ACTA oder TTIP voranbringen will. Die Freiheitsrechte der Bürgerinnen und Bürger werden aber dann tangiert, wenn der sie schützende Rechtsrahmen durch internationale Abkommen unterminiert wird Und noch etwas am Ende.</del>' .
+            '<ins>Eine Politische Ökonomie kann demokratisch und grundrechtsorientiert betrieben werden. Diese Möglichkeit bieten die gemischten Wirtschaften in Europa und diese Möglichkeit wollen wir sichern und ausbauen. Geheimverträge wie ACTA und TTIP schränken diese Fähigkeit ein. Die Rechte der ArbeitnehmerInnen und VerbraucherInnen werden nicht gestärkt, sondern abgebaut. Nicht einmal die Einhaltung der ILO-Abkommen wird gefordert. Internationale Abkommen sollen die Möglichkeit bieten, Grundrechte zu stärken, nicht diese Fähigkeit in den Vertragsstaaten künftig verunmöglichen Und noch etwas am Ende.</ins> Und noch etwas am Ende</p>'
+        ];
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
 
@@ -492,8 +476,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testDeletedSentenceAtEnd()
     {
         $origParagraphs = ['<p>gesellschaftlich dominante Narrative zu hinterfragen und ggf. zu dekonstruieren. Andererseits sind gerade junge Menschen auf für sie geeignete Möglichkeiten und Wege des Gedenkens angewiesen, da sie selbst noch weniger über persönliche Erinnerungen verfügen und dennoch bereits den legitimen Anspruch auf Mitbestimmung haben. Wer Gesellschaft mitgestalten will, muss (also) erinnern können.</p>'];
@@ -505,19 +487,17 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $diffParas);
     }
 
-    /**
-     */
     public function testParagraphs()
     {
         $diff = new Diff();
 
         $str1 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
-            'Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>' .
-            '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. ' .
-            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
+                'Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</p>' .
+                '<p>Oamoi großherzig Mamalad, liberalitas Bavariae hoggd! Nimmds helfgod im Beidl des basd scho i hob di liab. ' .
+                'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
         $str2 = '<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. ' .
-            'Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. ' .
-            'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
+                'Biaschlegl soi oans, zwoa, gsuffa Oachsdfsdfsdf helfgod im Beidl des basd scho i hob di liab. ' .
+                'A Prosit der Gmiadlichkeit midanand mim obandln do mim Radl foahn, Jodler. Ned woar Brotzeit Brotzeit gwihss eana Gidarn.</p>';
 
         /*
         $expect = ['<p>I mechad dee Schwoanshaxn ghupft wia gsprunga measi gschmeidig hawadere midananda vui huift vui Biawambn, des wiad a Mordsgaudi is. <del>Biaschlegl soi oans, zwoa, gsuffa Oachkatzlschwoaf hod Wiesn.</del></p>',
@@ -597,9 +577,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $diffParas);
     }
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testTwoInserts()
     {
         $str1   = '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>
@@ -608,10 +585,12 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 <ul><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>
 <ul><li>Blabla</li></ul>
 <p>I waar soweid Blosmusi es nomoi.</p>';
-        $expect = ['<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>' .
+        $expect = [
+            '<ul><li>###LINENUMBER###Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>' .
             '<ul class="inserted"><li>Oamoi a Maß und no a Maß des basd scho wann griagd ma nacha wos z’dringa do Meidromml, oba a fescha Bua!</li></ul>' .
             '<ul class="inserted"><li>Blabla</li></ul>',
-            '<p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>'];
+            '<p>###LINENUMBER###I waar soweid Blosmusi es nomoi.</p>'
+        ];
 
         $diff           = new Diff();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
@@ -620,9 +599,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $diffParas);
     }
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testTwoChangedLis()
     {
         $str1   = '<ul><li>Test123</li></ul>
@@ -631,9 +607,11 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $str2   = '<ul><li>Test123</li></ul>
 <ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.asdasd</li></ul>
 <ul><li>aWoibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>';
-        $expect = ['<ul><li>Test123</li></ul>',
+        $expect = [
+            '<ul><li>Test123</li></ul>',
             '<ul><li>Ned Mamalad auffi i bin a woschechta Bayer greaßt eich nachad, umananda gwiss nia need Weiznglasl.<ins>asdasd</ins></li></ul>',
-            '<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'];
+            '<ul><li><ins>a</ins>Woibbadinga noch da Giasinga Heiwog Biazelt mechad mim Spuiratz, soi zwoa.</li></ul>'
+        ];
 
         $diff           = new Diff();
         $origParagraphs = HTMLTools::sectionSimpleHTML($str1);
@@ -642,8 +620,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $diffParas);
     }
 
-    /**
-     */
     public function testShiftMisplacedTags()
     {
         $orig      = [
@@ -716,8 +692,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         ], $corrected);
     }
 
-    /**
-     */
     public function testLineDiffWithTags()
     {
         $strPre    = ['<ul><li>Listenpunkt</li></ul>'];
@@ -729,8 +703,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testParagraphManyChanges()
     {
         $strPre  = '<p>###LINENUMBER###Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten sozialen Absicherung. Ein weiteres wichtiges Hemmnis für Gründungen sind Existenzsorgen aufgrund einer schlechten ###LINENUMBER###sozialen Absicherung. Daher wollen wir, dass der Zugang für Selbständige zur freiwilligen ###LINENUMBER###Renten-, Kranken- und Arbeitslosenversicherung umgehend verbessert wird. Darüber hinaus ist ###LINENUMBER###es in der Anfangsphase der Selbständigkeit und insbesondere bei Start-ups oft schwierig, die ###LINENUMBER###vollen Beitragslasten zu tragen. Wir wollen an Lösungen arbeiten, die angelehnt an den ###LINENUMBER###Gedanken der Künstlersozialkasse, für eine temporäre Unterstützung an dieser Stelle sorgen. ###LINENUMBER###Damit sich Gründer*innen leichter am Markt etablieren können, wollen wir den bürokratischen ###LINENUMBER###Aufwand senken. Eine einzige Anlaufstelle (One-Stop-Shop) würde ihre Situation deutlich ###LINENUMBER###verbessern. Hier sollen sämtliche Beratungsleistungen und bürokratische Anforderungen ###LINENUMBER###abwickelt werden, damit sie nicht im Behördendschungel aufgehalten werden.</p>';
@@ -745,8 +717,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expected, $diffParas);
     }
 
-    /**
-     */
     public function testShortParagraph()
     {
         $strPre  = '<p><strong>Balance von Freiheit und Sicherheit für Solo-Selbstständige und Existenzgründer*innen</strong></p>';
@@ -761,8 +731,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expected, $diffParas);
     }
 
-    /**
-     */
     public function testDeleteBeyondList()
     {
         $strPre  = "<p>###LINENUMBER###Test.</p>
@@ -781,23 +749,25 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
 
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
 
-        $expected = ['<p>###LINENUMBER###Test.</p>',
+        $expected = [
+            '<p>###LINENUMBER###Test.</p>',
             '<p class="deleted">###LINENUMBER###<strong>To be deletedgi: </strong></p>',
             '<ul class="deleted"><li>###LINENUMBER###Test 2</li></ul>',
             '<ul class="deleted"><li>###LINENUMBER###Test 1</li></ul>',
-            '<p class="deleted">###LINENUMBER###Also to be deleted.</p>'];
+            '<p class="deleted">###LINENUMBER###Also to be deleted.</p>'
+        ];
         $this->assertEquals($expected, $diffParas);
     }
 
-    /**
-     */
     public function testLiPSomething()
     {
         // From https://bdk.antragsgruen.de/39/motion/133/amendment/323
         $strPre  = '<ul><li>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist eine ###LINENUMBER###öffentliche Aufgabe.</li></ul>';
         $strPost = '<ul><li><p>Die Mobilisierung der Mittel für den internationalen Klimaschutz ist zum allergroßten Teil öffentliche Aufgabe, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</p>' . "\n" . '.</li></ul>';
-        $expect  = ['<ul><li><p>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist <del>eine</del><ins>zum allergroßten Teil</ins> ###LINENUMBER###öffentliche Aufgabe<ins>, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</ins></p><ins>
-</ins>.</li></ul>'];
+        $expect  = [
+            '<ul><li><p>###LINENUMBER###Die Mobilisierung der Mittel für den internationalen Klimaschutz ist <del>eine</del><ins>zum allergroßten Teil</ins> ###LINENUMBER###öffentliche Aufgabe<ins>, denn Unternehmen investieren nicht in schwach entwickelte oder fragile Staaten die meist ohnehin am stärksten vom Klimawandel betroffen sind. Die Wirtschaft ist unter starken menschenrechtlichen.</ins></p><ins>
+</ins>.</li></ul>'
+        ];
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
         $newParagraphs  = HTMLTools::sectionSimpleHTML($strPost);
@@ -808,8 +778,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testNoMessingUpLineNumbers()
     {
         $strPre   = '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>
@@ -819,10 +787,12 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $strPost  = '<p><strong>Anspruch und Ausblick</strong></p>
 <p>Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkten und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang hier bleiben werden, diesen Prozess verstärken.</p>
 <p>Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden Herausforderungen an:</p>';
-        $expected = ['<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>',
+        $expected = [
+            '<p>###LINENUMBER###<strong>Anspruch und Ausblick</strong></p>',
             '<p>###LINENUMBER###Die Zusammensetzung der in Deutschland lebenden Bevölkerung ändert sich auch ###LINENUMBER###weiterhin stetig. Neue Mitglieder, neue Herkunftsstaaten machen die Gesellschaft ###LINENUMBER###vielfältiger und gehen mit neuen kulturellen Hintergründen, Erfahrungen und ###LINENUMBER###biographischen Bezügen ebenso einher, wie mit neuen historischen Bezugspunkte<ins>n</ins> ###LINENUMBER###und einer Verschiebung ihrer Relevanz untereinander. Nicht zuletzt werden die ###LINENUMBER###Menschen, die aktuell nach Deutschland flüchten und zumindest eine Zeit lang ###LINENUMBER###hier bleiben werden, diesen Prozess verstärken.</p>',
             '<p class="deleted">###LINENUMBER###Die Stärkung einer europäischen Identität – ohne die Verwischung historischer ###LINENUMBER###Verantwortung und politischer Kontinuitäten – ist für eine zukünftige ###LINENUMBER###Erinnerungspolitik ein wesentlicher Aspekt, der auch Erinnerungskulturen prägen ###LINENUMBER###wird und in der Erinnerungsarbeit aufgegriffen werden muss.</p>',
-            '<p><del>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'];
+            '<p><del>###LINENUMBER###Gleiches gilt für die Jugendverbände und –ringe als Teil dieser Gesellschaft. </del>###LINENUMBER###Wir als Jugendverbände und –ringe im DBJR nehmen uns der sich daraus ergebenden ###LINENUMBER###Herausforderungen an:</p>'
+        ];
         // Hint: could be further improved, by separating the leading 'n' from the big change block
 
         $origParagraphs = HTMLTools::sectionSimpleHTML($strPre);
@@ -846,8 +816,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
     }
 
 
-    /**
-     */
     public function testStripEmptyLinenumberDels()
     {
         $orig   = [
@@ -864,9 +832,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $arr = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
-    
-    /**
-     */
+
     public function testDeleteSentenceSecondSentanceBeginningAlike1()
     {
         $orig   = [
@@ -882,9 +848,7 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $arr    = $diff->compareHtmlParagraphs($orig, $new, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $arr);
     }
-    
-    /**
-     */
+
     public function testDeleteSentenceSecondSentanceBeginningAlike2()
     {
         $orig   = [
@@ -901,9 +865,6 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $this->assertEquals($expect, $arr);
     }
 
-    /**
-     * @throws \app\models\exceptions\Internal
-     */
     public function testInsertingIntoEmptySection()
     {
         $str1   = '';
@@ -915,5 +876,18 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'];
         $newParagraphs  = HTMLTools::sectionSimpleHTML($str2);
         $diffParas      = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
         $this->assertEquals($expect, $diffParas);
+    }
+
+    public function testNumberedSubLists()
+    {
+        $orig = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="3">Point 3</li></ol></li></ol>';
+        $new = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b">Point 2</li><li value="3">Point 3</li></ol></li></ol>';
+
+        $origParagraphs = HTMLTools::sectionSimpleHTML($orig);
+        $newParagraphs  = HTMLTools::sectionSimpleHTML($new);
+
+        $diff = new Diff();
+        $out  = $diff->compareHtmlParagraphs($origParagraphs, $newParagraphs, DiffRenderer::FORMATTING_CLASSES);
+        $this->assertEquals(['<ol start="1"><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b"><ins>Point 2</ins></li><li value="3">Point 3</li></ol></li></ol>'], $out);
     }
 }

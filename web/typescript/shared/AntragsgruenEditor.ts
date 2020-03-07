@@ -95,7 +95,8 @@ export class AntragsgruenEditor {
             extraPlugins: 'tabletools,listitemstyle',
             scayt_sLang: 'de_DE',
             title: title,
-            enterMode: enterMode
+            enterMode: enterMode,
+            shiftEnterMode: (enterMode === CKEDITOR.ENTER_BR ? CKEDITOR.ENTER_P : CKEDITOR.ENTER_BR),
         };
 
         let strikeEl = (noStrike ? '' : ' s'),

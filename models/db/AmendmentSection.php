@@ -185,7 +185,7 @@ class AmendmentSection extends IMotionSection
 
         foreach ($diffParas as $paraNo => $diffPara) {
             $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
-            if ($firstDiffPos !== false) {
+            if ($firstDiffPos !== null) {
                 $unchanged             = mb_substr($diffPara, 0, $firstDiffPos);
                 $lines                 = LineSplitter::countMotionParaLines($unchanged, $lineLength);
                 $firstDiffLine         = $firstLine + $lines - 1;
@@ -224,7 +224,7 @@ class AmendmentSection extends IMotionSection
         $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
         foreach ($diffParas as $paraNo => $diffPara) {
             $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
-            if ($firstDiffPos !== false) {
+            if ($firstDiffPos !== null) {
                 $amParagraphs[$paraNo] = $diffPara;
             }
         }

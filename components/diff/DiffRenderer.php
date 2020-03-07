@@ -31,17 +31,12 @@ class DiffRenderer
     /** @var null|callable */
     private $delCallback = null;
 
-    /**
-     */
     public function __construct()
     {
         $this->nodeCreator = new \DOMDocument();
     }
 
-    /**
-     * @param int $formatting
-     */
-    public function setFormatting($formatting)
+    public function setFormatting(int $formatting): void
     {
         $this->formatting = $formatting;
 
@@ -192,11 +187,7 @@ class DiffRenderer
         return $ins;
     }
 
-    /**
-     * @param \DOMElement $element
-     * @param string $param
-     */
-    private function addInsStyles(\DOMElement $element, $param)
+    private function addInsStyles(\DOMElement $element, string $param): void
     {
         static::nodeAddClass($element, 'inserted');
         if ($this->formatting == static::FORMATTING_INLINE) {
@@ -207,11 +198,7 @@ class DiffRenderer
         }
     }
 
-    /**
-     * @param \DOMElement $element
-     * @param string $param
-     */
-    private function addDelStyles(\DOMElement $element, $param)
+    private function addDelStyles(\DOMElement $element, string $param): void
     {
         static::nodeAddClass($element, 'deleted');
         if ($this->formatting == static::FORMATTING_INLINE) {
@@ -222,11 +209,7 @@ class DiffRenderer
         }
     }
 
-    /**
-     * @param \DOMNode $node
-     * @return \DOMNode
-     */
-    private function cloneNode(\DOMNode $node)
+    private function cloneNode(\DOMNode $node): \DOMNode
     {
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMElement $node */
@@ -338,7 +321,7 @@ class DiffRenderer
         } elseif ($inIns !== false) {
             /** @var \DOMElement $lastEl */
             $lastEl    = (count($newChildren) > 0 ? $newChildren[count($newChildren) - 1] : null);
-            $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
+            $prevIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName === 'ins');
             if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
@@ -401,6 +384,10 @@ class DiffRenderer
         foreach ($newChildren as $newChild) {
             $newDom->appendChild($newChild);
         }
+        foreach ($dom->attributes as $key => $val) {
+            $val = $dom->getAttribute($key);
+            $newDom->setAttribute($key, $val);
+        }
 
         return [[$newDom], $inIns, $inDel];
     }
@@ -437,11 +424,7 @@ class DiffRenderer
         return [[$newDom], $inIns, $inDel];
     }
 
-    /**
-     * @param \DOMElement $dom
-     * @return array
-     */
-    protected function renderHtmlWithPlaceholdersIntNormal($dom)
+    protected function renderHtmlWithPlaceholdersIntNormal(\DOMElement $dom): array
     {
         if (!static::nodeStartInsDel($dom)) {
             return [[$this->cloneNode($dom)], false, false];
@@ -471,11 +454,7 @@ class DiffRenderer
         return [[$newDom], $inIns, $inDel];
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public function renderHtmlWithPlaceholders($html)
+    public function renderHtmlWithPlaceholders(string $html): string
     {
         $dom = HTMLTools::html2DOM($html);
         $ret = $this->renderHtmlWithPlaceholdersIntNormal($dom);
@@ -488,11 +467,7 @@ class DiffRenderer
         return $str;
     }
 
-    /**
-     * @param string $line
-     * @return false|int
-     */
-    public static function paragraphContainsDiff($line)
+    public static function paragraphContainsDiff(string $line): ?int
     {
         $firstDiffs = [];
         if (preg_match('/(<ins( [^>]*)?>)/siu', $line, $matches, PREG_OFFSET_CAPTURE)) {
@@ -512,8 +487,8 @@ class DiffRenderer
             $pos          = strlen(utf8_decode(substr($line, 0, $matches[0][1])));
             $firstDiffs[] = $pos;
         }
-        if (count($firstDiffs) == 0) {
-            return false;
+        if (count($firstDiffs) === 0) {
+            return null;
         }
         return min($firstDiffs);
     }
