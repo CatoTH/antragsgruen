@@ -23,5 +23,7 @@ CKEDITOR.plugins.setLang( 'listitemstyle', 'en', {
 
     // Antragsgrün-specific strings
     numberedItemTitle: 'Number of list item',
-	value: 'Value'
+	value: 'Value',
+    liInsertBefore: 'Add list item above',
+    liInsertAfter: 'Add list item below'
 } );

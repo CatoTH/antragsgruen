@@ -23,5 +23,7 @@ CKEDITOR.plugins.setLang( 'listitemstyle', 'de', {
 
     // Antragsgrün-specific strings
     numberedItemTitle: 'Nummer des Listenpunktes',
-	value: 'Wert'
+	value: 'Wert',
+    liInsertBefore: 'Listenpunkt darüber hinzufügen',
+    liInsertAfter: 'Listenpunkt dahinter hinzufügen'
 } );
