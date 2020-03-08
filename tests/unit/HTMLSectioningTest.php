@@ -9,6 +9,22 @@ class HTMLSectioningTest extends TestBase
 {
     use Specify;
 
+
+
+    public function testOlsWithStart()
+    {
+        $orig = '<ol class="lowerAlpha" start="3"><li>Item 3</li><li>Item 4</li><li>Item 5</li></ol>';
+        $expect = [
+            '<ol class="lowerAlpha" start="3"><li>Item 3</li></ol>',
+            '<ol class="lowerAlpha" start="4"><li>Item 4</li></ol>',
+            '<ol class="lowerAlpha" start="5"><li>Item 5</li></ol>',
+        ];
+
+        $orig = HTMLTools::cleanSimpleHtml($orig);
+        $out  = HTMLTools::sectionSimpleHTML($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     public function testSectioning()
     {
         $orig   = '<p>Test1</p><p>Test <strong>2</strong> Test</p>

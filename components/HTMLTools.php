@@ -235,7 +235,7 @@ class HTMLTools
             $allowedClasses[] = 'strike';
         }
 
-        $allowedAttributes = ['style', 'href', 'class', 'li.value'];
+        $allowedAttributes = ['style', 'href', 'class', 'li.value', 'ol.start'];
 
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
 
@@ -337,7 +337,15 @@ class HTMLTools
         $return        = [];
         $children      = $element->childNodes;
         $pendingInline = null;
+
         $lino          = 0;
+        if ($element->nodeName === 'ol') {
+            $start = $element->getAttribute('start');
+            if ($start !== null && $start > 0) {
+                $lino = intval($start) - 1;
+            }
+        }
+
         for ($i = 0; $i < $children->length; $i++) {
             $child = $children->item($i);
             switch (get_class($child)) {
