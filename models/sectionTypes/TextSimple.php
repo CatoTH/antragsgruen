@@ -265,7 +265,7 @@ class TextSimple extends Text
         $formatter->setFirstLineNo($firstLine);
         $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
 
-        if (count($diffGroups) == 0) {
+        if (count($diffGroups) === 0) {
             return '';
         }
 

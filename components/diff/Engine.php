@@ -46,7 +46,7 @@ class Engine
         }
 
         // Ignoring some changes in pure HTML tags
-        if ($str1[0] === '<' && $str2[0] === '<' && preg_match('/^<[^>]+>$/', $str1) && preg_match('/^<[^>]+>$/', $str2)) {
+        if ($str1 !== '' && $str1[0] === '<' && $str2 !== '' && $str2[0] === '<' && preg_match('/^<[^>]+>$/', $str1) && preg_match('/^<[^>]+>$/', $str2)) {
             // Changing attributes of list items is not supported by the diff, as this would get too messy (ol start=2 => ol start=3)
             if (stripos($str1, '<ol') === 0 && stripos($str2, '<ol') === 0) {
                 return true;

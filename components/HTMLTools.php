@@ -316,6 +316,109 @@ class HTMLTools
         return $html;
     }
 
+    public static function getNextLiCounter(\DOMElement $li, int $oldLiNo): int
+    {
+        $liNo = $oldLiNo + 1;
+        $value = $li->getAttribute('value');
+        if ($value) {
+            if (is_numeric($value)) {
+                $liNo = intval($value);
+            }
+            if (strlen($value) === 1) {
+                $ord = ord(strtolower($value));
+                if ($ord >= ord('a') && $ord <= ord('z')) {
+                    $liNo = $ord - ord('a') + 1;
+                }
+            }
+        }
+        return $liNo;
+    }
+
+    public static function getLiValue(int $counter, ?string $value, string $formatting): string
+    {
+        switch ($formatting) {
+            case HTMLTools::OL_DECIMAL_CIRCLE:
+                return ($value !== null && $value !== '' ? $value : $counter);
+            case HTMLTools::OL_UPPER_ALPHA:
+                return ($value !== null && $value !== '' ? $value : chr(ord('A') + $counter - 1));
+            case HTMLTools::OL_LOWER_ALPHA:
+                return ($value !== null && $value !== '' ? $value : chr(ord('a') + $counter - 1));
+            case HTMLTools::OL_DECIMAL_DOT:
+            default:
+                return ($value !== null && $value !== '' ? $value : $counter);
+        }
+    }
+
+    public static function getLiValueFormatted(int $counter, ?string $value, string $formatting): string
+    {
+        $value = static::getLiValue($counter, $value, $formatting);
+        switch ($formatting) {
+            case HTMLTools::OL_DECIMAL_CIRCLE:
+                return '(' . $value . ')';
+            case HTMLTools::OL_UPPER_ALPHA:
+            case HTMLTools::OL_LOWER_ALPHA:
+            case HTMLTools::OL_DECIMAL_DOT:
+            default:
+                return $value . '.';
+        }
+    }
+
+    private static function explicitlySetLiValuesInt(\DOMElement $element, ?int $counter = null, ?string $formatting = null): void
+    {
+        $children      = $element->childNodes;
+
+        if ($element->nodeName === 'ol' || $element->nodeName === 'ul') {
+            $liCount          = 0;
+            $start = $element->getAttribute('start');
+            if ($start !== null && $start > 0) {
+                $liCount = intval($start) - 1;
+            }
+            $formatting = static::OL_DECIMAL_DOT;
+            if ($element->hasAttribute('class')) {
+                $classes = explode(' ', $element->getAttribute('class'));
+                foreach ($classes as $class) {
+                    if ($element->nodeName === 'ol' && in_array($class, static::$KNOWN_OL_CLASSES)) {
+                        $formatting = $class;
+                    }
+                }
+            }
+
+            foreach ($children as $child) {
+                if (!is_a($child, \DOMElement::class)) {
+                    continue;
+                }
+                /** @var \DOMElement $child */
+                $liCount = static::getNextLiCounter($child, $liCount);
+                static::explicitlySetLiValuesInt($child, $liCount, $formatting);
+            }
+            return;
+        }
+
+        if ($element->nodeName === 'li') {
+            $formatting = $formatting ?? static::OL_DECIMAL_DOT;
+            if (!$element->hasAttribute('value')) {
+                $liVal = static::getLiValue($counter, null, $formatting);
+                $element->setAttribute('value', $liVal);
+            }
+        }
+
+        foreach ($children as $child) {
+            if (!is_a($child, \DOMElement::class)) {
+                continue;
+            }
+            /** @var \DOMElement $child */
+            static::explicitlySetLiValuesInt($child);
+        }
+    }
+
+    public static function explicitlySetLiValues(string $html): string
+    {
+        $dom = static::html2DOM($html);
+        static::explicitlySetLiValuesInt($dom);
+
+        return static::renderDomToHtml($dom, true);
+    }
+
     /**
      * @param \DOMElement $element
      * @param bool $split
@@ -425,19 +528,8 @@ class HTMLTools
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
                         } elseif ($child->nodeName === 'li') {
-                            $lino++;
+                            $lino = static::getNextLiCounter($child, $lino);
                             $value = $child->getAttribute('value');
-                            if ($value) {
-                                if (is_numeric($value)) {
-                                    $lino = $value;
-                                }
-                                if (strlen($value) === 1) {
-                                    $ord = ord(strtolower($value));
-                                    if ($ord >= 97 && $ord <= 122) {
-                                        $lino = $ord - 96;
-                                    }
-                                }
-                            }
                             $newPre  = str_replace('#LINO#', $lino, $pre);
                             if ($value) {
                                 $newPre .= '<' . $child->nodeName . ' value="' . $value . '">';
@@ -478,12 +570,7 @@ class HTMLTools
         return $return;
     }
 
-    /**
-     * @param string $html
-     * @param bool $correctBefore
-     * @return \DOMElement
-     */
-    public static function html2DOM($html, $correctBefore = true)
+    public static function html2DOM(string $html, bool $correctBefore = true): \DOMElement
     {
         if ($correctBefore) {
             $html = static::correctHtmlErrors($html);
@@ -531,14 +618,11 @@ class HTMLTools
         return $result;
     }
 
-    /**
+    /*
      * Tries to restore the original HTML after re-combining reviously split markup.
      * Currently, this only joins adjacent top-level lists.
-     *
-     * @param string $html
-     * @return string
      */
-    public static function removeSectioningFragments($html)
+    public static function removeSectioningFragments(string $html): string
     {
         $body     = static::html2DOM($html);
         $children = $body->childNodes;

@@ -3,15 +3,12 @@
 namespace unit;
 
 use app\components\HTMLTools;
-use Yii;
 use Codeception\Specify;
 
 class HTMLNormalizeTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testStrippingEmptyBlocks()
     {
         $htmlIn = '<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Weit hinten, hinter den Wortbergen, fern der L&auml;nder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie in Buchstabhausen an der K&uuml;ste des Semantik, eines gro&szlig;en Sprachozeans. Ein kleines B&auml;chlein namens Duden flie&szlig;t durch ihren Ort und versorgt sie mit den n&ouml;tigen Regelialien.</del></p>
@@ -47,8 +44,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $htmlOut);
     }
 
-    /**
-     */
     public function testWrapPureTextWithP()
     {
         $textIn = "<p>Normal Text</p>\nText with no parent element<p>Normal text again</p>";
@@ -57,8 +52,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testWrapInlinedTextWithP()
     {
         $textIn = '<p>Normal Text</p>Text <strong>with no</strong> parent <em>element</em><p>Normal text again</p>';
@@ -67,8 +60,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripEmptySpans()
     {
         $orig   = '<p>Test</p><p><span class="underlined"><span>&nbsp;</span></span></p>';
@@ -80,8 +71,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripEmptyAs()
     {
         $orig   = '<h2><a>Test</a> - <a href="https://antragsgruen.de">Test 2</a></h2>';
@@ -93,8 +82,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testDanglingNbsp()
     {
         $orig   = '<p><span>so ein Fahrradanteil von 30 % und mehr erreicht werden kann.&nbsp;</span></p>';
@@ -103,8 +90,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripLeadingSpaces()
     {
         $orig   = '<p> Test 123 </p>';
@@ -113,8 +98,6 @@ class HTMLNormalizeTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testMergingOls1()
     {
         $orig   = '<ol><li>List item 1</li></ol>' . "\n\t" . '<ol start="2"><li>List item 2</li></ol>';
@@ -150,8 +133,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testPrepareForCKEditor1()
     {
         $orig   = '<p><strong> Test</strong></p> Test2';
@@ -160,8 +141,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testPrepareForCKEditor2()
     {
         $orig   = '<ol><li>List item 1</li></ol>' . "\n" . '<ol start="2"><li>List item 2</li></ol>';
@@ -170,8 +149,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testCreateParagraphs()
     {
         $orig   = "<p>Test<br><span style='color: red;'>Test2</span><br><span></span>";
@@ -196,8 +173,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testAllowUnderlines()
     {
         $orig   = "<p><span class='underline'>Underlined</span> Normal</p>";
@@ -207,8 +182,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testAllowH1H2H3H4()
     {
         $orig   = '<h1>H1</h1><h2>H2</h2><h3>H3</h3><h4>H4</h4>';
@@ -218,8 +191,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testAllowStrike()
     {
         $orig   = "<p><span class='strike'>Strike</span> Normal</p>";
@@ -229,8 +200,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testAllowSubscript()
     {
         $orig   = "<p><span class='subscript'>Subscript</span> Normal</p>";
@@ -246,8 +215,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testSuperscript()
     {
         $orig   = "<p><span class='superscript'>Superscript</span> Normal</p>";
@@ -263,8 +230,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripUnknown()
     {
         $orig   = "<p><span class='unknown'>Strike</span> Normal</p>";
@@ -281,8 +246,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripBRsAtBeginningAndEnd()
     {
         $orig   = "<p>Test1</p>\n<p><br>\nTest2<br></p>";
@@ -291,8 +254,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripWhitespacesAtEnd()
     {
         $orig   = '<p>Test 123 </p>';
@@ -311,8 +272,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripMultipleSpaces()
     {
         $orig   = '<p>Bla Bla   Bla</p><pre>Bla Bla  Bla</pre>';
@@ -321,8 +280,6 @@ Zeilenumbruch</li>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testLigatures()
     {
         $orig   = '<p>ﬁ is fi and ﬂ is fl</p>';
@@ -332,8 +289,6 @@ Zeilenumbruch</li>
         $this->assertNotEquals($out, $orig);
     }
 
-    /**
-     */
     public function testStripTabs()
     {
         $orig   = '<ul><li>
@@ -349,8 +304,6 @@ Test 2.</p>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUmlautDomains()
     {
         $orig   = '<p>Test <a href="http://www.hössl.org">My Domain</a></p>';
@@ -359,8 +312,6 @@ Test 2.</p>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testStripDelTags()
     {
         $orig   = '<p>Test <del>this should <strong>be</strong> deleted</del> more <del>this as well</del>.</p>';
@@ -369,8 +320,6 @@ Test 2.</p>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testDontStripInsTags()
     {
         $orig   = '<p>Test <ins>this should <strong>be</strong> inserted</ins> more <ins>this as well</ins>.</p>';
@@ -379,8 +328,6 @@ Test 2.</p>
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testNormalizeUmlauts()
     {
         $orig   = '<p>' . chr(195) . chr(164) . chr(97) . chr(204) . chr(136) . '</p>';

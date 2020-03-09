@@ -283,9 +283,10 @@ class Exporter
      */
     private static function encodeOLNode(\DOMElement $node, array $currentStyles, array $childStyles): string
     {
-        $counter = 1;
         if ($node->hasAttribute('start')) {
-            $counter = intval($node->getAttribute('start'));
+            $counter = intval($node->getAttribute('start')) - 1;
+        } else {
+            $counter = 0;
         }
 
         $classes = ($node->hasAttribute('class') ? explode(" ", $node->getAttribute('class')) : []);
@@ -313,37 +314,10 @@ class Exporter
             }
 
             /** @var \DOMElement $child */
-            if ($child->hasAttribute('value')) {
-                $value = $child->getAttribute('value');
-                if (preg_match('/^\d+$/', $value)) {
-                    $counter = intval($value);
-                } elseif (preg_match('/^[a-z]$/', $value)) {
-                    $counter = ord($value) - ord("a") + 1;
-                } elseif (preg_match('/^[A-Z]$/', $value)) {
-                    $counter = ord($value) - ord("A") + 1;
-                }
-            } else {
-                if ($itemStyle === HTMLTools::OL_LOWER_ALPHA) {
-                    $value = chr(ord('a') + $counter - 1);
-                } elseif ($itemStyle === HTMLTools::OL_UPPER_ALPHA) {
-                    $value = chr(ord('A') + $counter - 1);
-                } else {
-                    $value = $counter;
-                }
-            }
+            $counter   = HTMLTools::getNextLiCounter($child, $counter);
+            $formatted = HTMLTools::getLiValueFormatted($counter, $child->getAttribute('value'), $itemStyle);
 
-            switch ($itemStyle) {
-                case HTMLTools::OL_DECIMAL_CIRCLE:
-                    $formattedCounter = '(' . $value . ')';
-                    break;
-                default:
-                    $formattedCounter = $value . '.';
-                    break;
-            }
-
-            $content .= static::encodeHTMLNode($child, $childStyles, $formattedCounter);
-
-            $counter++;
+            $content .= static::encodeHTMLNode($child, $childStyles, $formatted);
         }
 
         return '\begin{enumerate}' . "\n" .
