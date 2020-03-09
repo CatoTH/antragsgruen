@@ -72,6 +72,8 @@ class Exporter
         $str = str_replace('\linebreak{}' . "\n\n" . '\item', "\n" . '\item', $str);
         $str = str_replace('\newline' . "\n" . '\end{enumerate}', "\n" . '\end{enumerate}', $str);
         $str = str_replace('\linebreak{}' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
+        $str = str_replace('\end{enumerate}' . "\n\n", '\end{enumerate}' . "\n", $str);
+        $str = preg_replace('/(\\\\linebreak{}\\n*)+\\\\begin{enumerate}/siu', "\n\begin{enumerate}", $str);
 
         return $str;
     }
@@ -93,53 +95,13 @@ class Exporter
     }
 
     /**
-     * @param string $content
-     * @param string[] $extraStyles
-     * @return string
-     */
-    private static function addInsDelExtraStyles($content, $extraStyles)
-    {
-        if (in_array('ins', $extraStyles)) {
-            $content = '\textcolor{Insert}{' . $content . '}';
-        }
-        if (in_array('del', $extraStyles)) {
-            $content = '\textcolor{Delete}{\sout{' . $content . '}}';
-        }
-        return $content;
-    }
-
-    /**
-     * @param string $content
-     * @param string[] $extraStyles
-     * @return string
-     */
-    private static function addInsDelExtraStylesToLi($content, $extraStyles)
-    {
-        $items = explode('\item ', $content);
-        $out   = [];
-        foreach ($items as $item) {
-            if (trim($item) == '') {
-                continue;
-            }
-            if (in_array('ins', $extraStyles)) {
-                $out[] = '\textcolor{Insert}{' . trim($item) . '}';
-            } elseif (in_array('del', $extraStyles)) {
-                $out[] = '\textcolor{Delete}{\sout{' . trim($item) . '}}';
-            } else {
-                $out[] = trim($item);
-            }
-        }
-
-        return '\item ' . implode("\n" . '\item ', $out) . "\n";
-    }
-
-    /**
      * @param \DOMNode $node
      * @param array $extraStyles
+     * @param null $liCounter
+     *
      * @return string
-     * @throws Internal
      */
-    private static function encodeHTMLNode(\DOMNode $node, $extraStyles = [])
+    private static function encodeHTMLNode(\DOMNode $node, $extraStyles = [], $liCounter = null): string
     {
         if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
@@ -160,6 +122,12 @@ class Exporter
                 }
                 $str = implode('', $words);
             }
+            if (in_array('ins', $extraStyles)) {
+                $str = '\textcolor{Insert}{' . $str . '}';
+            }
+            if (in_array('del', $extraStyles)) {
+                $str = '\textcolor{Delete}{' . $str . '}';
+            }
             return $str;
         } else {
             $content = '';
@@ -170,44 +138,43 @@ class Exporter
                 $classes = [];
             }
 
-            $childStyles = [];
+            $childStyles = $extraStyles;
             if (in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS)) {
                 if (in_array('ins', $classes) || in_array('inserted', $classes)) {
-                    $extraStyles[] = 'ins';
+                    $childStyles[] = 'ins';
                     $childStyles[] = 'underlined';
                 }
                 if (in_array('del', $classes) || in_array('deleted', $classes)) {
-                    $extraStyles[] = 'del';
-                }
-            } elseif ($node->nodeName === 'u') {
-                $childStyles[] = 'underlined';
-            } elseif ($node->nodeName === 'ins') {
-                $childStyles[] = 'underlined';
-            } elseif ($node->nodeName === 's') {
-                $childStyles[] = 'strike';
-            } elseif ($node->nodeName === 'del') {
-                $childStyles[] = 'strike';
-            } elseif ($node->nodeName === 'span') {
-                if (in_array('underline', $classes)) {
-                    $childStyles[] = 'underlined';
-                }
-                if (in_array('strike', $classes)) {
+                    $childStyles[] = 'del';
                     $childStyles[] = 'strike';
                 }
-                if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+            } else { // Inline elements
+                if ($node->nodeName === 'u') {
                     $childStyles[] = 'underlined';
+                } elseif ($node->nodeName === 'ins') {
+                    $childStyles[] = 'underlined';
+                } elseif ($node->nodeName === 's') {
+                    $childStyles[] = 'strike';
+                } elseif ($node->nodeName === 'del') {
+                    $childStyles[] = 'strike';
+                } elseif ($node->nodeName === 'span') {
+                    if (in_array('underline', $classes)) {
+                        $childStyles[] = 'underlined';
+                    }
+                    if (in_array('strike', $classes)) {
+                        $childStyles[] = 'strike';
+                    }
+                    if (in_array('ins', $classes) || in_array('inserted', $classes)) {
+                        $childStyles[] = 'underlined';
+                    }
                 }
             }
-            if (in_array('underlined', $extraStyles)) {
-                $childStyles[] = 'underlined';
-            }
-            if (in_array('strike', $extraStyles)) {
-                $childStyles[] = 'strike';
-            }
 
-            foreach ($node->childNodes as $child) {
-                /** @var \DOMNode $child */
-                $content .= static::encodeHTMLNode($child, $childStyles);
+            if ($node->nodeName !== 'ol') {
+                foreach ($node->childNodes as $child) {
+                    /** @var \DOMNode $child */
+                    $content .= static::encodeHTMLNode($child, $childStyles);
+                }
             }
 
             switch ($node->nodeName) {
@@ -222,10 +189,8 @@ class Exporter
                 case 'br':
                     return '\newline' . "\n";
                 case 'p':
-                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'div':
-                    $content = static::addInsDelExtraStyles($content, $extraStyles);
                     return $content . "\n";
                 case 'strong':
                 case 'b':
@@ -246,23 +211,22 @@ class Exporter
                 case 'sup':
                     return '\textsuperscript{' . $content . '}';
                 case 'blockquote':
-                    $content = static::addInsDelExtraStyles($content, $extraStyles);
-                    return '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
+                    $block = '\begin{quotation}\noindent' . "\n" . $content . '\end{quotation}' . "\n";
+                    // noindent enforces a new line number -> strip it if it's a block element wrapped
+                    $block = str_replace('\noindent' . "\n" . '\begin{itemize}', "\n" . '\begin{itemize}', $block);
+                    $block = str_replace('\noindent' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $block);
+
+                    return $block;
                 case 'ul':
-                    $content = static::addInsDelExtraStylesToLi($content, $extraStyles);
                     return '\begin{itemize}' . "\n" . $content . '\end{itemize}' . "\n";
                 case 'ol':
-                    $firstLine = '';
-                    $content   = static::addInsDelExtraStylesToLi($content, $extraStyles);
-                    if ($node->hasAttribute('start')) {
-                        $firstLine = '\setcounter{enumi}{' . ($node->getAttribute('start') - 1) . '}' . "\n";
-                    }
-                    return '\begin{enumerate}[label=\arabic*.]' . "\n" .
-                        $firstLine . $content .
-                        '\end{enumerate}' . "\n";
+                    return static::encodeOLNode($node, $extraStyles, $childStyles);
                 case 'li':
-                    $content = static::addInsDelExtraStyles($content, $extraStyles);
-                    return '\item ' . $content . "\n";
+                    if ($liCounter) {
+                        return '\item[' . $liCounter . '] ' . $content . "\n";
+                    } else {
+                        return '\item ' . $content . "\n";
+                    }
                 case 'a':
                     if ($node->hasAttribute('href')) {
                         $link    = $node->getAttribute('href');
@@ -314,6 +278,53 @@ class Exporter
                     throw new Internal('Unknown Tag: ' . $node->nodeName);
             }
         }
+    }
+
+    /*
+     * Hints about the numbering algorithm are in HTMLTools
+     */
+    private static function encodeOLNode(\DOMElement $node, array $currentStyles, array $childStyles): string
+    {
+        if ($node->hasAttribute('start')) {
+            $counter = intval($node->getAttribute('start')) - 1;
+        } else {
+            $counter = 0;
+        }
+
+        $classes = ($node->hasAttribute('class') ? explode(" ", $node->getAttribute('class')) : []);
+        if (in_array(HTMLTools::OL_DECIMAL_CIRCLE, $classes)) {
+            $itemStyle = HTMLTools::OL_DECIMAL_CIRCLE;
+        } elseif (in_array(HTMLTools::OL_LOWER_ALPHA, $classes)) {
+            $itemStyle = HTMLTools::OL_LOWER_ALPHA;
+        } elseif (in_array(HTMLTools::OL_UPPER_ALPHA, $classes)) {
+            $itemStyle = HTMLTools::OL_UPPER_ALPHA;
+        } else {
+            $itemStyle = HTMLTools::OL_DECIMAL_DOT;
+        }
+
+        if (in_array('ins', $currentStyles)) {
+            $childStyles[] = 'ins';
+        }
+        if (in_array('del', $currentStyles)) {
+            $childStyles[] = 'del';
+        }
+
+        $content = '';
+        foreach ($node->childNodes as $child) {
+            if ($child->nodeName !== 'li') {
+                continue;
+            }
+
+            /** @var \DOMElement $child */
+            $counter   = HTMLTools::getNextLiCounter($child, $counter);
+            $formatted = HTMLTools::getLiValueFormatted($counter, $child->getAttribute('value'), $itemStyle);
+
+            $content .= static::encodeHTMLNode($child, $childStyles, $formatted);
+        }
+
+        return '\begin{enumerate}' . "\n" .
+               $content .
+               '\end{enumerate}' . "\n";
     }
 
     public static function encodeHTMLString(string $str): string

@@ -138,7 +138,7 @@ class HTML2TexTest extends TestBase
     public function testInserted()
     {
         $orig   = "<p class='inserted'>Neu <em>Neu2</em></p>";
-        $expect = "\\textcolor{Insert}{\\uline{Neu}\\uline{ }\\emph{\\uline{Neu2}}}\n";
+        $expect = '\textcolor{Insert}{\uline{Neu}\uline{ }}\emph{\textcolor{Insert}{\uline{Neu2}}}' . "\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
@@ -146,33 +146,73 @@ class HTML2TexTest extends TestBase
     public function testDeleted()
     {
         $orig   = "<p class='deleted'>Neu Neu2</p>";
-        $expect = "\\textcolor{Delete}{\\sout{Neu Neu2}}\n";
+        $expect = "\\textcolor{Delete}{\sout{Neu}\sout{ Neu2}}\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 
     public function testNestedLists()
     {
-        // Yes, this looks pretty broken, and it kind of is. But for some reason, it seems possible to make things
-        // work anyway, therefore let's do so.
         $orig = [
-            '<ol start="2"><li>###LINENUMBER###Test 2' . "\n",
-            '<ol><li>###LINENUMBER###Nummer 2.1 123456789 123456789 123456789 123456789 123456789 ',
-            '###LINENUMBER###123456789 123456789 123456789 123456789 123456789</li>',
-            '<li>###LINENUMBER###Nummer 2.2<br></li></ol></li></ol>',
+            '<ol start="4"><li>###LINENUMBER###Test 2' . "\n",
+            '<ol class="decimalCircle"><li>###LINENUMBER###Test a</li>',
+            '<li value="g">###LINENUMBER###Test c</li>',
+            '<li value="i/">###LINENUMBER###Test d</li>',
+            '<li>###LINENUMBER###Test d</li></ol></li>',
+            '<li>Test 5</li></ol>'
         ];
-        $expect = '\begin{enumerate}[label=\arabic*.]
-\setcounter{enumi}{1}
-\item Test 2\linebreak{}
-
-\begin{enumerate}[label=\arabic*.]
-\item Nummer 2.1 123456789 123456789 123456789 123456789 123456789 \linebreak{}
-123456789 123456789 123456789 123456789 123456789
-\item Nummer 2.2
+        $expect = '\begin{enumerate}
+\item[4.] Test 2
+\begin{enumerate}
+\item[(1)] Test a
+\item[(g)] Test c
+\item[(i/)] Test d
+\item[(9)] Test d
 \end{enumerate}
-\end{enumerate}
-';
+\item[5.] Test 5
+\end{enumerate}' . "\n";
         $out    = Exporter::getMotionLinesToTeX($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testDeletedInsertedLists()
+    {
+        $orig = '<div><ol class="deleted" start="4"><li value="4">Test 2' . "\n" . '<ol class="decimalCircle"><li>Test a</li><li value="g">Test c</li><li value="i/">Test d</li><li>Test 9</li></ol></li></ol>' .
+                '<ol class="inserted" start="2"><li>Test3</li></ol><ol class="deleted" start="5"><li>Test3</li></ol></div>';
+
+        $expect = '\begin{enumerate}
+\item[4.] \textcolor{Delete}{\sout{Test}\sout{ 2\linebreak{}
+}}\begin{enumerate}
+\item[(1)] \textcolor{Delete}{\sout{Test}\sout{ a}}
+\item[(g)] \textcolor{Delete}{\sout{Test}\sout{ c}}
+\item[(i/)] \textcolor{Delete}{\sout{Test}\sout{ d}}
+\item[(9)] \textcolor{Delete}{\sout{Test}\sout{ 9}}
+\end{enumerate}
+
+\end{enumerate}
+\begin{enumerate}
+\item[2.] \textcolor{Insert}{\uline{Test3}}
+\end{enumerate}
+\begin{enumerate}
+\item[5.] \textcolor{Delete}{\sout{Test3}}
+\end{enumerate}
+
+';
+
+        $out = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testListInBlock()
+    {
+        $orig = '<blockquote class="delete"><ul><li>Test 123</li></ul>';
+        $expect = '\begin{quotation}
+\begin{itemize}
+\item Test 123
+\end{itemize}
+\end{quotation}
+';
+        $out = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
 }

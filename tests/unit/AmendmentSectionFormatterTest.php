@@ -23,7 +23,7 @@ class AmendmentSectionFormatterTest extends TestBase
 
         $this->assertEquals([
             [
-                'text' => '<ol start="3"><li>###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
+                'text' => '<ol start="3"><li value="3">###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
                 'lineFrom' => 3,
                 'lineTo' => 3,
             ]

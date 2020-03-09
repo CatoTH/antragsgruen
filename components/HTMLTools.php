@@ -11,19 +11,21 @@ class HTMLTools
     public static $KNOWN_BLOCK_ELEMENTS = ['div', 'ul', 'li', 'ol', 'blockquote', 'pre', 'p', 'section',
         'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
 
-    /**
-     * @param string $str
-     * @return bool
-     */
-    public static function isStringCachable($str)
+    public static $KNOWN_OL_CLASSES = ['decimalDot', 'decimalCircle', 'lowerAlpha', 'upperAlpha'];
+    const OL_DECIMAL_DOT = 'decimalDot';
+    const OL_DECIMAL_CIRCLE = 'decimalCircle';
+    const OL_LOWER_ALPHA = 'lowerAlpha';
+    const OL_UPPER_ALPHA = 'upperAlpha';
+
+    public static function isStringCachable(string $str): bool
     {
         return strlen($str) > 1000;
     }
 
-    /**
+    /*
      * Required by HTML Purifier to handle Umlaut domains
      */
-    public static function loadNetIdna2()
+    public static function loadNetIdna2(): void
     {
         $dir  = __DIR__ . DIRECTORY_SEPARATOR . 'Net_IDNA2-0.1.1' . DIRECTORY_SEPARATOR . 'Net' . DIRECTORY_SEPARATOR;
         $dir2 = $dir . 'IDNA2' . DIRECTORY_SEPARATOR;
@@ -33,18 +35,22 @@ class HTMLTools
     }
 
     public static function purify(\HTMLPurifier_Config $config, string $html): string {
-        $purifier = \HTMLPurifier::instance($config);
+        /** @var \HTMLPurifier_HTMLDefinition $def */
+        $def = $config->getHTMLDefinition(true);
+
+        // Overwriting standard LI implementation, allowing non-integer values
+        $li = $def->addBlankElement('li');
+        $li->attr['value'] = new \HTMLPurifier_AttrDef_Text();
+        $li->attr['type'] = 'Enum#s:1,i,I,a,A,disc,square,circle';
+
+        $purifier = new \HTMLPurifier($config);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
 
         return $purifier->purify($html);
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function cleanMessedUpHtmlCharacters($html)
+    public static function cleanMessedUpHtmlCharacters(string $html): string
     {
         if (function_exists('normalizer_normalize')) {
             $html = normalizer_normalize($html);
@@ -68,11 +74,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function cleanTrustedHtml($html)
+    public static function cleanTrustedHtml(string $html): string
     {
         $html = static::cleanMessedUpHtmlCharacters($html);
         $html = str_replace("\r", '', $html);
@@ -80,12 +82,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $htmlIn
-     * @param bool $linkify
-     * @return string
-     */
-    public static function correctHtmlErrors($htmlIn, $linkify = false)
+    public static function correctHtmlErrors(string $htmlIn, bool $linkify = false): string
     {
         $cacheKey = 'correctHtmlErrors_' . md5($htmlIn);
         if (static::isStringCachable($htmlIn) && \Yii::$app->getCache()->exists($cacheKey)) {
@@ -146,11 +143,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function wrapOrphanedTextWithP($html)
+    public static function wrapOrphanedTextWithP(string $html): string
     {
         $dom = static::html2DOM($html);
 
@@ -226,22 +219,23 @@ class HTMLTools
         // Remove <a>...</a>
         $html = preg_replace('/<a>(.*)<\/a>/siuU', '$1', $html);
 
-        // When editing amendments, list items are split into <ol start="2"> items.
+        // When editing amendments, list items are split into <ol start="2" class="upperAlpha"> items.
         // After editing, it should be merged into one list again.
-        $html = preg_replace('/<\/ol>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
-        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( start=\"?\'?\d*\"?\'?)?>/siu', '', $html);
+        $html = preg_replace('/<\/ol>\s*<ol( [^>]*)?>/siu', '', $html);
+        $html = preg_replace('/<\/ol>\s*<\/div>\s*<div[^>]*>\s*<ol( [^>]*)?>/siu', '', $html);
 
         $allowedTags = [
             'p', 'strong', 'em', 'ul', 'ol', 'li', 'span', 'a', 'br', 'blockquote',
             'sub', 'sup', 'pre', 'h1', 'h2', 'h3', 'h4'
         ];
 
-        $allowedClasses = ['underline', 'subscript', 'superscript'];
+        $allowedClasses = array_merge(['underline', 'subscript', 'superscript'], static::$KNOWN_OL_CLASSES);
+
         if (!in_array('strike', $forbiddenFormattings)) {
             $allowedClasses[] = 'strike';
         }
 
-        $allowedAttributes = ['style', 'href', 'class'];
+        $allowedAttributes = ['style', 'href', 'class', 'li.value', 'ol.start'];
 
         $html = str_replace('<p></p>', '<p>###EMPTY###</p>', $html);
 
@@ -297,11 +291,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function stripEmptyBlockParagraphs($html)
+    public static function stripEmptyBlockParagraphs(string $html): string
     {
         do {
             $htmlPre = $html;
@@ -314,11 +304,7 @@ class HTMLTools
         return $html;
     }
 
-    /**
-     * @param string $html
-     * @return string
-     */
-    public static function prepareHTMLForCkeditor($html)
+    public static function prepareHTMLForCkeditor(string $html): string
     {
         // When editing amendments, list items are split into <ol start="2"> items
         // (it's possible to edit only one list item)
@@ -328,6 +314,109 @@ class HTMLTools
         $html = preg_replace('/(<[^\/][^>]*>) (\w)/siu', '\\1&nbsp;\\2', $html);
         $html = preg_replace('/(\w) (<\/[^>]*>)/siu', '\\1&nbsp;\\2', $html);
         return $html;
+    }
+
+    public static function getNextLiCounter(\DOMElement $li, int $oldLiNo): int
+    {
+        $liNo = $oldLiNo + 1;
+        $value = $li->getAttribute('value');
+        if ($value) {
+            if (is_numeric($value)) {
+                $liNo = intval($value);
+            }
+            if (strlen($value) === 1) {
+                $ord = ord(strtolower($value));
+                if ($ord >= ord('a') && $ord <= ord('z')) {
+                    $liNo = $ord - ord('a') + 1;
+                }
+            }
+        }
+        return $liNo;
+    }
+
+    public static function getLiValue(int $counter, ?string $value, string $formatting): string
+    {
+        switch ($formatting) {
+            case HTMLTools::OL_DECIMAL_CIRCLE:
+                return ($value !== null && $value !== '' ? $value : $counter);
+            case HTMLTools::OL_UPPER_ALPHA:
+                return ($value !== null && $value !== '' ? $value : chr(ord('A') + $counter - 1));
+            case HTMLTools::OL_LOWER_ALPHA:
+                return ($value !== null && $value !== '' ? $value : chr(ord('a') + $counter - 1));
+            case HTMLTools::OL_DECIMAL_DOT:
+            default:
+                return ($value !== null && $value !== '' ? $value : $counter);
+        }
+    }
+
+    public static function getLiValueFormatted(int $counter, ?string $value, string $formatting): string
+    {
+        $value = static::getLiValue($counter, $value, $formatting);
+        switch ($formatting) {
+            case HTMLTools::OL_DECIMAL_CIRCLE:
+                return '(' . $value . ')';
+            case HTMLTools::OL_UPPER_ALPHA:
+            case HTMLTools::OL_LOWER_ALPHA:
+            case HTMLTools::OL_DECIMAL_DOT:
+            default:
+                return $value . '.';
+        }
+    }
+
+    private static function explicitlySetLiValuesInt(\DOMElement $element, ?int $counter = null, ?string $formatting = null): void
+    {
+        $children      = $element->childNodes;
+
+        if ($element->nodeName === 'ol' || $element->nodeName === 'ul') {
+            $liCount          = 0;
+            $start = $element->getAttribute('start');
+            if ($start !== null && $start > 0) {
+                $liCount = intval($start) - 1;
+            }
+            $formatting = static::OL_DECIMAL_DOT;
+            if ($element->hasAttribute('class')) {
+                $classes = explode(' ', $element->getAttribute('class'));
+                foreach ($classes as $class) {
+                    if ($element->nodeName === 'ol' && in_array($class, static::$KNOWN_OL_CLASSES)) {
+                        $formatting = $class;
+                    }
+                }
+            }
+
+            foreach ($children as $child) {
+                if (!is_a($child, \DOMElement::class)) {
+                    continue;
+                }
+                /** @var \DOMElement $child */
+                $liCount = static::getNextLiCounter($child, $liCount);
+                static::explicitlySetLiValuesInt($child, $liCount, $formatting);
+            }
+            return;
+        }
+
+        if ($element->nodeName === 'li') {
+            $formatting = $formatting ?? static::OL_DECIMAL_DOT;
+            if (!$element->hasAttribute('value')) {
+                $liVal = static::getLiValue($counter, null, $formatting);
+                $element->setAttribute('value', $liVal);
+            }
+        }
+
+        foreach ($children as $child) {
+            if (!is_a($child, \DOMElement::class)) {
+                continue;
+            }
+            /** @var \DOMElement $child */
+            static::explicitlySetLiValuesInt($child);
+        }
+    }
+
+    public static function explicitlySetLiValues(string $html): string
+    {
+        $dom = static::html2DOM($html);
+        static::explicitlySetLiValuesInt($dom);
+
+        return static::renderDomToHtml($dom, true);
     }
 
     /**
@@ -351,7 +440,15 @@ class HTMLTools
         $return        = [];
         $children      = $element->childNodes;
         $pendingInline = null;
+
         $lino          = 0;
+        if ($element->nodeName === 'ol') {
+            $start = $element->getAttribute('start');
+            if ($start !== null && $start > 0) {
+                $lino = intval($start) - 1;
+            }
+        }
+
         for ($i = 0; $i < $children->length; $i++) {
             $child = $children->item($i);
             switch (get_class($child)) {
@@ -363,20 +460,39 @@ class HTMLTools
                         }
                         $pendingInline .= '<br>';
                     } elseif (in_array($child->nodeName, $inlineElements) || !$split) {
-                        if ($child->nodeName == 'a') {
-                            $href = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
-                            if ($child->hasAttribute('class')) {
-                                $newPre = '<a href="' . Html::encode($href) . '" ' .
-                                    'class="' . Html::encode($child->getAttribute('class')) . '">';
-                            } else {
-                                $newPre = '<a href="' . Html::encode($href) . '">';
-                            }
-                        } elseif ($child->nodeName == 'span' && $child->hasAttribute('class')) {
-                            $newPre = '<' . $child->nodeName . ' ' .
-                                'class="' . Html::encode($child->getAttribute('class')) . '">';
-                        } else {
-                            $newPre = '<' . $child->nodeName . '>';
+                        $attributes = [];
+                        switch ($child->nodeName) {
+                            case 'a':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                $attributes['href'] = ($child->hasAttribute('href') ? $child->getAttribute('href') : '');
+                                break;
+                            case 'span':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                break;
+                            case 'ul':
+                            case 'ol':
+                                if ($child->hasAttribute('class')) {
+                                    $attributes['class'] = $child->getAttribute('class');
+                                }
+                                if ($child->hasAttribute('start')) {
+                                    $attributes['start'] = $child->getAttribute('start');
+                                }
+                                break;
+                            case 'li':
+                                if ($child->hasAttribute('value')) {
+                                    $attributes['value'] = $child->getAttribute('value');
+                                }
+                                break;
                         }
+                        $newPre = '<' . $child->nodeName;
+                        foreach ($attributes as $key => $val) {
+                            $newPre .= ' ' . $key . '="' . Html::encode($val) . '"';
+                        }
+                        $newPre .= '>';
                         $newPost = '</' . $child->nodeName . '>';
                         $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                         if ($pendingInline === null) {
@@ -390,20 +506,40 @@ class HTMLTools
                             $return[]      = $pre . $pendingInline . $post;
                             $pendingInline = null;
                         }
-                        if ($child->nodeName == 'ol') {
-                            $newPre  = $pre . '<' . $child->nodeName . ' start="#LINO#">';
+
+                        /*
+                         * Hints about numbering of ordered lists:
+                         * - Each OL gets a "start" attribute, with the numeric value
+                         * - LIs are receiving a "value" if it explicitly set by the user. this value overrides the natural order
+                         * - Unlike in standard HTML, non-numeric values are allowed as LI[value]
+                         * - If a strictly numeric number (1-100) is encountered as LI[value], this affects the counter of the OL,
+                         *   both of the current OL parent item and of the parent OL of each subsequent LI
+                         * - The same happens with a single-letter character; A is treated equally as 1, B as 2, and so on
+                         * - If a non-strictly-numbered LI[value] is encontered (like "3b"), the counter of the OL is unaffected
+                         */
+                        if ($child->nodeName === 'ol') {
+                            $classes = $child->getAttribute('class');
+                            $newPre = $pre . '<' . $child->nodeName;
+                            if ($classes) {
+                                $newPre .= ' class="' . Html::encode($classes) . '"';
+                            }
+                            $newPre .= ' start="#LINO#">';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif ($child->nodeName == 'li') {
-                            $lino++;
-                            $newPre  = str_replace('#LINO#', $lino, $pre) . '<' . $child->nodeName . '>';
+                        } elseif ($child->nodeName === 'li') {
+                            $lino = static::getNextLiCounter($child, $lino);
+                            $value = $child->getAttribute('value');
+                            $newPre  = str_replace('#LINO#', $lino, $pre);
+                            if ($value) {
+                                $newPre .= '<' . $child->nodeName . ' value="' . $value . '">';
+                            } else {
+                                $newPre .= '<' . $child->nodeName . '>';
+                            }
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
                             $return  = array_merge($return, $newArrs);
-                        } elseif (in_array($child->nodeName,
-                            ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-                        ) {
+                        } elseif (in_array($child->nodeName, ['ul', 'blockquote', 'p', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'])) {
                             $newPre  = $pre . '<' . $child->nodeName . '>';
                             $newPost = '</' . $child->nodeName . '>' . $post;
                             $newArrs = static::sectionSimpleHTMLInt($child, $split, $splitListItems, $newPre, $newPost);
@@ -434,12 +570,7 @@ class HTMLTools
         return $return;
     }
 
-    /**
-     * @param string $html
-     * @param bool $correctBefore
-     * @return \DOMElement
-     */
-    public static function html2DOM($html, $correctBefore = true)
+    public static function html2DOM(string $html, bool $correctBefore = true): \DOMElement
     {
         if ($correctBefore) {
             $html = static::correctHtmlErrors($html);
@@ -487,14 +618,11 @@ class HTMLTools
         return $result;
     }
 
-    /**
+    /*
      * Tries to restore the original HTML after re-combining reviously split markup.
      * Currently, this only joins adjacent top-level lists.
-     *
-     * @param string $html
-     * @return string
      */
-    public static function removeSectioningFragments($html)
+    public static function removeSectioningFragments(string $html): string
     {
         $body     = static::html2DOM($html);
         $children = $body->childNodes;

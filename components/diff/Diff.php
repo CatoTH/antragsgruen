@@ -315,12 +315,7 @@ class Diff
             $this->wrapWithInsert($preChars . $restInsC . $postChars) . $postWords;
     }
 
-    /**
-     * @param $lineOldArr
-     * @param $lineNewArr
-     * @return boolean
-     */
-    public function htmlParagraphTypeChanges($lineOldArr, $lineNewArr)
+    public function htmlParagraphTypeChanges(array $lineOldArr, array $lineNewArr): bool
     {
         if (count($lineOldArr) === 0 || count($lineNewArr) === 0) {
             return false;
@@ -335,16 +330,10 @@ class Diff
         } else {
             $nodeType2 = $matches['nodeType'];
         }
-        return ($nodeType1 != $nodeType2);
+        return ($nodeType1 !== $nodeType2);
     }
 
-    /**
-     * @param string $lineOld
-     * @param string $lineNew
-     * @return string
-     * @throws Internal
-     */
-    public function computeLineDiff($lineOld, $lineNew)
+    public function computeLineDiff(string $lineOld, string $lineNew): string
     {
         $computedStrs = [];
         $lineOld      = static::normalizeForDiff($lineOld);
@@ -356,7 +345,7 @@ class Diff
             return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
         }
 
-        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
+        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr, false);
         $return = $this->engine->moveWordOpsToMatchSentenceStructure($return);
 
         $return = $this->groupOperations($return, '');
@@ -600,7 +589,7 @@ class Diff
         $renderer->setFormatting($diffFormatting);
 
         list($adjustedRef, $adjustedMatching) = $matcher->matchForDiff($referenceParas, $newParas);
-        if (count($adjustedRef) != count($adjustedMatching)) {
+        if (count($adjustedRef) !== count($adjustedMatching)) {
             throw new Internal('compareSectionedHtml: number of sections does not match');
         }
         $diffSections = [];
@@ -831,7 +820,7 @@ class Diff
         $diffParas     = $diff->compareHtmlParagraphs($referenceParas, $newParas, $diffFormatting);
         $affectedParas = [];
         foreach ($diffParas as $paraNo => $para) {
-            if (DiffRenderer::paragraphContainsDiff($para) !== false) {
+            if (DiffRenderer::paragraphContainsDiff($para) !== null) {
                 $affectedParas[$paraNo] = $para;
             }
         }

@@ -257,7 +257,7 @@ class ArrayMatcher
      */
     public function matchForDiff($referenceArr, $toMatchArr)
     {
-        $diff = $this->diffEngine->compareArrays($referenceArr, $toMatchArr);
+        $diff = $this->diffEngine->compareArrays($referenceArr, $toMatchArr, true);
 
         $newRef = $newMatching = [];
 

@@ -18,56 +18,33 @@ class AmendmentSectionFormatter
     /** @var bool */
     private $debug = false;
 
-    /**
-     * @param string $text
-     * @throws Internal
-     */
-    public function setTextOriginal($text)
+    public function setTextOriginal(string $text): void
     {
         $this->paragraphsOriginal = HTMLTools::sectionSimpleHTML($text);
     }
 
-    /**
-     * @param string $text
-     * @throws Internal
-     */
-    public function setTextNew($text)
+    public function setTextNew(string $text): void
     {
         $this->paragraphsNew = HTMLTools::sectionSimpleHTML($text);
     }
 
-    /**
-     * @param int $lineNo
-     */
-    public function setFirstLineNo($lineNo)
+    public function setFirstLineNo(int $lineNo): void
     {
         $this->firstLine = $lineNo;
     }
 
-    /**
-     * @param bool $debug
-     */
-    public function setDebug($debug)
+    public function setDebug(bool $debug): void
     {
         $this->debug = $debug;
     }
 
-    /**
-     * @param string $text
-     * @param int $lineLength
-     * @return string
-     */
-    public static function addLineNumberPlaceholders($text, $lineLength)
+    public static function addLineNumberPlaceholders(string $text, int $lineLength): string
     {
         $linesOut = LineSplitter::splitHtmlToLines($text, $lineLength, '###LINENUMBER###');
         return implode('', $linesOut);
     }
 
-    /**
-     * @param string $paragraphs
-     * @return array
-     */
-    public static function extractInsDelBlocks($paragraphs)
+    public static function extractInsDelBlocks(string $paragraphs): ?array
     {
         $detectInsDel = function ($str) {
             if (stripos($str, '<ins') !== false || stripos($str, '</ins') !== false) {
@@ -120,7 +97,7 @@ class AmendmentSectionFormatter
             );
         } while ($pre != $paragraphs);
 
-        if (trim($paragraphs) != '') {
+        if (trim($paragraphs) !== '') {
             // Something remains => it's not a pure replacement
             return null;
         } else {
@@ -128,11 +105,7 @@ class AmendmentSectionFormatter
         }
     }
 
-    /**
-     * @param array $diffSections
-     * @return array
-     */
-    public static function groupConsecutiveChangeBlocks($diffSections)
+    public static function groupConsecutiveChangeBlocks(array $diffSections): array
     {
         $pendingBlocks = null;
         $blocksOut     = [];
@@ -170,7 +143,9 @@ class AmendmentSectionFormatter
             $originals     = [];
             $newParagraphs = [];
             foreach ($this->paragraphsOriginal as $section) {
-                $originals[] = static::addLineNumberPlaceholders($section, $lineLength);
+                $html = static::addLineNumberPlaceholders($section, $lineLength);
+                $html = HTMLTools::explicitlySetLiValues($html);
+                $originals[] = $html;
             }
             foreach ($this->paragraphsNew as $newParagraph) {
                 // Besides adding line numbers, addLineNumberPlaceholders also breaks overly long words into parts
@@ -183,6 +158,7 @@ class AmendmentSectionFormatter
 
             $diff         = new Diff();
             $diffSections = $diff->compareHtmlParagraphs($originals, $newParagraphs, $diffFormatting);
+
             $diffSections = static::groupConsecutiveChangeBlocks($diffSections);
             $htmlDiff     = implode("\n", $diffSections);
 

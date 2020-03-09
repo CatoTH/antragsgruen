@@ -2,7 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
-use app\models\db\{IMotion, Motion, MotionSection, MotionSectionParagraph};
+use app\models\db\{IMotion, Motion, MotionSection};
 use app\models\settings\VotingData;
 
 class Draft implements \JsonSerializable

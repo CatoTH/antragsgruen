@@ -51,6 +51,124 @@
     font-size: 1.2em;
   }
 
+  ol {
+    counter-reset: antragsgruen-counter;
+    list-style: none;
+
+    @for $i from 1 through 100 {
+      &[start="#{$i}"] {
+        counter-reset: antragsgruen-counter #{$i - 1};
+      }
+    }
+
+    > li {
+      counter-increment: antragsgruen-counter;
+      position: relative;
+
+      &::before {
+        content: counter(antragsgruen-counter) ".";
+        position: absolute;
+        left: -40px;
+        top: 0;
+      }
+
+      &[value]::before {
+        content: attr(value) ".";
+      }
+
+      @for $i from 1 through 100 {
+        &[value="#{$i}"] {
+          counter-reset: antragsgruen-counter #{$i - 1};
+        }
+      }
+      &[value="A"] { counter-reset: antragsgruen-counter 0; }
+      &[value="a"] { counter-reset: antragsgruen-counter 0; }
+      &[value="B"] { counter-reset: antragsgruen-counter 1; }
+      &[value="b"] { counter-reset: antragsgruen-counter 1; }
+      &[value="C"] { counter-reset: antragsgruen-counter 2; }
+      &[value="c"] { counter-reset: antragsgruen-counter 2; }
+      &[value="D"] { counter-reset: antragsgruen-counter 3; }
+      &[value="d"] { counter-reset: antragsgruen-counter 3; }
+      &[value="E"] { counter-reset: antragsgruen-counter 4; }
+      &[value="e"] { counter-reset: antragsgruen-counter 4; }
+      &[value="F"] { counter-reset: antragsgruen-counter 5; }
+      &[value="f"] { counter-reset: antragsgruen-counter 5; }
+      &[value="G"] { counter-reset: antragsgruen-counter 6; }
+      &[value="g"] { counter-reset: antragsgruen-counter 6; }
+      &[value="H"] { counter-reset: antragsgruen-counter 7; }
+      &[value="h"] { counter-reset: antragsgruen-counter 7; }
+      &[value="I"] { counter-reset: antragsgruen-counter 8; }
+      &[value="i"] { counter-reset: antragsgruen-counter 8; }
+      &[value="J"] { counter-reset: antragsgruen-counter 9; }
+      &[value="j"] { counter-reset: antragsgruen-counter 9; }
+      &[value="K"] { counter-reset: antragsgruen-counter 10; }
+      &[value="k"] { counter-reset: antragsgruen-counter 10; }
+      &[value="L"] { counter-reset: antragsgruen-counter 11; }
+      &[value="l"] { counter-reset: antragsgruen-counter 11; }
+      &[value="M"] { counter-reset: antragsgruen-counter 12; }
+      &[value="m"] { counter-reset: antragsgruen-counter 12; }
+      &[value="N"] { counter-reset: antragsgruen-counter 13; }
+      &[value="n"] { counter-reset: antragsgruen-counter 13; }
+      &[value="O"] { counter-reset: antragsgruen-counter 14; }
+      &[value="o"] { counter-reset: antragsgruen-counter 14; }
+      &[value="P"] { counter-reset: antragsgruen-counter 15; }
+      &[value="p"] { counter-reset: antragsgruen-counter 15; }
+      &[value="Q"] { counter-reset: antragsgruen-counter 16; }
+      &[value="q"] { counter-reset: antragsgruen-counter 16; }
+      &[value="R"] { counter-reset: antragsgruen-counter 17; }
+      &[value="r"] { counter-reset: antragsgruen-counter 17; }
+      &[value="S"] { counter-reset: antragsgruen-counter 18; }
+      &[value="s"] { counter-reset: antragsgruen-counter 18; }
+      &[value="T"] { counter-reset: antragsgruen-counter 19; }
+      &[value="t"] { counter-reset: antragsgruen-counter 19; }
+      &[value="U"] { counter-reset: antragsgruen-counter 20; }
+      &[value="u"] { counter-reset: antragsgruen-counter 20; }
+      &[value="V"] { counter-reset: antragsgruen-counter 21; }
+      &[value="v"] { counter-reset: antragsgruen-counter 21; }
+      &[value="W"] { counter-reset: antragsgruen-counter 22; }
+      &[value="w"] { counter-reset: antragsgruen-counter 22; }
+      &[value="X"] { counter-reset: antragsgruen-counter 23; }
+      &[value="x"] { counter-reset: antragsgruen-counter 23; }
+      &[value="Y"] { counter-reset: antragsgruen-counter 24; }
+      &[value="y"] { counter-reset: antragsgruen-counter 24; }
+      &[value="Z"] { counter-reset: antragsgruen-counter 25; }
+      &[value="z"] { counter-reset: antragsgruen-counter 25; }
+    }
+    &.decimalCircle {
+      > li {
+        &::before {
+          content: "(" counter(antragsgruen-counter) ")";
+        }
+
+        &[value]::before {
+          content: "(" attr(value) ")";
+        }
+      }
+    }
+    &.lowerAlpha {
+      > li {
+        &::before {
+          content: counter(antragsgruen-counter, lower-alpha) ".";
+        }
+
+        &[value]::before {
+          content: attr(value) ".";
+        }
+      }
+    }
+    &.upperAlpha {
+      > li {
+        &::before {
+          content: counter(antragsgruen-counter, upper-alpha) ".";
+        }
+
+        &[value]::before {
+          content: attr(value) ".";
+        }
+      }
+    }
+  }
+
   .amendmentRef {
     font-size: 0.8em;
     opacity: 0.7;
@@ -60,6 +178,7 @@
     font-family: $motionFixedFont;
     //letter-spacing: -0.5px;
     color: $motionFixedFontColor;
+    hyphens: none; // Otherwise, hovered inline amendments have different line breaks than the original motion
   }
 
   @media screen and (min-width: 800px) {
