@@ -12,6 +12,8 @@ return [
     'amend_for_motion'       => 'for',
     'supporter_you'          => 'You!',
     'supporter_none'         => 'None',
+    'table_caption'          => 'Metadata of the amendment',
+    'table_description'      => 'The following table describes the status, the proposer and other metadata of this amendment.',
     'status'                 => 'Status',
     'proposed_status'        => 'Proposed procedure',
     'referred_to'            => 'Referred to',

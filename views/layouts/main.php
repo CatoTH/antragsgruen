@@ -98,6 +98,8 @@ echo '<script>' . $modernizr . '</script>' . "\n";
 
 $this->beginBody();
 
+echo '<a href="#mainContent" id="gotoMainContent">' . Yii::t('base', 'goto_main_content') . '</a>';
+
 echo '<div class="over_footer_wrapper">';
 
 echo \app\models\layoutHooks\Layout::beforePage();

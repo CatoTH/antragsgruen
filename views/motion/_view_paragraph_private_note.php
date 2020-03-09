@@ -10,6 +10,15 @@ use yii\helpers\Html;
  */
 
 $comment = $motion->getPrivateComment($sectionId, $paragraphNo);
+
+$sectionTitle = null;
+foreach ($motion->sections as $section) {
+    if ($section->sectionId === $sectionId) {
+        $sectionTitle = $section->getSettings()->title;
+    }
+}
+$noteSrc = ['%NO%', '%TITLE%'];
+$noteRepl = [($paragraphNo + 1), $sectionTitle];
 ?>
 <section class="privateParagraphNoteHolder">
     <?php
@@ -18,7 +27,7 @@ $comment = $motion->getPrivateComment($sectionId, $paragraphNo);
         <div class="privateParagraphNoteOpener hidden">
             <button class="btn btn-link btn-xs">
                 <span class="glyphicon glyphicon-pushpin"></span>
-                <?= Yii::t('motion', 'private_notes') ?>
+                <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_open')) ?>
             </button>
         </div>
         <?php
@@ -34,14 +43,14 @@ $comment = $motion->getPrivateComment($sectionId, $paragraphNo);
     ?>
     <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
     <label>
-        <?= Yii::t('motion', 'private_notes') ?>
+        <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para')) ?>
         <textarea class="form-control" name="noteText"
         ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
     </label>
     <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">
     <input type="hidden" name="sectionId" value="<?= $sectionId ?>">
     <button type="submit" name="savePrivateNote" class="btn btn-success">
-        <?= Yii::t('base', 'save') ?>
+        <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_save')) ?>
     </button>
     <?= Html::endForm() ?>
 </section>

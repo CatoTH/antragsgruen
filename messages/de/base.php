@@ -15,6 +15,7 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Antragsliste',
     'menu_todo'             => 'To Do',
+    'goto_main_content'     => 'Zum Inhalt der Seite',
     'privacy_statement'     => 'Datenschutz',
     'imprint'               => 'Impressum',
     'err_email_not_sent'    => 'Eine E-Mail konnte nicht geschickt werden',

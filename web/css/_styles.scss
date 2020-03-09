@@ -117,6 +117,10 @@
   overflow-wrap: break-word;
   table-layout: fixed;
 
+  > caption {
+    display: none;
+  }
+
   > tbody > tr > th {
     width: 30%;
     vertical-align: top;

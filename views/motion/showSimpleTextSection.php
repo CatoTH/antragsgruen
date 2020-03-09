@@ -36,37 +36,40 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
     $id = 'section_' . $section->sectionId . '_' . $paragraphNo;
     echo '<div class="' . implode(' ', $parClasses) . '" id="' . $id . '">';
 
-
-    echo '<ul class="bookmarks">';
-    if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS) {
-        $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
-        $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
-        if ($numComments > 0 || $mayOpen) {
-            echo '<li class="comment">';
-            $str  = '<span class="glyphicon glyphicon-comment"></span>';
-            $str  .= '<span class="count" data-count="' . $numComments . '"></span>';
-            $zero = '';
-            if ($numComments === 0) {
-                $zero .= ' zero';
+    $hasComments = ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_PARAGRAPHS);
+    $hasAmendments = (count($paragraph->amendmentSections) > 0);
+    if ($hasComments || $hasAmendments) {
+        echo '<ul class="bookmarks">';
+        if ($hasComments) {
+            $mayOpen     = $section->getMotion()->motionType->getCommentPolicy()->checkCurrUser(true, true);
+            $numComments = $paragraph->getNumOfAllVisibleComments($screenAdmin);
+            if ($numComments > 0 || $mayOpen) {
+                echo '<li class="comment">';
+                $str  = '<span class="glyphicon glyphicon-comment"></span>';
+                $str  .= '<span class="count" data-count="' . $numComments . '"></span>';
+                $zero = '';
+                if ($numComments === 0) {
+                    $zero .= ' zero';
+                }
+                echo Html::a($str, '#', ['class' => 'shower' . $zero]);
+                echo Html::a($str, '#', ['class' => 'hider active' . $zero]);
+                echo '</li>';
             }
-            echo Html::a($str, '#', ['class' => 'shower' . $zero]);
-            echo Html::a($str, '#', ['class' => 'hider active' . $zero]);
-            echo '</li>';
         }
-    }
 
-    foreach ($paragraph->amendmentSections as $amendmentSection) {
-        $amendment = $consultation->getAmendment($amendmentSection->amendmentId);
-        $amLink    = UrlHelper::createAmendmentUrl($amendment);
-        $firstline = $amendmentSection->firstAffectedLine;
-        echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
-        echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
-        echo Html::encode($amendment->titlePrefix);
-        echo \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment);
-        echo "</a></li>\n";
-    }
+        foreach ($paragraph->amendmentSections as $amendmentSection) {
+            $amendment = $consultation->getAmendment($amendmentSection->amendmentId);
+            $amLink    = UrlHelper::createAmendmentUrl($amendment);
+            $firstline = $amendmentSection->firstAffectedLine;
+            echo '<li class="amendment amendment' . $amendment->id . '" data-first-line="' . $firstline . '">';
+            echo '<a data-id="' . $amendment->id . '" href="' . Html::encode($amLink) . '">';
+            echo Html::encode($amendment->titlePrefix);
+            echo \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment);
+            echo "</a></li>\n";
+        }
 
-    echo '</ul>';
+        echo '</ul>';
+    }
 
     echo '<div class="text motionTextFormattings textOrig';
     if ($section->getSettings()->fixedWidth) {

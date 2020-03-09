@@ -14,7 +14,7 @@ $rowClasses = ['row', 'antragsgruen-content'];
 $widthClass = ($layout->fullWidth ? 'antragsgruen-width-full' : 'antragsgruen-width-main');
 
 echo '<div class="' . implode(' ', $rowClasses) . '">';
-echo '<main class="' . $widthClass . ' well">';
+echo '<main class="' . $widthClass . ' well" id="mainContent">';
 echo $content;
 echo '</main></div>';
 

@@ -250,19 +250,21 @@ if (User::getCurrentUser()) {
 
     $motionData[] = [
         'rowClass' => 'privateNotes' . ($comment ? '' : ' hidden'),
-        'title'    => Yii::t('motion', 'private_notes'),
+        'title'    => Yii::t('motion', 'private_notes_open'),
         'content'  => $str,
     ];
 }
 
-echo '<table class="motionDataTable">';
+echo '<div class="sr-only" id="motionDataTableDescription">Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag</div>';
+echo '<table class="motionDataTable" aria-describedby="motionDataTableDescription">';
+echo '<caption>' . Yii::t('motion', 'table_caption') . '</caption>';
 foreach ($motionData as $row) {
     if (isset($row['rowClass'])) {
         echo '<tr class="' . $row['rowClass'] . '">';
     } else {
         echo '<tr>';
     }
-    echo '<th>' . $row['title'] . ':</th>';
+    echo '<th scope="row">' . $row['title'] . ':</th>';
     if (isset($row['tdClass'])) {
         echo '<td class="' . $row['tdClass'] . '">' . $row['content'] . '</td>';
     } else {

@@ -155,6 +155,7 @@ class StdHooks extends Hooks
                     $icon = '<span class="glyphicon glyphicon-plus-sign"></span>';
                     $url  = UrlHelper::createUrl('/pages/list-pages');
                     $out  .= '<li class="addPage">' .
+                             '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>' .
                         Html::a($icon, $url, ['title' => \Yii::t('pages', 'menu_add_btn')]) . '</li>';
                 }
 

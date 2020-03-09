@@ -21,7 +21,7 @@ foreach ($params->multimenu as $m) {
 }
 
 echo '<div class="' . implode(' ', $rowClasses) . '">
-        <main class="antragsgruen-width-main well">';
+        <main class="antragsgruen-width-main well" id="mainContent">';
 
 echo $content;
 

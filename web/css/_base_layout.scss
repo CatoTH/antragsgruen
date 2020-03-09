@@ -11,6 +11,20 @@
   text-align: center;
 }
 
+#gotoMainContent {
+  color: transparent;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  &:link, &:visited {
+    color: transparent;
+  }
+  &:focus {
+    color: $colorLinks;
+    border: dotted 1px grey;
+  }
+}
+
 .logo {
   margin-top: 14px;
   display: block;

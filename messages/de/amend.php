@@ -12,6 +12,8 @@ return [
     'amend_for_motion'                  => 'zu',
     'supporter_you'                     => 'Du!',
     'supporter_none'                    => 'keine',
+    'table_caption'                     => 'Rahmendaten zum Änderungsantrag',
+    'table_description'                 => 'Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Änderungsantrag',
     'status'                            => 'Status',
     'proposed_status'                   => 'Verfahrensvorschlag',
     'referred_to'                       => 'Weitergeleitet an',

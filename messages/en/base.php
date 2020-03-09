@@ -39,6 +39,7 @@ return [
     'menu_logout'           => 'Logout',
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
+    'goto_main_content'     => 'Skip to main content',
     'email_footer'          => [
         'title' => 'E-Mail-Signature for automatically sent e-mails',
         'text'  => '',
