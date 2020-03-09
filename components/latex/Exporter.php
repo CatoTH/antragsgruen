@@ -66,6 +66,8 @@ class Exporter
         $str = str_replace('###LINENUMBER###', '', $str);
         $str = str_replace('###LINEBREAK###', "\\linebreak{}\n", $str);
 
+        $str = str_replace('\item \newline', '\item', $str); // Empty list points would break the rendering
+
         // Some edge cases that occur in nested enumerated lists
         $str = str_replace('\linebreak{}' . "\n\n" . '\item', "\n" . '\item', $str);
         $str = str_replace('\newline' . "\n" . '\end{enumerate}', "\n" . '\end{enumerate}', $str);
