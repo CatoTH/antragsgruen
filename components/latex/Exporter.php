@@ -71,7 +71,7 @@ class Exporter
         $str = str_replace('\newline' . "\n" . '\end{enumerate}', "\n" . '\end{enumerate}', $str);
         $str = str_replace('\linebreak{}' . "\n" . '\begin{enumerate}', "\n" . '\begin{enumerate}', $str);
         $str = str_replace('\end{enumerate}' . "\n\n", '\end{enumerate}' . "\n", $str);
-        $str = preg_replace('/(\\\\linebreak{}\\n?)+\\\\begin{enumerate}/siu', "\n\begin{enumerate}", $str);
+        $str = preg_replace('/(\\\\linebreak{}\\n*)+\\\\begin{enumerate}/siu', "\n\begin{enumerate}", $str);
 
         return $str;
     }

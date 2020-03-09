@@ -116,7 +116,7 @@ class HTMLNormalizeTest extends TestBase
 	<li>Listenpunkt (<em>kursiv</em>)<br />
 	Zeilenumbruch</li>
 </ol>';
-        $expect = '<ol class="upperAlpha">
+        $expect = '<ol class="upperAlpha" start="1">
 <li>Listenpunkt</li>
 <li>Listenpunkt (<em>kursiv</em>)<br>
 Zeilenumbruch</li>

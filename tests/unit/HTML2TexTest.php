@@ -181,7 +181,7 @@ class HTML2TexTest extends TestBase
                 '<ol class="inserted" start="2"><li>Test3</li></ol><ol class="deleted" start="5"><li>Test3</li></ol></div>';
 
         $expect = '\begin{enumerate}
-\item[4.] \textcolor{Delete}{\sout{Test}\sout{ 2\linebreak
+\item[4.] \textcolor{Delete}{\sout{Test}\sout{ 2\linebreak{}
 }}\begin{enumerate}
 \item[(1)] \textcolor{Delete}{\sout{Test}\sout{ a}}
 \item[(g)] \textcolor{Delete}{\sout{Test}\sout{ c}}
