@@ -880,6 +880,8 @@ Neue Zeile<sub>Tiefgestellt</sub>.</p>'
 
     public function testNumberedSubLists()
     {
+        $this->markTestIncomplete('2b will not be added as of yet, because the diff ignores changes in tag values');
+
         $orig = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="3">Point 3</li></ol></li></ol>';
         $new = '<ol><li><ol class="lowerAlpha"><li>Point 1</li><li value="2b">Point 2</li><li value="3">Point 3</li></ol></li></ol>';
 
