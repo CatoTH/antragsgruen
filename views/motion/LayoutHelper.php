@@ -134,7 +134,7 @@ class LayoutHelper
         if ($content->textRight) {
             // If there is a figure to the right, and the text of the main part is centered, then \newline\linebreak (BR) leads to
             // broken text formatting. Therefore, we convert it into new paragraphs (P), where this problem does not appear.
-            $content->textMain = preg_replace('/([\S])\\\\newline\n(\\\\newline\n)*\\\\linebreak\n([\S])/siu', '$1' . "\n\n" . '$3', $content->textMain);
+            $content->textMain = preg_replace('/([\S])\\\\newline\n(\\\\newline\n)*\\\\linebreak{}\n([\S])/siu', '$1' . "\n\n" . '$3', $content->textMain);
         }
 
         $limitedSupporters = LimitedSupporterList::createFromIMotion($motion);
