@@ -345,7 +345,7 @@ class Diff
             return $this->wrapWithDelete($lineOld) . $this->wrapWithInsert($lineNew);
         }
 
-        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr);
+        $return = $this->engine->compareArrays($lineOldArr, $lineNewArr, false);
         $return = $this->engine->moveWordOpsToMatchSentenceStructure($return);
 
         $return = $this->groupOperations($return, '');
