@@ -2,6 +2,8 @@
 
 ## Version 4.6.0 [not released yet]
 
+- Numbered lists are now supported. This includes different list item styles (like (1), 1., a., A.), manually setting the list item number for each list item (e.g. to skip numbers) and also using non-standard list numbers like "15b" (e.g. for laws where paragraphs have been inserted afterwards). This enables discussions and amendments for statutes and laws.
+
 - Several improvements were made to increase the accessibility of Antragsgrün, like better navigation with screenreader.
 
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
