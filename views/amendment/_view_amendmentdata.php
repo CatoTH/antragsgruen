@@ -118,14 +118,16 @@ if (User::getCurrentUser()) {
 }
 
 
-echo '<table class="motionDataTable">';
+echo '<div class="sr-only" id="motionDataTableDescription">' . Yii::t('amend', 'table_description') . '</div>';
+echo '<table class="motionDataTable" aria-describedby="motionDataTableDescription">';
+echo '<caption>' . Yii::t('amend', 'table_caption') . '</caption>';
 foreach ($amendmentData as $row) {
     if (isset($row['rowClass'])) {
         echo '<tr class="' . $row['rowClass'] . '">';
     } else {
         echo '<tr>';
     }
-    echo '<th>' . $row['title'] . ':</th>';
+    echo '<th scope="row">' . $row['title'] . ':</th>';
     if (isset($row['tdClass'])) {
         echo '<td class="' . $row['tdClass'] . '">' . $row['content'] . '</td>';
     } else {

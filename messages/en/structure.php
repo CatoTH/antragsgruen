@@ -240,4 +240,6 @@ return [
     'months_10' => 'October',
     'months_11' => 'November',
     'months_12' => 'December',
+
+    'date_with_aria' => '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%MONTH%/%DAY%/%YEAR%</span>',
 ];

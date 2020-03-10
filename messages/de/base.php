@@ -16,6 +16,7 @@ return [
     'menu_motion_list'      => 'Antragsliste',
     'menu_todo'             => 'To Do',
     'goto_main_content'     => 'Zum Inhalt der Seite',
+    'toggle_dropdown'       => 'Auswahl öffnen',
     'privacy_statement'     => 'Datenschutz',
     'imprint'               => 'Impressum',
     'err_email_not_sent'    => 'Eine E-Mail konnte nicht geschickt werden',
@@ -49,4 +50,8 @@ return [
     'debug_deadline_hint' => 'Nur für diesen Browser',
     'debug_deadline_set'  => 'Setzen',
     'debug_deadline_quit' => 'Simulation beenden',
+
+    'aria_breadcrumb'  => 'Breadcrumb-Menü',
+    'aria_mainmenu'    => 'Hauptmenü',
+    'aria_footer'      => 'Rechtliche Hinweise und Softwareinformationen',
 ];

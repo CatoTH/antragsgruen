@@ -14,11 +14,11 @@ class StdHooks extends Hooks
     public function beginPage(string $before): string
     {
         $out = '<header id="mainmenu">';
-        $out .= '<div class="navbar">
+        $out .= '<nav class="navbar" aria-label="' . \Yii::t('base', 'aria_mainmenu') . '">
         <div class="navbar-inner">';
         $out .= Layout::getStdNavbarHeader();
         $out .= '</div>
-        </div>';
+        </nav>';
 
         $out .= '</header>';
 
@@ -38,7 +38,7 @@ class StdHooks extends Hooks
     public function favicons(string $before): string
     {
         /** @var AntragsgruenApp $params */
-        $params = \Yii::$app->params;
+        $params       = \Yii::$app->params;
         $resourceBase = Html::encode($params->resourceBase);
         if (defined('YII_FROM_ROOTDIR') && YII_FROM_ROOTDIR === true) {
             $resourceBase .= 'web/';
@@ -64,10 +64,10 @@ class StdHooks extends Hooks
 
     public function breadcrumbs(string $before): string
     {
-        $out = '';
+        $out             = '';
         $showBreadcrumbs = (!$this->consultation || !$this->consultation->site || $this->consultation->site->getSettings()->showBreadcrumbs);
         if (is_array($this->layout->breadcrumbs) && $showBreadcrumbs) {
-            $out .= '<ol class="breadcrumb">';
+            $out .= '<nav aria-label="' . \Yii::t('base', 'aria_breadcrumb') . '"><ol class="breadcrumb">';
             foreach ($this->layout->breadcrumbs as $link => $name) {
                 if ($link === '' || is_numeric($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
@@ -75,7 +75,7 @@ class StdHooks extends Hooks
                     $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
                 }
             }
-            $out .= '</ol>';
+            $out .= '</ol></nav>';
         }
 
         return $out;
@@ -88,8 +88,11 @@ class StdHooks extends Hooks
 
     public function getSearchForm(string $before): string
     {
-        $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', ['class' => 'form-search']);
-        $html .= '<div class="nav-list"><div class="nav-header">' . \Yii::t('con', 'sb_search') . '</div>
+        $html = Html::beginForm(UrlHelper::createUrl('consultation/search'), 'post', [
+            'class'           => 'form-search',
+            'aria-labelledby' => 'sidebarSearchTitle',
+        ]);
+        $html .= '<div class="nav-list"><div class="nav-header" id="sidebarSearchTitle">' . \Yii::t('con', 'sb_search') . '</div>
     <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
     <div class="input-group">
       <input type="text" class="form-control query" name="query"
@@ -140,7 +143,7 @@ class StdHooks extends Hooks
     public function getStdNavbarHeader(string $before): string
     {
         /** @var Base $controller */
-        $controller   = \Yii::$app->controller;
+        $controller = \Yii::$app->controller;
 
         $out = '<ul class="nav navbar-nav">';
 
@@ -152,17 +155,16 @@ class StdHooks extends Hooks
 
             if ($controller->consultation) {
                 if (User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-                    $icon = '<span class="glyphicon glyphicon-plus-sign"></span>';
+                    $icon = '<span class="glyphicon glyphicon-plus-sign"></span><span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
                     $url  = UrlHelper::createUrl('/pages/list-pages');
                     $out  .= '<li class="addPage">' .
-                             '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>' .
-                        Html::a($icon, $url, ['title' => \Yii::t('pages', 'menu_add_btn')]) . '</li>';
+                             Html::a($icon, $url, ['title' => \Yii::t('pages', 'menu_add_btn')]) . '</li>';
                 }
 
                 $homeUrl = UrlHelper::homeUrl();
                 $out     .= '<li class="active">' .
-                    Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
-                    '</li>';
+                            Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
+                            '</li>';
 
                 $pages = ConsultationText::getMenuEntries($controller->site, $controller->consultation);
                 foreach ($pages as $page) {
@@ -180,7 +182,7 @@ class StdHooks extends Hooks
                 $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
                 $loginTitle = \Yii::t('base', 'menu_login');
                 $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) .
-                    '</li>';
+                               '</li>';
             }
             if (User::getCurrentUser()) {
                 $link = Html::a(
@@ -225,14 +227,14 @@ class StdHooks extends Hooks
 
     public function getAntragsgruenAd(string $before): string
     {
-        if (\Yii::$app->language == 'de') {
+        if (\Yii::$app->language === 'de') {
             $url = 'https://antragsgruen.de/';
         } else {
             $url = 'https://motion.tools/';
         }
 
-        return '<div class="antragsgruenAd well">
-        <div class="nav-header">' . \Yii::t('con', 'aad_title') . '</div>
+        return '<section class="antragsgruenAd well" aria-labelledby="sidebarAntragsgruenTitle">
+        <div class="nav-header" id="sidebarAntragsgruenTitle">' . \Yii::t('con', 'aad_title') . '</div>
         <div class="content">
             ' . \Yii::t('con', 'aad_text') . '
             <div>
@@ -241,30 +243,30 @@ class StdHooks extends Hooks
                 </a>
             </div>
         </div>
-    </div>';
+    </section>';
     }
 
     public function footerLine(string $before): string
     {
-        $out = '<footer class="footer">';
+        $out = '<footer class="footer" aria-label="' . \Yii::t('base', 'aria_footer') . '">';
 
         if (!defined('INSTALLING_MODE') || INSTALLING_MODE !== true) {
             $legalLink   = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'legal']);
             $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
 
             $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
-                \Yii::t('base', 'imprint') . '</a>
+                    \Yii::t('base', 'imprint') . '</a>
             <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
-                \Yii::t('base', 'privacy_statement') . '</a>';
+                    \Yii::t('base', 'privacy_statement') . '</a>';
         }
 
         $out .= '<span class="version">';
         if (\Yii::$app->language == 'de') {
             $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
-                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+                    Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         } else {
             $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
-                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+                    Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
         }
         $out .= '</span>';
 
@@ -276,6 +278,7 @@ class StdHooks extends Hooks
     /**
      * @param string $before
      * @param ConsultationMotionType[] $motionTypes
+     *
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -289,9 +292,9 @@ class StdHooks extends Hooks
             $description = $motionType->createTitle;
 
             $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .
-                'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
-                '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
-                '</a>';
+                          'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
+                          '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
+                          '</a>';
             $htmlSmall .=
                 '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
                 '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
@@ -314,6 +317,7 @@ class StdHooks extends Hooks
                 $str .= Tools::formatMysqlDateTime($deadline) . "</p>\n";
             }
         }
+
         return $str;
     }
 }

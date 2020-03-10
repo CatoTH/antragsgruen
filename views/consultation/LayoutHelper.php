@@ -11,13 +11,12 @@ class LayoutHelper
     private static function getMotionLineContent(Motion $motion, Consultation $consultation): string
     {
         $return = '';
-        $return .= '<p class="date">' . Tools::formatMysqlDate($motion->dateCreation) . '</p>' . "\n";
         $return .= '<p class="title">' . "\n";
 
         $motionUrl = UrlHelper::createMotionUrl($motion);
         $return    .= '<a href="' . Html::encode($motionUrl) . '" class="motionLink' . $motion->id . '">';
 
-        $return .= '<span class="glyphicon glyphicon-file motionIcon"></span>';
+        $return .= '<span class="glyphicon glyphicon-file motionIcon" aria-hidden="true"></span>';
         if (!$consultation->getSettings()->hideTitlePrefix && trim($motion->titlePrefix) !== '') {
             $return .= '<span class="motionPrefix">' . Html::encode($motion->titlePrefix) . '</span>';
         }
@@ -29,10 +28,15 @@ class LayoutHelper
 
         $hasPDF = ($motion->getMyMotionType()->getPDFLayoutClass() !== null);
         if ($hasPDF && $motion->status !== Motion::STATUS_MOVED) {
-            $html   = '<span class="glyphicon glyphicon-download-alt"></span> PDF';
+            $html   = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> PDF';
             $return .= Html::a($html, UrlHelper::createMotionUrl($motion, 'pdf'), ['class' => 'pdfLink']);
         }
         $return .= "</p>\n";
+
+
+        $return .= '<p class="date"><span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
+                   Tools::formatMysqlDateWithAria($motion->dateCreation) . '</p>' . "\n";
+
         $return .= '<p class="info">';
         $return .= Html::encode($motion->getInitiatorsStr());
         if ($motion->status === Motion::STATUS_WITHDRAWN) {
@@ -58,11 +62,13 @@ class LayoutHelper
     private static function getAmendmentLineContent(Amendment $amendment): string
     {
         $return = '';
-        $return .= '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
 
         $title  = (trim($amendment->titlePrefix) === '' ? \Yii::t('amend', 'amendment') : $amendment->titlePrefix);
         $return .= '<a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" ' .
                    'class="amendmentTitle amendment' . $amendment->id . '">' . Html::encode($title) . '</a>';
+
+        $return .= '<p class="date"><span class="sr-only">' . \Yii::t('motion', 'created_on_str') . '</span> ' .
+                   Tools::formatMysqlDateWithAria($amendment->dateCreation) . '</p>' . "\n";
 
         $return .= '<span class="info">';
         $return .= Html::encode($amendment->getInitiatorsStr());

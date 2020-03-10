@@ -622,7 +622,7 @@
 
   .commentHeader {
     background: none;
-    color: $colorLinksLight;
+    color: darken($colorLinks, 5%);
     font-family: $bodyFont;
     font-size: 1em;
     font-weight: bold;

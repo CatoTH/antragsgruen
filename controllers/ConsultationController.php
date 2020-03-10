@@ -256,11 +256,7 @@ class ConsultationController extends Base
         return $this->render('user_notifications', ['user' => $user, 'notifications' => $notifications]);
     }
 
-
-    /**
-     * @param Consultation $consultation
-     */
-    private function consultationSidebar(Consultation $consultation)
+    private function consultationSidebar(Consultation $consultation): void
     {
         $newestAmendments = Amendment::getNewestByConsultation($consultation, 5);
         $newestMotions    = Motion::getNewestByConsultation($consultation, 3);

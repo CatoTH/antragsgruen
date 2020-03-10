@@ -45,7 +45,8 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
     </button>
 </h2>
 <div class="holder">
-    <section class="statusForm">
+    <fieldset class="statusForm">
+        <legend class="hidden"><?= Yii::t('amend', 'proposal_status_title') ?></legend>
         <h3><?= Yii::t('amend', 'proposal_status_title') ?></h3>
 
         <?php
@@ -67,9 +68,10 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
             <?= Html::radio('proposalStatus', !$foundStatus, ['value' => '0']) ?>
             - <?= Yii::t('amend', 'proposal_status_na') ?> -
         </label>
-    </section>
+    </fieldset>
     <div class="middleCol">
-        <div class="visibilitySettings showIfStatusSet">
+        <fieldset class="visibilitySettings showIfStatusSet">
+            <legend class="hidden"><?= Yii::t('amend', 'proposal_publicity') ?></legend>
             <h3><?= Yii::t('amend', 'proposal_publicity') ?></h3>
             <label>
                 <?= Html::checkbox('proposalVisible', ($motion->proposalVisibleFrom !== null)) ?>
@@ -79,7 +81,7 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                 <?= Html::checkbox('setPublicExplanation', ($motion->proposalExplanation !== null)) ?>
                 <?= Yii::t('amend', 'proposal_public_expl_set') ?>
             </label>
-        </div>
+        </fieldset>
         <div class="votingBlockSettings showIfStatusSet">
             <h3><?= Yii::t('amend', 'proposal_voteblock') ?></h3>
             <?php

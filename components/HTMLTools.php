@@ -871,17 +871,19 @@ class HTMLTools
             $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
         }
         $str .= '>
-  <button class="btn btn-default ' . $btnSize . ' dropdown-toggle" data-toggle="dropdown" type="button">
+  <button class="btn btn-default ' . $btnSize . ' dropdown-toggle" data-toggle="dropdown" type="button" aria-haspopup="true">
     <span class="selected-label"></span>
     <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
+    <span class="sr-only">' . \Yii::t('base', 'toggle_dropdown') . '</span>
   </button>
-  <ul class="dropdown-menu" role="menu">';
+  <ul class="dropdown-menu">';
         foreach ($options as $value => $name) {
             if (is_array($name)) {
-                $str .= '<li data-value="' . Html::encode($value) . '" ';
+                $str .= '<li data-value="' . Html::encode($value) . '"';
                 if ($value == $selected) {
-                    $str .= ' data-selected="true"';
+                    $str .= ' data-selected="true" aria-checked="true"';
+                } else {
+                    $str .= ' aria-checked="false"';
                 }
                 if (isset($name['attributes'])) {
                     foreach ($name['attributes'] as $attrName => $attrVal) {
@@ -898,8 +900,7 @@ class HTMLTools
             }
         }
         $str .= '</ul>
-  <input class="hidden hidden-field" name="' . $formName . '" readonly="readonly" ' .
-            ' title="[Hidden]" aria-hidden="true" type="text" value="' . Html::encode($selected) . '">
+  <input class="hidden hidden-field" name="' . $formName . '" type="hidden" value="' . Html::encode($selected) . '">
 </div>';
         return $str;
     }

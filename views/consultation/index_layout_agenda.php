@@ -21,8 +21,8 @@ $hideAmendmendsByDefault = ($consultation->getSettings()->startLayoutType === Co
 
 $items        = ConsultationAgendaItem::getItemsByParent($consultation, null);
 
-echo '<section class="sectionAgenda">';
-echo '<h2 class="green">' . Yii::t('con', 'Agenda') . '</h2>';
+echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
+echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '</h2>';
 
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';

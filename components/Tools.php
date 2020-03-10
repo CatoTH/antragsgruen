@@ -228,6 +228,32 @@ class Tools
         static::$last_time = $time;
     }
 
+    public static function formatMysqlDateWithAria(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
+    {
+        $currentTs = DateTools::getCurrentTimestamp();
+
+        if ($mysqldate === null || strlen($mysqldate) === 0) {
+            return '-';
+        } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs) && $allowRelativeDates) {
+            return \yii::t('base', 'Today');
+        } elseif (substr($mysqldate, 0, 10) === date('Y-m-d', $currentTs - 3600 * 24) && $allowRelativeDates) {
+            return \yii::t('base', 'Yesterday');
+        }
+
+        $date = explode('-', substr($mysqldate, 0, 10));
+        if (count($date) !== 3) {
+            return '-';
+        }
+
+        $replaces = [
+            '%DAY%'       => sprintf('%02d', $date[2]),
+            '%MONTH%'     => sprintf('%02d', $date[1]),
+            '%YEAR%'      => sprintf('%04d', $date[0]),
+            '%MONTHNAME%' => \Yii::t('structure', 'months_' . intval($date[1])),
+        ];
+
+        return str_replace(array_keys($replaces), array_values($replaces), \Yii::t('structure', 'date_with_aria'));
+    }
 
     public static function formatMysqlDate(?string $mysqldate, ?string $locale = null, bool $allowRelativeDates = true): string
     {

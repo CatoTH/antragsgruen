@@ -237,7 +237,7 @@ if (User::getCurrentUser()) {
         $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
     }
     $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
-    $str .= '<textarea class="form-control" name="noteText" title="' . Yii::t('motion', 'private_notes') . '">';
+    $str .= '<textarea class="form-control" name="noteText" title="' . Yii::t('motion', 'private_notes_write') . '">';
     if ($comment) {
         $str .= Html::encode($comment->text);
     }
@@ -255,7 +255,7 @@ if (User::getCurrentUser()) {
     ];
 }
 
-echo '<div class="sr-only" id="motionDataTableDescription">Diese Tabelle beschreibt den Status, die Antragstellerin und verschiedene Rahmendaten zum Antrag</div>';
+echo '<div class="sr-only" id="motionDataTableDescription">' . Yii::t('motion', 'table_description') . '</div>';
 echo '<table class="motionDataTable" aria-describedby="motionDataTableDescription">';
 echo '<caption>' . Yii::t('motion', 'table_caption') . '</caption>';
 foreach ($motionData as $row) {

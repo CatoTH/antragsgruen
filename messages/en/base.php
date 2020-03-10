@@ -40,6 +40,7 @@ return [
     'menu_motion_list'      => 'Motions',
     'menu_todo'             => 'To Do',
     'goto_main_content'     => 'Skip to main content',
+    'toggle_dropdown'       => 'Open selection',
     'email_footer'          => [
         'title' => 'E-Mail-Signature for automatically sent e-mails',
         'text'  => '',
@@ -49,4 +50,8 @@ return [
     'debug_deadline_hint' => 'Only for this browser',
     'debug_deadline_set'  => 'Set',
     'debug_deadline_quit' => 'Quit simulation',
+
+    'aria_breadcrumb'  => 'Breadcrumb menu',
+    'aria_mainmenu'    => 'Main menu',
+    'aria_footer'      => 'Legal links and software information',
 ];
