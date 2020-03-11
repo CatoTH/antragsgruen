@@ -2,9 +2,10 @@
 
 namespace app\controllers;
 
+use app\views\consultation\LayoutHelper;
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentComment, ConsultationAgendaItem, IComment, IRSSItem, Motion, Consultation, MotionComment, User, UserNotification};
-use app\models\exceptions\{FormError, Internal};
+use app\models\exceptions\{FormError, Internal, NotFound};
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
@@ -365,6 +366,59 @@ class ConsultationController extends Base
         $this->consultation->refresh();
 
         \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
+    }
+
+    public function actionSaveAgendaItemAjax(string $itemId)
+    {
+        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
+            return $this->showErrorpage(403, 'No access');
+        }
+
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $condition = ['id' => intval($itemId), 'consultationId' => $this->consultation->id];
+        /** @var ConsultationAgendaItem $item */
+        $item = ConsultationAgendaItem::findOne($condition);
+        if (!$item) {
+            return json_encode(['success' => false, 'message' => 'Item not found']);
+        }
+
+        $data = json_decode(\Yii::$app->request->post('data'), true);
+        if ($data['type'] === 'agendaItem') {
+            $item->title        = $data['title'];
+            $item->code         = $data['code'];
+            if (isset($jsitem['time']) && preg_match('/^\d\d:\d\d$/siu', $data['time'])) {
+                $item->time = $data['time'];
+            } else {
+                $item->time = null;
+            }
+            try {
+                if ($data['motionType'] > 0 && $this->consultation->getMotionType($data['motionType'])) {
+                    $item->motionTypeId = intval($data['motionType']);
+                } else {
+                    $item->motionTypeId = null;
+                }
+            } catch (NotFound $e) {
+                $item->motionTypeId = null;
+            }
+            $settings                       = $item->getSettingsObj();
+            $settings->inProposedProcedures = (!isset($data['inProposedProcedures']) || $data['inProposedProcedures']);
+            $item->setSettingsObj($settings);
+
+            $newHtml = LayoutHelper::showAgendaItem($item, $this->consultation, true);
+        } elseif ($data['type'] === 'date') {
+            $newHtml = '@TODO';
+        } else {
+            return json_encode(['success' => false, 'message' => 'Unknown item type']);
+        }
+
+        $item->save();
+
+        return json_encode([
+            'success' => true,
+            'html' => $newHtml,
+        ]);
     }
 
     /**

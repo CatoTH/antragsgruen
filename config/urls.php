@@ -17,7 +17,7 @@ $domamend     = $domv . '<motionSlug:[^\/]+[^\/]+\-\d+>/<amendmentId:\d+>';
 $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
-$consultationPaths    = 'search|maintenance|notifications|activitylog|collecting';
+$consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax';
 $consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf';

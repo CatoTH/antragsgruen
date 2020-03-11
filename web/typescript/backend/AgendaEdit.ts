@@ -131,21 +131,35 @@ export class AgendaEdit {
             $form = $(ev.target),
             newTitle = $form.find('input[name=title]').val() as string,
             newCode = $form.find('input[name=code]').val() as string,
-            newTime = $form.find('input[name=time]').val() as string;
-        $li.removeClass('editing');
-        $li.data('code', newCode);
-        $li.find('> div > h3 .code').text(newCode);
-        $li.find('> div > h3 .title').text(newTitle);
-        if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked") && newTime) {
-            if ($li.find('> div > h3 .time').length === 0) {
-                console.log("prepend");
-                $li.find('> div > h3').prepend('<span class="time"></span>');
+            newTime = $form.find('input[name=time]').val() as string,
+            saveUrl = $li.data('save-url') as string;
+
+        $.post(saveUrl, {
+            '_csrf': $('input[name=_csrf]').val(),
+            'data': JSON.stringify({
+                'type': 'agendaItem',
+                'title': $form.find('input[name=title]').val() as string,
+                'code': $form.find('input[name=code]').val() as string,
+                'time': $form.find('input[name=time]').val() as string,
+                'motionType': parseInt($form.find('select[name=motionType]').val() as string),
+                'inProposedProcedures': $form.find('input[name=inProposedProcedures]').prop('checked')
+            }),
+        }, ret => {
+            $li.removeClass('editing');
+            $li.data('code', newCode);
+            $li.find('> div > h3 .code').text(newCode);
+            $li.find('> div > h3 .title').text(newTitle);
+            if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked") && newTime) {
+                if ($li.find('> div > h3 .time').length === 0) {
+                    console.log("prepend");
+                    $li.find('> div > h3').prepend('<span class="time"></span>');
+                }
+                $li.find('> div > h3 .time').text(newTime);
+            } else {
+                $li.find('> div > h3 .time').remove();
             }
-            $li.find('> div > h3 .time').text(newTime);
-        } else {
-            $li.find('> div > h3 .time').remove();
-        }
-        $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+            $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+        });
     }
 
     submitCompleteForm() {

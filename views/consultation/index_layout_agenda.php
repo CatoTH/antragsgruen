@@ -26,7 +26,7 @@ echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '<
 
 if ($admin) {
     echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     $templateItem                 = new ConsultationAgendaItem();
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
@@ -36,13 +36,13 @@ if ($admin) {
     $templateItem->time  = null;
 
     ob_start();
-    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin, !$longVersion);
+    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
     ob_start();
     $templateItem->title = '';
-    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin, !$longVersion);
+    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
@@ -57,7 +57,7 @@ if ($admin) {
     echo '</div>';
 } else {
     echo '<div class="agendaHolder">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     echo '</div>';
 }
 echo '</section>';

@@ -398,10 +398,10 @@ class Consultation extends ActiveRecord
      * @return ConsultationMotionType
      * @throws NotFound
      */
-    public function getMotionType($motionTypeId)
+    public function getMotionType(int $motionTypeId): ConsultationMotionType
     {
         foreach ($this->motionTypes as $motionType) {
-            if ($motionType->id == $motionTypeId) {
+            if ($motionType->id === $motionTypeId) {
                 return $motionType;
             }
         }
