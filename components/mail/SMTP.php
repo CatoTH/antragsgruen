@@ -12,6 +12,7 @@ class SMTP extends Base
     private $authenticator = null;
     private $username = null;
     private $password = null;
+    private $encryption = null;
 
     /**
      * @param array $params
@@ -30,6 +31,9 @@ class SMTP extends Base
         }
         if (isset($params['name'])) {
             $this->name = $params['name'];
+        }
+        if (isset($params['encryption'])) {
+            $this->encryption = $params['encryption'];
         }
 
         if (!isset($params['authType'])) {
@@ -70,7 +74,12 @@ class SMTP extends Base
     protected function getTransport()
     {
         $encrypted = ($this->port !== 25);
-        $transport = new \Swift_SmtpTransport($this->host, $this->port, ($encrypted ? 'ssl' : null));
+        if ($encrypted && $this->encryption !== null) {
+            $encryption = $this->encryption;
+        } else {
+            $encryption = ($encrypted ? 'ssl' : null);
+        }
+        $transport = new \Swift_SmtpTransport($this->host, $this->port, $encryption);
         if ($this->username) {
             $transport->setUsername($this->username);
         }
