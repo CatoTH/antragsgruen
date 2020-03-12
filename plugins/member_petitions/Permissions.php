@@ -2,8 +2,7 @@
 
 namespace app\plugins\member_petitions;
 
-use app\models\db\Motion;
-use app\models\db\User;
+use app\models\db\{Motion, User};
 
 class Permissions extends \app\models\siteSpecificBehavior\Permissions
 {
@@ -26,8 +25,10 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
             return false;
         }
 
-        if (!Tools::isDiscussionUntilOver($motion)) {
-            return false;
+        if (Tools::isPetitionsActive($motion->getMyConsultation())) {
+            if (!Tools::isDiscussionUntilOver($motion)) {
+                return false;
+            }
         }
 
         if ($motion->iAmInitiator() || User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {
