@@ -328,6 +328,7 @@ $agendaMarginPerLevel: 50px;
     list-style-type: none;
     margin: 0 0 0 30px;
     padding: 0;
+    clear: both; // clears the "add motion"-button, which would be affecting the "add entry" line
   }
   ul.motions {
     list-style-type: none;
@@ -411,10 +412,13 @@ $agendaMarginPerLevel: 50px;
         padding: 3px;
         font-weight: normal;
         html.no-touchevents & .delAgendaItem {
-          visibility: hidden;
+          opacity: 0;
         }
         html.no-touchevents &:hover .delAgendaItem {
-          visibility: visible;
+          opacity: 1;
+        }
+        html.no-touchevents & .delAgendaItem:focus {
+          opacity: 1;
         }
 
         .editAgendaItem {
@@ -422,10 +426,13 @@ $agendaMarginPerLevel: 50px;
           margin-left: 10px;
         }
         html.no-touchevents & .editAgendaItem {
-          visibility: hidden;
+          opacity: 0;
         }
         html.no-touchevents &:hover .editAgendaItem {
-          visibility: visible;
+          opacity: 1;
+        }
+        html.no-touchevents & .editAgendaItem:focus {
+          opacity: 1;
         }
       }
 

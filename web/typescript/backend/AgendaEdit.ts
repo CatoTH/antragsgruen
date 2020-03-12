@@ -13,6 +13,7 @@ export class AgendaEdit {
     constructor(private $widget: JQuery) {
         this.$agendaform = $('#agendaEditSavingHolder');
         this.$agenda = $('.motionListWithinAgenda');
+        this.locale = $("html").attr('lang');
 
         this.$agenda.addClass('agendaListEditing');
         this.$agenda.nestedSortable({
@@ -32,28 +33,8 @@ export class AgendaEdit {
         this.$agenda.find('.agendaItem').each((i, el) => {
             this.prepareAgendaItem($(el));
         });
-        this.prepareAgendaList(this.$agenda, true);
-        this.$agenda.find('ol.agenda').each((i, el) => {
-            this.prepareAgendaList($(el), false);
-        });
 
-        this.locale = $("html").attr('lang');
-        this.$agenda.find(".input-group.time").datetimepicker({
-            locale: this.locale,
-            format: 'LT',
-            stepping: 5
-        });
-        this.$agenda.find(".input-group.date").each((i, el) => {
-            let preDate = null;
-            if ($(el).data("date")) {
-                preDate = moment($(el).data("date"), "YYYY-MM-DD", this.locale);
-            }
-            $(el).datetimepicker({
-                locale: this.locale,
-                format: 'dddd, Do MMMM YYYY',
-                defaultDate: preDate
-            });
-        });
+        this.prepareAgendaList(this.$agenda, true);
 
 
         this.$agenda.on('click', '.agendaItemAdder .addEntry', this.agendaItemAdd.bind(this));
@@ -62,7 +43,7 @@ export class AgendaEdit {
         this.$agenda.on('click', '.delAgendaItem', this.delAgendaItem.bind(this));
         this.$agenda.on('click', '.editAgendaItem', this.editAgendaItem.bind(this));
         this.$agenda.on('submit', '.agendaItemEditForm', this.submitSingleItemForm.bind(this));
-        this.$agenda.on('submit', '.agendaDateEditForm', this.submitDateItemForm.bind(this));
+        this.$agenda.on('submit', '.agendaDateEditForm', this.submitSingleItemForm.bind(this));
         this.$agendaform.on("submit", this.submitCompleteForm.bind(this));
     }
 
@@ -128,36 +109,45 @@ export class AgendaEdit {
         ev.preventDefault();
         this.showSaver();
         let $li = $(ev.target).parents('li.agendaItem').first(),
+            $parentLi = $li.parents('li').first(),
+            position = $li.prevAll().length,
+            parentId = ($parentLi.length > 0 ? $parentLi.data('id') : null),
             $form = $(ev.target),
-            newTitle = $form.find('input[name=title]').val() as string,
-            newCode = $form.find('input[name=code]').val() as string,
-            newTime = $form.find('input[name=time]').val() as string,
             saveUrl = $li.data('save-url') as string;
+
+        const saveData = {
+            'parentId': parentId,
+            'position': position,
+            'title': $form.find('input[name=title]').val() as string,
+        };
+
+        if ($li.hasClass('agendaItemDate')) {
+            saveData['type'] = 'date';
+            const date = ($form.find(".date") as any).datetimepicker("date");
+            if (date) {
+                saveData['date'] = date.format("YYYY-MM-DD");
+            } else {
+                saveData['date'] = null;
+            }
+        } else {
+            saveData['type'] = 'agendaItem';
+            saveData['inProposedProcedures'] = $form.find('input[name=inProposedProcedures]').prop('checked');
+            saveData['motionType'] = parseInt($form.find('select[name=motionType]').val() as string);
+            saveData['time'] = $form.find('input[name=time]').val() as string;
+            saveData['code'] = $form.find('input[name=code]').val() as string;
+        }
 
         $.post(saveUrl, {
             '_csrf': $('input[name=_csrf]').val(),
-            'data': JSON.stringify({
-                'type': 'agendaItem',
-                'title': $form.find('input[name=title]').val() as string,
-                'code': $form.find('input[name=code]').val() as string,
-                'time': $form.find('input[name=time]').val() as string,
-                'motionType': parseInt($form.find('select[name=motionType]').val() as string),
-                'inProposedProcedures': $form.find('input[name=inProposedProcedures]').prop('checked')
-            }),
+            'data': JSON.stringify(saveData),
         }, ret => {
-            $li.removeClass('editing');
-            $li.data('code', newCode);
-            $li.find('> div > h3 .code').text(newCode);
-            $li.find('> div > h3 .title').text(newTitle);
-            if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked") && newTime) {
-                if ($li.find('> div > h3 .time').length === 0) {
-                    console.log("prepend");
-                    $li.find('> div > h3').prepend('<span class="time"></span>');
-                }
-                $li.find('> div > h3 .time').text(newTime);
-            } else {
-                $li.find('> div > h3 .time').remove();
+            if (!ret['success']) {
+                alert("Could not save: " + ret['message']);
+                return;
             }
+            const $newItem = $(ret['html']);
+            $li.replaceWith($newItem);
+            this.prepareAgendaItem($newItem);
             $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
         });
     }
@@ -195,13 +185,8 @@ export class AgendaEdit {
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
         this.prepareAgendaItem($newElement);
-        this.prepareAgendaList($newElement.find('ol.agenda'), false);
         $newElement.find('.editAgendaItem').trigger('click');
         $newElement.find('.agendaItemEditForm input.code').trigger("focus");
-        $newElement.find(".input-group.time").datetimepicker({
-            locale: this.locale,
-            format: 'LT'
-        });
     }
 
     agendaDateAdd(ev: Event) {
@@ -211,12 +196,7 @@ export class AgendaEdit {
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
         this.prepareAgendaItem($newElement);
-        this.prepareAgendaList($newElement.find('ol.agenda'), false);
         $newElement.find('.editAgendaItem').trigger('click');
-        $newElement.find(".input-group.date").datetimepicker({
-            locale: this.locale,
-            format: 'dddd, Do MMMM YYYY'
-        });
     }
 
     showTimesChanges() {
@@ -231,8 +211,29 @@ export class AgendaEdit {
         $item.find('> div').prepend('<span class="glyphicon glyphicon-resize-vertical moveHandle"></span>');
         $item.find('> div > h3').append('<a href="#" class="editAgendaItem"><span class="glyphicon glyphicon-pencil"></span></a>');
         $item.find('> div > h3').append(this.delAgendaItemStr);
-        $item.find('li.checkbox').on('click', (ev) => {
+        $item.find('> div li.checkbox').on('click', (ev) => {
             ev.stopPropagation();
+        });
+
+        $item.find('> ol.agenda').each((i, el) => {
+            this.prepareAgendaList($(el), false);
+        });
+
+        $item.find("> div .input-group.time").datetimepicker({
+            locale: this.locale,
+            format: 'LT'
+        });
+
+        $item.find("> div .input-group.date").each((i, el) => {
+            let preDate = null;
+            if ($(el).data("date")) {
+                preDate = moment($(el).data("date"), "YYYY-MM-DD", this.locale);
+            }
+            $(el).datetimepicker({
+                locale: this.locale,
+                format: 'dddd, Do MMMM YYYY',
+                defaultDate: preDate
+            });
         });
     }
 

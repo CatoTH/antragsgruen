@@ -12,7 +12,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $consultationId
- * @property int $parentItemId
+ * @property int|null $parentItemId
  * @property int $position
  * @property string $code
  * @property string $time

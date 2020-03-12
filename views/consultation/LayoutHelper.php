@@ -170,6 +170,7 @@ class LayoutHelper
         ]);
 
         echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
+        echo 'data-id="' . Html::encode($agendaItem->id) . '" ';
         echo 'data-save-url="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
         echo 'data-code="' . Html::encode($agendaItem->code) . '">';
         echo '<div><h3>';
@@ -295,7 +296,8 @@ class LayoutHelper
             $fullTitle .= $agendaItem->title;
         }
 
-        echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '"';
+        echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
+        echo 'data-id="' . Html::encode($agendaItem->id) . '" ';
         echo 'data-save-url="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '">';
         echo '<div><h3>';
         echo '<span class="title">' . Html::encode($fullTitle) . '</span>';
