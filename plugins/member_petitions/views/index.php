@@ -17,18 +17,18 @@ $layout->bodyCssClasses[] = 'memberPetitionList memberPetitionHome';
 
 $myConsultations = Tools::getUserConsultations($site, $user);
 
-$this->title = \Yii::t('member_petitions', 'title');
+$this->title = Yii::t('member_petitions', 'title');
 ?>
-    <h1><?= \Yii::t('member_petitions', 'title') ?></h1>
+    <h1><?= Yii::t('member_petitions', 'title') ?></h1>
     <div class="content">
         <!--
         <section class="createPetition" data-antragsgruen-widget="memberpetitions/HomeCreatePetitions">
             <button type="button" class="btn btn-primary pull-right showWidget">
                 <span class="glyphicon glyphicon-plus"></span>
-                <?= \Yii::t('member_petitions', 'index_create') ?>
+                <?= Yii::t('member_petitions', 'index_create') ?>
             </button>
             <div class="alert alert-success hidden addWidget">
-                <?= \Yii::t('member_petitions', 'index_create_hint') ?>
+                <?= Yii::t('member_petitions', 'index_create_hint') ?>
                 <?php
         foreach ($myConsultations as $consultation) {
             echo '<div class="createRow">';
@@ -50,7 +50,7 @@ $this->title = \Yii::t('member_petitions', 'title');
 
         <?php
         if (count($myConsultations) > 0) {
-            echo \Yii::t('member_petitions', 'index_orga_hint');
+            echo Yii::t('member_petitions', 'index_orga_hint');
             echo '<div class="orgaList">';
             foreach ($myConsultations as $consultation) {
                 $url   = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
@@ -97,7 +97,7 @@ $mySupports = Tools::getSupportedMotions($controller->site);
 
 if (count($myMotions) > 0) {
     ?>
-    <h2 class="green"><?= \Yii::t('member_petitions', 'index_my_petitions') ?></h2>
+    <h2 class="green"><?= Yii::t('member_petitions', 'index_my_petitions') ?></h2>
     <div class="content">
         <?php
         echo $this->render('_motion_list', [
@@ -112,7 +112,7 @@ if (count($myMotions) > 0) {
 
 if (count($mySupports) > 0) {
     ?>
-    <h2 class="green"><?= \Yii::t('member_petitions', 'index_my_supports') ?></h2>
+    <h2 class="green"><?= Yii::t('member_petitions', 'index_my_supports') ?></h2>
     <div class="content">
         <?php
         echo $this->render('_motion_list', [

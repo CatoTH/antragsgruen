@@ -54,7 +54,7 @@ class Module extends ModuleBase
      * @return string|ConsultationSettings
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public static function getConsultationSettingsClass($consultation)
+    public static function getConsultationSettingsClass(Consultation $consultation)
     {
         return ConsultationSettings::class;
     }

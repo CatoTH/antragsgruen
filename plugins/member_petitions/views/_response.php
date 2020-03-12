@@ -3,23 +3,23 @@
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var \app\models\db\Motion $motion
  * @var \app\models\db\Motion $response
  */
 
 ?>
 
-<h2 class="darkgreen"><?= \Yii::t('member_petitions', 'response_title') ?></h2>
+<h2 class="darkgreen"><?= Yii::t('member_petitions', 'response_title') ?></h2>
 
 <div class="content">
     <table class="motionDataTable">
         <tr>
-            <th><?= \Yii::t('member_petitions', 'response_from') ?>:</th>
+            <th><?= Yii::t('member_petitions', 'response_from') ?>:</th>
             <td><?= Html::encode($response->getInitiatorsStr()) ?></td>
         </tr>
         <tr>
-            <th><?= \Yii::t('member_petitions', 'response_date') ?>:</th>
+            <th><?= Yii::t('member_petitions', 'response_date') ?>:</th>
             <td><?= \app\components\Tools::formatMysqlDate($response->dateCreation) ?></td>
         </tr>
     </table>
@@ -37,7 +37,7 @@ foreach ($response->getSortedSections(true) as $i => $section) {
         $main .= ' smallFont';
     }
     $main .= ' motionTextHolder' . $i . '" id="resp_section_' . $section->sectionId . '">';
-    $main .= '<h3 class="green">' . \Yii::t('member_petitions', 'response_text') . '</h3>';
+    $main .= '<h3 class="green">' . Yii::t('member_petitions', 'response_text') . '</h3>';
     $main .= $section->getSectionType()->showMotionView(null, []);
     $main .= '</section>';
 }

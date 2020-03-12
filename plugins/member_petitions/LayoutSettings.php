@@ -9,19 +9,12 @@ use app\models\settings\Layout;
 
 class LayoutSettings extends Layout
 {
-    /**
-     * @param string $title
-     * @return string
-     */
-    public function formatTitle($title)
+    public function formatTitle(string $title): string
     {
         return $title;
     }
 
-    /**
-     * @param Consultation $consultation
-     */
-    public function setConsultation(Consultation $consultation)
+    public function setConsultation(Consultation $consultation): void
     {
         $this->consultation = $consultation;
         if ($consultation && count($this->breadcrumbs) == 0) {

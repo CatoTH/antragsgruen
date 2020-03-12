@@ -5,7 +5,7 @@ use app\models\db\MotionSection;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var \app\models\db\Motion $motion
  */
 
@@ -19,10 +19,10 @@ $user     = \app\models\db\User::getCurrentUser();
 $username = ($user ? $user->name : '');
 ?>
 
-    <h2 class="green"><?= \Yii::t('member_petitions', 'respond_title') ?></h2>
+    <h2 class="green"><?= Yii::t('member_petitions', 'respond_title') ?></h2>
     <div class="content">
         <div class="form-group">
-            <label for="responseFrom"><?= \Yii::t('member_petitions', 'respond_from') ?></label>
+            <label for="responseFrom"><?= Yii::t('member_petitions', 'respond_from') ?></label>
             <input type="text" class="form-control" id="responseFrom" autocomplete="off"
                    value="<?= Html::encode($username) ?>">
         </div>
@@ -37,7 +37,7 @@ $username = ($user ? $user->name : '');
         ?>
 
         <div class="save-row">
-            <button class="btn btn-primary" type="submit"><?= \Yii::t('member_petitions', 'respond_btn') ?></button>
+            <button class="btn btn-primary" type="submit"><?= Yii::t('member_petitions', 'respond_btn') ?></button>
         </div>
     </div>
 
