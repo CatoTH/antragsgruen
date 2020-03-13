@@ -23,9 +23,11 @@ export class AgendaEdit {
             helper: 'clone',
             axis: 'y',
             update: () => {
-                $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
-                this.saveNewOrder();
+                this.$agenda.trigger("antragsgruen:agenda-change").trigger("antragsgruen:agenda-reordered");
             }
+        });
+        this.$agenda.on("antragsgruen:agenda-reordered", () => {
+            this.saveNewOrder();
         });
         this.$agenda.find('.agendaItem').each((i, el) => {
             this.prepareAgendaItem($(el));
@@ -68,9 +70,6 @@ export class AgendaEdit {
         const saveUrl = this.$widget.data("save-order") as string,
             structure = this.buildAgendaStruct(this.$widget.find("> ol"));
 
-
-        console.log("Save new order: " + saveUrl, structure);
-
         $.post(saveUrl, {
             '_csrf': $('input[name=_csrf]').val(),
             'data': JSON.stringify(structure),
@@ -79,6 +78,7 @@ export class AgendaEdit {
                 alert("Could not save: " + ret['message']);
                 return;
             }
+            this.$agenda.trigger("antragsgruen:agenda-change");
         });
     }
 
