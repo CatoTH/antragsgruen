@@ -47,10 +47,7 @@ class ConsultationAgendaItem extends ActiveRecord
         return $this->hasOne(Consultation::class, ['id' => 'consultationId']);
     }
 
-    /**
-     * @return Consultation|null
-     */
-    public function getMyConsultation()
+    public function getMyConsultation(): ?Consultation
     {
         $consultation = Consultation::getCurrent();
         if ($consultation && $this->consultationId === $consultation->id) {
@@ -146,6 +143,20 @@ class ConsultationAgendaItem extends ActiveRecord
         }
 
         return $return;
+    }
+
+    public function deleteWithAllDependencies(): void
+    {
+        foreach ($this->childItems as $childItem) {
+            $childItem->deleteWithAllDependencies();
+        }
+
+        foreach ($this->getMyMotions() as $motion) {
+            $motion->agendaItemId = null;
+            $motion->save();
+        }
+
+        $this->delete();
     }
 
     /**

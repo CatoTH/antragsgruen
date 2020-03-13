@@ -3,15 +3,12 @@
 declare let moment: any;
 
 export class AgendaEdit {
-    private hasChanged: boolean = false;
-    private $agendaform: JQuery;
     private readonly $agenda: JQuery;
     private readonly locale: string;
 
     private delAgendaItemStr = '<a href="#" class="delAgendaItem"><span class="glyphicon glyphicon-minus-sign"></span></a>';
 
     constructor(private $widget: JQuery) {
-        this.$agendaform = $('#agendaEditSavingHolder');
         this.$agenda = $('.motionListWithinAgenda');
         this.locale = $("html").attr('lang');
 
@@ -26,8 +23,8 @@ export class AgendaEdit {
             helper: 'clone',
             axis: 'y',
             update: () => {
-                this.showSaver();
                 $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+                this.saveNewOrder();
             }
         });
         this.$agenda.find('.agendaItem').each((i, el) => {
@@ -44,37 +41,22 @@ export class AgendaEdit {
         this.$agenda.on('click', '.editAgendaItem', this.editAgendaItem.bind(this));
         this.$agenda.on('submit', '.agendaItemEditForm', this.submitSingleItemForm.bind(this));
         this.$agenda.on('submit', '.agendaDateEditForm', this.submitSingleItemForm.bind(this));
-        this.$agendaform.on("submit", this.submitCompleteForm.bind(this));
     }
 
     buildAgendaStruct($ol) {
         let items = [];
         $ol.children('.agendaItem').each((i, el) => {
-            const $li = $(el),
-                id = $li.attr('id').split('_');
+            const $li = $(el);
             if ($li.find('> div > .agendaDateEditForm').length > 0) {
-                let date = $li.find('> div > .agendaDateEditForm input[name=date]').val();
                 items.push({
                     'type': 'date',
-                    'id': id[1],
-                    'date': moment(date, 'dddd, Do MMMM YYYY', this.locale).format('L'),
-                    'title': $li.find('> div > .agendaDateEditForm input[name=title]').val(),
+                    'id': parseInt($li.data("id")),
                     'children': this.buildAgendaStruct($li.find('> ol'))
                 });
             } else {
-                const $form = $li.find('> div > .agendaItemEditForm');
-                let time = null;
-                if (this.$widget.find('.agendaItemAdder .showTimes input').prop("checked")) {
-                    time = $li.find('> div > .agendaItemEditForm input[name=time]').val();
-                }
                 items.push({
                     'type': 'std',
-                    'id': id[1],
-                    'time': time,
-                    'code': $form.find('input[name=code]').val(),
-                    'title': $form.find('input[name=title]').val(),
-                    'motionTypeId': $form.find('select[name=motionType]').val(),
-                    'inProposedProcedures': $form.find('.extraSettings input[name=inProposedProcedures]').prop('checked'),
+                    'id': parseInt($li.data("id")),
                     'children': this.buildAgendaStruct($li.find('> ol'))
                 });
             }
@@ -82,32 +64,26 @@ export class AgendaEdit {
         return items;
     }
 
-    submitDateItemForm(ev: Event) {
-        ev.preventDefault();
-        this.showSaver();
+    private saveNewOrder() {
+        const saveUrl = this.$widget.data("save-order") as string,
+            structure = this.buildAgendaStruct(this.$widget.find("> ol"));
 
-        let $li = $(ev.target).parents('li.agendaItem').first(),
-            $form = $(ev.target),
-            newTitle = $form.find('input[name=title]').val() as string,
-            newDate = $form.find('input[name=date]').val() as string,
-            fullString = '';
-        if (newDate) {
-            fullString += newDate;
-        }
-        if (newDate && newTitle) {
-            fullString += ': ';
-        }
-        if (newTitle) {
-            fullString += newTitle;
-        }
-        $li.removeClass('editing');
-        $li.find('> div > h3 .title').text(fullString);
-        $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+
+        console.log("Save new order: " + saveUrl, structure);
+
+        $.post(saveUrl, {
+            '_csrf': $('input[name=_csrf]').val(),
+            'data': JSON.stringify(structure),
+        }, ret => {
+            if (!ret['success']) {
+                alert("Could not save: " + ret['message']);
+                return;
+            }
+        });
     }
 
     submitSingleItemForm(ev: Event) {
         ev.preventDefault();
-        this.showSaver();
         let $li = $(ev.target).parents('li.agendaItem').first(),
             $parentLi = $li.parents('li').first(),
             position = $li.prevAll().length,
@@ -152,27 +128,28 @@ export class AgendaEdit {
         });
     }
 
-    submitCompleteForm() {
-        let data = this.buildAgendaStruct($('.motionListWithinAgenda'));
-        this.$agendaform.find('input[name=data]').val(JSON.stringify(data));
-        $(window).off("beforeunload", AgendaEdit.onLeavePage);
-    }
-
     delAgendaItem(ev: Event) {
-        let $this = $(ev.target);
         ev.preventDefault();
+        let $li = $(ev.target).parents('li.agendaItem').first(),
+            delUrl = $li.data('del-url') as string;
         bootbox.confirm(__t("admin", "agendaDelEntryConfirm"), (result) => {
             if (result) {
-                this.showSaver();
-                $this.parents('li.agendaItem').first().remove();
-                $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+                $.post(delUrl, {
+                    '_csrf': $('input[name=_csrf]').val(),
+                }, ret => {
+                    if (!ret['success']) {
+                        alert("Could not delete: " + ret['message']);
+                        return;
+                    }
+                    $li.remove();
+                    $('ol.motionListWithinAgenda').trigger("antragsgruen:agenda-change");
+                });
             }
         });
     }
 
     editAgendaItem(ev: Event) {
         ev.preventDefault();
-        this.showSaver();
         let $li = $(ev.target).parents('li.agendaItem').first();
         $li.addClass('editing');
         $li.find('> div > .agendaItemEditForm input[name=code]').trigger("focus").trigger("select");
@@ -180,7 +157,6 @@ export class AgendaEdit {
 
     agendaItemAdd(ev: Event) {
         ev.preventDefault();
-        this.showSaver();
         let $newElement = $($('#agendaNewElementTemplate').val() as string),
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
@@ -191,7 +167,6 @@ export class AgendaEdit {
 
     agendaDateAdd(ev: Event) {
         ev.preventDefault();
-        this.showSaver();
         let $newElement = $($('#agendaNewDateTemplate').val() as string),
             $adder = $(ev.target).parents('.agendaItemAdder').first();
         $adder.before($newElement);
@@ -251,17 +226,5 @@ export class AgendaEdit {
             $el.find(".showTimes input").prop("checked", true);
         }
         $list.append($el);
-    }
-
-    showSaver() {
-        $('#agendaEditSavingHolder').removeClass("hidden");
-        this.hasChanged = true;
-        if (!$("body").hasClass('testing')) {
-            $(window).on("beforeunload", AgendaEdit.onLeavePage);
-        }
-    }
-
-    public static onLeavePage(): string {
-        return __t("std", "leave_changed_page");
     }
 }

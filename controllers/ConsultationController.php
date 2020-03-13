@@ -305,11 +305,6 @@ class ConsultationController extends Base
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
 
-        if (isset(\Yii::$app->request->post()['saveAgenda'])) {
-            $this->saveAgenda();
-        }
-
-
         $myself = User::getCurrentUser();
         if ($myself) {
             $myMotions    = $myself->getMySupportedMotionsByConsultation($this->consultation);
