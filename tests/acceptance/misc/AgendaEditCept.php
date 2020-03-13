@@ -23,7 +23,6 @@ $I->see('Parteitag', 'h1');
 $I->seeElementInDOM('.moveHandle');
 $I->see('Tagesordnung', '.motionListWithinAgenda');
 $I->dontSeeElement('.agendaItemEditForm');
-$I->dontSeeElement('#agendaEditSavingHolder');
 
 $I->wantTo('reorder the list');
 $I->executeJS('$(".agendaListEditing").find("> li.agendaItem").last().prependTo(".agendaListEditing");');
@@ -35,14 +34,11 @@ $I->seeElement('.agendaItemEditForm');
 $I->seeElement('#agendaitem_-1 .agendaItemEditForm .code');
 $I->fillField('#agendaitem_-1 .agendaItemEditForm .title input', 'More motions');
 $I->selectOption('#agendaitem_-1 .agendaItemEditForm .motionType select', '5');
-$I->seeElement('#agendaEditSavingHolder');
-$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
-
-
+$I->executeJS('$("#agendaitem_-1 > div .agendaItemEditForm").trigger("submit");');
+$I->wait(0.3);
 
 $I->wantTo('check if my chenges are saved');
 $I->dontSeeElement('.agendaItemEditForm');
-$I->dontSeeElement('#agendaEditSavingHolder');
 $I->see('1.4. More Motions', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3');
 $I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID . ' > div > h3');
 
@@ -50,7 +46,9 @@ $I->see('Antrag stellen', '#agendaitem_' . AcceptanceTester::FIRST_FREE_AGENDA_I
 $I->wantTo('further change the agenda a bit');
 $I->see('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(2).find("> ol").children().eq(2).insertAfter($(".motionListWithinAgenda").children().eq(0));');
-$I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-change");');
+$I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-reordered");');
+$I->wait(0.3);
+
 $I->see('2. Schatzmeister*in', '.motionListWithinAgenda');
 $I->see('1.3. More Motions', '.motionListWithinAgenda');
 $I->see('2. Anträge', '.motionListWithinAgenda');
@@ -58,23 +56,27 @@ $I->see('2. Anträge', '.motionListWithinAgenda');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click();');
 $I->fillField('#agendaitem_5 .agendaItemEditForm .title input', 'Sonstwas');
 $I->selectOption('#agendaitem_5 .agendaItemEditForm .motionType select', '0');
-$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
+$I->executeJS('$("#agendaitem_5 > div .agendaItemEditForm").trigger("submit");');
+$I->wait(0.3);
 
 $I->dontSee('Bewerben', '#agendaitem_5 > div > h3');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->seeInField('#agendaitem_5 .agendaItemEditForm .title input', 'Sonstwas');
 $I->seeOptionIsSelected('#agendaitem_5 .agendaItemEditForm .motionType select', 'Keine Anträge');
-$I->submitForm('#agendaitem_5 .agendaItemEditForm', [], '');
-
+$I->executeJS('$("#agendaitem_5 > div .agendaItemEditForm").trigger("submit");');
+$I->wait(0.3);
 
 $I->wantTo('add a date');
 $I->executeJS('$(".motionListWithinAgenda .agendaItemAdder .addDate").click()');
 $I->executeJS('$("#agendaitem_-1 .agendaDateEditForm .date").data("DateTimePicker").date(moment("2020-02-02", "YYYY-MM-DD"));');
 $I->seeInField('#agendaitem_-1 .agendaDateEditForm .date input', 'Sonntag, 2. Februar 2020');
 $I->executeJS('$("#agendaitem_-1 .agendaDateEditForm .ok button").click();');
-$I->see('Sonntag, 2. Februar 2020', '#agendaitem_-1 h3');
+$I->wait(0.3);
+
+$I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
 $I->executeJS('$(".agendaListEditing").find("> li.agendaItem").last().prependTo(".agendaListEditing");');
-$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
+$I->executeJS('$("ol.motionListWithinAgenda").trigger("antragsgruen:agenda-reordered");');
+$I->wait(0.3);
 
 $I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
 $I->dontSeeElement('#agendaitem_-1');
@@ -89,11 +91,11 @@ $I->seeElementInDOM('.motionListWithinAgenda.showTimes');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > h3 .editAgendaItem").click()');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > form .time").data("DateTimePicker").date(moment("17:30", "LT"));');
 $I->executeJS('$(".motionListWithinAgenda").children().eq(1).find("> div > form .ok button").click();');
-$I->see('17:30', '#agendaitem_7 .time');
+$I->wait(0.3);
 
-$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
-$I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
 $I->see('17:30', '#agendaitem_7 .time');
+$I->see('Sonntag, 2. Februar 2020', '#agendaitem_' . (AcceptanceTester::FIRST_FREE_AGENDA_ITEM_ID + 1) . ' h3');
+
 
 $I->wantTo('delete the two modified items');
 
@@ -110,7 +112,9 @@ $I->acceptBootboxConfirm();
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');
 
-$I->submitForm('#agendaEditSavingHolder', [], 'saveAgenda');
+
+$I->gotoConsultationHome(true, 'parteitag', 'parteitag');
 
 $I->dontSee('Sonstwas');
 $I->dontSee('More motions');
+$I->see('1. Sonstiges');

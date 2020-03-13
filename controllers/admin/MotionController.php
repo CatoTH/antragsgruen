@@ -82,6 +82,8 @@ class MotionController extends AdminBase
      */
     public function actionType($motionTypeId)
     {
+        $motionTypeId = intval($motionTypeId);
+
         if (!User::havePrivilege($this->consultation, [User::PRIVILEGE_CONSULTATION_SETTINGS, User::PRIVILEGE_SITE_ADMIN])) {
             $this->showErrorpage(403, \Yii::t('admin', 'no_access'));
 

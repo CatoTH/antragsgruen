@@ -228,7 +228,8 @@ class MotionListController extends AdminBase
      */
     public function actionMotionOdslist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn    = ($withdrawn == 1);
+        $motionTypeId = intval($motionTypeId);
 
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
@@ -265,6 +266,8 @@ class MotionListController extends AdminBase
      */
     public function actionMotionExcellist($motionTypeId, $textCombined = false, $withdrawn = 0)
     {
+        $motionTypeId = intval($motionTypeId);
+
         if (!AntragsgruenApp::hasPhpExcel()) {
             return $this->showErrorpage(500, 'The Excel package has not been installed. ' .
                                              'To install it, execute "./composer.phar require phpoffice/phpexcel".');
@@ -311,6 +314,8 @@ class MotionListController extends AdminBase
      */
     public function actionMotionOpenslides($motionTypeId, $version = 1)
     {
+        $motionTypeId = intval($motionTypeId);
+
         try {
             $motionType = $this->consultation->getMotionType($motionTypeId);
         } catch (ExceptionBase $e) {
@@ -351,7 +356,8 @@ class MotionListController extends AdminBase
      */
     public function actionMotionPdfziplist($motionTypeId = 0, $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn    = ($withdrawn == 1);
+        $motionTypeId = intval($motionTypeId);
 
         try {
             if ($motionTypeId > 0) {
@@ -394,7 +400,8 @@ class MotionListController extends AdminBase
      */
     public function actionMotionOdtziplist($motionTypeId = 0, $withdrawn = 0)
     {
-        $withdrawn = ($withdrawn == 1);
+        $withdrawn    = ($withdrawn == 1);
+        $motionTypeId = intval($motionTypeId);
 
         try {
             if ($motionTypeId > 0) {

@@ -6,6 +6,8 @@
 
 - Several improvements were made to increase the accessibility of Antragsgrün, like better navigation with screenreader.
 
+- It is now easier to edit the agenda of a consultation, as the changes are immediatelly saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
+
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
 
 - If an amendment affects only one specific line of a motion paragraph, one line before and after the affected one are now also shown in the amendment (confirmation) view, to give more context when reading it.

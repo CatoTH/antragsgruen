@@ -1,6 +1,6 @@
 <?php
 
-use app\components\MotionSorter;
+use app\components\{MotionSorter, UrlHelper};
 use app\models\db\{Consultation, ConsultationAgendaItem, Motion};
 use app\models\settings\{Layout, Consultation as ConsultationSettings};
 use app\views\consultation\LayoutHelper;
@@ -25,8 +25,9 @@ echo '<section class="sectionAgenda" aria-labelledby="sectionAgendaTitle">';
 echo '<h2 class="green" id="sectionAgendaTitle">' . Yii::t('con', 'Agenda') . '</h2>';
 
 if ($admin) {
-    echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+    echo '<div class="agendaHolder" data-antragsgruen-widget="backend/AgendaEdit" ';
+    echo 'data-save-order="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-order-ajax'])) . '">';
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     $templateItem                 = new ConsultationAgendaItem();
     $templateItem->consultationId = $consultation->id;
     $templateItem->refresh();
@@ -36,20 +37,15 @@ if ($admin) {
     $templateItem->time  = null;
 
     ob_start();
-    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin, !$longVersion);
+    LayoutHelper::showAgendaItem($templateItem, $consultation, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewElementTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
 
     ob_start();
     $templateItem->title = '';
-    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin, !$longVersion);
+    LayoutHelper::showDateAgendaItem($templateItem, $consultation, $admin);
     $newElementTemplate = ob_get_clean();
     echo '<input id="agendaNewDateTemplate" type="hidden" value="' . Html::encode($newElementTemplate) . '">';
-
-    echo Html::beginForm('', 'post', ['id' => 'agendaEditSavingHolder', 'class' => 'hidden']);
-    echo '<input type="hidden" name="data" value="">';
-    echo '<button class="btn btn-success" type="submit" name="saveAgenda">' . Yii::t('base', 'save') . '</button>';
-    echo Html::endForm();
 
     $layout->addJS('js/jquery-ui.min.js');
     $layout->addJS('js/jquery.ui.touch-punch.js');
@@ -57,7 +53,7 @@ if ($admin) {
     echo '</div>';
 } else {
     echo '<div class="agendaHolder">';
-    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true, !$longVersion);
+    $shownMotions = LayoutHelper::showAgendaList($items, $consultation, $admin, true);
     echo '</div>';
 }
 echo '</section>';

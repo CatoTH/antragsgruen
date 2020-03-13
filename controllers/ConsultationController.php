@@ -3,14 +3,16 @@
 namespace app\controllers;
 
 use app\components\{DateTools, RSSExporter, Tools, UrlHelper};
-use app\models\db\{Amendment, AmendmentComment, ConsultationAgendaItem, IComment, IRSSItem, Motion, Consultation, MotionComment, User, UserNotification};
-use app\models\exceptions\{FormError, Internal};
+use app\models\db\{Amendment, AmendmentComment, IComment, IRSSItem, Motion, Consultation, MotionComment, User, UserNotification};
+use app\models\exceptions\Internal;
 use app\models\forms\ConsultationActivityFilterForm;
 use app\models\proposedProcedure\Factory;
 use yii\web\Response;
 
 class ConsultationController extends Base
 {
+    use ConsultationAgendaTrait;
+
     /**
      * @param \yii\base\Action $action
      *
@@ -273,99 +275,7 @@ class ConsultationController extends Base
     }
 
 
-    /**
-     * @param array $arr
-     * @param int|null $parentId
-     *
-     * @return int[]
-     * @throws FormError
-     */
-    private function saveAgendaArr($arr, $parentId)
-    {
-        $consultationId = intval($this->consultation->id);
 
-        $items = [];
-        foreach ($arr as $i => $jsitem) {
-            if ($jsitem['id'] > 0) {
-                $condition = ['id' => intval($jsitem['id']), 'consultationId' => $consultationId];
-                /** @var ConsultationAgendaItem $item */
-                $item = ConsultationAgendaItem::findOne($condition);
-                if (!$item) {
-                    throw new FormError('Inconsistency - did not find given agenda item: ' . $condition);
-                }
-            } else {
-                $item                 = new ConsultationAgendaItem();
-                $item->consultationId = $consultationId;
-            }
-
-            $item->title = $jsitem['title'];
-            $item->time  = null;
-            if ($jsitem['type'] === 'std') {
-                $item->code         = $jsitem['code'];
-                $item->motionTypeId = ($jsitem['motionTypeId'] > 0 ? intval($jsitem['motionTypeId']) : null);
-                if (isset($jsitem['time']) && preg_match('/^\d\d:\d\d$/siu', $jsitem['time'])) {
-                    $item->time = $jsitem['time'];
-                }
-            }
-            if ($jsitem['type'] === 'date') {
-                $item->code = '';
-                $item->time = Tools::dateBootstrapdate2sql($jsitem['date']);
-                if (!$item->time) {
-                    $item->time = '0000-00-00';
-                }
-            }
-            $item->parentItemId = $parentId;
-            $item->position     = $i;
-
-            $settings                       = $item->getSettingsObj();
-            $settings->inProposedProcedures = (!isset($jsitem['inProposedProcedures']) || $jsitem['inProposedProcedures']);
-            $item->setSettingsObj($settings);
-
-            $item->save();
-            $items[] = $item->id;
-
-            $items = array_merge($items, $this->saveAgendaArr($jsitem['children'], $item->id));
-        }
-
-        return $items;
-    }
-
-    private function saveAgenda(): void
-    {
-        if (!User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-            \Yii::$app->session->setFlash('error', 'No permissions to edit this page');
-
-            return;
-        }
-
-        $data = json_decode(\Yii::$app->request->post('data'), true);
-        if (!is_array($data)) {
-            \Yii::$app->session->setFlash('error', 'Could not parse input');
-
-            return;
-        }
-
-        try {
-            $usedItems = $this->saveAgendaArr($data, null);
-        } catch (\Exception $e) {
-            \Yii::$app->session->setFlash('error', $e->getMessage());
-
-            return;
-        }
-
-        foreach ($this->consultation->agendaItems as $item) {
-            if (!in_array($item->id, $usedItems)) {
-                $item->delete();
-            }
-        }
-
-        if ($this->consultation->cacheOneMotionAffectsOthers()) {
-            $this->consultation->flushCacheWithChildren(['lines']);
-        }
-        $this->consultation->refresh();
-
-        \Yii::$app->session->setFlash('success', \Yii::t('base', 'saved'));
-    }
 
     /**
      * @return string
@@ -394,11 +304,6 @@ class ConsultationController extends Base
 
         $this->layout = 'column2';
         $this->consultationSidebar($this->consultation);
-
-        if (isset(\Yii::$app->request->post()['saveAgenda'])) {
-            $this->saveAgenda();
-        }
-
 
         $myself = User::getCurrentUser();
         if ($myself) {

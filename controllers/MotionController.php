@@ -306,6 +306,8 @@ class MotionController extends Base
      */
     private function getMotionTypeForCreate($motionTypeId = 0, $agendaItemId = 0, $cloneFrom = 0)
     {
+        $motionTypeId = intval($motionTypeId);
+
         if ($agendaItemId > 0) {
             $where      = ['consultationId' => $this->consultation->id, 'id' => $agendaItemId];
             $agendaItem = ConsultationAgendaItem::findOne($where);

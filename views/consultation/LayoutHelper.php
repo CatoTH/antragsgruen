@@ -4,6 +4,7 @@ namespace app\views\consultation;
 
 use app\components\{MotionSorter, Tools, UrlHelper};
 use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, Motion};
+use app\models\settings\Consultation as ConsultationSettings;
 use yii\helpers\Html;
 
 class LayoutHelper
@@ -158,13 +159,20 @@ class LayoutHelper
      * @param ConsultationAgendaItem $agendaItem
      * @param Consultation $consultation
      * @param bool $admin
-     * @param bool $showMotions
      *
      * @return int[]
      */
-    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin, bool $showMotions): array
+    public static function showAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
     {
+        $showMotions = !in_array($consultation->getSettings()->startLayoutType, [
+            ConsultationSettings::START_LAYOUT_AGENDA_LONG,
+            ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND,
+        ]);
+
         echo '<li class="agendaItem" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
+        echo 'data-id="' . Html::encode($agendaItem->id) . '" ';
+        echo 'data-save-url="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
+        echo 'data-del-url="' . Html::encode(UrlHelper::createUrl(['/consultation/del-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
         echo 'data-code="' . Html::encode($agendaItem->code) . '">';
         echo '<div><h3>';
         if ($agendaItem->time) {
@@ -261,7 +269,7 @@ class LayoutHelper
         echo '</div>';
 
         $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false, $showMotions);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false);
         $shownMotions           = array_merge($shownMotions, $agendaListShownMotions);
 
         echo '</li>';
@@ -273,11 +281,10 @@ class LayoutHelper
      * @param ConsultationAgendaItem $agendaItem
      * @param Consultation $consultation
      * @param bool $admin
-     * @param bool $showMotions
      *
      * @return int[]
      */
-    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin, bool $showMotions): array
+    public static function showDateAgendaItem(ConsultationAgendaItem $agendaItem, Consultation $consultation, bool $admin): array
     {
         $fullTitle = '';
         if ($agendaItem->time && $agendaItem->time !== '0000-00-00') {
@@ -290,7 +297,10 @@ class LayoutHelper
             $fullTitle .= $agendaItem->title;
         }
 
-        echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '">';
+        echo '<li class="agendaItem agendaItemDate" id="agendaitem_' . IntVal($agendaItem->id) . '" ';
+        echo 'data-id="' . Html::encode($agendaItem->id) . '" ';
+        echo 'data-save-url="' . Html::encode(UrlHelper::createUrl(['/consultation/save-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '" ';
+        echo 'data-del-url="' . Html::encode(UrlHelper::createUrl(['/consultation/del-agenda-item-ajax', 'itemId' => $agendaItem->id])) . '">';
         echo '<div><h3>';
         echo '<span class="title">' . Html::encode($fullTitle) . '</span>';
         echo '</h3>';
@@ -319,7 +329,7 @@ class LayoutHelper
         echo '</div>';
 
         $children               = ConsultationAgendaItem::getItemsByParent($consultation, $agendaItem->id);
-        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false, $showMotions);
+        $agendaListShownMotions = static::showAgendaList($children, $consultation, $admin, false);
 
         echo '</li>';
 
@@ -331,11 +341,10 @@ class LayoutHelper
      * @param Consultation $consultation
      * @param bool $admin
      * @param bool $isRoot
-     * @param bool $showMotions
      *
      * @return int[]
      */
-    public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false, bool $showMotions = true): array
+    public static function showAgendaList(array $items, Consultation $consultation, bool $admin, bool $isRoot = false): array
     {
         $timesClass = 'noShowTimes ';
         foreach ($consultation->agendaItems as $agendaItem) {
@@ -349,9 +358,9 @@ class LayoutHelper
         $shownMotions = [];
         foreach ($items as $item) {
             if ($item->isDateSeparator()) {
-                $newShown = static::showDateAgendaItem($item, $consultation, $admin, $showMotions);
+                $newShown = static::showDateAgendaItem($item, $consultation, $admin);
             } else {
-                $newShown = static::showAgendaItem($item, $consultation, $admin, $showMotions);
+                $newShown = static::showAgendaItem($item, $consultation, $admin);
             }
             $shownMotions = array_merge($shownMotions, $newShown);
         }
