@@ -44,7 +44,11 @@
   font-size: $textSize;
   line-height: $textSize * 1.2;
   @if $headingTextShadow {
-    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    @if ($textColor == rgb(51, 51, 51)) {
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    } @else {
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+    }
   }
   @if type_of($headingFontBold) == 'bool' and $headingFontBold {
     font-weight: bold;

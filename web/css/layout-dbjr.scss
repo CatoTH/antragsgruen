@@ -31,16 +31,18 @@ $btn-success-bg: $colorRed;
 $headingFont: "FiraSans", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
 $headingPrimaryBackground: $colorDarkGrey;
-$headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: $colorLightGrey;
+$headingSecondaryText: #333;
+$headingSecondaryBackground: rgb(200, 200, 200);
 $headingTertiaryText: black;
-$headingTertiaryBackground: rgb(200, 200, 200);
+$headingTertiaryBackground: rgb(220, 220, 220);
 
 $headingFontBold: false !default;
 
 $menuFont: "FiraSans", sans-serif;
-$menuLink: rgb(141, 141, 141);
+$menuLink: rgb(100, 100, 100);
 $menuActive: rgb(51, 51, 51);
+$navbar-default-link-color: $menuLink;
+$breadcrumb-color: $menuLink;
 
 $sidebarBackground: $colorRed;
 $sidebarActionFont: "FiraSans", sans-serif;

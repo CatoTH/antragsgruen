@@ -4,7 +4,6 @@ $colorGreenLight: rgb(175, 203, 8) !default;
 $fixedWidthTextStdPadding: 50px !default;
 $fixedWidthTextStdPaddingSmall: 30px !default;
 $fixedWidthTextListPadding: 40px !default;
-$fixedWidthTextListPaddingSmall: 15px !default;
 $fixedWidthTextQuotePadding: 15px !default;
 $fixedWidthTextQuoteMargin: 38px !default;
 $fixedWidthTextQuoteMarginSmall: 18px !default;
@@ -43,8 +42,9 @@ $headingTextShadow: true !default;
 $menuFont: 'sans-serif' !default;
 $menuLink: blue !default;
 $menuActive: black !default;
-$adminHintColor: red !default;
+$adminHintColor: #ee0101 !default;
 $colorDelLink: #FF7777 !default;
+$errorColor: #ee0101 !default;
 
 $sidebarBackground: white !default;
 $sidebarBackgroundGradient: true !default;

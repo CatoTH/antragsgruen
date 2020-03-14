@@ -289,27 +289,27 @@
   }
   @media screen and (max-width: 799px) {
     > ul, > ol {
-      padding-left: $fixedWidthTextListPaddingSmall;
+      padding-left: $fixedWidthTextListPadding;
 
       .lineNumber:first-of-type {
-        left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+        left: $lineNumberOffset - 5px + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPaddingSmall);
       }
 
       ul, ol {
         padding-left: 15px;
 
         .lineNumber:first-of-type {
-          left: $lineNumberOffset - 5px + -1 * (2 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+          left: $lineNumberOffset - 5px + -1 * (2 * $fixedWidthTextListPadding + $fixedWidthTextStdPaddingSmall);
         }
 
         ul, ol {
           .lineNumber:first-of-type {
-            left: $lineNumberOffset - 5px + -1 * (3 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+            left: $lineNumberOffset - 5px + -1 * (3 * $fixedWidthTextListPadding + $fixedWidthTextStdPaddingSmall);
           }
 
           ul, ol {
             .lineNumber:first-of-type {
-              left: $lineNumberOffset - 5px + -1 * (4 * $fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+              left: $lineNumberOffset - 5px + -1 * (4 * $fixedWidthTextListPadding + $fixedWidthTextStdPaddingSmall);
             }
           }
         }
@@ -318,12 +318,12 @@
 
     .fourdigitsLineNumbers & {
       .lineNumber:first-of-type {
-        left: $lineNumberOffset4 - 5px + -1 * $fixedWidthTextListPaddingSmall;
+        left: $lineNumberOffset4 - 5px + -1 * $fixedWidthTextListPadding;
       }
 
       > ul, > ol {
         .lineNumber:first-of-type {
-          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextListPaddingSmall + $fixedWidthTextStdPaddingSmall);
+          left: $lineNumberOffset4 - 5px + -1 * ($fixedWidthTextListPadding + $fixedWidthTextStdPaddingSmall);
         }
       }
 
@@ -690,7 +690,7 @@
     }
 
     .delLink {
-      color: red;
+      color: $colorDelLink;
       left: 3px;
       width: 24px;
       border-right: solid 1px $commentBorder;
@@ -846,7 +846,7 @@ iframe.pdfViewer {
   }
 
   .lineNumberNotFound {
-    color: red;
+    color: $errorColor;
   }
 
   .input-group {
@@ -1097,7 +1097,7 @@ blockquote + .privateParagraphNoteHolder {
 
 .motionChangeView {
   .notDisplayable {
-    color: red;
+    color: $errorColor;
   }
 
   .noChanges {

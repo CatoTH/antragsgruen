@@ -297,7 +297,7 @@ class StdHooks extends Hooks
                           '</a>';
             $htmlSmall .=
                 '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .
-                '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) . '</a>';
+                '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>' . Html::encode($description) . '</a>';
         }
 
         $html                               .= '</div></div>';

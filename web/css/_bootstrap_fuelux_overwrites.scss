@@ -163,7 +163,7 @@
   background: none;
   filter: none;
   @include border-radius(0);
-  margin: 30px 0 0;
+  margin: 30px 0 5px;
   padding: 0;
 
   &, .active {

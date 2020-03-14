@@ -26,7 +26,7 @@ try {
 
     $html .= '<li class="amendmentCreate">';
     $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
-    $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+    $title          = '<span class="icon glyphicon glyphicon-flash" aria-hidden="true"></span>';
     $title .= Yii::t('motion', 'amendment_create');
     if (!$motion->isCurrentlyAmendable(false, true)) {
         $title .= ' <span class="onlyAdmins">(' . Yii::t('motion', 'amendment_create_admin') . ')</span>';

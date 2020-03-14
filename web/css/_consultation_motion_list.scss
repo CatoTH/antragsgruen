@@ -35,6 +35,7 @@
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
       top: 12px;
       right: 12px;
+      margin: 0;
       @media screen and (max-width: $screen-sm-max) {
         position: relative;
         top: 0;
@@ -162,6 +163,7 @@
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
         right: -8px;
+        margin: 0;
         @media screen and (max-width: $screen-sm-max) {
           position: relative;
           top: 0;
