@@ -109,8 +109,8 @@ echo '</div>';
 if (User::getCurrentUser() && !$motion->getPrivateComment(null, -1)) {
     ?>
     <div class="privateNoteOpener">
-        <button class="btn btn-link btn-sm">
-            <span class="glyphicon glyphicon-pushpin"></span>
+        <button class="btn btn-link btn-sm" tabindex="0">
+            <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
             <?= Yii::t('motion', 'private_notes') ?>
         </button>
     </div>

@@ -40,7 +40,7 @@ echo '</ul>';
 echo '<div class="text textOrig motionTextFormattings fixedWidthFont">';
 if ($hasLineNumbers) {
     /** @var int $lineNo */
-    $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
+    $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
 }
 echo Html::encode($section->getData());
 echo '</div>';

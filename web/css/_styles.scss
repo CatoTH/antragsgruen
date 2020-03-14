@@ -73,8 +73,10 @@
       z-index: 10;
       top: 0;
       left: 10px;
-      opacity: 0.3;
       margin: 0;
+      * {
+        opacity: 0.3;
+      }
     }
   }
   @media screen and (max-width: $screen-xs-max) {
@@ -139,6 +141,7 @@
       color: $colorDelLink;
       font-style: italic;
       padding: 0 6px 0 3px;
+      @include outlineOnFocus();
     }
   }
   > .content > .alert {

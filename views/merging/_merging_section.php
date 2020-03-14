@@ -54,7 +54,7 @@ foreach ($paragraphNos as $paragraphNo) {
             foreach ($paragraph->lines as $i => $line) {
                 if ($section->getSettings()->lineNumbers) {
                     /** @var int $lineNo */
-                    $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '"></span>';
+                    $lineNoStr = '<span class="lineNumber" data-line-number="' . $lineNo++ . '" aria-hidden="true"></span>';
                     $line      = str_replace('###LINENUMBER###', $lineNoStr, $line);
                 }
                 $line   = str_replace('<br>', '', $line);

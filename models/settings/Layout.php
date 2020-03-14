@@ -306,6 +306,7 @@ class Layout
         $out = '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
     <div class="container-fluid">
         <div class="navbar-header">
+            ' . $this->menusSmallAttachment . '
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#sidebarSmallContent" aria-expanded="false">
                 <span class="sr-only">' . \Yii::t('base', 'menu_main') . '</span>
@@ -313,7 +314,6 @@ class Layout
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            ' . $this->menusSmallAttachment . '
         </div>
 
         <div class="collapse navbar-collapse" id="sidebarSmallContent">

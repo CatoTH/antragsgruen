@@ -4,7 +4,10 @@
 
 - Numbered lists are now supported. This includes different list item styles (like (1), 1., a., A.), manually setting the list item number for each list item (e.g. to skip numbers) and also using non-standard list numbers like "15b" (e.g. for laws where paragraphs have been inserted afterwards). This enables discussions and amendments for statutes and laws.
 
-- Several improvements were made to increase the accessibility of Antragsgrün, like better navigation with screenreader.
+- Several improvements were made to increase the accessibility of Antragsgrün:
+
+  - Better navigation with screenreader
+  - Easier navigation using the keyboard
 
 - It is now easier to edit the agenda of a consultation, as the changes are immediatelly saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
 

@@ -133,8 +133,12 @@
     }
   }
 }
+.navbar-toggle {
+  @include outlineOnFocus();
+}
 
 .btn {
+  @include outlineOnFocus();
   .span9 & {
     margin: 10px 0 0 200px;
   }
@@ -146,6 +150,10 @@
   text-transform: uppercase;
   color: #fff;
   @include linear-gradient(90deg, $btn-primary-bg, lighten($btn-primary-bg, 3.5%));
+}
+
+.btn-link {
+  @include outlineOnFocus();
 }
 
 .table {

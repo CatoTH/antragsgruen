@@ -70,6 +70,14 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         }
     });
 
+    // Used to only show outlines on links when keyboard is used
+    document.body.addEventListener('mousedown', () => {
+        document.body.classList.add('usingMouse');
+    });
+    document.body.addEventListener('keydown', () => {
+        document.body.classList.remove('usingMouse');
+    });
+
     // Needs to be synchronized with ConsultationAgendaItem:getSortedFromConsultation
     const recalcAgendaNode = ($ol: JQuery, prefix: string) => {
         const separator = '.';

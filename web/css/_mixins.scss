@@ -70,3 +70,12 @@
   border-left-width: $fixedWidthTextQuoteBorder;
 }
 
+@mixin outlineOnFocus() {
+  &:focus {
+    outline: solid 2px grey;
+    outline-offset: 0;
+  }
+  body.usingMouse &:focus {
+    outline: none;
+  }
+}
