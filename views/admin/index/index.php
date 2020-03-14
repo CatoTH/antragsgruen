@@ -143,7 +143,7 @@ if (User::havePrivilege($consultation, User::PRIVILEGE_CONSULTATION_SETTINGS)) {
     if (count($site->consultations) === 1) {
         echo Html::beginForm('', 'post', ['class' => 'delSiteCaller']);
         echo '<button class="btn-link" type="submit" name="delSite">' .
-             '<span class="glyphicon glyphicon-trash"></span> ' . Yii::t('admin', 'index_site_del') .
+             '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> ' . Yii::t('admin', 'index_site_del') .
              '</button>';
         echo Html::endForm();
     }

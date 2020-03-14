@@ -272,7 +272,7 @@ echo '</div>';
     <br><br>
     <div class="deleteTypeOpener content">
         <button class="btn btn-danger btn-link" type="button">
-            <span class="glyphicon glyphicon-trash"></span>
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             <?= Yii::t('admin', 'motion_type_del_caller') ?>
         </button>
     </div>
@@ -285,7 +285,7 @@ if ($motionType->isDeletable()) {
     ?>
     <div class="submitRow">
         <button type="submit" name="delete" class="btn btn-danger">
-            <span class="glyphicon glyphicon-trash"></span>
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             <?= Yii::t('admin', 'motion_type_del_btn') ?>
         </button>
     </div>

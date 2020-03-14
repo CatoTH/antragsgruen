@@ -32,7 +32,8 @@ $hasProposedProcedures = $controller->consultation->hasProposedProcedures();
                         <button class="link removeAdmin removeAdmin<?= $user->id ?>"
                                 type="button" data-id="<?= $user->id ?>"
                                 title="<?= Yii::t('admin', 'siteacc_admins_del') ?>">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            <span class="sr-only"><?= Yii::t('admin', 'siteacc_admins_del') ?></span>
                         </button>
                         <?php
                     }

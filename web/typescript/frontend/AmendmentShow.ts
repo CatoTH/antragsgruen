@@ -4,8 +4,8 @@ class AmendmentShow {
     constructor() {
         new MotionInitiatorShow();
 
-        $("form.delLink").submit(this.delSubmit.bind(this));
-        $(".share_buttons a").click(this.shareLinkClicked.bind(this));
+        $("form.delLink").on("submit", this.delSubmit.bind(this));
+        $(".share_buttons a").on("click", this.shareLinkClicked.bind(this));
 
         let s: string[] = location.hash.split('#comm');
         if (s.length == 2) {
@@ -21,7 +21,7 @@ class AmendmentShow {
         let form: JQuery = ev.target;
         bootbox.confirm(__t("std", "del_confirm"), function (result) {
             if (result) {
-                form.submit();
+                form.trigger("submit");
             }
         });
     }
@@ -44,15 +44,16 @@ class AmendmentShow {
 
     private initPrivateComments()
     {
-        $('.privateNoteOpener').click(() => {
+        $('.privateNoteOpener button').on("click", (ev) => {
+            ev.preventDefault();
             $('.privateNoteOpener').remove();
             $('.motionData .privateNotes').removeClass('hidden');
-            $('.motionData .privateNotes textarea').focus();
+            $('.motionData .privateNotes textarea').trigger("focus");
         });
-        $('.privateNotes blockquote').click(() => {
+        $('.privateNotes blockquote').on("click", () => {
             $('.privateNotes blockquote').addClass('hidden');
             $('.privateNotes form').removeClass('hidden');
-            $('.privateNotes textarea').focus();
+            $('.privateNotes textarea').trigger("focus");
         });
     }
 }

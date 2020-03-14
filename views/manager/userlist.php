@@ -51,7 +51,8 @@ echo Html::beginForm('', 'post', [
                         <button type="button" data-id="<?= $user->id ?>" class="link deleteUser"
                                 data-name="<?= Html::encode($user->name . ' / ' . $user->getAuthName()) ?>"
                                 title="<?= Yii::t('admin', 'siteacc_del_btn') ?>">
-                            <span class="glyphicon glyphicon-trash"></span>
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            <span class="sr-only"><?= Yii::t('admin', 'siteacc_del_btn') ?></span>
                         </button>
                         <?php
                     }

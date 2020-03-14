@@ -34,7 +34,7 @@ echo '<h1>' . Yii::t('admin', 'files_title') . '</h1>';
                 <?= Html::beginForm('', 'post', ['class' => 'deleteForm']) ?>
                 <input type="hidden" name="id" value="<?= $file->id ?>">
                 <button type="submit" name="delete" class="btn btn-link">
-                    <span class="glyphicon glyphicon-trash"></span>
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                     <?= Yii::t('pages', 'images_delete') ?>
                 </button>
                 <?= Html::endForm() ?>

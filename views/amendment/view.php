@@ -108,8 +108,8 @@ echo '</div>';
 if (User::getCurrentUser() && !$amendment->getPrivateComment()) {
     ?>
     <div class="privateNoteOpener">
-        <button class="btn btn-link btn-sm">
-            <span class="glyphicon glyphicon-pushpin"></span>
+        <button class="btn btn-link btn-sm" tabindex="0" type="button">
+            <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
             <?= Yii::t('motion', 'private_notes') ?>
         </button>
     </div>
@@ -121,7 +121,7 @@ if ($amendment->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
         ?>
         <div class="proposedChangesOpener">
             <button class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-chevron-down"></span>
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                 <?= Yii::t('amend', 'proposal_open') ?>
             </button>
         </div>

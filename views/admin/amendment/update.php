@@ -45,7 +45,7 @@ $html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
-$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash"></span>'
+$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
          . Yii::t('admin', 'amend_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 

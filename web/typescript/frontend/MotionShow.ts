@@ -64,7 +64,7 @@ class MotionParagraph {
         const $link = $amendment.find("a"),
             amendmentId = $link.data("id");
         if ($("html").hasClass("touchevents")) {
-            $link.click((ev) => {
+            $link.on("click", (ev) => {
                 ev.preventDefault();
                 if (this.$element.find("> .textAmendment.amendment" + amendmentId).hasClass("hidden")) {
                     this.showInlineAmendment(amendmentId)
@@ -73,9 +73,9 @@ class MotionParagraph {
                 }
             });
         } else {
-            $amendment.mouseover(() => {
+            $amendment.on("mouseover", () => {
                 this.showInlineAmendment(amendmentId);
-            }).mouseout(() => {
+            }).on("mouseout", () => {
                 this.hideInlineAmendment(amendmentId);
             });
         }
@@ -88,18 +88,18 @@ class MotionShow {
         new LineNumberHighlighting();
 
         let $paragraphs = $('.motionTextHolder .paragraph');
-        $paragraphs.find('.comment .shower').click(this.showComment.bind(this));
-        $paragraphs.find('.comment .hider').click(this.hideComment.bind(this));
+        $paragraphs.find('.comment .shower').on("click", this.showComment.bind(this));
+        $paragraphs.find('.comment .hider').on("click", this.hideComment.bind(this));
 
-        $paragraphs.filter('.commentsOpened').find('.comment .shower').click();
-        $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').click();
+        $paragraphs.filter('.commentsOpened').find('.comment .shower').trigger("click");
+        $paragraphs.filter(':not(.commentsOpened)').find('.comment .hider').trigger("click");
 
         $paragraphs.each((i, el) => {
             new MotionParagraph($(el));
         });
 
 
-        $('.tagAdderHolder').click(function (ev) {
+        $('.tagAdderHolder').on("click", function (ev) {
             ev.preventDefault();
             $(this).addClass("hidden");
             $('#tagAdderForm').removeClass("hidden");
@@ -110,8 +110,8 @@ class MotionShow {
             $('#comment' + s[1]).scrollintoview({top_offset: -100});
         }
 
-        $("form.delLink").submit(this.delSubmit.bind(this));
-        $(".share_buttons a").click(this.shareLinkClicked.bind(this));
+        $("form.delLink").on("submit", this.delSubmit.bind(this));
+        $(".share_buttons a").on("click", this.shareLinkClicked.bind(this));
 
         this.markMovedParagraphs();
         this.initPrivateComments();
@@ -149,28 +149,29 @@ class MotionShow {
         if ($('.privateParagraph, .privateNote').length > 0) {
             $('.privateParagraphNoteOpener').removeClass('hidden');
         }
-        $('.privateNoteOpener').click(() => {
+        $('.privateNoteOpener').on("click", (ev) => {
+            ev.preventDefault();
             $('.privateNoteOpener').remove();
             $('.motionData .privateNotes').removeClass('hidden');
-            $('.motionData .privateNotes textarea').focus();
+            $('.motionData .privateNotes textarea').trigger("focus");
             $('.privateParagraphNoteOpener').removeClass('hidden');
         });
-        $('.privateParagraphNoteOpener').click((ev) => {
+        $('.privateParagraphNoteOpener').on("click", (ev) => {
             $(ev.currentTarget).addClass('hidden');
             const $form = $(ev.currentTarget).parents('.privateParagraphNoteHolder').find('form');
             $form.removeClass('hidden');
-            $form.find('textarea').focus();
+            $form.find('textarea').trigger("focus");
         });
-        $('.privateNotes blockquote').click(() => {
+        $('.privateNotes blockquote').on("click", () => {
             $('.privateNotes blockquote').addClass('hidden');
             $('.privateNotes form').removeClass('hidden');
-            $('.privateNotes textarea').focus();
+            $('.privateNotes textarea').trigger("focus");
         });
-        $('.privateParagraphNoteHolder blockquote').click((ev) => {
+        $('.privateParagraphNoteHolder blockquote').on("click", (ev) => {
             const $target = $(ev.currentTarget).parents('.privateParagraphNoteHolder');
             $target.find('blockquote').addClass('hidden');
             $target.find('form').removeClass('hidden');
-            $target.find('textarea').focus();
+            $target.find('textarea').trigger("focus");
         });
     }
 
@@ -179,7 +180,7 @@ class MotionShow {
         let form = ev.target;
         bootbox.confirm(__t("std", "del_confirm"), (result) => {
             if (result) {
-                form.submit();
+                form.trigger("submit");
             }
         });
     }

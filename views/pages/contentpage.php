@@ -96,7 +96,7 @@ if ($admin) {
     echo Html::beginForm($deleteUrl, 'post', ['class' => 'deletePageForm']);
     echo '<input type="hidden" name="delete" value="delete">';
     echo '<button type="submit" class="btn btn-link btn-danger pull-right">';
-    echo '<span class="glyphicon glyphicon-trash"></span> ' . Yii::t('pages', 'settings_delete');
+    echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span> ' . Yii::t('pages', 'settings_delete');
     echo '</button>';
     echo Html::endForm();
 }

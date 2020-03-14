@@ -25,8 +25,8 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     if (!$comment) {
         ?>
         <div class="privateParagraphNoteOpener hidden">
-            <button class="btn btn-link btn-xs">
-                <span class="glyphicon glyphicon-pushpin"></span>
+            <button class="btn btn-link btn-xs" tabindex="0" type="button">
+                <span class="glyphicon glyphicon-pushpin" aria-hidden="false"></span>
                 <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_open')) ?>
             </button>
         </div>

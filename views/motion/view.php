@@ -122,7 +122,7 @@ if ($motion->getMyMotionType()->getSettingsObj()->hasProposedProcedure) {
         ?>
         <div class="proposedChangesOpener">
             <button class="btn btn-default btn-sm">
-                <span class="glyphicon glyphicon-chevron-down"></span>
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                 <?= Yii::t('amend', 'proposal_open') ?>
             </button>
         </div>

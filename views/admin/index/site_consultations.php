@@ -23,18 +23,18 @@ $layout->addCSS('css/manager.css');
 $layout->addCSS('css/backend.css');
 $layout->addAMDModule('backend/ConsultationCreate');
 $layout->loadDatepicker();
-$layout->addBreadcrumb(\Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
-$layout->addBreadcrumb(\Yii::t('admin', 'cons_breadcrumb'));
+$layout->addBreadcrumb(Yii::t('admin', 'bread_settings'), UrlHelper::createUrl('admin/index'));
+$layout->addBreadcrumb(Yii::t('admin', 'cons_breadcrumb'));
 $layout->loadFuelux();
 
 $settings = $site->getSettings();
 
-echo '<h1>' . \Yii::t('admin', 'cons_title') . '</h1>';
+echo '<h1>' . Yii::t('admin', 'cons_title') . '</h1>';
 
 echo $controller->showErrors();
 
 echo Html::beginForm('', 'post', ['class' => 'consultationEditForm']);
-echo '<h2 class="green">' . \Yii::t('admin', 'cons_created_list') . '</h2>';
+echo '<h2 class="green">' . Yii::t('admin', 'cons_created_list') . '</h2>';
 echo '<div class="content"><ul id="consultationsList">';
 foreach ($consultations as $consultation) {
     $isStandard = ($consultation->id == $site->currentConsultationId);
@@ -48,16 +48,19 @@ foreach ($consultations as $consultation) {
     echo '<div class="stdbox">';
     if ($isStandard) {
         echo '<strong><span class="glyphicon glyphicon-ok" style="color: green;"></span> ' .
-            \Yii::t('admin', 'cons_std_con') . '</strong>';
+            Yii::t('admin', 'cons_std_con') . '</strong>';
     } else {
         echo '<button type="submit" name="setStandard[' . $consultation->id . ']" class="link">' .
-            \Yii::t('admin', 'cons_set_std') . '</button>';
+            Yii::t('admin', 'cons_set_std') . '</button>';
     }
     echo '</div>';
 
     if (!$isStandard) {
         echo '<div class="delbox"><button type="submit" name="delete[' . $consultation->id . ']" class="link" title="' .
-            \Yii::t('admin', 'cons_delete_title') . '"><span class="glyphicon glyphicon-trash"></span></button></div>';
+            Yii::t('admin', 'cons_delete_title') . '">';
+        echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
+        echo '<span class="sr-only">' . Yii::t('admin', 'cons_delete_title') . '</span>';
+        echo '</button></div>';
     }
 
     echo '<h3>';
@@ -67,11 +70,11 @@ foreach ($consultations as $consultation) {
     echo '<div class="homeLink">';
     $url = Url::toRoute(array_merge(['consultation/index'], $params));
     echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-        \Yii::t('admin', 'cons_goto_site') . '</a>';
+        Yii::t('admin', 'cons_goto_site') . '</a>';
     echo '</div><div class="adminLink">';
     $url = Url::toRoute(array_merge(['admin/index'], $params));
     echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
-        \Yii::t('admin', 'cons_goto_admin') . '</a>';
+        Yii::t('admin', 'cons_goto_admin') . '</a>';
     echo '</div>';
 
     echo '</li>';
@@ -84,12 +87,12 @@ echo Html::beginForm('', 'post', ['class' => 'consultationCreateForm form-horizo
 
 $textOpts = ['required' => 'required', 'class' => 'form-control'];
 ?>
-<h2 class="green"><?= \Yii::t('admin', 'cons_create') ?></h2>
+<h2 class="green"><?= Yii::t('admin', 'cons_create') ?></h2>
 
 <div class="content">
 
     <div class="form-group">
-        <label for="newTitle" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_title') ?>:</label>
+        <label for="newTitle" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_title') ?>:</label>
         <div class="col-md-8"><?php
             echo Html::input(
                 'text',
@@ -101,7 +104,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
     </div>
 
     <div class="form-group">
-        <label for="newShort" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_short') ?>:</label>
+        <label for="newShort" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_short') ?>:</label>
         <div class="col-md-4"><?php
             echo Html::input(
                 'text',
@@ -113,7 +116,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
     </div>
 
     <div class="form-group">
-        <label for="newPath" class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_url') ?>:</label>
+        <label for="newPath" class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_url') ?>:</label>
         <div class="col-md-8 fakeUrl">
             <?php
             $input = Html::input(
@@ -136,7 +139,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
 
         <div class="form-group">
             <label for="newSetStandard" class="col-md-4 control-label">
-                <?= \Yii::t('admin', 'cons_create_std') ?>:
+                <?= Yii::t('admin', 'cons_create_std') ?>:
             </label>
             <div class="col-md-8 checkbox">
                 <label><?php
@@ -145,23 +148,23 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
                         $createForm->setAsDefault,
                         ['id' => 'newSetStandard']
                     ); ?>
-                    <?= \Yii::t('admin', 'cons_create_std_do') ?>
+                    <?= Yii::t('admin', 'cons_create_std_do') ?>
                 </label>
             </div>
         </div>
 
         <div class="form-group settingsType">
-            <div class="col-md-4 control-label"><?= \Yii::t('admin', 'cons_create_settings') ?>:</div>
+            <div class="col-md-4 control-label"><?= Yii::t('admin', 'cons_create_settings') ?>:</div>
             <div class="col-md-8">
                 <label class="radio settingsTypeLabel">
                     <input type="radio" name="newConsultation[settingsType]" id="settingsTypeWizard" required
                            value="wizard">
-                    <?= \Yii::t('admin', 'cons_create_wizard') ?>
+                    <?= Yii::t('admin', 'cons_create_wizard') ?>
                 </label>
                 <label class="radio settingsTypeLabel">
                     <input type="radio" name="newConsultation[settingsType]" id="settingsTypeTemplate" required
                            value="template" checked>
-                    <?= \Yii::t('admin', 'cons_create_template') ?>:
+                    <?= Yii::t('admin', 'cons_create_template') ?>:
                 </label>
                 <?php
                 $templates = [];
@@ -182,7 +185,7 @@ $textOpts = ['required' => 'required', 'class' => 'form-control'];
         <div class="settingsTypeTemplate">
             <div class="saveholder">
                 <button type="submit" name="createConsultation" class="btn btn-primary">
-                    <?= \Yii::t('admin', 'cons_create_submit') ?>
+                    <?= Yii::t('admin', 'cons_create_submit') ?>
                 </button>
             </div>
         </div>

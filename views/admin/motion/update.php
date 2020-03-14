@@ -46,7 +46,7 @@ $html     .= '<span class="icon glyphicon glyphicon-arrow-right"></span>' .
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
 $html .= '<input type="hidden" name="delete" value="1">';
-$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash"></span>'
+$html .= '<button type="submit" class="link"><span class="icon glyphicon glyphicon-trash" aria-hidden="true"></span>'
          . Yii::t('admin', 'motion_del') . '</button>';
 $html .= Html::endForm() . '</li>';
 
