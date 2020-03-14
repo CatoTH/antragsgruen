@@ -583,6 +583,15 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   input {
     opacity: 0;
     width: 100%;
+    pointer-events: none;
+  }
+
+  &:focus-within label {
+    outline: solid 2px grey;
+    outline-offset: 0;
+  }
+  body.usingMouse &:focus-within label {
+    outline: none;
   }
 }
 

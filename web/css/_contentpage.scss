@@ -59,10 +59,13 @@
 
     html.no-touchevents & {
       li .deleteFile {
-        visibility: hidden;
+        opacity: 0.1;
       }
       li:hover .deleteFile {
-        visibility: visible;
+        opacity: 1;
+      }
+      li .deleteFile:focus {
+        opacity: 1;
       }
     }
   }

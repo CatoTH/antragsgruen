@@ -77,14 +77,14 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
 
 
         <div class="form-group">
-            <label class="col-sm-3 control-label" for="consultationPath"><?= Yii::t('admin', 'con_url_path') ?>
-                :</label>
+            <div class="col-sm-3 control-label"><?= Yii::t('admin', 'con_url_path') ?>:</div>
             <div class="col-sm-9 urlPathHolder">
                 <div class="shower">
                     <?= Html::encode($consultation->urlPath) ?>
                     [<a href="#"><?= Yii::t('admin', 'con_url_change') ?></a>]
                 </div>
                 <div class="holder hidden">
+                    <label for="consultationPath" class="sr-only"><?= Yii::t('admin', 'con_url_path') ?></label>
                     <input type="text" required name="consultation[urlPath]"
                            value="<?= Html::encode($consultation->urlPath) ?>" class="form-control"
                            pattern="[\w_-]+" id="consultationPath">
@@ -237,10 +237,6 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                             <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
                             <input type="text" class="form-control dropdown-toggle pillbox-add-item"
                                    placeholder="<?= Yii::t('admin', 'con_topic_add') ?>">
-                            <button type="button" class="dropdown-toggle sr-only">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
                         </li>
                     </ul>
                 </div>
@@ -285,10 +281,6 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                             <a class="pillbox-more">and <span class="pillbox-more-count"></span> more...</a>
                             <input type="text" class="form-control dropdown-toggle pillbox-add-item"
                                    placeholder="<?= Yii::t('admin', 'con_organisation_add') ?>">
-                            <button type="button" class="dropdown-toggle sr-only">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
                         </li>
                     </ul>
                 </div>

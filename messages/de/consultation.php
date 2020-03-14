@@ -31,6 +31,7 @@ return [
     'pdf_motions'          => 'PDFs: Anträge',
     'pdf_amendments'       => 'Alle Änderungsanträge gesammelt',
     'pdf_amendments_small' => 'PDFs: Änderungsanträge',
+    'sb_mini_aria'         => 'Kleine Version der Sidebar',
     'sb_search_form'       => 'Suchformular',
     'sb_search_desc'       => 'Der Suchbegriff, nach dem die Website durchsucht werden soll.',
     'sb_search'            => 'Suche',

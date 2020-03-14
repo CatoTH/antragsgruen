@@ -583,5 +583,6 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'files_download_new'   => 'Upload file',
     'files_download_file'  => 'Choose file',
     'files_download_title' => 'Title',
+    'files_download_del'   => 'Delete this file: %TITLE%',
     'files_download_del_c' => 'Do you want to delete this file?',
 ];

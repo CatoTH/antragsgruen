@@ -596,5 +596,6 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'files_download_new'   => 'Datei veröffentlichen',
     'files_download_file'  => 'Datei auswählen',
     'files_download_title' => 'Titel',
+    'files_download_del'   => 'Datei löschen: %TITLE%',
     'files_download_del_c' => 'Soll diese Datei wirklich gelöscht werden?',
 ];

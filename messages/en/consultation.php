@@ -31,6 +31,7 @@ return [
     'pdf_motions'          => 'PDFs: motions',
     'pdf_amendments'       => 'All amendments',
     'pdf_amendments_small' => 'PDFs: amendments',
+    'sb_mini_aria'         => 'Small version of the sidebar',
     'sb_search_form'       => 'Search form',
     'sb_search_desc'       => 'The term to search for.',
     'sb_search'            => 'Search',
