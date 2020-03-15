@@ -28,7 +28,7 @@ class StdHooks extends Hooks
     public function logoRow(string $before): string
     {
         $out = '<div class="row logo">
-<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo text-hide">' . \Yii::t('base', 'Home');
+<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo"><span class="sr-only">' . \Yii::t('base', 'Home') . '</span>';
         $out .= $this->layout->getLogoStr();
         $out .= '</a></div>';
 

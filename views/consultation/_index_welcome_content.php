@@ -27,7 +27,7 @@ echo '</article>';
 
 $files = $consultation->getDownloadableFiles();
 ?>
-    <div class="downloadableFiles <?= (count($files) === 0 ? 'hidden' : '') ?>">
+    <div class="downloadableFiles<?= (count($files) === 0 ? ' hidden' : '') ?>">
         <h2><?= Yii::t('admin', 'files_download') ?></h2>
         <em class="none<?= (count($files) > 0 ? ' hidden' : '') ?>"><?= Yii::t('admin', 'files_download_none') ?></em>
         <?php
