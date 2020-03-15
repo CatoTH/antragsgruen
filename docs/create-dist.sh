@@ -54,6 +54,7 @@ chmod 775 web/assets
 find ./web/ -name "*\.map" -exec rm {} \;
 chmod -R u+rwx web/js/bower/yii2-pjax/.git
 rm -R web/js/src
+rm -R web/js/bootstrap-datetimepicker.js
 rm -R web/js/bower
 rm -R web/typescript
 rm -R vendor/tecnickcom/tcpdf/examples

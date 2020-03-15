@@ -33,17 +33,17 @@ echo '<input type="hidden" name="category" value="' . Html::encode($category) . 
 echo $controller->showErrors();
 
 
-echo '<fieldset class="form-group">
-        <label class="col-sm-4 control-label" for="startLayoutType">' .
+echo '<div class="form-group">
+        <label class="col-sm-4 control-label" for="wordingBase">' .
     Yii::t('admin', 'translating_base') . ':</label>
         <div class="col-sm-8">';
 echo Html::dropDownList(
     'wordingBase',
     $consultation->wordingBase,
     MessageSource::getLanguageVariants(Yii::$app->language),
-    ['class' => 'form-control']
+    ['class' => 'form-control', 'id' => 'wordingBase']
 );
-echo '</div></fieldset>';
+echo '</div></div>';
 
 echo '<div class="saveholder">
 <button type="submit" name="save" class="btn btn-primary">' . Yii::t('base', 'save') . '</button>
@@ -84,10 +84,11 @@ foreach ($consultation->texts as $text) {
 echo '<br><br>';
 
 
-foreach ($strings as $string) {
+foreach ($strings as $i => $string) {
     $encKey = Html::encode(urlencode($string['id']));
     $value  = (isset($consStrings[$string['id']]) ? $consStrings[$string['id']] : '');
-    echo '<div class="form-group"><label class="col-sm-6 control-label">';
+    $htmlId = 'string' . $i;
+    echo '<div class="form-group"><label class="col-sm-6 control-label" for="' . $htmlId . '">';
     if (isset($string['title']) && $string['title'] !== '') {
         echo Html::encode($string['title']);
     } else {
@@ -99,7 +100,7 @@ foreach ($strings as $string) {
     echo '<span class="identifier">' . Html::encode($string['id']) . '</span>';
     echo '</label><div class="col-sm-6">';
 
-    echo HTMLTools::smallTextarea('string[' . $encKey . ']', ['class' => 'form-control'], $value);
+    echo HTMLTools::smallTextarea('string[' . $encKey . ']', ['class' => 'form-control', 'id' => $htmlId], $value);
     echo '</div></div>';
 }
 

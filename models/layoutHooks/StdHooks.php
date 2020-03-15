@@ -92,12 +92,12 @@ class StdHooks extends Hooks
             'class'           => 'form-search',
             'aria-labelledby' => 'sidebarSearchTitle',
         ]);
-        $html .= '<div class="nav-list"><div class="nav-header" id="sidebarSearchTitle">' . \Yii::t('con', 'sb_search') . '</div>
-    <div style="text-align: center; padding-left: 7px; padding-right: 7px;">
+        $html .= '<div class="nav-list" id="sidebarSearch"><div class="nav-header" id="sidebarSearchTitle">' . \Yii::t('con', 'sb_search') . '</div>
+    <div class="searchContent">
     <div class="input-group">
-      <input type="text" class="form-control query" name="query"
-        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required
-        title="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '">
+      <label for="searchQuery" class="sr-only">' . \Yii::t('con', 'sb_search_query') . '</label>
+      <input type="text" class="form-control query" name="query" id="searchQuery"
+        placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">
             <span class="glyphicon glyphicon-search"></span> ' . \Yii::t('con', 'sb_search_do') . '

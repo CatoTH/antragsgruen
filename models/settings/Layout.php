@@ -257,8 +257,8 @@ class Layout
     public function loadDatepicker(): void
     {
         $this->addJS('npm/moment-with-locales.min.js');
-        $this->addJS('npm/bootstrap-datetimepicker.min.js');
-        $this->addCSS('npm/bootstrap-datetimepicker.min.css');
+        $this->addJS('js/build/bootstrap-datetimepicker.min.js');
+        $this->addCSS('css/bootstrap-datetimepicker.min.css');
     }
 
     public function loadCKEditor(): void
@@ -303,7 +303,7 @@ class Layout
         foreach ($this->menusHtmlSmall as $menu) {
             $dropdownHtml .= $menu;
         }
-        $out = '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
+        return '<nav class="navbar navbar-default sidebarSmall visible-sm-block visible-xs-block" id="' . $htmlId . '">
     <div class="container-fluid">
         <div class="navbar-header">
             ' . $this->menusSmallAttachment . '
@@ -323,7 +323,6 @@ class Layout
         </div>
     </div>
 </nav>';
-        return $out;
     }
 
     public static function resourceUrl(string $url): string

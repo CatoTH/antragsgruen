@@ -121,8 +121,9 @@ class MotionTypeEdit {
         }).trigger('change');
 
         $('.datetimepicker').each((i, el) => {
-            $(el).datetimepicker({
-                locale: $(el).find("input").data('locale')
+            const $el = $(el);
+            $el.datetimepicker({
+                locale: $el.find("input").data('locale')
             });
         });
 

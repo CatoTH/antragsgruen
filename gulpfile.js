@@ -19,8 +19,6 @@ async function taskCopyFiles() {
     await gulp.src("node_modules/sortablejs/Sortable.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/corejs-typeahead/dist/typeahead.bundle.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/moment/min/moment-with-locales.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js").pipe(gulp.dest('./web/npm/'));
-    await gulp.src("node_modules/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/jquery/dist/jquery.min.js").pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/requirejs/require.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
     await gulp.src("node_modules/clipboard/dist/clipboard.min.js").pipe(uglify()).pipe(gulp.dest('./web/npm/'));
@@ -43,6 +41,15 @@ function taskBuildJsMain() {
     return gulp.src(main_js_files)
         .pipe(sourcemaps.init())
         .pipe(concat('antragsgruen.min.js'))
+        .pipe(uglify())
+        .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('./web/js/build/'));
+}
+
+function taskBuildDatetimepicker() {
+    return gulp.src(["web/js/bootstrap-datetimepicker.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat('bootstrap-datetimepicker.min.js'))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('./web/js/build/'));
@@ -75,7 +82,7 @@ function taskBuildJsEnGb() {
         .pipe(gulp.dest('./web/js/build/'));
 }
 
-const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsEn, taskBuildJsEnGb);
+const taskBuildJs = gulp.parallel(taskBuildJsMain, taskBuildJsDe, taskBuildJsEn, taskBuildJsEnGb, taskBuildDatetimepicker);
 
 function taskBuildCss() {
     return gulp.src("web/css/*.scss")
@@ -98,6 +105,7 @@ function taskBuildPluginCss() {
 function taskWatch() {
     gulp.watch(main_js_files, taskBuildJs);
     gulp.watch(["web/js/antragsgruen-de.js", "web/js/antragsgruen-en.js", "web/js/antragsgruen-en-gb.js"], taskBuildJs);
+    gulp.watch(["web/js/bootstrap-datetimepicker.js"], taskBuildDatetimepicker);
     gulp.watch(["web/css/*.scss"], gulp.parallel(taskBuildCss, taskBuildPluginCss));
     gulp.watch(["plugins/**/*.scss"], taskBuildPluginCss);
     gulp.watch(['./web/typescript/**/*.ts'], taskBuildTypescript);

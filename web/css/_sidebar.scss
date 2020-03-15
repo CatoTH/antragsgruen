@@ -8,6 +8,13 @@
 }
 
 #sidebar {
+  #sidebarSearch {
+    .searchContent {
+      text-align: center;
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+  }
   .nav-list {
     padding: 0;
     margin-bottom: 20px;
