@@ -27,10 +27,12 @@ class StdHooks extends Hooks
 
     public function logoRow(string $before): string
     {
-        $out = '<div class="row logo">
-<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo"><span class="sr-only">' . \Yii::t('base', 'Home') . '</span>';
+        $out = '<div class="row logo">';
+        $out .= '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo">';
+        $out .= '<span class="sr-only">' . \Yii::t('base', 'home_back') . '</span>';
         $out .= $this->layout->getLogoStr();
-        $out .= '</a></div>';
+        $out .= '</a>';
+        $out .= '</div>';
 
         return $out;
     }
@@ -45,7 +47,7 @@ class StdHooks extends Hooks
         }
         $faviconBase = $resourceBase . 'favicons';
 
-        $out = '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBase . '/apple-touch-icon.png">
+        return '<link rel="apple-touch-icon" sizes="180x180" href="' . $faviconBase . '/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="' . $faviconBase . '/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="' . $faviconBase . '/favicon-16x16.png">
 <link rel="manifest" href="' . $faviconBase . '/site.webmanifest">
@@ -53,8 +55,6 @@ class StdHooks extends Hooks
 <meta name="msapplication-TileColor" content="#00a300">
 <meta name="msapplication-TileImage" content="' . $faviconBase . '/mstile-150x150.png">
 <meta name="theme-color" content="#ffffff">';
-
-        return $out;
     }
 
     public function beforeContent(string $before): string
@@ -72,7 +72,12 @@ class StdHooks extends Hooks
                 if ($link === '' || is_numeric($link)) {
                     $out .= '<li>' . Html::encode($name) . '</li>';
                 } else {
-                    $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
+                    if ($link === UrlHelper::homeUrl()) {
+                        // We have enough links to the home page already, esp. the logo just a few pixels away. This would be confusing for screenreaders.
+                        $out .= '<li><span class="pseudoLink" data-href="' . Html::encode($link) . '">' . Html::encode($name) . '</a></li>';
+                    } else {
+                        $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
+                    }
                 }
             }
             $out .= '</ol></nav>';
@@ -155,7 +160,8 @@ class StdHooks extends Hooks
 
             if ($controller->consultation) {
                 if (User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
-                    $icon = '<span class="glyphicon glyphicon-plus-sign"></span><span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
+                    $icon = '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>';
+                    $icon .= '<span class="sr-only">' . \Yii::t('pages', 'menu_add_btn') . '</span>';
                     $url  = UrlHelper::createUrl('/pages/list-pages');
                     $out  .= '<li class="addPage">' .
                              Html::a($icon, $url, ['title' => \Yii::t('pages', 'menu_add_btn')]) . '</li>';
@@ -163,12 +169,12 @@ class StdHooks extends Hooks
 
                 $homeUrl = UrlHelper::homeUrl();
                 $out     .= '<li class="active">' .
-                            Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink']) .
+                            Html::a(\Yii::t('base', 'Home'), $homeUrl, ['id' => 'homeLink', 'aria-label' => \Yii::t('base', 'home_back')]) .
                             '</li>';
 
                 $pages = ConsultationText::getMenuEntries($controller->site, $controller->consultation);
                 foreach ($pages as $page) {
-                    $options = ['class' => 'page' . $page->id];
+                    $options = ['class' => 'page' . $page->id, 'aria-label' => $page->title];
                     $out     .= '<li>' . Html::a($page->title, $page->getUrl(), $options) . '</li>';
                 }
             }
@@ -181,7 +187,7 @@ class StdHooks extends Hooks
                 }
                 $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => $backUrl]);
                 $loginTitle = \Yii::t('base', 'menu_login');
-                $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) .
+                $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .
                                '</li>';
             }
             if (User::getCurrentUser()) {
@@ -199,25 +205,25 @@ class StdHooks extends Hooks
                 }
                 $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => $backUrl]);
                 $logoutTitle = \Yii::t('base', 'menu_logout');
-                $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
+                $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink', 'aria-label' => $logoutTitle]) . '</li>';
             }
             if ($privilegeScreening || $privilegeProposal) {
                 $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink']) . '</li>';
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
             }
             if ($privilegeScreening) {
                 $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
                 if (count($todo) > 0) {
                     $adminUrl   = UrlHelper::createUrl('/admin/index/todo');
                     $adminTitle = \Yii::t('base', 'menu_todo') . ' (' . count($todo) . ')';
-                    $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo']) . '</li>';
+                    $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminTodo', 'aria-label' => $adminTitle]) . '</li>';
                 }
             }
             if (User::havePrivilege($consultation, IndexController::$REQUIRED_PRIVILEGES)) {
                 $adminUrl   = UrlHelper::createUrl('/admin/index');
                 $adminTitle = \Yii::t('base', 'menu_admin');
-                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink']) . '</li>';
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'adminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
         }
         $out .= '</ul>';
@@ -293,7 +299,7 @@ class StdHooks extends Hooks
 
             $html      .= '<a class="createMotion createMotion' . $motionType->id . '" ' .
                           'href="' . Html::encode($link) . '" title="' . Html::encode($description) . '" rel="nofollow">' .
-                          '<span class="glyphicon glyphicon-plus-sign"></span>' . Html::encode($description) .
+                          '<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>' . Html::encode($description) .
                           '</a>';
             $htmlSmall .=
                 '<a class="navbar-brand" href="' . Html::encode($link) . '" rel="nofollow">' .

@@ -92,6 +92,7 @@
     font-size: 14px;
     border-radius: 0 0 10px 10px;
     border: solid 1px lighten($createMotionBtnColor, 1.8%);
+    transition: border ease-in-out 0.15s,background-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
 
     text-transform: uppercase;
     -webkit-font-smoothing: antialiased;
@@ -105,6 +106,11 @@
     > span {
       padding-right: 10px;
       font-size: 15px;
+    }
+    &:focus {
+      border: solid 1px $focusBorderColor;
+      background: linear-gradient(to bottom, lighten($createMotionBtnColor, 2.3%) 0%, lighten($createMotionBtnColor, 4.6%) 100%); /* W3C */
+      box-shadow: 0 0 10px rgb(80, 136, 179);
     }
   }
 

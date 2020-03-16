@@ -142,7 +142,7 @@
       color: $colorDelLink;
       font-style: italic;
       padding: 0 6px 0 3px;
-      @include outlineOnFocus();
+      @include outlineOnFocusNoBorder();
     }
   }
   > .content > .alert {

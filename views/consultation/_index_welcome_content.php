@@ -1,7 +1,5 @@
 <?php
 
-use app\components\Tools;
-use app\models\db\ConsultationMotionType;
 use yii\helpers\Html;
 
 echo '<div class="content contentPage contentPageWelcome">';

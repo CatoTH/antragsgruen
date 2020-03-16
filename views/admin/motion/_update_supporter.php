@@ -16,11 +16,11 @@ use yii\helpers\Html;
  * @param ISupporter $supporter
  * @return string
  */
-$getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($settings) {
+$getSupporterRow = function (ISupporter $supporter) use ($settings) {
     $str = '<li><div class="supporterRow">';
     $str .= '<input type="hidden" name="supporterId[]" value="' . Html::encode($supporter->id) . '">';
 
-    $title = Html::encode(\Yii::t('admin', 'motion_supp_name'));
+    $title = Html::encode(Yii::t('admin', 'motion_supp_name'));
     $str   .= '<div class="nameCol">';
 
     $str .= '<span class="glyphicon glyphicon-resize-vertical moveHandle"></span> ';
@@ -29,7 +29,7 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
     $str .= ' class="form-control supporterName" placeholder="' . $title . '" title="' . $title . '">';
     $str .= '</div>';
 
-    $title = Html::encode(\Yii::t('admin', 'motion_supp_orga'));
+    $title = Html::encode(Yii::t('admin', 'motion_supp_orga'));
     $str   .= '<div>';
     $str   .= '<input type="text" name="supporterOrga[]" value="' . Html::encode($supporter->organization) . '" ';
     $str   .= ' class="form-control supporterOrga" placeholder="' . $title . '" title="' . $title . '">';
@@ -37,7 +37,7 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
 
     if ($settings->contactGender !== InitiatorForm::CONTACT_NONE) {
         $genderChoices = array_merge(
-            ['' => \Yii::t('initiator', 'gender') . ':'],
+            ['' => Yii::t('initiator', 'gender') . ':'],
             SupportBase::getGenderSelection()
         );
         $str .= '<div class="colGender">';
@@ -64,7 +64,7 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
 };
 
 ?>
-<h2 class="green"><?= \Yii::t('admin', 'motion_edit_supporters') ?></h2>
+<h2 class="green"><?= Yii::t('admin', 'motion_edit_supporters') ?></h2>
 <div class="content fuelux" id="motionSupporterHolder">
     <ul class="supporterList">
         <?php
@@ -77,14 +77,15 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
     <div class="fullTextAdder"><a href="#"><?= Yii::t('initiator', 'fullTextField') ?></a></div>
 
     <a href="#" class="supporterRowAdder" data-content="<?= Html::encode($getSupporterRow($newTemplate)) ?>">
-        <span class="glyphicon glyphicon-plus-sign"></span>
-        <?= \Yii::t('admin', 'motion_edit_supporters_add') ?>
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+        <?= Yii::t('admin', 'motion_edit_supporters_add') ?>
     </a>
 
     <div class="form-group hidden" id="fullTextHolder">
         <div class="col-md-9">
+            <label for="fullTextHolderTextarea" class="sr-only"><?= Html::encode(Yii::t('initiator', 'fullTextSyntax')) ?></label>
             <textarea class="form-control" placeholder="<?= Html::encode(Yii::t('initiator', 'fullTextSyntax')) ?>"
-                      rows="10"></textarea>
+                      id="fullTextHolderTextarea" rows="10"></textarea>
         </div>
         <div class="col-md-3">
             <button type="button" class="btn btn-success fullTextAdd">
@@ -95,10 +96,10 @@ $getSupporterRow = function (\app\models\db\ISupporter $supporter) use ($setting
             <button class="btn btn-default fullTextCopy" type="button">
                 <span class="glyphicon glyphicon-copy normal"></span>
                 <span class="glyphicon glyphicon-ok ok"></span>
-                <?= \Yii::t('initiator', 'copy_to_clipboard') ?>
+                <?= Yii::t('initiator', 'copy_to_clipboard') ?>
             </button>
             <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
-                  data-original-title="<?= \Yii::t('initiator', 'copy_to_clipboard_h') ?>"></span>
+                  data-original-title="<?= Yii::t('initiator', 'copy_to_clipboard_h') ?>"></span>
         </div>
     </div>
 </div>

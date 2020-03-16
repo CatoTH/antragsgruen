@@ -250,7 +250,7 @@ echo '</div>';
         </ul>
 
         <a href="#" class="sectionAdder">
-            <span class="glyphicon glyphicon-plus-sign"></span>
+            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
             <?= Yii::t('admin', 'motion_section_add') ?>
         </a>
 

@@ -59,7 +59,7 @@ $btnFunctions = $consultation->havePrivilege(\app\models\db\User::PRIVILEGE_CONS
         <div class="dropdown dropdown-menu-left exportAmendmentDd">
             <button class="btn btn-success dropdown-toggle" type="button" id="newMotionBtn"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                <span class="glyphicon glyphicon-plus-sign"></span>
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('admin', 'list_new') ?>
                 <span class="caret"></span>
             </button>

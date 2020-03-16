@@ -70,6 +70,10 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
         }
     });
 
+    $(document).on('click', '.pseudoLink', ev => {
+        window.location.href = $(ev.currentTarget).data("href");
+    });
+
     // Used to only show outlines on links when keyboard is used
     document.body.addEventListener('mousedown', () => {
         document.body.classList.add('usingMouse');
@@ -77,6 +81,7 @@ declare let ANTRAGSGRUEN_STRINGS: string[][];
     document.body.addEventListener('keydown', () => {
         document.body.classList.remove('usingMouse');
     });
+
 
     // Needs to be synchronized with ConsultationAgendaItem:getSortedFromConsultation
     const recalcAgendaNode = ($ol: JQuery, prefix: string) => {

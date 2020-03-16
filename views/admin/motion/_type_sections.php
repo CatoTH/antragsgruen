@@ -212,7 +212,7 @@ $sName = 'sections[' . $sectionId . ']';
             $template = $dataRowFormatter($newRow, 0, $sName);
             ?>
             <a href="#" class="addRow" data-template="<?= Html::encode($template) ?>">
-                <span class="glyphicon glyphicon-plus-sign"></span>
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('admin', 'motion_section_add_line') ?>
             </a>
         </div>

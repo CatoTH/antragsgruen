@@ -77,7 +77,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
         ?>
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
-        <span class="glyphicon glyphicon-plus-sign"></span>
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </section>
@@ -95,7 +95,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
         ?>
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
-        <span class="glyphicon glyphicon-plus-sign"></span>
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>
@@ -113,7 +113,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
         ?>
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
-        <span class="glyphicon glyphicon-plus-sign"></span>
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>
@@ -131,7 +131,7 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
         ?>
     </div>
     <button type="button" class="btn btn-link btn-xs deadlineAdder">
-        <span class="glyphicon glyphicon-plus-sign"></span>
+        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
         <?= Yii::t('admin', 'motion_cdeadline_add') ?>
     </button>
 </div>

@@ -17,7 +17,7 @@ class LayoutSettings extends Layout
     public function setConsultation(Consultation $consultation): void
     {
         $this->consultation = $consultation;
-        if ($consultation && count($this->breadcrumbs) == 0) {
+        if ($consultation && count($this->breadcrumbs) === 0) {
             $this->breadcrumbs[UrlHelper::homeUrl()] = \Yii::t('member_petitions', 'bc');
             $url                                     = \Yii::$app->request->url;
             if (strpos($url, $consultation->urlPath) !== false) {

@@ -74,7 +74,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                 <div class="row">
                     <div class="col-md-6">
                         <button type="submit" class="btn btn-primary" name="loginconpwd">
-                            <span class="glyphicon glyphicon-log-in"></span>
+                            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                             <?= Yii::t('user', 'login_btn_login') ?>
                         </button>
                     </div>
@@ -176,9 +176,9 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     <div class="row">
         <div class="col-md-6">
             <button type="submit" class="btn btn-primary" name="loginusernamepassword">
-                <span id="loginStr"><span class="glyphicon glyphicon-log-in"></span>
+                <span id="loginStr"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                     <?= Yii::t('user', 'login_btn_login') ?></span>
-                <span id="createStr"><span class="glyphicon glyphicon-plus-sign"></span>
+                <span id="createStr"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     <?= Yii::t('user', 'login_btn_create') ?></span>
             </button>
         </div>
@@ -214,7 +214,7 @@ if ($params->isSamlActive()) {
     echo '
         <input type="hidden" name="backUrl" value="' . Html::encode($absoluteBack) . '">
         <button type="submit" class="btn btn-primary" name="samlLogin">
-            <span class="glyphicon glyphicon-log-in"></span> Einloggen
+            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Einloggen
     </button>';
 
     echo Html::endForm();

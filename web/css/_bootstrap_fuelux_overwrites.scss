@@ -133,11 +133,11 @@
   }
 }
 .navbar-toggle {
-  @include outlineOnFocus();
+  @include outlineOnFocusHasBorder();
 }
 
 .btn {
-  @include outlineOnFocus();
+  @include outlineOnFocusHasBorder();
   .span9 & {
     margin: 10px 0 0 200px;
   }
@@ -152,7 +152,7 @@
 }
 
 .btn-link {
-  @include outlineOnFocus();
+  @include outlineOnFocusNoBorder();
 }
 
 .table {
@@ -188,6 +188,10 @@
 
   a {
     color: $menuLink;
+  }
+  .pseudoLink {
+    color: $menuLink;
+    cursor: pointer;
   }
 }
 

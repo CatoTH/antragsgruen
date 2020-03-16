@@ -51,7 +51,7 @@ return [
     'debug_deadline_set'  => 'Set',
     'debug_deadline_quit' => 'Quit simulation',
 
-    'aria_breadcrumb'  => 'Breadcrumb menu',
-    'aria_mainmenu'    => 'Main menu',
-    'aria_footer'      => 'Legal links and software information',
+    'aria_breadcrumb' => 'Breadcrumb menu',
+    'aria_mainmenu'   => 'Main menu',
+    'aria_footer'     => 'Legal links and software information',
 ];

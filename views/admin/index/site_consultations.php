@@ -69,11 +69,11 @@ foreach ($consultations as $consultation) {
 
     echo '<div class="homeLink">';
     $url = Url::toRoute(array_merge(['consultation/index'], $params));
-    echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
+    echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
         Yii::t('admin', 'cons_goto_site') . '</a>';
     echo '</div><div class="adminLink">';
     $url = Url::toRoute(array_merge(['admin/index'], $params));
-    echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right"></span> ' .
+    echo '<a href="' . Html::encode($url) . '"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
         Yii::t('admin', 'cons_goto_admin') . '</a>';
     echo '</div>';
 

@@ -19,7 +19,7 @@
   &:link, &:visited {
     color: transparent;
   }
-  @include outlineOnFocus();
+  @include outlineOnFocusNoBorder();
   &:focus {
     color: $colorLinks;
   }
@@ -59,7 +59,7 @@ $footer_line_height: 1.5em;
 }
 
 a {
-  @include outlineOnFocus();
+  @include outlineOnFocusNoBorder();
 }
 
 body > footer {
