@@ -36,7 +36,7 @@ if (count($comments) > 0) {
                 foreach ($comments as $comment) {
                     $text  = $comment->getTextAbstract(150);
                     $title = $comment->getIMotion()->getTitleWithPrefix();
-                    $more  = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Yii::t('con', 'discuss_comment_link');
+                    $more  = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Yii::t('con', 'discuss_comment_link');
                     ?>
                     <div class="motionCommentHolder">
                         <article class="motionComment">
@@ -58,13 +58,13 @@ if (count($comments) > 0) {
             </div>
             <div class="moreActivitiesLink">
                 <?php
-                $title = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Yii::t('con', 'discuss_comments_more');
+                $title = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Yii::t('con', 'discuss_comments_more');
                 echo Html::a($title, UrlHelper::createUrl('consultation/activitylog'));
                 ?>
             </div>
             <div class="showAllComments">
                 <button class="btn btn-link">
-                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                     <?= Yii::t('con', 'discuss_comments_expand') ?>
                 </button>
             </div>

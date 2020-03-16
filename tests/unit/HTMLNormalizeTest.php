@@ -9,6 +9,15 @@ class HTMLNormalizeTest extends TestBase
 {
     use Specify;
 
+    public function testCorrectLeavesAria()
+    {
+        $htmlIn = 'Test <ins aria-label="Inserted: 1">1</ins><del aria-label="Deleted: 2">2</del><span>';
+        $htmlOut = HTMLTools::correctHtmlErrors($htmlIn);
+        $expect = 'Test <ins aria-label="Inserted: 1">1</ins><del aria-label="Deleted: 2">2</del><span></span>';
+
+        $this->assertEquals($expect, $htmlOut);
+    }
+
     public function testStrippingEmptyBlocks()
     {
         $htmlIn = '<p><del class="ice-del ice-cts" data-changedata="" data-cid="2" data-last-change-time="1497797183731" data-time="1497797183731" data-userid="" data-username="">Weit hinten, hinter den Wortbergen, fern der L&auml;nder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen sie in Buchstabhausen an der K&uuml;ste des Semantik, eines gro&szlig;en Sprachozeans. Ein kleines B&auml;chlein namens Duden flie&szlig;t durch ihren Ort und versorgt sie mit den n&ouml;tigen Regelialien.</del></p>

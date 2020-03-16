@@ -198,7 +198,7 @@ if ($motion->replacedMotion) {
 
     $changesLink = UrlHelper::createMotionUrl($motion, 'view-changes');
     $content     .= '<div class="changesLink">';
-    $content     .= '<span class="glyphicon glyphicon-chevron-right"></span> ';
+    $content     .= '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
     $content     .= Html::a(Yii::t('motion', 'replaces_motion_diff'), $changesLink);
     $content     .= '</div>';
 

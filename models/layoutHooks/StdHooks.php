@@ -76,7 +76,8 @@ class StdHooks extends Hooks
                         // We have enough links to the home page already, esp. the logo just a few pixels away. This would be confusing for screenreaders.
                         $out .= '<li><span class="pseudoLink" data-href="' . Html::encode($link) . '">' . Html::encode($name) . '</a></li>';
                     } else {
-                        $out .= '<li>' . Html::a(Html::encode($name), $link) . '</li>';
+                        $label = str_replace('%TITLE%', $name, \Yii::t('base', 'aria_bc_back'));
+                        $out .= '<li>' . Html::a(Html::encode($name), $link, ['aria-label' => $label]) . '</li>';
                     }
                 }
             }

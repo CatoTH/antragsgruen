@@ -3,11 +3,40 @@
 namespace unit;
 
 use app\components\diff\DiffRenderer;
+use app\components\HTMLTools;
 use Codeception\Specify;
 
 class DiffRendererTest extends TestBase
 {
     use Specify;
+
+    public function testNodeToText()
+    {
+        $html = '<div> 1 <em>2 <strike>###LINENUMBER### 2</strike></em> 3 <span>4</span>';
+        $dom = HTMLTools::html2DOM($html);
+        $text = DiffRenderer::nodeToPlainText($dom);
+        $this->assertEquals('1 2 2 3 4', $text);
+    }
+
+    public function testAria1()
+    {
+        $renderer = new DiffRenderer();
+        $renderer->setFormatting(DiffRenderer::FORMATTING_CLASSES_ARIA);
+
+        $html     = '<p>Test###INS_START###Neuer Absatz###INS_END### ###DEL_START###Neuer Absatz###DEL_END###.</p>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<p>Test<ins aria-label="Einfügen: „Neuer Absatz”">Neuer Absatz</ins> <del aria-label="Streichen: „Neuer Absatz”">Neuer Absatz</del>.</p>', $rendered);
+    }
+
+    public function testAria2()
+    {
+        $renderer = new DiffRenderer();
+        $renderer->setFormatting(DiffRenderer::FORMATTING_CLASSES_ARIA);
+
+        $html     = '<ul><li>Test###INS_START###<p>Neuer Absatz</p>###INS_END###.</li></ul>';
+        $rendered = $renderer->renderHtmlWithPlaceholders($html);
+        $this->assertEquals('<ul><li>Test<p class="inserted" aria-label="Einfügen: „Neuer Absatz”">Neuer Absatz</p>.</li></ul>', $rendered);
+    }
 
     public function testCallback()
     {

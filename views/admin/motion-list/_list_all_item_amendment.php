@@ -75,7 +75,7 @@ if ($colProposals) {
 
     if ($entry->proposalStatus === Amendment::STATUS_MODIFIED_ACCEPTED) {
         $url = UrlHelper::createAmendmentUrl($entry, 'edit-proposed-change');
-        echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right"></span> ' .
+        echo '<div class="editModified"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
             Html::a(Yii::t('admin', 'amend_edit_text'), $url) . '</div>';
     }
     echo '</td>';

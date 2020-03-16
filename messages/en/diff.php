@@ -15,4 +15,6 @@ return [
     'newline'        => 'Newline',
     'plain_text_del' => 'DELETE',
     'plain_text_ins' => 'INSERT',
+    'aria_ins'       => 'Insert: "%INS%"',
+    'aria_del'       => 'Delete: "%DEL%"',
 ];

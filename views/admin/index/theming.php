@@ -133,7 +133,7 @@ foreach ($settingsByBlock as $group => $settings) {
                                             ?>
                                         </ul>
                                         <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                             <?= Html::encode(Yii::t('admin', 'con_logo_edit_images')) ?>
                                         </a>
                                     </div>

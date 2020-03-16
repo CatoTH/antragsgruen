@@ -43,6 +43,13 @@ class HTMLTools
         $li->attr['value'] = new \HTMLPurifier_AttrDef_Text();
         $li->attr['type'] = 'Enum#s:1,i,I,a,A,disc,square,circle';
 
+        $def->addAttribute('ins', 'aria-label', 'Text');
+        $def->addAttribute('del', 'aria-label', 'Text');
+        $def->addAttribute('span', 'aria-label', 'Text');
+        foreach (static::$KNOWN_BLOCK_ELEMENTS as $element) {
+            $def->addAttribute($element, 'aria-label', 'Text');
+        }
+
         $purifier = new \HTMLPurifier($config);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
@@ -581,10 +588,10 @@ class HTMLTools
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head><body>' . $html . "</body></html>");
         $bodies = $src_doc->getElementsByTagName('body');
-        /** @var \DOMElement $str */
-        $str    = $bodies->item(0);
+        /** @var \DOMElement $dom */
+        $dom    = $bodies->item(0);
 
-        return $str;
+        return $dom;
     }
 
 

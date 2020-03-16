@@ -156,13 +156,13 @@ echo $initiatorClass->getMotionForm($form->motionType, $form, $controller);
 <section class="content saveCancelRow">
     <div class="saveCol">
         <button type="submit" name="save" class="btn btn-primary">
-            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             <?= Yii::t('motion', 'go_on') ?>
         </button>
     </div>
     <div class="cancelCol">
         <a href="<?= Html::encode(UrlHelper::homeUrl()) ?>" id="cancel" class="btn">
-            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
             <?= Yii::t('motion', 'back_start') ?>
         </a>
     </div>

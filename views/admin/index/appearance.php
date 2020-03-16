@@ -98,7 +98,7 @@ $handledSiteSettings = [];
                                 ?>
                             </ul>
                             <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
-                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                                 <?= Html::encode(Yii::t('admin', 'con_logo_edit_images')) ?>
                             </a>
                         </div>
@@ -138,7 +138,7 @@ $handledSiteSettings = [];
                     ?>
                 </label>
                 <?= Html::a(
-                    '<span class="glyphicon glyphicon-chevron-right"></span> ' .
+                    '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
                     ($hasCustom ? Yii::t('admin', 'con_ci_custom_edit') : Yii::t('admin', 'con_ci_custom_create')),
                     UrlHelper::createUrl(['/admin/index/theming', 'default' => 'DEFAULT']),
                     ['class' => 'editThemeLink']

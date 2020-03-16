@@ -150,7 +150,8 @@ echo Html::input('hidden', 'mergeDraft', json_encode($form->draftData), ['id' =>
 ?>
     <div class="submitHolder content">
         <button type="submit" name="save" class="btn btn-primary">
-            <span class="glyphicon glyphicon-chevron-right"></span> <?= Yii::t('amend', 'go_on') ?>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <?= Yii::t('amend', 'go_on') ?>
         </button>
     </div>
 

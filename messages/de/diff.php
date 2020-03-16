@@ -15,4 +15,6 @@ return [
     'newline'        => 'Zeilenumbruch',
     'plain_text_del' => 'LÖSCHUNG',
     'plain_text_ins' => 'EINFÜGUNG',
+    'aria_ins'       => 'Einfügen: „%INS%”',
+    'aria_del'       => 'Streichen: „%DEL%”',
 ];

@@ -207,7 +207,7 @@ class TextSimple extends Text
                 $formatter->setTextNew($section->data);
                 $formatter->setFirstLineNo($firstLine);
                 $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_INLINE);
-                if (count($diffGroups) == 0) {
+                if (count($diffGroups) === 0) {
                     return '';
                 }
 
@@ -263,7 +263,7 @@ class TextSimple extends Text
         $formatter->setTextOriginal($section->getOriginalMotionSection()->getData());
         $formatter->setTextNew($section->data);
         $formatter->setFirstLineNo($firstLine);
-        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES_ARIA);
 
         if (count($diffGroups) === 0) {
             return '';

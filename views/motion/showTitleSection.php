@@ -50,7 +50,7 @@ foreach ($amendingSections as $amendmentSection) {
     echo '<div class="text textAmendment hidden motionTextFormattings fixedWidthFont amendment' . $amendment->id . '">';
 
     echo '<div class="preamble"><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '">';
-    echo '<h3><span class="glyphicon glyphicon-chevron-right"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';
+    echo '<h3><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>' . Html::encode($amendment->getShortTitle(false)) . '</h3>';
     echo ', ' . Yii::t('amend', 'initiated_by') . ': ' . Html::encode($amendment->getInitiatorsStr());
     $amParas = $amendment->getChangedParagraphs($motion->getActiveSections(), true);
     if (count($amParas) > 1) {

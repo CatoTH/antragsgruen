@@ -7,10 +7,11 @@ use app\models\db\Amendment;
 
 class DiffRenderer
 {
-    const FORMATTING_NONE    = -1;
+    const FORMATTING_NONE = -1;
     const FORMATTING_CLASSES = 0;
-    const FORMATTING_INLINE  = 1;
-    const FORMATTING_ICE     = 2; // For CKEditor LITE Change-Tracking
+    const FORMATTING_INLINE = 1;
+    const FORMATTING_ICE = 2; // For CKEditor LITE Change-Tracking
+    const FORMATTING_CLASSES_ARIA = 3;
 
     const INS_START = '###INS_START###';
     const INS_END   = '###INS_END###';
@@ -72,28 +73,17 @@ class DiffRenderer
         }
     }
 
-    /**
-     * @param callable $callback
-     */
-    public function setInsCallback($callback)
+    public function setInsCallback(callable $callback): void
     {
         $this->insCallback = $callback;
     }
 
-    /**
-     * @param callable $callback
-     */
-    public function setDelCallback($callback)
+    public function setDelCallback(callable $callback): void
     {
         $this->delCallback = $callback;
     }
 
-    /**
-     * @internal
-     * @param \DOMNode $node
-     * @return boolean
-     */
-    public static function nodeCanBeAttachedToDelIns($node)
+    public static function nodeCanBeAttachedToDelIns(\DOMNode $node): bool
     {
         if (is_a($node, \DOMText::class)) {
             return true;
@@ -102,37 +92,22 @@ class DiffRenderer
         return !in_array($node->nodeName, HTMLTools::$KNOWN_BLOCK_ELEMENTS);
     }
 
-    /**
-     * @internal
-     * @param \DOMElement $node
-     * @param string $cssClass
-     */
-    public static function nodeAddClass(\DOMElement $node, $cssClass)
+    public static function nodeAddClass(\DOMElement $node, string $cssClass): void
     {
         $prevClass = $node->getAttribute('class');
-        if ($prevClass != '') {
+        if ($prevClass !== '') {
             $prevClass .= ' ';
         }
         $prevClass .= $cssClass;
         $node->setAttribute('class', $prevClass);
     }
 
-    /**
-     * @internal
-     * @param \DOMNode $node
-     * @param string $text
-     * @return bool
-     */
-    public static function nodeContainsText($node, $text)
+    public static function nodeContainsText(\DOMNode $node, string $text): bool
     {
         return (mb_strpos($node->nodeValue, $text) !== false);
     }
 
-    /**
-     * @param \DOMNode $node
-     * @return bool
-     */
-    public static function nodeStartInsDel($node)
+    public static function nodeStartInsDel(\DOMNode $node): bool
     {
         if (preg_match(static::INS_START_MATCH, $node->nodeValue)) {
             return true;
@@ -153,16 +128,24 @@ class DiffRenderer
         return preg_split('/###(INS|DEL)_(START|END)###/siu', $text);
     }
 
-    /**
-     * @internal
-     * @param string $param
-     * @return \DOMElement
-     */
-    private function createIns($param)
+    public static function nodeToPlainText(\DOMNode $node): string
+    {
+        $text = $node->nodeValue;
+        $text = str_replace('###LINENUMBER###', '', $text);
+
+        return trim(preg_replace('/\s{2,}/siu', ' ', $text));
+    }
+
+    private function createIns($param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('ins');
-        if ($this->formatting == static::FORMATTING_INLINE) {
+        if ($this->formatting === static::FORMATTING_INLINE) {
             $ins->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
+            $childText = static::nodeToPlainText($childNode);
+            $text      = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
+            $ins->setAttribute('aria-label', $text);
         }
         if ($this->insCallback) {
             call_user_func($this->insCallback, $ins, $param);
@@ -170,16 +153,16 @@ class DiffRenderer
         return $ins;
     }
 
-    /**
-     * @internal
-     * @param string $param
-     * @return \DOMElement
-     */
-    private function createDel($param)
+    private function createDel($param, \DOMNode $childNode): \DOMElement
     {
         $ins = $this->nodeCreator->createElement('del');
-        if ($this->formatting == static::FORMATTING_INLINE) {
+        if ($this->formatting === static::FORMATTING_INLINE) {
             $ins->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
+            $childText = static::nodeToPlainText($childNode);
+            $text      = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
+            $ins->setAttribute('aria-label', $text);
         }
         if ($this->delCallback) {
             call_user_func($this->delCallback, $ins, $param);
@@ -190,8 +173,13 @@ class DiffRenderer
     private function addInsStyles(\DOMElement $element, string $param): void
     {
         static::nodeAddClass($element, 'inserted');
-        if ($this->formatting == static::FORMATTING_INLINE) {
+        if ($this->formatting === static::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: green; text-decoration: underline;');
+        }
+        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
+            $childText = static::nodeToPlainText($element);
+            $text      = str_replace('%INS%', $childText, \Yii::t('diff', 'aria_ins'));
+            $element->setAttribute('aria-label', $text);
         }
         if ($this->insCallback) {
             call_user_func($this->insCallback, $element, $param);
@@ -201,8 +189,13 @@ class DiffRenderer
     private function addDelStyles(\DOMElement $element, string $param): void
     {
         static::nodeAddClass($element, 'deleted');
-        if ($this->formatting == static::FORMATTING_INLINE) {
+        if ($this->formatting === static::FORMATTING_INLINE) {
             $element->setAttribute('style', 'color: red; text-decoration: line-through;');
+        }
+        if ($this->formatting === static::FORMATTING_CLASSES_ARIA) {
+            $childText = static::nodeToPlainText($element);
+            $text      = str_replace('%DEL%', $childText, \Yii::t('diff', 'aria_del'));
+            $element->setAttribute('aria-label', $text);
         }
         if ($this->delCallback) {
             call_user_func($this->delCallback, $element, $param);
@@ -242,20 +235,20 @@ class DiffRenderer
         $nodes     = [];
         $lastIsIns = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'ins');
         $lastIsDel = ($lastEl && is_a($lastEl, \DOMElement::class) && $lastEl->nodeName == 'del');
-        while ($text != '') {
+        while ($text !== '') {
             if ($inIns !== false) {
                 $split = preg_split('/###INS_END###/siu', $text, 2);
-                if ($split[0] != '') {
+                if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsIns) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->createIns($inIns);
+                        $newNode = $this->createIns($inIns, $newText);
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
                 }
-                if (count($split) == 2) {
+                if (count($split) === 2) {
                     $text  = $split[1];
                     $inIns = false;
                 } else {
@@ -263,12 +256,12 @@ class DiffRenderer
                 }
             } elseif ($inDel !== false) {
                 $split = preg_split('/###DEL_END###/siu', $text, 2);
-                if ($split[0] != '') {
+                if ($split[0] !== '') {
                     $newText = $this->nodeCreator->createTextNode($split[0]);
                     if ($lastIsDel) {
                         $lastEl->appendChild($newText);
                     } else {
-                        $newNode = $this->createDel($inDel);
+                        $newNode = $this->createDel($inDel, $newText);
                         $newNode->appendChild($newText);
                         $nodes[] = $newNode;
                     }
@@ -281,8 +274,8 @@ class DiffRenderer
                 }
             } else {
                 $split = preg_split('/(###(?:INS|DEL)_START([^#]{0,20})###)/siu', $text, 2, PREG_SPLIT_DELIM_CAPTURE);
-                if (count($split) == 4) {
-                    if ($split[0] != '') {
+                if (count($split) === 4) {
+                    if ($split[0] !== '') {
                         $newText = $this->nodeCreator->createTextNode($split[0]);
                         $nodes[] = $newText;
                     }
@@ -325,9 +318,10 @@ class DiffRenderer
             if ($prevIsIns && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->createIns($inIns);
-                $delNode->appendChild(static::cloneNode($child));
-                $newChildren[] = $delNode;
+                $clonedChild = static::cloneNode($child);
+                $insNode     = $this->createIns($inIns, $clonedChild);
+                $insNode->appendChild($clonedChild);
+                $newChildren[] = $insNode;
             } else {
                 /** @var \DOMElement $clone */
                 $clone = static::cloneNode($child);
@@ -341,8 +335,9 @@ class DiffRenderer
             if ($prevIsDel && static::nodeCanBeAttachedToDelIns($child)) {
                 $lastEl->appendChild(static::cloneNode($child));
             } elseif (static::nodeCanBeAttachedToDelIns($child)) {
-                $delNode = $this->createDel($inDel);
-                $delNode->appendChild(static::cloneNode($child));
+                $clonedChild = static::cloneNode($child);
+                $delNode     = $this->createDel($inDel, $clonedChild);
+                $delNode->appendChild($clonedChild);
                 $newChildren[] = $delNode;
             } else {
                 /** @var \DOMElement $clone */

@@ -32,7 +32,7 @@ class LayoutHelper
             $admin = User::havePrivilege($consultation, [User::PRIVILEGE_SCREENING, User::PRIVILEGE_CHANGE_PROPOSALS]);
             if ($admin && ($supp->contactEmail || $supp->contactPhone )) {
                 if (!$expanded) {
-                    $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right"></span> ';
+                    $name .= '<a href="#" class="contactShow"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ';
                     $name .= \Yii::t('initiator', 'contact_show') . '</a>';
                 }
 

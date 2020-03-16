@@ -5,9 +5,7 @@
  * @var Amendment $amendment
  */
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentSection;
-use app\models\db\User;
+use app\models\db\{Amendment, AmendmentSection, User};
 
 $consultation = $amendment->getMyConsultation();
 

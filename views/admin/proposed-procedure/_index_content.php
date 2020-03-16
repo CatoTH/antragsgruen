@@ -32,7 +32,7 @@ foreach ($proposedAgenda as $proposedItem) {
 
     if (!$expandAll && $proposedItem->blockId !== $expandId) {
         $expandUrl   = UrlHelper::createUrl(['/admin/proposed-procedure/index', 'expandId' => $proposedItem->blockId]);
-        $expandTitle = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($proposedItem->title);
+        $expandTitle = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($proposedItem->title);
         ?>
         <section class="motionHolder motionHolder<?= $proposedItem->blockId ?> proposedProcedureOverview openable">
             <h2 class="green">
