@@ -263,7 +263,7 @@ Testing is currently done the following ways:
 
 - Ensuring that all functionality is accessible with the keyboard.
 - Screenreader functionality is currently tested using VoiceOver.
-- For validation, [Total Validator](https://www.totalvalidator.com/) and the Mozilla Firefox accessibility validation is used. **Known limitations** of Total Validator here are the inaccurate contrast checking for gradients in headlines and buttons. For Firefox, the main limitation is that it inaccurately classifys elements as interactive that have a `$(element).on("click", ".subselecor", handler)`-listener that is actually targeted to dynamic child elements.
+- For validation, [Total Validator](https://www.totalvalidator.com/), [WAVE](https://wave.webaim.org/) and the Mozilla Firefox accessibility validation is used. **Known limitations** of Total Validator and WAVE here are the inaccurate contrast checking for gradients in headlines and buttons. Firefox checks them correctly. For Firefox, the main limitation is that it inaccurately classifys elements as interactive that have a `$(element).on("click", ".subselecor", handler)`-listener that is actually targeted to dynamic child elements.
 
 Known limitations:
 

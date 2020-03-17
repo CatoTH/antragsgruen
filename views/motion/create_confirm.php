@@ -125,7 +125,7 @@ if ($right === '') {
 
 <?= Html::beginForm('', 'post', ['id' => 'motionConfirmForm']) ?>
     <div class="content saveCancelRow">
-        <div class="saveRow">
+        <div class="saveCol">
             <button type="submit" name="confirm" class="btn btn-success">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 <?= $motion->getSubmitButtonLabel() ?>
