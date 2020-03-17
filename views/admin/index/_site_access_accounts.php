@@ -141,11 +141,11 @@ if (count($privilegesScreening) > 0) {
 
     <div class="saveholder">
         <button type="submit" name="noAccess" class="btn btn-danger">
-            <span class="glyphicon glyphicon-thumbs-down"></span>
+            <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
             <?= Yii::t('admin', 'siteacc_noscreen_users_btn') ?>
         </button>
         <button type="submit" name="grantAccess" class="btn btn-success">
-            <span class="glyphicon glyphicon-thumbs-up"></span>
+            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
             <?= Yii::t('admin', 'siteacc_screen_users_btn') ?>
         </button>
     </div>

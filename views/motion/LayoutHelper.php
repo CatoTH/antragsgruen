@@ -283,24 +283,24 @@ class LayoutHelper
                     break;
                 case ISupporter::ROLE_LIKE:
                     echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                    echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
                     echo '</button>';
                     break;
                 case ISupporter::ROLE_DISLIKE:
                     echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                    echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                    echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
                     echo '</button>';
                     break;
                 default:
                     if ($hasLike) {
                         echo '<button type="submit" name="motionLike" class="btn btn-success">';
-                        echo '<span class="glyphicon glyphicon-thumbs-up"></span> ' . \Yii::t('motion', 'like');
+                        echo '<span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> ' . \Yii::t('motion', 'like');
                         echo '</button>';
                     }
 
                     if ($hasDislike) {
                         echo '<button type="submit" name="motionDislike" class="btn btn-alert">';
-                        echo '<span class="glyphicon glyphicon-thumbs-down"></span> ' . \Yii::t('motion', 'dislike');
+                        echo '<span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> ' . \Yii::t('motion', 'dislike');
                         echo '</button>';
                     }
             }

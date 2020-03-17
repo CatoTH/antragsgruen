@@ -44,7 +44,7 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
             echo '<div class="colOrga">';
             echo '<input type="text" name="motionSupportOrga" class="form-control"
                            value="' . Html::encode($orga) . '"
-                           placeholder="' . Html::encode(Yii::t('motion', 'support_orga')) . '" 
+                           placeholder="' . Html::encode(Yii::t('motion', 'support_orga')) . '"
                            required ' . $fixedReadOnly . '>';
             echo '</div>';
         }
@@ -66,7 +66,7 @@ if ($settings->hasOrganizations && $user && $user->organization === '' && $user-
         ?>
         <div class="colSubmit">
             <button type="submit" name="motionSupport" class="btn btn-success" <?= $disableSubmit ?>>
-                <span class="glyphicon glyphicon-thumbs-up"></span>
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
                 <?= Yii::t('motion', 'support') ?>
             </button>
         </div>

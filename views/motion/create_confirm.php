@@ -124,16 +124,16 @@ if ($right === '') {
     </div>
 
 <?= Html::beginForm('', 'post', ['id' => 'motionConfirmForm']) ?>
-    <div class="content">
-        <div style="float: right;">
+    <div class="content saveCancelRow">
+        <div class="saveRow">
             <button type="submit" name="confirm" class="btn btn-success">
-                <span class="glyphicon glyphicon-ok-sign"></span>
+                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
                 <?= $motion->getSubmitButtonLabel() ?>
             </button>
         </div>
-        <div style="float: left;">
+        <div class="cancelCol">
             <button type="submit" name="modify" class="btn">
-                <span class="glyphicon glyphicon-remove-sign"></span>
+                <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
                 <?= Yii::t('motion', 'button_correct') ?>
             </button>
         </div>
