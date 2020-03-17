@@ -23,7 +23,7 @@ $I->click('.homeLinkLogo');
 $I->see('A3: Textformatierungen', 'h1');
 
 $I->logout();
-$I->click('.breadcrumb a');
+$I->executeJS('$(".breadcrumb .pseudoLink").trigger("click");');
 $I->see('A3: Textformatierungen', 'h1');
 
 

@@ -21,7 +21,8 @@ class AmendmentShow {
         let form: JQuery = ev.target;
         bootbox.confirm(__t("std", "del_confirm"), function (result) {
             if (result) {
-                form.trigger("submit");
+                // noinspection JSDeprecatedSymbols
+                form.submit(); // Native submit() function, not the jQuery one
             }
         });
     }

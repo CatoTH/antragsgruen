@@ -695,6 +695,11 @@
       width: 24px;
       border-right: solid 1px $commentBorder;
       border-top-right-radius: 3px;
+
+      .link {
+        border-right: 0;
+        padding: 4px;
+      }
     }
 
     .delLink + .link {

@@ -36,7 +36,7 @@ class Bootbox extends \Codeception\Module
      */
     public function acceptBootboxAlert()
     {
-        $this->getWebDriver()->click('.bootbox .btn-primary');
+        $this->getWebDriver()->executeJS('$(".bootbox .btn-primary").trigger("click")');
         $this->getWebDriver()->wait(1);
     }
 
@@ -44,7 +44,7 @@ class Bootbox extends \Codeception\Module
      */
     public function acceptBootboxConfirm()
     {
-        $this->getWebDriver()->click('.bootbox .btn-primary');
+        $this->getWebDriver()->executeJS('$(".bootbox .btn-primary").trigger("click")');
         $this->getWebDriver()->wait(1);
     }
 }

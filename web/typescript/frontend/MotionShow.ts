@@ -180,7 +180,8 @@ class MotionShow {
         let form = ev.target;
         bootbox.confirm(__t("std", "del_confirm"), (result) => {
             if (result) {
-                form.trigger("submit");
+                // noinspection JSDeprecatedSymbols
+                form.submit(); // Native submit() function, not the jQuery one
             }
         });
     }
