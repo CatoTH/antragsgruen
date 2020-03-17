@@ -55,6 +55,7 @@
 
       a {
         color: $colorLinks;
+        display: inline-block;
         &:hover, &:focus {
           color: darken($colorLinks, 20%);
         }
