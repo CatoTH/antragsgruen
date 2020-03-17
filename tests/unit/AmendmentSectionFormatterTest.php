@@ -23,17 +23,17 @@ class AmendmentSectionFormatterTest extends TestBase
 
         $this->assertEquals([
             [
-                'text' => '<ol start="3"><li value="3">###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
+                'text'     => '<ol start="3"><li value="3">###LINENUMBER###Test <del>3</del><ins>3neu</ins></li></ol>',
                 'lineFrom' => 3,
-                'lineTo' => 3,
+                'lineTo'   => 3,
             ]
         ], $diffGroups);
     }
 
     public function testOverlongLines()
     {
-        $orig = '<p>[1] <a href="https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf">https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf</a></p>';
-        $new  = $orig;
+        $orig      = '<p>[1] <a href="https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf">https://www.gruene.de/fileadmin/user_upload/Dokumente/Beschl%C3%BCsse/Humanitaeren_Zuzug_von_Roma_aus_Balkanstaaten_ermoeglichen.pdf</a></p>';
+        $new       = $orig;
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($orig);
         $formatter->setTextNew($new);
@@ -176,6 +176,20 @@ class AmendmentSectionFormatterTest extends TestBase
         $this->assertEquals($expect, $text);
     }
 
+    public function testWhitespaceDeleted()
+    {
+        $diffGroups = [
+            [
+                'text'     => '<ul><li value="1">###LINENUMBER###sich die Eltern flexibel untereinander aufteilen (8+8+8). Auch ###LINENUMBER###Alleinerziehende haben einen Anspruch auf 24 Monate FamilienZeitPlus<del aria-label="Streichen: „”"> </del></li></ul>',
+                'lineFrom' => 13,
+                'lineTo'   => 14,
+            ]
+        ];
+        $text       = TextSimple::formatDiffGroup($diffGroups);
+        $expect     = '<h4 class="lineSummary">Von Zeile 13 bis 14 löschen:</h4><div><ul><li value="1">sich die Eltern flexibel untereinander aufteilen (8+8+8). Auch Alleinerziehende haben einen Anspruch auf 24 Monate FamilienZeitPlus<del class="space" aria-label="Streichen: „Leerzeichen”">[Leerzeichen]</del></li></ul></div>';
+        $this->assertEquals($expect, $text);
+    }
+
     public function testLineBreaksWithinParagraphs()
     {
         // 'Line breaks within paragraphs'
@@ -187,17 +201,19 @@ Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichti
 <p>Die Kaputtsparpolitik ist gescheitert<br>
 Die Strategie zur Krisenbewältigung der letzten fünf Jahre hat zwar ein wichtiges Ziel erreicht: Der Euro, als entscheidendes Element der europäischen Integration und des europäischen Zusammenhalts, konnte bislang gerettet werden. Dafür hat Europa neue Instrumente und Mechanismen geschaffen, wie den Euro-Rettungsschirm mit dem Europäischen Stabilitätsmechanismus (ESM) oder die Bankenunion. Aber diese Instrumente allein werden die tiefgreifenden Probleme nicht lösen - weder politisch noch wirtschaftlich.</p>';
 
-        $expect = [[
-            'text'     =>
-                '<p>###LINENUMBER###Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische ' .
-                '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ' .
-                '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ' .
-                '###LINENUMBER###Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch <del>unpopuläre</del><ins>unbequeme</ins> ' .
-                '###LINENUMBER###Strukturreformen <del>angeht</del><ins>mit einbezieht</ins>, wenn diese zu nachhaltigem Wachstum und mehr ' .
-                '###LINENUMBER###Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde </p>',
-            'lineFrom' => 4,
-            'lineTo'   => 9,
-        ]];
+        $expect = [
+            [
+                'text'     =>
+                    '<p>###LINENUMBER###Komponenten: eine nachhaltige Investitionsstrategie, die auf ökologische ' .
+                    '###LINENUMBER###Innovationen setzt statt auf <del>maßlose Deregulierung; eine Politik der sozialen</del><ins>Deregulierung und blindes Vertrauen in die Heilkräfte des Marktes; einen Weg zu mehr sozialer</ins> ' .
+                    '###LINENUMBER###Gerechtigkeit statt der Gleichgültigkeit gegenüber der ständig schärferen ' .
+                    '###LINENUMBER###Spaltung unserer Gesellschaften; <del>eine Politik, die</del><ins>ein Wirtschaftsmodell, das</ins> auch <del>unpopuläre</del><ins>unbequeme</ins> ' .
+                    '###LINENUMBER###Strukturreformen <del>angeht</del><ins>mit einbezieht</ins>, wenn diese zu nachhaltigem Wachstum und mehr ' .
+                    '###LINENUMBER###Gerechtigkeit beitragen; ein Politik die Probleme wie Korruption und mangelnde </p>',
+                'lineFrom' => 4,
+                'lineTo'   => 9,
+            ]
+        ];
 
         $formatter = new AmendmentSectionFormatter();
         $formatter->setTextOriginal($orig);

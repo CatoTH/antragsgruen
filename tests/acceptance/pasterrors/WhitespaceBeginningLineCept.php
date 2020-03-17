@@ -22,3 +22,7 @@ $I->submitForm('#amendmentEditForm', [], 'save');
 $I->see(mb_strtoupper('Änderungsantrag bestätigen'), 'h1');
 $I->see('Antragsteller*innen');
 $I->dontSee('Von Zeile');
+
+$aria = $I->executeJS('return $("del.space").attr("aria-label")');
+$I->assertStringContainsString('Leerzeichen', $aria);
+$I->assertStringContainsString('Streichen', $aria);

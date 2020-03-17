@@ -463,18 +463,26 @@ class TextSimple extends Text
             $out .= $wrapEnd;
         }
 
-        $strSpaceDel   = '<del class="space">[' . \Yii::t('diff', 'space') . ']</del>';
-        $strNewlineDel = '<del class="space">[' . \Yii::t('diff', 'newline') . ']</del>';
-        $strSpaceIns   = '<ins class="space">[' . \Yii::t('diff', 'space') . ']</ins>';
-        $strNewlineIns = '<ins class="space">[' . \Yii::t('diff', 'newline') . ']</ins>';
-        $out           = str_replace('<del> </del>', $strSpaceDel, $out);
-        $out           = str_replace('<ins> </ins>', $strSpaceIns, $out);
-        $out           = str_replace('<del><br></del>', $strNewlineDel . '<del><br></del>', $out);
-        $out           = str_replace('<ins><br></ins>', $strNewlineIns . '<ins><br></ins>', $out);
-        $out           = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
-        $out           = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
-        $out           = str_replace('###LINENUMBER###', '', $out);
-        $repl          = '<br></p></div>';
+        $aria        = str_replace('%DEL%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_del'));
+        $strSpaceDel = '<del class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'space') . ']</del>';
+
+        $aria          = str_replace('%DEL%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_del'));
+        $strNewlineDel = '<del class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'newline') . ']</del>';
+
+        $aria        = str_replace('%INS%', \Yii::t('diff', 'space'), \Yii::t('diff', 'aria_ins'));
+        $strSpaceIns = '<ins class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'space') . ']</ins>';
+
+        $aria          = str_replace('%INS%', \Yii::t('diff', 'newline'), \Yii::t('diff', 'aria_ins'));
+        $strNewlineIns = '<ins class="space" aria-label="' . $aria . '">[' . \Yii::t('diff', 'newline') . ']</ins>';
+
+        $out  = preg_replace('/<del[^>]*> <\/del>/siu', $strSpaceDel, $out);
+        $out  = preg_replace('/<ins[^>]*> <\/ins>/siu', $strSpaceIns, $out);
+        $out  = preg_replace('/<del[^>]*><br><\/del>/siu', $strNewlineDel . '<del><br></del>', $out);
+        $out  = preg_replace('/<ins[^>]*><br><\/ins>/siu', $strNewlineIns . '<ins><br></ins>', $out);
+        $out  = str_replace($strSpaceDel . $strNewlineIns, $strNewlineIns, $out);
+        $out  = str_replace($strSpaceDel . '<ins></ins><br>', '<br>', $out);
+        $out  = str_replace('###LINENUMBER###', '', $out);
+        $repl = '<br></p></div>';
         if (mb_substr($out, mb_strlen($out) - mb_strlen($repl), mb_strlen($repl)) == $repl) {
             $out = mb_substr($out, 0, mb_strlen($out) - mb_strlen($repl)) . '</p></div>';
         }
