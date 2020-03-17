@@ -156,8 +156,8 @@ class MotionShow {
             $('.motionData .privateNotes textarea').trigger("focus");
             $('.privateParagraphNoteOpener').removeClass('hidden');
         });
-        $('.privateParagraphNoteOpener').on("click", (ev) => {
-            $(ev.currentTarget).addClass('hidden');
+        $('.privateParagraphNoteOpener button').on("click", (ev) => {
+            $(ev.currentTarget).parents(".privateParagraphNoteOpener").addClass('hidden');
             const $form = $(ev.currentTarget).parents('.privateParagraphNoteHolder').find('form');
             $form.removeClass('hidden');
             $form.find('textarea').trigger("focus");

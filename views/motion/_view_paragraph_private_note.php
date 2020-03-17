@@ -26,7 +26,7 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
         ?>
         <div class="privateParagraphNoteOpener hidden">
             <button class="btn btn-link btn-xs" tabindex="0" type="button">
-                <span class="glyphicon glyphicon-pushpin" aria-hidden="false"></span>
+                <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
                 <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_open')) ?>
             </button>
         </div>
@@ -35,7 +35,10 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     if ($comment) {
         ?>
         <blockquote class="privateParagraph<?= $comment ? '' : ' hidden' ?>" id="comm<?= $comment->id ?>">
-            <button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>
+            <button class="btn btn-link btn-xs btnEdit">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                <span class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_edit')) ?></span>
+            </button>
             <?= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') ?>
         </blockquote>
         <?php
@@ -43,8 +46,8 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     ?>
     <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
     <label>
-        <?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?>
-        <textarea class="form-control" name="noteText"
+        <div class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?></div>
+        <textarea class="form-control" name="noteText" placeholder="<?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?>"
         ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
     </label>
     <input type="hidden" name="paragraphNo" value="<?= $paragraphNo ?>">

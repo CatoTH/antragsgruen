@@ -233,7 +233,10 @@ if (User::getCurrentUser()) {
     $str = '';
     if ($comment) {
         $str .= '<blockquote class="privateNote" id="comm' . $comment->id . '">';
-        $str .= '<button class="btn btn-link btn-xs btnEdit"><span class="glyphicon glyphicon-edit"></span></button>';
+        $str .= '<button class="btn btn-link btn-xs btnEdit">';
+        $str .= '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>';
+        $str .= '<span class="sr-only">' . Yii::t('motion', 'private_notes_edit') . '</span>';
+        $str .= '</button>';
         $str .= HTMLTools::textToHtmlWithLink($comment ? $comment->text : '') . '</blockquote>';
     }
     $str .= Html::beginForm('', 'post', ['class' => 'form-inline' . ($comment ? ' hidden' : '')]);
