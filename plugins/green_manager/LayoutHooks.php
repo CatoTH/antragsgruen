@@ -118,8 +118,8 @@ class LayoutHooks extends Hooks
         <div class="content">
             Du you want to use Discuss.green for your own convention?
             <div>
-                <a href="https://discuss.green/" title="Information about using Discuss.green / Antragsgrün" class="btn btn-primary">
-                <span class="glyphicon glyphicon-chevron-right"></span> Information
+                <a href="https://discuss.green/" aria-label="Information about using Discuss.green / Antragsgrün" class="btn btn-primary">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Information
                 </a>
             </div>
         </div>

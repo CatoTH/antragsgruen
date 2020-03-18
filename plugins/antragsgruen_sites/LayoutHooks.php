@@ -21,15 +21,16 @@ class LayoutHooks extends Hooks
         $out = '<ul class="nav navbar-nav">';
 
         $startLink = UrlHelper::createUrl('/antragsgruen_sites/manager/index');
-        $out       .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink) . '</li>';
+        $out       .= '<li class="active">' . Html::a(\Yii::t('base', 'Home'), $startLink, ['aria-label' => \Yii::t('base', 'home_back')]) . '</li>';
 
         $helpLink = UrlHelper::createUrl('/antragsgruen_sites/manager/help');
-        $out      .= '<li>' . Html::a(\Yii::t('base', 'Help'), $helpLink, ['id' => 'helpLink']) . '</li>';
+        $helpTitle = \Yii::t('base', 'Help');
+        $out      .= '<li>' . Html::a($helpTitle, $helpLink, ['id' => 'helpLink', 'aria-label' => $helpTitle]) . '</li>';
 
         if (!User::getCurrentUser()) {
             $loginUrl   = UrlHelper::createUrl(['/user/login', 'backUrl' => \yii::$app->request->url]);
             $loginTitle = \Yii::t('base', 'menu_login');
-            $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow']) .
+            $out        .= '<li>' . Html::a($loginTitle, $loginUrl, ['id' => 'loginLink', 'rel' => 'nofollow', 'aria-label' => $loginTitle]) .
                 '</li>';
         }
         if (User::getCurrentUser()) {
@@ -42,7 +43,13 @@ class LayoutHooks extends Hooks
 
             $logoutUrl   = UrlHelper::createUrl(['/user/logout', 'backUrl' => \yii::$app->request->url]);
             $logoutTitle = \Yii::t('base', 'menu_logout');
-            $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink']) . '</li>';
+            $out         .= '<li>' . Html::a($logoutTitle, $logoutUrl, ['id' => 'logoutLink', 'aria-label' => $logoutTitle]) . '</li>';
+        }
+
+        if (\Yii::$app->language === 'de') {
+            $out .= '<li><a lang="en" id="enLink" href="https://motion.tools/" aria-label="This site in english" title="This site in english">🇬🇧</a></li>';
+        } else {
+            $out .= '<li><a lang="en" id="deLink" href="https://antragsgruen.de/" aria-label="This site in german" title="This site in german">🇩🇪</a></li>';
         }
 
         $out .= '</ul>';
@@ -70,11 +77,13 @@ class LayoutHooks extends Hooks
 
         $out .= '<span class="version">';
         if (\Yii::$app->language === 'de') {
-            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
-                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+            $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
+            $out         .= '<a href="https://antragsgruen.de/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+                            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         } else {
-            $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
-                Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+            $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
+            $out         .= '<a href="https://motion.tools/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+                            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         }
         $out .= '</span>';
 

@@ -77,7 +77,7 @@ class StdHooks extends Hooks
                         $out .= '<li><span class="pseudoLink" data-href="' . Html::encode($link) . '">' . Html::encode($name) . '</a></li>';
                     } else {
                         $label = str_replace('%TITLE%', $name, \Yii::t('base', 'aria_bc_back'));
-                        $out .= '<li>' . Html::a(Html::encode($name), $link, ['aria-label' => $label]) . '</li>';
+                        $out   .= '<li>' . Html::a(Html::encode($name), $link, ['aria-label' => $label]) . '</li>';
                     }
                 }
             }
@@ -268,12 +268,14 @@ class StdHooks extends Hooks
         }
 
         $out .= '<span class="version">';
-        if (\Yii::$app->language == 'de') {
-            $out .= '<a href="https://antragsgruen.de/">Antragsgrün</a>, Version ' .
-                    Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+        if (\Yii::$app->language === 'de') {
+            $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
+            $out         .= '<a href="https://antragsgruen.de/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+                            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         } else {
-            $out .= '<a href="https://motion.tools/">Antragsgrün</a>, Version ' .
-                    Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
+            $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
+            $out         .= '<a href="https://motion.tools/" aria-label="' . \Yii::t('base', 'aria_antragsgruen') . '">Antragsgrün</a>, Version ' .
+                            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
         }
         $out .= '</span>';
 

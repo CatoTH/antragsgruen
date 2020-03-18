@@ -51,8 +51,10 @@ return [
     'debug_deadline_set'  => 'Setzen',
     'debug_deadline_quit' => 'Simulation beenden',
 
-    'aria_breadcrumb'  => 'Breadcrumb-Menü',
-    'aria_bc_back' => 'Zurück zu %TITLE%',
-    'aria_mainmenu'    => 'Hauptmenü',
-    'aria_footer'      => 'Rechtliche Hinweise und Softwareinformationen',
+    'aria_breadcrumb'   => 'Breadcrumb-Menü',
+    'aria_bc_back'      => 'Zurück zu %TITLE%',
+    'aria_mainmenu'     => 'Hauptmenü',
+    'aria_footer'       => 'Rechtliche Hinweise und Softwareinformationen',
+    'aria_antragsgruen' => 'Vorstellung der Software Antragsgrün',
+    'aria_version_hint' => 'Antragsgrün Version: %VERSION% - Änderungen dieser Version',
 ];

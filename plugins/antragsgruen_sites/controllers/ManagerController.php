@@ -2,13 +2,9 @@
 
 namespace app\plugins\antragsgruen_sites\controllers;
 
-use app\components\HTMLTools;
-use app\components\yii\MessageSource;
-use app\components\Tools;
-use app\components\UrlHelper;
+use app\components\{HTMLTools, yii\MessageSource, Tools, UrlHelper};
 use app\controllers\Base;
-use app\models\db\Site;
-use app\models\db\User;
+use app\models\db\{Site, User};
 use app\models\exceptions\FormError;
 use app\models\forms\SiteCreateForm;
 use app\models\settings\Consultation;
@@ -36,7 +32,7 @@ class ManagerController extends Base
             if ($consultation->getSettings()->robotsPolicy === Consultation::ROBOTS_NONE) {
                 continue;
             }
-            
+
             $url      = UrlHelper::createUrl(['/consultation/home', 'subdomain' => $site->subdomain]);
             $siteData = [
                 'title'        => $consultation->title,
@@ -51,8 +47,9 @@ class ManagerController extends Base
             }
         }
 
-        $html         = '<ul class="nav nav-list current-uses-list">';
-        $html         .= '<li class="nav-header">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
+        $html         = '<section aria-labelledby="currentUsesTitle">';
+        $html .= '<ul class="nav nav-list current-uses-list">';
+        $html         .= '<li class="nav-header" id="currentUsesTitle">' . \Yii::t('manager', 'sidebar_curr_uses') . '</li>';
         foreach ($sitesCurrent as $data) {
             $html .= '<li>';
             if ($data['organization'] != '') {
@@ -77,7 +74,7 @@ class ManagerController extends Base
             }
             $html .= Html::a(HTMLTools::encodeAddShy($data['title']), $data['url']) . '</li>' . "\n";
         }
-        $html                            .= '</ul>';
+        $html                            .= '</ul></section>';
         $this->layoutParams->menusHtml[] = $html;
     }
 

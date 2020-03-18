@@ -115,7 +115,7 @@ $params = \Yii::$app->params;
 
     <p style="text-align: center; font-weight: bold;">
         <a href="<?= Html::encode(UrlHelper::createUrl('manager/help')) ?>">
-            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             Manual / Detailed description of the functionality
         </a>
     </p>
@@ -148,7 +148,7 @@ $params = \Yii::$app->params;
     </p>
     <p>
         <a href="<?= Html::encode(UrlHelper::createUrl('manager/free-hosting')) ?>">
-            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
             Details / F.A.Q. regarding the free hosting
         </a>
     </p>

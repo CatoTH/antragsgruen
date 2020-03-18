@@ -112,9 +112,9 @@ $showArchived = isset($_REQUEST['showArchived']);
                 Älteste
             </button>
             <button type="button" class="btn btn-default" data-sort="amendments" data-order="desc">
-                <span class="glyphicon glyphicon-flash"></span>
+                <span class="glyphicon glyphicon-flash" aria-label="Änderungsanträge"></span>
             </button>
-            <button type="button" class="btn btn-default" data-sort="comments" data-order="desc">
+            <button type="button" class="btn btn-default" data-sort="comments" data-order="desc" aria-label="Kommentare">
                 <span class="glyphicon glyphicon-comment"></span>
             </button>
         </div>
@@ -122,7 +122,7 @@ $showArchived = isset($_REQUEST['showArchived']);
 
     <div class="showArchivedRow">
         <?php
-        $arrow = '<span class="glyphicon glyphicon-chevron-right"></span>';
+        $arrow = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>';
         if ($showArchived) {
             $baselink = UrlHelper::createUrl(['consultation/index']) . '#motionListSorter';
             echo Html::a($arrow . ' Aktuelle Begehren anzeigen', $baselink);
@@ -144,7 +144,7 @@ $showArchived = isset($_REQUEST['showArchived']);
                 foreach ($comments as $comment) {
                     $text  = $comment->getTextAbstract(150);
                     $title = $comment->getIMotion()->getTitleWithPrefix();
-                    $more  = '<span class="glyphicon glyphicon-chevron-right"></span> weiter';
+                    $more  = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> weiter';
                     ?>
                     <div class="motionCommentHolder">
                         <article class="motionComment">
@@ -165,13 +165,13 @@ $showArchived = isset($_REQUEST['showArchived']);
             </div>
             <div class="moreActivitiesLink">
                 <?php
-                $title = '<span class="glyphicon glyphicon-chevron-right"></span> Weitere aktuelle Aktivitäten';
+                $title = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Weitere aktuelle Aktivitäten';
                 echo Html::a($title, UrlHelper::createUrl('consultation/activitylog'));
                 ?>
             </div>
             <div class="showAllComments">
                 <button class="btn btn-link">
-                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                     Weitere anzeigen
                 </button>
             </div>

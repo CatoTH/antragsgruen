@@ -381,11 +381,7 @@ class User extends ActiveRecord implements IdentityInterface
         return \Yii::$app->getSecurity()->generateRandomString(8);
     }
 
-    /**
-     * @param string $date
-     * @return string
-     */
-    public function createEmailConfirmationCode($date = '')
+    public function createEmailConfirmationCode(string $date = ''): string
     {
         if (YII_ENV == 'test') {
             return 'testCode';
@@ -397,15 +393,10 @@ class User extends ActiveRecord implements IdentityInterface
         if ($date == '') {
             $date = date('Ymd');
         }
-        $code = $this->id . '-' . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
-        return $code;
+        return $this->id . '-' . substr(md5($this->id . $date . $params->randomSeed), 0, 8);
     }
 
-    /**
-     * @param string $code
-     * @return bool
-     */
-    public function checkEmailConfirmationCode($code)
+    public function checkEmailConfirmationCode(string $code): bool
     {
         if (hash_equals($code, $this->createEmailConfirmationCode())) {
             return true;
@@ -419,10 +410,7 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getWurzelwerkName()
+    public function getWurzelwerkName(): ?string
     {
         if (preg_match("/https:\/\/([a-z0-9_-]+)\.netzbegruener\.in\//siu", $this->auth, $matches)) {
             return $matches[1];
@@ -433,11 +421,7 @@ class User extends ActiveRecord implements IdentityInterface
         return null;
     }
 
-
-    /**
-     * @return bool
-     */
-    public function isWurzelwerkUser()
+    public function isWurzelwerkUser(): bool
     {
         if (preg_match("/https:\/\/[a-z0-9_-]+\.netzbegruener\.in\//siu", $this->auth)) {
             return true;
@@ -448,37 +432,23 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    /**
-     * @param string $username
-     * @return string
-     */
-    public static function wurzelwerkId2Auth($username)
+    public static function wurzelwerkId2Auth(string $username): string
     {
         return 'openid:https://service.gruene.de/openid/' . $username;
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmailAuthUser()
+    public function isEmailAuthUser(): bool
     {
         $authParts = explode(':', $this->auth);
-        return ($authParts[0] == 'email');
+        return ($authParts[0] === 'email');
     }
 
-    /**
-     * @param string $password
-     * @return bool
-     */
-    public function validatePassword($password)
+    public function validatePassword(string $password): bool
     {
         return password_verify($password, $this->pwdEnc);
     }
 
-    /**
-     * @param string $newPassword
-     */
-    public function changePassword($newPassword)
+    public function changePassword(string $newPassword): void
     {
         $this->pwdEnc        = password_hash($newPassword, PASSWORD_DEFAULT);
         $this->recoveryToken = null;
@@ -527,23 +497,15 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
 
-    /**
-     * @return string
-     */
-    public function getNotificationUnsubscribeCode()
+    public function getNotificationUnsubscribeCode(): string
     {
         /** @var AntragsgruenApp $params */
         $params = \Yii::$app->params;
 
-        $code = $this->id . '-' . substr(md5($this->id . 'unsubscribe' . $params->randomSeed), 0, 8);
-        return $code;
+        return $this->id . '-' . substr(md5($this->id . 'unsubscribe' . $params->randomSeed), 0, 8);
     }
 
-    /**
-     * @param string $code
-     * @return null|User
-     */
-    public static function getUserByUnsubscribeCode($code)
+    public static function getUserByUnsubscribeCode(string $code): ?User
     {
         $parts = explode('-', $code);
         /** @var User $user */

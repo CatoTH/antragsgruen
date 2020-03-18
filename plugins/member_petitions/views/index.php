@@ -54,7 +54,7 @@ $this->title = Yii::t('member_petitions', 'title');
             echo '<div class="orgaList">';
             foreach ($myConsultations as $consultation) {
                 $url   = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
-                $title = '<span class="glyphicon glyphicon-chevron-right"></span> ' . Html::encode($consultation->title);
+                $title = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' . Html::encode($consultation->title);
                 echo '<div class="orgaListItem">' . Html::a($title, $url, ['class' => 'btn btn-primary']) . '</div>';
             }
             echo '</div>';
@@ -65,7 +65,7 @@ $this->title = Yii::t('member_petitions', 'title');
 /*
 foreach (Tools::getUserConsultations($controller->site, $user) as $consultation) {
     $url       = UrlHelper::createUrl(['/consultation/index', 'consultationPath' => $consultation->urlPath]);
-    $gotoTitle = '<span class="glyphicon glyphicon-chevron-right"></span> Zur Verbands-Seite';
+    $gotoTitle = '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> Zur Verbands-Seite';
     ?>
     <h2 class="green">
         <?= Html::encode($consultation->title) ?>

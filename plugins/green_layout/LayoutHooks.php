@@ -29,19 +29,19 @@ class LayoutHooks extends Hooks
     public function logoRow(string $before): string
     {
         $out = '<header class="row logo" role="banner">' .
-            '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo" title="' .
-            Html::encode(\Yii::t('base', 'home_back')) . '">' .
-            $this->layout->getLogoStr() .
-            '</a></p>' .
-            '<div class="hgroup">' .
-            '<div id="site-title"><span>' .
-            '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Discuss.green</a>' .
-            '</span></div>';
+               '<p id="logo"><a href="' . Html::encode(UrlHelper::homeUrl()) . '" class="homeLinkLogo" title="' .
+               Html::encode(\Yii::t('base', 'home_back')) . '">' .
+               $this->layout->getLogoStr() .
+               '</a></p>' .
+               '<div class="hgroup">' .
+               '<div id="site-title"><span>' .
+               '<a href="' . Html::encode(UrlHelper::homeUrl()) . '" rel="home">Discuss.green</a>' .
+               '</span></div>';
         if ($this->consultation) {
             $out .= '<div id="site-description">' . Html::encode($this->consultation->title) . '</div>';
         }
         $out .= '</div>' .
-            '</header>';
+                '</header>';
 
         return $out;
     }
@@ -49,9 +49,9 @@ class LayoutHooks extends Hooks
     public function beforeContent(string $before): string
     {
         $out = '<section class="navwrap">' .
-            '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">' .
-            \Yii::t('base', 'menu_main') . ':</h6>' .
-            '<div class="navigation nav-fallback clearfix">';
+               '<nav role="navigation" class="pos" id="mainmenu"><h6 class="unsichtbar">' .
+               \Yii::t('base', 'menu_main') . ':</h6>' .
+               '<div class="navigation nav-fallback clearfix">';
         $out .= Layout::getStdNavbarHeader();
         $out .= '</div></nav>';
         $out .= Layout::breadcrumbs();
@@ -82,6 +82,7 @@ class LayoutHooks extends Hooks
                 <span class="fa fa-search"></span> <span class="text">Search</span>
             </button>';
         $html .= Html::endForm();
+
         return $html;
     }
 
@@ -94,15 +95,16 @@ class LayoutHooks extends Hooks
             $privacyLink = UrlHelper::createUrl(['/pages/show-page', 'pageSlug' => 'privacy']);
 
             $out .= '<a href="' . Html::encode($legalLink) . '" class="legal" id="legalLink">' .
-                \Yii::t('base', 'imprint') . '</a>
+                    \Yii::t('base', 'imprint') . '</a>
             <a href="' . Html::encode($privacyLink) . '" class="privacy" id="privacyLink">' .
-                \Yii::t('base', 'privacy_statement') . '</a>';
+                    \Yii::t('base', 'privacy_statement') . '</a>';
         }
 
-        $out .= '<span class="version">';
-        $out .= '<a href="https://discuss.green/">Discuss.green / Antragsgrün</a>, Version ' .
-            Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL);
-        $out .= '</span>';
+        $ariaVersion = str_replace('%VERSION%', ANTRAGSGRUEN_VERSION, \Yii::t('base', 'aria_version_hint'));
+        $out         .= '<span class="version">';
+        $out         .= '<a href="https://discuss.green/">Discuss.green / Antragsgrün</a>, Version ' .
+                        Html::a(Html::encode(ANTRAGSGRUEN_VERSION), ANTRAGSGRUEN_HISTORY_URL, ['aria-label' => $ariaVersion]);
+        $out         .= '</span>';
 
         $out .= '</div></footer>';
 
