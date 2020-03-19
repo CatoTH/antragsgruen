@@ -162,9 +162,7 @@ class ConsultationLog extends ActiveRecord
         }
     }
 
-    /**
-     */
-    private function setMotionData()
+    private function setMotionData(): void
     {
         if ($this->motion) {
             return;
@@ -228,10 +226,7 @@ class ConsultationLog extends ActiveRecord
         }
     }
 
-    /**
-     * @return null|string
-     */
-    public function getLink()
+    public function getLink(): ?string
     {
         $this->setMotionData();
         if ($this->motion && !$this->motion->isVisible()) {
@@ -300,21 +295,13 @@ class ConsultationLog extends ActiveRecord
         }
     }
 
-    /**
-     * @return Motion|null
-     */
-    public function getMotion()
+    public function getMotion(): ?Motion
     {
         $this->setMotionData();
         return $this->motion;
     }
 
-    /**
-     * @param string $str
-     * @param string $fallback
-     * @return string
-     */
-    private function formatLogEntryUser($str, $fallback)
+    private function formatLogEntryUser(string $str, string $fallback): string
     {
         if ($fallback === '') {
             $fallback = \Yii::t('structure', 'activity_someone');
@@ -333,11 +320,7 @@ class ConsultationLog extends ActiveRecord
         }
     }
 
-    /**
-     * @param string $str
-     * @return string
-     */
-    private function formatLogEntryAmendment($str)
+    private function formatLogEntryAmendment(string $str): string
     {
         $deleted = '<span class="deleted">' . \Yii::t('structure', 'activity_deleted') . '</span>';
         if ($this->amendment) {
@@ -351,11 +334,7 @@ class ConsultationLog extends ActiveRecord
         return $str;
     }
 
-    /**
-     * @param int $amendmentId
-     * @return string|null
-     */
-    private static function amendmentId2Prefix($amendmentId)
+    private static function amendmentId2Prefix(int $amendmentId): ?string
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -367,11 +346,7 @@ class ConsultationLog extends ActiveRecord
         return ($row ? $row['titlePrefix'] : null);
     }
 
-    /**
-     * @param int $amendmentId
-     * @return Motion|null
-     */
-    private static function amendmentId2Motion($amendmentId)
+    private static function amendmentId2Motion(int $amendmentId): ?Motion
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -386,11 +361,7 @@ class ConsultationLog extends ActiveRecord
         return Motion::findOne($row['motionId']);
     }
 
-    /**
-     * @param int $motionId
-     * @return string|null
-     */
-    private static function motionId2Prefix($motionId)
+    private static function motionId2Prefix(int $motionId): ?string
     {
         /** @var \app\models\settings\AntragsgruenApp $app */
         $app = \Yii::$app->params;
@@ -402,10 +373,7 @@ class ConsultationLog extends ActiveRecord
         return ($row ? $row['titlePrefix'] : null);
     }
 
-    /**
-     * @return string|null
-     */
-    public function formatLogEntry()
+    public function formatLogEntry(): ?string
     {
         $this->setMotionData();
         if ($this->motion && !$this->motion->isVisible()) {
@@ -435,6 +403,8 @@ class ConsultationLog extends ActiveRecord
             case static::MOTION_CHANGE:
                 $str = \Yii::t('structure', 'activity_MOTION_CHANGE');
                 $str = $this->formatLogEntryUser($str, '');
+                $prefix = static::motionId2Prefix($this->actionReferenceId);
+                $str    = str_replace('###MOTION###', $prefix, $str);
                 return $str;
             case static::MOTION_WITHDRAW:
                 $str = \Yii::t('structure', 'activity_MOTION_WITHDRAW');
