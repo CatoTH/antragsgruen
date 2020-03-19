@@ -325,7 +325,7 @@ class Amendment extends IMotion implements IRSSItem
 
     private $myMotion = null;
 
-    public function getMyMotion(): Motion
+    public function getMyMotion(): ?Motion
     {
         if (!$this->myMotion) {
             $current = Consultation::getCurrent();
