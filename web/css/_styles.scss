@@ -525,10 +525,10 @@ h2.green .amendmentAjaxTooltip, h3.green .amendmentAjaxTooltip {
   max-width: none;
   color: black;
 
-  @media screen and (min-width: 800px) {
+  @media (min-width: $screenMinWith) {
     width: 400px;
   }
-  @media screen and (min-width: 1200px) {
+  @media (min-width: 1200px) {
     width: 600px;
   }
   .popover-content {

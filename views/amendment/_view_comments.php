@@ -1,8 +1,6 @@
 <?php
 
-use app\models\db\Amendment;
-use app\models\db\AmendmentComment;
-use app\models\db\User;
+use app\models\db\{Amendment, AmendmentComment, User};
 
 /**
  * @var \yii\web\View $this
@@ -14,7 +12,7 @@ $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
 echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
-echo '<h2 class="green">' . \Yii::t('amend', 'comments_title') . '</h2>';
+echo '<h2 class="green">' . Yii::t('amend', 'comments_title') . '</h2>';
 
 $form = $commentForm;
 
@@ -32,9 +30,9 @@ foreach ($amendment->comments as $comment) {
 if ($screeningQueue > 0) {
     echo '<div class="commentScreeningQueue">';
     if ($screeningQueue == 1) {
-        echo \Yii::t('amend', 'comments_screening_queue_1');
+        echo Yii::t('amend', 'comments_screening_queue_1');
     } else {
-        echo str_replace('%NUM%', $screeningQueue, \Yii::t('amend', 'comments_screening_queue_x'));
+        echo str_replace('%NUM%', $screeningQueue, Yii::t('amend', 'comments_screening_queue_x'));
     }
     echo '</div>';
 }
@@ -42,7 +40,7 @@ if ($screeningQueue > 0) {
 $screenAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
 foreach ($amendment->getVisibleComments($screenAdmin, -1, null) as $comment) {
     /** @var AmendmentComment $comment */
-    echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
+    echo $this->render('@app/views/shared/comment', ['comment' => $comment]);
 }
 
 echo $form->renderFormOrErrorMessage();

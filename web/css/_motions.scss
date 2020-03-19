@@ -181,13 +181,10 @@
     hyphens: none; // Otherwise, hovered inline amendments have different line breaks than the original motion
   }
 
-  @media screen and (min-width: 800px) {
+  @media (min-width: $screenMinWith) {
     .lineNumber {
       position: relative;
       left: $lineNumberOffset + -1 * $fixedWidthTextStdPadding;
-      @media screen and (max-width: 799px) {
-        left: $lineNumberOffset - 5px + -1 * $fixedWidthTextStdPaddingSmall;
-      }
       width: 0;
       display: inline-block;
       float: left; // otherwise problems appear at li > p constucts
@@ -229,7 +226,7 @@
     }
   }
 
-  @media screen and (min-width: 800px) {
+  @media (min-width: $screenMinWith) {
     > ul, > ol {
       padding-left: $fixedWidthTextListPadding;
 
@@ -392,10 +389,10 @@
     }
 
     .text {
-      @media screen and (min-width: 800px) {
+      @media (min-width: $screenMinWith) {
         padding: 15px $fixedWidthTextStdPadding 15px $fixedWidthTextStdPadding;
       }
-      @media screen and (max-width: 799px) {
+      @media (max-width: $screenMinWith - 1) {
         padding: 15px $fixedWidthTextStdPaddingSmall 15px $fixedWidthTextStdPaddingSmall;
       }
 
@@ -410,10 +407,10 @@
     }
 
     &.lineNumbers .text {
-      @media screen and (min-width: 800px) {
+      @media screen and (min-width: $screenMinWith) {
         padding: 15px 10px 15px $fixedWidthTextStdPadding;
       }
-      @media screen and (max-width: 799px) {
+      @media (max-width: $screenMinWith - 1) {
         padding: 15px 10px 15px $fixedWidthTextStdPaddingSmall;
       }
     }
@@ -426,7 +423,7 @@
   }
 
   .textAmendment {
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       width: $motionFixedWidth;
     }
     position: relative;
@@ -444,10 +441,10 @@
       position: absolute;
       top: -($inlineAmendmentPreambleHeight - 10);
       height: $inlineAmendmentPreambleHeight;
-      @media screen and (min-width: 800px) {
+      @media (min-width: $screenMinWith) {
         width: 100%;
       }
-      @media screen and (max-width: 799px) {
+      @media (max-width: $screenMinWith - 1) {
         width: calc(100% - #{$fixedWidthTextStdPaddingSmall} - 10px);
       }
 
@@ -633,7 +630,7 @@
   }
 
   .commentName {
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       float: right;
       padding-top: $commentPadding;
       padding-right: $commentPadding;
@@ -972,6 +969,13 @@ iframe.pdfViewer {
 }
 
 .motionData {
+  @media (min-width: $screenMinWith) {
+    .translateWidget {
+      float: right;
+      margin-bottom: -25px; // moves the consultation from the table up
+    }
+  }
+
   .privateNotes {
     th {
       padding-top: 25px;
@@ -992,7 +996,7 @@ iframe.pdfViewer {
       line-height: 1.1;
       height: 50px;
       width: 100%;
-      @media screen and (min-width: 800px) {
+      @media (min-width: $screenMinWith) {
         width: calc(100% - 110px);
       }
     }
@@ -1042,7 +1046,7 @@ iframe.pdfViewer {
 
   label {
     width: 100%;
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       width: calc(100% - 110px);
     }
   }

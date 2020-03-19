@@ -165,7 +165,7 @@ foreach ($paragraphs as $paragraphNo => $paragraph) {
                 echo '</div>';
             }
             foreach ($paragraph->getVisibleComments($screenAdmin, null) as $comment) {
-                echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
+                echo $this->render('@app/views/shared/comment', ['comment' => $comment]);
             }
 
             echo $form->renderFormOrErrorMessage();

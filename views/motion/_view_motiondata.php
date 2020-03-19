@@ -22,6 +22,10 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_NONE) {
 
 echo '<div class="content">';
 
+
+echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createMotionUrl($motion)]);
+
+
 $replacedByMotions = $motion->getVisibleReplacedByMotions();
 if (count($replacedByMotions) > 0) {
     echo '<div class="alert alert-danger motionReplacedBy" role="alert">';
