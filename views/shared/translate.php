@@ -55,9 +55,9 @@ $languages = [
         'nameNative' => 'Italiano',
     ],
     [
-        'htmlLang'   => 'ne',
-        'googleLang' => 'ne',
-        'bingLang'   => 'ne',
+        'htmlLang'   => 'nl',
+        'googleLang' => 'nl',
+        'bingLang'   => 'nl',
         'nameNative' => 'Nederlands',
     ],
     [
@@ -81,7 +81,7 @@ $languages = [
     [
         'htmlLang'   => 'zh',
         'googleLang' => 'zh',
-        'bingLang'   => 'zh',
+        'bingLang'   => 'zh-Hans',
         'nameNative' => '中文',
     ],
 ];
