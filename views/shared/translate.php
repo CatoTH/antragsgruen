@@ -19,31 +19,69 @@ if (!isset($urlParts['host'])) {
 
 $languages = [
     [
+        'htmlLang'   => 'ar',
+        'googleLang' => 'ar',
+        'bingLang'   => 'ar',
+        'nameNative' => 'العربية',
+    ],
+    [
         'htmlLang'   => 'en',
         'googleLang' => 'en',
         'bingLang'   => 'en',
-        'flag'       => '🇬🇧',
         'nameNative' => 'English',
     ],
     [
         'htmlLang'   => 'es',
         'googleLang' => 'es',
         'bingLang'   => 'es',
-        'flag'       => '🇪🇸',
         'nameNative' => 'Español',
     ],
     [
         'htmlLang'   => 'fr',
         'googleLang' => 'fr',
         'bingLang'   => 'fr',
-        'flag'       => '🇫🇷',
         'nameNative' => 'Français',
+    ],
+    [
+        'htmlLang'   => 'hr',
+        'googleLang' => 'hr',
+        'bingLang'   => 'hr',
+        'nameNative' => 'Hrvatski',
+    ],
+    [
+        'htmlLang'   => 'it',
+        'googleLang' => 'it',
+        'bingLang'   => 'it',
+        'nameNative' => 'Italiano',
+    ],
+    [
+        'htmlLang'   => 'ne',
+        'googleLang' => 'ne',
+        'bingLang'   => 'ne',
+        'nameNative' => 'Nederlands',
+    ],
+    [
+        'htmlLang'   => 'pl',
+        'googleLang' => 'pl',
+        'bingLang'   => 'pl',
+        'nameNative' => 'Polski',
+    ],
+    [
+        'htmlLang'   => 'ru',
+        'googleLang' => 'ru',
+        'bingLang'   => 'ru',
+        'nameNative' => 'русский',
+    ],
+    [
+        'htmlLang'   => 'tr',
+        'googleLang' => 'tr',
+        'bingLang'   => 'tr',
+        'nameNative' => 'Türkçe',
     ],
     [
         'htmlLang'   => 'zh',
         'googleLang' => 'zh',
         'bingLang'   => 'zh',
-        'flag'       => '🇨🇳',
         'nameNative' => '中文',
     ],
 ];
@@ -59,6 +97,14 @@ $languages = [
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="translatePageBtn">
+            <li class="dropdown-header"><?php
+                if ($service === 'google') {
+                    echo 'Google Translate';
+                }
+                if ($service === 'bing') {
+                    echo 'Bing Translator';
+                }
+            ?></li>
             <?php
             foreach ($languages as $language) {
                 $url = '';
@@ -69,7 +115,7 @@ $languages = [
                     $url = 'https://www.translatetheweb.com/?ref=TVert&from=&to=' . $language['bingLang'] . '&a=' . urlencode($toTranslateUrl);
                 }
                 echo '<li><a href="' . Html::encode($url) . '" lang="' . Html::encode($language['htmlLang']) . '" ';
-                echo '>' . $language['flag'] . ' ' . $language['nameNative'] . '</a></li>';
+                echo '>' . $language['nameNative'] . '</a></li>';
             }
             ?>
         </ul>

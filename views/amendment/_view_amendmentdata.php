@@ -18,6 +18,8 @@ if ($motionDataMode === \app\models\settings\Consultation::MOTIONDATA_NONE) {
     return;
 }
 
+echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::createAmendmentUrl($amendment)]);
+
 $amendmentData = [];
 
 $amendmentData[] = [

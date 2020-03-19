@@ -1,8 +1,11 @@
 <?php
 
+use app\components\UrlHelper;
 use yii\helpers\Html;
 
 echo '<div class="content contentPage contentPageWelcome">';
+
+echo $this->render('@app/views/shared/translate', ['toTranslateUrl' => UrlHelper::homeUrl()]);
 
 echo \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 

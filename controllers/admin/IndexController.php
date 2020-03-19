@@ -116,6 +116,17 @@ class IndexController extends AdminBase
 
             $settingsInput = (isset($post['settings']) ? $post['settings'] : []);
             $settings      = $model->getSettings();
+
+            if (isset($settingsInput['translationService']) && isset($post['translationSpecificService'])) {
+                if (in_array($post['translationSpecificService'], ['google', 'bing'])) {
+                    $settings->translationService = $post['translationSpecificService'];
+                } else {
+                    $settings->translationService = null;
+                }
+            } else {
+                $settings->translationService = null;
+            }
+
             $settings->saveForm($settingsInput, $post['settingsFields']);
 
             if (isset($post['consultationLogo']) && $post['consultationLogo']) {

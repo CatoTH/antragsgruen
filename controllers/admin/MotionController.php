@@ -4,14 +4,13 @@ namespace app\controllers\admin;
 
 use app\components\{DateTools, HTMLTools, Tools, UrlHelper};
 use app\models\db\{Consultation, ConsultationSettingsMotionSection, ConsultationMotionType, Motion, MotionSupporter, TexTemplate, User};
-use app\models\exceptions\ExceptionBase;
-use app\models\exceptions\FormError;
+use app\models\exceptions\{ExceptionBase, FormError};
+use app\models\events\MotionEvent;
 use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
+use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
+use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
 use app\models\settings\{InitiatorForm, MotionType};
-use app\models\policies\IPolicy;
-use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
-use app\models\events\MotionEvent;
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
@@ -36,11 +35,11 @@ class MotionController extends AdminBase
             if (preg_match('/^new[0-9]+$/', $sectionId)) {
                 $section               = new ConsultationSettingsMotionSection();
                 $section->motionTypeId = $motionType->id;
-                $section->type         = IntVal($data['type']);
+                $section->type         = intval($data['type']);
                 $section->status       = ConsultationSettingsMotionSection::STATUS_VISIBLE;
             } else {
                 /** @var ConsultationSettingsMotionSection $section */
-                $section = $motionType->getMotionSections()->andWhere('id = ' . IntVal($sectionId))->one();
+                $section = $motionType->getMotionSections()->andWhere('id = ' . intval($sectionId))->one();
                 if (!$section) {
                     throw new FormError('Section not found: ' . $sectionId);
                 }
@@ -61,7 +60,7 @@ class MotionController extends AdminBase
         }
         foreach (\Yii::$app->request->post('sectionsTodelete') as $sectionId) {
             if ($sectionId > 0) {
-                $sectionId = IntVal($sectionId);
+                $sectionId = intval($sectionId);
                 /** @var ConsultationSettingsMotionSection $section */
                 $section = $motionType->getMotionSections()->andWhere('id = ' . $sectionId)->one();
                 if ($section) {
@@ -116,10 +115,10 @@ class MotionController extends AdminBase
 
             $pdfTemplate = \Yii::$app->request->post('pdfTemplate');
             if (strpos($pdfTemplate, 'php') === 0) {
-                $motionType->pdfLayout     = IntVal(str_replace('php', '', $pdfTemplate));
+                $motionType->pdfLayout     = intval(str_replace('php', '', $pdfTemplate));
                 $motionType->texTemplateId = null;
             } elseif ($pdfTemplate) {
-                $motionType->texTemplateId = IntVal($pdfTemplate);
+                $motionType->texTemplateId = intval($pdfTemplate);
             }
 
             $motionType->motionLikesDislikes = 0;
@@ -273,7 +272,7 @@ class MotionController extends AdminBase
             } else {
                 $motionType = null;
                 foreach ($this->consultation->motionTypes as $cType) {
-                    if (is_numeric($type['preset']) && $cType->id === IntVal($type['preset'])) {
+                    if (is_numeric($type['preset']) && $cType->id === intval($type['preset'])) {
                         $motionType = new ConsultationMotionType();
                         $motionType->setAttributes($cType->getAttributes(), false);
                         $motionType->id = null;
@@ -318,10 +317,10 @@ class MotionController extends AdminBase
             $motionType->motionPrefix  = substr($type['motionPrefix'], 0, 10);
 
             if (strpos($type['pdfLayout'], 'php') === 0) {
-                $motionType->pdfLayout     = IntVal(str_replace('php', '', $type['pdfLayout']));
+                $motionType->pdfLayout     = intval(str_replace('php', '', $type['pdfLayout']));
                 $motionType->texTemplateId = null;
             } elseif ($type['pdfLayout']) {
-                $motionType->texTemplateId = IntVal($type['pdfLayout']);
+                $motionType->texTemplateId = intval($type['pdfLayout']);
             }
 
             if (!$motionType->save()) {
@@ -506,7 +505,7 @@ class MotionController extends AdminBase
                 \Yii::$app->session->setFlash('error', $e->getMessage());
             }
 
-            if (IntVal($modat['motionType']) !== $motion->motionTypeId) {
+            if (intval($modat['motionType']) !== $motion->motionTypeId) {
                 try {
                     /** @var ConsultationMotionType $newType */
                     $newType = ConsultationMotionType::findOne($modat['motionType']);
@@ -522,8 +521,8 @@ class MotionController extends AdminBase
             $motion->title        = $modat['title'];
             $motion->statusString = $modat['statusString'];
             $motion->noteInternal = $modat['noteInternal'];
-            $motion->status       = IntVal($modat['status']);
-            $motion->agendaItemId = (isset($modat['agendaItemId']) ? IntVal($modat['agendaItemId']) : null);
+            $motion->status       = intval($modat['status']);
+            $motion->agendaItemId = (isset($modat['agendaItemId']) ? intval($modat['agendaItemId']) : null);
             $motion->nonAmendable = (isset($modat['nonAmendable']) ? 1 : 0);
 
             $roundedDate = Tools::dateBootstraptime2sql($modat['dateCreation']);
@@ -549,9 +548,9 @@ class MotionController extends AdminBase
                 $motion->datePublication = null;
             }
 
-            if ($modat['parentMotionId'] && IntVal($modat['parentMotionId']) !== $motion->id &&
+            if ($modat['parentMotionId'] && intval($modat['parentMotionId']) !== $motion->id &&
                 $this->consultation->getMotion($modat['parentMotionId'])) {
-                $motion->parentMotionId = IntVal($modat['parentMotionId']);
+                $motion->parentMotionId = intval($modat['parentMotionId']);
             } else {
                 $motion->parentMotionId = null;
             }
