@@ -66,8 +66,7 @@ $params = \Yii::$app->params;
             </li>
             <li>Hohe <strong>Anpassbarkeit</strong>: Die Antrags- und Unterstützer*innen-Formulare sowie das „Wording“ lässt
                 sich frei an die eigenen Bedürfnisse anpassen. Es stehen unterschiedliche Layout-Varianten zur
-                Auswahl, Varianten zur Nummerierung von (Änderungs-)Anträgen usw. Wir versuchen, die gesamte grüne
-                Vielfalt abzubilden :-).
+                Auswahl, Farben und Logos können ausgetauscht werden.
             </li>
             <li><strong>E-Mail-Benachrichtigungen</strong> über neue Anträge, Änderungsanträge und/oder Kommentare für alle
                 Interessierte
@@ -82,7 +81,6 @@ $params = \Yii::$app->params;
             <li><strong>Vor-Ort-Präsentationen</strong>. Auf Parteitagen selbst bietet sich der
                 Einsatz von Tools an, die speziell dafür ausgelegt sind - wir empfehlen hier
                 <a lang="en" href="http://openslides.org/de/">OpenSlides</a>.
-                (Antragsgrün bietet die Möglichkeit, Anträge und Änderungsanträge in Openslides zu exportieren.)
             </li>
             <li><strong>Wahlen / Abstimmungen</strong>.</li>
         </ul>
@@ -195,9 +193,8 @@ aber das Passwort.</div>';
     <h2 id="wer" class="green">Kontakt</h2>
 
     <div class="content infoSite">
-        <p>Antragsgrün wird von „<strong>Netzbegrünung</strong> - Verein für GRÜNE Netzkultur“ betrieben. Programmiert wird
-            es von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
-                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>), das Design stammt von <a
+        <p>Antragsgrün wird von <a href="https://www.hoessl.eu/">Tobias Hößl</a> (<a
+                href="https://twitter.com/TobiasHoessl">@TobiasHoessl</a>) programmiert, das ursprüngliche Design stammt von <a
                 href="http://www.netzminze.de/">Karin Wehle</a>.</p>
 
         <p>Wir werden das Antragsgrün in Zukunft weiter ausbauen und um <strong>zusätzliche Funktionen</strong> ergänzen.
