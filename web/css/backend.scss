@@ -97,7 +97,7 @@ label.legend {
     text-align: right;
 
     button {
-      color: $colorDelLink  ;
+      color: $colorDelLink;
     }
   }
 
@@ -106,7 +106,7 @@ label.legend {
   }
 }
 
-@media screen and (min-width: 800px) {
+@media (min-width: $screenMinWith) {
   .adminIndexHolder {
     display: flex;
     flex-direction: row;
@@ -131,7 +131,7 @@ label.legend {
   }
 }
 
-@media screen and (max-width: 799px) {
+@media (max-width: $screenMinWith - 1) {
   .adminIndexSecondary {
     margin-top: 50px;
   }
@@ -213,15 +213,26 @@ label.legend {
       text-align: right;
     }
   }
+
   .selectRow {
     label {
       display: block;
     }
+
     .selectHolder {
       max-width: 400px;
     }
   }
+
+  .translationService {
+    .services {
+      label {
+        margin-left: 20px;
+      }
+    }
+  }
 }
+
 #consultationSettingsForm {
   .pillbox-add-item {
     min-width: 130px;
@@ -243,7 +254,7 @@ label.legend {
       @media screen and (min-width: 600px) {
         width: 450px;
       }
-      @media screen and (min-width: 800px) {
+      @media screen and (min-width: $screenMinWith) {
         width: 600px;
       }
     }
@@ -667,21 +678,27 @@ label.legend {
       .amendmentRow {
         display: none;
       }
+
       .commentRow {
         display: none;
       }
+
       .lineNumbersLabel, .fixedWidthLabel, .lineLength {
         display: none;
       }
+
       .positionRow {
         display: none;
       }
+
       .printTitleSection {
         display: none;
       }
+
       .showInHtml {
         display: block;
       }
+
       .maxLenInput, .lineLengthSoft {
         display: none;
       }
@@ -691,6 +708,7 @@ label.legend {
       .amendmentRow {
         display: none;
       }
+
       .commentRow {
         display: none;
       }
@@ -698,6 +716,7 @@ label.legend {
       .lineNumbersLabel, .fixedWidthLabel, .lineLength {
         display: none;
       }
+
       .maxLenInput, .lineLengthSoft {
         display: none;
       }
@@ -741,6 +760,7 @@ label.legend {
     font-weight: normal;
     padding-left: 17px;
   }
+
   .prefixAlreadyTaken {
     color: red;
     font-weight: bold;
@@ -998,7 +1018,7 @@ label.legend {
       }
     }
 
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       .setPasswordHolder input[type=password] {
         width: 40%;
       }
@@ -1281,6 +1301,7 @@ label.legend {
     font-style: italic;
     font-size: 0.8em;
   }
+
   .identifier {
     display: block;
     color: #bbb;

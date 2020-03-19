@@ -314,7 +314,7 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
 
     foreach ($motion->getVisibleComments($screeningAdmin, -1, null) as $comment) {
         /** @var MotionComment $comment */
-        echo $this->render('@app/views/motion/_comment', ['comment' => $comment]);
+        echo $this->render('@app/views/shared/comment', ['comment' => $comment]);
     }
 
     echo $form->renderFormOrErrorMessage();

@@ -55,170 +55,193 @@ $handledSettings     = [];
 $handledSiteSettings = [];
 
 ?>
-    <h2 class="green"><?= Yii::t('admin', 'con_ci') ?></h2>
-    <div class="content">
-        <fieldset class="form-group logoRow">
-            <label class="col-sm-3" for="logoUrl"><?= Yii::t('admin', 'con_logo_url') ?>:</label>
-            <div class="col-sm-2 logoPreview">
-                <?php
-                if ($settings->logoUrl) {
-                    echo $layout->getLogoStr();
-                }
-                ?>
-            </div>
-            <div class="col-sm-7 imageChooser">
-                <input type="hidden" name="consultationLogo" value="" autocomplete="off">
-                <div class="uploadCol">
-                    <input type="file" name="newLogo" class="form-control" id="logoUrl">
-                    <label for="logoUrl">
-                        <span class="glyphicon glyphicon-upload"></span>
-                        <span class="text" data-title="<?= Html::encode(Yii::t('admin', 'con_logo_url_upload')) ?>">
+    <section aria-labelledby="conCiTitle">
+        <h2 class="green" id="conCiTitle"><?= Yii::t('admin', 'con_ci') ?></h2>
+        <div class="content">
+            <fieldset class="form-group logoRow">
+                <label class="col-sm-3" for="logoUrl"><?= Yii::t('admin', 'con_logo_url') ?>:</label>
+                <div class="col-sm-2 logoPreview">
+                    <?php
+                    if ($settings->logoUrl) {
+                        echo $layout->getLogoStr();
+                    }
+                    ?>
+                </div>
+                <div class="col-sm-7 imageChooser">
+                    <input type="hidden" name="consultationLogo" value="" autocomplete="off">
+                    <div class="uploadCol">
+                        <input type="file" name="newLogo" class="form-control" id="logoUrl">
+                        <label for="logoUrl">
+                            <span class="glyphicon glyphicon-upload"></span>
+                            <span class="text" data-title="<?= Html::encode(Yii::t('admin', 'con_logo_url_upload')) ?>">
                             <?= Yii::t('admin', 'con_logo_url_upload') ?>
                         </span>
-                    </label>
-                </div>
-                <?php
-                $images = $consultation->site->getFileImages();
-                if (count($images) > 0) {
-                    $imgEditLink = UrlHelper::createUrl('/admin/index/files');
-                    ?>
-                    <div class="dropdown imageChooserDd">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <?= Yii::t('admin', 'con_logo_url_choose') ?>
-                            <span class="caret"></span>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
-                            <ul>
-                                <?php
-                                foreach ($images as $file) {
-                                    $src = $file->getUrl();
-                                    echo '<li><a href="#"><img alt="" src="' . Html::encode($src) . '"></a></li>';
-                                }
-                                ?>
-                            </ul>
-                            <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
-                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                                <?= Html::encode(Yii::t('admin', 'con_logo_edit_images')) ?>
-                            </a>
-                        </div>
+                        </label>
                     </div>
                     <?php
-                }
-                ?>
-            </div>
-        </fieldset>
-
-        <fieldset class="form-group">
-            <div class="thumbnailedLayoutSelector">
-                <?php
-                $layoutId              = $consultation->site->getSettings()->siteLayout;
-                $handledSiteSettings[] = 'siteLayout';
-                foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
-                    echo '<label class="layout ' . $lId . '">';
-                    echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
-                    echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
-                         'alt="' . Html::encode($cssLayout['title']) . '" ' .
-                         'title="' . Html::encode($cssLayout['title']) . '"></span>';
-                    echo '</label>';
-                }
-                ?>
-            </div>
-            <div class="customThemeSelector">
-                <label>
-                    <?php
-                    $isCustom  = (strpos($layoutId, 'layout-custom-') !== false);
-                    $hasCustom = (count($consultation->site->getSettings()->stylesheetSettings) > 0);
-                    $options   = ['value' => $layoutId];
-                    if (!$hasCustom) {
-                        $options['disabled'] = 'disabled';
+                    $images = $consultation->site->getFileImages();
+                    if (count($images) > 0) {
+                        $imgEditLink = UrlHelper::createUrl('/admin/index/files');
+                        ?>
+                        <div class="dropdown imageChooserDd">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <?= Yii::t('admin', 'con_logo_url_choose') ?>
+                                <span class="caret"></span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
+                                <ul>
+                                    <?php
+                                    foreach ($images as $file) {
+                                        $src = $file->getUrl();
+                                        echo '<li><a href="#"><img alt="" src="' . Html::encode($src) . '"></a></li>';
+                                    }
+                                    ?>
+                                </ul>
+                                <a href="<?= Html::encode($imgEditLink) ?>" class="imageEditLink pull-right">
+                                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                    <?= Html::encode(Yii::t('admin', 'con_logo_edit_images')) ?>
+                                </a>
+                            </div>
+                        </div>
+                        <?php
                     }
-                    echo Html::radio('siteSettings[siteLayout]', $isCustom, $options);
-                    echo ' ' . Yii::t('admin', 'con_ci_custom');
                     ?>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                <div class="thumbnailedLayoutSelector">
+                    <?php
+                    $layoutId              = $consultation->site->getSettings()->siteLayout;
+                    $handledSiteSettings[] = 'siteLayout';
+                    foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
+                        echo '<label class="layout ' . $lId . '">';
+                        echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
+                        echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
+                             'alt="' . Html::encode($cssLayout['title']) . '" ' .
+                             'title="' . Html::encode($cssLayout['title']) . '"></span>';
+                        echo '</label>';
+                    }
+                    ?>
+                </div>
+                <div class="customThemeSelector">
+                    <label>
+                        <?php
+                        $isCustom  = (strpos($layoutId, 'layout-custom-') !== false);
+                        $hasCustom = (count($consultation->site->getSettings()->stylesheetSettings) > 0);
+                        $options   = ['value' => $layoutId];
+                        if (!$hasCustom) {
+                            $options['disabled'] = 'disabled';
+                        }
+                        echo Html::radio('siteSettings[siteLayout]', $isCustom, $options);
+                        echo ' ' . Yii::t('admin', 'con_ci_custom');
+                        ?>
+                    </label>
+                    <?= Html::a(
+                        '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
+                        ($hasCustom ? Yii::t('admin', 'con_ci_custom_edit') : Yii::t('admin', 'con_ci_custom_create')),
+                        UrlHelper::createUrl(['/admin/index/theming', 'default' => 'DEFAULT']),
+                        ['class' => 'editThemeLink']
+                    ) ?>
+                </div>
+            </fieldset>
+        </div>
+    </section>
+
+    <section aria-labelledby="conAppearanceTitle">
+        <h2 class="green" id="conAppearanceTitle"><?= Yii::t('admin', 'con_appearance_content') ?></h2>
+        <div class="content">
+            <div class="form-group selectRow">
+                <?php $handledSettings[] = 'startLayoutType'; ?>
+                <label class="control-label" for="startLayoutType">
+                    <?= Yii::t('admin', 'con_home_page_style') ?>:
                 </label>
-                <?= Html::a(
-                    '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span> ' .
-                    ($hasCustom ? Yii::t('admin', 'con_ci_custom_edit') : Yii::t('admin', 'con_ci_custom_create')),
-                    UrlHelper::createUrl(['/admin/index/theming', 'default' => 'DEFAULT']),
-                    ['class' => 'editThemeLink']
-                ) ?>
+                <div class="selectHolder"><?php
+                    echo HTMLTools::fueluxSelectbox(
+                        'settings[startLayoutType]',
+                        $consultation->getSettings()->getStartLayouts(),
+                        $consultation->getSettings()->startLayoutType,
+                        ['id' => 'startLayoutType'],
+                        true
+                    );
+                    ?></div>
             </div>
-        </fieldset>
-    </div>
-    <h2 class="green"><?= Yii::t('admin', 'con_appearance_content') ?></h2>
+
+            <div class="form-group selectRow">
+                <?php $handledSettings[] = 'motiondataMode'; ?>
+                <label class="control-label" for="motiondataMode">
+                    <?= Yii::t('admin', 'con_motion_data') ?>:
+                </label>
+                <div class="selectHolder"><?php
+                    echo HTMLTools::fueluxSelectbox(
+                        'settings[motiondataMode]',
+                        $consultation->getSettings()->getMotiondataModes(),
+                        $consultation->getSettings()->motiondataMode,
+                        ['id' => 'motiondataMode'],
+                        true
+                    );
+                    ?></div>
+            </div>
+            <br>
+
+            <?php
+
+            $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, Yii::t('admin', 'con_prefix_hide'));
+
+            $handledSiteSettings[] = 'showAntragsgruenAd';
+            echo '<div><label>';
+            echo Html::checkbox('siteSettings[showAntragsgruenAd]', $siteSettings->showAntragsgruenAd, ['id' => 'showAntragsgruenAd']) . ' ';
+            echo Yii::t('admin', 'con_show_ad');
+            echo '</label></div>';
+
+            $handledSiteSettings[] = 'showBreadcrumbs';
+            echo '<div><label>';
+            echo Html::checkbox('siteSettings[showBreadcrumbs]', $siteSettings->showBreadcrumbs, ['id' => 'showBreadcrumbs']) . ' ';
+            echo Yii::t('admin', 'con_show_breadcrumbs');
+            echo '</label></div>';
+
+            $propTitle = Yii::t('admin', 'con_proposal_procedure');
+            $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
+                         'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+            $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
+
+            $propTitle = Yii::t('admin', 'con_collecting');
+            $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
+                         'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
+            $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
+
+            $propTitle = Yii::t('admin', 'con_new_motions');
+            $boolSettingRow($settings, 'sidebarNewMotions', $handledSettings, $propTitle);
+
+            $propTitle = Yii::t('admin', 'con_am_bookmark_names');
+            $boolSettingRow($settings, 'amendmentBookmarksWithNames', $handledSettings, $propTitle);
+
+            ?>
+            <div class="translationService">
+                <label>
+                    <?= Html::checkbox('settings[translationService]', $settings->translationService !== null, ['id' => 'translationService']) ?>
+                    <?= Yii::t('admin', 'con_translation') ?>
+                </label>
+                <div class="services">
+                    <label>
+                        <?= Html::radio('translationSpecificService', $settings->translationService === 'bing', ['value' => 'bing']) ?>
+                        <?= Yii::t('admin', 'con_translation_bing') ?>
+                    </label>
+                    <label>
+                        <?= Html::radio('translationSpecificService', $settings->translationService === 'google', ['value' => 'google']) ?>
+                        <?= Yii::t('admin', 'con_translation_google') ?>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
     <div class="content">
-        <div class="form-group selectRow">
-            <?php $handledSettings[] = 'startLayoutType'; ?>
-            <label class="control-label" for="startLayoutType">
-                <?= Yii::t('admin', 'con_home_page_style') ?>:
-            </label>
-            <div class="selectHolder"><?php
-                echo HTMLTools::fueluxSelectbox(
-                    'settings[startLayoutType]',
-                    $consultation->getSettings()->getStartLayouts(),
-                    $consultation->getSettings()->startLayoutType,
-                    ['id' => 'startLayoutType'],
-                    true
-                );
-                ?></div>
-        </div>
-
-        <div class="form-group selectRow">
-            <?php $handledSettings[] = 'motiondataMode'; ?>
-            <label class="control-label" for="motiondataMode">
-                <?= Yii::t('admin', 'con_motion_data') ?>:
-            </label>
-            <div class="selectHolder"><?php
-                echo HTMLTools::fueluxSelectbox(
-                    'settings[motiondataMode]',
-                    $consultation->getSettings()->getMotiondataModes(),
-                    $consultation->getSettings()->motiondataMode,
-                    ['id' => 'motiondataMode'],
-                    true
-                );
-                ?></div>
-        </div>
-        <br>
-
-        <?php
-
-        $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, Yii::t('admin', 'con_prefix_hide'));
-
-        $handledSiteSettings[] = 'showAntragsgruenAd';
-        echo '<div><label>';
-        echo Html::checkbox('siteSettings[showAntragsgruenAd]', $siteSettings->showAntragsgruenAd, ['id' => 'showAntragsgruenAd']) . ' ';
-        echo Yii::t('admin', 'con_show_ad');
-        echo '</label></div>';
-
-        $handledSiteSettings[] = 'showBreadcrumbs';
-        echo '<div><label>';
-        echo Html::checkbox('siteSettings[showBreadcrumbs]', $siteSettings->showBreadcrumbs, ['id' => 'showBreadcrumbs']) . ' ';
-        echo Yii::t('admin', 'con_show_breadcrumbs');
-        echo '</label></div>';
-
-        $propTitle = Yii::t('admin', 'con_proposal_procedure');
-        $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                     'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
-        $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
-
-        $propTitle = Yii::t('admin', 'con_collecting');
-        $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                     'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
-        $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
-
-        $propTitle = Yii::t('admin', 'con_new_motions');
-        $boolSettingRow($settings, 'sidebarNewMotions', $handledSettings, $propTitle);
-
-        $propTitle = Yii::t('admin', 'con_am_bookmark_names');
-        $boolSettingRow($settings, 'amendmentBookmarksWithNames', $handledSettings, $propTitle);
-        ?>
-        <br>
         <div class="saveholder">
             <button type="submit" name="save" class="btn btn-primary"><?= Yii::t('admin', 'save') ?></button>
         </div>
-
-
     </div>
 
 <?php

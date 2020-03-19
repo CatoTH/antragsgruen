@@ -25,6 +25,8 @@
 
 - If a motion is moved to another agenda item or consultation and a reference stays at the old place, then there now also is a reference from the new place to the original place to indicate where this motion originally came from.
 
+- There is a new function to embed a translation button to motion, amendment and consultation pages. To enable it, go to Settings -> Appearance page and activate the Translation component. You can choose either Google or Bing. This will show a button at the top right of a motion/amendment that allows visitors of this site to translate this page using the specified service.
+
   
 
 ### Version 4.5.1 [not released yet]

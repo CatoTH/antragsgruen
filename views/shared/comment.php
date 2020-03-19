@@ -80,7 +80,7 @@ if (count($comment->replies) > 0 || $canReply) {
     echo '<div class="motionCommentReplies">';
 
     foreach ($comment->getIMotion()->getVisibleComments($screenAdmin, $comment->paragraph, $comment->id) as $reply) {
-        echo $this->render('@app/views/motion/_comment', ['comment' => $reply]);
+        echo $this->render('comment', ['comment' => $reply]);
     }
 
     if ($canReply) {

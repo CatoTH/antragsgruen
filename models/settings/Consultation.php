@@ -51,6 +51,7 @@ class Consultation implements \JsonSerializable
 
     /** @var null|string */
     public $accessPwd = null;
+    public $translationService = null;
 
     /** @var null|string[] */
     public $organisations = null;

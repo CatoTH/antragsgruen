@@ -12,6 +12,10 @@
       font-weight: bold;
     }
   }
+  .translateWidget {
+    float: right;
+    margin-left: 20px; // For the edit button
+  }
 }
 
 .motionList {
@@ -26,10 +30,10 @@
 
     > .date {
       color: #757676;
-      @media screen and (min-width: 800px) {
+      @media (min-width: $screenMinWith) {
         margin-left: 20px;
       }
-      @media screen and (max-width: 799px) {
+      @media (max-width: $screenMinWith - 1) {
         margin-left: 12px;
       }
       position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
@@ -155,17 +159,17 @@
       > .date {
         color: #757676;
         display: block;
-        @media screen and (min-width: 800px) {
+        @media (min-width: $screenMinWith) {
           margin-left: 20px;
         }
-        @media screen and (max-width: 799px) {
+        @media (max-width: $screenMinWith - 1) {
           margin-left: 12px;
         }
         position: absolute; // no float, otherwise height gets recalculated wrong when sorting agenda items
         top: 0;
         right: -8px;
         margin: 0;
-        @media screen and (max-width: $screen-sm-max) {
+        @media (max-width: $screen-sm-max) {
           position: relative;
           top: 0;
           right: 0;
@@ -336,10 +340,10 @@ $agendaMarginPerLevel: 50px;
   ul.motions {
     list-style-type: none;
     padding: 0;
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       margin: 0 0 0 50px;
     }
-    @media screen and (max-width: 799px) {
+    @media (max-width: $screenMinWith - 1) {
       margin: 0 0 0 26px;
     }
   }
@@ -383,10 +387,10 @@ $agendaMarginPerLevel: 50px;
 
   li.agendaItem {
     border: solid 1px transparent; // Otherwise: strange behavior when moving items
-    @media screen and (min-width: 800px) {
+    @media (min-width: $screenMinWith) {
       padding-left: 20px;
     }
-    @media screen and (max-width: 799px) {
+    @media (max-width: $screenMinWith - 1) {
       padding-left: 16px;
     }
     position: relative;
@@ -403,10 +407,10 @@ $agendaMarginPerLevel: 50px;
 
     > div {
       margin-bottom: 5px;
-      @media screen and (min-width: 800px) {
+      @media (min-width: $screenMinWith) {
         padding: 5px 10px 10px;
       }
-      @media screen and (max-width: 799px) {
+      @media (max-width: $screenMinWith - 1) {
         padding: 5px 10px 10px 0;
       }
 

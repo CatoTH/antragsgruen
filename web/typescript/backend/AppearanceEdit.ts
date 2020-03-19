@@ -4,6 +4,7 @@ export class AppearanceEdit {
     constructor(private $form: JQuery) {
         this.initLogoUpload();
         this.initLayoutChooser();
+        this.initTranslationService();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -44,5 +45,18 @@ export class AppearanceEdit {
         };
         $inputs.on("change", onChange);
         onChange();
+    }
+
+    private initTranslationService() {
+        this.$form.find("#translationService").on('change', (ev) => {
+            const checked = $(ev.currentTarget).prop("checked");
+            if (checked) {
+                this.$form.find(".services").removeClass("hidden");
+                this.$form.find(".services input").prop("required", true);
+            } else {
+                this.$form.find(".services").addClass("hidden");
+                this.$form.find(".services input").prop("required", false);
+            }
+        }).trigger("change");
     }
 }
