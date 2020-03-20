@@ -213,7 +213,7 @@ class MotionSection extends IMotionSection
             ])) {
                 return base64_decode($this->data);
             } else {
-                return $this->data;
+                return ($this->data === null ? '' : $this->data); // null = created on-the-fly, e.g. when responding to petitions
             }
         }
     }
