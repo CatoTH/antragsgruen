@@ -59,7 +59,7 @@ foreach ($sections as $i => $section) {
     }
 
     if ($section->isLayoutRight()) {
-        $right .= '<section class="sectionType' . $sectionType . '">';
+        $right .= '<section class="sectionType' . $sectionType . '" aria-label="' . Html::encode($section->getSectionTitle()) . '">';
         $right .= $section->getSectionType()->getSimple(true);
         $right .= '</section>';
     } else {
@@ -67,9 +67,9 @@ foreach ($sections as $i => $section) {
         if ($motion->getMyConsultation()->getSettings()->lineLength > 80) {
             $main .= ' smallFont';
         }
-        $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '">';
+        $main .= ' motionTextHolder' . $i . '" id="section_' . $section->sectionId . '" aria-labelledby="section_' . $section->sectionId . '_title">';
         if (!in_array($sectionType, [ISectionType::TYPE_PDF_ATTACHMENT, ISectionType::TYPE_PDF_ALTERNATIVE, ISectionType::TYPE_IMAGE])) {
-            $main .= '<h3 class="green">' . Html::encode($section->getSectionTitle()) . '</h3>';
+            $main .= '<h3 class="green" id="section_' . $section->sectionId . '_title">' . Html::encode($section->getSectionTitle()) . '</h3>';
         }
 
         $commOp = (isset($openedComments[$section->sectionId]) ? $openedComments[$section->sectionId] : []);

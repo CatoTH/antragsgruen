@@ -32,7 +32,7 @@ $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createAmendmentUrl($amendment)) . '" class="view">';
-$html .= '<span class="icon glyphicon glyphicon-file"></span>' . Yii::t('admin', 'amend_show') . '</a></li>';
+$html .= '<span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('admin', 'amend_show') . '</a></li>';
 
 $cloneUrl = Html::encode(UrlHelper::createUrl([
     'amendment/create',
@@ -40,7 +40,7 @@ $cloneUrl = Html::encode(UrlHelper::createUrl([
     'cloneFrom'  => $amendment->id
 ]));
 $html     .= '<li><a href="' . $cloneUrl . '" class="clone">';
-$html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
+$html     .= '<span class="icon glyphicon glyphicon-duplicate" aria-hidden="true"></span>' .
              Yii::t('admin', 'list_template_amendment') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'amendmentDeleteForm']);
@@ -136,7 +136,7 @@ echo '<div class="content form-horizontal fuelux">';
                 ?>
                 <input type="text" class="form-control" name="amendment[dateCreation]" id="amendmentDateCreation"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
             </div>
         </div>
     </div>
@@ -152,7 +152,7 @@ echo '<div class="content form-horizontal fuelux">';
                 ?>
                 <input type="text" class="form-control" name="amendment[dateResolution]" id="amendmentDateResolution"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
             </div>
         </div>
     </div>
@@ -188,11 +188,11 @@ $votingOpened = $voting->hasAnyData();
 ?>
     <div class="contentVotingResultCaller">
         <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-down"></span>
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             <?= Yii::t('amend', 'merge_new_votes_enter') ?>
         </button>
         <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-up"></span>
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
             <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
         </button>
     </div>

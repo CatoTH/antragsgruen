@@ -32,16 +32,16 @@ $layout->addJS('npm/clipboard.min.js');
 
 $html = '<ul class="sidebarActions">';
 $html .= '<li><a href="' . Html::encode(UrlHelper::createMotionUrl($motion)) . '" class="view">';
-$html .= '<span class="icon glyphicon glyphicon-file"></span>' . Yii::t('admin', 'motion_show') . '</a></li>';
+$html .= '<span class="icon glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('admin', 'motion_show') . '</a></li>';
 
 $cloneUrl = UrlHelper::createUrl(['motion/create', 'cloneFrom' => $motion->id]);
 $html     .= '<li><a href="' . Html::encode($cloneUrl) . '" class="clone">';
-$html     .= '<span class="icon glyphicon glyphicon-duplicate"></span>' .
+$html     .= '<span class="icon glyphicon glyphicon-duplicate" aria-hidden="true"></span>' .
              Yii::t('admin', 'motion_new_base_on_this') . '</a></li>';
 
 $moveUrl = UrlHelper::createUrl(['admin/motion/move', 'motionId' => $motion->id]);
 $html     .= '<li><a href="' . Html::encode($moveUrl) . '" class="move">';
-$html     .= '<span class="icon glyphicon glyphicon-arrow-right"></span>' .
+$html     .= '<span class="icon glyphicon glyphicon-arrow-right" aria-hidden="true"></span>' .
              Yii::t('admin', 'motion_move') . '</a></li>';
 
 $html .= '<li>' . Html::beginForm('', 'post', ['class' => 'motionDeleteForm']);
@@ -183,7 +183,7 @@ $date   = Tools::dateSql2bootstraptime($motion->dateCreation);
             <div class="input-group date" id="motionDateCreationHolder">
                 <input type="text" class="form-control" name="motion[dateCreation]" id="motionDateCreation"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
             </div>
         </div>
     </div>
@@ -199,7 +199,7 @@ $date = Tools::dateSql2bootstraptime($motion->datePublication);
             <div class="input-group date" id="motionDatePublicationHolder">
                 <input type="text" class="form-control" name="motion[datePublication]" id="motionDatePublication"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
             </div>
         </div>
     </div>
@@ -215,7 +215,7 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
             <div class="input-group date" id="motionDateResolutionHolder">
                 <input type="text" class="form-control" name="motion[dateResolution]" id="motionDateResolution"
                        value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
             </div>
         </div>
     </div>
@@ -272,11 +272,11 @@ $votingOpened = $voting->hasAnyData();
 ?>
     <div class="contentVotingResultCaller">
         <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-down"></span>
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             <?= Yii::t('amend', 'merge_new_votes_enter') ?>
         </button>
         <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
-            <span class="glyphicon glyphicon-chevron-up"></span>
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
             <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
         </button>
     </div>

@@ -205,6 +205,9 @@
       text-align: right;
     }
   }
+  .legend {
+    font-weight: bold;
+  }
   label.optional {
     &:after {
       content: "(" attr(data-optional-str) ")";
@@ -306,6 +309,10 @@
   }
 
   .initiatorData {
+    .control-label {
+      font-weight: bold;
+    }
+
     .contact-head {
       margin-top: 20px;
       margin-bottom: 10px;

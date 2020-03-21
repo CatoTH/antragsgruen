@@ -45,7 +45,7 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
         <?= Yii::t('amend', 'proposal_amend_title') ?>
         <button class="pull-right btn-link closeBtn" type="button"
                 title="<?= Html::encode(Yii::t('amend', 'proposal_close')) ?>">
-            <span class="glyphicon glyphicon-chevron-up"></span>
+            <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
         </button>
     </h2>
     <div class="holder">
@@ -108,10 +108,10 @@ $votingBlocks = $amendment->getMyConsultation()->votingBlocks;
                     <?php
                     if ($amendment->proposalUserStatus !== null) {
                         if ($amendment->proposalUserStatus == Amendment::STATUS_ACCEPTED) {
-                            echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
+                            echo '<span class="glyphicon glyphicon glyphicon-ok accepted" aria-hidden="true"></span>';
                             echo Yii::t('amend', 'proposal_user_accepted');
                         } elseif ($amendment->proposalUserStatus == Amendment::STATUS_REJECTED) {
-                            echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
+                            echo '<span class="glyphicon glyphicon glyphicon-remove rejected" aria-hidden="true"></span>';
                             echo Yii::t('amend', 'proposal_user_rejected');
                         } else {
                             echo 'Error: unknown response of the proposer';

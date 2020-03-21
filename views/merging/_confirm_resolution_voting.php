@@ -35,17 +35,17 @@ $votingOpened = $voting->hasAnyData();
         <div class="input-group date" id="dateResolutionHolder">
             <input type="text" class="form-control" name="dateResolution" id="dateResolution"
                    value="<?= Html::encode($date) ?>" data-locale="<?= Html::encode($locale) ?>">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></span>
         </div>
     </div>
 </div>
 <div class="content contentVotingResultCaller">
     <button class="btn btn-link votingResultOpener <?= ($votingOpened ? 'hidden' : '') ?>" type="button">
-        <span class="glyphicon glyphicon-chevron-down"></span>
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
         <?= Yii::t('amend', 'merge_new_votes_enter') ?>
     </button>
     <button class="btn btn-link votingResultCloser <?= ($votingOpened ? '' : 'hidden') ?>" type="button">
-        <span class="glyphicon glyphicon-chevron-up"></span>
+        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
         <?= Yii::t('amend', 'merge_new_votes_enter') ?>:
     </button>
 </div>

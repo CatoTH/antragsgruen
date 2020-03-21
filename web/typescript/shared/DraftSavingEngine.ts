@@ -20,9 +20,10 @@ export class DraftSavingEngine {
             if (key.indexOf(keyBase + "_") == 0) {
                 let data = JSON.parse(localStorage.getItem(key)),
                     lastEdit = new Date(data['lastEdit']),
-                    $link = $("<li><a href='#' class='restore'></a> " +
-                        "<a href='#' class='delete glyphicon glyphicon-trash' title='" + __t("std", "draft_del") +
-                        "'></a></li>");
+                    $link = $("<li><button type='button' class='btn-link restore'></button> " +
+                        "<button type='button' class='btn-link delete' title='" + __t("std", "draft_del") + "' aria-label='" + __t("std", "draft_del") + "'>" +
+                        "<span class='glyphicon glyphicon-trash' aria-hidden='true'></button>" +
+                        "</li>");
 
 
                 $link.data("key", key);
@@ -30,7 +31,7 @@ export class DraftSavingEngine {
                     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
                     hour: 'numeric', minute: 'numeric'
                 }).format(lastEdit);
-                $link.find('.restore').text(__t("std", "draft_date") + ': ' + dateStr).click((ev) => {
+                $link.find('.restore').text(__t("std", "draft_date") + ': ' + dateStr).on("click", (ev) => {
                     ev.preventDefault();
                     let $li = $(ev.delegateTarget).parents("li").first();
                     bootbox.confirm(__t("std", "draft_restore_confirm"), (result) => {
@@ -39,7 +40,7 @@ export class DraftSavingEngine {
                         }
                     });
                 });
-                $link.find('.delete').click((ev) => {
+                $link.find('.delete').on("click", (ev) => {
                     ev.preventDefault();
                     let $li = $(ev.delegateTarget).parents("li").first();
                     bootbox.confirm(__t("std", "draft_del_confirm"), (result) => {
@@ -136,7 +137,7 @@ export class DraftSavingEngine {
         }
         if (data.hasOwnProperty("amendmentEditorial_wysiwyg") && data['amendmentEditorial_wysiwyg'] != '') {
             if (!CKEDITOR.hasOwnProperty('amendmentEditorial_wysiwyg')) {
-                $(".editorialChange .opener").click();
+                $(".editorialChange .opener").trigger("click");
                 window.setTimeout(function () {
                     CKEDITOR.instances['amendmentEditorial_wysiwyg'].setData(data['amendmentEditorial_wysiwyg']);
                 }, 100);

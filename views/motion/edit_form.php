@@ -90,8 +90,8 @@ echo Html::beginForm('', 'post', [
 echo '<div class="content fuelux">';
 
 if (count($form->motionType->agendaItems) > 0) {
-    echo '<div class="form-group">';
-    echo '<label class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
+    echo '<fieldset class="form-group">';
+    echo '<legend class="legend">' . Yii::t('motion', 'agenda_item') . '</label>';
     if ($form->agendaItem) {
         echo '<div>' . Html::encode($form->agendaItem->title) . '</div>';
     } else {
@@ -103,7 +103,7 @@ if (count($form->motionType->agendaItems) > 0) {
         echo HTMLTools::fueluxSelectbox('agendaItem', $agendaItems, null, ['id' => 'agendaSelect']);
         echo '</div>';
     }
-    echo '</div>';
+    echo '</fieldset>';
 }
 
 /** @var ConsultationSettingsTag[] $tags */
@@ -117,8 +117,8 @@ if (count($tags) == 1) {
     echo '<input type="hidden" name="tags[]" value="' . $keys[0] . '" title="Tags">';
 } elseif (count($tags) > 0) {
     if ($consultation->getSettings()->allowMultipleTags) {
-        echo '<div class="form-group multipleTagsGroup">';
-        echo '<label class="legend">' . Yii::t('motion', 'tag_tags') . '</label>';
+        echo '<fieldset class="form-group multipleTagsGroup">';
+        echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend>';
         foreach ($tags as $id => $tag) {
             echo '<label class="checkbox-inline"><input name="tags[]" value="' . $id . '" type="checkbox" ';
             if (in_array($id, $form->tags)) {
@@ -126,7 +126,7 @@ if (count($tags) == 1) {
             }
             echo ' title="Tags"> ' . Html::encode($tag->title) . '</label>';
         }
-        echo '</div>';
+        echo '</fieldset>';
     } else {
         $layout->loadFuelux();
         $selected   = (count($form->tags) > 0 ? $form->tags[0] : 0);
@@ -134,11 +134,11 @@ if (count($tags) == 1) {
         foreach ($tags as $tag) {
             $tagOptions[$tag->id] = $tag->title;
         }
-        echo '<div class="form-group">';
-        echo '<label>' . Yii::t('motion', 'tag_tags') . '</label><div style="position: relative;">';
+        echo '<fieldset class="form-group">';
+        echo '<legend class="legend">' . Yii::t('motion', 'tag_tags') . '</legend><div style="position: relative;">';
         echo HTMLTools::fueluxSelectbox('tags[]', $tagOptions, $selected, ['id' => 'tagSelect']);
         echo '</div>';
-        echo '</div>';
+        echo '</fieldset>';
     }
 }
 
