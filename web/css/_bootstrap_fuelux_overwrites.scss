@@ -199,6 +199,14 @@
   @extend label;
 }
 
+legend, .legend {
+  font-size: $font-size-base;
+  border: none;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
 .toggle {
   .toggle-group {
     .btn {

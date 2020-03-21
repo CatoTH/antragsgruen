@@ -237,6 +237,7 @@ return [
     'con_new_motions'         => 'Show <strong>new motions</strong> in the sidebar',
     'con_am_bookmark_names'   => 'Show the names of initiators in the amendment-bookmarks',
     'con_translation'         => 'Show <strong>translation links</strong> above motions, amendments etc.',
+    'con_translation_service' => 'Translation service to use',
     'con_translation_google'  => 'Google Translate',
     'con_translation_bing'    => 'Bing Translator',
     'con_title_comments'      => 'Comments',

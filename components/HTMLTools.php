@@ -885,6 +885,7 @@ class HTMLTools
   </button>
   <ul class="dropdown-menu">';
         foreach ($options as $value => $name) {
+            $fakeLink = Html::encode('#' . $value); // Only a trick to quiet validation; proper way would be to use buttons, but that's not part of Bootstrap 3
             if (is_array($name)) {
                 $str .= '<li data-value="' . Html::encode($value) . '"';
                 if ($value == $selected) {
@@ -897,13 +898,13 @@ class HTMLTools
                         $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
                     }
                 }
-                $str .= '><a href="#">' . Html::encode($name['title']) . '</a></li>';
+                $str .= '><a href="' . $fakeLink . '">' . Html::encode($name['title']) . '</a></li>';
             } else {
                 $str .= '<li data-value="' . Html::encode($value) . '" ';
                 if ($value == $selected) {
                     $str .= ' data-selected="true"';
                 }
-                $str .= '><a href="#">' . Html::encode($name) . '</a></li>';
+                $str .= '><a href="' . $fakeLink . '">' . Html::encode($name) . '</a></li>';
             }
         }
         $str .= '</ul>

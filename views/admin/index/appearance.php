@@ -152,11 +152,11 @@ $handledSiteSettings = [];
     <section aria-labelledby="conAppearanceTitle">
         <h2 class="green" id="conAppearanceTitle"><?= Yii::t('admin', 'con_appearance_content') ?></h2>
         <div class="content">
-            <div class="form-group selectRow">
+            <fieldset class="form-group selectRow">
                 <?php $handledSettings[] = 'startLayoutType'; ?>
-                <label class="control-label" for="startLayoutType">
+                <legend>
                     <?= Yii::t('admin', 'con_home_page_style') ?>:
-                </label>
+                </legend>
                 <div class="selectHolder"><?php
                     echo HTMLTools::fueluxSelectbox(
                         'settings[startLayoutType]',
@@ -166,13 +166,13 @@ $handledSiteSettings = [];
                         true
                     );
                     ?></div>
-            </div>
+            </fieldset>
 
-            <div class="form-group selectRow">
+            <fieldset class="form-group selectRow">
                 <?php $handledSettings[] = 'motiondataMode'; ?>
-                <label class="control-label" for="motiondataMode">
+                <legend>
                     <?= Yii::t('admin', 'con_motion_data') ?>:
-                </label>
+                </legend>
                 <div class="selectHolder"><?php
                     echo HTMLTools::fueluxSelectbox(
                         'settings[motiondataMode]',
@@ -182,7 +182,7 @@ $handledSiteSettings = [];
                         true
                     );
                     ?></div>
-            </div>
+            </fieldset>
             <br>
 
             <?php
@@ -203,12 +203,14 @@ $handledSiteSettings = [];
 
             $propTitle = Yii::t('admin', 'con_proposal_procedure');
             $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                         'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+                         'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_proposal_tt')) . '" ' .
+                         'data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
             $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_collecting');
             $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                         'title="" data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
+                         'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_collecting_tt')) . '" ' .
+                         'data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
             $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_new_motions');
@@ -223,7 +225,8 @@ $handledSiteSettings = [];
                     <?= Html::checkbox('settings[translationService]', $settings->translationService !== null, ['id' => 'translationService']) ?>
                     <?= Yii::t('admin', 'con_translation') ?>
                 </label>
-                <div class="services">
+                <fieldset class="services">
+                    <legend><?= Yii::t('admin', 'con_translation_service') ?>:</legend>
                     <label>
                         <?= Html::radio('translationSpecificService', $settings->translationService === 'bing', ['value' => 'bing']) ?>
                         <?= Yii::t('admin', 'con_translation_bing') ?>
@@ -232,7 +235,7 @@ $handledSiteSettings = [];
                         <?= Html::radio('translationSpecificService', $settings->translationService === 'google', ['value' => 'google']) ?>
                         <?= Yii::t('admin', 'con_translation_google') ?>
                     </label>
-                </div>
+                </fieldset>
             </div>
 
         </div>

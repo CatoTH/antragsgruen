@@ -194,7 +194,8 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
 
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
                   data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
         </div>
     </div>
@@ -417,7 +418,8 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                    value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
         </div>
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
+            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
                   data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
         </div>
     </div>

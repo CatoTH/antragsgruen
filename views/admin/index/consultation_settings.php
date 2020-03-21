@@ -6,10 +6,8 @@
  * @var string $locale
  */
 
-use app\components\HTMLTools;
-use app\components\UrlHelper;
-use app\models\db\Consultation;
-use app\models\db\Motion;
+use app\components\{HTMLTools, UrlHelper};
+use app\models\db\{Consultation, Motion};
 use yii\helpers\Html;
 
 /** @var \app\controllers\admin\IndexController $controller */
@@ -113,22 +111,24 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         </div>
 
         <?php $handledSettings[] = 'lineLength'; ?>
-        <fieldset class="form-group">
+        <div class="form-group">
             <label class="col-sm-3 control-label" for="lineLength"><?= Yii::t('admin', 'con_line_len') ?>
                 :</label>
             <div class="col-sm-3">
                 <input type="number" required name="settings[lineLength]"
                        value="<?= Html::encode($settings->lineLength) ?>" class="form-control" id="lineLength">
             </div>
-        </fieldset>
+        </div>
 
         <?php $handledSettings[] = 'robotsPolicy'; ?>
         <fieldset class="form-group">
-            <div class="col-sm-3 control-label">
+            <legend class="col-sm-3 control-label">
                 <?= Yii::t('admin', 'con_robots') ?>:
-                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
-                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_robots_hint')) ?>"></span>
-            </div>
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_robots_hint')) ?>"
+                      aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_robots_hint')) ?>"
+                ></span>
+            </legend>
             <div class="col-sm-9">
                 <?php
                 foreach (\app\models\settings\Consultation::getRobotPolicies() as $policy => $policyName) {
@@ -167,9 +167,8 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
             }
         }
         ?>
-        <div class="form-group" id="forceMotionRow">
-            <label class="col-sm-3 control-label" for="startLayoutType"><?= Yii::t('admin', 'con_force_motion') ?>
-                :</label>
+        <fieldset class="form-group" id="forceMotionRow">
+            <legend class="col-sm-3 control-label"><?= Yii::t('admin', 'con_force_motion') ?>:</legend>
             <div class="col-sm-9"><?php
                 echo HTMLTools::fueluxSelectbox(
                     'settings[forceMotion]',
@@ -179,7 +178,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     true
                 );
                 ?></div>
-        </div>
+        </fieldset>
 
 
         <div><label>
@@ -263,8 +262,10 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         <div class="form-group">
             <div class="col-sm-3 control-label">
                 <?= Yii::t('admin', 'con_organisations') ?>:
-                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" title=""
-                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_organisations_hint')) ?>"></span>
+                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_organisations_hint')) ?>"
+                      aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_organisations_hint')) ?>"
+                ></span>
             </div>
             <div class="col-sm-9">
                 <div class="pillbox" data-initialize="pillbox" id="organisationList">
@@ -291,10 +292,10 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
     <h2 class="green"><?= Yii::t('admin', 'con_title_amendments') ?></h2>
     <div class="content">
 
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="amendmentNumbering">
+        <fieldset class="form-group">
+            <legend class="col-sm-3 control-label">
                 <?= Yii::t('admin', 'con_amend_number') ?>:
-            </label>
+            </legend>
             <div class="col-sm-9"><?php
                 echo HTMLTools::fueluxSelectbox(
                     'consultation[amendmentNumbering]',
@@ -304,7 +305,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                     true
                 );
                 ?></div>
-        </div>
+        </fieldset>
 
 
         <div><label>
