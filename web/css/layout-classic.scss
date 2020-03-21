@@ -7,10 +7,10 @@ $OpenSansPath: "../fonts/OpenSans/fonts";
 $veraSansPath: "../fonts/BitstreamVeraSansMono";
 @import "../fonts/BitstreamVeraSansMono/verasans";
 
-$screen-md-min: $container-md !default;
+$screen-md-min: ($container-md + 90px) !default; // Extra spacing for the "create motion button"
 $mainContentWidth: $container-md - $sidebarWidth !default;
 $content-max-width: $mainContentWidth - 2px !default;
-$grid-float-breakpoint: $container-md - 32px !default; // $screen-md-min;
+$grid-float-breakpoint: $screen-md-min !default;
 
 $colorLinksLight: #6d7e00;
 $colorLinks: #6d7e00;
@@ -31,8 +31,8 @@ $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(27, 74, 251);
 
 $menuFont: "Open Sans", sans-serif;
-$menuLink: #6d7e00;
-$menuActive: rgb(115, 115, 115);
+$menuLink: #4b7000;
+$menuActive: rgb(100, 100, 100);
 
 $sidebarBackground: $colorMagenta;
 $sidebarActionFont: "Open Sans", sans-serif;
