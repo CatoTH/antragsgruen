@@ -209,7 +209,8 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
         </div>
     </div>
 
-    <div class="thumbnailedLayoutSelector">
+    <fieldset class="thumbnailedLayoutSelector">
+        <legend></legend>
         <?php
         $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
         foreach (\app\views\pdfLayouts\IPDFLayout::getAvailableClassesWithLatex() as $lId => $layout) {
@@ -226,7 +227,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
             echo '</label>';
         }
         ?>
-    </div>
+    </fieldset>
 
     <div class="submitRow">
         <button type="submit" name="save" class="btn btn-primary">

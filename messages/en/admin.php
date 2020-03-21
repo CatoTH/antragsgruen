@@ -197,6 +197,7 @@ return [
     'con_logo_url_choose'     => 'Choose',
     'con_logo_edit_images'    => 'Manage images',
     'con_ci'                  => 'Layout',
+    'con_ci_legend'           => 'Choose the color scheme',
     'con_ci_custom'           => 'Custom theme',
     'con_ci_custom_edit'      => 'Edit custom theme',
     'con_ci_custom_create'    => 'Create custom theme',

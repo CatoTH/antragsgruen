@@ -1,5 +1,6 @@
 <?php
 return [
+    'logo_current'          => 'Aktuelles Logo',
     'Help'                  => 'Hilfe',
     'Today'                 => 'Heute',
     'Yesterday'             => 'Gestern',

@@ -88,6 +88,24 @@
   }
 }
 
+@mixin outlineOnFocusWithinNoBorder() {
+  border: solid 1px rgba(102, 175, 233, 0);
+  box-sizing: border-box;
+  box-shadow: none;
+  transition: border ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
+
+  &:focus-within {
+    border: solid 1px $focusBorderColor;
+    box-shadow: 0 0 3px 2px $focusShadowColor;
+    transition: border ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
+    outline: none;
+  }
+  body.usingMouse &:focus {
+    border: solid 1px transparent;
+    box-shadow: none;
+  }
+}
+
 @mixin outlineOnFocusHasBorder() {
   box-sizing: border-box;
   box-shadow: none;

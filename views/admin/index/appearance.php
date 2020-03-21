@@ -59,7 +59,7 @@ $handledSiteSettings = [];
         <h2 class="green" id="conCiTitle"><?= Yii::t('admin', 'con_ci') ?></h2>
         <div class="content">
             <fieldset class="form-group logoRow">
-                <label class="col-sm-3" for="logoUrl"><?= Yii::t('admin', 'con_logo_url') ?>:</label>
+                <legend class="col-sm-3"><?= Yii::t('admin', 'con_logo_url') ?>:</legend>
                 <div class="col-sm-2 logoPreview">
                     <?php
                     if ($settings->logoUrl) {
@@ -68,15 +68,15 @@ $handledSiteSettings = [];
                     ?>
                 </div>
                 <div class="col-sm-7 imageChooser">
-                    <input type="hidden" name="consultationLogo" value="" autocomplete="off">
+                    <input type="hidden" name="consultationLogo" value="">
                     <div class="uploadCol">
-                        <input type="file" name="newLogo" class="form-control" id="logoUrl">
                         <label for="logoUrl">
-                            <span class="glyphicon glyphicon-upload"></span>
+                            <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
                             <span class="text" data-title="<?= Html::encode(Yii::t('admin', 'con_logo_url_upload')) ?>">
                             <?= Yii::t('admin', 'con_logo_url_upload') ?>
                         </span>
                         </label>
+                        <input type="file" name="newLogo" class="form-control" id="logoUrl">
                     </div>
                     <?php
                     $images = $consultation->site->getFileImages();
@@ -87,14 +87,16 @@ $handledSiteSettings = [];
                             <button class="btn btn-default dropdown-toggle" type="button" id="fileChooseDropdownBtn"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 <?= Yii::t('admin', 'con_logo_url_choose') ?>
-                                <span class="caret"></span>
+                                <span class="caret" aria-hidden="true"></span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="fileChooseDropdownBtn">
                                 <ul>
                                     <?php
                                     foreach ($images as $file) {
                                         $src = $file->getUrl();
-                                        echo '<li><a href="#"><img alt="" src="' . Html::encode($src) . '"></a></li>';
+                                        echo '<li><a href="#">';
+                                        echo '<img src="' . Html::encode($src) . '" alt="' . Html::encode($file->filename) . '">';
+                                        echo '</a></li>';
                                     }
                                     ?>
                                 </ul>
@@ -110,18 +112,23 @@ $handledSiteSettings = [];
                 </div>
             </fieldset>
 
-            <fieldset class="form-group">
+            <fieldset class="form-group thumbnailRow">
+                <legend class="sr-only"><?= Yii::t('admin', 'con_ci_legend') ?></legend>
                 <div class="thumbnailedLayoutSelector">
                     <?php
                     $layoutId              = $consultation->site->getSettings()->siteLayout;
                     $handledSiteSettings[] = 'siteLayout';
                     foreach (\app\models\settings\Layout::getCssLayouts($this) as $lId => $cssLayout) {
-                        echo '<label class="layout ' . $lId . '">';
-                        echo Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]);
-                        echo '<span><img src="' . Html::encode($cssLayout['preview']) . '" ' .
-                             'alt="' . Html::encode($cssLayout['title']) . '" ' .
-                             'title="' . Html::encode($cssLayout['title']) . '"></span>';
-                        echo '</label>';
+                        ?>
+                        <label class="layout <?= $lId ?>">
+                            <?= Html::radio('siteSettings[siteLayout]', $lId === $layoutId, ['value' => $lId]) ?>
+                            <span>
+                                <img src="<?= Html::encode($cssLayout['preview']) ?>" alt="<?= Html::encode($cssLayout['title']) ?>"
+                                     title="<?= Html::encode($cssLayout['title']) ?>" aria-hidden="true">
+                                <span class="sr-only"><?= Html::encode($cssLayout['title']) ?></span>
+                            </span>
+                        </label>
+                    <?php
                     }
                     ?>
                 </div>

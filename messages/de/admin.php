@@ -199,6 +199,7 @@ return [
     'con_logo_url_choose'     => 'Auswählen',
     'con_logo_edit_images'    => 'Bilder verwalten',
     'con_ci'                  => 'Layout',
+    'con_ci_legend'           => 'Farbschema auswählen',
     'con_ci_custom'           => 'Eigenes Farbschema',
     'con_ci_custom_edit'      => 'Eigenes Farbschema bearbeiten',
     'con_ci_custom_create'    => 'Eigenes Farbschema anlegen',

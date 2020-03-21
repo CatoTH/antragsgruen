@@ -400,7 +400,7 @@ class Layout
             if (!isset($path['host']) && $logoUrl[0] !== '/') {
                 $logoUrl = $resourceBase . $logoUrl;
             }
-            return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode($filename) . '">';
+            return '<img src="' . Html::encode($logoUrl) . '" alt="' . Html::encode(\Yii::t('base', 'logo_current')) . '">';
         } else {
             return '<span class="logoImg"></span>';
         }

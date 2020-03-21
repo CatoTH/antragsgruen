@@ -3,6 +3,7 @@
 @import "bootstrap-3.4.1-sass/bootstrap/variables";
 @import "bootstrap-3.4.1-sass/bootstrap/glyphicons";
 @import "bootstrap-3.4.1-sass/bootstrap/mixins";
+@import "mixins";
 
 .adminForm {
   label {
@@ -354,6 +355,8 @@ label.legend {
 
 .thumbnailedLayoutSelector {
   padding-left: 5px !important; // cancels bootstrap padding
+
+  @include outlineOnFocusWithinNoBorder();
 
   .layout {
     height: 150px;
