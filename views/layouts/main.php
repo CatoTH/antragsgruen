@@ -129,6 +129,9 @@ foreach ($layout->getJSFiles() as $jsFile) {
 foreach ($layout->onloadJs as $js) {
     echo '<script>' . $js . '</script>' . "\n";
 }
+foreach ($layout->vueTemplates as $vueTemplate) {
+    echo $this->render($vueTemplate);
+}
 
 echo $layout->getAMDClasses();
 echo $layout->getAMDLoader();

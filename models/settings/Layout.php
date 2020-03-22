@@ -25,6 +25,7 @@ class Layout
     public $robotsNoindex        = false;
     public $extraCss             = [];
     public $extraJs              = [];
+    public $vueTemplates         = [];
     public $bodyCssClasses       = [];
     public $onloadJs             = [];
     public $fullWidth            = false;
@@ -186,6 +187,14 @@ class Layout
         return $this;
     }
 
+    public function addVueTemplate(string $template): self
+    {
+        if (!in_array($template, $this->vueTemplates)) {
+            $this->vueTemplates[] = $template;
+        }
+        return $this;
+    }
+
     public function getHTMLLanguageCode(): string
     {
         if (!$this->consultation) {
@@ -281,6 +290,11 @@ class Layout
     public function loadSortable(): void
     {
         $this->addJS('npm/Sortable.min.js');
+    }
+
+    public function loadVue(): void
+    {
+        $this->addJS('npm/vue.min.js');
     }
 
     public function loadTypeahead(): void

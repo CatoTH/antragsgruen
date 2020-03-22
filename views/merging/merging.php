@@ -20,7 +20,11 @@ $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
+$layout->loadVue();
 $layout->loadCKEditor();
+
+$layout->addVueTemplate('@app/views/merging/_merging_paragraph_status.vue.php');
+
 if ($twoCols) {
     $layout->fullWidth = true;
     //$layout->fullScreen = true;

@@ -40,7 +40,8 @@
         "pa11y": "^5.3.0",
         "requirejs": "^2.3.6",
         "sortablejs": "^1.10.2",
-        "typescript": "^3.8.3"
+        "typescript": "^3.8.3",
+        "vue": "^2.6.11"
     },
     "directories": {
         "bin": "./bin/"

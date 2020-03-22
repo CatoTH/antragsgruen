@@ -1,6 +1,9 @@
 import { AntragsgruenEditor } from "../shared/AntragsgruenEditor";
 import editor = CKEDITOR.editor;
 import ClickEvent = JQuery.ClickEvent;
+import { VueConstructor } from 'vue';
+
+declare var Vue: VueConstructor;
 
 const STATUS_ACCEPTED = 4;
 const STATUS_MODIFIED_ACCEPTED = 6;
@@ -585,6 +588,21 @@ class MotionMergeAmendmentsParagraph {
 
         this.initButtons();
         this.initSetCollisionsAsHandled();
+
+        const amendmentData = $holder.find(".changeToolbar .statuses").data("amendments");
+        new Vue({
+            el: $holder.find(".changeToolbar .statuses")[0],
+            template: `<div class="statuses"><paragraph-amendment-settings v-for="data in amendmentData"
+                                                     v-bind:amendment="data.amendment"
+                                                     v-bind:nameBase="data.nameBase"
+                                                     v-bind:idAdd="data.idAdd"
+                                                     v-bind:active="data.active"
+            ></paragraph-amendment-settings></div>`,
+            data: {
+                amendmentData,
+            }
+        });
+
         $holder.find(".amendmentStatus").each((i: number, element) => {
             AmendmentStatuses.registerParagraph($(element).data("amendment-id"), this);
         });
