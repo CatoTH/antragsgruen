@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\MotionSection;
+use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
@@ -35,6 +35,20 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 $amendments = $motion->getVisibleAmendmentsSorted();
 
+$amendmentStaticData = [];
+$statusesAllNames = Amendment::getStatusNames();
+foreach ($amendments as $amendment) {
+    $amendmentStaticData[] = [
+        'id'            => $amendment->id,
+        'titlePrefix'   => $amendment->titlePrefix,
+        'bookmarkName'  => \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment),
+        'url'           => UrlHelper::createAmendmentUrl($amendment),
+        'oldStatusId'   => $amendment->status,
+        'oldStatusName' => $statusesAllNames[$amendment->status],
+        'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+    ];
+}
+
 /** @var MotionSection[] $newSections */
 $newSections = [];
 foreach ($motion->getSortedSections(false) as $section) {
@@ -63,10 +77,11 @@ echo $controller->showErrors();
 echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
-    'class'                    => 'motionMergeForm motionMergeStyles fuelux',
-    'enctype'                  => 'multipart/form-data',
-    'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
-    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
+    'class'                      => 'motionMergeForm motionMergeStyles fuelux',
+    'enctype'                    => 'multipart/form-data',
+    'data-draft-saving'          => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
+    'data-antragsgruen-widget'   => 'frontend/MotionMergeAmendments',
+    'data-amendment-static-data' => json_encode($amendmentStaticData),
 ]);
 
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');

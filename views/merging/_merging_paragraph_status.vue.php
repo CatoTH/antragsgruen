@@ -22,6 +22,7 @@ ob_start();
     </button>
     <button type="button" class="btn btn-sm toggleAmendment"
             v-bind:class="[active ? 'toggleActive' : 'btn-default', 'toggleAmendment' + amendment.id]"
+            v-on:click="activeToggle()"
     >
         <input v-bind:name="nameBase + '[' + amendment.id + ']'" v-bind:value="active ? '1' : '0'"
                type="hidden" class="amendmentActive" v-bind:data-amendment-id="amendment.id">
@@ -36,44 +37,49 @@ ob_start();
             </a>
         </li>
         <li v-if="amendment.hasProposal" class="divider"></li>
-        <li v-if="amendment.hasProposal" class="versionorig">
-            <a href="#" class="setVersion" data-version="<?= Init::TEXT_VERSION_ORIGINAL ?>">
+        <li v-if="amendment.hasProposal" class="versionorig" v-bind:class="version == 'orig' ? 'selected' : ''">
+            <a href="#" class="setVersion" v-on:click="setVersion($event, 'orig')">
                 <?= Yii::t('amend', 'merge_amtable_text_orig') ?>
             </a>
         </li>
-        <li v-if="amendment.hasProposal" class="versionprop">
-            <a href="#" class="setVersion" data-version="<?= Init::TEXT_VERSION_PROPOSAL ?>">
+        <li v-if="amendment.hasProposal" class="versionprop" v-bind:class="version == 'prop' ? 'selected' : ''">
+            <a href="#" class="setVersion" v-on:click="setVersion($event, 'prop')">
                 <?= Yii::t('amend', 'merge_amtable_text_prop') ?>
             </a>
         </li>
         <li class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_status_set')) ?>:"></li>
-        <li v-for="(statusName, statusId) in statuses" v-bind:class="'status' + statusId">
-            <a href="" class="setStatus" v-bind:data-status="statusId">{{ statusName }}</a>
+        <li v-for="(statusName, statusId) in statuses" v-bind:class="['status' + statusId, status == statusId ? 'selected' : '']">
+            <a href="" class="setStatus" v-bind:data-status="statusId" v-on:click="setStatus($event, statusId)">{{ statusName }}</a>
         </li>
         <li class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_voting_set')) ?>:"></li>
         <li>
             <div class="votingResult">
                 <label v-bind:for="'votesComment' + idadd"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
-                <input class="form-control votesComment" type="text" id="'votesComment' + idadd" value="">
+                <input class="form-control votesComment" type="text" v-bind:id="'votesComment' + idadd"
+                       v-model.lazy="votingData.votesComment" v-on:change="setVotes()">
             </div>
         </li>
         <li>
             <div class="votingData">
                 <div>
                     <label v-bind:for="'votesYes' + idadd"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
-                    <input class="form-control votesYes" type="number" v-bind:id="'votesYes' + idadd" value="">
+                    <input class="form-control votesYes" type="number" v-bind:id="'votesYes' + idadd"
+                           v-model.lazy="votingData.votesYes" v-on:change="setVotes()">
                 </div>
                 <div>
                     <label v-bind:for="'votesNo' + idadd"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
-                    <input class="form-control votesNo" type="number" v-bind:id="'votesNo' + idadd" value="">
+                    <input class="form-control votesNo" type="number" v-bind:id="'votesNo' + idadd"
+                           v-model.lazy="votingData.votesNo" v-on:change="setVotes()">
                 </div>
                 <div>
                     <label v-bind:for="'votesAbstention' + idadd"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
-                    <input class="form-control votesAbstention" type="number" v-bind:id="'votesAbstention' + idadd" value="">
+                    <input class="form-control votesAbstention" type="number" v-bind:id="'votesAbstention' + idadd"
+                           v-model.lazy="votingData.votesAbstention" v-on:change="setVotes()">
                 </div>
                 <div>
                     <label v-bind:for="'votesInvalid' + idadd"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
-                    <input class="form-control votesInvalid" type="number" v-bind:id="'votesInvalid' + idadd" value="">
+                    <input class="form-control votesInvalid" type="number" v-bind:id="'votesInvalid' + idadd"
+                           v-model.lazy="votingData.votesInvalid" v-on:change="setVotes()">
                 </div>
             </div>
         </li>
@@ -86,7 +92,7 @@ $html = ob_get_clean();
 <script>
     Vue.component('paragraph-amendment-settings', {
         template: <?= json_encode($html) ?>,
-        props: ['nameBase', 'amendment', 'active', 'idadd'],
+        props: ['nameBase', 'amendment', 'active', 'idadd', 'status', 'version', 'votingData'],
         data() {
             return {};
         },
@@ -100,12 +106,26 @@ $html = ob_get_clean();
         },
 
         methods: {
-            increment() {
-                this.count++;
+            activeToggle() {
+                this.$emit('update', ['set-active', parseInt(this.amendment.id), !this.active]);
             },
-
-            decrement() {
-                this.count--;
+            setStatus($event, statusId) {
+                $event.preventDefault();
+                this.$emit('update', ['set-status', parseInt(this.amendment.id), parseInt(statusId)]);
+            },
+            setVersion($event, version) {
+                $event.preventDefault();
+                this.$emit('update', ['set-version', parseInt(this.amendment.id), version]);
+            },
+            setVotes() {
+                const votingData = {
+                    votesComment: this.votingData.votesComment,
+                    votesYes: this.votingData.votesYes,
+                    votesNo: this.votingData.votesNo,
+                    votesAbstention: this.votingData.votesAbstention,
+                    votesInvalid: this.votingData.votesInvalid,
+                };
+                this.$emit('update', ['set-votes', parseInt(this.amendment.id), votingData]);
             }
         },
 

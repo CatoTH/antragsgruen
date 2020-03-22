@@ -40,22 +40,13 @@ $allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragra
 list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
 
 $vueData          = [];
-$statusesAllNames = Amendment::getStatusNames();
 foreach ($normalAmendments as $amendment) {
     /** @var Amendment $amendment */
     $vueData[] = [
-        'nameBase'  => $nameBase,
-        'idAdd'     => $type->id . '_' . $paragraphNo . '_' . $amendment->id,
-        'amendment' => [
-            'id'            => $amendment->id,
-            'titlePrefix'   => $amendment->titlePrefix,
-            'bookmarkName'  => \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment),
-            'url'           => UrlHelper::createAmendmentUrl($amendment),
-            'oldStatusId'   => $amendment->status,
-            'oldStatusName' => $statusesAllNames[$amendment->status],
-            'hasProposal'   => ($amendment->getMyProposalReference() !== null),
-        ],
-        'active'    => $form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo),
+        'amendmentId' => $amendment->id,
+        'nameBase'    => $nameBase,
+        'idAdd'       => $type->id . '_' . $paragraphNo . '_' . $amendment->id,
+        'active'      => $form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo),
     ];
 }
 
