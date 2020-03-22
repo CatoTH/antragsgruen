@@ -1,7 +1,6 @@
 <?php
 
 use app\models\db\Amendment;
-use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
 $statuses = [
@@ -56,7 +55,7 @@ ob_start();
             <div class="votingResult">
                 <label v-bind:for="'votesComment' + idadd"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
                 <input class="form-control votesComment" type="text" v-bind:id="'votesComment' + idadd"
-                       v-model.lazy="votingData.votesComment" v-on:change="setVotes()">
+                       v-model.lazy="votingData.comment" v-on:change="setVotes()">
             </div>
         </li>
         <li>
@@ -119,7 +118,7 @@ $html = ob_get_clean();
             },
             setVotes() {
                 const votingData = {
-                    votesComment: this.votingData.votesComment,
+                    comment: this.votingData.comment,
                     votesYes: this.votingData.votesYes,
                     votesNo: this.votingData.votesNo,
                     votesAbstention: this.votingData.votesAbstention,

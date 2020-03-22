@@ -514,7 +514,10 @@ class MotionMergeAmendmentsTextarea {
             html = html.replace(new RegExp(ent, 'g'), entities[ent]);
         });
 
-        return html.replace(/\s+</g, '<').replace(/>\s+/g, '>').replace(/<[^>]*>/g, '');
+        return html.replace(/\s+</g, '<').replace(/>\s+/g, '>')
+            .replace(/<[^>]*ice-ins[^>]*>/g, 'ice-ins') // make sure accepted insertions are still recognized as change
+            .replace(/<ins[^>]*>/g, 'ice-ins')
+            .replace(/<[^>]*>/g, '');
     }
 
     public onChanged() {
@@ -689,6 +692,7 @@ class MotionMergeAmendmentsParagraph {
                             AmendmentStatuses.setStatus(amendmentId, parseInt(eventData[2]));
                             break;
                         case 'set-votes':
+                            console.log("setVotes");
                             AmendmentStatuses.setVotesData(amendmentId, eventData[2]);
                             break;
                         case 'set-version':
@@ -776,13 +780,9 @@ class MotionMergeAmendmentsParagraph {
     }
 
     public getDraftData() {
-        const amendmentToggles = [];
-        this.$holder.find(".amendmentStatus").each((id, el) => {
-            const $el = $(el);
-            if ($el.find(".toggleActive").length > 0) {
-                amendmentToggles.push($el.data("amendment-id"));
-            }
-        });
+        const amendmentToggles = this.statusWidget.getAllAmendmentData()
+            .filter(amendmentData => amendmentData.active)
+            .map(amendmentData => amendmentData.amendmentId);
         return {
             amendmentToggles,
             text: this.textarea.getContent(),
