@@ -29,7 +29,7 @@
 
   
 
-### Version 4.5.1 [not released yet]
+### Version 4.5.1 (2020-03-23)
 
 - Bugfix: When editing an amendment as admin, the date picker was missing for the resolution date of the initiator organisation.
 - Bugfix: When changing a motion text, the PDF was not regenerated in some cases.
