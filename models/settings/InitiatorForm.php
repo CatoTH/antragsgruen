@@ -21,6 +21,7 @@ class InitiatorForm implements \JsonSerializable
     public $hasOrganizations    = true;
     public $allowMoreSupporters = true;
     public $hasResolutionDate   = 2;
+    public $allowSupportingAfterPublication = false;
 
     // Used for CollectBeforePublish
     public $skipForOrganizations = true;

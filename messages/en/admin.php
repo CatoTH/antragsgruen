@@ -490,6 +490,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_optional'        => 'Optional',
     'motion_type_required'        => 'Required',
     'motion_type_allow_more_supp' => 'Allow more supporters than required',
+    'motion_type_supp_after_pub'  => 'Allow officially supporting it after publication',
+    'motion_type_supp_after_pubh' => 'For this to work, "official support" needs to be activated above',
     'motion_type_ask_orga'        => 'Ask for organizations at natural persons',
     'motion_type_pos'             => 'Position (in the PDF)',
     'motion_type_pos_left'        => 'Left',
@@ -499,6 +501,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',
+    'motion_type_like_support_h'  => 'This option is only relevant if "Collecting phase before publication" or "allow supporting it after publication" is chosen below',
 
     'motion_deadlines_head'   => 'Deadline / Phases',
     'motion_deadline_complex' => 'Complex schedule / phases',

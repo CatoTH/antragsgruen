@@ -77,7 +77,16 @@ foreach (IPolicy::getPolicies() as $policy) {
                     ($motionType->motionLikesDislikes & $checkbox[0]),
                     ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $checkbox[1] . '</label>';
+                echo $checkbox[1];
+
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_SUPPORT) {
+                    $title = Html::encode(Yii::t('admin', 'motion_type_like_support_h'));
+                    echo ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                                aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $title . '"
+                                title="' . $title . '"></span>';
+                }
+
+                echo '</label>';
             }
             ?>
         </div>
@@ -153,7 +162,17 @@ foreach (IPolicy::getPolicies() as $policy) {
                     ($motionType->amendmentLikesDislikes & $checkbox[0]),
                     ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $checkbox[1] . '</label>';
+
+                echo $checkbox[1];
+
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_SUPPORT) {
+                    $title = Html::encode(Yii::t('admin', 'motion_type_like_support_h'));
+                    echo ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
+                                aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $title . '"
+                                title="' . $title . '"></span>';
+                }
+
+                echo '</label>';
             }
             ?>
         </div>
