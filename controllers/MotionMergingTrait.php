@@ -128,6 +128,60 @@ trait MotionMergingTrait
         ]);
     }
 
+    public function actionMergeAmendmentsStatusAjax(string $motionSlug, string $knownAmendments): string
+    {
+        \yii::$app->response->format = Response::FORMAT_RAW;
+        \yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
+        }
+
+        $form = Init::fromInitForm($motion,
+            \Yii::$app->request->post('amendments', []),
+            \Yii::$app->request->post('textVersion', [])
+        );
+
+        $amendmentsById          = [];
+        $newAmendmentsById       = [];
+        $newAmendmentsStaticData = [];
+
+        $knownAmendments = array_map('intval', explode(',', $knownAmendments));
+        foreach ($motion->getVisibleAmendments() as $amendment) {
+            $amendmentsById[$amendment->id] = $amendment;
+            if (!in_array($amendment->id, $knownAmendments)) {
+                $newAmendmentsById[$amendment->id] = $amendment;
+                $newAmendmentsStaticData[] = Init::getJsAmendmentStaticData($amendment);
+            }
+        }
+
+        $newAmendmentsParagraphs = [];
+        if (count($newAmendmentsStaticData) > 0) {
+            foreach ($motion->getSortedSections(false) as $section) {
+                $type = $section->getSettings();
+                $newAmendmentsParagraphs[$type->id] = [];
+                // @TODO Support titles?
+                if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
+                    $paragraphs     = $section->getTextParagraphObjects(false, false, false, true);
+                    $paragraphNos   = array_keys($paragraphs);
+                    foreach ($paragraphNos as $paragraphNo) {
+                        $newAmendmentsParagraphs[$type->id][$paragraphNo] = $form->getJsParagraphStatusData($section, $paragraphNo, $newAmendmentsById);
+                    }
+                }
+            }
+        }
+
+        return json_encode([
+            'success' => true,
+            'new'     => [
+                'staticData' => $newAmendmentsStaticData,
+                'paragraphs' => $newAmendmentsParagraphs,
+            ],
+            'deleted' => [],
+        ]);
+    }
+
     /**
      * @param string $motionSlug
      *

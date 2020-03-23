@@ -130,7 +130,8 @@ class Draft implements \JsonSerializable
             foreach (array_keys($paragraphs) as $paragraphNo) {
                 $allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
                 $paragraphText  = $form->getParagraphText($section, $paragraphNo, $amendmentsById);
-                list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
+                /** @noinspection PhpUnusedLocalVariableInspection */
+                list($normalAmendments, $modUs) = $form->getAffectingAmendments($allAmendingIds, $amendmentsById);
 
                 $draftPara                    = new DraftParagraph();
                 $draftPara->unchanged         = null;

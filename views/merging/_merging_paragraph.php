@@ -21,35 +21,21 @@ $paragraphCollisions = array_filter(
     ARRAY_FILTER_USE_KEY
 );
 
-$type      = $section->getSettings();
-$nameBase  = 'sections[' . $type->id . '][' . $paragraphNo . ']';
-$htmlId    = 'sections_' . $type->id . '_' . $paragraphNo;
-$holderId  = 'section_holder_' . $type->id . '_' . $paragraphNo;
-$reloadUrl = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments-paragraph-ajax', [
+$type         = $section->getSettings();
+$nameBase     = 'sections[' . $type->id . '][' . $paragraphNo . ']';
+$htmlId       = 'sections_' . $type->id . '_' . $paragraphNo;
+$holderId     = 'section_holder_' . $type->id . '_' . $paragraphNo;
+$reloadUrl    = UrlHelper::createMotionUrl($section->getMotion(), 'merge-amendments-paragraph-ajax', [
     'sectionId'   => $type->id,
     'paragraphNo' => $paragraphNo,
     'amendments'  => 'DUMMY',
 ]);
+$jsStatusData = $form->getJsParagraphStatusData($section, $paragraphNo, $amendmentsById);
 
 echo '<section class="paragraphWrapper ' . (count($paragraphCollisions) > 0 ? ' hasCollisions' : '') .
      '" data-section-id="' . $type->id . '" data-paragraph-id="' . $paragraphNo . '" ' .
      'id="paragraphWrapper_' . $type->id . '_' . $paragraphNo . '" ' .
      'data-reload-url="' . Html::encode($reloadUrl) . '">';
-
-$allAmendingIds = $form->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo);
-list($normalAmendments, $modUs) = $form->getAffectingAmendmentsForParagraph($allAmendingIds, $amendmentsById, $paragraphNo);
-
-$vueData          = [];
-foreach ($normalAmendments as $amendment) {
-    /** @var Amendment $amendment */
-    $vueData[] = [
-        'amendmentId' => $amendment->id,
-        'nameBase'    => $nameBase,
-        'idAdd'       => $type->id . '_' . $paragraphNo . '_' . $amendment->id,
-        'active'      => $form->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo),
-    ];
-}
-
 ?>
     <div class="leftToolbar">
         <div class="changedIndicator unchanged"><span
@@ -57,7 +43,7 @@ foreach ($normalAmendments as $amendment) {
                 aria-label="<?= Yii::t('amend', 'merge_changed') ?>"></span></div>
     </div>
     <div class="changeToolbar">
-        <div class="statuses" data-amendments="<?= Html::encode(json_encode($vueData)) ?>"></div>
+        <div class="statuses" data-amendments="<?= Html::encode(json_encode($jsStatusData)) ?>"></div>
         <div class="actions">
             <div class="mergeActionHolder hidden">
                 <div class="btn-group">

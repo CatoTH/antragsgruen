@@ -81,6 +81,9 @@ class AmendmentStatuses {
         });
     }
 
+    public static getAmendmentIds(): number[] {
+        return Object.keys(AmendmentStatuses.statuses).map(key => parseInt(key, 10));
+    }
 
     public static getAllStatuses(): { [amendmentId: number]: number } {
         return AmendmentStatuses.statuses;
@@ -834,6 +837,7 @@ export class MotionMergeAmendments {
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
 
         this.initDraftSaving();
+        this.initCheckBackendStatus();
         this.initRemovingSectionTexts();
     }
 
@@ -901,7 +905,7 @@ export class MotionMergeAmendments {
         if (!onlyInput) {
             $.ajax({
                 type: "POST",
-                url: MotionMergeAmendments.$form.data('draftSaving'),
+                url: MotionMergeAmendments.$form.data('draftSavingUrl'),
                 data: {
                     'public': (isPublic ? 1 : 0),
                     data: dataStr,
@@ -977,5 +981,24 @@ export class MotionMergeAmendments {
         $(".sectionType0").on("change", () => this.hasUnsavedChanges = true);
 
         $("#yii-debug-toolbar").remove();
+    }
+
+    private initCheckBackendStatus() {
+        window.setInterval(() => {
+            let url = MotionMergeAmendments.$form.data('checkStatusUrl');
+            const amendmentIds = AmendmentStatuses.getAmendmentIds();
+            url = url.replace(/AMENDMENTS/, amendmentIds.join(','));
+            $.get(url, data => {
+                if (data['success']) {
+                    this.onReceivedBackendStatus(data['new'], data['deleted']);
+                } else {
+                    console.warn(data);
+                }
+            });
+        }, 5000);
+    }
+
+    private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
+        console.log("received", newAmendments, deletedAmendments)
     }
 }
