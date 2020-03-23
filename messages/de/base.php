@@ -59,4 +59,7 @@ return [
     'aria_antragsgruen' => 'Vorstellung der Software Antragsgrün',
     'aria_version_hint' => 'Antragsgrün Version: %VERSION% - Änderungen dieser Version',
     'aria_tooltip'      => 'Hinweis',
+    'aria_error'        => 'Fehler',
+    'aria_info'         => 'Hinweis',
+    'aria_success'      => 'Erfolg',
 ];

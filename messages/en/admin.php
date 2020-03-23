@@ -501,7 +501,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',
-    'motion_type_like_support_h'  => 'This option is only relevant if "Collecting phase before publication" or "allow supporting it after publication" is chosen below',
+    'motion_type_like_support_h'  => 'Users can support motions. If there is a support collection phase before publication, this only works in this phase - unless it is explicitly set up differently.',
 
     'motion_deadlines_head'   => 'Deadline / Phases',
     'motion_deadline_complex' => 'Complex schedule / phases',

@@ -59,4 +59,7 @@ return [
     'aria_antragsgruen' => 'About the software Antragsgrün',
     'aria_version_hint' => 'Antragsgrün version: %VERSION% - Change log',
     'aria_tooltip'      => 'Hint',
+    'aria_error'        => 'Error',
+    'aria_info'         => 'Info',
+    'aria_success'      => 'Success',
 ];

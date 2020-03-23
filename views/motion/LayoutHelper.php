@@ -322,13 +322,7 @@ class LayoutHelper
         echo '</section>';
     }
 
-    /**
-     * @param IMotion $motion
-     * @param IPolicy $policy
-     * @param SupportBase $supportType
-     * @param bool $iAmSupporting
-     */
-    public static function printSupportingSection($motion, $policy, SupportBase $supportType, $iAmSupporting)
+    public static function printSupportingSection(IMotion $motion, IPolicy $policy, SupportBase $supportType, bool $iAmSupporting): void
     {
         $user = User::getCurrentUser();
 
@@ -375,7 +369,7 @@ class LayoutHelper
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
                 }
                 echo '<div class="alert alert-info" role="alert">' . $icon .
-                    '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
+                    '<span class="sr-only">' . \Yii::t('base', 'aria_error') . ':</span>' . Html::encode($cantSupportMsg) . '
             </div>';
             }
         }

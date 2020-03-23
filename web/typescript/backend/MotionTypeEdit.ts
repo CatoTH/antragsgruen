@@ -50,6 +50,17 @@ class MotionTypeEdit {
         const $initiatorGender = $form.find(".contactGender input");
 
         const $supportType = $form.find(".supportType");
+        const $supportAllowMore = $form.find(".formGroupAllowMore input");
+
+        $supportAllowMore.on('change', () => {
+            const selected = parseInt($supportType.find('input').val() as string, 10);
+            if (selected === SUPPORTER_COLLECTING_SUPPORTERS && $supportAllowMore.is(':checked')) {
+                $form.find('.formGroupAllowAfterPub').removeClass('hidden');
+            } else {
+                $form.find('.formGroupAllowAfterPub').addClass('hidden');
+            }
+        }).trigger('change');
+
         $supportType.on('changed.fu.selectlist', () => {
             const selected = $supportType.find('input').val();
             const hasSupporters = $supportType.find("li[data-value=\"" + selected + "\"]").data("has-supporters");
@@ -59,11 +70,12 @@ class MotionTypeEdit {
                 $form.find('.formGroupAllowMore').removeClass('hidden');
                 this.motionsHaveSupporters = true;
             } else {
-                $form.find(".formGroupMinSupporters").addClass('hidden');
-                $form.find(".formGroupAllowMore").addClass('hidden');
+                $form.find('.formGroupMinSupporters').addClass('hidden');
+                $form.find('.formGroupAllowMore').addClass('hidden');
                 this.motionsHaveSupporters = false;
             }
-            $initiatorGender.trigger("change");
+            $initiatorGender.trigger('change');
+            $supportAllowMore.trigger('change');
             this.setMaxPdfSupporters();
         }).trigger('changed.fu.selectlist');
 

@@ -353,10 +353,7 @@ class Base extends Controller
         }
     }
 
-    /**
-     * @return string
-     */
-    public function showErrors()
+    public function showErrors(bool $addBorder = false): string
     {
         $session = Yii::$app->session;
         if (!$session->isActive) {
@@ -366,9 +363,9 @@ class Base extends Controller
 
         $error = $session->getFlash('error', null, true);
         if ($error) {
-            $str = '<div class="alert alert-danger" role="alert">
+            $str .= '<div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_error') . ':</span>
                 ' . nl2br(Html::encode($error)) . '
             </div>';
         }
@@ -377,7 +374,7 @@ class Base extends Controller
         if ($success) {
             $str .= '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                <span class="sr-only">Success:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
                 ' . Html::encode($success) . '
             </div>';
         }
@@ -386,18 +383,22 @@ class Base extends Controller
         if ($info) {
             $str .= '<div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                <span class="sr-only">Info:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_info') . ':</span>
                 ' . Html::encode($info) . '
             </div>';
         }
 
         $email = $session->getFlash('email', null, true);
-        if ($email && YII_ENV == 'test') {
+        if ($email && YII_ENV === 'test') {
             $str .= '<div class="alert alert-info" role="alert">
                 <span class="glyphicon glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-                <span class="sr-only">Info:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_info') . ':</span>
                 ' . Html::encode($email) . '
             </div>';
+        }
+
+        if ($str !== '' && $addBorder) {
+            $str = '<div class="content">' . $str . '</div>';
         }
 
         return $str;

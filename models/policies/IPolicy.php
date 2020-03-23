@@ -3,8 +3,7 @@
 namespace app\models\policies;
 
 use app\components\UrlHelper;
-use app\models\db\ConsultationMotionType;
-use app\models\db\User;
+use app\models\db\{ConsultationMotionType, User};
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
 
@@ -60,55 +59,27 @@ abstract class IPolicy
     /** @var ConsultationMotionType */
     protected $motionType;
 
-    /**
-     * @param ConsultationMotionType $motionType
-     */
     public function __construct(ConsultationMotionType $motionType)
     {
         $this->motionType = $motionType;
     }
 
 
-    /**
-     * @static
-     * @abstract
-     * @return int
-     */
-    public static function getPolicyID()
+    public static function getPolicyID(): int
     {
         return -1;
     }
 
-    /**
-     * @static
-     * @abstract
-     * @return string
-     */
-    public static function getPolicyName()
+    public static function getPolicyName(): string
     {
         return '';
     }
 
-    /**
-     * @abstract
-     * @return string
-     */
-    abstract public function getOnCreateDescription();
+    abstract public function getOnCreateDescription(): string;
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    abstract public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false);
+    abstract public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool;
 
-    /**
-     * @param int $deadlineType
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    protected function checkCurrUserWithDeadline($deadlineType, $allowAdmins = true, $assumeLoggedIn = false)
+    protected function checkCurrUserWithDeadline(string $deadlineType, bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if (!$this->motionType->isInDeadline($deadlineType)) {
             $consultation = $this->motionType->getConsultation();
@@ -119,71 +90,34 @@ abstract class IPolicy
         return $this->checkCurrUser($allowAdmins, $assumeLoggedIn);
     }
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    public function checkCurrUserMotion($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUserMotion(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         $deadlineType = ConsultationMotionType::DEADLINE_MOTIONS;
         return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
     }
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    public function checkCurrUserAmendment($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUserAmendment(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         $deadlineType = ConsultationMotionType::DEADLINE_AMENDMENTS;
         return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
     }
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     */
-    public function checkCurrUserComment($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUserComment(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
         return $this->checkCurrUserWithDeadline($deadlineType, $allowAdmins, $assumeLoggedIn);
     }
 
-    /**
-     * @abstract
-     * @return string
-     */
-    abstract public function getPermissionDeniedMotionMsg();
+    abstract public function getPermissionDeniedMotionMsg(): string;
 
-    /**
-     * @abstract
-     * @return string
-     */
-    abstract public function getPermissionDeniedAmendmentMsg();
+    abstract public function getPermissionDeniedAmendmentMsg(): string;
 
-    /**
-     * @abstract
-     * @return string
-     */
-    abstract public function getPermissionDeniedCommentMsg();
+    abstract public function getPermissionDeniedCommentMsg(): string;
 
-    /**
-     * @abstract
-     * @return string
-     */
-    abstract public function getPermissionDeniedSupportMsg();
+    abstract public function getPermissionDeniedSupportMsg(): string;
 
 
-    /**
-     * @static
-     * @param string $policyId
-     * @param ConsultationMotionType $motionType
-     * @return IPolicy
-     */
-    public static function getInstanceByID($policyId, ConsultationMotionType $motionType)
+    public static function getInstanceByID(int $policyId, ConsultationMotionType $motionType): IPolicy
     {
         /** @var IPolicy $polClass */
         foreach (static::getPolicies() as $polId => $polClass) {

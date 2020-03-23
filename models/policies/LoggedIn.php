@@ -3,33 +3,21 @@
 namespace app\models\policies;
 
 use app\components\DateTools;
-use app\models\db\ConsultationMotionType;
-use app\models\db\User;
+use app\models\db\{ConsultationMotionType, User};
 
 class LoggedIn extends IPolicy
 {
-    /**
-     * @static
-     * @return int
-     */
-    public static function getPolicyID()
+    public static function getPolicyID(): int
     {
         return 2;
     }
 
-    /**
-     * @static
-     * @return string
-     */
-    public static function getPolicyName()
+    public static function getPolicyName(): string
     {
         return \Yii::t('structure', 'policy_logged_title');
     }
 
-    /**
-     * @return bool
-     */
-    protected function isWriteForbidden()
+    protected function isWriteForbidden(): bool
     {
         $user = User::getCurrentUser();
         if (!$user) {
@@ -42,18 +30,12 @@ class LoggedIn extends IPolicy
         return ($privilege->privilegeCreate == 0);
     }
 
-    /**
-     * @return string
-     */
-    public function getOnCreateDescription()
+    public function getOnCreateDescription(): string
     {
         return \Yii::t('structure', 'policy_logged_desc');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedMotionMsg()
+    public function getPermissionDeniedMotionMsg(): string
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_motion_denied');
@@ -64,10 +46,7 @@ class LoggedIn extends IPolicy
         return \Yii::t('structure', 'policy_logged_motion_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedAmendmentMsg()
+    public function getPermissionDeniedAmendmentMsg(): string
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_amend_denied');
@@ -78,10 +57,7 @@ class LoggedIn extends IPolicy
         return \Yii::t('structure', 'policy_logged_amend_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedSupportMsg()
+    public function getPermissionDeniedSupportMsg(): string
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_supp_denied');
@@ -89,10 +65,7 @@ class LoggedIn extends IPolicy
         return \Yii::t('structure', 'policy_logged_supp_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedCommentMsg()
+    public function getPermissionDeniedCommentMsg(): string
     {
         if ($this->isWriteForbidden()) {
             return \Yii::t('structure', 'policy_specuser_comm_denied');
@@ -108,14 +81,7 @@ class LoggedIn extends IPolicy
         return \Yii::t('structure', 'policy_logged_comm_denied');
     }
 
-
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if (\Yii::$app->user->isGuest && $assumeLoggedIn) {
             return true;
