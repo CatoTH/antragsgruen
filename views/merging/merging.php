@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\MotionSection;
+use app\models\db\{Amendment, MotionSection};
 use app\models\mergeAmendments\Init;
 use yii\helpers\Html;
 
@@ -20,7 +20,11 @@ $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
 $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
+$layout->loadVue();
 $layout->loadCKEditor();
+
+$layout->addVueTemplate('@app/views/merging/_merging_paragraph_status.vue.php');
+
 if ($twoCols) {
     $layout->fullWidth = true;
     //$layout->fullScreen = true;
@@ -30,6 +34,20 @@ $title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 $amendments = $motion->getVisibleAmendmentsSorted();
+
+$amendmentStaticData = [];
+$statusesAllNames = Amendment::getStatusNames();
+foreach ($amendments as $amendment) {
+    $amendmentStaticData[] = [
+        'id'            => $amendment->id,
+        'titlePrefix'   => $amendment->titlePrefix,
+        'bookmarkName'  => \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment),
+        'url'           => UrlHelper::createAmendmentUrl($amendment),
+        'oldStatusId'   => $amendment->status,
+        'oldStatusName' => $statusesAllNames[$amendment->status],
+        'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+    ];
+}
 
 /** @var MotionSection[] $newSections */
 $newSections = [];
@@ -59,10 +77,11 @@ echo $controller->showErrors();
 echo '</div>';
 
 echo Html::beginForm(UrlHelper::createMotionUrl($motion, 'merge-amendments'), 'post', [
-    'class'                    => 'motionMergeForm motionMergeStyles fuelux',
-    'enctype'                  => 'multipart/form-data',
-    'data-draft-saving'        => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
-    'data-antragsgruen-widget' => 'frontend/MotionMergeAmendments',
+    'class'                      => 'motionMergeForm motionMergeStyles fuelux',
+    'enctype'                    => 'multipart/form-data',
+    'data-draft-saving'          => UrlHelper::createMotionUrl($motion, 'save-merging-draft'),
+    'data-antragsgruen-widget'   => 'frontend/MotionMergeAmendments',
+    'data-amendment-static-data' => json_encode($amendmentStaticData),
 ]);
 
 $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public');

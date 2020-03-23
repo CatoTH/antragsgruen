@@ -1,7 +1,7 @@
 <?php
+
 namespace Helper;
 
-use Codeception\TestCase;
 use Codeception\Util\Uri;
 
 class AntragsgruenWebDriver extends \Codeception\Module\WebDriver

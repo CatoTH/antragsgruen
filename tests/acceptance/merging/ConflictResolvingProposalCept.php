@@ -31,7 +31,7 @@ $I->wantTo('test the merging');
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->click('#sidebar .mergeamendments a');
 $I->wait(0.2);
-$I->executeJS('$(".toMergeAmendments .selectAll").trigger("click");');
+$I->clickJS('.toMergeAmendments .selectAll');
 $I->wait(0.2);
 $I->submitForm('.mergeAllRow', [], null);
 $I->wait(0.5);
@@ -46,9 +46,9 @@ $I->seeElement('#paragraphWrapper_2_2 .collidingParagraph');
 
 $I->wantTo('switch to original amendment version');
 
-$I->executeJS('$("#paragraphWrapper_2_1 .amendmentStatus280 .dropdown-toggle").click();');
+$I->clickJS('#paragraphWrapper_2_1 .amendmentStatus280 .dropdown-toggle');
 $I->wait(0.5);
-$I->executeJS('$("#paragraphWrapper_2_1 .amendmentStatus280 .versionorig a").click();');
+$I->clickJS('#paragraphWrapper_2_1 .amendmentStatus280 .versionorig a');
 $I->wait(1);
 $I->dontSee('noconflict', '#section_holder_2_1 ins');
 $I->see('A big replacement', '#paragraphWrapper_2_1 .collidingParagraph ins');
@@ -59,8 +59,8 @@ $I->wantTo('test the merging with original version');
 $I->gotoMotion(true, 'Testing_proposed_changes-630');
 $I->click('#sidebar .mergeamendments a');
 $I->wait(0.2);
-$I->executeJS('$(".toMergeAmendments .selectAll").trigger("click");');
-$I->executeJS('$(".amendment280 input[value=orig]").click();');
+$I->clickJS('.toMergeAmendments .selectAll');
+$I->clickJS('.amendment280 input[value=orig]');
 $I->wait(0.2);
 $I->submitForm('.mergeAllRow', [], null);
 $I->wait(0.5);
@@ -75,9 +75,9 @@ $I->seeElement('#paragraphWrapper_2_2 .collidingParagraph');
 
 $I->wantTo('switch to proposed amendment version');
 
-$I->executeJS('$("#paragraphWrapper_2_1 .amendmentStatus280 .dropdown-toggle").click();');
+$I->clickJS('#paragraphWrapper_2_1 .amendmentStatus280 .dropdown-toggle');
 $I->wait(0.5);
-$I->executeJS('$("#paragraphWrapper_2_1 .amendmentStatus280 .versionprop a").click();');
+$I->clickJS('#paragraphWrapper_2_1 .amendmentStatus280 .versionprop a');
 $I->wait(1);
 $I->see('noconflict', '#section_holder_2_1 ins');
 $I->dontSeeElement('#paragraphWrapper_2_1 .collidingParagraph');

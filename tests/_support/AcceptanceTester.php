@@ -353,4 +353,9 @@ class AcceptanceTester extends \Codeception\Actor
     {
         $this->executeJS('$("' . addslashes($selector) . '").checkbox("uncheck");');
     }
+
+    public function clickJS(string $selector): void
+    {
+        $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true}))');
+    }
 }
