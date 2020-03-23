@@ -53,31 +53,31 @@ ob_start();
         <li class="divider dividerLabeled" data-label="<?= Html::encode(Yii::t('amend', 'merge_voting_set')) ?>:"></li>
         <li>
             <div class="votingResult">
-                <label v-bind:for="'votesComment' + idadd"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
-                <input class="form-control votesComment" type="text" v-bind:id="'votesComment' + idadd"
+                <label v-bind:for="'votesComment' + idAdd"><?= Yii::t('amend', 'merge_new_votes_comment') ?></label>
+                <input class="form-control votesComment" type="text" v-bind:id="'votesComment' + idAdd"
                        v-model.lazy="votingData.comment" v-on:change="setVotes()">
             </div>
         </li>
         <li>
             <div class="votingData">
                 <div>
-                    <label v-bind:for="'votesYes' + idadd"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
-                    <input class="form-control votesYes" type="number" v-bind:id="'votesYes' + idadd"
+                    <label v-bind:for="'votesYes' + idAdd"><?= Yii::t('amend', 'merge_amend_votes_yes') ?></label>
+                    <input class="form-control votesYes" type="number" v-bind:id="'votesYes' + idAdd"
                            v-model.lazy="votingData.votesYes" v-on:change="setVotes()">
                 </div>
                 <div>
-                    <label v-bind:for="'votesNo' + idadd"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
-                    <input class="form-control votesNo" type="number" v-bind:id="'votesNo' + idadd"
+                    <label v-bind:for="'votesNo' + idAdd"><?= Yii::t('amend', 'merge_amend_votes_no') ?></label>
+                    <input class="form-control votesNo" type="number" v-bind:id="'votesNo' + idAdd"
                            v-model.lazy="votingData.votesNo" v-on:change="setVotes()">
                 </div>
                 <div>
-                    <label v-bind:for="'votesAbstention' + idadd"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
-                    <input class="form-control votesAbstention" type="number" v-bind:id="'votesAbstention' + idadd"
+                    <label v-bind:for="'votesAbstention' + idAdd"><?= Yii::t('amend', 'merge_amend_votes_abstention') ?></label>
+                    <input class="form-control votesAbstention" type="number" v-bind:id="'votesAbstention' + idAdd"
                            v-model.lazy="votingData.votesAbstention" v-on:change="setVotes()">
                 </div>
                 <div>
-                    <label v-bind:for="'votesInvalid' + idadd"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
-                    <input class="form-control votesInvalid" type="number" v-bind:id="'votesInvalid' + idadd"
+                    <label v-bind:for="'votesInvalid' + idAdd"><?= Yii::t('amend', 'merge_amend_votes_invalid') ?></label>
+                    <input class="form-control votesInvalid" type="number" v-bind:id="'votesInvalid' + idAdd"
                            v-model.lazy="votingData.votesInvalid" v-on:change="setVotes()">
                 </div>
             </div>
@@ -91,7 +91,7 @@ $html = ob_get_clean();
 <script>
     Vue.component('paragraph-amendment-settings', {
         template: <?= json_encode($html) ?>,
-        props: ['nameBase', 'amendment', 'active', 'idadd', 'status', 'version', 'votingData'],
+        props: ['nameBase', 'amendment', 'active', 'idAdd', 'status', 'version', 'votingData'],
         data() {
             return {};
         },

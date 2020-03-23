@@ -44,7 +44,8 @@
     "codeception/verify": "^1.2.0",
     "bower-asset/yii2-pjax": "^2.0.3.9999999-dev",
     "codeception/module-asserts": "^1.1",
-    "codeception/module-webdriver": "^1.0"
+    "codeception/module-webdriver": "^1.0",
+    "codeception/module-yii2": "^1.1"
   },
   "autoload": {
     "psr-4": {

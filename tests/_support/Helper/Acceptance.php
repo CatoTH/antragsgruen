@@ -23,10 +23,7 @@ class Acceptance extends \Codeception\Module
         $this->deleteDB();
     }
 
-    /**
-     * @param string $page
-     */
-    public function amOnPage2($page)
+    public function amOnPage2(string $page)
     {
         $urlParts = parse_url($page);
         /** @var WebDriver $webdriver */
@@ -38,9 +35,6 @@ class Acceptance extends \Codeception\Module
         $webdriver->webDriver->get($page);
     }
 
-    /**
-     *
-     */
     public function populateDBData1()
     {
         $this->populateDB(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR .
