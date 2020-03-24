@@ -351,7 +351,7 @@ class LayoutHelper
                 echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
                 echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
                 echo '</div>';
                 echo Html::endForm();
@@ -403,30 +403,5 @@ class LayoutHelper
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
         return $pdf;
-    }
-
-    /**
-     * @param string $url
-     * @param string $title
-     * @return string
-     */
-    public static function getShareButtons($url, $title)
-    {
-        $twitter       = Html::encode(
-            'https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url)
-        );
-        $facebook      = Html::encode(
-            'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
-        );
-        $titleTwitter  = Html::encode(\Yii::t('motion', 'share_twitter'));
-        $titleFacebook = Html::encode(\Yii::t('motion', 'share_facebook'));
-        return '<div class="share_buttons"><ul>
-              <li class="twitter"><a href="' . $twitter . '" title="' . $titleTwitter . '">
-                 <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
-              </a></li>
-              <li class="facebook"><a href="' . $facebook . '" title="' . $titleFacebook . '">
-                  <span class="icon fontello-facebook"></span> <span class="share_text">share</span>
-              </a></li>
-            </ul></div>';
     }
 }
