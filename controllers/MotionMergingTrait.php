@@ -146,25 +146,31 @@ trait MotionMergingTrait
         $amendmentsById          = [];
         $newAmendmentsById       = [];
         $newAmendmentsStaticData = [];
+        $newAmendmentsStatus     = [];
 
         $knownAmendments = array_map('intval', explode(',', $knownAmendments));
         foreach ($motion->getVisibleAmendments() as $amendment) {
             $amendmentsById[$amendment->id] = $amendment;
             if (!in_array($amendment->id, $knownAmendments)) {
-                $newAmendmentsById[$amendment->id] = $amendment;
-                $newAmendmentsStaticData[] = Init::getJsAmendmentStaticData($amendment);
+                $newAmendmentsById[$amendment->id]   = $amendment;
+                $newAmendmentsStaticData[]           = Init::getJsAmendmentStaticData($amendment);
+                $newAmendmentsStatus[$amendment->id] = [
+                    'status'     => $amendment->status,
+                    'version'    => ($amendment->hasAlternativeProposaltext(false) ? Init::TEXT_VERSION_PROPOSAL : Init::TEXT_VERSION_ORIGINAL),
+                    'votingData' => $amendment->getVotingData()->jsonSerialize(),
+                ];
             }
         }
 
         $newAmendmentsParagraphs = [];
         if (count($newAmendmentsStaticData) > 0) {
             foreach ($motion->getSortedSections(false) as $section) {
-                $type = $section->getSettings();
+                $type                               = $section->getSettings();
                 $newAmendmentsParagraphs[$type->id] = [];
                 // @TODO Support titles?
                 if ($type->type === \app\models\sectionTypes\ISectionType::TYPE_TEXT_SIMPLE) {
-                    $paragraphs     = $section->getTextParagraphObjects(false, false, false, true);
-                    $paragraphNos   = array_keys($paragraphs);
+                    $paragraphs   = $section->getTextParagraphObjects(false, false, false, true);
+                    $paragraphNos = array_keys($paragraphs);
                     foreach ($paragraphNos as $paragraphNo) {
                         $newAmendmentsParagraphs[$type->id][$paragraphNo] = $form->getJsParagraphStatusData($section, $paragraphNo, $newAmendmentsById);
                     }
@@ -176,6 +182,7 @@ trait MotionMergingTrait
             'success' => true,
             'new'     => [
                 'staticData' => $newAmendmentsStaticData,
+                'status'     => $newAmendmentsStatus,
                 'paragraphs' => $newAmendmentsParagraphs,
             ],
             'deleted' => [],

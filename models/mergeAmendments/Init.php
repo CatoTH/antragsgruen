@@ -83,6 +83,7 @@ class Init
                 return $amendment->getMyProposalReference()->id;
             }
         }
+
         return null;
     }
 
@@ -104,7 +105,7 @@ class Init
     {
         if ($this->draftData) {
             $paragraphData = $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
-            $amendmentIds = $paragraphData->getActiveResolvedAmendmentIds($this->motion);
+            $amendmentIds  = $paragraphData->getActiveResolvedAmendmentIds($this->motion);
 
             return $section->getAmendmentDiffMerger($amendmentIds)->getParagraphMerger($paragraphNo);
         } else {

@@ -44,6 +44,14 @@ class AmendmentStatuses {
         });
     }
 
+    public static registerNewAmendment(amendmentId: number, status: number, version: AMENDMENT_VERSION, votingData: VotingData) {
+        AmendmentStatuses.statuses[amendmentId] = status;
+        AmendmentStatuses.versions[amendmentId] = version;
+        AmendmentStatuses.votingData[amendmentId] = votingData;
+
+        console.log("registered new amendment status", AmendmentStatuses.statuses, AmendmentStatuses.versions, AmendmentStatuses.votingData);
+    }
+
     public static getAmendmentStatus(amendmentId: number): number {
         return AmendmentStatuses.statuses[amendmentId];
     }
@@ -818,7 +826,6 @@ export class MotionMergeAmendments {
         AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions, draft.amendmentVotingData);
 
         const amendmentStaticData = $form.data('amendment-static-data');
-        console.log(amendmentStaticData);
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
@@ -873,9 +880,9 @@ export class MotionMergeAmendments {
 
     private saveDraft(onlyInput = false) {
         if (this.paragraphs.filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
-            console.log("Has no unsaved changes");
             return;
         }
+        console.log("Has unsaved changes");
 
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
@@ -999,6 +1006,11 @@ export class MotionMergeAmendments {
     }
 
     private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
-        console.log("received", newAmendments, deletedAmendments)
+        const newAmendmentStaticData = {};
+        newAmendments['staticData'].forEach(amendmentData => {
+            newAmendmentStaticData[amendmentData['id']] = amendmentData;
+            const status = newAmendments['status'][amendmentData['id']];
+            AmendmentStatuses.registerNewAmendment(amendmentData['id'], status['status'], status['version'], status['votingData']);
+        });
     }
 }
