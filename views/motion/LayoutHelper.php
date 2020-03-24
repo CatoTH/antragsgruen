@@ -151,13 +151,7 @@ class LayoutHelper
         return $content;
     }
 
-    /**
-     * @param IPdfWriter $pdf
-     * @param IPDFLayout $pdfLayout
-     * @param Motion $motion
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion): void
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
@@ -183,11 +177,7 @@ class LayoutHelper
         }
     }
 
-    /**
-     * @param Motion $motion
-     * @return string
-     */
-    public static function createPdfTcpdf(Motion $motion)
+    public static function createPdfTcpdf(Motion $motion): string
     {
         $pdfLayout = $motion->motionType->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
@@ -208,12 +198,7 @@ class LayoutHelper
         return $pdf->Output('', 'S');
     }
 
-    /**
-     * @param IMotion $motion
-     * @param IPolicy $policy
-     * @param int $supportStatus
-     */
-    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, $supportStatus)
+    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, string $supportStatus): void
     {
         $user = User::getCurrentUser();
 
@@ -241,7 +226,7 @@ class LayoutHelper
             return;
         }
 
-        echo '<section class="likes"><h2 class="green">' . \Yii::t('motion', 'likes_title') . '</h2>
+        echo '<section class="likes" aria-labelledby="likesTitle"><h2 class="green" id="likesTitle">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
         if ($hasLike && count($likes) > 0) {
@@ -307,8 +292,8 @@ class LayoutHelper
             echo '</div>';
             echo Html::endForm();
         } else {
-            if ($cantSupportMsg != '') {
-                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+            if ($cantSupportMsg !== '') {
+                if ($cantSupportMsg === \Yii::t('structure', 'policy_logged_supp_denied')) {
                     $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
                 } else {
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';

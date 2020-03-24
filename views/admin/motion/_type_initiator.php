@@ -194,9 +194,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
 
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
-                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </div>
     </div>
 
@@ -222,10 +220,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 Yii::t('admin', 'motion_type_supp_after_pub'),
                 $motionSettings->allowSupportingAfterPublication
             );
-            $title = Html::encode(Yii::t('admin', 'motion_type_supp_after_pubh'));
-            echo ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                         aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $title . '"
-                         title="' . $title . '"></span>';
+            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>
@@ -435,9 +430,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                    value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
         </div>
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
-                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </div>
     </div>
 
@@ -463,10 +456,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 Yii::t('admin', 'motion_type_supp_after_pub'),
                 $amendmentSettings->allowSupportingAfterPublication
             );
-            $title = Html::encode(Yii::t('admin', 'motion_type_supp_after_pubh'));
-            echo ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                         aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip')) . ': ' . $title . '"
-                         title="' . $title . '"></span>';
+            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>

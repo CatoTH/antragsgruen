@@ -828,14 +828,14 @@ class HTMLTools
         return trim($text);
     }
 
-    /**
-     * @param string $formName
-     * @param string $htmlLabel
-     * @param bool $checked
-     * @param array $attributes
-     * @return string
-     */
-    public static function fueluxCheckbox($formName, $htmlLabel, $checked, $attributes = [])
+    public static function getTooltipIcon(string $tooltip): string
+    {
+        return '<span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
+                  'aria-label="' . Html::encode(\Yii::t('base', 'aria_tooltip') . ': ' . $tooltip) . '" ' .
+                  'data-original-title="' . Html::encode($tooltip) . '"></span>';
+    }
+
+    public static function fueluxCheckbox(string $formName, string $htmlLabel, bool $checked, array $attributes = []): string
     {
         $str = '<label class="checkbox-custom" data-initialize="checkbox"';
         foreach ($attributes as $attrName => $attrVal) {
@@ -971,11 +971,7 @@ class HTMLTools
         }
     }
 
-    /**
-     * @param \DOMNode $node
-     * @return array
-     */
-    public static function getDomDebug(\DOMNode $node)
+    public static function getDomDebug(\DOMNode $node): array
     {
         if (is_a($node, \DOMElement::class)) {
             /** @var \DOMNode $node */

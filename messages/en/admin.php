@@ -499,6 +499,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_print_title'     => 'Print title in PDF',
     'motion_type_show_in_html'    => 'Also display as a regular motion section',
     'motion_type_like_like'       => 'Likes',
+    'motion_type_like_like_h'     => 'Users liking a motion can be seen below its text, yet it\s not officially supporting it. Official supporters can be seen in the PDF, for example.',
     'motion_type_like_dislike'    => 'Dislikes',
     'motion_type_like_support'    => 'Official support',
     'motion_type_like_support_h'  => 'Users can support motions. If there is a support collection phase before publication, this only works in this phase - unless it is explicitly set up differently.',

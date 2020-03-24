@@ -448,6 +448,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_print_title'     => 'Titel im PDF anzeigen',
     'motion_type_show_in_html'    => 'Auch als regulären Antrags-Abschnitt anzeigen',
     'motion_type_like_like'       => 'Zustimmung',
+    'motion_type_like_like_h'     => 'Wer einem Antrag zustimmt, steht unter dem Antrag, gehört aber nicht zu den offiziellen Unterstützer*innen, die unter anderem auch im PDF aufgelistet werden.',
     'motion_type_like_dislike'    => 'Ablehnung',
     'motion_type_like_support'    => 'Offiziell unterstützen',
     'motion_type_like_support_h'  => 'Mitglieder können sich selbst auf die Unterstützungsliste setzen. Falls es eine Unterstützungs-Phase vor Veröffentlichung gibt, gilt dies normalerweise nur innerhalb dieser - es sei denn, dies wird ausdrücklich anders eingestellt.',

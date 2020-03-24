@@ -209,15 +209,11 @@ $handledSiteSettings = [];
             echo '</label></div>';
 
             $propTitle = Yii::t('admin', 'con_proposal_procedure');
-            $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                         'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_proposal_tt')) . '" ' .
-                         'data-original-title="' . Html::encode(Yii::t('admin', 'con_proposal_tt')) . '"></span>';
+            $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_proposal_tt'));
             $boolSettingRow($settings, 'proposalProcedurePage', $handledSettings, $propTitle . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_collecting');
-            $tooltip   = ' <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top" ' .
-                         'aria-label="' . Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_collecting_tt')) . '" ' .
-                         'data-original-title="' . Html::encode(Yii::t('admin', 'con_collecting_tt')) . '"></span>';
+            $tooltip   = HTMLTools::getTooltipIcon(Yii::t('admin', 'con_collecting_tt'));
             $boolSettingRow($settings, 'collectingPage', $handledSettings, $propTitle . $tooltip);
 
             $propTitle = Yii::t('admin', 'con_new_motions');
