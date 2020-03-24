@@ -162,6 +162,13 @@ trait MotionMergingTrait
             }
         }
 
+        $deletedAmendmentIds = [];
+        foreach ($knownAmendments as $amendmentId) {
+            if (!isset($amendmentsById[$amendmentId])) {
+                $deletedAmendmentIds[] = $amendmentId;
+            }
+        }
+
         $newAmendmentsParagraphs = [];
         if (count($newAmendmentsStaticData) > 0) {
             foreach ($motion->getSortedSections(false) as $section) {
@@ -185,7 +192,7 @@ trait MotionMergingTrait
                 'status'     => $newAmendmentsStatus,
                 'paragraphs' => $newAmendmentsParagraphs,
             ],
-            'deleted' => [],
+            'deleted' => $deletedAmendmentIds,
         ]);
     }
 

@@ -52,6 +52,12 @@ class AmendmentStatuses {
         console.log("registered new amendment status", AmendmentStatuses.statuses, AmendmentStatuses.versions, AmendmentStatuses.votingData);
     }
 
+    public static deleteAmendment(amendmentId: number) {
+        delete(AmendmentStatuses.statuses[amendmentId]);
+        delete(AmendmentStatuses.versions[amendmentId]);
+        delete(AmendmentStatuses.votingData[amendmentId]);
+    }
+
     public static getAmendmentStatus(amendmentId: number): number {
         return AmendmentStatuses.statuses[amendmentId];
     }
@@ -676,6 +682,9 @@ class MotionMergeAmendmentsParagraph {
                         amendment, nameBase, idAdd, active, status, verstion, votingData
                     });
                 });
+                this.$on('amendment-deleted', function ([amendmentId]) {
+                    this.amendmentParagraphData = this.amendmentParagraphData.filter(amend => amend.amendmentId != amendmentId);
+                });
             },
             methods: {
                 getAllAmendmentData() {
@@ -741,6 +750,9 @@ class MotionMergeAmendmentsParagraph {
         this.statusWidget.$emit('amendment-added', [amendment, nameBase, idAdd, active, status, verstion, votingData]);
     }
 
+    public onAmendmentDeleted(amendmentId) {
+        this.statusWidget.$emit('amendment-deleted', [amendmentId]);
+    }
 
     private initSetCollisionsAsHandled() {
         this.$holder.on("click", "button.hideCollision", (ev: ClickEvent) => {
@@ -1010,7 +1022,7 @@ export class MotionMergeAmendments {
             url = url.replace(/AMENDMENTS/, amendmentIds.join(','));
             $.get(url, data => {
                 if (data['success']) {
-                    this.onReceivedBackendStatus(data['new']/*, data['deleted']*/);
+                    this.onReceivedBackendStatus(data['new'], data['deleted']);
                 } else {
                     console.warn(data);
                 }
@@ -1018,7 +1030,7 @@ export class MotionMergeAmendments {
         }, 5000);
     }
 
-    private onReceivedBackendStatus(newAmendments: any[]/*, deletedAmendments: any[]*/) {
+    private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
         const newAmendmentStaticData = {};
         newAmendments['staticData'].forEach(amendmentData => {
             newAmendmentStaticData[amendmentData['id']] = amendmentData;
@@ -1034,6 +1046,15 @@ export class MotionMergeAmendments {
                         paraObj.onAmendmentAdded(amendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
                     });
                 });
+            });
+        });
+
+        deletedAmendments.forEach(amendmentId => {
+            console.log("Removing amendment", amendmentId);
+            AmendmentStatuses.deleteAmendment(amendmentId);
+
+            Object.keys(this.paragraphsByTypeAndNo).forEach(id => {
+                this.paragraphsByTypeAndNo[id].onAmendmentDeleted(amendmentId);
             });
         });
     }
