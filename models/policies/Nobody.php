@@ -6,71 +6,42 @@ use app\models\db\User;
 
 class Nobody extends IPolicy
 {
-    /**
-     * @static
-     * @return int
-     */
-    public static function getPolicyID()
+    public static function getPolicyID(): int
     {
         return 0;
     }
 
-    /**
-     * @static
-     * @return string
-     */
-    public static function getPolicyName()
+    public static function getPolicyName(): string
     {
         return \Yii::t('structure', 'policy_nobody_title');
     }
 
-    /**
-     * @return string
-     */
-    public function getOnCreateDescription()
+    public function getOnCreateDescription(): string
     {
         return \Yii::t('structure', 'policy_nobody_desc');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedMotionMsg()
+    public function getPermissionDeniedMotionMsg(): string
     {
         return \Yii::t('structure', 'policy_nobody_motion_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedAmendmentMsg()
+    public function getPermissionDeniedAmendmentMsg(): string
     {
         return \Yii::t('structure', 'policy_nobody_amend_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedSupportMsg()
+    public function getPermissionDeniedSupportMsg(): string
     {
         return \Yii::t('structure', 'policy_nobody_supp_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedCommentMsg()
+    public function getPermissionDeniedCommentMsg(): string
     {
         return \Yii::t('structure', 'policy_nobody_comm_denied');
     }
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         if ($allowAdmins && User::getCurrentUser()) {
             if (User::havePrivilege($this->motionType->getMyConsultation(), User::PRIVILEGE_MOTION_EDIT)) {

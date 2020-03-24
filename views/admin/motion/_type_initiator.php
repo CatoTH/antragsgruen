@@ -194,9 +194,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
 
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
-                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </div>
     </div>
 
@@ -209,6 +207,20 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 Yii::t('admin', 'motion_type_allow_more_supp'),
                 $motionSettings->allowMoreSupporters
             );
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group formGroupAllowAfterPub" id="typeAllowSupportingAfterPublication">
+        <div class="checkbox col-md-8 col-md-offset-4">
+            <input type="hidden" name="motionInitiatorSettingFields[]" value="allowSupportingAfterPublication">
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'motionInitiatorSettings[allowSupportingAfterPublication]',
+                Yii::t('admin', 'motion_type_supp_after_pub'),
+                $motionSettings->allowSupportingAfterPublication
+            );
+            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>
@@ -418,9 +430,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                    value="<?= Html::encode($amendmentSettings->minSupportersFemale) ?>">
         </div>
         <div class="col-md-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_supp_female_h')) ?>"
-                  data-original-title="<?= Html::encode(Yii::t('admin', 'motion_type_supp_female_h')) ?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_female_h')) ?>
         </div>
     </div>
 
@@ -433,6 +443,20 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 Yii::t('admin', 'motion_type_allow_more_supp'),
                 $amendmentSettings->allowMoreSupporters
             );
+            ?>
+        </div>
+    </div>
+
+    <div class="form-group formGroupAllowAfterPub" id="typeAllowSupportingAfterPublicationAmendment">
+        <div class="checkbox col-md-8 col-md-offset-4">
+            <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowSupportingAfterPublication">
+            <?php
+            echo HTMLTools::fueluxCheckbox(
+                'amendmentInitiatorSettings[allowSupportingAfterPublication]',
+                Yii::t('admin', 'motion_type_supp_after_pub'),
+                $amendmentSettings->allowSupportingAfterPublication
+            );
+            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>

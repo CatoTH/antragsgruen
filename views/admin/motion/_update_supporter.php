@@ -98,9 +98,7 @@ $getSupporterRow = function (ISupporter $supporter) use ($settings) {
                 <span class="glyphicon glyphicon-ok ok"></span>
                 <?= Yii::t('initiator', 'copy_to_clipboard') ?>
             </button>
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('initiator', 'copy_to_clipboard_h')) ?>"
-                  data-original-title="<?= Yii::t('initiator', 'copy_to_clipboard_h') ?>"></span>
+            <?= \app\components\HTMLTools::getTooltipIcon(Yii::t('initiator', 'copy_to_clipboard_h')) ?>
         </div>
     </div>
 </div>

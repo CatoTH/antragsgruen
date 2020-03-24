@@ -151,13 +151,7 @@ class LayoutHelper
         return $content;
     }
 
-    /**
-     * @param IPdfWriter $pdf
-     * @param IPDFLayout $pdfLayout
-     * @param Motion $motion
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion)
+    public static function printToPDF(IPdfWriter $pdf, IPDFLayout $pdfLayout, Motion $motion): void
     {
         error_reporting(error_reporting() & ~E_DEPRECATED); // TCPDF ./. PHP 7.2
 
@@ -183,11 +177,7 @@ class LayoutHelper
         }
     }
 
-    /**
-     * @param Motion $motion
-     * @return string
-     */
-    public static function createPdfTcpdf(Motion $motion)
+    public static function createPdfTcpdf(Motion $motion): string
     {
         $pdfLayout = $motion->motionType->getPDFLayoutClass();
         $pdf       = $pdfLayout->createPDFClass();
@@ -208,12 +198,7 @@ class LayoutHelper
         return $pdf->Output('', 'S');
     }
 
-    /**
-     * @param IMotion $motion
-     * @param IPolicy $policy
-     * @param int $supportStatus
-     */
-    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, $supportStatus)
+    public static function printLikeDislikeSection(IMotion $motion, IPolicy $policy, string $supportStatus): void
     {
         $user = User::getCurrentUser();
 
@@ -241,7 +226,7 @@ class LayoutHelper
             return;
         }
 
-        echo '<section class="likes"><h2 class="green">' . \Yii::t('motion', 'likes_title') . '</h2>
+        echo '<section class="likes" aria-labelledby="likesTitle"><h2 class="green" id="likesTitle">' . \Yii::t('motion', 'likes_title') . '</h2>
     <div class="content">';
 
         if ($hasLike && count($likes) > 0) {
@@ -307,8 +292,8 @@ class LayoutHelper
             echo '</div>';
             echo Html::endForm();
         } else {
-            if ($cantSupportMsg != '') {
-                if ($cantSupportMsg == \Yii::t('structure', 'policy_logged_supp_denied')) {
+            if ($cantSupportMsg !== '') {
+                if ($cantSupportMsg === \Yii::t('structure', 'policy_logged_supp_denied')) {
                     $icon = '<span class="icon glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ';
                 } else {
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
@@ -322,13 +307,7 @@ class LayoutHelper
         echo '</section>';
     }
 
-    /**
-     * @param IMotion $motion
-     * @param IPolicy $policy
-     * @param SupportBase $supportType
-     * @param bool $iAmSupporting
-     */
-    public static function printSupportingSection($motion, $policy, SupportBase $supportType, $iAmSupporting)
+    public static function printSupportingSection(IMotion $motion, IPolicy $policy, SupportBase $supportType, bool $iAmSupporting): void
     {
         $user = User::getCurrentUser();
 
@@ -357,7 +336,7 @@ class LayoutHelper
                 echo Html::beginForm('', 'post', ['class' => 'motionSupportForm']);
                 echo '<div style="text-align: center; margin-bottom: 20px;">';
                 echo '<button type="submit" name="motionSupportRevoke" class="btn">';
-                echo '<span class="glyphicon glyphicon-remove-sign"></span> ' . \Yii::t('motion', 'like_withdraw');
+                echo '<span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> ' . \Yii::t('motion', 'like_withdraw');
                 echo '</button>';
                 echo '</div>';
                 echo Html::endForm();
@@ -375,7 +354,7 @@ class LayoutHelper
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
                 }
                 echo '<div class="alert alert-info" role="alert">' . $icon .
-                    '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
+                    '<span class="sr-only">' . \Yii::t('base', 'aria_error') . ':</span>' . Html::encode($cantSupportMsg) . '
             </div>';
             }
         }
@@ -409,30 +388,5 @@ class LayoutHelper
         $pdf      = $exporter->createPDF([$content]);
         \Yii::$app->cache->set($motion->getPdfCacheKey(), $pdf);
         return $pdf;
-    }
-
-    /**
-     * @param string $url
-     * @param string $title
-     * @return string
-     */
-    public static function getShareButtons($url, $title)
-    {
-        $twitter       = Html::encode(
-            'https://twitter.com/intent/tweet?text=' . urlencode($title) . '&url=' . urlencode($url)
-        );
-        $facebook      = Html::encode(
-            'https://www.facebook.com/sharer/sharer.php?u=' . urlencode($url)
-        );
-        $titleTwitter  = Html::encode(\Yii::t('motion', 'share_twitter'));
-        $titleFacebook = Html::encode(\Yii::t('motion', 'share_facebook'));
-        return '<div class="share_buttons"><ul>
-              <li class="twitter"><a href="' . $twitter . '" title="' . $titleTwitter . '">
-                 <span class="icon fontello-twitter"></span> <span class="share_text">tweet</span>
-              </a></li>
-              <li class="facebook"><a href="' . $facebook . '" title="' . $titleFacebook . '">
-                  <span class="icon fontello-facebook"></span> <span class="share_text">share</span>
-              </a></li>
-            </ul></div>';
     }
 }

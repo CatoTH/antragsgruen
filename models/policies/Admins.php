@@ -8,36 +8,22 @@ use app\models\db\User;
 
 class Admins extends IPolicy
 {
-    /**
-     * @static
-     * @return int
-     */
-    public static function getPolicyID()
+    public static function getPolicyID(): int
     {
         return 3;
     }
 
-    /**
-     * @static
-     * @return string
-     */
-    public static function getPolicyName()
+    public static function getPolicyName(): string
     {
         return \Yii::t('structure', 'policy_admin_title');
     }
 
-    /**
-     * @return string
-     */
-    public function getOnCreateDescription()
+    public function getOnCreateDescription(): string
     {
         return \Yii::t('structure', 'policy_admin_desc');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedMotionMsg()
+    public function getPermissionDeniedMotionMsg(): string
     {
         if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_MOTIONS)) {
             return \Yii::t('structure', 'policy_deadline_over');
@@ -45,10 +31,7 @@ class Admins extends IPolicy
         return \Yii::t('structure', 'policy_admin_motion_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedAmendmentMsg()
+    public function getPermissionDeniedAmendmentMsg(): string
     {
         if (!$this->motionType->isInDeadline(ConsultationMotionType::DEADLINE_AMENDMENTS)) {
             return \Yii::t('structure', 'policy_deadline_over');
@@ -56,18 +39,12 @@ class Admins extends IPolicy
         return \Yii::t('structure', 'policy_admin_amend_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedSupportMsg()
+    public function getPermissionDeniedSupportMsg(): string
     {
         return \Yii::t('structure', 'policy_admin_supp_denied');
     }
 
-    /**
-     * @return string
-     */
-    public function getPermissionDeniedCommentMsg()
+    public function getPermissionDeniedCommentMsg(): string
     {
         $deadlineType = ConsultationMotionType::DEADLINE_COMMENTS;
         if (!$this->motionType->isInDeadline($deadlineType)) {
@@ -77,13 +54,7 @@ class Admins extends IPolicy
         return \Yii::t('structure', 'policy_admin_comm_denied');
     }
 
-    /**
-     * @param bool $allowAdmins
-     * @param bool $assumeLoggedIn
-     * @return bool
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function checkCurrUser($allowAdmins = true, $assumeLoggedIn = false)
+    public function checkCurrUser(bool $allowAdmins = true, bool $assumeLoggedIn = false): bool
     {
         return User::havePrivilege($this->motionType->getConsultation(), User::PRIVILEGE_MOTION_EDIT);
     }

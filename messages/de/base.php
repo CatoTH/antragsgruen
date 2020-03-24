@@ -58,5 +58,8 @@ return [
     'aria_footer'       => 'Rechtliche Hinweise und Softwareinformationen',
     'aria_antragsgruen' => 'Vorstellung der Software Antragsgrün',
     'aria_version_hint' => 'Antragsgrün Version: %VERSION% - Änderungen dieser Version',
-    'aria_tooltip'      => 'Hinweis',
+    'aria_tooltip'      => 'Erklärung',
+    'aria_error'        => 'Fehler',
+    'aria_info'         => 'Hinweis',
+    'aria_success'      => 'Erfolg',
 ];

@@ -124,10 +124,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         <fieldset class="form-group">
             <legend class="col-sm-3 control-label">
                 <?= Yii::t('admin', 'con_robots') ?>:
-                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_robots_hint')) ?>"
-                      aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_robots_hint')) ?>"
-                ></span>
+                <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_robots_hint')) ?>
             </legend>
             <div class="col-sm-9">
                 <?php
@@ -262,10 +259,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
         <div class="form-group">
             <div class="col-sm-3 control-label">
                 <?= Yii::t('admin', 'con_organisations') ?>:
-                <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                      data-original-title="<?= Html::encode(Yii::t('admin', 'con_organisations_hint')) ?>"
-                      aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'con_organisations_hint')) ?>"
-                ></span>
+                <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'con_organisations_hint')) ?>
             </div>
             <div class="col-sm-9">
                 <div class="pillbox" data-initialize="pillbox" id="organisationList">

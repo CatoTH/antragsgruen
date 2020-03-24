@@ -77,7 +77,16 @@ foreach (IPolicy::getPolicies() as $policy) {
                     ($motionType->motionLikesDislikes & $checkbox[0]),
                     ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $checkbox[1] . '</label>';
+                echo $checkbox[1];
+
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_LIKE) {
+                    echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_like_like_h'));
+                }
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_SUPPORT) {
+                    echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_like_support_h'));
+                }
+
+                echo '</label>';
             }
             ?>
         </div>
@@ -153,7 +162,17 @@ foreach (IPolicy::getPolicies() as $policy) {
                     ($motionType->amendmentLikesDislikes & $checkbox[0]),
                     ['value' => $checkbox[0], 'class' => $checkbox[2]]
                 );
-                echo $checkbox[1] . '</label>';
+
+                echo $checkbox[1];
+
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_LIKE) {
+                    echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_like_like_h'));
+                }
+                if ($checkbox[0] === SupportBase::LIKEDISLIKE_SUPPORT) {
+                    echo HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_like_support_h'));
+                }
+
+                echo '</label>';
             }
             ?>
         </div>
@@ -207,9 +226,7 @@ foreach (IPolicy::getPolicies() as $policy) {
                 ]
             );
             ?> <?= Yii::t('admin', 'motion_type_initiators_merge_nocoll') ?>
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint')) ?>"
-                  title="<?=Html::encode(Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint'))?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_nocoll_hint')) ?>
         </label>
         <label><?php
             echo Html::radio(
@@ -221,9 +238,7 @@ foreach (IPolicy::getPolicies() as $policy) {
                 ]
             )
             ?> <?= Yii::t('admin', 'motion_type_initiators_merge_yes') ?>
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('admin', 'motion_type_initiators_merge_yes_hint')) ?>"
-                  title="<?=Html::encode(Yii::t('admin', 'motion_type_initiators_merge_yes_hint'))?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_yes_hint')) ?>
         </label>
     </div>
 </div>

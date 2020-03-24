@@ -203,9 +203,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
                    value="<?= Html::encode($supportSett->maxPdfSupporters !== null ? $supportSett->maxPdfSupporters : '') ?>">
         </div>
         <div class="col-m-1">
-            <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="top"
-                  aria-label="<?= Html::encode(Yii::t('base', 'aria_tooltip') . ': ' . Yii::t('initiator', 'motion_type_supp_max_pdfd')) ?>"
-                  title="<?=Html::encode(Yii::t('admin', 'motion_type_supp_max_pdfd'))?>"></span>
+            <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_max_pdfd')) ?>
         </div>
     </div>
 
