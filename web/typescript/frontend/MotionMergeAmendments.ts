@@ -670,6 +670,12 @@ class MotionMergeAmendmentsParagraph {
                         }
                     }
                 });
+                this.$on('amendment-added', function ([amendment, nameBase, idAdd, active, status, verstion, votingData]) {
+                    this.amendmentParagraphData.push({
+                        amendmentId: amendment.id,
+                        amendment, nameBase, idAdd, active, status, verstion, votingData
+                    });
+                });
             },
             methods: {
                 getAllAmendmentData() {
@@ -683,8 +689,8 @@ class MotionMergeAmendmentsParagraph {
                     }
                     return null;
                 },
-                setAmendmentActive(amendmentId, active) {
-                    this.getAmendmentData(amendmentId).active = active;
+                setAmendmentActive(amendment, active) {
+                    amendment.active = active;
                     para.reloadText();
                 },
                 update(eventData) {
@@ -697,13 +703,12 @@ class MotionMergeAmendmentsParagraph {
                     }
                     switch (op) {
                         case 'set-active':
-                            doAfterAskIfChanged(() => this.setAmendmentActive(amendmentId, eventData[2]));
+                            doAfterAskIfChanged(() => this.setAmendmentActive(amendment, eventData[2]));
                             break;
                         case 'set-status':
                             AmendmentStatuses.setStatus(amendmentId, parseInt(eventData[2]));
                             break;
                         case 'set-votes':
-                            console.log("setVotes");
                             AmendmentStatuses.setVotesData(amendmentId, eventData[2]);
                             break;
                         case 'set-version':
@@ -730,6 +735,10 @@ class MotionMergeAmendmentsParagraph {
 
     public onAmendmentStatusChanged(amendmentId: number, status: number) {
         this.statusWidget.$emit('status-updated', [amendmentId, status]);
+    }
+
+    public onAmendmentAdded(amendment, nameBase, idAdd, active, status, verstion, votingData) {
+        this.statusWidget.$emit('amendment-added', [amendment, nameBase, idAdd, active, status, verstion, votingData]);
     }
 
 
@@ -816,7 +825,7 @@ export class MotionMergeAmendments {
     public static $form;
 
     public $draftSavingPanel: JQuery;
-    private paragraphs: MotionMergeAmendmentsParagraph[] = [];
+    private paragraphsByTypeAndNo: {[typeAndPara: string]: MotionMergeAmendmentsParagraph} = {};
     private hasUnsavedChanges = false;
 
     constructor($form: JQuery) {
@@ -829,11 +838,13 @@ export class MotionMergeAmendments {
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
+            const sectionId = $para.data("section-id");
+            const paragraphId = $para.data("paragraph-id");
             $para.find(".wysiwyg-textarea").on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            this.paragraphs.push(new MotionMergeAmendmentsParagraph($para, draft, amendmentStaticData));
+            this.paragraphsByTypeAndNo[sectionId + '_' + paragraphId] = new MotionMergeAmendmentsParagraph($para, draft, amendmentStaticData);
         });
 
         MotionMergeAmendments.$form.on("submit", () => {
@@ -879,9 +890,11 @@ export class MotionMergeAmendments {
     }
 
     private saveDraft(onlyInput = false) {
-        if (this.paragraphs.filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
+        if (Object.keys(this.paragraphsByTypeAndNo).map(id => this.paragraphsByTypeAndNo[id])
+            .filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
             return;
         }
+
         console.log("Has unsaved changes");
 
         const data = {
@@ -901,8 +914,8 @@ export class MotionMergeAmendments {
             data.removedSections.push(parseInt($(el).val() as string));
         });
 
-        this.paragraphs.forEach(para => {
-            data.paragraphs[para.sectionId + '_' + para.paragraphId] = para.getDraftData();
+        Object.keys(this.paragraphsByTypeAndNo).forEach(paraId => {
+            data.paragraphs[paraId] = this.paragraphsByTypeAndNo[paraId].getDraftData();
         });
         let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
@@ -933,7 +946,7 @@ export class MotionMergeAmendments {
                         this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
                     }
 
-                    this.paragraphs.forEach(par => par.onDraftChanged());
+                    Object.keys(this.paragraphsByTypeAndNo).forEach(parId => this.paragraphsByTypeAndNo[parId].onDraftChanged());
                     this.hasUnsavedChanges = false;
                 },
                 error: () => {
@@ -997,7 +1010,7 @@ export class MotionMergeAmendments {
             url = url.replace(/AMENDMENTS/, amendmentIds.join(','));
             $.get(url, data => {
                 if (data['success']) {
-                    this.onReceivedBackendStatus(data['new'], data['deleted']);
+                    this.onReceivedBackendStatus(data['new']/*, data['deleted']*/);
                 } else {
                     console.warn(data);
                 }
@@ -1005,12 +1018,23 @@ export class MotionMergeAmendments {
         }, 5000);
     }
 
-    private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
+    private onReceivedBackendStatus(newAmendments: any[]/*, deletedAmendments: any[]*/) {
         const newAmendmentStaticData = {};
         newAmendments['staticData'].forEach(amendmentData => {
             newAmendmentStaticData[amendmentData['id']] = amendmentData;
             const status = newAmendments['status'][amendmentData['id']];
             AmendmentStatuses.registerNewAmendment(amendmentData['id'], status['status'], status['version'], status['votingData']);
+
+            Object.keys(newAmendments['paragraphs']).forEach(typeId => {
+                Object.keys(newAmendments['paragraphs'][typeId]).forEach(paragraphNo => {
+                    const paraObj = this.paragraphsByTypeAndNo[typeId + '_' + paragraphNo];
+                    newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
+                        const amendmentData = newAmendmentStaticData[data.amendmentId];
+                        console.log("Adding new paragraph indicator: ", typeId, paragraphNo, JSON.parse(JSON.stringify(amendmentData)));
+                        paraObj.onAmendmentAdded(amendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
+                    });
+                });
+            });
         });
     }
 }
