@@ -778,16 +778,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v1.12.2",
+            "version": "v1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "3b953109fdfc821c1979bc829c8b7421721fef82"
+                "reference": "bbade402cbe84c69b718120911506a3aa2bae653"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/3b953109fdfc821c1979bc829c8b7421721fef82",
-                "reference": "3b953109fdfc821c1979bc829c8b7421721fef82",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/bbade402cbe84c69b718120911506a3aa2bae653",
+                "reference": "bbade402cbe84c69b718120911506a3aa2bae653",
                 "shasum": ""
             },
             "require": {
@@ -856,7 +856,7 @@
                 "secret-key cryptography",
                 "side-channel resistant"
             ],
-            "time": "2019-12-30T03:11:08+00:00"
+            "time": "2020-03-20T21:48:09+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1011,16 +1011,16 @@
         },
         {
             "name": "setasign/fpdi",
-            "version": "v2.3.1",
+            "version": "v2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Setasign/FPDI.git",
-                "reference": "f58e64e51f61922d4c3ba4c6c91366ac520cb442"
+                "reference": "527761458f504882ab844f15754523825647f291"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/f58e64e51f61922d4c3ba4c6c91366ac520cb442",
-                "reference": "f58e64e51f61922d4c3ba4c6c91366ac520cb442",
+                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/527761458f504882ab844f15754523825647f291",
+                "reference": "527761458f504882ab844f15754523825647f291",
                 "shasum": ""
             },
             "require": {
@@ -1037,10 +1037,7 @@
                 "tecnickcom/tcpdf": "~6.2"
             },
             "suggest": {
-                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured.",
-                "setasign/fpdi-fpdf": "Use this package to automatically evaluate dependencies to FPDF.",
-                "setasign/fpdi-tcpdf": "Use this package to automatically evaluate dependencies to TCPDF.",
-                "setasign/fpdi-tfpdf": "Use this package to automatically evaluate dependencies to tFPDF."
+                "setasign/fpdf": "FPDI will extend this class but as it is also possible to use TCPDF or tFPDF as an alternative. There's no fixed dependency configured."
             },
             "type": "library",
             "autoload": {
@@ -1071,7 +1068,7 @@
                 "fpdi",
                 "pdf"
             ],
-            "time": "2020-03-10T15:28:15+00:00"
+            "time": "2020-03-23T15:53:59+00:00"
         },
         {
             "name": "setasign/fpdi-tcpdf",
@@ -1903,16 +1900,16 @@
         },
         {
             "name": "codeception/codeception",
-            "version": "4.1.3",
+            "version": "4.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/Codeception.git",
-                "reference": "c30e2abe4af327d8be4fb23446ff740fec76fd60"
+                "reference": "55d8d1d882fa0777e47de17b04c29b3c50fe29e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/c30e2abe4af327d8be4fb23446ff740fec76fd60",
-                "reference": "c30e2abe4af327d8be4fb23446ff740fec76fd60",
+                "url": "https://api.github.com/repos/Codeception/Codeception/zipball/55d8d1d882fa0777e47de17b04c29b3c50fe29e7",
+                "reference": "55d8d1d882fa0777e47de17b04c29b3c50fe29e7",
                 "shasum": ""
             },
             "require": {
@@ -1984,7 +1981,7 @@
                 "functional testing",
                 "unit testing"
             ],
-            "time": "2020-03-17T16:48:30+00:00"
+            "time": "2020-03-23T17:07:20+00:00"
         },
         {
             "name": "codeception/lib-asserts",
@@ -2138,20 +2135,20 @@
         },
         {
             "name": "codeception/module-webdriver",
-            "version": "1.0.5",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/module-webdriver.git",
-                "reference": "cfeadb39170aa80e6fe244de6a130453edd79fe9"
+                "reference": "9ee54108860859b120ed4a22e50f37d33aa3a518"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/module-webdriver/zipball/cfeadb39170aa80e6fe244de6a130453edd79fe9",
-                "reference": "cfeadb39170aa80e6fe244de6a130453edd79fe9",
+                "url": "https://api.github.com/repos/Codeception/module-webdriver/zipball/9ee54108860859b120ed4a22e50f37d33aa3a518",
+                "reference": "9ee54108860859b120ed4a22e50f37d33aa3a518",
                 "shasum": ""
             },
             "require": {
-                "codeception/codeception": "4.0.x-dev | ^4.0",
+                "codeception/codeception": "^4.0",
                 "php": ">=5.6.0 <8.0",
                 "php-webdriver/webdriver": "^1.6.0"
             },
@@ -2189,7 +2186,7 @@
                 "browser-testing",
                 "codeception"
             ],
-            "time": "2020-03-06T08:39:02+00:00"
+            "time": "2020-03-23T17:08:27+00:00"
         },
         {
             "name": "codeception/module-yii2",
