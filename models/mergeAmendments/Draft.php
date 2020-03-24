@@ -80,11 +80,24 @@ class Draft implements \JsonSerializable
         $draft->sections            = $json['sections'];
         $draft->removedSections     = (isset($json['removedSections']) ? $json['removedSections'] : []);
         $draft->paragraphs          = DraftParagraph::fromJsonArr($json['paragraphs']);
-        $draft->amendmentVersions   = $json['amendmentVersions'];
-        $draft->amendmentStatuses   = $json['amendmentStatuses'];
-        $draft->amendmentVotingData = array_map(function ($data) {
-            return new VotingData($data);
-        }, $json['amendmentVotingData']);
+
+        // If the merging page is reloaded and an amendment has been deleted in the meanwhile,
+        // its status information should be removed. (Text changes already made remain)
+        $draft->amendmentVersions = [];
+        $draft->amendmentStatuses = [];
+        $draft->amendmentVotingData = [];
+        foreach ($origMotion->getVisibleAmendments() as $amendment) {
+            if (isset($json['amendmentVersions'][$amendment->id])) {
+                $draft->amendmentVersions[$amendment->id] = $json['amendmentVersions'][$amendment->id];
+            }
+            if (isset($json['amendmentStatuses'][$amendment->id])) {
+                $draft->amendmentStatuses[$amendment->id] = $json['amendmentStatuses'][$amendment->id];
+            }
+            if (isset($json['amendmentVotingData'][$amendment->id])) {
+                $draft->amendmentVotingData[$amendment->id] = new VotingData($json['amendmentVotingData'][$amendment->id]);
+            }
+        }
+
         $draft->public              = $public;
         $draft->time                = $time;
 
