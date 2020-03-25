@@ -1066,7 +1066,7 @@ export class MotionMergeAmendments {
                     console.warn(data);
                 }
             });
-        }, 5000);
+        }, 3000);
     }
 
     private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {

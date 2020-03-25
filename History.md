@@ -11,6 +11,8 @@
 
 - It is now easier to edit the agenda of a consultation, as the changes are immediatelly saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
 
+- If a new amendment is screened / published while a new version of the motion is being created (by merging other amendments into it), this new amendment will automatically appear in the merging view. A small hint will appear, notifiying about this addition, and with a link to the first paragraph affected by this amendment. The new amendment is inactive, by default, and needs to be actively activated for merging into the affected paragraph. Vice-versa, if an amendment is unpublished while merging, the amendment hint vanishes automatically. Already applied changes remain, though.
+
 - Users can now support motions and amendments in all phases, if this is set up.
 
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.

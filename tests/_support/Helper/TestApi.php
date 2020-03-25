@@ -21,7 +21,7 @@ class TestApi extends \Codeception\Module
 
     private function executeCall($subdomain, $consultationUrl, $operation, $data)
     {
-        $url = 'http://' . $subdomain . '.antragsgruen.local/' . $consultationUrl . '/test/' . $operation;
+        $url = 'http://antragsgruen-test.local/' . $subdomain . '/' . $consultationUrl . '/test/' . $operation;
 
         $handle = curl_init();
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -37,14 +37,16 @@ class TestApi extends \Codeception\Module
             throw new \Exception('File not found: ' . $info['http_code'] . ' / ' . $url);
         }
 
-        return json_decode($data);
+        return json_decode($data, true);
     }
 
     public function apiSetAmendmentStatus($subdomain, $consultationUrl, $amendmentId, $status)
     {
-        return $this->executeCall($subdomain, $consultationUrl, 'set-amendment-status', [
+        $ret = $this->executeCall($subdomain, $consultationUrl, 'set-amendment-status', [
             'id'     => $amendmentId,
             'status' => $status,
         ]);
+
+        $this->assertTrue($ret['success']);
     }
 }

@@ -10,7 +10,7 @@ class TestController extends Base
 
     public function actionIndex(string $action = '')
     {
-        if (YII_ENV !== 'dev') {
+        if (YII_ENV !== 'test') {
             die("Only accessible in testing mode");
         }
         if ($_SERVER['REMOTE_ADDR'] !== '::1' && $_SERVER['REMOTE_ADDR'] !== '127.0.0.1') {
@@ -29,7 +29,7 @@ class TestController extends Base
     }
 
     /*
-POST http://stdparteitag.antragsgruen.local/std-parteitag/test/set-amendment-status
+POST http://antragsgruen-test.local/stdparteitag/std-parteitag/test/set-amendment-status
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
 
@@ -42,12 +42,12 @@ id=270&status=3
 
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment) {
-            return json_encode(['sucess' => false, 'error' => 'Amendment not found']);
+            return json_encode(['success' => false, 'error' => 'Amendment not found']);
         }
 
         $amendment->status = intval($status);
         $amendment->save();
 
-        return json_encode(['sucess' => true]);
+        return json_encode(['success' => true]);
     }
 }
