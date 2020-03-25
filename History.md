@@ -31,6 +31,8 @@
 
 - There is a new function to embed a translation button to motion, amendment and consultation pages. To enable it, go to Settings -> Appearance page and activate the Translation component. You can choose either Google or Bing. This will show a button at the top right of a motion/amendment that allows visitors of this site to translate this page using the specified service.
 
+- Technical change: Internally, some first components start to use the Vue.JS library.
+
   
 
 ### Version 4.5.1 (2020-03-23)

@@ -69,7 +69,7 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
     $domv . 'test'                            => 'test/index',
-    $domv . 'test/<action:.*>'                   => 'test/index',
+    $domv . 'test/<action:.*>'                => 'test/index',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
@@ -113,10 +113,10 @@ if ($params->multisiteMode) {
     );
     if ($params->domainSubdomain) {
         // The subdomain-scoped version of the login should have a higher priority
-        $urlRules = array_merge($urlRules, [$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>']);
+        $urlRules = array_merge($urlRules, [$domp . '/<_a:(' . $userPaths . ')>' => 'user/<_a>']);
     } else {
         // If we use /subdomain/consultation/, the login should have higher priority, not to collide with [consultation]
-        $urlRules = array_merge([$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>'], $urlRules);
+        $urlRules = array_merge([$domp . '/<_a:(' . $userPaths . ')>' => 'user/<_a>'], $urlRules);
     }
 
     foreach ($params->getPluginClasses() as $pluginClass) {

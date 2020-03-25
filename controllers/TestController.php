@@ -28,7 +28,8 @@ class TestController extends Base
         return json_encode(['success' => false, 'message' => 'Unknown action: ' . $action]);
     }
 
-    /*
+    /* Sample HTTP Request:
+
 POST http://antragsgruen-test.local/stdparteitag/std-parteitag/test/set-amendment-status
 Accept: application/json
 Content-Type: application/x-www-form-urlencoded
