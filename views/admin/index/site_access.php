@@ -32,7 +32,7 @@ echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 if ($policyWarning) {
     echo '<div class="accountEditExplanation alert alert-info alert-dismissible" role="alert">
 <button type="button" class="close" data-dismiss="alert"
-aria-label="Close"><span aria-hidden="true">&times;</span></button>' .
+aria-label="' . Yii::t('base', 'aria_close') . '"><span aria-hidden="true">&times;</span></button>' .
         Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . Yii::t('admin', 'siteacc_policywarning') .
         '<div class="saveholder"><button type="submit" name="policyRestrictToUsers" class="btn btn-primary">' .
         Yii::t('admin', 'siteacc_policy_login') . '</button></div>' .

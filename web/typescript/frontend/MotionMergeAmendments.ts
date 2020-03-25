@@ -837,6 +837,7 @@ export class MotionMergeAmendments {
     public static $form;
 
     public $draftSavingPanel: JQuery;
+    public $newAmendmentAlert: JQuery;
     private paragraphsByTypeAndNo: {[typeAndPara: string]: MotionMergeAmendmentsParagraph} = {};
     private hasUnsavedChanges = false;
 
@@ -867,6 +868,7 @@ export class MotionMergeAmendments {
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
 
         this.initDraftSaving();
+        this.initNewAmendmentAlert();
         this.initCheckBackendStatus();
         this.initRemovingSectionTexts();
     }
@@ -1015,6 +1017,43 @@ export class MotionMergeAmendments {
         $("#yii-debug-toolbar").remove();
     }
 
+    private initNewAmendmentAlert() {
+        this.$newAmendmentAlert = MotionMergeAmendments.$form.find('#newAmendmentAlert');
+        this.$newAmendmentAlert.find('.closeLink').on('click', () => {
+            this.$newAmendmentAlert.find('.buttons').children().remove();
+            this.$newAmendmentAlert.removeClass('revealed');
+            window.setTimeout(() => {
+                this.$newAmendmentAlert.addClass('hidden');
+            }, 1000);
+        });
+    }
+
+    private alertAboutNewAmendment(amendmentId: number, title: string) {
+        const $buttons = this.$newAmendmentAlert.find('.buttons');
+        const $newButton = $('<button class="btn-link gotoAmendment" type="button"></button>').text(title);
+        $newButton.on('click', () => {
+            const $firstToggle = $(".amendmentStatus" + amendmentId).first();
+            const $paragraph = $firstToggle.parents('.paragraphWrapper');
+            $paragraph.scrollintoview({top_offset: -100});
+        });
+        $buttons.append($newButton);
+
+        if ($buttons.children().length > 1) {
+            this.$newAmendmentAlert.find('.message .one').addClass('hidden');
+            this.$newAmendmentAlert.find('.message .many').removeClass('hidden');
+        } else {
+            this.$newAmendmentAlert.find('.message .one').removeClass('hidden');
+            this.$newAmendmentAlert.find('.message .many').addClass('hidden');
+        }
+
+        if (this.$newAmendmentAlert.hasClass('hidden')) {
+            this.$newAmendmentAlert.removeClass('hidden');
+            window.setTimeout(() => {
+                this.$newAmendmentAlert.addClass('revealed');
+            }, 100);
+        }
+    }
+
     private initCheckBackendStatus() {
         window.setInterval(() => {
             let url = MotionMergeAmendments.$form.data('checkStatusUrl');
@@ -1042,11 +1081,12 @@ export class MotionMergeAmendments {
                     const paraObj = this.paragraphsByTypeAndNo[typeId + '_' + paragraphNo];
                     newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
                         const amendmentData = newAmendmentStaticData[data.amendmentId];
-                        console.log("Adding new paragraph indicator: ", typeId, paragraphNo, JSON.parse(JSON.stringify(amendmentData)));
                         paraObj.onAmendmentAdded(amendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
                     });
                 });
             });
+
+            this.alertAboutNewAmendment(amendmentData['id'], amendmentData['titlePrefix']);
         });
 
         deletedAmendments.forEach(amendmentId => {

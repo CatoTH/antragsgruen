@@ -1,10 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\mergeAmendments\Draft;
-use app\models\mergeAmendments\Init;
+use app\models\db\{Amendment, Motion};
+use app\models\mergeAmendments\{Draft, Init};
 use yii\helpers\Html;
 
 /**

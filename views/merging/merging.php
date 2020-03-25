@@ -56,10 +56,7 @@ if (count($amendments) > 0) {
     $explanation = Yii::t('amend', 'merge_explanation');
     $explanation = str_replace('###COLLIDINGHINT###', '', $explanation);
     $explanation = str_replace('###NEWPREFIX###', $motion->getNewTitlePrefix(), $explanation);
-    echo '<div class="alert alert-info alert-dismissible" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">' .
-         '<span aria-hidden="true">&times;</span></button>' .
-         $explanation . '</div>';
+    echo '<div class="alert alert-info alert-dismissible">' . $explanation . '</div>';
 }
 
 echo $controller->showErrors();
@@ -79,18 +76,21 @@ $publicDraftLink = UrlHelper::createMotionUrl($motion, 'merge-amendments-public'
 $pdfLink         = UrlHelper::createMotionUrl($motion, 'merge-amendments-draft-pdf');
 $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c') : '');
 ?>
-    <section id="draftSavingPanel" data-resumed-date="<?= ($resumedDate) ?>">
-        <h2>
-            <?= Yii::t('amend', 'merge_draft_title') ?>
+    <section id="draftSavingPanel" data-resumed-date="<?= ($resumedDate) ?>" aria-labelledby="draftSavingPanelTitle">
+        <header>
+            <h2 id="draftSavingPanelTitle">
+                <?= Yii::t('amend', 'merge_draft_title') ?>
+            </h2>
             <a href="<?= Html::encode($pdfLink) ?>" class="pdfLink" target="_blank">
-                <span class="glyphicon glyphicon-download-alt"></span>
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                 PDF
             </a>
-        </h2>
+        </header>
         <label class="public">
             <a href="<?= Html::encode($publicDraftLink) ?>" target="_blank"
                class="publicLink <?= ($form->draftData->public ? '' : 'hidden') ?>">
-                <span class="glyphicon glyphicon-share"></span>
+                <span class="glyphicon glyphicon-share" aria-hidden="true"></span>
+                <span class="sr-only"><?= Yii::t('amend', 'merge_draft_public_link') ?></span>
             </a>
             <input type="checkbox" name="public" <?= ($form->draftData->public ? 'checked' : '') ?>>
             <?= Yii::t('amend', 'merge_draft_public') ?>
@@ -98,7 +98,7 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
         <label class="autosave">
             <input type="checkbox" name="autosave" checked> <?= Yii::t('amend', 'merge_draft_auto_save') ?>
         </label>
-        <div class="savingError hidden">
+        <div class="savingError hidden" aria-live="polite">
             <div class="errorNetwork"><?= Yii::t('amend', 'merge_draft_err_saving') ?></div>
             <div class="errorHolder"></div>
         </div>
@@ -110,6 +110,20 @@ $resumedDate     = ($form->draftData->time ? $form->draftData->time->format('c')
             </div>
             <button class="saveDraft btn btn-default btn-xs"
                     type="button"><?= Yii::t('amend', 'merge_draft_save') ?></button>
+        </div>
+    </section>
+
+    <section id="newAmendmentAlert" aria-live="polite" aria-labelledby="newAmendmentAlertTitle" class="hidden">
+        <div class="holder">
+            <button class="btn btn-link btn-sm closeLink" type="button" title="<?= Yii::t('base', 'aria_close') ?>">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only"><?= Yii::t('base', 'aria_close') ?></span>
+            </button>
+            <div class="message" id="newAmendmentAlertTitle">
+                <span class="one"><?= Yii::t('amend', 'merge_new_amend_1') ?>:</span>
+                <span class="many"><?= Yii::t('amend', 'merge_new_amend_x') ?>:</span>
+            </div>
+            <span class="buttons"></span>
         </div>
     </section>
 
@@ -149,8 +163,8 @@ foreach ($motion->getVisibleAmendments(false) as $amendment) {
 }
 if (count($editorials) > 0) {
     ?>
-    <section class="editorialAmendments">
-        <h2 class="green"><?= Yii::t('amend', 'merge_amend_editorials') ?></h2>
+    <section class="editorialAmendments" aria-labelledby="editorialAmendmentsTitle">
+        <h2 class="green" id="editorialAmendmentsTitle"><?= Yii::t('amend', 'merge_amend_editorials') ?></h2>
         <div><?= implode('', $editorials) ?></div>
     </section>
     <?php
