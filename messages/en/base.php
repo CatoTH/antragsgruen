@@ -62,4 +62,5 @@ return [
     'aria_error'        => 'Error',
     'aria_info'         => 'Info',
     'aria_success'      => 'Success',
+    'aria_close'        => 'Close',
 ];

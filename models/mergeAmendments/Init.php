@@ -2,6 +2,7 @@
 
 namespace app\models\mergeAmendments;
 
+use app\components\UrlHelper;
 use app\components\diff\amendmentMerger\ParagraphMerger;
 use app\models\db\{Amendment, Motion, MotionSection};
 use app\models\sectionTypes\ISectionType;
@@ -82,6 +83,7 @@ class Init
                 return $amendment->getMyProposalReference()->id;
             }
         }
+
         return null;
     }
 
@@ -103,7 +105,7 @@ class Init
     {
         if ($this->draftData) {
             $paragraphData = $this->draftData->paragraphs[$section->sectionId . '_' . $paragraphNo];
-            $amendmentIds = $paragraphData->getActiveResolvedAmendmentIds($this->motion);
+            $amendmentIds  = $paragraphData->getActiveResolvedAmendmentIds($this->motion);
 
             return $section->getAmendmentDiffMerger($amendmentIds)->getParagraphMerger($paragraphNo);
         } else {
@@ -111,12 +113,12 @@ class Init
         }
     }
 
-    public function getAllAmendmentIdsAffectingParagraph(MotionSection $section, $paragraphNo)
+    public function getAllAmendmentIdsAffectingParagraph(MotionSection $section, $paragraphNo, ?array $onlyAmendments = null)
     {
-        return $section->getAmendmentDiffMerger(null)->getAffectingAmendmentIds($paragraphNo);
+        return $section->getAmendmentDiffMerger($onlyAmendments)->getAffectingAmendmentIds($paragraphNo);
     }
 
-    public function getAffectingAmendmentsForParagraph(array $allAmendingIds, array $amendmentsById, int $paragraphNo): array
+    public function getAffectingAmendments(array $allAmendingIds, array $amendmentsById): array
     {
         $modUs = [];
         /** @var Amendment[] $normalAmendments */
@@ -173,5 +175,41 @@ class Init
         } else {
             return in_array($amendmentId, $this->toMergeMainIds);
         }
+    }
+
+    public static function getJsAmendmentStaticData(Amendment $amendment): array
+    {
+        $statusesAllNames = Amendment::getStatusNames();
+
+        return [
+            'id'            => $amendment->id,
+            'titlePrefix'   => $amendment->titlePrefix,
+            'bookmarkName'  => \app\models\layoutHooks\Layout::getAmendmentBookmarkName($amendment),
+            'url'           => UrlHelper::createAmendmentUrl($amendment),
+            'oldStatusId'   => $amendment->status,
+            'oldStatusName' => $statusesAllNames[$amendment->status],
+            'hasProposal'   => ($amendment->getMyProposalReference() !== null),
+        ];
+    }
+
+    public function getJsParagraphStatusData(MotionSection $section, int $paragraphNo, array $amendmentsById): array
+    {
+        $allAmendingIds = $this->getAllAmendmentIdsAffectingParagraph($section, $paragraphNo, array_keys($amendmentsById));
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        list($normalAmendments, $modUs) = $this->getAffectingAmendments($allAmendingIds, $amendmentsById);
+        $type = $section->getSettings();
+
+        $vueData = [];
+        foreach ($normalAmendments as $amendment) {
+            /** @var Amendment $amendment */
+            $vueData[] = [
+                'amendmentId' => $amendment->id,
+                'nameBase'    => 'sections[' . $type->id . '][' . $paragraphNo . ']',
+                'idAdd'       => $type->id . '_' . $paragraphNo . '_' . $amendment->id,
+                'active'      => $this->isAmendmentActiveForParagraph($amendment->id, $section, $paragraphNo),
+            ];
+        }
+
+        return $vueData;
     }
 }

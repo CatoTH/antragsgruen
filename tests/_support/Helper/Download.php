@@ -1,8 +1,6 @@
 <?php
 namespace Helper;
 
-use Codeception\TestCase;
-
 class Download extends \Codeception\Module
 {
     /**

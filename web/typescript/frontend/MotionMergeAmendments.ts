@@ -44,6 +44,20 @@ class AmendmentStatuses {
         });
     }
 
+    public static registerNewAmendment(amendmentId: number, status: number, version: AMENDMENT_VERSION, votingData: VotingData) {
+        AmendmentStatuses.statuses[amendmentId] = status;
+        AmendmentStatuses.versions[amendmentId] = version;
+        AmendmentStatuses.votingData[amendmentId] = votingData;
+
+        console.log("registered new amendment status", AmendmentStatuses.statuses, AmendmentStatuses.versions, AmendmentStatuses.votingData);
+    }
+
+    public static deleteAmendment(amendmentId: number) {
+        delete(AmendmentStatuses.statuses[amendmentId]);
+        delete(AmendmentStatuses.versions[amendmentId]);
+        delete(AmendmentStatuses.votingData[amendmentId]);
+    }
+
     public static getAmendmentStatus(amendmentId: number): number {
         return AmendmentStatuses.statuses[amendmentId];
     }
@@ -81,6 +95,9 @@ class AmendmentStatuses {
         });
     }
 
+    public static getAmendmentIds(): number[] {
+        return Object.keys(AmendmentStatuses.statuses).map(key => parseInt(key, 10));
+    }
 
     public static getAllStatuses(): { [amendmentId: number]: number } {
         return AmendmentStatuses.statuses;
@@ -659,6 +676,15 @@ class MotionMergeAmendmentsParagraph {
                         }
                     }
                 });
+                this.$on('amendment-added', function ([amendment, nameBase, idAdd, active, status, verstion, votingData]) {
+                    this.amendmentParagraphData.push({
+                        amendmentId: amendment.id,
+                        amendment, nameBase, idAdd, active, status, verstion, votingData
+                    });
+                });
+                this.$on('amendment-deleted', function ([amendmentId]) {
+                    this.amendmentParagraphData = this.amendmentParagraphData.filter(amend => amend.amendmentId != amendmentId);
+                });
             },
             methods: {
                 getAllAmendmentData() {
@@ -672,8 +698,8 @@ class MotionMergeAmendmentsParagraph {
                     }
                     return null;
                 },
-                setAmendmentActive(amendmentId, active) {
-                    this.getAmendmentData(amendmentId).active = active;
+                setAmendmentActive(amendment, active) {
+                    amendment.active = active;
                     para.reloadText();
                 },
                 update(eventData) {
@@ -686,13 +712,12 @@ class MotionMergeAmendmentsParagraph {
                     }
                     switch (op) {
                         case 'set-active':
-                            doAfterAskIfChanged(() => this.setAmendmentActive(amendmentId, eventData[2]));
+                            doAfterAskIfChanged(() => this.setAmendmentActive(amendment, eventData[2]));
                             break;
                         case 'set-status':
                             AmendmentStatuses.setStatus(amendmentId, parseInt(eventData[2]));
                             break;
                         case 'set-votes':
-                            console.log("setVotes");
                             AmendmentStatuses.setVotesData(amendmentId, eventData[2]);
                             break;
                         case 'set-version':
@@ -721,6 +746,13 @@ class MotionMergeAmendmentsParagraph {
         this.statusWidget.$emit('status-updated', [amendmentId, status]);
     }
 
+    public onAmendmentAdded(amendment, nameBase, idAdd, active, status, verstion, votingData) {
+        this.statusWidget.$emit('amendment-added', [amendment, nameBase, idAdd, active, status, verstion, votingData]);
+    }
+
+    public onAmendmentDeleted(amendmentId) {
+        this.statusWidget.$emit('amendment-deleted', [amendmentId]);
+    }
 
     private initSetCollisionsAsHandled() {
         this.$holder.on("click", "button.hideCollision", (ev: ClickEvent) => {
@@ -805,7 +837,8 @@ export class MotionMergeAmendments {
     public static $form;
 
     public $draftSavingPanel: JQuery;
-    private paragraphs: MotionMergeAmendmentsParagraph[] = [];
+    public $newAmendmentAlert: JQuery;
+    private paragraphsByTypeAndNo: {[typeAndPara: string]: MotionMergeAmendmentsParagraph} = {};
     private hasUnsavedChanges = false;
 
     constructor($form: JQuery) {
@@ -815,15 +848,16 @@ export class MotionMergeAmendments {
         AmendmentStatuses.init(draft.amendmentStatuses, draft.amendmentVersions, draft.amendmentVotingData);
 
         const amendmentStaticData = $form.data('amendment-static-data');
-        console.log(amendmentStaticData);
 
         $(".paragraphWrapper").each((i, el) => {
             const $para = $(el);
+            const sectionId = $para.data("section-id");
+            const paragraphId = $para.data("paragraph-id");
             $para.find(".wysiwyg-textarea").on("mousemove", (ev) => {
                 MotionMergeAmendments.currMouseX = ev.offsetX;
             });
 
-            this.paragraphs.push(new MotionMergeAmendmentsParagraph($para, draft, amendmentStaticData));
+            this.paragraphsByTypeAndNo[sectionId + '_' + paragraphId] = new MotionMergeAmendmentsParagraph($para, draft, amendmentStaticData);
         });
 
         MotionMergeAmendments.$form.on("submit", () => {
@@ -834,6 +868,8 @@ export class MotionMergeAmendments {
         $(window).on("beforeunload", MotionMergeAmendments.onLeavePage);
 
         this.initDraftSaving();
+        this.initNewAmendmentAlert();
+        this.initCheckBackendStatus();
         this.initRemovingSectionTexts();
     }
 
@@ -868,10 +904,12 @@ export class MotionMergeAmendments {
     }
 
     private saveDraft(onlyInput = false) {
-        if (this.paragraphs.filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
-            console.log("Has no unsaved changes");
+        if (Object.keys(this.paragraphsByTypeAndNo).map(id => this.paragraphsByTypeAndNo[id])
+            .filter(par => par.hasUnsavedChanges).length === 0 && !this.hasUnsavedChanges) {
             return;
         }
+
+        console.log("Has unsaved changes");
 
         const data = {
             "amendmentStatuses": AmendmentStatuses.getAllStatuses(),
@@ -890,8 +928,8 @@ export class MotionMergeAmendments {
             data.removedSections.push(parseInt($(el).val() as string));
         });
 
-        this.paragraphs.forEach(para => {
-            data.paragraphs[para.sectionId + '_' + para.paragraphId] = para.getDraftData();
+        Object.keys(this.paragraphsByTypeAndNo).forEach(paraId => {
+            data.paragraphs[paraId] = this.paragraphsByTypeAndNo[paraId].getDraftData();
         });
         let isPublic: boolean = this.$draftSavingPanel.find('input[name=public]').prop('checked');
 
@@ -901,7 +939,7 @@ export class MotionMergeAmendments {
         if (!onlyInput) {
             $.ajax({
                 type: "POST",
-                url: MotionMergeAmendments.$form.data('draftSaving'),
+                url: MotionMergeAmendments.$form.data('draftSavingUrl'),
                 data: {
                     'public': (isPublic ? 1 : 0),
                     data: dataStr,
@@ -922,7 +960,7 @@ export class MotionMergeAmendments {
                         this.$draftSavingPanel.find('.savingError .errorHolder').text(ret['error']).removeClass('hidden');
                     }
 
-                    this.paragraphs.forEach(par => par.onDraftChanged());
+                    Object.keys(this.paragraphsByTypeAndNo).forEach(parId => this.paragraphsByTypeAndNo[parId].onDraftChanged());
                     this.hasUnsavedChanges = false;
                 },
                 error: () => {
@@ -977,5 +1015,87 @@ export class MotionMergeAmendments {
         $(".sectionType0").on("change", () => this.hasUnsavedChanges = true);
 
         $("#yii-debug-toolbar").remove();
+    }
+
+    private initNewAmendmentAlert() {
+        this.$newAmendmentAlert = MotionMergeAmendments.$form.find('#newAmendmentAlert');
+        this.$newAmendmentAlert.find('.closeLink').on('click', () => {
+            this.$newAmendmentAlert.find('.buttons').children().remove();
+            this.$newAmendmentAlert.removeClass('revealed');
+            window.setTimeout(() => {
+                this.$newAmendmentAlert.addClass('hidden');
+            }, 1000);
+        });
+    }
+
+    private alertAboutNewAmendment(amendmentId: number, title: string) {
+        const $buttons = this.$newAmendmentAlert.find('.buttons');
+        const $newButton = $('<button class="btn-link gotoAmendment" type="button"></button>').text(title);
+        $newButton.on('click', () => {
+            const $firstToggle = $(".amendmentStatus" + amendmentId).first();
+            const $paragraph = $firstToggle.parents('.paragraphWrapper');
+            $paragraph.scrollintoview({top_offset: -100});
+        });
+        $buttons.append($newButton);
+
+        if ($buttons.children().length > 1) {
+            this.$newAmendmentAlert.find('.message .one').addClass('hidden');
+            this.$newAmendmentAlert.find('.message .many').removeClass('hidden');
+        } else {
+            this.$newAmendmentAlert.find('.message .one').removeClass('hidden');
+            this.$newAmendmentAlert.find('.message .many').addClass('hidden');
+        }
+
+        if (this.$newAmendmentAlert.hasClass('hidden')) {
+            this.$newAmendmentAlert.removeClass('hidden');
+            window.setTimeout(() => {
+                this.$newAmendmentAlert.addClass('revealed');
+            }, 100);
+        }
+    }
+
+    private initCheckBackendStatus() {
+        window.setInterval(() => {
+            let url = MotionMergeAmendments.$form.data('checkStatusUrl');
+            const amendmentIds = AmendmentStatuses.getAmendmentIds();
+            url = url.replace(/AMENDMENTS/, amendmentIds.join(','));
+            $.get(url, data => {
+                if (data['success']) {
+                    this.onReceivedBackendStatus(data['new'], data['deleted']);
+                } else {
+                    console.warn(data);
+                }
+            });
+        }, 3000);
+    }
+
+    private onReceivedBackendStatus(newAmendments: any[], deletedAmendments: any[]) {
+        const newAmendmentStaticData = {};
+        newAmendments['staticData'].forEach(amendmentData => {
+            newAmendmentStaticData[amendmentData['id']] = amendmentData;
+            const status = newAmendments['status'][amendmentData['id']];
+            AmendmentStatuses.registerNewAmendment(amendmentData['id'], status['status'], status['version'], status['votingData']);
+
+            Object.keys(newAmendments['paragraphs']).forEach(typeId => {
+                Object.keys(newAmendments['paragraphs'][typeId]).forEach(paragraphNo => {
+                    const paraObj = this.paragraphsByTypeAndNo[typeId + '_' + paragraphNo];
+                    newAmendments['paragraphs'][typeId][paragraphNo].forEach(data => {
+                        const amendmentData = newAmendmentStaticData[data.amendmentId];
+                        paraObj.onAmendmentAdded(amendmentData, data['nameBase'], data['idAdd'], data['active'], status['status'], status['version'], status['votingData'])
+                    });
+                });
+            });
+
+            this.alertAboutNewAmendment(amendmentData['id'], amendmentData['titlePrefix']);
+        });
+
+        deletedAmendments.forEach(amendmentId => {
+            console.log("Removing amendment", amendmentId);
+            AmendmentStatuses.deleteAmendment(amendmentId);
+
+            Object.keys(this.paragraphsByTypeAndNo).forEach(id => {
+                this.paragraphsByTypeAndNo[id].onAmendmentDeleted(amendmentId);
+            });
+        });
     }
 }

@@ -22,7 +22,7 @@ $consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
 $motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
 $motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
-$motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax';
+$motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax|merge-amendments-status-ajax';
 $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf';
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';
 $amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
@@ -68,6 +68,8 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
+    $domv . 'test'                            => 'test/index',
+    $domv . 'test/<action:.*>'                => 'test/index',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
@@ -111,10 +113,10 @@ if ($params->multisiteMode) {
     );
     if ($params->domainSubdomain) {
         // The subdomain-scoped version of the login should have a higher priority
-        $urlRules = array_merge($urlRules, [$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>']);
+        $urlRules = array_merge($urlRules, [$domp . '/<_a:(' . $userPaths . ')>' => 'user/<_a>']);
     } else {
         // If we use /subdomain/consultation/, the login should have higher priority, not to collide with [consultation]
-        $urlRules = array_merge([$domp . '/<_a:(' . $userPaths . ')>'   => 'user/<_a>'], $urlRules);
+        $urlRules = array_merge([$domp . '/<_a:(' . $userPaths . ')>' => 'user/<_a>'], $urlRules);
     }
 
     foreach ($params->getPluginClasses() as $pluginClass) {

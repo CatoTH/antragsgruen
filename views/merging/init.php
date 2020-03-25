@@ -1,10 +1,8 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\Motion;
-use app\models\mergeAmendments\Draft;
-use app\models\mergeAmendments\Init;
+use app\models\db\{Amendment, Motion};
+use app\models\mergeAmendments\{Draft, Init};
 use yii\helpers\Html;
 
 /**
@@ -53,7 +51,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
             <?php
         }
         if ($draft) { ?>
-            <div class="alert alert-info draftExistsAlert" role="alert">
+            <div class="alert alert-info draftExistsAlert">
                 <?php
                 $date = \app\components\Tools::formatMysqlDateTime($draft->draftMotion->dateCreation);
                 echo str_replace('%DATE%', $date, Yii::t('amend', 'merge_init_draft_hint'));

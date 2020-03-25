@@ -527,15 +527,20 @@
       font-weight: normal;
     }
 
-    h2 {
-      margin: 0;
-      font-size: 16px;
-      padding: 5px;
+    header {
       background-color: #eee;
+      position: relative;
+    }
+    h2 {
+      font-size: 16px;
+      margin: 0 35px 0 0;
+      padding: 5px;
     }
     .pdfLink {
-      float: right;
       font-size: 12px;
+      position: absolute;
+      right: 5px;
+      top: 3px;
     }
     .public {
       padding: 5px;
@@ -617,6 +622,50 @@
       > .save {
         width: 40%;
       }
+    }
+  }
+
+  #newAmendmentAlert {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 30px;
+    z-index: 11;
+    padding: 0;
+    background: white;
+    border-top: solid 1px #ccc;
+    -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+
+    transition: transform ease-in-out 0.3s;
+    transform: translate3d(0, 35px, 0);
+    &.revealed {
+      transform: translate3d(0, 0, 0);
+    }
+
+    @media (min-width: $screen-md-min) {
+      .holder {
+        width: $container-md;
+        margin: 0 auto;
+      }
+    }
+
+    .closeLink {
+      float: left;
+    }
+
+    .message {
+      float: left;
+      font-size: 16px;
+      line-height: 30px;
+      vertical-align: middle;
+      font-weight: bold;
+    }
+
+    .buttons button {
+      line-height: 26px;
     }
   }
 }
