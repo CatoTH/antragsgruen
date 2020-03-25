@@ -16,6 +16,7 @@ modules:
         - \Helper\Bootbox
         - \Helper\AccessibilityValidator
         - \Helper\ConfigurationChanger
+        - \Helper\TestApi
     config:
         \Helper\AntragsgruenWebDriver:
             url: 'http://antragsgruen-test.local/'
