@@ -94,6 +94,12 @@ class SiteCreateWizard {
         $panel.addClass("active").removeClass("inactive");
         this.$activePanel = $panel;
 
+        if ($panel.find("input:checked").length > 0) {
+            $panel.find("input:checked").trigger("focus");
+        } else if ($panel.find("button[type=submit]").length > 0) {
+            $panel.find("button[type=submit]").trigger("focus");
+        }
+
         try {
             let isCorrect = (window.location.hash == "#" + $panel.attr("id"));
             if ((window.location.hash == "" || window.location.hash == "#") && "#" + $panel.attr("id") == this.firstPanel) {
@@ -231,13 +237,13 @@ class SiteCreateWizard {
             });
         });
         $form.find(".date.motionsDeadline").on("dp.change", function () {
-            $("input.motionsDeadlineExists").prop("checked", true).change();
+            $("input.motionsDeadlineExists").prop("checked", true).trigger("change");
         });
         $form.find(".date.amendmentDeadline").on("dp.change", function () {
-            $("input.amendDeadlineExists").prop("checked", true).change();
+            $("input.amendDeadlineExists").prop("checked", true).trigger("change");
         });
         $form.find("input.minSupporters").on("change", () => {
-            $("input.needsSupporters").prop("checked", true).change();
+            $("input.needsSupporters").prop("checked", true).trigger("change");
         });
         $form.find("#siteSubdomain").on("keyup change", this.subdomainChange.bind(this));
         $form.find("#siteTitle").on("keyup change", function () {
@@ -269,8 +275,20 @@ class SiteCreateWizard {
         });
 
         let obj = this;
-        $form.find(".navigation .btn-next").on("click", function (ev) {
-            if ($(this).attr("type") === "submit") {
+
+        // The enter key should not submit the form, but lead to the next panel
+        $form.on("keypress", (ev) => {
+            if (ev.key === "Enter") {
+                if (this.$activePanel.find(".btn-next").attr("type") !== "submit") {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    this.showPanel($(obj.getNextPanel()));
+                }
+            }
+        });
+
+        $form.find(".navigation .btn-next").on("click", (ev) => {
+            if ($(ev.currentTarget).attr("type") === "submit") {
                 return;
             }
             ev.preventDefault();
