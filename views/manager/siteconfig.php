@@ -29,7 +29,7 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 if (!$editable) {
-    echo '<div class="alert alert-danger" role="alert">';
+    echo '<div class="alert alert-danger">';
     echo yii::t('manager', 'err_settings_ro');
     echo '<br><br><pre>';
     echo Html::encode($makeEditabeCommand);

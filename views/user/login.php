@@ -53,7 +53,7 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
                 if ($conPwdErr) {
                     echo '<div class="alert alert-danger" role="alert">
                     <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                    <span class="sr-only">Error:</span>';
+                    <span class="sr-only">' . Yii::t('base', 'aria_error') . ':</span>';
                     echo Html::encode($conPwdErr);
                     echo '</div>';
                 }

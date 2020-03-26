@@ -298,8 +298,8 @@ class LayoutHelper
                 } else {
                     $icon = '<span class="icon glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>';
                 }
-                echo '<div class="alert alert-info" role="alert">' .
-                    $icon . '<span class="sr-only">Error:</span>' . Html::encode($cantSupportMsg) . '
+                echo '<div class="alert alert-info">' .
+                    $icon . '<span class="sr-only">' . \Yii::t('base', 'aria_error') . ':</span>' . Html::encode($cantSupportMsg) . '
                     </div>';
             }
         }

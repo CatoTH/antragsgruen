@@ -1,6 +1,6 @@
 <?php
-use app\components\HTMLTools;
-use app\components\UrlHelper;
+
+use app\components\{HTMLTools, UrlHelper};
 use app\models\db\Amendment;
 use yii\helpers\Html;
 
@@ -16,21 +16,21 @@ use yii\helpers\Html;
         <div class="alert alert-info">
             <?php
             if ($allowStatusChanging) {
-                echo \Yii::t('amend', 'merge1_introduction');
+                echo Yii::t('amend', 'merge1_introduction');
             } else {
-                echo \Yii::t('amend', 'merge1_introduction_user');
+                echo Yii::t('amend', 'merge1_introduction_user');
             }
             ?>
         </div>
 
         <div class="form-group">
-            <label for="motionTitlePrefix"><?= \Yii::t('amend', 'merge1_motion_prefix') ?></label>
+            <label for="motionTitlePrefix"><?= Yii::t('amend', 'merge1_motion_prefix') ?></label>
             <input type="text" class="form-control" id="motionTitlePrefix" name="motionTitlePrefix"
                    value="<?= Html::encode($amendment->getMyMotion()->getNewTitlePrefix()) ?>">
         </div>
 
         <div class="form-group">
-            <label for="amendmentStatus"><?= \Yii::t('amend', 'merge1_amend_status') ?></label>
+            <label for="amendmentStatus"><?= Yii::t('amend', 'merge1_amend_status') ?></label>
             <div class="fueluxSelectHolder">
                 <?php
                 echo HTMLTools::fueluxSelectbox(
@@ -45,16 +45,16 @@ use yii\helpers\Html;
     </div>
     <?php if ($allowStatusChanging) { ?>
     <fieldset class="otherAmendmentStatus">
-        <h2 class="green"><?= \Yii::t('amend', 'merge1_other_status') ?></h2>
+        <h2 class="green"><?= Yii::t('amend', 'merge1_other_status') ?></h2>
         <div class="content">
-            <div class="alert alert-info"><?= \Yii::t('amend', 'merge1_status_intro') ?></div>
+            <div class="alert alert-info"><?= Yii::t('amend', 'merge1_status_intro') ?></div>
 
             <?php
             foreach ($otherAmendments as $otherAmend) {
                 echo '<div class="row"><div class="col-md-5">';
                 echo HTMLTools::amendmentDiffTooltip($otherAmend, 'bottom');
                 echo Html::a(Html::encode($otherAmend->getTitle()), UrlHelper::createAmendmentUrl($otherAmend));
-                echo '<span class="by">' . \Yii::t('amend', 'merge1_amend_by') . ': ' .
+                echo '<span class="by">' . Yii::t('amend', 'merge1_amend_by') . ': ' .
                     $otherAmend->getInitiatorsStr() . '</span>';
                 echo '</div><div class="col-md-7"><div class="fueluxSelectHolder">';
                 $statusesAll = $amendment->getStatusNames();
@@ -62,7 +62,7 @@ use yii\helpers\Html;
                 foreach (Amendment::getStatusesMarkAsDoneOnRewriting() as $statusId) {
                     $statuses[$statusId] = $statusesAll[$statusId];
                 }
-                $statuses[$otherAmend->status] = \Yii::t('amend', 'merge1_status_unchanged') . ': ' .
+                $statuses[$otherAmend->status] = Yii::t('amend', 'merge1_status_unchanged') . ': ' .
                     $statusesAll[$amendment->status];
                 $statusPre = ($amendment->globalAlternative ? Amendment::STATUS_REJECTED : $otherAmend->status);
                 echo HTMLTools::fueluxSelectbox(
@@ -80,7 +80,7 @@ use yii\helpers\Html;
 
     <div class="content save-row">
         <button class="goto_2 btn btn-primary">
-            <?= \Yii::t('amend', 'merge1_goon') ?>
+            <?= Yii::t('amend', 'merge1_goon') ?>
         </button>
     </div>
 </div>

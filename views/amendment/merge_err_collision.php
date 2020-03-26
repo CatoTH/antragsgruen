@@ -5,7 +5,7 @@ use app\models\db\Amendment;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  * @var Amendment $amendment
  * @var Amendment[] $collidingAmendments
@@ -15,7 +15,7 @@ use yii\helpers\Html;
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 
-$this->title = \Yii::t('amend', 'merge1_err_collision');
+$this->title = Yii::t('amend', 'merge1_err_collision');
 
 $motion    = $amendment->getMyMotion();
 $motionUrl = UrlHelper::createMotionUrl($motion);
@@ -23,17 +23,17 @@ $layout->addBreadcrumb($motion->getBreadcrumbTitle(), $motionUrl);
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {
-    $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb(\Yii::t('amend', 'merge1_title'));
+$layout->addBreadcrumb(Yii::t('amend', 'merge1_title'));
 
 
 ?>
-<h1><?= \Yii::t('amend', 'merge1_err_collision') ?></h1>
+<h1><?= Yii::t('amend', 'merge1_err_collision') ?></h1>
 
 <div class="content">
-    <div class="alert alert-danger" role="alert">
-        <?= \Yii::t('amend', 'merge1_err_collision_desc') ?>
+    <div class="alert alert-danger">
+        <?= Yii::t('amend', 'merge1_err_collision_desc') ?>
         <ul>
             <?php foreach ($collidingAmendments as $collidingAmendment) { ?>
                 <li>

@@ -44,7 +44,7 @@ echo '<h1>' . Html::encode($this->title) . '</h1>';
 
 echo '<div class="form content">';
 
-echo '<br><div class="alert alert-info" role="alert">';
+echo '<br><div class="alert alert-info">';
 echo Yii::t('amend', 'create_explanation');
 echo '</div><br style="clear: both;">';
 
@@ -76,7 +76,7 @@ if (Yii::$app->user->isGuest) {
     echo \app\components\AntiSpam::getJsProtectionHint($form->motion->id);
 }
 
-echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
+echo '<div id="draftHint" class="hidden alert alert-info"
     data-motion-id="' . $form->motion->id . '" data-amendment-id="' . $form->amendmentId . '">' .
     Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
 </div>

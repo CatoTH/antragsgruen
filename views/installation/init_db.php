@@ -39,7 +39,7 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 if (!$editable) {
-    echo '<div class="alert alert-danger" role="alert">';
+    echo '<div class="alert alert-danger">';
     echo Yii::t('manager', 'err_settings_ro');
     echo '<br><br><pre>';
     echo Html::encode($makeEditabeCommand);
@@ -48,7 +48,7 @@ if (!$editable) {
 }
 
 if ($phpVersionWarning) {
-    echo '<div class="alert alert-danger" role="alert">' . $phpVersionWarning . '</div>';
+    echo '<div class="alert alert-danger">' . $phpVersionWarning . '</div>';
 }
 
 
@@ -58,14 +58,14 @@ if ($form->isConfigured()) {
 
         echo '<div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-        <span class="sr-only">Success:</span>';
+        <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>';
         echo Yii::t('manager', 'config_finished');
         echo '</div>';
 
         if (!$form->tablesAreCreated()) {
             echo '<div class="alert alert-info" role="alert">
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-        <span class="sr-only">Hint:</span>';
+        <span class="sr-only">' . Yii::t('base', 'aria_info') . ':</span>';
 
             echo Yii::t('manager', 'config_create_tables');
             echo '</div>';
@@ -73,14 +73,13 @@ if ($form->isConfigured()) {
     } catch (Exception $e) {
         echo '<div class="alert alert-danger" role="alert">
                 <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-                <span class="sr-only">Error:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_error') . ':</span>
                 ' . nl2br(Html::encode($e->getMessage())) . '
             </div>';
     }
 } else {
-    echo '<div class="alert alert-info" role="alert">
+    echo '<div class="alert alert-info">
         <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
-        <span class="sr-only">Welcome:</span>
         ' . Yii::t('manager', 'welcome') . '
     </div>';
 }

@@ -79,7 +79,7 @@ $getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISu
 if ($myself) {
     if (count($myMotions)) {
         echo '<section class="sectionMyMotions" aria-labelledby="sectionMyMotionsTitle">';
-        echo '<h3 class="green" id="sectionMyMotionsTitle">' . Yii::t('con', 'My Motions') . '</h3>';
+        echo '<h2 class="green" id="sectionMyMotionsTitle">' . Yii::t('con', 'My Motions') . '</h2>';
         echo '<div class="content myImotionList myMotionList"><ul>';
 
         foreach ($myMotions as $motionSupport) {
@@ -107,7 +107,7 @@ if ($myself) {
 
     if (count($myAmendments) > 0) {
         echo '<section class="sectionMyAmendments" aria-labelledby="sectionMyAmendmentsTitle">';
-        echo '<h3 class="green" id="sectionMyAmendmentsTitle">' . Yii::t('con', 'My Amendments') . '</h3>';
+        echo '<h2 class="green" id="sectionMyAmendmentsTitle">' . Yii::t('con', 'My Amendments') . '</h2>';
         echo '<div class="content myImotionList myAmendmentList"><ul>';
         foreach ($myAmendments as $amendmentSupport) {
             /** @var Amendment $amendment */

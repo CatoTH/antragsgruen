@@ -28,7 +28,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 <div class="motionMergeInit" data-antragsgruen-widget="frontend/MergeInit">
 
     <div class="content">
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-info">
             <?= Yii::t('amend', 'merge_init_explanation') ?>
         </div>
     </div>
@@ -37,7 +37,7 @@ $layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
     <div class="content">
         <?php
         if ($unconfirmed) { ?>
-            <div class="alert alert-info unconfirmedExistsAlert" role="alert">
+            <div class="alert alert-info unconfirmedExistsAlert">
                 <?php
                 echo Yii::t('amend', 'merge_init_unconf_hint');
                 $confirmUrl = UrlHelper::createMotionUrl($unconfirmed, 'merge-amendments-confirm');

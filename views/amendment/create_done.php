@@ -58,25 +58,26 @@ if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
     $controller->layoutParams->addJS('npm/clipboard.min.js');
     $encodedUrl = Html::encode(UrlHelper::absolutizeLink(UrlHelper::createAmendmentUrl($amendment)));
     ?><br>
-    <div class="alert alert-info promoUrl" role="alert" data-antragsgruen-widget="frontend/CopyUrlToClipboard">
+    <div class="alert alert-info promoUrl" data-antragsgruen-widget="frontend/CopyUrlToClipboard">
         <div class="form-group">
             <div class="input-group">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing"
                             title="<?= Yii::t('motion', 'copy_to_clipboard') ?>">
-                        <span class="glyphicon glyphicon-copy"></span>
+                        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                        <span class="sr-only"><?= Yii::t('motion', 'copy_to_clipboard') ?></span>
                     </button>
                 </span>
                 <input type="text" class="form-control" id="urlSharing" readonly value="<?= $encodedUrl ?>" title="URL">
             </div>
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-            <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
+            <span id="inputGroupSuccess1Status" class="sr-only"><?= Yii::t('base', 'aria_success') ?></span>
         </div>
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>
     <?php
     if ($motion->motionType->policySupportMotions === \app\models\policies\IPolicy::POLICY_WURZELWERK) {
-        echo '<div class="alert alert-info" role="alert">';
+        echo '<div class="alert alert-info">';
         echo Yii::t('amend', 'confirmed_support_phase_ww');
         echo '</div>';
     }

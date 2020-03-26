@@ -25,7 +25,7 @@ $layout->bodyCssClasses[] = 'adminTranslationForm';
 echo '<h1>' . Yii::t('admin', 'Translation / Wording') . '</h1>
 <div class="content">
 
-<div class="alert alert-info" role="alert">' . Yii::t('admin', 'translating_hint') . '</div>';
+<div class="alert alert-info">' . Yii::t('admin', 'translating_hint') . '</div>';
 
 
 echo Html::beginForm('', 'post', ['id' => 'wordingBaseForm', 'class' => 'adminForm form-horizontal']);

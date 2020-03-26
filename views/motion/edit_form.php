@@ -72,7 +72,7 @@ if (Yii::$app->user->isGuest) {
     echo \app\components\AntiSpam::getJsProtectionHint($form->motionId);
 }
 
-echo '<div id="draftHint" class="hidden alert alert-info" role="alert"
+echo '<div id="draftHint" class="hidden alert alert-info"
     data-motion-type="' . $form->motionType->id . '" data-motion-id="' . $form->motionId . '">' .
     Yii::t('amend', 'unsaved_drafts') . '<ul></ul>
 </div>';

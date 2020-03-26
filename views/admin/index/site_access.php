@@ -30,9 +30,7 @@ $conSettings = $consultation->getSettings();
 echo '<h1>' . Yii::t('admin', 'siteacc_title') . '</h1>';
 
 if ($policyWarning) {
-    echo '<div class="accountEditExplanation alert alert-info alert-dismissible" role="alert">
-<button type="button" class="close" data-dismiss="alert"
-aria-label="' . Yii::t('base', 'aria_close') . '"><span aria-hidden="true">&times;</span></button>' .
+    echo '<div class="accountEditExplanation alert alert-info">' .
         Html::beginForm('', 'post', ['id' => 'policyRestrictForm']) . Yii::t('admin', 'siteacc_policywarning') .
         '<div class="saveholder"><button type="submit" name="policyRestrictToUsers" class="btn btn-primary">' .
         Yii::t('admin', 'siteacc_policy_login') . '</button></div>' .
@@ -46,7 +44,7 @@ $success = Yii::$app->session->getFlash('success_login', null, true);
 if ($success) {
     echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                <span class="sr-only">Success:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
                 ' . Html::encode($success) . '
             </div>';
 }

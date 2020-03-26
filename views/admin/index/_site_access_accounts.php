@@ -197,7 +197,7 @@ if ($hasSaml) {
 if ($hasEmail) {
     ?>
     <section class="addUsersByLogin email hidden content">
-        <div class="accountEditExplanation alert alert-info" role="alert">
+        <div class="accountEditExplanation alert alert-info">
             <?= Yii::t('admin', 'siteacc_acc_expl_mail') ?>
         </div>
         <div class="row">
@@ -226,7 +226,7 @@ if ($hasEmail) {
 } else {
     ?>
     <section class="addUsersByLogin email hidden content">
-        <div class="accountEditExplanation alert alert-info" role="alert">
+        <div class="accountEditExplanation alert alert-info">
             <?= Yii::t('admin', 'siteacc_acc_expl_nomail') ?>
         </div>
         <div class="row">

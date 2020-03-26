@@ -33,10 +33,7 @@ echo '<h1>' . Yii::t('admin', 'motion_type_edit') . '</h1>';
 
 if ($supportCollPolicyWarning) {
     ?>
-    <div class="adminTypePolicyFix alert alert-info alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
+    <div class="adminTypePolicyFix alert alert-info">
         <?= Html::beginForm('', 'post', ['id' => 'policyFixForm']) ?>
         <?= Yii::t('admin', 'support_coll_policy_warning') ?>
         <div class="saveholder">

@@ -23,7 +23,7 @@ $layout->addAMDModule('frontend/AccountEdit');
 
 $formUrl = UrlHelper::createUrl('user/myaccount');
 echo '<h1>' . Yii::t('user', 'my_acc_title') . '</h1>' .
-    Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content form-horizontal']);
+     Html::beginForm($formUrl, 'post', ['class' => 'userAccountForm content form-horizontal']);
 
 echo $controller->showErrors();
 
@@ -59,7 +59,7 @@ if ($user->email) {
         echo Html::encode($user->email);
     } else {
         echo '<span style="color: gray;">' . Html::encode($user->email) . '</span> ' .
-            '(' . Yii::t('user', 'email_unconfirmed') . ')';
+             '(' . Yii::t('user', 'email_unconfirmed') . ')';
     }
     echo '</span><a href="#" class="requestEmailChange">' . Yii::t('user', 'emailchange_call') . '</a>';
 
@@ -68,7 +68,7 @@ if ($user->email) {
         echo '<div class="changeRequested">' . Yii::t('user', 'emailchange_requested') . ': ';
         echo Html::encode($changeRequested);
         echo '<button type="submit" name="resendEmailChange" class="link resendButton">' .
-            Yii::t('user', 'emailchange_resend') . '</button>';
+             Yii::t('user', 'emailchange_resend') . '</button>';
         echo '</div>';
     }
 
@@ -90,7 +90,7 @@ if ($user->email) {
             echo '<div class="changeRequested">' . Yii::t('user', 'emailchange_requested') . ': ';
             echo Html::encode($changeRequested);
             echo '<button type="submit" name="resendEmailChange" class="link resendButton">' .
-                Yii::t('user', 'emailchange_resend') . '</button>';
+                 Yii::t('user', 'emailchange_resend') . '</button>';
             echo '</div>';
         }
         ?>
@@ -109,7 +109,7 @@ if ($user->getSettingsObj()->ppReplyTo !== '') {
             <strong><?= Html::encode($user->getSettingsObj()->ppReplyTo) ?></strong>
         </div>
     </div>
-<?php
+    <?php
 }
 ?>
 
@@ -123,55 +123,60 @@ if ($user->getSettingsObj()->ppReplyTo !== '') {
 <?php
 if ($controller->site) {
     ?>
-
-    <h2 class="green"><?= Yii::t('user', 'notification_title') ?></h2>
-    <div class="content">
-        <?= Yii::t('user', 'notification_intro') ?>
-        <ul>
-            <?php
-            foreach ($controller->site->consultations as $consultation) {
-                $link = UrlHelper::createUrl(
-                    ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
-                );
-                echo '<li>' . Html::a(Html::encode($consultation->title), $link) . '</li>';
-            }
-            ?>
-        </ul>
-    </div>
+    <section aria-labelledby="notificationsTitle">
+        <h2 class="green" id="notificationsTitle"><?= Yii::t('user', 'notification_title') ?></h2>
+        <div class="content">
+            <?= Yii::t('user', 'notification_intro') ?>
+            <ul>
+                <?php
+                foreach ($controller->site->consultations as $consultation) {
+                    $link = UrlHelper::createUrl(
+                        ['consultation/notifications', 'consultationPath' => $consultation->urlPath]
+                    );
+                    echo '<li>' . Html::a(Html::encode($consultation->title), $link) . '</li>';
+                }
+                ?>
+            </ul>
+        </div>
+    </section>
 
     <br><br>
     <?php
 }
 ?>
 
-<h2 class="green"><?= Yii::t('user', 'export_title') ?></h2>
-<div class="content userDataExport">
-    <?= Yii::t('user', 'export_intro') ?>
-    <div class="exportRow">
-        <?php
-        echo Html::a(
-            Yii::t('user', 'export_btn'),
-            UrlHelper::createUrl('user/data-export'),
-            ['class' => 'btn btn-primary']
-        );
-        ?>
+<section aria-labelledby="userDataExportTitle">
+    <h2 class="green" id="userDataExportTitle"><?= Yii::t('user', 'export_title') ?></h2>
+    <div class="content userDataExport">
+        <?= Yii::t('user', 'export_intro') ?>
+        <div class="exportRow">
+            <?php
+            echo Html::a(
+                Yii::t('user', 'export_btn'),
+                UrlHelper::createUrl('user/data-export'),
+                ['class' => 'btn btn-primary']
+            );
+            ?>
+        </div>
     </div>
-</div>
+</section>
 
 <br><br>
 
-<h2 class="green"><?= Yii::t('user', 'del_title') ?></h2>
-<?= Html::beginForm($formUrl, 'post', ['class' => 'accountDeleteForm content']) ?>
-<div class="accountEditExplanation alert alert-info" role="alert">
-    <?= Yii::t('user', 'del_explanation') ?></div>
-<div class="row">
-    <div class="col-md-6">
-        <div class="checkbox">
-            <label><?= Html::checkbox('accountDeleteConfirm') . Yii::t('user', 'del_confirm') ?></label>
+<section aria-labelledby="delAccountTitle">
+    <h2 class="green" id="delAccountTitle"><?= Yii::t('user', 'del_title') ?></h2>
+    <?= Html::beginForm($formUrl, 'post', ['class' => 'accountDeleteForm content']) ?>
+    <div class="accountEditExplanation alert alert-info">
+        <?= Yii::t('user', 'del_explanation') ?></div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="checkbox">
+                <label><?= Html::checkbox('accountDeleteConfirm') . Yii::t('user', 'del_confirm') ?></label>
+            </div>
+        </div>
+        <div class="col-md-6" style="text-align: right;">
+            <button type="submit" name="accountDelete" class="btn btn-danger"><?= Yii::t('user', 'del_do') ?></button>
         </div>
     </div>
-    <div class="col-md-6" style="text-align: right;">
-        <button type="submit" name="accountDelete" class="btn btn-danger"><?= Yii::t('user', 'del_do') ?></button>
-    </div>
-</div>
-<?= Html::endForm() ?>
+    <?= Html::endForm() ?>
+</section>

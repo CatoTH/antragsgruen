@@ -16,7 +16,7 @@ $this->title = Yii::t('user', 'deleted_title');
 <div class="content">
     <div class="alert alert-success" role="alert">
         <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-        <span class="sr-only">Success:</span>
+        <span class="sr-only"><?= Yii::t('base', 'aria_success') ?>:</span>
         <?= Yii::t('user', 'deleted_msg') ?>
     </div>
 </div>

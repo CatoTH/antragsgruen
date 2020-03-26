@@ -286,7 +286,7 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
     if ($screening) {
         echo '<div class="alert alert-success" role="alert">
                 <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                <span class="sr-only">Success:</span>
+                <span class="sr-only">' . Yii::t('base', 'aria_success') . ':</span>
                 ' . Html::encode($screening) . '
             </div>';
     }

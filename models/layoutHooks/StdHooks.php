@@ -98,7 +98,7 @@ class StdHooks extends Hooks
             'class'           => 'form-search',
             'aria-labelledby' => 'sidebarSearchTitle',
         ]);
-        $html .= '<div class="nav-list" id="sidebarSearch"><div class="nav-header" id="sidebarSearchTitle">' . \Yii::t('con', 'sb_search') . '</div>
+        $html .= '<section class="nav-list" id="sidebarSearch" aria-labelledby="sidebarSearchTitle"><div class="nav-header" id="sidebarSearchTitle">' . \Yii::t('con', 'sb_search') . '</div>
     <div class="searchContent">
     <div class="input-group">
       <label for="searchQuery" class="sr-only">' . \Yii::t('con', 'sb_search_query') . '</label>
@@ -106,12 +106,12 @@ class StdHooks extends Hooks
         placeholder="' . Html::encode(\Yii::t('con', 'sb_search_query')) . '" required>
       <span class="input-group-btn">
         <button class="btn btn-default" type="submit" title="' . Html::encode(\Yii::t('con', 'sb_search_do')) . '">
-            <span class="glyphicon glyphicon-search"></span> ' . \Yii::t('con', 'sb_search_do') . '
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span> ' . \Yii::t('con', 'sb_search_do') . '
         </button>
       </span>
     </div>
     </div>
-</div>';
+</section>';
         $html .= Html::endForm();
 
         return $html;

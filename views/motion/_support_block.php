@@ -24,7 +24,7 @@ echo Html::beginForm('', 'post', [
     <label class="supportQuestion"><?= Yii::t('motion', 'support_question') ?></label>
 <?php
 if ($settings->hasOrganizations && $user && $user->organization === '' && $user->fixedData) {
-    echo '<div class="alert alert-danger" role="alert">';
+    echo '<div class="alert alert-danger">';
     echo Yii::t('motion', 'supporting_no_orga_error');
     echo '</div>';
     $disableSubmit = 'disabled';
