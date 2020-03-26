@@ -30,7 +30,7 @@ $agreed = ($motion->proposalUserStatus === \app\models\db\Motion::STATUS_ACCEPTE
         <div class="agreement">
             <?php
             if ($agreed) {
-                echo '<span class="agreed glyphicon glyphicon-ok"></span> ';
+                echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
                 echo Yii::t('amend', 'proposal_user_agree');
             } else {
                 ?>

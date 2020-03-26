@@ -63,4 +63,5 @@ return [
     'aria_info'         => 'Info',
     'aria_success'      => 'Success',
     'aria_close'        => 'Close',
+    'aria_remove'       => 'Remove',
 ];

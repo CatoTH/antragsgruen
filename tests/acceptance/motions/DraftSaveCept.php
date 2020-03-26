@@ -34,7 +34,7 @@ $I->dontSee('Even more text');
 
 
 $I->wantTo('restore the draft');
-$I->click('#draftHint a.restore');
+$I->click('#draftHint button.restore');
 $I->seeBootboxDialog('Diesen Entwurf wiederherstellen?');
 $I->acceptBootboxConfirm();
 $I->seeInField(['name' => 'sections[1]'], 'Draft title');

@@ -41,7 +41,8 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
     <?= Yii::t('amend', 'proposal_amend_title') ?>
     <button class="pull-right btn-link closeBtn" type="button"
             title="<?= Html::encode(Yii::t('amend', 'proposal_close')) ?>">
-        <span class="glyphicon glyphicon-chevron-up"></span>
+        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+        <span class="sr-only"><?= Html::encode(Yii::t('amend', 'proposal_close')) ?></span>
     </button>
 </h2>
 <div class="holder">
@@ -106,10 +107,10 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                 <?php
                 if ($motion->proposalUserStatus !== null) {
                     if ($motion->proposalUserStatus === Motion::STATUS_ACCEPTED) {
-                        echo '<span class="glyphicon glyphicon glyphicon-ok accepted"></span>';
+                        echo '<span class="glyphicon glyphicon glyphicon-ok accepted" aria-hidden="true"></span>';
                         echo Yii::t('amend', 'proposal_user_accepted');
                     } elseif ($motion->proposalUserStatus === Motion::STATUS_REJECTED) {
-                        echo '<span class="glyphicon glyphicon glyphicon-remove rejected"></span>';
+                        echo '<span class="glyphicon glyphicon glyphicon-remove rejected" aria-hidden="true"></span>';
                         echo Yii::t('amend', 'proposal_user_rejected');
                     } else {
                         echo 'Error: unknown response of the proposer';
@@ -165,9 +166,10 @@ $votingBlocks = $motion->getMyConsultation()->votingBlocks;
                         <?php
                         if (\app\models\db\User::isCurrentUser($user)) {
                             $url = UrlHelper::createMotionUrl($motion, 'del-proposal-comment');
-                            echo '<button type="button" data-url="' . Html::encode($url) . '" ';
-                            echo 'class="btn-link delComment">';
-                            echo '<span class="glyphicon glyphicon-trash"></span></button>';
+                            echo '<button type="button" data-url="' . Html::encode($url) . '" class="btn-link delComment">';
+                            echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
+                            echo '<span class="sr-only">' . Yii::t('amend', 'proposal_comment_delete') . '</span>';
+                            echo '</button>';
                         }
                         ?>
                         <div class="name"><?= Html::encode($user ? $user->name : '-') ?></div>

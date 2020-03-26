@@ -63,4 +63,5 @@ return [
     'aria_info'         => 'Hinweis',
     'aria_success'      => 'Erfolg',
     'aria_close'        => 'Schließen',
+    'aria_remove'       => 'Entfernen',
 ];

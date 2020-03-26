@@ -40,7 +40,8 @@ $saveUrl = UrlHelper::createUrl([
 ?>
 <div class="dropdown respHolder" data-save-url="<?= Html::encode($saveUrl) ?>">
     <button class="respButton dropdown-toggle btn-link" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" id="resp<?= $idBase ?>">
-        <span class="glyphicon glyphicon-edit"></span>
+        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        <?= Yii::t('admin', 'list_responsible_edit') ?>
     </button>
     <span class="responsibilityUser" data-id="<?= $imotion->responsibilityId ?>"><?php
         if ($imotion->responsibilityUser) {

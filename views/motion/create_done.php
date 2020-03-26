@@ -63,13 +63,14 @@ if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" data-clipboard-target="#urlSharing"
                             title="<?= Yii::t('motion', 'copy_to_clipboard') ?>">
-                        <span class="glyphicon glyphicon-copy"></span>
+                        <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                        <span class="sr-only"><?= Yii::t('motion', 'copy_to_clipboard') ?></span>
                     </button>
                 </span>
                 <input type="text" class="form-control" id="urlSharing" readonly value="<?= $encodedUrl ?>" title="URL">
             </div>
             <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-            <span id="inputGroupSuccess1Status" class="sr-only">(success)</span>
+            <span id="inputGroupSuccess1Status" class="sr-only">(<?= Yii::t('base', 'aria_success') ?>)</span>
         </div>
         <div class="hidden clipboard-done"><?= Yii::t('motion', 'copy_to_clipboard_done') ?></div>
     </div>

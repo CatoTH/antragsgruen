@@ -122,6 +122,7 @@ return [
     'list_responsible'            => 'Verantwortlich',
     'list_responsible_none'       => 'keine regestrierte Nutzer*in',
     'list_responsible_comment'    => 'Kommentar / Zusatz',
+    'list_responsible_edit'       => 'Verantwortlichkeit bearbeiten',
     'list_title'                  => 'Titel',
     'list_prefix'                 => 'Antragsnr.',
     'list_type'                   => 'Typ',

@@ -230,7 +230,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     /** @noinspection PhpUnhandledExceptionInspection */
     if ($motion->isCurrentlyAmendable(false, true)) {
         echo '<div class="pull-right">';
-        $title          = '<span class="icon glyphicon glyphicon-flash"></span>';
+        $title          = '<span class="icon glyphicon glyphicon-flash" aria-hidden="true"></span>';
         $title          .= Yii::t('motion', 'amendment_create');
         $amendCreateUrl = UrlHelper::createUrl(['amendment/create', 'motionSlug' => $motion->getMotionSlug()]);
         echo '<a class="btn btn-default btn-sm" href="' . Html::encode($amendCreateUrl) . '" rel="nofollow">' .

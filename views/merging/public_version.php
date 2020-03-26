@@ -6,7 +6,7 @@ use app\models\mergeAmendments\Draft;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Motion $motion
  * @var Draft $draft
  */
@@ -17,11 +17,11 @@ $layout     = $controller->layoutParams;
 
 $layout->robotsNoindex = true;
 $layout->addBreadcrumb($motion->getBreadcrumbTitle(), UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb(\Yii::t('amend', 'merge_bread'));
+$layout->addBreadcrumb(Yii::t('amend', 'merge_bread'));
 $layout->loadFuelux();
 $layout->loadBootstrapToggle();
 
-$title       = str_replace('%TITLE%', $motion->motionType->titleSingular, \Yii::t('amend', 'merge_title'));
+$title       = str_replace('%TITLE%', $motion->motionType->titleSingular, Yii::t('amend', 'merge_title'));
 $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 ?>
@@ -38,7 +38,7 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
                 <td><?= Html::a(Html::encode($motion->getTitleWithPrefix()), UrlHelper::createMotionUrl($motion)) ?></td>
             </tr>
             <tr>
-                <th><?= \Yii::t('amend', 'merge_draft_date') ?></th>
+                <th><?= Yii::t('amend', 'merge_draft_date') ?></th>
                 <td class="mergeDraftDate"><?= \app\components\Tools::formatMysqlDateTime($draft->time->format('Y-m-d H:i:s')) ?></td>
             </tr>
         </table>
@@ -46,32 +46,34 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
     <section class="motionTextHolder mergePublicDraft"
              data-reload-url="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'merge-amendments-public-ajax')) ?>"
              data-antragsgruen-widget="frontend/MotionMergeAmendmentsPublic">
-        <h2 class="green"><?= \Yii::t('amend', 'merge_new_text') ?></h2>
+        <h2 class="green"><?= Yii::t('amend', 'merge_new_text') ?></h2>
         <div class="content">
             <div class="row">
                 <div class="col-md-8">
-                    <div class="alert alert-info" role="alert"><?= \Yii::t('motion', 'merging_draft_warning') ?></div>
+                    <div class="alert alert-info" role="alert"><?= Yii::t('motion', 'merging_draft_warning') ?></div>
                 </div>
                 <div class="col-md-4 motionUpdateWidget">
                     <div>
-                        <button class="btn btn-sm btn-default" type="button"
+                        <button class="btn btn-sm btn-default" type="button" title="<?= Yii::t('amend', 'merge_draft_fullscreen') ?>"
                                 data-antragsgruen-widget="frontend/FullscreenToggle">
-                            <span class="glyphicon glyphicon-fullscreen"></span>
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                            <span class="sr-only"><?= Yii::t('amend', 'merge_draft_fullscreen') ?></span>
                         </button>
 
-                        <button id="updateBtn" class="btn btn-sm btn-default">
-                            <span class="glyphicon glyphicon-refresh"></span>
+                        <button id="updateBtn" class="btn btn-sm btn-default" type="button" title="<?= Yii::t('amend', 'merge_draft_reload') ?>">
+                            <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                            <span class="sr-only"><?= Yii::t('amend', 'merge_draft_reload') ?></span>
                         </button>
 
-                        <label class="sr-only" for="autoUpdateToggle"></label>
+                        <label class="sr-only" for="autoUpdateToggle"><?= Yii::t('amend', 'merge_draft_auto_update') ?></label>
                         <input type="checkbox" id="autoUpdateToggle" checked
                                data-onstyle="success" data-size="small" data-toggle="toggle"
-                               data-on="<?= Html::encode(\Yii::t('amend', 'merge_draft_auto_update')) ?>"
-                               data-off="<?= Html::encode(\Yii::t('amend', 'merge_draft_auto_update')) ?>">
+                               data-on="<?= Html::encode(Yii::t('amend', 'merge_draft_auto_update')) ?>"
+                               data-off="<?= Html::encode(Yii::t('amend', 'merge_draft_auto_update')) ?>">
                     </div>
                     <div class="updated">
                         <span class="glyphicon glyphicon-ok"></span>
-                        <?=\Yii::t('amend', 'merge_draft_updated')?>
+                        <?=Yii::t('amend', 'merge_draft_updated')?>
                     </div>
                 </div>
             </div>

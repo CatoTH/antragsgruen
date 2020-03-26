@@ -121,6 +121,7 @@ return [
     'list_responsible'            => 'Responsible',
     'list_responsible_none'       => 'no registered user',
     'list_responsible_comment'    => 'Comment',
+    'list_responsible_edit'       => 'Edit responsibility',
     'list_title'                  => 'Title',
     'list_prefix'                 => 'Signature',
     'list_type'                   => 'Type',

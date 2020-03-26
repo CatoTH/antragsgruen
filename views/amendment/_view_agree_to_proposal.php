@@ -30,7 +30,7 @@ $agreed = ($amendment->proposalUserStatus === \app\models\db\Amendment::STATUS_A
         <div class="agreement">
             <?php
             if ($agreed) {
-                echo '<span class="agreed glyphicon glyphicon-ok"></span> ';
+                echo '<span class="agreed glyphicon glyphicon-ok" aria-hidden="true"></span> ';
                 echo Yii::t('amend', 'proposal_user_agree');
             } else {
                 ?>

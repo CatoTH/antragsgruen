@@ -225,7 +225,7 @@ echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consu
                         foreach ($tags as $tag) {
                             echo '<li class="btn btn-default pill" data-id="' . $tag->id . '">
         <span>' . Html::encode($tag->title) . '</span>
-        <span class="glyphicon glyphicon-close"><span class="sr-only">Remove</span></span>
+        <span class="glyphicon glyphicon-close"><span class="sr-only">' . Yii::t('base', 'aria_remove') . '</span></span>
     </li>';
                         }
                         ?>

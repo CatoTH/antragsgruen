@@ -96,18 +96,18 @@ $title = '<span class="fontello fontello-globe"></span>' . Yii::t('con', 'activi
 $link  = UrlHelper::createUrl('consultation/activitylog');
 $html  .= '<li class="activitylog">' . Html::a($title, $link) . '</li>';
 
-$title = '<span class="glyphicon glyphicon-bell"></span>' . Yii::t('con', 'email_notifications');
+$title = '<span class="glyphicon glyphicon-bell" aria-hidden="true"></span>' . Yii::t('con', 'email_notifications');
 $link  = UrlHelper::createUrl('consultation/notifications');
 $html  .= '<li class="notifications">' . Html::a($title, $link) . '</li>';
 
 if ($consultation->getSettings()->showFeeds) {
-    $title = '<span class="fontello fontello-rss-squared"></span>' . Yii::t('con', 'feeds');
+    $title = '<span class="fontello fontello-rss-squared" aria-hidden="true"></span>' . Yii::t('con', 'feeds');
     $link  = UrlHelper::createUrl('consultation/feeds');
     $html  .= '<li class="feeds">' . Html::a($title, $link) . '</li>';
 }
 
 if ($consultation->getSettings()->collectingPage) {
-    $title = '<span class="glyphicon glyphicon-file"></span>' . Yii::t('con', 'sb_collecting');
+    $title = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'sb_collecting');
     $link  = UrlHelper::createUrl('consultation/collecting');
     $html  .= '<li class="collecting">' . Html::a($title, $link) . '</li>';
 }
@@ -120,7 +120,7 @@ $layout->menusHtmlSmall[] = '<li>' . Html::a(Yii::t('con', 'news'), $link) . '</
 if ($consultation->getSettings()->proposalProcedurePage) {
     $html = '<section class="sidebar-box" aria-labelledby="sidebarPpTitle"><ul class="nav nav-list motions">';
     $html .= '<li class="nav-header" id="sidebarPpTitle">' . Yii::t('con', 'proposed_procedure') . '</li>';
-    $name = '<span class="glyphicon glyphicon-file"></span>' . Yii::t('con', 'proposed_procedure');
+    $name = '<span class="glyphicon glyphicon-file" aria-hidden="true"></span>' . Yii::t('con', 'proposed_procedure');
     $url  = UrlHelper::createUrl('consultation/proposed-procedure');
     $html .= '<li>' . Html::a($name, $url, ['id' => 'proposedProcedureLink']) . "</li>\n";
     $html .= "</ul></section>";
@@ -159,7 +159,7 @@ if ($hasAmendments && $consultation->getSettings()->sidebarNewMotions) {
             }
             $title     = implode(' ', $title);
             $amendLink = UrlHelper::createAmendmentUrl($amendment);
-            $linkTitle = '<span class="glyphicon glyphicon-flash"></span>' . $title;
+            $linkTitle = '<span class="glyphicon glyphicon-flash" aria-hidden="true"></span>' . $title;
             $html      .= '<li>' . Html::a($linkTitle, $amendLink, ['class' => 'amendment' . $amendment->id]) . '</li>';
         }
     }
@@ -176,7 +176,7 @@ if ($hasComments) {
     } else {
         foreach ($newestComments as $comment) {
             $html .= '<li><a href="' . Html::encode($comment->getLink()) . '">';
-            $html .= '<span class="glyphicon glyphicon-comment"></span>';
+            $html .= '<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>';
             $html .= '<strong>' . Html::encode($comment->name) . '</strong>, ';
             $html .= Tools::formatMysqlDateTime($comment->dateCreation);
             if (is_a($comment, \app\models\db\MotionComment::class)) {
@@ -212,7 +212,7 @@ if ($hasPDF) {
             'resolutions' => 1,
             'filename'    => 'resolutions.pdf',
         ]);
-        $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_resolutions');
+        $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_resolutions');
         $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'resolutionPdfCompilation']) . '</li>';
 
         $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
@@ -232,7 +232,7 @@ if ($hasPDF) {
                 'motionTypeId' => $motionType->id,
                 'filename'     => $motionType->titlePlural . '.pdf',
             ]);
-            $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all_short');
+            $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all_short');
             $name    .= ': ' . Html::encode($motionType->titlePlural);
             $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
@@ -245,7 +245,7 @@ if ($hasPDF) {
             'motionTypeId' => $consultation->motionTypes[0]->id,
             'filename'     => $consultation->motionTypes[0]->titlePlural . '.pdf',
         ]);
-        $name    = '<span class="glyphicon glyphicon-download-alt"></span>' . Yii::t('con', 'pdf_all');
+        $name    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>' . Yii::t('con', 'pdf_all');
         $html    .= '<li>' . Html::a($name, $pdfLink, ['class' => 'motionPdfCompilation']) . '</li>';
 
         $link                     = Html::a(Yii::t('con', 'pdf_motions'), $pdfLink, $opts);
@@ -257,7 +257,7 @@ if ($hasPDF) {
             'amendment/pdfcollection',
             'filename' => Yii::t('con', 'feed_amendments') . '.pdf',
         ]);
-        $linkTitle    = '<span class="glyphicon glyphicon-download-alt"></span>';
+        $linkTitle    = '<span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>';
         $linkTitle    .= Yii::t('con', 'pdf_amendments');
         $html         .= '<li>' . Html::a($linkTitle, $amendPdfLink, ['class' => 'amendmentPdfs']) . '</li>';
         $link         = Html::a(Yii::t('con', 'pdf_amendments_small'), $amendPdfLink, ['class' => 'amendmentPdfs']);
