@@ -77,6 +77,11 @@ body > footer {
     margin-top: 0;
     white-space: nowrap;
   }
+
+  a:link, a:visited {
+    color: $colorLinksFooter;
+  }
+
   .version {
     display: inline-block;
     margin-left: 30px;

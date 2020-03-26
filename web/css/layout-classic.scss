@@ -14,9 +14,10 @@ $grid-float-breakpoint: $screen-md-min !default;
 
 $colorLinksLight: #6d7e00;
 $colorLinks: #6d7e00;
+$colorLinksFooter: darken($colorLinks, 5%);
 $linkTextDecoration: none;
 $colorDelLink: #FF7777;
-$colorMagenta: rgb(226, 0, 122);
+$colorMagenta: rgb(212, 0, 116);
 $brand-primary: $colorMagenta;
 $text-color: rgb(72, 70, 73);
 $btn-success-bg: #2c882c;
@@ -25,8 +26,8 @@ $table-border-color: $colorGreenLight;
 $headingFont: "Open Sans", sans-serif;
 $headingPrimaryText: rgb(255, 255, 255);
 $headingPrimaryBackground: rgb(40, 95, 25);
-$headingSecondaryText: rgb(255, 255, 255);
-$headingSecondaryBackground: rgb(175, 203, 8);
+$headingSecondaryText: #444;
+$headingSecondaryBackground: rgb(182, 209, 8);
 $headingTertiaryText: black;
 $headingTertiaryBackground: rgb(27, 74, 251);
 

@@ -44,7 +44,7 @@
   font-size: $textSize;
   line-height: $textSize * 1.2;
   @if $headingTextShadow {
-    @if ($textColor == rgb(51, 51, 51)) {
+    @if ($textColor == rgb(51, 51, 51) or $textColor == rgb(68, 68, 68)) {
       text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
     } @else {
       text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);

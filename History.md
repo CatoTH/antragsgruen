@@ -3,37 +3,24 @@
 ## Version 4.6.0 [not released yet]
 
 - Numbered lists are now supported. This includes different list item styles (like (1), 1., a., A.), manually setting the list item number for each list item (e.g. to skip numbers) and also using non-standard list numbers like "15b" (e.g. for laws where paragraphs have been inserted afterwards). This enables discussions and amendments for statutes and laws.
-
 - Several improvements were made to increase the accessibility of Antragsgrün:
-
   - Better navigation with screenreader
   - Easier navigation using the keyboard
-
+  - Better contrasts
+  - Generally, Antragsgrün aims to comply with the WCAG 2.0 AA rules
 - It is now easier to edit the agenda of a consultation, as the changes are immediatelly saved and it is not necessary anymore to explicitly use the Save-Button at the bottom of the agenda.
-
 - If a new amendment is screened / published while a new version of the motion is being created (by merging other amendments into it), this new amendment will automatically appear in the merging view. A small hint will appear, notifiying about this addition, and with a link to the first paragraph affected by this amendment. The new amendment is inactive, by default, and needs to be actively activated for merging into the affected paragraph. Vice-versa, if an amendment is unpublished while merging, the amendment hint vanishes automatically. Already applied changes remain, though.
-
 - Users can now support motions and amendments in all phases, if this is set up.
-
 - There is now an option to include the name of an amendment submitter to the bookmarks shown to the right of the motion text. As this has the danger of looking awkward once the names are getting too long, this is not activated by default.
-
 - If an amendment affects only one specific line of a motion paragraph, one line before and after the affected one are now also shown in the amendment (confirmation) view, to give more context when reading it.
-
 - If a motion or amendment is submitted as an organisation, the confirmation page now also shows the contact person.
-
 - Regarding proposed procedures:
-
   - If proposed procedures are used, it is now possible for the admin of a consultation to set a default Reply-To e-mail-address for each motion committee member.
   - The e-mail about a proposed procedure to the initiator of a motion now contains a link that can be forwarded to other people. These users can see the proposed procedure, too, and agree to them.
   - Bugfix: when a motion was replaced by another one, the assignment was not saved properly.
-
 - If a motion is moved to another agenda item or consultation and a reference stays at the old place, then there now also is a reference from the new place to the original place to indicate where this motion originally came from.
-
 - There is a new function to embed a translation button to motion, amendment and consultation pages. To enable it, go to Settings -> Appearance page and activate the Translation component. You can choose either Google or Bing. This will show a button at the top right of a motion/amendment that allows visitors of this site to translate this page using the specified service.
-
 - Technical change: Internally, some first components start to use the Vue.JS library.
-
-  
 
 ### Version 4.5.1 (2020-03-23)
 
