@@ -231,6 +231,7 @@ trait AmendmentActionsTrait
         AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender);
 
         $amendment->refresh();
+        $amendment->flushCacheWithChildren(null);
 
         \Yii::$app->session->setFlash('success', $string);
     }
@@ -282,6 +283,7 @@ trait AmendmentActionsTrait
                 $amendment->unlink('amendmentSupporters', $supp, true);
             }
         }
+        $amendment->flushCacheWithChildren(null);
         $consultation = $amendment->getMyConsultation();
         ConsultationLog::logCurrUser($consultation, ConsultationLog::AMENDMENT_UNLIKE, $amendment->id);
         \Yii::$app->session->setFlash('success', \Yii::t('amend', 'neutral_done'));

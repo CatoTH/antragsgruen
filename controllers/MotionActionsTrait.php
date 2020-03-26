@@ -188,6 +188,7 @@ trait MotionActionsTrait
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender);
 
         $motion->refresh();
+        $motion->flushViewCache();
 
         \Yii::$app->session->setFlash('success', $string);
     }
@@ -283,8 +284,8 @@ trait MotionActionsTrait
         $currentUser          = User::getCurrentUser();
         $anonymouslySupported = MotionSupporter::getMyAnonymousSupportIds();
         foreach ($motion->motionSupporters as $supp) {
-            if (($currentUser && $supp->userId == $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
-                if ($supp->role == MotionSupporter::ROLE_SUPPORTER) {
+            if (($currentUser && $supp->userId === $currentUser->id) || in_array($supp->id, $anonymouslySupported)) {
+                if ($supp->role === MotionSupporter::ROLE_SUPPORTER) {
                     if (!$motion->isSupportingPossibleAtThisStatus()) {
                         throw new FormError('Not possible given the current motion status');
                     }
@@ -292,6 +293,8 @@ trait MotionActionsTrait
                 $motion->unlink('motionSupporters', $supp, true);
             }
         }
+
+        $motion->flushViewCache();
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_UNLIKE, $motion->id);
         \Yii::$app->session->setFlash('success', \Yii::t('motion', 'neutral_done'));
     }
