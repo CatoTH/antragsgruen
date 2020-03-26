@@ -320,40 +320,6 @@ class AcceptanceTester extends \Codeception\Actor
         $this->assertEquals($expected, $value);
     }
 
-    /**
-     * @param string $selector
-     */
-    public function seeFueluxCheckboxChecked($selector)
-    {
-        $value = $this->executeJs('return $("' . addslashes($selector) . '").checkbox("isChecked");');
-        $this->assertEquals(true, $value);
-    }
-
-    /**
-     * @param string $selector
-     */
-    public function dontSeeFueluxCheckboxChecked($selector)
-    {
-        $value = $this->executeJs('return $("' . addslashes($selector) . '").checkbox("isChecked");');
-        $this->assertEquals(false, $value);
-    }
-
-    /**
-     * @param string $selector
-     */
-    public function checkFueluxCheckbox($selector)
-    {
-        $this->executeJS('$("' . addslashes($selector) . '").checkbox("check").find("input").trigger("change");');
-    }
-
-    /**
-     * @param string $selector
-     */
-    public function uncheckFueluxCheckbox($selector)
-    {
-        $this->executeJS('$("' . addslashes($selector) . '").checkbox("uncheck");');
-    }
-
     public function clickJS(string $selector): void
     {
         $this->executeJS('document.querySelector("' . $selector . '").dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true}))');

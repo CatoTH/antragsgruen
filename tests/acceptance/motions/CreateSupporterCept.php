@@ -18,7 +18,7 @@ $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->selectFueluxOption('#typeSupportType', \app\models\supportTypes\SupportBase::GIVEN_BY_INITIATOR);
 $I->fillField('#typeMinSupporters', 0);
-$I->uncheckFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
+$I->uncheckOption('#typeHasOrga');
 
 $motionTypePage->saveForm();
 
@@ -42,8 +42,8 @@ $I->gotoConsultationHome();
 $motionTypePage = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 
 $I->fillField('#typeMinSupporters', 2);
-$I->checkFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
-$I->checkFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
+$I->checkOption('#typeAllowMoreSupporters');
+$I->checkOption('#typeHasOrga');
 $motionTypePage->saveForm();
 $I->seeInField('#typeMinSupporters', 2);
 

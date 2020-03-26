@@ -3,8 +3,7 @@
 use app\components\HTMLTools;
 use app\models\db\ConsultationMotionType;
 use app\models\settings\InitiatorForm;
-use app\models\supportTypes\CollectBeforePublish;
-use app\models\supportTypes\SupportBase;
+use app\models\supportTypes\{CollectBeforePublish, SupportBase};
 use yii\helpers\Html;
 
 /**
@@ -17,7 +16,7 @@ $amendmentSettings = $motionType->getAmendmentSupportTypeClass()->getSettingsObj
 $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_encode($amendmentSettings));
 ?>
 <section class="motionSupporters" id="motionSupportersForm">
-    <h3><?= Yii::t('admin', 'motion_type_initiator') ?></h3>
+    <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator') ?></h2>
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeSupportType">
@@ -45,10 +44,10 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_person_type') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails personTypes">
             <div class="form-control">
                 <label>
@@ -65,12 +64,12 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
                 </label>
             </div>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="form-group">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_contact_name') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails contactName">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactName">
             <?php
@@ -86,12 +85,12 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="form-group">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_email') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails contactEMail">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactEmail">
             <?php
@@ -107,12 +106,12 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="form-group">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_phone') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails contactPhone">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactPhone">
             <?php
@@ -128,12 +127,12 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="form-group formGroupResolutionDate">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group formGroupResolutionDate">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_orga_resolution') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails contactResolutionDate">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasResolutionDate">
             <?php
@@ -149,12 +148,12 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </div>
+    </fieldset>
 
-    <div class="form-group formGroupGender">
-        <div class="col-md-4 control-label">
+    <fieldset class="form-group formGroupGender">
+        <legend class="col-md-4 control-label">
             <?= Yii::t('admin', 'motion_type_gender') ?>
-        </div>
+        </legend>
         <div class="col-md-8 contactDetails contactGender">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="contactGender">
             <?php
@@ -170,7 +169,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
             );
             ?>
         </div>
-    </div>
+    </fieldset>
 
     <div class="form-group formGroupMinSupporters" id="typeMinSupportersRow">
         <label class="col-md-4 control-label" for="typeMinSupporters">
@@ -198,41 +197,44 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowMore" id="typeAllowMoreSupporters">
-        <div class="checkbox col-md-8 col-md-offset-4">
+    <div class="form-group formGroupAllowMore">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'motionInitiatorSettings[allowMoreSupporters]',
                 Yii::t('admin', 'motion_type_allow_more_supp'),
-                $motionSettings->allowMoreSupporters
+                $motionSettings->allowMoreSupporters,
+                'typeAllowMoreSupporters'
             );
             ?>
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub" id="typeAllowSupportingAfterPublication">
-        <div class="checkbox col-md-8 col-md-offset-4">
+    <div class="form-group formGroupAllowAfterPub">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'motionInitiatorSettings[allowSupportingAfterPublication]',
                 Yii::t('admin', 'motion_type_supp_after_pub'),
-                $motionSettings->allowSupportingAfterPublication
+                $motionSettings->allowSupportingAfterPublication,
+                'typeAllowSupportingAfterPublication',
+                Yii::t('admin', 'motion_type_supp_after_pubh')
             );
-            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>
 
     <div class="form-group" id="typeHasOrgaRow">
-        <div class="checkbox col-md-8 col-md-offset-4">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="motionInitiatorSettingFields[]" value="hasOrganizations">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'motionInitiatorSettings[hasOrganizations]',
                 Yii::t('admin', 'motion_type_ask_orga'),
-                $motionSettings->hasOrganizations
+                $motionSettings->hasOrganizations,
+                'typeHasOrga'
             );
             ?>
         </div>
@@ -240,9 +242,9 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 
 
     <div class="form-group" id="sameInitiatorSettingsForAmendments">
-        <div class="checkbox col-md-8 col-md-offset-4">
+        <div class="col-md-8 col-md-offset-4">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'sameInitiatorSettingsForAmendments',
                 Yii::t('admin', 'motion_type_same_amendment'),
                 $sameInitiatorSettingsForAmendments
@@ -254,7 +256,7 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
 
 
 <section class="amendmentSupporters" id="amendmentSupportersForm">
-    <h3><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h3>
+    <h2 class="h3"><?= Yii::t('admin', 'motion_type_initiator_amend') ?></h2>
 
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeSupportTypeAmendment">
@@ -434,41 +436,44 @@ $sameInitiatorSettingsForAmendments = (json_encode($motionSettings) === json_enc
         </div>
     </div>
 
-    <div class="form-group formGroupAllowMore" id="typeAllowMoreSupportersAmendment">
-        <div class="checkbox col-md-8 col-md-offset-4">
+    <div class="form-group formGroupAllowMore"">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowMoreSupporters">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'amendmentInitiatorSettings[allowMoreSupporters]',
                 Yii::t('admin', 'motion_type_allow_more_supp'),
-                $amendmentSettings->allowMoreSupporters
+                $amendmentSettings->allowMoreSupporters,
+                'typeAllowMoreSupportersAmendment'
             );
             ?>
         </div>
     </div>
 
-    <div class="form-group formGroupAllowAfterPub" id="typeAllowSupportingAfterPublicationAmendment">
-        <div class="checkbox col-md-8 col-md-offset-4">
+    <div class="form-group formGroupAllowAfterPub">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="allowSupportingAfterPublication">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'amendmentInitiatorSettings[allowSupportingAfterPublication]',
                 Yii::t('admin', 'motion_type_supp_after_pub'),
-                $amendmentSettings->allowSupportingAfterPublication
+                $amendmentSettings->allowSupportingAfterPublication,
+                'typeAllowSupportingAfterPublicationAmendment',
+                Yii::t('admin', 'motion_type_supp_after_pubh')
             );
-            echo ' ' . HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_supp_after_pubh'));
             ?>
         </div>
     </div>
 
     <div class="form-group" id="typeHasOrgaRowAmendment">
-        <div class="checkbox col-md-8 col-md-offset-4">
+        <div class="col-md-8 col-md-offset-4">
             <input type="hidden" name="amendmentInitiatorSettingFields[]" value="hasOrganizations">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'amendmentInitiatorSettings[hasOrganizations]',
                 Yii::t('admin', 'motion_type_ask_orga'),
-                $amendmentSettings->hasOrganizations
+                $amendmentSettings->hasOrganizations,
+                'typeHasOrgaAmendment'
             );
             ?>
         </div>

@@ -59,7 +59,7 @@ $I->dontSeeCheckboxIsChecked('.motionDislike');
 $I->dontSeeCheckboxIsChecked('.motionLike');
 $I->checkOption('.motionLike');
 $I->checkOption('.motionDislike');
-$I->checkFueluxCheckbox('#typeHasOrgaRow label');
+$I->checkOption('#typeHasOrga');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 

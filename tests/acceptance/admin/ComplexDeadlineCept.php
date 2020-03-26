@@ -9,7 +9,7 @@ $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
 $I->dontSeeElement('.stickyAdminDebugFooter');
 $I->dontSeeElement('.deadlineTypeComplex.motionDeadlines');
 $I->seeElement('#typeDeadlineMotionsHolder');
-$I->checkFueluxCheckbox('#deadlineFormTypeComplex');
+$I->checkOption('#deadlineFormTypeComplex');
 $I->seeElement('.deadlineTypeComplex.motionDeadlines');
 $I->dontSeeElement('#typeDeadlineMotionsHolder');
 
@@ -38,7 +38,7 @@ $I->executeJS('$(".mergingDeadlines .deadlineEntry:nth-child(1) .datetimepickerF
 // - 01.07.2017: Creating motions, amendments and comments is possible [Phase 3]
 // - 01.09.2017: Creating motions and merging is possible, no comments and amendments
 
-$I->checkFueluxCheckbox('#deadlineDebugMode');
+$I->checkOption('#deadlineDebugMode');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->seeElement('.stickyAdminDebugFooter');
 

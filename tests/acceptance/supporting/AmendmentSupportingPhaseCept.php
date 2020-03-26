@@ -121,7 +121,7 @@ $I->dontSeeCheckboxIsChecked('.amendmentDislike');
 $I->dontSeeCheckboxIsChecked('.amendmentLike');
 $I->checkOption('.amendmentLike');
 $I->checkOption('.amendmentDislike');
-$I->checkFueluxCheckbox('#typeHasOrgaRow label');
+$I->checkOption('#typeHasOrga');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 

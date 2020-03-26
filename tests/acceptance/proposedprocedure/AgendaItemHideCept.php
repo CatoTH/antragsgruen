@@ -50,7 +50,7 @@ $I->see('W-01');
 $I->wantTo('disable proposed procedures and see that the feature is deactivated then');
 
 $page = $I->gotoStdAdminPage('laenderrat-to', 'laenderrat-to')->gotoMotionTypes(9);
-$I->uncheckFueluxCheckbox('#typeProposedProcedure');
+$I->uncheckOption('#typeProposedProcedure');
 $page->saveForm();
 
 $I->gotoConsultationHome(true, 'laenderrat-to', 'laenderrat-to');

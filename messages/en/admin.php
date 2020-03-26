@@ -429,6 +429,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_initiators_merge_nocoll_hint' => 'If there is a collision, the admin has to be contacted',
     'motion_type_initiators_merge_no'          => 'No, only admins',
 
+    'motion_section_type'         => 'Type of this section',
     'motion_section_title'        => 'Motion sections',
     'motion_section_del'          => 'Delete section',
     'motion_section_add'          => 'Add section',
@@ -446,6 +447,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_section_comm_para'    => 'Paragraph-based',
     'motion_section_amendable'    => 'Amendable',
     'motion_section_name'         => 'Section name',
+    'motion_section_maxsize'      => 'Maximale Druckgröße',
+
     'todo_title'                  => 'To Do',
     'todo_from'                   => 'By',
     'todo_motion_screen'          => 'Screen %TYPE%',
@@ -499,6 +502,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_pos_right'       => 'Right',
     'motion_type_print_title'     => 'Print title in PDF',
     'motion_type_show_in_html'    => 'Also display as a regular motion section',
+    'motion_type_like_title'      => 'Types of support',
     'motion_type_like_like'       => 'Likes',
     'motion_type_like_like_h'     => 'Users liking a motion can be seen below its text, yet it\s not officially supporting it. Official supporters can be seen in the PDF, for example.',
     'motion_type_like_dislike'    => 'Dislikes',

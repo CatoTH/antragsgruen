@@ -64,10 +64,10 @@ $I->wantTo('enable it for collection phase');
 
 $page = $I->gotoStdAdminPage()->gotoMotionTypes(1);
 $I->dontSeeElement('#typeAllowSupportingAfterPublication');
-$I->checkFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
+$I->checkOption('#typeAllowMoreSupporters');
 $I->wait(0.3);
 $I->seeElement('#typeAllowSupportingAfterPublication');
-$I->checkFueluxCheckbox('#typeAllowSupportingAfterPublication .checkbox-custom');
+$I->checkOption('#typeAllowSupportingAfterPublication');
 $page->saveForm();
 
 $I->gotoMotion();

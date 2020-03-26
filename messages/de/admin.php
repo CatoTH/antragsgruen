@@ -448,6 +448,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_type_pos_right'       => 'Rechts',
     'motion_type_print_title'     => 'Titel im PDF anzeigen',
     'motion_type_show_in_html'    => 'Auch als regulären Antrags-Abschnitt anzeigen',
+    'motion_type_like_title'      => 'Arten der Zustimmung bzw. Unterstützung',
     'motion_type_like_like'       => 'Zustimmung',
     'motion_type_like_like_h'     => 'Wer einem Antrag zustimmt, steht unter dem Antrag, gehört aber nicht zu den offiziellen Unterstützer*innen, die unter anderem auch im PDF aufgelistet werden.',
     'motion_type_like_dislike'    => 'Ablehnung',
@@ -483,6 +484,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_cdeadline_add'    => 'Zeitraum hinzufügen',
     'motion_deadline_debug'   => 'Debug-Modus für Admins aktivieren<br><small>(um zukünftige/vergangene Zeitpunkte zu simulieren)</small>',
 
+    'motion_section_type'         => 'Typ des Abschnitts',
     'motion_section_title'        => 'Antrags-Abschnitte',
     'motion_section_del'          => 'Abschnitt löschen',
     'motion_section_add'          => 'Abschnitt hinzufügen',
@@ -500,6 +502,7 @@ Da <strong>kein E-Mail-Versand</strong> eingerichtet ist, musst du die <strong>P
     'motion_section_comm_para'    => 'Pro Absatz',
     'motion_section_amendable'    => 'In Änderungsanträgen',
     'motion_section_name'         => 'Name des Abschnitts',
+    'motion_section_maxsize'      => 'Maximum print width',
 
     'todo_title'            => 'To Do',
     'todo_from'             => 'Von',

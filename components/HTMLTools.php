@@ -835,20 +835,23 @@ class HTMLTools
                   'data-original-title="' . Html::encode($tooltip) . '"></span>';
     }
 
-    public static function fueluxCheckbox(string $formName, string $htmlLabel, bool $checked, array $attributes = []): string
+    public static function labeledCheckbox(string $formName, string $htmlLabel, bool $checked, ?string $id = null, ?string $tooltip = null): string
     {
-        $str = '<label class="checkbox-custom" data-initialize="checkbox"';
-        foreach ($attributes as $attrName => $attrVal) {
-            $str .= ' ' . $attrName . '="' . Html::encode($attrVal) . '"';
-        }
-        $str .= '>';
-        $str .= '<input type="checkbox" name="' . $formName . '" ';
+        $str = '<label class="labeledCheckbox">';
+        $str .= '<input type="checkbox" name="' . Html::encode($formName) . '"';
         if ($checked) {
             $str .= ' checked';
         }
-        $str .= ' class="sr-only">';
-        $str .= '<span class="checkbox-label">' . $htmlLabel . '</span>';
+        if ($id) {
+            $str .= ' id="' . Html::encode($id) . '"';
+        }
+        $str .= '>';
+        $str .= '<span>' . $htmlLabel . '</span>';
+        if ($tooltip) {
+            $str .= HTMLTools::getTooltipIcon($tooltip);
+        }
         $str .= '</label>';
+
         return $str;
     }
 

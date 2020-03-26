@@ -20,7 +20,7 @@ $I->executeJS('$("#motionSupporterHolder > ul > li:nth(1) .supporterName").val("
 $I->submitForm('#motionUpdateForm', [], 'save');
 
 $I->gotoStdAdminPage('supporter', 'supporter')->gotoMotionTypes(10);
-$I->checkFueluxCheckbox('#typeHasOrgaRow .checkbox-custom');
+$I->checkOption('#typeHasOrga');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->logout();

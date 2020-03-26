@@ -44,7 +44,7 @@ $I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 5) . 
 $I->seeInField('.section' . (AcceptanceTester::FIRST_FREE_MOTION_SECTION + 6) . ' .sectionTitle input', 'Foto');
 
 $I->wantTo('highlight the create link in a big, pink button');
-$I->checkFueluxCheckbox('#typeCreateSidebar label');
+$I->checkOption('#typeCreateSidebar');
 $I->submitForm('.adminTypeForm', [], 'save');
 
 $I->wantTo('check if I can see the new types');

@@ -7,7 +7,7 @@ $I->populateDBData1();
 
 $I->wantTo('activate single paragraph mode');
 $I->loginAndGotoStdAdminPage()->gotoMotionTypes(1);
-$I->checkFueluxCheckbox('#typeAmendSinglePara .checkbox-custom');
+$I->checkOption('#typeAmendSinglePara');
 $I->submitForm('.adminTypeForm', [], 'save');
 $I->see('Gespeichert.');
 

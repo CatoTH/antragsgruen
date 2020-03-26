@@ -86,7 +86,7 @@ $I->see('Standard-Veranstaltung', '.consultation1');
 $I->wantTo('check that the settings were set correctly');
 
 $I->gotoStdAdminPage('stdparteitag', 'neukurz')->gotoMotionTypes(AcceptanceTester::FIRST_FREE_MOTION_TYPE);
-$I->dontSeeCheckboxIsChecked('#deadlineFormTypeComplex input');
+$I->dontSeeCheckboxIsChecked('#deadlineFormTypeComplex');
 $I->seeInField('#typeSimpleDeadlineMotions', '30.12.2028 20:00');
 $I->seeInField('#typeSimpleDeadlineAmendments', '30.11.2026 20:00');
 

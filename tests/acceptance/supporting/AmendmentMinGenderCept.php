@@ -19,7 +19,7 @@ $I->checkOption("//input[@name='type[amendmentLikesDislikes][]'][@value='4']"); 
 $I->seeElement('#typeMinSupportersFemaleRowAmendment');
 $I->fillField('#typeMinSupportersAmendment', 1);
 $I->fillField('#typeMinSupportersFemaleAmendment', 1);
-$I->checkFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
+$I->checkOption('#typeAllowMoreSupportersAmendment');
 $page->saveForm();
 
 

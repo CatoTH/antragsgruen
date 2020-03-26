@@ -32,11 +32,11 @@ $I->logout();
 $I->loginAsConsultationAdmin();
 $I->click('#adminLink');
 $I->click('.motionType1');
-$I->seeFueluxCheckboxChecked('#typeProposedProcedure');
-$I->uncheckFueluxCheckbox('#typeProposedProcedure');
+$I->seeCheckboxIsChecked('#typeProposedProcedure');
+$I->uncheckOption('#typeProposedProcedure');
 $I->submitForm('.adminTypeForm', [], 'save');
 
-$I->dontSeeFueluxCheckboxChecked('#typeProposedProcedure');
+$I->dontSeeCheckboxIsChecked('#typeProposedProcedure');
 
 
 

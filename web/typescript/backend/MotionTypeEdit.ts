@@ -122,7 +122,7 @@ class MotionTypeEdit {
     }
 
     private initDeadlines() {
-        $('#deadlineFormTypeComplex input').on("change", (ev) => {
+        $('#deadlineFormTypeComplex').on("change", (ev) => {
             if ($(ev.currentTarget).prop('checked')) {
                 $('.deadlineTypeSimple').addClass('hidden');
                 $('.deadlineTypeComplex').removeClass('hidden');

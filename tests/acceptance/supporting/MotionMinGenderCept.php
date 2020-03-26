@@ -16,7 +16,7 @@ $I->checkOption("//input[@name='type[motionLikesDislikes][]'][@value='4']"); // 
 $I->seeElement('#typeMinSupportersFemaleRow');
 $I->fillField('#typeMinSupporters', 1);
 $I->fillField('#typeMinSupportersFemale', 1);
-$I->checkFueluxCheckbox('#typeAllowMoreSupporters .checkbox-custom');
+$I->checkOption('#typeAllowMoreSupporters');
 $page->saveForm();
 
 

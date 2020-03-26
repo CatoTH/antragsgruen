@@ -1,8 +1,7 @@
 <?php
 
 use app\models\db\ConsultationSettingsMotionSection;
-use app\models\sectionTypes\ISectionType;
-use app\models\sectionTypes\TabularDataType;
+use app\models\sectionTypes\{ISectionType, TabularDataType};
 use yii\helpers\Html;
 
 /**
@@ -24,11 +23,13 @@ $sName = 'sections[' . $sectionId . ']';
         <div class="toprow">
 
             <a href="#" class="remover" title="<?= Html::encode(Yii::t('admin', 'motion_section_del')) ?>">
-                <span class="glyphicon glyphicon-remove-circle"></span>
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                <span class="sr-only"><?= Yii::t('admin', 'motion_section_del') ?></span>
             </a>
-            <?php
 
-            $attribs = ['class' => 'form-control sectionType'];
+            <label for="sectionType<?= $sectionId ?>" class="sr-only"><?= Yii::t('admin', 'motion_section_type') ?></label>
+            <?php
+            $attribs = ['class' => 'form-control sectionType', 'id' => 'sectionType' . $sectionId];
             if ($section->id > 0) {
                 $attribs['disabled'] = 'disabled';
             }
@@ -47,8 +48,8 @@ $sName = 'sections[' . $sectionId . ']';
         </div>
         <div class="bottomrow">
             <div class="leftCol">
-                <div class="positionRow">
-                    <div><?= Yii::t('admin', 'motion_type_pos') ?></div>
+                <fieldset class="positionRow">
+                    <legend><?= Yii::t('admin', 'motion_type_pos') ?></legend>
                     <label class="positionSection">
                         <?= Html::radio($sName . '[positionRight]', ($section->positionRight != 1), ['value' => 0]) ?>
                         <?= Yii::t('admin', 'motion_type_pos_left') ?>
@@ -57,7 +58,7 @@ $sName = 'sections[' . $sectionId . ']';
                         <?= Html::radio($sName . '[positionRight]', ($section->positionRight == 1), ['value' => 1]) ?>
                         <?= Yii::t('admin', 'motion_type_pos_right') ?>
                     </label><br>
-                </div>
+                </fieldset>
 
                 <label class="printTitleSection">
                     <?= Html::checkbox($sName . '[printTitle]', $section->printTitle) ?>
@@ -90,8 +91,8 @@ $sName = 'sections[' . $sectionId . ']';
                     <?= Yii::t('admin', 'motion_section_limit') ?>
                 </label>
 
-                <div class="imageMaxSize">
-                    <div>Maximale Druckgröße</div>
+                <fieldset class="imageMaxSize">
+                    <legend><?= Yii::t('admin', 'motion_section_maxsize') ?></legend>
                     <div>
                         <input type="number" name="<?= $sName ?>[imgMaxWidth]" value="<?= $settings->imgMaxWidth > 0 ? $settings->imgMaxWidth : '' ?>"
                                title="Width in cm" size="4" class="form-control">
@@ -100,7 +101,7 @@ $sName = 'sections[' . $sectionId . ']';
                                title="Height in cm" size="4" class="form-control">
                         cm
                     </div>
-                </div>
+                </fieldset>
 
                 <?php
                 $value = '';
@@ -122,8 +123,8 @@ $sName = 'sections[' . $sectionId . ']';
                 </label>
             </div>
             <div class="commAmendCol">
-                <div class="commentRow">
-                    <div><?= Yii::t('admin', 'motion_section_comm') ?>:</div>
+                <fieldset class="commentRow">
+                    <legend><?= Yii::t('admin', 'motion_section_comm') ?>:</legend>
 
                     <label class="commentNone">
                         <?php
@@ -149,7 +150,7 @@ $sName = 'sections[' . $sectionId . ']';
                         <?= Yii::t('admin', 'motion_section_comm_para') ?>
                     </label>
 
-                </div>
+                </fieldset>
 
                 <label class="amendmentRow">
                     <?= Html::checkbox(
@@ -189,7 +190,7 @@ $sName = 'sections[' . $sectionId . ']';
         };
 
         ?>
-        <div class="tabularDataRow">
+        <fieldset class="tabularDataRow">
             <legend><?= Yii::t('admin', 'motion_section_tab_data') ?>:</legend>
             <ul>
                 <?php
@@ -215,7 +216,7 @@ $sName = 'sections[' . $sectionId . ']';
                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 <?= Yii::t('admin', 'motion_section_add_line') ?>
             </a>
-        </div>
+        </fieldset>
 
     </div>
 </li>

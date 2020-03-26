@@ -17,7 +17,7 @@ foreach (IPolicy::getPolicies() as $policy) {
 }
 
 ?>
-<h3><?= Yii::t('admin', 'motion_type_perm') ?></h3>
+<h2 class="h3"><?= Yii::t('admin', 'motion_type_perm') ?></h2>
 
 <!-- Policy for creating motions -->
 
@@ -62,7 +62,8 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!--Support types for motions (Likes, Dislikes, Official support) -->
 
 <div class="form-group">
-    <div class="col-md-8 col-md-offset-4 contactDetails motionSupportPolicy">
+    <fieldset class="col-md-8 col-md-offset-4 contactDetails motionSupportPolicy">
+        <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
         <div class="form-control">
             <?php
             $checkboxes = [
@@ -90,7 +91,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             }
             ?>
         </div>
-    </div>
+    </fieldset>
 </div>
 
 
@@ -111,13 +112,14 @@ foreach (IPolicy::getPolicies() as $policy) {
         ) ?>
     </div>
 </div>
-<div class="form-group checkbox checkboxNoPadding" id="typeAmendSinglePara">
-    <div class="checkbox col-md-8 col-md-offset-4">
+<div class="form-group checkboxNoPadding">
+    <div class="col-md-8 col-md-offset-4">
         <?php
-        echo HTMLTools::fueluxCheckbox(
+        echo HTMLTools::labeledCheckbox(
             'type[amendSinglePara]',
             Yii::t('admin', 'motion_type_amend_singlep'),
-            !$motionType->amendmentMultipleParagraphs
+            !$motionType->amendmentMultipleParagraphs,
+            'typeAmendSinglePara'
         );
         ?>
     </div>
@@ -147,7 +149,8 @@ foreach (IPolicy::getPolicies() as $policy) {
 <!-- Support types for amendments (Likes, Dislikes, Official support) -->
 
 <div class="form-group">
-    <div class="col-md-8 col-md-offset-4 contactDetails amendmentSupportPolicy">
+    <fieldset class="col-md-8 col-md-offset-4 contactDetails amendmentSupportPolicy">
+        <legend class="sr-only"><?= Yii::t('admin', 'motion_type_like_title') ?></legend>
         <div class="form-control">
             <?php
             $checkboxes = [
@@ -176,7 +179,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             }
             ?>
         </div>
-    </div>
+    </fieldset>
 </div>
 
 
@@ -200,10 +203,10 @@ foreach (IPolicy::getPolicies() as $policy) {
 
 <!-- Are initiators allowed to merge amendments into their motions -->
 
-<div class="form-group initiatorsCanMergeRow">
-    <div class="col-md-4 control-label">
+<fieldset class="form-group initiatorsCanMergeRow">
+    <legend class="col-md-4 control-label">
         <?= Yii::t('admin', 'motion_type_initiators_merge') ?>
-    </div>
+    </legend>
     <div class="col-md-8">
         <label><?php
             echo Html::radio(
@@ -241,7 +244,7 @@ foreach (IPolicy::getPolicies() as $policy) {
             <?= HTMLTools::getTooltipIcon(Yii::t('admin', 'motion_type_initiators_merge_yes_hint')) ?>
         </label>
     </div>
-</div>
+</fieldset>
 
 <?php
 ?>

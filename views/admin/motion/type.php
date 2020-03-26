@@ -56,7 +56,7 @@ echo '<div class="content">';
 echo $controller->showErrors();
 
 ?>
-    <h3><?= Yii::t('admin', 'motion_type_names') ?></h3>
+    <h2 class="h3"><?= Yii::t('admin', 'motion_type_names') ?></h2>
     <div class="form-group">
         <label class="col-md-4 control-label" for="typeTitleSingular">
             <?= Yii::t('admin', 'motion_type_singular') ?>
@@ -102,13 +102,14 @@ echo $controller->showErrors();
             ?>
         </div>
     </div>
-    <div class="form-group checkbox checkboxNoPadding" id="typeCreateSidebar">
-        <div class="checkbox col-md-8 col-md-offset-4">
+    <div class="form-group checkboxNoPadding">
+        <div class="col-md-8 col-md-offset-4">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'type[sidebarCreateButton]',
                 Yii::t('admin', 'motion_type_create_sidebar'),
-                $motionType->sidebarCreateButton
+                $motionType->sidebarCreateButton,
+                'typeCreateSidebar'
             );
             ?>
         </div>
@@ -142,13 +143,13 @@ echo $controller->showErrors();
         <label class="col-md-4 control-label" for="typeProposedProcedure">
             <?= Yii::t('admin', 'motion_type_proposed') ?>
         </label>
-        <div class="checkbox col-md-8">
+        <div class="col-md-8">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'type[proposedProcedure]',
                 Yii::t('admin', 'motion_type_proposed_label'),
                 $motionType->getSettingsObj()->hasProposedProcedure,
-                ['id' => 'typeProposedProcedure']
+                'typeProposedProcedure'
             );
             ?>
         </div>
@@ -158,13 +159,13 @@ echo $controller->showErrors();
         <label class="col-md-4 control-label" for="typeResponsibilities">
             <?= Yii::t('admin', 'motion_type_respons') ?>
         </label>
-        <div class="checkbox col-md-8">
+        <div class="col-md-8">
             <?php
-            echo HTMLTools::fueluxCheckbox(
+            echo HTMLTools::labeledCheckbox(
                 'type[responsibilities]',
                 Yii::t('admin', 'motion_type_respons_label'),
                 $motionType->getSettingsObj()->hasResponsibilities,
-                ['id' => 'typeResponsibilities']
+                'typeResponsibilities'
             );
             ?>
         </div>
@@ -179,7 +180,7 @@ echo $this->render('_type_initiator', ['motionType' => $motionType]);
 $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
 ?>
 
-    <h3><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h3>
+    <h2 class="h3"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></h2>
 
     <div class="form-group">
         <label class="col-sm-4 control-label" for="pdfIntroduction">
@@ -208,7 +209,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
     </div>
 
     <fieldset class="thumbnailedLayoutSelector">
-        <legend></legend>
+        <legend class="sr-only"><?= Yii::t('admin', 'motion_type_pdf_layout') ?></legend>
         <?php
         $currValue = ($motionType->texTemplateId ? $motionType->texTemplateId : 'php' . $motionType->pdfLayout);
         foreach (\app\views\pdfLayouts\IPDFLayout::getAvailableClassesWithLatex() as $lId => $layout) {
@@ -219,6 +220,7 @@ $supportSett = $motionType->getMotionSupportTypeClass()->getSettingsObj();
                 echo '<img src="' . Html::encode($layout['preview']) . '" ' .
                     'alt="' . Html::encode($layout['title']) . '" ' .
                     'title="' . Html::encode($layout['title']) . '"></span>';
+                echo '<span class="sr-only">' . Html::encode($layout['title']) . '</span>';
             } else {
                 echo '<span class="placeholder">' . Html::encode($layout['title']) . '</span>';
             }

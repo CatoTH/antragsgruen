@@ -16,17 +16,15 @@ $simpleDeadlineMotions    = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpleAmendmentsDeadline());
 
 ?>
-<h3><?= Yii::t('admin', 'motion_deadlines_head') ?></h3>
+<h2 class="h3"><?= Yii::t('admin', 'motion_deadlines_head') ?></h2>
 
-<div class="checkbox">
-    <?php
-    echo HTMLTools::fueluxCheckbox(
+<div>
+    <?= HTMLTools::labeledCheckbox(
         'deadlines[formtypeComplex]',
         Yii::t('admin', 'motion_deadline_complex'),
         !$deadlineForm->isSimpleConfiguration(),
-        ['id' => 'deadlineFormTypeComplex']
-    );
-    ?>
+        'deadlineFormTypeComplex'
+    ) ?>
 </div>
 
 <div class="form-group deadlineTypeSimple">
@@ -68,7 +66,7 @@ $simpleDeadlineAmendments = Tools::dateSql2bootstraptime($deadlineForm->getSimpl
 $type = ConsultationMotionType::DEADLINE_MOTIONS;
 ?>
 <section class="deadlineTypeComplex deadlineHolder motionDeadlines" data-type="<?= $type ?>">
-    <h4><?= Yii::t('admin', 'motion_cdeadline_mot') ?>:</h4>
+    <h3 class="h4"><?= Yii::t('admin', 'motion_cdeadline_mot') ?>:</h3>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
@@ -86,7 +84,7 @@ $type = ConsultationMotionType::DEADLINE_MOTIONS;
 $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
 ?>
 <div class="deadlineTypeComplex deadlineHolder amendmentDeadlines" data-type="<?= $type ?>">
-    <h4><?= Yii::t('admin', 'motion_cdeadline_amend') ?>:</h4>
+    <h3 class="h4"><?= Yii::t('admin', 'motion_cdeadline_amend') ?>:</h3>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
@@ -104,7 +102,7 @@ $type = ConsultationMotionType::DEADLINE_AMENDMENTS;
 $type = ConsultationMotionType::DEADLINE_MERGING;
 ?>
 <div class="deadlineTypeComplex deadlineHolder mergingDeadlines" data-type="<?= $type ?>">
-    <h4><?= Yii::t('admin', 'motion_cdeadline_merge') ?>:</h4>
+    <h3 class="h4"><?= Yii::t('admin', 'motion_cdeadline_merge') ?>:</h3>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
@@ -122,7 +120,7 @@ $type = ConsultationMotionType::DEADLINE_MERGING;
 $type = ConsultationMotionType::DEADLINE_COMMENTS;
 ?>
 <div class="deadlineTypeComplex deadlineHolder commentDeadlines" data-type="<?= $type ?>">
-    <h4><?= Yii::t('admin', 'motion_cdeadline_com') ?>:</h4>
+    <h3 class="h4"><?= Yii::t('admin', 'motion_cdeadline_com') ?>:</h3>
     <div class="deadlineList">
         <?php
         foreach ($motionType->getDeadlinesByType($type) as $deadline) {
@@ -136,13 +134,11 @@ $type = ConsultationMotionType::DEADLINE_COMMENTS;
     </button>
 </div>
 
-<div class="deadlineTypeComplex checkbox">
-    <?php
-    echo HTMLTools::fueluxCheckbox(
+<div class="deadlineTypeComplex">
+    <?= HTMLTools::labeledCheckbox(
         'activateDeadlineDebugMode',
         Yii::t('admin', 'motion_deadline_debug'),
         DateTools::isDeadlineDebugModeActive($motionType->getMyConsultation()),
-        ['id' => 'deadlineDebugMode']
-    );
-    ?>
+        'deadlineDebugMode'
+    ) ?>
 </div>
