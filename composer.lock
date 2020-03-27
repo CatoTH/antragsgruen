@@ -1573,16 +1573,16 @@
         },
         {
             "name": "yiisoft/yii2",
-            "version": "2.0.33",
+            "version": "2.0.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-framework.git",
-                "reference": "8c0a329b72b11d938e1cb7e4cabf700139206723"
+                "reference": "ef2585379bc387433e150a62451a89a4b1e130d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/8c0a329b72b11d938e1cb7e4cabf700139206723",
-                "reference": "8c0a329b72b11d938e1cb7e4cabf700139206723",
+                "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/ef2585379bc387433e150a62451a89a4b1e130d7",
+                "reference": "ef2585379bc387433e150a62451a89a4b1e130d7",
                 "shasum": ""
             },
             "require": {
@@ -1669,7 +1669,7 @@
                 "framework",
                 "yii2"
             ],
-            "time": "2020-03-24T20:03:06+00:00"
+            "time": "2020-03-26T20:42:29+00:00"
         },
         {
             "name": "yiisoft/yii2-authclient",
