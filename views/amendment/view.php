@@ -44,7 +44,7 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
-$minHeight               = ($sidebarRows * 40 - 100) . 'px';
+$minHeight               = max(0, $sidebarRows * 40 - 100) . 'px';
 $supportCollectingStatus = (
     $amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS &&
     !$amendment->isDeadlineOver()

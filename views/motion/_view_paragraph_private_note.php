@@ -46,7 +46,7 @@ $noteRepl = [($paragraphNo + 1), $sectionTitle];
     ?>
     <?= Html::beginForm('', 'post', ['class' => 'form-inline hidden']) ?>
     <label>
-        <div class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?></div>
+        <span class="sr-only"><?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?></span>
         <textarea class="form-control" name="noteText" placeholder="<?= str_replace($noteSrc, $noteRepl, Yii::t('motion', 'private_notes_para_write')) ?>"
         ><?= Html::encode($comment ? $comment->text : '') ?></textarea>
     </label>
