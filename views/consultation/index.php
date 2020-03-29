@@ -76,6 +76,17 @@ $getMyMotionAttrs = function (\app\models\db\IMotion $motion, \app\models\db\ISu
     return [implode(" ", $class), $title];
 };
 
+
+foreach ($consultation->speechQueues as $queue) {
+    foreach ($queue->items as $item) {
+        echo $item->id . "<br>";
+    }
+    foreach ($queue->subqueues as $subqueue) {
+        echo $subqueue->id . "<br>";
+    }
+}
+
+
 if ($myself) {
     if (count($myMotions)) {
         echo '<section class="sectionMyMotions" aria-labelledby="sectionMyMotionsTitle">';

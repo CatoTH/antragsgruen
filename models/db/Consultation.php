@@ -37,6 +37,7 @@ use yii\db\ActiveRecord;
  * @property ConsultationUserPrivilege[] $userPrivileges
  * @property ConsultationFile[] $files
  * @property ConsultationLog[] $logEntries
+ * @property SpeechQueue[] $speechQueues
  * @property UserNotification[] $userNotifications
  * @property VotingBlock[] $votingBlocks
  */
@@ -368,6 +369,14 @@ class Consultation extends ActiveRecord
     {
         return $this->hasMany(ConsultationMotionType::class, ['consultationId' => 'id'])
             ->andWhere(ConsultationMotionType::tableName() . '.status != ' . ConsultationMotionType::STATUS_DELETED);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpeechQueues()
+    {
+        return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
     }
 
     /**
