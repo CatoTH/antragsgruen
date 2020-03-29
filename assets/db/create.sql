@@ -599,6 +599,52 @@ CREATE TABLE `###TABLE_PREFIX###siteAdmin` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `speechQueue`
+--
+
+CREATE TABLE `###TABLE_PREFIX###speechQueue` (
+  `id` int(11) NOT NULL,
+  `consultationId` int(11) NOT NULL,
+  `agendaItemId` int(11) DEFAULT NULL,
+  `quotaByTime` tinyint(4) NOT NULL DEFAULT 0,
+  `quotaOrder` tinyint(4) NOT NULL DEFAULT 0,
+  `isOpen` tinyint(4) NOT NULL DEFAULT 0,
+  `isModerated` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `speechQueueItem`
+--
+
+CREATE TABLE `###TABLE_PREFIX###speechQueueItem` (
+  `id` int(11) NOT NULL,
+  `queueId` int(11) NOT NULL,
+  `subqueueId` int(11) DEFAULT NULL,
+  `userId` int(11) DEFAULT NULL,
+  `name` text NOT NULL,
+  `position` int(11) NOT NULL,
+  `dateStarted` timestamp NULL DEFAULT NULL,
+  `dateStopped` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `speechSubqueue`
+--
+
+CREATE TABLE `###TABLE_PREFIX###speechSubqueue` (
+  `id` int(11) NOT NULL,
+  `queueId` int(11) NOT NULL,
+  `name` text NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `texTemplate`
 --
 
@@ -909,6 +955,30 @@ ALTER TABLE `###TABLE_PREFIX###siteAdmin`
   ADD KEY `site_admin_fk_siteIdx` (`siteId`);
 
 --
+-- Indexes for table `speechQueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueue`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_speech_consultation` (`consultationId`),
+  ADD KEY `fk_speech_agenda` (`agendaItemId`);
+
+--
+-- Indexes for table `speechSubqueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechSubqueue`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_speech_queue` (`queueId`);
+
+--
+-- Indexes for table `speechQueueItem`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_speechitem_queue` (`queueId`),
+  ADD KEY `fk_speechitem_subqueue` (`subqueueId`),
+  ADD KEY `fk_speechitem_user` (`userId`);
+
+--
 -- Indexes for table `texTemplate`
 --
 ALTER TABLE `###TABLE_PREFIX###texTemplate`
@@ -1041,6 +1111,21 @@ ALTER TABLE `###TABLE_PREFIX###motionSupporter`
 --
 ALTER TABLE `###TABLE_PREFIX###site`
   MODIFY `id` INT(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `speechQueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueue`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `speechSubqueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechSubqueue`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `speechQueueItem`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `texTemplate`
 --
@@ -1301,6 +1386,27 @@ ALTER TABLE `###TABLE_PREFIX###siteAdmin`
   ADD CONSTRAINT `site_admin_fk_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`)
   ON DELETE NO ACTION
   ON UPDATE NO ACTION;
+
+--
+-- Constraints for table `speechQueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueue`
+  ADD CONSTRAINT `fk_speech_agenda` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`),
+  ADD CONSTRAINT `fk_speech_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
+
+--
+-- Constraints for table `speechSubqueue`
+--
+ALTER TABLE `###TABLE_PREFIX###speechSubqueue`
+  ADD CONSTRAINT `fk_speech_queue` FOREIGN KEY (`queueId`) REFERENCES `###TABLE_PREFIX###speechQueue` (`id`);
+
+--
+-- Constraints for table `speechQueueItem`
+--
+ALTER TABLE `###TABLE_PREFIX###speechQueueItem`
+  ADD CONSTRAINT `fk_speechitem_queue` FOREIGN KEY (`queueId`) REFERENCES `###TABLE_PREFIX###speechQueue` (`id`),
+  ADD CONSTRAINT `fk_speechitem_subqueue` FOREIGN KEY (`subqueueId`) REFERENCES `###TABLE_PREFIX###speechSubqueue` (`id`),
+  ADD CONSTRAINT `fk_speechitem_user` FOREIGN KEY (`userId`) REFERENCES `###TABLE_PREFIX###user` (`id`);
 
 --
 -- Constraints for table `texTemplate`

@@ -73,7 +73,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m200223_161553_agenda_obsoletion', '1582474676'),
   ('m200301_110040_user_settings', '1583060479'),
   ('m200621_063838_amendmentMotionExtraData', '1592721950'),
-  ('m201111_193448_consultation_text_per_motion_type', '1605123408')
+  ('m201111_193448_consultation_text_per_motion_type', '1605123408'),
+  ('m200329_135701_speech_list', '1585492187')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;
