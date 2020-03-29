@@ -18,6 +18,7 @@ class m200329_135701_speech_list extends Migration
             'agendaItemId'   => 'INTEGER NULL DEFAULT NULL',
             'quotaByTime'    => 'TINYINT NOT NULL DEFAULT 0',
             'quotaOrder'     => 'TINYINT NOT NULL DEFAULT 0',
+            'isActive'       => 'TINYINT NOT NULL DEFAULT 0',
             'isOpen'         => 'TINYINT NOT NULL DEFAULT 0',
             'isModerated'    => 'TINYINT NOT NULL DEFAULT 0',
         ]);

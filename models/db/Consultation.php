@@ -379,6 +379,17 @@ class Consultation extends ActiveRecord
         return $this->hasMany(SpeechQueue::class, ['consultationId' => 'id']);
     }
 
+    public function getActiveSpeechQueue(): ?SpeechQueue
+    {
+        foreach ($this->speechQueues as $speechQueue) {
+            if ($speechQueue->isActive) {
+                return $speechQueue;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

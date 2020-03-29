@@ -605,6 +605,7 @@ CREATE TABLE `###TABLE_PREFIX###speechQueue` (
   `agendaItemId` int(11) DEFAULT NULL,
   `quotaByTime` tinyint(4) NOT NULL DEFAULT 0,
   `quotaOrder` tinyint(4) NOT NULL DEFAULT 0,
+  `isActive` tinyint(4) NOT NULL DEFAULT 0,
   `isOpen` tinyint(4) NOT NULL DEFAULT 0,
   `isModerated` tinyint(4) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

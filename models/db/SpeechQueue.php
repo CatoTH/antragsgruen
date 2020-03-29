@@ -11,6 +11,7 @@ use yii\db\ActiveRecord;
  * @property int|null $agendaItemId
  * @property int $quotaByTime
  * @property int $quotaOrder
+ * @property int $isActive
  * @property int $isOpen
  * @property int $isModerated
  *
@@ -79,9 +80,23 @@ class SpeechQueue extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isModerated'], 'required'],
-            [['quotaByTime', 'quotaOrder', 'isOpen', 'isModerated'], 'safe'],
-            [['id', 'consultationId', 'agendaItemId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isModerated'], 'number'],
+            [['consultationId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'required'],
+            [['quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'safe'],
+            [['id', 'consultationId', 'agendaItemId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'number'],
+        ];
+    }
+
+    public function getUserObject(): array
+    {
+        return [
+            'id' => $this->id,
+        ];
+    }
+
+    public function getAdminObject(): array
+    {
+        return [
+            'id' => $this->id,
         ];
     }
 }
