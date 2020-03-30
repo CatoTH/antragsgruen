@@ -7,9 +7,11 @@ ob_start();
     <header v-if="subqueue.name === 'default'">Warteliste</header>
 
     <ul class="subqueueItems">
-        <li v-for="item in subqueue.applied" class="subqueueItem">
+        <li v-for="item in subqueue.applied" class="subqueueItem" tabindex="0"
+            v-on:click="onItemSelected($event, item)"
+            v-on:keyup.enter="onItemSelected($event, item)"
+        >
             {{ item.name }}
-            <button type="button" class="btn btn-sm btn-default" v-on:click="onItemSelected($event, item)">auswählen</button>
         </li>
     </ul>
 
@@ -36,7 +38,7 @@ $html        = ob_get_clean();
         methods: {
             onItemSelected: function ($event, item) {
                 $event.preventDefault();
-                this.$emit('add-item', this.subqueue, item);
+                this.$emit('add-item', item);
             }
         }
     });

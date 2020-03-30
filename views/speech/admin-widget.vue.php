@@ -8,25 +8,47 @@ ob_start();
 <div class="speechAdmin">
     <ol class="slots" aria-label="Redeliste">
         <li v-for="slot in sortedSlots" class="slotEntry">
-            {{ slot.name }}
-            <button type="button" class="btn btn-sm btn-default" v-on:click="removeSlot($event, slot)">Zurück zur Warteliste</button>
+            <div class="name">
+                {{ slot.name }}
+            </div>
+            <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
+                Redebeitrag läuft
+            </div>
+
+            <button type="button" class="btn btn-success start"
+                    v-on:click="startSlot($event, slot)" v-if="slot.dateStarted === null">
+                <span class="glyphicon glyphicon-play" aria-label="Redebeitrag starten" title="Redebeitrag starten"></span>
+            </button>
+            <button type="button" class="btn btn-danger start"
+                    v-on:click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
+                <span class="glyphicon glyphicon-stop" aria-label="Redebeitrag beenden" title="Redebeitrag beenden"></span>
+            </button>
+
+            <div class="operations">
+                <button type="button" class="btn btn-xs btn-default removeSlot" v-on:click="removeSlot($event, slot)">
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    Warteliste
+                </button>
+            </div>
         </li>
-        <li class="slotPlaceholder">
-            Vorschlag: XYZ
+        <li class="slotPlaceholder" v-if="slotProposal" tabindex="0"
+            v-on:click="addItemToSlots(slotProposal)"
+            v-on:keyup.enter="addItemToSlots(slotProposal)">
+            Vorschlag: {{ slotProposal.name }}
         </li>
     </ol>
 
     <div class="subqueues">
         <speech-admin-subqueue v-for="subqueue in queue.subqueues"
                                v-bind:subqueue="subqueue"
-                               v-on:add-item="onAddItem"
+                               v-on:add-item="addItemToSlots"
         ></speech-admin-subqueue>
     </div>
 </div>
 
 <?php
-$html            = ob_get_clean();
-$itemSetPosition = UrlHelper::createUrl('speech/admin-item-setposition');
+$html          = ob_get_clean();
+$itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
 ?>
 
 <script>
@@ -39,8 +61,7 @@ $itemSetPosition = UrlHelper::createUrl('speech/admin-item-setposition');
         },
         computed: {
             sortedSlots: function () {
-                return this.queue.slots.sort(function(slot1, slot2) {
-                    console.log(JSON.stringify(slot1), JSON.stringify(slot2));
+                return this.queue.slots.sort(function (slot1, slot2) {
                     if (slot1.dateStarted && slot2.dateStarted === null) {
                         return -1;
                     }
@@ -52,16 +73,24 @@ $itemSetPosition = UrlHelper::createUrl('speech/admin-item-setposition');
                         const date2 = new Date(slot2.dateStarted);
                         return date1.getTime() - date2.getTime();
                     }
-                    return slot2.position - slot1.position;
+                    return slot1.position - slot2.position;
                 });
+            },
+            slotProposal: function () {
+                if (this.queue.subqueues[0].applied.length > 0) {
+                    console.log(this.queue.subqueues[0]);
+                    return this.queue.subqueues[0].applied[0];
+                } else {
+                    return null;
+                }
             }
         },
         methods: {
-            _setPosition(id, position) {
-                $.post(<?= json_encode($itemSetPosition) ?>, {
+            _setStatus: function (id, op) {
+                $.post(<?= json_encode($itemSetStatus) ?>, {
                     queue: this.queue.id,
                     item: id,
-                    position,
+                    op,
                     _csrf: this.csrf,
                 }, (data) => {
                     if (!data['success']) {
@@ -74,12 +103,20 @@ $itemSetPosition = UrlHelper::createUrl('speech/admin-item-setposition');
                     alert(err.responseText);
                 });
             },
+            startSlot: function ($event, slot) {
+                $event.preventDefault();
+                this._setStatus(slot.id, "start");
+            },
+            stopSlot: function ($event, slot) {
+                $event.preventDefault();
+                this._setStatus(slot.id, "stop");
+            },
             removeSlot: function ($event, slot) {
                 $event.preventDefault();
-                this._setPosition(slot.id, "remove");
+                this._setStatus(slot.id, "unset-slot");
             },
-            onAddItem: function (subqueue, item) {
-                this._setPosition(item.id, "max");
+            addItemToSlots: function (item) {
+                this._setStatus(item.id, "set-slot");
             }
         }
     });

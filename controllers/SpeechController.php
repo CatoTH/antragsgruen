@@ -47,7 +47,7 @@ class SpeechController extends Base
         ]);
     }
 
-    public function actionAdminItemSetposition()
+    public function actionAdminItemSetstatus()
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
@@ -69,21 +69,33 @@ class SpeechController extends Base
         }
         $item = $queue->getItemById(intval(\Yii::$app->request->post('item')));
 
-        if (\Yii::$app->request->post('position') === "max") {
-            $maxPosition = 0;
-            foreach ($queue->items as $cmpItem) {
-                if ($cmpItem->position !== null && $cmpItem->position > $maxPosition) {
-                    $maxPosition = $cmpItem->position;
+        switch (\Yii::$app->request->post('op')) {
+            case "set-slot":
+                $maxPosition = 0;
+                foreach ($queue->items as $cmpItem) {
+                    if ($cmpItem->position !== null && $cmpItem->position > $maxPosition) {
+                        $maxPosition = $cmpItem->position;
+                    }
                 }
-            }
 
-            $item->position = $maxPosition + 1;
-            $item->save();
-        } elseif (\Yii::$app->request->post('position') === "remove") {
-            $item->position    = null;
-            $item->dateStarted = null;
-            $item->dateStopped = null;
-            $item->save();
+                $item->position = $maxPosition + 1;
+                $item->save();
+                break;
+            case "unset-slot":
+                $item->position    = null;
+                $item->dateStarted = null;
+                $item->dateStopped = null;
+                $item->save();
+                break;
+            case "start":
+                $item->dateStarted = date("Y-m-d H:i:s");
+                $item->dateStopped = null;
+                $item->save();
+                break;
+            case "stop":
+                $item->dateStopped = date("Y-m-d H:i:s");
+                $item->save();
+                break;
         }
 
         return json_encode([
