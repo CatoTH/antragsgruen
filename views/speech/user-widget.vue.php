@@ -1,8 +1,9 @@
 <?php
 
-ob_start();
+use app\components\UrlHelper;
 
-use app\components\UrlHelper; ?>
+ob_start();
+?>
 
 <div>
 

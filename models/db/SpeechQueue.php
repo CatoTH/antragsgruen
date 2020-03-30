@@ -86,6 +86,28 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
+    public function getSubqueueById(int $subqueueId): ?SpeechSubqueue
+    {
+        foreach ($this->subqueues as $subqueue) {
+            if ($subqueue->id === $subqueueId) {
+                return $subqueue;
+            }
+        }
+
+        return null;
+    }
+
+    public function getItemById(int $itemId): ?SpeechQueueItem
+    {
+        foreach ($this->items as $item) {
+            if ($item->id === $itemId) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
+
     private function getAdminApiSubqueue(?SpeechSubqueue $subqueue): array
     {
         $obj = [
@@ -119,10 +141,59 @@ class SpeechQueue extends ActiveRecord
         return $obj;
     }
 
+    private function getAdminApiSubqueues(): array
+    {
+        $subqueues = [];
+        foreach ($this->subqueues as $subqueue) {
+            $subqueues[] = $this->getAdminApiSubqueue($subqueue);
+        }
+
+        // Users without subqueue when there actually are existing subqueues:
+        // this happens if a queue starts off without subqueues, someone registers,
+        // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
+        $usersWithoutSubqueue = 0;
+        foreach ($this->items as $item) {
+            if ($item->subqueueId === null) {
+                $usersWithoutSubqueue++;
+            }
+        }
+        if (count($subqueues) === 0 || $usersWithoutSubqueue > 0) {
+            $subqueues[] = $this->getAdminApiSubqueue(null);
+        }
+
+        return $subqueues;
+    }
+
     public function getAdminApiObject(): array
     {
+        $slots = [];
+        foreach ($this->items as $item) {
+            if ($item->position === null) {
+                continue;
+            }
+            $subqueue = ($item->subqueueId ? $this->getSubqueueById($item->subqueueId) : null);
+            $slots[]  = [
+                'id'          => $item->id,
+                'subqueue'    => [
+                    'id'   => ($subqueue ? $subqueue->id : null),
+                    'name' => ($subqueue ? $subqueue->name : 'default'),
+                ],
+                'name'        => $item->name,
+                'userId'      => $item->userId,
+                'position'    => $item->position,
+                'dateStarted' => ($item->getDateStarted() ? $item->getDateStarted()->format('c') : null),
+                'dateStopped' => ($item->getDateStopped() ? $item->getDateStopped()->format('c') : null),
+                'dateApplied' => ($item->getDateApplied() ? $item->getDateApplied()->format('c') : null),
+            ];
+        }
+        usort($slots, function (array $entry1, array $entry2) {
+            return $entry1['position'] <=> $entry2['position'];
+        });
+
         return [
-            'id' => $this->id,
+            'id'        => $this->id,
+            'subqueues' => $this->getAdminApiSubqueues(),
+            'slots'     => $slots,
         ];
     }
 
