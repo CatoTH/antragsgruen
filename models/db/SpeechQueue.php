@@ -86,17 +86,110 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
-    public function getUserObject(): array
+    private function getAdminApiSubqueue(?SpeechSubqueue $subqueue): array
+    {
+        $obj = [
+            'id'      => ($subqueue ? $subqueue->id : null),
+            'name'    => ($subqueue ? $subqueue->name : 'default'),
+            'applied' => [],
+            'onlist'  => [],
+        ];
+
+        foreach ($this->items as $item) {
+            if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
+                continue;
+            }
+            if ($item->position === null) {
+                $obj['applied'][] = [
+                    'id'        => $item->id,
+                    'name'      => $item->name,
+                    'userId'    => $item->userId,
+                    'appliedAt' => $item->getDateApplied()->format('c'),
+                ];
+            } else {
+                $obj['onlist'][] = [
+                    'id'       => $item->id,
+                    'name'     => $item->name,
+                    'userId'   => $item->userId,
+                    'position' => $item->position,
+                ];
+            }
+        }
+
+        return $obj;
+    }
+
+    public function getAdminApiObject(): array
     {
         return [
             'id' => $this->id,
         ];
     }
 
-    public function getAdminObject(): array
+    private function getUserApiSubqueue(?SpeechSubqueue $subqueue): array
     {
+        $user = User::getCurrentUser();
+
+        $obj = [
+            'id'         => ($subqueue ? $subqueue->id : null),
+            'name'       => ($subqueue ? $subqueue->name : 'default'),
+            'numApplied' => 0,
+            'iAmOnList'  => false,
+        ];
+
+        foreach ($this->items as $item) {
+            if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
+                continue;
+            }
+            if ($item->position === null) {
+                $obj['numApplied']++;
+                if ($user && $item->userId && $user->id === $item->userId) {
+                    $obj['iAmOnList'] = true;
+                }
+            }
+        }
+
+        return $obj;
+    }
+
+    private function getUserApiSubqueues(): array
+    {
+        $subqueues = [];
+        foreach ($this->subqueues as $subqueue) {
+            $subqueues[] = $this->getUserApiSubqueue($subqueue);
+        }
+
+        // Users without subqueue when there actually are existing subqueues:
+        // this happens if a queue starts off without subqueues, someone registers,
+        // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
+        $usersWithoutSubqueue = 0;
+        foreach ($this->items as $item) {
+            if ($item->subqueueId === null) {
+                $usersWithoutSubqueue++;
+            }
+        }
+        if (count($subqueues) === 0 || $usersWithoutSubqueue > 0) {
+            $subqueues[] = $this->getUserApiSubqueue(null);
+        }
+
+        return $subqueues;
+    }
+
+    public function getUserApiObject(): array
+    {
+        $user = User::getCurrentUser();
+
+        $iAmOnList = false;
+        foreach ($this->items as $item) {
+            if ($user && $item->userId && $user->id === $item->userId) {
+                $iAmOnList = true;
+            }
+        }
+
         return [
-            'id' => $this->id,
+            'id'        => $this->id,
+            'iAmOnList' => $iAmOnList,
+            'subqueues' => $this->getUserApiSubqueues(),
         ];
     }
 }

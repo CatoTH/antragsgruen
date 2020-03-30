@@ -134,7 +134,8 @@ if ($myself) {
     }
 }
 
-if ($consultation->getActiveSpeechQueue()) {
+if ($consultation->getSettings()->hasSpeechLists) {
+    $queue = $consultation->getActiveSpeechQueue();
     echo $this->render('_index_speech', ['queue' => $consultation->getActiveSpeechQueue()]);
 }
 

@@ -193,6 +193,7 @@ $handledSiteSettings = [];
             <br>
 
             <?php
+            $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
 
             $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, Yii::t('admin', 'con_prefix_hide'));
 
