@@ -52,7 +52,7 @@ class SpeechController extends Base
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $user  = User::getCurrentUser();
+        $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
             return json_encode([
                 'success' => false,
@@ -67,22 +67,22 @@ class SpeechController extends Base
                 'message' => 'Queue not found',
             ]);
         }
-        if (\Yii::$app->request->post('subqueue')) {
-            $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
-        } else {
-            $subqueue = null;
-        }
         $item = $queue->getItemById(intval(\Yii::$app->request->post('item')));
 
         if (\Yii::$app->request->post('position') === "max") {
             $maxPosition = 0;
-            foreach ($queue->items as $item) {
-                if ($item->position !== null && $item->position > $maxPosition) {
-                    $maxPosition = $item->position;
+            foreach ($queue->items as $cmpItem) {
+                if ($cmpItem->position !== null && $cmpItem->position > $maxPosition) {
+                    $maxPosition = $cmpItem->position;
                 }
             }
 
             $item->position = $maxPosition + 1;
+            $item->save();
+        } elseif (\Yii::$app->request->post('position') === "remove") {
+            $item->position    = null;
+            $item->dateStarted = null;
+            $item->dateStopped = null;
             $item->save();
         }
 

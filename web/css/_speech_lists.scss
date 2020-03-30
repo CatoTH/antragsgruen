@@ -1,0 +1,67 @@
+.speechAdmin {
+  .slots {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0;
+    width: 200px;
+  }
+  .slotEntry {
+    margin: 10px 0;
+    border: solid 1px grey;
+    border-radius: 3px;
+    background-color: #D3D3D3;
+    min-height: 60px;
+    padding: 10px;
+  }
+  .slotPlaceholder {
+    margin: 10px 0;
+    border: dotted 1px grey;
+    border-radius: 3px;
+    background-color: #e6e6e6;
+    min-height: 60px;
+    padding: 10px;
+  }
+
+  .subqueues {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin-top: 50px;
+  }
+
+  .subqueue {
+    width: 230px;
+
+    > header {
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-bottom: solid 3px lightgrey;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    .empty {
+      font-style: italic;
+    }
+  }
+
+  .subqueueItems {
+    list-style-type: none;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+  .subqueueItem {
+    margin: 10px 0;
+    border: solid 1px grey;
+    border-radius: 3px;
+    background-color: #e6e6e6;
+    min-height: 60px;
+    padding: 10px;
+  }
+}
+
+
+.speechUser {
+
+}
