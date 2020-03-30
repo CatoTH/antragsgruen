@@ -39,7 +39,8 @@ class m200329_135701_speech_list extends Migration
             'subqueueId'  => 'INTEGER NULL DEFAULT NULL',
             'userId'      => 'INTEGER NULL DEFAULT NULL',
             'name'        => 'TEXT NOT NULL',
-            'position'    => 'INTEGER NOT NULL',
+            'position'    => 'INTEGER NULL DEFAULT NULL',
+            'dateApplied' => 'TIMESTAMP NULL DEFAULT NULL',
             'dateStarted' => 'TIMESTAMP NULL DEFAULT NULL',
             'dateStopped' => 'TIMESTAMP NULL DEFAULT NULL',
         ]);

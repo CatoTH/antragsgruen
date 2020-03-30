@@ -29,12 +29,13 @@ class SpeechController extends Base
             ]);
         }
 
-        $item             = new SpeechQueueItem();
-        $item->queueId    = $queue->id;
-        $item->subqueueId = null;
-        $item->userId     = $user->id;
-        $item->name       = $user->name;
-        $item->position   = 0;
+        $item              = new SpeechQueueItem();
+        $item->queueId     = $queue->id;
+        $item->subqueueId  = null;
+        $item->userId      = $user->id;
+        $item->name        = $user->name;
+        $item->position    = 0;
+        $item->dateApplied = date('Y-m-d H:i:s');
         $item->save();
 
         \Yii::$app->response->format = Response::FORMAT_RAW;
@@ -42,7 +43,7 @@ class SpeechController extends Base
 
         return json_encode([
             'success' => true,
-            'queue'   => $queue->getUserObject(),
+            'queue'   => $queue->getUserApiObject(),
         ]);
     }
 }

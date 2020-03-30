@@ -5,7 +5,6 @@ namespace app\components\yii;
 use app\components\UrlHelper;
 use app\models\exceptions\Internal;
 use app\models\settings\AntragsgruenApp;
-use Yii;
 
 class MessageSource extends \yii\i18n\MessageSource
 {
@@ -19,7 +18,7 @@ class MessageSource extends \yii\i18n\MessageSource
             $this->on(self::EVENT_MISSING_TRANSLATION, function ($event) {
                 /** \yii\i18n\MissingTranslationEvent $event */
                 /** @var AntragsgruenApp $params */
-                $params = Yii::$app->params;
+                $params = \Yii::$app->params;
                 $fp     = fopen($params->getTmpDir() . 'missing-translations.log', 'a');
                 fwrite($fp, $event->language . ' - ' . $event->category . ' - ' . $event->message . "\n");
                 fclose($fp);
@@ -29,7 +28,7 @@ class MessageSource extends \yii\i18n\MessageSource
 
     public static function getTranslatableCategories(): array
     {
-        if (Yii::$app->language === 'de') {
+        if (\Yii::$app->language === 'de') {
             $categories = [
                 'base'      => 'Basis-Layout',
                 'structure' => 'Interne Bezeichnungen',
@@ -44,6 +43,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'comment'   => 'Kommentare',
                 'admin'     => 'Administration',
                 'user'      => 'Account-Einstellungen',
+                'speech'    => 'Redelisten',
                 'wizard'    => 'Wizard',
             ];
         } else {
@@ -61,6 +61,7 @@ class MessageSource extends \yii\i18n\MessageSource
                 'comment'   => 'Comments',
                 'admin'     => 'Administration',
                 'user'      => 'User accounts',
+                'speech'    => 'Speaking list',
                 'wizard'    => 'Wizard',
             ];
         }
@@ -75,7 +76,7 @@ class MessageSource extends \yii\i18n\MessageSource
     public static function getLanguageVariants(string $language): array
     {
         /** @var AntragsgruenApp $params */
-        $params        = Yii::$app->params;
+        $params        = \Yii::$app->params;
         $localMessages = (isset($params->localMessages[$language]) ? $params->localMessages[$language] : []);
         if ($language === 'de') {
             return array_merge([
@@ -128,12 +129,12 @@ class MessageSource extends \yii\i18n\MessageSource
      */
     protected function getMessageFilePath(string $category, string $language): string
     {
-        $messageFile = Yii::getAlias($this->basePath) . "/$language/";
+        $messageFile = \Yii::getAlias($this->basePath) . "/$language/";
 
         foreach (AntragsgruenApp::getActivePluginIds() as $pluginId) {
             if ($category === $pluginId) {
                 $messageFile = '@app/plugins/' . $pluginId . '/messages/' . $language . '/';
-                $messageFile = Yii::getAlias($messageFile);
+                $messageFile = \Yii::getAlias($messageFile);
             }
         }
 

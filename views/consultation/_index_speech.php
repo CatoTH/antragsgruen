@@ -7,6 +7,10 @@ use yii\helpers\Html;
  * @var \app\models\db\SpeechQueue $queue
  */
 
+if (!$queue) {
+    return;
+}
+
 /** @var \app\controllers\Base $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
@@ -14,7 +18,7 @@ $layout     = $controller->layoutParams;
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/user-widget.vue.php');
 
-$initData = $queue->getUserObject();
+$initData = $queue->getUserApiObject();
 $user     = \app\models\db\User::getCurrentUser();
 if ($user) {
     $userData = [

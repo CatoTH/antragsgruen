@@ -199,6 +199,7 @@ return [
     'con_pdf_intro_place'     => 'Mitgliederversammlung des Lorem Ipsum e.V.',
     'con_prefix_hide'         => '<strong>Antragskürzel verstecken</strong><br>
 <small class="conPrefixHide">Antragskürzel müssen zwar weiterhin angegeben werden, damit danach sortiert werden kann, werden aber nicht mehr angezeigt.</small>',
+    'con_speech_lists'        => '<strong>Redelisten</strong> anbieten',
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Neues Logo hochladen',

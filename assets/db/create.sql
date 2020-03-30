@@ -625,7 +625,8 @@ CREATE TABLE `###TABLE_PREFIX###speechQueueItem` (
   `subqueueId` int(11) DEFAULT NULL,
   `userId` int(11) DEFAULT NULL,
   `name` text NOT NULL,
-  `position` int(11) NOT NULL,
+  `position` int(11) NULL DEFAULT NULL,
+  `dateApplied` timestamp NULL DEFAULT NULL,
   `dateStarted` timestamp NULL DEFAULT NULL,
   `dateStopped` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
