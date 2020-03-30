@@ -3,14 +3,19 @@ ob_start();
 ?>
 
 <section class="subqueue">
-    <header>{{ subqueue.name }}</header>
+    <header v-if="subqueue.name !== 'default'">{{ subqueue.name }}</header>
+    <header v-if="subqueue.name === 'default'">Warteliste</header>
 
     <ul class="subqueueItems">
-        <li v-for="item in subqueue.applied">
+        <li v-for="item in subqueue.applied" class="subqueueItem">
             {{ item.name }}
-            <button type="button" v-on:click="onItemSelected($event, item)">auswählen</button>
+            <button type="button" class="btn btn-sm btn-default" v-on:click="onItemSelected($event, item)">auswählen</button>
         </li>
     </ul>
+
+    <div class="empty" v-if="subqueue.applied.length === 0">
+        keine Bewerbungen
+    </div>
 </section>
 
 <?php

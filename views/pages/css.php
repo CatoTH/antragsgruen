@@ -45,6 +45,7 @@ $icon-font-path: "./fonts/";
 @import "base_layout";
 @import "contentpage";
 @import "consultation_motion_list";
+@import "speech_lists";
 @import "motions";
 @import "proposed_procedure";
 @import "styles";

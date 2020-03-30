@@ -54,7 +54,7 @@ class SpeechQueueItem extends ActiveRecord
     public function rules()
     {
         return [
-            [['queueId', 'name', 'position'], 'required'],
+            [['queueId', 'name'], 'required'],
             [['id', 'queueId', 'subqueueId', 'userId', 'position'], 'number'],
         ];
     }

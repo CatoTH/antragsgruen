@@ -5,7 +5,7 @@ use app\components\UrlHelper;
 ob_start();
 ?>
 
-<div>
+<div class="speechUser">
 
     Wartelisten:
     <div v-for="subqueue in queue.subqueues" class="row">
