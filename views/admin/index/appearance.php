@@ -1,5 +1,6 @@
 <?php
 
+use app\models\db\SpeechSubqueue;
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\Consultation;
 use yii\helpers\Html;
@@ -128,7 +129,7 @@ $handledSiteSettings = [];
                                 <span class="sr-only"><?= Html::encode($cssLayout['title']) ?></span>
                             </span>
                         </label>
-                    <?php
+                        <?php
                     }
                     ?>
                 </div>
@@ -192,8 +193,27 @@ $handledSiteSettings = [];
             </fieldset>
             <br>
 
+            <div class="speechLists">
+                <?php
+                $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
+
+                $handledSettings[] = 'speechListSubqueues';
+                ?>
+                <fieldset class="quotas">
+                    <legend><?= Yii::t('admin', 'con_speech_quotas') ?>:</legend>
+                    <label>
+                        <?= Html::radio('settings[speechListSubqueues]', $settings->speechListSubqueues === SpeechSubqueue::CONFIGURATION_NONE,
+                            ['value' => SpeechSubqueue::CONFIGURATION_NONE]) ?>
+                        <?= Yii::t('admin', 'con_speech_quota_none') ?>
+                    </label>
+                    <label>
+                        <?= Html::radio('settings[speechListSubqueues]', $settings->speechListSubqueues === SpeechSubqueue::CONFIGURATION_GENDER,
+                            ['value' => SpeechSubqueue::CONFIGURATION_GENDER]) ?>
+                        <?= Yii::t('admin', 'con_speech_quota_gender') ?>
+                    </label>
+                </fieldset>
+            </div>
             <?php
-            $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
 
             $boolSettingRow($settings, 'hideTitlePrefix', $handledSettings, Yii::t('admin', 'con_prefix_hide'));
 

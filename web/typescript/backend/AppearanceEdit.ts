@@ -6,6 +6,7 @@ export class AppearanceEdit {
         this.initLayoutChooser();
         this.initTranslationService();
         this.initRestApi();
+        this.initSpeechQueues();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -68,6 +69,19 @@ export class AppearanceEdit {
                 this.$form.find(".apiBaseUrl").removeClass("hidden");
             } else {
                 this.$form.find(".apiBaseUrl").addClass("hidden");
+            }
+        }).trigger("change");
+    }
+
+    private initSpeechQueues() {
+        this.$form.find("#hasSpeechLists").on('change', (ev) => {
+            const checked = $(ev.currentTarget).prop("checked");
+            if (checked) {
+                this.$form.find(".quotas").removeClass("hidden");
+                this.$form.find(".quotas input").prop("required", true);
+            } else {
+                this.$form.find(".quotas").addClass("hidden");
+                this.$form.find(".quotas input").prop("required", false);
             }
         }).trigger("change");
     }
