@@ -128,7 +128,7 @@ class AmendmentLineNumberingTest extends DBTestBase
             ],
         ];
         $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>' .
-            'Test<del class="space">[Leerzeichen]</del>Bla<ins class="space">[Leerzeichen]</ins>' . '</p></div>';
+            'Test<del class="space" aria-label="Streichen: „Leerzeichen”">[Leerzeichen]</del>Bla<ins class="space" aria-label="Einfügen: „Leerzeichen”">[Leerzeichen]</ins>' . '</p></div>';
 
         $filtered = TextSimple::formatDiffGroup($in);
         $this->assertEquals($expect, $filtered);
@@ -140,8 +140,8 @@ class AmendmentLineNumberingTest extends DBTestBase
                 'lineTo'   => 16,
             ],
         ];
-        $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>Test<del class="space">[Zeilenumbruch]</del>' .
-            '<del><br></del>Bla<ins class="space">[Zeilenumbruch]</ins><ins><br></ins></p></div>';
+        $expect = '<h4 class="lineSummary">In Zeile 16:</h4><div><p>Test<del class="space" aria-label="Streichen: „Leerzeichen”">[Zeilenumbruch]</del>' .
+            '<del><br></del>Bla<ins class="space" aria-label="Einfügen: „Zeilenumbruch”">[Zeilenumbruch]</ins><ins><br></ins></p></div>';
 
         $filtered = TextSimple::formatDiffGroup($in);
         $this->assertEquals($expect, $filtered);
