@@ -295,7 +295,7 @@ class ParagraphMerger
         return $words;
     }
 
-    private static function groupParagraphData(array $words): array
+    public static function groupParagraphData(array $words): array
     {
         $groupedParaData  = [];
         $pending          = '';
@@ -309,21 +309,23 @@ class ParagraphMerger
         };
         foreach ($words as $word) {
             if ($word['modifiedBy'] !== null) {
-                if ($pendingCurrAmend == 0 && $word['orig'] != '') {
+                if ($pendingCurrAmend === 0 && !in_array($word['orig'], ['', '#', '##', '###'])) { // # would lead to conflicty with ###DEL_START### in the modification
                     if (mb_strpos($word['modification'], $word['orig']) === 0) {
+                        // The current word has an unchanged beginning + an insertion or deletion
+                        // => the unchanged part will be added to the $pending queue (which will be added to $groupedParaData in the next "if" statement
                         $shortened            = mb_substr($word['modification'], mb_strlen($word['orig']));
                         $pending              .= $word['orig'];
                         $word['modification'] = $shortened;
                     }
                 }
-                if ($word['modifiedBy'] != $pendingCurrAmend) {
+                if ($word['modifiedBy'] !== $pendingCurrAmend) {
                     $addToGrouped($pendingCurrAmend, $pending);
                     $pending          = '';
                     $pendingCurrAmend = $word['modifiedBy'];
                 }
                 $pending .= $word['modification'];
             } else {
-                if (0 != $pendingCurrAmend) {
+                if (0 !== $pendingCurrAmend) {
                     $addToGrouped($pendingCurrAmend, $pending);
                     $pending          = '';
                     $pendingCurrAmend = 0;
