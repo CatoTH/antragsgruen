@@ -1,16 +1,19 @@
 .speechAdmin {
+  $slotWidth: 240px;
+  $markerWidth: 500px;
+
   .slots {
     list-style-type: none;
     margin: 0 auto;
     padding: 0;
-    width: 200px;
+    width: $slotWidth;
   }
   .slotEntry {
     margin: 10px 0;
     border: solid 1px grey;
     border-radius: 3px;
     background-color: #D3D3D3;
-    min-height: 70px;
+    min-height: 75px;
     padding: 10px;
     position: relative;
 
@@ -18,18 +21,51 @@
       font-weight: bold;
     }
 
+    .statusActive {
+      font-style: italic;
+    }
+    .statusUpcoming {
+      font-style: italic;
+    }
+
     .operations {
       position: absolute;
       left: 0;
-      right: 0;
       bottom: 0;
-      height: 23px;
+      border-right: solid 1px grey;
+      border-top: solid 1px grey;
+      border-top-right-radius: 3px;
+
+      .removeSlot {
+        color: $colorDelLink;
+        padding: 0 5px;
+        background-color: rgba(255, 255, 255, 0.5);
+
+        @include outlineOnFocusHasBorder();
+        &:hover, &:focus {
+          background-color: transparent;
+        }
+      }
     }
 
     .start, .stop {
       position: absolute;
       top: 10px;
       right: 10px;
+    }
+
+    &.isActive {
+      background-color: #d3ffd3;
+    }
+
+    &.isUpcoming:before {
+      content: '';
+      position: absolute;
+      height: 1px;
+      width: $markerWidth;
+      top: -6px;
+      left: ($slotWidth - $markerWidth) / 2;
+      border-bottom: dotted 1px gray;
     }
   }
   .slotPlaceholder {
@@ -39,6 +75,12 @@
     background-color: #e6e6e6;
     min-height: 60px;
     padding: 10px;
+    cursor: pointer;
+
+    @include outlineOnFocusHasBorder();
+    &:hover, &:focus {
+      background-color: darken(#e6e6e6, 5%);
+    }
   }
 
   .subqueues {
@@ -77,6 +119,12 @@
     background-color: #e6e6e6;
     min-height: 60px;
     padding: 10px;
+    cursor: pointer;
+
+    @include outlineOnFocusHasBorder();
+    &:hover, &:focus {
+      background-color: darken(#e6e6e6, 5%);
+    }
   }
 }
 

@@ -7,12 +7,15 @@ ob_start();
 
 <div class="speechAdmin">
     <ol class="slots" aria-label="Redeliste">
-        <li v-for="slot in sortedSlots" class="slotEntry">
+        <li v-for="slot in sortedSlots" class="slotEntry" v-bind:class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
             <div class="name">
                 {{ slot.name }}
             </div>
             <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
                 Redebeitrag läuft
+            </div>
+            <div class="status statusUpcoming" v-if="isUpcomingSlot(slot)">
+                Nächster Redebeitrag
             </div>
 
             <button type="button" class="btn btn-success start"
@@ -25,9 +28,8 @@ ob_start();
             </button>
 
             <div class="operations">
-                <button type="button" class="btn btn-xs btn-default removeSlot" v-on:click="removeSlot($event, slot)">
-                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                    Warteliste
+                <button type="button" class="link removeSlot" v-on:click="removeSlot($event, slot)">
+                    <span class="glyphicon glyphicon-chevron-down" aria-label="Zurück auf die Warteliste" title="Zurück auf die Warteliste"></span>
                 </button>
             </div>
         </li>
@@ -41,14 +43,16 @@ ob_start();
     <div class="subqueues">
         <speech-admin-subqueue v-for="subqueue in queue.subqueues"
                                v-bind:subqueue="subqueue"
-                               v-on:add-item="addItemToSlots"
+                               v-on:add-item-to-slots="addItemToSlots"
+                               v-on:add-item-to-subqueue="addItemToSubqueue"
         ></speech-admin-subqueue>
     </div>
 </div>
 
 <?php
-$html          = ob_get_clean();
-$itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
+$html             = ob_get_clean();
+$itemSetStatusUrl = UrlHelper::createUrl('speech/admin-item-setstatus');
+$createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
 ?>
 
 <script>
@@ -61,6 +65,7 @@ $itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
         },
         computed: {
             sortedSlots: function () {
+                console.log("Sorting...");
                 return this.queue.slots.sort(function (slot1, slot2) {
                     if (slot1.dateStarted && slot2.dateStarted === null) {
                         return -1;
@@ -76,6 +81,19 @@ $itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
                     return slot1.position - slot2.position;
                 });
             },
+            activeSlot: function () {
+                const active = this.sortedSlots.filter(function (slot) {
+                    return slot.dateStarted !== null && slot.dateStopped === null;
+                });
+                return active.length > 0 ? active[0] : null;
+            },
+            upcomingSlot: function () {
+                const upcoming = this.sortedSlots.filter(function (slot) {
+                    return slot.dateStarted === null && slot.dateStopped === null;
+                });
+
+                return upcoming.length > 0 ? upcoming[0] : null;
+            },
             slotProposal: function () {
                 if (this.queue.subqueues[0].applied.length > 0) {
                     console.log(this.queue.subqueues[0]);
@@ -87,7 +105,7 @@ $itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
         },
         methods: {
             _setStatus: function (id, op) {
-                $.post(<?= json_encode($itemSetStatus) ?>, {
+                $.post(<?= json_encode($itemSetStatusUrl) ?>, {
                     queue: this.queue.id,
                     item: id,
                     op,
@@ -117,6 +135,32 @@ $itemSetStatus = UrlHelper::createUrl('speech/admin-item-setstatus');
             },
             addItemToSlots: function (item) {
                 this._setStatus(item.id, "set-slot");
+            },
+            addItemToSubqueue: function (subqueue, itemName) {
+                console.log(JSON.stringify(subqueue), itemName);
+                $.post(<?= json_encode($createItemUrl) ?>, {
+                    queue: this.queue.id,
+                    subqueue: subqueue.id,
+                    name: itemName,
+                    _csrf: this.csrf,
+                }, (data) => {
+                    if (!data['success']) {
+                        alert(data['message']);
+                        return;
+                    }
+
+                    this.queue = data['queue'];
+                }).catch(err => {
+                    alert(err.responseText);
+                });
+            },
+            isActiveSlot: function (slot) {
+                const active = this.activeSlot;
+                return (active && active.id === slot.id);
+            },
+            isUpcomingSlot: function (slot) {
+                const active = this.upcomingSlot;
+                return (active && active.id === slot.id);
             }
         }
     });
