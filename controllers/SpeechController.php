@@ -7,6 +7,14 @@ use yii\web\Response;
 
 class SpeechController extends Base
 {
+    private function getError(string $message): string
+    {
+        return json_encode([
+            'success' => false,
+            'message' => $message,
+        ]);
+    }
+
     private function getQueue(int $queueId): ?SpeechQueue
     {
         foreach ($this->consultation->speechQueues as $queue) {
@@ -26,10 +34,7 @@ class SpeechController extends Base
         $user  = User::getCurrentUser();
         $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
         if (!$queue) {
-            return json_encode([
-                'success' => false,
-                'message' => 'Queue not found',
-            ]);
+            return $this->getError('Queue not found');
         }
 
         $item              = new SpeechQueueItem();
@@ -54,18 +59,12 @@ class SpeechController extends Base
 
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return json_encode([
-                'success' => false,
-                'message' => 'Missing privileges',
-            ]);
+            return $this->getError('Missing privileges');
         }
 
         $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
         if (!$queue) {
-            return json_encode([
-                'success' => false,
-                'message' => 'Queue not found',
-            ]);
+            return $this->getError('Queue not found');
         }
         $item = $queue->getItemById(intval(\Yii::$app->request->post('item')));
 
@@ -97,6 +96,50 @@ class SpeechController extends Base
                 $item->save();
                 break;
         }
+
+        return json_encode([
+            'success' => true,
+            'queue'   => $queue->getAdminApiObject(),
+        ]);
+    }
+
+    public function actionAdminCreateItem()
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            return $this->getError('Missing privileges');
+        }
+
+        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        if (!$queue) {
+            return $this->getError('Queue not found');
+        }
+
+        if (\Yii::$app->request->post('subqueue')) {
+            $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
+        } else {
+            $subqueue = null;
+        }
+        if (count($queue->subqueues) > 0 && !$subqueue) {
+            return $this->getError('No subqueue given');
+        }
+
+        $name = trim(\Yii::$app->request->post('name'));
+        if (!$name) {
+            return $this->getError('No name entered');
+        }
+
+        $item              = new SpeechQueueItem();
+        $item->queueId     = $queue->id;
+        $item->subqueueId  = ($subqueue ? $subqueue->id : null);
+        $item->userId      = null;
+        $item->name        = $name;
+        $item->position    = null;
+        $item->dateApplied = date('Y-m-d H:i:s');
+        $item->save();
 
         return json_encode([
             'success' => true,
