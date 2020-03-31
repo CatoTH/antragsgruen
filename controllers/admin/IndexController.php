@@ -127,6 +127,13 @@ class IndexController extends AdminBase
                 $settings->translationService = null;
             }
 
+            if (isset($settingsInput['speechListSubqueues'])) {
+                $subqueueMode = intval($settingsInput['speechListSubqueues']);
+                foreach ($this->consultation->speechQueues as $speechQueue) {
+                    $speechQueue->setSubqueueConfiguration($subqueueMode);
+                }
+            }
+
             $settings->saveForm($settingsInput, $post['settingsFields']);
 
             if (isset($post['consultationLogo']) && $post['consultationLogo']) {

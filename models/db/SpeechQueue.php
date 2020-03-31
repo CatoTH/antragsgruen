@@ -86,6 +86,44 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
+    public function setSubqueueConfiguration(int $configuration): void
+    {
+        switch ($configuration) {
+            case SpeechSubqueue::CONFIGURATION_NONE:
+                foreach ($this->subqueues as $subqueue) {
+                    $subqueue->deleteReassignItems($this);
+                }
+                break;
+            case SpeechSubqueue::CONFIGURATION_GENDER:
+                $hasMen   = false;
+                $hasWomen = false;
+                foreach ($this->subqueues as $subqueue) {
+                    if ($subqueue->name === \Yii::t('speech', 'subqueue_female')) {
+                        $hasWomen = true;
+                    } elseif ($subqueue->name === \Yii::t('speech', 'subqueue_male')) {
+                        $hasMen = true;
+                    } else {
+                        $subqueue->deleteReassignItems($this);
+                    }
+                }
+                if (!$hasWomen) {
+                    $subqueue           = new SpeechSubqueue();
+                    $subqueue->queueId  = $this->id;
+                    $subqueue->name     = \Yii::t('speech', 'subqueue_male');
+                    $subqueue->position = 0;
+                    $subqueue->save();
+                }
+                if (!$hasMen) {
+                    $subqueue           = new SpeechSubqueue();
+                    $subqueue->queueId  = $this->id;
+                    $subqueue->name     = \Yii::t('speech', 'subqueue_female');
+                    $subqueue->position = 1;
+                    $subqueue->save();
+                }
+                break;
+        }
+    }
+
     public function getSubqueueById(int $subqueueId): ?SpeechSubqueue
     {
         foreach ($this->subqueues as $subqueue) {

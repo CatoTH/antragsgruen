@@ -15,6 +15,9 @@ use yii\db\ActiveRecord;
  */
 class SpeechSubqueue extends ActiveRecord
 {
+    const CONFIGURATION_NONE = 0;
+    const CONFIGURATION_GENDER = 1;
+
     /**
      * @return string
      */
@@ -44,5 +47,33 @@ class SpeechSubqueue extends ActiveRecord
             [['name', 'position'], 'safe'],
             [['id', 'queueId', 'position'], 'number'],
         ];
+    }
+
+    /**
+     * @param SpeechQueue $queue
+     *
+     * @return SpeechQueueItem[]
+     */
+    public function getItems(SpeechQueue $queue): array
+    {
+        $items = [];
+        foreach ($queue->items as $item) {
+            if ($item->subqueueId === $this->id) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    public function deleteReassignItems(SpeechQueue $queue): void
+    {
+        foreach ($this->getItems($queue) as $item) {
+            $item->subqueueId = null;
+            $item->save();
+        }
+
+        /** @noinspection PhpUnhandledExceptionInspection */
+        $this->delete();
     }
 }
