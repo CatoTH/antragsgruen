@@ -77,7 +77,9 @@ class SpeechController extends Base
                     }
                 }
 
-                $item->position = $maxPosition + 1;
+                $item->position    = $maxPosition + 1;
+                $item->dateStarted = null;
+                $item->dateStopped = null;
                 $item->save();
                 break;
             case "unset-slot":
@@ -90,6 +92,13 @@ class SpeechController extends Base
                 $item->dateStarted = date("Y-m-d H:i:s");
                 $item->dateStopped = null;
                 $item->save();
+
+                foreach ($queue->items as $cmpItem) {
+                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
+                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
+                        $cmpItem->save();
+                    }
+                }
                 break;
             case "stop":
                 $item->dateStopped = date("Y-m-d H:i:s");
@@ -97,7 +106,7 @@ class SpeechController extends Base
                 break;
             case "move":
                 if (\Yii::$app->request->post('newSubqueueId')) {
-                    $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('newSubqueueId')));
+                    $subqueue         = $queue->getSubqueueById(intval(\Yii::$app->request->post('newSubqueueId')));
                     $item->subqueueId = $subqueue->id;
                 } else {
                     $item->subqueueId = null;

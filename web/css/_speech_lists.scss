@@ -2,7 +2,48 @@
   $slotWidth: 240px;
   $markerWidth: 500px;
 
-  .slots {
+  .previousSummary {
+    margin: 0 auto;
+    width: 400px;
+    border: solid 1px #e5e5e5;
+    background-color: #f0f0f0;
+
+    > header {
+      border-bottom: solid 1px #e5e5e5;
+      background-color: #e5e5e5;
+      padding: 5px;
+      position: relative;
+
+      .btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+        font-weight: normal;
+      }
+    }
+
+    .previousLists {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+    }
+    .previousList {
+      flex: 1;
+
+      header {
+        text-align: center;
+        span {
+          border-bottom: solid 1px grey;
+        }
+      }
+
+      ol {
+        text-align: left;
+      }
+    }
+  }
+
+  .slots, .previousList {
     list-style-type: none;
     margin: 0 auto;
     padding: 0;

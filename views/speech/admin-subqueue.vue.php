@@ -88,16 +88,20 @@ $html = ob_get_clean();
         methods: {
             _isButtonClick: function ($event) {
                 let isButton = false;
-                this.$refs.otherQueues.forEach(function (button) {
-                    if ($event.target === button || button.contains($event.target)) {
-                        isButton = true;
-                    }
-                });
-                this.$refs.otherQueue.forEach(function (button) {
-                    if ($event.target === button || button.contains($event.target)) {
-                        isButton = true;
-                    }
-                });
+                if (this.$refs.otherQueues) {
+                    this.$refs.otherQueues.forEach(function (button) {
+                        if ($event.target === button || button.contains($event.target)) {
+                            isButton = true;
+                        }
+                    });
+                }
+                if (this.$refs.otherQueue) {
+                    this.$refs.otherQueue.forEach(function (button) {
+                        if ($event.target === button || button.contains($event.target)) {
+                            isButton = true;
+                        }
+                    });
+                }
                 return isButton;
             },
             onItemSelected: function ($event, item) {
