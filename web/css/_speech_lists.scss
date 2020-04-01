@@ -8,6 +8,7 @@
     padding: 0;
     width: $slotWidth;
   }
+
   .slotEntry {
     margin: 10px 0;
     border: solid 1px grey;
@@ -24,28 +25,9 @@
     .statusActive {
       font-style: italic;
     }
+
     .statusUpcoming {
       font-style: italic;
-    }
-
-    .operations {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      border-right: solid 1px grey;
-      border-top: solid 1px grey;
-      border-top-right-radius: 3px;
-
-      .removeSlot {
-        color: $colorDelLink;
-        padding: 0 5px;
-        background-color: rgba(255, 255, 255, 0.5);
-
-        @include outlineOnFocusHasBorder();
-        &:hover, &:focus {
-          background-color: transparent;
-        }
-      }
     }
 
     .start, .stop {
@@ -68,6 +50,7 @@
       border-bottom: dotted 1px gray;
     }
   }
+
   .slotPlaceholder {
     margin: 10px 0;
     border: dotted 1px grey;
@@ -78,6 +61,7 @@
     cursor: pointer;
 
     @include outlineOnFocusHasBorder();
+
     &:hover, &:focus {
       background-color: darken(#e6e6e6, 5%);
     }
@@ -112,6 +96,7 @@
     margin: 0 auto;
     padding: 0 15px;
   }
+
   .subqueueItem {
     margin: 10px 0;
     border: solid 1px grey;
@@ -120,10 +105,35 @@
     min-height: 60px;
     padding: 10px;
     cursor: pointer;
+    position: relative;
 
     @include outlineOnFocusHasBorder();
+
     &:hover, &:focus {
       background-color: darken(#e6e6e6, 5%);
+    }
+  }
+
+  .operations {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-right: solid 1px grey;
+    border-top: solid 1px grey;
+    border-top-right-radius: 3px;
+
+    .moveSubqueue, .removeSlot {
+      padding: 0 5px;
+      background-color: rgba(255, 255, 255, 0.5);
+
+      @include outlineOnFocusHasBorder();
+
+      &:hover, &:focus {
+        background-color: transparent;
+      }
+    }
+    .removeSlot {
+      color: $colorDelLink;
     }
   }
 }
