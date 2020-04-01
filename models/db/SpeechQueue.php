@@ -109,14 +109,14 @@ class SpeechQueue extends ActiveRecord
                 if (!$hasWomen) {
                     $subqueue           = new SpeechSubqueue();
                     $subqueue->queueId  = $this->id;
-                    $subqueue->name     = \Yii::t('speech', 'subqueue_male');
+                    $subqueue->name     = \Yii::t('speech', 'subqueue_female');
                     $subqueue->position = 0;
                     $subqueue->save();
                 }
                 if (!$hasMen) {
                     $subqueue           = new SpeechSubqueue();
                     $subqueue->queueId  = $this->id;
-                    $subqueue->name     = \Yii::t('speech', 'subqueue_female');
+                    $subqueue->name     = \Yii::t('speech', 'subqueue_male');
                     $subqueue->position = 1;
                     $subqueue->save();
                 }
@@ -191,7 +191,7 @@ class SpeechQueue extends ActiveRecord
         // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
         $usersWithoutSubqueue = 0;
         foreach ($this->items as $item) {
-            if ($item->subqueueId === null) {
+            if ($item->subqueueId === null && $item->position === null) {
                 $usersWithoutSubqueue++;
             }
         }

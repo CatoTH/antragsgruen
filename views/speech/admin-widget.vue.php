@@ -43,8 +43,10 @@ ob_start();
     <div class="subqueues">
         <speech-admin-subqueue v-for="subqueue in queue.subqueues"
                                v-bind:subqueue="subqueue"
+                               v-bind:allSubqueues="queue.subqueues"
                                v-on:add-item-to-slots="addItemToSlots"
                                v-on:add-item-to-subqueue="addItemToSubqueue"
+                               v-on:move-item-to-subqueue="moveItemToSubqueue"
         ></speech-admin-subqueue>
     </div>
 </div>
@@ -95,29 +97,34 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
                 return upcoming.length > 0 ? upcoming[0] : null;
             },
             slotProposal: function () {
-                if (this.queue.subqueues[0].applied.length > 0) {
-                    console.log(this.queue.subqueues[0]);
-                    return this.queue.subqueues[0].applied[0];
+                const subqueue = this.queue.subqueues.filter(function(subqueue) { return subqueue.applied.length > 0; });
+                if (subqueue.length > 0) {
+                    return subqueue[0].applied[0];
                 } else {
                     return null;
                 }
             }
         },
         methods: {
-            _setStatus: function (id, op) {
-                $.post(<?= json_encode($itemSetStatusUrl) ?>, {
+            _setStatus: function (id, op, additionalProps) {
+                let postData = {
                     queue: this.queue.id,
                     item: id,
                     op,
                     _csrf: this.csrf,
-                }, (data) => {
+                };
+                if (additionalProps) {
+                    postData = Object.assign(postData, additionalProps);
+                }
+                const widget = this;
+                $.post(<?= json_encode($itemSetStatusUrl) ?>, postData, function(data) {
                     if (!data['success']) {
                         alert(data['message']);
                         return;
                     }
 
-                    this.queue = data['queue'];
-                }).catch(err => {
+                    widget.queue = data['queue'];
+                }).catch(function(err) {
                     alert(err.responseText);
                 });
             },
@@ -136,21 +143,24 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
             addItemToSlots: function (item) {
                 this._setStatus(item.id, "set-slot");
             },
+            moveItemToSubqueue: function (item, newSubqueue) {
+                this._setStatus(item.id, "move", {newSubqueueId: newSubqueue.id});
+            },
             addItemToSubqueue: function (subqueue, itemName) {
-                console.log(JSON.stringify(subqueue), itemName);
+                const widget = this;
                 $.post(<?= json_encode($createItemUrl) ?>, {
                     queue: this.queue.id,
                     subqueue: subqueue.id,
                     name: itemName,
                     _csrf: this.csrf,
-                }, (data) => {
+                }, function (data) {
                     if (!data['success']) {
                         alert(data['message']);
                         return;
                     }
 
-                    this.queue = data['queue'];
-                }).catch(err => {
+                    widget.queue = data['queue'];
+                }).catch(function(err) {
                     alert(err.responseText);
                 });
             },

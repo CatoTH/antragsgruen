@@ -13,6 +13,30 @@ ob_start();
             title="Auf die Redeliste setzen" aria-label="Auf die Redeliste setzen"
         >
             {{ item.name }}
+
+            <div class="operations" v-if="otherSubqueues.length > 0">
+                <button class="link moveSubqueue" type="button" v-if="otherSubqueues.length === 1" ref="otherQueue"
+                        title="In die andere Warteliste verschieben"
+                        v-on:click="moveToSubqueue($event, item, otherSubqueues[0])"
+                >
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">In die andere Warteliste verschieben</span>
+                </button>
+
+                <div class="btn-group" v-if="otherSubqueues.length > 1" ref="otherQueues">
+                    <button class="link moveSubqueue dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            title="In eine andere Warteliste verschieben"
+                    >
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">In eine andere Warteliste verschieben</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li v-for="newSubqueue of otherSubqueues">
+                            <a href="#" v-on:click="moveToSubqueue($event, item, newSubqueue)">{{ newSubqueue.name }}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </li>
     </ul>
 
@@ -45,17 +69,41 @@ $html = ob_get_clean();
 <script>
     Vue.component('speech-admin-subqueue', {
         template: <?= json_encode($html) ?>,
-        props: ['subqueue'],
+        props: ['subqueue', 'allSubqueues'],
         data() {
-            console.log(JSON.parse(JSON.stringify(this.subqueue)));
             return {
                 adderOpened: false,
                 adderName: ''
             };
         },
-        computed: {},
+        computed: {
+            otherSubqueues: function () {
+                console.log("allSubqueues:", this.subqueue.id);
+                const mySubqueueId = this.subqueue.id;
+                return this.allSubqueues.filter(function (subqueue) {
+                    return subqueue.id && subqueue.id !== mySubqueueId
+                });
+            }
+        },
         methods: {
+            _isButtonClick: function ($event) {
+                let isButton = false;
+                this.$refs.otherQueues.forEach(function (button) {
+                    if ($event.target === button || button.contains($event.target)) {
+                        isButton = true;
+                    }
+                });
+                this.$refs.otherQueue.forEach(function (button) {
+                    if ($event.target === button || button.contains($event.target)) {
+                        isButton = true;
+                    }
+                });
+                return isButton;
+            },
             onItemSelected: function ($event, item) {
+                if (this._isButtonClick($event)) {
+                    return;
+                }
                 $event.preventDefault();
                 this.$emit('add-item-to-slots', item);
             },
@@ -72,6 +120,10 @@ $html = ob_get_clean();
                     this.adderOpened = false;
                     this.adderName = '';
                 }
+            },
+            moveToSubqueue: function ($event, item, newSubqueue) {
+                $event.preventDefault();
+                this.$emit('move-item-to-subqueue', item, newSubqueue);
             }
         }
     });

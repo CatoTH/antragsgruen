@@ -95,6 +95,15 @@ class SpeechController extends Base
                 $item->dateStopped = date("Y-m-d H:i:s");
                 $item->save();
                 break;
+            case "move":
+                if (\Yii::$app->request->post('newSubqueueId')) {
+                    $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('newSubqueueId')));
+                    $item->subqueueId = $subqueue->id;
+                } else {
+                    $item->subqueueId = null;
+                }
+                $item->save();
+                break;
         }
 
         return json_encode([
