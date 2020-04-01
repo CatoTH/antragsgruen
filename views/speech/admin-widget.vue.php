@@ -6,6 +6,35 @@ ob_start();
 ?>
 
 <div class="speechAdmin">
+    <section class="previousSpeakers" v-bind:class="">
+        <div class="previousSummary">
+            <header>
+                Bisherige Sprecher*innen: {{ previousSpeakers.length }}
+
+                <button class="btn btn-link" type="button" v-on:click="showPreviousList = true" v-if="!showPreviousList">
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    Anzeigen
+                </button>
+                <button class="btn btn-link" type="button" v-on:click="showPreviousList = false" v-if="showPreviousList">
+                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    Anzeigen
+                </button>
+            </header>
+
+            <div class="previousLists" v-if="showPreviousList">
+                <div class="previousList" v-for="subqueue in queue.subqueues">
+                    <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
+                    <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
+                    <ol>
+                        <li v-for="item in getPreviousForSubqueue(subqueue)">
+                            {{ item.name }}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <ol class="slots" aria-label="Redeliste">
         <li v-for="slot in sortedSlots" class="slotEntry" v-bind:class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
             <div class="name">
@@ -63,12 +92,25 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
         props: ['queue', 'csrf'],
         data() {
             console.log(JSON.parse(JSON.stringify(this.queue)));
-            return {};
+            return {
+                showPreviousList: false
+            };
         },
         computed: {
+            previousSpeakers: function () {
+                return this.queue.slots.filter(function (slot) {
+                    return slot.dateStopped !== null;
+                }).sort(function (slot1, slot2) {
+                    const date1 = new Date(slot1.dateStopped);
+                    const date2 = new Date(slot2.dateStopped);
+                    return date1.getTime() - date2.getTime();
+                });
+            },
             sortedSlots: function () {
                 console.log("Sorting...");
-                return this.queue.slots.sort(function (slot1, slot2) {
+                return this.queue.slots.filter(function (slot) {
+                    return slot.dateStopped === null;
+                }).sort(function (slot1, slot2) {
                     if (slot1.dateStarted && slot2.dateStarted === null) {
                         return -1;
                     }
@@ -97,7 +139,9 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
                 return upcoming.length > 0 ? upcoming[0] : null;
             },
             slotProposal: function () {
-                const subqueue = this.queue.subqueues.filter(function(subqueue) { return subqueue.applied.length > 0; });
+                const subqueue = this.queue.subqueues.filter(function (subqueue) {
+                    return subqueue.applied.length > 0;
+                });
                 if (subqueue.length > 0) {
                     return subqueue[0].applied[0];
                 } else {
@@ -117,15 +161,20 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
                     postData = Object.assign(postData, additionalProps);
                 }
                 const widget = this;
-                $.post(<?= json_encode($itemSetStatusUrl) ?>, postData, function(data) {
+                $.post(<?= json_encode($itemSetStatusUrl) ?>, postData, function (data) {
                     if (!data['success']) {
                         alert(data['message']);
                         return;
                     }
 
                     widget.queue = data['queue'];
-                }).catch(function(err) {
+                }).catch(function (err) {
                     alert(err.responseText);
+                });
+            },
+            getPreviousForSubqueue: function (subqueue) {
+                return this.previousSpeakers.filter(function (item) {
+                    return item.subqueue.id === subqueue.id;
                 });
             },
             startSlot: function ($event, slot) {
@@ -160,7 +209,7 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
                     }
 
                     widget.queue = data['queue'];
-                }).catch(function(err) {
+                }).catch(function (err) {
                     alert(err.responseText);
                 });
             },
