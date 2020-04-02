@@ -15,8 +15,9 @@ ob_start();
         Nächste Redner*innen:
         <ul class="upcomingSpeakerList">
             <li v-for="speaker in upcomingSpeakers">
-                {{ speaker.name }}
-                <button type="button" class="btn btn-link" v-if="isMe(speaker)" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
+                <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
+                --><span class="label label-success" v-if="isMe(speaker)">Du</span><!-- Fight unwanted whitespace
+                --><button type="button" class="btn btn-link" v-if="isMe(speaker)" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
                     <span class="glyphicon glyphicon-trash" aria-label="Mich aus der Liste entfernen"></span>
                 </button>
             </li>
@@ -35,16 +36,17 @@ ob_start();
                     {{ subqueue.name }}
                 </div>
                 <div class="applied">
-                    {{ subqueue.numApplied }}
+                    <span class="number">
+                        {{ subqueue.numApplied }}
+                    </span>
 
                     <div v-if="subqueue.iAmOnList" class="appliedMe">
-                        <div class="label label-success">Du</div>
+                        <span class="label label-success">Beworben</span>
                         <button type="button" class="btn btn-link" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
                             <span class="glyphicon glyphicon-trash" aria-label="Mich aus der Liste entfernen"></span>
                         </button>
                     </div>
-                </div>
-                <div class="apply">
+
                     <button class="btn btn-default btn-xs" type="button"
                             v-if="!queue.iAmOnList && showApplicationForm !== subqueue.id"
                             v-on:click="onShowApplicationForm($event, subqueue)"
@@ -69,6 +71,7 @@ ob_start();
 
 <?php
 $html          = ob_get_clean();
+$pollUrl       = UrlHelper::createUrl('speech/poll');
 $registerUrl   = UrlHelper::createUrl('speech/register');
 $unregisterUrl = UrlHelper::createUrl('speech/unregister');
 ?>
@@ -78,10 +81,10 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user'],
         data() {
-            //console.log(JSON.parse(JSON.stringify(this.queue)));
             return {
                 registerName: this.user.name,
-                showApplicationForm: null
+                showApplicationForm: null,
+                pollingId: null
             };
         },
         computed: {
@@ -99,7 +102,6 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
         },
         methods: {
             isMe: function (slot) {
-                console.log(JSON.stringify(slot), JSON.stringify(this.user));
                 return slot.userId === this.user.id;
             },
             register: function ($event, subqueue) {
@@ -148,7 +150,28 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
+            },
+            reloadData: function () {
+                const widget = this;
+                $.get(<?= json_encode($pollUrl) ?>, {queue: widget.queue.id}, function (data) {
+                    if (!data['success']) {
+                        return;
+                    }
+                    widget.queue = data['queue'];
+                });
+            },
+            startPolling: function () {
+                const widget = this;
+                this.pollingId = window.setInterval(function () {
+                    widget.reloadData();
+                }, 3000);
             }
         },
+        beforeDestroy() {
+            window.clearInterval(this.pollingId)
+        },
+        created() {
+            this.startPolling()
+        }
     });
 </script>

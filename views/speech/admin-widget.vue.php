@@ -6,31 +6,29 @@ ob_start();
 ?>
 
 <div class="speechAdmin">
-    <section class="previousSpeakers" v-bind:class="">
-        <div class="previousSummary">
-            <header>
-                Bisherige Sprecher*innen: {{ previousSpeakers.length }}
+    <section class="previousSpeakers" v-bind:class="{previousShown: showPreviousList}">
+        <header>
+            Bisherige Sprecher*innen: {{ previousSpeakers.length }}
 
-                <button class="btn btn-link" type="button" v-on:click="showPreviousList = true" v-if="!showPreviousList">
-                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                    Anzeigen
-                </button>
-                <button class="btn btn-link" type="button" v-on:click="showPreviousList = false" v-if="showPreviousList">
-                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                    Anzeigen
-                </button>
-            </header>
+            <button class="btn btn-link" type="button" v-on:click="showPreviousList = true" v-if="!showPreviousList">
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                Anzeigen
+            </button>
+            <button class="btn btn-link" type="button" v-on:click="showPreviousList = false" v-if="showPreviousList">
+                <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                Anzeigen
+            </button>
+        </header>
 
-            <div class="previousLists" v-if="showPreviousList">
-                <div class="previousList" v-for="subqueue in queue.subqueues">
-                    <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
-                    <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
-                    <ol>
-                        <li v-for="item in getPreviousForSubqueue(subqueue)">
-                            {{ item.name }}
-                        </li>
-                    </ol>
-                </div>
+        <div class="previousLists" v-if="showPreviousList">
+            <div class="previousList" v-for="subqueue in queue.subqueues">
+                <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
+                <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
+                <ol>
+                    <li v-for="item in getPreviousForSubqueue(subqueue)">
+                        {{ item.name }}
+                    </li>
+                </ol>
             </div>
         </div>
     </section>
@@ -49,20 +47,24 @@ ob_start();
 
             <button type="button" class="btn btn-success start"
                     v-on:click="startSlot($event, slot)" v-if="slot.dateStarted === null">
-                <span class="glyphicon glyphicon-play" aria-label="Redebeitrag starten" title="Redebeitrag starten"></span>
+                <span class="glyphicon glyphicon-play" title="Redebeitrag starten" aria-hidden="true"></span>
+                <span class="sr-only">Redebeitrag starten</span>
             </button>
             <button type="button" class="btn btn-danger start"
                     v-on:click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                <span class="glyphicon glyphicon-stop" aria-label="Redebeitrag beenden" title="Redebeitrag beenden"></span>
+                <span class="glyphicon glyphicon-stop" title="Redebeitrag beenden" aria-hidden="true"></span>
+                <span class="sr-only">Redebeitrag beenden</span>
             </button>
 
             <div class="operations">
-                <button type="button" class="link removeSlot" v-on:click="removeSlot($event, slot)">
-                    <span class="glyphicon glyphicon-chevron-down" aria-label="Zurück auf die Warteliste" title="Zurück auf die Warteliste"></span>
+                <button type="button" class="link removeSlot" v-on:click="removeSlot($event, slot)" title="Zurück auf die Warteliste">
+                    <span class="glyphicon glyphicon-chevron-down"></span>
+                    <span class="sr-only">Zurück auf die Warteliste</span>
                 </button>
             </div>
         </li>
         <li class="slotPlaceholder" v-if="slotProposal" tabindex="0"
+            v-bind:class="{ isUpcoming: upcomingSlot === null }"
             v-on:click="addItemToSlots(slotProposal)"
             v-on:keyup.enter="addItemToSlots(slotProposal)">
             Vorschlag: {{ slotProposal.name }}
@@ -84,6 +86,7 @@ ob_start();
 $html             = ob_get_clean();
 $itemSetStatusUrl = UrlHelper::createUrl('speech/admin-item-setstatus');
 $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
+$pollUrl          = UrlHelper::createUrl('speech/admin-poll');
 ?>
 
 <script>
@@ -93,7 +96,8 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
         data() {
             console.log(JSON.parse(JSON.stringify(this.queue)));
             return {
-                showPreviousList: false
+                showPreviousList: false,
+                pollingId: null
             };
         },
         computed: {
@@ -220,7 +224,28 @@ $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
             isUpcomingSlot: function (slot) {
                 const active = this.upcomingSlot;
                 return (active && active.id === slot.id);
+            },
+            reloadData: function () {
+                const widget = this;
+                $.get(<?= json_encode($pollUrl) ?>, {queue: widget.queue.id}, function (data) {
+                    if (!data['success']) {
+                        return;
+                    }
+                    widget.queue = data['queue'];
+                });
+            },
+            startPolling: function () {
+                const widget = this;
+                this.pollingId = window.setInterval(function () {
+                    widget.reloadData();
+                }, 3000);
             }
+        },
+        beforeDestroy() {
+            window.clearInterval(this.pollingId)
+        },
+        created() {
+            this.startPolling()
         }
     });
 </script>

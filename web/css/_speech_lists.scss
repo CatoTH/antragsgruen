@@ -2,15 +2,17 @@
   $slotWidth: 240px;
   $markerWidth: 500px;
 
-  .previousSummary {
+  $backgroundInactive: #f0f0f0;
+  $borderInactive: darken($backgroundInactive, 20%);
+
+  .previousSpeakers {
     margin: 0 auto;
     width: 400px;
-    border: solid 1px #e5e5e5;
-    background-color: #f0f0f0;
+    border: solid 1px $borderInactive;
+    background-color: $backgroundInactive;
 
     > header {
-      border-bottom: solid 1px #e5e5e5;
-      background-color: #e5e5e5;
+      background-color: $backgroundInactive;
       padding: 5px;
       position: relative;
 
@@ -19,6 +21,14 @@
         right: 0;
         top: 0;
         font-weight: normal;
+      }
+    }
+
+    &.previousShown > header {
+      background-color: darken($backgroundInactive, 5%);
+
+      .btn-link {
+        color: darken($link-color, 10%);
       }
     }
 
@@ -54,9 +64,9 @@
 
   .slotEntry {
     margin: 10px 0;
-    border: solid 1px grey;
+    border: solid 1px $borderInactive;
     border-radius: 3px;
-    background-color: #D3D3D3;
+    background-color: $backgroundInactive;
     min-height: 75px;
     padding: 10px;
     position: relative;
@@ -82,32 +92,35 @@
     &.isActive {
       background-color: #d3ffd3;
     }
-
-    &.isUpcoming:before {
-      content: '';
-      position: absolute;
-      height: 1px;
-      width: $markerWidth;
-      top: -6px;
-      left: ($slotWidth - $markerWidth) / 2;
-      border-bottom: dotted 1px gray;
-    }
   }
 
   .slotPlaceholder {
+    position: relative;
     margin: 10px 0;
-    border: dotted 1px grey;
+    border: dotted 1px $borderInactive;
     border-radius: 3px;
-    background-color: #e6e6e6;
+    background-color: $backgroundInactive;
     min-height: 60px;
-    padding: 10px;
+    padding: 18px 10px 10px 10px;
     cursor: pointer;
+    text-align: center;
+    font-style: italic;
 
     @include outlineOnFocusHasBorder();
 
     &:hover, &:focus {
-      background-color: darken(#e6e6e6, 5%);
+      background-color: darken($backgroundInactive, 5%);
     }
+  }
+
+  .isUpcoming:before {
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: $markerWidth;
+    top: -6px;
+    left: ($slotWidth - $markerWidth) / 2;
+    border-bottom: dotted 1px gray;
   }
 
   .subqueues {
@@ -142,9 +155,9 @@
 
   .subqueueItem {
     margin: 10px 0;
-    border: solid 1px grey;
+    border: solid 1px $borderInactive;
     border-radius: 3px;
-    background-color: #e6e6e6;
+    background-color: $backgroundInactive;
     min-height: 60px;
     padding: 10px;
     cursor: pointer;
@@ -153,7 +166,7 @@
     @include outlineOnFocusHasBorder();
 
     &:hover, &:focus {
-      background-color: darken(#e6e6e6, 5%);
+      background-color: darken($backgroundInactive, 5%);
     }
   }
 
@@ -161,8 +174,8 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    border-right: solid 1px grey;
-    border-top: solid 1px grey;
+    border-right: solid 1px $borderInactive;
+    border-top: solid 1px $borderInactive;
     border-top-right-radius: 3px;
 
     .moveSubqueue, .removeSlot {
@@ -213,9 +226,14 @@
         content: ', ';
         display: inline;
       }
+
       &:first-child:before {
         content: '';
       }
+    }
+
+    .label {
+      margin-left: 5px;
     }
   }
 
@@ -229,30 +247,40 @@
       }
     }
   }
+
   .waitingSubqueues {
     margin-left: 20px;
-    margin-top: 5px;
     display: table;
-    width: 100%;
+
     > * {
       display: table-row;
     }
 
     .name {
       display: table-cell;
-      width: 30%;
+      width: 200px;
+      line-height: 35px;
+      vertical-align: middle;
     }
+
     .applied {
       display: table-cell;
-      width: 20%;
-      padding-bottom: 5px;
+      line-height: 35px;
+      vertical-align: middle;
+
+      .number {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      form {
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
+
     .appliedMe {
       display: inline-block;
-    }
-    .apply {
-      display: table-cell;
-      width: 50%;
     }
   }
 }

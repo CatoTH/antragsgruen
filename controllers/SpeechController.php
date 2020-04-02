@@ -26,6 +26,26 @@ class SpeechController extends Base
         return null;
     }
 
+    public function actionPoll()
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return $this->getError('Not logged in');
+        }
+        $queue = $this->getQueue(intval(\Yii::$app->request->get('queue')));
+        if (!$queue) {
+            return $this->getError('Queue not found');
+        }
+
+        return json_encode([
+            'success' => true,
+            'queue'   => $queue->getUserApiObject(),
+        ]);
+    }
+
     public function actionRegister()
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
@@ -50,12 +70,17 @@ class SpeechController extends Base
         } else {
             $subqueueId = null;
         }
+        if (\Yii::$app->request->post('username')) {
+            $name = trim(\Yii::$app->request->post('username'));
+        } else {
+            $name = $user->name;
+        }
 
         $item              = new SpeechQueueItem();
         $item->queueId     = $queue->id;
         $item->subqueueId  = $subqueueId;
         $item->userId      = $user->id;
-        $item->name        = $user->name;
+        $item->name        = $name;
         $item->position    = null;
         $item->dateApplied = date('Y-m-d H:i:s');
         $item->dateStarted = null;
@@ -85,6 +110,7 @@ class SpeechController extends Base
         foreach ($queue->items as $item) {
             // One can only delete oneself before the speech has started
             if ($item->userId === $user->id && $item->dateStarted === null) {
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $item->delete();
             }
         }
@@ -93,6 +119,29 @@ class SpeechController extends Base
         return json_encode([
             'success' => true,
             'queue'   => $queue->getUserApiObject(),
+        ]);
+    }
+
+
+
+    public function actionAdminPoll()
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            return $this->getError('Missing privileges');
+        }
+
+        $queue = $this->getQueue(intval(\Yii::$app->request->get('queue')));
+        if (!$queue) {
+            return $this->getError('Queue not found');
+        }
+
+        return json_encode([
+            'success' => true,
+            'queue'   => $queue->getAdminApiObject(),
         ]);
     }
 
