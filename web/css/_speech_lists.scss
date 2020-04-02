@@ -27,11 +27,13 @@
       flex-direction: row;
       width: 100%;
     }
+
     .previousList {
       flex: 1;
 
       header {
         text-align: center;
+
         span {
           border-bottom: solid 1px grey;
         }
@@ -173,6 +175,7 @@
         background-color: transparent;
       }
     }
+
     .removeSlot {
       color: $colorDelLink;
     }
@@ -181,5 +184,75 @@
 
 
 .speechUser {
+  .activeSpeaker {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+    font-weight: bold;
+  }
 
+  .upcomingSpeaker {
+    margin-top: 20px;
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+      line-height: 1.5em;
+    }
+  }
+
+  .upcomingSpeakerList {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+
+    > * {
+      display: inline;
+
+      &:before {
+        content: ', ';
+        display: inline;
+      }
+      &:first-child:before {
+        content: '';
+      }
+    }
+  }
+
+  .waitingMultiple {
+    margin-top: 20px;
+
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+        line-height: 1.5em;
+      }
+    }
+  }
+  .waitingSubqueues {
+    margin-left: 20px;
+    margin-top: 5px;
+    display: table;
+    width: 100%;
+    > * {
+      display: table-row;
+    }
+
+    .name {
+      display: table-cell;
+      width: 30%;
+    }
+    .applied {
+      display: table-cell;
+      width: 20%;
+      padding-bottom: 5px;
+    }
+    .appliedMe {
+      display: inline-block;
+    }
+    .apply {
+      display: table-cell;
+      width: 50%;
+    }
+  }
 }

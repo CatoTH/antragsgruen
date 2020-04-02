@@ -31,20 +31,64 @@ class SpeechController extends Base
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $user  = User::getCurrentUser();
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return $this->getError('Not logged in');
+        }
+        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        if (!$queue) {
+            return $this->getError('Queue not found');
+        }
+        if (count($queue->subqueues) > 0) {
+            // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
+            $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));
+            if ($subqueue) {
+                $subqueueId = $subqueue->id;
+            } else {
+                return $this->getError('No subqueue provided');
+            }
+        } else {
+            $subqueueId = null;
+        }
+
+        $item              = new SpeechQueueItem();
+        $item->queueId     = $queue->id;
+        $item->subqueueId  = $subqueueId;
+        $item->userId      = $user->id;
+        $item->name        = $user->name;
+        $item->position    = null;
+        $item->dateApplied = date('Y-m-d H:i:s');
+        $item->dateStarted = null;
+        $item->dateStopped = null;
+        $item->save();
+
+        return json_encode([
+            'success' => true,
+            'queue'   => $queue->getUserApiObject(),
+        ]);
+    }
+
+    public function actionUnregister()
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user) {
+            return $this->getError('Not logged in');
+        }
         $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
         if (!$queue) {
             return $this->getError('Queue not found');
         }
 
-        $item              = new SpeechQueueItem();
-        $item->queueId     = $queue->id;
-        $item->subqueueId  = null;
-        $item->userId      = $user->id;
-        $item->name        = $user->name;
-        $item->position    = 0;
-        $item->dateApplied = date('Y-m-d H:i:s');
-        $item->save();
+        foreach ($queue->items as $item) {
+            // One can only delete oneself before the speech has started
+            if ($item->userId === $user->id && $item->dateStarted === null) {
+                $item->delete();
+            }
+        }
+        $queue->refresh();
 
         return json_encode([
             'success' => true,
