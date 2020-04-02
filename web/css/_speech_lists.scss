@@ -248,6 +248,20 @@
     }
   }
 
+  .waitingSingle {
+    margin-top: 10px;
+
+    form {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .appliedMe {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
   .waitingSubqueues {
     margin-left: 20px;
     display: table;

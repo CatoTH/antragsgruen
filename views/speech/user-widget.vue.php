@@ -17,13 +17,47 @@ ob_start();
             <li v-for="speaker in upcomingSpeakers">
                 <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)">Du</span><!-- Fight unwanted whitespace
-                --><button type="button" class="btn btn-link" v-if="isMe(speaker)" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
+                -->
+                <button type="button" class="btn btn-link" v-if="isMe(speaker)" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
                     <span class="glyphicon glyphicon-trash" aria-label="Mich aus der Liste entfernen"></span>
                 </button>
             </li>
         </ul>
     </div>
 
+    <section class="waiting waitingSingle" v-if="queue.subqueues.length === 1" aria-label="Warteliste für Redebeiträge">
+        <header>
+            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+            Warteliste
+
+            <span class="number">
+                {{ queue.subqueues[0].numApplied }}
+            </span>
+
+            <div v-if="queue.subqueues[0].iAmOnList" class="appliedMe">
+                <span class="label label-success">Beworben</span>
+                <button type="button" class="btn btn-link" v-on:click="removeMeFromQueue($event)" title="Mich aus der Liste entfernen">
+                    <span class="glyphicon glyphicon-trash" aria-label="Mich aus der Liste entfernen"></span>
+                </button>
+            </div>
+
+            <button class="btn btn-default btn-xs" type="button"
+                    v-if="!queue.iAmOnList && showApplicationForm !== queue.subqueues[0].id"
+                    v-on:click="onShowApplicationForm($event, queue.subqueues[0])"
+            >
+                Bewerben
+            </button>
+            <form v-on:submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].iAmOnList && showApplicationForm === queue.subqueues[0].id">
+                <label v-bind:for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only">Name</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" v-model="registerName" v-bind:id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Eintragen</button>
+                    </span>
+                </div>
+            </form>
+        </header>
+    </section>
 
     <section class="waiting waitingMultiple" v-if="queue.subqueues.length > 1" aria-label="Wartelisten für Redebeiträge">
         <header>
@@ -83,7 +117,7 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
         data() {
             return {
                 registerName: this.user.name,
-                showApplicationForm: null,
+                showApplicationForm: false, // "null" is already taken by the default form
                 pollingId: null
             };
         },
