@@ -19,11 +19,14 @@ $initData = $queue->getUserApiObject();
 if ($user) {
     $userData = [
         'loggedIn' => true,
+        'id'       => $user->id,
         'name'     => $user->name,
     ];
 } else {
     $userData = [
         'loggedIn' => false,
+        'id'       => null,
+        'name'     => '',
     ];
 }
 

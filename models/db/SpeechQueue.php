@@ -202,7 +202,7 @@ class SpeechQueue extends ActiveRecord
         return $subqueues;
     }
 
-    public function getAdminApiObject(): array
+    private function getActiveSlots(): array
     {
         $slots = [];
         foreach ($this->items as $item) {
@@ -228,10 +228,15 @@ class SpeechQueue extends ActiveRecord
             return $entry1['position'] <=> $entry2['position'];
         });
 
+        return $slots;
+    }
+
+    public function getAdminApiObject(): array
+    {
         return [
             'id'        => $this->id,
             'subqueues' => $this->getAdminApiSubqueues(),
-            'slots'     => $slots,
+            'slots'     => $this->getActiveSlots(),
         ];
     }
 
@@ -273,7 +278,7 @@ class SpeechQueue extends ActiveRecord
         // and only afterwards subqueues are created. In this case, there will be a placeholder "default" queue.
         $usersWithoutSubqueue = 0;
         foreach ($this->items as $item) {
-            if ($item->subqueueId === null) {
+            if ($item->subqueueId === null && $item->position === null) {
                 $usersWithoutSubqueue++;
             }
         }
@@ -299,6 +304,7 @@ class SpeechQueue extends ActiveRecord
             'id'        => $this->id,
             'iAmOnList' => $iAmOnList,
             'subqueues' => $this->getUserApiSubqueues(),
+            'slots'     => $this->getActiveSlots(),
         ];
     }
 }
