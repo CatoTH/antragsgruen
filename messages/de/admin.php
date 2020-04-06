@@ -162,7 +162,7 @@ return [
     'list_functions'              => 'Funktionen',
     'list_functions_procedure'    => 'Verfahrensvorschläge aktivieren',
     'list_functions_responsib'    => 'Zuständigkeiten aktivieren',
-    'list_functions_activated'    => 'Die Funktion wurde aktiviert und ist in der Liste unten nun sichtbar. Du kannst sie bei Bedarf unter Einstellungen -&gt; Antragstypen wieder deaktivieren.',
+    'list_functions_activated'    => 'Die Funktion wurde aktiviert und ist in der Liste unten nun sichtbar. Du kannst sie bei Bedarf unter Einstellungen -> Antragstypen wieder deaktivieren.',
     'list_pdf_amend'              => 'PDF + ÄAs',
     'filter_na'                   => '- egal -',
     'filter_title'                => 'Titel',
