@@ -100,7 +100,7 @@
     transition: border ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
     outline: none;
   }
-  body.usingMouse &:focus {
+  body.usingMouse &:focus-within {
     border: solid 1px transparent;
     box-shadow: none;
   }
