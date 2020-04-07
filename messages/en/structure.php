@@ -148,6 +148,7 @@ return [
     'STATUS_MERGING_DRAFT_PRIVATE'        => 'Merging Draft (invisible)',
     'STATUS_RESOLUTION_PRELIMINARY'       => 'Resolution (preliminary)',
     'STATUS_RESOLUTION_FINAL'             => 'Resolution',
+    'STATUS_MOVED'                        => 'Moved',
 
     'PROPOSED_ACCEPTED_MOTION'    => 'Accepted',
     'PROPOSED_ACCEPTED_AMEND'     => 'Accepted',
