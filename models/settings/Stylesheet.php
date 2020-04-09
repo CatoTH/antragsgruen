@@ -343,7 +343,10 @@ class Stylesheet implements \JsonSerializable
 
     public function getValue(string $field, string $defaults): string
     {
-        if ($this->$field !== null) {
+        if (trim($this->$field) === '' && $field !== 'backgroundImage') {
+            // Empty strings are only allowed for backgroundImage
+            return (string)static::getAllSettings($defaults)[$field]['default'];
+        } elseif ($this->$field !== null) {
             return (string)$this->$field;
         } else {
             return (string)static::getAllSettings($defaults)[$field]['default'];
