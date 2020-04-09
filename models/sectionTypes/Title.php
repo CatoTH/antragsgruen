@@ -179,7 +179,7 @@ class Title extends ISectionType
     {
         /** @var AmendmentSection $section */
         $section = $this->section;
-        if ($section->data === $section->getOriginalMotionSection()->getData()) {
+        if ($section->getOriginalMotionSection() && $section->data === $section->getOriginalMotionSection()->getData()) {
             return;
         }
         $title = Exporter::encodePlainString($section->getSettings()->title);
