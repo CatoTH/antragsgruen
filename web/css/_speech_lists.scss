@@ -5,6 +5,14 @@
   $backgroundInactive: #f0f0f0;
   $borderInactive: darken($backgroundInactive, 20%);
 
+  .settings {
+    display: flex;
+    flex-direction: row;
+    > * {
+      flex: 1;
+    }
+  }
+
   .previousSpeakers {
     margin: 0 auto;
     width: 400px;
@@ -104,7 +112,9 @@
     padding: 18px 10px 10px 10px;
     cursor: pointer;
     text-align: center;
-    font-style: italic;
+    .title {
+      font-style: italic;
+    }
 
     @include outlineOnFocusHasBorder();
 

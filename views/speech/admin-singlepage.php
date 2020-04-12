@@ -25,13 +25,11 @@ $initData = $queue->getAdminApiObject();
 $this->title = Yii::t('speech', 'admin_title');
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
-<div class="manageSpeechQueue content">
+<div class="manageSpeechQueue">
     <div class="sr-only" id="speachListBackendTitle">Redeliste verwalten</div>
     <section aria-labelledby="speachListBackendTitle"
              data-antragsgruen-widget="Backend/CurrentSpeachList"
              data-queue="<?= Html::encode(json_encode($initData)) ?>">
-        <div class="content">
-            <div class="speechAdmin"></div>
-        </div>
+        <div class="speechAdmin"></div>
     </section>
 </div>

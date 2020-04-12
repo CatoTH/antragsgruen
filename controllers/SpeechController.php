@@ -123,7 +123,6 @@ class SpeechController extends Base
     }
 
 
-
     public function actionAdminPoll()
     {
         \Yii::$app->response->format = Response::FORMAT_RAW;
@@ -138,6 +137,31 @@ class SpeechController extends Base
         if (!$queue) {
             return $this->getError('Queue not found');
         }
+
+        return json_encode([
+            'success' => true,
+            'queue'   => $queue->getAdminApiObject(),
+        ]);
+    }
+
+    public function actionAdminSetstatus()
+    {
+        \Yii::$app->response->format = Response::FORMAT_RAW;
+        \Yii::$app->response->headers->add('Content-Type', 'application/json');
+
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            return $this->getError('Missing privileges');
+        }
+
+        $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
+        if (!$queue) {
+            return $this->getError('Queue not found');
+        }
+
+        $queue->isOpen   = (intval(\Yii::$app->request->post('isOpen')) > 0 ? 1 : 0);
+        $queue->isActive = (intval(\Yii::$app->request->post('isActive')) > 0 ? 1 : 0);
+        $queue->save();
 
         return json_encode([
             'success' => true,
@@ -180,6 +204,26 @@ class SpeechController extends Base
                 $item->dateStarted = null;
                 $item->dateStopped = null;
                 $item->save();
+                break;
+            case "set-slot-and-start":
+                $maxPosition = 0;
+                foreach ($queue->items as $cmpItem) {
+                    if ($cmpItem->position !== null && $cmpItem->position > $maxPosition) {
+                        $maxPosition = $cmpItem->position;
+                    }
+                }
+
+                $item->position    = $maxPosition + 1;
+                $item->dateStarted = date("Y-m-d H:i:s");
+                $item->dateStopped = null;
+                $item->save();
+
+                foreach ($queue->items as $cmpItem) {
+                    if ($cmpItem->id !== $item->id && $cmpItem->dateStarted !== null && $cmpItem->dateStopped === null) {
+                        $cmpItem->dateStopped = date("Y-m-d H:i:s");
+                        $cmpItem->save();
+                    }
+                }
                 break;
             case "start":
                 $item->dateStarted = date("Y-m-d H:i:s");

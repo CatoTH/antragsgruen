@@ -5,85 +5,100 @@ use app\components\UrlHelper;
 ob_start();
 ?>
 
-<div class="speechAdmin">
-    <section class="previousSpeakers" v-bind:class="{previousShown: showPreviousList}">
-        <header>
-            Bisherige Sprecher*innen: {{ previousSpeakers.length }}
-
-            <button class="btn btn-link" type="button" v-on:click="showPreviousList = true" v-if="!showPreviousList">
-                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                Anzeigen
-            </button>
-            <button class="btn btn-link" type="button" v-on:click="showPreviousList = false" v-if="showPreviousList">
-                <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                Anzeigen
-            </button>
-        </header>
-
-        <div class="previousLists" v-if="showPreviousList">
-            <div class="previousList" v-for="subqueue in queue.subqueues">
-                <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
-                <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
-                <ol>
-                    <li v-for="item in getPreviousForSubqueue(subqueue)">
-                        {{ item.name }}
-                    </li>
-                </ol>
-            </div>
-        </div>
-    </section>
-
-    <ol class="slots" aria-label="Redeliste">
-        <li v-for="slot in sortedSlots" class="slotEntry" v-bind:class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
-            <div class="name">
-                {{ slot.name }}
-            </div>
-            <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                Redebeitrag läuft
-            </div>
-            <div class="status statusUpcoming" v-if="isUpcomingSlot(slot)">
-                Nächster Redebeitrag
-            </div>
-
-            <button type="button" class="btn btn-success start"
-                    v-on:click="startSlot($event, slot)" v-if="slot.dateStarted === null">
-                <span class="glyphicon glyphicon-play" title="Redebeitrag starten" aria-hidden="true"></span>
-                <span class="sr-only">Redebeitrag starten</span>
-            </button>
-            <button type="button" class="btn btn-danger start"
-                    v-on:click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                <span class="glyphicon glyphicon-stop" title="Redebeitrag beenden" aria-hidden="true"></span>
-                <span class="sr-only">Redebeitrag beenden</span>
-            </button>
-
-            <div class="operations">
-                <button type="button" class="link removeSlot" v-on:click="removeSlot($event, slot)" title="Zurück auf die Warteliste">
-                    <span class="glyphicon glyphicon-chevron-down"></span>
-                    <span class="sr-only">Zurück auf die Warteliste</span>
-                </button>
-            </div>
-        </li>
-        <li class="slotPlaceholder" v-if="slotProposal" tabindex="0"
-            v-bind:class="{ isUpcoming: upcomingSlot === null }"
-            v-on:click="addItemToSlots(slotProposal)"
-            v-on:keyup.enter="addItemToSlots(slotProposal)">
-            Vorschlag: {{ slotProposal.name }}
-        </li>
-    </ol>
-
-    <div class="subqueues">
-        <speech-admin-subqueue v-for="subqueue in queue.subqueues"
-                               v-bind:subqueue="subqueue"
-                               v-bind:allSubqueues="queue.subqueues"
-                               v-on:add-item-to-slots="addItemToSlots"
-                               v-on:add-item-to-subqueue="addItemToSubqueue"
-                               v-on:move-item-to-subqueue="moveItemToSubqueue"
-        ></speech-admin-subqueue>
+<article class="speechAdmin">
+    <div class="toolbarBelowTitle settings">
+        <label class="settingsActive">
+            <input type="checkbox" v-model="queue.isActive" @change="settingsChanged()">
+            Redeliste ist sichtbar
+        </label>
+        <label class="settingsOpen" v-if="queue.isActive">
+            <input type="checkbox" v-model="queue.isOpen" @change="settingsChanged()">
+            Bewerbungen möglich
+        </label>
     </div>
-</div>
+
+    <main class="content">
+        <section class="previousSpeakers" :class="{previousShown: showPreviousList}">
+            <header>
+                Bisherige Sprecher*innen: {{ previousSpeakers.length }}
+
+                <button class="btn btn-link" type="button" @click="showPreviousList = true" v-if="!showPreviousList">
+                    <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    Anzeigen
+                </button>
+                <button class="btn btn-link" type="button" @click="showPreviousList = false" v-if="showPreviousList">
+                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    Anzeigen
+                </button>
+            </header>
+
+            <div class="previousLists" v-if="showPreviousList">
+                <div class="previousList" v-for="subqueue in queue.subqueues">
+                    <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
+                    <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
+                    <ol>
+                        <li v-for="item in getPreviousForSubqueue(subqueue)">
+                            {{ item.name }}
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <ol class="slots" aria-label="Redeliste">
+            <li v-for="slot in sortedSlots" class="slotEntry" :class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
+                <div class="name">
+                    {{ slot.name }}
+                </div>
+                <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
+                    Redebeitrag läuft
+                </div>
+                <div class="status statusUpcoming" v-if="isUpcomingSlot(slot)">
+                    Nächster Redebeitrag
+                </div>
+
+                <button type="button" class="btn btn-success start"
+                        @click="startSlot($event, slot)" v-if="slot.dateStarted === null">
+                    <span class="glyphicon glyphicon-play" title="Redebeitrag starten" aria-hidden="true"></span>
+                    <span class="sr-only">Redebeitrag starten</span>
+                </button>
+                <button type="button" class="btn btn-danger start"
+                        @click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
+                    <span class="glyphicon glyphicon-stop" title="Redebeitrag beenden" aria-hidden="true"></span>
+                    <span class="sr-only">Redebeitrag beenden</span>
+                </button>
+
+                <div class="operations">
+                    <button type="button" class="link removeSlot" @click="removeSlot($event, slot)" title="Zurück auf die Warteliste">
+                        <span class="glyphicon glyphicon-chevron-down"></span>
+                        <span class="sr-only">Zurück auf die Warteliste</span>
+                    </button>
+                </div>
+            </li>
+            <li class="slotPlaceholder" v-if="slotProposal" tabindex="0"
+                :class="{ isUpcoming: upcomingSlot === null }"
+                @click="addItemToSlotsAndStart(slotProposal)"
+                @keyup.enter="addItemToSlotsAndStart(slotProposal)">
+                <span class="title">Vorgeschlag starten</span>
+                <span class="name">{{ slotProposal.name }}</span>
+            </li>
+        </ol>
+
+        <div class="subqueues">
+            <speech-admin-subqueue v-for="subqueue in queue.subqueues"
+                                   :subqueue="subqueue"
+                                   :allSubqueues="queue.subqueues"
+                                   @add-item-to-slots-and-start="addItemToSlotsAndStart"
+                                   @add-item-to-subqueue="addItemToSubqueue"
+                                   @move-item-to-subqueue="moveItemToSubqueue"
+            ></speech-admin-subqueue>
+        </div>
+    </main>
+</article>
 
 <?php
 $html             = ob_get_clean();
+$setStatusUrl     = UrlHelper::createUrl('speech/admin-setstatus');
 $itemSetStatusUrl = UrlHelper::createUrl('speech/admin-item-setstatus');
 $createItemUrl    = UrlHelper::createUrl('speech/admin-create-item');
 $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
@@ -111,7 +126,6 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                 });
             },
             sortedSlots: function () {
-                console.log("Sorting...");
                 return this.queue.slots.filter(function (slot) {
                     return slot.dateStopped === null;
                 }).sort(function (slot1, slot2) {
@@ -193,11 +207,33 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                 $event.preventDefault();
                 this._setStatus(slot.id, "unset-slot");
             },
+            // Not used currently
             addItemToSlots: function (item) {
                 this._setStatus(item.id, "set-slot");
             },
+            addItemToSlotsAndStart: function (item) {
+                this._setStatus(item.id, "set-slot-and-start");
+            },
             moveItemToSubqueue: function (item, newSubqueue) {
                 this._setStatus(item.id, "move", {newSubqueueId: newSubqueue.id});
+            },
+            settingsChanged: function () {
+                const widget = this;
+                $.post(<?= json_encode($setStatusUrl) ?>, {
+                    queue: this.queue.id,
+                    isActive: (this.queue.isActive ? 1 : 0),
+                    isOpen: (this.queue.isOpen ? 1 : 0),
+                    _csrf: this.csrf,
+                }, function (data) {
+                    if (!data['success']) {
+                        alert(data['message']);
+                        return;
+                    }
+
+                    widget.queue = data['queue'];
+                }).catch(function (err) {
+                    alert(err.responseText);
+                });
             },
             addItemToSubqueue: function (subqueue, itemName) {
                 const widget = this;
