@@ -3,15 +3,16 @@
 namespace app\controllers;
 
 use app\components\{UrlHelper, EmailNotifications};
-use app\models\db\{ConsultationAgendaItem,
+use app\models\db\{Amendment,
+    ConsultationAgendaItem,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
     Motion,
     MotionSupporter,
+    SpeechQueue,
     User,
-    UserNotification
-};
+    UserNotification};
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -436,6 +437,55 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
+    }
+
+    public function actionAdminSpeech($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            \Yii::$app->session->setFlash('error', \Yii::t('base', 'err_site_403'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+
+        if (count($motion->speechQueues) === 0) {
+            $speechQueue = SpeechQueue::createWithSubqueues($this->consultation);
+            $speechQueue->motionId = $motion->id;
+            $speechQueue->save();
+        } else {
+            $speechQueue = $motion->speechQueues[0];
+        }
+
+        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $speechQueue]);
+    }
+
+    protected function guessRedirectByPrefix(string $prefix): ?string
+    {
+        $motion = Motion::findOne([
+            'consultationId' => $this->consultation->id,
+            'titlePrefix'    => $prefix
+        ]);
+        if ($motion && $motion->isReadable()) {
+            return $motion->getLink();
+        }
+
+        /** @var Amendment|null $amendment */
+        $amendment = Amendment::find()->joinWith('motionJoin')->where([
+            'motion.consultationId' => $this->consultation->id,
+            'amendment.titlePrefix' => $prefix,
+        ])->one();
+
+        if ($amendment && $amendment->isReadable()) {
+            return $amendment->getLink();
+        }
+
+        return null;
     }
 
     /**
