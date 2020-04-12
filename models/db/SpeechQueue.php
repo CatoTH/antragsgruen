@@ -260,6 +260,8 @@ class SpeechQueue extends ActiveRecord
     {
         return [
             'id'        => $this->id,
+            'isActive'  => !!$this->isActive,
+            'isOpen'    => !!$this->isOpen,
             'subqueues' => $this->getAdminApiSubqueues(),
             'slots'     => $this->getActiveSlots(),
         ];

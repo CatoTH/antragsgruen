@@ -109,7 +109,8 @@ $html = ob_get_clean();
                     return;
                 }
                 $event.preventDefault();
-                this.$emit('add-item-to-slots', item);
+                // this.$emit('add-item-to-slots', item);
+                this.$emit('add-item-to-slots-and-start', item);
             },
             openAdder: function () {
                 this.adderOpened = true;
