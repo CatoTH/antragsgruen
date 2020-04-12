@@ -6,6 +6,7 @@ export class CurrentSpeachList {
     private widget;
 
     constructor(private $element: JQuery) {
+        console.log($element);
         this.widget = new Vue({
             el: this.$element.find(".speechAdmin")[0],
             template: `<speech-admin-widget v-bind:queue="queue" v-bind:csrf="csrf"></speech-admin-widget>`,

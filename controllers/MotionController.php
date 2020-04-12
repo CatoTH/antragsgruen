@@ -10,9 +10,9 @@ use app\models\db\{Amendment,
     ConsultationSettingsMotionSection,
     Motion,
     MotionSupporter,
+    SpeechQueue,
     User,
-    UserNotification
-};
+    UserNotification};
 use app\models\exceptions\{ExceptionBase, FormError, Inconsistency, Internal};
 use app\models\forms\MotionEditForm;
 use app\models\sectionTypes\ISectionType;
@@ -471,6 +471,30 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
+    }
+
+    public function actionAdminSpeech($motionSlug)
+    {
+        $motion = $this->consultation->getMotion($motionSlug);
+        if (!$motion) {
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
+
+            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+        }
+        $user = User::getCurrentUser();
+        if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
+            return $this->getError('Missing privileges');
+        }
+
+        if (count($motion->speechQueues) === 0) {
+            $speechQueue = SpeechQueue::createWithSubqueues($this->consultation);
+            $speechQueue->motionId = $motion->id;
+            $speechQueue->save();
+        } else {
+            $speechQueue = $motion->speechQueues[0];
+        }
+
+        return $this->render('@app/views/speech/admin-singlepage', ['queue' => $speechQueue]);
     }
 
     protected function guessRedirectByPrefix(string $prefix): ?string

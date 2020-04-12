@@ -102,7 +102,6 @@ class SpeechQueue extends ActiveRecord
     public function setSubqueueConfiguration(array $names): void
     {
         if (count($names) > 1) {
-            var_dump($names);
             for ($i = 0; $i < count($this->subqueues); $i++) {
                 if ($i < count($names)) {
                     $this->subqueues[$i]->name = $names[$i];
@@ -124,6 +123,30 @@ class SpeechQueue extends ActiveRecord
                 $subqueue->deleteReassignItems($this);
             }
         }
+    }
+
+    public static function createWithSubqueues(Consultation $consultation): SpeechQueue
+    {
+        $queue                 = new SpeechQueue();
+        $queue->consultationId = $consultation->id;
+        $queue->motionId       = null;
+        $queue->agendaItemId   = null;
+        $queue->quotaByTime    = 0;
+        $queue->quotaOrder     = 0;
+        $queue->isActive       = 0;
+        $queue->isOpen         = 0;
+        $queue->isModerated    = 0;
+        $queue->save();
+
+        foreach ($consultation->getSettings()->speechListSubqueues as $i => $name) {
+            $subqueue           = new SpeechSubqueue();
+            $subqueue->queueId  = $queue->id;
+            $subqueue->position = $i;
+            $subqueue->name     = $name;
+            $subqueue->save();
+        }
+
+        return $queue;
     }
 
     public function getSubqueueById(int $subqueueId): ?SpeechSubqueue
