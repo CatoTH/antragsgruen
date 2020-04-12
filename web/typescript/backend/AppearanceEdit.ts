@@ -66,10 +66,19 @@ export class AppearanceEdit {
             const checked = $(ev.currentTarget).prop("checked");
             if (checked) {
                 this.$form.find(".quotas").removeClass("hidden");
-                this.$form.find(".quotas input").prop("required", true);
             } else {
                 this.$form.find(".quotas").addClass("hidden");
-                this.$form.find(".quotas input").prop("required", false);
+            }
+        }).trigger("change");
+
+        this.$form.find("#hasMultipleSpeechLists").on('change', (ev) => {
+            const checked = $(ev.currentTarget).prop("checked");
+            if (checked) {
+                this.$form.find(".quotaName").removeClass("hidden");
+                this.$form.find(".quotaName input").prop("required", true);
+            } else {
+                this.$form.find(".quotaName").addClass("hidden");
+                this.$form.find(".quotaName input").prop("required", false);
             }
         }).trigger("change");
     }

@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $consultationId
  * @property int|null $agendaItemId
+ * @property int|null $motionId
  * @property int $quotaByTime
  * @property int $quotaOrder
  * @property int $isActive
@@ -17,6 +18,7 @@ use yii\db\ActiveRecord;
  *
  * @property Consultation $consultation
  * @property ConsultationAgendaItem|null $agendaItem
+ * @property Motion|null $motion
  * @property SpeechSubqueue[] $subqueues
  * @property SpeechQueueItem[] $items
  */
@@ -61,9 +63,17 @@ class SpeechQueue extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getMotion()
+    {
+        return $this->hasOne(Motion::class, ['id' => 'motionId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSubqueues()
     {
-        return $this->hasMany(SpeechSubqueue::class, ['queueId' => 'id']);
+        return $this->hasMany(SpeechSubqueue::class, ['queueId' => 'id'])->orderBy('position ASC');
     }
 
     /**
@@ -86,41 +96,33 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
-    public function setSubqueueConfiguration(int $configuration): void
+    /**
+     * @param string[] $names
+     */
+    public function setSubqueueConfiguration(array $names): void
     {
-        switch ($configuration) {
-            case SpeechSubqueue::CONFIGURATION_NONE:
-                foreach ($this->subqueues as $subqueue) {
-                    $subqueue->deleteReassignItems($this);
+        if (count($names) > 1) {
+            var_dump($names);
+            for ($i = 0; $i < count($this->subqueues); $i++) {
+                if ($i < count($names)) {
+                    $this->subqueues[$i]->name = $names[$i];
+                    $this->subqueues[$i]->save();
+                } else {
+                    $this->subqueues[$i]->deleteReassignItems($this);
                 }
-                break;
-            case SpeechSubqueue::CONFIGURATION_GENDER:
-                $hasMen   = false;
-                $hasWomen = false;
-                foreach ($this->subqueues as $subqueue) {
-                    if ($subqueue->name === \Yii::t('speech', 'subqueue_female')) {
-                        $hasWomen = true;
-                    } elseif ($subqueue->name === \Yii::t('speech', 'subqueue_male')) {
-                        $hasMen = true;
-                    } else {
-                        $subqueue->deleteReassignItems($this);
-                    }
-                }
-                if (!$hasWomen) {
-                    $subqueue           = new SpeechSubqueue();
-                    $subqueue->queueId  = $this->id;
-                    $subqueue->name     = \Yii::t('speech', 'subqueue_female');
-                    $subqueue->position = 0;
-                    $subqueue->save();
-                }
-                if (!$hasMen) {
-                    $subqueue           = new SpeechSubqueue();
-                    $subqueue->queueId  = $this->id;
-                    $subqueue->name     = \Yii::t('speech', 'subqueue_male');
-                    $subqueue->position = 1;
-                    $subqueue->save();
-                }
-                break;
+            }
+            // Create additional subqueues
+            for ($i = count($this->subqueues); $i < count($names); $i++) {
+                $subqueue           = new SpeechSubqueue();
+                $subqueue->queueId  = $this->id;
+                $subqueue->name     = $names[$i];
+                $subqueue->position = $i;
+                $subqueue->save();
+            }
+        } else {
+            foreach ($this->subqueues as $subqueue) {
+                $subqueue->deleteReassignItems($this);
+            }
         }
     }
 

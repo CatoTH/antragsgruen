@@ -127,11 +127,24 @@ class IndexController extends AdminBase
                 $settings->translationService = null;
             }
 
-            if (isset($settingsInput['speechListSubqueues'])) {
-                $subqueueMode = intval($settingsInput['speechListSubqueues']);
-                foreach ($this->consultation->speechQueues as $speechQueue) {
-                    $speechQueue->setSubqueueConfiguration($subqueueMode);
+            if (isset($settingsInput['hasSpeechLists']) && $settingsInput['hasSpeechLists']) {
+                if (isset($post['hasMultipleSpeechLists']) && $post['hasMultipleSpeechLists']) {
+                    $subqueues = [];
+                    if (isset($post['multipleSpeechListNames'])) {
+                        foreach ($post['multipleSpeechListNames'] as $name) {
+                            if (trim($name) !== '') {
+                                $subqueues[] = trim($name);
+                            }
+                        }
+                    }
+                } else {
+                    $subqueues = [];
                 }
+
+                foreach ($this->consultation->speechQueues as $speechQueue) {
+                    $speechQueue->setSubqueueConfiguration($subqueues);
+                }
+                $settings->speechListSubqueues = $subqueues;
             }
 
             $settings->saveForm($settingsInput, $post['settingsFields']);
