@@ -50,7 +50,6 @@ class Consultation implements \JsonSerializable
 
     /** @var null|int */
     public $forceMotion = null;
-    public $speechListSubqueues = SpeechSubqueue::CONFIGURATION_NONE;
 
     /** @var null|string */
     public $accessPwd = null;
@@ -58,6 +57,7 @@ class Consultation implements \JsonSerializable
 
     /** @var null|string[] */
     public $organisations = null;
+    public $speechListSubqueues = [];
 
     // SETTINGS WITHOUT TEST CASES
 

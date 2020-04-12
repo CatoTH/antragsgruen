@@ -606,6 +606,7 @@ CREATE TABLE `###TABLE_PREFIX###speechQueue` (
   `id` int(11) NOT NULL,
   `consultationId` int(11) NOT NULL,
   `agendaItemId` int(11) DEFAULT NULL,
+  `motionId` int(11) DEFAULT NULL,
   `quotaByTime` tinyint(4) NOT NULL DEFAULT 0,
   `quotaOrder` tinyint(4) NOT NULL DEFAULT 0,
   `isActive` tinyint(4) NOT NULL DEFAULT 0,
@@ -962,6 +963,7 @@ ALTER TABLE `###TABLE_PREFIX###siteAdmin`
 ALTER TABLE `###TABLE_PREFIX###speechQueue`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk_speech_consultation` (`consultationId`),
+  ADD KEY `fk_speech_motion` (`motionId`),
   ADD KEY `fk_speech_agenda` (`agendaItemId`);
 
 --
@@ -1394,6 +1396,7 @@ ALTER TABLE `###TABLE_PREFIX###siteAdmin`
 --
 ALTER TABLE `###TABLE_PREFIX###speechQueue`
   ADD CONSTRAINT `fk_speech_agenda` FOREIGN KEY (`agendaItemId`) REFERENCES `###TABLE_PREFIX###consultationAgendaItem` (`id`),
+  ADD CONSTRAINT `fk_speech_motion` FOREIGN KEY (`motionId`) REFERENCES `###TABLE_PREFIX###motion` (`id`),
   ADD CONSTRAINT `fk_speech_consultation` FOREIGN KEY (`consultationId`) REFERENCES `###TABLE_PREFIX###consultation` (`id`);
 
 --

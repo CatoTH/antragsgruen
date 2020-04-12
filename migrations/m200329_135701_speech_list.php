@@ -16,6 +16,7 @@ class m200329_135701_speech_list extends Migration
             'id'             => 'INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY',
             'consultationId' => 'INTEGER NOT NULL',
             'agendaItemId'   => 'INTEGER NULL DEFAULT NULL',
+            'motionId'       => 'INTEGER NULL DEFAULT NULL',
             'quotaByTime'    => 'TINYINT NOT NULL DEFAULT 0',
             'quotaOrder'     => 'TINYINT NOT NULL DEFAULT 0',
             'isActive'       => 'TINYINT NOT NULL DEFAULT 0',
@@ -23,6 +24,7 @@ class m200329_135701_speech_list extends Migration
             'isModerated'    => 'TINYINT NOT NULL DEFAULT 0',
         ]);
         $this->addForeignKey('fk_speech_consultation', 'speechQueue', 'consultationId', 'consultation', 'id');
+        $this->addForeignKey('fk_speech_motion', 'speechQueue', 'motionId', 'motion', 'id');
         $this->addForeignKey('fk_speech_agenda', 'speechQueue', 'agendaItemId', 'consultationAgendaItem', 'id');
 
         $this->createTable('speechSubqueue', [
@@ -63,6 +65,7 @@ class m200329_135701_speech_list extends Migration
         $this->dropTable('speechSubqueue');
 
         $this->dropForeignKey('fk_speech_agenda', 'speechQueue');
+        $this->dropForeignKey('fk_speech_motion', 'speechQueue');
         $this->dropForeignKey('fk_speech_consultation', 'speechQueue');
         $this->dropTable('speechQueue');
     }

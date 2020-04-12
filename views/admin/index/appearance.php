@@ -196,20 +196,30 @@ $handledSiteSettings = [];
             <div class="speechLists">
                 <?php
                 $boolSettingRow($settings, 'hasSpeechLists', $handledSettings, Yii::t('admin', 'con_speech_lists'));
-
-                $handledSettings[] = 'speechListSubqueues';
+                $speechSubqueues = ($settings->speechListSubqueues ? $settings->speechListSubqueues : []);
+                $name1           = (count($speechSubqueues) > 0 ? $speechSubqueues[0] : Yii::t('speech', 'subqueue_female'));
+                $name2           = (count($speechSubqueues) > 1 ? $speechSubqueues[1] : Yii::t('speech', 'subqueue_male'));
                 ?>
                 <fieldset class="quotas">
-                    <legend><?= Yii::t('admin', 'con_speech_quotas') ?>:</legend>
-                    <label>
-                        <?= Html::radio('settings[speechListSubqueues]', $settings->speechListSubqueues === SpeechSubqueue::CONFIGURATION_NONE,
-                            ['value' => SpeechSubqueue::CONFIGURATION_NONE]) ?>
-                        <?= Yii::t('admin', 'con_speech_quota_none') ?>
+                    <label class="quotaSelector">
+                        <?= Html::checkbox('hasMultipleSpeechLists', (count($speechSubqueues) > 1), ['id' => 'hasMultipleSpeechLists']) ?>
+                        <?= Yii::t('admin', 'con_speech_quotas') ?>
                     </label>
-                    <label>
-                        <?= Html::radio('settings[speechListSubqueues]', $settings->speechListSubqueues === SpeechSubqueue::CONFIGURATION_GENDER,
-                            ['value' => SpeechSubqueue::CONFIGURATION_GENDER]) ?>
-                        <?= Yii::t('admin', 'con_speech_quota_gender') ?>
+                    <label class="quotaName">
+                        <span class="input-group">
+                            <span class="input-group-addon">1.</span>
+                            <input name="multipleSpeechListNames[]" value="<?= Html::encode($name1) ?>" class="form-control"
+                               title="<?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?>">
+                        </span>
+                        <span class="sr-only"><?= str_replace('%no%', 1, Yii::t('admin', 'con_speech_quota_name')) ?></span>
+                    </label>
+                    <label class="quotaName">
+                        <span class="input-group">
+                            <span class="input-group-addon">2.</span>
+                            <input name="multipleSpeechListNames[]" value="<?= Html::encode($name2) ?>" class="form-control"
+                               title="<?= str_replace('%no%', 2, Yii::t('admin', 'con_speech_quota_name')) ?>">
+                        </span>
+                        <span class="sr-only"><?= str_replace('%no%', 2, Yii::t('admin', 'con_speech_quota_name')) ?></span>
                     </label>
                 </fieldset>
             </div>
