@@ -1,6 +1,6 @@
 # Version history
 
-## Version 4.6.0 [not released yet]
+## Version 4.6.0 (2020-04-12)
 
 - Numbered lists are now supported. This includes different list item styles (like (1), 1., a., A.), manually setting the list item number for each list item (e.g. to skip numbers) and also using non-standard list numbers like "15b" (e.g. for laws where paragraphs have been inserted afterwards). This enables discussions and amendments for statutes and laws.
 - Several improvements were made to increase the accessibility of Antragsgrün:

@@ -54,7 +54,8 @@ $I->uncheckOption('#typeProposedProcedure');
 $page->saveForm();
 
 $I->gotoConsultationHome(true, 'laenderrat-to', 'laenderrat-to');
+$I->wait(0.3);
 $I->executeJS('$("#agendaitem_9 > div > h3 > .editAgendaItem").trigger("click");');
-$I->wait(0.5);
+$I->wait(0.3);
 $I->seeElement('#agendaitem_9 > div > .agendaItemEditForm');
 $I->dontSeeElement('#agendaitem_9 > div > .agendaItemEditForm > .extraSettings');
