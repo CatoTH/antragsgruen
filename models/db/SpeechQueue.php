@@ -96,6 +96,22 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
+    public function getTitle(): string
+    {
+        $consultation = $this->getMyConsultation();
+        if ($this->motionId && $consultation->getMotion($this->motionId)) {
+            $motion = $consultation->getMotion($this->motionId);
+
+            return str_replace('%TITLE%', $motion->titlePrefix, \Yii::t('speech', 'title_to'));
+        } elseif ($this->agendaItemId && $consultation->getAgendaItem($this->agendaItemId)) {
+            $item = $consultation->getAgendaItem($this->agendaItemId);
+
+            return str_replace('%TITLE%', $item->getShownCode(true), \Yii::t('speech', 'title_to'));
+        } else {
+            return \Yii::t('speech', 'title_plain');
+        }
+    }
+
     /**
      * @param string[] $names
      */

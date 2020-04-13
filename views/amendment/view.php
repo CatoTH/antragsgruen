@@ -44,6 +44,10 @@ $sidebarRows = include(__DIR__ . DIRECTORY_SEPARATOR . '_view_sidebar.php');
 
 echo '<h1>' . Html::encode($amendment->getTitle()) . '</h1>';
 
+if ($consultation->getSettings()->hasSpeechLists) {
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}
+
 $minHeight               = max(0, $sidebarRows * 40 - 100) . 'px';
 $supportCollectingStatus = (
     $amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS &&
