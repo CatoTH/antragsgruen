@@ -449,9 +449,9 @@ class MotionController extends Base
         }
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            \Yii::$app->session->setFlash('error', \Yii::t('base', 'err_site_403'));
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
 
-            return $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
         if (count($motion->speechQueues) === 0) {

@@ -381,13 +381,24 @@ class Consultation extends ActiveRecord
 
     public function getActiveSpeechQueue(): ?SpeechQueue
     {
+        $firstActive = null;
+        $firstActiveWithNoAssignment = null;
         foreach ($this->speechQueues as $speechQueue) {
             if ($speechQueue->isActive) {
-                return $speechQueue;
+                if ($firstActive === null) {
+                    $firstActive = $speechQueue;
+                }
+                if ($firstActiveWithNoAssignment === null && $speechQueue->motionId === null || $speechQueue->agendaItemId === null) {
+                    $firstActiveWithNoAssignment = $speechQueue;
+                }
             }
         }
 
-        return null;
+        if ($firstActiveWithNoAssignment) {
+            return $firstActiveWithNoAssignment;
+        } else {
+            return null;
+        }
     }
 
     /**

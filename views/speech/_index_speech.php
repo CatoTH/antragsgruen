@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\User;
+use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
@@ -17,9 +18,30 @@ $layout     = $controller->layoutParams;
 $user       = User::getCurrentUser();
 
 $layout->loadVue();
+$layout->addVueTemplate('@app/views/speech/user-widget.vue.php');
 
-if ($user->hasPrivilege($controller->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-    echo $this->render('_index_speech_admin', ['queue' => $queue]);
+$initData = $queue->getUserApiObject();
+if ($user) {
+    $userData = [
+        'loggedIn' => true,
+        'id'       => $user->id,
+        'name'     => $user->name,
+    ];
+} else {
+    $userData = [
+        'loggedIn' => false,
+        'id'       => null,
+        'name'     => '',
+    ];
 }
 
-echo $this->render('_index_speech_user', ['queue' => $queue]);
+?>
+<section aria-labelledby="speachListUserTitle"
+         data-antragsgruen-widget="Frontend/HomeCurrentSpeachList"
+         data-queue="<?= Html::encode(json_encode($initData)) ?>"
+         data-user="<?= Html::encode(json_encode($userData)) ?>">
+    <h2 class="green" id="speachListUserTitle">Redeliste</h2>
+    <div class="content">
+        <div class="currentSpeachList"></div>
+    </div>
+</section>
