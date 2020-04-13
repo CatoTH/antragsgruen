@@ -135,7 +135,7 @@ if ($hasPpAdminbox || $hasSpeechLists) {
         ?>
         <a href="<?= Html::encode(UrlHelper::createMotionUrl($motion, 'admin-speech')) ?>" class="btn btn-default btn-sm">
             <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <?= Yii::t('speech', 'admin_title') ?>
+            <?= str_replace('%TITLE%', $motion->titlePrefix, Yii::t('speech', 'admin_title_to')) ?>
         </a>
         <?php
     }
@@ -177,6 +177,10 @@ $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragr
 }, $viewText);
 
 echo $viewText;
+
+if ($consultation->getSettings()->hasSpeechLists) {
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}
 
 ?>
     <form class="gotoLineNumerPanel form-inline">
@@ -308,8 +312,4 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$
     echo $form->renderFormOrErrorMessage();
 
     echo '</section>';
-}
-
-if ($consultation->getSettings()->hasSpeechLists) {
-    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
 }

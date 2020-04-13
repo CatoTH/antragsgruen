@@ -26,7 +26,11 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
 
 ?>
     <h1 class="stickyHeader"><?= Html::encode($motion->getTitleWithPrefix()) ?></h1>
-
+<?php
+if ($consultation->getSettings()->hasSpeechLists) {
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}
+?>
     <div class="motionData content">
         <table class="motionDataTable">
             <tr>
@@ -73,7 +77,7 @@ $this->title = $title . ': ' . $motion->getTitleWithPrefix();
                     </div>
                     <div class="updated">
                         <span class="glyphicon glyphicon-ok"></span>
-                        <?=Yii::t('amend', 'merge_draft_updated')?>
+                        <?= Yii::t('amend', 'merge_draft_updated') ?>
                     </div>
                 </div>
             </div>

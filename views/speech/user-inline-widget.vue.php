@@ -18,7 +18,7 @@ ob_start();
                 <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)"><?= Yii::t('speech', 'you') ?></span><!-- Fight unwanted whitespace
                 -->
-                <button type="button" class="btn btn-link" v-if="isMe(speaker)" v-on:click="removeMeFromQueue($event)"
+                <button type="button" class="btn btn-link" v-if="isMe(speaker)" @click="removeMeFromQueue($event)"
                         title="<?= Yii::t('speech', 'remove_me') ?>">
                     <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
                 </button>
@@ -37,21 +37,21 @@ ob_start();
 
             <div v-if="queue.subqueues[0].iAmOnList" class="appliedMe">
                 <span class="label label-success">Beworben</span>
-                <button type="button" class="btn btn-link" v-on:click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
+                <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
                     <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
                 </button>
             </div>
 
             <button class="btn btn-default btn-xs" type="button"
                     v-if="!queue.iAmOnList && showApplicationForm !== queue.subqueues[0].id"
-                    v-on:click="onShowApplicationForm($event, queue.subqueues[0])"
+                    @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
-            <form v-on:submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].iAmOnList && showApplicationForm === queue.subqueues[0].id">
-                <label v-bind:for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
+            <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].iAmOnList && showApplicationForm === queue.subqueues[0].id">
+                <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
-                    <input type="text" class="form-control" v-model="registerName" v-bind:id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
+                    <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                     </span>
@@ -77,21 +77,21 @@ ob_start();
 
                     <div v-if="subqueue.iAmOnList" class="appliedMe">
                         <span class="label label-success">Beworben</span>
-                        <button type="button" class="btn btn-link" v-on:click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
+                        <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
                             <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
                         </button>
                     </div>
 
                     <button class="btn btn-default btn-xs" type="button"
                             v-if="!queue.iAmOnList && showApplicationForm !== subqueue.id"
-                            v-on:click="onShowApplicationForm($event, subqueue)"
+                            @click="onShowApplicationForm($event, subqueue)"
                     >
                         <?= Yii::t('speech', 'apply') ?>
                     </button>
-                    <form v-on:submit="register($event, subqueue)" v-if="!queue.iAmOnList && showApplicationForm === subqueue.id">
-                        <label v-bind:for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
+                    <form @submit="register($event, subqueue)" v-if="!queue.iAmOnList && showApplicationForm === subqueue.id">
+                        <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" v-model="registerName" v-bind:id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
+                            <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><?= Yii::t('speech', 'apply_do') ?></button>
                             </span>

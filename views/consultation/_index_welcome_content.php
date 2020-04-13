@@ -40,7 +40,7 @@ if ($contentAdmin || $speechAdmin) {
         $adminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
         echo '<a href="' . Html::encode($adminUrl) . '" class="btn btn-sm btn-default adminSpeechList">';
         echo '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> ';
-        echo Yii::t('speech', 'admin_title');
+        echo Yii::t('speech', 'admin_title_plain');
         echo '</a>';
     }
     echo '<br><br>';

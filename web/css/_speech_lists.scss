@@ -8,6 +8,7 @@
   .settings {
     display: flex;
     flex-direction: row;
+
     > * {
       flex: 1;
     }
@@ -112,6 +113,7 @@
     padding: 18px 10px 10px 10px;
     cursor: pointer;
     text-align: center;
+
     .title {
       font-style: italic;
     }
@@ -310,7 +312,6 @@
 }
 
 
-
 .currentSpeechFooter {
   position: fixed;
   bottom: 0;
@@ -321,7 +322,7 @@
   padding: 0;
   background: white;
   border: solid 1px #ccc;
-  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: row;
 
@@ -336,6 +337,11 @@
     margin: 0;
     padding: 5px;
     background-color: #eee;
+
+    &:after {
+      content: ':';
+      display: inline-block;
+    }
   }
 
   .speechUser {
@@ -355,6 +361,7 @@
   .waitingMultiple {
     display: flex;
     flex-direction: row;
+
     header {
       @if ($font-size-base < 16) {
         font-size: 16px;
@@ -379,29 +386,45 @@
   .subqueue {
     display: flex;
     flex-direction: row;
+    margin: 0 10px;
+    padding: 0 0 0 10px;
+    background-color: #eee;
+    border-radius: 3px;
+    line-height: $speechLineHeight - 2px;
+    vertical-align: middle;
 
     .name {
-      line-height: $speechLineHeight;
-      vertical-align: middle;
+      font-weight: bold;
+      margin-right: 7px;
     }
 
-    .applied {
-      line-height: $speechLineHeight;
-      vertical-align: middle;
-
-      .number {
+    .number {
+      font-size: 0.8em;
+      &:before {
+        content: '(';
         display: inline-block;
-        margin-right: 10px;
       }
-
-      form {
+      &:after {
+        content: ')';
         display: inline-block;
-        vertical-align: middle;
       }
+    }
+
+    .applyBtn {
+      line-height: 20px;
+      height: 23px;
+      margin-top: 5px;
+      margin-left: 10px;
+      margin-right: 10px;
     }
 
     .appliedMe {
       display: inline-block;
+    }
+
+    form {
+      margin-left: 10px;
+      max-width: 200px;
     }
   }
 }

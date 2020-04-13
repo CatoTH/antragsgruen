@@ -40,6 +40,6 @@ if ($user) {
          data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechFooter"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>">
-    <h2 class="widgetTitle" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
+    <h2 class="widgetTitle" id="speechListUserTitle"><?= Html::encode($queue->getTitle()) ?></h2>
     <div class="currentSpeechList"></div>
 </section>
