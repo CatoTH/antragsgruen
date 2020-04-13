@@ -206,7 +206,7 @@
 }
 
 
-.speechUser {
+.currentSpeechInline {
   .activeSpeaker {
     @if ($font-size-base < 16) {
       font-size: 16px;
@@ -290,6 +290,103 @@
     .applied {
       display: table-cell;
       line-height: 35px;
+      vertical-align: middle;
+
+      .number {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      form {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+
+    .appliedMe {
+      display: inline-block;
+    }
+  }
+}
+
+
+
+.currentSpeechFooter {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  padding: 0;
+  background: white;
+  border: solid 1px #ccc;
+  box-shadow: 0 0 3px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: row;
+
+  $speechLineHeight: 35px;
+
+  .widgetTitle {
+    flex: 0;
+    flex-basis: 170px;
+    font-size: 16px;
+    line-height: $speechLineHeight;
+    vertical-align: middle;
+    margin: 0;
+    padding: 5px;
+    background-color: #eee;
+  }
+
+  .speechUser {
+    flex: 1;
+    padding: 5px;
+  }
+
+  .activeSpeaker {
+    @if ($font-size-base < 16) {
+      font-size: 16px;
+    }
+    line-height: $speechLineHeight;
+    vertical-align: middle;
+    font-weight: bold;
+  }
+
+  .waitingMultiple {
+    display: flex;
+    flex-direction: row;
+    header {
+      @if ($font-size-base < 16) {
+        font-size: 16px;
+      }
+      line-height: $speechLineHeight;
+      vertical-align: middle;
+    }
+  }
+
+  .waitingSingle {
+    form {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    .appliedMe {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+
+  .subqueue {
+    display: flex;
+    flex-direction: row;
+
+    .name {
+      line-height: $speechLineHeight;
+      vertical-align: middle;
+    }
+
+    .applied {
+      line-height: $speechLineHeight;
       vertical-align: middle;
 
       .number {
