@@ -336,3 +336,7 @@ if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
 
     echo '</section>';
 }
+
+if ($consultation->getSettings()->hasSpeechLists) {
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}

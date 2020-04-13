@@ -26,9 +26,7 @@ $this->title = Yii::t('speech', 'admin_title');
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
-    <div class="sr-only" id="speachListBackendTitle">Redeliste verwalten</div>
-    <section aria-labelledby="speachListBackendTitle"
-             data-antragsgruen-widget="Backend/CurrentSpeachList"
+    <section data-antragsgruen-widget="Backend/SpeechListEdit"
              data-queue="<?= Html::encode(json_encode($initData)) ?>">
         <div class="speechAdmin"></div>
     </section>

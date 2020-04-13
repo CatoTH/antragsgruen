@@ -18,7 +18,7 @@ $layout     = $controller->layoutParams;
 $user       = User::getCurrentUser();
 
 $layout->loadVue();
-$layout->addVueTemplate('@app/views/speech/user-inline-widget.vue.php');
+$layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
 
 $initData = $queue->getUserApiObject();
 if ($user) {
@@ -37,11 +37,9 @@ if ($user) {
 
 ?>
 <section aria-labelledby="speechListUserTitle"
-         data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechInline"
+         data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechFooter"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
          data-user="<?= Html::encode(json_encode($userData)) ?>">
-    <h2 class="green" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
-    <div class="content">
-        <div class="currentSpeechList"></div>
-    </div>
+    <h2 class="widgetTitle" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
+    <div class="currentSpeechList"></div>
 </section>

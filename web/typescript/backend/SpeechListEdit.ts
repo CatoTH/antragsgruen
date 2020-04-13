@@ -2,17 +2,17 @@ import { VueConstructor } from 'vue';
 
 declare var Vue: VueConstructor;
 
-export class HomeCurrentSpeachList {
+export class SpeechListEdit {
     private widget;
 
     constructor(private $element: JQuery) {
         this.widget = new Vue({
-            el: this.$element.find(".currentSpeachList")[0],
-            template: `<speech-user-widget v-bind:queue="queue" v-bind:user="user" v-bind:csrf="csrf"></speech-user-widget>`,
+            el: this.$element.find(".speechAdmin")[0],
+            template: `<speech-admin-widget v-bind:queue="queue" v-bind:csrf="csrf"></speech-admin-widget>`,
             data: {
                 queue: $element.data('queue'),
                 user: $element.data('user'),
-                csrf: $('input[name=_csrf]').val() as string,
+                csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
             }
         });
     }
