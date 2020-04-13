@@ -483,7 +483,9 @@ class MotionController extends Base
         }
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
-            return $this->getError('Missing privileges');
+            \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
+
+            return $this->redirect(UrlHelper::createMotionUrl($motion));
         }
 
         if (count($motion->speechQueues) === 0) {

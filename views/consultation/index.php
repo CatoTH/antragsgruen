@@ -1,17 +1,16 @@
 <?php
 
 use app\components\Tools;
-use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter};
+use app\models\db\{Amendment, AmendmentSupporter, Motion, MotionSupporter, User};
 use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
  * @var \app\models\db\Consultation $consultation
  * @var Motion[] $motions
- * @var \app\models\db\User|null $myself
+ * @var User|null $myself
  * @var MotionSupporter[] $myMotions
  * @var AmendmentSupporter[] $myAmendments
- * @var bool $admin
  */
 
 /** @var \app\controllers\ConsultationController $controller */
@@ -20,11 +19,13 @@ $layout                   = $controller->layoutParams;
 $layout->bodyCssClasses[] = 'consultationIndex';
 $this->title              = $consultation->title;
 
+$contentAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT);
 
-if ($admin) {
+if ($contentAdmin) {
     $layout->loadCKEditor();
     $layout->loadDatepicker();
 }
+
 
 echo '<h1>';
 
@@ -41,7 +42,7 @@ echo '</h1>';
 
 echo $layout->getMiniMenu('sidebarSmall');
 
-echo $this->render('_index_welcome_content', ['consultation' => $consultation, 'admin' => $admin]);
+echo $this->render('_index_welcome_content', ['consultation' => $consultation]);
 echo $this->render('_index_phases_progress', ['consultation' => $consultation]);
 
 echo $controller->showErrors();
@@ -142,5 +143,5 @@ if ($consultation->getSettings()->hasSpeechLists) {
 echo $this->render($consultation->getSettings()->getStartLayoutView(), [
     'consultation' => $consultation,
     'layout'       => $layout,
-    'admin'        => $admin,
+    'admin'        => $contentAdmin,
 ]);
