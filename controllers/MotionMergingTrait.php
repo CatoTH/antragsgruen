@@ -138,11 +138,6 @@ trait MotionMergingTrait
             return json_encode(['success' => false, 'error' => \Yii::t('motion', 'err_not_found')]);
         }
 
-        $form = Init::fromInitForm($motion,
-            \Yii::$app->request->post('amendments', []),
-            \Yii::$app->request->post('textVersion', [])
-        );
-
         $amendmentsById          = [];
         $newAmendmentsById       = [];
         $newAmendmentsStaticData = [];
@@ -171,6 +166,9 @@ trait MotionMergingTrait
 
         $newAmendmentsParagraphs = [];
         if (count($newAmendmentsStaticData) > 0) {
+            // Init::fromInitForm is computational heavy, therefore only call it if something new comes in
+            $form = Init::fromInitForm($motion, [], []);
+
             foreach ($motion->getSortedSections(false) as $section) {
                 $type                               = $section->getSettings();
                 $newAmendmentsParagraphs[$type->id] = [];
