@@ -48,6 +48,12 @@ if ($motion->isResolution()) {
     echo '<h1>' . $motion->getEncodedTitleWithPrefix() . '</h1>';
 }
 
+if ($consultation->getSettings()->hasSpeechLists) {
+    // Should be after h1 (because of CSS border-radius to .well :first-child),
+    // but rather early in the context (because it should be easy reachable using keyboard / tabindex)
+    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
+}
+
 echo $layout->getMiniMenu('motionSidebarSmall');
 
 echo '<div class="motionData" style="min-height: ' . $minHeight . 'px;">';
@@ -176,10 +182,6 @@ $viewText = preg_replace_callback('/<!--PRIVATE_NOTE_(?<sectionId>\d+)_(?<paragr
 }, $viewText);
 
 echo $viewText;
-
-if ($consultation->getSettings()->hasSpeechLists) {
-    echo $this->render('@app/views/speech/_footer_widget', ['queue' => $motion->getActiveSpeechQueue()]);
-}
 
 ?>
     <form class="gotoLineNumerPanel form-inline">

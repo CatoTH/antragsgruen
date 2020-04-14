@@ -39,7 +39,9 @@ if ($user) {
 <section aria-labelledby="speechListUserTitle"
          data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechInline"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
-         data-user="<?= Html::encode(json_encode($userData)) ?>">
+         data-user="<?= Html::encode(json_encode($userData)) ?>"
+         data-title="<?= Html::encode($queue->getTitle()) ?>"
+>
     <h2 class="green" id="speechListUserTitle"><?= Yii::t('speech', 'user_section_title') ?></h2>
     <div class="content">
         <div class="currentSpeechList"></div>

@@ -83,12 +83,12 @@ ob_start();
                     </div>
 
                     <button class="btn btn-default btn-xs" type="button"
-                            v-if="!queue.iAmOnList && showApplicationForm !== subqueue.id"
+                            v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm !== subqueue.id"
                             @click="onShowApplicationForm($event, subqueue)"
                     >
                         <?= Yii::t('speech', 'apply') ?>
                     </button>
-                    <form @submit="register($event, subqueue)" v-if="!queue.iAmOnList && showApplicationForm === subqueue.id">
+                    <form @submit="register($event, subqueue)" v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm === subqueue.id">
                         <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">
                             <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
@@ -114,7 +114,7 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
 <script>
     Vue.component('speech-user-inline-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user'],
+        props: ['queue', 'csrf', 'user', 'title'],
         data() {
             return {
                 registerName: this.user.name,

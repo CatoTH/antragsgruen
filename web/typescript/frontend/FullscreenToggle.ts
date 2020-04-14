@@ -3,7 +3,7 @@ export class FullscreenToggle {
 
     constructor(private $element: JQuery) {
         this.$holderElement = $(".well").first();
-        this.$element.click(this.toggleFullScreeen.bind(this));
+        this.$element.on("click", this.toggleFullScreeen.bind(this));
     }
 
     private requestFullscreen() {

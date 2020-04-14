@@ -345,6 +345,7 @@ class SpeechQueue extends ActiveRecord
 
         return [
             'id'        => $this->id,
+            'isOpen'    => !!$this->isOpen,
             'iAmOnList' => $iAmOnList,
             'subqueues' => $this->getUserApiSubqueues(),
             'slots'     => $this->getActiveSlots(),

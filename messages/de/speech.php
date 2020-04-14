@@ -11,6 +11,7 @@ return [
     'title_to'           => 'Redeliste zu %TITLE%',
     'user_section_title' => 'Redeliste',
     'current'            => 'Aktuell',
+    'current_nobody'     => 'niemand',
     'next_speaker'       => 'Nächste Redner*innen',
     'you'                => 'Du',
     'remove_me'          => 'Mich aus der Liste entfernen',
@@ -23,4 +24,7 @@ return [
     'apply'              => 'Bewerben',
     'apply_name'         => 'Name',
     'apply_do'           => 'Eintragen',
+
+    'err_permission_admin' => 'Keine Berechtigung zum Bearbeiten der Redeliste',
+    'err_permission_apply' => 'Die Redeliste ist geschlossen',
 ];
