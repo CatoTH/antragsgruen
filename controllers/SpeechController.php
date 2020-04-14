@@ -59,6 +59,9 @@ class SpeechController extends Base
         if (!$queue) {
             return $this->getError('Queue not found');
         }
+        if (!$queue->isOpen) {
+            return $this->getError(\Yii::t('speech', 'err_permission_apply'));
+        }
         if (count($queue->subqueues) > 0) {
             // Providing a subqueue is necessary if there are some; otherwise, it goes into the "default" subqueue
             $subqueue = $queue->getSubqueueById(intval(\Yii::$app->request->post('subqueue')));

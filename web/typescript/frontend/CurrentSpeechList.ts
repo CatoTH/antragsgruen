@@ -11,19 +11,20 @@ export class CurrentSpeechList {
             queue: $element.data('queue'),
             user: $element.data('user'),
             csrf: $("head").find("meta[name=csrf-token]").attr("content") as string,
+            title: $element.data('title'),
         };
         if ($element.hasClass('currentSpeechInline')) {
             this.widget = new Vue({
                 el: $vueEl[0],
                 template: `
-                    <speech-user-inline-widget :queue="queue" :user="user" :csrf="csrf"></speech-user-inline-widget>`,
+                    <speech-user-inline-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-inline-widget>`,
                 data
             });
         } else {
             this.widget = new Vue({
                 el: $vueEl[0],
                 template: `
-                    <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf"></speech-user-footer-widget>`,
+                    <speech-user-footer-widget :queue="queue" :user="user" :csrf="csrf" :title="title"></speech-user-footer-widget>`,
                 data
             });
         }

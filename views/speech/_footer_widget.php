@@ -39,7 +39,9 @@ if ($user) {
 <section aria-labelledby="speechListUserTitle"
          data-antragsgruen-widget="Frontend/CurrentSpeechList" class="currentSpeechFooter"
          data-queue="<?= Html::encode(json_encode($initData)) ?>"
-         data-user="<?= Html::encode(json_encode($userData)) ?>">
-    <h2 class="widgetTitle" id="speechListUserTitle"><?= Html::encode($queue->getTitle()) ?></h2>
+         data-user="<?= Html::encode(json_encode($userData)) ?>"
+         data-title="<?= Html::encode($queue->getTitle()) ?>"
+>
+    <div class="hidden" id="speechListUserTitle"><?= Html::encode($queue->getTitle()) ?></div>
     <div class="currentSpeechList"></div>
 </section>

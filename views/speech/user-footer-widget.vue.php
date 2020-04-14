@@ -6,9 +6,18 @@ ob_start();
 ?>
 
 <article class="speechUser">
-    <div v-if="activeSpeaker" class="activeSpeaker">
+    <header class="widgetTitle">{{ title }}</header>
+
+    <div class="activeSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-        <?= Yii::t('speech', 'current') ?>: {{ activeSpeaker.name }}
+        <span class="title"><?= Yii::t('speech', 'current') ?>:</span>
+        <span class="name" v-if="activeSpeaker">
+            {{ activeSpeaker.name }}
+            <span class="label label-success" v-if="isMe(activeSpeaker)"><?= Yii::t('speech', 'you') ?></span>
+        </span>
+        <span class="nobody" v-if="!activeSpeaker">
+            <?= Yii::t('speech', 'current_nobody') ?>
+        </span>
     </div>
     <div v-if="upcomingSpeakers.length > 0" class="upcomingSpeaker">
         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
@@ -74,12 +83,12 @@ ob_start();
             </div>
 
             <button class="btn btn-default btn-xs applyBtn" type="button"
-                    v-if="!queue.iAmOnList && showApplicationForm !== subqueue.id"
+                    v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm !== subqueue.id"
                     @click="onShowApplicationForm($event, subqueue)"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
-            <form @submit="register($event, subqueue)" v-if="!queue.iAmOnList && showApplicationForm === subqueue.id">
+            <form @submit="register($event, subqueue)" v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm === subqueue.id">
                 <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
@@ -103,8 +112,9 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
 <script>
     Vue.component('speech-user-footer-widget', {
         template: <?= json_encode($html) ?>,
-        props: ['queue', 'csrf', 'user'],
+        props: ['queue', 'csrf', 'user', 'title'],
         data() {
+            console.log(JSON.parse(JSON.stringify(this.queue)));
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
@@ -130,10 +140,11 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
             },
             numAppliedTitle: function (subqueue) {
                 if (subqueue.numApplied === 1) {
-                    return <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
+                    const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_1')) ?>;
+                    return msg;
                 } else {
-                    return <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>.
-                    replace(/%NUM%/, subqueue.numApplied);
+                    const msg = "" + <?= json_encode(Yii::t('speech', 'persons_waiting_x')) ?>;
+                    return msg.replace(/%NUM%/, subqueue.numApplied);
                 }
             },
             register: function ($event, subqueue) {
