@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  * @property int $queueId
  * @property int|null $subqueueId - null if there are no subqueues and the default queue is used
  * @property int|null $userId
+ * @property string|null $userToken
  * @property string $name
  * @property int|null $position - null if the user has only applied; >0 once assigned to a speaking slot
  * @property string|null $dateApplied

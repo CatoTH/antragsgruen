@@ -10,11 +10,8 @@ use yii\db\ActiveRecord;
  * @property int $consultationId
  * @property int|null $agendaItemId
  * @property int|null $motionId
- * @property int $quotaByTime
- * @property int $quotaOrder
  * @property int $isActive
- * @property int $isOpen
- * @property int $isModerated
+ * @property string|null $settings
  *
  * @property Consultation $consultation
  * @property ConsultationAgendaItem|null $agendaItem
@@ -90,10 +87,27 @@ class SpeechQueue extends ActiveRecord
     public function rules()
     {
         return [
-            [['consultationId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'required'],
-            [['quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'safe'],
-            [['id', 'consultationId', 'agendaItemId', 'quotaByTime', 'quotaOrder', 'isOpen', 'isActive', 'isModerated'], 'number'],
+            [['consultationId', 'isActive'], 'required'],
+            [['isActive'], 'safe'],
+            [['id', 'consultationId', 'agendaItemId', 'isActive'], 'number'],
         ];
+    }
+
+    /** @var null|\app\models\settings\SpeechQueue */
+    private $settingsObject = null;
+
+    public function getSettings(): \app\models\settings\SpeechQueue
+    {
+        if (!is_object($this->settingsObject)) {
+            $this->settingsObject = new \app\models\settings\SpeechQueue($this->settings);
+        }
+        return $this->settingsObject;
+    }
+
+    public function setSettings(?\app\models\settings\SpeechQueue $settings)
+    {
+        $this->settingsObject = $settings;
+        $this->settings       = json_encode($settings, JSON_PRETTY_PRINT);
     }
 
     public function getTitle(): string
@@ -119,11 +133,12 @@ class SpeechQueue extends ActiveRecord
     {
         if (count($names) > 1) {
             for ($i = 0; $i < count($this->subqueues); $i++) {
+                $subqueue = $this->subqueues[$i];
                 if ($i < count($names)) {
-                    $this->subqueues[$i]->name = $names[$i];
-                    $this->subqueues[$i]->save();
+                    $subqueue->name = $names[$i];
+                    $subqueue->save();
                 } else {
-                    $this->subqueues[$i]->deleteReassignItems($this);
+                    $subqueue->deleteReassignItems($this);
                 }
             }
             // Create additional subqueues
@@ -147,11 +162,8 @@ class SpeechQueue extends ActiveRecord
         $queue->consultationId = $consultation->id;
         $queue->motionId       = null;
         $queue->agendaItemId   = null;
-        $queue->quotaByTime    = 0;
-        $queue->quotaOrder     = 0;
         $queue->isActive       = 0;
-        $queue->isOpen         = 0;
-        $queue->isModerated    = 0;
+        $queue->settings       = null;
         $queue->save();
 
         foreach ($consultation->getSettings()->speechListSubqueues as $i => $name) {
@@ -277,7 +289,7 @@ class SpeechQueue extends ActiveRecord
         return [
             'id'        => $this->id,
             'isActive'  => !!$this->isActive,
-            'isOpen'    => !!$this->isOpen,
+            'isOpen'    => $this->getSettings()->isOpen,
             'subqueues' => $this->getAdminApiSubqueues(),
             'slots'     => $this->getActiveSlots(),
         ];
@@ -345,7 +357,7 @@ class SpeechQueue extends ActiveRecord
 
         return [
             'id'        => $this->id,
-            'isOpen'    => !!$this->isOpen,
+            'isOpen'    => $this->getSettings()->isOpen,
             'iAmOnList' => $iAmOnList,
             'subqueues' => $this->getUserApiSubqueues(),
             'slots'     => $this->getActiveSlots(),

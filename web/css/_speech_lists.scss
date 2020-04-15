@@ -8,9 +8,17 @@
   .settings {
     display: flex;
     flex-direction: row;
+    padding-bottom: 5px;
 
     > * {
       flex: 1;
+    }
+    .settingsOpen, .settingsActive {
+      line-height: 35px;
+      font-weight: normal;
+    }
+    .settingsPolicy {
+      text-align: right;
     }
   }
 
@@ -110,7 +118,7 @@
     border-radius: 3px;
     background-color: $backgroundInactive;
     min-height: 60px;
-    padding: 18px 10px 10px 10px;
+    padding: 10px;
     cursor: pointer;
     text-align: center;
 
