@@ -1,15 +1,13 @@
 <?php
 
 return [
-    'admin_bc'          => 'Speech list',
-    'admin_title_plain' => 'Manage speech list',
-    'admin_title_to'    => 'Manage speech list of %TITLE%',
-    'subqueue_male'     => 'Men',
-    'subqueue_female'   => 'Women',
+    'subqueue_male'   => 'Men',
+    'subqueue_female' => 'Women',
+    'speaking_list'   => 'Speaking list',
 
-    'title_plain'        => 'Speech list',
-    'title_to'           => 'Speech list of %TITLE%',
-    'user_section_title' => 'Speech list',
+    'title_plain'        => 'Speaking list',
+    'title_to'           => 'Speaking list of %TITLE%',
+    'user_section_title' => 'Speaking list',
     'current'            => 'Currently',
     'current_nobody'     => 'nobody',
     'next_speaker'       => 'Next speaker',
@@ -25,6 +23,22 @@ return [
     'apply_name'         => 'Name',
     'apply_do'           => 'Apply',
 
-    'err_permission_admin' => 'No permision to edit this speech list',
-    'err_permission_apply' => 'The speech list is closed',
+    'err_permission_admin' => 'No permision to edit this speaking list',
+    'err_permission_apply' => 'The speaking list is closed',
+
+    'admin_bc'              => 'Speech list',
+    'admin_title_plain'     => 'Manage speaking list',
+    'admin_title_to'        => 'Manage speaking list of %TITLE%',
+    'admin_setting'         => 'Settings',
+    'admin_setting_visible' => 'List is visible',
+    'admin_setting_open'    => 'Applying is possible',
+    'admin_prefer_nonspeak' => 'Prefer persons who haven\'t talked yet',
+    'admin_prev_speakers'   => 'Previous speakers',
+    'admin_prev_show'       => 'Show',
+    'admin_running'         => 'Speaking',
+    'admin_next'            => 'Next speaker',
+    'admin_start'           => 'Start',
+    'admin_stop'            => 'Finish',
+    'admin_back_to_wait'    => 'Back to the waiting list',
+    'admin_start_proposal'  => 'Start proposal',
 ];

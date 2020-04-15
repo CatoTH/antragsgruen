@@ -17,11 +17,8 @@ class m200329_135701_speech_list extends Migration
             'consultationId' => 'INTEGER NOT NULL',
             'agendaItemId'   => 'INTEGER NULL DEFAULT NULL',
             'motionId'       => 'INTEGER NULL DEFAULT NULL',
-            'quotaByTime'    => 'TINYINT NOT NULL DEFAULT 0',
-            'quotaOrder'     => 'TINYINT NOT NULL DEFAULT 0',
             'isActive'       => 'TINYINT NOT NULL DEFAULT 0',
-            'isOpen'         => 'TINYINT NOT NULL DEFAULT 0',
-            'isModerated'    => 'TINYINT NOT NULL DEFAULT 0',
+            'settings'       => 'TEXT NULL DEFAULT NULL',
         ]);
         $this->addForeignKey('fk_speech_consultation', 'speechQueue', 'consultationId', 'consultation', 'id');
         $this->addForeignKey('fk_speech_motion', 'speechQueue', 'motionId', 'motion', 'id');
@@ -40,6 +37,7 @@ class m200329_135701_speech_list extends Migration
             'queueId'     => 'INTEGER NOT NULL',
             'subqueueId'  => 'INTEGER NULL DEFAULT NULL',
             'userId'      => 'INTEGER NULL DEFAULT NULL',
+            'userToken'   => 'VARCHAR(32) NULL DEFAULT NULL',
             'name'        => 'TEXT NOT NULL',
             'position'    => 'INTEGER NULL DEFAULT NULL',
             'dateApplied' => 'TIMESTAMP NULL DEFAULT NULL',

@@ -9,33 +9,49 @@ ob_start();
     <div class="toolbarBelowTitle settings">
         <label class="settingsActive">
             <input type="checkbox" v-model="queue.isActive" @change="settingsChanged()">
-            Redeliste ist sichtbar
+            <?= Yii::t('speech', 'admin_setting_visible') ?>
         </label>
         <label class="settingsOpen" v-if="queue.isActive">
             <input type="checkbox" v-model="queue.isOpen" @change="settingsChanged()">
-            Bewerbungen möglich
+            <?= Yii::t('speech', 'admin_setting_open') ?>
         </label>
+        <div class="settingsPolicy">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= Yii::t('speech', 'admin_setting') ?>
+                    <span class="caret" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li class="checkbox">
+                        <label @click="$event.stopPropagation()">
+                            <input type="checkbox" class="withdrawn" name="withdrawn">
+                            <?= Yii::t('speech', 'admin_prefer_nonspeak') ?>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <main class="content">
         <section class="previousSpeakers" :class="{previousShown: showPreviousList}">
             <header>
-                Bisherige Sprecher*innen: {{ previousSpeakers.length }}
+                <?= Yii::t('speech', 'admin_prev_speakers') ?>: {{ previousSpeakers.length }}
 
                 <button class="btn btn-link" type="button" @click="showPreviousList = true" v-if="!showPreviousList">
                     <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
-                    Anzeigen
+                    <?= Yii::t('speech', 'admin_prev_show') ?>
                 </button>
                 <button class="btn btn-link" type="button" @click="showPreviousList = false" v-if="showPreviousList">
                     <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
-                    Anzeigen
+                    <?= Yii::t('speech', 'admin_prev_show') ?>
                 </button>
             </header>
 
             <div class="previousLists" v-if="showPreviousList">
                 <div class="previousList" v-for="subqueue in queue.subqueues">
                     <header v-if="queue.subqueues.length > 1 && subqueue.name !== 'default'"><span>{{ subqueue.name }}</span></header>
-                    <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span>Warteliste</span></header>
+                    <header v-if="queue.subqueues.length > 1 && subqueue.name === 'default'"><span><?= Yii::t('speech', 'waiting_list_1') ?></span></header>
                     <ol>
                         <li v-for="item in getPreviousForSubqueue(subqueue)">
                             {{ item.name }}
@@ -45,33 +61,33 @@ ob_start();
             </div>
         </section>
 
-        <ol class="slots" aria-label="Redeliste">
+        <ol class="slots" aria-label="<?= Yii::t('speech', 'speaking_list') ?>">
             <li v-for="slot in sortedSlots" class="slotEntry" :class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
                 <div class="name">
                     {{ slot.name }}
                 </div>
                 <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                    Redebeitrag läuft
+                    <?= Yii::t('speech', 'admin_running') ?>
                 </div>
                 <div class="status statusUpcoming" v-if="isUpcomingSlot(slot)">
-                    Nächster Redebeitrag
+                    <?= Yii::t('speech', 'admin_next') ?>
                 </div>
 
                 <button type="button" class="btn btn-success start"
                         @click="startSlot($event, slot)" v-if="slot.dateStarted === null">
                     <span class="glyphicon glyphicon-play" title="Redebeitrag starten" aria-hidden="true"></span>
-                    <span class="sr-only">Redebeitrag starten</span>
+                    <span class="sr-only"><?= Yii::t('speech', 'admin_start') ?></span>
                 </button>
                 <button type="button" class="btn btn-danger start"
                         @click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
                     <span class="glyphicon glyphicon-stop" title="Redebeitrag beenden" aria-hidden="true"></span>
-                    <span class="sr-only">Redebeitrag beenden</span>
+                    <span class="sr-only"><?= Yii::t('speech', 'admin_stop') ?></span>
                 </button>
 
                 <div class="operations">
                     <button type="button" class="link removeSlot" @click="removeSlot($event, slot)" title="Zurück auf die Warteliste">
                         <span class="glyphicon glyphicon-chevron-down"></span>
-                        <span class="sr-only">Zurück auf die Warteliste</span>
+                        <span class="sr-only"><?= Yii::t('speech', 'admin_back_to_wait') ?></span>
                     </button>
                 </div>
             </li>
@@ -79,8 +95,8 @@ ob_start();
                 :class="{ isUpcoming: upcomingSlot === null }"
                 @click="addItemToSlotsAndStart(slotProposal)"
                 @keyup.enter="addItemToSlotsAndStart(slotProposal)">
-                <span class="title">Vorgeschlag starten</span>
-                <span class="name">{{ slotProposal.name }}</span>
+                <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?></div>
+                <div class="name">{{ slotProposal.name }}</div>
             </li>
         </ol>
 

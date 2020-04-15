@@ -59,7 +59,7 @@ class SpeechController extends Base
         if (!$queue) {
             return $this->getError('Queue not found');
         }
-        if (!$queue->isOpen) {
+        if (!$queue->getSettings()->isOpen) {
             return $this->getError(\Yii::t('speech', 'err_permission_apply'));
         }
         if (count($queue->subqueues) > 0) {
@@ -162,7 +162,10 @@ class SpeechController extends Base
             return $this->getError('Queue not found');
         }
 
-        $queue->isOpen   = (intval(\Yii::$app->request->post('isOpen')) > 0 ? 1 : 0);
+        $settings         = $queue->getSettings();
+        $settings->isOpen = (intval(\Yii::$app->request->post('isOpen')) > 0);
+        $queue->setSettings($settings);
+
         $queue->isActive = (intval(\Yii::$app->request->post('isActive')) > 0 ? 1 : 0);
         $queue->save();
 

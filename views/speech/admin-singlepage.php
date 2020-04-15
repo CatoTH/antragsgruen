@@ -22,7 +22,11 @@ $layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
 
 $initData = $queue->getAdminApiObject();
 
-$this->title = Yii::t('speech', 'admin_title');
+if ($queue->motion) {
+    $this->title = str_replace('%TITLE%', $queue->motion->titlePrefix, Yii::t('speech', 'admin_title'));
+} else {
+    $this->title = Yii::t('speech', 'admin_title_plain');
+}
 ?>
 <h1><?= Html::encode($this->title) ?></h1>
 <div class="manageSpeechQueue">
