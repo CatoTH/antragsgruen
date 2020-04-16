@@ -87,6 +87,7 @@
     min-height: 75px;
     padding: 10px;
     position: relative;
+    text-align: center;
 
     .name {
       font-weight: bold;
@@ -102,11 +103,11 @@
 
     .start, .stop {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      bottom: 5px;
+      right: 5px;
     }
 
-    &.isActive {
+    &.slotActive {
       background-color: #d3ffd3;
     }
   }
@@ -119,17 +120,19 @@
     background-color: $backgroundInactive;
     min-height: 60px;
     padding: 10px;
-    cursor: pointer;
     text-align: center;
 
     .title {
       font-style: italic;
     }
 
-    @include outlineOnFocusHasBorder();
+    &.active {
+      @include outlineOnFocusHasBorder();
+      cursor: pointer;
 
-    &:hover, &:focus {
-      background-color: darken($backgroundInactive, 5%);
+      &:hover, &:focus {
+        background-color: darken($backgroundInactive, 5%);
+      }
     }
   }
 

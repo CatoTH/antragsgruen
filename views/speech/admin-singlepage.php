@@ -23,7 +23,7 @@ $layout->addVueTemplate('@app/views/speech/admin-subqueue.vue.php');
 $initData = $queue->getAdminApiObject();
 
 if ($queue->motion) {
-    $this->title = str_replace('%TITLE%', $queue->motion->titlePrefix, Yii::t('speech', 'admin_title'));
+    $this->title = str_replace('%TITLE%', $queue->motion->titlePrefix, Yii::t('speech', 'admin_title_to'));
 } else {
     $this->title = Yii::t('speech', 'admin_title_plain');
 }
