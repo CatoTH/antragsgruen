@@ -8,4 +8,9 @@ class SpeechQueue implements \JsonSerializable
 
     public $isOpen = false;
     public $preferNonspeaker = false;
+
+    public function getAdminApiObject(): array
+    {
+        return $this->jsonSerialize();
+    }
 }

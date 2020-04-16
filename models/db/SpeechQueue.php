@@ -101,6 +101,7 @@ class SpeechQueue extends ActiveRecord
         if (!is_object($this->settingsObject)) {
             $this->settingsObject = new \app\models\settings\SpeechQueue($this->settings);
         }
+
         return $this->settingsObject;
     }
 
@@ -289,7 +290,7 @@ class SpeechQueue extends ActiveRecord
         return [
             'id'        => $this->id,
             'isActive'  => !!$this->isActive,
-            'isOpen'    => $this->getSettings()->isOpen,
+            'settings'  => $this->getSettings()->getAdminApiObject(),
             'subqueues' => $this->getAdminApiSubqueues(),
             'slots'     => $this->getActiveSlots(),
         ];

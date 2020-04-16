@@ -36,9 +36,11 @@ return [
     'admin_prev_speakers'   => 'Previous speakers',
     'admin_prev_show'       => 'Show',
     'admin_running'         => 'Speaking',
+    'admin_running_nobody'  => 'Nobody',
     'admin_next'            => 'Next speaker',
     'admin_start'           => 'Start',
     'admin_stop'            => 'Finish',
     'admin_back_to_wait'    => 'Back to the waiting list',
     'admin_start_proposal'  => 'Start proposal',
+    'admin_proposal_nobody' => 'No proposal',
 ];

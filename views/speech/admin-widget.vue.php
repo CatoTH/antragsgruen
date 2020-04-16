@@ -12,7 +12,7 @@ ob_start();
             <?= Yii::t('speech', 'admin_setting_visible') ?>
         </label>
         <label class="settingsOpen" v-if="queue.isActive">
-            <input type="checkbox" v-model="queue.isOpen" @change="settingsChanged()">
+            <input type="checkbox" v-model="queue.settings.isOpen" @change="settingsChanged()">
             <?= Yii::t('speech', 'admin_setting_open') ?>
         </label>
         <div class="settingsPolicy">
@@ -24,7 +24,7 @@ ob_start();
                 <ul class="dropdown-menu">
                     <li class="checkbox">
                         <label @click="$event.stopPropagation()">
-                            <input type="checkbox" class="withdrawn" name="withdrawn">
+                            <input type="checkbox" class="preferNonspeaker" v-model="queue.settings.preferNonspeaker" @change="settingsChanged()">
                             <?= Yii::t('speech', 'admin_prefer_nonspeak') ?>
                         </label>
                     </li>
@@ -62,41 +62,64 @@ ob_start();
         </section>
 
         <ol class="slots" aria-label="<?= Yii::t('speech', 'speaking_list') ?>">
-            <li v-for="slot in sortedSlots" class="slotEntry" :class="{ isUpcoming: isUpcomingSlot(slot), isActive: isActiveSlot(slot) }">
-                <div class="name">
-                    {{ slot.name }}
-                </div>
-                <div class="status statusActive" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                    <?= Yii::t('speech', 'admin_running') ?>
-                </div>
-                <div class="status statusUpcoming" v-if="isUpcomingSlot(slot)">
-                    <?= Yii::t('speech', 'admin_next') ?>
+            <li v-if="activeSlot" class="slotEntry slotActive active">
+                <div class="status statusActive">
+                    <?= Yii::t('speech', 'admin_running') ?>:
                 </div>
 
-                <button type="button" class="btn btn-success start"
-                        @click="startSlot($event, slot)" v-if="slot.dateStarted === null">
-                    <span class="glyphicon glyphicon-play" title="Redebeitrag starten" aria-hidden="true"></span>
-                    <span class="sr-only"><?= Yii::t('speech', 'admin_start') ?></span>
-                </button>
-                <button type="button" class="btn btn-danger start"
-                        @click="stopSlot($event, slot)" v-if="slot.dateStarted !== null && slot.dateStopped === null">
-                    <span class="glyphicon glyphicon-stop" title="Redebeitrag beenden" aria-hidden="true"></span>
+                <div class="name">
+                    {{ activeSlot.name }}
+                </div>
+
+                <button type="button" class="btn btn-danger stop" @click="stopSlot($event, activeSlot)">
+                    <span class="glyphicon glyphicon-stop" title="<?= Yii::t('speech', 'admin_stop') ?>" aria-hidden="true"></span>
                     <span class="sr-only"><?= Yii::t('speech', 'admin_stop') ?></span>
                 </button>
 
                 <div class="operations">
-                    <button type="button" class="link removeSlot" @click="removeSlot($event, slot)" title="Zurück auf die Warteliste">
-                        <span class="glyphicon glyphicon-chevron-down"></span>
+                    <button type="button" class="link removeSlot" @click="removeSlot($event, activeSlot)" title="<?= Yii::t('speech', 'admin_back_to_wait') ?>">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         <span class="sr-only"><?= Yii::t('speech', 'admin_back_to_wait') ?></span>
                     </button>
                 </div>
             </li>
-            <li class="slotPlaceholder" v-if="slotProposal" tabindex="0"
-                :class="{ isUpcoming: upcomingSlot === null }"
+            <li v-if="!activeSlot" class="slotEntry slotActive inactive">
+                <div class="status statusActive">
+                    <?= Yii::t('speech', 'admin_running') ?>:
+                </div>
+
+                <div class="name">
+                    <?= Yii::t('speech', 'admin_running_nobody') ?>
+                </div>
+            </li>
+
+            <li v-for="slot in sortedQueue" class="slotEntry">
+                <div class="name">
+                    {{ slot.name }}
+                </div>
+
+                <button type="button" class="btn btn-success start" @click="startSlot($event, slot)" title="<?= Yii::t('speech', 'admin_start') ?>">
+                    <span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                    <span class="sr-only"><?= Yii::t('speech', 'admin_start') ?></span>
+                </button>
+
+                <div class="operations">
+                    <button type="button" class="link removeSlot" @click="removeSlot($event, slot)" title="<?= Yii::t('speech', 'admin_back_to_wait') ?>">
+                        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        <span class="sr-only"><?= Yii::t('speech', 'admin_back_to_wait') ?></span>
+                    </button>
+                </div>
+            </li>
+
+            <li class="slotPlaceholder active" tabindex="0" v-if="slotProposal"
                 @click="addItemToSlotsAndStart(slotProposal)"
                 @keyup.enter="addItemToSlotsAndStart(slotProposal)">
-                <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?></div>
+                <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?>:</div>
                 <div class="name">{{ slotProposal.name }}</div>
+            </li>
+            <li class="slotPlaceholder inactive" v-if="!slotProposal">
+                <div class="title"><?= Yii::t('speech', 'admin_start_proposal') ?>:</div>
+                <div class="nobody"><?= Yii::t('speech', 'admin_proposal_nobody') ?></div>
             </li>
         </ol>
 
@@ -141,45 +164,53 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                     return date1.getTime() - date2.getTime();
                 });
             },
-            sortedSlots: function () {
+            sortedQueue: function () {
                 return this.queue.slots.filter(function (slot) {
-                    return slot.dateStopped === null;
+                    return slot.dateStarted === null;
                 }).sort(function (slot1, slot2) {
-                    if (slot1.dateStarted && slot2.dateStarted === null) {
-                        return -1;
-                    }
-                    if (slot2.dateStarted && slot1.dateStarted === null) {
-                        return 1;
-                    }
-                    if (slot1.dateStarted && slot2.dateStarted) {
-                        const date1 = new Date(slot1.dateStarted);
-                        const date2 = new Date(slot2.dateStarted);
-                        return date1.getTime() - date2.getTime();
-                    }
                     return slot1.position - slot2.position;
                 });
             },
             activeSlot: function () {
-                const active = this.sortedSlots.filter(function (slot) {
+                const active = this.queue.slots.filter(function (slot) {
                     return slot.dateStarted !== null && slot.dateStopped === null;
                 });
                 return active.length > 0 ? active[0] : null;
             },
             upcomingSlot: function () {
-                const upcoming = this.sortedSlots.filter(function (slot) {
-                    return slot.dateStarted === null && slot.dateStopped === null;
-                });
-
-                return upcoming.length > 0 ? upcoming[0] : null;
+                return this.sortedQueue.length > 0 ? this.sortedQueue[0] : null;
             },
             slotProposal: function () {
-                const subqueue = this.queue.subqueues.filter(function (subqueue) {
-                    return subqueue.applied.length > 0;
+                const prevSpeakerNums = {};
+                this.queue.slots.forEach(function (slot) {
+                    if (prevSpeakerNums[slot.subqueue.id] === undefined) {
+                        prevSpeakerNums[slot.subqueue.id] = 0;
+                    }
+                    prevSpeakerNums[slot.subqueue.id]++;
                 });
-                if (subqueue.length > 0) {
-                    return subqueue[0].applied[0];
-                } else {
+
+                const queuesSortedByPreviousSpeakers = Object.assign([], this.queue.subqueues).sort(function (queue1, queue2) {
+                    const num1 = (prevSpeakerNums[queue1.id] === undefined ? 0 : prevSpeakerNums[queue1.id]);
+                    const num2 = (prevSpeakerNums[queue2.id] === undefined ? 0 : prevSpeakerNums[queue2.id]);
+                    if (num1 === num2) {
+                        return queue1.position - queue2.position; // First positions come first, if same amount of speakers
+                    } else {
+                        return num1 - num2; // Lower numbers first
+                    }
+                });
+
+                // If queue no. 1 is empty and had less previous talkers than queue no. 2, we're not making a proposal
+
+                const chosenQueue = queuesSortedByPreviousSpeakers[0];
+                if (chosenQueue.applied.length === null) {
                     return null;
+                }
+
+                if (this.queue.settings.preferNonspeaker) {
+                    // @TODO respect user ID + name
+                    return chosenQueue.applied[0];
+                } else {
+                    return chosenQueue.applied[0];
                 }
             }
         },
@@ -238,7 +269,8 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                 $.post(<?= json_encode($setStatusUrl) ?>, {
                     queue: this.queue.id,
                     isActive: (this.queue.isActive ? 1 : 0),
-                    isOpen: (this.queue.isOpen ? 1 : 0),
+                    isOpen: (this.queue.settings.isOpen ? 1 : 0),
+                    preferNonspeaker: (this.queue.settings.preferNonspeaker ? 1 : 0),
                     _csrf: this.csrf,
                 }, function (data) {
                     if (!data['success']) {
@@ -268,14 +300,6 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
-            },
-            isActiveSlot: function (slot) {
-                const active = this.activeSlot;
-                return (active && active.id === slot.id);
-            },
-            isUpcomingSlot: function (slot) {
-                const active = this.upcomingSlot;
-                return (active && active.id === slot.id);
             },
             reloadData: function () {
                 const widget = this;

@@ -35,10 +35,12 @@ return [
     'admin_prefer_nonspeak' => 'Personen bevorzugen, die noch nicht sprachen',
     'admin_prev_speakers'   => 'Bisherige Sprecher*innen',
     'admin_prev_show'       => 'Anzeigen',
-    'admin_running'         => 'Redebeitrag läuft',
+    'admin_running'         => 'Laufender Redebeitrag',
+    'admin_running_nobody'  => 'Keiner',
     'admin_next'            => 'Nächster Redebeitrag',
     'admin_start'           => 'Redebeitrag starten',
     'admin_stop'            => 'Redebeitrag beenden',
     'admin_back_to_wait'    => 'Zurück auf die Warteliste',
     'admin_start_proposal'  => 'Vorschlag starten',
+    'admin_proposal_nobody' => 'Kein Vorschlag',
 ];
