@@ -197,6 +197,7 @@ return [
     'con_speech_lists'        => '<strong>Redelisten</strong> anbieten',
     'con_speech_quotas'       => 'Quotierte Redelisten',
     'con_speech_quota_name'   => 'Name der %no%. Unterliste',
+    'con_speech_login'        => 'Nur Eingeloggte dürfen sich auf die Redeliste bewerben',
     'con_fb_img'              => 'Facebook-Bild',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Neues Logo hochladen',

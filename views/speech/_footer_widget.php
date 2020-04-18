@@ -16,21 +16,31 @@ if (!$queue) {
 $controller = $this->context;
 $layout     = $controller->layoutParams;
 $user       = User::getCurrentUser();
+$cookieUser = ($user ? null : \app\components\CookieUser::getFromCookieOrCache());
 
 $layout->loadVue();
 $layout->addVueTemplate('@app/views/speech/user-footer-widget.vue.php');
 
-$initData = $queue->getUserApiObject();
+$initData = $queue->getUserApiObject($user, $cookieUser);
 if ($user) {
     $userData = [
         'loggedIn' => true,
         'id'       => $user->id,
+        'token'    => null,
+        'name'     => $user->name,
+    ];
+} elseif ($cookieUser) {
+    $userData = [
+        'loggedIn' => true,
+        'id'       => null,
+        'token'    => $cookieUser->userToken,
         'name'     => $user->name,
     ];
 } else {
     $userData = [
         'loggedIn' => false,
         'id'       => null,
+        'token'    => null,
         'name'     => '',
     ];
 }

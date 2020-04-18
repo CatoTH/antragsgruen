@@ -2,7 +2,6 @@
 
 namespace app\models\settings;
 
-use app\models\db\SpeechSubqueue;
 use app\models\exceptions\Internal;
 
 class Consultation implements \JsonSerializable
@@ -47,6 +46,7 @@ class Consultation implements \JsonSerializable
     public $managedUserAccounts = false;
     public $amendmentBookmarksWithNames = false;
     public $hasSpeechLists = false;
+    public $speechRequiresLogin = false;
 
     /** @var null|int */
     public $forceMotion = null;

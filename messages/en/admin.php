@@ -200,6 +200,7 @@ return [
     'con_speech_lists'        => '<strong>Speaking lists</strong>',
     'con_speech_quotas'       => 'Multiple sub-queues per speaking list',
     'con_speech_quota_name'   => 'Name of sun-queue no. %no%',
+    'con_speech_login'        => 'Only logged in users may apply for the speaking list',
     'con_fb_img'              => 'Facebook image',
     'con_logo_url'            => 'Logo',
     'con_logo_url_upload'     => 'Upload new logo',
