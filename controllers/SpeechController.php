@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\CookieUser;
 use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 use yii\web\Response;
 
@@ -31,10 +32,9 @@ class SpeechController extends Base
         \Yii::$app->response->format = Response::FORMAT_RAW;
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
-        $user = User::getCurrentUser();
-        if (!$user) {
-            return $this->getError('Not logged in');
-        }
+        $user       = User::getCurrentUser();
+        $cookieUser = ($user ? null : CookieUser::getFromCookieOrCache());
+
         $queue = $this->getQueue(intval(\Yii::$app->request->get('queue')));
         if (!$queue) {
             return $this->getError('Queue not found');
@@ -42,7 +42,7 @@ class SpeechController extends Base
 
         return json_encode([
             'success' => true,
-            'queue'   => $queue->getUserApiObject(),
+            'queue'   => $queue->getUserApiObject($user, $cookieUser),
         ]);
     }
 
@@ -53,8 +53,17 @@ class SpeechController extends Base
 
         $user = User::getCurrentUser();
         if (!$user) {
-            return $this->getError('Not logged in');
+            if ($this->consultation->getSettings()->speechRequiresLogin) {
+                return $this->getError('Not logged in');
+            } elseif (\Yii::$app->request->post('username')) {
+                $cookieUser = CookieUser::getFromCookieOrCreate(\Yii::$app->request->post('username'));
+            } else {
+                return $this->getError('No name provided');
+            }
+        } else {
+            $cookieUser = null;
         }
+
         $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
         if (!$queue) {
             return $this->getError('Queue not found');
@@ -82,7 +91,8 @@ class SpeechController extends Base
         $item              = new SpeechQueueItem();
         $item->queueId     = $queue->id;
         $item->subqueueId  = $subqueueId;
-        $item->userId      = $user->id;
+        $item->userId      = ($user ? $user->id : null);
+        $item->userToken   = ($cookieUser ? $cookieUser->userToken : null);
         $item->name        = $name;
         $item->position    = null;
         $item->dateApplied = date('Y-m-d H:i:s');
@@ -92,7 +102,7 @@ class SpeechController extends Base
 
         return json_encode([
             'success' => true,
-            'queue'   => $queue->getUserApiObject(),
+            'queue'   => $queue->getUserApiObject($user, $cookieUser),
         ]);
     }
 
@@ -102,17 +112,19 @@ class SpeechController extends Base
         \Yii::$app->response->headers->add('Content-Type', 'application/json');
 
         $user = User::getCurrentUser();
-        if (!$user) {
-            return $this->getError('Not logged in');
-        }
+        $cookieUser = CookieUser::getFromCookieOrCache();
+
         $queue = $this->getQueue(intval(\Yii::$app->request->post('queue')));
         if (!$queue) {
             return $this->getError('Queue not found');
         }
 
         foreach ($queue->items as $item) {
-            // One can only delete oneself before the speech has started
-            if ($item->userId === $user->id && $item->dateStarted === null) {
+            if ($item->dateStarted) {
+                // One can only delete oneself before the speech has started
+                continue;
+            }
+            if (($user && $item->userId === $user->id) || ($cookieUser && $cookieUser->userToken && $item->userToken === $cookieUser->userToken)) {
                 /** @noinspection PhpUnhandledExceptionInspection */
                 $item->delete();
             }
@@ -121,7 +133,7 @@ class SpeechController extends Base
 
         return json_encode([
             'success' => true,
-            'queue'   => $queue->getUserApiObject(),
+            'queue'   => $queue->getUserApiObject($user, $cookieUser),
         ]);
     }
 

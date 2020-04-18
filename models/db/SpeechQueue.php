@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\CookieUser;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -296,37 +297,35 @@ class SpeechQueue extends ActiveRecord
         ];
     }
 
-    private function getUserApiSubqueue(?SpeechSubqueue $subqueue): array
+    private function getUserApiSubqueue(?SpeechSubqueue $subqueue, ?User $user, ?CookieUser $cookieUser): array
     {
-        $user = User::getCurrentUser();
-
         $obj = [
-            'id'         => ($subqueue ? $subqueue->id : null),
-            'name'       => ($subqueue ? $subqueue->name : 'default'),
-            'numApplied' => 0,
-            'iAmOnList'  => false,
+            'id'          => ($subqueue ? $subqueue->id : null),
+            'name'        => ($subqueue ? $subqueue->name : 'default'),
+            'numApplied'  => 0,
+            'haveApplied' => false, // true if a user (matching userID or userToken) is on the list, but has not spoken yet (including assigned places)
         ];
 
         foreach ($this->items as $item) {
             if (!(($subqueue && $subqueue->id === $item->subqueueId) || ($subqueue === null && $item->subqueueId === null))) {
                 continue;
             }
+            if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
+                $obj['haveApplied'] = true;
+            }
             if ($item->position === null) {
                 $obj['numApplied']++;
-                if ($user && $item->userId && $user->id === $item->userId) {
-                    $obj['iAmOnList'] = true;
-                }
             }
         }
 
         return $obj;
     }
 
-    private function getUserApiSubqueues(): array
+    private function getUserApiSubqueues(?User $user, ?CookieUser $cookieUser): array
     {
         $subqueues = [];
         foreach ($this->subqueues as $subqueue) {
-            $subqueues[] = $this->getUserApiSubqueue($subqueue);
+            $subqueues[] = $this->getUserApiSubqueue($subqueue, $user, $cookieUser);
         }
 
         // Users without subqueue when there actually are existing subqueues:
@@ -339,29 +338,29 @@ class SpeechQueue extends ActiveRecord
             }
         }
         if (count($subqueues) === 0 || $usersWithoutSubqueue > 0) {
-            $subqueues[] = $this->getUserApiSubqueue(null);
+            $subqueues[] = $this->getUserApiSubqueue(null, $user, $cookieUser);
         }
 
         return $subqueues;
     }
 
-    public function getUserApiObject(): array
+    public function getUserApiObject(?User $user, ?CookieUser $cookieUser): array
     {
-        $user = User::getCurrentUser();
-
-        $iAmOnList = false;
+        // haveApplied: true if a user (matching userID or userToken) is on the list, but has not spoken yet
+        $haveApplied = false;
         foreach ($this->items as $item) {
-            if ($user && $item->userId && $user->id === $item->userId) {
-                $iAmOnList = true;
+            if (!$item->dateStarted && $item->isMe($user, $cookieUser)) {
+                $haveApplied = true;
             }
         }
 
         return [
-            'id'        => $this->id,
-            'isOpen'    => $this->getSettings()->isOpen,
-            'iAmOnList' => $iAmOnList,
-            'subqueues' => $this->getUserApiSubqueues(),
-            'slots'     => $this->getActiveSlots(),
+            'id'                  => $this->id,
+            'isOpen'              => $this->getSettings()->isOpen,
+            'haveApplied'         => $haveApplied,
+            'subqueues'           => $this->getUserApiSubqueues($user, $cookieUser),
+            'slots'               => $this->getActiveSlots(),
+            'speechRequiresLogin' => $this->getMyConsultation()->getSettings()->speechRequiresLogin,
         ];
     }
 }

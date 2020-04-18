@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\components\CookieUser;
 use app\models\settings\AntragsgruenApp;
 use yii\db\ActiveRecord;
 
@@ -85,5 +86,17 @@ class SpeechQueueItem extends ActiveRecord
         } else {
             return null;
         }
+    }
+
+    public function isMe(?User $user, ?CookieUser $cookieUser): bool
+    {
+        if ($user && $this->userId && $user->id === $this->userId) {
+            return true;
+        }
+        if ($cookieUser && $cookieUser->userToken === $this->userToken) {
+            return true;
+        }
+
+        return false;
     }
 }

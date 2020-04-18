@@ -35,7 +35,7 @@ ob_start();
                 {{ queue.subqueues[0].numApplied }}
             </span>
 
-            <div v-if="queue.subqueues[0].iAmOnList" class="appliedMe">
+            <div v-if="queue.subqueues[0].haveApplied" class="appliedMe">
                 <span class="label label-success">Beworben</span>
                 <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
                     <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
@@ -43,12 +43,12 @@ ob_start();
             </div>
 
             <button class="btn btn-default btn-xs" type="button"
-                    v-if="!queue.iAmOnList && showApplicationForm !== queue.subqueues[0].id"
+                    v-if="!queue.haveApplied && showApplicationForm !== queue.subqueues[0].id"
                     @click="onShowApplicationForm($event, queue.subqueues[0])"
             >
                 <?= Yii::t('speech', 'apply') ?>
             </button>
-            <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].iAmOnList && showApplicationForm === queue.subqueues[0].id">
+            <form @submit="register($event, queue.subqueues)" v-if="!queue.subqueues[0].haveApplied && showApplicationForm === queue.subqueues[0].id">
                 <label :for="'speechRegisterName' + queue.subqueues[0].id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + queue.subqueues[0].id" ref="adderNameInput">
@@ -75,7 +75,7 @@ ob_start();
                         {{ subqueue.numApplied }}
                     </span>
 
-                    <div v-if="subqueue.iAmOnList" class="appliedMe">
+                    <div v-if="subqueue.haveApplied" class="appliedMe">
                         <span class="label label-success">Beworben</span>
                         <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
                             <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
@@ -83,12 +83,12 @@ ob_start();
                     </div>
 
                     <button class="btn btn-default btn-xs" type="button"
-                            v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm !== subqueue.id"
+                            v-if="queue.isOpen && !queue.haveApplied && showApplicationForm !== subqueue.id"
                             @click="onShowApplicationForm($event, subqueue)"
                     >
                         <?= Yii::t('speech', 'apply') ?>
                     </button>
-                    <form @submit="register($event, subqueue)" v-if="queue.isOpen && !queue.iAmOnList && showApplicationForm === subqueue.id">
+                    <form @submit="register($event, subqueue)" v-if="queue.isOpen && !queue.haveApplied && showApplicationForm === subqueue.id">
                         <label :for="'speechRegisterName' + subqueue.id" class="sr-only"><?= Yii::t('speech', 'apply_name') ?></label>
                         <div class="input-group">
                             <input type="text" class="form-control" v-model="registerName" :id="'speechRegisterName' + subqueue.id" ref="adderNameInput">
@@ -116,6 +116,7 @@ $unregisterUrl = UrlHelper::createUrl('speech/unregister');
         template: <?= json_encode($html) ?>,
         props: ['queue', 'csrf', 'user', 'title'],
         data() {
+            console.log(JSON.parse(JSON.stringify(this.user)));
             return {
                 registerName: this.user.name,
                 showApplicationForm: false, // "null" is already taken by the default form
