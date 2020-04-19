@@ -12,7 +12,6 @@ return [
     'current_nobody'     => 'niemand',
     'next_speaker'       => 'Nächste Redner*innen',
     'you'                => 'Du',
-    'remove_me'          => 'Mich aus der Liste entfernen',
     'waiting_aria_1'     => 'Warteliste für Redebeiträge',
     'waiting_aria_x'     => 'Wartelisten für Redebeiträge',
     'waiting_list_1'     => 'Warteliste',
@@ -22,6 +21,10 @@ return [
     'apply'              => 'Bewerben',
     'apply_name'         => 'Name',
     'apply_do'           => 'Eintragen',
+    'applied'            => 'Beworben',
+    'applied_aria'       => 'Du hast dich für einen Platz auf der Redeliste beworben',
+    'apply_revoke'       => 'Zurückziehen',
+    'apply_revoke_aria'  => 'Die Bewerbung zurückziehen',
 
     'err_permission_admin' => 'Keine Berechtigung zum Bearbeiten der Redeliste',
     'err_permission_apply' => 'Die Redeliste ist geschlossen',
@@ -43,4 +46,7 @@ return [
     'admin_back_to_wait'    => 'Zurück auf die Warteliste',
     'admin_start_proposal'  => 'Vorschlag starten',
     'admin_proposal_nobody' => 'Kein Vorschlag',
+
+    'sidebar_title'  => 'Alle Redelisten',
+    'sidebar_active' => 'Aktive Redeliste',
 ];

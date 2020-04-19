@@ -475,6 +475,8 @@ class MotionController extends Base
 
     public function actionAdminSpeech($motionSlug)
     {
+        $this->layout = 'column2';
+
         $motion = $this->consultation->getMotion($motionSlug);
         if (!$motion) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));

@@ -419,6 +419,8 @@ class ConsultationController extends Base
 
     public function actionAdminSpeech()
     {
+        $this->layout = 'column2';
+
         $user = User::getCurrentUser();
         if (!$user->hasPrivilege($this->consultation, User::PRIVILEGE_SPEECH_QUEUES)) {
             \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_edit_permission'));
