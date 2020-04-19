@@ -12,7 +12,6 @@ return [
     'current_nobody'     => 'nobody',
     'next_speaker'       => 'Next speaker',
     'you'                => 'You',
-    'remove_me'          => 'Remove me from list',
     'waiting_aria_1'     => 'Waiting list',
     'waiting_aria_x'     => 'Waiting lists',
     'waiting_list_1'     => 'Waiting list',
@@ -22,6 +21,10 @@ return [
     'apply'              => 'Apply',
     'apply_name'         => 'Name',
     'apply_do'           => 'Apply',
+    'applied'            => 'Applied',
+    'applied_aria'       => 'You applied to speak',
+    'apply_revoke'       => 'Withdraw',
+    'apply_revoke_aria'  => 'Withdraw the application',
 
     'err_permission_admin' => 'No permision to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
@@ -43,4 +46,7 @@ return [
     'admin_back_to_wait'    => 'Back to the waiting list',
     'admin_start_proposal'  => 'Start proposal',
     'admin_proposal_nobody' => 'No proposal',
+
+    'sidebar_title'  => 'All speech lists',
+    'sidebar_active' => 'Active speech list',
 ];

@@ -18,9 +18,10 @@ ob_start();
                 <span class="name">{{ speaker.name }}</span><!-- Fight unwanted whitespace
                 --><span class="label label-success" v-if="isMe(speaker)"><?= Yii::t('speech', 'you') ?></span><!-- Fight unwanted whitespace
                 -->
-                <button type="button" class="btn btn-link" v-if="isMe(speaker)" @click="removeMeFromQueue($event)"
-                        title="<?= Yii::t('speech', 'remove_me') ?>">
-                    <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
+                <button type="button" class="btn btn-link btnWithdraw" v-if="isMe(speaker)" @click="removeMeFromQueue($event)"
+                        title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
                 </button>
             </li>
         </ul>
@@ -36,9 +37,11 @@ ob_start();
             </span>
 
             <div v-if="queue.subqueues[0].haveApplied" class="appliedMe">
-                <span class="label label-success">Beworben</span>
-                <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
-                    <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
+                <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
+                <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
+                        title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
                 </button>
             </div>
 
@@ -76,9 +79,11 @@ ob_start();
                     </span>
 
                     <div v-if="subqueue.haveApplied" class="appliedMe">
-                        <span class="label label-success">Beworben</span>
-                        <button type="button" class="btn btn-link" @click="removeMeFromQueue($event)" title="<?= Yii::t('speech', 'remove_me') ?>">
-                            <span class="glyphicon glyphicon-trash" aria-label="<?= Yii::t('speech', 'remove_me') ?>"></span>
+                        <span class="label label-success"><?= Yii::t('speech', 'applied') ?></span>
+                        <button type="button" class="btn btn-link btnWithdraw" @click="removeMeFromQueue($event)"
+                            title="<?= Yii::t('speech', 'apply_revoke_aria') ?>" aria-label="<?= Yii::t('speech', 'apply_revoke_aria') ?>">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                            <span class="withdrawLabel"><?= Yii::t('speech', 'apply_revoke') ?></span>
                         </button>
                     </div>
 

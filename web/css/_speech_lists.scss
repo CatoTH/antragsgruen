@@ -1,3 +1,25 @@
+#sidebar {
+  #sidebarOtherQueues {
+    padding-right: 15px; // Same as padding-left
+  }
+
+  .otherQueues {
+    .active {
+      position: relative;
+
+      .glyphicon {
+        position: absolute;
+        left: 15px;
+        top: 3px;
+      }
+    }
+    .activeLabel {
+      font-size: 0.9em;
+      font-style: italic;
+    }
+  }
+}
+
 .speechAdmin {
   $slotWidth: 240px;
   $markerWidth: 500px;
@@ -13,10 +35,12 @@
     > * {
       flex: 1;
     }
+
     .settingsOpen, .settingsActive {
       line-height: 35px;
       font-weight: normal;
     }
+
     .settingsPolicy {
       text-align: right;
     }
@@ -278,10 +302,16 @@
       display: inline-block;
       vertical-align: middle;
     }
+  }
 
-    .appliedMe {
-      display: inline-block;
-      vertical-align: middle;
+  .appliedMe {
+    display: inline-block;
+    vertical-align: middle;
+
+    .btnWithdraw {
+      font-weight: normal;
+      padding: 0 5px;
+      font-size: 75%; // Same as the .label next to it
     }
   }
 
