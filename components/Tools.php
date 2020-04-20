@@ -75,7 +75,11 @@ class Tools
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2}) (?<ampm>am|pm)$/i';
             if (preg_match($pattern, $time, $matches)) {
-                $hours = (strtolower($matches['ampm']) == 'pm' ? $matches['hour'] + 12 : $matches['hour']);
+                if (intval($matches['hour']) === 12) {
+                    $hours = (strtolower($matches['ampm']) === 'pm' ? 12 : 0);
+                } else {
+                    $hours = (strtolower($matches['ampm']) === 'pm' ? $matches['hour'] + 12 : $matches['hour']);
+                }
 
                 return sprintf(
                     '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
