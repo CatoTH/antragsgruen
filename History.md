@@ -3,6 +3,7 @@
 ### Version 4.6.1 [not released yet]
 
 - Several minor accessibility and performance improvements.
+- Bugfix: wrong time transformation when using the english version.
 
 ## Version 4.6.0 (2020-04-12)
 
