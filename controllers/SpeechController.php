@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\CookieUser;
+use app\views\speech\LayoutHelper;
 use app\models\db\{SpeechQueue, SpeechQueueItem, User};
 use yii\web\Response;
 
@@ -182,9 +183,19 @@ class SpeechController extends Base
         $queue->isActive = (intval(\Yii::$app->request->post('isActive')) > 0 ? 1 : 0);
         $queue->save();
 
+        if ($queue->isActive) {
+            foreach ($this->consultation->speechQueues as $otherQueue) {
+                if ($otherQueue->id !== $queue->id) {
+                    $otherQueue->isActive = 0;
+                    $otherQueue->save();
+                }
+            }
+        }
+
         return json_encode([
             'success' => true,
             'queue'   => $queue->getAdminApiObject(),
+            'sidebar' => LayoutHelper::getSidebars($this->consultation, $queue),
         ]);
     }
 

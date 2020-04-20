@@ -19,16 +19,13 @@
   overflow: auto;
 
   &.hasDeadline {
-    min-height: 135px; // Spacing for the deadlin circle
+    min-height: 135px; // Spacing for the deadline circle
   }
 
   .editCaller {
     float: right;
     margin-left: 10px;
     font-weight: normal;
-  }
-  .adminSpeechList {
-    float: right;
   }
 }
 

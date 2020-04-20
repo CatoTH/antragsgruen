@@ -7,10 +7,21 @@ ob_start();
 
 <article class="speechAdmin">
     <div class="toolbarBelowTitle settings">
-        <label class="settingsActive">
-            <input type="checkbox" v-model="queue.isActive" @change="settingsChanged()">
-            <?= Yii::t('speech', 'admin_setting_visible') ?>
-        </label>
+        <div class="settingsActive" v-if="queue.isActive">
+            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+            <?= Yii::t('speech', 'admin_is_active') ?>
+
+            <button class="btn btn-xs btn-default" type="button" @click="setInactive()">
+                <?= Yii::t('speech', 'admin_deactivate') ?>
+            </button>
+        </div>
+        <div class="settingsActive" v-if="!queue.isActive">
+            <span class="inactive"><?= Yii::t('speech', 'admin_is_inactive') ?></span>
+            <button class="btn btn-xs btn-default" type="button" @click="setActive()">
+                <?= Yii::t('speech', 'admin_activate') ?>
+            </button>
+            <span v-if="queue.otherActiveName" class="deactivateOthers">(<?= Yii::t('speech', 'admin_deactivate_other') ?>)</span>
+        </div>
         <label class="settingsOpen" v-if="queue.isActive">
             <input type="checkbox" v-model="queue.settings.isOpen" @change="settingsChanged()">
             <?= Yii::t('speech', 'admin_setting_open') ?>
@@ -264,6 +275,14 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
             moveItemToSubqueue: function (item, newSubqueue) {
                 this._setStatus(item.id, "move", {newSubqueueId: newSubqueue.id});
             },
+            setInactive: function () {
+              this.queue.isActive = false;
+              this.settingsChanged();
+            },
+            setActive: function () {
+              this.queue.isActive = true;
+              this.settingsChanged();
+            },
             settingsChanged: function () {
                 const widget = this;
                 $.post(<?= json_encode($setStatusUrl) ?>, {
@@ -279,6 +298,11 @@ $pollUrl          = UrlHelper::createUrl('speech/admin-poll');
                     }
 
                     widget.queue = data['queue'];
+
+                    if (data['sidebar']) {
+                        document.getElementById('sidebar').childNodes.item(0).innerHTML = data['sidebar'][0];
+                        // @TODO Secondary sidebar
+                    }
                 }).catch(function (err) {
                     alert(err.responseText);
                 });
