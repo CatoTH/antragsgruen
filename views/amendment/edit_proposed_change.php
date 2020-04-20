@@ -18,7 +18,7 @@ $controller   = $this->context;
 $layout       = $controller->layoutParams;
 $consultation = $controller->consultation;
 
-$this->title        = \Yii::t('amend', 'proposal_edit_title');
+$this->title        = Yii::t('amend', 'proposal_edit_title');
 $layout->fullWidth  = true;
 $layout->fullScreen = true;
 $layout->loadCKEditor();
@@ -29,19 +29,19 @@ $layout->addBreadcrumb($amendment->getMyMotion()->getBreadcrumbTitle(), $motionU
 if (!$consultation->getSettings()->hideTitlePrefix && $amendment->titlePrefix != '') {
     $layout->addBreadcrumb($amendment->titlePrefix, UrlHelper::createAmendmentUrl($amendment));
 } else {
-    $layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
+    $layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
 }
-$layout->addBreadcrumb(\Yii::t('amend', 'proposal_edit_bread'));
+$layout->addBreadcrumb(Yii::t('amend', 'proposal_edit_bread'));
 
-echo '<h1>' . \Yii::t('amend', 'proposal_edit_title') . '</h1>';
+echo '<h1>' . Yii::t('amend', 'proposal_edit_title') . '</h1>';
 
 $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
 ?>
     <div class="content">
         <a href="<?= UrlHelper::createAmendmentUrl($amendment) ?>" class="goBackLink">
-            <span class="glyphicon glyphicon-chevron-left"></span>
-            <?= \Yii::t('amend', 'proposal_edit_back') ?>
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <?= Yii::t('amend', 'proposal_edit_back') ?>
         </a>
         <?php
         if ($msgSuccess) {
@@ -62,10 +62,10 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
 
         <div class="row">
             <section class="col-md-6">
-                <h2><?= \Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
+                <h2><?= Yii::t('amend', 'proposal_edit_title_prop') ?></h2>
             </section>
             <section class="col-md-6">
-                <h2><?= \Yii::t('amend', 'proposal_edit_title_orig') ?></h2>
+                <h2><?= Yii::t('amend', 'proposal_edit_title_orig') ?></h2>
             </section>
         </div>
         <?php
@@ -129,14 +129,14 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
         ?>
         <div class="save-row">
             <button class="btn btn-default pull-right" type="submit" name="reset">
-                <?= \Yii::t('amend', 'proposal_reset') ?>
+                <?= Yii::t('amend', 'proposal_reset') ?>
             </button>
             <button class="btn btn-primary" type="submit" name="save">
-                <?= \Yii::t('base', 'save') ?>
+                <?= Yii::t('base', 'save') ?>
             </button>
         </div>
         <aside id="collisionIndicator" class="<?= (count($collidingAmendments) === 0 ? 'hidden' : '') ?>">
-            <h2><?= \Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
+            <h2><?= Yii::t('amend', 'proposal_conflict_title') ?>:</h2>
             <ul class="collisionList">
                 <?php
                 foreach ($collidingAmendments as $collidingAmendment) {
@@ -144,7 +144,7 @@ $collidingAmendments = $amendment->collidesWithOtherProposedAmendments(true);
                     $title = $collidingAmendment->getShortTitle();
                     $url   = UrlHelper::createAmendmentUrl($collidingAmendment);
                     if ($collidingAmendment->proposalStatus == Amendment::STATUS_VOTE) {
-                        $title .= ' (' . \Yii::t('amend', 'proposal_voting') . ')';
+                        $title .= ' (' . Yii::t('amend', 'proposal_voting') . ')';
                     }
 
                     echo '<li>' . Html::a($title, $url, ['target' => '_blank']);

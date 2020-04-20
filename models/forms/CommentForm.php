@@ -272,7 +272,7 @@ class CommentForm extends Model
             ]);
         } elseif (!$skipError) {
             return '<div class="alert alert-info" style="margin: 19px;" role="alert">
-        <span class="glyphicon glyphicon-log-in"></span>&nbsp; ' .
+        <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp; ' .
                 $this->motionType->getCommentPolicy()->getPermissionDeniedCommentMsg() . '</div>';
         } else {
             return '';

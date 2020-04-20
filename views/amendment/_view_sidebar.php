@@ -8,12 +8,12 @@ use yii\helpers\Html;
  * @var bool $adminEdit
  */
 
-$html        = '<ul class="sidebarActions">';
+$html        = '<ul class="sidebarActions" aria-label="' . Html::encode(Yii::t('amend', 'sidebar_title_aria')) . '">';
 $sidebarRows = 0;
 
 if ($amendment->getMyMotion()->motionType->getPDFLayoutClass() !== null && $amendment->isVisible()) {
     $html .= '<li class="download">';
-    $title = '<span class="icon glyphicon glyphicon-download-alt"></span>' .
+    $title = '<span class="icon glyphicon glyphicon-download-alt" aria-hidden="true"></span>' .
         Yii::t('motion', 'download_pdf');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'pdf')) . '</li>';
     $sidebarRows++;
@@ -22,7 +22,7 @@ if ($amendment->getMyMotion()->motionType->getPDFLayoutClass() !== null && $amen
 
 if ($amendment->canEdit()) {
     $html .= '<li class="edit">';
-    $title = '<span class="icon glyphicon glyphicon-edit"></span>' .
+    $title = '<span class="icon glyphicon glyphicon-edit" aria-hidden="true"></span>' .
         Yii::t('amend', 'amendment_edit');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'edit')) . '</li>';
     $sidebarRows++;
@@ -30,7 +30,7 @@ if ($amendment->canEdit()) {
 
 if ($amendment->canWithdraw()) {
     $html .= '<li class="withdraw">';
-    $title = '<span class="icon glyphicon glyphicon-remove"></span>' .
+    $title = '<span class="icon glyphicon glyphicon-remove" aria-hidden="true"></span>' .
         Yii::t('amend', 'amendment_withdraw');
     $html .= Html::a($title, UrlHelper::createAmendmentUrl($amendment, 'withdraw')) . '</li>';
     $sidebarRows++;
@@ -38,7 +38,7 @@ if ($amendment->canWithdraw()) {
 
 if ($amendment->canMergeIntoMotion(true)) {
     $html .= '<li class="mergeIntoMotion">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . Yii::t('amend', 'sidebar_mergeintomotion');
+    $title = '<span class="icon glyphicon glyphicon-wrench" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_mergeintomotion');
     $url = UrlHelper::createAmendmentUrl($amendment, 'merge');
     $html .= Html::a($title, $url) . '</li>';
     $sidebarRows++;
@@ -46,13 +46,13 @@ if ($amendment->canMergeIntoMotion(true)) {
 
 if ($adminEdit) {
     $html .= '<li class="adminEdit">';
-    $title = '<span class="icon glyphicon glyphicon-wrench"></span>' . Yii::t('amend', 'sidebar_adminedit');
+    $title = '<span class="icon glyphicon glyphicon-wrench" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_adminedit');
     $html .= Html::a($title, $adminEdit) . '</li>';
     $sidebarRows++;
 }
 
 $html .= '<li class="back">';
-$title = '<span class="icon glyphicon glyphicon-chevron-left"></span>' . Yii::t('amend', 'sidebar_back');
+$title = '<span class="icon glyphicon glyphicon-chevron-left" aria-hidden="true"></span>' . Yii::t('amend', 'sidebar_back');
 $html .= Html::a($title, UrlHelper::createMotionUrl($amendment->getMyMotion())) . '</li>';
 $sidebarRows++;
 

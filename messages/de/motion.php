@@ -8,6 +8,7 @@ return [
     'confirm_view_web'                   => 'Web-Fassung',
     'confirm_view_pdf'                   => 'Druckfassung',
     'create_prerequisites'               => 'Voraussetzungen für einen Antrag',
+    'sidebar_title_aria'                 => 'Funktionen und Links zum Antrag',
     'amendment_create'                   => 'Änderungsantrag stellen',
     'amendment_create_admin'             => 'Admin',
     'amendments_merge'                   => 'Änderungsanträge einpflegen',

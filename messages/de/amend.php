@@ -9,6 +9,7 @@ return [
     'supporter'                         => 'Unterstützer*in',
     'supporters'                        => 'Unterstützer*innen',
     'supporters_title'                  => 'Unterstützer*innen',
+    'sidebar_title_aria'                => 'Funktionen und Links zum Änderungsantrag',
     'amend_for_motion'                  => 'zu',
     'supporter_you'                     => 'Du!',
     'supporter_none'                    => 'keine',

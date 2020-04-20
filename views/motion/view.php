@@ -224,7 +224,8 @@ echo \app\models\layoutHooks\Layout::afterMotionView($motion);
 $amendments     = $motion->getVisibleAmendments();
 $nobodyCanAmend = ($motion->motionType->getAmendmentPolicy()->getPolicyID() === IPolicy::POLICY_NOBODY);
 if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
-    echo '<section class="amendments"><h2 class="green">' . Yii::t('amend', 'amendments') . '</h2>
+    echo '<section class="amendments" aria-labelledby="amendmentsTitle">' .
+         '<h2 class="green" id="amendmentsTitle">' . Yii::t('amend', 'amendments') . '</h2>
     <div class="content">';
 
     /** @noinspection PhpUnhandledExceptionInspection */
@@ -277,8 +278,8 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
 
 $nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
 if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
-    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
-    echo '<h2 class="green">' . Yii::t('motion', 'comments') . '</h2>';
+    echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
+    echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;
     $screeningAdmin = User::havePrivilege($motion->getMyConsultation(), User::PRIVILEGE_SCREENING);
 

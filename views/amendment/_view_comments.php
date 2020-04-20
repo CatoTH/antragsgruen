@@ -11,8 +11,8 @@ use app\models\db\{Amendment, AmendmentComment, User};
 $motion       = $amendment->getMyMotion();
 $consultation = $motion->getMyConsultation();
 
-echo '<section class="comments" data-antragsgruen-widget="frontend/Comments">';
-echo '<h2 class="green">' . Yii::t('amend', 'comments_title') . '</h2>';
+echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
+echo '<h2 class="green" id="commentsTitle">' . Yii::t('amend', 'comments_title') . '</h2>';
 
 $form = $commentForm;
 

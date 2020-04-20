@@ -44,7 +44,7 @@ echo Html::beginForm('', 'post', ['class' => $classes, 'id' => $formIdPre . '_fo
 if ($user && $user->name) {
     echo '<div class="commentName">' . Html::encode($form->name) . ' (' . Html::encode($form->email) . ')</div>';
 }
-echo '<h3 class="commentHeader commentWriteHeader">' . $title . '</h3>';
+echo '<h3 class="commentHeader commentWriteHeader" id="commentWrite' . $formIdPre . '">' . $title . '</h3>';
 
 if (Yii::$app->user->isGuest) {
     echo AntiSpam::getJsProtectionHint($consultation->id);
@@ -61,7 +61,8 @@ if ($isReplyTo) {
 if ($user && $user->name && $user->email) {
     ?>
     <div class="commentFullTextarea">
-        <textarea name="comment[text]" title="<?= Html::encode(Yii::t('comment', 'text')) ?>" class="form-control"
+        <textarea name="comment[text]" class="form-control"
+                  title="<?= Html::encode(Yii::t('comment', 'text')) ?>"  aria-labelledby="commentWrite<?= $formIdPre ?>"
                   rows="5" id="<?= $formIdPre ?>_text"><?= Html::encode($form->text) ?></textarea>
     </div>
     <?php

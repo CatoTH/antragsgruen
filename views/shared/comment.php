@@ -57,13 +57,15 @@ $canReply      = (!$comment->parentCommentId && $commentPolicy->checkCurrUserCom
             echo Html::beginForm($imotion->getLink(), 'post', ['class' => 'entry delLink']);
             echo '<input type="hidden" name="commentId" value="' . $comment->id . '">';
             echo '<input type="hidden" name="deleteComment" value="on">';
-            echo '<button class="link" type="submit">';
-            echo '<span class="glyphicon glyphicon-trash"></span></button>';
+            echo '<button class="link" type="submit" title="' . Html::encode(Yii::t('comment', 'del_aria')) . '">';
+            echo '<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>';
+            echo '<span class="sr-only">' . Yii::t('comment', 'del_aria') . '</span>';
+            echo '</button>';
             echo Html::endForm();
         }
 
         $link     = '<span class="glyphicon glyphicon-link"></span>';
-        $linkOpts = ['class' => 'entry link', 'title' => Yii::t('comment', 'link_comment')];
+        $linkOpts = ['class' => 'entry link', 'title' => Yii::t('comment', 'link_comment'), 'aria-label' => Yii::t('comment', 'link_comment')];
         echo Html::a($link, $comment->getLink(), $linkOpts);
 
         if ($canReply) {

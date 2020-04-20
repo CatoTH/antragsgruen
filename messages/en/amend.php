@@ -9,6 +9,7 @@ return [
     'supporter'              => 'Supporter',
     'supporters'             => 'Supporters',
     'supporters_title'       => 'Supporters',
+    'sidebar_title_aria'     => 'Functionality and links regarding this amendments',
     'amend_for_motion'       => 'for',
     'supporter_you'          => 'You!',
     'supporter_none'         => 'None',
