@@ -9,7 +9,6 @@ use yii\helpers\Html;
  */
 
 $contentAdmin = User::havePrivilege($consultation, User::PRIVILEGE_CONTENT_EDIT);
-$speechAdmin = User::havePrivilege($consultation, User::PRIVILEGE_SPEECH_QUEUES);
 
 $preWelcome = \app\models\layoutHooks\Layout::getConsultationPreWelcome();
 
@@ -22,28 +21,18 @@ echo $preWelcome;
 $pageData = \app\models\db\ConsultationText::getPageData($consultation->site, $consultation, 'welcome');
 $saveUrl  = $pageData->getSaveUrl();
 
-if ($contentAdmin || $speechAdmin) {
-    if ($contentAdmin) {
-        echo Html::beginForm($saveUrl, 'post', [
-            'data-upload-url'          => $pageData->getUploadUrl(),
-            'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
-            'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
-            'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
-            'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
-        ]);
-        echo '<button type="button" class="btn btn-sm btn-default editCaller">';
-        echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';
-        echo Yii::t('con', 'edit_welcome');
-        echo '</button>';
-    }
-    if ($speechAdmin) {
-        $adminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
-        echo '<a href="' . Html::encode($adminUrl) . '" class="btn btn-sm btn-default adminSpeechList">';
-        echo '<span class="glyphicon glyphicon-user" aria-hidden="true"></span> ';
-        echo Yii::t('speech', 'admin_title_plain');
-        echo '</a>';
-    }
-    echo '<br><br>';
+if ($contentAdmin) {
+    echo Html::beginForm($saveUrl, 'post', [
+        'data-upload-url'          => $pageData->getUploadUrl(),
+        'data-image-browse-url'    => $pageData->getImageBrowseUrl(),
+        'data-file-delete-url'     => $pageData->getFileDeleteUrl(),
+        'data-del-confirmation'    => Yii::t('admin', 'files_download_del_c'),
+        'data-antragsgruen-widget' => 'frontend/ContentPageEdit',
+    ]);
+    echo '<button type="button" class="btn btn-sm btn-link editCaller">';
+    echo '<span class="glyphicon glyphicon-edit" aria-hidden="true"></span> ';
+    echo Yii::t('con', 'edit_welcome');
+    echo '</button><br>';
 }
 
 echo '<article class="textHolder" id="stdTextHolder">';

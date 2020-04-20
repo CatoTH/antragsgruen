@@ -158,6 +158,7 @@ class StdHooks extends Hooks
             $privilegeScreening = User::havePrivilege($consultation, User::PRIVILEGE_SCREENING);
             //$privilegeAny       = User::havePrivilege($consultation, User::PRIVILEGE_ANY);
             $privilegeProposal = User::havePrivilege($consultation, User::PRIVILEGE_CHANGE_PROPOSALS);
+            $privilegeSpeech = User::havePrivilege($consultation, User::PRIVILEGE_SPEECH_QUEUES);
 
             if ($controller->consultation) {
                 if (User::havePrivilege($this->consultation, User::PRIVILEGE_CONTENT_EDIT)) {
@@ -181,7 +182,7 @@ class StdHooks extends Hooks
             }
 
             if (!User::getCurrentUser()) {
-                if (get_class($controller) == UserController::class) {
+                if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
                     $backUrl = \yii::$app->request->url;
@@ -199,7 +200,7 @@ class StdHooks extends Hooks
                 );
                 $out  .= '<li>' . $link . '</li>';
 
-                if (get_class($controller) == UserController::class) {
+                if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
                     $backUrl = \yii::$app->request->url;
@@ -212,6 +213,11 @@ class StdHooks extends Hooks
                 $adminUrl   = UrlHelper::createUrl('/admin/motion-list/index');
                 $adminTitle = \Yii::t('base', 'menu_motion_list');
                 $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'motionListLink', 'aria-label' => $adminTitle]) . '</li>';
+            }
+            if ($privilegeSpeech && $consultation->getSettings()->hasSpeechLists) {
+                $adminUrl = UrlHelper::createUrl(['consultation/admin-speech']);
+                $adminTitle = \Yii::t('base', 'menu_speech_lists');
+                $out        .= '<li>' . Html::a($adminTitle, $adminUrl, ['id' => 'speechAdminLink', 'aria-label' => $adminTitle]) . '</li>';
             }
             if ($privilegeScreening) {
                 $todo = AdminTodoItem::getConsultationTodos($controller->consultation);
