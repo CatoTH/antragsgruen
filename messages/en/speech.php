@@ -29,7 +29,7 @@ return [
     'err_permission_admin' => 'No permision to edit this speaking list',
     'err_permission_apply' => 'The speaking list is closed',
 
-    'admin_bc'              => 'Speech list',
+    'admin_bc'              => 'Speaking list',
     'admin_title_plain'     => 'Manage speaking list',
     'admin_title_to'        => 'Manage speaking list of %TITLE%',
     'admin_setting'         => 'Settings',
@@ -47,6 +47,6 @@ return [
     'admin_start_proposal'  => 'Start proposal',
     'admin_proposal_nobody' => 'No proposal',
 
-    'sidebar_title'  => 'All speech lists',
-    'sidebar_active' => 'Active speech list',
+    'sidebar_title'  => 'All speaking lists',
+    'sidebar_active' => 'Active speaking list',
 ];
