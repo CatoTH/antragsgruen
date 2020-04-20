@@ -288,12 +288,20 @@ class SpeechQueue extends ActiveRecord
 
     public function getAdminApiObject(): array
     {
+        $otherActiveName = null;
+        foreach ($this->getMyConsultation()->speechQueues as $otherQueue) {
+            if ($otherQueue->isActive && $otherQueue->id !== $this->id) {
+                $otherActiveName = $otherQueue->getTitle();
+            }
+        }
+
         return [
-            'id'        => $this->id,
-            'isActive'  => !!$this->isActive,
-            'settings'  => $this->getSettings()->getAdminApiObject(),
-            'subqueues' => $this->getAdminApiSubqueues(),
-            'slots'     => $this->getActiveSlots(),
+            'id'              => $this->id,
+            'isActive'        => !!$this->isActive,
+            'settings'        => $this->getSettings()->getAdminApiObject(),
+            'subqueues'       => $this->getAdminApiSubqueues(),
+            'slots'           => $this->getActiveSlots(),
+            'otherActiveName' => $otherActiveName,
         ];
     }
 
