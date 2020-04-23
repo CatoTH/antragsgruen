@@ -17,6 +17,10 @@ list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultat
 if (count($resolutions) > 0) {
     echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
 }
+
+$motions = array_filter($motions, function(Motion $motion) {
+    return !in_array($motion->status, $motion->getMyConsultation()->getInvisibleMotionStatuses(false));
+});
 if (!$showPrefix) {
     usort($motions, function (Motion $motion1, Motion $motion2) {
         return $motion2->getTimestamp() <=> $motion1->getTimestamp();
