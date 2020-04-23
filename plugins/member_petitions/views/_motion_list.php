@@ -122,16 +122,20 @@ foreach ($motions as $motion) {
         echo '</span>';
     }
 
-    $deadline = Tools::getPetitionResponseDeadline($motion);
-    if ($deadline) {
-        echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
-        echo \app\components\Tools::formatRemainingTime($deadline);
-    }
+    if (Tools::isPetitionsActive($motion->getMyConsultation())) {
+        if ($motion->getMyConsultation()->getSettings()) {
+            $deadline = Tools::getPetitionResponseDeadline($motion);
+        }
+        if ($deadline) {
+            echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
+            echo \app\components\Tools::formatRemainingTime($deadline);
+        }
 
-    $deadline = Tools::getDiscussionUntil($motion);
-    if ($deadline) {
-        echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
-        echo \app\components\Tools::formatRemainingTime($deadline);
+        $deadline = Tools::getDiscussionUntil($motion);
+        if ($deadline) {
+            echo ', ' . Yii::t('member_petitions', 'index_remaining') . ': ';
+            echo \app\components\Tools::formatRemainingTime($deadline);
+        }
     }
 
     if ($motion->status === Motion::STATUS_PAUSED) {
