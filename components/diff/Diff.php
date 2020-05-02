@@ -484,7 +484,7 @@ class Diff
     {
         $firstTagOrig = (preg_match('/^<[^>]+>/siu', $orig, $matchesOrig) ? $matchesOrig[0] : '');
         $firstTagNew  = (preg_match('/^<[^>]+>/siu', $new, $matchesNew) ? $matchesNew[0] : '');
-        if ($firstTagOrig != $firstTagNew) {
+        if ($firstTagOrig !== $firstTagNew) {
             return ['', $orig, $new, $diff, ''];
         }
 
@@ -498,7 +498,7 @@ class Diff
         if ($prefixLen < 40) {
             $prefix = '';
         } else {
-            if ($prefixLen > 0 && mb_substr($prefix, $prefixLen - 1, 1) == '.') {
+            if ($prefixLen > 0 && mb_substr($prefix, $prefixLen - 1, 1) === '.') {
                 // Leave it unchanged
             } elseif ($prefixLen > 40 && mb_strrpos($prefix, '. ') > $prefixLen - 40) {
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '. ') + 2);
@@ -506,7 +506,7 @@ class Diff
                 $prefix = mb_substr($prefix, 0, mb_strrpos($prefix, '.') + 1);
             }
         }
-        if ($prefix == '') {
+        if ($prefix === '') {
             if (preg_match('/^(<(p|blockquote|ul|ol|li|pre)>)+/siu', $prefixPre, $matches)) {
                 $prefix = $matches[0];
             }
@@ -526,21 +526,28 @@ class Diff
                 }
             }
         }
-        if ($postfix == '') {
+
+        if ($postfix === '') {
             if (preg_match('/(<\/(p|blockquote|ul|ol|li|pre)>)+$/siu', $postfixPre, $matches)) {
                 $postfix = $matches[0];
             }
         }
 
+        // The old and the new version might have different attributes in the HTML tags, like a start="1" attribute. We need to normalize that
+        $prefixNew               = str_replace('###LINENUMBER###', '', $prefix);
+        $postfixNew              = str_replace('###LINENUMBER###', '', $postfix);
+        $prefixNewNormalized     = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $prefixNew); // remove start/class-attributes from tags
+        $postfixNewNormalized    = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $postfixNew); // remove start/class-attributes from tags
+        $newNormalized           = preg_replace("/<(ul|ol|li)[^>]+>/siu", '<\1>', $new);
+        $prefixNewNormalizedLen  = mb_strlen($prefixNewNormalized);
+        $postfixNewNormalizedLen = mb_strlen($postfixNewNormalized);
+
         $prefixLen     = mb_strlen($prefix);
-        $prefixNew     = str_replace('###LINENUMBER###', '', $prefix);
-        $prefixNewLen  = mb_strlen($prefixNew);
         $postfixLen    = mb_strlen($postfix);
-        $postfixNew    = str_replace('###LINENUMBER###', '', $postfix);
-        $postfixNewLen = mb_strlen($postfixNew);
         $middleDiff    = mb_substr($diff, $prefixLen, mb_strlen($diff) - $prefixLen - $postfixLen);
         $middleOrig    = mb_substr($orig, $prefixLen, mb_strlen($orig) - $prefixLen - $postfixLen);
-        $middleNew     = mb_substr($new, $prefixNewLen, mb_strlen($new) - $prefixNewLen - $postfixNewLen);
+
+        $middleNew     = mb_substr($newNormalized, $prefixNewNormalizedLen, mb_strlen($newNormalized) - $prefixNewNormalizedLen - $postfixNewNormalizedLen);
 
         return [$prefix, $middleOrig, $middleNew, $middleDiff, $postfix];
     }

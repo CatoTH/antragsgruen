@@ -4,6 +4,7 @@
 
 - Several minor accessibility and performance improvements.
 - Bugfix: wrong time transformation when using the english version.
+- Bugfix: When showing the diff view of amendments changing the text within list items, some words could get lost.
 
 ## Version 4.6.0 (2020-04-12)
 
