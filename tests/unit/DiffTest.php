@@ -11,6 +11,24 @@ class DiffTest extends TestBase
 {
     use Specify;
 
+    public function testEdgeCaseUnchangedPrefixPostfix()
+    {
+        $lineOld = '<ul><li value="1">###LINENUMBER###Hier ein Anfang. Der Einzelhandel ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren.</li></ul>';
+        $lineNew = '<ul><li>Hier ein Anfang. Der Strukturwandel des Handels in Richtung online hat sich beschleunigt.</li></ul>';
+        $combined = '<ul><li value="1">###LINENUMBER###Hier ein Anfang. Der ###DEL_START###Einzelhandel###DEL_END######INS_START###Strukturwandel des Handels in Richtung online hat sich beschleunigt###INS_END### ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren###INS_END###.</li></ul>';
+
+        $diff         = new Diff();
+        $return = $diff->getUnchangedPrefixPostfix($lineOld, $lineNew, $combined);
+
+        $this->assertEquals([
+            '<ul><li value="1">###LINENUMBER###Hier ein Anfang. ',
+            'Der Einzelhandel ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren.',
+            'Der Strukturwandel des Handels in Richtung online hat sich beschleunigt.',
+            'Der ###DEL_START###Einzelhandel###DEL_END######INS_START###Strukturwandel des Handels in Richtung online hat sich beschleunigt###INS_END### ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren###INS_END###.',
+            '</li></ul>',
+        ], $return);
+    }
+
     public function testShortLineWithManyChanges()
     {
         $orig     = '<p>Wir bieten einen Gegenpol zur Staatlichen Erziehung in dieser Gesellschaft.</p>';
