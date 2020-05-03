@@ -563,14 +563,14 @@ class Consultation extends ActiveRecord
      */
     public function getUnreadableStatuses()
     {
-        $invisible = [
+        return [
             IMotion::STATUS_DELETED,
             IMotion::STATUS_DRAFT,
+            IMotion::STATUS_DRAFT_ADMIN,
             IMotion::STATUS_MERGING_DRAFT_PRIVATE,
             IMotion::STATUS_MERGING_DRAFT_PUBLIC,
             IMotion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
         ];
-        return $invisible;
     }
 
     /**
