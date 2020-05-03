@@ -362,7 +362,7 @@ abstract class IMotion extends ActiveRecord
     public function isReadable(): bool
     {
         $iAmAdmin = User::havePrivilege($this->getMyConsultation(), User::PRIVILEGE_CONTENT_EDIT);
-        if ($iAmAdmin && $this->status === static::STATUS_DRAFT) {
+        if ($iAmAdmin && in_array($this->status, [static::STATUS_DRAFT, static::STATUS_DRAFT_ADMIN])) {
             return true;
         }
 
