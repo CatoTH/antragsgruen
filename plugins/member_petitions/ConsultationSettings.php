@@ -17,7 +17,7 @@ class ConsultationSettings extends Consultation
         if ($this->petitionPage) {
             return '@app/plugins/member_petitions/views/consultation';
         } else {
-            return '@app/views/consultation/index_layout_std';
+            return parent::getStartLayoutView();
         }
     }
 
