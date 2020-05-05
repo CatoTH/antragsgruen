@@ -59,10 +59,6 @@ class LayoutHooks extends Hooks
 
     public function afterMotionView(string $before, Motion $motion): string
     {
-        if (!Tools::isPetitionsActive($motion->getMyConsultation())) {
-            return $before;
-        }
-
         if (Tools::canRespondToPetition($motion)) {
             $this->layout->loadCKEditor();
             $before .= \Yii::$app->controller->renderPartial('@app/plugins/member_petitions/views/_respond', [

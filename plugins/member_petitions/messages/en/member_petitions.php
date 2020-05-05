@@ -11,13 +11,14 @@ return [
     'index_my_supports'  => 'My supported petitions',
     'index_remaining'    => 'Remaining',
 
-    'sett_orgaid'            => 'Organization ID',
-    'sett_replydeadline'     => 'Reply deadline (days)',
-    'sett_title'             => 'Member petitions',
-    'sett_minDiscussionTime' => 'Min. discussion days',
-    'sett_maxOverallTime'    => 'Max. overall time (days)',
-    'sett_maxOverallTimeD'   => '(Discussion + petition; 0 = ∞)',
-    'sett_petitions_active'  => 'Activate phase system',
+    'sett_orgaid'             => 'Organization ID',
+    'sett_replydeadline'      => 'Reply deadline (days)',
+    'sett_title'              => 'Member petitions',
+    'sett_minDiscussionTime'  => 'Min. discussion days',
+    'sett_maxOverallTime'     => 'Max. overall time (days)',
+    'sett_maxOverallTimeD'    => '(Discussion + petition; 0 = ∞)',
+    'sett_petitions_active'   => 'Activate phase system',
+    'sett_can_always_respond' => 'Petitions can be replied to also with deactivated phase system',
 
     'status_collecting'   => 'Collecting supporters',
     'status_unanswered'   => 'Not answered yet',
@@ -50,10 +51,10 @@ return [
     'response_date'  => 'Date',
     'response_text'  => 'Text',
 
-    'noti_response_title'  => 'Responded', //@TODO
-    'noti_response_text'   => 'Responded', //@TODO
-    'submit_discuss_title' => 'Submitted discussion', //@TODO
-    'submit_discuss_text'  => 'Submitted discussion', //@TODO
+    'noti_response_title'   => 'Responded', //@TODO
+    'noti_response_text'    => 'Responded', //@TODO
+    'submit_discuss_title'  => 'Submitted discussion', //@TODO
+    'submit_discuss_text'   => 'Submitted discussion', //@TODO
     'submit_petition_title' => 'Submitted petition', //@TODO
     'submit_petition_text'  => 'Submitted petition', //@TODO
 ];

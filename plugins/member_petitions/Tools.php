@@ -265,10 +265,23 @@ class Tools
      */
     public static function canRespondToPetition(IMotion $motion)
     {
-        $typePetition = Tools::getPetitionType($motion->getMyConsultation());
-        if ($motion->getMyMotionType()->id !== $typePetition->id) {
-            return false;
+        $consultation = $motion->getMyConsultation();
+
+        // If the phase system is active, then it is restricted to the petition type.
+        // If not, then it is active for all motion types, IF the option has beed activated
+        if (Tools::isPetitionsActive($consultation)) {
+            $typePetition = Tools::getPetitionType($motion->getMyConsultation());
+            if ($motion->getMyMotionType()->id !== $typePetition->id) {
+                return false;
+            }
+        } else {
+            /** @var ConsultationSettings $settings */
+            $settings = $consultation->getSettings();
+            if (!$settings->canAlwaysRespond) {
+                return false;
+            }
         }
+
         if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
             return false;
         }
