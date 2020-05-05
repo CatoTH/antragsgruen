@@ -3,6 +3,7 @@
 ### Version 4.6.1 [not released yet]
 
 - Several minor accessibility and performance improvements.
+- Updates to core libraries (Yii and jQuery).
 - Bugfix: motions of the status "Draft (admin)" could be accessed using a known direct link.
 - Bugfix: wrong time transformation when using the english version.
 - Bugfix: When showing the diff view of amendments changing the text within list items, some words could get lost.
