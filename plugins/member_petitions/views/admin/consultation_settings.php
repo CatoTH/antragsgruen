@@ -22,6 +22,13 @@ $settings = $consultation->getSettings();
             <input type="hidden" name="settingsFields[]" value="petitionPage">
         </label>
     </div>
+    <div>
+        <label>
+            <?= Html::checkbox('settings[canAlwaysRespond]', $settings->canAlwaysRespond) ?>
+            <?= Yii::t('member_petitions', 'sett_can_always_respond') ?>
+            <input type="hidden" name="settingsFields[]" value="canAlwaysRespond">
+        </label>
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label"
                for="consultationOrgaId"><?= Yii::t('member_petitions', 'sett_orgaid') ?>:</label>
