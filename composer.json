@@ -17,6 +17,7 @@
   "require": {
     "php": ">=7.1.0",
     "ext-dom": "*",
+    "ext-pdo": "*",
     "ext-zip": "*",
     "ext-json": "*",
     "ext-fileinfo": "*",

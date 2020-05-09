@@ -2,7 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\{Tools, UrlHelper, WurzelwerkSamlClient, mail\Tools as MailTools};
+use app\components\{ExternalPasswordAuthenticatorInterface, Tools, UrlHelper, WurzelwerkSamlClient, mail\Tools as MailTools};
 use app\models\events\UserEvent;
 use app\models\exceptions\{FormError, MailNotSent};
 use app\models\settings\AntragsgruenApp;
@@ -251,6 +251,21 @@ class User extends ActiveRecord implements IdentityInterface
             [['id', 'emailConfirmed'], 'number'],
         ];
     }
+
+
+    public static function getExternalAuthenticator(): ?ExternalPasswordAuthenticatorInterface
+    {
+        /** @var AntragsgruenApp $params */
+        $params = \Yii::$app->params;
+        foreach ($params->getPluginClasses() as $pluginClass) {
+            $authenticator = $pluginClass::getExternalPasswordAuthenticator();
+            if ($authenticator) {
+                return $authenticator;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * Finds an identity by the given ID.
@@ -596,12 +611,15 @@ class User extends ActiveRecord implements IdentityInterface
         return false;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthName()
+    public function getAuthName(): string
     {
         $authparts = explode(':', $this->auth);
+
+        $externalAuthenticator = static::getExternalAuthenticator();
+        if ($externalAuthenticator && $authparts[0] === $externalAuthenticator->getAuthPrefix()) {
+            return $externalAuthenticator->formatUsername($this);
+        }
+
         switch ($authparts[0]) {
             case 'email':
                 return 'E-Mail: ' . $authparts[1];

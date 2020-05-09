@@ -1,5 +1,9 @@
 # Version history
 
+## Version 4.7.0 [not released yet]
+
+- Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database.
+
 ### Version 4.6.1 [not released yet]
 
 - Several minor accessibility and performance improvements.

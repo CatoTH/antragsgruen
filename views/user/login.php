@@ -1,6 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
+use app\models\db\User;
 use app\models\forms\LoginUsernamePasswordForm;
 use yii\helpers\Html;
 use app\models\settings\Site as SiteSettings;
@@ -29,6 +30,8 @@ if ($controller->site) {
 }
 /** @var \app\models\settings\AntragsgruenApp $params */
 $params = Yii::$app->params;
+
+$externalAuthenticator = User::getExternalAuthenticator();
 
 echo '<h1>' . Yii::t('user', 'login_title') . '</h1>';
 
@@ -96,7 +99,8 @@ if ($controller->consultation && $controller->consultation->getSettings()->acces
 }
 
 if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
-    $pwMinLen = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+    $pwMinLen         = LoginUsernamePasswordForm::PASSWORD_MIN_LEN;
+    $supportsCreating = ($externalAuthenticator === null || $externalAuthenticator->supportsCreatingAccounts());
 
     $classes = ['loginUsername'];
     if ($shownAccessPwdForm) {
@@ -120,16 +124,18 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
     $preUsername = $usernamePasswordForm->username;
     $preName     = $usernamePasswordForm->name;
 
-    $preChecked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
-    ?>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox" name="createAccount" id="createAccount" <?= $preChecked ?>>
-            <?= Yii::t('user', 'login_create_account') ?>
-        </label>
-    </div>
+    if ($supportsCreating) {
+        $preChecked = (isset($_REQUEST["createAccount"]) ? 'checked' : '');
+        ?>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="createAccount" id="createAccount" <?= $preChecked ?>>
+                <?= Yii::t('user', 'login_create_account') ?>
+            </label>
+        </div>
+        <?php
+    }
 
-    <?php
     if ($controller->consultation && $controller->consultation->getSettings()->managedUserAccounts) {
         echo '<div class="alert alert-info managedAccountHint hidden"><p>';
         echo Yii::t('user', 'login_managed_hint');
@@ -149,27 +155,29 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
         <input type="password" name="password" id="passwordInput" required class="form-control"
                autocomplete="current-password" data-min-len="<?= $pwMinLen ?>">
     </div>
-
-    <div class="form-group hidden" id="pwdConfirm">
-        <label for="passwordConfirm"><?= Yii::t('user', 'login_password_rep') ?>:</label>
-        <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
-    </div>
-
-    <div class="form-group hidden" id="regName">
-        <label for="name"><?= Yii::t('user', 'login_create_name') ?>:</label>
-        <input type="text" value="<?= Html::encode($preName) ?>" name="name" id="name" class="form-control">
-    </div>
-
     <?php
-    if ($controller->getParams()->dataPrivacyCheckbox) {
+    if ($supportsCreating) {
         ?>
-        <div class="form-group hidden checkbox" id="regConfirmation">
-            <label>
-                <input type="checkbox" name="confirmation" id="confirmation">
-                <?= Yii::t('user', 'login_confirm_registration') ?>:
-            </label>
+        <div class="form-group hidden" id="pwdConfirm">
+            <label for="passwordConfirm"><?= Yii::t('user', 'login_password_rep') ?>:</label>
+            <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control">
+        </div>
+
+        <div class="form-group hidden" id="regName">
+            <label for="name"><?= Yii::t('user', 'login_create_name') ?>:</label>
+            <input type="text" value="<?= Html::encode($preName) ?>" name="name" id="name" class="form-control">
         </div>
         <?php
+        if ($controller->getParams()->dataPrivacyCheckbox) {
+            ?>
+            <div class="form-group hidden checkbox" id="regConfirmation">
+                <label>
+                    <input type="checkbox" name="confirmation" id="confirmation">
+                    <?= Yii::t('user', 'login_confirm_registration') ?>:
+                </label>
+            </div>
+            <?php
+        }
     }
     ?>
 
@@ -178,13 +186,32 @@ if (in_array(SiteSettings::LOGIN_STD, $loginMethods)) {
             <button type="submit" class="btn btn-primary" name="loginusernamepassword">
                 <span id="loginStr"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                     <?= Yii::t('user', 'login_btn_login') ?></span>
-                <span id="createStr"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                <?php
+                if ($supportsCreating) {
+                    ?>
+                    <span id="createStr"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                     <?= Yii::t('user', 'login_btn_create') ?></span>
+                    <?php
+                }
+                ?>
             </button>
         </div>
-        <div class="col-md-6 passwordRecovery">
-            <?= Html::a(Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) ?>
-        </div>
+
+        <?php
+        if ($externalAuthenticator === null || $externalAuthenticator->supportsResetPassword()) {
+            ?>
+            <div class="col-md-6 passwordRecovery">
+                <?= Html::a(Yii::t('user', 'login_forgot_pw'), UrlHelper::createUrl('user/recovery')) ?>
+            </div>
+            <?php
+        } elseif ($externalAuthenticator && $externalAuthenticator->resetPasswordAlternativeLink()) {
+            ?>
+            <div class="col-md-6 passwordRecovery">
+                <?= Html::a(Yii::t('user', 'login_forgot_pw'), $externalAuthenticator->resetPasswordAlternativeLink()) ?>
+            </div>
+            <?php
+        }
+        ?>
     </div>
     <?php
     echo Html::endForm();

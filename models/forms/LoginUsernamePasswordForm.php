@@ -2,14 +2,10 @@
 
 namespace app\models\forms;
 
+use app\components\ExternalPasswordAuthenticatorInterface;
 use app\components\UrlHelper;
-use app\models\db\EMailLog;
-use app\models\db\Site;
-use app\models\db\User;
-use app\models\exceptions\Login;
-use app\models\exceptions\LoginInvalidPassword;
-use app\models\exceptions\LoginInvalidUser;
-use app\models\exceptions\MailNotSent;
+use app\models\db\{EMailLog, Site, User};
+use app\models\exceptions\{Internal, Login, LoginInvalidPassword, LoginInvalidUser, MailNotSent};
 use app\models\settings\AntragsgruenApp;
 use app\models\settings\Site as SiteSettings;
 use yii\base\Model;
@@ -28,6 +24,15 @@ class LoginUsernamePasswordForm extends Model
     /** @var bool */
     public $createAccount = false;
 
+    /** @var ExternalPasswordAuthenticatorInterface|null */
+    private $externalAuthenticator;
+
+    public function __construct(?ExternalPasswordAuthenticatorInterface $externalAuthenticator)
+    {
+        parent::__construct();
+        $this->externalAuthenticator = $externalAuthenticator;
+    }
+
     /**
      * @return array
      */
@@ -45,8 +50,11 @@ class LoginUsernamePasswordForm extends Model
      * @param User $user
      * @throws MailNotSent
      */
-    private function sendConfirmationEmail(User $user)
+    private function sendConfirmationEmail(User $user): void
     {
+        if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
+            throw new Internal('Creating account is not supported');
+        }
         $bestCode = $user->createEmailConfirmationCode();
         $params   = ['/user/confirmregistration', 'email' => $this->username, 'code' => $bestCode, 'subdomain' => null];
         $link     = UrlHelper::absolutizeLink(UrlHelper::createUrl($params));
@@ -71,8 +79,11 @@ class LoginUsernamePasswordForm extends Model
      * @param Site|null $site
      * @throws Login
      */
-    private function doCreateAccountValidate($site)
+    private function doCreateAccountValidate(?Site $site): void
     {
+        if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
+            throw new Internal('Creating account is not supported');
+        }
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
         } else {
@@ -114,8 +125,15 @@ class LoginUsernamePasswordForm extends Model
      * @return User
      * @throws Login
      */
-    public function doCreateAccount($site)
+    public function doCreateAccount(?Site $site): User
     {
+        if ($this->externalAuthenticator && !$this->externalAuthenticator->supportsCreatingAccounts()) {
+            throw new Internal('Creating account is not supported');
+        }
+        if ($this->externalAuthenticator && $this->externalAuthenticator->supportsCreatingAccounts()) {
+            return $this->externalAuthenticator->performRegistration($this->username, $this->password);
+        }
+
         $this->doCreateAccountValidate($site);
 
         $user                  = new User();
@@ -157,17 +175,20 @@ class LoginUsernamePasswordForm extends Model
     /**
      * @return User[]
      */
-    private function getCandidatesStdLogin()
+    private function getCandidatesStdLogin(): array
     {
-        $sql_where1 = "`auth` = 'email:" . addslashes($this->username) . "'";
-        return User::findBySql("SELECT * FROM `user` WHERE $sql_where1")->all();
+        $tableName = User::tableName();
+        $sqlWhere1 = "`auth` = 'email:" . addslashes($this->username) . "'";
+
+        /** @noinspection SqlResolve */
+        return User::findBySql("SELECT * FROM `" . $tableName . "` WHERE $sqlWhere1")->all();
     }
 
     /**
      * @param Site|null $site
      * @return User[]
      */
-    private function getCandidates($site)
+    private function getCandidates(?Site $site): array
     {
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
@@ -189,7 +210,7 @@ class LoginUsernamePasswordForm extends Model
      * @throws LoginInvalidPassword
      * @throws Login
      */
-    public function checkLogin($site)
+    public function checkLogin(?Site $site): User
     {
         if ($site) {
             $methods = $site->getSettings()->loginMethods;
@@ -201,6 +222,11 @@ class LoginUsernamePasswordForm extends Model
             $this->error = \Yii::t('user', 'login_err_siteaccess');
             throw new Login($this->error);
         }
+
+        if ($this->externalAuthenticator) {
+            return $this->externalAuthenticator->performLogin($this->username, $this->password);
+        }
+
         $candidates = $this->getCandidates($site);
 
         if (count($candidates) === 0) {
@@ -221,7 +247,7 @@ class LoginUsernamePasswordForm extends Model
      * @return User
      * @throws Login
      */
-    public function getOrCreateUser($site)
+    public function getOrCreateUser(?Site $site): User
     {
         if ($this->createAccount) {
             return $this->doCreateAccount($site);

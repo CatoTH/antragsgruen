@@ -2,6 +2,7 @@
 
 namespace app\plugins;
 
+use app\components\ExternalPasswordAuthenticatorInterface;
 use app\models\db\{Consultation, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
@@ -23,6 +24,7 @@ class ModuleBase extends Module
 
     /**
      * @param Controller $controller
+     *
      * @return AssetBundle[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -53,11 +55,13 @@ class ModuleBase extends Module
             $urls[$dommotion . '/' . $url]    = $route;
             $urls[$dommotionOld . '/' . $url] = $route;
         }
+
         return $urls;
     }
 
     /**
      * @param Site $site
+     *
      * @return null|DefaultBehavior|string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -68,6 +72,7 @@ class ModuleBase extends Module
 
     /**
      * @param Consultation $consultation
+     *
      * @return string|\app\models\settings\Consultation
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -78,6 +83,7 @@ class ModuleBase extends Module
 
     /**
      * @param Site $site
+     *
      * @return string|\app\models\settings\Site
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -104,6 +110,7 @@ class ModuleBase extends Module
     /**
      * @param Layout $layoutSettings
      * @param Consultation $consultation
+     *
      * @return Hooks[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
@@ -128,6 +135,11 @@ class ModuleBase extends Module
     }
 
     public static function getDefaultLogo(): ?array
+    {
+        return null;
+    }
+
+    public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
         return null;
     }

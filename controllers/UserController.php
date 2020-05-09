@@ -84,7 +84,7 @@ class UserController extends Base
             $backUrl = '/';
         }
 
-        $usernamePasswordForm = new LoginUsernamePasswordForm();
+        $usernamePasswordForm = new LoginUsernamePasswordForm(User::getExternalAuthenticator());
 
         $conPwdConsultation = $this->consultation;
         if (Yii::$app->request->get('passConId')) {
