@@ -7,34 +7,22 @@ use app\models\siteSpecificBehavior\DefaultBehavior;
 
 class SiteSpecificBehavior extends DefaultBehavior
 {
-    /**
-     * @return string
-     */
-    public static function hasSiteHomePage()
+    public static function hasSiteHomePage(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function preferConsultationSpecificHomeLink()
+    public static function preferConsultationSpecificHomeLink(): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
-    public static function siteHomeIsAlwaysPublic()
+    public static function siteHomeIsAlwaysPublic(): bool
     {
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public static function getSiteHomePage()
+    public static function getSiteHomePage(): ?string
     {
         /** @var Base $controller */
         $controller = \Yii::$app->controller;

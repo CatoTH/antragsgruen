@@ -26,18 +26,12 @@ class SiteSpecificBehavior extends DefaultBehavior
         ];
     }
 
-    /**
-     * @return string
-     */
-    public static function hasSiteHomePage()
+    public static function hasSiteHomePage(): bool
     {
         return true;
     }
 
-    /**
-     * @return string
-     */
-    public static function getSiteHomePage()
+    public static function getSiteHomePage(): string
     {
         $controller = \Yii::$app->controller;
         return $controller->render('@app/plugins/member_petitions/views/index');

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedParameterInspection */
 
 namespace app\models\siteSpecificBehavior;
 
@@ -28,7 +28,6 @@ class DefaultBehavior
      * @param string $prefix1
      * @param string $prefix2
      * @return int
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity,PHPMD.NPathComplexity)
      */
     public static function getSortedMotionsSort($prefix1, $prefix2)
     {
@@ -44,42 +43,34 @@ class DefaultBehavior
         return $statuses;
     }
 
-    /**
-     * @return bool
-     */
-    public static function hasSiteHomePage()
+    public static function hasSiteHomePage(): bool
     {
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public static function preferConsultationSpecificHomeLink()
-    {
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function siteHomeIsAlwaysPublic()
-    {
-        return false;
-    }
-
-    /**
-     * @return null|string
-     */
-    public static function getSiteHomePage()
+    public static function getSiteHomePage(): ?string
     {
         return null;
+    }
+
+    public static function getConsultationHomePage(Consultation $consultation): ?string
+    {
+        return null;
+    }
+
+    public static function preferConsultationSpecificHomeLink(): bool
+    {
+        return false;
+    }
+
+    public static function siteHomeIsAlwaysPublic(): bool
+    {
+        return false;
     }
 
     /**
      * @param Consultation $consultation
      * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getConsultationSettingsForm(Consultation $consultation)
     {
@@ -88,7 +79,6 @@ class DefaultBehavior
 
     /**
      * @param Consultation $consultation
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function saveConsultationSettings(Consultation $consultation)
     {

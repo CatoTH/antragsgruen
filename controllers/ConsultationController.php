@@ -296,6 +296,11 @@ class ConsultationController extends Base
      */
     public function actionIndex()
     {
+        $behaviorHome = $this->site->getBehaviorClass()->getConsultationHomePage($this->consultation);
+        if ($behaviorHome !== null) {
+            return $behaviorHome;
+        }
+
         if ($this->consultation->getForcedMotion()) {
             $this->redirect(UrlHelper::createMotionUrl($this->consultation->getForcedMotion()));
         }
