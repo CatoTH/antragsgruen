@@ -1,36 +1,21 @@
 <?php
 namespace app\models\amendmentNumbering;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Motion};
 
 class GlobalCompact extends IAmendmentNumbering
 {
-
-    /**
-     * @return string
-     */
-    public static function getName()
+    public static function getName(): string
     {
         return \Yii::t('structure', 'amend_number_global');
     }
 
-    /**
-     * @return int
-     */
-    public static function getID()
+    public static function getID(): int
     {
         return 1;
     }
 
-
-    /**
-     * @param Amendment $amendment
-     * @param Motion $motion
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentNumber(Amendment $amendment, Motion $motion)
+    public function getAmendmentNumber(Amendment $amendment, Motion $motion): string
     {
         $prefixes = [];
         foreach ($motion->getMyConsultation()->motions as $mot) {
@@ -42,13 +27,7 @@ class GlobalCompact extends IAmendmentNumbering
         return 'Ä' . ($maxRev + 1);
     }
 
-    /**
-     * @param Motion $motion
-     * @param string $prefix
-     * @param null|Amendment $ignore
-     * @return Amendment|null
-     */
-    public function findAmendmentWithPrefix(Motion $motion, $prefix, $ignore = null)
+    public function findAmendmentWithPrefix(Motion $motion, string $prefix, ?Amendment $ignore = null): ?Amendment
     {
         $prefixNorm = trim(mb_strtoupper($prefix));
         foreach ($motion->getMyConsultation()->motions as $mot) {

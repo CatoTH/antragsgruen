@@ -2,27 +2,36 @@
 
 namespace app\models\amendmentNumbering;
 
-use app\models\db\Motion;
-use app\models\db\Amendment;
+use app\components\UrlHelper;
+use app\models\db\{Motion, Amendment};
 
 abstract class IAmendmentNumbering
 {
     /**
      * @return IAmendmentNumbering[]
      */
-    public static function getNumberings()
+    public static function getNumberings(): array
     {
-        return [
+        $numberings = [
             0 => PerMotionCompact::class,
             1 => GlobalCompact::class,
             2 => ByLine::class,
         ];
+
+        $site = UrlHelper::getCurrentSite();
+        if ($site) {
+            foreach ($site->getBehaviorClass()->getCustomAmendmentNumberings() as $numbering) {
+                $numberings[$numbering::getID()] = $numbering;
+            }
+        }
+
+        return $numberings;
     }
 
     /**
      * @return string[]
      */
-    public static function getNames()
+    public static function getNames(): array
     {
         $names = [];
         foreach (static::getNumberings() as $key => $pol) {
@@ -31,19 +40,13 @@ abstract class IAmendmentNumbering
         return $names;
     }
 
-    /**
-     * @return int
-     */
-    public static function getID()
+    public static function getID(): int
     {
         return -1;
     }
 
 
-    /**
-     * @return string
-     */
-    public static function getName()
+    public static function getName(): string
     {
         return '';
     }
@@ -52,7 +55,7 @@ abstract class IAmendmentNumbering
      * @param string[] $prefixes
      * @return int
      */
-    public static function getMaxTitlePrefixNumber($prefixes)
+    public static function getMaxTitlePrefixNumber(array $prefixes): int
     {
         $maxRev    = 0;
         $splitStrs = ['neu'];
@@ -70,20 +73,9 @@ abstract class IAmendmentNumbering
         return $maxRev;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param Motion $motion
-     * @return string
-     */
-    abstract public function getAmendmentNumber(Amendment $amendment, Motion $motion);
+    abstract public function getAmendmentNumber(Amendment $amendment, Motion $motion): string;
 
-    /**
-     * @param Motion $motion
-     * @param string $prefix
-     * @param null|Amendment $ignore
-     * @return Amendment|null
-     */
-    public function findAmendmentWithPrefix(Motion $motion, $prefix, $ignore = null)
+    public function findAmendmentWithPrefix(Motion $motion, string $prefix, ?Amendment $ignore = null): ?Amendment
     {
         $prefixNorm = trim(mb_strtoupper($prefix));
         foreach ($motion->amendments as $amend) {

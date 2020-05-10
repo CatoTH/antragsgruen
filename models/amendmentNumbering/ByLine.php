@@ -1,36 +1,22 @@
 <?php
 namespace app\models\amendmentNumbering;
 
-use app\models\db\Amendment;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Motion};
 
 class ByLine extends IAmendmentNumbering
 {
 
-    /**
-     * @return string
-     */
-    public static function getName()
+    public static function getName(): string
     {
         return \Yii::t('structure', 'amend_number_perline');
     }
 
-    /**
-     * @return int
-     */
-    public static function getID()
+    public static function getID(): int
     {
         return 2;
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param Motion $motion
-     * @param int $lineStrLen
-     * @return string
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    public function getAmendmentNumber(Amendment $amendment, Motion $motion, $lineStrLen = 3)
+    public function getAmendmentNumber(Amendment $amendment, Motion $motion, int $lineStrLen = 3): string
     {
         $line = $amendment->getFirstDiffLine();
         while (mb_strlen($line) < $lineStrLen) {

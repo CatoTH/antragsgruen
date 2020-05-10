@@ -19,7 +19,7 @@ abstract class IPolicy
     /**
      * @return IPolicy[]
      */
-    public static function getPolicies()
+    public static function getPolicies(): array
     {
         $policies = [
             static::POLICY_ADMINS    => Admins::class,

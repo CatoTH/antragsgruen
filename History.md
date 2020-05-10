@@ -2,7 +2,8 @@
 
 ## Version 4.7.0 [not released yet]
 
-- Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database.
+- Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
+- Internal: Plugins can now provide custom amendment numberings.
 
 ### Version 4.6.1 [not released yet]
 

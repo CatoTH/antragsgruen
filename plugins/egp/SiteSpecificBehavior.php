@@ -2,6 +2,7 @@
 
 namespace app\plugins\egp;
 
+use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\db\Consultation;
 use app\models\siteSpecificBehavior\DefaultBehavior;
 
@@ -11,5 +12,15 @@ class SiteSpecificBehavior extends DefaultBehavior
     {
         Header("Location: https://europeangreens.eu/draft-documents/onlinespring2020");
         die();
+    }
+
+    /**
+     * @return string[]|IAmendmentNumbering[]
+     */
+    public static function getCustomAmendmentNumberings(): array
+    {
+        return [
+            EgpAmendmentNumbering::class,
+        ];
     }
 }

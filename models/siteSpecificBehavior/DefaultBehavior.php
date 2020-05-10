@@ -3,6 +3,7 @@
 namespace app\models\siteSpecificBehavior;
 
 use app\components\MotionSorter;
+use app\models\amendmentNumbering\IAmendmentNumbering;
 use app\models\db\Consultation;
 use app\models\policies\IPolicy;
 
@@ -20,6 +21,14 @@ class DefaultBehavior
      * @return string[]|IPolicy[]
      */
     public static function getCustomPolicies()
+    {
+        return [];
+    }
+
+    /**
+     * @return string[]|IAmendmentNumbering[]
+     */
+    public static function getCustomAmendmentNumberings(): array
     {
         return [];
     }

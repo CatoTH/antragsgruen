@@ -42,22 +42,27 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
 
     private function getUserByName(string $username): ?array
     {
-        $sql  = 'SELECT user.uid, user.name, user.pass AS password, user.mail AS email, ' .
-                'contact.display_name, GROUP_CONCAT(usergroup.name SEPARATOR ",") groups ' .
+        $sql  = 'SELECT user.uid, contact.first_name, contact.last_name, user.name, user.pass AS password, user.mail AS email, ' .
+                'contact.display_name, GROUP_CONCAT(usergroup.name SEPARATOR ",") AS groups, contact_organization.organization_name AS delegate_of ' .
                 'FROM users AS user ' .
                 'JOIN civicrm_uf_match ON user.uid = civicrm_uf_match.uf_id AND civicrm_uf_match.domain_id = :domain ' .
-                'JOIN civicrm_contact contact ON civicrm_uf_match.contact_id = contact.id ' .
+                'JOIN civicrm_contact AS contact ON civicrm_uf_match.contact_id = contact.id ' .
                 'JOIN civicrm_group_contact ON civicrm_uf_match.contact_id = civicrm_group_contact.contact_id ' .
-                'JOIN civicrm_group usergroup ON usergroup.id = civicrm_group_contact.group_id ' .
-
+                'JOIN civicrm_group AS usergroup ON usergroup.id = civicrm_group_contact.group_id ' .
+                'LEFT JOIN civicrm_relationship ON contact.id = civicrm_relationship.contact_id_a AND civicrm_relationship.relationship_type_id = :relType ' .
+                'LEFT JOIN civicrm_contact AS contact_organization ON civicrm_relationship.contact_id_b = contact_organization.id ' .
                 'WHERE user.name = :username AND user.status = 1 ' .
-                ' GROUP BY user.uid';
+                'GROUP BY user.uid';
         $user = $this->querySingleRow($sql, [
             ':username' => $username,
             ':domain'   => $this->config->domainId,
+            ':relType'  => $this->config->organisationRelationship,
         ]);
         if ($user) {
             $user['groups'] = explode(',', $user['groups']);
+            if ($user['delegate_of'] === null) {
+                $user['delegate_of'] = '';
+            }
         }
 
         return $user;
@@ -117,9 +122,12 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
         }
 
         // Set this with every login
-        $userObj->name      = $user['display_name'];
-        $userObj->email     = $user['email'];
-        $userObj->fixedData = 1;
+        $userObj->name         = $user['display_name'];
+        $userObj->nameFamily   = $user['last_name'];
+        $userObj->nameGiven    = $user['first_name'];
+        $userObj->organization = $user['delegate_of'];
+        $userObj->email        = $user['email'];
+        $userObj->fixedData    = 1;
         $userObj->save();
         if (!$userObj) {
             var_dump($userObj->getErrors());
