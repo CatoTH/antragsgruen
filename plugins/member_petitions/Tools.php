@@ -311,7 +311,7 @@ class Tools
         if ($motion->getMyMotionType()->id !== $typePetition->id) {
             return null;
         }
-        if (!$motion->isVisible() || $motion->status === IMotion::STATUS_PROCESSED) {
+        if (!$motion->isVisible() || in_array($motion->status, [IMotion::STATUS_PROCESSED, IMotion::STATUS_PAUSED])) {
             return null;
         }
 

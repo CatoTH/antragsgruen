@@ -61,7 +61,7 @@ class NotificationsController extends Controller
                     continue;
                 }
                 $daysOver = floor((time() - $until->getTimestamp()) / (3600 * 24));
-                if (($daysOver % 1) === 0) {
+                if (($daysOver % 3) === 0) {
                     echo "Sending admin-notification for: " . $motion->id . " / " . $motion->title . "\n";
                     new AdminResponseRequired($motion);
                 }
