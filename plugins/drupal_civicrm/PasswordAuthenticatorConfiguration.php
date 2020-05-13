@@ -18,5 +18,4 @@ class PasswordAuthenticatorConfiguration implements \JsonSerializable
     public $domainId = 1;
 
     public $resetAlternativeLink = '';
-    public $organisationRelationship = 0;
 }

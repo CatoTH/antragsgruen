@@ -49,14 +49,13 @@ class PasswordAuthenticator implements ExternalPasswordAuthenticatorInterface
                 'JOIN civicrm_contact AS contact ON civicrm_uf_match.contact_id = contact.id ' .
                 'JOIN civicrm_group_contact ON civicrm_uf_match.contact_id = civicrm_group_contact.contact_id ' .
                 'JOIN civicrm_group AS usergroup ON usergroup.id = civicrm_group_contact.group_id ' .
-                'LEFT JOIN civicrm_relationship ON contact.id = civicrm_relationship.contact_id_a AND civicrm_relationship.relationship_type_id = :relType ' .
-                'LEFT JOIN civicrm_contact AS contact_organization ON civicrm_relationship.contact_id_b = contact_organization.id ' .
+                'LEFT JOIN civicrm_value_copenhagen_congress_data_30 ON contact.id = civicrm_value_copenhagen_congress_data_30.entity_id ' .
+                'LEFT JOIN civicrm_contact AS contact_organization ON civicrm_value_copenhagen_congress_data_30.party__organisation__eu__292 = contact_organization.id ' .
                 'WHERE user.name = :username AND user.status = 1 ' .
                 'GROUP BY user.uid';
         $user = $this->querySingleRow($sql, [
             ':username' => $username,
             ':domain'   => $this->config->domainId,
-            ':relType'  => $this->config->organisationRelationship,
         ]);
         if ($user) {
             $user['groups'] = explode(',', $user['groups']);

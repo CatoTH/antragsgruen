@@ -4,6 +4,7 @@ namespace app\plugins\egp;
 
 use app\models\db\Site;
 use app\plugins\ModuleBase;
+use yii\web\View;
 
 class Module extends ModuleBase
 {
@@ -16,5 +17,25 @@ class Module extends ModuleBase
     public static function getSiteSpecificBehavior(Site $site)
     {
         return SiteSpecificBehavior::class;
+    }
+
+    public static function getProvidedLayouts(?View $view = null): array
+    {
+        if ($view) {
+            $asset = ThumbnailAssets::register($view);
+            $thumbBase = $asset->baseUrl;
+        } else {
+            $thumbBase = '/';
+        }
+
+        return [
+            'std' => [
+                'title'       => 'European Green Party',
+                'preview'     => $thumbBase . '/layout-preview-green.png',
+                'bundle'      => Assets::class,
+                'hooks'       => LayoutHooks::class,
+                'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
+            ],
+        ];
     }
 }

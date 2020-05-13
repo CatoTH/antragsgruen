@@ -1,0 +1,14 @@
+$ptSansFontPath: './' !default;
+
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: normal;
+  src: url($ptSansFontPath + 'ptsans_regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'PT Sans Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: url($ptSansFontPath + 'ptsans_bold.woff') format('woff');
+}

@@ -1,0 +1,14 @@
+$arvoFontPath: './' !default;
+
+@font-face {
+  font-family: 'Arvo';
+  font-style: normal;
+  font-weight: normal;
+  src: url($arvoFontPath + 'arvo_regular.woff') format('woff');
+}
+@font-face {
+  font-family: 'Arvo Gruen';
+  font-style: normal;
+  font-weight: normal;
+  src: url($arvoFontPath + 'arvo_gruen.woff') format('woff');
+}

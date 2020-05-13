@@ -29,7 +29,7 @@ if ($form->motion->titlePrefix !== '') {
             $mode === 'create' ? 'amendment_create_x' : 'amendment_edit_x'
         );
     }
-    $this->title = str_replace('%prefix%', $form->motion->titlePrefix, $title);
+    $this->title = str_replace('%prefix%', $form->motion->getTitleWithPrefix(), $title);
 } else {
     $this->title = Yii::t('amend', $mode === 'create' ? 'amendment_create' : 'amendment_edit');
 }
