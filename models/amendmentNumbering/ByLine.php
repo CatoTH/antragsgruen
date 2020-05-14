@@ -27,14 +27,14 @@ class ByLine extends IAmendmentNumbering
         foreach ($motion->amendments as $amend) {
             if ($amend->titlePrefix) {
                 $x = explode($revBase, $amend->titlePrefix);
-                if (count($x) == 2) {
-                    if (strlen($x[1]) > 0 && $x[1][0] == '-') {
+                if (count($x) === 2) {
+                    if (strlen($x[1]) > 0 && $x[1][0] === '-') {
                         $x[1] = substr($x[1], 1);
                     }
-                    $maxRev = max($maxRev, strlen($x[1]) == 0 ? 1 : IntVal($x[1]));
+                    $maxRev = max($maxRev, strlen($x[1]) === 0 ? 1 : intval($x[1]));
                 }
             }
         }
-        return $maxRev == 0 ? $revBase : $revBase . '-' . ($maxRev + 1);
+        return $maxRev === 0 ? $revBase : $revBase . '-' . ($maxRev + 1);
     }
 }

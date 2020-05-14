@@ -21,23 +21,20 @@ class EgpAmendmentNumbering extends IAmendmentNumbering
 
     public function getAmendmentNumber(Amendment $amendment, Motion $motion): string
     {
-        $prefixes = [];
+        $line = $amendment->getFirstDiffLine();
+        $revBase = 'AM-' . $line;
+        $maxRev  = 0;
         foreach ($motion->amendments as $amend) {
-            $prefixes[] = $amend->titlePrefix;
-        }
-        $maxRev = static::getMaxTitlePrefixNumber($prefixes);
-        $prefix = 'AM' . ($maxRev + 1);
-
-        $initiatorOrgas = [];
-        foreach ($amendment->getInitiators() as $initiator) {
-            if ($initiator->organization) {
-                $initiatorOrgas[] = $initiator->organization;
+            if ($amend->titlePrefix) {
+                $x = explode($revBase, $amend->titlePrefix);
+                if (count($x) === 2) {
+                    if (strlen($x[1]) > 0 && $x[1][0] === '-') {
+                        $x[1] = substr($x[1], 1);
+                    }
+                    $maxRev = max($maxRev, strlen($x[1]) === 0 ? 1 : intval($x[1]));
+                }
             }
         }
-        if (count($initiatorOrgas) > 0) {
-            $prefix .= ' (' . implode(", ", $initiatorOrgas) . ')';
-        }
-
-        return $prefix;
+        return $revBase . '-' . ($maxRev + 1);
     }
 }
