@@ -5,7 +5,7 @@ namespace app\models\layoutHooks;
 use app\components\{Tools, UrlHelper};
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{Amendment, ConsultationMotionType, ConsultationText, ISupporter, User};
+use app\models\db\{Amendment, ConsultationMotionType, ConsultationText, ISupporter, Motion, User};
 use app\models\settings\AntragsgruenApp;
 use yii\helpers\Html;
 
@@ -130,6 +130,47 @@ class StdHooks extends Hooks
         return $str;
     }
 
+    public function getMotionFormattedAmendmentList(string $before, Motion $motion): string
+    {
+        $amendments = $motion->getVisibleAmendments();
+        // Global alternatives first, then sorted by titlePrefix
+        usort($amendments, function (Amendment $amend1, Amendment $amend2) {
+            if ($amend1->globalAlternative && !$amend2->globalAlternative) {
+                return -1;
+            }
+            if (!$amend1->globalAlternative && $amend2->globalAlternative) {
+                return 1;
+            }
+
+            return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
+        });
+
+        $before = '';
+        if (count($amendments) > 0) {
+            $before .= '<ul class="amendments">';
+            foreach ($amendments as $amend) {
+                $before .= '<li>';
+                if ($amend->globalAlternative) {
+                    $before .= '<strong>' . \Yii::t('amend', 'global_alternative') . ':</strong> ';
+                }
+                $aename = $amend->titlePrefix;
+                if ($aename === '') {
+                    $aename = $amend->id;
+                }
+                $amendLink     = UrlHelper::createAmendmentUrl($amend);
+                $amendStatuses = Amendment::getStatusNames();
+                $before        .= Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
+                $before        .= ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
+                $before        .= '</li>';
+            }
+            $before .= '</ul>';
+        } else {
+            $before .= '<em>' . \Yii::t('motion', 'amends_none') . '</em>';
+        }
+
+        return $before;
+    }
+
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
     {
         if (!$this->consultation->getSettings()->amendmentBookmarksWithNames) {
@@ -181,7 +222,7 @@ class StdHooks extends Hooks
             }
 
             if (!User::getCurrentUser()) {
-                if (get_class($controller) == UserController::class) {
+                if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
                     $backUrl = \yii::$app->request->url;
@@ -199,7 +240,7 @@ class StdHooks extends Hooks
                 );
                 $out  .= '<li>' . $link . '</li>';
 
-                if (get_class($controller) == UserController::class) {
+                if (get_class($controller) === UserController::class) {
                     $backUrl = UrlHelper::createUrl('/consultation/index');
                 } else {
                     $backUrl = \yii::$app->request->url;

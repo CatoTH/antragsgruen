@@ -119,6 +119,11 @@ class Hooks
         return $motionData;
     }
 
+    public function getMotionFormattedAmendmentList(string $before, Motion $motion): string
+    {
+        return $before;
+    }
+
     public function getAmendmentViewData(array $amendmentData, Amendment $amendment): array
     {
         return $amendmentData;

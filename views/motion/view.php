@@ -239,39 +239,7 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
         echo '</div>';
     }
 
-    // Global alternatives first, then sorted by titlePrefix
-    usort($amendments, function (Amendment $amend1, Amendment $amend2) {
-        if ($amend1->globalAlternative && !$amend2->globalAlternative) {
-            return -1;
-        }
-        if (!$amend1->globalAlternative && $amend2->globalAlternative) {
-            return 1;
-        }
-
-        return strnatcasecmp($amend1->titlePrefix, $amend2->titlePrefix);
-    });
-
-    if (count($amendments) > 0) {
-        echo '<ul class="amendments">';
-        foreach ($amendments as $amend) {
-            echo '<li>';
-            if ($amend->globalAlternative) {
-                echo '<strong>' . Yii::t('amend', 'global_alternative') . ':</strong> ';
-            }
-            $aename = $amend->titlePrefix;
-            if ($aename === '') {
-                $aename = $amend->id;
-            }
-            $amendLink     = UrlHelper::createAmendmentUrl($amend);
-            $amendStatuses = Amendment::getStatusNames();
-            echo Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
-            echo ' (' . Html::encode($amend->getInitiatorsStr() . ', ' . $amendStatuses[$amend->status]) . ')';
-            echo '</li>';
-        }
-        echo '</ul>';
-    } else {
-        echo '<em>' . Yii::t('motion', 'amends_none') . '</em>';
-    }
+    echo \app\models\layoutHooks\Layout::getMotionFormattedAmendmentList($motion);
 
     echo '</div></section>';
 }

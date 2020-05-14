@@ -126,6 +126,11 @@ class Layout
         return static::callHook('afterMotionView', [$motion]);
     }
 
+    public static function getMotionFormattedAmendmentList(Motion $motion): string
+    {
+        return static::callHook('getMotionFormattedAmendmentList', [$motion]);
+    }
+
     public static function getMotionViewData(array $motionData, Motion $motion): array
     {
         return static::callHook('getMotionViewData', [$motion], $motionData);
