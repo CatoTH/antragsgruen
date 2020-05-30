@@ -45,9 +45,9 @@ return [
     'button_submit_create'          => 'Create',
     'button_submit_submit'          => 'Submit',
     'button_submit_publish'         => 'Publish',
-    'submitted_create'              => 'Created motion',
-    'submitted_submit'              => 'Submitted motion',
-    'submitted_publish'             => 'Published motion',
+    'submitted_create'              => 'Created %TITLE%',
+    'submitted_submit'              => 'Submitted %TITLE%',
+    'submitted_publish'             => 'Published %TITLE%',
     'created_bread_create'          => 'Created',
     'created_bread_submit'          => 'Submitted',
     'created_bread_publish'         => 'Published',
@@ -163,7 +163,7 @@ return [
     'support_orga'           => 'Organization',
     'support_name'           => 'Name',
 
-    'confirmed_support_phase'            => "You created the motion.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your motion:",
+    'confirmed_support_phase'            => "You created the %TITLE%.<br>\nTo officially submit it, it needs at least <strong>%MIN% supporters</strong>%ADD_REQUIREMENT%.<br>\nSend the following link to gain support for your motion:",
     'confirmed_support_phase_addfemale'  => ', including %MIN% women',
     'confirmed_support_phase_ww'         => '', // Not relevant
     'submitted_screening_email'          => "Hi,\n\nYou just submitted a motion. It will now be screened and then published. You will be notified separately, once this happens.\n\nYou can see the motion here: %LINK%",

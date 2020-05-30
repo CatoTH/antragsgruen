@@ -350,7 +350,7 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'siteacc_screen_users_btn'    => 'Grant access',
     'siteacc_noscreen_users_btn'  => 'Don\' grant access',
     'Translation / Wording'       => 'Edit the language',
-    'translating_hint'            => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.' .
+    'translating_hint'            => 'Here you can change all texts of the user interface of Antragsgrün. If you want to completely translate Antragsgrün into another language, please <a href="https://github.com/CatoTH">contact us</a> so we can adopt the translation into the official project.<br>' .
                                      '<strong>Hint:</strong> Changes here only affect this one consultation.',
     'translating_none'            => 'No strings to translate',
     'translating_base'            => 'Base language',

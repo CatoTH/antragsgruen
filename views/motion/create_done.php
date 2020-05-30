@@ -16,14 +16,15 @@ $this->title = Yii::t('motion', $mode == 'create' ? 'Start a Motion' : 'Edit Mot
 $controller = $this->context;
 $controller->layoutParams->addBreadcrumb($this->title, UrlHelper::createMotionUrl($motion));
 
+$typeName = $motion->getMyMotionType()->titleSingular;
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
-    echo '<h1>' . Yii::t('motion', 'submitted_create') . '</h1>';
+    echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_create')) . '</h1>';
     $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_create'));
 } elseif ($motion->isInScreeningProcess()) {
-    echo '<h1>' . Yii::t('motion', 'submitted_submit') . '</h1>';
+    echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_submit')) . '</h1>';
     $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_submit'));
 } else {
-    echo '<h1>' . Yii::t('motion', 'submitted_publish') . '</h1>';
+    echo '<h1>' . str_replace('%TITLE%', $typeName, Yii::t('motion', 'submitted_publish')) . '</h1>';
     $controller->layoutParams->addBreadcrumb(Yii::t('motion', 'created_bread_publish'));
 }
 
@@ -38,7 +39,7 @@ if ($motion->isInScreeningProcess()) {
 if ($motion->status === Motion::STATUS_COLLECTING_SUPPORTERS) {
     $supportType   = $motion->motionType->getMotionSupportTypeClass();
     $min           = $supportType->getSettingsObj()->minSupporters;
-    $msg           = str_replace('%MIN%', $min, Yii::t('motion', 'confirmed_support_phase'));
+    $msg           = str_replace(['%TITLE%', '%MIN%'], [$motion->getMyMotionType()->titleSingular, $min], Yii::t('motion', 'confirmed_support_phase'));
     $requirement   = '';
     $missingFemale = $motion->getMissingSupporterCountByGender($supportType, 'female');
     if ($missingFemale > 0) {

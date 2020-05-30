@@ -53,10 +53,13 @@ if ($form->motionType->getMotionSupportTypeClass()->collectSupportersBeforePubli
     $str = Yii::t('motion', 'support_collect_explanation');
     $str = str_replace('%MIN%', $supp->getSettingsObj()->minSupporters, $str);
     $str = str_replace('%MIN+1%', ($supp->getSettingsObj()->minSupporters + 1), $str);
+    $title = Yii::t('motion', 'support_collect_explanation_title');
 
-    echo '<div style="font-weight: bold; text-decoration: underline;">' .
-        Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
-        $str . '<br><br>';
+    if (trim($title) !== '' || trim($str) !== '') {
+        echo '<div style="font-weight: bold; text-decoration: underline;">' .
+             Yii::t('motion', 'support_collect_explanation_title') . '</div>' .
+             $str . '<br><br>';
+    }
 }
 
 
