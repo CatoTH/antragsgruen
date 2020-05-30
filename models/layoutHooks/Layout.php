@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSection, Site};
 
 class Layout
 {
@@ -174,6 +174,16 @@ class Layout
     public static function getMotionDetailsInitiatorName(string $origLine, ISupporter $supporter): string
     {
         return static::callHook('getMotionDetailsInitiatorName', [$supporter], $origLine);
+    }
+
+    public static function getSupporterNameWithOrga(ISupporter $supporter): string
+    {
+        return static::callHook('getSupporterNameWithOrga', [$supporter], '');
+    }
+
+    public static function getSupporterNameWithResolutionDate(ISupporter $supporter, bool $html): string
+    {
+        return static::callHook('getSupporterNameWithResolutionDate', [$supporter, $html], '');
     }
 
     public static function getAdminIndexHint(Consultation $consultation): string

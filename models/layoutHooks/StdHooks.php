@@ -171,6 +171,67 @@ class StdHooks extends Hooks
         return $before;
     }
 
+    public function getSupporterNameWithOrga(string $before, ISupporter $supporter): string
+    {
+        if ($supporter->personType === ISupporter::PERSON_NATURAL || $supporter->personType === null) {
+            $name = $supporter->name;
+            if ($name == '' && $supporter->getMyUser()) {
+                $name = $supporter->getMyUser()->name;
+            }
+            if ($supporter->organization != '') {
+                $name .= ' (' . trim($supporter->organization, " \t\n\r\0\x0B()") . ')';
+            }
+            return $name;
+        } else {
+            return trim($supporter->organization, " \t\n\r\0\x0B()");
+        }
+    }
+
+    public function getSupporterNameWithResolutionDate(string $before, ISupporter $supporter, bool $html): string
+    {
+        if ($html) {
+            $name = Html::encode($supporter->name);
+            $orga = Html::encode(trim($supporter->organization, " \t\n\r\0\x0B"));
+            if ($name == '' && $supporter->getMyUser()) {
+                $name = Html::encode($supporter->getMyUser()->name);
+            }
+            if ($supporter->personType === ISupporter::PERSON_NATURAL || $supporter->personType === null) {
+                if ($orga != '') {
+                    $name .= ' <small style="font-weight: normal;">';
+                    $name .= '(' . $orga . ')';
+                    $name .= '</small>';
+                }
+                return $name;
+            } else {
+                if ($supporter->resolutionDate > 0) {
+                    $orga .= ' <small style="font-weight: normal;">(';
+                    $orga .= \Yii::t('motion', 'resolution_on') . ': ';
+                    $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false);
+                    $orga .= ')</small>';
+                }
+                return $orga;
+            }
+        } else {
+            $name = $supporter->name;
+            $orga = trim($supporter->organization, " \t\n\r\0\x0B");
+            if ($name == '' && $supporter->getMyUser()) {
+                $name = $supporter->getMyUser()->name;
+            }
+            if ($supporter->personType === ISupporter::PERSON_NATURAL || $supporter->personType === null) {
+                if ($orga !== '') {
+                    $name .= ' (' . $orga . ')';
+                }
+                return $name;
+            } else {
+                if ($supporter->resolutionDate > 0) {
+                    $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
+                    $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false) . ')';
+                }
+                return $orga;
+            }
+        }
+    }
+
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
     {
         if (!$this->consultation->getSettings()->amendmentBookmarksWithNames) {

@@ -5,7 +5,7 @@ namespace app\plugins\egp;
 use app\components\UrlHelper;
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
-use app\models\db\{Amendment, ConsultationText, Motion, User};
+use app\models\db\{Amendment, ConsultationText, ISupporter, Motion, User};
 use app\models\layoutHooks\{Hooks, Layout};
 use yii\helpers\Html;
 
@@ -244,5 +244,10 @@ class LayoutHooks extends Hooks
         }
 
         return $before;
+    }
+
+    public function getSupporterNameWithOrga(string $before, ISupporter $supporter): string
+    {
+        return $supporter->organization;
     }
 }

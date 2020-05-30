@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSection, Site};
 
 class Hooks
 {
@@ -160,6 +160,16 @@ class Hooks
     }
 
     public function getMotionDetailsInitiatorName(string $before, ISupporter $supporter): string
+    {
+        return $before;
+    }
+
+    public function getSupporterNameWithOrga(string $before, ISupporter $supporter): string
+    {
+        return $before;
+    }
+
+    public function getSupporterNameWithResolutionDate(string $before, ISupporter $supporter, bool $html): string
     {
         return $before;
     }

@@ -2,9 +2,7 @@
 
 namespace app\models\db;
 
-use app\components\Tools;
 use yii\db\ActiveRecord;
-use yii\helpers\Html;
 
 /**
  * @property int $id
@@ -72,63 +70,12 @@ abstract class ISupporter extends ActiveRecord
 
     public function getNameWithOrga(): string
     {
-        if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
-            $name = $this->name;
-            if ($name == '' && $this->getMyUser()) {
-                $name = $this->getMyUser()->name;
-            }
-            if ($this->organization != '') {
-                $name .= ' (' . trim($this->organization, " \t\n\r\0\x0B()") . ')';
-            }
-            return $name;
-        } else {
-            return trim($this->organization, " \t\n\r\0\x0B()");
-        }
+        return \app\models\layoutHooks\Layout::getSupporterNameWithOrga($this);
     }
 
     public function getNameWithResolutionDate(bool $html = true): string
     {
-        if ($html) {
-            $name = Html::encode($this->name);
-            $orga = Html::encode(trim($this->organization, " \t\n\r\0\x0B"));
-            if ($name == '' && $this->getMyUser()) {
-                $name = Html::encode($this->getMyUser()->name);
-            }
-            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
-                if ($orga != '') {
-                    $name .= ' <small style="font-weight: normal;">';
-                    $name .= '(' . $orga . ')';
-                    $name .= '</small>';
-                }
-                return $name;
-            } else {
-                if ($this->resolutionDate > 0) {
-                    $orga .= ' <small style="font-weight: normal;">(';
-                    $orga .= \Yii::t('motion', 'resolution_on') . ': ';
-                    $orga .= Tools::formatMysqlDate($this->resolutionDate, null, false);
-                    $orga .= ')</small>';
-                }
-                return $orga;
-            }
-        } else {
-            $name = $this->name;
-            $orga = trim($this->organization, " \t\n\r\0\x0B");
-            if ($name == '' && $this->getMyUser()) {
-                $name = $this->getMyUser()->name;
-            }
-            if ($this->personType === static::PERSON_NATURAL || $this->personType === null) {
-                if ($orga !== '') {
-                    $name .= ' (' . $orga . ')';
-                }
-                return $name;
-            } else {
-                if ($this->resolutionDate > 0) {
-                    $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
-                    $orga .= Tools::formatMysqlDate($this->resolutionDate, null, false) . ')';
-                }
-                return $orga;
-            }
-        }
+        return \app\models\layoutHooks\Layout::getSupporterNameWithResolutionDate($this, $html);
     }
 
     public function getGivenNameOrFull(): string
