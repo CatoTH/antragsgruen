@@ -5,6 +5,7 @@ namespace app\plugins\egp;
 use app\components\UrlHelper;
 use app\models\db\Motion;
 use app\models\db\Site;
+use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
 use yii\web\View;
 
@@ -53,5 +54,17 @@ class Module extends ModuleBase
         return [
             'ods'    => 'egp/motion/ods',
         ];
+    }
+
+    public static function getProvidedPdfLayouts(array $default): array
+    {
+        $default[] = [
+            'id'        => 101,
+            'title'     => 'European Greens',
+            'preview'   => null,
+            'className' => Egp::class,
+        ];
+
+        return $default;
     }
 }
