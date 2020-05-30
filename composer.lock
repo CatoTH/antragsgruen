@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "59578cb44d90ac2755b1161d1009f76b",
+    "content-hash": "8068bb754253ff36499a7ce80d7aff3e",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -165,16 +165,16 @@
         },
         {
             "name": "catoth/html2opendocument",
-            "version": "0.12",
+            "version": "0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CatoTH/html2opendocument.git",
-                "reference": "5070dc80aa5bbfa0339e64965425395d7536c435"
+                "reference": "689574eda5d1bdcf90b14cedefcec5c216682ca3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/5070dc80aa5bbfa0339e64965425395d7536c435",
-                "reference": "5070dc80aa5bbfa0339e64965425395d7536c435",
+                "url": "https://api.github.com/repos/CatoTH/html2opendocument/zipball/689574eda5d1bdcf90b14cedefcec5c216682ca3",
+                "reference": "689574eda5d1bdcf90b14cedefcec5c216682ca3",
                 "shasum": ""
             },
             "require": {
@@ -206,7 +206,7 @@
                 "ods",
                 "odt"
             ],
-            "time": "2018-10-26T17:01:56+00:00"
+            "time": "2020-05-30T11:45:51+00:00"
         },
         {
             "name": "cebe/markdown",

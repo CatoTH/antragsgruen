@@ -86,6 +86,13 @@ if ($entry->getMyMotionType()->texTemplateId || $entry->getMyMotionType()->pdfLa
 }
 echo Html::a('ODT', UrlHelper::createMotionUrl($entry, 'odt'), ['class' => 'odt']) . ' / ';
 echo Html::a('HTML', UrlHelper::createMotionUrl($entry, 'plainhtml'), ['class' => 'plainHtml']);
+
+foreach ($controller->getParams()->getPluginClasses() as $pluginClass) {
+    foreach ($pluginClass::getCustomMotionExports($entry) as $title => $url) {
+        echo ' / ' . Html::a(Html::encode($title), $url);
+    }
+}
+
 echo '</td>';
 
 if ($colAction) {

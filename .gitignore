@@ -6,6 +6,10 @@ dist
 test.php
 simplesaml
 config/config.json
+config/config.*.json
+!config/config.template.json
+!config/config.template_singlesite.json
+config/drupal_civicrm.json
 config/config_tests.json
 config/DEBUG
 config/update-private.key

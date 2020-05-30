@@ -2,6 +2,8 @@
 
 namespace app\plugins\egp;
 
+use app\components\UrlHelper;
+use app\models\db\Motion;
 use app\models\db\Site;
 use app\plugins\ModuleBase;
 use yii\web\View;
@@ -36,6 +38,20 @@ class Module extends ModuleBase
                 'hooks'       => LayoutHooks::class,
                 'odtTemplate' => __DIR__ . '/OpenOffice-Template-Gruen.odt',
             ],
+        ];
+    }
+
+    public static function getCustomMotionExports(Motion $motion): array
+    {
+        return [
+            'Spreadsheet' => UrlHelper::createUrl(['/egp/motion/ods', 'motionSlug' => $motion->getMotionSlug()]),
+        ];
+    }
+
+    protected static function getMotionUrlRoutes(): array
+    {
+        return [
+            'ods'    => 'egp/motion/ods',
         ];
     }
 }
