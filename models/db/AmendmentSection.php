@@ -214,14 +214,15 @@ class AmendmentSection extends IMotionSection
      *
      * @param string[] $origParagraphs
      * @param bool $splitListItems
+     * @param int
      * @return MotionSectionParagraphAmendment[]
      */
-    public function diffStrToOrigParagraphs($origParagraphs, $splitListItems = true)
+    public function diffStrToOrigParagraphs($origParagraphs, $splitListItems, $formatting)
     {
         $amParagraphs = [];
         $newSections  = HTMLTools::sectionSimpleHTML($this->data, $splitListItems);
         $diff         = new Diff();
-        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newSections, DiffRenderer::FORMATTING_CLASSES);
+        $diffParas = $diff->compareHtmlParagraphs($origParagraphs, $newSections, $formatting);
         foreach ($diffParas as $paraNo => $diffPara) {
             $firstDiffPos = DiffRenderer::paragraphContainsDiff($diffPara);
             if ($firstDiffPos !== null) {
