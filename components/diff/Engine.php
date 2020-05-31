@@ -68,38 +68,102 @@ class Engine
     }
 
     /**
+     * This gives the offsets of the first string in the two arrays that is not equal.
+     * As we might be ignoring a string (###LINENUMBER###), that might not be the same index for both array
+     *
+     * @param array $strings1
+     * @param array $strings2
+     * @param bool $relaxedTags
+     *
+     * @return int[]
+     */
+    private function getArrayDiffStarts(array $strings1, array $strings2, bool $relaxedTags): array
+    {
+        $start1 = 0;
+        $start2 = 0;
+        $end1   = count($strings1) - 1;
+        $end2   = count($strings2) - 1;
+
+        loop:
+        if ($start1 > $end1 || $start2 > $end2) {
+            return [$start1, $start2];
+        }
+
+        if ($strings1[$start1] === $this->IGNORE_STR && $strings2[$start2] !== $this->IGNORE_STR &&
+            ($start1 + 1) <= $end1 && $strings1[$start1 + 1] === $strings2[$start2]) {
+            $start1++;
+        }
+
+        if (!$this->strCmp($strings1[$start1], $strings2[$start2], $relaxedTags)) {
+            return [$start1, $start2];
+        }
+        $start1++;
+        $start2++;
+        goto loop; // This feels so wrong, yet so right...
+    }
+
+    /**
+     * This returns the last index of the two string arrays that are different -
+     * taking into account that some string might be ignored (###LINENUMBER###)
+     * and that the end indexes should not be before the start indexes
+     *
+     * @param array $strings1
+     * @param array $strings2
+     * @param int $start1
+     * @param int $start2
+     * @param bool $relaxedTags
+     *
+     * @return int[]
+     */
+    private function getArrayDiffEnds(array $strings1, array $strings2, int $start1, int $start2, bool $relaxedTags): array
+    {
+        $end1   = count($strings1) - 1;
+        $end2   = count($strings2) - 1;
+
+        loop:
+        if ($end1 < $start1 || $end2 < $start2) {
+            return [$end1, $end2];
+        }
+
+        if ($strings1[$end1] === $this->IGNORE_STR && $strings2[$end2] !== $this->IGNORE_STR &&
+            ($end1 - 1) >= $start1 && $strings1[$end1 - 1] === $strings2[$end2]) {
+            $end1--;
+        }
+
+        if (!$this->strCmp($strings1[$end1], $strings2[$end2], $relaxedTags)) {
+            return [$end1, $end2];
+        }
+        $end1--;
+        $end2--;
+        goto loop; // This feels so wrong, yet so right...
+    }
+
+    /**
      * @param string[] $strings1
      * @param string[] $strings2
      * @param bool $relaxedTags (for matching LIs even when some attributes are different
      * @return array
      */
-    public function compareArrays($strings1, $strings2, bool $relaxedTags)
+    public function compareArrays(array $strings1, array $strings2, bool $relaxedTags): array
     {
-        // initialise the sequences and comparison start and end positions
-        $start = 0;
-        $end1  = count($strings1) - 1;
-        $end2  = count($strings2) - 1;
-
-        // skip any common prefix
-        while ($start <= $end1 && $start <= $end2 && $this->strCmp($strings1[$start], $strings2[$start], $relaxedTags)) {
-            $start++;
-        }
+        list($start1, $start2) = $this->getArrayDiffStarts($strings1, $strings2, $relaxedTags);
+        list($end1, $end2) = $this->getArrayDiffEnds($strings1, $strings2, $start1, $start2, $relaxedTags);
 
         // skip any common suffix
-        while ($end1 >= $start && $end2 >= $start && $this->strCmp($strings1[$end1], $strings2[$end2], $relaxedTags)) {
+        while ($end1 >= $start1 && $end2 >= $start2 && $this->strCmp($strings1[$end1], $strings2[$end2], $relaxedTags)) {
             $end1--;
             $end2--;
         }
 
         // compute the table of longest common subsequence lengths
-        $table = self::computeTable($strings1, $strings2, $start, $end1, $end2, $relaxedTags);
+        $table = self::computeTable($strings1, $strings2, $start1, $start2, $end1, $end2, $relaxedTags);
 
         // generate the partial diff
-        $partialDiff = self::generatePartialDiff($table, $strings1, $strings2, $start, $relaxedTags);
+        $partialDiff = self::generatePartialDiff($table, $strings1, $strings2, $start1, $start2, $relaxedTags);
 
         // generate the full diff
         $diff = [];
-        for ($index = 0; $index < $start; $index++) {
+        for ($index = 0; $index < $start1; $index++) {
             $diff[] = [$strings1[$index], self::UNMODIFIED];
         }
         while (count($partialDiff) > 0) {
@@ -121,7 +185,7 @@ class Engine
      * @param $string2
      * @return array
      */
-    public function compareStrings($string1, $string2)
+    public function compareStrings(string $string1, string $string2): array
     {
         $sequence1 = preg_split('/\R/', $string1);
         $sequence2 = preg_split('/\R/', $string2);
@@ -313,18 +377,20 @@ class Engine
      * Returns the table of longest common subsequence lengths for the specified
      * sequences. The parameters are:
      *
-     * @param string $sequence1 - the first sequence
-     * @param string $sequence2 - the second sequence
-     * @param int $start        - the starting index
+     * @param string[] $sequence1 - the first sequence
+     * @param string[] $sequence2 - the second sequence
+     * @param int $start1         - the first starting index
+     * @param int $start2         - the second starting index
      * @param int $end1         - the ending index for the first sequence
      * @param int $end2         - the ending index for the second sequence
+     * @param bool $relaxedTags
      * @return array
      */
-    private function computeTable($sequence1, $sequence2, $start, $end1, $end2, $relaxedTags)
+    private function computeTable($sequence1, $sequence2, $start1, $start2, $end1, $end2, $relaxedTags)
     {
         // determine the lengths to be compared
-        $length1 = $end1 - $start + 1;
-        $length2 = $end2 - $start + 1;
+        $length1 = $end1 - $start1 + 1;
+        $length2 = $end2 - $start2 + 1;
 
         // initialise the table
         $table = [array_fill(0, $length2 + 1, 0)];
@@ -337,7 +403,7 @@ class Engine
             // loop over the columns
             for ($index2 = 1; $index2 <= $length2; $index2++) {
                 // store the longest common subsequence length
-                if ($this->strCmp($sequence1[$index1 + $start - 1], $sequence2[$index2 + $start - 1], $relaxedTags)) {
+                if ($this->strCmp($sequence1[$index1 + $start1 - 1], $sequence2[$index2 + $start2 - 1], $relaxedTags)) {
                     $table[$index1][$index2] = $table[$index1 - 1][$index2 - 1] + 1;
                 } else {
                     $table[$index1][$index2] = max($table[$index1 - 1][$index2], $table[$index1][$index2 - 1]);
@@ -356,10 +422,12 @@ class Engine
      * @param array $table     - the table returned by the computeTable function
      * @param array $sequence1 - the first sequence
      * @param array $sequence2 - the second sequence
-     * @param int $start       - the starting index
+     * @param int $start1      - the first starting index
+     * @param int $start2      - the second starting index
+     * @param bool $relaxedTags
      * @return array
      */
-    private function generatePartialDiff($table, $sequence1, $sequence2, $start, $relaxedTags)
+    private function generatePartialDiff($table, $sequence1, $sequence2, $start1, $start2, $relaxedTags)
     {
         //  initialise the diff
         $diff = [];
@@ -372,21 +440,21 @@ class Engine
         while ($index1 > 0 || $index2 > 0) {
             // check what has happened to the items at these indices
             if ($index1 > 0 && $index2 > 0
-                && $this->strCmp($sequence1[$index1 + $start - 1], $sequence2[$index2 + $start - 1], $relaxedTags)
+                && $this->strCmp($sequence1[$index1 + $start1 - 1], $sequence2[$index2 + $start2 - 1], $relaxedTags)
             ) {
                 // update the diff and the indices
-                $diff[] = [$sequence1[$index1 + $start - 1], self::UNMODIFIED];
+                $diff[] = [$sequence1[$index1 + $start1 - 1], self::UNMODIFIED];
                 $index1--;
                 $index2--;
             } elseif ($index2 > 0
                 && $table[$index1][$index2] == $table[$index1][$index2 - 1]
             ) {
                 // update the diff and the indices
-                $diff[] = [$sequence2[$index2 + $start - 1], self::INSERTED];
+                $diff[] = [$sequence2[$index2 + $start2 - 1], self::INSERTED];
                 $index2--;
             } else {
                 // update the diff and the indices
-                $diff[] = [$sequence1[$index1 + $start - 1], self::DELETED];
+                $diff[] = [$sequence1[$index1 + $start1 - 1], self::DELETED];
                 $index1--;
             }
 

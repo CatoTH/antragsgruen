@@ -4,6 +4,7 @@
 
 - Several minor accessibility and performance improvements.
 - Updates to core libraries (Yii and jQuery).
+- Bugfix: A bug that lead to unchanged text before changed text being shown as deleted and inserted again was fixed.
 - Bugfix: motions of the status "Draft (admin)" could be accessed using a known direct link.
 - Bugfix: wrong time transformation when using the english version.
 - Bugfix: When showing the diff view of amendments changing the text within list items, some words could get lost.
