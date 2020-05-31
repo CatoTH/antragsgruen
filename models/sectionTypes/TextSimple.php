@@ -72,7 +72,7 @@ class TextSimple extends Text
 
         $amParas          = $moParas;
         $changedParagraph = -1;
-        foreach ($amSection->diffStrToOrigParagraphs($moParas, false) as $paraNo => $para) {
+        foreach ($amSection->diffStrToOrigParagraphs($moParas, false, DiffRenderer::FORMATTING_ICE) as $paraNo => $para) {
             $amParas[$paraNo] = $para;
             $changedParagraph = $paraNo;
         }
