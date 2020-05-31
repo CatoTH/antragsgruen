@@ -11,6 +11,26 @@ class DiffTest extends TestBase
 {
     use Specify;
 
+    public function testLineNumberBeforeActualChange()
+    {
+        $engine = new Engine();
+        $engine->setIgnoreStr('###LINENUMBER###');
+
+        $array1 = ['1', '2', '###LINENUMBER###', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '###LINENUMBER###', '13', '14'];
+        $array2 = ['1', '2', '3', '4', '5', '6', '11', '12', '13', '14'];
+        $returned = $engine->compareArrays($array1, $array2, false);
+
+        $this->assertEquals([
+            ['1', 0], ['2', 0],
+            ['###LINENUMBER###', 0], // This should not be marked as deleted
+            ['3', 0], ['4', 0], ['5', 0], ['6', 0],
+            ['7', 1], ['8', 1], ['9', 1], ['10', 1], // Deleted
+            ['11', 0], ['12', 0],
+            ['###LINENUMBER###', 0], // This should not be marked as deleted
+            ['13', 0], ['14', 0],
+        ], $returned);
+    }
+
     public function testEdgeCaseUnchangedPrefixPostfix()
     {
         $lineOld = '<ul><li value="1">###LINENUMBER###Hier ein Anfang. Der Einzelhandel ###LINENUMBER###hat bereits weitere Marktanteile an den Onlinehandel verloren.</li></ul>';
