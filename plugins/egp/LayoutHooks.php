@@ -2,6 +2,7 @@
 
 namespace app\plugins\egp;
 
+use app\components\Tools;
 use app\components\UrlHelper;
 use app\controllers\{admin\IndexController, Base, UserController};
 use app\models\AdminTodoItem;
@@ -248,6 +249,41 @@ class LayoutHooks extends Hooks
 
     public function getSupporterNameWithOrga(string $before, ISupporter $supporter): string
     {
-        return $supporter->organization;
+        return trim($supporter->organization, " \t\n\r\0\x0B");
+    }
+
+    public function getSupporterNameWithResolutionDate(string $before, ISupporter $supporter, bool $html): string
+    {
+        if ($html) {
+            $orga = Html::encode(trim($supporter->organization, " \t\n\r\0\x0B"));
+            if ($supporter->resolutionDate > 0) {
+                $orga .= ' <small style="font-weight: normal;">(';
+                $orga .= \Yii::t('motion', 'resolution_on') . ': ';
+                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false);
+                $orga .= ')</small>';
+            }
+
+            return $orga;
+        } else {
+            $orga = trim($supporter->organization, " \t\n\r\0\x0B");
+            if ($supporter->resolutionDate > 0) {
+                $orga .= ' (' . \Yii::t('motion', 'resolution_on') . ': ';
+                $orga .= Tools::formatMysqlDate($supporter->resolutionDate, null, false) . ')';
+            }
+
+            return $orga;
+        }
+    }
+
+    public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
+    {
+        if (!$this->consultation->getSettings()->amendmentBookmarksWithNames) {
+            return '';
+        }
+        if (count($amendment->getInitiators()) === 0) {
+            return '';
+        }
+        $initiator = $amendment->getInitiators()[0];
+        return ' <small>' . Html::encode($initiator->organization) . '</small>';
     }
 }
