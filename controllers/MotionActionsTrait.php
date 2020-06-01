@@ -187,9 +187,6 @@ trait MotionActionsTrait
 
         MotionSupporter::createSupport($motion, $currentUser, $name, $orga, $role, $gender);
 
-        $motion->refresh();
-        $motion->flushViewCache();
-
         \Yii::$app->session->setFlash('success', $string);
     }
 
@@ -255,10 +252,6 @@ trait MotionActionsTrait
 
         $this->motionLikeDislike($motion, $role, \Yii::t('motion', 'support_done'), $name, $orga, $gender);
         ConsultationLog::logCurrUser($motion->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $motion->id);
-
-        if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
-            EmailNotifications::sendMotionSupporterMinimumReached($motion);
-        }
     }
 
     /**

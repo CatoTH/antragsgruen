@@ -3,14 +3,22 @@
 namespace app\plugins\egp;
 
 use app\components\UrlHelper;
-use app\models\db\Motion;
-use app\models\db\Site;
+use app\models\db\{AmendmentSupporter, Motion, MotionSupporter, Site};
 use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
+use yii\base\Event;
 use yii\web\View;
 
 class Module extends ModuleBase
 {
+    public function init(): void
+    {
+        parent::init();
+
+        Event::on(AmendmentSupporter::class, AmendmentSupporter::EVENT_SUPPORTED, [Notifications::class, 'onAmendmentSupport'], null, false);
+        Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [Notifications::class, 'onMotionSupport'], null, false);
+    }
+
     /**
      * @param Site $site
      *

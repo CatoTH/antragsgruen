@@ -2,6 +2,10 @@
 
 namespace app\models\db;
 
+use app\components\EmailNotifications;
+use app\models\events\AmendmentSupporterEvent;
+use yii\base\Event;
+
 /**
  * @package app\models\db
  *
@@ -26,8 +30,8 @@ namespace app\models\db;
  */
 class AmendmentSupporter extends ISupporter
 {
-    /**
-     */
+    const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
+
     public function init()
     {
         parent::init();
@@ -35,6 +39,9 @@ class AmendmentSupporter extends ISupporter
         $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
+
+        // This handler should be called at the end of the event chain
+        Event::on(AmendmentSupporter::class, AmendmentSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
     }
 
     /**
@@ -73,20 +80,12 @@ class AmendmentSupporter extends ISupporter
         \Yii::$app->session->set('anonymous_amendment_supports', $pre);
     }
 
-    /**
-     * @param Amendment $amendment
-     * @param User|null $user
-     * @param string $name
-     * @param string $orga
-     * @param string $role
-     * @param string $gender
-     */
-    public static function createSupport(Amendment $amendment, $user, $name, $orga, $role, $gender = '')
+    public static function createSupport(Amendment $amendment, ?User $user, string $name, string $orga, string $role, string $gender = ''): void
     {
         $maxPos = 0;
         if ($user) {
             foreach ($amendment->amendmentSupporters as $supp) {
-                if ($supp->userId == $user->id) {
+                if ($supp->userId === $user->id) {
                     $amendment->unlink('amendmentSupporters', $supp, true);
                 } elseif ($supp->position > $maxPos) {
                     $maxPos = $supp->position;
@@ -116,6 +115,27 @@ class AmendmentSupporter extends ISupporter
 
         if (!$user) {
             static::addAnonymouslySupportedAmendment($support);
+        }
+
+        $amendment->refresh();
+        $amendment->flushCacheWithChildren(null);
+
+        $support->trigger(AmendmentSupporter::EVENT_SUPPORTED, new AmendmentSupporterEvent($support));
+    }
+
+    public static function checkOfficialSupportNumberReached(AmendmentSupporterEvent $event): void
+    {
+        $support = $event->supporter;
+        if ($support->role !== static::ROLE_SUPPORTER) {
+            return;
+        }
+        /** @var Amendment $amendment */
+        $amendment = $support->getIMotion();
+
+        $supportType = $amendment->getMyMotionType()->getMotionSupportTypeClass();
+
+        if (count($amendment->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
+            EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
         }
     }
 

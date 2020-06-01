@@ -2,6 +2,10 @@
 
 namespace app\models\db;
 
+use app\components\EmailNotifications;
+use app\models\events\MotionSupporterEvent;
+use yii\base\Event;
+
 /**
  * @package app\models\db
  *
@@ -26,6 +30,8 @@ namespace app\models\db;
  */
 class MotionSupporter extends ISupporter
 {
+    const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
+
     public function init()
     {
         parent::init();
@@ -33,6 +39,9 @@ class MotionSupporter extends ISupporter
         $this->on(static::EVENT_AFTER_UPDATE, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
+
+        // This handler should be called at the end of the event chain
+        Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
     }
 
     /**
@@ -114,6 +123,26 @@ class MotionSupporter extends ISupporter
 
         if (!$user) {
             static::addAnonymouslySupportedMotion($support);
+        }
+
+        $motion->refresh();
+        $motion->flushViewCache();
+
+        $support->trigger(MotionSupporter::EVENT_SUPPORTED, new MotionSupporterEvent($support));
+    }
+
+    public static function checkOfficialSupportNumberReached(MotionSupporterEvent $event): void
+    {
+        $support = $event->supporter;
+        if ($support->role !== static::ROLE_SUPPORTER) {
+            return;
+        }
+        /** @var Motion $motion */
+        $motion = $support->getIMotion();
+
+        $supportType = $motion->getMyMotionType()->getMotionSupportTypeClass();
+        if (count($motion->getSupporters()) == $supportType->getSettingsObj()->minSupporters) {
+            EmailNotifications::sendMotionSupporterMinimumReached($motion);
         }
     }
 

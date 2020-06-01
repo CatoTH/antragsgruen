@@ -22,7 +22,7 @@ class Module extends ModuleBase
 
     /**
      * @param Controller $controller
-     * @return \yii\web\AssetBundle[]
+     * @return \yii\web\AssetBundle[]|string[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public static function getActiveAssetBundles(Controller $controller)

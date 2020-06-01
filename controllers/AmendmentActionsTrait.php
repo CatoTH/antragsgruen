@@ -204,11 +204,6 @@ trait AmendmentActionsTrait
 
         $this->amendmentLikeDislike($amendment, $role, \Yii::t('amend', 'support_done'), $name, $orga, $gender);
         ConsultationLog::logCurrUser($amendment->getMyConsultation(), ConsultationLog::MOTION_SUPPORT, $amendment->id);
-
-        $minSupporters = $supportClass->getSettingsObj()->minSupporters;
-        if (count($amendment->getSupporters()) === $minSupporters) {
-            EmailNotifications::sendAmendmentSupporterMinimumReached($amendment);
-        }
     }
 
     /**
@@ -229,9 +224,6 @@ trait AmendmentActionsTrait
         }
 
         AmendmentSupporter::createSupport($amendment, $currentUser, $name, $orga, $role, $gender);
-
-        $amendment->refresh();
-        $amendment->flushCacheWithChildren(null);
 
         \Yii::$app->session->setFlash('success', $string);
     }

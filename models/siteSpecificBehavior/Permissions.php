@@ -2,15 +2,9 @@
 
 namespace app\models\siteSpecificBehavior;
 
-use app\models\db\ConsultationMotionType;
-use app\models\db\IMotion;
-use app\models\db\MotionSupporter;
-use app\models\db\User;
-use app\models\exceptions\Internal;
-use app\models\exceptions\NotAmendable;
-use app\models\policies\All;
-use app\models\db\Motion;
-use app\models\policies\IPolicy;
+use app\models\db\{ConsultationMotionType, IMotion, MotionSupporter, User, Motion};
+use app\models\exceptions\{Internal, NotAmendable};
+use app\models\policies\{All, IPolicy};
 use app\models\supportTypes\SupportBase;
 
 class Permissions
@@ -24,17 +18,17 @@ class Permissions
     {
         $consultation = $motion->getMyConsultation();
 
-        if ($motion->status == Motion::STATUS_DRAFT) {
+        if ($motion->status === Motion::STATUS_DRAFT) {
             $hadLoggedInUser = false;
             foreach ($motion->motionSupporters as $supp) {
                 $currUser = User::getCurrentUser();
-                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
+                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId > 0) {
                     $hadLoggedInUser = true;
                     if ($currUser && $currUser->id == $supp->userId) {
                         return true;
                     }
                 }
-                if ($supp->role == MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
+                if ($supp->role === MotionSupporter::ROLE_INITIATOR && $supp->userId === null) {
                     if ($currUser && $currUser->hasPrivilege($consultation, User::PRIVILEGE_MOTION_EDIT)) {
                         return true;
                     }
@@ -43,7 +37,7 @@ class Permissions
             if ($hadLoggedInUser) {
                 return false;
             } else {
-                if ($motion->motionType->getMotionPolicy()->getPolicyID() == All::getPolicyID()) {
+                if ($motion->motionType->getMotionPolicy()->getPolicyID() === All::getPolicyID()) {
                     return true;
                 } else {
                     return false;

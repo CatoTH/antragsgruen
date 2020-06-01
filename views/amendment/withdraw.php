@@ -5,7 +5,7 @@ use app\models\db\Amendment;
 use yii\helpers\Html;
 
 /**
- * @var \yii\web\View $this
+ * @var Yii\web\View $this
  * @var Amendment $amendment
  */
 
@@ -15,20 +15,20 @@ $layout     = $controller->layoutParams;
 $motion     = $amendment->getMyMotion();
 
 $layout->addBreadcrumb($motion->motionType->titleSingular, UrlHelper::createMotionUrl($motion));
-$layout->addBreadcrumb(\Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
-$layout->addBreadcrumb(\Yii::t('amend', 'withdraw_bread'));
+$layout->addBreadcrumb(Yii::t('amend', 'amendment'), UrlHelper::createAmendmentUrl($amendment));
+$layout->addBreadcrumb(Yii::t('amend', 'withdraw_bread'));
 
-$this->title = \Yii::t('amend', 'withdraw') . ': ' . $amendment->getTitle();
+$this->title = Yii::t('amend', 'withdraw') . ': ' . $amendment->getTitle();
 
-echo '<h1>' . \Yii::t('amend', 'withdraw') . ': ' . Html::encode($amendment->getTitle()) . '</h1>';
+echo '<h1>' . Yii::t('amend', 'withdraw') . ': ' . Html::encode($amendment->getTitle()) . '</h1>';
 echo Html::beginForm('', 'post', ['class' => 'content withdrawForm']);
 
-echo '<div class="ask">' . \Yii::t('amend', 'withdraw_confirm') . '</div>';
+echo '<div class="ask">' . Yii::t('amend', 'withdraw_confirm') . '</div>';
 echo '<div class="row">';
 echo '<div class="cancel col-md-6"><button class="btn" name="cancel">' .
-    \Yii::t('amend', 'withdraw_no') . '</button></div>';
+    Yii::t('amend', 'withdraw_no') . '</button></div>';
 echo '<div class="withdraw col-md-6"><button class="btn btn-danger" name="withdraw">' .
-    \Yii::t('amend', 'withdraw_yes') . '</button></div>';
+    Yii::t('amend', 'withdraw_yes') . '</button></div>';
 echo '</div></div>';
 
 echo Html::endForm();
