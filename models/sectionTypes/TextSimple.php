@@ -3,7 +3,7 @@
 namespace app\models\sectionTypes;
 
 use app\components\diff\{AmendmentSectionFormatter, Diff, DiffRenderer};
-use app\components\{HashedStaticCache, HTMLTools};
+use app\components\{HashedStaticCache, HTMLTools, LineSplitter};
 use app\components\latex\{Content, Exporter};
 use app\models\db\{AmendmentSection, Consultation, MotionSection};
 use app\models\forms\CommentForm;
@@ -636,6 +636,33 @@ class TextSimple extends Text
         $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
         $originalData = $section->getOriginalMotionSection()->getData();
         return static::formatAmendmentForOds($originalData, $section->data, $firstLine, $lineLength);
+    }
+
+    public function getAmendmentUnchangedVersionODS(): string
+    {
+        /** @var AmendmentSection $section */
+        $section = $this->section;
+
+        if ($section->getAmendment()->globalAlternative) {
+            return $section->data;
+        }
+
+        $firstLine    = $section->getFirstLineNumber();
+        $lineLength   = $section->getCachedConsultation()->getSettings()->lineLength;
+        $originalData = $section->getOriginalMotionSection()->getData();
+
+        $formatter = new AmendmentSectionFormatter();
+        $formatter->setTextOriginal($originalData);
+        $formatter->setTextNew($section->data);
+        $formatter->setFirstLineNo($firstLine);
+        $diffGroups = $formatter->getDiffGroupsWithNumbers($lineLength, DiffRenderer::FORMATTING_CLASSES);
+
+        $unchanged = [];
+        foreach ($diffGroups as $diffGroup) {
+            $unchanged[] = LineSplitter::extractLines($originalData, $lineLength, $firstLine, $diffGroup['lineFrom'], $diffGroup['lineTo']);
+        }
+
+        return implode('<br><br>', $unchanged);
     }
 
     public function printMotionToODT(ODTText $odt): void

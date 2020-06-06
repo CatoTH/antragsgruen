@@ -211,7 +211,6 @@ class LineSplitter
             $spl = new static($html, $lineLength);
             $result = $spl->splitLines();
         } else {
-            /** @var \DOMElement $dom */
             $result = static::splitHtmlToLinesInt($dom, $lineLength, $prependLines);
         }
 
@@ -222,7 +221,7 @@ class LineSplitter
     /**
      * @param string[] $paragraphs
      * @param int $lineLength
-     * @return \string[]
+     * @return string[]
      */
     public static function addLineNumbersToParagraphs($paragraphs, $lineLength)
     {
@@ -233,15 +232,27 @@ class LineSplitter
         return $paragraphs;
     }
 
-
-    /**
-     * @param string $para
-     * @param int $lineLength
-     * @return int
-     */
-    public static function countMotionParaLines($para, $lineLength)
+    public static function countMotionParaLines(string $para, int $lineLength): int
     {
         $lines = LineSplitter::splitHtmlToLines($para, $lineLength, '');
         return count($lines);
+    }
+
+    /*
+     * HINT: This may or may not include the outer block nodes; specifically, if the first line within a list item is extracted,
+     * the generated HTML could have the list formatting included. If the second line is extracted, it probably will not.
+     * This function is mainly about the text content.
+     */
+    public static function extractLines(string $html, int $lineLength, int $paraFirstLineNo, int $lineFrom, int $lineTo): string
+    {
+        $lines = LineSplitter::splitHtmlToLines($html, $lineLength, '');
+        $intLineFrom = $lineFrom - $paraFirstLineNo;
+        $intLineTo = $lineTo - $paraFirstLineNo;
+        $selectedLines = [];
+        for ($i = $intLineFrom; $i <= $intLineTo && $i < count($lines); $i++) {
+            $selectedLines[] = $lines[$i];
+        }
+
+        return trim(HTMLTools::correctHtmlErrors(implode('', $selectedLines)));
     }
 }

@@ -5,6 +5,7 @@ use app\models\db\AmendmentSection;
 use app\models\db\Motion;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
+use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
@@ -77,6 +78,7 @@ $currCol = $firstCol = 1;
 
 $COL_PREFIX = $currCol++;
 $COL_INITIATOR = $currCol++;
+$COL_UNCHANGED = $currCol++;
 $COL_CHANGE = $currCol++;
 $COL_REASON = $currCol++;
 $COL_STATUS = $currCol++;
@@ -109,6 +111,9 @@ $doc->setCellStyle(2, $COL_PREFIX, [], ['fo:font-weight' => 'bold']);
 $doc->setCell(2, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, Yii::t('export', 'initiator'));
 $doc->setColumnWidth($COL_INITIATOR, 6);
 
+$doc->setCell(2, $COL_UNCHANGED, Spreadsheet::TYPE_TEXT, 'Unchanged text');
+$doc->setColumnWidth($COL_UNCHANGED, 10);
+
 $doc->setCell(2, $COL_CHANGE, Spreadsheet::TYPE_TEXT, 'Proposed amendment');
 $doc->setColumnWidth($COL_CHANGE, 10);
 
@@ -139,24 +144,38 @@ $firstMotionRow = $row;
 $amendments = $motion->getVisibleAmendmentsSorted(false);
 foreach ($amendments as $amendment) {
     $initiatorNames = [];
-    $initiatorContacs = [];
+    $initiatorContacts = [];
     foreach ($amendment->getInitiators() as $supp) {
         $initiatorNames[] = $supp->organization;
-        if ($supp->contactEmail != '') {
-            $initiatorContacs[] = $supp->contactEmail;
+        if ($supp->name) {
+            $initiatorContacts[] = Html::encode($supp->name);
         }
-        if ($supp->contactPhone != '') {
-            $initiatorContacs[] = $supp->contactPhone;
+        if ($supp->contactEmail) {
+            $initiatorContacts[] = Html::encode($supp->contactEmail);
+        } elseif ($supp->user && $supp->user->email) {
+            $initiatorContacts[] = Html::encode($supp->user->email);
+        }
+        if ($supp->contactPhone) {
+            $initiatorContacts[] = Html::encode($supp->contactPhone);
         }
     }
     $firstLine = $amendment->getFirstDiffLine();
 
     $doc->setCell($row, $COL_PREFIX, Spreadsheet::TYPE_TEXT, $amendment->titlePrefix);
     $doc->setCell($row, $COL_INITIATOR, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorNames));
-    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_TEXT, implode(', ', $initiatorContacs));
+    $doc->setCell($row, $COL_CONTACT, Spreadsheet::TYPE_HTML, implode("<br>", $initiatorContacts));
     $doc->setCell($row, $COL_STATUS, Spreadsheet::TYPE_HTML, $amendment->getFormattedStatus());
     $changeExplanation = HTMLTools::correctHtmlErrors($amendment->changeExplanation);
     $doc->setCell($row, $COL_REASON, Spreadsheet::TYPE_HTML, $changeExplanation);
+
+    $unchanged = [];
+    foreach ($amendment->getSortedSections(false) as $section) {
+        $type = $section->getSectionType();
+        if (is_a($type, TextSimple::class)) {
+            $unchanged[] = $type->getAmendmentUnchangedVersionODS();
+        }
+    }
+    $doc->setCell($row, $COL_UNCHANGED, Spreadsheet::TYPE_HTML, implode('<br><br>', $unchanged));
 
     $change = '';
     if ($amendment->changeEditorial !== '') {

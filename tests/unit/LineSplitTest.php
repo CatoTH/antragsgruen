@@ -9,8 +9,6 @@ class LineSplitTest extends TestBase
 {
     use Specify;
 
-    /**
-     */
     public function testWorkAfterManualLineBreaks()
     {
         $orig1 = '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invi dun tutlabore</p>';
@@ -34,8 +32,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect2, $out);
     }
 
-    /**
-     */
     public function testCase1()
     {
         $orig   = "Geschäftsordnung der Bundesversammlung geregelt. " .
@@ -51,8 +47,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testCase2()
     {
         $orig   = "gut und richtig, wenn Eltern selbst eine Initiative für " .
@@ -66,8 +60,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testCase3()
     {
         $orig   = "angehen, ist von großem Wert für unser Land. Veränderung kann nur gelingen, " .
@@ -83,8 +75,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testCase4()
     {
         $orig   = "angehen, ist von gro&szlig;em Wert f&uuml;r unser Land. Ver&auml;nderung " .
@@ -98,8 +88,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testCase5()
     {
         $orig   = "1angehen, ist von<br>gro&szlig;em Wert f&uuml;r<br>\nunser Land. Ver&auml;nderung " .
@@ -115,8 +103,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testWithDashInWord()
     {
         $orig   = '<p>nationalen Parlamente sowie die Rückkehr zur Gemeinschaftsmethode und eine EU-Kommissarin oder einen EU-Kommissar; er oder sie soll der Eurogruppe vorsitzen und mit allen WWU-relevanten Kompetenzen ausgestattet sein.</p>';
@@ -129,8 +115,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testWithLinenumbers()
     {
         $orig   = '<p>nationalen Parlamente sowie die Rückkehr zur Gemeinschaftsmethode und eine EU-Kommissarin oder einen EU-Kommissar; er oder sie soll der Eurogruppe vorsitzen und mit allen WWU-relevanten Kompetenzen ausgestattet sein.</p>';
@@ -143,8 +127,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testMultilevelList()
     {
         $orig   = '<p>1234 2234 3234 4234 5234 6234 7234 8234 9234 0234 1234 2234 3234 4234 5234 6234 7234 8234 9234 0234 1234 2234 3234 4234 5234 6234 7234 8234 9234 0234</p>' .
@@ -172,8 +154,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testUl()
     {
         $orig   = '<ul><li>No. 1</li></ul>';
@@ -185,8 +165,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testBlockquote()
     {
         $orig   = '<blockquote><p>No. 1</p></blockquote>';
@@ -198,8 +176,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testOl()
     {
         $orig   = '<ol start="2"><li>No. 1</li></ol>';
@@ -211,8 +187,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testForceLinebreak()
     {
         $orig   = '<p><br><strong>Demokratie und Freiheit </strong><br>' . "\r\n" .
@@ -226,8 +200,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testAmpersand()
     {
         $orig   = '<p>Test Line 1 &amp; ü € 2<br>Line 2</p>';
@@ -240,8 +212,6 @@ class LineSplitTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
-    /**
-     */
     public function testHeadlines()
     {
         $orig   = '<h2>Wir kämpfen für Lohngleichheit und eine eigenständige Existenzsicherung von Frauen</h2>';
@@ -252,5 +222,21 @@ class LineSplitTest extends TestBase
 
         $out = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
         $this->assertEquals($expect, $out);
+    }
+
+    public function testExtractLinesBeginning()
+    {
+        $orig = '<ul><li>Bavaria ipsum <strong>dolor sit amet o’ha wea nia ausgähd,</strong> kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher.</li><li>Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs. I moan scho aa Oachkatzlschwoaf Haberertanz Semmlkneedl, no Graudwiggal. </li></ul>';
+        $extracted = LineSplitter::extractLines($orig, 30, 3, 3, 5);
+
+        $this->assertEquals('<ul><li>Bavaria ipsum <strong>dolor sit amet o’ha wea nia ausgähd,</strong> kummt nia hoam </li></ul>', $extracted);
+    }
+
+    public function testExtractLinesMiddle()
+    {
+        $orig = '<ul><li>Bavaria ipsum <strong>dolor sit amet o’ha wea nia ausgähd,</strong> kummt nia hoam i hob di narrisch gean helfgod ebba ded baddscher.</li><li>Des so so, nia Biawambn back mas? Kaiwe Hetschapfah Trachtnhuat, a bravs. I moan scho aa Oachkatzlschwoaf Haberertanz Semmlkneedl, no Graudwiggal. </li></ul>';
+        $extracted = LineSplitter::extractLines($orig, 30, 1, 3, 5);
+
+        $this->assertEquals('ausgähd, kummt nia hoam i hob di narrisch gean helfgod ebba ded', $extracted);
     }
 }
