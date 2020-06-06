@@ -1,11 +1,7 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\Amendment;
-use app\models\db\AmendmentSection;
-use app\models\db\Consultation;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{Amendment, AmendmentSection, Consultation};
 use yii\helpers\Html;
 
 /**

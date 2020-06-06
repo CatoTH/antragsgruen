@@ -1,7 +1,7 @@
 <?php
 
 use app\components\UrlHelper;
-use app\models\db\{Amendment, Motion, MotionComment, MotionSupporter, User};
+use app\models\db\{Motion, MotionComment, MotionSupporter, User};
 use app\models\forms\CommentForm;
 use app\models\policies\{IPolicy, Nobody};
 use app\views\motion\LayoutHelper;

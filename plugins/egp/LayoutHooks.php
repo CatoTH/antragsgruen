@@ -210,7 +210,7 @@ class LayoutHooks extends Hooks
 
     public function getMotionFormattedAmendmentList(string $before, Motion $motion): string
     {
-        $amendments = $motion->getVisibleAmendments();
+        $amendments = $motion->getVisibleAmendments(false);
         // Global alternatives first, then sorted by titlePrefix
         usort($amendments, function (Amendment $amend1, Amendment $amend2) {
             if ($amend1->globalAlternative && !$amend2->globalAlternative) {
@@ -237,6 +237,10 @@ class LayoutHooks extends Hooks
                 }
                 $amendLink     = UrlHelper::createAmendmentUrl($amend);
                 $before        .= Html::a(Html::encode($aename), $amendLink, ['class' => 'amendment' . $amend->id]);
+                $initatorStr = $amend->getInitiatorsStr();
+                if ($initatorStr) {
+                    $before .= ' (' . $initatorStr . ')';
+                }
                 $before        .= '</li>';
             }
             $before .= '</ul>';

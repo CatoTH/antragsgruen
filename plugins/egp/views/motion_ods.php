@@ -5,7 +5,6 @@ use app\models\db\AmendmentSection;
 use app\models\db\Motion;
 use app\models\sectionTypes\TextSimple;
 use CatoTH\HTML2OpenDocument\Spreadsheet;
-use yii\helpers\Html;
 
 /**
  * @var $this yii\web\View
