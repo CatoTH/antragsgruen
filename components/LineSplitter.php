@@ -245,7 +245,11 @@ class LineSplitter
      */
     public static function extractLines(string $html, int $lineLength, int $paraFirstLineNo, int $lineFrom, int $lineTo): string
     {
-        $lines = LineSplitter::splitHtmlToLines($html, $lineLength, '');
+        $sections = HTMLTools::sectionSimpleHTML($html, true);
+        $lines = [];
+        foreach ($sections as $section) {
+            $lines = array_merge($lines, LineSplitter::splitHtmlToLines($section, $lineLength, ''));
+        }
         $intLineFrom = $lineFrom - $paraFirstLineNo;
         $intLineTo = $lineTo - $paraFirstLineNo;
         $selectedLines = [];
