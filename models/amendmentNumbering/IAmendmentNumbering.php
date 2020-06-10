@@ -62,7 +62,7 @@ abstract class IAmendmentNumbering
                 $spl    = explode($split, $prefix);
                 $prefix = $spl[0];
             }
-            $number = preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix);
+            $number = intval(preg_replace('/^(.*[^0-9])?([0-9]+)([^0-9]*)$/siu', '$2', $prefix));
             if ($number > $maxRev) {
                 $maxRev = $number;
             }
