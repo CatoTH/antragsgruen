@@ -5,16 +5,16 @@
  * @var \app\models\forms\ConsultationActivityFilterForm $form
  */
 
+use app\components\MotionSorter;
 use app\components\Tools;
 use app\models\db\{Amendment, Motion};
 use app\components\UrlHelper;
-use app\views\consultation\LayoutHelper;
 use yii\helpers\Html;
 
 /** @var \app\controllers\ConsultationController $controller */
 $controller = $this->context;
 
-$consultation = \app\components\UrlHelper::getCurrentConsultation();
+$consultation = UrlHelper::getCurrentConsultation();
 $this->title  = Yii::t('con', 'collecting_bc');
 
 $layout = $controller->layoutParams;
@@ -34,7 +34,7 @@ foreach ($consultation->motions as $motion) {
 
 <?php
 if (count($motions) > 0) {
-    echo '<h2 class="green">Sammelnde Anträge</h2>';
+    echo '<h2 class="green">' . Yii::t('con', 'collecting_motions') . '</h2>';
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motions as $motion) {
         echo '<li class="motion motion' . $motion->id . '">';
@@ -73,7 +73,7 @@ foreach ($consultation->getVisibleMotions(false, false) as $motion) {
     }
 }
 if (count($motionsWithAmendments) > 0) {
-    echo '<h2 class="green">Sammelnde Änderungsanträge</h2>';
+    echo '<h2 class="green">' . Yii::t('con', 'collecting_amends') . '</h2>';
     echo '<ul class="motionList motionListStd motionListWithoutAgenda">';
     foreach ($motionsWithAmendments as $motion) {
         echo '<li class="motion motion' . $motion->id . '">';
@@ -92,7 +92,8 @@ if (count($motionsWithAmendments) > 0) {
         echo '<h4 class="amendments">' . Yii::t('amend', 'amendments') . '</h4>';
         echo '<ul class="amendments">';
 
-        foreach ($motion->amendments as $amendment) {
+        $amendments = MotionSorter::getSortedAmendments($consultation, $motion->amendments);
+        foreach ($amendments as $amendment) {
             if ($amendment->status !== Amendment::STATUS_COLLECTING_SUPPORTERS) {
                 continue;
             }

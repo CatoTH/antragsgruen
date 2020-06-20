@@ -49,11 +49,13 @@ return [
     'activity_bc'    => 'Activities',
     'activity_title' => 'Activity log',
 
-    'collecting_bc'     => 'Collecting support',
-    'collecting_title'  => 'Collecting support',
-    'collecting_intro'  => 'The following motions and / or amendments are looking for supporters:',
-    'collecting_motion' => 'Motion by %INITIATOR%. Current status: %CURR%',
-    'collecting_amend'  => 'Amendment by %INITIATOR%, starting line %LINE%. Current status: %CURR%',
+    'collecting_bc'      => 'Collecting support',
+    'collecting_title'   => 'Collecting support',
+    'collecting_intro'   => 'The following motions and / or amendments are looking for supporters:',
+    'collecting_motions' => 'Collecting motions',
+    'collecting_motion'  => 'Motion by %INITIATOR%. Current status: %CURR%',
+    'collecting_amend'   => 'Amendment by %INITIATOR%, starting line %LINE%. Current status: %CURR%',
+    'collecting_amends'  => 'Collecting amendments',
 
     'noti_title'            => 'Notifications',
     'noti_bc'               => 'Notifications',
