@@ -67,7 +67,7 @@ if (count($motions) > 0) {
 $motionsWithAmendments = [];
 foreach ($consultation->getVisibleMotions(false, false) as $motion) {
     foreach ($motion->amendments as $amendment) {
-        if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS) {
+        if ($amendment->status === Amendment::STATUS_COLLECTING_SUPPORTERS && !in_array($motion, $motionsWithAmendments, true)) {
             $motionsWithAmendments[] = $motion;
         }
     }
