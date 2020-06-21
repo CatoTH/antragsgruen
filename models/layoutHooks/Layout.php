@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
 
 class Layout
 {
@@ -126,6 +126,11 @@ class Layout
         return static::callHook('afterMotionView', [$motion]);
     }
 
+    public static function getMotionAlternativeComments(Motion $motion): string
+    {
+        return static::callHook('getMotionAlternativeComments', [$motion]);
+    }
+
     public static function getMotionFormattedAmendmentList(Motion $motion): string
     {
         return static::callHook('getMotionFormattedAmendmentList', [$motion]);
@@ -144,6 +149,11 @@ class Layout
     public static function getAmendmentBookmarkName(Amendment $amendment): string
     {
         return static::callHook('getAmendmentBookmarkName', [$amendment], '');
+    }
+
+    public static function getAmendmentAlternativeComments(Amendment $amendment): string
+    {
+        return static::callHook('getAmendmentAlternativeComments', [$amendment]);
     }
 
     public static function getConsultationPreWelcome(): string

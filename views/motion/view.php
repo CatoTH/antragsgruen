@@ -244,8 +244,12 @@ if (count($amendments) > 0 || (!$nobodyCanAmend && !$motion->isResolution())) {
     echo '</div></section>';
 }
 
+$alternativeCommentView = \app\models\layoutHooks\Layout::getMotionAlternativeComments($motion);
+if ($alternativeCommentView) {
+    echo $alternativeCommentView;
+}
 $nobodyCanComment = ($motion->motionType->getCommentPolicy()->getPolicyID() === Nobody::getPolicyID());
-if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution()) {
+if ($commentWholeMotions && !$nobodyCanComment && !$motion->isResolution() && !$alternativeCommentView) {
     echo '<section class="comments" data-antragsgruen-widget="frontend/Comments" aria-labelledby="commentsTitle">';
     echo '<h2 class="green" id="commentsTitle">' . Yii::t('motion', 'comments') . '</h2>';
     $form           = $commentForm;

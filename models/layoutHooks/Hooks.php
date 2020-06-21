@@ -2,7 +2,7 @@
 
 namespace app\models\layoutHooks;
 
-use app\models\db\{Amendment, Consultation, ConsultationMotionType, IMotion, ISupporter, Motion, MotionSection, Site};
+use app\models\db\{Amendment, Consultation, ConsultationMotionType, ISupporter, Motion, MotionSection, Site};
 
 class Hooks
 {
@@ -114,6 +114,11 @@ class Hooks
         return $before;
     }
 
+    public function getMotionAlternativeComments(string $before, Motion $motion): string
+    {
+        return $before;
+    }
+
     public function getMotionViewData(array $motionData, Motion $motion): array
     {
         return $motionData;
@@ -130,6 +135,11 @@ class Hooks
     }
 
     public function getAmendmentBookmarkName(string $before, Amendment $amendment): string
+    {
+        return $before;
+    }
+
+    public function getAmendmentAlternativeComments(string $before, Amendment $amendment): string
     {
         return $before;
     }
