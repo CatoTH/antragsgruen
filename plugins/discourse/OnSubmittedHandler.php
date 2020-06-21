@@ -3,9 +3,17 @@
 namespace app\plugins\discourse;
 
 use app\models\events\{AmendmentEvent, MotionEvent};
+use app\models\db\IMotion;
+use yii\helpers\Html;
 
-class OnPublishedHandler
+class OnSubmittedHandler
 {
+    public static function hasDiscourseThread(IMotion $imotion): bool
+    {
+        $data = $imotion->getExtraDataKey('discourse');
+        return ($data && isset($data['topic_id']));
+    }
+
     public static function createTopic(string $title, string $body): array
     {
         $config = json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
@@ -37,8 +45,18 @@ class OnPublishedHandler
     {
         $amendment = $event->amendment;
 
-        $title = 'Änderungsantrag ' . $amendment->getTitleWithPrefix();
-        $body = 'Änderungsantrag von: ' . $amendment->getInitiatorsStr() . "\n" . 'Link: ' . $amendment->getLink(true);
+        if (static::hasDiscourseThread($amendment)) {
+            return;
+        }
+
+        $title = 'Beteiligungsgrün: Änderungsantrag zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
+        $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
+                . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
+        foreach ($amendment->getSortedSections(true) as $section) {
+            $body .= '<div>';
+            $body .= $section->getSectionType()->getAmendmentPlainHtml();
+            $body .= '</div>';
+        }
 
         $data = static::createTopic($title, $body);
         $amendment->setExtraDataKey('discourse', [
@@ -48,12 +66,28 @@ class OnPublishedHandler
         $amendment->save();
     }
 
+    public static function onAmendmentSubmitted(AmendmentEvent $event): void
+    {
+        // @TODO: Restrict to amendments with collection phase
+        static::onAmendmentPublished($event);
+    }
+
     public static function onMotionPublished(MotionEvent $event): void
     {
         $motion = $event->motion;
 
+        if (static::hasDiscourseThread($motion)) {
+            return;
+        }
+
         $title = $motion->getTitleWithPrefix();
-        $body = $motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr() . "\n" . 'Link: ' . $motion->getLink(true);
+        $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
+                . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
+        foreach ($motion->getSortedSections(true) as $section) {
+            $body .= '<div>';
+            $body .= $section->getSectionType()->getMotionPlainHtml();
+            $body .= '</div>';
+        }
 
         $data = static::createTopic($title, $body);
         $motion->setExtraDataKey('discourse', [
@@ -61,5 +95,11 @@ class OnPublishedHandler
             'topic_slug' => $data['topic_slug'],
         ]);
         $motion->save();
+    }
+
+    public static function onMotionSubmitted(MotionEvent $event): void
+    {
+        // @TODO: Restrict to motions with collection phase
+        static::onMotionPublished($event);
     }
 }

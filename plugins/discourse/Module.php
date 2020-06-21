@@ -14,8 +14,10 @@ class Module extends ModuleBase
     {
         parent::init();
 
-        Event::on(Motion::class, Motion::EVENT_PUBLISHED_FIRST, [OnPublishedHandler::class, 'onMotionPublished'], null, false);
-        Event::on(Amendment::class, Amendment::EVENT_PUBLISHED_FIRST, [OnPublishedHandler::class, 'onAmendmentPublished'], null, false);
+        Event::on(Motion::class, Motion::EVENT_PUBLISHED_FIRST, [OnSubmittedHandler::class, 'onMotionPublished'], null, false);
+        Event::on(Motion::class, Motion::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onMotionSubmitted'], null, false);
+        Event::on(Amendment::class, Amendment::EVENT_PUBLISHED_FIRST, [OnSubmittedHandler::class, 'onAmendmentPublished'], null, false);
+        Event::on(Amendment::class, Amendment::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onAmendmentSubmitted'], null, false);
     }
 
     /**
