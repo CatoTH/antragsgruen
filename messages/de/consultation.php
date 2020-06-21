@@ -49,11 +49,13 @@ return [
     'activity_bc'    => 'Aktivitäten',
     'activity_title' => 'Aktivitäts-Protokoll',
 
-    'collecting_bc'     => 'Unterstützung sammeln',
-    'collecting_title'  => 'Unterstützung sammeln',
-    'collecting_intro'  => 'Die folgenden Anträge und / oder Änderungsanträge sind auf der Suche nach Unterstützer*innen:',
-    'collecting_motion' => 'Antrag von %INITIATOR%. Aktueller Stand: %CURR%',
-    'collecting_amend'  => 'Änderungsantrag von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
+    'collecting_bc'      => 'Unterstützung sammeln',
+    'collecting_title'   => 'Unterstützung sammeln',
+    'collecting_intro'   => 'Die folgenden Anträge und / oder Änderungsanträge sind auf der Suche nach Unterstützer*innen:',
+    'collecting_motions' => 'Sammelnde Anträge',
+    'collecting_motion'  => 'Antrag von %INITIATOR%. Aktueller Stand: %CURR%',
+    'collecting_amend'   => 'Änderungsantrag von %INITIATOR%, ab Zeile %LINE%. Aktueller Stand: %CURR%',
+    'collecting_amends'  => 'Sammelnde Änderungsanträge',
 
     'noti_title'            => 'Benachrichtigungen',
     'noti_bc'               => 'Benachrichtigungen',

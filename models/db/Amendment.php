@@ -450,14 +450,15 @@ class Amendment extends IMotion implements IRSSItem
         return $firstLine;
     }
 
-    /**
-     * @param Amendment $ae1
-     * @param Amendment $ae2
-     * @return int
-     * @throws \app\models\exceptions\Internal
-     */
-    public static function sortVisibleByLineNumbersSort($ae1, $ae2)
+    public static function compareByLineNumbers(Amendment $ae1, Amendment $ae2): int
     {
+        /*
+         * Sort order:
+         * - First line number
+         * - Title prefix, if given (i.e., it is screened)
+         * - If only one amendment has a title prefix, this one comes first
+         * - if nothing else helps, then ordering by ID / submission time
+         */
         $first1 = $ae1->getFirstDiffLine();
         $first2 = $ae2->getFirstDiffLine();
 
@@ -468,18 +469,20 @@ class Amendment extends IMotion implements IRSSItem
             return 1;
         }
 
-        $tit1 = explode('-', $ae1->titlePrefix);
-        $tit2 = explode('-', $ae2->titlePrefix);
-        if (count($tit1) > 2 && count($tit1) == count($tit2)) {
-            if ($tit1[count($tit1) - 1] < $tit2[count($tit2) - 1]) {
-                return -1;
+        if ($ae1->titlePrefix && $ae2->titlePrefix) {
+            $tit1 = explode('-', $ae1->titlePrefix);
+            $tit2 = explode('-', $ae2->titlePrefix);
+            if (count($tit1) > 2 && count($tit1) === count($tit2)) {
+                return $tit1[count($tit1) - 1] <=> $tit2[count($tit2) - 1];
+            } else {
+                return strcasecmp($ae1->titlePrefix, $ae2->titlePrefix);
             }
-            if ($tit1[count($tit1) - 1] > $tit2[count($tit2) - 1]) {
-                return 1;
-            }
-            return 0;
+        } elseif ($ae1->titlePrefix) {
+            return -1;
+        } elseif ($ae2->titlePrefix) {
+            return 1;
         } else {
-            return strcasecmp($ae1->titlePrefix, $ae2->titlePrefix);
+            return $ae1->id <=> $ae2->id;
         }
     }
 
@@ -490,19 +493,15 @@ class Amendment extends IMotion implements IRSSItem
      * @return Amendment[]
      * @throws \app\models\exceptions\Internal
      */
-    public static function sortVisibleByLineNumbers(Consultation $consultation, $amendments)
+    public static function sortByLineNumbers(Consultation $consultation, $amendments)
     {
-        $ams = [];
         foreach ($amendments as $am) {
-            if (!in_array($am->status, $consultation->getInvisibleAmendmentStatuses())) {
-                $am->getFirstDiffLine();
-                $ams[] = $am;
-            }
+            $am->getFirstDiffLine(); // Initialize the cache
         }
 
-        usort($ams, [Amendment::class, 'sortVisibleByLineNumbersSort']);
+        usort($amendments, [Amendment::class, 'compareByLineNumbers']);
 
-        return $ams;
+        return $amendments;
     }
 
     /**

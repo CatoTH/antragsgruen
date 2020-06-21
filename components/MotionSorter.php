@@ -3,24 +3,13 @@
 namespace app\components;
 
 use app\models\amendmentNumbering\ByLine;
-use app\models\db\Amendment;
-use app\models\db\Consultation;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\IMotion;
-use app\models\db\Motion;
+use app\models\db\{Amendment, Consultation, ConsultationAgendaItem, IMotion, Motion};
 
 class MotionSorter
 {
-    /**
-     * @param string $str1
-     * @param string $str2
-     * @param int $num1
-     * @param int $num2
-     * @return int
-     */
-    protected static function getSortedMotionsSortCmp($str1, $str2, $num1, $num2)
+    protected static function getSortedMotionsSortCmp(string $str1, string $str2, int $num1, int $num2): int
     {
-        if ($str1 == $str2) {
+        if ($str1 === $str2) {
             if ($num1 < $num2) {
                 $return = -1;
             } elseif ($num1 > $num2) {
@@ -41,21 +30,16 @@ class MotionSorter
         return $return;
     }
 
-    /**
-     * @param string $str1
-     * @param string $str2
-     * @return string[]
-     */
-    public static function stripCommonBeginning($str1, $str2)
+    public static function stripCommonBeginning(string $str1, string $str2): array
     {
-        if ($str1 == '' || $str2 == '') {
+        if ($str1 === '' || $str2 === '') {
             return [$str1, $str2];
         }
         if (is_numeric($str1[0]) && is_numeric($str2[0])) {
-            if (IntVal($str1) == IntVal($str2) && $str1 != $str2) {
+            if (intval($str1) === intval($str2) && $str1 != $str2) {
                 $str1s = preg_replace('/^[0-9]+[\.\- ]+/', '', $str1);
                 $str2s = preg_replace('/^[0-9]+[\.\- ]+/', '', $str2);
-                if ($str1s == $str1 || $str2s == $str2) {
+                if ($str1s === $str1 || $str2s === $str2) {
                     return [$str1, $str2];
                 } else {
                     return static::stripCommonBeginning($str1s, $str2s);
@@ -63,52 +47,48 @@ class MotionSorter
             } else {
                 return [$str1, $str2];
             }
-        } elseif (!is_numeric($str1[0]) && !is_numeric($str2[0]) && $str1[0] == $str2[0]) {
+        } elseif (!is_numeric($str1[0]) && !is_numeric($str2[0]) && $str1[0] === $str2[0]) {
             return static::stripCommonBeginning(mb_substr($str1, 1), mb_substr($str2, 1));
         } else {
             return [$str1, $str2];
         }
     }
 
-    /**
-     * @param string $prefix1
-     * @param string $prefix2
-     * @return int
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity,PHPMD.NPathComplexity)
-     */
-    public static function getSortedMotionsSort($prefix1, $prefix2)
+    public static function getSortedMotionsSort(string $prefix1, string $prefix2): int
     {
-        if ($prefix1 == '' && $prefix2 == '') {
+        if ($prefix1 === '' && $prefix2 === '') {
             return 0;
         }
-        if ($prefix1 == '') {
+        if ($prefix1 === '') {
             return -1;
         }
-        if ($prefix2 == '') {
+        if ($prefix2 === '') {
             return 1;
         }
 
         $prefix1 = preg_replace('/neu$/siu', 'neu1', $prefix1);
         $prefix2 = preg_replace('/neu$/siu', 'neu1', $prefix2);
+        $prefix1 = preg_replace('/new$/siu', 'new1', $prefix1);
+        $prefix2 = preg_replace('/new/siu', 'new1', $prefix2);
         list($prefix1, $prefix2) = static::stripCommonBeginning($prefix1, $prefix2);
 
         $pat1 = '/^(?<str1>[^0-9]*)(?<num1>[0-9]*)/siu';
         $pat2 = '/^(?<str1>[^0-9]*)(?<num1>[0-9]+)(?<str2>[^0-9]+)(?<num2>[0-9]+)$/siu';
 
         if (preg_match($pat2, $prefix1, $mat1) && preg_match($pat2, $prefix2, $mat2)) {
-            if ($mat1['str1'] == $mat2['str1'] && $mat1['num1'] == $mat2['num1']) {
+            if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
                 return static::getSortedMotionsSortCmp($mat1['str2'], $mat2['str2'], $mat1['num2'], $mat2['num2']);
             } else {
                 return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
             }
         } elseif (preg_match($pat2, $prefix1, $mat1) && preg_match($pat1, $prefix2, $mat2)) {
-            if ($mat1['str1'] == $mat2['str1'] && $mat1['num1'] == $mat2['num1']) {
+            if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
                 return 1;
             } else {
                 return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
             }
         } elseif (preg_match($pat1, $prefix1, $mat1) && preg_match($pat2, $prefix2, $mat2)) {
-            if ($mat1['str1'] == $mat2['str1'] && $mat1['num1'] == $mat2['num1']) {
+            if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
                 return -1;
             } else {
                 return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
@@ -269,8 +249,8 @@ class MotionSorter
      */
     public static function getSortedAmendments(Consultation $consultation, $amendments)
     {
-        if ($consultation->amendmentNumbering == ByLine::getID()) {
-            return Amendment::sortVisibleByLineNumbers($consultation, $amendments);
+        if ($consultation->amendmentNumbering === ByLine::getID()) {
+            return Amendment::sortByLineNumbers($consultation, $amendments);
         } else {
             usort($amendments, function (Amendment $am1, Amendment $am2) {
                 return static::getSortedMotionsSort($am1->titlePrefix, $am2->titlePrefix);
