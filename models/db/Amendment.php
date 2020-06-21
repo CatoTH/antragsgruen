@@ -34,6 +34,7 @@ use yii\helpers\Html;
  * @property int $globalAlternative
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
+ * @property string|null $extraData
  *
  * @property AmendmentComment[] $comments
  * @property AmendmentComment[] $privateComments

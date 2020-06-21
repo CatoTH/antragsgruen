@@ -71,7 +71,8 @@ INSERT INTO `###TABLE_PREFIX###migration` (`version`, `apply_time`) VALUES
   ('m200125_124424_minimalistic_ui', '1580379395'),
   ('m200130_100306_agenda_extension', '1580379395'),
   ('m200223_161553_agenda_obsoletion', '1582474676'),
-  ('m200301_110040_user_settings', '1583060479')
+  ('m200301_110040_user_settings', '1583060479'),
+  ('m200621_063838_amendmentMotionExtraData', '1592721950')
 ;
 
 SET SQL_MODE = @OLD_SQL_MODE;

@@ -36,6 +36,7 @@ use yii\helpers\Html;
  * @property int $votingStatus
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
+ * @property string|null $extraData
  * @property User $responsibilityUser
  */
 abstract class IMotion extends ActiveRecord
@@ -122,7 +123,7 @@ abstract class IMotion extends ActiveRecord
      *
      * @return string[]
      */
-    public static function getStatusNames($includeAdminInvisibles = false)
+    public static function getStatusNames(bool $includeAdminInvisibles = false)
     {
         $statuses = [
             static::STATUS_WITHDRAWN                    => \Yii::t('structure', 'STATUS_WITHDRAWN'),
@@ -213,18 +214,12 @@ abstract class IMotion extends ActiveRecord
         ];
     }
 
-    /**
-     * @return bool
-     */
-    public function isInScreeningProcess()
+    public function isInScreeningProcess(): bool
     {
         return in_array($this->status, IMotion::getScreeningStatuses());
     }
 
-    /**
-     * @return bool
-     */
-    public function isSubmitted()
+    public function isSubmitted(): bool
     {
         return !in_array($this->status, [
             IMotion::STATUS_DELETED,
@@ -317,7 +312,7 @@ abstract class IMotion extends ActiveRecord
         return $this->votingDataObject;
     }
 
-    public function setVotingData(VotingData $data)
+    public function setVotingData(VotingData $data): void
     {
         $this->votingDataObject = $data;
         $this->votingData       = json_encode($data, JSON_PRETTY_PRINT);
@@ -757,16 +752,32 @@ abstract class IMotion extends ActiveRecord
      */
     abstract public function getAdminComments($types, $sort = 'desc', $limit = null);
 
-    /**
-     * @return array
-     */
-    abstract public function getUserdataExportObject();
+    abstract public function getUserdataExportObject(): array;
 
-    /**
-     * @return string
-     */
-    public function getShowAlwaysToken()
+    public function getShowAlwaysToken(): string
     {
         return sha1('createToken' . AntragsgruenApp::getInstance()->randomSeed . $this->id);
+    }
+
+    private function getExtraData(): array
+    {
+        if ($this->extraData) {
+            return json_decode($this->extraData, true);
+        } else {
+            return [];
+        }
+    }
+
+    public function getExtraDataKey(string $key)
+    {
+        $data = $this->getExtraData();
+        return (isset($data[$key]) ? $data[$key] : null);
+    }
+
+    public function setExtraDataKey(string $key, $value): void
+    {
+        $data = $this->getExtraData();
+        $data[$key] = $value;
+        $this->extraData = json_encode($data);
     }
 }

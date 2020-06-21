@@ -36,9 +36,9 @@ use yii\helpers\Html;
  * @property string $slug
  * @property int|null $responsibilityId
  * @property string|null $responsibilityComment
+ * @property string|null $extraData
  *
  * @property ConsultationMotionType $motionType
- * @property Consultation $consultation
  * @property Amendment[] $amendments
  * @property MotionComment[] $comments
  * @property MotionComment[] $privateComments
