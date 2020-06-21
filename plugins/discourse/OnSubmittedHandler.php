@@ -49,7 +49,7 @@ class OnSubmittedHandler
             return;
         }
 
-        $title = 'Änderungsantrag auf Beteiligungsgrün zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
+        $title = 'Beteiligungsgrün: Änderungsantrag zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
         $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
                 . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
         foreach ($amendment->getSortedSections(true) as $section) {
@@ -80,7 +80,7 @@ class OnSubmittedHandler
             return;
         }
 
-        $title = $motion->getMyMotionType()->titleSingular . ' auf Beteiligungsgrün: ' . $motion->getTitleWithPrefix();
+        $title = 'Beteiligungsgrün: ' . $motion->getTitleWithPrefix();
         $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
                 . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
         foreach ($motion->getSortedSections(true) as $section) {
