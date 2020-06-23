@@ -98,8 +98,8 @@ class MotionSorter
             preg_match($pat1, $prefix2, $mat2);
             $str1 = (isset($mat1['str1']) ? $mat1['str1'] : '');
             $str2 = (isset($mat2['str1']) ? $mat2['str1'] : '');
-            $num1 = (isset($mat1['num1']) ? $mat1['num1'] : '');
-            $num2 = (isset($mat2['num1']) ? $mat2['num1'] : '');
+            $num1 = (isset($mat1['num1']) ? intval($mat1['num1']) : 0);
+            $num2 = (isset($mat2['num1']) ? intval($mat2['num1']) : 0);
             return static::getSortedMotionsSortCmp($str1, $str2, $num1, $num2);
         }
     }

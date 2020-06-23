@@ -49,21 +49,25 @@ class OnSubmittedHandler
             return;
         }
 
-        $title = 'Beteiligungsgrün: Änderungsantrag zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
-        $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
-                . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
-        foreach ($amendment->getSortedSections(true) as $section) {
-            $body .= '<div>';
-            $body .= $section->getSectionType()->getAmendmentPlainHtml();
-            $body .= '</div>';
-        }
+        try {
+            $title = 'Beteiligungsgrün: Änderungsantrag zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
+            $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
+                    . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
+            foreach ($amendment->getSortedSections(true) as $section) {
+                $body .= '<div>';
+                $body .= $section->getSectionType()->getAmendmentPlainHtml();
+                $body .= '</div>';
+            }
 
-        $data = static::createTopic($title, $body);
-        $amendment->setExtraDataKey('discourse', [
-            'topic_id' => $data['topic_id'],
-            'topic_slug' => $data['topic_slug'],
-        ]);
-        $amendment->save();
+            $data = static::createTopic($title, $body);
+            $amendment->setExtraDataKey('discourse', [
+                'topic_id' => $data['topic_id'],
+                'topic_slug' => $data['topic_slug'],
+            ]);
+            $amendment->save();
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', 'Das Diskussionsthema im Grünen Forum konnte nicht angelegt werden. Bitte wende dich an beteiligung@gruene.de. Der Änderungsantrag selbst wurde angelegt.');
+        }
     }
 
     public static function onAmendmentSubmitted(AmendmentEvent $event): void
@@ -80,21 +84,25 @@ class OnSubmittedHandler
             return;
         }
 
-        $title = 'Beteiligungsgrün: ' . $motion->getTitleWithPrefix();
-        $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
-                . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
-        foreach ($motion->getSortedSections(true) as $section) {
-            $body .= '<div>';
-            $body .= $section->getSectionType()->getMotionPlainHtml();
-            $body .= '</div>';
-        }
+        try {
+            $title = 'Beteiligungsgrün: ' . $motion->getTitleWithPrefix();
+            $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
+                    . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
+            foreach ($motion->getSortedSections(true) as $section) {
+                $body .= '<div>';
+                $body .= $section->getSectionType()->getMotionPlainHtml();
+                $body .= '</div>';
+            }
 
-        $data = static::createTopic($title, $body);
-        $motion->setExtraDataKey('discourse', [
-            'topic_id' => $data['topic_id'],
-            'topic_slug' => $data['topic_slug'],
-        ]);
-        $motion->save();
+            $data = static::createTopic($title, $body);
+            $motion->setExtraDataKey('discourse', [
+                'topic_id' => $data['topic_id'],
+                'topic_slug' => $data['topic_slug'],
+            ]);
+            $motion->save();
+        } catch (\Exception $e) {
+            \yii::$app->session->setFlash('error', 'Das Diskussionsthema im Grünen Forum konnte nicht angelegt werden. Bitte wende dich an beteiligung@gruene.de. Der Antrag selbst wurde angelegt.');
+        }
     }
 
     public static function onMotionSubmitted(MotionEvent $event): void
