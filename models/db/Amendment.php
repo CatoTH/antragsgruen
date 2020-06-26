@@ -702,7 +702,7 @@ class Amendment extends IMotion implements IRSSItem
                 return false;
             }
         }
-        if ($this->isDeadlineOver()) {
+        if ($this->isDeadlineOver() && !$supportSettings->allowSupportingAfterPublication) {
             return false;
         }
 
