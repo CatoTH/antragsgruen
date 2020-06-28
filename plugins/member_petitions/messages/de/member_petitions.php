@@ -12,6 +12,7 @@ return [
     'index_remaining'    => 'Verbleibend',
 
     'sett_orgaid'             => 'Organisations-ID',
+    'sett_discourse_cat'      => 'Discourse Category-ID',
     'sett_replydeadline'      => 'Antwort-Frist (Tage)',
     'sett_title'              => 'Beteiligungsgrün',
     'sett_minDiscussionTime'  => 'Min. Diskussionszeit (Tage)',

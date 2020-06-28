@@ -12,6 +12,7 @@ class ConsultationSettings extends Consultation
     public $maxOverallTime = 0;
     public $petitionPage = true;
     public $canAlwaysRespond = false;
+    public $discourseCategoryId = 0;
 
     public function getStartLayoutView(): string
     {

@@ -12,6 +12,7 @@ return [
     'index_remaining'    => 'Remaining',
 
     'sett_orgaid'             => 'Organization ID',
+    'sett_discourse_cat'      => 'Discourse Category-ID',
     'sett_replydeadline'      => 'Reply deadline (days)',
     'sett_title'              => 'Member petitions',
     'sett_minDiscussionTime'  => 'Min. discussion days',

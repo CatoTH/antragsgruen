@@ -3,7 +3,9 @@
 namespace app\plugins\discourse;
 
 use app\models\events\{AmendmentEvent, MotionEvent};
+use app\models\db\Consultation;
 use app\models\db\IMotion;
+use app\plugins\member_petitions\ConsultationSettings;
 use yii\helpers\Html;
 
 class OnSubmittedHandler
@@ -14,7 +16,13 @@ class OnSubmittedHandler
         return ($data && isset($data['topic_id']));
     }
 
-    public static function createTopic(string $title, string $body): array
+    public static function getDiscourseCategory(Consultation $consultation): ?int {
+        /** @var ConsultationSettings $settings */
+        $settings = $consultation->getSettings();
+        return $settings->discourseCategoryId > 0 ? intval($settings->discourseCategoryId) : null;
+    }
+
+    public static function createTopic(string $title, string $body, int $categoryId): array
     {
         $config = json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
 
@@ -24,7 +32,7 @@ class OnSubmittedHandler
             \GuzzleHttp\RequestOptions::JSON => [
                 "title" => $title,
                 "raw" => $body,
-                "category" => $config['category']
+                "category" => $categoryId
             ],
             \GuzzleHttp\RequestOptions::HEADERS => [
                 'Api-key' => $config['key'],
@@ -45,12 +53,20 @@ class OnSubmittedHandler
     {
         $amendment = $event->amendment;
 
+        $categoryId = static::getDiscourseCategory($amendment->getMyConsultation());
+        if (!$categoryId) {
+            return;
+        }
+
         if (static::hasDiscourseThread($amendment)) {
             return;
         }
 
         try {
-            $title = 'Beteiligungsgrün: Änderungsantrag zu ' . $amendment->getMyMotion()->titlePrefix . ', Zeile ' . $amendment->getFirstDiffLine();
+            $title = str_replace(['%TITLE%', '%LINE%'], [
+                $amendment->getMyMotion()->titlePrefix, $amendment->getFirstDiffLine()
+            ], \Yii::t('discourse', 'title_amend'));
+
             $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
                     . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
             foreach ($amendment->getSortedSections(true) as $section) {
@@ -59,14 +75,14 @@ class OnSubmittedHandler
                 $body .= '</div>';
             }
 
-            $data = static::createTopic($title, $body);
+            $data = static::createTopic($title, $body, $categoryId);
             $amendment->setExtraDataKey('discourse', [
                 'topic_id' => $data['topic_id'],
                 'topic_slug' => $data['topic_slug'],
             ]);
             $amendment->save();
         } catch (\Exception $e) {
-            \yii::$app->session->setFlash('error', 'Das Diskussionsthema im Grünen Forum konnte nicht angelegt werden. Bitte wende dich an beteiligung@gruene.de. Der Änderungsantrag selbst wurde angelegt.');
+            \yii::$app->session->setFlash('error', \Yii::t('discourse', 'error_create'));
         }
     }
 
@@ -80,12 +96,18 @@ class OnSubmittedHandler
     {
         $motion = $event->motion;
 
+        $categoryId = static::getDiscourseCategory($motion->getMyConsultation());
+        if (!$categoryId) {
+            return;
+        }
+
         if (static::hasDiscourseThread($motion)) {
             return;
         }
 
         try {
-            $title = 'Beteiligungsgrün: ' . $motion->getTitleWithPrefix();
+            $title = str_replace(['%TITLE%'], [$motion->getTitleWithPrefix()], \Yii::t('discourse', 'title_motion'));
+
             $body = Html::encode($motion->getMyMotionType()->titleSingular . ' von: ' . $motion->getInitiatorsStr()) . "<br>\n"
                     . Html::encode('Link: ' . $motion->getLink(true)) . "<br>\n<br>\n";
             foreach ($motion->getSortedSections(true) as $section) {
@@ -94,14 +116,14 @@ class OnSubmittedHandler
                 $body .= '</div>';
             }
 
-            $data = static::createTopic($title, $body);
+            $data = static::createTopic($title, $body, $categoryId);
             $motion->setExtraDataKey('discourse', [
                 'topic_id' => $data['topic_id'],
                 'topic_slug' => $data['topic_slug'],
             ]);
             $motion->save();
         } catch (\Exception $e) {
-            \yii::$app->session->setFlash('error', 'Das Diskussionsthema im Grünen Forum konnte nicht angelegt werden. Bitte wende dich an beteiligung@gruene.de. Der Antrag selbst wurde angelegt.');
+            \yii::$app->session->setFlash('error', \Yii::t('discourse', 'error_create'));
         }
     }
 
