@@ -54,7 +54,7 @@ class MotionTypeEdit {
 
         $supportAllowMore.on('change', () => {
             const selected = parseInt($supportType.find('input').val() as string, 10);
-            if (selected === SUPPORTER_COLLECTING_SUPPORTERS && $supportAllowMore.is(':checked')) {
+            if ((selected === SUPPORTER_COLLECTING_SUPPORTERS || selected) === SUPPORTER_GIVEN_BY_INITIATOR && $supportAllowMore.is(':checked')) {
                 $form.find('.formGroupAllowAfterPub').removeClass('hidden');
             } else {
                 $form.find('.formGroupAllowAfterPub').addClass('hidden');
