@@ -77,21 +77,21 @@ class MotionSorter
 
         if (preg_match($pat2, $prefix1, $mat1) && preg_match($pat2, $prefix2, $mat2)) {
             if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
-                return static::getSortedMotionsSortCmp($mat1['str2'], $mat2['str2'], $mat1['num2'], $mat2['num2']);
+                return static::getSortedMotionsSortCmp($mat1['str2'], $mat2['str2'], intval($mat1['num2']), intval($mat2['num2']));
             } else {
-                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
+                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], intval($mat1['num1']), intval($mat2['num1']));
             }
         } elseif (preg_match($pat2, $prefix1, $mat1) && preg_match($pat1, $prefix2, $mat2)) {
             if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
                 return 1;
             } else {
-                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
+                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], intval($mat1['num1']), intval($mat2['num1']));
             }
         } elseif (preg_match($pat1, $prefix1, $mat1) && preg_match($pat2, $prefix2, $mat2)) {
             if ($mat1['str1'] === $mat2['str1'] && $mat1['num1'] === $mat2['num1']) {
                 return -1;
             } else {
-                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], $mat1['num1'], $mat2['num1']);
+                return static::getSortedMotionsSortCmp($mat1['str1'], $mat2['str1'], intval($mat1['num1']), intval($mat2['num1']));
             }
         } else {
             preg_match($pat1, $prefix1, $mat1);
