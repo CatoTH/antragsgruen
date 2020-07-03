@@ -36,4 +36,58 @@ class Module extends ModuleBase
     {
         return json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
     }
+
+    public static function getMotionExtraSettingsForm(Motion $motion): string
+    {
+        $discourseData = $motion->getExtraDataKey('discourse');
+        $currThreadId = ($discourseData && isset($discourseData['topic_id']) ? intval($discourseData['topic_id']) : '');
+        return '<div class="form-group">
+        <label class="col-md-3 control-label" for="motionDiscourseThreadId">Discourse Thread ID</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="motion[discourseThreadId]" id="discourseThreadId" value="' . $currThreadId . '">
+        </div>
+    </div>';
+    }
+
+    public static function setMotionExtraSettingsFromForm(Motion $motion, array $post): void
+    {
+        $discourseData = $motion->getExtraDataKey('discourse');
+        if (!is_array($discourseData)) {
+            $discourseData = [];
+        }
+        if (isset($post['motion']) && isset($post['motion']['discourseThreadId']) && $post['motion']['discourseThreadId'] > 0) {
+            $discourseData['topic_id'] = intval($post['motion']['discourseThreadId']);
+        } else {
+            unset($discourseData['topic_id']);
+        }
+        $motion->setExtraDataKey('discourse', $discourseData);
+    }
+
+    public static function getAmendmentExtraSettingsForm(Amendment $amendment): string
+    {
+        $discourseData = $amendment->getExtraDataKey('discourse');
+        $currThreadId = ($discourseData && isset($discourseData['topic_id']) ? intval($discourseData['topic_id']) : '');
+        return '<div class="form-group">
+        <label class="col-md-3 control-label" for="motionDiscourseThreadId">Discourse Thread ID</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="amendment[discourseThreadId]" id="discourseThreadId" value="' . $currThreadId . '">
+        </div>
+    </div>';
+    }
+
+    public static function setAmendmentExtraSettingsFromForm(Amendment $amendment, array $post): void
+    {
+        $discourseData = $amendment->getExtraDataKey('discourse');
+        if (!is_array($discourseData)) {
+            $discourseData = [];
+        }
+        if (isset($post['amendment']) && isset($post['amendment']['discourseThreadId']) && $post['amendment']['discourseThreadId'] > 0) {
+            $discourseData['topic_id'] = intval($post['amendment']['discourseThreadId']);
+        } else {
+            unset($discourseData['topic_id']);
+        }
+        $amendment->setExtraDataKey('discourse', $discourseData);
+    }
+
+
 }
