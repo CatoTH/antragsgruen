@@ -1,11 +1,8 @@
 <?php
 
-use app\components\HTMLTools;
-use app\components\Tools;
-use app\components\UrlHelper;
-use app\models\db\ConsultationAgendaItem;
-use app\models\db\Motion;
-use app\models\db\MotionSupporter;
+use app\models\settings\AntragsgruenApp;
+use app\components\{HTMLTools, Tools, UrlHelper};
+use app\models\db\{ConsultationAgendaItem, Motion, MotionSupporter};
 use yii\helpers\Html;
 
 /**
@@ -253,6 +250,12 @@ $date = Tools::dateSql2bootstraptime($motion->dateResolution);
             </label>
         </div>
     </div>
+
+<?php
+foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+    echo $plugin::getMotionExtraSettingsForm($motion);
+}
+?>
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="motionNoteInternal">

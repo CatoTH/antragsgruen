@@ -1,5 +1,6 @@
 <?php
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, Tools, UrlHelper};
 use app\models\db\{Amendment, AmendmentSection, Consultation};
 use yii\helpers\Html;
@@ -165,6 +166,12 @@ echo '<div class="content form-horizontal fuelux">';
             ) ?>
         </div>
     </div>
+
+<?php
+foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+    echo $plugin::getAmendmentExtraSettingsForm($amendment);
+}
+?>
 
     <div class="form-group">
         <label class="col-md-3 control-label" for="amendmentNoteInternal">

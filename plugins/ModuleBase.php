@@ -3,7 +3,7 @@
 namespace app\plugins;
 
 use app\components\ExternalPasswordAuthenticatorInterface;
-use app\models\db\{Consultation, Motion, Site};
+use app\models\db\{Amendment, Consultation, Motion, Site};
 use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\models\siteSpecificBehavior\DefaultBehavior;
@@ -147,5 +147,23 @@ class ModuleBase extends Module
     public static function getExternalPasswordAuthenticator(): ?ExternalPasswordAuthenticatorInterface
     {
         return null;
+    }
+
+    public static function getMotionExtraSettingsForm(Motion $motion): string
+    {
+        return '';
+    }
+
+    public static function setMotionExtraSettingsFromForm(Motion $motion, array $post): void
+    {
+    }
+
+    public static function getAmendmentExtraSettingsForm(Amendment $amendment): string
+    {
+        return '';
+    }
+
+    public static function setAmendmentExtraSettingsFromForm(Amendment $amendment, array $post): void
+    {
     }
 }

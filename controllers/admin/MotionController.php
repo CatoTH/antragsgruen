@@ -10,7 +10,7 @@ use app\models\forms\{DeadlineForm, MotionEditForm, MotionMover};
 use app\models\motionTypeTemplates\{Application as ApplicationTemplate, Motion as MotionTemplate, PDFApplication as PDFApplicationTemplate};
 use app\models\policies\IPolicy;
 use app\models\sectionTypes\ISectionType;
-use app\models\settings\{InitiatorForm, MotionType};
+use app\models\settings\{AntragsgruenApp, InitiatorForm, MotionType};
 use app\models\supportTypes\SupportBase;
 use yii\web\Response;
 
@@ -560,6 +560,11 @@ class MotionController extends AdminBase
             } else {
                 $motion->titlePrefix = $post['motion']['titlePrefix'];
             }
+
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                $plugin::setMotionExtraSettingsFromForm($motion, $post);
+            }
+
             $motion->save();
 
             foreach ($this->consultation->tags as $tag) {

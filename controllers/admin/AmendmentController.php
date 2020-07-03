@@ -2,6 +2,7 @@
 
 namespace app\controllers\admin;
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{Tools, UrlHelper, ZipWriter};
 use app\models\db\{Amendment, AmendmentSupporter, User};
 use app\models\events\AmendmentEvent;
@@ -262,6 +263,11 @@ class AmendmentController extends AdminBase
             } else {
                 $amendment->titlePrefix = $post['amendment']['titlePrefix'];
             }
+
+            foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+                $plugin::setAmendmentExtraSettingsFromForm($amendment, $post);
+            }
+
             $amendment->save();
 
             $this->saveAmendmentSupporters($amendment);
