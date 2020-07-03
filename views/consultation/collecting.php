@@ -102,7 +102,7 @@ if (count($motionsWithAmendments) > 0) {
             echo '<span class="date">' . Tools::formatMysqlDate($amendment->dateCreation) . '</span>' . "\n";
 
             $max = $motion->getMyMotionType()->getMotionSupportTypeClass()->getSettingsObj()->minSupporters;
-            $curr = count($motion->getSupporters());
+            $curr = count($amendment->getSupporters());
             $title = str_replace(
                 ['%INITIATOR%', '%LINE%', '%CURR%'],
                 [$amendment->getInitiatorsStr(), $amendment->getFirstDiffLine(), $curr . ' / ' . $max],
