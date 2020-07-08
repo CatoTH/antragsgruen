@@ -31,6 +31,7 @@ use yii\base\Event;
 class MotionSupporter extends ISupporter
 {
     const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
+    private static $handlersAttached = false;
 
     public function init()
     {
@@ -40,8 +41,11 @@ class MotionSupporter extends ISupporter
         $this->on(static::EVENT_AFTER_INSERT, [$this, 'onSaved'], null, false);
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
 
-        // This handler should be called at the end of the event chain
-        Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
+        if (!static::$handlersAttached) {
+            static::$handlersAttached = true;
+            // This handler should be called at the end of the event chain
+            Event::on(MotionSupporter::class, MotionSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
+        }
     }
 
     /**

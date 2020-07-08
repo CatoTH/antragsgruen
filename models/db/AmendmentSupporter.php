@@ -31,6 +31,7 @@ use yii\base\Event;
 class AmendmentSupporter extends ISupporter
 {
     const EVENT_SUPPORTED = 'supported_official'; // Called if a new support (like, dislike, official) was created; no initiators
+    private static $handlersAttached = false;
 
     public function init()
     {
@@ -41,7 +42,10 @@ class AmendmentSupporter extends ISupporter
         $this->on(static::EVENT_AFTER_DELETE, [$this, 'onSaved'], null, false);
 
         // This handler should be called at the end of the event chain
-        Event::on(AmendmentSupporter::class, AmendmentSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
+        if (!static::$handlersAttached) {
+            static::$handlersAttached = true;
+            Event::on(AmendmentSupporter::class, AmendmentSupporter::EVENT_SUPPORTED, [$this, 'checkOfficialSupportNumberReached'], null, true);
+        }
     }
 
     /**
