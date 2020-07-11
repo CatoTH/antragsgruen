@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.6.1 [not released yet]
+### Version 4.6.1 (2020-07-11)
 
 - Several minor accessibility and performance improvements.
 - If supporting a motion or amendment is allowed after publication, then the deadline for supporting it is now not affected anymore by the deadline for the submission.
