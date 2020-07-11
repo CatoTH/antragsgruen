@@ -5,7 +5,7 @@
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
-### Version 4.6.1 [not released yet]
+### Version 4.6.1 (2020-07-11)
 
 - Several minor accessibility and performance improvements.
 - If supporting a motion or amendment is allowed after publication, then the deadline for supporting it is now not affected anymore by the deadline for the submission.
@@ -16,6 +16,7 @@
 - Bugfix: wrong time transformation when using the english version.
 - Bugfix: When showing the diff view of amendments changing the text within list items, some words could get lost.
 - Bugfix: If amendment codes didn't have numbers, this could break the screening process.
+- Bugfix: Resetting the custom color theme to default values took the color values from before the accessibility-related design changes.
 
 ## Version 4.6.0 (2020-04-12)
 
