@@ -231,6 +231,45 @@ class HTML2TexTest extends TestBase
         $this->assertEquals($expect, $out);
     }
 
+    public function testNestedListsWithEmptyLines() {
+        $orig = '<ul>
+ <li>
+ <p>Line 1</p>
+ <ul>
+ <li>
+ <p>Line 1.1.</p>
+<br>
+</li>
+ <li>
+ <p>Line 1.2</p>
+</li>
+ </ul>
+<br>
+</li>
+<li>
+<p>Line 2</p>
+</li>
+</ul>';
+        $expect = '\begin{itemize}
+\item   Line 1
+\begin{itemize}
+\item   Line 1.1.
+\newline
+
+\item   Line 1.2
+
+\end{itemize}
+\phantom{ }
+
+\item  Line 2
+
+\end{itemize}
+';
+
+        $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
     public function testListInBlock()
     {
         $orig = '<blockquote class="delete"><ul><li>Test 123</li></ul>';

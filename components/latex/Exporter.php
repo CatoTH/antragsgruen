@@ -363,6 +363,9 @@ class Exporter
         $out = preg_replace('/ +\\n/siu', "\n", $out);
         $out = preg_replace('/ +###LINEBREAK###/siu', "###LINEBREAK###", $out);
 
+        // \end{itemize} + \newline => \end{itemize} + \phantom{ }
+        $out = preg_replace('/\\\\end\{itemize\}\n\\\\newline\n/siu', "\\end{itemize}\n\\phantom{ }\n", $out);
+
         return $out;
     }
 
