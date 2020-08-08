@@ -38,9 +38,9 @@ class HTML2TexTest extends TestBase
             'Aufmüpfiga, Voiksdepp, Gibskobf, Kasberlkopf.<br>' .
             'Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, ' .
             'greißlicha Uhu, oida Daddara!</p>';
-        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla, \\linebreak{}\n" .
+        $expect = "Doafdebb, Asphaltwanzn, hoid dei Babbn, Schdeckalfisch, Hemmadbiesla,\\linebreak{}\n" .
             "halbseidener, Aufm\\\"upfiga, Voiksdepp, Gibskobf, Kasberlkopf.\\linebreak{}\n" .
-            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht, \\linebreak{}\n" .
+            "Flegel, Kamejtreiba, glei foid da Wadschnbam um, schdaubiga Bruada, Oaschgsicht,\\linebreak{}\n" .
             "grei\\ss{}licha Uhu, oida Daddara!\n";
 
         $lines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
@@ -130,7 +130,7 @@ class HTML2TexTest extends TestBase
     public function testBrokenHtml()
     {
         $orig   = "<p>Test <em>kursiv</em> <ins>Neu</ins> </strong></p>";
-        $expect = "Test \\emph{kursiv} \\textcolor{Insert}{\\uline{Neu}} \n";
+        $expect = "Test \\emph{kursiv} \\textcolor{Insert}{\\uline{Neu}}\n";
         $out    = Exporter::encodeHTMLString($orig);
         $this->assertEquals($expect, $out);
     }
@@ -181,8 +181,7 @@ class HTML2TexTest extends TestBase
                 '<ol class="inserted" start="2"><li>Test3</li></ol><ol class="deleted" start="5"><li>Test3</li></ol></div>';
 
         $expect = '\begin{enumerate}
-\item[4.] \textcolor{Delete}{\sout{Test}\sout{ 2\linebreak{}
-}}\begin{enumerate}
+\item[4.] \textcolor{Delete}{\sout{Test}\sout{ 2}\sout{ }}\begin{enumerate}
 \item[(1)] \textcolor{Delete}{\sout{Test}\sout{ a}}
 \item[(g)] \textcolor{Delete}{\sout{Test}\sout{ c}}
 \item[(i/)] \textcolor{Delete}{\sout{Test}\sout{ d}}
@@ -200,6 +199,35 @@ class HTML2TexTest extends TestBase
 ';
 
         $out = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testParagraphsAndLineBreaksInLists()
+    {
+        $orig = '<ul>
+ <li>
+ <p>Line 1</p>
+ <ul>
+ <li>
+ <p>Line 2</p>
+<br>
+</li>
+</ul>
+</li>
+</ul>';
+        $expect = '\begin{itemize}
+\item   Line 1
+\begin{itemize}
+\item   Line 2
+\newline
+
+\end{itemize}
+
+\end{itemize}
+';
+
+        $out    = Exporter::encodeHTMLString($orig);
+
         $this->assertEquals($expect, $out);
     }
 
