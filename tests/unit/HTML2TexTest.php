@@ -10,6 +10,7 @@ class HTML2TexTest extends TestBase
 {
     use Specify;
 
+
     public function testEmptyLine()
     {
         $orig   = "<p> </p>";
@@ -235,38 +236,93 @@ class HTML2TexTest extends TestBase
         $orig = '<ul>
  <li>
  <p>Line 1</p>
- <ul>
- <li>
- <p>Line 1.1.</p>
 <br>
 </li>
  <li>
- <p>Line 1.2</p>
+ <p>Line 2</p>
+ <ul>
+ <li>
+ <p>Line 2.1.</p>
+<br>
+</li>
+ <li>
+ <p>Line 2.2</p>
 </li>
  </ul>
 <br>
 </li>
 <li>
-<p>Line 2</p>
+<p>Line 3</p>
 </li>
 </ul>';
         $expect = '\begin{itemize}
 \item   Line 1
-\begin{itemize}
-\item   Line 1.1.
 \newline
 
-\item   Line 1.2
+\item   Line 2
+\begin{itemize}
+\item   Line 2.1.
+\newline
+
+\item   Line 2.2
 
 \end{itemize}
 \phantom{ }
 
-\item  Line 2
+\item  Line 3
 
 \end{itemize}
 ';
 
         $out    = Exporter::encodeHTMLString($orig);
+        $this->assertEquals($expect, $out);
+    }
+
+    public function testNestedListsWithEmptyLines2() {
+        $orig = '<ul>
+ <li>
+ <p>Line 1</p>
+<br>
+</li>
+ <li>
+ <p>Line 2</p>
+ <ul>
+ <li>
+ <p>Line 2.1.</p>
+<br>
+</li>
+ <li>
+ <p>Line 2.2</p>
+</li>
+ </ul>
+<br>
+</li>
+<li>
+<p>Line 3</p>
+</li>
+</ul>';
+        $expect = '\begin{itemize}
+\item Line 1
+ \newline
+
+\item Line 2
+\begin{itemize}
+\item Line 2.1.
+ \newline
+
+\item Line 2.2
+
+\end{itemize}
+ \phantom{ }
+
+\item Line 3
+
+\end{itemize}
+';
+
+        $byLines = LineSplitter::splitHtmlToLines($orig, 80, '###LINENUMBER###');
+        $out    = Exporter::getMotionLinesToTeX($byLines);
+
         $this->assertEquals($expect, $out);
     }
 
