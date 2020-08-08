@@ -5,6 +5,10 @@
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
+### Version 4.6.2 [not released yet]
+
+- Bugfix: LaTeX-based PDF rendering sometime failed or gave wrong line numbering in nested lists.
+
 ### Version 4.6.1 (2020-07-11)
 
 - Several minor accessibility and performance improvements.

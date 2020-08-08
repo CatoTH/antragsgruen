@@ -21,7 +21,7 @@ class Exporter
         $this->app    = $app;
     }
 
-    public static function encodePlainString(string $str): string
+    public static function encodePlainString(string $str, bool $textLineBreaks = true): string
     {
         $replaces = [
             '\\'                     => '\textbackslash{}',
@@ -37,7 +37,6 @@ class Exporter
             '^'                      => '\^{}',
             '\#\#\#LINENUMBER\#\#\#' => '###LINENUMBER###',
             '\#\#\#LINEBREAK\#\#\#'  => '###LINEBREAK###',
-            "\n"                     => '\\linebreak{}' . "\n", // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "[",
             "ä"                      => "\\\"a",
             "ö"                      => "\\\"o",
             "ü"                      => "\\\"u",
@@ -46,6 +45,11 @@ class Exporter
             "Ü"                      => "\\\"U",
             "ß"                      => "\\ss{}",
         ];
+        if ($textLineBreaks) {
+            $replaces["\n"] = '\\linebreak{}' . "\n"; // Adding a {} at the end prevents broken LaTeX-Files if the next line begins with a "["
+        } else {
+            $replaces["\n"] = ' '; // HTML-like behavior
+        }
         return str_replace(array_keys($replaces), array_values($replaces), $str);
     }
 
@@ -105,7 +109,7 @@ class Exporter
     {
         if ($node->nodeType === XML_TEXT_NODE) {
             /** @var \DOMText $node */
-            $str = static::encodePlainString($node->data);
+            $str = static::encodePlainString($node->data, false);
             if (in_array('underlined', $extraStyles) || in_array('strike', $extraStyles)) {
                 $words = explode(' ', $str);
                 if (in_array('underlined', $extraStyles)) {
@@ -128,6 +132,8 @@ class Exporter
             if (in_array('del', $extraStyles)) {
                 $str = '\textcolor{Delete}{' . $str . '}';
             }
+
+            // echo 'Text node: "' . $node->data . '" => "' . $str . '"' . "\n";
             return $str;
         } else {
             $content = '';
@@ -176,6 +182,8 @@ class Exporter
                     $content .= static::encodeHTMLNode($child, $childStyles);
                 }
             }
+
+            // echo 'Node "' . $node->nodeName . '" => Content "' . $content . '"' . "\n";
 
             switch ($node->nodeName) {
                 case 'h4':
@@ -349,6 +357,11 @@ class Exporter
         if (trim(str_replace('###LINENUMBER###', '', $out), "\n") == ' ') {
             $out = str_replace(' ', '{\color{white}.}', $out);
         }
+        // Strip out leading and trailing white spaces - has more aesthetical reasons; normalized TeX is easier to test
+        $out = preg_replace('/\\n +/siu', "\n", $out);
+        $out = preg_replace('/###LINEBREAK### +/siu', "###LINEBREAK###", $out);
+        $out = preg_replace('/ +\\n/siu', "\n", $out);
+        $out = preg_replace('/ +###LINEBREAK###/siu', "###LINEBREAK###", $out);
 
         return $out;
     }
