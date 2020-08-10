@@ -19,6 +19,7 @@
 - Some texts can now be changed per motion type, to change the wording depending on context. For example, in the "Create a motion" form, instead of the default "Motion or amendment?" text, there can be different explanations for different motion or application types.
 - Applications / Candidatures are now only shown in two-column mode until the first embedded PDF or Video appears. It then switches into single-column-layout to make the PDF/video better readable/watchable.
 - The URL slug of a motion can now be changed on the admin page.
+- Applications (or other motion types with images) now receive a `og:image` tag for better image detection when sharing the applications.
 - Bugfix: If e-mail-notifcations about published motions for the initiating users are set up, but the submission form does not explicitly ask for an e-mail-address, no e-mail was sent. Now, it is sent to the e-mail-address of the user account.
 - Bugfix: If an user has previously put her e-mail-address on the e-mail-blocklist, then saving the account settings lead to an error message.
 - Bugfix: if the link to a proposed procedure was forwarded, only the proposed status and the accept button was shown, not the modified text of an amendment.

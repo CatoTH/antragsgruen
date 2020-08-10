@@ -72,6 +72,9 @@ foreach ($layout->feeds as $title => $url) {
 foreach ($layout->extraCss as $file) {
     echo '<link rel="stylesheet" href="' . $layout->resourceUrl($file) . '">' . "\n";
 }
+if ($layout->ogImage !== '') {
+    echo '<meta property="og:image" content="' . Html::encode($layout->ogImage) . '">' . "\n";
+}
 
 echo '<link rel="stylesheet" href="' . $mainCssFile . '">' . "\n";
 
