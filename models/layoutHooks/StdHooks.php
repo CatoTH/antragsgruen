@@ -421,12 +421,16 @@ class StdHooks extends Hooks
     public function getConsultationPreWelcome(string $before): string
     {
         $str = '';
-        if (count($this->consultation->motionTypes) === 1) {
-            $deadline = $this->consultation->motionTypes[0]->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
-            if ($deadline) {
-                $str = '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
-                $str .= Tools::formatMysqlDateTime($deadline) . "</p>\n";
+        $highlightedDeadlines = [];
+        foreach ($this->consultation->motionTypes as $motionType) {
+            $deadline = $motionType->getUpcomingDeadline(ConsultationMotionType::DEADLINE_MOTIONS);
+            if ($motionType->sidebarCreateButton && $deadline && !in_array($deadline, $highlightedDeadlines)) {
+                $highlightedDeadlines[] = $deadline;
             }
+        }
+        if (count($highlightedDeadlines) === 1) {
+            $str = '<p class="deadlineCircle">' . \Yii::t('con', 'deadline_circle') . ': ';
+            $str .= Tools::formatMysqlDateTime($highlightedDeadlines[0]) . "</p>\n";
         }
 
         return $str;
