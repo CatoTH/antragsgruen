@@ -3,6 +3,7 @@
 ### Version 4.6.2 [not released yet]
 
 - Bugfix: LaTeX-based PDF rendering sometime failed or gave wrong line numbering in nested lists.
+- Bugfix: Final and preliminary resolutions were not shown on the home page, if the agenda view was set up.
 
 ### Version 4.6.1 (2020-07-11)
 
