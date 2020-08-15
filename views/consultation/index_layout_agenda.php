@@ -64,11 +64,6 @@ if ($admin) {
 echo '</section>';
 
 
-list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
-
 
 if ($longVersion) {
     $items = ConsultationAgendaItem::getSortedFromConsultation($consultation);
