@@ -13,6 +13,11 @@ use yii\helpers\Html;
  * @var bool $admin
  */
 
+list($_motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
+if (count($resolutions) > 0) {
+    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
+}
+
 $longVersion = (in_array($consultation->getSettings()->startLayoutType, [
     ConsultationSettings::START_LAYOUT_AGENDA_LONG,
     ConsultationSettings::START_LAYOUT_AGENDA_HIDE_AMEND,
@@ -58,11 +63,6 @@ if ($admin) {
 }
 echo '</section>';
 
-
-list($motions, $resolutions) = MotionSorter::getMotionsAndResolutions($consultation->motions);
-if (count($resolutions) > 0) {
-    echo $this->render('_index_resolutions', ['consultation' => $consultation, 'resolutions' => $resolutions]);
-}
 
 
 if ($longVersion) {

@@ -9,6 +9,8 @@
 ### Version 4.6.2 [not released yet]
 
 - Bugfix: LaTeX-based PDF rendering sometime failed or gave wrong line numbering in nested lists.
+- Motions embedded into an agenda are now shown, even if they are replaced by a resolution above.
+- Bugfix: if a resolution was replaced by a new version of that resolution, but that new version was deleted, the original resolution was still not shown on the home page anymore.
 
 ### Version 4.6.1 (2020-07-11)
 

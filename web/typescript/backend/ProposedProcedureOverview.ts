@@ -13,7 +13,7 @@ export class ProposedProcedureOverview {
     private $updateWidget: JQuery;
     private $proposalList: JQuery;
     private $dateField: JQuery;
-    private interval: number = null;
+    private plannedInterval: number = null;
 
     constructor(private $widget: JQuery) {
         this.csrf = this.$widget.find('input[name=_csrf]').val() as string;
@@ -113,42 +113,58 @@ export class ProposedProcedureOverview {
     private skipReload(): boolean {
         if (this.$widget.find('.respHolder.dropdown.open').length > 0) {
             return true;
-        } else if (this.$widget.find('.comment.writing').length > 0) {
+        } else if (this.$widget.find('.comments.writing').length > 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    private reload() {
+    private reload(cb) {
         if (this.skipReload()) {
             console.log('No reload, as comment writing is active');
+            cb();
             return;
         }
-        $.get(this.updateUrl, (data: ReloadResult) => {
-            if (!data.success) {
-                alert(data.error);
-                return;
+        $.ajax({
+            type: "GET",
+            url: this.updateUrl,
+            success: (data: ReloadResult) => {
+                if (!data.success) {
+                    alert(data.error);
+                    return;
+                }
+                this.$dateField.text(data.date);
+                this.$proposalList.html(data.html);
+                this.onContentUpdated();
+
+                cb();
+            },
+            error: () => {
+                cb();
             }
-            this.$dateField.text(data.date);
-            this.$proposalList.html(data.html);
-            this.onContentUpdated();
+        })
+    }
+
+    private executeInterval() {
+        this.reload(() => {
+            this.plannedInterval = window.setTimeout(this.executeInterval.bind(this), 5000);
         });
     }
 
     private startInterval() {
-        if (this.interval !== null) {
+        if (this.plannedInterval !== null) {
             return;
         }
-        this.interval = window.setInterval(this.reload.bind(this), 5000);
+        this.plannedInterval = window.setTimeout(this.executeInterval.bind(this), 5000);
     }
 
     private stopInterval() {
-        if (this.interval === null) {
+        if (this.plannedInterval === null) {
             return;
         }
-        window.clearInterval(this.interval);
-        this.interval = null;
+        window.clearTimeout(this.plannedInterval);
+        this.plannedInterval = null;
     }
 
     private initUpdateWidget() {
@@ -158,10 +174,10 @@ export class ProposedProcedureOverview {
         this.updateUrl = this.$widget.data('reload-url');
 
         let $toggle = this.$updateWidget.find('#autoUpdateToggle');
-        $toggle.change(() => {
+        $toggle.on("change", () => {
             let active: boolean = $toggle.prop('checked');
             if (active) {
-                this.reload();
+                this.reload(() => {});
                 this.startInterval();
             } else {
                 this.stopInterval();

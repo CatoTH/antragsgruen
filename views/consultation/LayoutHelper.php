@@ -252,9 +252,7 @@ class LayoutHelper
         if ($showMotions) {
             $motions = [];
             foreach ($agendaItem->getMotionsFromConsultation() as $motion) {
-                if (!$motion->isResolution()) {
-                    $motions[] = $motion;
-                }
+                $motions[] = $motion;
             }
             $motions = MotionSorter::getSortedMotionsFlat($consultation, $motions);
             if (count($motions) > 0) {
