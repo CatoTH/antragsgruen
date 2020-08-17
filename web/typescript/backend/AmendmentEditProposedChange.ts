@@ -22,7 +22,7 @@ export class AmendmentEditProposedChange {
             let editor: AntragsgruenEditor = new AntragsgruenEditor($textarea.attr("id")),
                 ckeditor: CKEDITOR.editor = editor.getEditor();
 
-            $textarea.parents("form").submit(() => {
+            $textarea.parents("form").on('submit', () => {
                 $textarea.parent().find("textarea.raw").val(ckeditor.getData());
                 if (typeof(ckeditor.plugins.lite) != 'undefined') {
                     ckeditor.plugins.lite.findPlugin(ckeditor).acceptAll();
@@ -34,7 +34,7 @@ export class AmendmentEditProposedChange {
             $('#' + $textarea.attr('id')).on('keypress', this.onContentChanged.bind(this));
         });
 
-        this.$form.find('.resetText').click((ev) => {
+        this.$form.find('.resetText').on('click', (ev) => {
             let $text: JQuery = $(ev.currentTarget).parents('.wysiwyg-textarea').find('.texteditor');
             window['CKEDITOR']['instances'][$text.attr('id')].setData($text.data('original-html'));
 
