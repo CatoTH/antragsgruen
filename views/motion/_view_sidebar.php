@@ -2,11 +2,13 @@
 
 use app\components\UrlHelper;
 use app\models\db\Motion;
+use app\models\settings\Layout;
 use yii\helpers\Html;
 
 /**
  * @var Motion $motion
  * @var bool $adminEdit
+ * @var Layout $layout
  */
 
 /** @var Motion[] $replacedByMotions */

@@ -15,9 +15,14 @@ class Permissions extends \app\models\siteSpecificBehavior\Permissions
     {
         $replacedByMotions = array_filter($motion->replacedByMotions, function (Motion $motion) {
             $draftStatuses = [
+                Motion::STATUS_DELETED,
                 Motion::STATUS_DRAFT,
                 Motion::STATUS_MERGING_DRAFT_PUBLIC,
-                Motion::STATUS_MERGING_DRAFT_PRIVATE
+                Motion::STATUS_MERGING_DRAFT_PRIVATE,
+                Motion::STATUS_WITHDRAWN_INVISIBLE,
+                Motion::STATUS_PROPOSED_MODIFIED_AMENDMENT,
+                Motion::STATUS_INLINE_REPLY,
+                Motion::STATUS_DRAFT_ADMIN,
             ];
             return !in_array($motion->status, $draftStatuses);
         });
