@@ -13,15 +13,15 @@
         "build": "gulp"
     },
     "devDependencies": {
-        "@types/bootbox": "^5.2.0",
+        "@types/bootbox": "^5.2.1",
         "@types/bootstrap": "^3.4.0",
-        "@types/ckeditor": "^4.9.9",
+        "@types/ckeditor": "^4.9.10",
         "@types/clipboard": "^2.0.1",
-        "@types/eonasdan-bootstrap-datetimepicker": "^4.17.26",
-        "@types/jquery": "^3.3.38",
-        "@types/sortablejs": "^1.10.4",
+        "@types/eonasdan-bootstrap-datetimepicker": "^4.17.27",
+        "@types/jquery": "^3.5.1",
+        "@types/sortablejs": "^1.10.6",
         "@types/typeahead": "^0.11.32",
-        "autoprefixer": "^9.7.6",
+        "autoprefixer": "^9.8.6",
         "bootbox": "^5.4.0",
         "bootstrap": "^3.4.1",
         "bootstrap-toggle": "*",
@@ -40,8 +40,8 @@
         "pa11y": "^5.3.0",
         "requirejs": "^2.3.6",
         "sortablejs": "^1.10.2",
-        "typescript": "^3.8.3",
-        "vue": "^2.6.11"
+        "typescript": "^3.9.7",
+        "vue": "^2.6.12"
     },
     "directories": {
         "bin": "./bin/"
@@ -51,7 +51,7 @@
         "cloneable-readable": "^2.0.1",
         "corejs-typeahead": "^1.3.1",
         "isotope-layout": "^3.0.6",
-        "moment": "^2.25.3",
+        "moment": "^2.27.0",
         "remove-trailing-separator": "^1.1.0"
     },
     "browserslist": [
