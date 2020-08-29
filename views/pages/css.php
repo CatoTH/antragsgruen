@@ -2,6 +2,7 @@
 
 /**
  * @var \app\models\settings\Stylesheet $stylesheetSettings
+ * @var string $format
  */
 
 $css = '
@@ -10,13 +11,13 @@ $css = '
 @import "variables";
 
 $OpenSansPath: "./fonts/OpenSans/fonts";
-@import "./fonts/OpenSans/open-sans.scss";
+@import "../fonts/OpenSans/open-sans.scss";
 $veraSansPath: "./fonts/BitstreamVeraSansMono";
-@import "./fonts/BitstreamVeraSansMono/verasans";
+@import "../fonts/BitstreamVeraSansMono/verasans";
 $firaSansFontPath: "./fonts/firasans/";
-@import "./fonts/firasans/firasans";
+@import "../fonts/firasans/firasans";
 $veraSansPath: "./fonts/BitstreamVeraSansMono";
-@import "./fonts/BitstreamVeraSansMono/verasans";
+@import "../fonts/BitstreamVeraSansMono/verasans";
 
 ' . $stylesheetSettings->toScssVariables(\app\models\settings\Stylesheet::DEFAULTS_LAYOUT_CLASSIC) . '
 $colorLinksFooter: $colorLinks;
@@ -89,5 +90,5 @@ $css .= '.logoImg {
 
 $scss = new \ScssPhp\ScssPhp\Compiler();
 $scss->addImportPath(Yii::$app->basePath . '/web/css/');
-$scss->setFormatter(\ScssPhp\ScssPhp\Formatter\Compressed::class);
+$scss->setFormatter($format);
 echo $scss->compile($css);

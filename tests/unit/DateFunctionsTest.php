@@ -2,7 +2,6 @@
 namespace unit;
 
 use app\components\Tools;
-use Yii;
 use Codeception\Specify;
 
 class DateFunctionsTest extends TestBase

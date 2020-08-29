@@ -362,13 +362,7 @@ class PagesController extends Base
         ]);
     }
 
-    /**
-     * @param string $filename
-     *
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionFile($filename)
+    public function actionFile(string $filename): string
     {
         $file = ConsultationFile::findOne([
             'consultationId' => $this->consultation->id,
@@ -387,9 +381,7 @@ class PagesController extends Base
         return $file->data;
     }
 
-    /**
-     */
-    public function actionCss()
+    public function actionCss(): string
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
         \yii::$app->response->headers->add('Content-Type', 'text/css');
@@ -409,7 +401,10 @@ class PagesController extends Base
             }
         }
 
-        $data       = $this->renderPartial('css', ['stylesheetSettings' => $stylesheetSettings]);
+        $data       = $this->renderPartial('css', [
+            'stylesheetSettings' => $stylesheetSettings,
+            'format' => \ScssPhp\ScssPhp\Formatter\Compressed::class,
+        ]);
         $toSaveData = ANTRAGSGRUEN_VERSION . "\n" . $data;
         ConsultationFile::createStylesheetCache($this->site, $stylesheetSettings, $toSaveData);
 

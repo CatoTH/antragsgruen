@@ -31,27 +31,27 @@
 
 
 @mixin calc-grid-column($index, $class, $type) {
-  @if ($type == width) and ($index > 0) {
+  @if ($type == width and $index > 0) {
     .col-#{$class}-#{$index} {
       width: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == push) and ($index > 0) {
+  @if ($type == push and $index > 0) {
     .col-#{$class}-push-#{$index} {
       left: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == push) and ($index == 0) {
+  @if ($type == push and $index == 0) {
     .col-#{$class}-push-0 {
       left: auto;
     }
   }
-  @if ($type == pull) and ($index > 0) {
+  @if ($type == pull and $index > 0) {
     .col-#{$class}-pull-#{$index} {
       right: percentage(($index / $grid-columns));
     }
   }
-  @if ($type == pull) and ($index == 0) {
+  @if ($type == pull and $index == 0) {
     .col-#{$class}-pull-0 {
       right: auto;
     }

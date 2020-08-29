@@ -32,7 +32,7 @@
     "tijsverkoyen/css-to-inline-styles": "^2.2.0",
     "catoth/html2opendocument": "0.13",
     "paragonie/sodium_compat": "^1.6",
-    "scssphp/scssphp": "^1.0.7",
+    "scssphp/scssphp": "^1.2",
     "swiftmailer/swiftmailer": "^6.2",
     "guzzlehttp/guzzle": "^6.5"
   },
