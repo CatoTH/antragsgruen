@@ -107,6 +107,11 @@ class MessageSource extends \yii\i18n\MessageSource
                 'fr' => 'Français',
             ], $localMessages);
         }
+        if ($language === 'nl') {
+            return array_merge([
+                'nl' => 'Nederlands',
+            ], $localMessages);
+        }
         return [];
     }
 
@@ -119,6 +124,7 @@ class MessageSource extends \yii\i18n\MessageSource
             'de' => 'Deutsch',
             'en' => 'English',
             'fr' => 'Français',
+            'nl' => 'Nederlands',
         ];
     }
 
