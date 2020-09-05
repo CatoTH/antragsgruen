@@ -103,6 +103,19 @@ class Tools
                     $matches['minute']
                 );
             }
+        } elseif ($locale === 'nl') {
+            $pattern = '/^(?<day>\\d{1,2})\-(?<month>\\d{1,2})\-(?<year>\\d{4}) ' .
+                       '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
+            if (preg_match($pattern, $time, $matches)) {
+                return sprintf(
+                    '%1$04d-%2$02d-%3$02d %4$02d:%5$02d:00',
+                    $matches['year'],
+                    $matches['month'],
+                    $matches['day'],
+                    $matches['hour'],
+                    $matches['minute']
+                );
+            }
         } elseif ($locale === 'fr') {
             $pattern = '/^(?<day>\\d{1,2})\/(?<month>\\d{1,2})\/(?<year>\\d{4}) ' .
                        '(?<hour>\\d{1,2})\:(?<minute>\\d{1,2})$/';
@@ -174,6 +187,8 @@ class Tools
             return $matches['day'] . '/' . $matches['month'] . '/' . $matches['year'];
         } elseif ($locale === 'en') {
             return $matches['month'] . '/' . $matches['day'] . '/' . $matches['year'];
+        } elseif ($locale === 'nl') {
+            return $matches['day'] . '-' . $matches['month'] . '-' . $matches['year'];
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
@@ -200,6 +215,11 @@ class Tools
             }
         } elseif ($locale === 'en') {
             $pattern = '/^(?<month>\\d{1,2})\/(?<day>\\d{1,2})\/(?<year>\\d{4})$/';
+            if (preg_match($pattern, $date, $matches)) {
+                return sprintf('%1$04d-%2$02d-%3$02d', $matches['year'], $matches['month'], $matches['day']);
+            }
+        } elseif ($locale === 'nl') {
+            $pattern = '/^(?<day>\\d{1,2})\-(?<month>\\d{1,2})\-(?<year>\\d{4})$/';
             if (preg_match($pattern, $date, $matches)) {
                 return sprintf('%1$04d-%2$02d-%3$02d', $matches['year'], $matches['month'], $matches['day']);
             }
@@ -240,6 +260,12 @@ class Tools
             $date .= $matches['hour'] . ':' . $matches['minute'];
 
             return $date;
+        } elseif ($locale === 'nl') {
+            $date = $matches['day'] . '-' . $matches['month'] . '-' . $matches['year'] . ' ';
+            $date .= $matches['hour'] . ':' . $matches['minute'];
+
+            return $date;
+
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
@@ -260,6 +286,8 @@ class Tools
             return $time->format('d/m/Y H:i');
         } elseif ($locale === 'en') {
             return $time->format('m/d/Y H:i');
+        } elseif ($locale === 'nl') {
+            return $time->format('d-m-Y H:i');
         } else {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
@@ -314,6 +342,9 @@ class Tools
             case ConsultationSettings::DATE_FORMAT_YMD_DASH:
                 $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%YEAR%-%MONTH%-%DAY%</span>';
                 break;
+            case ConsultationSettings::DATE_FORMAT_DMY_DASH:
+                $pattern = '<span aria-label="%DAY%. %MONTHNAME% %YEAR%">%DAY%-%MONTH%-%YEAR%</span>';
+                break;
             default:
                 throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
         }
@@ -337,6 +368,7 @@ class Tools
         if (count($date) !== 3) {
             return '-';
         }
+
         switch (self::getCurrentDateFormat()) {
             case ConsultationSettings::DATE_FORMAT_DMY_DOT:
                 return sprintf('%02d.%02d.%04d', $date[2], $date[1], $date[0]);
@@ -346,6 +378,8 @@ class Tools
                 return sprintf('%02d/%02d/%04d', $date[1], $date[2], $date[0]);
             case ConsultationSettings::DATE_FORMAT_YMD_DASH:
                 return sprintf('%04d-%02d-%02d', $date[0], $date[1], $date[2]);
+            case ConsultationSettings::DATE_FORMAT_DMY_DASH:
+                return sprintf('%02d-%02d-%04d', $date[2], $date[1], $date[0]);
             default:
                 throw new Internal('Unsupported date format: ' . self::getCurrentDateFormat());
         }
