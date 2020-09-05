@@ -329,7 +329,7 @@ class Tools
         if ($locale === null) {
             $locale = Tools::getCurrentDateLocale();
         }
-        if ($locale !== 'de' && $locale !== 'en' && $locale !== 'fr') {
+        if ($locale !== 'de' && $locale !== 'en' && $locale !== 'fr' && $locale !== 'nl') {
             throw new Internal('Unsupported Locale: ' . $locale);
         }
 
