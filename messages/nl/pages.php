@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'list_title'      => 'Pagina's',
+    'list_title'      => 'Pagina\'s',
     'list_add_std'    => 'Maak een standaardpagina',
     'list_add_custom' => 'Maak een nieuwe pagina',
-    'list_edit'       => 'Pas pagina's aan',
+    'list_edit'       => 'Pas pagina\'s aan',
     'list_all_cons'   => 'Alle consultaties',
     'list_this_con'   => 'Alleen deze consultatie',
 
