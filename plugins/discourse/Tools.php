@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace app\plugins\discourse;
 
 use app\models\db\{Amendment, Consultation, IMotion, Motion};
+use app\components\HTMLTools;
 use yii\helpers\Html;
 
 class Tools
@@ -50,6 +51,19 @@ class Tools
         ];
     }
 
+    public static function getRandomCharacters(int $len): string
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+        $str = '';
+
+        for ($i = 0; $i < $len; $i++) {
+            $index = rand(0, strlen($characters) - 1);
+            $str .= $characters[$index];
+        }
+
+        return $str;
+    }
+
     /**
      * @param Motion $motion
      * @return array
@@ -70,10 +84,7 @@ class Tools
             $body .= '</div>';
         }
 
-        return [
-            'topic_id' => 123,
-            'topic_slug' => 'test-123'
-        ];
+        $body = HTMLTools::trimHtml($body, 2200); // Maximum would be 2499
 
         $data = static::createTopic($title, $body, $categoryId);
         $discourseData = [
@@ -101,6 +112,8 @@ class Tools
             $amendment->getFirstDiffLine()
         ], \Yii::t('discourse', 'title_amend'));
 
+        $title .= ' [' . static::getRandomCharacters(3) . ']';
+
         $body = Html::encode('Änderungsantrag von: ' . $amendment->getInitiatorsStr()) . "<br>\n"
                 . Html::encode('Link: ' . $amendment->getLink(true)) . "<br>\n<br>\n";
         foreach ($amendment->getSortedSections(true) as $section) {
@@ -108,6 +121,8 @@ class Tools
             $body .= $section->getSectionType()->getAmendmentPlainHtml();
             $body .= '</div>';
         }
+
+        $body = HTMLTools::trimHtml($body, 2200); // Maximum would be 2499
 
         $data = static::createTopic($title, $body, $categoryId);
         $discourseData = [

@@ -1108,4 +1108,24 @@ class HTMLTools
         }
         return $str;
     }
+
+    /*
+     * Hint: It's not 100% guaranteed that $maxLength is not exceeded, as ending HTML tags might be added on the fly.
+     */
+    public static function trimHtml(string $html, int $maxLength)
+    {
+        if (mb_strlen($html) <= $maxLength) {
+            return $html;
+        }
+
+        $safetyGap = 40; // 5-10 ending tags
+        $shortenedHtml = mb_substr($html, 0, $maxLength - $safetyGap);
+        if (preg_match('/\\w$/', $shortenedHtml)) {
+            $shortenedHtml .= '…';
+        }
+
+        $shortenedHtml = static::correctHtmlErrors($shortenedHtml, false);
+
+        return $shortenedHtml;
+    }
 }
