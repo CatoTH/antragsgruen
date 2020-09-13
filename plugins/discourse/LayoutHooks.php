@@ -3,6 +3,7 @@
 namespace app\plugins\discourse;
 
 use app\models\db\{Amendment, IMotion, Motion};
+use app\components\UrlHelper;
 use app\models\layoutHooks\Hooks;
 use yii\helpers\Html;
 
@@ -10,37 +11,35 @@ class LayoutHooks extends Hooks
 {
     private function showDiscouseCommentSection(IMotion $motion): string
     {
-        $discourseData = $motion->getExtraDataKey('discourse');
-        $discourseConfig = Module::getDiscourseConfiguration();
-        if (!$discourseData) {
-            return '<!-- No discourse topic created -->';
+        if (!Tools::getDiscourseCategory($motion->getMyConsultation())) {
+            return '';
+        }
+
+        if (is_a($motion, Motion::class)) {
+            /** @var Motion $motion */
+            $discourseUrl = UrlHelper::createUrl([
+                '/discourse/motion/goto-discourse',
+                'motionSlug' => $motion->getMotionSlug(),
+            ]);
+        } elseif (is_a($motion, Amendment::class)) {
+            /** @var Amendment $motion */
+            $discourseUrl = UrlHelper::createUrl([
+                '/discourse/amendment/goto-discourse',
+                'motionSlug' => $motion->getMyMotion()->getMotionSlug(),
+                'amendmentId' => $motion->id,
+            ]);
+        } else {
+            return '';
         }
 
         $str = '<section class="comments" aria-labelledby="commentsTitle">';
         $str .= '<h2 class="green" id="commentsTitle">' . \Yii::t('motion', 'comments') . '</h2>';
         $str .= '<div class="content" style="text-align: center;">';
 
-        $url = $discourseConfig['host'] . 't/' . $discourseData['topic_id'];
-        $str .= '<a class="btn btn-primary" href="' . Html::encode($url) . '">';
-        $str .= '<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Zu den Kommentaren';
+        $str .= '<a class="btn btn-primary" href="' . Html::encode($discourseUrl) . '" rel="nofollow">';
+        $str .= '<span class="glyphicon glyphicon-comment" aria-hidden="true"></span> ';
+        $str .= \Yii::t('discourse', 'goto_comments');
         $str .= '</a>';
-
-        /*
-        $str .= '<div id="discourse-comments"></div>
-        <script type="text/javascript">
-            window.DiscourseEmbed = {
-                discourseUrl: ' . json_encode($discourseConfig['host']) . ',
-                topicId: ' . json_encode($discourseData['topic_id']) . '
-            };
-
-    (function() {
-    var d = document.createElement("script"); d.type = "text/javascript"; d.async = true;
-    d.src = window.DiscourseEmbed.discourseUrl + "javascripts/embed.js";
-    (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(d);
-  })();
-</script>';
-        */
-
         $str .= '</div>';
         $str .= '</section>';
 

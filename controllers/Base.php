@@ -513,4 +513,89 @@ class Base extends Controller
 
         return $this->consultation;
     }
+
+    protected function guessRedirectByPrefix(string $prefix): ?string
+    {
+        $motion = Motion::findOne([
+            'consultationId' => $this->consultation->id,
+            'titlePrefix'    => $prefix
+        ]);
+        if ($motion && $motion->isReadable()) {
+            return $motion->getLink();
+        }
+
+        /** @var Amendment|null $amendment */
+        $amendment = Amendment::find()->joinWith('motionJoin')->where([
+            'motion.consultationId' => $this->consultation->id,
+            'amendment.titlePrefix' => $prefix,
+        ])->one();
+
+        if ($amendment && $amendment->isReadable()) {
+            return $amendment->getLink();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $motionSlug
+     *
+     * @return Motion|null
+     */
+    protected function getMotionWithCheck($motionSlug)
+    {
+        if (is_numeric($motionSlug) && $motionSlug > 0) {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'id'             => $motionSlug,
+                'slug'           => null
+            ]);
+        } else {
+            $motion = Motion::findOne([
+                'consultationId' => $this->consultation->id,
+                'slug'           => $motionSlug
+            ]);
+        }
+        /** @var Motion $motion */
+        if (!$motion) {
+            $redirect = $this->guessRedirectByPrefix($motionSlug);
+            if ($redirect) {
+                $this->redirect($redirect);
+            } else {
+                Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
+                $this->redirect(UrlHelper::createUrl('consultation/index'));
+            }
+            Yii::$app->end();
+
+            return null;
+        }
+
+        $this->checkConsistency($motion);
+
+        return $motion;
+    }
+
+    /**
+     * @param string $motionSlug
+     * @param int $amendmentId
+     * @param null|string $redirectView
+     * @return Amendment|null
+     */
+    protected function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
+    {
+        $motion    = $this->consultation->getMotion($motionSlug);
+        $amendment = $this->consultation->getAmendment($amendmentId);
+        if (!$amendment || !$motion) {
+            $this->redirect(UrlHelper::createUrl('consultation/index'));
+            return null;
+        }
+        if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
+            if ($redirectView) {
+                $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
+                return null;
+            }
+        }
+        $this->checkConsistency($motion, $amendment);
+        return $amendment;
+    }
 }

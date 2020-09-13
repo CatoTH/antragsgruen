@@ -25,30 +25,6 @@ class AmendmentController extends Base
     /**
      * @param string $motionSlug
      * @param int $amendmentId
-     * @param null|string $redirectView
-     * @return Amendment|null
-     */
-    private function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
-    {
-        $motion    = $this->consultation->getMotion($motionSlug);
-        $amendment = $this->consultation->getAmendment($amendmentId);
-        if (!$amendment || !$motion) {
-            $this->redirect(UrlHelper::createUrl('consultation/index'));
-            return null;
-        }
-        if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
-            if ($redirectView) {
-                $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
-                return null;
-            }
-        }
-        $this->checkConsistency($motion, $amendment);
-        return $amendment;
-    }
-
-    /**
-     * @param string $motionSlug
-     * @param int $amendmentId
      * @return string
      * @throws \app\models\exceptions\Internal
      */

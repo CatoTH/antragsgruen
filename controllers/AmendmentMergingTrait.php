@@ -9,7 +9,7 @@ use app\models\forms\MergeSingleAmendmentForm;
 use app\models\sectionTypes\ISectionType;
 
 /**
- * @method Amendment getAmendmentWithCheck($motionSlug, $amendmentId)
+ * @method Amendment getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
  * @method redirect($uri)
  * @property Consultation $consultation
  */

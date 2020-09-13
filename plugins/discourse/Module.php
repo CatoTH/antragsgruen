@@ -2,7 +2,6 @@
 
 namespace app\plugins\discourse;
 
-use app\models\layoutHooks\Hooks;
 use app\models\settings\Layout;
 use app\plugins\ModuleBase;
 use app\models\db\{Consultation, Amendment, Motion};
@@ -20,12 +19,7 @@ class Module extends ModuleBase
         Event::on(Amendment::class, Amendment::EVENT_SUBMITTED, [OnSubmittedHandler::class, 'onAmendmentSubmitted'], null, false);
     }
 
-    /**
-     * @param Layout $layoutSettings
-     * @param Consultation $consultation
-     * @return Hooks[]
-     */
-    public static function getForcedLayoutHooks($layoutSettings, $consultation)
+    public static function getForcedLayoutHooks(Layout $layoutSettings, ?Consultation $consultation)
     {
         return [
             new LayoutHooks($layoutSettings, $consultation)
@@ -35,6 +29,20 @@ class Module extends ModuleBase
     public static function getDiscourseConfiguration(): array
     {
         return json_decode(file_get_contents(__DIR__ . '/../../config/discourse.json'), true);
+    }
+
+    protected static function getMotionUrlRoutes(): array
+    {
+        return [
+            'goto-discourse' => 'discourse/motion/goto-discourse',
+        ];
+    }
+
+    protected static function getAmendmentUrlRoutes(): array
+    {
+        return [
+            'goto-discourse' => 'discourse/amendment/goto-discourse',
+        ];
     }
 
     public static function getMotionExtraSettingsForm(Motion $motion): string
@@ -89,5 +97,10 @@ class Module extends ModuleBase
         $amendment->setExtraDataKey('discourse', $discourseData);
     }
 
-
+    public static function getConsultationExtraSettingsForm(Consultation $consultation): string
+    {
+        return \Yii::$app->controller->renderPartial(
+            '@app/plugins/discourse/views/admin/consultation_settings', ['consultation' => $consultation]
+        );
+    }
 }

@@ -6,6 +6,7 @@
  * @var string $locale
  */
 
+use app\models\settings\AntragsgruenApp;
 use app\components\{HTMLTools, UrlHelper};
 use app\models\db\{Consultation, Motion};
 use yii\helpers\Html;
@@ -13,7 +14,7 @@ use yii\helpers\Html;
 /** @var \app\controllers\admin\IndexController $controller */
 $controller = $this->context;
 $layout     = $controller->layoutParams;
-/** @var \app\models\settings\AntragsgruenApp $params */
+/** @var AntragsgruenApp $params */
 $params = Yii::$app->params;
 
 $layout->addCSS('css/backend.css');
@@ -53,7 +54,9 @@ $settings        = $consultation->getSettings();
 $siteSettings    = $consultation->site->getSettings();
 $handledSettings = [];
 
-echo $consultation->site->getBehaviorClass()->getConsultationSettingsForm($consultation);
+foreach (AntragsgruenApp::getActivePlugins() as $plugin) {
+    echo $plugin::getConsultationExtraSettingsForm($consultation);
+}
 
 ?>
     <h2 class="green"><?= Yii::t('admin', 'con_title_general') ?></h2>

@@ -92,7 +92,7 @@ $urlRules = [
 ];
 
 foreach ($params->getPluginClasses() as $pluginClass) {
-    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dommotion, $dommotionOld));
+    $urlRules = array_merge($urlRules, $pluginClass::getAllUrlRoutes($dommotion, $dommotionOld, $domamend, $domamendOld));
 }
 
 // Catch-All-Routes, should be loaded last

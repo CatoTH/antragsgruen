@@ -28,45 +28,6 @@ class MotionController extends Base
 
     /**
      * @param string $motionSlug
-     *
-     * @return Motion|null
-     */
-    private function getMotionWithCheck($motionSlug)
-    {
-        if (is_numeric($motionSlug) && $motionSlug > 0) {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'id'             => $motionSlug,
-                'slug'           => null
-            ]);
-        } else {
-            $motion = Motion::findOne([
-                'consultationId' => $this->consultation->id,
-                'slug'           => $motionSlug
-            ]);
-        }
-        /** @var Motion $motion */
-        if (!$motion) {
-            $redirect = $this->guessRedirectByPrefix($motionSlug);
-            if ($redirect) {
-                $this->redirect($redirect);
-            } else {
-                \Yii::$app->session->setFlash('error', \Yii::t('motion', 'err_not_found'));
-                $this->redirect(UrlHelper::createUrl('consultation/index'));
-            }
-            \Yii::$app->end();
-
-            return null;
-        }
-
-        $this->checkConsistency($motion);
-
-        return $motion;
-    }
-
-
-    /**
-     * @param string $motionSlug
      * @param int $commentId
      * @param string|null $procedureToken
      *
@@ -471,29 +432,6 @@ class MotionController extends Base
         }
 
         return $this->render('withdraw', ['motion' => $motion]);
-    }
-
-    protected function guessRedirectByPrefix(string $prefix): ?string
-    {
-        $motion = Motion::findOne([
-            'consultationId' => $this->consultation->id,
-            'titlePrefix'    => $prefix
-        ]);
-        if ($motion && $motion->isReadable()) {
-            return $motion->getLink();
-        }
-
-        /** @var Amendment|null $amendment */
-        $amendment = Amendment::find()->joinWith('motionJoin')->where([
-            'motion.consultationId' => $this->consultation->id,
-            'amendment.titlePrefix' => $prefix,
-        ])->one();
-
-        if ($amendment && $amendment->isReadable()) {
-            return $amendment->getLink();
-        }
-
-        return null;
     }
 
     /**

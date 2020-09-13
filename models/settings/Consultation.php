@@ -71,6 +71,7 @@ class Consultation implements \JsonSerializable
     public $startLayoutType = 0;
     public $robotsPolicy = 1;
     public $motiondataMode = 0;
+    public $discourseCategoryId = 0;
 
     /** @var null|string */
     public $logoUrl = null;
