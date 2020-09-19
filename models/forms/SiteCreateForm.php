@@ -410,7 +410,7 @@ class SiteCreateForm extends Model
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -426,7 +426,7 @@ class SiteCreateForm extends Model
         $section->maxLen        = 0;
         $section->fixedWidth    = 1;
         $section->lineNumbers   = 1;
-        $section->hasComments   = 1;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_MOTION;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -531,7 +531,7 @@ class SiteCreateForm extends Model
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -547,7 +547,7 @@ class SiteCreateForm extends Model
         $section->maxLen        = 0;
         $section->fixedWidth    = 1;
         $section->lineNumbers   = 1;
-        $section->hasComments   = 1;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_MOTION;
         $section->hasAmendments = 1;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -563,7 +563,7 @@ class SiteCreateForm extends Model
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
         $section->settings      = null;

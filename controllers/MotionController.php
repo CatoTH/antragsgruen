@@ -103,11 +103,15 @@ class MotionController extends Base
             }
         }
 
-
-        $commentWholeMotions = false;
-        foreach ($motion->getActiveSections() as $section) {
-            if ($section->getSettings()->hasComments == ConsultationSettingsMotionSection::COMMENTS_MOTION) {
-                $commentWholeMotions = true;
+        $textSections = $motion->getActiveSections(ISectionType::TYPE_TEXT_SIMPLE);
+        if (count($textSections) === 0) {
+            $commentWholeMotions = true;
+        } else {
+            $commentWholeMotions = false;
+            foreach ($textSections as $section) {
+                if ($section->getSettings()->hasComments === ConsultationSettingsMotionSection::COMMENTS_MOTION) {
+                    $commentWholeMotions = true;
+                }
             }
         }
 
