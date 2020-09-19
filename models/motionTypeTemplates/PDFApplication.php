@@ -67,7 +67,7 @@ trait PDFApplication
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
         $section->settings      = null;
@@ -83,7 +83,7 @@ trait PDFApplication
         $section->maxLen        = 0;
         $section->fixedWidth    = 0;
         $section->lineNumbers   = 0;
-        $section->hasComments   = 0;
+        $section->hasComments   = ConsultationSettingsMotionSection::COMMENTS_NONE;
         $section->hasAmendments = 0;
         $section->positionRight = 0;
 
