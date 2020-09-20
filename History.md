@@ -3,12 +3,13 @@
 ## Version 4.7.0 [not released yet]
 
 - The pink deadline circle on the consultation is now also shown if multiple motion types with the same deadline exist.
-- Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
 ### Version 4.6.2 [not released yet]
 
+- Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
+- SVG images can now be uploaded as logo.
 - Bugfix: LaTeX-based PDF rendering sometime failed or gave wrong line numbering in nested lists.
 - Motions embedded into an agenda are now shown, even if they are replaced by a resolution above.
 - Bugfix: if a resolution was replaced by a new version of that resolution, but that new version was deleted, the original resolution was still not shown on the home page anymore.
