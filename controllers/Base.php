@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\exceptions\NotFound;
 use app\components\{ConsultationAccessPassword, HTMLTools, UrlHelper};
 use app\models\exceptions\Internal;
 use app\models\settings\{AntragsgruenApp, Layout};
@@ -10,6 +11,7 @@ use Yii;
 use yii\base\Module;
 use yii\helpers\Html;
 use yii\web\Controller;
+use yii\web\Response;
 
 class Base extends Controller
 {
@@ -241,6 +243,26 @@ class Base extends Controller
         return parent::render($view, $params);
     }
 
+    public function returnRestResponse(int $statusCode, string $json)
+    {
+        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
+        $this->layoutParams->robotsNoindex = true;
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        Yii::$app->response->headers->add('Content-Type', 'application/json');
+        Yii::$app->response->statusCode    = $statusCode;
+        Yii::$app->response->content       = $json;
+        Yii::$app->end();
+
+        return null;
+    }
+
+    public function returnRestResponseFromException(\Exception $exception) {
+        return $this->returnRestResponse($exception->getCode() > 0 ? $exception->getCode() : 500, json_encode([
+            'success' => false,
+            'message' => $exception->getMessage()
+        ]));
+    }
+
     /**
      * @return AntragsgruenApp
      */
@@ -446,24 +468,36 @@ class Base extends Controller
     /**
      * @param null|Motion $checkMotion
      * @param null|Amendment $checkAmendment
+     * @param bool $throwExceptions
+     *
      * @throws \yii\base\ExitException
+     *
      */
-    protected function checkConsistency($checkMotion = null, $checkAmendment = null)
+    protected function checkConsistency($checkMotion = null, $checkAmendment = null, bool $throwExceptions = false)
     {
         $consultationPath = strtolower($this->consultation->urlPath);
         $subdomain        = strtolower($this->site->subdomain);
 
         if (strtolower($this->consultation->site->subdomain) !== $subdomain) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_cons_not_site'), 400);
+            }
             Yii::$app->user->setFlash("error", Yii::t('base', 'err_cons_not_site'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if (is_object($checkMotion) && strtolower($checkMotion->getMyConsultation()->urlPath) !== $consultationPath) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('motion', 'err_not_found'), 404);
+            }
             Yii::$app->session->setFlash('error', Yii::t('motion', 'err_not_found'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
 
         if ($checkAmendment !== null && ($checkMotion === null || $checkAmendment->motionId !== $checkMotion->id)) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_amend_not_consult'), 400);
+            }
             Yii::$app->session->setFlash('error', Yii::t('base', 'err_amend_not_consult'));
             $this->redirect(UrlHelper::createUrl('consultation/index'));
         }
@@ -539,10 +573,11 @@ class Base extends Controller
 
     /**
      * @param string $motionSlug
+     * @param bool $throwExceptions
      *
      * @return Motion|null
      */
-    protected function getMotionWithCheck($motionSlug)
+    protected function getMotionWithCheck($motionSlug, bool $throwExceptions = false)
     {
         if (is_numeric($motionSlug) && $motionSlug > 0) {
             $motion = Motion::findOne([
@@ -558,6 +593,9 @@ class Base extends Controller
         }
         /** @var Motion $motion */
         if (!$motion) {
+            if ($throwExceptions) {
+                throw new NotFound('Motion not found', 404);
+            }
             $redirect = $this->guessRedirectByPrefix($motionSlug);
             if ($redirect) {
                 $this->redirect($redirect);
@@ -570,7 +608,7 @@ class Base extends Controller
             return null;
         }
 
-        $this->checkConsistency($motion);
+        $this->checkConsistency($motion, null, $throwExceptions);
 
         return $motion;
     }
@@ -579,23 +617,30 @@ class Base extends Controller
      * @param string $motionSlug
      * @param int $amendmentId
      * @param null|string $redirectView
+     * @param bool $throwExceptions
      * @return Amendment|null
      */
-    protected function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null)
+    protected function getAmendmentWithCheck($motionSlug, $amendmentId, $redirectView = null, bool $throwExceptions = false): ?Amendment
     {
         $motion    = $this->consultation->getMotion($motionSlug);
         $amendment = $this->consultation->getAmendment($amendmentId);
         if (!$amendment || !$motion) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('amend', 'err_not_found'), 404);
+            }
             $this->redirect(UrlHelper::createUrl('consultation/index'));
             return null;
         }
         if ($amendment->motionId !== $motion->id && $amendment->getMyConsultation()->id === $motion->consultationId) {
+            if ($throwExceptions) {
+                throw new Internal(Yii::t('base', 'err_amend_not_consult'), 404);
+            }
             if ($redirectView) {
                 $this->redirect(UrlHelper::createAmendmentUrl($amendment, $redirectView));
                 return null;
             }
         }
-        $this->checkConsistency($motion, $amendment);
+        $this->checkConsistency($motion, $amendment, $throwExceptions);
         return $amendment;
     }
 }

@@ -12,6 +12,8 @@ class Site implements \JsonSerializable
     /** @var bool */
     public $showAntragsgruenAd = true;
     public $showBreadcrumbs = true;
+    public $apiEnabled = true;
+    public $apiCorsOrigin = null;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];

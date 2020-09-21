@@ -399,6 +399,19 @@ class ConsultationController extends Base
     /**
      * @return string
      */
+    public function actionJson()
+    {
+        if (!$this->site->getSettings()->apiEnabled) {
+            return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
+        }
+
+
+        return $this->returnRestResponse(200, $this->renderPartial('json', ['consultation' => $this->consultation]));
+    }
+
+    /**
+     * @return string
+     */
     public function actionDebugbarAjax()
     {
         \yii::$app->response->format = Response::FORMAT_RAW;
