@@ -305,7 +305,7 @@ trait MotionExportTraits
      * @param string $motionSlug
      * @return string
      */
-    public function actionJson($motionSlug)
+    public function actionRest($motionSlug)
     {
         if (!$this->site->getSettings()->apiEnabled) {
             return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
@@ -321,7 +321,7 @@ trait MotionExportTraits
             return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
         }
 
-        return $this->returnRestResponse(200, $this->renderPartial('json', ['motion' => $motion]));
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['motion' => $motion]));
     }
 
     /**

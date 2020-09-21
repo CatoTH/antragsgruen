@@ -24,7 +24,7 @@ abstract class ISectionType
     const TYPE_API_TEXT_SIMPLE = 'TextSimple';
     const TYPE_API_TEXT_HTML = 'TextHTML';
     const TYPE_API_IMAGE = 'Image';
-    const TYPE_API_TABULAR = 'Tabular';
+    const TYPE_API_TABULAR = 'TabularData';
     const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
     const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
 

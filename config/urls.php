@@ -18,14 +18,14 @@ $dommotionOld = $domv . 'motion/<motionSlug:[^\/]+>';
 $domamendOld  = $domv . 'motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>';
 
 $consultationPaths    = 'search|maintenance|notifications|activitylog|collecting|save-agenda-item-ajax|del-agenda-item-ajax|save-agenda-order-ajax';
-$consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments|json';
+$consultationPaths    .= '|feeds|feedall|feedmotions|feedamendments|feedcomments';
 $consultationPaths    .= '|proposed-procedure|proposed-procedure-ajax|debugbar-ajax';
-$motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|json|viewimage|viewpdf|embeddedpdf';
+$motionPaths          = 'createconfirm|createdone|edit|pdf|pdfamendcollection|pdfembed|odt|plainhtml|viewimage|viewpdf|embeddedpdf';
 $motionPaths          .= '|withdraw|view-changes|view-changes-odt|save-proposal-status|del-proposal-comment';
 $motionPaths          .= '|merge-amendments|merge-amendments-init|merge-amendments-confirm|merge-amendments-paragraph-ajax|merge-amendments-status-ajax';
 $motionPaths          .= '|merge-amendments-init-pdf|merge-amendments-draft-pdf';
 $motionPaths          .= '|merge-amendments-public|merge-amendments-public-ajax|save-merging-draft';
-$amendPaths           = 'pdf|odt|json|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
+$amendPaths           = 'pdf|odt|createconfirm|createdone|edit|withdraw|merge|merge-done|get-merge-collisions|ajax-diff';
 $amendPaths           .= '|save-proposal-status|edit-proposed-change|edit-proposed-change-check|del-proposal-comment';
 $userPaths            = 'login|logout|confirmregistration|emailblacklist|recovery';
 $userPaths            .= '|loginsaml|logoutsaml|consultationaccesserror|myaccount|emailchange|data-export';
@@ -89,6 +89,10 @@ $urlRules = [
     $dommotionOld . '/amendment/create'            => 'amendment/create',
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
+
+    $domv . 'rest'                                 => 'consultation/rest',
+    $domv . 'rest/motion/<motionSlug:[^\/]+>' => '/motion/rest',
+    $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];
 
 foreach ($params->getPluginClasses() as $pluginClass) {

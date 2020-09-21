@@ -12,7 +12,7 @@ class Site implements \JsonSerializable
     /** @var bool */
     public $showAntragsgruenAd = true;
     public $showBreadcrumbs = true;
-    public $apiEnabled = true;
+    public $apiEnabled = false;
     public $apiCorsOrigin = null;
 
     /** @var int[] */

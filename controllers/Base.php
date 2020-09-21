@@ -249,6 +249,9 @@ class Base extends Controller
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->format = Response::FORMAT_RAW;
         Yii::$app->response->headers->add('Content-Type', 'application/json');
+        if ($this->site->getSettings()->apiCorsOrigin) {
+            Yii::$app->response->headers->add('Access-Control-Allow-Origin', $this->site->getSettings()->apiCorsOrigin);
+        }
         Yii::$app->response->statusCode    = $statusCode;
         Yii::$app->response->content       = $json;
         Yii::$app->end();

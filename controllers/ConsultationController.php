@@ -399,14 +399,14 @@ class ConsultationController extends Base
     /**
      * @return string
      */
-    public function actionJson()
+    public function actionRest()
     {
         if (!$this->site->getSettings()->apiEnabled) {
             return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
         }
 
 
-        return $this->returnRestResponse(200, $this->renderPartial('json', ['consultation' => $this->consultation]));
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
     }
 
     /**

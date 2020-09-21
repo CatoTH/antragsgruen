@@ -131,7 +131,7 @@ class AmendmentController extends Base
      *
      * @return string
      */
-    public function actionJson($motionSlug, $amendmentId)
+    public function actionRest($motionSlug, $amendmentId)
     {
         if (!$this->site->getSettings()->apiEnabled) {
             return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
@@ -147,7 +147,7 @@ class AmendmentController extends Base
             return $this->returnRestResponseFromException(new NotFound('Amendment is not readable'));
         }
 
-        return $this->returnRestResponse(200, $this->renderPartial('json', ['amendment' => $amendment]));
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['amendment' => $amendment]));
     }
 
     /**
