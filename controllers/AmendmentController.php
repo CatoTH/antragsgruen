@@ -133,9 +133,7 @@ class AmendmentController extends Base
      */
     public function actionRest($motionSlug, $amendmentId)
     {
-        if (!$this->site->getSettings()->apiEnabled) {
-            return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
-        }
+        $this->handleRestHeaders();
 
         try {
             $amendment = $this->getAmendmentWithCheck($motionSlug, $amendmentId, null, true);

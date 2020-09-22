@@ -307,9 +307,7 @@ trait MotionExportTraits
      */
     public function actionRest($motionSlug)
     {
-        if (!$this->site->getSettings()->apiEnabled) {
-            return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
-        }
+        $this->handleRestHeaders();
 
         try {
             $motion = $this->getMotionWithCheck($motionSlug, true);

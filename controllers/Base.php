@@ -243,15 +243,35 @@ class Base extends Controller
         return parent::render($view, $params);
     }
 
+    public function handleRestHeaders(): void
+    {
+        $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
+        $this->layoutParams->robotsNoindex = true;
+
+        if (!$this->site->getSettings()->apiEnabled) {
+            $this->returnRestResponseFromException(new \Exception('API disabled', 403));
+            Yii::$app->end();
+        }
+
+        if ($this->site->getSettings()->apiCorsOrigins) {
+            if (in_array('*', $this->site->getSettings()->apiCorsOrigins)) {
+                Yii::$app->response->headers->add('Access-Control-Allow-Origin', '*');
+            } elseif (Yii::$app->request->origin && in_array(Yii::$app->request->origin, $this->site->getSettings()->apiCorsOrigins)) {
+                Yii::$app->response->headers->add('Access-Control-Allow-Origin', Yii::$app->request->origin);
+            }
+        }
+
+        if (Yii::$app->request->method === 'OPTIONS') {
+            Yii::$app->end();
+        }
+    }
+
     public function returnRestResponse(int $statusCode, string $json)
     {
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
         Yii::$app->response->format = Response::FORMAT_RAW;
         Yii::$app->response->headers->add('Content-Type', 'application/json');
-        if ($this->site->getSettings()->apiCorsOrigin) {
-            Yii::$app->response->headers->add('Access-Control-Allow-Origin', $this->site->getSettings()->apiCorsOrigin);
-        }
         Yii::$app->response->statusCode    = $statusCode;
         Yii::$app->response->content       = $json;
         Yii::$app->end();

@@ -401,10 +401,9 @@ class ConsultationController extends Base
      */
     public function actionRest()
     {
-        if (!$this->site->getSettings()->apiEnabled) {
-            return $this->returnRestResponseFromException(new \Exception('API disabled', 403));
-        }
+        $this->handleRestHeaders();
 
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
     }

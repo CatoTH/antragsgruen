@@ -13,13 +13,13 @@ class Site implements \JsonSerializable
     public $showAntragsgruenAd = true;
     public $showBreadcrumbs = true;
     public $apiEnabled = false;
-    public $apiCorsOrigin = null;
 
     /** @var int[] */
     public $loginMethods = [0, 1, 3];
 
     /** @var array */
     public $stylesheetSettings = [];
+    public $apiCorsOrigins = [];
 
     const LOGIN_STD        = 0;
     const LOGIN_WURZELWERK = 1;
