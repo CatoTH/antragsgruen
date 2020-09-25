@@ -3,6 +3,7 @@
 ## Version 4.7.0 [not released yet]
 
 - The pink deadline circle on the consultation is now also shown if multiple motion types with the same deadline exist.
+- First, small beginnings of a REST API are implemented, currently with read-only access. It can be enabled in the site component settings. The documentation can be found at [docs/openapi.yaml](docs/openapi.yaml)
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
