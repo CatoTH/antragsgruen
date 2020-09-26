@@ -1,6 +1,6 @@
 # Version history
 
-### Version 4.6.2 [not released yet]
+### Version 4.6.2 (2020-09-26)
 
 - Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
 - SVG images can now be uploaded as logo.
