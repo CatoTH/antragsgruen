@@ -23,7 +23,8 @@ class Module extends ModuleBase
     public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
     {
         return [
-            $dom . 'api-docs/openapi.yml' => 'swagger_ui/swaggerui/openapi',
+            $dom . 'api-docs/openapi.yml'  => 'swagger_ui/swaggerui/openapi',
+            $dom . 'api-docs/index.html'   => 'swagger_ui/swaggerui/index',
             $dom . 'api-docs/<action:\w*>' => 'swagger_ui/swaggerui/index',
         ];
     }
