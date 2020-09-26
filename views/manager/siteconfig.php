@@ -114,6 +114,7 @@ $currPort     = (isset($config->mailService['port']) ? $config->mailService['por
 $currAuthType = (isset($config->mailService['authType']) ? $config->mailService['authType'] : '');
 $currUsername = (isset($config->mailService['username']) ? $config->mailService['username'] : '');
 $currPassword = (isset($config->mailService['password']) ? $config->mailService['password'] : '');
+$currTls      = (isset($config->mailService['encryption']) && $config->mailService['encryption'] === 'tls');
 
 ?>
     <!-- Mandrill -->
@@ -175,6 +176,14 @@ $currPassword = (isset($config->mailService['password']) ? $config->mailService[
         <div class="col-sm-3">
             <input type="number" name="mailService[smtpPort]" placeholder="25"
                    value="<?= Html::encode($currPort) ?>" class="form-control" id="smtpPort">
+        </div>
+    </div>
+    <div class="form-group emailOption smtpTls">
+        <label class="col-sm-4 control-label" for="smtpTls"><?= yii::t('manager', 'smtp_tls') ?>:</label>
+        <div class="col-sm-3">
+            <?php
+            echo Html::checkbox('mailService[smtpTls]', $currTls, ['id' => 'smtpTls']);
+            ?>
         </div>
     </div>
     <div class="form-group emailOption smtpAuthType">

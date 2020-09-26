@@ -22,6 +22,8 @@ export class SiteConfig {
         } else if (transport == 'smtp') {
             $('.emailOption.smtpHost').show();
             $('.emailOption.smtpPort').show();
+            $('.emailOption.smtpTls').show();
+            console.log($('.emailOption.smtpTls'));
             $('.emailOption.smtpAuthType').show();
             if (auth != 'none') {
                 $('.emailOption.smtpUsername').show();
