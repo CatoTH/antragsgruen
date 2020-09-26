@@ -242,7 +242,7 @@ return [
     'con_am_bookmark_names'   => 'In den Änderungsantrags-Lesezeichen auch den Namen der Initiator*in anzeigen',
     'con_rest_api_enabled'    => '<strong>REST-API</strong> (aktuell nur Lesezugriff) für alle Veranstaltungen anbieten',
     'con_rest_api_hint'       => 'Mit der REST-API können Programmierer*innen Programme wie z.B. mobile Apps entwickeln, die auf die Anträge, Änderungsanträge etc. dieser Seite zugreifen',
-    'con_rest_api_url'        => 'Base-URL der API: %URL%<br><a href="https://github.com/CatoTH/antragsgruen/blob/master/docs/openapi.yaml">OpenAPI Spezifikation</a>',
+    'con_rest_api_url'        => 'Base-URL der API: %URL%<br><a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/openapi.yaml">OpenAPI Spezifikation</a>',
     'con_translation'         => '<strong>Übersetzungs-Links</strong> über Anträgen, Änderungsanträgen etc. anzeigen',
     'con_translation_service' => 'Zu verwendender Übersetzungs-Dienst',
     'con_translation_google'  => 'Google Translate',

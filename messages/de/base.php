@@ -35,7 +35,7 @@ return [
     'err_site_404'          => 'Leider existiert die aufgerufene Seite nicht. Falls du der Meinung bist, dass das ein Fehler ist, melde dich bitte per E-Mail (info@antragsgruen.de) bei uns.',
     'err_cons_404'          => 'Die angegebene Veranstaltung wurde nicht gefunden. Höchstwahrscheinlich liegt das an einem Tippfehler in der Adresse im Browser.<br><br>
 			Auf der <a href="%URL%">Antragsgrün-Startseite</a> siehst du rechts eine Liste der aktiven Veranstaltungen.',
-    'err_update_mode'       => 'Die Seite befindet sich gerade im Update-Modus.<br><br>Wenn Sie Admin der Seite sind und dies nicht beabsichtigt ist, finden Sie in der <a href="https://github.com/CatoTH/antragsgruen/blob/master/docs/update-troubleshooting.md">Dokumentation</a> weitere Informationen.',
+    'err_update_mode'       => 'Die Seite befindet sich gerade im Update-Modus.<br><br>Wenn Sie Admin der Seite sind und dies nicht beabsichtigt ist, finden Sie in der <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md">Dokumentation</a> weitere Informationen.',
     'legal_multisite_hint'  => '<p>Antragsgrün bietet Nutzer*innen die Möglichkeit, Veranstaltungsseiten anzulegen, die eigenständig verwaltet werden.</p>',
     'legal_base_title'      => 'Betreiber*in der Plattform Antragsgruen.de',
     'legal_base_intro'      => 'Verantwortlich für die Software Antragsgrün und den Betrieb der technischen Plattform antragsgruen.de:',

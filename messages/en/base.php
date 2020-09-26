@@ -27,7 +27,7 @@ return [
     'err_site_500'          => 'An internal error has occurred',
     'err_site_404'          => 'The given site does not exist. If you think this is an error, please contact us (info@antragsgruen.de).',
     'err_cons_404'          => 'The given consultation was not found. This is probably a typo in the URL entered in your browser.',
-    'err_update_mode'       => 'The site is in maintenance mode due to an update.<br><br>If you are the admin and this is not intentional, you can find further information in the <a href="https://github.com/CatoTH/antragsgruen/blob/master/docs/update-troubleshooting.md">documentation</a>.',
+    'err_update_mode'       => 'The site is in maintenance mode due to an update.<br><br>If you are the admin and this is not intentional, you can find further information in the <a href="https://github.com/CatoTH/antragsgruen/blob/main/docs/update-troubleshooting.md">documentation</a>.',
     'legal_multisite_hint'  => '<p>Antragsgrün lets users open their own consultations that can be administered independently.</p>',
     'legal_base_title'      => 'Operator of the Antragsgruen.de platform',
     'legal_base_intro'      => 'Responsible for the Antragsgrün software and the operation of the antragsgruen.de platform:',

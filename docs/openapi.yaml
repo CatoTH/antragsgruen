@@ -217,7 +217,7 @@ components:
         status_id:
           type: number
           example: 3
-          description: Refer to https://github.com/CatoTH/antragsgruen/blob/master/models/db/IMotion.php#L47 for a definition of the status IDs
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
           type: string
           example: Eingereicht
@@ -284,7 +284,7 @@ components:
         status_id:
           type: number
           example: 3
-          description: Refer to https://github.com/CatoTH/antragsgruen/blob/master/models/db/IMotion.php#L47 for a definition of the status IDs
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/main/models/db/IMotion.php#L47 for a definition of the status IDs
         status_title:
           type: string
           example: Eingereicht
