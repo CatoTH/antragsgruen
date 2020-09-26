@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\UrlHelper;
+use app\models\exceptions\NotFound;
 use app\models\db\{Consultation, Motion, TexTemplate, User};
 use app\models\exceptions\ExceptionBase;
 use app\models\MotionSectionChanges;
@@ -16,7 +17,6 @@ use yii\web\Response;
  * @property Consultation $consultation
  * @property \app\models\settings\Layout $layoutParams
  *
- * @method Motion getMotionWithCheck(string $motionSlug)
  * @method string render(string $template, array $params)
  * @method string redirect(string $url)
  * @method string renderPartial(string $template, array $params)
@@ -283,7 +283,6 @@ trait MotionExportTraits
         return $this->renderPartial('view_odt', ['motion' => $motion]);
     }
 
-
     /**
      * @param string $motionSlug
      * @return string
@@ -300,6 +299,27 @@ trait MotionExportTraits
         }
 
         return $this->renderPartial('plain_html', ['motion' => $motion]);
+    }
+
+    /**
+     * @param string $motionSlug
+     * @return string
+     */
+    public function actionRest($motionSlug)
+    {
+        $this->handleRestHeaders();
+
+        try {
+            $motion = $this->getMotionWithCheck($motionSlug, true);
+        } catch (\Exception $e) {
+            return $this->returnRestResponseFromException($e);
+        }
+
+        if (!$motion->isReadable()) {
+            return $this->returnRestResponseFromException(new NotFound('Motion is not readable'));
+        }
+
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['motion' => $motion]));
     }
 
     /**

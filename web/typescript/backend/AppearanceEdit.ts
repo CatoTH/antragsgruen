@@ -5,6 +5,7 @@ export class AppearanceEdit {
         this.initLogoUpload();
         this.initLayoutChooser();
         this.initTranslationService();
+        this.initRestApi();
 
         $('[data-toggle="tooltip"]').tooltip();
     }
@@ -56,6 +57,17 @@ export class AppearanceEdit {
             } else {
                 this.$form.find(".services").addClass("hidden");
                 this.$form.find(".services input").prop("required", false);
+            }
+        }).trigger("change");
+    }
+
+    private initRestApi() {
+        this.$form.find("#apiEnabled").on('change', (ev) => {
+            const checked = $(ev.currentTarget).prop("checked");
+            if (checked) {
+                this.$form.find(".apiBaseUrl").removeClass("hidden");
+            } else {
+                this.$form.find(".apiBaseUrl").addClass("hidden");
             }
         }).trigger("change");
     }

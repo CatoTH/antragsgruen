@@ -399,6 +399,18 @@ class ConsultationController extends Base
     /**
      * @return string
      */
+    public function actionRest()
+    {
+        $this->handleRestHeaders();
+
+        $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
+
+        return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
+    }
+
+    /**
+     * @return string
+     */
     public function actionDebugbarAjax()
     {
         \yii::$app->response->format = Response::FORMAT_RAW;

@@ -1,0 +1,362 @@
+openapi: 3.0.0
+info:
+  title: Antragsgrün API
+  description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
+  version: 0.1.0
+paths:
+  /{consultationPath}/rest:
+    get:
+      summary: Overview over this consultation, with links to motions and amendments.
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consultation info, motion and amendment links
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultationWithLinks'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+  /{consultationPath}/rest/motion/{motionSlug}:
+    get:
+      summary: Details of this motion
+      description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+        - in: path
+          name: motionSlug
+          required: true
+          example: 123-motion
+          schema:
+            type: string
+      responses:
+        '200': # status code
+          description: Motion info, including links to amendments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionDetails'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+  /{consultationPath}/rest/motion/{motionSlug}/amendment/{amendmentId}:
+    get:
+      summary: Details of this motion
+      description: The URL of this endpoint is not 100% predictable - please only use the links provided by the consultation index
+      parameters:
+        - in: path
+          name: consultationPath
+          required: true
+          example: std-parteitag
+          schema:
+            type: string
+        - in: path
+          name: motionSlug
+          required: true
+          example: 123-motion
+          schema:
+            type: string
+        - in: path
+          name: amendmentId
+          required: true
+          example: 42
+          schema:
+            type: string
+      responses:
+        '200': # status code
+          description: Motion info, including links to amendments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AmendmentDetails'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
+
+components:
+  schemas:
+    ConsultationWithLinks:
+      properties:
+        title:
+          type: string
+          example: 44. Bundesdelegiertenkonferenz
+        title_short:
+          type: string
+          example: 44. BDK
+        motion_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionLinkWithAmendmentLinks'
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation
+    MotionLinkWithAmendmentLinks:
+      properties:
+        id:
+          type: number
+          example: 23
+        agenda_item:
+          type: string
+          example: Title of the agenda item
+        prefix:
+          type: string
+          example: A1
+        title:
+          type: string
+          example: Pure title of the motion
+        title_with_intro:
+          type: string
+          example: "Motion A1: Pure title of the motion"
+        title_with_prefix:
+          type: string
+          example: "A1: Pure title of the motion"
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        amendment_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmendmentLink'
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion
+    MotionLink:
+      properties:
+        id:
+          type: number
+          example: 23
+        agenda_item:
+          type: string
+          example: Title of the agenda item
+        prefix:
+          type: string
+          example: A1
+        title:
+          type: string
+          example: Pure title of the motion
+        title_with_intro:
+          type: string
+          example: "Motion A1: Pure title of the motion"
+        title_with_prefix:
+          type: string
+          example: "A1: Pure title of the motion"
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion
+    MotionDetails:
+      properties:
+        id:
+          type: number
+          example: 23
+        agenda_item:
+          type: string
+          example: Title of the agenda item
+        prefix:
+          type: string
+          example: A1
+        title:
+          type: string
+          example: Pure title of the motion
+        title_with_intro:
+          type: string
+          example: "Motion A1: Pure title of the motion"
+        title_with_prefix:
+          type: string
+          example: "A1: Pure title of the motion"
+        status_id:
+          type: number
+          example: 3
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/master/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Eingereicht
+        date_published:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+        supporters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supporter'
+        initiators:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supporter'
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/MotionSection'
+        amendment_links:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmendmentLink'
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion
+    AmendmentLink:
+      properties:
+        id:
+          type: number
+          example: 23
+        prefix:
+          type: string
+          example: Ä1
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/42/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/42
+    AmendmentDetails:
+      properties:
+        id:
+          type: number
+          example: 23
+        prefix:
+          type: string
+          example: Ä1
+        title:
+          type: string
+          example: "Ä1 zu A1: My motion"
+        first_line:
+          type: number
+          example: 1
+          description: The first line affected by this amendment
+        status_id:
+          type: number
+          example: 3
+          description: Refer to https://github.com/CatoTH/antragsgruen/blob/master/models/db/IMotion.php#L47 for a definition of the status IDs
+        status_title:
+          type: string
+          example: Eingereicht
+        date_published:
+          type: string
+          example: "2015-03-30T03:27:20+02:00"
+        motion:
+          $ref: '#/components/schemas/MotionLink'
+        supporters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supporter'
+        initiators:
+          type: array
+          items:
+            $ref: '#/components/schemas/Supporter'
+        initiators_html:
+          type: string
+          example: "Testuser 1"
+        url_json:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/42/json
+        url_html:
+          type: string
+          example: https://test.antragsgruen.de/consultation/123-motion/42
+    Supporter:
+      properties:
+        type:
+          type: string
+          example: person
+          description: Describes if it is a natural person or an organization
+          enum:
+            - person
+            - organization
+        name:
+          type: string
+          example: Ava
+        organization:
+          type: string
+          example: E Corp
+    MotionSection:
+      properties:
+        type:
+          type: string
+          example: TextSimple
+          enum:
+            - Title
+            - TextSimple
+            - TextHTML
+            - Image
+            - TabularData
+            - PDFAttachment
+            - PDFAlternative
+        title:
+          type: string
+          example: Motion text
+        html:
+          type: string
+          example: "<strong>This is the motion text</strong>"
+    ErrorNotFound:
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Object not found
+    ErrorApiDisabled:
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: API disabled

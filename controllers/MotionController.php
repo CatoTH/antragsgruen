@@ -3,8 +3,7 @@
 namespace app\controllers;
 
 use app\components\{UrlHelper, EmailNotifications};
-use app\models\db\{Amendment,
-    ConsultationAgendaItem,
+use app\models\db\{ConsultationAgendaItem,
     ConsultationLog,
     ConsultationMotionType,
     ConsultationSettingsMotionSection,
