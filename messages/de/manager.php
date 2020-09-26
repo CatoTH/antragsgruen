@@ -27,6 +27,7 @@ return [
     'smtp_server'             => 'SMTP Server',
     'smtp_port'               => 'SMTP Port',
     'smtp_login'              => 'SMTP Login-Typ',
+    'smtp_tls'                => 'TLS',
     'smtp_login_none'         => 'Kein Login',
     'smtp_username'           => 'SMTP Benutzer*innenname',
     'smtp_password'           => 'SMTP Passwort',

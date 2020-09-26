@@ -85,10 +85,11 @@ class ManagerController extends Base
                     break;
                 case 'smtp':
                     $config->mailService = [
-                        'transport' => 'smtp',
-                        'host'      => $post['mailService']['smtpHost'],
-                        'port'      => $post['mailService']['smtpPort'],
-                        'authType'  => $post['mailService']['smtpAuthType'],
+                        'transport'  => 'smtp',
+                        'host'       => $post['mailService']['smtpHost'],
+                        'port'       => $post['mailService']['smtpPort'],
+                        'authType'   => $post['mailService']['smtpAuthType'],
+                        'encryption' => (isset($post['mailService']['smtpTls']) ? 'tls' : null),
                     ];
                     if ($post['mailService']['smtpAuthType'] != 'none') {
                         $config->mailService['username'] = $post['mailService']['smtpUsername'];
