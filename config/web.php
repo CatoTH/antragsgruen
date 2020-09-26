@@ -19,7 +19,7 @@ if (file_exists($configFile)) {
 }
 try {
     $params = new \app\models\settings\AntragsgruenApp($config);
-} catch (\Exception $e) {
+} catch (Exception $e) {
     die('Could not load configuration; probably due to a syntax error in config/config.json?');
 }
 
@@ -31,12 +31,12 @@ if (YII_DEBUG === false) {
 
 $common = require(__DIR__ . DIRECTORY_SEPARATOR . 'common.php');
 
-$csrfCookie = [
+$cookieSettings = [
     'httpOnly' => true,
     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null
 ];
 if ((isset($_SERVER['REQUEST_SCHEME']) && strtolower($_SERVER['REQUEST_SCHEME']) === 'https') || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')) {
-    $csrfCookie['secure'] = true;
+    $cookieSettings['secure'] = true;
 }
 
 $config = yii\helpers\ArrayHelper::merge(
@@ -50,6 +50,7 @@ $config = yii\helpers\ArrayHelper::merge(
             'user'                 => [
                 'identityClass'   => 'app\models\db\User',
                 'enableAutoLogin' => true,
+                'identityCookie' => array_merge($cookieSettings, ['name' => '_identity']),
             ],
             'authClientCollection' => [
                 'class'   => 'yii\authclient\Collection',
@@ -57,7 +58,7 @@ $config = yii\helpers\ArrayHelper::merge(
             ],
             'request'              => [
                 'cookieValidationKey' => $params->randomSeed,
-                'csrfCookie'          => $csrfCookie,
+                'csrfCookie'          => $cookieSettings,
 
                 // Trust proxies from reverse proxies on local networks - necessary for getIsSecureConnection()
                 'trustedHosts' => [

@@ -4,6 +4,7 @@
 
 - Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
 - SVG images can now be uploaded as logo.
+- Some browser warnings regarding cookie settings are resolved.
 - Bugfix: LaTeX-based PDF rendering sometime failed or gave wrong line numbering in nested lists.
 - Motions embedded into an agenda are now shown, even if they are replaced by a resolution above.
 - Bugfix: if a resolution was replaced by a new version of that resolution, but that new version was deleted, the original resolution was still not shown on the home page anymore.
