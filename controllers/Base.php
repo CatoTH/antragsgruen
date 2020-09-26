@@ -323,7 +323,6 @@ class Base extends Controller
         if ($this->consultation == null) {
             return false;
         }
-        /** @var \app\models\settings\Consultation $settings */
         $settings = $this->consultation->getSettings();
         $admin    = User::havePrivilege($this->consultation, User::PRIVILEGE_CONSULTATION_SETTINGS);
         if ($settings->maintenanceMode && !$admin) {
@@ -361,10 +360,7 @@ class Base extends Controller
         return false;
     }
 
-    /**
-     * @return bool
-     */
-    public function testConsultationPwd()
+    public function testConsultationPwd(): bool
     {
         if (!Yii::$app->user->getIsGuest()) {
             return false;
@@ -387,9 +383,7 @@ class Base extends Controller
         }
     }
 
-    /**
-     */
-    public function forceLogin()
+    public function forceLogin(): void
     {
         if (Yii::$app->user->getIsGuest()) {
             $loginUrl = UrlHelper::createUrl(['user/login', 'backUrl' => Yii::$app->request->url]);
@@ -449,12 +443,7 @@ class Base extends Controller
         return $str;
     }
 
-    /**
-     * @param $status
-     * @param $message
-     * @throws \yii\base\ExitException
-     */
-    protected function showErrorpage($status, $message)
+    protected function showErrorpage(int $status, ?string $message): void
     {
         $this->layoutParams->setFallbackLayoutIfNotInitializedYet();
         $this->layoutParams->robotsNoindex = true;
@@ -470,33 +459,19 @@ class Base extends Controller
         Yii::$app->end();
     }
 
-    /**
-     * @throws \yii\base\ExitException
-     */
-    protected function consultationNotFound()
+    protected function consultationNotFound(): void
     {
         $url     = Html::encode($this->getParams()->domainPlain);
         $message = str_replace('%URL%', $url, Yii::t('base', 'err_cons_404'));
         $this->showErrorpage(404, $message);
     }
 
-    /**
-     * @throws \yii\base\ExitException
-     */
-    protected function consultationError()
+    protected function consultationError(): void
     {
         $this->showErrorpage(500, Yii::t('base', 'err_site_404'));
     }
 
-    /**
-     * @param null|Motion $checkMotion
-     * @param null|Amendment $checkAmendment
-     * @param bool $throwExceptions
-     *
-     * @throws \yii\base\ExitException
-     *
-     */
-    protected function checkConsistency($checkMotion = null, $checkAmendment = null, bool $throwExceptions = false)
+    protected function checkConsistency(?Motion $checkMotion = null, ?Amendment $checkAmendment = null, bool $throwExceptions = false): void
     {
         $consultationPath = strtolower($this->consultation->urlPath);
         $subdomain        = strtolower($this->site->subdomain);

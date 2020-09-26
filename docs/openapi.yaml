@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   title: Antragsgrün API
   description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
-  version: 0.1.9
+  version: 0.1.0
 paths:
   /{consultationPath}/rest:
     get:
@@ -15,12 +15,24 @@ paths:
           schema:
             type: string
       responses:
-        '200': # status code
+        '200':
           description: Consultation info, motion and amendment links
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConsultationWithLinks'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
   /{consultationPath}/rest/motion/{motionSlug}:
     get:
       summary: Details of this motion
@@ -45,6 +57,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MotionDetails'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
   /{consultationPath}/rest/motion/{motionSlug}/amendment/{amendmentId}:
     get:
       summary: Details of this motion
@@ -75,7 +99,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AmendmentDetails'
-
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
+        '404':
+          description: The consultation was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorNotFound'
 
 components:
   schemas:
@@ -309,3 +344,19 @@ components:
         html:
           type: string
           example: "<strong>This is the motion text</strong>"
+    ErrorNotFound:
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: Object not found
+    ErrorApiDisabled:
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: API disabled
