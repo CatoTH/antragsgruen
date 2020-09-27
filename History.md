@@ -7,6 +7,11 @@
 - Internal: the login system now supports plugins for retrieving user accounts from external sources, e.g. CMS systems with an existing user database. As an example, a integration into Drupal/CiviCRM can be found in the plugins/drupal_civicrm-folder.
 - Internal: Plugins can now provide custom amendment numberings and add extra settings and data fields for amendments and motions.
 
+### Version 4.6.3 [not released yet]
+
+- Resuming a previously saved draft when merging amendments into an motion could fail if in the meantime an amendment has been hadded.
+
+
 ### Version 4.6.2 (2020-09-26)
 
 - Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
