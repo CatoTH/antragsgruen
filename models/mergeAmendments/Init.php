@@ -72,6 +72,12 @@ class Init
                 $form->draftData->amendmentVersions[$amendmentId] = $amendmentVersion;
             }
         }
+        foreach ($unchangedDraft->draftData->amendmentVotingData as $amendmentId => $amendmentVotingData) {
+            if (!isset($form->draftData->amendmentVotingData[$amendmentId])) {
+                $amendment = $motion->getMyConsultation()->getAmendment($amendmentId);
+                $form->draftData->amendmentVotingData[$amendmentId] = $amendment->getVotingData();
+            }
+        }
 
         return $form;
     }

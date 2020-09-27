@@ -1,5 +1,9 @@
 # Version history
 
+### Version 4.6.3 [not released yet]
+
+- Resuming a previously saved draft when merging amendments into an motion could fail if in the meantime an amendment has been hadded.
+
 ### Version 4.6.2 (2020-09-26)
 
 - Motion types that do not have a text part, for example PDF-uploaded applications or financial reports, can now also have comments, if the permission is set accordingly in the motion type settings.
