@@ -16,10 +16,16 @@ class SiteSpecificBehavior extends DefaultBehavior
         return Permissions::class;
     }
 
-    public static function getConsultationHomePage(Consultation $consultation): string
+    public static function getConsultationHomePage(Consultation $consultation): ?string
     {
-        Header("Location: https://europeangreens.eu/draft-documents/onlinespring2020");
-        die();
+        /** @var ConsultationSettings $settings */
+        $settings = $consultation->getSettings();
+        if ($settings->homeRedirectUrl) {
+            Header("Location: " . $settings->homeRedirectUrl);
+            die();
+        } else {
+            return null;
+        }
     }
 
     /**

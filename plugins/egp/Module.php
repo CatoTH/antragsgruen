@@ -3,7 +3,7 @@
 namespace app\plugins\egp;
 
 use app\components\UrlHelper;
-use app\models\db\{AmendmentSupporter, Motion, MotionSupporter, Site};
+use app\models\db\{AmendmentSupporter, Consultation, Motion, MotionSupporter, Site};
 use app\plugins\egp\pdf\Egp;
 use app\plugins\ModuleBase;
 use yii\base\Event;
@@ -74,5 +74,22 @@ class Module extends ModuleBase
         ];
 
         return $default;
+    }
+
+    /**
+     * @param Consultation $consultation
+     * @return string|ConsultationSettings
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public static function getConsultationSettingsClass(Consultation $consultation)
+    {
+        return ConsultationSettings::class;
+    }
+
+    public static function getConsultationExtraSettingsForm(Consultation $consultation): string
+    {
+        return \Yii::$app->controller->renderPartial(
+            '@app/plugins/egp/views/admin/consultation_settings', ['consultation' => $consultation]
+        );
     }
 }
