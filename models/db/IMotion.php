@@ -614,10 +614,8 @@ abstract class IMotion extends ActiveRecord
                 } else {
                     return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;
                 }
-                break;
             case static::STATUS_CUSTOM_STRING:
                 return Html::encode($this->proposalComment) . $explStr;
-                break;
             case static::STATUS_VOTE:
                 $str = static::getProposedStatusNames()[$this->proposalStatus];
                 if (is_a($this, Amendment::class)) {
@@ -635,7 +633,6 @@ abstract class IMotion extends ActiveRecord
                 $str .= $explStr;
 
                 return $str;
-                break;
             default:
                 if (isset(static::getProposedStatusNames()[$this->proposalStatus])) {
                     return static::getProposedStatusNames()[$this->proposalStatus] . $explStr;

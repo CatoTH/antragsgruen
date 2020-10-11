@@ -2,10 +2,9 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{latex\Content, Tools, UrlHelper};
-use app\models\db\{Consultation, MotionSection};
+use app\components\{HTMLTools, latex\Content, Tools, UrlHelper};
+use app\models\db\Consultation;
 use app\models\exceptions\{FormError, Internal};
-use app\models\settings\AntragsgruenApp;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text as ODTText;
@@ -26,6 +25,28 @@ class VideoEmbed extends ISectionType
             return $matches['id'];
         }
         if (preg_match('/youtube\.com\/embed\/(?<id>[a-z0-9]{11})/siu', $url, $matches)) {
+            return $matches['id'];
+        }
+        return null;
+    }
+
+    private function extractVimeoUrl(string $url): ?string
+    {
+        if (preg_match('/vimeo\.com\/(?<id>[0-9]+)/siu', $url, $matches)) {
+            return $matches['id'];
+        }
+        if (preg_match('/vimeo\.com\/channels\/[a-z0-9]+\/(?<id>[0-9]+)/siu', $url, $matches)) {
+            return $matches['id'];
+        }
+        return null;
+    }
+
+    private function extractFacebookUrl(string $url): ?string
+    {
+        if (preg_match('/facebook\.com\/([a-z0-9]*\/)?(?<id>[0-9]+)/siu', $url, $matches)) {
+            return $matches['id'];
+        }
+        if (preg_match('/facebook\.com\/watch\/\?v=(?<id>[0-9]+)/siu', $url, $matches)) {
             return $matches['id'];
         }
         return null;
@@ -79,12 +100,21 @@ class VideoEmbed extends ISectionType
     public function getSimple(bool $isRight, bool $showAlways = false): string
     {
         $youtubeId = $this->extractYoutubeUrl($this->getMotionPlainText());
+        $vimeoId = $this->extractVimeoUrl($this->getMotionPlainText());
+        $facebookId = $this->extractFacebookUrl($this->getMotionPlainText());
         $html = '<div class="videoHolder"><div class="videoSizer">';
-        if ($youtubeId) {
+        if ($vimeoId) {
+            $url = 'https://player.vimeo.com/video/' . $vimeoId;
+            $html .= '<iframe src="' . $url . '" allow="autoplay; fullscreen" allowfullscreen></iframe>';
+        } elseif ($youtubeId) {
             $url = 'https://www.youtube.com/embed/' . $youtubeId;
             $html .= '<iframe src="' . $url . '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+        } elseif ($facebookId) {
+            $url = $this->getMotionPlainText();
+            $url = 'https://www.facebook.com/plugins/video.php?href=' . urlencode($url) . '&show_text=0&width=476';
+            $html .= '<iframe src="' . $url . '" allowTransparency="true" allowFullScreen="true"></iframe>';
         } else {
-            $html .= Html::encode($this->getMotionPlainText());
+            $html .= HTMLTools::plainToHtml($this->getMotionPlainText(), true);
         }
         $html .= '</div></div>';
 

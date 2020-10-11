@@ -835,7 +835,7 @@ iframe.pdfViewer {
   margin-right: -1px;
 
   .videoHolder {
-    padding: 15px 10px 15px 50px;
+    padding: 15px 50px 15px 50px;
   }
 
   .videoSizer {
@@ -851,6 +851,7 @@ iframe.pdfViewer {
     height: 100%;
     width: 100%;
     position: absolute;
+    border: none;
   }
 }
 
