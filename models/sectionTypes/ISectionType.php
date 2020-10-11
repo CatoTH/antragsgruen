@@ -19,6 +19,7 @@ abstract class ISectionType
     const TYPE_TABULAR         = 4;
     const TYPE_PDF_ATTACHMENT  = 5;
     const TYPE_PDF_ALTERNATIVE = 6;
+    const TYPE_VIDEO_EMBED     = 7;
 
     const TYPE_API_TITLE = 'Title';
     const TYPE_API_TEXT_SIMPLE = 'TextSimple';
@@ -27,6 +28,7 @@ abstract class ISectionType
     const TYPE_API_TABULAR = 'TabularData';
     const TYPE_API_PDF_ATTACHMENT = 'PDFAttachment';
     const TYPE_API_PDF_ALTERNATIVE = 'PDFAlternative';
+    const TYPE_API_VIDEO_EMBED = 'VideoEmbed';
 
     /** @var IMotionSection */
     protected $section;
@@ -51,6 +53,7 @@ abstract class ISectionType
             static::TYPE_TABULAR         => \yii::t('structure', 'section_tabular'),
             static::TYPE_PDF_ATTACHMENT  => \yii::t('structure', 'section_pdf_attachment'),
             static::TYPE_PDF_ALTERNATIVE => \yii::t('structure', 'section_pdf_alternative'),
+            static::TYPE_VIDEO_EMBED     => \yii::t('structure', 'section_video_embed'),
         ];
     }
 
@@ -71,6 +74,8 @@ abstract class ISectionType
                 return static::TYPE_API_PDF_ALTERNATIVE;
             case static::TYPE_API_PDF_ATTACHMENT:
                 return static::TYPE_API_PDF_ATTACHMENT;
+            case static::TYPE_VIDEO_EMBED:
+                return static::TYPE_API_VIDEO_EMBED;
             default:
                 return 'Unknown';
         }

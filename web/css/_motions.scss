@@ -830,6 +830,30 @@ iframe.pdfViewer {
   margin-right: -1px;
 }
 
+.sectionType7 { // PDFs
+  margin-left: -1px;
+  margin-right: -1px;
+
+  .videoHolder {
+    padding: 15px 10px 15px 50px;
+  }
+
+  .videoSizer {
+    overflow: hidden;
+    padding-bottom: 56.25%;
+    position: relative;
+    height: 0;
+  }
+
+  iframe {
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
+}
+
 .gotoLineNumerPanel {
   position: fixed;
   bottom: 0;
