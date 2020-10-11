@@ -64,6 +64,15 @@ class Module extends ModuleBase
         ];
     }
 
+    public static function getAllUrlRoutes(string $dom, string $dommotion, string $dommotionOld, string $domamend, string $domamendOld): array
+    {
+        $urls = parent::getAllUrlRoutes($dom, $dommotion, $dommotionOld, $domamend, $domamendOld);
+
+        $urls[$dom . '<consultationPath:[\w_-]+>/candidatures'] = '/egp/candidatures/index';
+
+        return $urls;
+    }
+
     public static function getProvidedPdfLayouts(array $default): array
     {
         $default[] = [

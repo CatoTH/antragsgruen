@@ -2,9 +2,8 @@
 
 namespace app\plugins\egp\controllers;
 
-use app\components\UrlHelper;
 use app\controllers\Base;
-use app\models\db\{Motion, User};
+use app\models\db\User;
 use yii\web\Response;
 
 class MotionController extends Base
