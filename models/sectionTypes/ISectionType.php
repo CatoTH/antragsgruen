@@ -12,6 +12,7 @@ use yii\helpers\Html;
 
 abstract class ISectionType
 {
+    // Synchronize with MotionTypeEdit.ts
     const TYPE_TITLE           = 0;
     const TYPE_TEXT_SIMPLE     = 1;
     const TYPE_TEXT_HTML       = 2;

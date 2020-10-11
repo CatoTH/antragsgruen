@@ -2,9 +2,9 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{HTMLTools, latex\Content, Tools, UrlHelper};
+use app\components\{HTMLTools, latex\Content};
 use app\models\db\Consultation;
-use app\models\exceptions\{FormError, Internal};
+use app\models\exceptions\FormError;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
 use yii\helpers\Html;
 use \CatoTH\HTML2OpenDocument\Text as ODTText;
@@ -177,24 +177,24 @@ class VideoEmbed extends ISectionType
 
     public function getMotionODS(): string
     {
-        return '<p>Full HTML is not convertable to Spreadsheets</p>';
+        return '<p>Videos is not convertable to Spreadsheets</p>';
     }
 
     public function getAmendmentODS(): string
     {
-        return '<p>Full HTML is not convertable to Spreadsheets</p>';
+        return '<p>Videos are not convertable to Spreadsheets</p>';
     }
 
     public function printMotionToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('[Videos are not convertable to ODT]', false); // @TODO
     }
 
     public function printAmendmentToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Full HTML is not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('[Vieos are not convertable to ODT]', false); // @TODO
     }
 
     /**

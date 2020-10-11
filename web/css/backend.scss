@@ -729,6 +729,24 @@ label.legend {
         display: none;
       }
     }
+
+    &.videoEmbed {
+      .amendmentRow {
+        display: none;
+      }
+
+      .commentRow {
+        display: none;
+      }
+
+      .lineNumbersLabel, .fixedWidthLabel, .lineLength {
+        display: none;
+      }
+
+      .maxLenInput, .lineLengthSoft {
+        display: none;
+      }
+    }
   }
 }
 
