@@ -4,6 +4,22 @@ info:
   description: Read-Only-API for [Antragsgrün](https://antragsgruen.de/)
   version: 0.1.0
 paths:
+  /rest:
+    get:
+      summary: List of consultations in this site
+      responses:
+        '200':
+          description: Consultation list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultationLinkList'
+        '403':
+          description: The REST API is not enabled for this consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorApiDisabled'
   /{consultationPath}/rest:
     get:
       summary: Overview over this consultation, with links to motions and amendments.
@@ -114,6 +130,29 @@ paths:
 
 components:
   schemas:
+    ConsultationLinkList:
+      type: array
+      items:
+        type: object
+        properties:
+          title:
+            type: string
+            example: 44. Bundesdelegiertenkonferenz
+          title_short:
+            type: string
+            example: 44. BDK
+          date_published:
+            type: string
+            example: "2015-03-30T03:27:20+02:00"
+          url_path:
+            type: string
+            example: consultation
+          url_json:
+            type: string
+            example: https://test.antragsgruen.de/consultation/rest
+          url_html:
+            type: string
+            example: https://test.antragsgruen.de/consultation
     ConsultationWithLinks:
       properties:
         title:
@@ -128,7 +167,7 @@ components:
             $ref: '#/components/schemas/MotionLinkWithAmendmentLinks'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/json
+          example: https://test.antragsgruen.de/consultation/rest
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation
@@ -161,7 +200,7 @@ components:
             $ref: '#/components/schemas/AmendmentLink'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/123-motion/json
+          example: https://test.antragsgruen.de/consultation/rest/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -190,7 +229,7 @@ components:
           example: "Testuser 1"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/123-motion/json
+          example: https://test.antragsgruen.de/consultation/rest/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -245,7 +284,7 @@ components:
             $ref: '#/components/schemas/AmendmentLink'
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/123-motion/json
+          example: https://test.antragsgruen.de/consultation/rest/123-motion
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion
@@ -262,7 +301,7 @@ components:
           example: "Testuser 1"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/123-motion/42/json
+          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42
@@ -306,7 +345,7 @@ components:
           example: "Testuser 1"
         url_json:
           type: string
-          example: https://test.antragsgruen.de/consultation/123-motion/42/json
+          example: https://test.antragsgruen.de/consultation/rest/123-motion/amendment/42
         url_html:
           type: string
           example: https://test.antragsgruen.de/consultation/123-motion/42

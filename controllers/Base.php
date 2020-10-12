@@ -252,6 +252,10 @@ class Base extends Controller
             $this->returnRestResponseFromException(new \Exception('API disabled', 403));
             Yii::$app->end();
         }
+        if ($this->consultation && ($this->consultation->urlPath === null || $this->consultation->dateDeletion || $this->consultation->getSettings()->maintenanceMode)) {
+            $this->returnRestResponseFromException(new \Exception('Consultation not found', 404));
+            Yii::$app->end();
+        }
 
         if ($this->site->getSettings()->apiCorsOrigins) {
             if (in_array('*', $this->site->getSettings()->apiCorsOrigins)) {

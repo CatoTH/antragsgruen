@@ -802,4 +802,13 @@ class Consultation extends ActiveRecord
         }
         return false;
     }
+
+    public function getDateTime(): ?\DateTime
+    {
+        if ($this->dateCreation) {
+            return \DateTime::createFromFormat('Y-m-d H:i:s', $this->dateCreation);
+        } else {
+            return null;
+        }
+    }
 }

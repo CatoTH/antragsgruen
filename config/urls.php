@@ -68,8 +68,7 @@ $urlRules = [
     $dom . 'page/<pageSlug:[^\/]+>/save'      => 'pages/save-page',
     $dom . 'page/<pageSlug:[^\/]+>/delete'    => 'pages/delete-page',
     $dom . 'admin/<_a:(siteconfig|userlist)>' => 'manager/<_a>',
-    $domv . 'test'                            => 'test/index',
-    $domv . 'test/<action:.*>'                => 'test/index',
+    $dom . 'rest'                             => 'consultation/rest-site',
 
     $domv . 'motion/pdfcollection/<motionTypeId:\d+>/<filename:.*>' => 'motion/pdfcollection',
     $domv . 'motion/fullpdf/<motionTypeId:\d+>/<filename:.*>'       => 'motion/fullpdf',
@@ -90,8 +89,8 @@ $urlRules = [
     $domv                                          => 'consultation/index',
     $dom                                           => 'consultation/home',
 
-    $domv . 'rest'                                 => 'consultation/rest',
-    $domv . 'rest/motion/<motionSlug:[^\/]+>' => '/motion/rest',
+    $domv . 'rest'                                                        => 'consultation/rest',
+    $domv . 'rest/motion/<motionSlug:[^\/]+>'                             => '/motion/rest',
     $domv . 'rest/motion/<motionSlug:[^\/]+>/amendment/<amendmentId:\d+>' => '/amendment/rest',
 ];
 

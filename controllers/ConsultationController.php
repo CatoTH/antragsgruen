@@ -274,9 +274,6 @@ class ConsultationController extends Base
         );
     }
 
-
-
-
     /**
      * @return string
      * @throws \yii\base\ExitException
@@ -406,6 +403,16 @@ class ConsultationController extends Base
         $this->consultation->preloadAllMotionData(Consultation::PRELOAD_ONLY_AMENDMENTS);
 
         return $this->returnRestResponse(200, $this->renderPartial('rest_get', ['consultation' => $this->consultation]));
+    }
+
+    /**
+     * @return string
+     */
+    public function actionRestSite()
+    {
+        $this->handleRestHeaders();
+
+        return $this->returnRestResponse(200, $this->renderPartial('rest_site_get', ['site' => $this->site]));
     }
 
     /**
