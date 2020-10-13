@@ -100,13 +100,10 @@ class TabularDataType implements \JsonSerializable
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
                 return $value;
-                break;
             case TabularDataType::TYPE_INTEGER:
                 return IntVal($value);
-                break;
             case TabularDataType::TYPE_DATE:
                 return Tools::dateBootstrapdate2sql($value);
-                break;
         }
         throw new Internal('Unsupported data type');
     }
@@ -121,13 +118,10 @@ class TabularDataType implements \JsonSerializable
         switch ($this->type) {
             case TabularDataType::TYPE_STRING:
                 return $value;
-                break;
             case TabularDataType::TYPE_INTEGER:
                 return $value;
-                break;
             case TabularDataType::TYPE_DATE:
                 return Tools::formatMysqlDate($value);
-                break;
         }
         throw new Internal('Unsupported data type');
     }

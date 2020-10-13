@@ -83,7 +83,7 @@ class TabularData extends ISectionType
         $data = json_decode($this->section->getData(), true);
         $str  = '<dl class="tabularData table' . (!$isRight ? ' dl-horizontal' : '') . '">';
         foreach ($data['rows'] as $rowId => $rowData) {
-            if (!isset($rows[$rowId])) {
+            if (!isset($rows[$rowId]) || $rows[$rowId]->formatRow($rowData) === '') {
                 continue;
             }
             $str .= '<dt>';
@@ -128,7 +128,7 @@ class TabularData extends ISectionType
         $data = json_decode($this->section->getData(), true);
 
         foreach ($data['rows'] as $rowId => $rowData) {
-            if (!isset($rows[$rowId])) {
+            if (!isset($rows[$rowId]) || $rows[$rowId]->formatRow($rowData) === '') {
                 continue;
             }
             $y     = $pdf->getY();
@@ -219,7 +219,7 @@ class TabularData extends ISectionType
 
         $return = '';
         foreach ($data['rows'] as $rowId => $rowData) {
-            if (!isset($rows[$rowId])) {
+            if (!isset($rows[$rowId]) || $rows[$rowId]->formatRow($rowData) == '') {
                 continue;
             }
             $return .= $rows[$rowId]->title . ': ';
@@ -249,7 +249,7 @@ class TabularData extends ISectionType
         }
         */
         foreach ($data['rows'] as $rowId => $rowData) {
-            if (!isset($rows[$rowId])) {
+            if (!isset($rows[$rowId]) || $rows[$rowId]->formatRow($rowData) === '') {
                 continue;
             }
             if ($isRight) {
