@@ -1,5 +1,7 @@
 declare var Sortable;
 
+import {AntragsgruenEditor} from "../shared/AntragsgruenEditor";
+
 const CONTACT_NONE = 0;
 const CONTACT_OPTIONAL = 1;
 const CONTACT_REQUIRED = 2;
@@ -30,6 +32,7 @@ class MotionTypeEdit {
 
         $('[data-toggle="tooltip"]').tooltip();
 
+        this.initCreateExplanation();
         this.initSectionList();
         this.initDeadlines();
 
@@ -42,6 +45,27 @@ class MotionTypeEdit {
                 $('section.amendmentSupporters').addClass("hidden");
             } else {
                 $('section.amendmentSupporters').removeClass("hidden");
+            }
+        }).trigger("change");
+    }
+
+    private initCreateExplanation() {
+        let initialized = false;
+        const $checkbox = $("#typeHasCreateExplanation");
+        $checkbox.on("change", () => {
+            const $explanationHolder = $("#typeCreateExplanationHolder");
+            if ($checkbox.prop("checked")) {
+                $explanationHolder.removeClass("hidden");
+                if (!initialized) {
+                    initialized = true;
+                    const $textarea = $explanationHolder.find(".texteditor"),
+                        editor = (new AntragsgruenEditor($textarea.attr("id"))).getEditor();
+                    $textarea.parents("form").on("submit", () => {
+                        $textarea.parent().find("textarea").val(editor.getData());
+                    });
+                }
+            } else {
+                $explanationHolder.addClass("hidden");
             }
         }).trigger("change");
     }

@@ -379,6 +379,8 @@ As there is <strong>no e-mail-delivery configured</strong>, it is necessary that
     'motion_type_initiator_amend' => 'Initiators / supporters: amendments',
     'motion_type_proposed'        => 'Proposed procedure',
     'motion_type_proposed_label'  => 'Admins can specify a proposed procedure for these motions',
+    'motion_type_explan'          => 'Explanation for creating',
+    'motion_type_explan_label'    => 'Enter an explanation shown when creating a motion',
     'motion_type_respons'         => 'Responsibilities',
     'motion_type_respons_label'   => 'Each motion/amendment can be assigned to an admin',
     'motion_type_perm'            => 'Permissions',
