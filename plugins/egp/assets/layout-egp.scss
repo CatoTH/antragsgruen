@@ -392,3 +392,87 @@ body > footer.footer {
     }
   }
 }
+
+.egpCandidatures {
+  color: #333;
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 300;
+  h2 {
+    font-family: inherit;
+    font-weight: bolder;
+    font-size: 16px;
+    line-height: 1.75;
+    color: inherit;
+    margin-top: 0;
+  }
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  > ul > li {
+    @media screen and (min-width: 800px) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+  .imageHolder {
+    flex: 0;
+    flex-basis: 280px;
+    padding-right: 20px;
+    text-align: center;
+    img {
+      max-width: 280px;
+      max-height: 350px;
+    }
+  }
+  .contentHolder {
+    flex: 1;
+    @media screen and (min-width: 800px) {
+      padding-top: 60px;
+      padding-left: 60px;
+    }
+  }
+  .supportedByHolder, .nominatedByHolder {
+    margin: 5px 5px 10px 0;
+  }
+  .supportedByHolder ul {
+    display: inline;
+  }
+  .supportedByHolder ul li {
+    display: inline;
+
+    &:after {
+      display: inline-block;
+      padding: 0 6px 0 0;
+      content: ',';
+    }
+
+    &:last-child:after {
+      content: none;
+    }
+  }
+  .documentList {
+    margin: 25px 0;
+    li {
+      display: inline;
+
+      &:after {
+        display: inline-block;
+        padding: 0 10px;
+        content: '|';
+      }
+
+      &:last-child:after {
+        content: none;
+      }
+    }
+  }
+}

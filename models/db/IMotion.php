@@ -152,6 +152,12 @@ abstract class IMotion extends ActiveRecord
             static::STATUS_RESOLUTION_PRELIMINARY       => \Yii::t('structure', 'STATUS_RESOLUTION_PRELIMINARY'),
             static::STATUS_RESOLUTION_FINAL             => \Yii::t('structure', 'STATUS_RESOLUTION_FINAL'),
             static::STATUS_MOVED                        => \Yii::t('structure', 'STATUS_MOVED'),
+
+            100 => '123',
+            101 => '123',
+            102 => '123',
+            103 => '123',
+            104 => '123',
         ];
         if ($includeAdminInvisibles) {
             $propName = \Yii::t('structure', 'STATUS_PROPOSED_MODIFIED_AMENDMENT');
