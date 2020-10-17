@@ -2,7 +2,7 @@
 
 namespace app\models\sectionTypes;
 
-use app\components\{HTMLTools, latex\Content};
+use app\components\{HTMLTools, latex\Content, latex\Exporter};
 use app\models\db\Consultation;
 use app\models\exceptions\FormError;
 use app\views\pdfLayouts\{IPDFLayout, IPdfWriter};
@@ -136,9 +136,14 @@ class VideoEmbed extends ISectionType
         if ($this->section->getSettings()->printTitle) {
             $pdfLayout->printSectionHeading($this->section->getSettings()->title);
         }
+        $html = '<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>';
 
         $pdf->SetFont('Courier', '', 11);
         $pdf->Ln(7);
+
+        $y    = $pdf->getY();
+        $pdf->writeHTMLCell(12, '', 12, $y, '', 0, 0, 0, true, '', true);
+        $pdf->writeHTMLCell(173, '', 24, '', $html, 0, 1, 0, true, '', true);
     }
 
     public function printAmendmentToPDF(IPDFLayout $pdfLayout, IPdfWriter $pdf): void
@@ -148,7 +153,6 @@ class VideoEmbed extends ISectionType
 
     public function getMotionPlainText(): string
     {
-
         return ($this->isEmpty() ? '' : $this->section->getData());
     }
 
@@ -159,42 +163,56 @@ class VideoEmbed extends ISectionType
 
     public function printMotionTeX(bool $isRight, Content $content, Consultation $consultation): void
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+        $title = Exporter::encodePlainString($this->section->getSettings()->title);
+        $text = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+        $text .= Exporter::encodeHTMLString('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>');
+
         if ($isRight) {
-            $content->textRight .= '[TEST VIDEO]';
+            $content->textRight .= $text;
         } else {
-            $content->textMain .= '[TEST VIDEO]';
+            $content->textMain .= $text;
         }
     }
 
     public function printAmendmentTeX(bool $isRight, Content $content): void
     {
+        if ($this->isEmpty()) {
+            return;
+        }
+        $title = Exporter::encodePlainString($this->section->getSettings()->title);
+        $text = '\subsection*{\AntragsgruenSection ' . $title . '}' . "\n";
+        $text .= Exporter::encodeHTMLString('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>');
+
         if ($isRight) {
-            $content->textRight .= '[TEST VIDEO]'; // @TODO
+            $content->textRight .= $text;
         } else {
-            $content->textMain .= '[TEST VIDEO]'; // @TODO
+            $content->textMain .= $text;
         }
     }
 
     public function getMotionODS(): string
     {
-        return '<p>Videos is not convertable to Spreadsheets</p>';
+        return '<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>';
     }
 
     public function getAmendmentODS(): string
     {
-        return '<p>Videos are not convertable to Spreadsheets</p>';
+        return '<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>';
     }
 
     public function printMotionToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Videos are not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>', false);
     }
 
     public function printAmendmentToODT(ODTText $odt): void
     {
         $odt->addHtmlTextBlock('<h2>' . Html::encode($this->section->getSettings()->title) . '</h2>', false);
-        $odt->addHtmlTextBlock('[Vieos are not convertable to ODT]', false); // @TODO
+        $odt->addHtmlTextBlock('<p>' . HTMLTools::plainToHtml($this->section->getData()) . '</p>', false);
     }
 
     /**

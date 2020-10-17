@@ -172,7 +172,7 @@ class PDF extends ISectionType
             if (str_replace('pdf', '', strtolower($title)) == strtolower($title)) {
                 $title .= ' [PDF]';
             }
-            $pdf->writeHTML('<h3>' . $title . '</h3>');
+            $pdfLayout->printSectionHeading($title);
         }
 
         $data = $this->section->getData();
